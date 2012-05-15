@@ -1,0 +1,57 @@
+/* -------------------------------------------
+	IE7 CSS
+	--------------------------------------- */
+* {
+	zoom: 1;
+}
+#nav #search input[type="text"] {
+	margin-top: 0;
+}
+
+/* need these to preserve animated main nav states in non ie browsers */
+#nav li.first a:hover {
+	background-position: -14px -46px;
+}
+#nav li.first.nav-on a {
+	background-position: -14px -92px;
+}
+#nav li.second a:hover {
+	background-position: -106px -46px;
+}
+#nav li.second.nav-on a {
+	background-position: -106px -92px;
+}		
+#nav li.third a:hover {
+	background-position: -203px -46px;
+}
+#nav li.third.nav-on a {
+	background-position: -203px -92px;
+}
+#nav li.fourth a:hover {
+	background-position: -404px -46px;
+}
+#nav li.fourth.nav-on a {
+	background-position: -404px -92px;
+}
+.search-callout a.advanced-search-link {
+	padding: 5px 0 0;
+}
+.promo-block {
+	zoom: 1;
+}
+div.browse-paging {
+	zoom: 1;
+}
+#searchOptionsBox .bg{
+	zoom: 1;
+}
+.attributeListItem {
+	width: 200px;
+}
+#exposeMask {
+	zoom: 1;
+}
+.restricted-media {
+	display: block;
+	padding-left: 0;
+}

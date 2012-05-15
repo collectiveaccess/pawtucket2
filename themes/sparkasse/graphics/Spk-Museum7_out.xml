@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<panorama>
+<!-- Pano2VR 3.1.2 panorama configuration -->
+<view fovmode="0">
+<start pan="0" tilt="0" fov="70"/>
+<min pan="0" tilt="-90" fov="5"/>
+<max pan="360" tilt="90" fov="120"/>
+</view>
+<autorotate speed="0.400" delay="5.00" returntohorizon="0.000" startloaded="0" />
+<input tilesize="1640" tilescale="1.0061" tile0url="images/Spk-Museum7_o_0.jpg" tile1url="images/Spk-Museum7_o_1.jpg" tile2url="images/Spk-Museum7_o_2.jpg" tile3url="images/Spk-Museum7_o_3.jpg" tile4url="images/Spk-Museum7_o_4.jpg" tile5url="images/Spk-Museum7_o_5.jpg" />
+<userdata title="" description="" author="" datetime="" copyright="" source="" info="" comment="" />
+<control sensitifity="8" simulatemass="1" lockedmouse="0" lockedkeyboard="0" lockedwheel="0" invertwheel="0" speedwheel="1" dblclickfullscreen="0" invertcontrol="1" />
+<sounds>
+</sounds>
+</panorama>

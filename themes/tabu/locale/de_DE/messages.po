@@ -1,0 +1,2591 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TABU\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-27 12:09-0500\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Info <info@collectiveaccess.org>\n"
+"Language-Team:  <info@collectiveaccess.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: US\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /web/dev/pawtucket2\n"
+"X-Poedit-KeywordsList: _t;_p\n"
+"X-Poedit-SearchPath-0: /web/dev/pawtucket2/themes/tabu\n"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/ajax_browse_facet_html.php:121
+msgid "Type "
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:40
+#, fuzzy
+msgid "Browse for"
+msgstr "Browse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:45
+#, fuzzy
+msgid "Themensuche"
+msgstr "Schlagwörter"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:56
+msgid "Refine results by"
+msgstr "Ergebnisse filtern"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:73
+#, fuzzy
+msgid "You browsed for"
+msgstr "Browse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:83
+msgid "start new search"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/bundles/ca_search_form_attributes.php:52
+#, fuzzy
+msgid "Locale "
+msgstr "Orte"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:38
+msgid "Back"
+msgstr "Übersicht"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/paging_controls_html.php:10
+msgid "Previous"
+msgstr "Zurück"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:50
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:50
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:49
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:51
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/paging_controls_html.php:14
+msgid "Next"
+msgstr "Vor"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:60
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:60
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:61
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:58
+msgid "Identifier"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:80
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:80
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:246
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:81
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:78
+#, fuzzy
+msgid "[more]"
+msgstr "Mehr"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:116
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:115
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:304
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:117
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:113
+#, fuzzy
+msgid "Related"
+msgstr "Verwandte Bilder"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+msgid "Entities"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+msgid "Entity"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:127
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:126
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:315
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:128
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:124
+#, fuzzy
+msgid "Related Place"
+msgstr "Verwandte Bilder"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:136
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:135
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:324
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:137
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:133
+#, fuzzy
+msgid "Related Collection"
+msgstr "Verwandte Bilder"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:146
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:145
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:333
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:146
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:142
+msgid "Subject"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:52
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:55
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:106
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:110
+msgid "Einstellungs-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:77
+#, fuzzy
+msgid "Print"
+msgstr "Partner"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:81
+msgid "Bookmark"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:83
+#, fuzzy
+msgid "Login/Register to Bookmark"
+msgstr "Anmelden/Registrieren"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:97
+#, fuzzy
+msgid "Search results"
+msgstr "Ihre Suche ergab %1 Treffer."
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:96
+#, fuzzy
+msgid "Advanced Search"
+msgstr "Suchbegriff eingeben"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:101
+msgid "Browse"
+msgstr "Browse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:102
+#, fuzzy
+msgid "Browse results"
+msgstr "Objekttypen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:106
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:110
+#, fuzzy
+msgid "untitled"
+msgstr "Titel"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:204
+msgid "Zur Einstellungs-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:256
+msgid "Part Of"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:261
+#, fuzzy
+msgid "Part%1"
+msgstr "Partner"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:266
+msgid "More"
+msgstr "Mehr"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:350
+msgid "Datensatz-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:5
+msgid "Favorites"
+msgstr "Favoriten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:12
+msgid "Featured content"
+msgstr "Unsere Favoriten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:45
+#, fuzzy
+msgid "Random selection"
+msgstr "Verwandte Bilder"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:45
+msgid "User favorites"
+msgstr "Ihre Favoriten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:78
+msgid "Most viewed"
+msgstr "Meist gesehen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:112
+msgid "Recently Added"
+msgstr "Neuzugänge"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:5
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:21
+msgid "Login"
+msgstr "Anmelden"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:14
+msgid "Email address"
+msgstr "E-Mail-Adresse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:18
+msgid "Password"
+msgstr "Passwort"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:25
+msgid "Forgot your password?"
+msgstr "Passwort vergessen?"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:27
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:30
+msgid "Reset your password"
+msgstr "Passwort vergessen?"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:31
+msgid "To reset your password enter the e-mail address you used to register below. A message will be sent to the address with instructions on how to reset your password."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:42
+msgid "Your e-mail address"
+msgstr "Ihre E-Mail-Adresse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:43
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:81
+msgid "Go"
+msgstr "Los"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:51
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:91
+msgid "Register"
+msgstr "Anmelden/Registrieren"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:55
+msgid "As a member you can bookmark items for reference during futire site visits."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:81
+msgid "Security Question (to prevent SPAMbots)"
+msgstr "Sicherheitsfrage (um Spambots zu verhindern)"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:90
+msgid "Re-Type password"
+msgstr "Passwort wiederholen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:37
+msgid "Instructions have been sent to the e-mail address you provided."
+msgstr "An Ihre E-Mail-Adresse wurde soeben eine E-Mail mit einem Link abgesandt. Öffnen Sie bitte den Link in Ihrem Browser und geben Sie auf der sich daraufhin öffnenden Seite ein neues Passwort ein."
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:40
+#, fuzzy
+msgid "You should receive the instructions within the hour. If you do not, contact us for assistance at "
+msgstr "Sollten Sie innerhalb der nächsten Stunde keine Post von uns erhalten, melden Sie sich bitte unter "
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:50
+msgid "Your password has been reset!"
+msgstr "Ihr Passwort wurde geändert!"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:53
+msgid "You may now"
+msgstr "Sie können sich jetzt"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:53
+msgid "login"
+msgstr "anmelden"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:62
+msgid "Your password could not be reset!"
+msgstr "Ihr Passwort konnte nicht geändert werden!"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:65
+msgid "Please contact us for assistance,"
+msgstr "Nehmen Sie Kontakt zu uns auf, wenn Sie Hilfe benötigen."
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:75
+msgid "Please enter your new password."
+msgstr "Bitte geben Sie Ihr Passwort ein und wiederholen es."
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:82
+msgid "New password"
+msgstr "Passwort"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:85
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:86
+msgid "Save"
+msgstr "Absenden"
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageFooter.php:2
+#, fuzzy
+msgid "top"
+msgstr "Nach oben"
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:36
+msgid "Bookmarks"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:37
+msgid "Logout"
+msgstr "Abmelden"
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:39
+msgid "Login/Register"
+msgstr "Anmelden/Registrieren"
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:74
+msgid "Zur Entstehung von F. W. Murnaus TABU"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:75
+msgid "Edition der Outtakes"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:81
+msgid "Search"
+msgstr "Suche"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_collections_search_no_results_html.php:31
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_entities_search_no_results_html.php:31
+msgid "To search for collections, simply type in the words that best describe what you are looking for and click on the \"search\" button. By default, the search engine will return only matches that contain all of the words in your search. The more words entered, the more restrictive the search."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:71
+msgid "Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:73
+#, fuzzy
+msgid "Merken"
+msgstr "Mehr"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:75
+#, fuzzy
+msgid "Typ"
+msgstr "Nach oben"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:81
+#, fuzzy
+msgid "Datum"
+msgstr "Album bearbeiten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:83
+#, fuzzy
+msgid "Drehort"
+msgstr "Regie"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:85
+msgid "Kameramann"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:87
+msgid "Personen"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:89
+#, fuzzy
+msgid "Stichwort"
+msgstr "Impressum"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:123
+msgid "Login to Bookmark"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:180
+#, fuzzy
+msgid "Action"
+msgstr "Optionen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:44
+msgid "%1 of %2 results have been mapped.  To see all results chose a different display by clicking the \"Options\" link below."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:50
+msgid "Found %1 results."
+msgstr "Ihre Suche ergab %1 Treffer."
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:58
+msgid "It is not possible to show a map of the results because none of the items found have map coordinates."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_search_no_results_html.php:30
+msgid "To search the collection, simply type in the words that best describe what you are looking for and click on the \"search\" button. By default, the search engine will return only matches that contain all of the words in your search. The more words entered, the more restrictive the search."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/paging_controls_html.php:9
+msgid "Ergebnisse pro Seite"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/paging_controls_html.php:81
+msgid "Suchergebnis %1 von %2 von %3"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:40
+#, fuzzy
+msgid "Collections"
+msgstr "Standort"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+msgid "result"
+msgstr "Treffer"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+msgid "results"
+msgstr "Treffer"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+#, fuzzy
+msgid "Your search found %1 %2."
+msgstr "Ihre Suche ergab"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:40
+msgid "Occurrences"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:40
+msgid "Places"
+msgstr "Orte"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ajax_refine_facet_html.php:95
+msgid "Group by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_collections_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_entities_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_occurrences_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_places_search_basic_html.php:41
+msgid "Filter Search"
+msgstr "Suche filtern"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_collections_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_entities_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_occurrences_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_places_search_basic_html.php:46
+msgid "Options"
+msgstr "Optionen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_objects_search_basic_html.php:41
+#, fuzzy
+msgid "Suche nach"
+msgstr "Suche"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:77
+msgid "Outtakes"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:81
+#, fuzzy
+msgid "Continuity reports"
+msgstr "Favoriten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:85
+msgid "Script Clerk's reports"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:89
+msgid "All"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:97
+msgid "Ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat. Ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:36
+#, fuzzy
+msgid "Sort"
+msgstr "Impressum"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:57
+msgid "Results per page:"
+msgstr "Ergebnisse:"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:69
+msgid "Layout:"
+msgstr "Ansicht:"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:82
+msgid "Search history:"
+msgstr "Bisherige Anfragen:"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:102
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:8
+msgid "Hide"
+msgstr "Verstecken"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:10
+msgid "Filter results by"
+msgstr "Suche filtern nach"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:34
+msgid "Filtering results by"
+msgstr "Ergebnisse gefiltert nach"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:45
+msgid "clear all filters"
+msgstr "alle Filter löschen"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:50
+#, fuzzy
+msgid "There are no bookmark lists to edit. Create a list to start."
+msgstr "Es gibt keine Alben zu bearbeiten. Legen Sie ein neues Album an."
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:60
+msgid "Bookmark list is not selected."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:70
+#, fuzzy
+msgid "There are no bookmarked items."
+msgstr "Dieses Album ist leer."
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:97
+msgid "Gemerkt"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_slideshow_html.php:33
+msgid "Slideshow"
+msgstr "Diashow"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_slideshow_html.php:35
+msgid "You must have the Flash Plug-in version 9.0.0 or better installed to play slideshows"
+msgstr "Für Diashows brauchen Sie mindestens Flash Plug-in Version 9.0.0."
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:16
+msgid "Left"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:20
+#, fuzzy
+msgid "Featured Item"
+msgstr "Unsere Favoriten"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:28
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:33
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:38
+#, fuzzy
+msgid "More &gt;"
+msgstr "Mehr"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:31
+msgid "Most Viewed"
+msgstr "Meist gesehene Bilder"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:41
+msgid "Quickly browse by"
+msgstr "Suche über"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:53
+msgid "Or click \"Browse\" in the navigation bar to do a refined browse"
+msgstr "Oder wählen Sie \"Alle Filme\" in der Navigationsleiste"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:58
+msgid "Get alerted to newly added items by RSS"
+msgstr "Neuzugänge als RSS-Feed"
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/configuration_error_html.php:11
+msgid ""
+"Apparently the built-in sanity check has found errors in your system configuration.\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at the messages below."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/logged_out_html.php:1
+msgid "Login again"
+msgstr "Nochmals anmelden"
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/login_html.php:19
+msgid "Username"
+msgstr "Benutzernamen"
+
+#~ msgid "List"
+#~ msgstr "Listen"
+
+#, fuzzy
+#~ msgid "name"
+#~ msgstr "Benutzernamen"
+
+#~ msgid "browse"
+#~ msgstr "browse"
+
+#~ msgid "Recently added"
+#~ msgstr "Neueste Bilde"
+
+#~ msgid "First name"
+#~ msgstr "Vorname"
+
+#~ msgid "Last name"
+#~ msgstr "Nachname"
+
+#~ msgid "Login failed. Please try again."
+#~ msgstr "Fehlerhafte Anmeldung. Bitte nochmals versuchen."
+
+#~ msgid "You are now logged in"
+#~ msgstr "Erfolgreich angemeldet"
+
+#~ msgid "Login failed."
+#~ msgstr "Ungültige Eingabe."
+
+#~ msgid "You have been logged out"
+#~ msgstr "Erfolgreich abgemeldet"
+
+#~ msgid "E-mail address is not valid."
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#~ msgid "Please enter your first name"
+#~ msgstr "Bitte geben Sie Ihren Vornamen ein."
+
+#~ msgid "Please enter your last name"
+#~ msgstr "Bitte geben Sie Ihren Nachnamen ein."
+
+#~ msgid "Please enter and re-type your password."
+#~ msgstr "Bitte geben Sie Ihr Passwort ein und wiederholen es."
+
+#~ msgid "Passwords do not match"
+#~ msgstr "Fehlerhaftes Passwort. Bitte nochmals versuchen."
+
+#~ msgid "Please answer the security question."
+#~ msgstr "Bitte beantworten Sie die Sicherheitsfrage."
+
+#~ msgid "Your answer was incorrect, please try again"
+#~ msgstr "Ungültige Antwort; bitte nochmals versuchen"
+
+#, fuzzy
+#~ msgid "User cannot register"
+#~ msgstr "Ihre Favoriten"
+
+#~ msgid "A user has already registered with this email address"
+#~ msgstr "Mit dieser E-Mail-Adresse hat sich schon ein Benutzer angemeldet."
+
+#~ msgid "Thank you for registering!"
+#~ msgstr "Vielen Dank für Ihre Registrierung!"
+
+#~ msgid "Thank you for registering!  You are now logged in."
+#~ msgstr "Vielen Dank für Ihre Registrierung! Sie sind jetzt angemeldet."
+
+#~ msgid "E-mail address is not valid"
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#~ msgid "Resetting your site password"
+#~ msgstr "Angeforderter Passwort-Link"
+
+#~ msgid "Passwords do not match. Please try again."
+#~ msgstr "Fehlerhaftes Passwort. Bitte nochmals versuchen."
+
+#~ msgid "Your password has been reset"
+#~ msgstr "Ihr Passwort wurde geändert"
+
+#~ msgid "Invalid user"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Invalid secondary search type"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Your first collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Could not create collection for user"
+#~ msgstr "Objekt konnte nicht aus dem Album entfernt werden"
+
+#~ msgid "Successfully added item"
+#~ msgstr "Objekt erfolgreich dazugefügt."
+
+#, fuzzy
+#~ msgid "Could not add item to collection"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "You must enter a name for your collection"
+#~ msgstr "Bitte geben Sie Ihrem Album einen Namen"
+
+#, fuzzy
+#~ msgid "Please enter the name of your collection"
+#~ msgstr "Bitte tragen Sie den Albumnamen hier ein"
+
+#, fuzzy
+#~ msgid "The collection does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "You cannot view this collection"
+#~ msgstr "Dieses Album kann nicht aufgerufen werden"
+
+#, fuzzy
+#~ msgid "You cannot edit this collection"
+#~ msgstr "Dieses Album kann nicht bearbeitet werden"
+
+#~ msgid "Could not reorder item %1: %2"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Could not remove item from collection"
+#~ msgstr "Objekt konnte nicht aus dem Album entfernt werden"
+
+#~ msgid "Login was invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#~ msgid "You are now logged out"
+#~ msgstr "Erfolgreich abgemeldet"
+
+#, fuzzy
+#~ msgid "Delete"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Results"
+#~ msgstr "Treffer"
+
+#, fuzzy
+#~ msgid "BLANK"
+#~ msgstr "ÜBERSICHT"
+
+#, fuzzy
+#~ msgid "Add/remove item to/from watch list."
+#~ msgstr "Objekt konnte nicht aus dem Album entfernt werden"
+
+#, fuzzy
+#~ msgid "Lot"
+#~ msgstr "Abmelden"
+
+#, fuzzy
+#~ msgid "Related objects"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Applied to representation"
+#~ msgstr "Das Projekt"
+
+#, fuzzy
+#~ msgid "Number of items"
+#~ msgstr "Aus dem Album"
+
+#, fuzzy
+#~ msgid "Type of content"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Part of set"
+#~ msgstr "Partner"
+
+#, fuzzy
+#~ msgid "Part of"
+#~ msgstr "Partner"
+
+#, fuzzy
+#~ msgid "More info"
+#~ msgstr "Mehr"
+
+#, fuzzy
+#~ msgid "Could not send registration confirmation email to %1: %2"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#~ msgid "Start Browsing By..."
+#~ msgstr "Suche nach:"
+
+#, fuzzy
+#~ msgid "%1 does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Could not save %1"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Default"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Invalid set"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Search could not be saved"
+#~ msgstr "Ihr Passwort konnte nicht geändert werden!"
+
+#, fuzzy
+#~ msgid "%1 is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Could not geocode address: [%1] %2"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Use map"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "%1 is not a valid list item_id for %2"
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#~ msgid "page"
+#~ msgstr "Seite"
+
+#, fuzzy
+#~ msgid "pages"
+#~ msgstr "Seite"
+
+#, fuzzy
+#~ msgid "%1 is not a valid url"
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#, fuzzy
+#~ msgid "Searches"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Invalid search type"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Invalid criteria type"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "PBCore"
+#~ msgstr "Mehr"
+
+#, fuzzy
+#~ msgid "Invalid property '%1'"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "User"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "Changes"
+#~ msgstr "Kapitel"
+
+#, fuzzy
+#~ msgid "Edited"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "Deleted"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Not set"
+#~ msgstr "Aus dem Album"
+
+#, fuzzy
+#~ msgid "BaseModel '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Field '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Starting date is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Ending date is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Ending time is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Timecode is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Could not update sub records in hierarchy: [%1] %2"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Couldn't write file: %1"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "File is not a valid format"
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#, fuzzy
+#~ msgid "Could not get hierarchy siblings: %1"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Tag relation id is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Comment id is invalid"
+#~ msgstr "Ungültige Eingabe"
+
+#, fuzzy
+#~ msgid "Couldn't remove element from restriction list: %1"
+#~ msgstr "Objekt konnte nicht aus dem Album entfernt werden"
+
+#, fuzzy
+#~ msgid "Could not instantiate driver"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "Driver does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Could not find plug-in for mimetype %1"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "Invalid date"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Invalid time"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Invalid uncertainty"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Invalid expression"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "File %1 does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid ""
+#~ "You must have the Flash Plug-in version 9.0.124 or better installed to "
+#~ "play video and audio in CollectiveAccess"
+#~ msgstr "Für Diashows brauchen Sie mindestens Flash Plug-in Version 9.0.0."
+
+#, fuzzy
+#~ msgid "Couldn't write image"
+#~ msgstr "Objekt konnte nicht aus dem Album entfernt werden"
+
+#, fuzzy
+#~ msgid "Could not read image file"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "View PDF document"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Could not open %1"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Couldn't write file to %1"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "Form '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Page element '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Could not load font '%1'"
+#~ msgstr "Objekt %1: %2 konnte nicht neu eingereiht werden"
+
+#, fuzzy
+#~ msgid "Could not load image at '%1'"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "Invalid class '%1'"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "Subform element '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Invalid ID"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "ID does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "This item is not available for view"
+#~ msgstr "Dieses Bild ist nicht zur Ansicht freigegeben"
+
+#~ msgid ""
+#~ "Thank you for contributing.  Your comments will be posted on this page "
+#~ "after review by site staff."
+#~ msgstr ""
+#~ "Vielen Dank für Ihren Beitrag. Ihr Kommentar wird nach Durchsicht von "
+#~ "Projektmitarbeitern veröffentlicht."
+
+#~ msgid "Thank you for your contribution."
+#~ msgstr "Vielen Dank für Ihre Registrierung!"
+
+#, fuzzy
+#~ msgid "Table num"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Notes"
+#~ msgstr "Aus dem Album"
+
+#, fuzzy
+#~ msgid "attributes"
+#~ msgstr "Favoriten"
+
+#, fuzzy
+#~ msgid "Created on"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Last used"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Name"
+#~ msgstr "Benutzernamen"
+
+#~ msgid "Description"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Description of display"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Display mode"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Bundle name"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Settings"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "display list"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Display type"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "collections"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "entities"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "object_lots"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "objects"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "object events"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "places"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "storage locations"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "representation annotations"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "sets"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "set items"
+#~ msgstr "Ihre Favoriten"
+
+#, fuzzy
+#~ msgid "search forms"
+#~ msgstr "Ihre Favoriten"
+
+#, fuzzy
+#~ msgid "Display code"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Display settings"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Display list contents"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Object representation (%1)"
+#~ msgstr "Das Projekt"
+
+#, fuzzy
+#~ msgid "Related entities"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Description of mapping"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Element name"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Destination"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Direction"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Import"
+#~ msgstr "Impressum"
+
+#, fuzzy
+#~ msgid "Export"
+#~ msgstr "Entdecken"
+
+#, fuzzy
+#~ msgid "Target"
+#~ msgstr "Seite"
+
+#, fuzzy
+#~ msgid "Objects"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "Object lots"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "collection name"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "collection names"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Name of collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Collection identifier"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Source"
+#~ msgstr "Mehr"
+
+#, fuzzy
+#~ msgid "Newly created"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Completed"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Status"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "Is deleted?"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Related places"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Related lot"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Inserted"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Updated"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "Parser"
+#~ msgstr "Partner"
+
+#, fuzzy
+#~ msgid "Description of editor"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Description of UI screen"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Table"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Editor type"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "object lots"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "loans"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "movements"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "object lot events"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "entity name"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "entity names"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "Display name"
+#~ msgstr "Displaymöglichkeit"
+
+#, fuzzy
+#~ msgid "Forename"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "Middlename"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Surname"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "Prefixes"
+#~ msgstr "Zurück"
+
+#~ msgid "comment"
+#~ msgstr "Kommentare"
+
+#~ msgid "comments"
+#~ msgstr "Kommentare"
+
+#~ msgid "Comment"
+#~ msgstr "Kommentar"
+
+#, fuzzy
+#~ msgid "Text of comment."
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "E-mail address"
+#~ msgstr "E-Mail-Adresse"
+
+#, fuzzy
+#~ msgid "E-mail address of commentor."
+#~ msgstr "Ungültige E-Mail-Adresse"
+
+#, fuzzy
+#~ msgid "tags"
+#~ msgstr "Tags"
+
+#, fuzzy
+#~ msgid "Tag"
+#~ msgstr "Tags"
+
+#, fuzzy
+#~ msgid "item view"
+#~ msgstr "Meist gesehene Bilder"
+
+#, fuzzy
+#~ msgid "list item name"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "list item names"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "Item color"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Item icon"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "list name"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "list names"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "By identifier"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "loan title"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "loan titles"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "loan"
+#~ msgstr "anmelden"
+
+#, fuzzy
+#~ msgid "Loan type"
+#~ msgstr "Lizenztyp"
+
+#, fuzzy
+#~ msgid "Loan identifier"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Related movements"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Dialect"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "storage_locations"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "movement title"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "movement titles"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "movement"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Movement type"
+#~ msgstr "Lizenztyp"
+
+#, fuzzy
+#~ msgid "Movement identifier"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Related lots"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Related loans"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "object event"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Event type"
+#~ msgstr "Lizenztyp"
+
+#, fuzzy
+#~ msgid "Name of object"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "object lot event title"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "object lot event titles"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "object lot event"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "lot title"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "lot titles"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "Related events"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Media content"
+#~ msgstr "Unsere Favoriten"
+
+#, fuzzy
+#~ msgid "object representation"
+#~ msgstr "Das Projekt"
+
+#, fuzzy
+#~ msgid "object"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "Sets"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "Representation id=%1 does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "Related object does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "place name"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "place names"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "place"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "Place identifier"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "representation annotation title"
+#~ msgstr "Das Album existiert nicht"
+
+#~ msgid "Title"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "representation annotation"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "search form names"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Search type"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Loans"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Movements"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Search form settings."
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "set item caption"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "set item captions"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Caption"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "set item"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "Set"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "Set content"
+#~ msgstr "Unsere Favoriten"
+
+#, fuzzy
+#~ msgid "Item captions"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "set name"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "set names"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Name of set"
+#~ msgstr "Aus dem Album"
+
+#, fuzzy
+#~ msgid "set"
+#~ msgstr "Treffer"
+
+#, fuzzy
+#~ msgid "The user who created the set."
+#~ msgstr "Dieses Album ist leer."
+
+#, fuzzy
+#~ msgid "Item does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "storage location"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Completed on"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Parameters"
+#~ msgstr "Partner"
+
+#, fuzzy
+#~ msgid "Invalid role '%1'"
+#~ msgstr "Ungültiger Benützer"
+
+#, fuzzy
+#~ msgid "user note"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "user notes"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "The user who created the note."
+#~ msgstr "Dieses Album ist leer."
+
+#, fuzzy
+#~ msgid "Note"
+#~ msgstr "Aus dem Album"
+
+#, fuzzy
+#~ msgid "Text of note."
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Note creation date"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "user roles"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Role settings"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Field access"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "user"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "users"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "User name"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "full-access"
+#~ msgstr "Vorname"
+
+#, fuzzy
+#~ msgid "deleted"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "The forename of this user."
+#~ msgstr "Dieses Album ist leer."
+
+#, fuzzy
+#~ msgid "The surname of this user."
+#~ msgstr "Dieses Album ist leer."
+
+#, fuzzy
+#~ msgid "Confirmed on"
+#~ msgstr "Neues Passwort bestätigen"
+
+#, fuzzy
+#~ msgid "Users"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "Group '%1' does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "watched item"
+#~ msgstr "Unsere Favoriten"
+
+#, fuzzy
+#~ msgid "watched items"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "The user who is watching the specified record."
+#~ msgstr "Dieses Album ist leer."
+
+#, fuzzy
+#~ msgid "&lsaquo; Previous"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "Next &rsaquo;"
+#~ msgstr "Treffer"
+
+#, fuzzy
+#~ msgid "Galleries"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "The set does not exist"
+#~ msgstr "Das Album existiert nicht"
+
+#, fuzzy
+#~ msgid "You cannot view this set"
+#~ msgstr "Dieses Album kann nicht aufgerufen werden"
+
+#~ msgid "Memories"
+#~ msgstr "Erinnerungen"
+
+#, fuzzy
+#~ msgid "Browse By:"
+#~ msgstr "Browse"
+
+#, fuzzy
+#~ msgid "Place"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "Tags"
+#~ msgstr "Tags"
+
+#~ msgid "PREVIOUS"
+#~ msgstr "ZURÜCK"
+
+#~ msgid "NEXT"
+#~ msgstr "VOR"
+
+#~ msgid "Jump to page"
+#~ msgstr "Zu Seite"
+
+#~ msgid "GO"
+#~ msgstr "LOS"
+
+#, fuzzy
+#~ msgid "%1 images"
+#~ msgstr "Bilder"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "Memories for"
+#~ msgstr "Erinnerungen"
+
+#, fuzzy
+#~ msgid "Memories from"
+#~ msgstr "Erinnerungen"
+
+#~ msgid "image"
+#~ msgstr "Bilder"
+
+#, fuzzy
+#~ msgid "images"
+#~ msgstr "Bilder"
+
+#, fuzzy
+#~ msgid "Exhibition themes"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Topics"
+#~ msgstr "Nach oben"
+
+#, fuzzy
+#~ msgid "Browse the Archive"
+#~ msgstr "Durch alle Bilder blättern"
+
+#~ msgid "Start browsing by:"
+#~ msgstr "Suche nach:"
+
+#, fuzzy
+#~ msgid "Related Objects"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Add to Collection +"
+#~ msgstr "Standort"
+
+#~ msgid "Average User Ranking"
+#~ msgstr "Durchschnittsbewertung"
+
+#~ msgid "User Comments"
+#~ msgstr "Kommentare"
+
+#~ msgid ""
+#~ "Login/register to be the first to rank, tag and comment on this object!"
+#~ msgstr ""
+#~ "Anmelden/Registrieren und als erster Bewertung, Tags und Kommentar "
+#~ "hinzufügen!"
+
+#~ msgid "Add your rank, tags and comment"
+#~ msgstr "Bewertung, Tags und Kommentar hinzufügen"
+
+#~ msgid "Tags (separated by commas)"
+#~ msgstr "Tags (getrennt durch Komma)"
+
+#~ msgid "Please login/register to rank, tag and comment on this item."
+#~ msgstr ""
+#~ "Bitte anmelden/registrieren um Bewertung, Tags und Kommentar hinzuzufügen!"
+
+#, fuzzy
+#~ msgid "My Collections"
+#~ msgstr "Standort"
+
+#~ msgid "Your %1 found %2 %3."
+#~ msgstr "Ihre Suche ergab %2 %3."
+
+#, fuzzy
+#~ msgid "Your Collections"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Current Collection"
+#~ msgstr "Standort"
+
+#~ msgid "public"
+#~ msgstr "öffentlich"
+
+#~ msgid "private"
+#~ msgstr "privat"
+
+#, fuzzy
+#~ msgid "This collection is %1"
+#~ msgstr "Standort"
+
+#~ msgid "Public URL"
+#~ msgstr "Öffentlich"
+
+#, fuzzy
+#~ msgid "Edit Collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Collection Information"
+#~ msgstr "Standort"
+
+#~ msgid "Display Option"
+#~ msgstr "Displaymöglichkeit"
+
+#~ msgid "Private"
+#~ msgstr "Privat"
+
+#~ msgid "Public"
+#~ msgstr "Öffentlich"
+
+#~ msgid "View slideshow"
+#~ msgstr "Diashow starten"
+
+#, fuzzy
+#~ msgid "Make a new collection"
+#~ msgstr "Neues Album erstellen"
+
+#~ msgid "View help tips"
+#~ msgstr "Hilfe einblenden"
+
+#~ msgid "Help Tips"
+#~ msgstr "Hilfe"
+
+#, fuzzy
+#~ msgid "How do I add content to my collection?"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "How do I change between collections?"
+#~ msgstr "Bitte tragen Sie den Albumnamen hier ein"
+
+#, fuzzy
+#~ msgid "How can I change the name of my collection?"
+#~ msgstr "Bitte tragen Sie den Albumnamen hier ein"
+
+#, fuzzy
+#~ msgid "There are no collections to edit. Create a collection to start."
+#~ msgstr "Es gibt keine Alben zu bearbeiten. Legen Sie ein neues Album an."
+
+#, fuzzy
+#~ msgid "Choose a collection to begin editing."
+#~ msgstr "Wählen Sie ein Album aus um es zu bearbeiten."
+
+#, fuzzy
+#~ msgid "There are no items in this collection."
+#~ msgstr "Dieses Album ist leer."
+
+#~ msgid "start over"
+#~ msgstr "zurücksetzen"
+
+#, fuzzy
+#~ msgid "Browsing by: "
+#~ msgstr "Durch alle Bilder blättern"
+
+#, fuzzy
+#~ msgid "Browse by:"
+#~ msgstr "Browse"
+
+#, fuzzy
+#~ msgid "Related Information"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Subjects"
+#~ msgstr "Objekttypen"
+
+#, fuzzy
+#~ msgid "More Items"
+#~ msgstr "Ihre Favoriten"
+
+#~ msgid ""
+#~ "You should receive the instructions within the hour. If you do not, "
+#~ "contact us for assistance, "
+#~ msgstr ""
+#~ "Sollten Sie innerhalb der nächsten Stunde keine Post von uns erhalten, "
+#~ "melden Sie sich bitte unter "
+
+#, fuzzy
+#~ msgid "About"
+#~ msgstr "Über uns"
+
+#, fuzzy
+#~ msgid "More Results"
+#~ msgstr "Treffer"
+
+#, fuzzy
+#~ msgid "Edit"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "New Collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Make a new Collection"
+#~ msgstr "Neues Album erstellen"
+
+#, fuzzy
+#~ msgid "Collection Items"
+#~ msgstr "Standort"
+
+#~ msgid "SEARCH"
+#~ msgstr "SUCHE"
+
+#, fuzzy
+#~ msgid "This set is not available for view"
+#~ msgstr "Dieses Bild ist nicht zur Ansicht freigegeben"
+
+#, fuzzy
+#~ msgid "%1 Themes"
+#~ msgstr "Schlagwörter"
+
+#~ msgid "with"
+#~ msgstr "und"
+
+#~ msgid "BACK"
+#~ msgstr "ÜBERSICHT"
+
+#, fuzzy
+#~ msgid "Subtitles"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "Parts"
+#~ msgstr "Partner"
+
+#, fuzzy
+#~ msgid "< previous"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "next >"
+#~ msgstr "Kontext"
+
+#, fuzzy
+#~ msgid "Rentable"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Subtitle Language"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Intertitle Language"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Textlist Language"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Voiceover Language"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Duration"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Ratio"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Projection Format"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Presentation framerate"
+#~ msgstr "Das Album existiert nicht"
+
+#~ msgid "My Sets"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "Year"
+#~ msgstr "Suchbegriff eingeben"
+
+#, fuzzy
+#~ msgid "Other titles"
+#~ msgstr "Titel"
+
+#~ msgid "Search history"
+#~ msgstr "Bisherige Anfragen"
+
+#, fuzzy
+#~ msgid "Search Options"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Results layout:"
+#~ msgstr "Treffer"
+
+#~ msgid "Sort by:"
+#~ msgstr "Sortieren:"
+
+#~ msgid "Your Sets"
+#~ msgstr "Ihre Alben"
+
+#~ msgid "Current Set"
+#~ msgstr "Aktuelles Album"
+
+#~ msgid "This set is"
+#~ msgstr "Dieses Album ist"
+
+#~ msgid "Edit Set"
+#~ msgstr "Album bearbeiten"
+
+#~ msgid "Create a new set"
+#~ msgstr "Neues Album erstellen"
+
+#~ msgid "Make a new set"
+#~ msgstr "Neues Album erstellen"
+
+#, fuzzy
+#~ msgid "How do I add images to my set?"
+#~ msgstr "Objekt konnte nicht in das Album hinzugefügt werden."
+
+#, fuzzy
+#~ msgid "How can I change the name of my set?"
+#~ msgstr "Bitte tragen Sie den Albumnamen hier ein"
+
+#~ msgid "Choose a set to begin editing."
+#~ msgstr "Wählen Sie ein Album aus um es zu bearbeiten."
+
+#, fuzzy
+#~ msgid "Add to Set +"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "Season"
+#~ msgstr "Meine Alben"
+
+#, fuzzy
+#~ msgid "Premiere"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "Languages"
+#~ msgstr "Kapitel"
+
+#, fuzzy
+#~ msgid "Jump to:"
+#~ msgstr "Zu Seite"
+
+#, fuzzy
+#~ msgid "Credit"
+#~ msgstr "Urheber"
+
+#, fuzzy
+#~ msgid "Current location"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Location notes"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Browse the collection by"
+#~ msgstr "Standort"
+
+#~ msgid "Imprint"
+#~ msgstr "Impressum"
+
+#~ msgid "Contact"
+#~ msgstr "Kontakt"
+
+#~ msgid "Start browsing by"
+#~ msgstr "Suche eingrenzen"
+
+#, fuzzy
+#~ msgid "Continue browsing by"
+#~ msgstr "Durch alle Bilder blättern"
+
+#, fuzzy
+#~ msgid "date"
+#~ msgstr "Album bearbeiten"
+
+#, fuzzy
+#~ msgid "citation"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "subtitle"
+#~ msgstr "Titel"
+
+#, fuzzy
+#~ msgid "series"
+#~ msgstr "Benutzernamen"
+
+#, fuzzy
+#~ msgid "journal"
+#~ msgstr "Ihre Alben"
+
+#, fuzzy
+#~ msgid "edition"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "volume"
+#~ msgstr "Schlagwörter"
+
+#, fuzzy
+#~ msgid "number of pages"
+#~ msgstr "Zu Seite"
+
+#, fuzzy
+#~ msgid "place of publication"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "publisher"
+#~ msgstr "öffentlich"
+
+#, fuzzy
+#~ msgid "Related Artworks"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Search Artworks"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "Browse Artworks"
+#~ msgstr "Browse"
+
+#, fuzzy
+#~ msgid "Browse Bibliography"
+#~ msgstr "Browse"
+
+#, fuzzy
+#~ msgid "Browse the Chronology"
+#~ msgstr "Durch alle Bilder blättern"
+
+#, fuzzy
+#~ msgid "Search Exhibitions"
+#~ msgstr "Optionen"
+
+#, fuzzy
+#~ msgid "jump to page"
+#~ msgstr "Zu Seite"
+
+#, fuzzy
+#~ msgid "Materials"
+#~ msgstr "Material"
+
+#, fuzzy
+#~ msgid "Location"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Your search found no results, please try again."
+#~ msgstr "Ungültige Antwort; bitte nochmals versuchen"
+
+#, fuzzy
+#~ msgid "Prev"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "Recent Additions"
+#~ msgstr "Neue Beiträge"
+
+#, fuzzy
+#~ msgid "Results for "
+#~ msgstr "Treffer"
+
+#, fuzzy
+#~ msgid "Collection Identifier(s)"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Collection Date Range"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "People and Organizations"
+#~ msgstr "Personen/Organisationen"
+
+#, fuzzy
+#~ msgid "Place(s)"
+#~ msgstr "Orte"
+
+#, fuzzy
+#~ msgid "Condition"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Collection Language"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Post new comment"
+#~ msgstr "Kommentare"
+
+#, fuzzy
+#~ msgid "Your name"
+#~ msgstr "Ihre Alben"
+
+#, fuzzy
+#~ msgid "Your email address will be kept private"
+#~ msgstr "Ihre E-Mail-Adresse"
+
+#, fuzzy
+#~ msgid "Moving Images"
+#~ msgstr "Bilder"
+
+#~ msgid "People"
+#~ msgstr "Personen"
+
+#, fuzzy
+#~ msgid "more"
+#~ msgstr "Mehr"
+
+#, fuzzy
+#~ msgid "Page: "
+#~ msgstr "Seite"
+
+#~ msgid "Dimensions"
+#~ msgstr "Dimensionen"
+
+#, fuzzy
+#~ msgid "Media"
+#~ msgstr "Material"
+
+#, fuzzy
+#~ msgid "Highlights from the Archives"
+#~ msgstr "Durch alle Bilder blättern"
+
+#~ msgid "BROWSE"
+#~ msgstr "DURCHBLÄTTERN "
+
+#, fuzzy
+#~ msgid "Browse the Permanent Collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Medium"
+#~ msgstr "Material"
+
+#, fuzzy
+#~ msgid "Date of creation"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Link"
+#~ msgstr "Anmelden"
+
+#, fuzzy
+#~ msgid "Collection"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "On exhibition"
+#~ msgstr "Optionen"
+
+#~ msgid "ADD TO SET +"
+#~ msgstr "ZU EINEM ALBUM HINZUFÜGEN +"
+
+#, fuzzy
+#~ msgid "Collections Database"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Highlights of the Collection"
+#~ msgstr "Durch alle Bilder blättern"
+
+#, fuzzy
+#~ msgid "home"
+#~ msgstr "Schlagwörter"
+
+#, fuzzy
+#~ msgid "here"
+#~ msgstr "Schlagwörter"
+
+#, fuzzy
+#~ msgid "Reset"
+#~ msgstr "Treffer"
+
+#~ msgid "Browsing By:"
+#~ msgstr "Durch alle Bilder blättern"
+
+#, fuzzy
+#~ msgid "<< previous"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "previous"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "next"
+#~ msgstr "Vor"
+
+#, fuzzy
+#~ msgid "skip to page"
+#~ msgstr "Zu Seite"
+
+#, fuzzy
+#~ msgid "%2 %3 found"
+#~ msgstr "Ihre Suche ergab"
+
+#, fuzzy
+#~ msgid "Project Description"
+#~ msgstr "Beschreibung"
+
+#~ msgid "How to Participate"
+#~ msgstr "Mitmachen"
+
+#, fuzzy
+#~ msgid "Partners"
+#~ msgstr "Partner"
+
+#~ msgid "FAQ"
+#~ msgstr "Häufig gestellte Fragen"
+
+#~ msgid "ALLE BILDER"
+#~ msgstr "LIBRARY"
+
+#~ msgid "How To Participate"
+#~ msgstr "Gestalten Sie mit!"
+
+#~ msgid "OBJECT INFORMATION"
+#~ msgstr "INFORMATIONEN"
+
+#~ msgid "Info"
+#~ msgstr "Details"
+
+#, fuzzy
+#~ msgid "Created By"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Production"
+#~ msgstr "Standort"
+
+#, fuzzy
+#~ msgid "Not Creative Commons"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "From the set"
+#~ msgstr "Aus dem Album"
+
+#~ msgid "Depicts"
+#~ msgstr "Abgebildet"
+
+#, fuzzy
+#~ msgid "Context"
+#~ msgstr "Vor"
+
+#, fuzzy
+#~ msgid "People/Organizations"
+#~ msgstr "Personen/Organisationen"
+
+#, fuzzy
+#~ msgid "Text in image"
+#~ msgstr "Text im Bild"
+
+#, fuzzy
+#~ msgid "Original Caption"
+#~ msgstr "Optionen"
+
+#~ msgid "User Favorites"
+#~ msgstr "Ihre Favoriten"
+
+#~ msgid "Your first set"
+#~ msgstr "Ihr erstes Album"
+
+#, fuzzy
+#~ msgid "This set is %1"
+#~ msgstr "Dieses Album ist"
+
+#, fuzzy
+#~ msgid ""
+#~ "You must have the Flash Plug-in version 9.0.124 or better installed, or "
+#~ "an HTML5 audio-capable browser, to play video and audio in "
+#~ "CollectiveAccess"
+#~ msgstr "Für Diashows brauchen Sie mindestens Flash Plug-in Version 9.0.0."
+
+#, fuzzy
+#~ msgid "about"
+#~ msgstr "Über uns"
+
+#~ msgid "Chapters"
+#~ msgstr "Kapitel"
+
+#~ msgid "ZOOM +"
+#~ msgstr "ZOOM +"
+
+#, fuzzy
+#~ msgid "Label Date"
+#~ msgstr "Nachname"
+
+#, fuzzy
+#~ msgid "Label Dimensions"
+#~ msgstr "Dimensionen"
+
+#, fuzzy
+#~ msgid "Description Source"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "Label Description"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "back to results"
+#~ msgstr "Ihre Suche ergab %1 Treffer."
+
+#, fuzzy
+#~ msgid "Previous image"
+#~ msgstr "Zurück"
+
+#, fuzzy
+#~ msgid "Related series"
+#~ msgstr "Verwandte Bilder"
+
+#, fuzzy
+#~ msgid "Description:"
+#~ msgstr "Beschreibung"
+
+#, fuzzy
+#~ msgid "PREV"
+#~ msgstr "ZURÜCK"
+
+#, fuzzy
+#~ msgid "Previous result"
+#~ msgstr "Zurück"
+
+#~ msgid "Timeline"
+#~ msgstr "Zeitleiste"
+
+#~ msgid "MORE INFO"
+#~ msgstr "MEHR DETAILS"
+
+#~ msgid "Deutsch"
+#~ msgstr "Deutsch"
+
+#~ msgid "English"
+#~ msgstr "English"
+
+#~ msgid "LIBRARY"
+#~ msgstr "ALLE BILDER"
+
+#~ msgid "Keywords"
+#~ msgstr "Schlagwörter"
+
+#~ msgid ""
+#~ "Select one or more keywords on the right hand side to refine the search\n"
+#~ "results. To remove keywords, click on the 'X'."
+#~ msgstr ""
+#~ "Wählen Sie ein oder mehrere Schlagwörter auf der rechten Seite aus und "
+#~ "verfeinern Sie dadurch Ihr Suchergebnis. Klicken Sie auf 'X' um "
+#~ "Schlagwörter zu entfernen."
+
+#~ msgid "MEMORY"
+#~ msgstr "ERINNERUNGEN"
+
+#~ msgid "%1"
+#~ msgstr "%1"
+
+#~ msgid "Featured Content"
+#~ msgstr "Unsere Favoriten"
+
+#~ msgid "THEMES"
+#~ msgstr "THEMEN"
+
+#~ msgid "INFORMATION"
+#~ msgstr "INFORMATION"
+
+#~ msgid "Logged in as %1"
+#~ msgstr "Als %1 angemeldet"
+
+#~ msgid ""
+#~ "2009 Deutsche Kinemathek - Museum für Film und Fernsehen; Bundeszentrale "
+#~ "für politische Bildung"
+#~ msgstr ""
+#~ "2009 Deutsche Kinemathek - Museum für Film und Fernsehen; Bundeszentrale "
+#~ "für politische Bildung"
+
+#~ msgid "MEMORIES"
+#~ msgstr "ERINNERUNGEN"
+
+#~ msgid "FAVORITES"
+#~ msgstr "FAVORITEN"
+
+#~ msgid "ABOUT"
+#~ msgstr "ÜBER UNS"
+
+#~ msgid "Wir waren so frei"
+#~ msgstr "Moments in Time 1989/1990"
+
+#~ msgid "Choose browse criteria from the list on the right."
+#~ msgstr "Wählen Sie Ihre Suchkriterien aus der Liste rechts aus."
+
+#~ msgid "BOOKMARKS"
+#~ msgstr "FAVORITEN"
+
+#~ msgid "So funktioniert's"
+#~ msgstr "So funktioniert's"
+
+#~ msgid "DOWNLOAD"
+#~ msgstr "HERUNTERLADEN"
+
+#~ msgid "Featured Video: %1"
+#~ msgstr "Angesagtes Video: %1"
+
+#~ msgid "Deutsche Kinemathek 2009"
+#~ msgstr "Deutsche Kinemathek 2009"
+
+#~ msgid "ARCHIVE"
+#~ msgstr "ARCHIV"
+
+#, fuzzy
+#~ msgid "ABOUT Us"
+#~ msgstr "ÜBER UNS"
+
+#, fuzzy
+#~ msgid "ABOUT US"
+#~ msgstr "ÜBER UNS"
+
+#~ msgid "EXPLORE"
+#~ msgstr "ENTDECKEN"

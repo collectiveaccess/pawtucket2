@@ -1,0 +1,135 @@
+
+
+/*** FORM ELEMENTS ***/
+input[type="text"], input[type="textarea"], textarea,  input[type="password"] {
+	font-size:12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border: 1px solid #D9EAFA;
+	padding: 2px 3px;
+	color: #3f3f3f;
+	font-weight:normal;
+}
+/*input[type="text"]{
+	width:830px;
+}
+input[type="textarea"], textarea{
+	width:857px;
+}*/
+textarea:focus{
+	border: solid #666 1px;
+	outline-style:none;  /** remove glow in Safari */
+}
+
+input.rulerBg, textarea.rulerBg {
+	background-image: url('../graphics/icons/formBgRuler.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:35px;
+}
+input.dateBg, textarea.dateBg {
+	background-image: url('../graphics/icons/formBgDate.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:30px;
+}
+input.currencyBg, textarea.currencyBg {
+	background-image: url('../graphics/icons/formBgCurrency.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:15px;
+}
+input.weightBg, textarea.weightBg {
+	background-image: url('../graphics/icons/formBgWeight.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:25px;
+}
+input.timecodeBg, textarea.timecodeBg {
+	background-image: url('../graphics/icons/formBgTimecode.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:65px;
+}
+input.urlBg, textarea.urlBg {
+	background-image: url('../graphics/icons/formBgUrl.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:30px;
+}
+input.lookupBg, textarea.lookupBg {
+	background-image: url('../graphics/icons/formBgLookup.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:15px;
+}
+
+
+/*** FORMS ***/
+
+.sectionBox{
+	border: 1px solid #e4f0f5;
+	background: white;
+	padding: 20px;
+
+}
+
+/* Style for labels on standard form fields (ie. no error) */
+.formLabel {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color: #636363;
+	margin-bottom: 5px;
+	font-weight: bold;
+	text-align: left;
+}
+.bundleLabel {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color: #636363;
+	margin-bottom: 10px;
+	font-weight: bold;
+	text-align: left;
+}
+.settingsBundle {
+	padding: 10px;
+}
+.objectRepresentationListItem{
+	width:100%;
+	margin:0px 0px 10px 0px;
+	padding:0px;
+}
+/* Style for labels on form fields where an error has occurred */
+.formLabelError {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color: #cc0000;
+	margin-bottom: 5px;
+	text-align: left;
+}
+
+.bundleLabelError {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color: #cc0000;
+	margin-bottom: 5px;
+	text-align: left;
+}
+
+/* submit button */
+.submitForm {
+	margin: 10px 0px 0px 0px; /* margin/padding for buttons is not in meyer reset */
+	border: 0;
+	background: #FFFFFF;
+	color: #3f3f3f;
+	font-size: 12px;
+	text-transform: uppercase;
+	cursor: pointer;
+	background-image: url('../graphics/buttons/6x7_r_arrow.gif');
+	background-repeat:no-repeat;
+	background-position: right center;
+	padding:0px 8px 0px 0px;
+}
+
+.submitForm img {
+	padding-bottom: 1px;
+}

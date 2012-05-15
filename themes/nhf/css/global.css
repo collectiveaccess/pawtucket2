@@ -1,0 +1,1316 @@
+/* --- orange #ff9124 turqouise #41a8ba --- */
+form{
+	display:inline;
+}
+body{
+	color:#333333;
+}
+
+/* ------------------------------------- */
+/* general styles */
+/* ------------------------------------- */
+
+.formErrors{
+	color: #CA1919;
+	
+	font-size:14px;
+	font-weight:bold;
+}
+.message{
+	color: #CA1919;
+	font-family: times, serif;
+	font-size:18px;
+	font-weight:bold;
+	margin-bottom:10px;
+	padding:5px;
+	margin-top:55px;
+}
+.notificationMessage{
+	color: #CA1919;
+	font-family: times, serif;
+	font-size:18px;
+	font-weight:bold;
+	margin-bottom:10px;
+	padding:5px;
+	margin-top:55px;
+}
+.divide{
+	height:1px;
+	border-bottom:1px dashed #acacac;
+}
+.bg {
+	background-color: #F5F5F5;
+	border: 1px solid #E2E2E2;
+	padding:10px;
+}
+.caption{
+	font-size:11px;
+	text-align:left;
+}
+a.caption{
+	font-size:11px;
+	color: #999999;
+	text-decoration:underline;
+}
+a.caption:hover{
+	color: #000000;
+}
+#pageTitle{
+	font-size:36px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin-bottom:25px;
+}
+
+ul.crossList{
+	margin:10px 0px 15px 0px;
+	padding:0px;
+}
+ul.crossList li{
+	list-style-type: none;
+	background: url('../graphics/nhf/cross.gif') no-repeat middle left;
+	padding-left: 15px;
+	margin:0px 0px 7px 0px;
+}
+.orange{
+	color: #ff9124;
+}
+
+/* Right Cols*/
+#rightCol {
+	margin: 10px 0px 0px 0px;
+	width:230px;
+	text-align:left;
+	float:left;
+	padding-top:15px;
+	background-color:#fbfbfb;
+	font-size:12px;
+}
+#hpRightCol {
+	margin: 10px 0px 0px 0px;
+	width:230px;
+	text-align:left;
+	float:left;
+	padding-top:15px;
+	background-color:#fbfbfb;
+	font-size:12px;
+}
+#detailBody #rightCol{
+	margin: 30px 0px 0px 0px;
+	width:220px;
+	text-align:left;
+	float:right;
+	padding-top:15px;
+	background-color:#fbfbfb;
+	font-size:12px;
+}
+
+#hpRightCol .unit, #detailBody #rightCol .unit, #rightCol .unit{
+	border-top:5px solid #c4e16b;
+	margin:0px;
+	padding:20px 15px 20px 15px;
+}
+#hpRightCol .heading, #detailBody #rightCol .heading, #rightCol .heading {
+	color: #666666;
+	font-size:11px;
+	font-weight: bold;
+}
+#hpRightCol .divide, #detailBody #rightCol .divide, #rightCol .divide {
+	height: 1px;
+	border-bottom:1px dashed #acacac;
+	background-color:#FFFFFF;
+	margin:5px -15px 10px -15px;
+}
+
+
+
+/* -------------------------------------------------*/
+/* "Searchlight" autocomplete search results styles */
+/* -------------------------------------------------*/
+div.searchlight-header{
+	size:12px;
+	font-weight:bold;
+	text-transform:uppercase;
+	color:#333333;
+	background-color:#E4E4E4;
+	padding:3px;
+}
+div.searchlight-item{
+	size:12px;
+	color:#333333;
+	padding:3px 3px 8px 3px;
+	background-color:#FFFFFF;
+}
+div.searchlight-item a{
+	size:12px;
+	color:#333333;
+	text-decoration:none;
+}
+div.searchlight-item a:hover{
+	text-decoration:underline;
+}
+div.searchlight-results-wrapper {
+    color: #333333;
+    border: 1px solid #333333;
+    margin: -1px;
+    overflow: hidden;
+}
+
+div.searchlight-results div.searchlight-selected {
+    background: #333;
+    color: #fff;
+}
+
+/* -------------------------------------------------*/
+/* tooltips / Rollovers */
+/* -------------------------------------------------*/
+#tooltip {
+	position: absolute;
+	z-index: 3000;
+	border: 2px solid #666666;
+	background-color: #FFFFFF;
+	padding: 10px 10px 10px 10px;
+	/*opacity: 0.9;*/
+	text-align: center;
+}
+.tooltipImage { /* used in image rollovers in results and on detail pages */
+	padding: 10px;
+	text-align: center;
+}
+
+.tooltipCaption { /* used in image rollovers in results and on detail pages */
+	margin-top: 10px;
+	width: 360px;
+	text-align: left;
+}
+.tooltipText{ /* used in features */
+	text-align:center;
+	padding:10px;
+	font-size:14px;
+}
+.infoTooltip{
+	color: #666666;
+	font-size:11px;
+}
+
+/* ------------------------------------- */
+/*  HOME PAGE - all used in Northeast */
+/* ------------------------------------- */
+#hpTitle{
+	font-size:36px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin:50px 0px 25px 0px;
+}
+#hpText{
+	width:710px;
+	line-height:1.5em;
+	color:#333333;
+	font-size:13px;
+}
+#hpSearch{
+	margin-top:15px;
+	font-size:11px;
+}
+#hpSearch input[type="text"] {
+	font-size:12px;
+	font-weight: normal;
+	padding: 1px 2px 3px 2px;
+	border: 1px solid #e2e2e2;
+	width:185px;
+	margin-right:5px;
+}
+#hpCollectionList{
+	float:left;
+	width: 710px;
+	margin:25px 30px 0px 0px;
+	padding: 45px 0px 0px 20px;
+	border-top: 1px dashed #acacac;
+}
+#hpCollectionList .title{
+	font-size:20px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin-bottom:17px;
+}
+#hpCollectionList a{
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	border:0px;
+}
+#hpCollectionList .col{
+	float:left;
+	width: 305px;
+	margin-right: 30px;
+}
+#hpCollectionList .col div{
+	margin-bottom:10px;
+	line-height:1em;
+}
+
+/* ------------------------------------- */
+/*  free text - about page, browse intro */
+/* ------------------------------------- */
+
+.textContent {
+	margin: 10px 0px 15px 0px;
+	font-size:12px;
+}
+
+.textContent div {
+	margin-bottom: 10px;
+}
+
+/* ------------------------------------- */
+/* Detail pages */
+/* ------------------------------------- */
+#detailBody{
+	margin-top:45px;
+	color:#333333;
+}
+
+#detailBody #pageNav {
+	margin:0px;
+	text-align:right;
+	font-size:14px;
+	font-weight:bold;
+	padding: 0px 15px 10px 15px;
+}
+/* #detailBody #pageNav a{
+	text-decoration:none;
+	color: #828282;
+}
+#detailBody #pageNav a:hover {
+	color: #E2E2E2;
+} */
+#detailBody #title{
+	font-size:36px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin-bottom:15px;
+}
+#detailBody #counts{
+	margin-bottom:25px;
+	padding-bottom:20px;
+	border-bottom: 1px dashed #999999;
+	line-height:2em;
+	font-size:12px;
+}
+#detailBody #counts .gray{
+	color: #dedede;
+}
+#detailBody #leftCol{
+	float:left;
+	width: 490px;
+	text-align:left;
+	margin:0px 0px 0px 0px;
+}
+#detailBody #leftCol .attributeMediaFileName, #detailBody #leftCol .attributeMediaInfo, #detailBody #leftCol .imageCaption{
+	font-size:11px;
+	color:#666666;
+}
+#detailBody #leftCol .collectionMap{
+	width:390px;
+	height:300px;
+	background-color:#dedede;
+}
+#objDetailRelObjects td.imageIcon{
+	width: 72px;
+	padding-bottom:10px;
+}
+#detailBody #leftCol .unit{
+	margin:0px 0px 25px 0px;
+	font-size:11px;
+	border:0px;
+	padding: 0px 10px 0px 10px;
+}
+#detailBody .heading{
+	font-weight:bold;
+	color:#666666;
+	font-size:11px;
+}
+
+#detailBody .infoButton{
+	float:right;
+}
+#detailBody #leftCol #description{
+	margin-top:12px;
+}
+/* nav bar on details with thumbnail grid */
+#detailNavBar{
+	background-color: #828282;
+	margin:10px 0px 15px 0px;
+	text-align:center;
+	padding:8px 10px 5px 10px;
+	height:15px;
+	text-align:left;
+}
+#detailNavBar a {
+	text-transform:uppercase;
+	font-size:14px;
+	font-weight:bold;
+	text-decoration:none;
+	color: #FFFFFF;
+}
+#detailNavBar #next{
+	float:right;
+}
+#detailNavBar #previous{
+	float:left;
+}
+/* image scroller - object detail */
+#objDetailRepScrollingViewer {
+	text-align:center;
+	position: relative;
+	overflow: hidden;
+	width: 580px;
+	height: 470px;
+	padding: 0px;
+	background-color: #FFFFFF;
+}
+#objDetailRepScrollingViewer #objDetailRepScrollingViewerImageContainer {
+	position: absolute;
+	width: 580px;
+	height: 470px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#objDetailImage div .objDetailRepScrollerImage {
+	position: absolute;
+	margin-top: 0px;
+	padding-top: 0px;
+}
+#objDetailImageNav {
+	background-color: #828282;
+	margin:0px 0px 15px 0px;
+	font-size:12px;
+	text-align:center;
+	padding:8px 10px 5px 10px;
+	height:15px;
+	text-align:left;
+}
+#objDetailImageNav{
+	text-decoration:none;
+	font-size:14px;
+	color: #FFFFFF;
+	font-weight:bold;
+}
+#objDetailImageNav a {
+	text-decoration:none;
+	color: #FFFFFF;
+}
+
+/* user comment/rank form */
+#objUserDataCommentsTitle{
+	font-size:11px;
+	line-height:1em;
+	color:#666666;
+	margin-bottom:10px;
+	font-weight:bold;
+}
+#objUserDataCommentsTitle img{
+	vertical-align:middle;
+}
+#objUserDataFormTitle{
+	font-size:11px;
+	line-height:1em;
+	color:#666666;
+	margin-bottom:50px;
+	font-weight:bold;
+	padding: 0px 10px 0px 10px;
+}
+#objUserData{
+	padding: 0px 10px 0px 10px;
+}
+#objUserDataComment{
+	background-color: #e3e3e3;
+	padding: 10px 10px 15px 10px;
+	margin-bottom:12px;
+}
+#objUserData .byLine{
+	margin: 0px 0px 0px 0px;
+	font-size:11px;
+	font-weight:bold;
+	color:#666666;
+}
+#objUserData .dateLine{
+	margin: 0px 0px 7px 0px;
+	font-size:11px;
+	color:#666666;
+}
+#objUserData .comment{
+	margin: 0px;
+	font-size:12px;
+	line-height: 1.3em;
+	color:#333333;
+}
+#objUserData .formLabel{
+	font-weight:normal;
+	color:#333333;
+	font-size:12px;
+	margin: 10px 0px 3px 0px;
+}
+#objUserData .formCaption{
+	font-weight:normal;
+	color:#666666;
+	font-size:11px;
+}
+#objUserDataForm{
+	margin-left:10px;
+}
+#objUserData input {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #e3e3e3;
+	background-color: #fbfbf7;
+	width:253px;
+}
+#objUserData input[type="text"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #e3e3e3;
+	background-color: #fbfbf7;
+	width:253px;
+}
+#objUserData textarea {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #e3e3e3;
+	background-color: #fbfbf7;
+	width:253px;
+}
+#objUserData input[type="textarea"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #e3e3e3;
+	background-color: #fbfbf7;
+	width:253px;
+}
+#objUserData form a{
+	border:0px;
+}
+/* ------------------------------------- */
+/* Browse list pages */
+/* ------------------------------------- */
+#browseLeftCol{
+	float:left; 
+	width: 470px;
+	margin:40px 0px 0px 0px;
+}
+#browseListBody{
+	margin:45px 0px 50px 20px;
+}
+#browseListBody #title{
+	font-size:36px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin-bottom:15px;
+}
+#browseListBody .subTitle{
+	font-size:28px;
+	font-family: times, serif;
+	line-height:1.1em;
+	color:#666666;
+	margin:0px 0px 10px 0px;
+}
+#browseListBody #introText{
+	font-size: 12px;
+	line-height:1.5em;
+	margin: 20px 0px 30px 0px;
+}
+#browseListBody #list{
+	margin-left:30px;
+}
+#browseListBody .col{
+	float:left;
+	width:200px;
+	margin-right:25px;
+}
+#browseListBody .item{
+	margin: 0px 0px 10px 0px;
+}
+#browseListBody .item a{
+	font-size:12px;
+}
+#browseListBody #letterBar{
+	padding:10px 0px 10px 30px;
+	font-size:12px;
+	color:#666666;
+	font-weight:bold;
+}
+#browseListBody #letterBar a{
+	font-family: times, serif;
+	font-size: 22px;
+	font-weight:bold;
+	text-transform:uppercase;
+	margin-left:12px;
+}
+#browseListBody .letterHeading{
+	font-family: times, serif;
+	margin:0px 0px 10px 0px;
+	border-bottom:1px solid #666666;
+	font-weight:bold;
+	color: #666666;
+	font-size:20px;
+	clear:both;
+	padding:20px 0px 5px 0px;
+	text-transform:uppercase;
+}
+#browseListBody a.top{
+	float:right;
+	margin-top:10px;
+	clear:left;
+	text-align:right;
+	background-image: url('../graphics/nhf/cross.gif');
+	background-repeat:no-repeat;
+	background-position: right center;
+	padding-right:13px;
+	font-size:12px;
+}
+#browseListBody #hiddenCollectionList{
+	margin-left:0px;
+}
+#browseListBody #featuredCollections .featuredCollection{
+	clear:left;
+}
+#browseListBody #featuredCollections img{
+	float:left;
+	margin:3px 10px 15px 0px;
+}
+/* general browse */
+#browseLeftColWide{
+	float:left; 
+	width: 730px;
+	margin:55px 30px 0px 0px;
+	padding: 0px;
+	border-top: 1px dashed #acacac;
+}
+/* facet col */
+#browseFacetCol{
+	float:left;
+	width:215px;
+	border-left: 1px dashed #c4e16b;
+	border-right: 1px dashed #c4e16b;
+	border-bottom: 1px dashed #c4e16b;
+	margin:35px 20px 0px 0px;
+	padding:0px;
+}
+#browseFacetCol .criteriaList{
+	padding:10px 10px 15px 10px;
+	background-color: #f6f6f6;
+	color:#333333;
+	font-size:12px;
+}
+#browseFacetCol .criteriaList div{
+	padding-bottom:5px;
+}
+#browseFacetCol .criteriaList a{
+	border-bottom:0px;
+}
+
+#browseFacetCol .criteriaList a:hover{
+	background-color:transparent;
+}
+#browseFacetCol .mainHeading{
+	font-size:20px;
+	font-family: times, serif;
+	line-height:1em;
+	color:#333333;
+	padding:10px 10px 10px 10px;
+	background-color: #E3E3E3;
+}
+#browseFacetCol .facetHeading{
+	font-size:12px;
+	color:#999999;
+	padding:5px 10px 5px 10px;
+	background-color: #f6f6f6;
+	font-weight:normal;
+	text-transform: capitalize;
+}
+#browseFacetCol .facets{
+	padding: 6px 10px 6px 10px;
+}
+#browseFacetCol .facets div{
+	padding-bottom: 2px;
+}
+#browseFacetCol .facets div a{
+	font-size:12px;
+}
+#browseFacetCol .facets div.moreFacets{
+	padding: 6px 0px 6px 0px;
+}
+#browseFacetCol .facets div.moreFacets a{
+	text-transform: capitalize;
+}
+
+.browsePanel {
+	position: absolute; 
+	top: 100px; 
+	left: 50%; 
+	background-color: #FFFFFF; 
+	width: 900px; 
+	height: 400px; 
+	display: none;
+	margin-left: -450px;
+	padding: 10px;
+	background-color: #f6f6f6;
+}
+.browsePanel #title{
+	font-size: 15px;
+	text-transform:capitalize;
+	color:#666666;
+	line-height:1em;
+	padding-bottom:15px;
+}
+
+.browsePanelContentArea { 
+	background-color: #FFFFFF;
+}
+.browsePanelList {
+	margin: 0px;
+	width: 868px;
+	height: 310px;
+	overflow: auto;
+	padding: 20px 15px 20px 15px;
+	color:#333333;
+}
+
+.browsePanelListCol {
+	float:left;
+	border-right:1px dashed #c4e16b;
+	margin-right:10px;
+	width:273px;
+}
+.browsePanelListCol div {
+	margin:0px 0px 5px 0px;
+}
+.browsePanelListCol div a{
+	font-size:12px;
+}
+a.browsePanelButton {
+	background-image: url("../graphics/nhf/close.gif");
+	background-repeat:no-repeat;
+	float: right;
+	margin-left: 15px;
+	width:17px;
+	height:17px;
+	text-decoration:none;
+}
+/* ------------------------------------- */
+/*  SEARCH/ BROWSE RESULTS/ item results on collection page */
+/* ------------------------------------- */
+#searchLeftCol{
+	float:left; 
+	width: 470px;
+	margin:40px 30px 0px 0px;
+}
+#searchSearch{
+	margin:0px 0px 20px 0px;
+	font-size:11px;
+}
+#searchSearch input[type="text"] {
+	font-size:12px;
+	font-weight: normal;
+	padding: 1px 2px 3px 2px;
+	border: 1px solid #e2e2e2;
+	width:230px;
+	margin-right:5px;
+}
+
+/* tabbed search results */
+.ui-tabs { position: relative; padding: .2em; zoom: 1; margin:10px 0px 0px 0px; } /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+.ui-tabs .ui-tabs-nav { margin: 0; padding: .2em .2em 0; }
+.ui-tabs .ui-tabs-nav li { list-style: none; float: left; position: relative; top: 1px; margin: 0 .2em 1px 0; border-bottom: 0 !important; padding: 0; white-space: nowrap; background:none; background-color:#FFFFFF;}
+.ui-tabs .ui-tabs-nav li a { float: left; padding: .5em 1em; text-decoration: none; border-bottom:0px; }
+.ui-tabs .ui-tabs-nav li a:hover { background-color:transparent; text-decoration:underline; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { margin-bottom: 0; padding-bottom: 1px; border-top:1px solid #E2E2E2; border-right:1px solid #E2E2E2; border-left:1px solid #E2E2E2;}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; color:#666666; text-decoration:none; }
+.ui-tabs .ui-tabs-nav li a, .ui-tabs.ui-tabs-collapsible .ui-tabs-nav li.ui-tabs-selected a { cursor: pointer; } /* first selector in group seems obsolete, but required to overcome bug in Opera applying cursor: text overall if defined elsewhere... */
+.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0px 0px 0px; border-top:1px solid #E2E2E2; margin-top:2.4em; clear:both;}
+.ui-tabs .ui-tabs-hide { display: none !important; }
+.ui-tabs .ui-tabs-nav a { outline: 0; }
+
+.ui-corner-tl { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-tr { -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-bl { -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-br { -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-top { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-bottom { -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-right {  -moz-border-radius-topright: 4px/*{cornerRadius}*/; -webkit-border-top-right-radius: 4px/*{cornerRadius}*/; border-top-right-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomright: 4px/*{cornerRadius}*/; -webkit-border-bottom-right-radius: 4px/*{cornerRadius}*/; border-bottom-right-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-left { -moz-border-radius-topleft: 4px/*{cornerRadius}*/; -webkit-border-top-left-radius: 4px/*{cornerRadius}*/; border-top-left-radius: 4px/*{cornerRadius}*/; -moz-border-radius-bottomleft: 4px/*{cornerRadius}*/; -webkit-border-bottom-left-radius: 4px/*{cornerRadius}*/; border-bottom-left-radius: 4px/*{cornerRadius}*/; }
+.ui-corner-all { -moz-border-radius: 4px/*{cornerRadius}*/; -webkit-border-radius: 4px/*{cornerRadius}*/; border-radius: 4px/*{cornerRadius}*/; }
+
+#searchNavBg{
+	
+}
+.searchNav{
+	text-align:left;
+	margin-top: 40px;
+	font-size:12px;	
+}
+.searchNav a{
+	font-size:12px;
+}
+.searchNav .turqPipe, .searchNav .turq {
+	color: #41a8ba;
+}
+.searchNav .grayPipe {
+	color: #e3e3e3;
+}
+.sectionBox{
+	/*clear: both;*/
+	padding-top:10px;
+}
+#searchResultHeading{ /* used on collection page */
+	color:#666666;
+	font-size:11px;
+	font-weight:bold;
+}
+#searchCount, .searchCount{
+	color:#333333;
+	font-size:11px;
+}
+#searchFor{
+	font-size:12px;
+	font-weight:bold;
+	color:#666666;
+}
+/* Item level */
+#itemResults{
+	margin-bottom:10px;
+	font-size:11px;
+}
+#itemResults .result{
+	margin-top:25px;
+	font-size:11px;
+}
+#itemResults a{
+	font-weight:bold;
+	font-size:11px;
+}
+#itemResults .resultDescription{
+	margin: 10px 0px 10px 0px;
+	color:#333333;
+	font-size:11px;
+}
+
+
+
+/* collection results */
+#collectionResults{
+	margin-bottom:10px;
+	font-size:12px;
+}
+#collectionResults .result{
+	margin-top:25px;
+	font-size:12px;
+}
+#collectionResults a{
+	font-weight:bold;
+	font-size:12px;
+}
+#collectionResults .resultDescription{
+	margin: 10px 0px 10px 0px;
+	color:#333333;
+}
+
+/* occurrence results */
+#occurrenceResults{
+	margin-bottom:10px;
+	font-size:12px;
+}
+#occurrenceResults .result{
+	margin-top:25px;
+	font-size:12px;
+}
+#occurrenceResults a{
+	font-weight:bold;
+	font-size:12px;
+}
+#occurrenceResults .resultDescription{
+	margin: 10px 0px 10px 0px;
+	color:#333333;
+}
+
+
+
+/* --------------------------------------*/
+/*  BROWSE  - OLD STYLES - PROBABLY REMOVE THESE */
+/* --------------------------------------*/
+
+/* - browse formatting for BUTTONS_WITH_OVERLAYS - */
+div.scrollableBrowseController { 
+    clear: both;
+    /* required settings */ 
+    position:relative; 
+    overflow:hidden; 
+    width: 900px; 
+    height:30px; 
+    background-color: #FFFFFF;
+    float: left;
+    margin: 0px 0px 5px 0px;
+} 
+ 
+/* 
+    root element for scrollable items. Must be absolutely positioned 
+    and it should have a extremely large width to accomodate scrollable items. 
+    it's enough that you set width and height for the root element and 
+    not for this element. 
+*/ 
+div.scrollableBrowseController div.items { 
+    /* this cannot be too large */ 
+    width:20000em; 
+    position:absolute; 
+} 
+ 
+/* 
+    a single item. must be floated in horizontal scrolling. 
+    typically, this element is the one that *you* will style 
+    the most. 
+*/ 
+div.scrollableBrowseController div.items div { 
+    float:left; 
+} 
+
+div.scrollableBrowseScrollControl {
+	padding: 0px;
+	margin:0px 0px 0px 0px;
+	display:block;
+	width:60px;
+	cursor:pointer;
+	text-transform:uppercase;
+	color:#828282;
+	font-size:9px;
+}
+div.nextPage{
+	text-align:right;
+}
+div.prevPage{
+	text-align:left;
+}
+
+div.scrollableBrowseController div.items div.facetMenu {
+	position: absolute;
+	padding:5px;
+	background-color: #DEDEDE;
+	margin: 0px;
+}
+
+div.scrollableBrowseController div.items div.facetMenu a{
+	color: #000000;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+div.scrollableBrowseController div.items div.facetMenu a.disabled{
+	color: #AAAAAA;
+	text-decoration:none;
+	text-transform:uppercase;
+}
+
+div.scrollableBrowseController div.items div.facetMenu a:hover{
+	color: #828282;
+}
+
+div.scrollableBrowseController div.items div.facetMenu img{
+	float: right;
+	margin-top:5px;
+}
+
+#browseParameters{
+	clear:both;
+}
+
+#browseParameters a{
+	color: #000000;
+	text-decoration:none;
+}
+
+#browseParameters a:hover{
+	color: #828282;
+}
+
+#browseParameters .browseByCol{
+	float:left;
+	width:206px;
+	padding:5px 5px 0px 5px;
+	background-color: #DEDEDE;
+	margin: 0px 0px 10px 0px;
+}
+
+#browseParameters .browseByCol img{
+	float: right;
+	margin-top:5px;
+}
+#browseParameters .browseForCol{
+	padding:5px 5px 5px 0px;
+	background-color: #DEDEDE;
+	margin: 0px 0px 10px 0px;
+}
+#browseParameters .spacer{
+	float:left;
+	width:12px;
+	background-color: #FFFFFF;
+	margin: 0px 5px 0px 0px;
+	padding: 6px 0px 6px 0px;
+}
+#browseParameters .heading{
+	font-style:italic;
+	color: #545454;
+}
+#browseParameters .browseForCol .button a{
+	text-transform:uppercase;
+	color: #828282;
+	font-size:12px;
+	text-decoration:none;
+	margin:0px;
+	padding:0px;
+	font-weight:normal;
+}
+#browseParameters .browseForCol .button a:hover{
+	color: #999999;
+}
+#browseParameters .browseForCol .button{
+	float:right;
+}
+#browseParameters .browseForCol a.close{
+	text-transform:uppercase;
+	color: #FFFFFF;
+	font-size:9px;
+	text-decoration:none;
+	padding:2px 2px 0px 2px;
+	margin:0px 10px 0px 2px;
+	background-color:#999999;
+	border:1px solid #828282;
+	line-height:1em;
+}
+#browseParameters .browseForCol a.close:hover{
+	background-color:#545454;
+}
+/* - browse formatting for HORIZONTAL_BOXES - */
+
+#browse #browseCriteria{
+	margin: 3px auto 13px auto;
+}
+#browse .browseBox{   /* Used in browse */
+	text-align:left;
+	float:left;
+	width: 150px;
+	padding:5px 7px 7px 7px;
+	background-color: #333333;
+	border:3px solid #828282;
+	font-size: 12px;
+	color: #FFFFFF;
+	overflow:hidden;
+	line-height:1.3em;
+	margin-bottom:15px;
+}
+#browse .browseBox .heading{   /* Used in browse */
+	font-size: 14px;
+	font-weight:bold;
+	color: #FFFFFF;
+	margin-bottom:3px;
+}
+#browse .browsingBy{   /* Used in browse */
+	font-size: 12px;
+	color: #FFFFFF;
+	padding-left:5px;
+}
+#browse .browsingBy a.close{
+	text-transform:uppercase;
+	color: #333333;
+	font-size:9px;
+	text-decoration:none;
+	padding:2px 2px 0px 3px;
+	margin:0px 0px 0px 5px;
+	background-color:#999999;
+	line-height:1em;
+	font-weight:bold;
+}
+#browse .browsingBy a.close:hover{
+	background-color:#FFFFFF;
+}
+#browse .browseBoxRefine{   /* Used in browse */
+	text-align:left;
+	float:left;
+	width: 150px;
+	padding:5px 7px 7px 7px;
+	background-color: #FFFFFF;
+	border:3px solid #828282;
+	font-size: 12px;
+	font-weight:normal;
+	color: #333333;
+	overflow:hidden;
+	line-height:1.3em;
+	margin-bottom:15px;
+}
+#browse .browseBoxRefine .heading{   /* Used in browse */
+	font-size: 14px;
+	font-weight:bold;
+	color: #333333;
+	margin-bottom:3px;
+}
+#browse .browseBoxRefine .browseFacetLink{
+	text-transform:capitalize;
+	padding-left:5px;
+}
+#browse .browseBoxRefine .browseFacetLink a{   /* Used in browse */
+	font-size: 12px;
+	color: #828282;
+	text-decoration:none;
+}
+#browse .browseBoxRefine .browseFacetLink a:hover{   /* Used in browse */
+	text-decoration:underline;
+}
+#browse .startOver a{   /* Used in browse */
+	text-decoration:underline;
+	font-size: 12px;
+	font-weight:normal;
+	color: #333333;
+}
+#browse .startOver{   /* Used in browse */
+	margin-top:5px;
+	font-size: 12px;
+	font-weight:normal;
+	color: #333333;
+
+}
+#browse .browseArrow{   /* Used in browse */
+	float:left;
+	padding-right:10px;
+	padding-left:10px;
+}
+#browse .browseWith{   /* Used in browse */
+	float:left;
+	padding-right:10px;
+	padding-left:10px;
+	font-size: 14px;
+	color:#333333;
+	font-weight:bold;
+}
+
+#browse .browseTargetSelect {
+	font-size: 11px;
+	float: right;
+}
+
+#browse .browseTargetSelect select {
+	font-size: 9px;
+}
+
+/* --- browse pop up panels --- */
+.browseSelectPanel, #browse .browseSelectPanel {  /* used in browse and details with browse */
+	position: absolute; 
+	top: 100px; 
+	left: 50%; 
+	border: 3px solid #000000; 
+	background-color: #FFFFFF; 
+	width: 900px; 
+	height: 400px; 
+	display: none;
+	margin-left: -450px;
+	padding: 10px;
+	background-image: url("../graphics/bgStripe.gif");
+}
+#browseFacetGroupingControls{ /*  used in browse and details with browse */
+	float:right;
+	margin: 10px 10px 0px 10px;
+	color:#333333;
+	text-transform:uppercase;
+	font-size: 11px;
+}
+#browseFacetGroupingControls a{ /*  used in browse  and details with browse */
+	text-decoration:none;
+	color:#333333;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size: 11px;
+}
+#browseFacetGroupingControls a.selected{ /*  used in browse and details with browse */
+	text-decoration:underline;
+	color:#333333;
+	text-transform:uppercase;
+	font-size: 11px;
+}
+
+
+#browseSelectPanelHeader { /*  used in browse and details with browse */
+	position: relative;
+	margin: 10px;
+	text-transform:uppercase;
+	font-size:14px;
+	color:#333333;
+	font-weight:bold;
+	height: 18px;
+	overflow:hidden;
+	width: 635px;
+}
+#browseSelectPanelHeader a { /*  used in browse and details with browse */
+	text-decoration:none;
+	text-transform:uppercase;
+	font-size:14px;
+	color:#333333;
+	font-weight:bold;
+	padding-right:4px;
+}
+
+#browseSelectPanelHeaderContent {
+	position: absolute;
+}
+
+#browseSelectPanelHeaderScrollButtons {
+	float:right;
+	margin: 10px 10px 0px 10px;
+	color:#333333;
+	font-size: 14px;
+}
+
+.browseSelectPanelList { /*  used in browse and details with browse */
+	margin: 0px;
+	width: 878px;
+	height: 310px;
+	overflow: auto;
+	padding: 0px 10px 10px 10px;;
+	color:#333333;
+}
+
+
+td.browseSelectPanelListCell { /*  used in browse and details with browse */
+	padding:3px;
+	width:20%;
+}
+
+
+table.browseSelectPanelListTable { /*  used in browse and details with browse */
+	width: 100%;
+}
+
+.listDivide{ /*  used in browse and details with browse */
+	height:1px;
+	border-bottom: 1px #333333 solid;
+}
+
+div.browseSelectPanelListGroupHeading { /*  used in browse and details with browse */
+	font-size: 34px;
+	font-weight: bold;
+	padding-top: 5px;
+	margin-bottom: 5px;
+	color:#4c4c4c;
+}
+
+a.browseSelectPanelListGroupHeading, a.browseSelectPanelListGroupHeading:hover { /*  used in browse and details with browse */
+	text-decoration: none;
+	color: #4c4c4c;
+}
+
+a.browseSelectPanelButton {   /*  used in browse and details with browse */
+	background-image: url("../graphics/closePanel.gif");
+	background-repeat:no-repeat;
+	float: right;
+	margin-left: 15px;
+	width:19px;
+	height:19px;
+	text-decoration:none;
+}
+
+a.browseSelectPanelButton:hover {
+	background-color: #333333;
+}
+
+a.browseSelectPanelLink { /*  used in browse and details with browse */
+	font-size: 10px;
+	text-decoration:none;
+	font-size:11px;
+	color:#4c4c4c;
+}
+
+a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
+	color:#999999;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* overlays (for object representations) */
+#objectRepresentationOverlay {
+	width:900px;
+	height: 620px;
+	display:none;
+	overflow: hidden;
+	
+	background-image:url(../graphics/overlay.png);
+}
+
+#objectRepresentationOverlay div.close {
+	background:url(../graphics/close.png) no-repeat; 
+	position:absolute; 
+	top:10px; 
+	right:10px;
+	width:36px;
+	height:36px;
+	cursor:pointer;
+}
+
+#objectRepresentationOverlayContent {
+	position: absolute;
+	top: 38px;
+	left: 38px;
+	width: 825px;
+	height: 550px;
+	overflow: auto;
+	
+	text-align: center;
+}
+
+#objectInfoRepresentationOverlay {
+	width:900px;
+	height: 620px;
+	display:none;
+	overflow: hidden;
+	
+	background-image:url(../graphics/overlay.png);
+}
+
+#objectInfoRepresentationOverlay div.close {
+	background:url(../graphics/close.png) no-repeat; 
+	position:absolute; 
+	top:10px; 
+	right:10px;
+	width:36px;
+	height:36px;
+	cursor:pointer;
+}
+
+#objectInfoRepresentationOverlayContent {
+	position: absolute;
+	top: 38px;
+	left: 38px;
+	width: 825px;
+	height: 550px;
+	overflow: auto;
+	
+	text-align: center;
+}
+

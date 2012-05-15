@@ -1,0 +1,373 @@
+/*** Button styles ***/
+.caDeleteItemButton {
+	float:right;
+	border:none;
+}
+.caDeleteLabelButton {
+	border:none;
+}
+.caAddItemButton a{
+	border:none;
+	margin-bottom:15px;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	color: #333;
+	font-size: 14px;
+}
+.caListItem {
+	width:100%;
+}
+
+.labelInfo {
+	width:100%;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+}
+.labelInfo span{
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+}
+.labelInfo a {
+	color: #333;
+}
+.bundleContainer {
+	width:850px;
+}
+div.button{
+	padding-left:10px;
+	font-size: 12px;
+}
+div.button a{
+	color: #666;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight:bold;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	padding-top:3px;
+}
+
+div.button a:hover{
+	color: #8B2D16;;
+}
+div.button img{
+	vertical-align:middle;
+}
+
+a.button{
+	color: #134959;
+	text-decoration: none;
+	font-size: 11px;
+	font-weight:bold;
+}
+
+a.button:hover{
+	color: #1FAA99;
+}
+
+a.form-button, span.form-button, del.form-button{
+	display:-moz-inline-box;
+	display:inline-block;
+	cursor:pointer;
+	border:none;
+    font-size:0;
+    line-height:0;
+    
+	/*
+	for Safari, read this first
+	http://creativebits.org/webdev/safari_background_repeat_bug_fix
+	*/
+	background-position:0 0;
+	background-repeat:no-repeat;
+	height:30px;
+	text-decoration:none;
+	color:#2e523b;
+	font-style:normal;
+	margin:0 6px 0px 0;
+	padding:0 10px 0 0;	
+	vertical-align:middle;	
+	
+    padding-top: 0px; /* was -2 */
+	_position:relative;
+	_width:10px;	
+	_overflow-y:hidden;
+}
+
+a.form-button, span.form-button, del.form-button,
+a.form-button span, span.form-button button, span.form-button input, del.form-button span{
+    background-image:url('../graphics/backgrounds/form_buttons.png');
+}
+
+a.form-button span, span.form-button button, span.form-button input, del.form-button span{
+	
+	white-space:nowrap;
+	cursor:pointer;
+    color:#222;
+	display:-moz-inline-box;
+	display:inline-block;
+	line-height:1;
+    letter-spacing:0 !important;
+    font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif !important;
+    font-size:12px !important;
+    font-style:normal;    
+    background-color:transparent;
+	background-position:100% 0;
+	background-repeat:no-repeat;
+	height:30px;
+	padding:8px 20px 0 10px;
+	margin:0 -16px 0 10px;
+	border:none;
+	vertical-align:text-top;
+	zoom: 1;  
+	_position:relative;
+    _padding-left:0px;
+	_padding-right:12px;
+	_margin-right:-10px;	
+	_display:block;
+	_top:0;
+	_right:-5px;
+	
+}
+
+span.form-button button{
+   line-height:2.5;/*Opera need this*/
+}
+
+html.safari a.form-button span, 
+html.safari del.form-button span{
+  line-height:1.3;
+}
+
+html.safari span.form-button button{
+  line-height:2.6;
+}
+
+html.safari a.form-button:focus,
+html.safari span.form-button button:focus{
+    outline:none;
+}
+
+
+
+del.form-button{
+	/* cursor:not-allowed;	*/
+	background-position:0 -180px;
+	
+}
+
+del.form-button span{
+	cursor:default;
+    color:#aaa !important;
+	background-position:100% -180px;
+}
+
+span.form-button button, span.form-button input{
+	padding-top:0px;
+	line-height:2.5;/*Opera need this*/
+}
+
+/* Button hover style */
+
+a.form-button:hover, 
+span.form-button:hover,
+a.form-button:focus, 
+
+a.dom-button-focus, 
+span.form-button-behavior-hover{
+	background-position:0 -60px;
+	color:#222;
+	text-decoration:none;
+}
+
+a.form-button:hover span, 
+span.form-button:hover button, 
+a.form-button:focus span, 
+
+span.form-button-behavior-hover button, 
+span.form-button-behavior-hover input{
+	background-position:100% -60px;
+}
+
+a.form-button:active, a.form-button:focus span{
+	color:#444;
+}
+
+del.form-button-behavior-hover, del.form-button:hover{
+	background-position:0 -180px;
+	/* cursor:not-allowed; */
+}
+
+del.form-button-behavior-hover span, del.form-button:hover span{
+	background-position:100% -180px;
+	/* cursor:not-allowed; */
+	
+}
+
+
+div.form-header-button {
+	float: right;
+	text-align: center;
+	margin-left: 10px;
+	background-color: #e7e7e7;
+	padding: 3px;
+	-moz-border-radius-bottomleft: 8px; 
+	-webkit-border-bottom-left-radius: 8px;
+	-moz-border-radius-bottomright: 8px; 
+	-webkit-border-bottom-right-radius: 8px;
+	-moz-border-radius-topleft: 8px; 
+	-webkit-border-top-left-radius: 8px;
+	-moz-border-radius-topright: 8px; 
+	-webkit-border-top-right-radius: 8px;	
+}
+
+div.form-header-button a {
+	text-decoration: none;
+	color: #000000;
+}
+
+img.form-button-left{  /** used to align images to the left **/
+	float: left; 
+	display: block;
+}
+
+* html img.form-button-left{
+	display:none;
+}
+
+/*** FORM ELEMENTS ***/
+input[type="text"], input[type="textarea"], textarea,  input[type="password"] {
+	font-size:12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border:1px solid #ddd;
+	padding:3px;
+	font-weight:normal;
+	/*width: 600px;*/
+  border: 1px inset #CDD1D3;
+ min-height:24px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  padding: 2px 10px 2px 10px;
+ background-color: #f7f6ee;
+  margin-right: 10px;
+  -webkit-appearance: textfield;
+  box-sizing: border-box;
+  -webkit-rtl-ordering: logical;
+-webkit-user-select: text;
+cursor: auto;
+}
+
+textarea:focus{
+	border: solid #666 1px;
+	outline-style:none;  /** remove glow in Safari */
+}
+
+input.rulerBg, textarea.rulerBg {
+	background-image: url('../graphics/icons/formBgRuler.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:35px;
+}
+input.dateBg, textarea.dateBg {
+	background-image: url('../graphics/icons/formBgDate.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:30px;
+}
+input.currencyBg, textarea.currencyBg {
+	background-image: url('../graphics/icons/formBgCurrency.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:15px;
+}
+input.weightBg, textarea.weightBg {
+	background-image: url('../graphics/icons/formBgWeight.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:25px;
+}
+input.timecodeBg, textarea.timecodeBg {
+	background-image: url('../graphics/icons/formBgTimecode.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:65px;
+}
+input.urlBg, textarea.urlBg {
+	background-image: url('../graphics/icons/formBgUrl.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:30px;
+}
+input.lookupBg, textarea.lookupBg {
+	background-image: url('../graphics/icons/formBgLookup.gif');
+	background-repeat:no-repeat;
+	background-position:right center;
+	padding-right:15px;
+}
+
+
+/*** FORMS ***/
+
+.sectionBox{
+	margin: 0px 0px 0px 0px;
+	padding-top: 5px;
+	margin-bottom: 10px;
+
+}
+
+/* Style for labels on standard form fields (ie. no error) */
+.formLabel {
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-size:11px;
+	color: #333333;
+	margin-bottom: 5px;
+	font-weight: bold;
+	text-align: left;
+}
+.bundleLabel {
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-size:13px;
+	color: #333;
+	margin-bottom: 10px;
+	padding: 2px;
+	font-weight: bold;
+	text-align: left;
+	width: 100%;
+	border-bottom: 1px dotted #777;
+
+	-moz-border-radius-topleft: 8px; 
+	-webkit-border-top-left-radius: 8px;
+	-moz-border-radius-topright: 8px; 
+	-webkit-border-top-right-radius: 8px;
+}
+.formLabelText {
+	padding-left:10px;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-size: 14px;
+}
+.settingsBundle {
+	padding: 10px;
+}
+
+/* Style for labels on form fields where an error has occurred */
+.formLabelError {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	color: #cc0000;
+	margin-bottom: 5px;
+	text-align: left;
+}
+
+.bundleLabelError {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	color: #cc0000;
+	margin-bottom: 5px;
+	text-align: left;
+}
+.textContent p{
+	font-size: 1.125em;
+  	line-height: 1.875;
+  	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+  	font-weight: 300;
+  	color: #333;
+  	position: relative;
+}

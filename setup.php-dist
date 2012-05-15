@@ -1,0 +1,237 @@
+<?php
+# --------------------------------------------------------------------------------------------
+#
+# ::::::::::::::::::::::
+# ::: Pawtucket v1.2 :::
+# ::::::::::::::::::::::
+#
+# Public-access front-end for CollectiveAccess 
+# Open-source collections management software
+# 
+# --------------------------------------------------------------------------------------------
+# THE VALUES BELOW ***MUST*** BE CHANGED TO SUIT YOUR ENVIRONMENT
+# --------------------------------------------------------------------------------------------
+
+#
+# __CA_BASE_DIR__ = the absolute server path to the directory containing your Pawtucket installation
+#
+# 		Enter the correct directory but omit trailing slashes!
+# 		For Windows hosts, use a notation similar to "C:/PATH/TO/COLLECTIVEACCESS"; do NOT use backslashes
+#
+define("__CA_BASE_DIR__", "/PATH/TO/WEBSERVER/ROOT");
+
+
+#
+# __CA_URL_ROOT__ = the root-relative URL path to your CollectiveAccess installation
+#
+#		Leave the __CA_URL_ROOT_ *BLANK* if the CollectiveAccess directory is the web server root
+#		or in the root directory of a virtual host. If CollectiveAccess is in a subdirectory or
+#		an alias is used to point the web server to the correct path, set '__CA_URL_ROOT__' to
+#		the relative url path to the subdirectory; start the path with a slash ('/') but omit trailing slashes.
+#
+# 		Example: If CollectiveAccess will be accessed via http://www.mysite.org/apps/ca then __CA_URL_ROOT__ would be set to /apps/ca
+#
+define("__CA_URL_ROOT__", "");
+
+
+# __CA_SITE_HOSTNAME__ = the hostname for your system
+#
+#		This must be the full host name. Do not include http:// or any other prefixes.
+#
+define("__CA_SITE_HOSTNAME__", "www.MyFirstCollectiveAccessSystem.org");
+
+
+# __CA_APP_NAME__ = a short name alphanumeric-only (no spaces or punctuation) name for this CollectiveAccess installation
+#
+# 		If you are running more than one instance of CollectiveAccess on the same server make sure each instance has its
+#		own unique __CA_APP_NAME__ setting.  __CA_APP_NAME__ must include letters, numbers and underscores only - no spaces or punctuation!
+#
+define("__CA_APP_NAME__", "my_first_collectiveaccess_system");
+
+
+# __CA_APP_DISPLAY_NAME__ = the name of your system for display purposes
+#
+#		This value will be used on emails, on the login screen, in window titles, etc.
+#
+define("__CA_APP_DISPLAY_NAME__", "My First CollectiveAccess System");
+
+
+#
+# The following settings allow Pawtucket to connect to its database. These settings
+# should have been given to you by your system administrator or hosting provider.
+#
+# Database server host name (often 'localhost')
+define("__CA_DB_HOST__", 'localhost');
+
+# Database login user name
+define("__CA_DB_USER__", 'my_database_user');
+
+# Database login password
+define("__CA_DB_PASSWORD__", 'my_database_password');
+
+# The name of your CollectiveAccess database
+define("__CA_DB_DATABASE__", 'name_of_my_database');
+
+# Only MySQL databases are currently supported so leave this set to 'mysql'!
+define("__CA_DB_TYPE__", 'mysql');
+
+
+#
+# Set your time zone here. A list of valid time zone settings is available at http://us3.php.net/manual/en/timezones.php
+#
+date_default_timezone_set('America/New_York');
+
+
+#
+# The following settings define how CA sends email on your server. These settings should have been given to you by
+# your system administrator or hosting provider. 
+#
+# SMTP server to use for outgoing mail
+define("__CA_SMTP_SERVER__", 'localhost');
+
+# SMTP port to use for outgoing mail
+define("__CA_SMTP_PORT__", 25);
+
+#
+# If your SMTP server requires you to authenticate then you can set the login information
+# below by uncommenting the smtp_auth, smtp_username and smtp_password lines and giving them appropriate values
+#
+#define("__CA_SMTP_AUTH__", 'login');
+#define("__CA_SMTP_USER__", 'my_smtp_username');
+#define("__CA_SMTP_PASSWORD__", 'my_smtp_password');
+
+# Generic site admin email - used as the "from" address.
+define("__CA_ADMIN_EMAIL__", 'info@put-your-domain-here.tld');
+
+#
+# If you use PayPal for e-commerce payments then you can set your authentication information 
+# below by uncommenting the __CA_PAYPAL* lines and assigning them appropriate values
+#
+#define("__CA_PAYPAL_API_USERNAME__", "your_paypal_api_username");
+#define("__CA_PAYPAL_API_PASSWORD__", "your_paypal_api_password");
+#define("__CA_PAYPAL_API_SIGNATURE__", "your_paypal_api_signature");
+#define("__CA_PAYPAL_API_ENVIRONMENT__", "sandbox");		// "sandbox" for testing or "live" for production use
+
+#
+# __CA_THEME__ = name of the theme to use for this Pawtucket instance
+#
+#		Themes are collections of views (templates), graphics and CSS that determine the look and feel of the
+#		user interface for your instance of Pawtucket.
+#
+# 		The theme name is a simple alphanumeric string with no punctunation or spaces - just A-Z, a-z, 0-9 and _
+#		The name should match a directory name in the themes directory. You can create your own theme by 
+# 		adding it to the themes directory in an appropriately named directory and then setting an entry in the
+# 		$_CA_THEMES_BY_DEVICE below. This array defines which themes to use for specific user agents. Set the key
+#		(left side value) for an entry to a piece of text or Perl-compatible regular expression that matches the user agent
+#		string you wish to target. For example, all iPhone-class devices include the word "iPhone" in their user agent string.
+#		Thus to assign a theme to use specifically for iPhone devices you would create an entry with a key of 'iphone' (or
+#		'iPhone' as it is case insensitive). The value (right side value) must be the name of a valid theme in your installation's
+# 		themes/ directory. The theme set for the special key '_default_' is used when no rule matches a user agent.
+#		
+#
+$_CA_THEMES_BY_DEVICE = array(
+	'iPhone' 		=> 'iphone',		// use the 'iphone' theme for iPhone devices such as iPhone and iPod Touch
+	'_default_' 	=> 'default'		// use the 'default' theme for everything else
+);
+
+# *** 
+# That's it! The settings here should be enough to get you up and running...
+# Don't forget to take a look at your global.conf file though. It defines additional settings you might need to change.
+# ***
+
+# --------------------------------------------------------------------------------------------
+# YOU PROBABLY DON'T NEED TO CHANGE ANYTHING UNDER THIS LINE
+# --------------------------------------------------------------------------------------------
+
+# Path to CollectiveAccess 'app' directory 
+define("__CA_APP_DIR__", __CA_BASE_DIR__."/app");
+
+# Now that we have __CA_APP_DIR__ set we can load our request helpers - very basic functions we need to set up request handling
+require_once(__CA_APP_DIR__.'/helpers/requestHelpers.php');
+
+# Path to CollectiveAccess 'models' directory containing database table model classes
+define("__CA_MODELS_DIR__", __CA_APP_DIR__."/models");
+
+# Path to CollectiveAccess 'lib' directory containing software libraries CA needs to function
+define("__CA_LIB_DIR__", __CA_APP_DIR__."/lib");
+
+# Path to CollectiveAccess 'lib' directory containing software libraries CA needs to function
+define("__CA_CONF_DIR__", __CA_APP_DIR__."/conf");
+
+# Path to CollectiveAccess 'themes' directory containing visual presentation elements - views (templates), CSS, graphics and, potentially, configuration
+define("__CA_THEMES_DIR__", __CA_BASE_DIR__."/themes");
+
+# Name of theme to use for this request
+define("__CA_THEME__", $g_configuration_cache_suffix = caGetPreferredThemeForCurrentDevice($_CA_THEMES_BY_DEVICE));
+
+# Root-relative URL path to 'themes' directory
+define("__CA_THEMES_URL__", __CA_URL_ROOT__."/themes");
+
+# Path to local config directory - configuration containing theme-specific configuration
+# Note that this is not the same as the __CA_CONF_DIR__, which contains general application configuration
+# Theme-specific configuration simply allows you to override selected application configuration as-needed to suit the specific theme
+define("__CA_LOCAL_CONFIG_DIRECTORY__", __CA_THEMES_DIR__."/".__CA_THEME__."/conf");
+
+
+# Set path to instance configuration file
+# (If you want to run several CA distinct instances using a single install
+#  you can add additional configuration files here. See http://trac.collectiveaccess.org/wiki/MultipleInstances)
+$_CA_INSTANCE_CONFIG_FILES = array(
+	'_default_'	=> __CA_CONF_DIR__.'/app.conf'	// the _default_ value must always be defined
+);
+
+if (!isset($_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']]) || !($_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']])) {
+	$_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES['_default_'];
+} 
+if (!(file_exists($_CA_CONFIG_PATH))) {
+	die("Configuration file is missing for hostname '".$_SERVER['HTTP_HOST']."'");
+}
+
+set_include_path(__CA_LIB_DIR__.'/ca'.PATH_SEPARATOR.__CA_LIB_DIR__.'/core'.PATH_SEPARATOR.__CA_MODELS_DIR__);
+
+# The path to the main instance configuration file defined as a constant
+define('__CA_APP_CONFIG__', $_CA_CONFIG_PATH);
+
+# --------------------------------------------------------------------------------------------
+
+# include version number
+require_once(__CA_APP_DIR__.'/version.php');
+
+# includes commonly used classes
+require_once(__CA_APP_DIR__.'/helpers/preload.php');
+
+if (defined('E_DEPRECATED')) {	// PHP 5.3
+	error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED);
+} else {	// PHP <= 5.2
+	error_reporting(E_ALL & ~E_NOTICE);
+}
+
+/* ----------------------------------------------------------------------
+ * setup.php : 	defines paths for Pawtucket public access front-end; enables the 
+ *				application to find various support files. This is the first file 
+ *				you should set up when configuring the application.
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2008-2012 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+?>

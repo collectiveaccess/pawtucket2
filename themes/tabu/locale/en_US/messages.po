@@ -1,0 +1,1296 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: TABU\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-01-27 12:08-0500\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Info <info@collectiveaccess.org>\n"
+"Language-Team:  <info@collectiveaccess.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: US\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: /web/dev/pawtucket2\n"
+"X-Poedit-KeywordsList: _t;_p\n"
+"X-Poedit-SearchPath-0: /web/dev/pawtucket2/themes/tabu\n"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/ajax_browse_facet_html.php:121
+msgid "Type "
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:40
+msgid "Browse for"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:45
+msgid "Themensuche"
+msgstr "Browse"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:56
+msgid "Refine results by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:73
+msgid "You browsed for"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Browse/browse_controls_html.php:83
+msgid "start new search"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/bundles/ca_search_form_attributes.php:52
+msgid "Locale "
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:38
+msgid "Back"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:44
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:40
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:42
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/paging_controls_html.php:10
+msgid "Previous"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:50
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:50
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:49
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:51
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:48
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/paging_controls_html.php:14
+msgid "Next"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:60
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:60
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:61
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:58
+msgid "Identifier"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:80
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:80
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:246
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:81
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:78
+msgid "[more]"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:116
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:115
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:304
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:117
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:113
+msgid "Related"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+msgid "Entities"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:93
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:281
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:94
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:90
+msgid "Entity"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:127
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:126
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:315
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:128
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:124
+#, fuzzy
+msgid "Related Place"
+msgstr "Add title"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:136
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:135
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:324
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:137
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:133
+#, fuzzy
+msgid "Related Collection"
+msgstr "Add title"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_collections_detail_html.php:146
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_entities_detail_html.php:145
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:333
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_occurrences_detail_html.php:146
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_places_detail_html.php:142
+msgid "Subject"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:52
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:55
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:106
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:110
+msgid "Einstellungs-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:77
+msgid "Print"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:81
+msgid "Bookmark"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:83
+msgid "Login/Register to Bookmark"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:92
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:97
+msgid "Search results"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:96
+msgid "Advanced Search"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:101
+msgid "Browse"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:102
+msgid "Browse results"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:106
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:110
+msgid "untitled"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:204
+msgid "Zur Einstellungs-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:256
+msgid "Part Of"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:261
+msgid "Part%1"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:266
+msgid "More"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Detail/ca_objects_detail_html.php:350
+msgid "Datensatz-Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:5
+msgid "Favorites"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:12
+msgid "Featured content"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:45
+#, fuzzy
+msgid "Random selection"
+msgstr "Add title"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:45
+msgid "User favorites"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:78
+msgid "Most viewed"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Favorites/favorites_landing_html.php:112
+msgid "Recently Added"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:5
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:21
+msgid "Login"
+msgstr "Login"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:14
+msgid "Email address"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:18
+msgid "Password"
+msgstr "Password"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:25
+#, fuzzy
+msgid "Forgot your password?"
+msgstr "Have you forgotten your password?"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:27
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:30
+#, fuzzy
+msgid "Reset your password"
+msgstr "Have you forgotten your password?"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:31
+msgid "To reset your password enter the e-mail address you used to register below. A message will be sent to the address with instructions on how to reset your password."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:42
+msgid "Your e-mail address"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:43
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:81
+msgid "Go"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:51
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:91
+msgid "Register"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:55
+msgid "As a member you can bookmark items for reference during futire site visits."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:81
+msgid "Security Question (to prevent SPAMbots)"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/loginreg_html.php:90
+msgid "Re-Type password"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:37
+msgid "Instructions have been sent to the e-mail address you provided."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:40
+msgid "You should receive the instructions within the hour. If you do not, contact us for assistance at "
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:50
+msgid "Your password has been reset!"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:53
+msgid "You may now"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:53
+#, fuzzy
+msgid "login"
+msgstr "Login"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:62
+msgid "Your password could not be reset!"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:65
+msgid "Please contact us for assistance,"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:75
+msgid "Please enter your new password."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:82
+#, fuzzy
+msgid "New password"
+msgstr "Password"
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:85
+msgid "Confirm new password"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/LoginReg/resetpw_html.php:86
+msgid "Save"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageFooter.php:2
+msgid "top"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:36
+msgid "Bookmarks"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:37
+msgid "Logout"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:39
+msgid "Login/Register"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:74
+msgid "Zur Entstehung von F. W. Murnaus TABU"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:75
+msgid "Edition der Outtakes"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/pageFormat/pageHeader.php:81
+msgid "Search"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_collections_search_no_results_html.php:31
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_entities_search_no_results_html.php:31
+msgid "To search for collections, simply type in the words that best describe what you are looking for and click on the \"search\" button. By default, the search engine will return only matches that contain all of the words in your search. The more words entered, the more restrictive the search."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:71
+msgid "Nr."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:73
+msgid "Merken"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:75
+msgid "Typ"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:81
+#, fuzzy
+msgid "Datum"
+msgstr "Edit"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:83
+#, fuzzy
+msgid "Drehort"
+msgstr "Login"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:85
+msgid "Kameramann"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:87
+msgid "Personen"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:89
+msgid "Stichwort"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:123
+msgid "Login to Bookmark"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_full_html.php:180
+msgid "Action"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:44
+msgid "%1 of %2 results have been mapped.  To see all results chose a different display by clicking the \"Options\" link below."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:50
+msgid "Found %1 results."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_results_map_html.php:58
+msgid "It is not possible to show a map of the results because none of the items found have map coordinates."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/ca_objects_search_no_results_html.php:30
+msgid "To search the collection, simply type in the words that best describe what you are looking for and click on the \"search\" button. By default, the search engine will return only matches that contain all of the words in your search. The more words entered, the more restrictive the search."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/paging_controls_html.php:9
+msgid "Ergebnisse pro Seite"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/paging_controls_html.php:81
+msgid "Suchergebnis %1 von %2 von %3"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:40
+#, fuzzy
+msgid "Collections"
+msgstr "Login"
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+msgid "result"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+msgid "results"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_collections_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_entities_html.php:56
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:57
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:56
+msgid "Your search found %1 %2."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_occurrences_html.php:40
+msgid "Occurrences"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Results/search_secondary_results/ca_places_html.php:40
+msgid "Places"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ajax_refine_facet_html.php:95
+msgid "Group by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_collections_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_entities_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_occurrences_search_basic_html.php:41
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_places_search_basic_html.php:41
+msgid "Filter Search"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_collections_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_entities_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_occurrences_search_basic_html.php:46
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_places_search_basic_html.php:46
+msgid "Options"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/ca_objects_search_basic_html.php:41
+msgid "Suche nach"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:77
+msgid "Outtakes"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:81
+msgid "Continuity reports"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:85
+msgid "Script Clerk's reports"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:89
+msgid "All"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_advanced_controls_html.php:97
+msgid "Ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat. Ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:36
+msgid "Sort"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:57
+msgid "Results per page:"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:69
+msgid "Layout:"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:82
+msgid "Search history:"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_controls_html.php:102
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:8
+msgid "Hide"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:10
+msgid "Filter results by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:34
+msgid "Filtering results by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Search/search_refine_html.php:45
+msgid "clear all filters"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:50
+msgid "There are no bookmark lists to edit. Create a list to start."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:60
+msgid "Bookmark list is not selected."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:70
+msgid "There are no bookmarked items."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_html.php:97
+msgid "Gemerkt"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_slideshow_html.php:33
+msgid "Slideshow"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Sets/sets_slideshow_html.php:35
+msgid "You must have the Flash Plug-in version 9.0.0 or better installed to play slideshows"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:16
+msgid "Left"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:20
+msgid "Featured Item"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:28
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:33
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:38
+msgid "More &gt;"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:31
+msgid "Most Viewed"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:41
+msgid "Quickly browse by"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:53
+msgid "Or click \"Browse\" in the navigation bar to do a refined browse"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/Splash/splash_html.php:58
+msgid "Get alerted to newly added items by RSS"
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/configuration_error_html.php:11
+msgid ""
+"Apparently the built-in sanity check has found errors in your system configuration.\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at the messages below."
+msgstr ""
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/logged_out_html.php:1
+#, fuzzy
+msgid "Login again"
+msgstr "Login"
+
+#: /web/dev/pawtucket2/themes/tabu/views/system/login_html.php:19
+msgid "Username"
+msgstr "User name"
+
+#, fuzzy
+#~ msgid "name"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "First name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Last name"
+#~ msgstr "Login"
+
+#~ msgid "You are now logged in"
+#~ msgstr "You have been logged in"
+
+#, fuzzy
+#~ msgid "Login failed."
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "You have been logged out"
+#~ msgstr "You have been logged out"
+
+#, fuzzy
+#~ msgid "User cannot register"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Resetting your site password"
+#~ msgstr "Have you forgotten your password?"
+
+#, fuzzy
+#~ msgid "Your first collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Could not add item to collection"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "The collection does not exist"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "You cannot view this collection"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "You cannot edit this collection"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Login was invalid"
+#~ msgstr "Login"
+
+#~ msgid "You are now logged out"
+#~ msgstr "You have been logged out"
+
+#, fuzzy
+#~ msgid "Number of items"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Part of set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Type id %1 is invalid"
+#~ msgstr "Login"
+
+#~ msgid "Preferred labels"
+#~ msgstr "Preferred names"
+
+#~ msgid "Non-preferred labels"
+#~ msgstr "Synonyms"
+
+#, fuzzy
+#~ msgid "%1 is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Use map"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "%1 is not a valid url"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "User"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Edited"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "Not set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Date is invalid for %1"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Time is invalid for "
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Starting date is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Ending date is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Ending time is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Timecode is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Time is invalid for %1"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Tag relation id is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Comment id is invalid"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "View PDF document"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "ID does not exist"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Notes"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Last used"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "bundle display name"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "bundle display names"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Name"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "bundle display placement"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "bundle display placements"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "display list"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "display lists"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "collections"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "occurrences"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Group"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Element name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Direction"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "collection name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "collection names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Name of collection"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection identifier"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Related collections"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Updated"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "Parser"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Alternate label to place on bundle"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Alternate label to place on bundle add button"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Editor type"
+#~ msgstr "Edit it!"
+
+#, fuzzy
+#~ msgid "loans"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "entity name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "entity names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Display name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Forename"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Middlename"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Surname"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "list item name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "list item names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "list name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "list names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "By label"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "By identifier"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "loan"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Loan type"
+#~ msgstr "Edit it!"
+
+#, fuzzy
+#~ msgid "Loan identifier"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Related movements"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Movement identifier"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Related lots"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Related loans"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Related object does not exist"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "occurrence name"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "occurrence names"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "place name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "place names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Loans"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Group label"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "set name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "set names"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Name of set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Item does not exist"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Completed on"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "user note"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "user notes"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Note"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Note creation date"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Field access"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "user"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "users"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "User name"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "full-access"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "deleted"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "Users"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Galleries"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "More Galleries"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "The set does not exist"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "You cannot view this set"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Close"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Add to Collection +"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "My Collections"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Your Collections"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Current Collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "This collection is %1"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Edit Collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection Information"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Make a new collection"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "There are no items in this collection."
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Related Information"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Edit"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "New Collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Make a new Collection"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Collection Items"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Subtitle Language"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Intertitle Language"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Textlist Language"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Voiceover Language"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Duration"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Ratio"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Projection Format"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Edit Set"
+#~ msgstr "Edit it!"
+
+#, fuzzy
+#~ msgid "Make a new set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Add to Set +"
+#~ msgstr "Edit it!"
+
+#, fuzzy
+#~ msgid "Credit"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "Location notes"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Browse the collection by"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid " More like this"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "date"
+#~ msgstr "Edit"
+
+#, fuzzy
+#~ msgid "citation"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "series"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "journal"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "edition"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "place of publication"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "publisher"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Related Artworks"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Location"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection Identifier(s)"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection Date Range"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Condition"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection Language"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Your name"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Browse the Permanent Collection"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Date of creation"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Link"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collection"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "On exhibition"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Collections Database"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Highlights of the Collection"
+#~ msgstr "Add title"
+
+#, fuzzy
+#~ msgid "Partners"
+#~ msgstr "User name"
+
+#, fuzzy
+#~ msgid "Production"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "From the set"
+#~ msgstr "Title not set"
+
+#, fuzzy
+#~ msgid "Text in image"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Last login"
+#~ msgstr "Login"
+
+#, fuzzy
+#~ msgid "Alternate labels for this entity"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Preferred labels for this entity"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Alternate labels for this occurrence"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Preferred labels for this occurrence"
+#~ msgstr "Preferred titles for this object"
+
+#, fuzzy
+#~ msgid "Entity label not set"
+#~ msgstr "Title not set"
+
+#~ msgid "Find"
+#~ msgstr "Find"
+
+#~ msgid "History"
+#~ msgstr "Geschicte"
+
+#~ msgid "fooey"
+#~ msgstr "fooey"
