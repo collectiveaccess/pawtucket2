@@ -67,7 +67,7 @@
  			$this->view->setVar('t_order', $t_order);
  			
  			# -- open orders
- 			$va_open_orders = $t_order->getOrders(array('user_id' => $this->request->getUserID(), 'order_status' => array('OPEN', 'SUBMITTED', 'AWAITING_PAYMENT', 'IN_PROCESSING', 'PROCESSED', 'FULFILLED', 'REOPENED')));
+ 			$va_open_orders = $t_order->getOrders(array('user_id' => $this->request->getUserID(), 'order_status' => array('OPEN', 'SUBMITTED', 'AWAITING_PAYMENT', 'IN_PROCESSING', 'PROCESSED', 'PROCESSED_AWAITING_DIGITIZATION', 'FULFILLED', 'REOPENED')));
  			$this->view->setVar('open_order_list', $va_open_orders);
  			
  			# --- recent orders
@@ -100,7 +100,7 @@
  				$this->response->setRedirect(caNavUrl($this->request, '', 'Account', 'Index'), 302);
  				return;
  			} else {
- 				if (!in_array($t_order->get('order_status'), array('AWAITING_PAYMENT', 'PROCESSED', 'COMPLETED', 'REOPENED'))) {
+ 				if (!in_array($t_order->get('order_status'), array('AWAITING_PAYMENT', 'PROCESSED', 'PROCESSED_AWAITING_DIGITIZATION', 'COMPLETED', 'REOPENED'))) {
  					$this->notification->addNotification(_t("This order is not yet available for viewing"), __NOTIFICATION_TYPE_ERROR__);
 					$this->response->setRedirect(caNavUrl($this->request, '', 'Account', 'Index'), 302);
  					return;
@@ -256,7 +256,7 @@
  			
  			if ($t_item->getPrimaryKey() && $t_order->getPrimaryKey()) {
  				// Is the order paid for...
- 				if (!in_array($t_order->get('order_status'), array('PROCESSED', 'COMPLETED'))) {
+ 				if (!in_array($t_order->get('order_status'), array('PROCESSED', 'PROCESSED_AWAITING_DIGITIZATION', 'COMPLETED'))) {
  					$this->notification->addNotification(_t("This order must be processed before you can download items"), __NOTIFICATION_TYPE_ERROR__);
  					$this->Index();
  					return;

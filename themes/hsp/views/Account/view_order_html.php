@@ -74,8 +74,12 @@
 						<div class="caClientOrderCustomerFormItemSummary">
 <?php
 						$t_commerce_item->load($va_item["item_id"]);
-						if($t_commerce_item->userCanDownloadItem()){
+						if($vb_can_download_item = $t_commerce_item->userCanDownloadItem()){
 							print caNavLink($this->request, _t('Download'), 'download', '', 'Account', 'Download', array('item_id' => $va_item['item_id'], 'download' => 1))."</a>";
+						} else {
+							if (is_null($vb_can_download_item)) {
+								print "<a href='#' class='download'>"._t('Not yet available for download')."</a>";
+							}
 						}
 ?>
 							<em><?php print $va_item['name']."</em> (".$va_item['idno'].")"; ?>
@@ -121,7 +125,7 @@
 		<h1><?php print _t('Order Summary'); ?></h1>
 		<div class="bg">
 			<div class="intro">
-			<?php print _t('Questions about your order?').'  <a href="#" onclick=\'jQuery("#clientCommunications").slideDown(200, function(){ scrollWindow(); }); return false;\'>'._t('Click here to contact Rights and Reproductions for assistance').'</a>.'; ?>
+			<?php print _t('Questions about your order?  <a href="#" onclick=\'jQuery("#clientCommunications").slideDown(200, function(){ scrollWindow(); }); return false;\'>Click here to contact Rights and Reproductions for assistance</a>.'); ?>
 			</div><!-- end intro -->
 <?php 
 	$va_totals = $t_order->getOrderTotals();
@@ -177,7 +181,7 @@
 				print "<div><b>"._t("Shipping method").":</b> ".$t_order->getChoiceListValue('shipping_method', $t_order->get('shipping_method'))."</div>\n";
 				
 				if (!($vs_ship_date = $t_order->get('shipping_date'))) {
-					$vs_ship_date = _('Not yet set');
+					$vs_ship_date = _t('Not yet set');
 				}
 				print "<div><b>"._t("Estimated ship date").":</b> {$vs_ship_date}</div>\n";
 					

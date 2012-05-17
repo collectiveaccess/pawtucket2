@@ -64,7 +64,7 @@
 <?php
 	$vn_i = 0;
 	foreach($va_orders as $va_order) {
-		$vb_show_order_details = (in_array($va_order['order_status'], array('AWAITING_PAYMENT', 'PROCESSED', 'COMPLETED', 'REOPENED'))) ? true : false;
+		$vb_show_order_details = (in_array($va_order['order_status'], array('AWAITING_PAYMENT', 'PROCESSED', 'PROCESSED_AWAITING_DIGITIZATION', 'COMPLETED', 'REOPENED'))) ? true : false;
 	
 		$vn_i++;
 ?>
