@@ -1222,6 +1222,38 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 		}
 		return $va_media;
 	}
+	# ------------------------------------------------------------------
+	/**
+	 * Returns number of representations attached to each object referenced by object_id in $pa_ids
+	 * 
+	 * @param array $pa_ids indexed array of object_id values to fetch labels for
+	 * @param array $pa_options
+	 * @return array List of representation counts indexed by object_id
+	 */
+	public function getMediaCountsForIDs($pa_ids, $pa_options = null) {
+		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return array(); }
+		if (!is_array($pa_options)) { $pa_options = array(); }
+		$va_access_values = $pa_options["checkAccess"];
+		if (isset($va_access_values) && is_array($va_access_values) && sizeof($va_access_values)) {
+			$vs_access_where = ' AND orep.access IN ('.join(',', $va_access_values).')';
+		}
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			SELECT oxor.object_id, count(*) c
+			FROM ca_object_representations orep
+			INNER JOIN ca_objects_x_object_representations AS oxor ON oxor.representation_id = orep.representation_id
+			WHERE
+				(oxor.object_id IN (".join(',', $pa_ids).")) orep.deleted = 0 {$vs_access_where}
+			GROUP BY oxor.object_id
+		");
+		
+		$va_counts = array();
+		while($qr_res->nextRow()) {
+			$va_counts[$qr_res->get('object_id')] = (int)$qr_res->get('c');
+		}
+		return $va_counts;
+	}
 	# ------------------------------------------------------
 	/**
 	 * Return object_ids for objects with labels exactly matching $ps_name
