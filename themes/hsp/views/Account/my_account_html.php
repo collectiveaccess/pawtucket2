@@ -64,7 +64,7 @@
 <?php
 	$vn_i = 0;
 	foreach($va_orders as $va_order) {
-		$vb_show_order_details = (in_array($va_order['order_status'], array('AWAITING_PAYMENT', 'PROCESSED', 'PROCESSED_AWAITING_DIGITIZATION', 'COMPLETED', 'REOPENED'))) ? true : false;
+		$vb_show_order_details = (in_array($va_order['order_status'], array('AWAITING_PAYMENT', 'PROCESSED', 'COMPLETED', 'REOPENED'))) ? true : false;
 	
 		$vn_i++;
 ?>
@@ -103,7 +103,15 @@
 			<td style="text-align:center;">
 <?php 
 				if($vb_show_order_details) {
-					print caNavLink($this->request, (((int)$va_order['payment_received_on'] > 0) || ($va_order['order_status'] != 'AWAITING_PAYMENT')) ? _t("View order")." &rsaquo;" : _t("Checkout")." &rsaquo;", 'button', '', 'Account', 'ViewOrder', array('order_id' => $va_order['order_id'])); 
+					$vs_button_text = "";
+					if(((int)$va_order['payment_received_on'] > 0) || ($va_order['order_status'] != 'AWAITING_PAYMENT')){
+						$vs_button_text = _t("View order")." &rsaquo;";
+					}elseif(((int)$va_order['payment_received_on'] == 0) && ($va_order['order_status'] == 'AWAITING_PAYMENT') && ($va_order['payment_method'] != "NONE")){
+						$vs_button_text = _t("Change Payment Method")." &rsaquo;";
+					}else{
+						$vs_button_text = _t("Checkout")." &rsaquo;";
+					}
+					print caNavLink($this->request, $vs_button_text, 'button', '', 'Account', 'ViewOrder', array('order_id' => $va_order['order_id'])); 
 				}
 ?>
 			</td>
