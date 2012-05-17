@@ -847,6 +847,8 @@
 				$pa_options['childrenOnlyForItemID'] = $this->get('type_id');
 			}
 			
+			$pa_options['limitToItemsWithID'] = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
+			
 			return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, $pa_options);
 		}
 		# ------------------------------------------------------------------
@@ -899,14 +901,14 @@
 				if (!$this->hasField($va_tmp[1])) {
 					$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
 					
-					return $this->htmlFormElementForAttributeSearch($po_request, $va_tmp[1], array(
+					return $this->htmlFormElementForAttributeSearch($po_request, $va_tmp[1], array_merge($pa_options, array(
 								'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
 								'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
 								'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
 								
 								'format' => '^ELEMENT',
 								'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
-							));
+							)));
 				}
 			}
 			return parent::htmlFormElementForSearch($po_request, $ps_field, $pa_options);
@@ -1664,10 +1666,10 @@
 		 */
 		public function getTypeRestrictionInstance($pn_element_id) {
 			$t_restriction = new ca_metadata_type_restrictions();
-			if ($t_restriction->load(array('element_id' => $pn_element_id, 'table_num' => $this->tableNum(), 'type_id' => $this->get($this->ATTRIBUTE_TYPE_ID_FLD)))) {
+			if ($t_restriction->load(array('element_id' => (int)$pn_element_id, 'table_num' => (int)$this->tableNum(), 'type_id' => $this->get($this->ATTRIBUTE_TYPE_ID_FLD)))) {
 				return $t_restriction;
 			} else {
-				if ($t_restriction->load(array('element_id' => $pn_element_id, 'table_num' => $this->tableNum(), 'type_id' => null))) {
+				if ($t_restriction->load(array('element_id' => (int)$pn_element_id, 'table_num' => (int)$this->tableNum(), 'type_id' => null))) {
 					return $t_restriction;
 				}
 			}
@@ -1679,14 +1681,14 @@
 					array_pop($va_ancestors); // get rid of root
 					if (sizeof($va_ancestors)) {
 						$qr_res = $this->getDb()->query("
-							SELECT element_id
+							SELECT restriction_id
 							FROM ca_metadata_type_restrictions
 							WHERE
-								type_id IN (?) AND table_num = ? AND include_subtypes = 1
-						", array($va_ancestors, $this->tableNum()));
+								type_id IN (?) AND table_num = ? AND include_subtypes = 1 AND element_id = ?
+						", array($va_ancestors, (int)$this->tableNum(), (int)$pn_element_id));
 						
 						if ($qr_res->nextRow()) {
-							if ($t_restriction->load(array('element_id' => $qr_res->get('element_id')))) {
+							if ($t_restriction->load($qr_res->get('restriction_id'))) {
 								return $t_restriction;
 							}
 						}
