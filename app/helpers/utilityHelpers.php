@@ -139,6 +139,34 @@ function caEscapeForXML($ps_text) {
 	return str_replace("\"", "&quot;", $ps_text);
 }
 # ----------------------------------------
+function caMakeProperUTF8ForXML($ps_text){
+	// remove/convert invalid bytes
+	$ps_text = mb_convert_encoding($ps_text, 'UTF-8', 'UTF-8');
+	
+	// strip invalid PCDATA characters for XML
+	$vs_return = "";
+	if (empty($ps_text)) {
+		return $vs_return;
+	}
+	 
+	$vn_length = strlen($ps_text);
+	for ($i=0; $i < $vn_length; $i++) {
+		$vn_current = ord($ps_text{$i});
+		if (($vn_current == 0x9) ||
+			($vn_current == 0xA) ||
+			($vn_current == 0xD) ||
+			(($vn_current >= 0x20) && ($vn_current <= 0xD7FF)) ||
+			(($vn_current >= 0xE000) && ($vn_current <= 0xFFFD)) ||
+			(($vn_current >= 0x10000) && ($vn_current <= 0x10FFFF)))
+		{
+			$vs_return .= chr($vn_current);
+		} else {
+			$vs_return .= " ";
+		}
+	}
+	return $vs_return;
+}
+# ----------------------------------------
 # --- Files
 # ----------------------------------------
 function caFileIsIncludable($ps_file) {

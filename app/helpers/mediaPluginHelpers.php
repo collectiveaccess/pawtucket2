@@ -522,4 +522,51 @@
 		return $vs_tmp_filepath;
 	}
 	# ------------------------------------------------------------------------------------------------
+	/**
+	 * Attempt to detect faces in image files (TIFF, JPEG, PNG) using OpenCV and the php-facedetect module
+	 * If php-facedetect and/or OpenCV are not installed then function will return an empty array
+	 *
+	 * @param string $ps_filepath Path to image file to analyze
+	 * @param int $pn_width  Width of image
+	 * @param int $pn_height Height of image
+	 * @param array $pa_training_files Array of names of OpenCV facial recognition training file to use. Files are stored in <base_dir>/support/opencv. Default is a good general selection of training files. Omit the ".xml" extension when passing names. 
+	 * 
+	 * @return array An array of detected faces. Each entry is an array with x & y coordinate, and area width and heights.
+	 */
+	function caDetectFaces($ps_filepath, $pn_width, $pn_height, $pa_training_files=null) {
+		$o_config = Configuration::load();
+		if (!$o_config->get('enable_face_detection_for_images')) { return array(); }
+		if(!function_exists("face_detect")) { return null; } // is php-facedetect installed? (http://www.xarg.org/project/php-facedetect/)
+		
+		if (!$pa_training_files || !is_array($pa_training_files) || !sizeof($pa_training_files)) { 
+			$pa_training_files = array(
+				'haarcascade_profileface',
+				'haarcascade_frontalface_alt'
+			);
+		}
+		foreach($pa_training_files as $vs_training_file) {
+			$va_faces = face_detect($ps_filepath, __CA_BASE_DIR__."/support/opencv/{$vs_training_file}.xml");
+			if (!is_array($va_faces) || !sizeof($va_faces)) { continue; }
+			
+			$va_filtered_faces = array();
+			
+			if (($vn_width_threshold = (int)($pn_width * 0.10)) < 50) { $vn_width_threshold = 50; }
+			if (($vn_height_threshold = (int)($pn_height * 0.10)) < 50) { $vn_height_threshold = 50; }
+			
+			foreach($va_faces as $vn_i => $va_info) {
+				if (($va_info['w'] > $vn_width_threshold) && ($va_info['h'] > $vn_height_threshold)) {
+					$va_filtered_faces[(($va_info['w'] * $va_info['h']) + ($vn_i * 0.1))] = $va_info;	// key is total area of feature
+				}
+			}
+			
+			if (!sizeof($va_filtered_faces)) { continue; }
+			
+			// Sort so largest area is first; most probably feature of interest
+			ksort($va_filtered_faces, SORT_NUMERIC);
+			$va_filtered_faces = array_reverse($va_filtered_faces);
+			return $va_filtered_faces;
+		}
+		return array();
+	}
+	# ------------------------------------------------------------------------------------------------
 ?>

@@ -167,12 +167,14 @@
 	 * @param array $pa_types List of type codes and/or type_ids that are the basis of the list
 	 * @param array $pa_options Array of options:
 	 * 		dont_include_subtypes_in_type_restriction = if set, returned list is not expanded to include subtypes
+	 *		dontIncludeSubtypesInTypeRestriction = synonym for dont_include_subtypes_in_type_restriction
 	 *
 	 * @return array List of numeric type_ids
 	 */
 	function caMakeTypeIDList($pm_table_name_or_num, $pa_types, $pa_options=null) {
 		$o_dm = Datamodel::load();
-		
+		if(isset($pa_options['dontIncludeSubtypesInTypeRestriction']) && (!isset($pa_options['dont_include_subtypes_in_type_restriction']) || !$pa_options['dont_include_subtypes_in_type_restriction'])) { $pa_options['dont_include_subtypes_in_type_restriction'] = $pa_options['dontIncludeSubtypesInTypeRestriction']; }
+	 	
 		if (isset($pa_options['dont_include_subtypes_in_type_restriction']) && $pa_options['dont_include_subtypes_in_type_restriction']) {
 			$pa_options['noChildren'] = true;
 		}
@@ -215,7 +217,7 @@
 	}
 	# ---------------------------------------------------------------------------------------------
 	/**
-	 * Merges types specified with any specified "restrict_to_types" option, user access settings and types configured in app.conf
+	 * Merges types specified with any specified "restrict_to_types"/"restrictToTypes" option, user access settings and types configured in app.conf
 	 * into a single list of type_ids suitable for enforcing type restrictions.
 	 *
 	 * @param BaseModel $t_instance A model instance for the table to which the types apply
