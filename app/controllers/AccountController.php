@@ -300,7 +300,14 @@
 					
 					$va_tmp = explode('.', $va_rep['paths'][$vs_version]);
 					$vs_ext = array_pop($va_tmp);
-					$vs_filename = $va_rep['original_filename'] ? $va_rep['original_filename'] : $t_object->get('idno')."_".$va_rep['representation_id'].".{$vs_ext}";
+					
+					if ($va_rep['original_filename']) {
+						$va_tmp2 = explode(".", $va_rep['original_filename']);
+						if (sizeof($va_tmp2) > 1) { array_pop($va_tmp2); }
+						$vs_filename = join(".", $va_tmp2).".{$vs_ext}";
+					} else {
+						$vs_filename = $t_object->get('idno')."_".$va_rep['representation_id'].".{$vs_ext}";
+					}
 			
 					$vn_size += $va_files[$va_rep['paths'][$vs_version]] = filesize($va_rep['paths'][$vs_version]);
 					$o_zip->addFile($va_rep['paths'][$vs_version], $vs_filename, 0, array('compression' => 0));
