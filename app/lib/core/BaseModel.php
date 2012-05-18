@@ -1878,8 +1878,10 @@ class BaseModel extends BaseObject {
 							break;
 						# -----------------------------
 						case (FT_TIMESTAMP):	# insert on stamp
+							$t = time();
 							$vs_fields .= $vs_field.",";
-							$vs_values .= time().",";
+							$vs_values .= $t.",";
+							$this->_FIELD_VALUES[$vs_field] = $t;
 							break;
 						# -----------------------------
 						case (FT_DATERANGE):
@@ -2139,7 +2141,8 @@ class BaseModel extends BaseObject {
 		if ($this->getMode() == ACCESS_WRITE) {
 			// do form timestamp check
 			if (isset($_REQUEST['form_timestamp']) && ($vn_form_timestamp = $_REQUEST['form_timestamp'])) {
-				$va_possible_conflicts = $this->getChangeLog($vn_form_timestamp, null, null, true, $this->getCurrentLoggingUnitID());
+				$va_possible_conflicts = $this->getChangeLog(null, array('range' => array('start' => $vn_form_timestamp, 'end' => time()), 'excludeUnitID' => $this->getCurrentLoggingUnitID()));
+				
 				if (sizeof($va_possible_conflicts)) {
 					$va_conflict_users = array();
 					$va_conflict_fields = array();
@@ -3210,7 +3213,23 @@ class BaseModel extends BaseObject {
 			$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
 			$va_type_info = $o_media_proc_settings->getMediaTypeInfo($o_media_proc_settings->canAccept($va_media_info["INPUT"]["MIMETYPE"]));
 			
-			return $va_type_info['MEDIA_VIEW_DEFAULT_VERSION'];
+			return ($va_type_info['MEDIA_VIEW_DEFAULT_VERSION']) ? $va_type_info['MEDIA_VIEW_DEFAULT_VERSION'] : array_shift($this->getMediaVersions($ps_field));
+		} else {
+			return null;
+		}	
+	}
+	
+	/**
+	 * Returns default version to display as a preview for the given field based upon the currently loaded row
+	 *
+	 * @param string $ps_field field name
+	 */
+	public function getDefaultMediaPreviewVersion($ps_field) {
+		if ($va_media_info = $this->getMediaInfo($ps_field)) {
+			$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
+			$va_type_info = $o_media_proc_settings->getMediaTypeInfo($o_media_proc_settings->canAccept($va_media_info["INPUT"]["MIMETYPE"]));
+			
+			return ($va_type_info['MEDIA_PREVIEW_DEFAULT_VERSION']) ? $va_type_info['MEDIA_PREVIEW_DEFAULT_VERSION'] : array_shift($this->getMediaVersions($ps_field));
 		} else {
 			return null;
 		}	
@@ -5048,21 +5067,55 @@ class BaseModel extends BaseObject {
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
-	 * Get change logs for the current record represented by this BaseModel object
+	 * Get change log for the current record represented by this BaseModel object, or for another specified row.
 	 * 
 	 * @access public
-	 * @param int $pn_less_than_secs_ago optional, restrict to a timespan, e.g. 3600 for the last hour
-	 * @param int $pn_max_num_entries_returned optional, maximal number of entries returned [default=all]
-	 * @param int $pn_id optional, get change logs for a different record [default=null]
-	 * @param bool $pb_for_table, only return changes made directly to the current table (ie. omit changes to related records that impact this record [default=false]
-	 * @param string $ps_exclude_unit_id, if set, log records with the specific unit_id are not returned
+	 * @param int $pn_row_id Return change log for row with specified primary key id. If omitted currently loaded record is used.
+	 * @param array $pa_options Array of options. Valid options are:
+	 * 		range = optional range to restrict returned entries to. Should be array with 0th key set to start and 1st key set to end of range. Both values should be Unix timestamps. You can also use 'start' and 'end' as keys if desired. 
+	 * 		limit = maximum number of entries returned. Omit or set to zero for no limit. [default=all]
+	 * 		forTable = if true only return changes made directly to the current table (ie. omit changes to related records that impact this record [default=false]
+	 * 		excludeUnitID = if set, log records with the specific unit_id are not returned [default=not set]
+	 *		changeType = if set to I, U or D, will limit change log to inserts, updates or deletes respectively. If not set all types are returned.
+	 * @return array Change log data
 	 */
-	public function &getChangeLog($pn_less_than_secs_ago=null, $pn_max_num_entries_returned=null, $pn_id=null, $pb_for_table=false, $ps_exclude_unit_id=null) {
-		if (!$pn_id) {
-			if (!($pn_id = $this->getPrimaryKey())) {
-				return array();
+	public function getChangeLog($pn_row_id=null, $pa_options=null) {
+		$pa_datetime_range = (isset($pa_options['range']) && is_array($pa_options['range'])) ? $pa_options['range'] : null;
+		$pn_max_num_entries_returned = (isset($pa_options['limit']) && (int)$pa_options['limit']) ? (int)$pa_options['limit'] : 0;
+		$pb_for_table = (isset($pa_options['forTable'])) ? (bool)$pa_options['forTable'] : false;
+		$ps_exclude_unit_id = (isset($pa_options['excludeUnitID']) && $pa_options['excludeUnitID']) ? $pa_options['excludeUnitID'] : null;
+		$ps_change_type = (isset($pa_options['changeType']) && in_array($pa_options['changeType'], array('I', 'U', 'D'))) ? $pa_options['changeType'] : null;
+			
+		$vs_daterange_sql = '';
+		if ($pa_datetime_range) {
+			$vn_start = $vn_end = null;
+			if (isset($pa_datetime_range[0])) {
+				$vn_start = (int)$pa_datetime_range[0];
+			} else {
+				if (isset($pa_datetime_range['start'])) {
+					$vn_start = (int)$pa_datetime_range['start'];
+				}
 			}
-		}
+			if (isset($pa_datetime_range[1])) {
+				$vn_end = (int)$pa_datetime_range[1];
+			} else {
+				if (isset($pa_datetime_range['end'])) {
+					$vn_end = (int)$pa_datetime_range['end'];
+				}
+			}
+			
+			if ($vn_start <= 0) { $vn_start = time() - 3600; }
+			if (!$vn_end <= 0) { $vn_end = time(); }
+			if ($vn_end < $vn_start) { $vn_end = $vn_start; }
+			
+			if (!$pn_row_id) {
+				if (!($pn_row_id = $this->getPrimaryKey())) {
+					return array();
+				}
+			}
+			
+			$vs_daterange_sql = " AND (wcl.log_datetime > ? AND wcl.log_datetime < ?)";
+		} 
 
 		if (!$this->opqs_get_change_log) {
 			$vs_change_log_database = '';
@@ -5083,11 +5136,10 @@ class BaseModel extends BaseObject {
 					LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
 					WHERE
 						(
-							(wcl.logged_table_num = ".$this->tableNum().") AND
+							(wcl.logged_table_num = ".((int)$this->tableNum()).") AND ".(($ps_change_type) ? "(wcl.changetype = '".$ps_change_type."') AND " : "")."
 							(wcl.logged_row_id = ?)
 						)
-						AND
-						(wcl.log_datetime > ?)
+						{$vs_daterange_sql}
 					ORDER BY log_datetime
 				"))) {
 					# should not happen
@@ -5105,11 +5157,10 @@ class BaseModel extends BaseObject {
 					LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
 					WHERE
 						(
-							(wcl.logged_table_num = ".$this->tableNum().") AND
+							(wcl.logged_table_num = ".((int)$this->tableNum()).") AND ".(($ps_change_type) ? "(wcl.changetype = '".$ps_change_type."') AND " : "")."
 							(wcl.logged_row_id = ?)
 						)
-						AND
-						(wcl.log_datetime > ?)
+						{$vs_daterange_sql}
 					UNION
 					SELECT DISTINCT
 						wcl.log_id, wcl.log_datetime, wcl.user_id, wcl.changetype, wcl.logged_table_num, wcl.logged_row_id,
@@ -5120,11 +5171,10 @@ class BaseModel extends BaseObject {
 					LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
 					WHERE
 						 (
-							(wcls.subject_table_num = ".$this->tableNum().") AND
-							(wcls.subject_row_id = ?)
+							(wcls.subject_table_num = ".((int)$this->tableNum()).") AND ".(($ps_change_type) ? "(wcl.changetype = '".$ps_change_type."') AND " : "")."
+							(wcls.subject_row_id  = ?)
 						)
-						AND
-						(wcl.log_datetime > ?)
+						{$vs_daterange_sql}
 					ORDER BY log_datetime
 				"))) {
 					# should not happen
@@ -5135,14 +5185,14 @@ class BaseModel extends BaseObject {
 				$this->opqs_get_change_log->setLimit($pn_max_num_entries_returned);
 			}
 		}
-
+		
 		// get directly logged records
 		$va_log = array();
 		
 		if ($pb_for_table) {
-			$qr_log = $this->opqs_get_change_log->execute(intval($pn_id), intval($pn_less_than_secs_ago));
+			$qr_log = $this->opqs_get_change_log->execute($vs_daterange_sql ? array((int)$pn_row_id, (int)$vn_start, (int)$vn_end) : array((int)$pn_row_id));
 		} else {
-			$qr_log = $this->opqs_get_change_log->execute(intval($pn_id), intval($pn_less_than_secs_ago), intval($pn_id), intval($pn_less_than_secs_ago));
+			$qr_log = $this->opqs_get_change_log->execute($vs_daterange_sql ? array((int)$pn_row_id, (int)$vn_start, (int)$vn_end, (int)$pn_row_id, (int)$vn_start, (int)$vn_end) : array((int)$pn_row_id, (int)$pn_row_id));
 		}
 		
 		while($qr_log->nextRow()) {
