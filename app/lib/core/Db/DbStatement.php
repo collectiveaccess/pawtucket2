@@ -108,6 +108,10 @@ class DbStatement extends DbBase {
 	function execute() {
 		$this->clearErrors();
 		$va_args = func_get_args();
+		if (is_array($va_args[0])) { 
+			$va_args = $va_args[0];
+		}
+		
 		if ($vb_res = $this->opo_db->execute($this, $this, $this->ops_sql, $va_args)) {
 			$this->opn_last_insert_id = $this->opo_db->getLastInsertID($this);
 		}
