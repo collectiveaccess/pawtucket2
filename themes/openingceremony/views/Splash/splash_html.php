@@ -83,19 +83,36 @@
 	</div>
 	
 	<div id="quickLinkItems">
+<?php 
+$va_random_object_padding = 0;
+$va_random_object_padding = (200 - $this->getVar("random_object_height"))/2;
+$va_random_object_padding_bottom = $va_random_object_padding;
+?>	
 		<div class="quickLinkItem">			
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("random_object_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("random_object_id")), array('id' => 'splashRandomObject')); ?></td></tr></table>
+			<table cellpadding="0" cellspacing="0" style="margin-right:0px; padding-top:<?php print $va_random_object_padding; ?>px; padding-bottom:<?php print $va_random_object_padding_bottom; ?>px;"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("random_object_preview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("random_object_id")), array('id' => 'splashRandomObject')); ?></td></tr></table>
 			<div class="title"><?php print _t("Random Object") ?></div>
 		</div>
+<?php 
+$va_recently_viewed_padding = 0;
+$va_recently_viewed_padding = (200 - $this->getVar("recently_viewed_height"))/2;
+$va_recently_viewed_padding_bottom = $va_recently_viewed_padding;
+?>		
 		<div class="quickLinkItem">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_viewed_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_viewed_id")), array('id' => 'splashRecentlyViewed')); ?></td></tr></table>
+			<table cellpadding="0" cellspacing="0" style="margin-right:0px; padding-top:<?php print $va_recently_viewed_padding; ?>px; padding-bottom:<?php print $va_recently_viewed_padding_bottom; ?>px;"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_viewed_preview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_viewed_id")), array('id' => 'splashRecentlyViewed')); ?></td></tr></table>
 			<div class="title"><?php print _t("Recently Viewed"); ?></div>
 		</div>
-		<div class="quickLinkItem" style="margin-right:0px;">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_added_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_added_id")), array('id' => 'splashRecentlyAdded')); ?></td></tr></table>
+<?php 
+$va_recently_added_padding = 0;
+$va_recently_added_padding = (200 - $this->getVar("recently_added_height"))/2;
+$va_recently_added_padding_bottom = $va_recently_added_padding;
+?>
+		<div class="quickLinkItem" >
+			<table cellpadding="0" cellspacing="0" style="margin-right:0px; padding-top:<?php print $va_recently_added_padding; ?>px; padding-bottom:<?php print $va_recently_added_padding_bottom; ?>px;"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_added_preview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_added_id")), array('id' => 'splashRecentlyAdded')); ?></td></tr></table>
 			<div class="title"><?php print _t("Recently Added"); ?></div>
+			
 		</div>	
 	</div>
+	
 <?php
 	TooltipManager::add('#splashRandomObject', $this->getVar("random_object_medium")."<br/><div class='tooltipCaption'>".$this->getVar('random_object_title')."</div>");
 	TooltipManager::add('#splashRecentlyViewed', $this->getVar("recently_viewed_medium")."<br/><div class='tooltipCaption'>".$this->getVar('recently_viewed_title')."</div>");
