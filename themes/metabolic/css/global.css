@@ -2287,12 +2287,15 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
 #caMediaPanel #close{
-	float: right;
+	position: absolute;
+	top: 0px;
+	right: 0px;
 	width:16px;
 	height:16px;
 	margin:10px;
 	background-image:url("../graphics/buttons/x.png");
 	background-repeat:no-repeat;
+	z-index: 32000;
 }
 #caMediaPanel #close a{
 	text-decoration:none;
@@ -2305,7 +2308,7 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 
 #caMediaOverlayContent {
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-left: 0px;
 	margin-left: auto;
 	margin-right: auto;
@@ -2315,30 +2318,12 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	text-align: center;
 }
 
-div.caMediaOverlayControls {
-	background-color: #FFFFFF;
-	padding: 3px;
-	font-size: 9px;
-	margin-left: 0px;
-	height: 25px;
-	border-bottom:2px solid #ededed;
+#caMediaOverlayContent div {
+	color: #FFFFFF;
 }
 
-select.caMediaOverlayControls {
-	font-size: 9px;
-}
-#caMediaOverlayThumbnails{
-	padding: 10px 0px 0px 0px;
-	text-align:center;
-	height:90px;
-	width:840px;
-	overflow:auto;
-}
-#caMediaOverlayThumbnails img{
-	margin:0px 1px 0px 1px;
-}
-#caMediaOverlayThumbnails div{
-	margin:0px auto 0px auto;
+#objDetailImage div {
+	color: #FFFFFF;
 }
 
 /* Advanced search */
