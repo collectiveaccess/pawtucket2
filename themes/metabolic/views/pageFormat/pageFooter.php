@@ -8,7 +8,7 @@
 		<div id="footer">
 			Metabolic Studio <br/>
 1745 N. Spring Street Unit 4 Los Angeles, CA 90012 <br/>
-info@metabolicstudio.org<mailto:info@metabolicstudio.org> phone 323.226.1158  
+<a href="mailto:info@metabolicstudio.org">info@metabolicstudio.org</a> phone 323.226.1158  
 		</div><!-- end footer -->
 <?php
 print TooltipManager::getLoadHTML();

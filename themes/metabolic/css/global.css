@@ -1043,7 +1043,7 @@ div.searchlight-results div.searchlight-selected {
 	margin-bottom:20px;
 	line-height: 1em;
 }
-#caAdvancedSearchForm input {
+/*#caAdvancedSearchForm input {
 	font-size:11px;
 	font-weight: normal;
 	padding: 0px 2px 0px 2px;
@@ -1083,6 +1083,31 @@ background-color: #f7f6ee;
 	margin: 0px;
 	border: 1px solid #828282;
 	background-color: #f7f6ee;
+}*/
+#caAdvancedSearchForm input[type="text"], #caAdvancedSearchForm input[type="textarea"], #caAdvancedSearchForm textarea, #caAdvancedSearchForm input[type="password"] {
+	font-size:12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border:1px solid #ddd;
+	padding:3px;
+	font-weight:normal;
+  border: 1px inset #CDD1D3;
+ min-height:24px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  padding: 2px 10px 2px 10px;
+ background-color: #f7f6ee;
+  margin-right: 10px;
+  -webkit-appearance: textfield;
+  box-sizing: border-box;
+  -webkit-rtl-ordering: logical;
+-webkit-user-select: text;
+cursor: auto;
+}
+#caAdvancedSearchForm textarea {
+	resize: none;
 }
 td.advSearchElement{
 	padding:0px 20px 10px 0px;
