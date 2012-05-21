@@ -434,7 +434,10 @@ div.searchlight-results div.searchlight-selected {
 #quickLinkItems .quickLinkItem{
 	float:left;
 	margin: 10px 14px 0px 0px;
-	width:195px;
+	padding-top:0px;
+	width:191px;
+	
+	border: 2px solid #e8e8e8;
 	overflow: hidden;
 }
 #quickLinkItems .quickLinkItem .title{
@@ -442,7 +445,7 @@ div.searchlight-results div.searchlight-selected {
 	text-transform: uppercase;
 	color: #333;
 	margin:5px 0px 0px 0px;
-	
+	text-align:center;
 }
 #quickLinkItems .quickLinkItem a.more{
 	font-size:11px;
@@ -457,7 +460,7 @@ div.searchlight-results div.searchlight-selected {
 #quickLinkItems .quickLinkItem table{
 	border: 0px solid #cccccc;
 	width:100%;
-	height:120px;
+
 }
 .tooltipCaption {
 	padding: 5px;
