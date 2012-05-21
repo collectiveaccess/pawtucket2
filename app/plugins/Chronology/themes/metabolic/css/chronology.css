@@ -147,6 +147,12 @@
 .action:hover, .action:focus {
 	border-color: #808080;
 }
+.actionHighlighted {
+	margin: 0px 3px 0px 3px;
+    border: 1px solid #808080;
+	background-color:#FFFFFF;
+	height: 246px;
+}
 .historicalContextContainer .action:hover, .historicalContextContainer .action:focus {
 	bottom:4px;
 	left:0px;
@@ -317,13 +323,13 @@
 	float:left;
 	text-align:left;
 	width: 20px;
-	padding: 200px 10px 0px 0px;
+	padding: 200px 10px 100px 0px;
 }
 .siloNext{
 	float:right;
 	text-align:right;
 	width: 20px;
-	padding: 200px 0px 0px 10px;
+	padding: 200px 0px 100px 10px;
 }
 .siloPrevious a, .siloNext a{
 	border:0px;
@@ -339,11 +345,12 @@
 }
 .siloMoreInfoContainer .leftCol{
 	float:left;
-	width:250px;
+	width:275px;
 }
 .siloMoreInfoContainer .rightCol{
 	float:right;
 	width:500px;
+	height:315px;
 }
 .siloMoreInfoContainer .unit{
 	margin-bottom:15px;
@@ -352,8 +359,15 @@
 .siloMoreInfoContainer .unit H3{
 	margin-top:0px;
 }
-.siloMoreInfoContainer .scrollPane{
-	width:250px;
+.siloMoreInfoContainer .rightCol H3{
+	margin-top:0px;
+}
+.siloMoreInfoContainer .leftCol .scrollPane{
+	width:275px;	
+	max-height: 315px; 
+}
+.siloMoreInfoContainer .moreImagesLink{
+	text-align:right;
 }
 .historicalContextContainer{
 	position:fixed;

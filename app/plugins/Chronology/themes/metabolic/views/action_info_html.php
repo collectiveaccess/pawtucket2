@@ -11,7 +11,8 @@
 	<div class="siloMoreInfoContent"><div class="siloPrevious">
 <?php
 		if($pn_previous_id){
-			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\");  return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
+			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first - 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_previous_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
+			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToPreviousAction(); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_previous_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
 		}else{
 			print "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmallOff.png' border='0'>";
 		}
@@ -20,18 +21,18 @@
 	<div class="siloNext">
 <?php
 		if($pn_next_id){
-			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\");  return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
+			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first + 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_next_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
+			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToNextAction(); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_next_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
 		}else{
 			print "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmallOff.png' border='0'>";
 		}
 ?>
 	</div><!-- end siloNext -->
-	<div class="hide"><a href="#" onclick="jQuery('#siloMoreInfo<?php print $pn_silo_id; ?>').slideUp(); return false;"><?php print _t("Hide"); ?> ></a></div><!-- end hide -->
+	<div class="hide"><a href="#" onclick="jQuery('#siloMoreInfo<?php print $pn_silo_id; ?>').slideUp(); jQuery('#actionContainer<?php print $va_action["occurrence_id"]; ?>').removeClass('actionHighlighted').addClass('action'); return false;"><?php print _t("Hide"); ?> ></a></div><!-- end hide -->
 	<H1><?php print $va_action["date"]; ?></H1>
 <?php
 	if($va_action["label"]){
 		print "<div class='unit actionText'>";
-		#print $va_action["label"];
 		print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_action["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $va_action["occurrence_id"])) : $va_action["label"]);
 		print "</div>";
 	}
@@ -42,19 +43,25 @@
 	}
 ?>
 	<div class="leftCol">
+		<div class="scrollPane">
 <?php
 
 		# --- entities
 		if($va_action["entities"]){	
 ?>
 			<div class="unit"><h3><?php print _t("Related")." ".((sizeof($va_action["entities"]) > 1) ? _t("People/Organizations") : _t("Person/Organization")); ?></h3>
-			<div class='scrollPane'>
+			
 <?php
+			$i = 0;
 			foreach($va_action["entities"] as $va_entity){
-				print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/><span class='details'> (".$va_entity['relationship_typename'].")</span><br/></p>";
+				print (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"]);
+				$i++;
+				if($i < sizeof($va_action["entities"])){
+					print ", ";
+				}
 			}
 ?>
-			</div></div>				
+			</div>				
 <?php
 		}
 		# --- occurrences
@@ -69,31 +76,35 @@
 			
 			foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
-					<h3><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h3>
-				<div class='scrollPane'>
+					<div class="unit"><h3><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h3>
 <?php
+				$i = 0;
 				foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."<br/><span class='details'> (".$va_info['relationship_typename'].")</span></p>";
+					print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"]);
+					$i++;
+					if($i < sizeof($va_occurrence_list)){
+						print ", ";
+					}
 				}
-?>
-				</div>
-<?php
+				print "</div><!-- end unit -->";
 			}
 		}
 		# --- collections
 		if($va_action["collections"]){	
 			print "<div class='unit'><h3>"._t("Related Project/Silo").((sizeof($va_action["collections"]) > 1) ? "s" : "")."</h3>";
-?>
-			<div class='scrollPane'>
-<?php
+			$i = 0;
 			foreach($va_action["collections"] as $va_collection_info){
-				print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+				print (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
+				$i++;
+				if($i < sizeof($va_action["collections"])){
+					print ", ";
+				}
 			}
 ?>
-			</div></div>
+			</div>
 <?php
 		}		
-		# -- display the map int he left column if there are media to display
+		# -- display the map in the left column if there are media to display
 		if(is_array($va_action["objects"]) && sizeof($va_action["objects"])){
 			if($va_action["map"] && $va_action["georeference"]){
 				print "<div class='unit'><H3>"._t("Location")."</H3>";
@@ -102,7 +113,7 @@
 			}
 		}
 ?>
-	</div><!-- end leftCol -->
+	</div><!-- end scrollPane --></div><!-- end leftCol -->
 	<div class="rightCol">
 <?php
 // 	if(is_array($va_action["objects"]) && sizeof($va_action["objects"])){
@@ -122,6 +133,7 @@
 
 	$vn_c = 0;
 	$vn_numCols = 4;
+	$vn_max_images = 12;
 	
 	
 
@@ -131,10 +143,10 @@
 			$t_rel_object = new ca_objects();
 			foreach($va_action["objects"] as $vn_i => $va_object_info){
 				$t_rel_object->load($va_object_info['object_id']);
-				$va_reps = $t_rel_object->getPrimaryRepresentation(array('mediumlarge'), null, array('return_with_access' => $va_access_values));
+				$va_reps = $t_rel_object->getPrimaryRepresentation(array('medium'), null, array('return_with_access' => $va_access_values));
 				$vn_object_id = $va_object_info['object_id'];
 
-				print "<div style='text-align:center;'>".caNavLink($this->request, $va_reps["tags"]["mediumlarge"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
+				print "<div style='text-align:center;'>".caNavLink($this->request, $va_reps["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 
 				print "<div style='text-align:center;'>".$t_rel_object->getLabelForDisplay().", ID:".$t_rel_object->get('idno')."</div>";
 			}
@@ -143,6 +155,8 @@
 			<table border="0" cellpadding="0px" cellspacing="0px" width="100%">
 <?php
 			$t_rel_object = new ca_objects();
+			$vn_itemc = 0;
+			# --- only show the first 12 images then a link that says how many more there are
 			foreach($va_action["objects"] as $vn_i => $va_object_info){
 				$t_rel_object->load($va_object_info['object_id']);
 				$va_reps = $t_rel_object->getPrimaryRepresentation(array('widethumbnail', 'small'), null, array('return_with_access' => $va_access_values));
@@ -181,6 +195,9 @@
 				}else{
 					print "<td><!-- empty for spacing --></td>";
 				}
+				if($vn_max_images == $vn_itemc){
+					break;
+				}
 			}
 			if(($vn_c > 0) && ($vn_c < $vn_numCols)){
 				while($vn_c < $vn_numCols){
@@ -195,6 +212,11 @@
 ?>
 		</table>
 <?php
+		if(sizeof($va_action["objects"]) > $vn_max_images){
+?>
+		<div class='moreImagesLink'><?php print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, _t("View all %1 images", sizeof($va_action["objects"]))." >", '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $va_action["occurrence_id"])) : _t("%1 more images", (sizeof($va_action["objects"]) - $vn_max_images))); ?></div>
+<?php
+		}
 		}
 	}else{
 		# -- no media to display so show a large map instead - if available!
@@ -225,3 +247,13 @@
 <?php
 	}
 ?>
+<script type="text/javascript">
+	function scrollTimelineToNextAction(){
+		var currentActionTimeline = jQuery("#silo<?php print $pn_silo_id; ?>").data("jcarousel");
+		currentActionTimeline.scroll(currentActionTimeline.first + 1, true); 
+	}
+	function scrollTimelineToPreviousAction(){
+		var currentActionTimeline = jQuery("#silo<?php print $pn_silo_id; ?>").data("jcarousel");
+		currentActionTimeline.scroll(currentActionTimeline.first - 1, true); 
+	}
+</script>

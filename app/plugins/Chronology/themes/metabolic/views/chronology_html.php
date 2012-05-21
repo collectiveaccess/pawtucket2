@@ -69,7 +69,7 @@
 					}
 					
 					
-					print "<li><div class='action'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
+					print "<li><div class='action' id='actionContainer".$vn_action_id."'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); $(\"#silo".$vn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$vn_action_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
 				}
 ?>
 				</ul>
@@ -90,7 +90,13 @@
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions'] - 1; ?>,  itemLoadCallback: loadActions});
+			var stateCookieJar = jQuery.cookieJar('caChronoCookieJar');
+			if(stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>")){
+				var initIndex = stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>");
+			} else {
+				var initIndex = 1;
+			}
+			jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions'] - 1; ?>,  itemLoadCallback: loadActions, start: initIndex});
 			jQuery('#silo<?php print $vn_silo_id; ?>').data('actionmap', <?php print json_encode($va_silo['actionmap']); ?>);
 			var slider_silo_id = <?php print $vn_silo_id; ?>; 
 			var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
@@ -110,6 +116,9 @@
 					jQuery('#silo' + slider_silo_id).data('jcarousel').scroll(ui.value, jQuery('#silo' + slider_silo_id).data('jcarousel').has(ui.value));
 				}
 			});
+			
+			// Update slider with current position
+			jQuery('#slider<?php print $vn_silo_id; ?>').slider("value", initIndex);
 			
 			jQuery('#sync<?php print $vn_silo_id; ?>').click( 
 				function(e) { 
@@ -132,10 +141,14 @@
 	<script type="text/javascript">
 		function loadActions(carousel, state) {
 			var silo_id = jQuery(carousel.list).attr('id').replace(/^silo/, "");
+			var stateCookieJar = jQuery.cookieJar('caChronoCookieJar');
+			stateCookieJar.get("caChronoTimeline" + silo_id)
+			// set carousel index in cookieJar
+			stateCookieJar.set("caChronoTimeline" + silo_id, carousel.first);
 			for (var i = carousel.first; i <= (carousel.last + 6); i++) {
 				// Check if the item already exists
 				if (!carousel.has(i)) {
-					jQuery.getJSON('<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'getActions'); ?>', {silo_id: silo_id, s: i, n: 10, context: (silo_id == <?php print $vn_historical_context_silo_id; ?>) ? 1 : 0}, function(actions) {
+					jQuery.getJSON('<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'getActions'); ?>', {silo_id: silo_id, s: i, n: 10, context: (silo_id == <?php print (int)$vn_historical_context_silo_id; ?>) ? 1 : 0}, function(actions) {
 						jQuery.each(actions, function(k, v) {
 							var entities = "";
 							var numMoreEntities = "";
@@ -179,7 +192,7 @@
 								var image = "<div class='actionImage'><?php print $vs_thumbnail; ?></div>";
 							}
 							
-							carousel.add(i, "<li><div class='action'><div class='actionDate'>" + v['date'] + "</div>" + titleExtended + "<div class='actionTitle'>" + clipped_label + more + "</div>" + image + entities + "<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").load(\"<?php print caNavUrl($this->request, 'Chronology', 'Show', 'getAction'); ?>/dontInitiateScroll/1/silo_id/" + v['silo_id'] + "/action_id/" + k + "\", function() { jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").slideDown(400, function(){ scrollWindow(" + v['silo_id'] + ");}); }); return false;'><?php print _t("More Info >"); ?></a></div></div></li>");	// format used when dynamically loading
+							carousel.add(i, "<li><div id='actionContainer" + k + "' class='action'><div class='actionDate'>" + v['date'] + "</div>" + titleExtended + "<div class='actionTitle'>" + clipped_label + more + "</div>" + image + entities + "<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").load(\"<?php print caNavUrl($this->request, 'Chronology', 'Show', 'getAction'); ?>/dontInitiateScroll/1/silo_id/" + v['silo_id'] + "/action_id/" + k + "\", function() { jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").slideDown(400, function(){ scrollWindow(" + v['silo_id'] + ");}); }); $(\"#silo" + v['silo_id'] + "\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer" + k + "\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><?php print _t("More Info >"); ?></a></div></div></li>");	// format used when dynamically loading
 							
 							i++;
 						});
