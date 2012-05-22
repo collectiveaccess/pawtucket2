@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2010 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -76,12 +76,17 @@
 				'LABEL' => 'Row id', 'DESCRIPTION' => 'Identifier for Row'
 		),
 		'access' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Access'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_CHOICE_LIST' => array(
+					_t('none') => 0,
+					_t('can read') => 1,
+					_t('can edit') => 2,
+					_t('can edit + delete') => 3
+				)
 		),
 		'notes' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -89,7 +94,7 @@
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Notes'), 'DESCRIPTION' => _t('Notes'),
-				'BOUNDS_LENGTH' => array(0,10)
+				'BOUNDS_LENGTH' => array(0,65535)
 		)
 	)
 );

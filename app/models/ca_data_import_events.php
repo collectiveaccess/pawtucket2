@@ -421,5 +421,31 @@ class ca_data_import_events extends BaseModel {
 		return $va_items;
 	}
 	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @param string $ps_source
+	 * @param string $ps_type_code
+	 * @return array Event information
+	 */
+	static public function getLastEventForSourceAndType($ps_source, $ps_type_code) {
+		$o_db = new Db();
+		
+		$qr_res = $o_db->query("
+			SELECT *
+			FROM ca_data_import_events
+			WHERE
+				(source = ?) AND (type_code = ?)
+			ORDER BY occurred_on DESC 
+			LIMIT 1
+		", (string)$ps_source, (string)$ps_type_code);
+		
+		if($qr_res->nextRow()) {
+			return $qr_res->getRow();
+		}
+		
+		return null;
+	}
+	# ------------------------------------------------------
 }
 ?>
