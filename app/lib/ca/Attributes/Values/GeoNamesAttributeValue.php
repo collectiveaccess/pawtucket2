@@ -161,6 +161,8 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 	# ------------------------------------------------------------------
 	public function parseValue($ps_value, $pa_element_info) {
  		$ps_value = trim(preg_replace("![\t\n\r]+!", ' ', $ps_value));
+		$vo_conf = Configuration::load();
+		$vs_user = trim($vo_conf->get("geonames_user"));
 
 		$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('canBeEmpty'));
 
@@ -175,7 +177,7 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 
 			$vs_text = $va_tmp[0];
 			$vs_id = $va_tmp[1];
-			$vs_url = "http://ws.geonames.org/get?geonameId={$vs_id}&style=full";
+			$vs_url = "http://api.geonames.org/get?geonameId={$vs_id}&style=full&username={$vs_user}";
 
 			return array(
 				'value_longtext1' => $vs_text,
@@ -185,11 +187,11 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 	}
 	# ------------------------------------------------------------------
 	/**
- 		 * @param array $pa_element_info
- 		 * @param array $pa_options Supported options are 
- 		 *			forSearch = if true, elenent is returned for use in a search form
- 		 *	@return string HTML for element		
- 		 */
+	 * @param array $pa_element_info
+ 	 * @param array $pa_options Supported options are 
+ 	 *			forSearch = if true, elenent is returned for use in a search form
+ 	 *	@return string HTML for element		
+ 	 */
 	public function htmlFormElement($pa_element_info, $pa_options=null) {
 		if (isset($pa_options['forSearch']) && $pa_options['forSearch']) {
 			return caHTMLTextInput("{fieldNamePrefix}".$pa_element_info['element_id']."_{n}", array('id' => "{fieldNamePrefix}".$pa_element_info['element_id']."_{n}", 'value' => $pa_options['value']), $pa_options);
@@ -250,21 +252,25 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 		
 		$vs_element .= "
 				var re = /\[([\d\.\-,; ]+)\]/;
-				var latlong = re.exec('{".$pa_element_info['element_id']."}')[1];
+				var r = re.exec('{".$pa_element_info['element_id']."}');
+				var latlong = (r) ? r[1] : null;
 
-				// map vars are global
-				map_".$pa_element_info['element_id']."{n} = new google.maps.Map(document.getElementById('map_".$pa_element_info['element_id']."{n}'), {
-					disableDefaultUI: false,
-					mapTypeId: google.maps.MapTypeId.SATELLITE
-				});
-				var tmp = latlong.split(',');
-				var pt = new google.maps.LatLng(tmp[0], tmp[1]);
-				map_".$pa_element_info['element_id']."{n}.setCenter(pt);
-				map_".$pa_element_info['element_id']."{n}.setZoom(15);		// todo: make this a user preference of some sort
-				var marker = new google.maps.Marker({
-					position: pt,
-					map: map_".$pa_element_info['element_id']."{n}
-				});";
+				if (latlong) {
+					// map vars are global
+					map_".$pa_element_info['element_id']."{n} = new google.maps.Map(document.getElementById('map_".$pa_element_info['element_id']."{n}'), {
+						disableDefaultUI: false,
+						mapTypeId: google.maps.MapTypeId.SATELLITE
+					});
+				
+					var tmp = latlong.split(',');
+					var pt = new google.maps.LatLng(tmp[0], tmp[1]);
+					map_".$pa_element_info['element_id']."{n}.setCenter(pt);
+					map_".$pa_element_info['element_id']."{n}.setZoom(15);		// todo: make this a user preference of some sort
+					var marker = new google.maps.Marker({
+						position: pt,
+						map: map_".$pa_element_info['element_id']."{n}
+					});
+				}";
 		
 		$vs_element .= "
 					});
