@@ -42,8 +42,12 @@
 	if($vo_result) {
 ?>
 		<h1><?php print _t("Objects from the Digital Archive"); ?></h1>
-		 <div id="showForm"><span style="text-decoration:none; font-weight:bold;">Advanced Search Form is Hidden: </span><a href="#" onclick='$("#caAdvancedSearchForm").show(); $("#showForm").hide()'>Show Search Form</a> </div>
 <?php
+		if($vo_result->numHits() > 0){
+?>
+		 <div id="showForm"><span style="text-decoration:none; font-weight:bold;">Advanced Search Form is Hidden: </span><a href="#" onclick='$("#caAdvancedSearchFormBorder").show(); $("#showForm").hide()'>Show Search Form</a> </div>
+<?php
+		}
 		print $this->render('Results/paging_controls_html.php');
 		if($vo_result->numHits() > 0){
 ?>
@@ -65,6 +69,14 @@
 			print $this->render('Results/ca_objects_search_no_results_html.php');
 		}else{
 			print $this->render('Results/ca_objects_results_'.$vs_view.'_html.php');
+			# -- hide form if there are results
+?>
+			<script type="text/javascript">
+			jQuery("#caAdvancedSearchFormBorder").hide();
+			jQuery("#advancedSearchFormContainerFormSelector").hide();
+			
+			</script>
+<?php
 		}		
 ?>		
 	</div><!-- end sectionbox -->

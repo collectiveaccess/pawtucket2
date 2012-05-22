@@ -1043,7 +1043,7 @@ div.searchlight-results div.searchlight-selected {
 	margin-bottom:20px;
 	line-height: 1em;
 }
-#caAdvancedSearchForm input {
+/*#caAdvancedSearchForm input {
 	font-size:11px;
 	font-weight: normal;
 	padding: 0px 2px 0px 2px;
@@ -1083,6 +1083,31 @@ background-color: #f7f6ee;
 	margin: 0px;
 	border: 1px solid #828282;
 	background-color: #f7f6ee;
+}*/
+#caAdvancedSearchForm input[type="text"], #caAdvancedSearchForm input[type="textarea"], #caAdvancedSearchForm textarea, #caAdvancedSearchForm input[type="password"] {
+	font-size:12px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	border:1px solid #ddd;
+	padding:3px;
+	font-weight:normal;
+  border: 1px inset #CDD1D3;
+ min-height:24px;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  padding: 2px 10px 2px 10px;
+ background-color: #f7f6ee;
+  margin-right: 10px;
+  -webkit-appearance: textfield;
+  box-sizing: border-box;
+  -webkit-rtl-ordering: logical;
+-webkit-user-select: text;
+cursor: auto;
+}
+#caAdvancedSearchForm textarea {
+	resize: none;
 }
 td.advSearchElement{
 	padding:0px 20px 10px 0px;
@@ -2287,12 +2312,15 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
 #caMediaPanel #close{
-	float: right;
+	position: absolute;
+	top: 0px;
+	right: 0px;
 	width:16px;
 	height:16px;
 	margin:10px;
 	background-image:url("../graphics/buttons/x.png");
 	background-repeat:no-repeat;
+	z-index: 32000;
 }
 #caMediaPanel #close a{
 	text-decoration:none;
@@ -2305,7 +2333,7 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 
 #caMediaOverlayContent {
-	margin-top: 5px;
+	margin-top: 0px;
 	margin-left: 0px;
 	margin-left: auto;
 	margin-right: auto;
@@ -2315,30 +2343,12 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	text-align: center;
 }
 
-div.caMediaOverlayControls {
-	background-color: #FFFFFF;
-	padding: 3px;
-	font-size: 9px;
-	margin-left: 0px;
-	height: 25px;
-	border-bottom:2px solid #ededed;
+#caMediaOverlayContent div {
+	color: #FFFFFF;
 }
 
-select.caMediaOverlayControls {
-	font-size: 9px;
-}
-#caMediaOverlayThumbnails{
-	padding: 10px 0px 0px 0px;
-	text-align:center;
-	height:90px;
-	width:840px;
-	overflow:auto;
-}
-#caMediaOverlayThumbnails img{
-	margin:0px 1px 0px 1px;
-}
-#caMediaOverlayThumbnails div{
-	margin:0px auto 0px auto;
+#objDetailImage div {
+	color: #FFFFFF;
 }
 
 /* Advanced search */

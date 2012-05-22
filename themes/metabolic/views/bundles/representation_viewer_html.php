@@ -260,68 +260,6 @@
 			print $o_view->render('bookviewer_html.php');
 		} else {
 ?>
-	<!-- Controls -->
-	<div class="caMediaOverlayControls">
-			<table width="95%">
-				<tr valign="middle">
-					<td align="left">
-						<form>
-<?php
-							print _t('Display %1 version', caHTMLSelect('version', $va_versions, array('id' => 'caMediaOverlayVersionControl', 'class' => 'caMediaOverlayControls'), array('value' => $vs_show_version)));
-							$va_rep_info = $this->getVar('version_info');
-
-							if (($this->getVar('version_type')) && ($va_rep_info['WIDTH'] > 0) && ($va_rep_info['HEIGHT'] > 0)) {
-								print " (".$this->getVar('version_type')."; ". $va_rep_info['WIDTH']." x ". $va_rep_info['HEIGHT']."px)";
-							}							
-?>
-						</form>
-						
-					</td>
-<?php
-					if($this->request->user->canDoAction("can_edit_ca_objects")){
-?>
-						<td align="middle" valign="middle">
-							<div><div style="float:left"><a href="<?php print caEditorUrl($this->request, 'ca_object_representations', $vn_representation_id)?>" ><?php print caNavIcon($this->request, __CA_NAV_BUTTON_EDIT__)?></a></div><div style="float:left; margin:2px 0px 0px 3px;"><?php print _t("Edit metadata"); ?></div></div>
-						</td>
-<?php
-					}
-?>
-					<td align="middle" valign="middle">
-						<div>
-<?php
-	if ($vn_id = $this->getVar('previous_representation_id')) {
-		print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>←</a>";
-	}
-	if (sizeof($va_reps) > 1) {
-		print ' '._t("%1 of %2", $this->getVar('representation_index'), sizeof($va_reps)).' ';
-	}
-	if ($vn_id = $this->getVar('next_representation_id')) {
-		print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>→</a>";
-	}
-?>
-						</div>
-					</td>
-<?php
-					if(caObjectsDisplayDownloadLink($this->request)){
-?>
-					<td align="right" text-align="right">
-<?php 
-						print caFormTag($this->request, 'DownloadRepresentation', 'downloadRepresentationForm', 'Detail/Object', 'get', 'multipart/form-data', null, array('disableUnsavedChangesWarning' => true));
-						print caHTMLSelect('version', $va_versions, array('id' => 'caMediaOverlayVersionControl', 'class' => 'caMediaOverlayControls'), array('value' => 'original'));
-						print ' '.caFormSubmitLink($this->request, caNavIcon($this->request, __CA_NAV_BUTTON_DOWNLOAD__, null, array('align' => 'middle')), '', 'downloadRepresentationForm');
-						print caHTMLHiddenInput('representation_id', array('value' => $t_rep->getPrimaryKey()));
-						print caHTMLHiddenInput('object_id', array('value' => $t_object->getPrimaryKey()));
-						print caHTMLHiddenInput('download', array('value' => 1));
-?>
-						</form>
-					</td>
-<?php
-					}
-?>
-				</tr>
-			</table>
-	</div><!-- end caMediaOverlayControls -->
-
 	<div id="caMediaOverlayContent">
 <?php
 	// return standard tag
