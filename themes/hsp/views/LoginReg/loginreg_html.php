@@ -56,17 +56,19 @@
 				<h1><?php print _t("Register"); ?></h1>
 				<div class="bg">
 					<form action="<?php print caNavUrl($this->request, '', 'LoginReg', 'register', array()); ?>" method="post" name="registration">
-<?php
+<?phpx
 						$va_errors = $this->getVar("reg_errors");
 						
 						if($va_errors["fname"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["fname"]."</div>";
 						}
 						print $this->getVar("fname");
+						
 						if($va_errors["lname"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["lname"]."</div>";
 						}
 						print $this->getVar("lname");
+						
 						if($va_errors["email"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["email"]."</div>";
 						}
@@ -76,6 +78,7 @@
 						$va_user_profile_settings = $this->getVar('profile_settings');
 						if (is_array($va_user_profile_settings) && sizeof($va_user_profile_settings)) {
 							foreach($va_user_profile_settings as $vs_field => $va_info) {
+								if (!isset($va_info['info']['showOnRegistrationForm']) || !$va_info['info']['showOnRegistrationForm']) { continue; }
 								if($va_errors[$vs_field]){
 									print "<div class='formErrors' style='text-align: left;'>".$va_errors[$vs_field]."</div>";
 								}
