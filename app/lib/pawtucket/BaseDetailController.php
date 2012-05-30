@@ -106,6 +106,7 @@
  		 * application on an as-needed basis.
  		 */
  		public function Show() {
+ 			JavascriptLoadManager::register('viz');
  			JavascriptLoadManager::register("ca", "panel");
  			JavascriptLoadManager::register("jit");
  			JavascriptLoadManager::register('browsable');
