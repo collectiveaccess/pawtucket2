@@ -1,6 +1,32 @@
 <?php
+/* ----------------------------------------------------------------------
+ * app/plugins/Chronology/themes/metabolic/views/chronology_html.php
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2012 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+ 
 	$va_silos = $this->getVar('silos');
-	//print_R($va_silos);
 	$vs_thumbnail = "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/imagePlaceholder.jpg' border='0'>";
 ?>
 <div id="chronology">
@@ -194,11 +220,22 @@
 							
 							carousel.add(i, "<li><div id='actionContainer" + k + "' class='action'><div class='actionDate'>" + v['date'] + "</div>" + titleExtended + "<div class='actionTitle'>" + clipped_label + more + "</div>" + image + entities + "<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").load(\"<?php print caNavUrl($this->request, 'Chronology', 'Show', 'getAction'); ?>/dontInitiateScroll/1/silo_id/" + v['silo_id'] + "/action_id/" + k + "\", function() { jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").slideDown(400, function(){ scrollWindow(" + v['silo_id'] + ");}); }); $(\"#silo" + v['silo_id'] + "\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer" + k + "\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><?php print _t("More Info >"); ?></a></div></div></li>");	// format used when dynamically loading
 							
+							
+							// Set current highlight
+							if (carousel.jcarousel_selected_action_id) {
+								console.log("set highlight to " + carousel.jcarousel_selected_action_id + " for silo " + silo_id);
+								jQuery("#silo" + silo_id).find(".actionHighlighted").removeClass("actionHighlighted").addClass("action"); jQuery("#actionContainer" + carousel.jcarousel_selected_action_id).removeClass("action").addClass("actionHighlighted");
+							}
 							i++;
 						});
 					});
 					
 					break;
+				}
+				// Set current highlight
+				if (carousel.jcarousel_selected_action_id) {
+					console.log("set highlight to " + carousel.jcarousel_selected_action_id + " for silo " + silo_id);
+					jQuery("#silo" + silo_id).find(".actionHighlighted").removeClass("actionHighlighted").addClass("action"); jQuery("#actionContainer" + carousel.jcarousel_selected_action_id).removeClass("action").addClass("actionHighlighted");
 				}
 			}
 			
@@ -263,5 +300,18 @@
 			var offset = jQuery('#siloContainer' + silo_id).offset();
 			window.scrollTo(offset.left, offset.top);
 			jQuery('.scrollPane').jScrollPane({animateScroll: true,});
+		}
+		
+		// Transaction action_id into index in jcarousel
+		function getIndexForActionID(silo_id, action_id) {
+			var actionmap = jQuery('#silo' + silo_id).data('actionmap');
+			
+			for(var i=0; i < actionmap.length; i++) {
+				if (actionmap[i]['id'] == action_id) { 
+					return i;
+				}
+			}
+			
+			return undefined;
 		}
 	</script>

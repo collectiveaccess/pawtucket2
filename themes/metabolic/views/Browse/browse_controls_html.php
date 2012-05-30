@@ -113,13 +113,25 @@
 								$vs_target_label = "Find People and Organizations";
 								$vs_target_intro = "To find people and organizations, start browsing by:";
 								break;
-							case 'ca_occurrences':
-								$vs_target_label = "Find Actions/Events";
-								$vs_target_intro = "To find actions, events and exhibitions, start browsing by:";
+							case 'ca_occurrences:action':
+								$vs_target_label = "Find Actions";
+								$vs_target_intro = "To find actions start browsing by:";
 								break;
-							case 'ca_collections':
-								$vs_target_label = "Find Projects/Silos";
-								$vs_target_intro = "To find Projects and Silos, start browsing by:";
+							case 'ca_occurrences:event':
+								$vs_target_label = "Find Events";
+								$vs_target_intro = "To find events start browsing by:";
+								break;
+							case 'ca_occurrences:exhibition':
+								$vs_target_label = "Find Exhibitions";
+								$vs_target_intro = "To find exhibitions start browsing by:";
+								break;
+							case 'ca_collections:silo':
+								$vs_target_label = "Find Silos";
+								$vs_target_intro = "To find silos, start browsing by:";
+								break;	
+							case 'ca_collections:project':
+								$vs_target_label = "Find Projects";
+								$vs_target_intro = "To find projects, start browsing by:";
 								break;	
 							case 'ca_places':
 								$vs_target_label = "Find Places";
@@ -129,15 +141,18 @@
 						$o_target_browse->removeAllCriteria();
 						$o_target_browse->execute();
 						$va_target_facet_info = $o_target_browse->getInfoForFacetsWithContent();
+						
+							if (sizeof($va_target_facet_info) > 0) {
 ?>
 						<div id='facetHeader'><a href='#'><?php print $vs_target_label;?></a></div>
 <?php						
-						print "<div class='facetsListDiv' >\n";
-						print "<div class='facetsIntroText'>".$vs_target_intro."</div>";
-						foreach($va_target_facet_info as $vs_facet_code => $va_facet_info) {
-							print "<div class='theFacet'><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\", null, null, null, null, \"{$vs_target}\");'>".ucwords($va_facet_info['label_plural'])."</a></div>\n";
+							print "<div class='facetsListDiv' >\n";
+							print "<div class='facetsIntroText'>".$vs_target_intro."</div>";
+							foreach($va_target_facet_info as $vs_facet_code => $va_facet_info) {
+								print "<div class='theFacet'><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\", null, null, null, null, \"{$vs_target}\");'>".ucwords($va_facet_info['label_plural'])."</a></div>\n";
+							}
+							print "</div><!-- end facetsDiv -->";
 						}
-						print "</div><!-- end facetsDiv -->";
 					}
 					print "</div>";
 				} else {

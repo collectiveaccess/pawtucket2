@@ -63,7 +63,7 @@
 						<!-- <div id="searchButton"><input style='width:47px' type="submit" value="Search" /></div> -->
 						<div id="searchElement">
 							<input type="search" placeholder="Search" name="search" value="<?php print ($vs_search) ? $vs_search : ''; ?>" onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" size="30"/>
-							<div class='advancedSearch'><?php print caNavLink($this->request, _t("advanced search"), "", "", "AdvancedSearch", "Index");?></div>
+							<div class='advancedSearch'><?php print caNavLink($this->request, _t("advanced search"), "", "", "AdvancedSearch", "Index", array('reset' => 1));?></div>
 						</div>
 						
 					</form>

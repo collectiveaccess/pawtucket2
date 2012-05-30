@@ -747,6 +747,7 @@
 			while($qr_hits->nextHit() && $i < $vn_items_per_page){
 				$va_related_objects[$qr_hits->get("object_id")] = array(
 					"widethumbnail" => $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)),
+					"small" => $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)),
 					"object_id" => $qr_hits->get("object_id"),
 					"label" => join($qr_hits->getDisplayLabels(), ", "),
 					"idno" => $qr_hits->get("idno")
