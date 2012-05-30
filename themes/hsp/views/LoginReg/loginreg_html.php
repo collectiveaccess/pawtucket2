@@ -56,19 +56,17 @@
 				<h1><?php print _t("Register"); ?></h1>
 				<div class="bg">
 					<form action="<?php print caNavUrl($this->request, '', 'LoginReg', 'register', array()); ?>" method="post" name="registration">
-<?phpx
+<?php
 						$va_errors = $this->getVar("reg_errors");
 						
 						if($va_errors["fname"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["fname"]."</div>";
 						}
 						print $this->getVar("fname");
-						
 						if($va_errors["lname"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["lname"]."</div>";
 						}
 						print $this->getVar("lname");
-						
 						if($va_errors["email"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["email"]."</div>";
 						}
