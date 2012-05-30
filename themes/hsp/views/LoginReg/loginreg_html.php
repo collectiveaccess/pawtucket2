@@ -76,6 +76,7 @@
 						$va_user_profile_settings = $this->getVar('profile_settings');
 						if (is_array($va_user_profile_settings) && sizeof($va_user_profile_settings)) {
 							foreach($va_user_profile_settings as $vs_field => $va_info) {
+								if (!isset($va_info['info']['showOnRegistrationForm']) || !$va_info['info']['showOnRegistrationForm']) { continue; }
 								if($va_errors[$vs_field]){
 									print "<div class='formErrors' style='text-align: left;'>".$va_errors[$vs_field]."</div>";
 								}

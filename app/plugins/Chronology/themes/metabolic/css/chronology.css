@@ -350,7 +350,7 @@
 .siloMoreInfoContainer .rightCol{
 	float:right;
 	width:500px;
-	height:315px;
+	/*height:315px; */
 }
 .siloMoreInfoContainer .unit{
 	margin-bottom:15px;

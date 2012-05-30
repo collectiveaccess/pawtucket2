@@ -1201,7 +1201,7 @@ td.advSearchElement{
 	width:240px;
 }
 .searchNav .nav a{
-	border-bottom: 1px dotted #777;
+	/*border-bottom: 1px dotted #777;*/
 }
 .searchnav a img{
 	vertical-align: middle;
