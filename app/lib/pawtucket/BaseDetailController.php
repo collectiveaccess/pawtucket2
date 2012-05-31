@@ -666,13 +666,16 @@
  			$va_tmp = explode('_', $vs_id);
  			$vn_id = (int)array_pop($va_tmp);
  			
+ 			$vs_rel_table = $this->request->getParameter('rtable', pString);
+ 			$vn_rel_type_id = $this->request->getParameter('rtypeid', pInteger);
+ 			
  			$o_dm = Datamodel::load();
  			
  			$t_instance = $o_dm->getInstanceByTableName($vs_table, true);
  			$t_instance->load($vn_id);
  			
  			$va_data = array(
- 				'id' => $vs_table.'_'.$vn_id,
+ 				'id' => $vs_table.'-'.$vn_id,
  				'name' => $t_instance->get("{$vs_table}.preferred_labels"),
  				'children' => array(),
  				'data' => array(
@@ -683,32 +686,60 @@
  				)
  			);
  			
- 			foreach(array('ca_entities', 'ca_occurrences', 'ca_collections') as $vs_rel_table) {
- 				if ($vs_rel_table == $vs_table) { continue; }
- 				$t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true);
- 				$va_rel = $t_instance->getRelatedItems($vs_rel_table);
- 				
- 				$vn_c = 0;
- 				if (is_array($va_rel)) {
- 					foreach($va_rel as $vn_rel_id => $va_rel_info) {
- 				
-						$va_data['children'][] = array(
-							'id' => $vs_rel_table.'_'.$va_rel_info[$t_rel_instance->primaryKey()],
-							'name' => $va_rel_info['label'],
-							'data' => array(
-								'table' => $vs_rel_table,
-								'detail' => ucfirst($t_rel_instance->getProperty('NAME_SINGULAR')),
-								'key' => $t_rel_instance->primaryKey(),
-								'id' => $va_rel_info[$t_rel_instance->primaryKey()]
-							)
-						);
-						
-						$vn_c++;
-						
-						if ($vn_c > 35) { break; }
+ 			if($vs_rel_table) {
+ 				if ($t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true)) {
+					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
+					
+					$vn_c = 0;
+					if (is_array($va_rel)) {
+						foreach($va_rel as $vn_rel_id => $va_rel_info) {
+							if ($vn_rel_type_id && ($va_rel_info['item_type_id'] != $vn_rel_type_id)) { continue; }
+							$va_data['children'][] = array(
+								'id' => $vs_rel_table.'-'.$va_rel_info[$t_rel_instance->primaryKey()].'-'.$vs_table.'-'.$vn_id,
+								'name' => $va_rel_info['label'],
+								'data' => array(
+									'table' => $vs_rel_table,
+									'detail' => ucfirst($t_rel_instance->getProperty('NAME_SINGULAR')),
+									'key' => $t_rel_instance->primaryKey(),
+									'id' => $va_rel_info[$t_rel_instance->primaryKey()]
+								)
+							);
+							
+							$vn_c++;
+							
+							if ($vn_c > 50) { break; }
+						}
 					}
 				}
- 			}
+ 			} else {
+				foreach(array('ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections') as $vs_rel_table) {
+					if ($vs_rel_table == $vs_table) { continue; }
+					$t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true);
+					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
+					
+					$vn_c = 0;
+					if (is_array($va_rel) && sizeof($va_rel)) {
+						$va_type_ids = array();
+						$va_type_list = $t_rel_instance->getTypeList();
+						foreach($va_rel as $vn_rel_id => $va_rel_info) {
+							$va_type_ids[$va_rel_info['item_type_id']] = true;
+						}
+						
+						foreach(array_keys($va_type_ids) as $vn_type_id) {
+							$va_data['children'][] = array(
+								'id' => $vs_table.'-'.$vn_id.'-'.$vs_rel_table.'-'.$vn_type_id.'-rel',
+								'name' => $vs_name = ucfirst($va_type_list[$vn_type_id]['name_plural']),
+								'data' => array(
+									'table' => $vs_rel_table,
+									'detail' => $vs_name,
+									'key' => $t_rel_instance->primaryKey(),
+									'id' => $va_rel_info[$t_rel_instance->primaryKey()]
+								)
+							);
+						}
+					}
+				}
+			}
  			
  			$this->view->setVar('data', $va_data);
  			

@@ -2592,6 +2592,12 @@ div.hierarchyBrowseTab {
   font: 10px sans-serif;
 }
 
+.visButton {
+  font: 12px sans-serif;
+  fill: #cc0000;
+  font-weight: bold;
+}
+
 .link {
   fill: none;
   stroke: #ccc;

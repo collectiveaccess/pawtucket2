@@ -5,6 +5,7 @@
 
 <script type="text/javascript">
 	function init() {
+		var maxTextLength = 44;
 		var w = jQuery('#infovis').width();
 		var h = jQuery('#infovis').height();
 		
@@ -12,11 +13,12 @@
 		width = w - margin.right - margin.left,
 		height = h - margin.top - margin.bottom,
 		i = 0,
-		duration = 500,
+		duration = 400,
 		root;
 		
-		var openNodes = {};
-	
+		var openNodes = [];
+		var nodeIDs = {};
+
 		var tree = d3.layout.tree()
 			.size([height, width]);
 		
@@ -35,15 +37,22 @@
 		  root.x0 = height / 2;
 		  root.y0 = 0;
 		
-		  function collapse(d) {
-			if (d.children) {
-			  d._children = d.children;
-			  d._children.forEach(collapse);
-			  d.children = null;
-			}
-		  }
-		
 		  root.children.forEach(collapse);
+		  
+		  // back to start button
+		  var backButtonG = vis.append("g").attr("class", "visButton").attr("x", "0").attr("y", "0")
+		  	.append("text").attr("class", "visButton").attr("x", parseInt(margin.left * -.75)).attr("y", "0")
+		  	.text("Reset")
+		  	.on("click", function() { 
+		  		if (openNodes.length > 1) {
+		  			var d = openNodes[1];
+		  			collapse(d); 
+		  			update(d); 
+		  			openNodes = [openNodes[0]];
+		  		}
+		  	});
+		  
+		  openNodes.push(tree.nodes(root).shift());
 		  update(root);
 		});
 		
@@ -51,9 +60,13 @@
 		
 		  // Compute the new tree layout.
 		  var nodes = tree.nodes(root).reverse();
-		
+
 		  // Normalize for fixed-depth.
-		  nodes.forEach(function(d) { d.y = d.depth * 240; });
+		  nodes.forEach(function(d) { d.y = (d.depth * 240) + 120; nodeIDs[d.id] = true });
+		
+			if (((openNodes.length + 2) * 240) > w) { 
+				nodes.forEach(function(d) { d.y += w - ((openNodes.length + 2) * 240); });
+			} 
 		
 		  // Update the nodes…
 		  var node = vis.selectAll("g.node")
@@ -62,10 +75,11 @@
 		  // Enter any new nodes at the parent's previous position.
 		  var nodeEnter = node.enter().append("g")
 			  .attr("class", "node")
+			  .attr("id", function(d) { return d.id; })
 			  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
 			  .on("click", click)
 			  .on("dblclick", dblclick);
-		
+
 		  nodeEnter.append("circle")
 			  .attr("r", 1e-6)
 			  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
@@ -74,7 +88,7 @@
 			  .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
 			  .attr("dy", ".35em")
 			  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
-			  .text(function(d) { return d.name; })
+			  .text(function(d) { return ((d.name.length > maxTextLength) ? d.name.substr(0,maxTextLength-3) + "..." : d.name); })
 			  .style("fill-opacity", 1e-6);
 		
 		  // Transition nodes to their new position.
@@ -132,30 +146,66 @@
 			d.x0 = d.x;
 			d.y0 = d.y;
 		  });
+		  
+		  // Make all notes grey
+		  vis.selectAll("g.node").attr("opacity", 0.5);
+		  
+		  for(var x in openNodes) {
+		  	vis.select("#" + openNodes[x].id).attr("opacity", 1.0);
+		  }
 		}
 		
 		// Toggle children on click.
 		function click(d) {
 		  if (d.children) {
-		  	openNodes[d.id] = undefined;
+		  	if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+		  	openNodes.splice(d.depth, 1);
 			d._children = d.children;
 			d.children = null;
 		  } else {
 		  	if (!d._children) {
-		  		var tmp = d.id.split('_');
-		  		console.log("Load via json children for " + tmp[0] + '_' + tmp[1] + '/' + tmp[2]); 
-		  		jQuery.getJSON('<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON'); ?>/table/' + tmp[0] + '_' + tmp[1] + '/id/' + tmp[2] + '/download/1', function(json) {
-		  			d.children = json.children;
-		  			openNodes[d.id] = d;
-		  			update(d);
+		  		var tmp = d.id.split('-');
+		  		
+		  		if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+		  		openNodes[d.depth] = d;
+				
+				vis.selectAll("g.node").attr("opacity", 0.5);	// Make all nodes grey
+
+				for(var x in openNodes) {						// Make selected nodes black
+					vis.select("#" + openNodes[x].id).attr("opacity", 1.0);
+				}
+			
+				// Load children of newly selected node
+				var url;
+				if (tmp[4]) {	// 5th item being set implies that the node clicked upon is a "grouping" node
+					url = '<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON'); ?>/table/' + tmp[0] + '/id/' + tmp[1] + '/rtable/' + tmp[2] + '/rtypeid/' + tmp[3] + '/download/1';
+				} else {
+					url = '<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON'); ?>/table/' + tmp[0] + '/id/' + tmp[1] + '/download/1';
+				}
+		  		jQuery.getJSON(url, function(json) {
+					d.children = json.children;
+					
+					if (d.children.length == 1) {
+		  				update(d);
+						click(d.children[0]);
+					} else {
+		  				update(d);
+		  			}
 		  		}); 
 		  		return;
 		  	}
 			d.children = d._children;
 			d._children = null;
-			openNodes[d.id] = d;
+			
+		  	if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+			openNodes[d.depth] = d;
 		  }
-		  update(d);
+			if (d.children.length == 1) {
+				update(d);
+				click(d.children[0]);
+			} else {
+				update(d);
+			}
 		}
 		
 		function dblclick(d) {
@@ -165,10 +215,18 @@
 			u = u + d.data.id;
 			window.location = u;
 		}
-
-	}	
-	jQuery(document).ready(function() {
-		init();
-		//jQuery.getJSON('<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON', array('table' => $t_subject->tableName(), 'id' => $t_subject->getPrimaryKey())); ?>', init); 
-	});
+			
+		function collapse(d) {
+			if (d.children) {
+				d._children = d.children;
+				d._children.forEach(function(d) { nodeIDs[d.id] = undefined; });
+				d._children.forEach(collapse);
+				d.children = null;
+			}
+			for(var x=(d.depth + 1); x < openNodes.length; x++) {
+				openNodes.splice(x, 1);
+			}
+		}
+	}
+	jQuery(document).ready(function() { init(); });
 </script>
