@@ -251,7 +251,6 @@ if (!$this->request->isAjax()) {
 				<H3 style="clear:both;"><?php print _t("Related Action%1", ($vn_num_actions > 1) ? "s" : ""); ?></H3><div class="timelineContainer"><ul id="actionTimeline" class="jcarousel-skin-chronology">
 <?php
 				$t_object = new ca_objects();
-				$va_siloIconToolTips = array();
 				foreach($va_actions as $vn_action_id => $va_action) {
 					$vs_label = $va_action['label'];
 					if(strlen($va_action['label']) > 125){
@@ -408,28 +407,6 @@ if (!$this->request->isAjax()) {
 			jQuery('#slider').slider("value", carousel.first);
 			
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	</script>
 <?php
 	}

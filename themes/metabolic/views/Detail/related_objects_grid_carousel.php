@@ -147,6 +147,7 @@ if($this->getVar('num_pages') > 1){
 						var imageGrid;
 						imageGrid = '<table border="0" cellpadding="0px" cellspacing="0px" width="100%">';
 						var col = 0;
+						var tooltips = {};
 						jQuery.each(objects, function(k, v) {
 							if (col == 0) { imageGrid = imageGrid +  "<tr>\n"; }
 							imageGrid = imageGrid + "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail" + v['object_id'] + "'><a href='<?php print caNavUrl($this->request, "Detail", "Object", "Show"); ?>/object_id/" + v['object_id'] + "'>" + v['widethumbnail'] + "</a></div></td>\n";
@@ -171,6 +172,11 @@ if($this->getVar('num_pages') > 1){
 
 						imageGrid = imageGrid + '</table>';
 						carousel.add(i, "<li>" + imageGrid + "</li>");	// format used when dynamically loading
+						
+						// Add tooltips
+						jQuery.each(objects, function(k, v) {
+							jQuery('.searchThumbnail' + v['object_id']).tooltip({ track: false, extraClass: 'tooltipFormat', showURL: false, bodyHandler: function() { return '<div class=\"tooltipImage\">' + v['small'] + '</div> <div class=\"tooltipCaption\"> <div><b>TITLE:</b> ' + v['label'] + '</div><div><b>ID:</b> ' + v['idno'] + '</div></div>' }});
+						});
 						i++;
 					});
 					

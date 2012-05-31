@@ -76,7 +76,7 @@
  		 *
  		 */
  		public function Edit($pa_values=null, $pa_options=null) {
- 			list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id) = $this->_initView($pa_options);
+ 			list($vn_subject_id, $t_subject, $t_ui) = $this->_initView($pa_options);
  			$vs_mode = $this->request->getParameter('mode', pString);
  			
  			//
@@ -103,14 +103,7 @@
  			if ($vs_idno_context_field = $t_subject->getProperty('ID_NUMBERING_CONTEXT_FIELD')) {
  				if ($vn_subject_id > 0) {
  					$this->view->setVar('_context_id', $t_subject->get($vs_idno_context_field));
- 				} else {
- 					if ($vn_parent_id > 0) {
- 						$t_parent = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name);
- 						if ($t_parent->load($vn_parent_id)) {
- 							$this->view->setVar('_context_id', $t_parent->get($vs_idno_context_field));
- 						}
- 					}
- 				}
+ 				} 
  			}
  			
  			// get default screen
@@ -143,7 +136,7 @@
  		 * @param array $pa_options Array of options passed through to _initView and saveBundlesForScreen()
  		 */
  		public function Save($pa_options=null) {
- 			list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id) = $this->_initView($pa_options);
+ 			list($vn_subject_id, $t_subject, $t_ui) = $this->_initView($pa_options);
  			if (!is_array($pa_options)) { $pa_options = array(); }
  			$vs_message = '';
  			
@@ -161,14 +154,7 @@
  			if ($vs_idno_context_field = $t_subject->getProperty('ID_NUMBERING_CONTEXT_FIELD')) {
  				if ($vn_subject_id > 0) {
  					$this->view->setVar('_context_id', $vn_context_id = $t_subject->get($vs_idno_context_field));
- 				} else {
- 					if ($vn_parent_id > 0) {
- 						$t_parent = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name);
- 						if ($t_parent->load($vn_parent_id)) {
- 							$this->view->setVar('_context_id', $vn_context_id = $t_parent->get($vs_idno_context_field));
- 						}
- 					}
- 				}
+ 				} 
  				
  				if ($vn_context_id) { $t_subject->set($vs_idno_context_field, $vn_context_id); }
  			}
@@ -188,7 +174,6 @@
  			$vb_is_insert = !$t_subject->getPrimaryKey();
  			
  			// Set access and status
- 			
  			if(strlen($vn_access = ContributePlugin::getFormSetting('access'))) {
  				$t_subject->set("access", $this->request->getParameter("access", pInteger));
  			}
@@ -210,19 +195,6 @@
 					$this->view->setVar($t_subject->primaryKey(), $vn_subject_id);
 					$this->view->setVar('subject_id', $vn_subject_id);
 					$this->request->session->setVar($this->ops_table_name.'_browse_last_id', $vn_subject_id);	// set last edited
-					
-					// If "above_id" is set then, we want to load the record pointed to by it and set its' parent to be the newly created record
-					// The newly created record's parent is already set to be the current parent of the "above_id"; the net effect of all of this
-					// is to insert the newly created record between the "above_id" record and its' current parent.
-					if ($vn_above_id && ($t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name, true)) && $t_instance->load($vn_above_id)) {
-						$t_instance->setMode(ACCESS_WRITE);
-						$t_instance->set('parent_id', $vn_subject_id);
-						$t_instance->update();
-						
-						if ($t_instance->numErrors()) {
-							$this->notification->addNotification($t_instance->getErrorDescription(), __NOTIFICATION_TYPE_ERROR__);	
-						}
-					}
 				}
 				
 			} else {
@@ -269,7 +241,11 @@
   				$this->opo_app_plugin_manager->hookSaveItem(array('id' => $vn_subject_id, 'table_num' => $t_subject->tableNum(), 'table_name' => $t_subject->tableName(), 'instance' => $t_subject, 'is_insert' => $vb_is_insert));
  			
  				if ((bool)$this->opa_ui_info['set_post_submission_notification']) {
- 					$this->notification->addNotification($this->opa_ui_info['post_submission_notification_message'], __NOTIFICATION_TYPE_INFO__);
+ 					if (($t_subject->tableName() == 'ca_objects') && ($t_subject->getRepresentationCount() > 0)) {
+ 						$this->notification->addNotification($this->opa_ui_info['post_submission_notification_message_with_media'], __NOTIFICATION_TYPE_INFO__);
+ 					} else {
+ 						$this->notification->addNotification($this->opa_ui_info['post_submission_notification_message'], __NOTIFICATION_TYPE_INFO__);
+ 					}
  				}
  				switch($this->opa_ui_info['post_submission_destination']) {
  					case 'url':
@@ -353,17 +329,6 @@
  			}
  			
  			$this->view->setVar('t_subject', $t_subject);
- 			
- 			if ($vs_parent_id_fld = $t_subject->getProperty('HIERARCHY_PARENT_ID_FLD')) {
- 				$this->view->setVar('parent_id', $vn_parent_id = $this->request->getParameter($vs_parent_id_fld, pInteger));
- 				
- 				// The "above_id" is set when the new record we're creating is to be inserted *above* an existing record (eg. made
- 				// the parent of another record). It will be set to the record we're inserting above. We ignore it if set when editing
- 				// an existing record since it is only relevant for newly created records.
- 				$this->view->setVar('above_id', $vn_above_id = $this->request->getParameter('above_id', pInteger));
- 				
- 				return array(null, $t_subject, $t_ui, $vn_parent_id, $vn_above_id);
- 			}
  			
  			return array(null, $t_subject, $t_ui);
  		}
