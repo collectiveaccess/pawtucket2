@@ -49,11 +49,22 @@
 		  			collapse(d); 
 		  			update(d); 
 		  			openNodes = [openNodes[0]];
+		  			
+		  			if (openNodes[0].children.length == 1) {
+		  				click(d);
+		  			}
 		  		}
 		  	});
 		  
-		  openNodes.push(tree.nodes(root).shift());
-		  update(root);
+		  var d = tree.nodes(root).shift();
+		  openNodes.push(d);
+		  
+			if (d.children.length == 1) {
+				update(d);
+				click(d.children[0]);
+			} else {
+				update(d);
+			}
 		});
 		
 		function update(source) {
