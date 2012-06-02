@@ -39,10 +39,11 @@
 <body>
 		<div id="topBar">
 <?php
+			$vb_client_services = (bool)$this->request->config->get('enable_client_services');
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				if($this->request->isLoggedIn()){
 					$o_client_services_config = caGetClientServicesConfiguration();
-					if ((bool)$o_client_services_config->get('enable_user_communication')) {
+					if ($vb_client_services && (bool)$o_client_services_config->get('enable_user_communication')) {
 						//
 						// Unread client communications
 						//
@@ -75,7 +76,7 @@
 							print "<div id='lightboxList'><b>"._t("your lightboxes").":</b><br/>";
 							foreach($va_sets as $va_set){
 								print caNavLink($this->request, ((strlen($va_set["name"]) > 30) ? substr($va_set["name"], 0, 30)."..." : $va_set["name"]), "", "", "Sets", "Index", array("set_id" => $va_set["set_id"]));
-								if(is_array($va_message_set_ids) && in_array($va_set["set_id"], $va_message_set_ids)){
+								if($vb_client_services && is_array($va_message_set_ids) && in_array($va_set["set_id"], $va_message_set_ids)){
 									print " <img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>";
 								}
 								print "<br/>";
@@ -84,13 +85,13 @@
 							print "</div>";
 						}else{
 							print caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index");
-							if(is_array($va_message_set_ids) && sizeof($va_message_set_ids)){
+							if($vb_client_services && is_array($va_message_set_ids) && sizeof($va_message_set_ids)){
 								print " <img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>";
 							}
 						}
 					}
 					
-					if ((bool)$o_client_services_config->get('enable_my_account')) {
+					if ($vb_client_services && (bool)$o_client_services_config->get('enable_my_account')) {
 						$t_order = new ca_commerce_orders();
 						if ($vn_num_open_orders = sizeof($va_orders = $t_order->getOrders(array('user_id' => $this->request->getUserID(), 'order_status' => array('OPEN', 'SUBMITTED', 'IN_PROCESSING', 'REOPENED'))))) {
 							print "<span style='color: #cc0000; font-weight: bold;'>".caNavLink($this->request, _t("My Account (%1)", $vn_num_open_orders), "", "", "Account", "Index")."</span>";
