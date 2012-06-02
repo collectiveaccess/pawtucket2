@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2011 Whirl-i-Gig
+ * Copyright 2010-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -112,6 +112,7 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 			'reference-black'	=> 'W',
 			'reference-white'	=> 'W',
 			'no_upsampling'		=> 'W',
+			'faces'				=> 'W',
 			'version'			=> 'W'	// required of all plug-ins
 		),
 		
@@ -360,6 +361,8 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 					$this->properties["bitdepth"] = $this->handle['depth'];
 					$this->properties["resolution"] = $this->handle['resolution'];
 					$this->properties["colorspace"] = $this->handle['colorspace'];
+					$this->properties["orientation_rotate"] = $this->handle['orientation_rotate'];
+					$this->properties["faces"] = $this->handle['faces'];
 					
 					$this->ohandle = $this->handle;
 					
@@ -554,36 +557,49 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 					);
 					
 					if ($do_fill_box_crop) {
-						switch($crop_from) {
-							case 'north_west':
-								$crop_from_offset_y = 0;
-								$crop_from_offset_x = $w - $parameters["width"];
-								break;
-							case 'south_east':
-								$crop_from_offset_x = 0;
-								$crop_from_offset_y = $h - $parameters["height"];
-								break;
-							case 'south_west':
-								$crop_from_offset_x = $w - $parameters["width"];
-								$crop_from_offset_y = $h - $parameters["height"];
-								break;
-							case 'random':
-								$crop_from_offset_x = rand(0, $w - $parameters["width"]);
-								$crop_from_offset_y = rand(0, $h - $parameters["height"]);
-								break;
-							case 'north_east':
-								$crop_from_offset_x = $crop_from_offset_y = 0;
-								break;
-							case 'center':
-							default:
-								if ($w > $parameters["width"]) {
-									$crop_from_offset_x = ceil(($w - $parameters["width"])/2);
-								} else {
-									if ($h > $parameters["height"]) {
-										$crop_from_offset_y = ceil(($h - $parameters["height"])/2);
+						// use face detection info to intelligently crop
+						if(is_array($this->properties['faces']) && sizeof($this->properties['faces'])) {
+							$va_info = array_shift($this->properties['faces']);
+							$crop_from_offset_x = ceil($va_info['x'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
+							$crop_from_offset_x -= ceil(0.15 * $parameters["width"]);	// since face will be tightly cropped give it some room
+							$crop_from_offset_y = ceil($va_info['y'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
+							$crop_from_offset_y -= ceil(0.15 * $parameters["height"]);	// since face will be tightly cropped give it some room
+							
+							// Don't try to crop beyond image boundaries, you just end up scaling the image, often awkwardly
+							if ($crop_from_offset_x > ($w - $parameters["width"])) { $crop_from_offset_x = 0; }
+							if ($crop_from_offset_y > ($h - $parameters["height"])) { $crop_from_offset_y = 0; }
+						} else {
+							switch($crop_from) {
+								case 'north_west':
+									$crop_from_offset_y = 0;
+									$crop_from_offset_x = $w - $parameters["width"];
+									break;
+								case 'south_east':
+									$crop_from_offset_x = 0;
+									$crop_from_offset_y = $h - $parameters["height"];
+									break;
+								case 'south_west':
+									$crop_from_offset_x = $w - $parameters["width"];
+									$crop_from_offset_y = $h - $parameters["height"];
+									break;
+								case 'random':
+									$crop_from_offset_x = rand(0, $w - $parameters["width"]);
+									$crop_from_offset_y = rand(0, $h - $parameters["height"]);
+									break;
+								case 'north_east':
+									$crop_from_offset_x = $crop_from_offset_y = 0;
+									break;
+								case 'center':
+								default:
+									if ($w > $parameters["width"]) {
+										$crop_from_offset_x = ceil(($w - $parameters["width"])/2);
+									} else {
+										if ($h > $parameters["height"]) {
+											$crop_from_offset_y = ceil(($h - $parameters["height"])/2);
+										}
 									}
-								}
-								break;
+									break;
+							}
 						}
 						$this->handle['ops'][] = array(
 							'op' => 'crop',
@@ -785,6 +801,7 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 			$this->properties["quality"] = "";
 			$this->properties["mimetype"] = $this->handle['mimetype'];
 			$this->properties["typename"] = $this->handle['magick'];
+			$this->properties["faces"] = $this->handle['faces'];
 			return true;
 		}
 		return false;
@@ -846,28 +863,6 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 	# ------------------------------------------------
 	private function _CoreImageRead($ps_filepath) {
 		if (caMediaPluginCoreImageInstalled($this->ops_CoreImage_path)) {
-			//
-			// TODO: Rotate incoming image as needed
-			//
-			if(function_exists('exif_read_data')) {
-				if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
-					if (isset($va_exif['IFD0']['Orientation'])) {
-						$vn_orientation = $va_exif['IFD0']['Orientation'];
-						switch($vn_orientation) {
-							case 3:
-								//exec($this->ops_imagemagick_path.'/convert "'.$ps_filepath.'[0]" -rotate 180 "'.$ps_filepath.'"');
-								break;
-							case 6:
-								//exec($this->ops_imagemagick_path.'/convert "'.$ps_filepath.'[0]" -rotate 90 "'.$ps_filepath.'"');
-								break;
-							case 8:
-								//exec($this->ops_imagemagick_path.'/convert "'.$ps_filepath.'[0]" -rotate -90 "'.$ps_filepath.'"');
-								break;
-						}
-					}
-				}
-			}
-			
 			$vs_output = shell_exec('sips --getProperty format --getProperty space --getProperty bitsPerSample --getProperty pixelWidth --getProperty pixelHeight --getProperty dpiWidth --getProperty dpiHeight "'.$ps_filepath."\" 2> /dev/null");
 			
 			$va_tmp = explode("\n", $vs_output);
@@ -880,18 +875,45 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 				$va_properties[trim($va_line_tmp[0])] = trim($va_line_tmp[1]);
 			}
 			
+			//
+			// TODO: Rotate incoming image as needed
+			//
+			$vn_orientation_rotation = null;
+			if(function_exists('exif_read_data')) {
+				if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+					if (isset($va_exif['IFD0']['Orientation'])) {
+						$vn_orientation = $va_exif['IFD0']['Orientation'];
+						switch($vn_orientation) {
+							case 3:
+								$vn_orientation_rotation = 180;
+								break;
+							case 6:
+								$vn_orientation_rotation = 90;
+								break;
+							case 8:
+								$vn_orientation_rotation = -90;
+								break;
+						}
+					}
+				}
+			}
+			
+			$va_faces = caDetectFaces($ps_filepath, $va_properties['pixelWidth'], $va_properties['pixelHeight']);			
+			
 			return array(
 				'mimetype' => $this->appleTypeToMimeType($va_properties['format']),
 				'magick' => $va_properties['format'],
-				'width' => $va_properties['pixelWidth'],
-				'height' => $va_properties['pixelHeight'],
+				'width' => (in_array($vn_orientation_rotation, array(90, -90))) ? $va_properties['pixelHeight'] : $va_properties['pixelWidth'],
+				'height' => (in_array($vn_orientation_rotation, array(90, -90))) ? $va_properties['pixelWidth'] : $va_properties['pixelHeight'],
 				'colorspace' => $va_properties['space'],
 				'depth' => $va_properties['bitsPerSample'],
+				'orientation_rotate' => $vn_orientation_rotation,
 				'resolution' => array(
 					'x' => $va_properties['dpiWidth'],
 					'y' => $va_properties['dpiHeight']
 				),
 				'ops' => array(),
+				'faces' => $va_faces,
 				'filepath' => $ps_filepath
 			);
 		}
@@ -936,10 +958,7 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 						break;
 					case 'rotate':
 						if (!is_numeric($va_op['angle'])) { break; }
-						
-						// TODO: stop being lazy and implement the math to convert a rotational angle into the transform matrix
-						// we need to pass to CIAffineTransform; for now this plugin doesn't support image rotation
-						//$va_ops[] = "filter image CIAffineTransform transform=1,0,0,1,0,0";
+						$va_ops[] = "filter image CIAffineTransform transform=".cos($va_op['angle']).",".(-1*sin($va_op['angle'])).",0,".sin($va_op['angle']).",".cos($va_op['angle']).",0";
 						break;
 					case 'filter_despeckle':
 						// TODO: see if this works nicely... just using default values
@@ -962,6 +981,11 @@ class WLPlugMediaCoreImage Extends WLPlug Implements IWLPlugMedia {
 						$va_ops[] = "filter image CIUnsharpMask radius={$vn_radius}:intensity={$vn_intensity}";
 						break;
 				}
+			}
+			
+			if (isset($this->properties["orientation_rotate"]) && ($this->properties["orientation_rotate"] != 0)) {
+				$va_ops[] = "filter image CIAffineTransform transform=".cos($va_op['angle']).",".(-1*sin($this->properties["orientation_rotate"])).",0,".sin($this->properties["orientation_rotate"]).",".cos($this->properties["orientation_rotate"]).",0";
+						
 			}
 			
 			$vs_input_file = $pa_handle['filepath'];

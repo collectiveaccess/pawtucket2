@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2009 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -177,6 +177,14 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 
 			$vs_text = $va_tmp[0];
 			$vs_id = $va_tmp[1];
+			
+			if (!$vs_id) {
+				if(!$va_settings["canBeEmpty"]){
+					$this->postError(1970, _t('Entry was blank.'), 'GeoNamesAttributeValue->parseValue()');
+					return false;
+				}
+				return array();
+			}
 			$vs_url = "http://api.geonames.org/get?geonameId={$vs_id}&style=full&username={$vs_user}";
 
 			return array(
@@ -252,25 +260,21 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 		
 		$vs_element .= "
 				var re = /\[([\d\.\-,; ]+)\]/;
-				var r = re.exec('{".$pa_element_info['element_id']."}');
-				var latlong = (r) ? r[1] : null;
+				var latlong = re.exec('{".$pa_element_info['element_id']."}')[1];
 
-				if (latlong) {
-					// map vars are global
-					map_".$pa_element_info['element_id']."{n} = new google.maps.Map(document.getElementById('map_".$pa_element_info['element_id']."{n}'), {
-						disableDefaultUI: false,
-						mapTypeId: google.maps.MapTypeId.SATELLITE
-					});
-				
-					var tmp = latlong.split(',');
-					var pt = new google.maps.LatLng(tmp[0], tmp[1]);
-					map_".$pa_element_info['element_id']."{n}.setCenter(pt);
-					map_".$pa_element_info['element_id']."{n}.setZoom(15);		// todo: make this a user preference of some sort
-					var marker = new google.maps.Marker({
-						position: pt,
-						map: map_".$pa_element_info['element_id']."{n}
-					});
-				}";
+				// map vars are global
+				map_".$pa_element_info['element_id']."{n} = new google.maps.Map(document.getElementById('map_".$pa_element_info['element_id']."{n}'), {
+					disableDefaultUI: false,
+					mapTypeId: google.maps.MapTypeId.SATELLITE
+				});
+				var tmp = latlong.split(',');
+				var pt = new google.maps.LatLng(tmp[0], tmp[1]);
+				map_".$pa_element_info['element_id']."{n}.setCenter(pt);
+				map_".$pa_element_info['element_id']."{n}.setZoom(15);		// todo: make this a user preference of some sort
+				var marker = new google.maps.Marker({
+					position: pt,
+					map: map_".$pa_element_info['element_id']."{n}
+				});";
 		
 		$vs_element .= "
 					});

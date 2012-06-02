@@ -316,20 +316,26 @@
  			$t_list_item->load(array('list_id' => $t_list->getPrimaryKey(), 'parent_id' => null));
  			$va_hier = caExtractValuesByUserLocale($t_list_item->getHierarchyWithLabels());
  			
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_tablename, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+ 			}
  			$va_types = array();
  			if (is_array($va_hier)) {
  				
  				$va_types_by_parent_id = array();
  				$vn_root_id = null;
 				foreach($va_hier as $vn_item_id => $va_item) {
+					if (is_array($va_restrict_to_types) && !in_array($vn_item_id, $va_restrict_to_types)) { continue; }
 					if (!$vn_root_id) { $vn_root_id = $va_item['parent_id']; continue; }
 					$va_types_by_parent_id[$va_item['parent_id']][] = $va_item;
 				}
 				foreach($va_hier as $vn_item_id => $va_item) {
+					if (is_array($va_restrict_to_types) && !in_array($vn_item_id, $va_restrict_to_types)) { continue; }
 					if ($va_item['parent_id'] != $vn_root_id) { continue; }
 					// does this item have sub-items?
 					if (isset($va_item['item_id']) && isset($va_types_by_parent_id[$va_item['item_id']]) && is_array($va_types_by_parent_id[$va_item['item_id']])) {
-						$va_subtypes = $this->_getSubTypes($va_types_by_parent_id[$va_item['item_id']], $va_types_by_parent_id);
+						$va_subtypes = $this->_getSubTypes($va_types_by_parent_id[$va_item['item_id']], $va_types_by_parent_id, $va_restrict_to_types);
 					} else {
 						$va_subtypes = array();
 					}
@@ -346,11 +352,12 @@
  			return $va_types;
  		}
  		# ------------------------------------------------------------------
-		private function _getSubTypes($pa_subtypes, $pa_types_by_parent_id) {
+		private function _getSubTypes($pa_subtypes, $pa_types_by_parent_id, $pa_restrict_to_types=null) {
 			$va_subtypes = array();
 			foreach($pa_subtypes as $vn_i => $va_type) {
+				if (is_array($pa_restrict_to_types) && !in_array($va_type['item_id'], $pa_restrict_to_types)) { continue; }
 				if (isset($pa_types_by_parent_id[$va_type['item_id']]) && is_array($pa_types_by_parent_id[$va_type['item_id']])) {
-					$va_subsubtypes = $this->_getSubTypes($pa_types_by_parent_id[$va_type['item_id']], $pa_types_by_parent_id);
+					$va_subsubtypes = $this->_getSubTypes($pa_types_by_parent_id[$va_type['item_id']], $pa_types_by_parent_id, $pa_restrict_to_types);
 				} else {
 					$va_subsubtypes = array();
 				}
@@ -366,6 +373,54 @@
 			
 			return $va_subtypes;
 		}
+		# -------------------------------------------------------
+ 		# "Searchlight" autocompleting search
+ 		# -------------------------------------------------------
+ 		public function lookup() {
+ 			$vs_search = $this->request->getParameter('q', pString);
+ 			
+ 			$t_list = new ca_lists();
+ 			$va_data = array();
+ 			
+ 			$va_access_values = caGetUserAccessValues($this->request);
+ 			
+ 			#
+ 			# Do "quicksearches" on so-configured tables
+ 			#
+ 			if ($this->request->config->get('quicksearch_return_ca_objects')) {
+				$va_results = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_objects', 57, array('limit' => 3, 'checkAccess' => $va_access_values)));
+				// break found objects out by type
+				foreach($va_results as $vn_id => $va_match_info) {
+					$vs_type = unicode_ucfirst($t_list->getItemFromListForDisplayByItemID('object_types', $va_match_info['type_id'], true));
+					$va_data['ca_objects'][$vs_type][$vn_id] = $va_match_info;
+				}
+			}
+			
+			if ($this->request->config->get('quicksearch_return_ca_entities')) {
+ 				$va_data['ca_entities'][_t('Entities')] = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_entities', 20, array('limit' => 10, 'checkAccess' => $va_access_values)));
+ 			}
+ 			
+ 			if ($this->request->config->get('quicksearch_return_ca_places')) {
+ 				$va_data['ca_places'][_t('Places')] = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_places', 72, array('limit' => 10, 'checkAccess' => $va_access_values)));
+ 			}
+ 			
+ 			if ($this->request->config->get('quicksearch_return_ca_occurrences')) {
+				$va_results = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_occurrences', 67, array('limit' => 10, 'checkAccess' => $va_access_values)));
+				// break found occurrences out by type
+				foreach($va_results as $vn_id => $va_match_info) {
+					$vs_type = unicode_ucfirst($t_list->getItemFromListForDisplayByItemID('occurrence_types', $va_match_info['type_id'], true));
+					$va_data['ca_occurrences'][$vs_type][$vn_id] = $va_match_info;
+				}
+			}
+			
+			if ($this->request->config->get('quicksearch_return_ca_collections')) {
+ 				$va_data['ca_collections'][_t('Collections')] = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_collections', 13, array('limit' => 10, 'checkAccess' => $va_access_values)));
+ 			}
+ 			
+ 			
+ 			$this->view->setVar('matches', $va_data);
+ 			$this->render('Search/ajax_search_lookup_json.php');
+ 		}
  		# -------------------------------------------------------
  		/**
  		 * Returns string representing the name of the item the search will return

@@ -481,6 +481,10 @@ class TilepicParser {
 					if ($va_op['height'] <= 0) { break; }
 					$va_ops[] = "filter image CICrop rectangle=".join(",", array($va_op['x'], $vn_y, $va_op['width'], $va_op['height']));
 					break;
+				case 'rotate':
+					if (!is_numeric($va_op['angle'])) { break; }
+					$va_ops[] = "filter image CIAffineTransform transform=".cos($va_op['angle']).",".(-1*sin($va_op['angle'])).",0,".sin($va_op['angle']).",".cos($va_op['angle']).",0";
+					break;
 				case 'filter_despeckle':
 					// TODO: see if this works nicely... just using default values
 					$va_ops[] = "filter image CINoiseReduction inputNoiseLevel=0.2:inputSharpness=0.4";
@@ -582,6 +586,49 @@ class TilepicParser {
 			}
 			$vs_filepath = $vs_tmp_fname;
         }
+        
+         if(function_exists('exif_read_data')) {
+			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+				if (isset($va_exif['IFD0']['Orientation'])) {
+					$vn_orientation_rotate = null;
+					$vn_orientation = $va_exif['IFD0']['Orientation'];
+					switch($vn_orientation) {
+						case 3:
+							$vn_orientation_rotate = 180;
+							break;
+						case 6:
+							$vn_orientation_rotate = 90;
+							break;
+						case 8:
+							$vn_orientation_rotate = -90;
+							break;
+					}
+					
+					if ($vn_orientation_rotate) {
+						$vs_tmp_basename = tempnam($vs_tilepic_tmpdir, 'tpc_');
+						$vs_tmp_fname = $vs_tmp_basename.'.jpg';
+						if (!($this->_imageMagickProcess($vs_filepath, $vs_tmp_fname, array(
+								array(
+									'op' => 'rotate',
+									'angle' => $vn_orientation_rotate
+								)
+							)
+						))) {
+							$this->error = "Couldn't rotate image";
+							@unlink($vs_tmp_fname);
+							return false;
+						}
+						
+						if (in_array($vn_orientation_rotate, array(90, -90))) {
+							$vn_tmp = $image_width;
+							$image_width = $h['width'] = $image_height;
+							$image_height = $h['height'] = $vn_tmp;
+						}
+						$vs_filepath = $vs_tmp_fname;
+					}
+				}
+			}
+		}
         
 		#
 		# How many layers to make?
@@ -802,6 +849,49 @@ class TilepicParser {
 			}
 			$vs_filepath = $vs_tmp_fname;
         }
+        
+        if(function_exists('exif_read_data')) {
+			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+				if (isset($va_exif['IFD0']['Orientation'])) {
+					$vn_orientation_rotate = null;
+					$vn_orientation = $va_exif['IFD0']['Orientation'];
+					switch($vn_orientation) {
+						case 3:
+							$vn_orientation_rotate = 180;
+							break;
+						case 6:
+							$vn_orientation_rotate = 90;
+							break;
+						case 8:
+							$vn_orientation_rotate = -90;
+							break;
+					}
+					
+					if ($vn_orientation_rotate) {
+						$vs_tmp_basename = tempnam($vs_tilepic_tmpdir, 'tpc_');
+						$vs_tmp_fname = $vs_tmp_basename.'.jpg';
+						if (!($this->_CoreImageProcess($vs_filepath, $vs_tmp_fname, array(
+								array(
+									'op' => 'rotate',
+									'angle' => $vn_orientation_rotate
+								)
+							)
+						))) {
+							$this->error = "Couldn't rotate image";
+							@unlink($vs_tmp_fname);
+							return false;
+						}
+						
+						if (in_array($vn_orientation_rotate, array(90, -90))) {
+							$vn_tmp = $image_width;
+							$image_width = $h['width'] = $image_height;
+							$image_height = $h['height'] = $vn_tmp;
+						}
+						$vs_filepath = $vs_tmp_fname;
+					}
+				}
+			}
+		}
         
 		#
 		# How many layers to make?
@@ -1051,6 +1141,25 @@ class TilepicParser {
 			return false;
         }
         
+        if(function_exists('exif_read_data')) {
+			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+				if (isset($va_exif['IFD0']['Orientation'])) {
+					$vn_orientation = $va_exif['IFD0']['Orientation'];
+					switch($vn_orientation) {
+						case 3:
+							$h->rotateImage("#FFFFFF", 180);
+							break;
+						case 6:
+							$h->rotateImage("#FFFFFF", 90);
+							break;
+						case 8:
+							$h->rotateImage("#FFFFFF", -90);
+							break;
+					}
+				}
+			}
+		}
+        
         $h->setImageType(imagick::IMGTYPE_TRUECOLOR);
 
 		if (!$h->setImageColorspace(imagick::COLORSPACE_RGB)) {
@@ -1244,6 +1353,31 @@ class TilepicParser {
 					break;
 				case IMAGETYPE_JPEG:
 					$r_image = imagecreatefromjpeg($ps_filepath);
+					 if(function_exists('exif_read_data')) {
+						if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+							if (isset($va_exif['IFD0']['Orientation'])) {
+								$vn_orientation = $va_exif['IFD0']['Orientation'];
+								$h = new WLPlugMediaGD();
+								switch($vn_orientation) {
+									case 3:
+										$r_image = $h->rotateImage($r_image, 180);
+										break;
+									case 6:
+										$r_image = $h->rotateImage($r_image, -90);
+										$vn_width = $va_info[0];
+										$va_info[0] = $va_info[1];
+										$va_info[1] = $vn_width;
+										break;
+									case 8:
+										$r_image = $h->rotateImage($r_image, 90);
+										$vn_width = $va_info[0];
+										$va_info[0] = $va_info[1];
+										$va_info[1] = $vn_width;
+										break;
+								}
+							}
+						}
+					}
 					$vs_mimetype = "image/jpeg";
 					$vs_typename = "JPEG";
 					break;

@@ -666,6 +666,31 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 		return null;
 	}
 	# ------------------------------------------------
+	/** 
+	 *
+	 */
+	public function writeClip($ps_filepath, $ps_start, $ps_end, $pa_options=null) {
+		$o_tc = new TimecodeParser();
+		
+		$vn_start = $vn_end = null;
+		if ($o_tc->parse($ps_start)) { $vn_start = $o_tc->getSeconds(); }
+		if ($o_tc->parse($ps_end)) { $vn_end = $o_tc->getSeconds(); }
+		
+		if (!$vn_start || !$vn_end) { return null; }
+		if ($vn_start >= $vn_end) { return null; }
+		
+		$vn_duration = $vn_end - $vn_start;
+		
+		exec(escapeshellcmd($this->ops_path_to_ffmpeg." -i '".$this->filepath."' -f mp3 -t {$vn_duration}  -y -ss {$vn_start} '{$ps_filepath}'"), $va_output, $vn_return);
+		if ($vn_return != 0) {
+			@unlink($filepath.".".$ext);
+			$this->postError(1610, _t("Error extracting clip from %1 to %2: %3", $ps_start, $ps_end, join("; ", $va_output)), "WLPlugAudio->writeClip()");
+			return false;
+		}
+		
+		return true;
+	}
+	# ------------------------------------------------
 	public function getOutputFormats() {
 		return $this->info["EXPORT"];
 	}

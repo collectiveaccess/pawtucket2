@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -56,6 +56,8 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 	
 	var $opo_config;
 	var $opo_external_app_config;
+	
+	var $opa_faces;
 	
 	var $info = array(
 		"IMPORT" => array(
@@ -135,6 +137,7 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 			'reference-black'	=> 'W',
 			'reference-white'	=> 'W',
 			'no_upsampling'		=> 'W',
+			'faces'				=> 'W',
 			'version'			=> 'W'	// required of all plug-ins
 		),
 		
@@ -426,40 +429,6 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 					return false;
 				}
 			} else {
-				//
-				// Rotate incoming image as needed
-				//
-				if(function_exists('exif_read_data')) {
-					if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
-						if (isset($va_exif['IFD0']['Orientation'])) {
-							$vn_orientation = $va_exif['IFD0']['Orientation'];
-							switch($vn_orientation) {
-								case 3:
-									$handle = new Imagick();
-									if ($handle->readImage($ps_filepath)) {
-										$handle->rotateImage("#FFFFFF", 180);
-										$handle->writeImage($ps_filepath);
-									}
-									break;
-								case 6:
-									$handle = new Imagick();
-									if ($handle->readImage($ps_filepath)) {
-										$handle->rotateImage("#FFFFFF", 90);
-										$handle->writeImage($ps_filepath);
-									}
-									break;
-								case 8:
-									$handle = new Imagick();
-									if ($handle->readImage($ps_filepath)) {
-										$handle->rotateImage("#FFFFFF", -90);
-										$handle->writeImage($ps_filepath);
-									}
-									break;
-							}
-						}
-					}
-				}
-			
 				$this->handle = "";
 				$this->filepath = "";
 				$handle = new Imagick();
@@ -484,7 +453,41 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 					
 					// exif
 					if(function_exists('exif_read_data')) {
-						if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
+						if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 							
+							//
+							// Rotate incoming image as needed
+							//
+							if (isset($va_exif['IFD0']['Orientation'])) {
+								$vn_orientation = $va_exif['IFD0']['Orientation'];
+								$vs_tmp_basename = tempnam(caGetTempDirPath(), 'ca_image_tmp');
+								
+								$vb_is_rotated = false;
+								switch($vn_orientation) {
+									case 3:
+										$this->handle->rotateImage("#FFFFFF", 180);
+										unset($va_exif['IFD0']['Orientation']);
+										$vb_is_rotated = true;
+										break;
+									case 6:
+										$this->handle->rotateImage("#FFFFFF", 90);
+										unset($va_exif['IFD0']['Orientation']);
+										$vb_is_rotated = true;
+										break;
+									case 8:
+										$this->handle->rotateImage("#FFFFFF", -90);
+										unset($va_exif['IFD0']['Orientation']);
+										$vb_is_rotated = true;
+										break;
+								}
+								
+								if($vb_is_rotated) {								
+									if ( $this->handle->writeImage($vs_tmp_basename) ) {
+										$va_tmp = $this->handle->getImageGeometry();
+										$this->properties["faces"] = $this->opa_faces = caDetectFaces($vs_tmp_basename, $va_tmp['width'], $va_tmp['height']);
+										@unlink($vs_tmp_basename);
+									}
+								}
+							}
 							$this->metadata['EXIF'] = $va_exif;
 						}
 					}
@@ -513,6 +516,11 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 					if (!$this->handle->setImageColorspace(imagick::COLORSPACE_RGB)) {
 						$this->postError(1610, _t("Error during RGB colorspace transformation operation"), "WLPlugImagick->read()");
 						return false;
+					}
+					
+					
+					if (!$this->properties["faces"]) {
+						$this->properties["faces"] = $this->opa_faces = caDetectFaces($ps_filepath, $va_tmp['width'], $va_tmp['height']);
 					}
 					
 					$this->properties["mimetype"] = $this->_getMagickImageMimeType($this->handle);
@@ -718,36 +726,51 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 								return false;
 						}
 						if ($do_fill_box_crop) {
-							switch($crop_from) {
-								case 'north_west':
-									$crop_from_offset_y = 0;
-									$crop_from_offset_x = $w - $parameters["width"];
-									break;
-								case 'south_east':
-									$crop_from_offset_x = 0;
-									$crop_from_offset_y = $h - $parameters["height"];
-									break;
-								case 'south_west':
-									$crop_from_offset_x = $w - $parameters["width"];
-									$crop_from_offset_y = $h - $parameters["height"];
-									break;
-								case 'random':
-									$crop_from_offset_x = rand(0, $w - $parameters["width"]);
-									$crop_from_offset_y = rand(0, $h - $parameters["height"]);
-									break;
-								case 'north_east':
-									$crop_from_offset_x = $crop_from_offset_y = 0;
-									break;
-								case 'center':
-								default:
-									if ($w > $parameters["width"]) {
-										$crop_from_offset_x = ceil(($w - $parameters["width"])/2);
-									} else {
-										if ($h > $parameters["height"]) {
-											$crop_from_offset_y = ceil(($h - $parameters["height"])/2);
+							// use face detection info to intelligently crop
+							if(is_array($this->properties['faces']) && sizeof($this->properties['faces'])) {
+								$va_info = array_shift($this->properties['faces']);
+								$crop_from_offset_x = ceil($va_info['x'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
+								$crop_from_offset_x -= ceil(0.15 * $parameters["width"]);	// since face will be tightly cropped give it some room
+								$crop_from_offset_y = ceil($va_info['y'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
+								$crop_from_offset_y -= ceil(0.15 * $parameters["height"]);	// since face will be tightly cropped give it some room
+								
+								// Don't try to crop beyond image boundaries, you just end up scaling the image, often awkwardly
+								if ($crop_from_offset_x > ($w - $parameters["width"])) { $crop_from_offset_x = 0; }
+								if ($crop_from_offset_y > ($h - $parameters["height"])) { $crop_from_offset_y = 0; }
+								if ($crop_from_offset_x < 0) { $crop_from_offset_x = 0; }
+								if ($crop_from_offset_y < 0) { $crop_from_offset_y = 0; }
+							} else {
+								switch($crop_from) {
+									case 'north_west':
+										$crop_from_offset_y = 0;
+										$crop_from_offset_x = $w - $parameters["width"];
+										break;
+									case 'south_east':
+										$crop_from_offset_x = 0;
+										$crop_from_offset_y = $h - $parameters["height"];
+										break;
+									case 'south_west':
+										$crop_from_offset_x = $w - $parameters["width"];
+										$crop_from_offset_y = $h - $parameters["height"];
+										break;
+									case 'random':
+										$crop_from_offset_x = rand(0, $w - $parameters["width"]);
+										$crop_from_offset_y = rand(0, $h - $parameters["height"]);
+										break;
+									case 'north_east':
+										$crop_from_offset_x = $crop_from_offset_y = 0;
+										break;
+									case 'center':
+									default:
+										if ($w > $parameters["width"]) {
+											$crop_from_offset_x = ceil(($w - $parameters["width"])/2);
+										} else {
+											if ($h > $parameters["height"]) {
+												$crop_from_offset_y = ceil(($h - $parameters["height"])/2);
+											}
 										}
-									}
-									break;
+										break;
+								}
 							}
 							if (!$this->handle->cropImage($parameters["width"], $parameters["height"], $crop_w_edge + $crop_from_offset_x, $crop_h_edge + $crop_from_offset_y )) {
 								$this->postError(1610, _t("Error during crop operation"), "WLPlugImagick->transform()");
@@ -1026,6 +1049,7 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 			$this->properties["quality"] = "";
 			$this->properties["mimetype"] = $this->_getMagickImageMimeType($this->handle);
 			$this->properties["typename"] = $this->handle->getImageFormat();
+			$this->properties["faces"] = $this->opa_faces;
 			return 1;
 		}
 		return false;
@@ -1039,6 +1063,7 @@ class WLPlugMediaImagick Extends WLPlug Implements IWLPlugMedia {
 		
 		$this->metadata = array();
 		$this->errors = array();
+		$this->opa_faces = null;
 	}
 	# ------------------------------------------------
 	public function cleanup() {

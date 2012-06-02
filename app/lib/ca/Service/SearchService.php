@@ -51,7 +51,7 @@ class SearchService extends BaseService {
 	 *
 	 * @param string $type can be one of: "ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"
 	 * @param string $query the search query
-	 * @param array associated array which defines the additional data to get. It must be an array of
+	 * @param array $additional_bundles associated array which defines the additional data to get. It must be an array of
 	 *	"bundle name" => "option array" mappings, e.g.
 	 *
 	 *	array(

@@ -285,7 +285,7 @@ class ItemInfoService extends BaseService {
 	 * Get all representations for specified object
 	 *
 	 * @param int $object_id identifier of the object
-	 * @param array $pa_versions list of media versions that should be included in the result
+	 * @param array $versions list of media versions that should be included in the result
 	 * @return array
 	 * @throws SoapFault
 	 */
@@ -350,10 +350,22 @@ class ItemInfoService extends BaseService {
 	 * @param int $item_id primary key
 	 * @param string $related_type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
 	 * @param array options Supported options:
- 	 * 		restrict_to_type - restricts returned items to those of the specified type; only supports a single type which can be specified as a list item_code or item_id
- 	 *		restrict_to_types - restricts returned items to those of the specified types; pass an array of list item_codes or item_ids
- 	 *		restrict_to_relationship_types - restricts returned items to those related to the current row by the specified relationship type(s). You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
+ 	 * 		restrict_to_type = restricts returned items to those of the specified type; only supports a single type which can be specified as a list item_code or item_id
+ 	 *		restrictToType = synonym for restrict_to_type
+ 	 *		restrict_to_types = restricts returned items to those of the specified types; pass an array of list item_codes or item_ids
+ 	 *		restrictToTypes = synonym for restrict_to_types
+ 	 *		dont_include_subtypes_in_type_restriction = if set subtypes are not included when enforcing restrict_to_types. Note that restrict_to_relationship_types always includes subtypes in its restriction.
+ 	 *		dontIncludeSubtypesInTypeRestriction = synonym for dont_include_subtypes_in_type_restriction
+ 	 *		restrict_to_relationship_types = restricts returned items to those related to the current row by the specified relationship type(s). You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
+ 	 *		restrictToRelationshipTypes = synonym for restrict_to_relationship_types
+ 	 *
  	 *		exclude_relationship_types - omits any items related to the current row with any of the specified types from the returned set of its. You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
+ 	 *		excludeRelationshipTypes = synonym for exclude_relationship_types
+ 	 * 		exclude_type = excludes returned items of the specified type; only supports a single type which can be specified as a list item_code or item_id
+ 	 *		excludeType = synonym for exclude_type
+ 	 *		exclude_types = omits any items related to the current row that are of any of the specified types from the returned set of ids. You can pass either an array of types or a single type. The types can be type_code's or type_id's.
+ 	 *		excludeTypes = synonym for exclude_types
+ 	 *
  	 *		fields - array of fields (in table.fieldname format) to include in returned data
  	 *		return_non_preferred_labels - if set to true, non-preferred labels are included in returned data
  	 *		checkAccess - array of access values to filter results by; if defined only items with the specified access code(s) are returned

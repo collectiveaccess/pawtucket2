@@ -190,6 +190,7 @@
 2510 = Invalid type id
 2520 = Can't set type id after item is created
 2550 = Item has been deleted
+2560 = Item is not correct type
 
 # --- Object representation errors
 2700 = Could not update primary flag for representation
