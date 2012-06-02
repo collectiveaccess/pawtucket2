@@ -187,7 +187,8 @@ if (!$this->request->isAjax()) {
 		$this->setVar('other_paging_parameters', array(
 			'occurrence_id' => $vn_occurrence_id
 		));
-		print $this->render('related_objects_grid.php');
+		print $this->render('related_objects_grid_carousel.php');
+		#print $this->render('related_objects_grid.php');
 
 if (!$this->request->isAjax()) {
 ?>

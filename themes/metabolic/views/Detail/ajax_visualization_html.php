@@ -4,139 +4,240 @@
 <div style="width: 100%; height: 100%; border: 0px; background-color: #FFFFFF;" id="infovis"> </div>
 
 <script type="text/javascript">
-	var labelType, useGradients, nativeTextSupport, animate;
-		var ht;
+	function init() {
+		var maxTextLength = 44;
+		var w = jQuery('#infovis').width();
+		var h = jQuery('#infovis').height();
 		
-		(function() {
-		  var ua = navigator.userAgent,
-			  iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
-			  typeOfCanvas = typeof HTMLCanvasElement,
-			  nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
-			  textSupport = nativeCanvasSupport 
-				&& (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
-		  //I'm setting this based on the fact that ExCanvas provides text support for IE
-		  //and that as of today iPhone/iPad current text support is lame
-		  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
-		  nativeTextSupport = labelType == 'Native';
-		  useGradients = nativeCanvasSupport;
-		  animate = !(iStuff || !nativeCanvasSupport);
-		})();
+		var margin = {top: 20, right: 120, bottom: 20, left: 120},
+		width = w - margin.right - margin.left,
+		height = h - margin.top - margin.bottom,
+		i = 0,
+		duration = 400,
+		root;
 		
-		function init(json){
-			//init data
-			//end
-			var infovis = document.getElementById('infovis');
-			var w = infovis.offsetWidth - 50, h = infovis.offsetHeight - 50;
-			
-			//init Hypertree
-			 ht = new $jit.Hypertree({
-			  //id of the visualization container
-			  injectInto: 'infovis',
-			  //canvas width and height
-			  width: w,
-			  height: h,
-			  duration: 700,
-			  offset: 0.0,
-			  
-			  //Change node and edge styles such as
-			  //color, width and dimensions.
-			  Node: {
-				  dim: 8,
-				  color: "#882222"
-			  },
-			  Edge: {
-				  lineWidth: 1,
-				  color: "#828282"
-			  },
-			  onBeforeCompute: function(node){
-				 // noop
-			  },
-			  //Attach event handlers and add text to the
-			  //labels. This method is only triggered on label
-			  //creation
-			  onCreateLabel: function(domElement, node){
-				  domElement.innerHTML = node.name;
-				  $jit.util.addEvent(domElement, 'click', function () {
-					  ht.onClick(node.id, {
-						  onComplete: function() {
-							  ht.controller.onComplete();
-						  }
-					  });
-				  });
-			  },
-			  //Change node styles when labels are placed
-			  //or moved.
-			  onPlaceLabel: function(domElement, node){
-				  var style = domElement.style;
-				  style.display = '';
-				  style.cursor = 'pointer';
-				   if (node._depth == 0) {
-					  domElement.setAttribute("class", "visLevel1");
+		var openNodes = [];
+		var nodeIDs = {};
+
+		var tree = d3.layout.tree()
+			.size([height, width]);
 		
-				  }else if (node._depth == 1) {
-					  domElement.setAttribute("class", "visLevel2");
+		var diagonal = d3.svg.diagonal()
+			.projection(function(d) { return [d.y, d.x]; });
 		
-				  } else if(node._depth == 2){
-					  domElement.setAttribute("class", "visLevel3");
+		var vis = d3.select("#infovis").append("svg")
+			.attr("width", width + margin.right + margin.left)
+			.attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		
-				  } else {
-					  style.display = 'none';
-				  }
+		d3.json("<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON', array('table' => $t_subject->tableName(), 'id' => $t_subject->getPrimaryKey(), 'download' => 1)); ?>", function(json) {
 		
-				  var left = parseInt(style.left);
-				  var w = domElement.offsetWidth;
-				  style.left = (left - w / 2) + 'px';
-			  },
-			  
-			  onComplete: function() {
-					var node = ht.root;
-					var x = node.split("_");
-					jQuery.getJSON('<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON');?>', { id: x[2], table:x[0]+"_"+x[1]}, function(data) {
-						var new_id = data.id;
-						//console.log(data);
-						ht.op.sum(data, {  
-						  type: 'fade:seq',  
-						  duration: 300,  
-						  hideLabels: false,  
-						  fps: 24,
-						  transition: $jit.Trans.Quart.easeOut,
-						  onComplete: function() { 
-							// noop
-							ht.root = new_id;
-						  },
-						  id: new_id
-						});
-						
-						
-					});
-				},
-			  
-				Events: {
-					enable: true,
-					  onClick: function(node, eventInfo, e) {
-						if (node) {
-							if (ht.root == node.id) {
-								var u = '<?php print caNavUrl($this->request, 'Detail', '^detail', 'Index', array('^key' => ''));?>';
-								u = u.replace('^detail', node.data.detail);
-								u = u.replace('^key', node.data.key);
-								u = u + node.data.id;
-								window.location = u;
-							} else {
-								ht.root = node.id;
-							}
-						}
-					  }
-				}
-			});
-			//load JSON data.
-			ht.loadJSON(json);
-			//compute positions and plot.
-			ht.refresh();
-			//end
-			ht.controller.onComplete();
+		  root = json;
+		  root.x0 = height / 2;
+		  root.y0 = 0;
+		
+		  root.children.forEach(collapse);
+		  
+		  // back to start button
+		  var backButtonG = vis.append("g").attr("class", "visButton").attr("x", "0").attr("y", "0")
+		  	.append("text").attr("class", "visButton").attr("x", parseInt(margin.left * -.75)).attr("y", "0")
+		  	.text("Reset")
+		  	.on("click", function() { 
+		  		if (openNodes.length > 1) {
+		  			var d = openNodes[1];
+		  			collapse(d); 
+		  			update(d); 
+		  			openNodes = [openNodes[0]];
+		  			
+		  			if (openNodes[0].children.length == 1) {
+		  				click(d);
+		  			}
+		  		}
+		  	});
+		  
+		  var d = tree.nodes(root).shift();
+		  openNodes.push(d);
+		  
+			if (d.children.length == 1) {
+				update(d);
+				click(d.children[0]);
+			} else {
+				update(d);
+			}
+		});
+		
+		function update(source) {
+		
+		  // Compute the new tree layout.
+		  var nodes = tree.nodes(root).reverse();
+
+		  // Normalize for fixed-depth.
+		  nodes.forEach(function(d) { d.y = (d.depth * 240) + 120; nodeIDs[d.id] = true });
+		
+			if (((openNodes.length + 2) * 240) > w) { 
+				nodes.forEach(function(d) { d.y += w - ((openNodes.length + 2) * 240); });
+			} 
+		
+		  // Update the nodes…
+		  var node = vis.selectAll("g.node")
+			  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+		
+		  // Enter any new nodes at the parent's previous position.
+		  var nodeEnter = node.enter().append("g")
+			  .attr("class", "node")
+			  .attr("id", function(d) { return d.id; })
+			  .attr("transform", function(d) { return "translate(" + source.y0 + "," + source.x0 + ")"; })
+			  .on("click", click)
+			  .on("dblclick", dblclick);
+
+		  nodeEnter.append("circle")
+			  .attr("r", 1e-6)
+			  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+		
+		  nodeEnter.append("text")
+			  .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
+			  .attr("dy", ".35em")
+			  .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; })
+			  .text(function(d) { return ((d.name.length > maxTextLength) ? d.name.substr(0,maxTextLength-3) + "..." : d.name); })
+			  .style("fill-opacity", 1e-6);
+		
+		  // Transition nodes to their new position.
+		  var nodeUpdate = node.transition()
+			  .duration(duration)
+			  .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+		
+		  nodeUpdate.select("circle")
+			  .attr("r", 4.5)
+			  .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+		
+		  nodeUpdate.select("text")
+			  .style("fill-opacity", 1);
+		
+		  // Transition exiting nodes to the parent's new position.
+		  var nodeExit = node.exit().transition()
+			  .duration(duration)
+			  .attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; })
+			  .remove();
+		
+		  nodeExit.select("circle")
+			  .attr("r", 1e-6);
+		
+		  nodeExit.select("text")
+			  .style("fill-opacity", 1e-6);
+		
+		  // Update the links…
+		  var link = vis.selectAll("path.link")
+			  .data(tree.links(nodes), function(d) { return d.target.id; });
+		
+		  // Enter any new links at the parent's previous position.
+		  link.enter().insert("path", "g")
+			  .attr("class", "link")
+			  .attr("d", function(d) {
+				var o = {x: source.x0, y: source.y0};
+				return diagonal({source: o, target: o});
+			  });
+		
+		  // Transition links to their new position.
+		  link.transition()
+			  .duration(duration)
+			  .attr("d", diagonal);
+		
+		  // Transition exiting nodes to the parent's new position.
+		  link.exit().transition()
+			  .duration(duration)
+			  .attr("d", function(d) {
+				var o = {x: source.x, y: source.y};
+				return diagonal({source: o, target: o});
+			  })
+			  .remove();
+		
+		  // Stash the old positions for transition.
+		  nodes.forEach(function(d) {
+			d.x0 = d.x;
+			d.y0 = d.y;
+		  });
+		  
+		  // Make all notes grey
+		  vis.selectAll("g.node").attr("opacity", 0.5);
+		  
+		  for(var x in openNodes) {
+		  	vis.select("#" + openNodes[x].id).attr("opacity", 1.0);
+		  }
 		}
 		
-		jQuery(document).ready(function() {
-			jQuery.getJSON('<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON', array('table' => $t_subject->tableName(), 'id' => $t_subject->getPrimaryKey())); ?>', init); 
-		});
+		// Toggle children on click.
+		function click(d) {
+		  if (d.children) {
+		  	if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+		  	openNodes.splice(d.depth, 1);
+			d._children = d.children;
+			d.children = null;
+		  } else {
+		  	if (!d._children) {
+		  		var tmp = d.id.split('-');
+		  		
+		  		if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+		  		openNodes[d.depth] = d;
+				
+				vis.selectAll("g.node").attr("opacity", 0.5);	// Make all nodes grey
+
+				for(var x in openNodes) {						// Make selected nodes black
+					vis.select("#" + openNodes[x].id).attr("opacity", 1.0);
+				}
+			
+				// Load children of newly selected node
+				var url;
+				if (tmp[4]) {	// 5th item being set implies that the node clicked upon is a "grouping" node
+					url = '<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON'); ?>/table/' + tmp[0] + '/id/' + tmp[1] + '/rtable/' + tmp[2] + '/rtypeid/' + tmp[3] + '/download/1';
+				} else {
+					url = '<?php print caNavUrl($this->request, 'Detail', $this->request->getController(), 'getRelationshipsAsJSON'); ?>/table/' + tmp[0] + '/id/' + tmp[1] + '/download/1';
+				}
+		  		jQuery.getJSON(url, function(json) {
+					d.children = json.children;
+					
+					if (d.children.length == 1) {
+		  				update(d);
+						click(d.children[0]);
+					} else {
+		  				update(d);
+		  			}
+		  		}); 
+		  		return;
+		  	}
+			d.children = d._children;
+			d._children = null;
+			
+		  	if (openNodes[d.depth]) { collapse(openNodes[d.depth]); }	// close any existing nodes at this level
+			openNodes[d.depth] = d;
+		  }
+			if (d.children.length == 1) {
+				update(d);
+				click(d.children[0]);
+			} else {
+				update(d);
+			}
+		}
+		
+		function dblclick(d) {
+			var u = '<?php print caNavUrl($this->request, 'Detail', '^detail', 'Index', array('^key' => ''));?>';
+			u = u.replace('^detail', d.data.detail);
+			u = u.replace('^key', d.data.key);
+			u = u + d.data.id;
+			window.location = u;
+		}
+			
+		function collapse(d) {
+			if (d.children) {
+				d._children = d.children;
+				d._children.forEach(function(d) { nodeIDs[d.id] = undefined; });
+				d._children.forEach(collapse);
+				d.children = null;
+			}
+			for(var x=(d.depth + 1); x < openNodes.length; x++) {
+				openNodes.splice(x, 1);
+			}
+		}
+	}
+	jQuery(document).ready(function() { init(); });
 </script>

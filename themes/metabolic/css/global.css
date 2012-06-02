@@ -2582,63 +2582,27 @@ div.hierarchyBrowseTab {
 }
 
 /* visualization styles */
-
-.visLevel1{
-	font-size: 1.3em;
-	font-weight: bold;
-	color: #000000;
-	width: 200px;
-	height: auto;
-	text-align: center;
-	margin: 5px 0px 0px 0px;
-}
-.visLevel2{
-	font-size: 1.2em;
-	font-weight: normal;
-	color: #828282;
-	width: 200px;
-	height: 1.2em;
-	overflow: hidden;
-	text-align: center;
-	margin: 4px 0px 0px 0px;
-	padding:0px;
-}
-.visLevel3{
-	font-size: 0.9em;
-	font-weight: normal;
-	color: #999999;
-	width: 120px;
-	height: 1.2em;
-	overflow: hidden;
-	text-align: center;
-	margin: 0px 0px 0px 0px;
-	padding:0px;
-}
-.visLevel2:hover, .visLevel3:hover {
-	font-size: 1.3em;
-	color: #000000;
-	z-index:1000000;
-	width: 200px;
-	height:auto;
-	text-align: center;
-	background-color:#FFFFFF;
-	border: 1px solid #828282;
-	padding:10px;
-	-moz-border-radius-bottomleft: 10px; 
-	-webkit-border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px; 
-	-webkit-border-bottom-right-radius: 10px;
-	-moz-border-radius-topleft: 10px; 
-	-webkit-border-top-left-radius: 10px;
-	-moz-border-radius-topright: 10px; 
-	-webkit-border-top-right-radius: 10px;
-	-moz-box-shadow: 0px 0px 4px #adadad;
-	-webkit-box-shadow: 0px 0px 4px #adadad;
-	box-shadow: 0px 0px 4px #adadad;
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
 
+.node {
+  font: 10px sans-serif;
+}
 
+.visButton {
+  font: 12px sans-serif;
+  fill: #cc0000;
+  font-weight: bold;
+}
 
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
 
 
 
