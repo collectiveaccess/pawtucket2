@@ -187,20 +187,16 @@ class TimecodeParser {
 					$vn_seconds = $vn_time_in_seconds;
 					
 					if ($ps_format == "COLON_DELIMITED") {
-						//$vs_seconds = preg_replace("/(\.\d+?)0+$/", "$1", sprintf("%2.1f", $vn_seconds));
-						//if (strlen(preg_match("/^([\d]+)/", $vs_seconds)) == 1) {
-						//	$vs_seconds = "0".$vs_seconds;
-						//}
 						if ((float)$vn_seconds != intval($vn_seconds)) {
 							if ($pa_options["NO_FRACTIONAL_SECONDS"]) {
-								$vs_seconds = sprintf("%2.0f", round($vn_seconds));
+								$vs_seconds = sprintf("%02.0f", round($vn_seconds));
 							} else {
-								$vs_seconds = sprintf("%2.1f", $vn_seconds);
+								$vs_seconds = sprintf("%04.1f", $vn_seconds);
 							}
 						} else {
-							$vs_seconds = sprintf("%2.0f", $vn_seconds);
+							$vs_seconds = sprintf("%02.0f", $vn_seconds);
 						}
-						return $vn_hours.":".sprintf("%02d", $vn_minutes).":".sprintf("%02d", $vs_seconds);
+						return $vn_hours.":".sprintf("%02d", $vn_minutes).":".$vs_seconds;
 					} else {
 						return $vn_hours."h ".$vn_minutes."m ".$vn_seconds."s";
 					}

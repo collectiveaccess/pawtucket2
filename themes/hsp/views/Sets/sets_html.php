@@ -243,7 +243,7 @@
 ?>
 			<br/><br/><div class="error">
 <?php
-				print _t('Please use the form at right to make a new gallery or choose and existing gallery from the "Galleries" menu at the top of the page.');
+				print _t('Please use the form at right to make a new gallery or choose an existing gallery from the "Galleries" menu at the top of the page.');
 ?>
 			</div>	
 <?php

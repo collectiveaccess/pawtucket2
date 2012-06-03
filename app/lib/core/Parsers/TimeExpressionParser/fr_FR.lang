@@ -1,5 +1,13 @@
 # *** use ONLY lowercase letters in lists: input will be forced to lowercase for comparison ***
 
+# Keywords containing spaces : CA parser use the space as a separator to treat the date entered and
+# CANNOT treat expression containing a space as a single one as "av. J.-C." in french.
+wordsWithSpaces = [ap JC,ap J-C,ap. J-C,ap. J.-C.,après JC,après J-C,après J.-C.,apr. J.-C.,apr. J-C,apr J-C,av JC,av J-C,av. J-C,av. J.-C.,avant JC,avant J-C,avant J.-C.]
+
+# Words containing spaces replacement : complete with the chosen replacement. You MUST use the replacement
+# in each value defined in this file, not the original string. Do not use punctuation in the replacement string.
+wordsWithSpacesReplacements = [apjc,apjc,apjc,apjc,apjc,apjc,apjc,apjc,apjc,apjc,avjc,avjc,avjc,avjc,avjc,avjc]
+
 # List month names; used whenever name of month needs to be displayed
 monthList = [janvier, février, mars, avril, mai, juin, juillet, août, septembre, octobre, novembre, décembre]
 
@@ -11,33 +19,32 @@ monthListDisplay = [Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, S
 # code à trois caratères et abreviations courantes
 monthTable = {
 	jan = janvier, janv. = janvier,
-	fév = février, févr. = février,
+	fév = février, févr. = février, fev = février,
 	mar = mars, mars = mars,
 	avr = avril, avr. = avril,
 	mai = mai,
-	jun = juin, juin = juin
+	jun = juin, juin = juin,
 	jul = juillet, juill. = juillet,
-	aoû = août, 
+	aoû = août, aou = août,
 	sep = septembre, sept. = septembre,
 	oct = octobre, oct. = octobre,
 	nov = novembre, nov. = novembre,
-	dec = decembre, dec. = decembre
+	dec = décembre, dec. = décembre, déc = décembre
 }
 
 # List of day names, starting with Sunday
 dayListDisplay = [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
 
 #rangePreConjunctions = [from, between]
-rangePreConjunctions = [depuis, après]
+rangePreConjunctions = [du,entre]
 
 #rangeConjunctions = [to, -, and, .., through]
-# ???
-rangeConjunctions = [-, et, ...]
+rangeConjunctions = [-, ...,au,et]
 
 dateTimeConjunctions = [à,@]
 
 dateDelimiters = [/,-,.]
-timeDelimiters = [:,.]
+timeDelimiters = [:,h,min]
 
 timeAMMeridian = am
 timePMMeridian = pm
@@ -47,7 +54,6 @@ meridianTable = {
 	p.m. = pm
 }
 
-# ???
 dateCircaIndicator = [vers, environ, autour de, <>, <approximatif>, circa, c, c., ca, ca., cca.]
 dateUncertaintyIndicator = [~]
 #dateUncertaintyYearIndicator = [y]
@@ -58,13 +64,21 @@ dateUncertaintyDayIndicator = [j]
 # What to use to indicate a geological date ("millions of years ago")
 dateMYA = [Ma]
 
-dateADIndicator = ap. J.-C.
-dateBCIndicator = av. J.-C.
+dateADIndicator = EC
+dateBCIndicator = AEC
 ADBCTable = {
-	a.d. = ad,
-	b.c. = bc,
-	EC = ad,
-	AEC = bc
+	ad = EC,
+	a.d. = EC,
+	AD = EC,
+	bc = AEC,
+	b.c. = AEC,
+	BC = AEC,
+	c.e. = EC,
+	b.c.e. = AEC,
+	ce = EC,
+	bce = AEC,
+	avjc = AEC,
+	apjc = EC
 }
 
 #nowDate = [now]
@@ -89,7 +103,7 @@ afterQualifier = [après]
 bornQualifier = [n., n, né]
 
 # Text to indicate century (as in "20th century")
-centuryIndicator = [siècle]
+centuryIndicator = [siècle, S.]
 
 # Text to indicate decade (as in "1920s")
 decadeIndicator = [s]
@@ -98,7 +112,7 @@ decadeIndicator = [s]
 # (eg. 0th, 1st, 2nd, 3rd would be a list like so: [th, st, nd, rd])
 #ordinalSuffixes = [th, st, nd, rd]
 # ??? à revoir
-ordinalSuffixes = [e, er, e, e]
+ordinalSuffixes = [e, er]
 #ordinalSuffixDefault = th
 ordinalSuffixDefault = e
 

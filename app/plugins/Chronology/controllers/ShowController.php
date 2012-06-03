@@ -224,7 +224,7 @@
  			if(is_array($va_action["objects"]) && sizeof($va_action["objects"]) > 0){
  				$o_map = new GeographicMap(250, 128, 'map');
  			}else{
- 				$o_map = new GeographicMap(500, 500, 'map');
+ 				$o_map = new GeographicMap(500, 300, 'map');
  			}
 			$o_map->mapFrom($t_action, "ca_occurrences.georeference.geocode");
 			$vs_map = $o_map->render('HTML');

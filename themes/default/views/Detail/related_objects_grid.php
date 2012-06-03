@@ -32,103 +32,10 @@
 	$vn_numCols = 4;
 	
 	$va_access_values	= $this->getVar('access_values');
-
-	print "<div id='ajaxImage'></div>";
-
-	$qr_hits->seek(0);
 	
-	$va_class_map = caGetMediaMimetypeToDisplayClassMap('detail');	// return array with keys=mimetypes and values=generic class (eg. "image", "video", "audio"; we'll use these to segregate the representations)
-	$va_hits_by_class = array();
-	while($qr_hits->nextHit()) {
-		$vs_mimetype = $qr_hits->getMediaInfo('ca_object_representations.media', 'original', 'MIMETYPE');
-		$vs_class = $va_class_map[$vs_mimetype];
-		
-		$va_hits_by_class[$vs_class][] = array(
-			'representation_id' => $qr_hits->get('ca_object_representations.representation_id'),
-			'tag' => $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)),
-			'videotag' => $qr_hits->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values))
-		);
-	}
-	
-	
-	print "<div id='relatedRecords'>";
-		//print "<div class='slide' style='width: 100%;'>";
-		$v_i = 0;
-		foreach($va_hits_by_class['images'] as $va_rep) {
-			if ($v_i == 0) { 
-				print "<div class='slide'>"; 
-			}
-			$vn_representation_id = $va_rep['representation_id'];
-			$vs_tag = $va_rep['tag'];
-			
-			print "<a href='#' class='relatedRecordsImage' id='relatedRecordsImage{$vn_representation_id}'>{$vs_tag}</a>";
-			
 ?>
-<script type="text/javascript">	
-
-		$("#relatedRecordsImage<?php print $vn_representation_id; ?>").click(function(){
-			$("#ajaxImage").load(
-				"<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetMedia'); ?>", 
-				{
-					representation_id: <?php print $vn_representation_id; ?>,
-					version: 'mediumlarge'
-				}
-			);
-		});
-</script>
+	<table border="0" cellpadding="0px" cellspacing="0px" width="100%">
 <?php
-			$v_i ++;	
-			if ($v_i == 5) {
-				print "</div>";
-				$v_i = 0;
-			}
-		}
-		//print "</div>\n";	
-		
-		if ($v_i > 0) {
-			print "</div>";
-		}
-
-	print "</div>\n";
-	
-	print "<div id='navigation'></div>";
-	
-if(is_array($va_hits_by_class['video'])) {
-	print "<div class='mediaTitle'>"._t("Related Videos")."</div>";
-	
-		foreach($va_hits_by_class['video'] as $va_rep) {
-			$vn_representation_id = $va_rep['representation_id'];
-			print "<div id='videoThumb'><a href='#' class='relatedRecordsVideo' id='relatedRecordsVideo{$vn_representation_id}'>".$va_rep['videotag']."</a></div>";
-			
-	?>
-	<script type="text/javascript">	
-	
-			$("#relatedRecordsVideo<?php print $vn_representation_id; ?>").click(function(){
-				$("#ajaxImage").load(
-					"<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetMedia'); ?>", 
-					{
-						representation_id: <?php print $vn_representation_id; ?>,
-						version: 'mediumlarge'
-					}
-				);
-			});
-	</script>
-	<?php		
-			
-		}
-}
-
-if(is_array($va_hits_by_class['audio'])) {
-	print "<div class='mediaTitle'>"._t("Related Audio")."</div>";
-	
-	print "<div id='videoDiv'>";
-	foreach($va_hits_by_class['audio'] as $va_rep) {
-		$vn_representation_id = $va_rep['representation_id'];
-		print "<div id='videoThumb'>".$va_rep['videotag']."</div>";		
-	}	
-	print "</div>";
-}
-/*
 	while(($vn_itemc < $this->getVar('items_per_page')) && ($qr_hits->nextHit())) {
 		if ($vn_c == 0) { print "<tr>\n"; }
 		$vn_object_id = $qr_hits->get('object_id');
@@ -138,7 +45,7 @@ if(is_array($va_hits_by_class['audio'])) {
 			$vs_caption .= $vs_label;
 		}
 		# --- get the height of the image so can calculate padding needed to center vertically
-		$va_media_info = $qr_hits->getMediaInfo('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values));
+		$va_media_info = $qr_hits->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
 		$vn_padding_top = 0;
 		$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
 		print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
@@ -180,21 +87,9 @@ if(is_array($va_hits_by_class['audio'])) {
 		}
 		print "</tr>\n";
 	}
-	*/
-
-	//print $this->render('paging_controls_html.php');
-	
-	JavascriptLoadManager::register('cycle');		// load "ca.cycle" javascript library
 ?>
+	</table>
+<?php
 
-<script type="text/javascript">
-$(document).ready(function() {
-   $('#relatedRecords').cycle({
-               fx: 'scrollLeft', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
-               speed:  1000,
-               timeout: 0,
-               pager: '#navigation'
-       });
-});
-</script>
-
+	print $this->render('paging_controls_html.php');
+?>

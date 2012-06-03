@@ -83,7 +83,7 @@
 					$o_timecode_parser = new TimecodeParser();
 					$vn_seconds = $o_timecode_parser->parse($pm_value);
 					if (is_numeric($vn_seconds)) {
-						$this->opa_property_values[$ps_property] = (float)$vn_seconds;
+						$this->opa_property_values[$ps_property] = (string)$vn_seconds;
 						return true;
 					}
 					

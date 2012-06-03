@@ -180,7 +180,7 @@ class ZipFile {
     	# If $data parameter begins with a forward slash and ends
     	# with a letter, number or underscore and is 255 characters
     	# or less, it is treated as a file path
-    	if ((strlen($data) <= 255) && (preg_match("/^\/.*[A-Za-z0-9_]{1}$/", $data))) {
+    	if ((strlen($data) <= 255) && ((preg_match("/^\/.*[A-Za-z0-9_]{1}$/", $data)) || (preg_match("/^[A-Za-z]{1}:.*[A-Za-z0-9_]{1}$/", $data)))) {
     		$path = $data;
     		if ($fp = fopen($path,"r")) {
     			$l = filesize($path);

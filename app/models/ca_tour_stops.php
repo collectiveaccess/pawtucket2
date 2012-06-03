@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -374,13 +374,47 @@ class ca_tour_stops extends BundlableLabelableBaseModelWithAttributes {
 			return $t_stop->getLabelForDisplay(false);
 		} else {			
 			if ($pn_id == $this->getPrimaryKey()) {
-				return $this->getLabelForDisplay(false);
+				return $this->getLabelForDisplay(true);
 			} else {
 				$t_stop = new ca_tour_stops($pn_id);
 				return $t_stop->getLabelForDisplay(false);
 			}
 		}
 	 }
+ 	# ------------------------------------------------------
+ 	/**
+ 	 * Check if currently loaded row is save-able
+ 	 *
+ 	 * @param RequestHTTP $po_request
+ 	 * @return bool True if record can be saved, false if not
+ 	 */
+ 	public function isSaveable($po_request) {
+ 		// Check actions
+ 		if (!$this->getPrimaryKey() && !$po_request->user->canDoAction('can_create_ca_tours')) {
+ 			return false;
+ 		}
+ 		if ($this->getPrimaryKey() && !$po_request->user->canDoAction('can_edit_ca_tours')) {
+ 			return false;
+ 		}
+ 		
+ 		return true;
+ 	}
+ 	
+ 	# ------------------------------------------------------
+ 	/**
+ 	 * Check if currently loaded row is deletable
+ 	 */
+ 	public function isDeletable($po_request) {
+ 		// Is row loaded?
+ 		if (!$this->getPrimaryKey()) { return false; }
+ 		
+ 		// Check actions
+ 		if (!$this->getPrimaryKey() && !$po_request->user->canDoAction('can_delete_ca_tours')) {
+ 			return false;
+ 		}
+ 		
+ 		return true;
+ 	}
 	 # ------------------------------------------------------
 }
 ?>

@@ -242,6 +242,18 @@ class Media extends BaseObject {
 		return $this->instance->writePreviews($this->filepath, $pa_options);
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
+	public function writeClip($ps_filename, $ps_start_, $ps_end, $pa_options=null) {
+		if (!$this->instance) { return false; }
+		
+		if (method_exists($this->instance, "writeClip")) {
+			return $this->instance->writeClip($ps_filename, $ps_start_, $ps_end, $pa_options);
+		}
+		return null;
+	}
+	# ----------------------------------------------------------
 	public function getOutputFormats() {
 		if (!$this->instance) { return false; }
 		return $this->instance->getOutputFormats();

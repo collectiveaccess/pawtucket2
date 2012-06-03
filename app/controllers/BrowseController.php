@@ -90,7 +90,11 @@
  			
  			$va_target_list = array();
  			foreach($this->request->config->getList('browse_targets') as $vs_target) {
- 				$va_target_list[$vs_target] = caGetBrowseInstance($vs_target);
+ 				$va_tmp = explode(":", $vs_target);
+ 				$va_target_list[$vs_target] = caGetBrowseInstance($va_tmp[0]);
+ 				if (sizeof($va_tmp) > 1) {
+ 					$va_target_list[$vs_target]->setTypeRestrictions(array($va_tmp[1]));
+ 				}
  			}
  			$this->view->setVar('targets', $va_target_list);
  			
@@ -119,7 +123,8 @@
 			//
  			// Set up for browse target
  			//
- 			switch($vs_browse_target) {
+ 			$va_tmp = explode(":", $vs_browse_target);
+ 			switch($va_tmp[0]) {
  				case 'ca_entities':
  					$this->ops_tablename = 'ca_entities';
  					$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
@@ -263,6 +268,11 @@
  			if ($vs_browse_target != $po_request->session->getVar('pawtucket2_browse_target')) {
 				$this->opo_browse->removeAllCriteria();
 			}
+			
+ 			
+ 			if ($va_tmp[1]) {	// set type restriction off of target
+ 				$this->opo_result_context->setTypeRestriction($va_tmp[1]);
+ 			}
 			
 			// Set up target vars and controls
  			$po_request->session->setVar('pawtucket2_browse_target', $vs_browse_target);

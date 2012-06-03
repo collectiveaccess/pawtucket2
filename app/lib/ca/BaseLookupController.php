@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -73,7 +73,7 @@
 			
 			if (!($pn_limit = $this->request->getParameter('limit', pInteger))) { $pn_limit = 100; }
 			$va_items = array();
-			if (($vn_str_len = unicode_strlen($ps_query)) > 0) {
+			if (($vn_str_len = mb_strlen($ps_query)) > 0) {
 				if ($vn_str_len < 3) { $pb_exact = true; }		// force short strings to be an exact match (using a very short string as a stem would perform badly and return too many matches in most cases)
 				
 				$o_search = new $this->ops_search_class();

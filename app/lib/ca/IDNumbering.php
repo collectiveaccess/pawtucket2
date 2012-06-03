@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2009 Whirl-i-Gig
+ * Copyright 2007-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,14 +38,15 @@
 	
 	class IDNumbering {
 		# -------------------------------------------------------
-		static public function newIDNumberer($ps_format, $ps_type='__default__', $ps_value=null, $po_db=null) {
+		static public function newIDNumberer($ps_format, $pm_type='__default__', $ps_value=null, $po_db=null) {
 			$o_config = Configuration::load();
-			$vs_classname = $o_config->get($ps_format.'_id_numbering_plugin');
-			if (!file_exists(__CA_LIB_DIR__.'/ca/IDNumbering/'.$vs_classname.'.php')) { return null; }
+			$vs_classname = $o_config->get("{$ps_format}_id_numbering_plugin");
+			if (!file_exists(__CA_LIB_DIR__."/ca/IDNumbering/{$vs_classname}.php")) { return null; }
 			
-			require_once(__CA_LIB_DIR__.'/ca/IDNumbering/'.$vs_classname.'.php');
+			require_once(__CA_LIB_DIR__."/ca/IDNumbering/{$vs_classname}.php");
 			
-			return new $vs_classname($ps_format, $ps_type, $ps_value, $po_db);
+			if (!is_array($pm_type)) { $pm_type = array($pm_type); }
+			return new $vs_classname($ps_format, $pm_type, $ps_value, $po_db);
 		}
 		# -------------------------------------------------------
 	}

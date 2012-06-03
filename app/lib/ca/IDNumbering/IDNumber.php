@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2009 Whirl-i-Gig
+ * Copyright 2007-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,10 +69,15 @@
 		# -------------------------------------------------------
 		# Types
 		# -------------------------------------------------------
-		public function setType($ps_type) {
-			if ($this->isValidType($ps_type)) {
-				$this->ops_type = $ps_type;
-				return true;
+		public function setType($pm_type) {
+			if (!is_array($pm_type)) { $pm_type = array($pm_type); }
+			
+			foreach($pm_type as $ps_type) {
+				if (!$ps_type) { continue; }
+				if ($this->isValidType($ps_type)) {
+					$this->ops_type = $ps_type;
+					return true;
+				}
 			}
 			$this->ops_type = '__default__';
 			return false;

@@ -95,6 +95,18 @@ BaseModel::$s_ca_models_definitions['ca_representation_annotations'] = array(
 				'DEFAULT' => '',
 				'LABEL' => 'Properties', 'DESCRIPTION' => 'Container for annotation properties.'
 		),
+		'preview' => array(
+				'FIELD_TYPE' => FT_MEDIA, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				
+				"MEDIA_PROCESSING_SETTING" => 'ca_representation_annotation_previews',
+				
+				'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+				
+				'LABEL' => _t('Preview media'), 'DESCRIPTION' => _t('Use this control to select media from your computer to upload for use as a preview.')
+		),
 		'access' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
@@ -285,6 +297,15 @@ class ca_representation_annotations extends BundlableLabelableBaseModelWithAttri
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
+	/**
+	 * Update annotation. If time code of annotation has changed media preview will be regenerated. 
+	 * You can force the media preview to be regenerated whether the time code has changed or not
+	 * by passing the 'forcePreviewGeneration' option.
+	 *
+	 * @param array $pa_options An array of options:
+	 *		forcePreviewGeneration = if set preview media will be regenerated whether time code has changed or not. Default is false.
+	 * @return bool True on success, false on failure
+	 */
 	public function update($pa_options=null) {
 		$this->set('type_code', $vs_type = $this->getAnnotationType());
 		if (!$this->opo_annotations_properties->validate()) {
@@ -292,10 +313,30 @@ class ca_representation_annotations extends BundlableLabelableBaseModelWithAttri
 			return false;
 		}
 		$this->set('props', $this->opo_annotations_properties->getPropertyValues());
+		
+		if ($this->getPrimaryKey() && ($this->changed('props') || (isset($pa_options['forcePreviewGeneration']) && $pa_options['forcePreviewGeneration']))) {
+			$vs_start = $this->getPropertyValue('startTimecode');
+			$vs_end = $this->getPropertyValue('endTimecode');
+			
+			$va_data['start'] = $vs_start;
+			$va_data['end'] = $vs_end;
+			
+			$t_rep = new ca_object_representations($this->get('representation_id'));
+			if (($vs_file = $t_rep->getMediaPath('media', 'original')) && file_exists($vs_file)) {
+				$o_media = new Media();
+				if ($o_media->read($vs_file)) {
+					if ($o_media->writeClip($vs_file = tempnam(caGetTempDirPath(), 'annotationPreview'), $vs_start, $vs_end)) {
+						$this->set('preview', $vs_file);
+					}
+				}
+			}
+		}	
+		
 		$vn_rc = parent::update($pa_options);
 		if (!$this->numErrors()) {
 			$this->opo_annotations_properties = $this->loadProperties($vs_type);
 		}
+		if ($vs_file) { @unlink($vs_file); }
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
@@ -340,6 +381,10 @@ class ca_representation_annotations extends BundlableLabelableBaseModelWithAttri
  	# ------------------------------------------------------
  	public function getPropertyValue($ps_property) {
  		return $this->opo_annotations_properties->getProperty($ps_property);
+ 	}
+ 	# ------------------------------------------------------
+ 	public function getPropertyValues() {
+ 		return $this->opo_annotations_properties->getPropertyValues();
  	}
  	# ------------------------------------------------------
  	public function setPropertyValue($ps_property, $pm_value) {

@@ -96,8 +96,3 @@ if($vo_result) {
 		print "\n</table>\n";
 	}
 ?>
-<script type="text/javascript">
-jQuery("#caAdvancedSearchForm").hide();
-jQuery("#advancedSearchFormContainerFormSelector").hide();
-
-</script>

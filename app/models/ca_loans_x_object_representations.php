@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_object_representation_labels.php : table access class for table ca_object_representation_labels
+ * app/models/ca_loans_x_object_representations.php : table access class for table ca_loans_x_object_representations
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,78 +33,68 @@
  /**
    *
    */
-require_once(__CA_LIB_DIR__.'/ca/BaseLabel.php');
+require_once(__CA_LIB_DIR__.'/core/BaseRelationshipModel.php');
 
 
-BaseModel::$s_ca_models_definitions['ca_object_representation_labels'] = array(
- 	'NAME_SINGULAR' 	=> _t('object representation caption'),
- 	'NAME_PLURAL' 		=> _t('object representation captions'),
+BaseModel::$s_ca_models_definitions['ca_loans_x_object_representations'] = array(
+ 	'NAME_SINGULAR' 	=> _t('loans ⇔ representations relationship'),
+ 	'NAME_PLURAL' 		=> _t('loans ⇔ representations relationships'),
  	'FIELDS' 			=> array(
- 		'label_id' => array(
+ 		'relation_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Label id', 'DESCRIPTION' => 'Identifier for Label'
+				'LABEL' => 'Relation id', 'DESCRIPTION' => 'Identifier for Relation'
 		),
-		'representation_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+		'loan_id' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Representation id', 'DESCRIPTION' => 'Identifier for Representation'
-		),
-		'locale_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'DISPLAY_FIELD' => array('ca_locales.name'),
-				'LABEL' => _t('Locale'), 'DESCRIPTION' => _t('Locale of label'),
+				'LABEL' => 'Loan id', 'DESCRIPTION' => 'Identifier for Loan'
 		),
 		'type_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DEFAULT' => '',
-				
-				'LIST_CODE' => 'object_representation_label_types',
-				'LABEL' => _t('Type'), 'DESCRIPTION' => _t('Indicates the type of label and how it should be employed.')
-		),
-		'name' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 100, 'DISPLAY_HEIGHT' => 3,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('Name'), 'DESCRIPTION' => _t('Name of representation'),
-				'BOUNDS_LENGTH' => array(1,1024)
+				'LABEL' => 'Type id', 'DESCRIPTION' => 'Identifier for Type',
+				'BOUNDS_VALUE' => array(0,65535)
 		),
-		'name_sort' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 1,
+		'representation_id' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Sort order', 'DESCRIPTION' => 'Sortable version of name value',
-				'BOUNDS_LENGTH' => array(0,1024)
+				'LABEL' => 'Collection id', 'DESCRIPTION' => 'Identifier for collection'
 		),
 		'source_info' => array(
-				'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => 'Source information', 'DESCRIPTION' => 'Source information'
 		),
-		'is_preferred' => array(
-				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_SELECT, 
+		'effective_date' => array(
+				'FIELD_TYPE' => FT_HISTORIC_DATERANGE, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => '',
+				'START' => 'sdatetime', 'END' => 'edatetime',
+				'LABEL' => _t('Effective dates'), 'DESCRIPTION' => _t('Period of time for which this relationship was in effect. This is an option qualification for the relationship. If left blank, this relationship is implied to have existed for as long as the related items have existed.')
+		),
+		'rank' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('Is preferred'), 'DESCRIPTION' => _t('Is preferred')
+				'LABEL' => _t('Sort order'), 'DESCRIPTION' => _t('The relative priority of the relationship when displayed in a list with other relationships. Lower numbers indicate higher priority.')
 		)
  	)
 );
 
-class ca_object_representation_labels extends BaseLabel {
+class ca_loans_x_object_representations extends BaseRelationshipModel {
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -116,10 +106,10 @@ class ca_object_representation_labels extends BaseLabel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_object_representation_labels';
+	protected $TABLE = 'ca_loans_x_object_representations';
 	      
 	# what is the primary key of the table?
-	protected $PRIMARY_KEY = 'label_id';
+	protected $PRIMARY_KEY = 'relation_id';
 
 	# ------------------------------------------------------
 	# --- Properties used by standard editing scripts
@@ -130,13 +120,14 @@ class ca_object_representation_labels extends BaseLabel {
 	# ------------------------------------------------------
 
 	# Array of fields to display in a listing of records from this table
-	protected $LIST_FIELDS = array('name');
+	protected $LIST_FIELDS = array('source_info');
 
 	# When the list of "list fields" above contains more than one field,
 	# the LIST_DELIMITER text is displayed between fields as a delimiter.
 	# This is typically a comma or space, but can be any string you like
 	protected $LIST_DELIMITER = ' ';
-	
+
+
 	# What you'd call a single record from this table (eg. a "person")
 	protected $NAME_SINGULAR;
 
@@ -145,7 +136,7 @@ class ca_object_representation_labels extends BaseLabel {
 
 	# List of fields to sort listing of records by; you can use 
 	# SQL 'ASC' and 'DESC' here if you like.
-	protected $ORDER_BY = array('name');
+	protected $ORDER_BY = array('source_info');
 
 	# Maximum number of record to display per page in a listing
 	protected $MAX_RECORDS_PER_PAGE = 20; 
@@ -157,7 +148,7 @@ class ca_object_representation_labels extends BaseLabel {
 
 	# If you want to order records arbitrarily, add a numeric field to the table and place
 	# its name here. The generic list scripts can then use it to order table records.
-	protected $RANK = '';
+	protected $RANK = 'rank';
 	
 	
 	# ------------------------------------------------------
@@ -178,7 +169,7 @@ class ca_object_representation_labels extends BaseLabel {
 	protected $LOG_CHANGES_TO_SELF = false;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
-			'representation_id'
+			'loan_id', 'representation_id'
 		),
 		"RELATED_TABLES" => array(
 		
@@ -186,19 +177,13 @@ class ca_object_representation_labels extends BaseLabel {
 	);
 	
 	# ------------------------------------------------------
-	# Labels
+	# --- Relationship info
 	# ------------------------------------------------------
-	# --- List of fields used in label user interface
-	protected $LABEL_UI_FIELDS = array(
-		'name'
-	);
-	protected $LABEL_DISPLAY_FIELD = 'name';
-	
-	# --- Name of field used for sorting purposes
-	protected $LABEL_SORT_FIELD = 'name_sort';
-	
-	# --- Name of table this table contains label for
-	protected $LABEL_SUBJECT_TABLE = 'ca_object_representations';
+	protected $RELATIONSHIP_LEFT_TABLENAME = 'ca_loans';
+	protected $RELATIONSHIP_RIGHT_TABLENAME = 'ca_object_representations';
+	protected $RELATIONSHIP_LEFT_FIELDNAME = 'loan_id';
+	protected $RELATIONSHIP_RIGHT_FIELDNAME = 'representation_id';
+	protected $RELATIONSHIP_TYPE_FIELDNAME = 'type_id';
 	
 	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
@@ -212,7 +197,7 @@ class ca_object_representation_labels extends BaseLabel {
 	# This is a function called when a new instance of this object is created. This
 	# standard constructor supports three calling modes:
 	#
-	# 1. If called without parameters, simply creates a new, empty objects object
+	# 1. If called without parameters, simply creates a new, empty object
 	# 2. If called with a single, valid primary key value, creates a new objects object and loads
 	#    the record identified by the primary key value
 	#

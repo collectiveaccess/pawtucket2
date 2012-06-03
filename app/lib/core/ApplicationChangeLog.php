@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -66,8 +66,8 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 	/**
  	 *
  	 */
-	public function getChangeLogForRow($t_item) {
-		return $this->_getChangeLogFromRawData($t_item->getChangeLog(), $t_item->tableNum());
+	public function getChangeLogForRow($t_item, $pa_options=null) {
+		return $this->_getChangeLogFromRawData($t_item->getChangeLog($t_item->getPrimaryKey(), $pa_options), $t_item->tableNum(), $pa_options);
 	}
 	# ----------------------------------------------------------------------
  	/**
@@ -451,7 +451,8 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 								
 								$va_changes[] = array(
 									'label' => $va_field_info['LABEL'],
-									'description' => (strlen((string)$vs_proc_val) ? $vs_proc_val : $vs_blank_placeholder)
+									'description' => (strlen((string)$vs_proc_val) ? $vs_proc_val : $vs_blank_placeholder),
+									'value' => $vs_value
 								);
 							}
 						}
@@ -516,8 +517,12 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 								$t_rel = $o_datamodel->getInstanceByTableNum($t_obj->tableNum(), true);
 								
 								$va_changes[] = array(
-									'label' => unicode_ucfirst($t_related_table->getProperty('NAME_SINGULAR')),
-									'description' => $t_related_table->getLabelForDisplay()
+									'label' => caUcFirstUTF8Safe($t_related_table->getProperty('NAME_SINGULAR')),
+									'idno' => ($vs_idno_field = $t_related_table->getProperty('ID_NUMBERING_ID_FIELD')) ? $t_related_table->get($vs_idno_field) : null,
+									'description' => $t_related_table->getLabelForDisplay(),
+									'table_name' => $t_related_table->tableName(),
+									'table_num' => $t_related_table->tableNum(),
+									'row_id' => $t_related_table->getPrimaryKey()
 								);
 							}
 						}
@@ -743,6 +748,90 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
  		
  		return null;
   	}
+  	# ----------------------------------------------------------------------
+ 	/**
+ 	 * 
+ 	 *
+ 	 * @param mixed $pm_table_name_or_num
+ 	 * @param array $pa_options An array of options:
+ 	 * 		range = optional range to restrict returned entries to. Should be array with 0th key set to start and 1st key set to end of range. Both values should be Unix timestamps. You can also use 'start' and 'end' as keys if desired. 
+	 * 		limit = maximum number of entries returned. Omit or set to zero for no limit. [default=all]
+	 * @return array Change log data
+ 	 */
+ 	public function getDeletions($pm_table_name_or_num, $pa_options=null) {
+ 		$o_dm = Datamodel::load();
+ 		$vn_table_num = $o_dm->getTableNum($pm_table_name_or_num);
+ 		$vs_table_name = $o_dm->getTableName($pm_table_name_or_num);
+ 		$t_subject = $o_dm->getInstanceByTableNum($vn_table_num, true);
+ 		
+		$pa_datetime_range = (isset($pa_options['range']) && is_array($pa_options['range'])) ? $pa_options['range'] : null;
+		$pn_max_num_entries_returned = (isset($pa_options['limit']) && (int)$pa_options['limit']) ? (int)$pa_options['limit'] : 0;
+		
+		if ($pa_datetime_range) {
+			$vn_start = $vn_end = null;
+			if (isset($pa_datetime_range[0])) {
+				$vn_start = (int)$pa_datetime_range[0];
+			} else {
+				if (isset($pa_datetime_range['start'])) {
+					$vn_start = (int)$pa_datetime_range['start'];
+				}
+			}
+			if (isset($pa_datetime_range[1])) {
+				$vn_end = (int)$pa_datetime_range[1];
+			} else {
+				if (isset($pa_datetime_range['end'])) {
+					$vn_end = (int)$pa_datetime_range['end'];
+				}
+			}
+			
+			if ($vn_start <= 0) { $vn_start = time() - 3600; }
+			if (!$vn_end <= 0) { $vn_end = time(); }
+			if ($vn_end < $vn_start) { $vn_end = $vn_start; }
+			
+			
+		} else {
+			$vn_end = time();
+			$vn_start = $vn_end - (24 * 60 * 60);
+		}
+		$o_db = new Db();
+  		if (!($qr_res = $o_db->query("
+			SELECT DISTINCT
+				wcl.log_id, wcl.log_datetime log_datetime, wcl.user_id, wcl.changetype, wcl.logged_table_num, wcl.logged_row_id,
+				wclsnap.snapshot, wcl.unit_id, wu.email, wu.fname, wu.lname
+			FROM ca_change_log wcl
+			INNER JOIN ca_change_log_snapshots AS wclsnap ON wclsnap.log_id = wcl.log_id
+			LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
+			LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
+			WHERE
+				(
+					(wcl.logged_table_num = ".(int)$vn_table_num.") AND (wcl.changetype = 'D') 
+				)
+				AND (wcl.log_datetime > ? AND wcl.log_datetime < ?)
+			ORDER BY wcl.log_datetime
+		", $vn_start, $vn_end))) {
+			# should not happen
+			return false;
+		}
+		
+		$va_log = array();
+		while($qr_res->nextRow()) {
+			$va_log[$vn_row_id = (int)$qr_res->get('logged_row_id')] = array(
+				'datetime' => date("n/d/Y@g:i:sa T", $qr_res->get('log_datetime')),
+				'table' => $vs_table_name,
+				'row_id' => $vn_row_id
+			);
+		}
+		
+		if ($qr_res = $t_subject->makeSearchResult($vs_table_name, array_keys($va_log))) {
+			$vs_pk = $t_subject->primaryKey();
+			while($qr_res->nextHit()) {
+				if (!($vn_row_id = $qr_res->get("{$vs_table_name}.{$vs_pk}"))) { continue; }
+				$va_log[$vn_row_id]['label'] = $qr_res->get("{$vs_table_name}.preferred_labels");
+				$va_log[$vn_row_id]['idno'] = $qr_res->get("{$vs_table_name}.idno");
+			}
+		}
+		return $va_log;
+	}
  	# ----------------------------------------------------------------------
  }
 ?>
