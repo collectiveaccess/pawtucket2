@@ -151,7 +151,7 @@
 ?>
 					<div class="error">
 <?php
-						print _t('There are no bookmark folders to edit. Create a folder to start.');
+						print _t('There are no bookmark folders to edit. Create a folder to begin.');
 ?>
 					</div>
 <?php		
