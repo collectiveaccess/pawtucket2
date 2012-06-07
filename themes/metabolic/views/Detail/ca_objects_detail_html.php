@@ -481,9 +481,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 					}else{
 						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
 					}
-?>					
-					<!-- bookmark link END -->
-<?php
+
 					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 						if($this->request->isLoggedIn()){
 							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
@@ -498,6 +496,8 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
 		}
 	}
+	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "Index", array('object_id' => $vn_object_id));
+	print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
 ?>
 	</div>
 <?php
@@ -505,7 +505,15 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 	
 	print COinS::getTags($t_object);
 	
-	
+	# -- metatags for facebook sharing
+	MetaTagManager::addMeta('og:title', $vs_title);
+	if($vs_media_url = $t_rep->getMediaUrl('media', 'thumbnail')){
+		MetaTagManager::addMeta('og:image', $vs_media_url);
+		MetaTagManager::addLink('image_src', $vs_media_url);
+	}
+	if($vs_description_text){
+		MetaTagManager::addMeta('og:description', $vs_description_text);
+	}
 ?>
 	<script type="text/javascript">
 
