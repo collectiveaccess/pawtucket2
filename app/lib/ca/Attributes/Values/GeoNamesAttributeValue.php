@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2009 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -161,6 +161,8 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 	# ------------------------------------------------------------------
 	public function parseValue($ps_value, $pa_element_info) {
  		$ps_value = trim(preg_replace("![\t\n\r]+!", ' ', $ps_value));
+		$vo_conf = Configuration::load();
+		$vs_user = trim($vo_conf->get("geonames_user"));
 
 		$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('canBeEmpty'));
 
@@ -175,7 +177,15 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 
 			$vs_text = $va_tmp[0];
 			$vs_id = $va_tmp[1];
-			$vs_url = "http://ws.geonames.org/get?geonameId={$vs_id}&style=full";
+			
+			if (!$vs_id) {
+				if(!$va_settings["canBeEmpty"]){
+					$this->postError(1970, _t('Entry was blank.'), 'GeoNamesAttributeValue->parseValue()');
+					return false;
+				}
+				return array();
+			}
+			$vs_url = "http://api.geonames.org/get?geonameId={$vs_id}&style=full&username={$vs_user}";
 
 			return array(
 				'value_longtext1' => $vs_text,
@@ -185,11 +195,11 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 	}
 	# ------------------------------------------------------------------
 	/**
- 		 * @param array $pa_element_info
- 		 * @param array $pa_options Supported options are 
- 		 *			forSearch = if true, elenent is returned for use in a search form
- 		 *	@return string HTML for element		
- 		 */
+	 * @param array $pa_element_info
+ 	 * @param array $pa_options Supported options are 
+ 	 *			forSearch = if true, elenent is returned for use in a search form
+ 	 *	@return string HTML for element		
+ 	 */
 	public function htmlFormElement($pa_element_info, $pa_options=null) {
 		if (isset($pa_options['forSearch']) && $pa_options['forSearch']) {
 			return caHTMLTextInput("{fieldNamePrefix}".$pa_element_info['element_id']."_{n}", array('id' => "{fieldNamePrefix}".$pa_element_info['element_id']."_{n}", 'value' => $pa_options['value']), $pa_options);

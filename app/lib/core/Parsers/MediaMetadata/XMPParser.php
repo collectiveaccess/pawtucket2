@@ -186,6 +186,11 @@ class XMPParser extends BaseMediaMetadataParser {
 				'namespace' => 'Iptc4xmpCore',
 				'tag' => 'CiUrlWork',
 				'description' => _t('Creator website')
+			),
+			'DescriptionWriter' => array(
+				'namespace' => 'photoshop',
+				'tag' => 'CaptionWriter',
+				'description' => _t('Description writer')
 			)
 		);
 		parent::__construct();
@@ -316,6 +321,9 @@ class XMPParser extends BaseMediaMetadataParser {
 				break;
 			case 'DateCreated':
 				$this->o_rdf_desc[0]->addAttribute('photoshop:DateCreated', $ps_value, "http://ns.adobe.com/photoshop/1.0/");
+				break;
+			case 'DescriptionWriter':
+				$this->o_rdf_desc[0]->addAttribute('photoshop:CaptionWriter', $ps_value, "http://ns.adobe.com/photoshop/1.0/");
 				break;
 			case 'RightsURL':
 				$this->o_rdf_desc[0]->addAttribute('xmpRights:WebStatement', $ps_value, "http://ns.adobe.com/xap/1.0/rights/");

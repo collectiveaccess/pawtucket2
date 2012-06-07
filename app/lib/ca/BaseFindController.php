@@ -709,6 +709,95 @@
  		}
  		# ------------------------------------------------------------------
  		/**
+ 		 * 
+ 		 * 
+ 		 */ 
+ 		public function DownloadRepresentations() {
+ 			if ($t_subject = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) {
+ 				$pa_ids = null;
+ 				if ($vs_ids = trim($this->request->getParameter($t_subject->tableName(), pString))) {
+ 					if ($vs_ids != 'all') {
+						$pa_ids = explode(';', $vs_ids);
+						
+						foreach($pa_ids as $vn_i => $vs_id) {
+							if (!trim($vs_id) || !(int)$vs_id) { unset($pa_ids[$vn_i]); }
+						}
+					}
+ 				}
+ 				
+ 				if (!is_array($pa_ids) || !sizeof($pa_ids)) { 
+ 					$pa_ids = $this->opo_result_context->getResultList();
+ 				}
+ 				if (is_array($pa_ids) && sizeof($pa_ids)) {
+ 					$ps_version = $this->request->getParameter('version', pString);
+					if ($qr_res = $t_subject->makeSearchResult($t_subject->tableName(), $pa_ids)) {
+						$o_zip = new ZipFile();
+						if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
+						set_time_limit($vn_limit * 2);
+						while($qr_res->nextHit()) {
+							if (!in_array($ps_version, $qr_res->getMediaVersions('ca_object_representations.media'))) {
+								$vs_version = 'original';
+							} else {
+								$vs_version = $ps_version;
+							}
+							$va_paths = $qr_res->getMediaPaths('ca_object_representations.media', $vs_version);
+							$va_infos = $qr_res->getMediaInfos('ca_object_representations.media');
+							$va_representation_ids = $qr_res->get('ca_object_representations.representation_id', array('returnAsArray' => true));
+							
+							foreach($va_paths as $vn_i => $vs_path) {
+								$vs_ext = array_pop(explode(".", $vs_path));
+								$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $qr_res->get($t_subject->tableName().'.idno'));
+								$vs_original_name = $va_infos[$vn_i]['ORIGINAL_FILENAME'];
+								$vn_index = (sizeof($va_paths) > 1) ? "_".($vn_i + 1) : '';
+								$vn_representation_id = $va_representation_ids[$vn_i];
+								
+								switch($this->request->user->getPreference('downloaded_file_naming')) {
+									case 'idno':
+										$vs_filename = "{$vs_idno_proc}{$vn_index}.{$vs_ext}";
+										break;
+									case 'idno_and_version':
+										$vs_filename = "{$vs_idno_proc}_{$vs_version}{$vn_index}.{$vs_ext}";
+										break;
+									case 'idno_and_rep_id_and_version':
+										$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}.{$vs_ext}";
+										break;
+									case 'original_name':
+									default:
+										if ($vs_original_name) {
+											$va_tmp = explode('.', $vs_original_name);
+											if (sizeof($va_tmp) > 1) { 
+												if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+													$va_tmp[] = $vs_ext;
+												}
+											}
+											$vs_filename = join('_', $va_tmp)."{$vn_index}.{$vs_ext}";
+										} else {
+											$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}.{$vs_ext}";
+										}
+										break;
+								} 
+								if ($vs_path_with_embedding = caEmbedMetadataIntoRepresentation(new ca_objects($qr_res->get('ca_objects.object_id')), new ca_object_representations($vn_representation_id), $vs_version)) {
+									$vs_path = $vs_path_with_embedding;
+								}
+								$o_zip->addFile($vs_path, $vs_filename, 0, array('compression' => 0));
+							}
+						}
+						$this->view->setVar('zip', $o_zip);
+						$this->view->setVar('download_name', 'media_for_'.mb_substr(preg_replace('![^A-Za-z0-9]+!u', '_', $this->getCriteriaForDisplay()), 0, 20).'.zip');
+						
+ 						set_time_limit($vn_limit);
+					}
+				}
+ 				
+ 				$this->render('Results/object_representation_download_binary.php');
+ 				return;
+ 			}
+ 			
+ 			// post error
+ 			$this->postError(3100, _t("Could not generate ZIP file for download"),"BaseEditorController->DownloadRepresentation()");
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
  		 * Set up variables for "tools" widget
  		 */
  		public function Tools($pa_parameters, $po_search) {

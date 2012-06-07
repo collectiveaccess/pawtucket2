@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -178,11 +178,6 @@
  			
  			$ps_value = trim(preg_replace("![\t\n\r]+!", ' ', $ps_value));
  			
- 			//if (!trim($ps_value)) {
- 				//$this->postError(1970, _t('Entry was blank.'), 'LCSHAttributeValue->parseValue()');
-			//	return false;
- 			//}
-
 			if (trim($ps_value)) {
 				$va_tmp = explode('|', $ps_value);
 				
@@ -191,9 +186,9 @@
 				$va_tmp1 = explode('/', $va_tmp[1]);
 				$vs_id = array_pop($va_tmp1);
 				return array(
-					'value_longtext1' => $va_tmp[0],	// text
-					'value_longtext2' => $vs_url,		// uri
-					'value_decimal1' => $vs_id			// id
+					'value_longtext1' => $va_tmp[0],						// text
+					'value_longtext2' => $vs_url,							// uri
+					'value_decimal1' => is_numeric($vs_id) ? $vs_id : null	// id
 				);
 			}
 			return array(

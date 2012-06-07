@@ -2508,6 +2508,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						if (!$this->validatePropertyValues()) {
 							$po_request->addActionErrors($this->errors(), 'ca_representation_annotation_properties', 'general');
 						}
+						$this->update();
 						break;
 					# -------------------------------------
 					// This bundle is only available for types which support set membership

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -89,6 +89,15 @@ class BaseService {
 	 */
 	public function getUserID(){
 		return $this->opo_request->getUserID();
+	}
+	# -------------------------------------------------------
+	/**
+	 * Fetches current date/time on the server and returns as Unix timestamp
+	 *
+	 * @return int
+	 */
+	public function getServerTime(){
+		return time();
 	}
 	# -------------------------------------------------------
 }

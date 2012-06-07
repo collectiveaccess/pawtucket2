@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -83,6 +83,18 @@
  			}
  			
  			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => $vn_subject_id ? __CA_BUNDLE_ACCESS_READONLY__ : __CA_BUNDLE_ACCESS_EDIT__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			//
  			// Are we duplicating?
  			//
  			if (($vs_mode == 'dupe') && $this->request->user->canDoAction('can_duplicate_'.$t_subject->tableName())) {
@@ -154,11 +166,11 @@
  				$vn_type_id = $this->request->getParameter($t_subject->getTypeFieldName(), pInteger);
  			}
  			
- 			if (!$this->request->getActionExtra()) {
- 				$va_nav = $t_ui->getScreensAsNavConfigFragment($this->request, $vn_type_id, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(),
-					array(),
-					array()
-				);
+ 			$va_nav = $t_ui->getScreensAsNavConfigFragment($this->request, $vn_type_id, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(),
+				array(),
+				array()
+			);
+ 			if (!$this->request->getActionExtra() || !isset($va_nav['fragment'][str_replace("Screen", "screen_", $this->request->getActionExtra())])) {
  				$this->request->setActionExtra($va_nav['defaultScreen']);
  			}
 			$this->view->setVar('t_ui', $t_ui);
@@ -180,6 +192,19 @@
  		public function Save($pa_options=null) {
  			list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id) = $this->_initView($pa_options);
  			if (!is_array($pa_options)) { $pa_options = array(); }
+ 			
+ 			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 				
  			if($vn_above_id) {
  				// Convert "above" id (the id of the record we're going to make the newly created record parent of
  				if (($t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name)) && $t_instance->load($vn_above_id)) {
@@ -190,7 +215,7 @@
  			}
  			
  			$vs_auth_table_name = $this->ops_table_name;
- 			if (in_array($this->ops_table_name, array('ca_object_representations', 'ca_representation_annotations'))) { $vs_auth_table_name = 'ca_objects'; }
+ 			if (in_array($this->ops_table_name, array('ca_representation_annotations'))) { $vs_auth_table_name = 'ca_objects'; }
  			 			
  			if(!sizeof($_POST)) {
  				$this->notification->addNotification(_t("Cannot save using empty request. Are you using a bookmark?"), __NOTIFICATION_TYPE_ERROR__);	
@@ -309,6 +334,18 @@
  			
  			if (!$vn_subject_id) { return; }
  			
+ 			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
  			if (!$vs_type_name = $t_subject->getTypeName()) {
  				$vs_type_name = $t_subject->getProperty('NAME_SINGULAR');
  			}
@@ -414,6 +451,18 @@
  			JavascriptLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
+ 			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
  			$t_display = new ca_bundle_displays();
  			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__));
  			
@@ -471,7 +520,20 @@
 
 			JavascriptLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
-
+ 			
+ 			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			
  			$t_display = new ca_bundle_displays();
  			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__));
 
@@ -541,6 +603,18 @@
  			JavascriptLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
+ 			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+ 			}
+ 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
  			$this->render('log_html.php');
  		}
  		# -------------------------------------------------------
@@ -582,7 +656,7 @@
  			}
  			
  			if (!$t_ui->getPrimaryKey()) {
- 				$t_ui->loadDefaultUI($this->ops_table_name, $this->request);
+ 				$t_ui = ca_editor_uis::loadDefaultUI($this->ops_table_name, $this->request, $t_subject->getTypeID());
  			}
  			
  			$this->view->setVar($t_subject->primaryKey(), $vn_subject_id);
@@ -786,6 +860,11 @@
  			
  			$vn_sort_type = $t_list->get('default_sort');
  			
+ 			$va_restrict_to_types = null;
+ 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
+ 			}
+ 			
  			$va_types = array();
  			if (is_array($va_hier)) {
  				
@@ -796,6 +875,7 @@
 					$va_types_by_parent_id[$va_item['parent_id']][] = $va_item;
 				}
 				foreach($va_hier as $vn_item_id => $va_item) {
+					if (is_array($va_restrict_to_types) && !in_array($vn_item_id, $va_restrict_to_types)) { continue; }
 					if ($va_item['parent_id'] != $vn_root_id) { continue; }
 					// does this item have sub-items?
 					$va_subtypes = array();
@@ -805,7 +885,7 @@
 						!(bool)$this->getRequest()->config->get($this->ops_table_name.'_enforce_strict_type_hierarchy')
 					) {
 						if (isset($va_item['item_id']) && isset($va_types_by_parent_id[$va_item['item_id']]) && is_array($va_types_by_parent_id[$va_item['item_id']])) {
-							$va_subtypes = $this->_getSubTypes($va_types_by_parent_id[$va_item['item_id']], $va_types_by_parent_id, $vn_sort_type);
+							$va_subtypes = $this->_getSubTypes($va_types_by_parent_id[$va_item['item_id']], $va_types_by_parent_id, $vn_sort_type, $va_restrict_to_types);
 						}
 					} 
 					
@@ -855,11 +935,12 @@
  		 * @param int $pn_sort_type Integer code indicating how to sort types in the menu
  		 * @return array List of subtypes ready for inclusion in a menu spec
  		 */
-		private function _getSubTypes($pa_subtypes, $pa_types_by_parent_id, $pn_sort_type) {
+		private function _getSubTypes($pa_subtypes, $pa_types_by_parent_id, $pn_sort_type, $pa_restrict_to_types=null) {
 			$va_subtypes = array();
 			foreach($pa_subtypes as $vn_i => $va_type) {
+				if (is_array($pa_restrict_to_types) && !in_array($va_type['item_id'], $pa_restrict_to_types)) { continue; }
 				if (isset($pa_types_by_parent_id[$va_type['item_id']]) && is_array($pa_types_by_parent_id[$va_type['item_id']])) {
-					$va_subsubtypes = $this->_getSubTypes($pa_types_by_parent_id[$va_type['item_id']], $pa_types_by_parent_id, $pn_sort_type);
+					$va_subsubtypes = $this->_getSubTypes($pa_types_by_parent_id[$va_type['item_id']], $pa_types_by_parent_id, $pn_sort_type, $pa_restrict_to_types);
 				} else {
 					$va_subsubtypes = array();
 				}
@@ -895,6 +976,7 @@
 			
 			foreach($va_subtypes as $vs_sort_key => $va_type) {
 				foreach($va_type as $vn_item_id => $va_item) {
+					if (is_array($pa_restrict_to_types) && !in_array($vn_item_id, $pa_restrict_to_types)) { continue; }
 					$va_subtypes_proc[$vn_item_id] = $va_item;
 				}
 			}
@@ -989,10 +1071,6 @@
  			
  			$vn_item_id 		= (isset($pa_parameters[$vs_pk])) ? $pa_parameters[$vs_pk] : null;
  			$vn_type_id 		= (isset($pa_parameters['type_id'])) ? $pa_parameters['type_id'] : null;
- 			// 
-//  			$t_ui = new ca_editor_uis();
-//  			$t_ui->loadDefaultUI($this->ops_table_name, $this->request);
-//  			$this->view->setVar('t_ui', $t_ui);
  			
  			$t_item->load($vn_item_id);
  			

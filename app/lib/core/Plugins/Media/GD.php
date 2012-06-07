@@ -354,6 +354,7 @@ class WLPlugMediaGD Extends WLPlug Implements IWLPlugMedia {
 					if(function_exists('exif_read_data')) {
 						$this->metadata["EXIF"] = $va_exif = @exif_read_data($filepath, 'EXIF', true, false);
 						
+						
 						//
 						// Rotate incoming image as needed
 						//
@@ -362,22 +363,19 @@ class WLPlugMediaGD Extends WLPlug Implements IWLPlugMedia {
 								$vn_orientation = $va_exif['IFD0']['Orientation'];
 								switch($vn_orientation) {
 									case 3:
-										$handle = imagecreatefromjpeg($filepath);
-										$handle = $this->rotateImage($handle, -180);
-										imagejpeg($handle, $filepath, 100);
+										$this->handle = imagecreatefromjpeg($filepath);
+										$this->handle = $this->rotateImage($this->handle, -180);
 										break;
 									case 6:
-										$handle = imagecreatefromjpeg($filepath);
-										$handle = $this->rotateImage($handle, -90);
-										imagejpeg($handle, $filepath, 100);
+										$this->handle = imagecreatefromjpeg($filepath);
+										$this->handle = $this->rotateImage($this->handle, -90);
 										$va_tmp = $va_info;
 										$va_info[0] = $va_tmp[1];
 										$va_info[1] = $va_tmp[0];
 										break;
 									case 8:
-										$handle = imagecreatefromjpeg($filepath);
-										$handle = $this->rotateImage($handle, 90);
-										imagejpeg($handle, $filepath, 100);
+										$this->handle = imagecreatefromjpeg($filepath);
+										$this->handle = $this->rotateImage($this->handle, 90);
 										$va_tmp = $va_info;
 										$va_info[0] = $va_tmp[1];
 										$va_info[1] = $va_tmp[0];
@@ -387,7 +385,9 @@ class WLPlugMediaGD Extends WLPlug Implements IWLPlugMedia {
 						}
 					}
 					
-					$this->handle = imagecreatefromjpeg($filepath);
+					if (!$this->handle) {
+						$this->handle = imagecreatefromjpeg($filepath);
+					}
 					$vs_mimetype = "image/jpeg";
 					$vs_typename = "JPEG";
 					
@@ -434,11 +434,20 @@ class WLPlugMediaGD Extends WLPlug Implements IWLPlugMedia {
 		
 		if ($rotation < 0) { $rotation += 360; }
 		switch($rotation) {
-			case 90: $newimg= @imagecreatetruecolor($height , $width );break;
-			case 180: $newimg= @imagecreatetruecolor($width , $height );break;
-			case 270: $newimg= @imagecreatetruecolor($height , $width );break;
-			case 0: return $img;break;
-			case 360: return $img;break;
+			case 90: 
+				$newimg= @imagecreatetruecolor($height , $width );
+				break;
+			case 180: 
+				$newimg= @imagecreatetruecolor($width , $height );
+				break;
+			case 270: 
+			case -90:
+				$newimg= @imagecreatetruecolor($height , $width );
+				break;
+			case 0: 
+			case 360:
+				return $img;
+				break;
 		}
 		
 		if($newimg) { 
@@ -447,6 +456,7 @@ class WLPlugMediaGD Extends WLPlug Implements IWLPlugMedia {
 					$reference = imagecolorat($img,$i,$j);
 					switch($rotation) {
 						case 270: 
+						case -90:
 							if(!@imagesetpixel($newimg, ($height - 1) - $j, $i, $reference )){
 								return false;
 							}

@@ -2694,7 +2694,7 @@ class TimeExpressionParser {
 			(!($pa_date['hours'] == 0 && $pa_date['minutes'] == 0 && $pa_date['seconds'] == 0 && ($ps_mode == 'START'))) &&
 			(!($pa_date['hours'] == 23 && $pa_date['minutes'] == 59 && $pa_date['seconds'] == 59 && ($ps_mode == 'END')))
 		) {
-			$vs_date .= 'T'.$pa_date['hours'].':'.$pa_date['minutes'].':'.$pa_date['seconds'];
+			$vs_date .= 'T'.sprintf("%02d", $pa_date['hours']).':'.sprintf("%02d", $pa_date['minutes']).':'.sprintf("%02d", $pa_date['seconds']).'Z';
 		}
 		
 		return $vs_date;

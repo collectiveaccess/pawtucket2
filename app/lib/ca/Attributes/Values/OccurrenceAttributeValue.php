@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2011 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -196,8 +196,8 @@ class OccurrenceAttributeValue extends AttributeValue implements IAttributeValue
 			);
 
 		if ($pa_options['po_request']) {
-			if($va_settings['restrictToOccurrenceTypeIdno'] && $va_settings['restrictToOccurrenceTypeIdno'] != ''){
-				$va_params = array("type" => $va_settings['restrictToOccurrenceTypeIdno']);
+			if($pa_element_info['settings']['restrictToOccurrenceTypeIdno'] && $pa_element_info['settings']['restrictToOccurrenceTypeIdno'] != ''){
+				$va_params = array("type" => $pa_element_info['settings']['restrictToOccurrenceTypeIdno']);
 			} else {
 				$va_params = null;
 			}
