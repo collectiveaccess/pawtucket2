@@ -1,4 +1,4 @@
-/* gold: #EDB344 --- gray: #666666 --- light blue: #A0BAD9 --- dark blue: #0B4692 */
+/* link blue: #00529f */
 
 form{
 	display:inline;
@@ -138,8 +138,8 @@ a.caption:hover{
 #navLinks #lightboxLink{
 	position:relative;
 	display:inline;
-	margin:-5px -7px 0px 0px;
-	padding:5px 7px 0px 0px;
+	margin:-5px -7px 0px -2px;
+	padding:5px 7px 0px 2px;
 }
 .lightboxLinkActive{
 	-moz-box-shadow: 0px 4px 5px #adadad;
@@ -275,13 +275,13 @@ img.lightboxList, #lightboxLink img {
 	text-align:center;
 	margin: 0px auto 10px auto;
 	color:#666666;
-	font-size:11px;
+	font-size:12px;
 	border-top: 3px solid #A0BAD9;
 	padding: 10px 0px 0px 0px;
 }
 #footer a{
 	color:#666666;
-	font-size:11px;
+	font-size:12px;
 	margin:0px 8px 0px 8px;
 }
 /* -------------------------------------------------*/
@@ -358,11 +358,14 @@ div.searchlight-results div.searchlight-selected {
 	padding:20px;
 	border:1px solid #DEDEDE;
 	background-color: #f7f7f7;
-	height:430px;
-	margin:15px 0px 0px 0px;
+	margin:15px 0px 15px 0px;
+	height:auto;
 }
 #hpTextContainer H2{
 	font-size:28px;
+}
+#hpPurchaseLink{
+	padding:15px 0px 0px 0px;
 }
 #hpText{
 	line-height:1.5em;
@@ -399,7 +402,7 @@ div.searchlight-results div.searchlight-selected {
 	font-weight:bold;
 	margin-bottom:0px;
 	font-family: Times, serif;
-	font-size:14px;
+	font-size:15px;
 	color:#333333;
 }
 #hpBrowse a{
@@ -407,6 +410,7 @@ div.searchlight-results div.searchlight-selected {
 	width:75px;
 	float:left;
 	color:#333333;
+	font-size:13px;
 }
 #hpBrowse a:hover{
 	padding-left: 10px;
@@ -504,7 +508,7 @@ div.searchlight-results div.searchlight-selected {
 
 .textContent {
 	margin: 10px 0px 15px 0px;
-	font-size:12px;
+	font-size:13px;
 }
 
 .textContent div {
@@ -536,7 +540,7 @@ div.searchlight-results div.searchlight-selected {
 }
 #detailBody #leftCol{
 	margin-top:10px;
-	font-size: 11px;
+	font-size: 12px;
 	text-align:left;
 }
 #objDetailRelObjects{
@@ -617,6 +621,26 @@ div.searchlight-results div.searchlight-selected {
 	width: 596px;
 	padding: 5px 5px 5px 5px;
 }
+#addToLightbox{
+	text-align:center;
+	padding:0px 0px 5px 0px;
+	margin:0px;
+	width: 600px;
+}
+#addToLightbox a {
+	text-decoration:none;
+	color: #00529f;
+	font-size:14px;
+	font-weight:bold;
+	font-style:normal;
+}
+#addToLightbox a:hover {
+	color: #A0BAD9;
+}
+#addToLightbox a img {
+	vertical-align:text-bottom;
+	padding-right:5px;
+}
 #cont {
 	width: 594px;
 	height: 500px;
@@ -629,7 +653,7 @@ div.searchlight-results div.searchlight-selected {
 }
 #objDetailImageNav{
 	text-decoration:none;
-	font-size:12px;
+	font-size:13px;
 	color: #666666;
 	font-weight:bold;
 }
@@ -1207,9 +1231,8 @@ td.advSearchElement{
 #registerForm input{
 	width:570px;
 }
-
-#loginForm input, #resetPasswordForm input{
-	width:240px;
+#registerForm input[type='checkbox']{
+	width:30px;
 }
 #loginForm input[type="text"], #registerForm input[type="text"], #resetPasswordForm input[type="text"], #profileForm input[type="text"] {
 	font-size:12px;
@@ -1217,6 +1240,10 @@ td.advSearchElement{
 	padding: 4px;
 	margin: 0px;
 	border: 1px solid #828282;
+}
+
+#registerForm input[type='checkbox'], #loginForm input[type='checkbox'], #resetPasswordForm input[type='checkbox'], #profileForm input[type="checkbox"]{
+	width:30px;
 }
 
 /* ------------------------------------- */
@@ -1505,14 +1532,14 @@ div.items div.active {
 }
 .startBrowsingBy{
 	color: #828282;
-	font-size:11px;
+	font-size:12px;
 }
 .facetHeadingLink{
 	margin-bottom:5px;
 }
 .facetHeadingLink a{
 	font-weight:bold;
-	font-size:15px;
+	font-size:16px;
 	text-decoration:underline;
 	color: #666666;
 	text-transform:capitalize;
