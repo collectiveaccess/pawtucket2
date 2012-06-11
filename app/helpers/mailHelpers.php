@@ -62,8 +62,8 @@
  	 * 	$pa_bcc: 	Email address(es) of bcc'ed message recipients. Can be a string containing a single email address or
  	 *				an associative array with keys set to multiple addresses and corresponding values optionally set to
  	 *				a human-readable recipient name. (optional)
- 	 * 	$pa_attachment: 	array containing file path, name and mime_type of file to attach.
- 	 *				keys are "path", "name", "mime_type"
+ 	 * 	$pa_attachment: 	array containing file path, name and mimetype of file to attach.
+ 	 *				keys are "path", "name", "mimetype"
  	 *
  	 * While both $ps_body_text and $ps_html_text are optional, at least one should be set and both can be set for a 
  	 * combination text and HTML email
@@ -162,8 +162,8 @@
 				if($pa_attachment["name"]){
 					$o_attachment->filename = $pa_attachment["name"];
 				}
-				if($pa_attachment["mime_type"]){
-					$o_attachment->type = $pa_attachment["mime_type"];
+				if($pa_attachment["mimetype"]){
+					$o_attachment->type = $pa_attachment["mimetype"];
 				}
 			}
 

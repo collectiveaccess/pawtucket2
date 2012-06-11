@@ -1,9 +1,12 @@
 <?php
-	$vn_item_id = $this->getVar("item_id");
-	$vs_tablename = $this->getVar("tablename");
-	$vs_controller = $this->getVar("controller");
-	$t_item = $this->getVar("t_item");
+	$vn_object_id = $this->getVar("object_id");
+	$t_object = $this->getVar("t_object");
 	$va_access_values = $this->getVar("access_values");
+	$va_reps = $t_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values));
+	$vs_image = "";
+	if(is_array($va_reps) && sizeof($va_reps)){
+		$vs_image = $va_reps["tags"]["small"];
+	}
 	$va_errors = $this->getVar("errors");
 	
 	# --- if there were errors in the form, the form paramas are passed back to preload the form
@@ -15,7 +18,7 @@
 	
 	# --- if params have not been passed, set some defaults
 	if(!$vs_subject && !$va_errors['subject']){
-		$vs_subject = $t_item->getLabelForDisplay();
+		$vs_subject = $t_object->getLabelForDisplay();
 	}
 	if(!$vs_from_email && $this->request->isLoggedIn() && !$va_errors['from_email']){
 		$vs_from_email = $this->request->user->get("email");
@@ -29,25 +32,33 @@
 <div id="detailBody">
 		<div id="pageNav">
 <?php
-			if ($vn_item_id) {
-				print caNavLink($this->request, "&lsaquo; "._t("Back"), '', 'Detail', $vs_controller, 'Show', array($t_item->PrimaryKey() => $vn_item_id), array('id' => 'back'));
+			if ($vn_object_id) {
+				print caNavLink($this->request, "&lsaquo; "._t("Back"), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id), array('id' => 'back'));
 			}
 ?>
 		</div><!-- end nav -->
 		<H1><?php print _t("Share this record"); ?></H1>
 		<div id="shareObjectInfo">
 			<div class='titleBar'>
-				<div class='recordTitle'><h1><?php print $t_item->getLabelForDisplay(); ?></h1></div>
+				<div class='recordTitle'><h1><?php print $t_object->getLabelForDisplay(); ?></h1></div>
 			</div>
 <?php
-			if($t_item->get('idno')){
-				print "<H3>"._t("Identifier")."</H3><p>".$t_item->get('idno')."</p>";
+			if($vs_image){
+				print "<p>".$vs_image."</p>";
+			}
+			if($t_object->get('idno')){
+				print "<H3>"._t("Identifier")."</H3><p>".$t_object->get('idno')."</p>";
+			}
+			
+			# --- description
+			if($vs_description_text = $t_object->get("ca_objects.description")){
+				print "<h3>Description</h3><div class='scrollPane' id='description'>".$vs_description_text."</div>";				
 			}
 ?>
 		</div><!-- end shareObjectInfo -->
 		<div id="shareForm">
-			<div><?php print _t("Use the form below to email this record to a colleague.  The item's title and identifier will be included in the email."); ?></div>
-			<form method="post" action="<?php print caNavUrl($this->request, 'Share', 'Share', 'sendEmail', array('item_id' => $vn_item_id, 'tablename' => $vs_tablename)); ?>" name="emailForm" enctype='multipart/form-data'>
+			<div><?php print _t("Use the form below to email this record to a colleague.  The title, identifier, description and a low resolution media version will be included in the email."); ?></div>
+			<form method="post" action="<?php print caNavUrl($this->request, 'Share', 'Share', 'sendEmailObject', array('object_id' => $vn_object_id)); ?>" name="emailObject" enctype='multipart/form-data'>
 				<div class="formLabel">
 					<?php print ($va_errors["to_email"]) ? "<div class='formErrors'>".$va_errors["to_email"]."</div>" : ""; ?>
 					<?php print _t("To e-mail address<br/>(Enter multiple addresses separated by commas)"); ?>
@@ -102,7 +113,7 @@
 					<textarea name="message" rows="8"><?php print $vs_message; ?></textarea>
 				</div>
 				<div class='button'>
-					<a href="#" onclick="document.forms.emailForm.submit(); return false;"><?php print _t("Send"); ?></a>
+					<a href="#" onclick="document.forms.emailObject.submit(); return false;"><?php print _t("Send"); ?></a>
 				</div>
 			</form>
 		</div><!-- end shareForm -->
