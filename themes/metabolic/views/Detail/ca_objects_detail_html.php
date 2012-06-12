@@ -366,7 +366,7 @@
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', mediumlarge, $this->getVar('primary_rep_display_options'))."</a>";
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', 'mediumlarge', $this->getVar('primary_rep_display_options'))."</a>";
 			}
 		} else {
 			print "<div style='width: 367px; height: 250px; background-color:#fff; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);'> </div>";
@@ -496,7 +496,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
 		}
 	}
-	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "Index", array('object_id' => $vn_object_id));
+	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
 	print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
 ?>
 	</div>
@@ -507,7 +507,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 	
 	# -- metatags for facebook sharing
 	MetaTagManager::addMeta('og:title', $vs_title);
-	if($vs_media_url = $t_rep->getMediaUrl('media', 'thumbnail')){
+	if($t_rep && $t_rep->getPrimaryKey() && $vs_media_url = $t_rep->getMediaUrl('media', 'thumbnail')){
 		MetaTagManager::addMeta('og:image', $vs_media_url);
 		MetaTagManager::addLink('image_src', $vs_media_url);
 	}
