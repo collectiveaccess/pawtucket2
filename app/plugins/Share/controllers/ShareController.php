@@ -168,30 +168,31 @@
 				$vs_mail_message_html = ob_get_contents();
 				ob_end_clean();
 				
-				# --- get media for attachment
-				$vs_media_version = "";
 				$va_media = null;
-				# Media representation to email
-				# --- version is set in media_display.conf.
-				if (method_exists($t_object, 'getPrimaryRepresentationInstance')) {
-					if ($t_primary_rep = $t_object->getPrimaryRepresentationInstance()) {
-						if (!sizeof($this->opa_access_values) || in_array($t_primary_rep->get('access'), $this->opa_access_values)) { 		// check rep access
-							$va_media = array();
-							$va_rep_display_info = caGetMediaDisplayInfo('email', $t_primary_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-							
-							$vs_media_version = $va_rep_display_info['display_version'];
-							
-							$va_media['path'] = $t_primary_rep->getMediaPath('media', $vs_media_version);
-							$va_media_info = $t_primary_rep->getFileInfo('media', $vs_media_version);
-							if(!$va_media['name'] = $va_media_info['ORIGINAL_FILENAME']){
-								$va_media['name'] = $va_media_info[$vs_media_version]['FILENAME'];
+				if($this->opo_plugin_config->get('enable_media_attachment')){
+					# --- get media for attachment
+					$vs_media_version = "";
+					# Media representation to email
+					# --- version is set in media_display.conf.
+					if (method_exists($t_object, 'getPrimaryRepresentationInstance')) {
+						if ($t_primary_rep = $t_object->getPrimaryRepresentationInstance()) {
+							if (!sizeof($this->opa_access_values) || in_array($t_primary_rep->get('access'), $this->opa_access_values)) { 		// check rep access
+								$va_media = array();
+								$va_rep_display_info = caGetMediaDisplayInfo('email', $t_primary_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+								
+								$vs_media_version = $va_rep_display_info['display_version'];
+								
+								$va_media['path'] = $t_primary_rep->getMediaPath('media', $vs_media_version);
+								$va_media_info = $t_primary_rep->getFileInfo('media', $vs_media_version);
+								if(!$va_media['name'] = $va_media_info['ORIGINAL_FILENAME']){
+									$va_media['name'] = $va_media_info[$vs_media_version]['FILENAME'];
+								}
+								# --- this is the mimetype of the version being downloaded
+								$va_media["mimetype"] = $va_media_info[$vs_media_version]['MIMETYPE'];
 							}
-							# --- this is the mimetype of the version being downloaded
-							$va_media["mimetype"] = $va_media_info[$vs_media_version]['MIMETYPE'];
 						}
 					}
-				}
-				
+				}				
 				if(caSendmail($va_to_email, array($ps_from_email => $ps_from_name), $ps_subject, $vs_mail_message_text, $vs_mail_message_html, null, null, $va_media)){
  					$this->notification->addNotification(_t("Your email was sent"), "message");
  					$this->response->setRedirect(caNavUrl($this->request, 'Detail', 'Object', 'Show', array('object_id' => $pn_object_id)));

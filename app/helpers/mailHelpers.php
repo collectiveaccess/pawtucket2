@@ -156,14 +156,16 @@
 			
 			if(is_array($pa_attachment) && $pa_attachment["path"]){
 				$ps_attachment_url = $pa_attachment["path"];
-				$vs_file_contents = file_get_contents($ps_attachment_url);
-				
-				$o_attachment = $o_mail->createAttachment($vs_file_contents);
-				if($pa_attachment["name"]){
-					$o_attachment->filename = $pa_attachment["name"];
-				}
-				if($pa_attachment["mimetype"]){
-					$o_attachment->type = $pa_attachment["mimetype"];
+				# --- only attach media if it is less than 50MB
+				if(filesize($ps_attachment_url) < 419430400){
+					$vs_file_contents = file_get_contents($ps_attachment_url);
+					$o_attachment = $o_mail->createAttachment($vs_file_contents);
+					if($pa_attachment["name"]){
+						$o_attachment->filename = $pa_attachment["name"];
+					}
+					if($pa_attachment["mimetype"]){
+						$o_attachment->type = $pa_attachment["mimetype"];
+					}
 				}
 			}
 
@@ -238,9 +240,7 @@
  	 * @return string True if send, false if error
 	 */
 	function caSendMessageUsingView($po_request, $pa_to, $pa_from, $ps_subject, $ps_view, $pa_values, $pa_cc=null, $pa_bcc=null) {
-		$vs_view_path = (is_object($po_request)) ? $po_request->getViewsDirectoryPath() : __CA_BASE_DIR__.'/themes/default/views';
-		
-		$o_view = new View(null, $vs_view_path."/mailTemplates");
+		$o_view = new View(null, $po_request->getViewsDirectoryPath()."/mailTemplates");
 		foreach($pa_values as $vs_key => $vm_val) {
 			$o_view->setVar($vs_key, $vm_val);
 		}
