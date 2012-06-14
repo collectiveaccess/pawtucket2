@@ -1,7 +1,7 @@
 <h1>Digital Library FAQ</h1>
 <div class="textContent">
 	<div>
-		<b><i>How do I purchase an image I see in the Digital Library?</i></b><br/>
+		<a name="purchase"></a><b><i>How do I purchase an image I see in the Digital Library?</i></b><br/>
 		Digital images, archival prints, and permission to reproduce, publish, exhibit, or distribute these materials are available, for a fee, through our Rights and Reproductions department.  To purchase images, please <?php print caNavLink($this->request, "Login/Register", "", "", "LoginReg", "form"); ?> with a new or existing Digital Library account.  Once you are logged in, add images to your gallery, check off the requested services for each image, and click the “Purchase or Inquire about Items” link to submit your order.
 		<A href="#messagingvideo">This video demonstration</a> provides an example of how the communication process for most orders and queries work with the digital library.  
 	</div>
