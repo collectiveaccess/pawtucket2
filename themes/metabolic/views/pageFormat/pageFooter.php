@@ -1,7 +1,7 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div></div><!-- end pageArea -->
 <?php
 		# --- depending on the current page, we might need an extra /div to close the border table around the pageArea div
-		if(in_array($this->request->getController(), array("Object", "Entity", "Occurrence", "Collection", "Place", "Form"))){
+		if(in_array($this->request->getController(), array("Object", "Entity", "Occurrence", "Collection", "Place", "Form", "Share"))){
 			print "</div><!-- end detailPageAreaBorder -->";
 		}
 ?>

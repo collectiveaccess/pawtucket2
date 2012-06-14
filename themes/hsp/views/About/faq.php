@@ -54,3 +54,5 @@
 		<A name="imagesearchvideo">Video on how to search for images</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/4rHuVb1Wpmc" frameborder="0" allowfullscreen></iframe><p>
 		<A name="imageviewervideo">Video on how to use the image viewer</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/WK_-z0eLLyc" frameborder="0" allowfullscreen></iframe><p>
 		<A name="messagingvideo">Video on how to send messages and communicate</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/RlXRMpT8Hq8" frameborder="0" allowfullscreen></iframe><p>
+	</div>
+</div>

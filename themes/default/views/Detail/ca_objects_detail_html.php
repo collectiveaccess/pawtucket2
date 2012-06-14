@@ -103,13 +103,14 @@
 			if(sizeof($va_children) > 0){
 				print "<div class='unit'><h2>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</h2> ";
 				$i = 0;
-				foreach($va_children as $va_child){
+				$va_children_ids = array_values($t_object->get("ca_objects.children.object_id", array('returnAsArray' => 1, 'checkAccess' => $va_access_values)));
+				foreach($va_children as $vn_i => $vs_name){
 					# only show the first 5 and have a more link
 					if($i == 5){
 						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>["._t("More")."]</a></div><!-- end moreChildrenLink -->";
 						print "<div id='moreChildren' style='display:none;'>";
 					}
-					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
+					print "<div>".caNavLink($this->request, $vs_name, '', 'Detail', 'Object', 'Show', array('object_id' => $va_children_ids[$vn_i]))."</div>";
 					$i++;
 					if(($i >= 5) && ($i == sizeof($va_children))){
 						print "</div><!-- end moreChildren -->";

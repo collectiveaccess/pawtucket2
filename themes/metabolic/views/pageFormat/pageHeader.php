@@ -115,7 +115,7 @@
 	$vs_search = $o_result_context->getSearchExpression();
 
 	$vs_controller = $this->request->getController();
-	if ($vs_controller == 'Object' | $vs_controller == 'Entity' | $vs_controller == 'Occurrence' | $vs_controller == 'Collection' | $vs_controller == 'Place' | $vs_controller == 'Form') {
+	if (in_array($vs_controller, array('Object', 'Entity', 'Occurrence', 'Collection', 'Place', 'Form', 'Share'))) {
 		print "<div id='detailPageAreaBorder'><div id='detailPageArea'>";
 	} else {
 		print "<div id='pageArea'>";
