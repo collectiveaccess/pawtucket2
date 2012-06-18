@@ -3623,6 +3623,31 @@ $pa_options["display_form_field_tips"] = true;
 		
 		return $o_res;
 	}
+	# ------------------------------------------------------------------
+	/**
+	 * Creates a search result instance for the specified table containing the specified keys as if they had been returned by a search or browse.
+	 * This method is useful when you need to efficiently retrieve data from an arbitrary set of records since you get all of the lazy loading functionality
+	 * of a standard search result without having to actually perform a search.
+	 *
+	 * Requires PHP 5.3 since it uses the get_called_class() function
+	 *
+	 * @param array $pa_ids List of primary key values to create result set for. Result set will contain specified keys in the order in which that are passed in the array.
+	 * @return SearchResult A search result of for the specified table
+	 */
+	static public function createResultSet($pa_ids) {
+		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+		$o_dm = Datamodel::load();
+		$pn_table_num = $o_dm->getTableNum(get_called_class());
+		if (!($t_instance = $o_dm->getInstanceByTableNum($pn_table_num))) { return null; }
+	
+		if (!($vs_search_result_class = $t_instance->getProperty('SEARCH_RESULT_CLASSNAME'))) { return null; }
+		require_once(__CA_LIB_DIR__.'/ca/Search/'.$vs_search_result_class.'.php');
+		$o_data = new WLPlugSearchEngineCachedResult($pa_ids, array(), $t_instance->primaryKey());
+		$o_res = new $vs_search_result_class();
+		$o_res->init($t_instance->tableNum(), $o_data, array());
+		
+		return $o_res;
+	}
 	# --------------------------------------------------------------------------------------------
 }
 ?>
