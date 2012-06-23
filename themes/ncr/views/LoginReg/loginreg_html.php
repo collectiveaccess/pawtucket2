@@ -91,6 +91,7 @@ $(document).ready(function() {
 					print "<div class='formErrors' style='text-align: left;'>".$va_errors["email"]."</div>";
 				}
 				print $this->getVar("email");
+if($x){
 				$va_research_fields = array("Art Collector", "Gallerist/Dealer", "Collections Manager", "Auction House Professional", "Appraiser", "Insurance Professional", "Librarian", "Curator", "Museum Professional", "Researcher/Scholar", "Educator", "Student", "Other");
 				if($va_errors["field_of_research"]){
 					print "<div class='formErrors' style='text-align: left;'>".$va_errors["field_of_research"]."</div>";
@@ -108,6 +109,20 @@ $(document).ready(function() {
 					</select>
 				</div>
 <?php
+}
+				// Output user profile settings if defined
+				$va_user_profile_settings = $this->getVar('profile_settings');
+				if (is_array($va_user_profile_settings) && sizeof($va_user_profile_settings)) {
+					foreach($va_user_profile_settings as $vs_field => $va_info) {
+						if($va_errors[$vs_field]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors[$vs_field]."</div>";
+						}
+						print $va_info['formatted_element'];
+					}
+				}
+				
+				
+				
 				if($va_errors["security"]){
 					print "<div class='formErrors' style='text-align: left;'>".$va_errors["security"]."</div>";
 				}
