@@ -136,7 +136,7 @@ if (!$this->request->isAjax()) {
 			# --- description
 			if($this->request->config->get('ca_entities_description_attribute')){
 				if($vs_description_text = $t_entity->get("ca_entities.".$this->request->config->get('ca_entities_description_attribute'))){
-					$vn_rightColText .= "<h3>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute'))."</h3><div id='description' class='scrollPane'> {$vs_description_text}</div>";				
+					$vn_rightColText .= "<h3>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute'))."</h3><div id='description' class='scrollPane'><p> {$vs_description_text}</p></div>";				
 
 				}
 			}	
