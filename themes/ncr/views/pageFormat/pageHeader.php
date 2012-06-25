@@ -10,6 +10,7 @@
 	<!--[if IE]>
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getThemeUrlPath(true); ?>/css/iestyles.css" />
 	<![endif]-->
+	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-tileviewer/jquery.tileviewer.css" type="text/css" media="screen" />
 <?php
 	print JavascriptLoadManager::getLoadHTML($this->request->getBaseUrlPath());
 ?>
@@ -99,7 +100,7 @@ $(document).ready(function() {
 <?php
 							}
 ?>
-								<li><?php print caNavLink($this->request, _t("account information"), "", "system", "Preferences", "EditProfilePrefs"); ?></li>
+								<li><?php print caNavLink($this->request, _t("account information"), "", "", "Profile", "Edit"); ?></li>
 								<li><?php print caNavLink($this->request, _t("logout"), "", "", "LoginReg", "logout"); ?></li>
 							</ul>
 <?php
