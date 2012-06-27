@@ -64,7 +64,7 @@ h3{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0px;
 	padding: 0;
@@ -139,6 +139,7 @@ a img {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	letter-spacing: 2px;
 	text-transform: uppercase;
+	clear:both;
 }
 .divide{
 	border-bottom: 1px dotted #777;
@@ -212,7 +213,7 @@ a.caption:hover{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-right: 0px;
@@ -747,12 +748,12 @@ div.searchlight-results div.searchlight-selected {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	font-size: .8em;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 
 #detailBody #pageNav a{
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailBody #pageNav a:hover {
 	text-decoration:none;
@@ -871,7 +872,7 @@ div.searchlight-results div.searchlight-selected {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	font-size: .8em;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailNavBar a {
 	text-decoration:none;
@@ -879,7 +880,7 @@ div.searchlight-results div.searchlight-selected {
 	letter-spacing: 2px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailNavBar #next{
 	display:inline;
@@ -909,7 +910,7 @@ div.searchlight-results div.searchlight-selected {
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-left: 10px;
@@ -1385,7 +1386,7 @@ td.advSearchElement{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-right: 20px;
@@ -1479,7 +1480,7 @@ td.advSearchElement{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	padding: 0;
@@ -2439,9 +2440,12 @@ div.hierarchyBrowseTab {
 {
 	overflow: hidden;
 	position: relative;
-
+	outline: none;
 }
 
+* :focus { 
+	outline: 0; 
+}
 .jspPane
 {
 	position: absolute;

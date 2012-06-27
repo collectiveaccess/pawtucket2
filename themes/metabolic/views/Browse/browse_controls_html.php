@@ -36,6 +36,18 @@
 	
 	$vs_browse_target		= $this->getVar('target');
 	$t_object = new ca_objects();
+	$t_featured = new ca_sets();
+	$featured_set = $t_featured->load(array('set_code' => 'carousel'));
+	$set_item = $t_featured->getItems();
+	foreach ($set_item as $id => $item) {
+		foreach ($item as $i_d => $the_item) {
+			$carousel_ids[] = $the_item['object_id'];
+		}
+	}
+	
+	$qr_set = ca_objects::createResultSet($carousel_ids);
+
+	
 	$va_random_items = $t_object->getRandomItems(10, array('checkAccess' => $this->getVar('access_values'), 'hasRepresentations' => 1));
 	$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_random_items));
 	$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), array('small', 'thumbnail', 'preview','medium', 'widepreview'), array('checkAccess' => $this->getVar('access_values')));
@@ -170,16 +182,18 @@
 				
 				
 				print "<div id='browseSlideshow'>";
-				foreach($va_random_items as $vn_object_id => $va_object_info) {
-					$randomImageHeight = $va_media[$va_object_info['object_id']]["info"]["medium"]["HEIGHT"];
+				while($qr_set->nextHit()) {
+					
+					$randomImageHeight = $qr_set->getMediaInfo('ca_object_representations.media', 'medium', 'HEIGHT');
 					$randomImagePadding = ((410 - $randomImageHeight) / 2);
-					$va_object_info['title'] = $va_labels[$vn_object_id];
-					$va_object_info['media'] = $va_media[$vn_object_id];
-					$va_random_items[$vn_object_id] = $va_object_info;
+					$object_title = $qr_set->get('ca_objects.preferred_labels');
+					$object_media = $qr_set->get('ca_object_representations.media.medium');
+					$vn_object_id = $qr_set->get('ca_objects.object_id');
 					print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
-					print caNavLink($this->request, $va_media[$va_object_info['object_id']]["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-					print "<div id='browseRandomCaption'>".caNavLink($this->request, $va_object_info['title'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+					print caNavLink($this->request, $object_media, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
+					print "<div id='browseRandomCaption'>".caNavLink($this->request, $object_title, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 				}
+				
 				
 				print "</div>";
 				

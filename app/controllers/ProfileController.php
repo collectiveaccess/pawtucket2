@@ -37,7 +37,8 @@
  			$this->view->setVar("fname", $t_user->htmlFormElement("fname","<div><b>"._t("First name")."</b><br/>^ELEMENT</div>"));
  			$this->view->setVar("lname", $t_user->htmlFormElement("lname","<div><b>"._t("Last name")."</b><br/>^ELEMENT</div>"));
  			$this->view->setVar("email", $t_user->htmlFormElement("email","<div><b>"._t("Email address")."</b><br/>^ELEMENT</div>"));
- 			$this->view->setVar("password", $t_user->htmlFormElement("password","<div><b>"._t("Password")."</b><br/>^ELEMENT</div>", array('value' => '')));
+ 			$this->view->setVar("password", $t_user->htmlFormElement("password","<div><b>"._t("Password (Leave blank to keep existing password)")."</b><br/>^ELEMENT</div>", array('value' => '')));
+ 			$this->view->setVar("password_confirm", '<div><b>Password confirm (Leave blank to keep existing password)</b><br><input name="password_confirm" value="" size="60" maxlength="100" autocomplete="off" type="password"></div>');
  			
  			$va_profile_prefs = $t_user->getValidPreferences('profile');
  			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -60,6 +61,8 @@
 			$ps_email = strip_tags($this->request->getParameter("email", pString));
 			$ps_fname = strip_tags($this->request->getParameter("fname", pString));
 			$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+			$ps_password = strip_tags($this->request->getParameter("password", pString));
+			$ps_password_confirm = strip_tags($this->request->getParameter("password_confirm", pString));
 			
 			if (!caCheckEmailAddress($ps_email)) {
 				$va_errors["email"] = _t("E-mail address is not valid.");
@@ -75,6 +78,10 @@
 				$va_errors["lname"] = _t("Please enter your last name");
 			}else{
 				$t_user->set("lname", $ps_lname);
+			}
+			if($ps_password && ($ps_password != $ps_password_confirm)){
+				$va_errors["password_confirm"] = _t("Please confirm your password");
+				$va_errors["password"] = _t("Please re-enter your password");
 			}
 			
 			// Check user profile responses
@@ -102,6 +109,15 @@
 						# noop
 						break;
 					# -------------
+					case "password":
+						if(!$va_errors[$vs_f] && $_REQUEST[$vs_f]){
+							$t_user->set($vs_f,$_REQUEST[$vs_f]); # set field values
+							if ($t_user->numErrors() > 0) {
+								$va_errors[$vs_f] = join("; ", $t_user->getErrors());
+							}
+						}
+						break;
+					# -------------
 					default:
 						if(!$va_errors[$vs_f]){
 							$t_user->set($vs_f,$_REQUEST[$vs_f]); # set field values
@@ -122,14 +138,17 @@
 			}
 			
 			if(sizeof($va_errors) == 0){
+				$t_user->setMode(ACCESS_WRITE);
 				$t_user->update();
 				if($t_user->numErrors()) {
 					$va_errors["register"] = join("; ", $t_user->getErrors());
+					print $va_errors["register"];
+				}else{
+					$this->notification->addNotification(_t('Your profile has been updated.'), __NOTIFICATION_TYPE_INFO__);
 				}
 			}
 			$this->view->setVar('errors', $va_errors);
 			
-			$this->notification->addNotification(_t('Your profile has been updated.'), __NOTIFICATION_TYPE_INFO__);
 			$this->Edit();
  		}
  		# -------------------------------------------------------
