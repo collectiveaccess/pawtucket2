@@ -75,7 +75,13 @@
 				
 	<?php				
 
-					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray())."</div>";
+					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
+					if($this->request->isLoggedIn()){
+						print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout");
+					}else{
+						print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "form");
+					}
+					print "</div>";
 
 
 					if($this->request->isLoggedIn()){
