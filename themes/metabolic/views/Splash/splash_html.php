@@ -31,7 +31,7 @@
 		$t_featured = new ca_sets();
 	$featured_set = $t_featured->load(array('set_code' => 'splash'));
 	$carousel_ids = $t_featured->getItemRowIDs(array('shuffle' => true));
-	$qr_set = ca_objects::createResultSet($carousel_ids);
+	$qr_set = ca_objects::createResultSet(array_keys($carousel_ids));
 	
 	$va_item_ids = $this->getVar('featured_content_slideshow_id_list');
 	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"));
