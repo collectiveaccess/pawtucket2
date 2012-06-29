@@ -289,11 +289,12 @@ a.caption:hover{
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	margin-bottom:20px;
 }
+
 #nav a{
 	color: #7c7c7c;
   	border: none;
 	text-decoration:none;
-	text-transform: uppercase;
+	
 	line-height:1em; 
 	margin-right: 25px;
 	float:left;
@@ -301,6 +302,9 @@ a.caption:hover{
 #nav a:hover{
 	color: #7c7c7c;
 	text-decoration:none;
+}
+.navLink a {
+	text-transform: lowercase;
 }
 .advancedSearch {
 	/*margin-right:70px;*/
@@ -2301,12 +2305,12 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 1.5%; 
-	left: 1.5%; 
+	top: 5%; 
+	left: 5%; 
 	border: 4px solid #ccc; 
 	background-color: #FFFFFF; 
-	width: 97%; 
-	height: 97%; 
+	width: 90%; 
+	height: 90%; 
 	display: none;
 	margin: 0 auto;
 	padding: 0px;
@@ -2316,16 +2320,18 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	width:16px;
-	height:16px;
-	margin:10px;
-	background-image:url("../graphics/buttons/x.png");
+	width:34px;
+	height:34px;
+	margin:0px 3px 0px 0px;
+	background-image:url("../graphics/close.png");
 	background-repeat:no-repeat;
 	z-index: 32000;
 }
 #caMediaPanel #close a{
 	text-decoration:none;
-	font-size:16px;
+	font-size:32px;
+	width:34px;
+	height:34px;
 	border:0px;
 }
 #caMediaPanelContentArea {

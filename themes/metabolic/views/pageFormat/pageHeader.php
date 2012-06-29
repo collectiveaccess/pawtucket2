@@ -74,18 +74,13 @@
 			  <div id="nav">
 				
 	<?php				
-					print join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
 
-				if (!$this->request->config->get('dont_allow_registration_and_login')) {
+					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray())."</div>";
+
+
 					if($this->request->isLoggedIn()){
-						if(!$this->request->config->get('disable_my_collections')){
-							print caNavLink($this->request, _t("Sets"), "", "", "Sets", "Index");
-						}
-						print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout");
-					}else{
-						print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "form");
-					}
-				}
+						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(my sets)"), "", "", "Sets", "Index")."</div>";
+					}		 
 			
 				# Locale selection
 				global $g_ui_locale;
