@@ -71,6 +71,13 @@
  		 	$this->opn_action_type_id = $t_list->getItemIDFromList('occurrence_types', 'action');
  		 	$this->opn_context_type_id = $t_list->getItemIDFromList('occurrence_types', 'context');
  		 	
+ 		 	
+ 		 	$this->opn_yes_list_id = $t_list->getItemIDFromList('yes_no', 'yes');
+ 		 	
+ 		 	$t_relationship_types = new ca_relationship_types();
+ 		 	$this->opn_rel_type_action_display_image = $t_relationship_types->getRelationshipTypeID("ca_objects_x_occurrences", "display");
+ 		 	$this->opn_rel_type_action_secondary_images = $t_relationship_types->getRelationshipTypeID("ca_objects_x_occurrences", "secondary");
+ 		 	
  		 	$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
 			$this->view->setVar('access_values', $va_access_values);
@@ -107,7 +114,7 @@
 						$o_search->setTypeRestrictions(array($this->opn_action_type_id));
 					}
  		 			$o_search->addResultFilter("ca_occurrences.access", "IN", join(',', $this->opa_access_values));
-					$qr_res = $o_search->search("ca_collections.collection_id:{$vn_collection_id} AND ca_occurrences.date.dates_value:\"after 1000\"");
+					$qr_res = $o_search->search("ca_occurrences.includeChronology:".$this->opn_yes_list_id." AND ca_collections.collection_id:{$vn_collection_id} AND ca_occurrences.date.dates_value:\"after 1000\"");
  		
 					$va_silos[$vn_collection_id] = array(
 						'collection_id' => $vn_collection_id,
@@ -156,9 +163,11 @@
  			}
  		 	
  		 	$o_search->addResultFilter("ca_occurrences.access", "IN", join(',', $this->opa_access_values));
-			$qr_res = $o_search->search("ca_collections.collection_id:{$pn_silo_id}", array('sort' => 'ca_occurrences.date.dates_value', 'sort_direction' => 'asc'));
+			$qr_res = $o_search->search("ca_occurrences.includeChronology:".$this->opn_yes_list_id." AND ca_collections.collection_id:{$pn_silo_id}", array('sort' => 'ca_occurrences.date.dates_value', 'sort_direction' => 'asc'));
  		
- 			$qr_res->seek($pn_start);
+ 			$t_occ = new ca_occurrences();
+					
+			$qr_res->seek($pn_start);
  		 	$va_actions = array();
  		 	$vn_c = 0;
  		 	while($qr_res->nextHit()) {
@@ -175,7 +184,7 @@
  		 			}
  		 			$vs_entities = (implode(", ", $va_related_entities));
  		 		}
- 		 		# --- get one object image to show in action
+ 		 		# --- get one object image to show in action - related with relationship type "is display image for"
  		 		$vs_image = "";
  		 		$o_db = new Db();
 				$qr_action_object = $o_db->query("SELECT o.object_id, r.media
@@ -183,10 +192,19 @@
 													RIGHT JOIN ca_objects AS o ON x.object_id = o.object_id
 													RIGHT JOIN ca_objects_x_object_representations AS oxr ON o.object_id = oxr.object_id
 													RIGHT JOIN ca_object_representations AS r ON r.representation_id = oxr.representation_id
-													WHERE x.occurrence_id = ? AND oxr.is_primary > 0 AND o.access IN (?) AND r.access IN (?) LIMIT 1", $qr_res->get('ca_occurrences.occurrence_id'), join(", ", $this->opa_access_values), join(", ", $this->opa_access_values));
+													WHERE x.type_id = ? AND x.occurrence_id = ? AND oxr.is_primary > 0 AND o.access IN (?) AND r.access IN (?) LIMIT 1", $this->opn_rel_type_action_display_image, $qr_res->get('ca_occurrences.occurrence_id'), join(", ", $this->opa_access_values), join(", ", $this->opa_access_values));
 				if($qr_action_object->numRows() > 0){
 					$qr_action_object->nextRow();
-					$vs_image = $qr_action_object->getMediaTag("media", "chronothumb");
+					$vs_image = $qr_action_object->getMediaTag("media", "chronothumb").$qr_action_object->get("type_id");
+				}else{
+					$t_occ->load($qr_res->get("ca_occurrences.occurrence_id"));
+					if($t_occ->get("ca_occurrences.georeference.geocode")){
+						# attempt to display a small map instead of an image
+						$o_map = new GeographicMap(142, 72, 'timelineMap'.$pn_silo_id.$t_occ->get("ca_occurrences.occurrence_id"));
+						$o_map->mapFrom($t_occ, "ca_occurrences.georeference.geocode");
+						$vs_map = $o_map->render('HTML');
+						$vs_image = $vs_map;
+					}
 				}
  		 		$va_timestamps = array_shift($qr_res->get('ca_occurrences.date.dates_value', array('rawDate' => true, 'returnAsArray' => true)));
  		 		$va_actions[$vn_id = $qr_res->get('ca_occurrences.occurrence_id')] = array(
@@ -217,7 +235,7 @@
  			$pn_silo_id = $this->request->getParameter('silo_id', pInteger);
  			$t_action = new ca_occurrences($pn_action_id);
  			$va_action = array();
- 			$va_action["objects"] = $t_action->get('ca_objects', array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values));
+ 			$va_action["objects"] = $t_action->get('ca_objects', array("restrict_to_relationship_types" => array("secondary"), "returnAsArray" => 1, 'checkAccess' => $this->opa_access_values));
  			$va_action["label"] = $t_action->getLabelforDisplay();
  			$va_action["georeference"] = $t_action->get('ca_occurrences.georeference.geocode');
  			# --- get a bigger map if there are no objects to show
@@ -281,7 +299,7 @@
  				$o_search->setTypeRestrictions(array($this->opn_action_type_id));
  			}
  		 	$o_search->addResultFilter("ca_occurrences.access", "IN", join(',', $this->opa_access_values));
-			$qr_res = $o_search->search("ca_collections.collection_id:{$pn_silo_id}", array('sort' => 'ca_occurrences.date.dates_value', 'sort_direction' => 'asc'));
+			$qr_res = $o_search->search("ca_occurrences.includeChronology:".$this->opn_yes_list_id." AND ca_collections.collection_id:{$pn_silo_id}", array('sort' => 'ca_occurrences.date.dates_value', 'sort_direction' => 'asc'));
  		
  		 	$va_actions = array();
  		 	$vn_c = 0;
