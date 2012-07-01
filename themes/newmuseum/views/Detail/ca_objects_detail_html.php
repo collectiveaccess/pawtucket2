@@ -235,7 +235,7 @@ if (!$this->request->config->get('dont_show_see_also')) {
 					switch($va_rep_info) {
 						case 'application/pdf':
 						case 'application/msword':
-							print '<br/>'.caNavLink($this->request, 'Download PDF', '', 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $t_primary_rep->getPrimaryKey(), 'download' => 1));
+							print '<br/>'.caNavLink($this->request, 'Download full-quality PDF', '', 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $t_primary_rep->getPrimaryKey(), 'download' => 1));
 							break;
 					}
 				}
@@ -256,7 +256,7 @@ if (!$this->request->config->get('dont_show_see_also')) {
 					switch($va_rep_info) {
 						case 'application/pdf':
 						case 'application/msword':
-							print '<br/>'.caNavLink($this->request, 'Download PDF', '', 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $t_rep->getPrimaryKey(), 'download' => 1));
+							print '<br/>'.caNavLink($this->request, 'Download full-quality PDF', '', 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $t_rep->getPrimaryKey(), 'download' => 1));
 							break;
 					}
 				}
@@ -266,7 +266,7 @@ if (!$this->request->config->get('dont_show_see_also')) {
 			}
 		}
 		TooltipManager::add(
-			"#objectMedia", "Enlarge image/document"
+			"#objectMedia", "Preview web-quality image/document"
 		);
 ?>		
 		</div><!-- end rightCol -->
