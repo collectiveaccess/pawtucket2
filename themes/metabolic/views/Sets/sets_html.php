@@ -38,6 +38,26 @@
 	$va_errors 			= $this->getvar("errors");
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
+	$va_errors_share_set 	= $this->getVar("errors_share_set");
+	
+	# --- share - email a friend
+	# --- if there were errors in the form, the form paramas are passed back to preload the form
+	$vs_to_email = $this->getVar("to_email");
+	$vs_from_email = $this->getVar("from_email");
+	$vs_from_name = $this->getVar("from_name");
+	$vs_subject = $this->getVar("subject");
+	$vs_message = $this->getVar("message");
+	
+	# --- if params have not been passed, set some defaults
+	if(!$vs_subject && !$va_errors['subject']){
+		$vs_subject = $t_set->getLabelForDisplay();
+	}
+	if(!$vs_from_email && $this->request->isLoggedIn() && !$va_errors['from_email']){
+		$vs_from_email = $this->request->user->get("email");
+	}	
+	if(!$vs_from_name && $this->request->isLoggedIn() && !$va_errors['from_name']){
+		$vs_from_name = $this->request->user->getName();
+	}
 ?>
 <h1><?php print _t("Your Collections"); ?></h1>
 <div id="setItemEditor">
@@ -113,13 +133,12 @@
 		<h2><?php print _t("Options"); ?></h2>
 <?php
 	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
-?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <?php print caNavLink($this->request, _t("View slideshow"), '', '', 'Sets', 'slideshow', array('set_id' => $vn_set_id)); ?></div>
-<?php
+		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick=' $("#helpTips").slideUp(1); $("#newForm").slideDown(250);return false;'><?php print _t("Make a new collection"); ?></a></div>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this collection"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new collection"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
 			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Make a new collection"); ?></h2>
 					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
@@ -140,6 +159,57 @@
 						<br/><a href="#" name="newSetSubmit" onclick="document.forms.newSetForm.submit(); return false;"><?php print _t("Save"); ?></a>
 					</form>
 				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+			</div>
+			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Share this collection"); ?></h2>
+<?php
+				if($t_set->get("access") == 0){
+					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this set you must first edit the set and make the display option Public")."</div>";
+				}else{
+?>
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" id="shareSetForm">
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["to_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
+						}
+?>
+						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span></div>
+						<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["from_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_email"]."</div>";
+						}
+?>
+						<?php print _t("Your e-mail address"); ?></div>
+						<input type="text" name="from_email" value="<?php print $vs_from_email; ?>">
+
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["from_name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_name"]."</div>";
+						}
+?>
+						<?php print _t("Your name"); ?></div>
+						<input type="text" name="from_name" value="<?php print $vs_from_name; ?>">
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["subject"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["subject"]."</div>";
+						}
+?>
+						<?php print _t("Subject"); ?></div>
+						<input type="text" name="subject" value="<?php print $vs_subject; ?>">
+						<div class="formLabel"><?php print _t("Message"); ?></div>
+						<textarea name="message" rows="5"><?php print $vs_message; ?></textarea>
+						<br/><a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
+						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
+					</form>
+				<a href='#' id='editSetButton' onclick='$("#shareForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+<?php
+				}
+?>
 			</div>
 			<div id="helpTips" style="display:none;">
 <?php
@@ -302,3 +372,31 @@
 		_makeSortable();
 	</script>
 </div><!-- end setItemEditor -->
+
+	<div id="caSetsSlideshowPanel"> 
+		<div id="close"><a href="#" onclick="caSetsSlideshowPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
+		<div id="caSetsSlideshowPanelContentArea">
+		
+		</div>
+	</div>
+	<script type="text/javascript">
+	/*
+		Set up the "caSetsSlideshowPanel" panel that will be triggered by links in sets interface
+		Note that the actual <div>'s implementing the panel are located here in views/Sets/sets_html.php
+	*/
+	var caSetsSlideshowPanel;
+	jQuery(document).ready(function() {
+		if (caUI.initPanel) {
+			caSetsSlideshowPanel = caUI.initPanel({ 
+				panelID: 'caSetsSlideshowPanel',										/* DOM ID of the <div> enclosing the panel */
+				panelContentID: 'caSetsSlideshowPanelContentArea',		/* DOM ID of the content area <div> in the panel */
+				exposeBackgroundColor: '#000000',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
+				exposeBackgroundOpacity: 0.8,							/* opacity of background color masking out page content; 1.0 is opaque */
+				panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
+				allowMobileSafariZooming: true,
+				mobileSafariViewportTagID: '_msafari_viewport',
+				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
+			});
+		}
+	});
+	</script>

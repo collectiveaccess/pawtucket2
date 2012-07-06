@@ -46,6 +46,7 @@
  			$this->view->setVar('client_services_config', $this->opo_client_services_config);
  			
 			JavascriptLoadManager::register("panel");
+			JavascriptLoadManager::register('cycle');
  		}
  		# -------------------------------------------------------
  		/** 
@@ -323,11 +324,97 @@
  			$this->index();
  		}
  		# -------------------------------------------------------
+ 		public function shareSet() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			
+ 			$va_errors_share_set = array();
+ 			
+ 			$t_set = new ca_sets();
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set->load($pn_set_id);
+ 			
+ 			$ps_to_email = $this->request->getParameter('to_email', pString);
+ 			$ps_from_email = $this->request->getParameter('from_email', pString);
+ 			$ps_from_name = $this->request->getParameter('from_name', pString);
+ 			$ps_subject = $this->request->getParameter('subject', pString);
+ 			$ps_message = $this->request->getParameter('message', pString);
+ 			
+			$o_purifier = new HTMLPurifier();
+    		$ps_message = $o_purifier->purify($ps_message);
+    		$ps_to_email = $o_purifier->purify($ps_to_email);
+    		$ps_from_email = $o_purifier->purify($ps_from_email);
+    		$ps_from_name = $o_purifier->purify($ps_from_name);
+    		$ps_subject = $o_purifier->purify($ps_subject);
+			
+			# --- check vars are set and email addresses are valid
+			$va_to_email = array();
+			$va_to_email_process = array();
+			if(!$ps_to_email){
+				$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+			}else{
+				# --- explode on commas to support multiple addresses - then check each one
+				$va_to_email_process = explode(",", $ps_to_email);
+				foreach($va_to_email_process as $vs_email_to_verify){
+					$vs_email_to_verify = trim($vs_email_to_verify);
+					if(caCheckEmailAddress($vs_email_to_verify)){
+						$va_to_email[$vs_email_to_verify] = "";
+					}else{
+						$ps_to_email = "";
+						$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+					}
+				}
+			}
+			if(!$ps_subject){
+				$va_errors_share_set["subject"] = _t("Please enter a subject");
+			}
+			if(!$ps_from_email || !caCheckEmailAddress($ps_from_email)){
+				$ps_from_email = "";
+				$va_errors_share_set["from_email"] = _t("Please enter a valid email address");
+			}
+			if(!$ps_from_name){
+				$va_errors_share_set["from_name"] = _t("Please enter your name");
+			}
+			
+
+ 			if(sizeof($va_errors_share_set) == 0){
+				# -- generate mail text from template - get both html and text versions
+				ob_start();
+				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_text.tpl");
+				$vs_mail_message_text = ob_get_contents();
+				ob_end_clean();
+				ob_start();
+				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_html.tpl");
+				$vs_mail_message_html = ob_get_contents();
+				ob_end_clean();
+								
+				if(caSendmail($va_to_email, array($ps_from_email => $ps_from_name), $ps_subject, $vs_mail_message_text, $vs_mail_message_html, null, null, $va_media)){
+ 					$this->notification->addNotification(_t("Your email was sent"), "message");
+ 				}else{
+ 					$this->notification->addNotification(_t("Your email could not be sent"), "message");
+ 					$va_errors_share_set["email"] = 1;
+ 				}
+ 			}
+ 			if(sizeof($va_errors_share_set)){
+ 				# --- there were errors in the form data, so reload form with errors displayed - pass params to preload form
+ 				$this->view->setVar('to_email', $ps_to_email);
+ 				$this->view->setVar('from_email', $ps_from_email);
+ 				$this->view->setVar('from_name', $ps_from_name);
+ 				$this->view->setVar('subject', $ps_subject);
+ 				$this->view->setVar('message', $ps_message);
+ 				
+ 				$this->notification->addNotification(_t("There were errors in your form"), "message");			
+ 			}
+ 			
+ 			$this->view->setVar('errors_share_set', $va_errors_share_set);
+ 			$this->index();
+ 		} 		
+ 		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function slideshow() {
-			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			
 			if (!$t_set->getPrimaryKey()) {
@@ -344,6 +431,7 @@
 			
 			$this->view->setVar('set_id', $pn_set_id);
 			$this->view->setVar('t_set', $t_set);
+			$this->view->setVar('items', caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('mediumlarge', 'large'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
 			
  			$this->render('Sets/sets_slideshow_html.php');
  		}

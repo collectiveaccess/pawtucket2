@@ -484,9 +484,9 @@ if (!$this->request->config->get('dont_allow_comments')) {
 
 					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
 						}else{
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
 						}
 					}
 
