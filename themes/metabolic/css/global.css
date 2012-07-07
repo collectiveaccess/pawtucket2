@@ -298,6 +298,9 @@ a.caption:hover{
 	margin-right: 25px;
 	float:left;
 }
+@media only screen and (max-device-width: 480px) {
+	#nav a { font-size: 20px; }
+}
 #nav a:hover{
 	color: #7c7c7c;
 	text-decoration:none;
@@ -375,6 +378,12 @@ a.caption:hover{
   padding: 2px 0px 2px 5px;
   height: 14px;
   margin: 0;
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	#search{ height: 40px;}
+	#search input[type="search"] {height: 28px;}
 }
 
 /* line 222, ../sass/styles.scss */
@@ -1117,6 +1126,11 @@ td.advSearchElement{
 	padding:0px 20px 10px 0px;
 	width:480px;
 }
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	td.advSearchElement{ width: 400px; }
+	#caAdvancedSearchForm input[type="text"] { width: 350px; }
+}
 .advSearchElement select {
 	min-width:150px;
 }
@@ -1686,6 +1700,11 @@ input.addItemToSetControlInThumbnails {
   -webkit-rtl-ordering: logical;
 -webkit-user-select: text;
 cursor: auto;
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	#loginForm input[type="text"], #loginForm input[type="password"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {height: 24px;}
 }
 
 /* ------------------------------------- */
