@@ -145,7 +145,7 @@ if($vo_result) {
 					$qr_ent_results = $this->getVar('secondary_search_ca_entities');
 					if($qr_ent_results->numHits()){
 						while($qr_ent_results->nextHit()) {
-							$va_hits_by_type[_t("People")][$qr_ent_results->get('entity_id')] = caNavLink($this->request, join('; ', $qr_ent_results->getDisplayLabels()), '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_ent_results->get('entity_id')));
+							$va_hits_by_type[1][_t("People")][$qr_ent_results->get('entity_id')] = caNavLink($this->request, join('; ', $qr_ent_results->getDisplayLabels()), '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_ent_results->get('entity_id')));
 						}
 					}
 				}
@@ -155,7 +155,7 @@ if($vo_result) {
 					$va_type_list = $t_occ->getTypeList();
 					if($qr_occ_results->numHits()){
 						while($qr_occ_results->nextHit()) {
-							$va_hits_by_type[$va_type_list[$qr_occ_results->get('type_id')]['name_plural']][$qr_occ_results->get('occurrence_id')] = caNavLink($this->request, join('; ', $qr_occ_results->getDisplayLabels()), '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $qr_occ_results->get('occurrence_id')));
+							$va_hits_by_type[$qr_occ_results->get('type_id')][$va_type_list[$qr_occ_results->get('type_id')]['name_plural']][$qr_occ_results->get('occurrence_id')] = caNavLink($this->request, join('; ', $qr_occ_results->getDisplayLabels()), '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $qr_occ_results->get('occurrence_id')));
 						}
 					}
 				}
@@ -166,12 +166,17 @@ if($vo_result) {
 				
 				$vn_width_in_percent = floor(100/sizeof($va_hits_by_type));
 				
-				foreach($va_hits_by_type as $vs_type => $va_hits) {
-					print "<td valign='top' width='{$vn_width_in_percent}%'><div class='header'>".$vs_type."</div>\n";
-					foreach($va_hits as $vn_occ_id => $vs_link) {
-						print $vs_link."<br/>\n";
+				
+				$va_type_id_list = array(1, 68, 69, 71, 70);
+				//foreach($va_hits_by_type as $vs_type => $va_hits) {
+				foreach($va_type_id_list as $vn_type_id) {
+					foreach($va_hits_by_type[$vn_type_id] as $vs_type => $va_hits) {
+						print "<td valign='top' width='{$vn_width_in_percent}%'><div class='header'>".$vs_type."</div>\n";
+						foreach($va_hits as $vn_occ_id => $vs_link) {
+							print $vs_link."<br/>\n";
+						}
+						print "</td>\n";
 					}
-					print "</td>\n";
 				}
 				print "</tr></table>\n";
 				print "</div>\n";
