@@ -202,7 +202,7 @@
 						# attempt to display a small map instead of an image
 						$o_map = new GeographicMap(142, 72, 'timelineMap'.$pn_silo_id.$t_occ->get("ca_occurrences.occurrence_id"));
 						$o_map->mapFrom($t_occ, "ca_occurrences.georeference.geocode");
-						$vs_map = $o_map->render('HTML');
+						$vs_map = $o_map->render('JPEG', array('zoomLevel' => 12, 'mapType' => 'TERRAIN'));
 						$vs_image = $vs_map;
 					}
 				}
