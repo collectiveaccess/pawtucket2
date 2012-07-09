@@ -377,6 +377,7 @@
 	width:960px;
 	-moz-border-radius-topleft: 15px; 
 	-webkit-border-top-left-radius: 15px;
+	border-top-left-radius: 15px;
 	z-index:10000;
 }
 .historicalContextContainer .hcInfo{
@@ -407,6 +408,7 @@
 	padding:10px 0px 0px 10px;
 	-moz-border-radius-topleft: 15px; 
 	-webkit-border-top-left-radius: 15px;
+	border-top-left-radius: 15px;
 	z-index:10000;
 }
 .historicalContextPlaceHolder a{

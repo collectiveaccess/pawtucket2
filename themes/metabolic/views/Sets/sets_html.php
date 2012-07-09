@@ -59,13 +59,13 @@
 		$vs_from_name = $this->request->user->getName();
 	}
 ?>
-<h1><?php print _t("Your Collections"); ?></h1>
+<h1><?php print _t("Your Sets"); ?></h1>
 <div id="setItemEditor">
 	<div id="rightCol">
 <?php
 	if ($vn_set_id) {
 ?>
-		<h2><?php print _t("Current Collection"); ?></h2>
+		<h2><?php print _t("Current Set"); ?></h2>
 <?php
 		# --- current set info and form to edit
 		if($vn_set_id){
@@ -76,7 +76,7 @@
 				$vs_access = _t("private");
 			}
 			print "<strong>".$this->getVar("set_name")."</strong>";
-			print "&nbsp;&mdash;&nbsp;<em>"._t("This collection is %1", $vs_access)."</em>";
+			print "&nbsp;&mdash;&nbsp;<em>"._t("This set is %1", $vs_access)."</em>";
 			if ($this->getVar("set_access") == 1) {
 				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='27'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
 			}
@@ -84,11 +84,11 @@
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
 			}
 			
-			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Collection")." &rsaquo;</a></div>";
+			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Set")." &rsaquo;</a></div>";
 			print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
-				<h2><?php print _t("Collection Information"); ?></h2>
+				<h2><?php print _t("Set Information"); ?></h2>
 <?php
 				if($va_errors_edit_set["edit_set"]){
 					print "<div class='formErrors'>".$va_errors_edit_set["edit_set"]."</div>";
@@ -119,7 +119,7 @@
 	}
 ?>
 
-		<h2><?php print _t("Your Collections"); ?></h2>
+		<h2><?php print _t("Your Sets"); ?></h2>
 <?php
 	foreach($va_sets as $va_set) {
 		if($va_set['set_id'] == $vn_set_id){
@@ -136,11 +136,11 @@
 		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this collection"); ?></a></div>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new collection"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this set"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new set"); ?></a></div>
 		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
 			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
-				<h2><?php print _t("Make a new collection"); ?></h2>
+				<h2><?php print _t("Make a new set"); ?></h2>
 					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
 <?php
 						if($va_errors_new_set["name"]){
@@ -161,7 +161,7 @@
 				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
 			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
-				<h2><?php print _t("Share this collection"); ?></h2>
+				<h2><?php print _t("Share this set"); ?></h2>
 <?php
 				if($t_set->get("access") == 0){
 					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this set you must first edit the set and make the display option Public")."</div>";
@@ -216,44 +216,44 @@
 			print "<h2>"._t("Help Tips")."</h2>";
 ?>
 				<ul>
-					<li><strong><?php print _t("How do I add content to my collection?"); ?></strong>
+					<li><strong><?php print _t("How do I add content to my set?"); ?></strong>
 						<div>
-							<?php print _t("You can add images and video to your collection while you are browsing the website.  You'll find <em>Add to Collection</em> links beneath images and video throughout the site."); ?>
+							<?php print _t("You can add images and video to your set while you are browsing the website.  You'll find <em>Add to Set</em> links beneath images and video throughout the site."); ?>
 						</div>
 					</li>
 				</ul>
 				<ul>
-					<li><strong><?php print _t("Can I have more than one collection?"); ?></strong>
+					<li><strong><?php print _t("Can I have more than one set?"); ?></strong>
 						<div>
-							<?php print _t("Yes.  Click the <em>Make a new collection</em> link above to create a new collection."); ?>
+							<?php print _t("Yes.  Click the <em>Make a new set</em> link above to create a new set."); ?>
 						</div>
 					</li>
 				</ul>
 				<ul>
-					<li><strong><?php print _t("How do I change between collections?"); ?></strong>
+					<li><strong><?php print _t("How do I change between sets?"); ?></strong>
 						<div>
-							<?php print _t("Click on the name of the collection you want to work with in the <em>YOUR COLLECTIONS</em> list."); ?>
+							<?php print _t("Click on the name of the set you want to work with in the <em>YOUR SETS</em> list."); ?>
 						</div>
 					</li>
 				</ul>
 				<ul>
-					<li><strong><?php print _t("How can I change the name of my collection?"); ?></strong>
+					<li><strong><?php print _t("How can I change the name of my set?"); ?></strong>
 						<div>
-							<?php print _t("Click the <em>EDIT</em> link in the <em>CURRENT COLLECTION</em> box above.  A form will slide open allowing you to change the name, display options and description of the collection you are currently working with."); ?>
+							<?php print _t("Click the <em>EDIT</em> link in the <em>CURRENT SET</em> box above.  A form will slide open allowing you to change the name, display options and description of the set you are currently working with."); ?>
 						</div>
 					</li>
 				</ul>
 				<ul>
-					<li><strong><?php print _t("Can I change the order of the content in my collection's slide show?"); ?></strong>
+					<li><strong><?php print _t("Can I change the order of the content in my set's slide show?"); ?></strong>
 						<div>
-							<?php print _t("Yes.  You can organize the content in your collections by dragging and dropping them into your preferred order.  Your changes are automatically saved once you drop the content into place."); ?>
+							<?php print _t("Yes.  You can organize the content in your sets by dragging and dropping them into your preferred order.  Your changes are automatically saved once you drop the content into place."); ?>
 						</div>
 					</li>
 				</ul>
 				<ul>
-					<li><strong><?php print _t("Can I share my collection with others?"); ?></strong>
+					<li><strong><?php print _t("Can I share my set with others?"); ?></strong>
 						<div>
-							<?php print _t("Yes.  When you set the display option of your collection to <em>Public</em>, your collection's slideshow becomes publicly accessible.  You can share the link to your slideshow with friends, students and colleagues."); ?>
+							<?php print _t("Yes.  When you set the display option of your set to <em>Public</em>, your set's slideshow becomes publicly accessible.  You can share the link to your slideshow with friends, students and colleagues."); ?>
 						</div>
 					</li>
 				</ul>
@@ -268,7 +268,7 @@
 ?>
 					<div class="error">
 <?php
-						print _t('There are no collections to edit. Create a collection to start.');
+						print _t('There are no sets to edit. Create a set to start.');
 ?>
 					</div>
 <?php		
@@ -278,7 +278,7 @@
 ?>
 					<div class="error">
 <?php
-						print _t('Choose a collection to begin editing.');
+						print _t('Choose a set to begin editing.');
 ?>
 					</div>
 <?php			
@@ -288,7 +288,7 @@
 ?>
 					<div class="error">
 <?php
-						print _t('There are no items in this collection.');
+						print _t('There are no items in this set.');
 ?>
 					</div>
 <?php
