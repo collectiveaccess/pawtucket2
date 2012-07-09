@@ -677,6 +677,7 @@ div.searchlight-results div.searchlight-selected {
 	width:245px;
 	margin:0px;
 	border: 1px solid #e2e2e2;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2519,6 +2520,7 @@ div.hierarchyBrowseTab {
 {
 	background: #dde;
 	position: relative;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2536,6 +2538,7 @@ div.hierarchyBrowseTab {
 	top: 0;
 	left: 0;
 	cursor: pointer;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2559,6 +2562,7 @@ div.hierarchyBrowseTab {
 	text-indent: -20000px;
 	display: block;
 	cursor: pointer;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
