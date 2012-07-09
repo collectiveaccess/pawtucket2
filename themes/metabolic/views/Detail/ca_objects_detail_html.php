@@ -55,14 +55,14 @@
 ?>
 		</div><!-- end nav -->
 		<div class='titleBar'>
-			<div class='recordTitle'><h1><?php print $vs_title; ?></h1></div>
-			<div class='idno'>
-<?php
+			<div class='recordTitle'><h1>
+<?php	
 			if($t_object->get('idno')){
-				print "<b>"._t("Identifier").":</b> ".$t_object->get('idno')."<!-- end unit -->";
+				print $t_object->get('idno');
 			}
-?>
-			</div>
+?>			
+			</h1></div>
+
 		</div>
 		<div style='clear:both;height:16px;'></div>
 		<div id="rightCol">
@@ -73,6 +73,7 @@
 
 <?php
 			}
+			print "<h3>Title</h3><p>".$vs_title."</p>";
 			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
