@@ -434,7 +434,86 @@
 			$this->view->setVar('items', caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('mediumlarge', 'large'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
 			
  			$this->render('Sets/sets_slideshow_html.php');
- 		}
+ 		}		
+ 		# -------------------------------------------------------
+		# Export
+		# -------------------------------------------------------
+		/**
+		 * Generate  export file of current set items
+		 */
+		public function export() {
+			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
+ 			if (!$t_set = $this->_getSet()) { 
+ 				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
+				$this->Index();
+ 			}
+ 			set_time_limit(7200);
+ 			$ps_output_type = $this->request->getParameter('output_type', pString);
+ 			$this->view->setVar('t_set', $t_set);
+ 			
+ 			if($this->request->config->get("dont_enforce_access_settings")){
+ 				$va_access_values = array();
+ 			}else{
+ 				$va_access_values = caGetUserAccessValues($this->request);
+ 			}
+ 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID())));
+ 			$this->view->setVar('items', $va_items);
+			$vs_output_filename = $t_set->getLabelForDisplay();
+			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
+
+			switch($ps_output_type) {
+				case '_pdf':
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
+					require_once(__CA_LIB_DIR__."/core/Print/html2pdf/html2pdf.class.php");
+					
+					try {
+						$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
+						$vo_html2pdf = new HTML2PDF('P','letter','en');
+						$vo_html2pdf->setDefaultFont("dejavusans");
+						$vo_html2pdf->WriteHTML($vs_content);
+						header("Content-Disposition: attachment; filename=".$vs_output_filename.".pdf");
+						header("Content-type: application/pdf");
+			
+						$vo_html2pdf->Output($vs_output_filename.".pdf");
+						$vb_printed_properly = true;
+					} catch (Exception $e) {
+						$vb_printed_properly = false;
+						$this->postError(3100, _t("Could not generate PDF"),"SetsController->PrintSummary()");
+					}
+					return;
+					break;
+				case '_csv':
+					$vs_delimiter = ",";
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_csv');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";
+					break;
+				case '_tab':
+					$vs_delimiter = "\t";	
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_tab');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";	
+					break;
+			}
+
+			header("Content-Disposition: attachment; filename=export_".$vs_output_file_name.".".$vs_file_extension);
+			header("Content-type: ".$vs_mimetype);
+			
+			$va_rows = array();
+			# --- headings
+			$va_row[] = _t("Media");
+			$va_row[] = _t("ID");
+			$va_row[] = _t("Label");
+			$va_rows[] = join($vs_delimiter, $va_row);
+			foreach($va_items as $va_item){
+				$va_row = array();
+				$va_row[] = $va_item["representation_url_thumbnail"];
+				$va_row[] = $va_item["idno"];
+				$va_row[] = $va_item["name"];
+				$va_rows[] = join($vs_delimiter, $va_row);
+			}
+			$this->opo_response->addContent(join("\n", $va_rows), 'view');		
+		}
  		# -------------------------------------------------------
  		# XML data providers
  		# -------------------------------------------------------
