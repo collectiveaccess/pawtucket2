@@ -139,7 +139,7 @@
 			if(!$ps_subject){
 				$va_errors["subject"] = _t("Please enter a subject");
 			}
-			if(!$ps_message){
+			if(!$ps_message && ($this->opo_plugin_config->get('require_message_text'))){
 				$va_errors["message"] = _t("Please enter a message");
 			}
 			if(!$this->request->isLoggedIn()){
@@ -343,7 +343,7 @@
 			if(!$ps_subject){
 				$va_errors["subject"] = _t("Please enter a subject");
 			}
-			if(!$ps_message){
+			if(!$ps_message && ($this->opo_plugin_config->get('require_message_text'))){
 				$va_errors["message"] = _t("Please enter a message");
 			}
 			if(!$this->request->isLoggedIn()){

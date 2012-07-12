@@ -134,7 +134,7 @@ if (!$this->request->isAjax()) {
 			# --- description
 			if($this->request->config->get('ca_collections_description_attribute')){
 				if($vs_description_text = $t_collection->get("ca_collections.".$this->request->config->get('ca_collections_description_attribute'))){
-					print "<h3>".$t_collection->getDisplayLabel("ca_collections.".$this->request->config->get('ca_collections_description_attribute'))."</h3><div id='description' class='scrollPane'> {$vs_description_text}</div><!-- end unit -->";				
+					print "<h3>".$t_collection->getDisplayLabel("ca_collections.".$this->request->config->get('ca_collections_description_attribute'))."</h3><div id='description' class='scrollPane'><p>{$vs_description_text}</p></div><!-- end unit -->";				
 
 				}
 			}

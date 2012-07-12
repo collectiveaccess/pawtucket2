@@ -111,7 +111,7 @@
 					}
 					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
 					$i++;
-					if(($i >= 5) && ($i == sizeof($va_children))){
+					if($i == sizeof($va_children)){
 						print "</div><!-- end moreChildren -->";
 					}
 				}

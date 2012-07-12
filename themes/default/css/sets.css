@@ -12,6 +12,7 @@
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 15px 0px;
 	background-color: #E2E2E2;	
+	border-radius:10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -331,6 +332,7 @@ div.setInfo{
 	font-size:11px;
 	cursor:pointer;
 	
+	border-radius:3px;
 	-moz-border-radius-bottomleft: 3px; 
 	-webkit-border-bottom-left-radius: 3px;
 	-moz-border-radius-bottomright: 3px; 
@@ -360,6 +362,7 @@ div.setInfo{
 	background-color:#EFEFEF;
 	
 	
+	border-radius:10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -455,6 +458,7 @@ a.caClientCommunicationsMessageSummaryCounter {
 	color: #FFFFFF;
 	padding:4px;
 	text-transform:uppercase;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -540,6 +544,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 /* List of orders */
 #caClientOrdersList {
 	border-spacing:3px;
+	border-top-right-radius:10px;
 	-moz-border-radius-topright: 10px; 
 	-webkit-border-top-right-radius: 10px;
 }
@@ -550,12 +555,16 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:13px;
 }
 #caClientOrdersList th.first{
+	border-bottom-left-radius:5px;
+	border-top-left-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-topleft: 5px; 
 	-webkit-border-top-left-radius: 5px;
 }
 #caClientOrdersList th.last{
+	border-bottom-right-radius:5px;
+	border-top-right-radius:5px;
 	-moz-border-radius-bottomright: 5px; 
 	-webkit-border-bottom-right-radius: 5px;
 	-moz-border-radius-topright: 5px; 
@@ -591,6 +600,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	border: 1px solid #E2E2E2;
 	padding:10px;
 	margin:0px 0px 20px 0px;
+	border-radius:10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -619,6 +629,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:15px;
 	padding:10px;
 	margin:0px 0px 10px 10px;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -659,6 +670,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:14px;
 	padding:5px 10px 4px 10px;
 	font-weight:bold;
+	border-radius:15px;
 	-moz-border-radius-bottomleft: 15px; 
 	-webkit-border-bottom-left-radius: 15px;
 	-moz-border-radius-bottomright: 15px; 
@@ -716,6 +728,7 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 	font-weight:bold;
 	padding:5px;
 	margin:0px 0px 10px 10px;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -750,4 +763,121 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 	width:260px;
 	height:120px;
 	overflow:auto;
+}
+
+
+
+
+/* overlay (for slideshow) */
+#caSetsSlideshowPanel {
+	position: fixed; 
+	top: 0px; 
+	left: 0px;
+	width: 100%; 
+	height: 100%;
+	display: none;
+	margin: 0 auto;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#caSetsSlideshowPanel #close{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width:34px;
+	height:34px;
+	margin:0px 3px 0px 0px;
+	background-image:url("../graphics/close.png");
+	background-repeat:no-repeat;
+	z-index: 32000;
+}
+#caSetsSlideshowPanel #close a{
+	text-decoration:none;
+	font-size:32px;
+	width:34px;
+	height:34px;
+	border:0px;
+}
+#caSetsSlideshowPanelContentArea {
+	width: 700px; 
+	height: 700px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshow div{
+	width:100%;
+	text-align:center;
+}
+
+.caSetsSlideshowCaption{
+	color: #828282;
+	font-size:13px;
+	padding-top:10px;
+}
+/*#caSetsSlideshowPrevious {
+	position:absolute;
+	top:250px;
+	left:-20px;
+}
+#caSetsSlideshowNext {
+	position:absolute;
+	top:250px;
+	right:-20px;
+}*/
+#caSetsSlideshowPrevious {
+	float:left;
+}
+#caSetsSlideshowNext {
+	float:right;
+}
+#caSetsSlideshowNext a, #caSetsSlideshowPrevious a{
+	font-size:35px;
+	color:#828282;
+	text-decoration:none;
+}
+#caSetsSlideshowPlayPause a{
+	color:#828282;
+	font-size:20px;
+}
+#caSetsSlideshowToolBar{
+	width:120px;
+	background-color:#EDEDED;
+	border-radius: 8px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	padding:10px;
+}
+
+/* styles for the slideshow when in media panel */
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:100%;
+}
+
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer H1{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea .caSetsSlideshowCaption{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowToolBar{
+	background-color: #828282;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowNext a, #caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious a{
+	color:#ededed;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause a{
+	color:#ededed;
 }

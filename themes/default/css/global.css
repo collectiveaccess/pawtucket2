@@ -50,7 +50,7 @@ h3{
 	line-height:1.1em;
 }
 h3 a{
-	tet-decoration:none;
+	text-decoration:none;
 }
 a{
 	text-decoration:underline;
@@ -163,6 +163,9 @@ a.caption:hover{
 	line-height:1.7em;
 	color:#828282;
 	z-index:10000;
+	border-bottom-right-radius:10px;
+	border-bottom-left-radius:10px;
+	border-top-left-radius:10px;
 	-moz-border-radius-topleft: 10px; 
 	-webkit-border-top-left-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
@@ -200,6 +203,7 @@ a.caption:hover{
 	width: 890px;
 	height:22px;
 	position:relative;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -466,6 +470,7 @@ div.searchlight-results div.searchlight-selected {
 	width:245px;
 	margin:0px;
 	border: 1px solid #e2e2e2;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -643,10 +648,13 @@ div.searchlight-results div.searchlight-selected {
 	width: 574px;
 	height:15px;
 	text-align:left;
+	
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
 	-webkit-border-bottom-right-radius: 10px;
+	border-bottom-right-radius:10px;
+	border-bottom-left-radius:10px;
 }
 #objDetailImageNav{
 	text-decoration:none;
@@ -771,6 +779,7 @@ div.searchlight-results div.searchlight-selected {
 	background-color: #E6E6E6;
 	padding:10px 10px 0px 10px;
 	margin:0px 0px 15px 0px;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -1027,8 +1036,19 @@ td.advSearchElement{
 	text-decoration:none;
 }
 
+/* find results add to set controls */
+input.addItemToSetControl {
+	display: none;
+}
+
+input.addItemToSetControlInThumbnails {
+	float: left;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
 /* search/browse options box - horizontal show hide */
-#showOptions{
+#showOptions, #showTools{
 	float:right;
 	margin: 1px 2px 0px 10px;
 	text-decoration:none;
@@ -1037,7 +1057,7 @@ td.advSearchElement{
 	font-size:11px;
 	
 }
-#hideOptions{
+#hideOptions, #hideTools{
 	position:absolute;
 	right:20px;
 	top:20px;
@@ -1048,7 +1068,7 @@ td.advSearchElement{
 	font-size:12px;
 	
 }
-#searchOptionsBox{
+#searchOptionsBox, #searchToolsBox{
 	position:relative;
 	clear:both;
 	margin: 0px 0px 0px 0px;
@@ -1059,12 +1079,12 @@ td.advSearchElement{
 #browse #searchOptionsBox{	/* need extra space above this box in the browse */
 	margin: 10px 0px 0px 0px;
 }
-#searchOptionsBox .col{
+#searchOptionsBox .col, #searchToolsBox .col{
 	float:left;
 	width:38%;
 	color:#828282;
 }
-#searchOptionsBox .col .unit{
+#searchOptionsBox .col .unit, #searchToolsBox .col .unit{
 	float:left;
 	padding:0px 20px 20px 10px;
 	color:#828282;
@@ -1084,7 +1104,7 @@ td.advSearchElement{
 	margin-right:10px;
 	border:0px;
 }
-#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading{
+#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading, #searchToolsBox .col .heading{
 	font-size:14px;
 	font-weight:bold;
 	color:#000000;
@@ -1094,6 +1114,11 @@ td.advSearchElement{
 	background-color: #E2E2E2;
 	border:0px;
 	padding:20px 20px 10px 20px;
+}
+#searchToolsBox .bg{
+	background-color: #E2E2E2;
+	border:0px;
+	padding:15px;
 }
 #searchOptionsBox .apply{
 	margin:0px -20px 0px -20px;
@@ -1105,6 +1130,13 @@ td.advSearchElement{
 	text-decoration: none;
 	font-weight:bold;
 	font-size:14px;
+	color:#000000;
+	text-transform:uppercase;
+}
+#searchToolsBox a.apply{
+	text-decoration: none;
+	font-weight:bold;
+	font-size:12px;
 	color:#000000;
 	text-transform:uppercase;
 }
@@ -1210,6 +1242,7 @@ td.advSearchElement{
 	border: 1px solid #E2E2E2;
 	padding:10px;
 	margin:0px 0px 20px 0px;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -1683,6 +1716,7 @@ td.advSearchElement{
 	margin-left: -465px;
 	padding: 10px;
 	background-image: url("../graphics/bgStripeBW.gif");
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2090,4 +2124,133 @@ div.hierarchyBrowseTab {
 * html .jspCorner
 {
 	margin: 0 -3px 0 0;
+}
+
+/* ------------- */
+/* jGrowl styles */
+/* ------------- */
+div.jGrowl {
+	padding: 			10px;
+	z-index: 			9999;
+	color: 				#fff;
+	font-size: 			12px;
+}
+
+/** Special IE6 Style Positioning **/
+div.ie6 {
+	position: 			absolute;
+}
+
+div.ie6.top-right {
+	right: 				auto;
+	bottom: 			auto;
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+  	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.top-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-right {
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.center {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	width: 				100%;
+}
+
+/** Normal Style Positions **/
+body > div.jGrowl {
+	position:			fixed;
+	left: 				40%;
+	right: 				50%;
+	margin-top:			100px;
+}
+
+body > div.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
+}
+
+body > div.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
+}
+
+body > div.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
+}
+
+/** Cross Browser Styling **/
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: 		#FFFFFF;
+	width: 					235px;
+	padding: 				20px;
+	margin-top: 			40px;
+	margin-bottom: 			5px;
+	font-family: 			Arial, Helvetica, sans-serif;
+	font-size: 				1em;
+	text-align: 			left;
+	display: 				none;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 			40px;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+div.jGrowl div.jGrowl-notification div.header {
+	font-weight: 			bold;
+	font-size:				1em;
+}
+
+div.jGrowl div.jGrowl-notification div.close {
+	z-index:				99;
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				1em;
+	cursor:					pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				.9em;
+	font-weight: 			bold;
+	text-align: 			center;
+}
+
+/** Hide jGrowl when printing **/
+@media print {
+	div.jGrowl {
+		display: 			none;
+	}
 }

@@ -78,7 +78,7 @@ if (!$this->request->isAjax()) {
 			}			
 			# --- description
 				if($vs_description_text = $t_occurrence->get("ca_occurrences.description")){
-					print "<h3>Description</h3><div id='description' class='scrollPane'>".$vs_description_text."</div>";				
+					print "<h3>Description</h3><div id='description' class='scrollPane'><p>".$vs_description_text."</p></div>";				
 
 				}
 
