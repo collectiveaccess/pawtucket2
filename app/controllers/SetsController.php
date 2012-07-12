@@ -153,8 +153,12 @@
  			$t_comm = new ca_commerce_communications();
  			$this->view->setVar('messages', $t_comm->getMessages($this->request->getUserID(), array('transaction_id' => $vn_transaction_id)));
  			
- 			
- 			$this->render('Sets/sets_html.php');
+ 			# --- use a different view if client services is enabled
+ 			if($this->request->config->get("enable_client_services")){
+ 				$this->render('Sets/client_services_html.php');
+ 			}else{
+ 				$this->render('Sets/sets_html.php');
+ 			}
  		}
  		# -------------------------------------------------------
  		/**
