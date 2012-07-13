@@ -36,11 +36,11 @@
  		$vn_initial_page = 1;
  	}
 ?>
-<div id="BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>">
+<?php print ($vs_display_type != 'media_overlay') ? '<div id="BookReaderContainer">' : ''; ?><div id="BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>">
     <noscript>
     	<p><?php print _t('The BookReader requires JavaScript to be enabled. Please check that your browser supports JavaScript and that it is enabled in the browser settings.'); ?></p>
     </noscript>
-</div>
+</div><?php print ($vs_display_type != 'media_overlay') ? '</div>' : ''; ?>
 <script type="text/javascript">
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',
