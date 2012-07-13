@@ -40,22 +40,24 @@ table { border: 1px solid #999999; color: #000000; text-wrap: normal; font-size:
 table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 135px; height: 120px; padding: 5px; font-size: 11px;}
 tr.odd   { background-color: #f2f2f2; }
 .displayHeader { background-color: #EEEEEE; padding: 5px; border: 1px solid #999999; font-size: 12px; }
-.pageHeader { background-color: #FFFFFF; margin: 15px 10px 10px 10px; padding: 3px 5px 2px 5px; width: 100%; height: 45px; }
+.pageHeader { background-color: #FFFFFF; margin: 5px 10px 10px 10px; padding: 3px 5px 2px 5px; width: 100%; height: 45px; }
 .pageHeader img{ vertical-align:middle; }
-.headerText { color: #000; margin: 0px 0px 10px 35px; }
-.pagingText { color: #000; margin: 0px 0px 10px 35px; text-align: right; }
+.headerText { color: #000; margin: 0px 0px 10px 15px; }
+.pagingText { color: #000; margin: 0px 0px 10px 15px; text-align: right; }
 -->
 </style>
 
 	<page backtop="50px">
 	<page_header>
 		<div class='pageHeader'>
-
-			<img src="<?php print $this->request->getThemeDirectoryPath()."/graphics/metabolic_logo.png"; ?>"/>
-<?php 
+<?php
+			if(file_exists($this->request->getThemeDirectoryPath().'/graphics/metabolic_logo.png')){
+				print '<img src="'.$this->request->getThemeDirectoryPath().'/graphics/metabolic_logo.png"/>';
+ 			}
 			print "<span class='headerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</span>";
 			print "<span class='headerText'>".(($vn_num_items == 1) ? _t('%1 item', $vn_num_items) : _t('%1 items', $vn_num_items))."</span>";
-			print "<span class='headerText'>".mb_substr($vs_title, 0, 60).((mb_strlen($vs_title) > 60) ? '...' : '')."</span>";
+			print "<span class='headerText'>".mb_substr($vs_title, 0, 15).((mb_strlen($vs_title) > 15) ? '...' : '')."</span>";
+			print "<span class='pagingText'>"._t("page [%1]/[%2]", "[page_cu]", "[page_nb]")."</span>";
 ?>
 		</div>
 	</page_header>
