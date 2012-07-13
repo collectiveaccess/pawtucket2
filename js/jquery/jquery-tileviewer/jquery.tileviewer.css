@@ -37,6 +37,16 @@
 	margin:0 5px 0 5px;
 	opacity: 0.5;
 }
+@media only screen and (max-device-width: 480px) {
+	.tileviewerControl img {
+		width:65px;
+		height:65px;
+	}
+	.tileviewer p.viewerControls {
+		width: 300px;
+		height: 70px;
+	}
+}
 
 /*
 .tileviewer canvas.mode_pan:active {
