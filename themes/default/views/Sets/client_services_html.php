@@ -55,7 +55,7 @@
 	//
 	// Action buttons (create new set)
 	//
-	print "<div class='optionsList'><a href='#' id='newSetButton' onclick='caShowCollectionForm(\"new\"); return false;'>"._t("Start a new lightbox")." &rsaquo;</a></div>";
+	print "<div class='newSetButton'><a href='#' id='newSetButton' onclick='caShowCollectionForm(\"new\"); return false;'>"._t("Start a new lightbox")." &rsaquo;</a></div>";
 ?>
 		<div id="currentSetContainer">
 <?php
@@ -83,11 +83,12 @@
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors_edit_set["name"]."</div>";
 						}
 ?>
-						<div class="formLabel"><?php print _t("Title"); ?></div>
-						<input type="text" name="name" value="<?php print htmlspecialchars($t_set->getLabelForDisplay(), ENT_QUOTES, 'UTF-8'); ?>">
-						<div class="formLabel"><?php print _t("Notes"); ?></div>
-						<textarea name="description" rows="5"><?php print htmlspecialchars($t_set->get('ca_sets.set_description'), ENT_QUOTES, 'UTF-8'); ?></textarea>
-
+						<div class="formLabel"><?php print _t("Title"); ?><br/>
+							<input type="text" name="name" value="<?php print htmlspecialchars($t_set->getLabelForDisplay(), ENT_QUOTES, 'UTF-8'); ?>">
+						</div>
+						<div class="formLabel"><?php print _t("Notes"); ?><br/>
+							<textarea name="description" rows="5"><?php print htmlspecialchars($t_set->get('ca_sets.set_description'), ENT_QUOTES, 'UTF-8'); ?></textarea>
+						</div>
 						<a href="#" name="newSetSubmit" onclick="jQuery('#editSetForm').submit(); return false;"><?php print _t("Save"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
 					</form>
@@ -159,7 +160,7 @@
 				
 				print "<a href='#' onclick='jQuery(\"#caClientCommunicationsReplyForm\").submit(); return false;' class='save'>"._t("Send")."</a>";
 ?>
-				<a href='#' id='editSetButton' onclick='jQuery("#caClientCommunications").slideUp(200); <?php print (!sizeof($va_messages_by_transaction)) ? "jQuery(\"#inquiryTitle\").hide(); jQuery(\"#inquiry\").show(); " : " jQuery(\".reply\").show(); "; ?>return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
+				<a href='#' onclick='jQuery("#caClientCommunications").slideUp(200); <?php print (!sizeof($va_messages_by_transaction)) ? "jQuery(\"#inquiryTitle\").hide(); jQuery(\"#inquiry\").show(); " : " jQuery(\".reply\").show(); "; ?>return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
 				</form>
 			</div>
 <?php
@@ -199,13 +200,15 @@
 						print "<div class='formErrors' style='text-align: left;'>".$va_errors_new_set["name"]."</div>";
 					}
 ?>
-					<div class="formLabel"><?php print _t("Title"); ?></div>
-					<input type="text" name="name">
-					<div class="formLabel"><?php print _t("Notes"); ?></div>
-					<textarea name="description" rows="5"></textarea>
+					<div class="formLabel"><?php print _t("Title"); ?><br/>
+						<input type="text" name="name">
+					</div>
+					<div class="formLabel"><?php print _t("Notes"); ?><br/>
+						<textarea name="description" rows="5"></textarea>
+					</div>
 					<a href="#" name="newSetSubmit" onclick="jQuery('#newSetForm').submit(); return false;"><?php print _t("Save"); ?></a>
 				</form>
-			<a href='#' id='editSetButton' onclick='caShowCollectionForm("current"); return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
+			<a href='#' onclick='caShowCollectionForm("current"); return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
 		</div>
 	</div>
 <?php

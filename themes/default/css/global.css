@@ -634,6 +634,10 @@ div.searchlight-results div.searchlight-selected {
 	width: 580px;
 	height: 500px;
 }
+/* force the z-index of the bookreader to be lower than the caMediaPanel when embedded in the page */
+#detailBody #BookReaderContainer div{
+	z-index:100;
+}
 #objDetailToolbar {
 	margin: 15px 0px 15px 0px;
 	text-align:right;
@@ -1901,14 +1905,8 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 
 div.caMediaOverlayControls {
-	/*background-color: #fff;
-	width:250px;
-	bottom:50px;
-	left:50%;
-	margin-left:-125px;
-	border:1px solid #333;
-	opacity:0.3;*/
 	background-color: #000;
+	color:#FFF;
 	font-size: 11px;
 	text-align:center;
 	position:absolute;
@@ -1917,28 +1915,27 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.2;
-	background-color:rgba(0,0,0,0.1);
+	opacity:.1;
+	
 }
 div.caMediaOverlayControls:hover {
 	opacity:1.0;
-	/*background-color:rgba(255,255,255,0.6);*/
-	background-color:rgba(0,0,0,0.4);
+	background-color:rgba(0,0,0,0.5);
 }
 div.caMediaOverlayControls a{
 	text-decoration:none;
 	font-weight:bold;
 	font-size:16px;
-	color:#000;
+	color:#FFF;
 }
 div.caMediaOverlayControls a:hover{
-	color:#000;
+	color:#FFF;
 }
 div.caMediaOverlayControls .close{
 	float:right;
 	width:15px;
 	height:16px;
-	background-image:url("../graphics/buttons/x.png");
+	background-image:url("../graphics/buttons/x_white.png");
 	margin: 0px 10px 0px 20px;
 }
 div.caMediaOverlayControls .download{
@@ -1947,7 +1944,7 @@ div.caMediaOverlayControls .download{
 }
 div.caMediaOverlayControls .objectInfo{
 	font-size:11px;
-	color:#000;
+	color:#FFF;
 	padding-left:10px;
 	text-align:left;
 	width:40%;
@@ -1958,6 +1955,7 @@ div.caMediaOverlayControls .repNav {
 	width:16%;
 	padding: 0px 2% 0px 2%;
 	text-align:center;
+	color:#FFF;
 }
 
 /* Advanced search */

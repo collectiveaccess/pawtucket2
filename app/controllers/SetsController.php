@@ -116,7 +116,7 @@
 				if (!$t_new_set->numErrors()) {
 					if ($vn_new_set_id = $t_new_set->getPrimaryKey()) {
 						global $g_ui_locale_id; // current locale_id for user
-						$t_new_set->addLabel(array('name' => _t("Your first collection")), $g_ui_locale_id, null, true); 				
+						$t_new_set->addLabel(array('name' => _t("Your first lightbox")), $g_ui_locale_id, null, true); 				
 				
 						// select the current set
 						$this->request->user->setVar('current_set_id', $vn_new_set_id);
@@ -187,7 +187,7 @@
 				
 				if (!$t_new_set->numErrors()) {
 					if ($vn_new_set_id = $t_new_set->getPrimaryKey()) {
-						$t_new_set->addLabel(array('name' => _t("Your first collection")), $g_ui_locale_id, null, true); 				
+						$t_new_set->addLabel(array('name' => _t("Your first lightbox")), $g_ui_locale_id, null, true); 				
 				
 						// select the current set
 						$this->request->user->setVar('current_set_id', $vn_new_set_id);
@@ -200,7 +200,7 @@
  			}
  			
  			if (!$t_set) {
- 				$va_errors[] = _t('Could not create collection for user');
+ 				$va_errors[] = _t('Could not create lightbox for user');
  			} else {
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('object_id', pInteger);
@@ -218,7 +218,7 @@
 					$va_errors = array();
 					$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
 				} else {
-					$va_errors[] = _t('Could not add item to collection');
+					$va_errors[] = _t('Could not add item to lightbox');
 				}
 			}
  			
@@ -244,7 +244,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors_edit_set["name"] = _t("You must enter a name for your collection");
+ 				$va_errors_edit_set["name"] = _t("You must enter a name for your lightbox");
  			}
  			$vs_desc =  $o_purifier->purify($this->request->getParameter('description', pString));
 
@@ -294,7 +294,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors_new_set["name"] = _t("Please enter the name of your collection");
+ 				$va_errors_new_set["name"] = _t("Please enter the name of your lightbox");
  			}
  			$vs_desc =  $o_purifier->purify($this->request->getParameter('description', pString));
  			
@@ -422,13 +422,13 @@
 			$t_set = new ca_sets($pn_set_id);
 			
 			if (!$t_set->getPrimaryKey()) {
-				$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+				$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 				$this->Edit();
 				return;
 			}
 			
 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
-				$this->notification->addNotification(_t("You cannot view this collection"), __NOTIFICATION_TYPE_INFO__);
+				$this->notification->addNotification(_t("You cannot view this lightbox"), __NOTIFICATION_TYPE_INFO__);
 				$this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form'));
 				return;
 			}
@@ -529,13 +529,13 @@
 			$t_set = new ca_sets($pn_set_id);
 			 
 			if (!$t_set->getPrimaryKey()) {
-				$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+				$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 				$this->Edit();
 				return;
 			}
 			
 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
-				$this->notification->addNotification(_t("You cannot view this collection"), __NOTIFICATION_TYPE_INFO__);
+				$this->notification->addNotification(_t("You cannot view this lightbox"), __NOTIFICATION_TYPE_INFO__);
 				$this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form'));
 				return;
 			}
@@ -559,13 +559,13 @@
 				$t_set = $this->_getSet();
 				
 				if (!$t_set->getPrimaryKey()) {
-					$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 					return;
 				}
 				
 				// does user have edit access to set?
 				if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-					$this->notification->addNotification(_t("You cannot edit this collection"), __NOTIFICATION_TYPE_ERROR__);
+					$this->notification->addNotification(_t("You cannot edit this lightbox"), __NOTIFICATION_TYPE_ERROR__);
 					$this->Edit();
 					return;
 				}
@@ -620,13 +620,13 @@
 				$t_set = $this->_getSet();
 				
 				if (!$t_set->getPrimaryKey()) {
-					$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 					return;
 				}
 				
 				// does user have edit access to set?
 				if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-					$this->notification->addNotification(_t("You cannot edit this collection"), __NOTIFICATION_TYPE_ERROR__);
+					$this->notification->addNotification(_t("You cannot edit this lightbox"), __NOTIFICATION_TYPE_ERROR__);
 					$this->Edit();
 					return;
 				}
@@ -635,7 +635,7 @@
 				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
 					$va_errors = array();
 				} else {
-					$va_errors[] = _t('Could not remove item from collection');
+					$va_errors[] = _t('Could not remove item from lightbox');
 				}
 				$this->view->setVar('set_id', $pn_set_id);
 				$this->view->setVar('item_id', $pn_item_id);

@@ -32,6 +32,7 @@
 	$va_sections 			= $this->getVar('sections');
 	$vs_content_mode 		= $this->getVar('content_mode');
 	$vs_title 				= $this->getVar('title');
+	$vs_download_version 	= $this->getVar('download_version');
 	
 	header("Content-type: application/json");
 	print json_encode(array(
@@ -47,7 +48,7 @@
 				'object_id' => $pn_object_id, 'representation_id' => $pn_representation_id
 			),
 			'pageList' => $va_pages,
-			'downloadUrl' => in_array($vs_content_mode, array('multiple_representations', 'hierarchy_of_representations')) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadMedia', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => 'original')): caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => 'original')),
+			'downloadUrl' => in_array($vs_content_mode, array('multiple_representations', 'hierarchy_of_representations')) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadMedia', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => $vs_download_version)): caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => $vs_download_version)),
 		)
 	));
 ?>
