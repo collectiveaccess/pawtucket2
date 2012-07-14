@@ -187,11 +187,12 @@
 					$randomImageHeight = $qr_set->getMediaInfo('ca_object_representations.media', 'medium', 'HEIGHT');
 					$randomImagePadding = ((410 - $randomImageHeight) / 2);
 					$object_title = $qr_set->get('ca_objects.preferred_labels');
+					$object_idno = $qr_set->get('ca_objects.idno');
 					$object_media = $qr_set->get('ca_object_representations.media.medium');
 					$vn_object_id = $qr_set->get('ca_objects.object_id');
 					print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
 					print caNavLink($this->request, $object_media, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-					print "<div id='browseRandomCaption'>".caNavLink($this->request, $object_title, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+					print "<div id='browseRandomCaption'>ID: ".caNavLink($this->request, $object_idno, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 				}
 				
 				
