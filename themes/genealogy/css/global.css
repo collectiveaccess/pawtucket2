@@ -529,7 +529,7 @@ ul {
 }
 #prevImage {
 	position: relative;
-	margin-top: 35%;
+	margin-top: 25%;
 	z-index:1000;
 	float:left;
 	background-color:#645D54;
@@ -546,7 +546,7 @@ ul {
 #nextImage {
 	float:right;
 	position: relative;
-	margin-top: 35%;
+	margin-top: 25%;
 	float:right;
 	background-color:#645D54;
 	-moz-border-radius: 10px; 
@@ -740,8 +740,8 @@ ul {
 	margin:0px 0px 15px 0px;
 	font-size:12px;
 	text-align:center;
-	padding:5px 20px 8px 0px;
-	width: 574px;
+	padding:5px 0px 8px 0px;
+	width: 640px;
 	height:15px;
 	text-align:left;
 
@@ -812,16 +812,15 @@ ul {
 	font-weight: normal;
 	padding: 0px 2px 0px 2px;
 	margin: 0px;
-	border: 1px solid #828282;
-	width:574px;
+	width:630px;
 }
 #objUserData input[type="text"] {
 	font-size:11px;
 	font-weight: normal;
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
-	border: 1px solid #828282;
-	width:574px;
+	border: 1px solid #645D54;
+	width:630px;
 	outline-style:none;
 	outline-width:0px;
 }
@@ -830,22 +829,26 @@ ul {
 	font-weight: normal;
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
-	border: 1px solid #828282;
+	
 }
 #objUserData textarea {
 	font-size:11px;
 	font-weight: normal;
 	padding: 0px 2px 0px 2px;
-	margin: 0px;
-	border: 1px solid #828282;
-	width:574px;
+	margin-bottom: 10px;
+	border: 1px solid #645D54;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	width:630px;
 }
 #objUserData input[type="textarea"] {
 	font-size:11px;
 	font-weight: normal;
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
-	border: 1px solid #828282;
+	border: 1px solid #645D54;
+
 	width:100%;
 	outline-style:none;
 	outline-width:0px;
@@ -2109,4 +2112,30 @@ div.hierarchyBrowseTab {
 	display:inline; /* Unhide the thumbnails */
 	position:relative;
 	margin-right:10px;
+<<<<<<< HEAD
+=======
+}
+
+/* visualization styles */
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.visButton {
+  font: 12px sans-serif;
+  fill: #cc0000;
+  font-weight: bold;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+>>>>>>> 1ba23c44af2897a70e54cda8837eef6c7f1ec9c3
 }

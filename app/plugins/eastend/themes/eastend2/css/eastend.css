@@ -1,0 +1,39 @@
+#chronoLeftCol{
+	float:left;
+	width:450px;
+}
+#chronoNav{
+	padding: 10px;
+	background-color: #b5b5b5;
+	font-size: 20px;
+}
+#chronoNav a{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+#chronoNav .placeholder{
+	color: #b5b5b5;
+}
+#chronoLeftCol #chronoLists .chronoList{
+	float:left;
+	width:150px;
+	height:450px;
+	overflow-y:auto;
+}
+#chronoLeftCol #chronoLists .chronoList .chronoListItem{
+	padding:5px 0px 5px 0px;
+}
+#chronoRightCol{
+	float:right;
+	width:400px;
+	height:500px;
+	overflow-y:auto;
+}
+#chronoRightCol .chronoThumbnail{
+	width: 120px;
+	height:120px;
+	padding:10px;
+	float:right;
+	text-align:center;
+	vertical-align:middle;
+}

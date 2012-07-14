@@ -154,7 +154,7 @@
 			# --- output related object images as links
 			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if (sizeof($va_related_objects)) {
-				print "<div class='unit' style='clear:left;'><H3 style='margin-bottom:8px;'>"._t("Associated Artworks")."</H3>";
+				print "<div class='unit' style='clear:both;'><H3 style='margin-bottom:8px;'>"._t("Associated Artworks")."</H3>";
 				$va_rel_objs_by_type = array();
 				$va_related_objs = array();
 	            $t_rel_types = new ca_relationship_types();
@@ -250,24 +250,29 @@
 				if($va_display_options['no_overlay']){
 					print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 				}else{
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
+					#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
+					$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+					print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 				}
 ?>
 				</div><!-- end objDetailImage -->
 <?php
-				if($t_rep->get("image_credit_line")){
-					# --- get width of image so caption matches
-					$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
-					print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
-					if($t_rep->get("image_credit_line")){
-						print "<i>".$t_rep->get("image_credit_line")."</i>";
-					}
-					print " &ndash; &copy; INFGM</div>";
-				}
+				// if($t_rep->get("image_credit_line")){
+// 					# --- get width of image so caption matches
+// 					$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+// 					print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
+// 					if($t_rep->get("image_credit_line")){
+// 						print "<i>".$t_rep->get("image_credit_line")."</i>";
+// 					}
+// 					print " &ndash; &copy; INFGM</div>";
+// 				}
 ?>
 				<div id="objDetailImageNav">
 <?php					
-						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
+					#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
+						
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
+
 ?>		
 				</div><!-- end objDetailImageNav -->
 <?php
@@ -492,7 +497,7 @@
 			# --- output related object images as links
 			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if (sizeof($va_related_objects)) {
-				print "<div class='unit' style='clear:left;'><H3 style='margin-bottom:8px;'>"._t("Associated Artworks")."</H3>";
+				print "<div class='unit' style='clear:both;'><H3 style='margin-bottom:8px;'>"._t("Associated Artworks")."</H3>";
 				$va_rel_objs_by_type = array();
 				$va_related_objs = array();
 	            $t_rel_types = new ca_relationship_types();

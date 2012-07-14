@@ -50,7 +50,7 @@ h3{
 	line-height:1.1em;
 }
 h3 a{
-	tet-decoration:none;
+	text-decoration:none;
 }
 a{
 	text-decoration:underline;
@@ -163,6 +163,9 @@ a.caption:hover{
 	line-height:1.7em;
 	color:#828282;
 	z-index:10000;
+	border-bottom-right-radius:10px;
+	border-bottom-left-radius:10px;
+	border-top-left-radius:10px;
 	-moz-border-radius-topleft: 10px; 
 	-webkit-border-top-left-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
@@ -200,6 +203,7 @@ a.caption:hover{
 	width: 890px;
 	height:22px;
 	position:relative;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -466,6 +470,7 @@ div.searchlight-results div.searchlight-selected {
 	width:245px;
 	margin:0px;
 	border: 1px solid #e2e2e2;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -550,7 +555,7 @@ div.searchlight-results div.searchlight-selected {
 	margin-top:12px;
 }
 #detailBody #rightCol{
-	width:592px;
+	width:580px;
 	text-align:left;
 	float:right
 }
@@ -624,16 +629,22 @@ div.searchlight-results div.searchlight-selected {
 #objDetailImage{
 	margin-bottom:0px;
 	text-align:center;
-	border: 2px solid #e6e6e6;
-	width: 580px;
-	padding: 5px 5px 5px 5px;
 }
-
-#cont {
+#BookReaderContainer{
 	width: 580px;
 	height: 500px;
 }
-
+/* force the z-index of the bookreader to be lower than the caMediaPanel when embedded in the page */
+#detailBody #BookReaderContainer div{
+	z-index:100;
+}
+#objDetailToolbar {
+	margin: 15px 0px 15px 0px;
+	text-align:right;
+}
+#objDetailToolbar img{
+	margin-left:5px;
+}
 #objDetailImageNav {
 	background-color: #e6e6e6;
 	margin:0px 0px 15px 0px;
@@ -643,10 +654,13 @@ div.searchlight-results div.searchlight-selected {
 	width: 574px;
 	height:15px;
 	text-align:left;
+	
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
 	-webkit-border-bottom-right-radius: 10px;
+	border-bottom-right-radius:10px;
+	border-bottom-left-radius:10px;
 }
 #objDetailImageNav{
 	text-decoration:none;
@@ -771,6 +785,7 @@ div.searchlight-results div.searchlight-selected {
 	background-color: #E6E6E6;
 	padding:10px 10px 0px 10px;
 	margin:0px 0px 15px 0px;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -1027,8 +1042,19 @@ td.advSearchElement{
 	text-decoration:none;
 }
 
+/* find results add to set controls */
+input.addItemToSetControl {
+	display: none;
+}
+
+input.addItemToSetControlInThumbnails {
+	float: left;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
 /* search/browse options box - horizontal show hide */
-#showOptions{
+#showOptions, #showTools{
 	float:right;
 	margin: 1px 2px 0px 10px;
 	text-decoration:none;
@@ -1037,7 +1063,7 @@ td.advSearchElement{
 	font-size:11px;
 	
 }
-#hideOptions{
+#hideOptions, #hideTools{
 	position:absolute;
 	right:20px;
 	top:20px;
@@ -1048,7 +1074,7 @@ td.advSearchElement{
 	font-size:12px;
 	
 }
-#searchOptionsBox{
+#searchOptionsBox, #searchToolsBox{
 	position:relative;
 	clear:both;
 	margin: 0px 0px 0px 0px;
@@ -1059,12 +1085,12 @@ td.advSearchElement{
 #browse #searchOptionsBox{	/* need extra space above this box in the browse */
 	margin: 10px 0px 0px 0px;
 }
-#searchOptionsBox .col{
+#searchOptionsBox .col, #searchToolsBox .col{
 	float:left;
 	width:38%;
 	color:#828282;
 }
-#searchOptionsBox .col .unit{
+#searchOptionsBox .col .unit, #searchToolsBox .col .unit{
 	float:left;
 	padding:0px 20px 20px 10px;
 	color:#828282;
@@ -1084,7 +1110,7 @@ td.advSearchElement{
 	margin-right:10px;
 	border:0px;
 }
-#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading{
+#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading, #searchToolsBox .col .heading{
 	font-size:14px;
 	font-weight:bold;
 	color:#000000;
@@ -1094,6 +1120,11 @@ td.advSearchElement{
 	background-color: #E2E2E2;
 	border:0px;
 	padding:20px 20px 10px 20px;
+}
+#searchToolsBox .bg{
+	background-color: #E2E2E2;
+	border:0px;
+	padding:15px;
 }
 #searchOptionsBox .apply{
 	margin:0px -20px 0px -20px;
@@ -1105,6 +1136,13 @@ td.advSearchElement{
 	text-decoration: none;
 	font-weight:bold;
 	font-size:14px;
+	color:#000000;
+	text-transform:uppercase;
+}
+#searchToolsBox a.apply{
+	text-decoration: none;
+	font-weight:bold;
+	font-size:12px;
 	color:#000000;
 	text-transform:uppercase;
 }
@@ -1210,6 +1248,7 @@ td.advSearchElement{
 	border: 1px solid #E2E2E2;
 	padding:10px;
 	margin:0px 0px 20px 0px;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -1683,6 +1722,7 @@ td.advSearchElement{
 	margin-left: -465px;
 	padding: 10px;
 	background-image: url("../graphics/bgStripeBW.gif");
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -1831,14 +1871,12 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 1.5%; 
-	left: 1.5%; 
-	border: 4px solid #ccc; 
-	background-color: #FFFFFF; 
-	width: 97%; 
-	height: 97%; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
 	display: none;
-	margin: 0 auto;
+	margin: 0px;
 	padding: 0px;
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
@@ -1855,14 +1893,11 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 #caMediaPanelContentArea {
 	width: 100%; 
-	height: 100%; 
+	height: 100%;
 }
 
 #caMediaOverlayContent {
-	margin-top: 5px;
-	margin-left: 0px;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0px;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
@@ -1870,29 +1905,57 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 
 div.caMediaOverlayControls {
-	background-color: #FFFFFF;
-	padding: 3px;
-	font-size: 9px;
-	margin-left: 0px;
-	height: 25px;
-	border-bottom:2px solid #ededed;
-}
-
-select.caMediaOverlayControls {
-	font-size: 9px;
-}
-#caMediaOverlayThumbnails{
-	padding: 10px 0px 0px 0px;
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
 	text-align:center;
-	height:90px;
-	width:840px;
-	overflow:auto;
+	position:absolute;
+	padding: 10px 0px 10px 0px;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.1;
+	
 }
-#caMediaOverlayThumbnails img{
-	margin:0px 1px 0px 1px;
+div.caMediaOverlayControls:hover {
+	opacity:1.0;
+	background-color:rgba(0,0,0,0.5);
 }
-#caMediaOverlayThumbnails div{
-	margin:0px auto 0px auto;
+div.caMediaOverlayControls a{
+	text-decoration:none;
+	font-weight:bold;
+	font-size:16px;
+	color:#FFF;
+}
+div.caMediaOverlayControls a:hover{
+	color:#FFF;
+}
+div.caMediaOverlayControls .close{
+	float:right;
+	width:15px;
+	height:16px;
+	background-image:url("../graphics/buttons/x_white.png");
+	margin: 0px 10px 0px 20px;
+}
+div.caMediaOverlayControls .download{
+	float:right;
+	margin-left:20px;
+}
+div.caMediaOverlayControls .objectInfo{
+	font-size:11px;
+	color:#FFF;
+	padding-left:10px;
+	text-align:left;
+	width:40%;
+	float:left;
+}
+div.caMediaOverlayControls .repNav {
+	float:left;
+	width:16%;
+	padding: 0px 2% 0px 2%;
+	text-align:center;
+	color:#FFF;
 }
 
 /* Advanced search */
@@ -2090,4 +2153,133 @@ div.hierarchyBrowseTab {
 * html .jspCorner
 {
 	margin: 0 -3px 0 0;
+}
+
+/* ------------- */
+/* jGrowl styles */
+/* ------------- */
+div.jGrowl {
+	padding: 			10px;
+	z-index: 			9999;
+	color: 				#fff;
+	font-size: 			12px;
+}
+
+/** Special IE6 Style Positioning **/
+div.ie6 {
+	position: 			absolute;
+}
+
+div.ie6.top-right {
+	right: 				auto;
+	bottom: 			auto;
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+  	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.top-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-right {
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.center {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	width: 				100%;
+}
+
+/** Normal Style Positions **/
+body > div.jGrowl {
+	position:			fixed;
+	left: 				40%;
+	right: 				50%;
+	margin-top:			100px;
+}
+
+body > div.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
+}
+
+body > div.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
+}
+
+body > div.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
+}
+
+/** Cross Browser Styling **/
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: 		#FFFFFF;
+	width: 					235px;
+	padding: 				20px;
+	margin-top: 			40px;
+	margin-bottom: 			5px;
+	font-family: 			Arial, Helvetica, sans-serif;
+	font-size: 				1em;
+	text-align: 			left;
+	display: 				none;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 			40px;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+div.jGrowl div.jGrowl-notification div.header {
+	font-weight: 			bold;
+	font-size:				1em;
+}
+
+div.jGrowl div.jGrowl-notification div.close {
+	z-index:				99;
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				1em;
+	cursor:					pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				.9em;
+	font-weight: 			bold;
+	text-align: 			center;
+}
+
+/** Hide jGrowl when printing **/
+@media print {
+	div.jGrowl {
+		display: 			none;
+	}
 }

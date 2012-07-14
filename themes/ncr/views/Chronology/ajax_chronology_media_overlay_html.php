@@ -36,13 +36,15 @@
 	$pn_year					= $this->getVar('year');
 	$vs_caption					= $this->getVar('caption');
 	$vs_photographer			= $this->getVar('photographer');
-	# --- take some pixels off the viewer height to accommodate the capiton text
-	$va_display_options['viewer_height'] = $va_display_options['viewer_height'] - 15;
+	# --- view height is in % not pixels!
+	# --- take some % off the viewer height to accommodate the capiton text
+	$va_display_options['viewer_height'] = ($va_display_options['viewer_height'] - 3)."%";
 	# --- if there are more than one reps, make the viewer height shorter to accommodate the thumbnails at the bottom
 	if(sizeof($va_thumbnails) > 1){
-		$va_display_options['viewer_height'] = $va_display_options['viewer_height'] - 84;
+		$va_display_options['viewer_height'] = ($va_display_options['viewer_height'] - 15)."%";
 	}
 ?>
+	<div class="caMediaOverlayControls"><!-- empty - need spaceer so can see close button --></div>
 	<div id="caMediaOverlayContent">
 <?php
 		$va_display_options['id'] = '_caMediaOverlayMediaDisplay';
@@ -63,7 +65,6 @@
 			print " &ndash; &copy; INFGM</div>";
 		}
 ?>
-	</div><!-- end caMediaOverlayContent -->
 <?php
 	# --- get all reps and if there are more than one to display thumbnail links
 	if(sizeof($va_thumbnails) > 1){
@@ -76,3 +77,4 @@
 		print "</div></div><!-- caMediaOverlayThumbnails -->";
 	}
 ?>
+</div><!-- end caMediaOverlayContent -->

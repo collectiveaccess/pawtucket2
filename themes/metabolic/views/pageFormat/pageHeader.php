@@ -19,7 +19,6 @@
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/bookmarks.css" rel="stylesheet" type="text/css" />
 	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/videojs/video-js.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-jplayer/jplayer.blue.monday.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-autocomplete/jquery.autocomplete.css" type="text/css" media="screen" />
   
   <!--[if (!IE)|(gte IE 8)]><!-->
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/js/DV/viewer-datauri.css" media="screen" rel="stylesheet" type="text/css" />
@@ -74,18 +73,19 @@
 			  <div id="nav">
 				
 	<?php				
-					print join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
 
-				if (!$this->request->config->get('dont_allow_registration_and_login')) {
+					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
 					if($this->request->isLoggedIn()){
-						if(!$this->request->config->get('disable_my_collections')){
-							print caNavLink($this->request, _t("Sets"), "", "", "Sets", "Index");
-						}
 						print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout");
 					}else{
 						print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "form");
 					}
-				}
+					print "</div>";
+
+
+					if($this->request->isLoggedIn()){
+						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(my sets)"), "", "", "Sets", "Index")."</div>";
+					}		 
 			
 				# Locale selection
 				global $g_ui_locale;

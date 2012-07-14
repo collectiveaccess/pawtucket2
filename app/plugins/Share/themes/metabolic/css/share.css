@@ -5,6 +5,10 @@
 #shareObjectInfo .scrollPane {
 	width:300px;	
 }
+#shareObjectInfo .recordTitle {
+	width: 310px;
+	overflow:hidden;
+}
 #shareObjectInfo h3{
 	font-size: .80em;
 	line-height:1em;

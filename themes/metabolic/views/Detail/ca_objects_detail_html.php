@@ -55,14 +55,14 @@
 ?>
 		</div><!-- end nav -->
 		<div class='titleBar'>
-			<div class='recordTitle'><h1><?php print $vs_title; ?></h1></div>
-			<div class='idno'>
-<?php
+			<div class='recordTitle'><h1>
+<?php	
 			if($t_object->get('idno')){
-				print "<b>"._t("Identifier").":</b> ".$t_object->get('idno')."<!-- end unit -->";
+				print $t_object->get('idno');
 			}
-?>
-			</div>
+?>			
+			</h1></div>
+
 		</div>
 		<div style='clear:both;height:16px;'></div>
 		<div id="rightCol">
@@ -73,12 +73,13 @@
 
 <?php
 			}
+			print "<h3>Title</h3><p>".$vs_title."</p>";
 			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
 			}			
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels')){
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/>'))){
 				print "<h3>"._t("Alternate Title")."</h3><p>".$va_alt_name."</p><!-- end unit -->";
 			}			
 			if($va_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true))){
@@ -216,7 +217,7 @@
 			}
 			# --- description
 				if($vs_description_text = $t_object->get("ca_objects.description")){
-					print "<h3>Description</h3><div class='scrollPane' id='description' style=''>".$vs_description_text."</div>";				
+					print "<h3>Description</h3><div class='scrollPane' id='description' style=''><p>".$vs_description_text."</p></div>";				
 ?>
 
 <?php
@@ -391,7 +392,7 @@
 			</div><!-- end objDetailImageNav -->
 <?php
 		
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
+if (!$this->request->config->get('dont_allow_comments')) {
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData" style='margin-top:20px;'>
@@ -484,15 +485,15 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 
 					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
 						}else{
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
 						}
 					}
 
 
 	if(!$this->request->isLoggedIn()){
-		if (!$this->request->config->get('dont_allow_registration_and_login')) {
+		if (!$this->request->config->get('dont_allow_comments')) {
 			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
 		}
 	}

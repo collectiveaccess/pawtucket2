@@ -46,6 +46,7 @@
  			$this->view->setVar('client_services_config', $this->opo_client_services_config);
  			
 			JavascriptLoadManager::register("panel");
+			JavascriptLoadManager::register('cycle');
  		}
  		# -------------------------------------------------------
  		/** 
@@ -115,7 +116,7 @@
 				if (!$t_new_set->numErrors()) {
 					if ($vn_new_set_id = $t_new_set->getPrimaryKey()) {
 						global $g_ui_locale_id; // current locale_id for user
-						$t_new_set->addLabel(array('name' => _t("Your first collection")), $g_ui_locale_id, null, true); 				
+						$t_new_set->addLabel(array('name' => _t("Your first lightbox")), $g_ui_locale_id, null, true); 				
 				
 						// select the current set
 						$this->request->user->setVar('current_set_id', $vn_new_set_id);
@@ -152,8 +153,12 @@
  			$t_comm = new ca_commerce_communications();
  			$this->view->setVar('messages', $t_comm->getMessages($this->request->getUserID(), array('transaction_id' => $vn_transaction_id)));
  			
- 			
- 			$this->render('Sets/sets_html.php');
+ 			# --- use a different view if client services is enabled
+ 			if($this->request->config->get("enable_client_services")){
+ 				$this->render('Sets/client_services_html.php');
+ 			}else{
+ 				$this->render('Sets/sets_html.php');
+ 			}
  		}
  		# -------------------------------------------------------
  		/**
@@ -182,7 +187,7 @@
 				
 				if (!$t_new_set->numErrors()) {
 					if ($vn_new_set_id = $t_new_set->getPrimaryKey()) {
-						$t_new_set->addLabel(array('name' => _t("Your first collection")), $g_ui_locale_id, null, true); 				
+						$t_new_set->addLabel(array('name' => _t("Your first lightbox")), $g_ui_locale_id, null, true); 				
 				
 						// select the current set
 						$this->request->user->setVar('current_set_id', $vn_new_set_id);
@@ -195,7 +200,7 @@
  			}
  			
  			if (!$t_set) {
- 				$va_errors[] = _t('Could not create collection for user');
+ 				$va_errors[] = _t('Could not create lightbox for user');
  			} else {
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('object_id', pInteger);
@@ -213,7 +218,7 @@
 					$va_errors = array();
 					$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
 				} else {
-					$va_errors[] = _t('Could not add item to collection');
+					$va_errors[] = _t('Could not add item to lightbox');
 				}
 			}
  			
@@ -239,7 +244,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors_edit_set["name"] = _t("You must enter a name for your collection");
+ 				$va_errors_edit_set["name"] = _t("You must enter a name for your lightbox");
  			}
  			$vs_desc =  $o_purifier->purify($this->request->getParameter('description', pString));
 
@@ -289,7 +294,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors_new_set["name"] = _t("Please enter the name of your collection");
+ 				$va_errors_new_set["name"] = _t("Please enter the name of your lightbox");
  			}
  			$vs_desc =  $o_purifier->purify($this->request->getParameter('description', pString));
  			
@@ -323,30 +328,196 @@
  			$this->index();
  		}
  		# -------------------------------------------------------
+ 		public function shareSet() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			
+ 			$va_errors_share_set = array();
+ 			
+ 			$t_set = new ca_sets();
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set->load($pn_set_id);
+ 			
+ 			$ps_to_email = $this->request->getParameter('to_email', pString);
+ 			$ps_from_email = $this->request->getParameter('from_email', pString);
+ 			$ps_from_name = $this->request->getParameter('from_name', pString);
+ 			$ps_subject = $this->request->getParameter('subject', pString);
+ 			$ps_message = $this->request->getParameter('message', pString);
+ 			
+			$o_purifier = new HTMLPurifier();
+    		$ps_message = $o_purifier->purify($ps_message);
+    		$ps_to_email = $o_purifier->purify($ps_to_email);
+    		$ps_from_email = $o_purifier->purify($ps_from_email);
+    		$ps_from_name = $o_purifier->purify($ps_from_name);
+    		$ps_subject = $o_purifier->purify($ps_subject);
+			
+			# --- check vars are set and email addresses are valid
+			$va_to_email = array();
+			$va_to_email_process = array();
+			if(!$ps_to_email){
+				$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+			}else{
+				# --- explode on commas to support multiple addresses - then check each one
+				$va_to_email_process = explode(",", $ps_to_email);
+				foreach($va_to_email_process as $vs_email_to_verify){
+					$vs_email_to_verify = trim($vs_email_to_verify);
+					if(caCheckEmailAddress($vs_email_to_verify)){
+						$va_to_email[$vs_email_to_verify] = "";
+					}else{
+						$ps_to_email = "";
+						$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+					}
+				}
+			}
+			if(!$ps_subject){
+				$va_errors_share_set["subject"] = _t("Please enter a subject");
+			}
+			if(!$ps_from_email || !caCheckEmailAddress($ps_from_email)){
+				$ps_from_email = "";
+				$va_errors_share_set["from_email"] = _t("Please enter a valid email address");
+			}
+			if(!$ps_from_name){
+				$va_errors_share_set["from_name"] = _t("Please enter your name");
+			}
+			
+
+ 			if(sizeof($va_errors_share_set) == 0){
+				# -- generate mail text from template - get both html and text versions
+				ob_start();
+				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_text.tpl");
+				$vs_mail_message_text = ob_get_contents();
+				ob_end_clean();
+				ob_start();
+				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_html.tpl");
+				$vs_mail_message_html = ob_get_contents();
+				ob_end_clean();
+								
+				if(caSendmail($va_to_email, array($ps_from_email => $ps_from_name), $ps_subject, $vs_mail_message_text, $vs_mail_message_html, null, null, $va_media)){
+ 					$this->notification->addNotification(_t("Your email was sent"), "message");
+ 				}else{
+ 					$this->notification->addNotification(_t("Your email could not be sent"), "message");
+ 					$va_errors_share_set["email"] = 1;
+ 				}
+ 			}
+ 			if(sizeof($va_errors_share_set)){
+ 				# --- there were errors in the form data, so reload form with errors displayed - pass params to preload form
+ 				$this->view->setVar('to_email', $ps_to_email);
+ 				$this->view->setVar('from_email', $ps_from_email);
+ 				$this->view->setVar('from_name', $ps_from_name);
+ 				$this->view->setVar('subject', $ps_subject);
+ 				$this->view->setVar('message', $ps_message);
+ 				
+ 				$this->notification->addNotification(_t("There were errors in your form"), "message");			
+ 			}
+ 			
+ 			$this->view->setVar('errors_share_set', $va_errors_share_set);
+ 			$this->index();
+ 		} 		
+ 		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function slideshow() {
-			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			
 			if (!$t_set->getPrimaryKey()) {
-				$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+				$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 				$this->Edit();
 				return;
 			}
 			
 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
-				$this->notification->addNotification(_t("You cannot view this collection"), __NOTIFICATION_TYPE_INFO__);
+				$this->notification->addNotification(_t("You cannot view this lightbox"), __NOTIFICATION_TYPE_INFO__);
 				$this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form'));
 				return;
 			}
 			
 			$this->view->setVar('set_id', $pn_set_id);
 			$this->view->setVar('t_set', $t_set);
+			$this->view->setVar('items', caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('mediumlarge', 'large'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
 			
  			$this->render('Sets/sets_slideshow_html.php');
- 		}
+ 		}		
+ 		# -------------------------------------------------------
+		# Export
+		# -------------------------------------------------------
+		/**
+		 * Generate  export file of current set items
+		 */
+		public function export() {
+			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
+ 			if (!$t_set = $this->_getSet()) { 
+ 				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
+				$this->Index();
+ 			}
+ 			set_time_limit(7200);
+ 			$ps_output_type = $this->request->getParameter('output_type', pString);
+ 			$this->view->setVar('t_set', $t_set);
+ 			
+ 			if($this->request->config->get("dont_enforce_access_settings")){
+ 				$va_access_values = array();
+ 			}else{
+ 				$va_access_values = caGetUserAccessValues($this->request);
+ 			}
+ 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID())));
+ 			$this->view->setVar('items', $va_items);
+			$vs_output_filename = $t_set->getLabelForDisplay();
+			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
+
+			switch($ps_output_type) {
+				case '_pdf':
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
+					require_once(__CA_LIB_DIR__."/core/Print/html2pdf/html2pdf.class.php");
+					
+					try {
+						$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
+						$vo_html2pdf = new HTML2PDF('P','letter','en');
+						$vo_html2pdf->setDefaultFont("dejavusans");
+						$vo_html2pdf->WriteHTML($vs_content);
+						header("Content-Disposition: attachment; filename=".$vs_output_filename.".pdf");
+						header("Content-type: application/pdf");
+			
+						$vo_html2pdf->Output($vs_output_filename.".pdf");
+						$vb_printed_properly = true;
+					} catch (Exception $e) {
+						$vb_printed_properly = false;
+						$this->postError(3100, _t("Could not generate PDF"),"SetsController->PrintSummary()");
+					}
+					return;
+					break;
+				case '_csv':
+					$vs_delimiter = ",";
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_csv');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";
+					break;
+				case '_tab':
+					$vs_delimiter = "\t";	
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_tab');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";	
+					break;
+			}
+
+			header("Content-Disposition: attachment; filename=export_".$vs_output_file_name.".".$vs_file_extension);
+			header("Content-type: ".$vs_mimetype);
+			
+			$va_rows = array();
+			# --- headings
+			$va_row[] = _t("Media");
+			$va_row[] = _t("ID");
+			$va_row[] = _t("Label");
+			$va_rows[] = join($vs_delimiter, $va_row);
+			foreach($va_items as $va_item){
+				$va_row = array();
+				$va_row[] = $va_item["representation_url_thumbnail"];
+				$va_row[] = $va_item["idno"];
+				$va_row[] = $va_item["name"];
+				$va_rows[] = join($vs_delimiter, $va_row);
+			}
+			$this->opo_response->addContent(join("\n", $va_rows), 'view');		
+		}
  		# -------------------------------------------------------
  		# XML data providers
  		# -------------------------------------------------------
@@ -358,13 +529,13 @@
 			$t_set = new ca_sets($pn_set_id);
 			 
 			if (!$t_set->getPrimaryKey()) {
-				$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+				$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 				$this->Edit();
 				return;
 			}
 			
 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
-				$this->notification->addNotification(_t("You cannot view this collection"), __NOTIFICATION_TYPE_INFO__);
+				$this->notification->addNotification(_t("You cannot view this lightbox"), __NOTIFICATION_TYPE_INFO__);
 				$this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form'));
 				return;
 			}
@@ -388,13 +559,13 @@
 				$t_set = $this->_getSet();
 				
 				if (!$t_set->getPrimaryKey()) {
-					$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 					return;
 				}
 				
 				// does user have edit access to set?
 				if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-					$this->notification->addNotification(_t("You cannot edit this collection"), __NOTIFICATION_TYPE_ERROR__);
+					$this->notification->addNotification(_t("You cannot edit this lightbox"), __NOTIFICATION_TYPE_ERROR__);
 					$this->Edit();
 					return;
 				}
@@ -449,13 +620,13 @@
 				$t_set = $this->_getSet();
 				
 				if (!$t_set->getPrimaryKey()) {
-					$this->notification->addNotification(_t("The collection does not exist"), __NOTIFICATION_TYPE_ERROR__);	
+					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 					return;
 				}
 				
 				// does user have edit access to set?
 				if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-					$this->notification->addNotification(_t("You cannot edit this collection"), __NOTIFICATION_TYPE_ERROR__);
+					$this->notification->addNotification(_t("You cannot edit this lightbox"), __NOTIFICATION_TYPE_ERROR__);
 					$this->Edit();
 					return;
 				}
@@ -464,7 +635,7 @@
 				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
 					$va_errors = array();
 				} else {
-					$va_errors[] = _t('Could not remove item from collection');
+					$va_errors[] = _t('Could not remove item from lightbox');
 				}
 				$this->view->setVar('set_id', $pn_set_id);
 				$this->view->setVar('item_id', $pn_item_id);

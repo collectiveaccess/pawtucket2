@@ -8,6 +8,9 @@
 	width: 250px;
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 15px 0px;
+	border-radius: 10px;
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px;
 }
 #setItemEditor #rightCol H2{
 	padding-top:10px;
@@ -141,11 +144,15 @@ div.edit a:hover{
 }
 
 /*  FORMS */
-#newSetForm .formLabel, #editSetForm .formLabel{
+#newSetForm .formLabel, #editSetForm .formLabel, #shareSetForm .formLabel{
 	font-weight:bold;
 	margin: 10px 0px 2px 0px;
 }
-#newSetForm input, #editSetForm input {
+#shareSetForm .formLabelNote, #newSetForm .formLabelNote, #editSetForm .formLabelNote{
+	font-size:11px;
+	font-weight:normal;
+}
+#newSetForm input, #editSetForm input, #shareSetForm input {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -154,7 +161,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
-#newSetForm input[type="text"], #editSetForm input[type="text"] {
+#newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -163,7 +170,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
-#newSetForm textarea, #editSetForm textarea {
+#newSetForm textarea, #editSetForm textarea, #shareSetForm textarea {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -172,7 +179,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
-#newSetForm input[type="textarea"], #editSetForm input[type="textarea"] {
+#newSetForm input[type="textarea"], #editSetForm input[type="textarea"], #shareSetForm input[type="textarea"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -181,7 +188,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
-#newSetForm a, #editSetForm a{
+#newSetForm a, #editSetForm a, #shareSetForm a{
 	text-transform:uppercase;
 	font-family: Arial, sans-serif;
 	font-size:14px;
@@ -191,7 +198,123 @@ div.edit a:hover{
 	margin: 0px;
 	padding: 5px 0px 0px 0px;
 }
-#newSetForm a:hover, #editSetForm a:hover{
+#newSetForm a:hover, #editSetForm a:hover, #shareSetForm a:hover{
 	color: #828282;
 	text-decoration:none;
+}
+
+
+/* overlay (for slideshow) */
+#caSetsSlideshowPanel {
+	position: fixed; 
+	top: 0px; 
+	left: 0px;
+	width: 100%; 
+	height: 100%;
+	display: none;
+	margin: 0 auto;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#caSetsSlideshowPanel #close{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width:34px;
+	height:34px;
+	margin:0px 3px 0px 0px;
+	background-image:url("../graphics/close.png");
+	background-repeat:no-repeat;
+	z-index: 32000;
+}
+#caSetsSlideshowPanel #close a{
+	text-decoration:none;
+	font-size:32px;
+	width:34px;
+	height:34px;
+	border:0px;
+}
+#caSetsSlideshowPanelContentArea {
+	width: 700px; 
+	height: 700px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshow div{
+	width:100%;
+	text-align:center;
+}
+
+.caSetsSlideshowCaption{
+	color: #828282;
+	font-size:13px;
+	padding-top:10px;
+}
+/*#caSetsSlideshowPrevious {
+	position:absolute;
+	top:250px;
+	left:-20px;
+}
+#caSetsSlideshowNext {
+	position:absolute;
+	top:250px;
+	right:-20px;
+}*/
+#caSetsSlideshowPrevious {
+	float:left;
+}
+#caSetsSlideshowNext {
+	float:right;
+}
+#caSetsSlideshowNext a, #caSetsSlideshowPrevious a{
+	font-size:35px;
+	color:#828282;
+	text-decoration:none;
+}
+#caSetsSlideshowPlayPause a{
+	color:#828282;
+	font-size:20px;
+	text-decoration:none;
+}
+#caSetsSlideshowToolBar{
+	width:120px;
+	background-color:#EDEDED;
+	border-radius: 8px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	padding:10px;
+}
+
+/* styles for the slideshow when in media panel */
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:100%;
+}
+
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer H1{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea .caSetsSlideshowCaption{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowToolBar{
+	background-color: #828282;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowNext a, #caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious a{
+	color:#ededed;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause a{
+	color:#ededed;
 }
