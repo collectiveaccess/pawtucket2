@@ -2110,3 +2110,26 @@ div.hierarchyBrowseTab {
 	position:relative;
 	margin-right:10px;
 }
+
+/* visualization styles */
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.visButton {
+  font: 12px sans-serif;
+  fill: #cc0000;
+  font-weight: bold;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
