@@ -306,17 +306,22 @@
 		</div><!-- end objDetailToolbar -->
 <?php
 if (!$this->request->config->get('dont_allow_registration_and_login')) {
+		$va_tags = $this->getVar("tags_array");
+		$va_comments = $this->getVar("comments");
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData">
-			<div class="divide" style="margin:0px 0px 10px 0px;"><!-- empty --></div>
 <?php
+			if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
+?>
+				<div class="divide" style="margin:12px 0px 10px 0px;"><!-- empty --></div>
+<?php			
+			}
 			if($this->getVar("ranking")){
 ?>
 				<h2 id="ranking"><?php print _t("Average User Ranking"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/user_ranking_<?php print $this->getVar("ranking"); ?>.gif" width="104" height="15" border="0" style="margin-left: 20px;"></h2>
 <?php
 			}
-			$va_tags = $this->getVar("tags_array");
 			if(is_array($va_tags) && sizeof($va_tags) > 0){
 				$va_tag_links = array();
 				foreach($va_tags as $vs_tag){
@@ -329,7 +334,6 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				</div>
 <?php
 			}
-			$va_comments = $this->getVar("comments");
 			if(is_array($va_comments) && (sizeof($va_comments) > 0)){
 ?>
 				<h2><div id="numComments">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div><?php print _t("User Comments"); ?></h2>
@@ -363,13 +367,11 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 					$vs_login_message = _t("Login/register to be the first to rank, tag and comment on this object!");
 				}
 			}
-			if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
-?>
-				<div class="divide" style="margin:12px 0px 10px 0px;"><!-- empty --></div>
-<?php			
-			}
+
 		if($this->request->isLoggedIn()){
 ?>
+
+			<div class="divide" style="margin:0px 0px 10px 0px;"><!-- empty --></div>
 			<h2><?php print _t("Add your rank, tags and comment"); ?></h2>
 			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id)); ?>" name="comment" enctype='multipart/form-data'>
 				<div class="formLabel">Rank
