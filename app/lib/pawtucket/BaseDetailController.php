@@ -713,7 +713,7 @@
 				}
  			} else {
 				foreach(array('ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections') as $vs_rel_table) {
-					if ($vs_rel_table == $vs_table) { continue; }
+					//if ($vs_rel_table == $vs_table) { continue; }
 					$t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true);
 					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
 					

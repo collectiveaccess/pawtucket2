@@ -62,6 +62,7 @@
 <h1><?php print _t("Your Sets"); ?></h1>
 <div id="setItemEditor">
 	<div id="rightCol">
+	<div id="setsMenu">
 <?php
 	if ($vn_set_id) {
 ?>
@@ -264,7 +265,7 @@
 				</ul>
 				<a href='#' id='editSetButton' onclick='$("#helpTips").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-
+	</div><!-- end setsMenu -->
 	</div><!-- end divRightCol -->
 	<div id="leftCol">
 <?php
