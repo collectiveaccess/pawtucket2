@@ -44,7 +44,7 @@
 			$carousel_ids[] = $the_item['object_id'];
 		}
 	}
-	
+	shuffle($carousel_ids);
 	$qr_set = ca_objects::createResultSet($carousel_ids);
 
 	
