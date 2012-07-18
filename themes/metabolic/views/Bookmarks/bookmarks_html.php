@@ -79,10 +79,11 @@
 <?php
 		}
 	}
+	if(is_array($va_folders) && sizeof($va_folders)){
 ?>
-
 		<h1><?php print _t("Your Folders"); ?></h1>
 <?php
+	}
 	foreach($va_folders as $va_folder) {
 		if($va_folder['folder_id'] == $vn_folder_id){
 			print "<div class='foldersListCurrent'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".$va_folder['name']."</div>\n";
