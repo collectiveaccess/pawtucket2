@@ -376,7 +376,7 @@ a.caption:hover{
   -o-border-radius: 15px;
   border-radius: 15px;
   padding: 2px 0px 2px 5px;
-  height: 14px;
+  /*height: 14px;*/
   margin: 0;
 }
 
