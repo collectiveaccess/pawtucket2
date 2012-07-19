@@ -342,7 +342,7 @@
  			$ps_from_email = $this->request->getParameter('from_email', pString);
  			$ps_from_name = $this->request->getParameter('from_name', pString);
  			$ps_subject = $this->request->getParameter('subject', pString);
- 			$ps_message = $this->request->getParameter('message', pString);
+ 			$ps_message = $this->request->getParameter('email_message', pString);
  			
 			$o_purifier = new HTMLPurifier();
     		$ps_message = $o_purifier->purify($ps_message);
@@ -405,7 +405,7 @@
  				$this->view->setVar('from_email', $ps_from_email);
  				$this->view->setVar('from_name', $ps_from_name);
  				$this->view->setVar('subject', $ps_subject);
- 				$this->view->setVar('message', $ps_message);
+ 				$this->view->setVar('email_message', $ps_message);
  				
  				$this->notification->addNotification(_t("There were errors in your form"), "message");			
  			}

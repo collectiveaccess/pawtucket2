@@ -46,7 +46,7 @@
 	$vs_from_email = $this->getVar("from_email");
 	$vs_from_name = $this->getVar("from_name");
 	$vs_subject = $this->getVar("subject");
-	$vs_message = $this->getVar("message");
+	$vs_message = $this->getVar("email_message");
 	
 	# --- if params have not been passed, set some defaults
 	if(!$vs_subject && !$va_errors['subject']){
@@ -216,7 +216,7 @@
 							<input type="text" name="subject" value="<?php print $vs_subject; ?>">
 						</div>
 						<div class="formLabel"><?php print _t("Message"); ?><br/>
-							<textarea name="message" rows="5"><?php print $vs_message; ?></textarea>
+							<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
 						</div>
 						<a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
