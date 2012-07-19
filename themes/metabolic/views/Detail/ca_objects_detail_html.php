@@ -74,14 +74,17 @@
 <?php
 			}
 			print "<h3>Title</h3><p>".$vs_title."</p>";
-			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
 			}			
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/>'))){
-				print "<h3>"._t("Alternate Title")."</h3><p>".$va_alt_name."</p><!-- end unit -->";
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/><br/>'))){
+				print "<h3>"._t("Alternate Title")."</h3><p style='line-height:1.1em;'>".$va_alt_name."</p><!-- end unit -->";
+			}
+			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
+				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
 			}			
+			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
 			if($va_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true))){
 				if ($va_artType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".$va_artType."</p><!-- end unit -->";
@@ -112,18 +115,16 @@
 					print "<h3>"._t("Subtype")."</h3><p>".$va_toolType."</p><!-- end unit -->";
 				}
 			}
-			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
-				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
+			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
 			}
+			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
+			}			
 			if($va_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
 				print "<h3>"._t("Material")."</h3><p>".$va_material."</p><!-- end unit -->";
 			}	
-			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
-			}	
-			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
-			}	
+	
 			if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length') || $va_height = $t_object->get('ca_objects.dimensions.dimensions_height') || $va_width = $t_object->get('ca_objects.dimensions.dimensions_width') || $va_depth = $t_object->get('ca_objects.dimensions.dimensions_depth') || $va_weight = $t_object->get('ca_objects.dimensions.weight')){
 				print "<h3>"._t("Dimensions")."</h3><p>";
 					if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length')) {print $va_length." (length) ";}
@@ -137,6 +138,11 @@
 				}
 				print "</p><!-- end unit -->";
 			}
+			# --- description
+				if($vs_description_text = $t_object->get("ca_objects.description")){
+					print "<h3>Description</h3><div class='scrollPane' id='description' style=''><p>".$vs_description_text."</p></div>";				
+
+				}			
 			if($va_edition = $t_object->get('ca_objects.editionOfContainer.editionOf')){
 				print "<h3>"._t("Edition")."</h3><p>".$va_edition;
 				if($va_edition_date = $t_object->get('ca_objects.editionOfContainer.editionDate')){
@@ -215,13 +221,7 @@
 					}
 				}
 			}
-			# --- description
-				if($vs_description_text = $t_object->get("ca_objects.description")){
-					print "<h3>Description</h3><div class='scrollPane' id='description' style=''><p>".$vs_description_text."</p></div>";				
-?>
 
-<?php
-				}
 			# --- child hierarchy info
 			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_children) > 0){
