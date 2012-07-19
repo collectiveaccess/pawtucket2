@@ -359,24 +359,20 @@
 ?>		
 		</div><!-- end rightCol-->
 		<div id="leftCol">
-
-			<div id="objDetailImage">
 <?php
 		if ($t_rep && $t_rep->getPrimaryKey()) {
-
+?>
+			<div id="objDetailImage">
+<?php
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', 'mediumlarge', $this->getVar('primary_rep_display_options'))."</a>";
 			}
-		} else {
-			print "<div style='width: 367px; height: 250px; background-color:#fff; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);'> </div>";
-		}
 ?>
 			</div><!-- end objDetailImage -->
 			<div id="objDetailImageNav" >
 				<div style="float:right;">
-					<!-- bookmark link BEGIN -->
 <?php
 				if (($this->request->isLoggedIn()) && ($this->request->config->get('can_download_media') && $t_rep && $t_rep->getPrimaryKey())) {
 					print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => original)); 
@@ -386,11 +382,12 @@
 					if ($this->getVar('typename') != "Audio/Film/Video") {
 						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
 					}
-			}
+				}
 ?>
 				</div>			
 			</div><!-- end objDetailImageNav -->
 <?php
+		}
 		
 if (!$this->request->config->get('dont_allow_comments')) {
 		# --- user data --- comments - ranking - tagging
@@ -472,35 +469,35 @@ if (!$this->request->config->get('dont_allow_comments')) {
 <?php
 	}
 ?>
+			<div id='bottomBar'>
+<?php	
+			if($this->request->isLoggedIn()){
+				print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+			}else{
+				print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+			}
+
+			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+				}else{
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+				}
+			}
+		
+		
+			if(!$this->request->isLoggedIn()){
+				if (!$this->request->config->get('dont_allow_comments')) {
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
+				}
+			}
+			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
+			print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
+?>
+			</div><!-- end bottomBar -->
 		</div><!-- end leftCol -->
 
 	</div><!-- end detailBody -->
-	<div id='bottomBar'>
-<?php	
-					if($this->request->isLoggedIn()){
-						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-					}else{
-						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-					}
-
-					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
-						}else{
-							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
-						}
-					}
-
-
-	if(!$this->request->isLoggedIn()){
-		if (!$this->request->config->get('dont_allow_comments')) {
-			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
-		}
-	}
-	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
-	print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
-?>
-	</div>
 <?php
 	require_once(__CA_LIB_DIR__.'/core/Parsers/COinS.php');
 	
@@ -517,9 +514,10 @@ if (!$this->request->config->get('dont_allow_comments')) {
 	}
 ?>
 	<script type="text/javascript">
-
-		jQuery('.scrollPane').jScrollPane({
-			
-			animateScroll: true,
+		jQuery(document).ready(function() {
+			jQuery('.scrollPane').jScrollPane({
+				
+				animateScroll: true,
+			});
 		});
 	</script>
