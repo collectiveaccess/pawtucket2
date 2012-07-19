@@ -112,7 +112,7 @@ a img {
 .details {
 	font-size: 78%;
 }
-#detailBody #rightCol #description .details{
+#detailBody #rightCol #description {
 	font-size:1em;
 }
 .formErrors{
@@ -824,6 +824,10 @@ div.searchlight-results div.searchlight-selected {
   	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
   	font-weight: 300;
   	color: #333;
+}
+
+#detailBody #description p{
+	font-size: 1.2em;
 }
 #detailBody #rightRightCol p{
 	font-size: 1em;
