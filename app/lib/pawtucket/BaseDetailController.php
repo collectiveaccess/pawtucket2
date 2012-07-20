@@ -186,6 +186,9 @@
 				}
 				
 				if ($vs_limit_facet_name) {
+					if (($va_configured_type_restrictions = $this->request->config->getList($this->ops_tablename.'_detail_browse_type_restrictions')) && is_array($va_configured_type_restrictions)) {
+						$this->opo_browse->setTypeRestrictions($va_configured_type_restrictions, array('includeChildren' => false));
+					}
 					$this->opo_browse->addCriteria($vs_limit_facet_name, array($vn_item_id));
 					$this->opo_browse->execute(array('checkAccess' => $va_access_values));
 					$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', $this->opo_browse->getBrowseID());

@@ -144,7 +144,7 @@
 			<div id="nav">
 				<div id="search"><form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get">
 						<a href="#" style="position: absolute; z-index:1500; margin: 4px 0px 0px 132px;" name="searchButtonSubmit" onclick="document.forms.header_search.submit(); return false;"><?php print "<img src='".$this->request->getThemeUrlPath()."/graphics/searchglass.gif' border='0'>"; ?></a>
-						<input type="text" name="search" value="<?php print ($vs_search) ? $vs_search : ''; ?>" onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" size="100"/>
+						<input type="text" name="search" value=" " onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" size="100"/>
 				</form></div>
 <?php				
 				print join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
