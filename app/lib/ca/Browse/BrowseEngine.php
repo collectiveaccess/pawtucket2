@@ -3108,10 +3108,13 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 * in the restriction. You may pass numeric type_id and alphanumeric type codes interchangeably.
 		 *
 		 * @param array $pa_type_codes_or_ids List of type_id or code values to filter browse by. When set, the browse will only consider items of the specified types. Using a hierarchical parent type will automatically include its children in the restriction. 
+		 * @param array $pa_options Options include:
+		 *		includeChildren = expand to include all child types in restriction. Default is true.
 		 * @return boolean True on success, false on failure
 		 */
-		public function setTypeRestrictions($pa_type_codes_or_ids) {
-			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids);
+		public function setTypeRestrictions($pa_type_codes_or_ids, $pa_options=null) {
+			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids, $pa_options);
+			
 			$this->opo_ca_browse_cache->setTypeRestrictions($this->opa_browse_type_ids);
 			return true;
 		}
@@ -3120,9 +3123,14 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 *
 		 *
 		 * @param array $pa_type_codes_or_ids List of type_id or code values to filter browse by. When set, the browse will only consider items of the specified types. Using a hierarchical parent type will automatically include its children in the restriction. 
+		 * @param array $pa_options Options include:
+		 *		includeChildren = expand to include all child types in returned set. Default is true.
 		 * @return boolean True on success, false on failure
 		 */
-		private function _convertTypeCodesToIDs($pa_type_codes_or_ids) {
+		private function _convertTypeCodesToIDs($pa_type_codes_or_ids, $pa_options=null) {
+			if (!isset($pa_options['includeChildren'])) { $pa_options['includeChildren'] = true; }
+			$vb_include_children = (bool)$pa_options['includeChildren'];
+			
 			$vs_md5 = caMakeCacheKeyFromOptions($pa_type_codes_or_ids);
 			
 			if (isset(BrowseEngine::$s_type_id_cache[$vs_md5])) { return BrowseEngine::$s_type_id_cache[$vs_md5]; }
@@ -3150,11 +3158,15 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 				if (!$vn_type_id) { return false; }
 				
 				if (isset($va_type_list[$vn_type_id]) && $va_type_list[$vn_type_id]) {	// is valid type for this subject
-					// See if there are any child types
-					$t_item = new ca_list_items($vn_type_id);
-					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
-					$va_ids[] = $vn_type_id;
-					$va_type_ids = array_merge($va_type_ids, $va_ids);
+					if ($vb_include_children) {
+						// See if there are any child types
+						$t_item = new ca_list_items($vn_type_id);
+						$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
+						$va_ids[] = $vn_type_id;
+						$va_type_ids = array_merge($va_type_ids, $va_ids);
+					} else {
+						$va_type_ids[] = $vn_type_id;
+					}
 				}
 			}
 			
