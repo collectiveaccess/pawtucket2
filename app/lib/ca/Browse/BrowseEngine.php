@@ -672,7 +672,7 @@
 			if (!($va_facets_with_content = $this->opo_ca_browse_cache->getGlobalParameter('facets_with_content'))) {
 				$t_browse = new BrowseEngine($this->opn_browse_table_num, null, $this->getContext());
 				$t_browse->execute();
-				
+				$va_facets_with_content = $this->opo_ca_browse_cache->getGlobalParameter('facets_with_content');
 			}
 			
 			if (is_array($va_facets_with_content)) {
