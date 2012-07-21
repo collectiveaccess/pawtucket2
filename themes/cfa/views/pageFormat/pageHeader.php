@@ -58,7 +58,7 @@
 <li><a href="http://www.chicagofilmarchives.org/pres-projects">Preservation Projects</a></li>
 <li><a href="http://www.chicagofilmarchives.org/midwest-stories">Midwest Stories</a></li>
 <li><a href="http://www.chicagofilmarchives.org/home-movies">Home Movies</a></li>
-<li><a href="http://www.chicagofilmarchives.org/stock-footage-library">Stock Footage Library</a></li>
+<li><a href="<?php print $this->request->config->get("cfa_stock_url"); ?>">Stock Footage Library</a></li>
 </ul></div>
 
 <div class="adunit_left"><a href="http://www.chicagofilmarchives.org/donate" title="Chicago Film Archives" rel="home"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/cfa/donate2.png" border="0" alt="dontate now"  /></a>
@@ -119,6 +119,8 @@ info@chicagofilmarchives.org</p>
 		<input type="image" src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/cfa/invis_button.png" class="searchbox_submit" value="Find" />
 		</form>
 	</div><!-- end searchwrapperCollectionSearch -->
+	<div id="collectionSearchHelpLink"><a href="http://www.chicagofilmarchives.org/search-instructions"><?php print _t("search instructions"); ?></a></div>
+		
   
 </div> <!--end leftnav_coll-->
 
