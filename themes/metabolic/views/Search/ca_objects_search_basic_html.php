@@ -28,6 +28,8 @@
  
 	$vo_result 				= $this->getVar('result');
 	$vo_result_context 		= $this->getVar('result_context');
+	$vs_view = $vo_result_context->getCurrentView();
+		
 if (!$this->request->isAjax()) {
  ?>
  	<div id="resultBox">
@@ -40,20 +42,24 @@ if (!$this->request->isAjax()) {
 		print $this->render('Results/paging_controls_html.php');
 		if($vo_result->numHits() > 0){
 ?>
-			<a href='#' id='showRefine' onclick='jQuery("#searchRefineBox").slideDown(250); jQuery("#showRefine").hide(); jQuery("#searchOptionsBox").slideUp(250); jQuery("#showOptions").show(); return false;'><?php print _t("Filter Search"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
+			<a href='#' id='showRefine' onclick='jQuery("#searchRefineBox").slideDown(250); jQuery("#showRefine").hide(); jQuery("#searchOptionsBox").slideUp(250); jQuery("#showOptions").show(); jQuery("#searchToolsBox").slideUp(250); jQuery("input.addItemToSetControl").hide(); jQuery("#showTools").show(); return false;'><?php print _t("Filter Search"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
+			<a href='#' id='showOptions' style='margin-right:10px;' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide();  $("#searchRefineBox").slideUp(250); $("#showRefine").show(); jQuery("#searchToolsBox").slideUp(250); jQuery("input.addItemToSetControl").hide(); jQuery("#showTools").show(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php
-		}
-		print $this->render('Search/search_controls_html.php');
+			if ($vs_view != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections') && is_array($va_sets = $this->getVar('available_sets')) && sizeof($va_sets)) {
 ?>
-		<a href='#' id='showOptions' style='margin-right:10px;' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide();  $("#searchRefineBox").slideUp(250); $("#showRefine").show(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
+				<a href='#' id='showTools' style='margin-right:10px;' onclick='$("#searchToolsBox").slideDown(250); $("#showTools").hide();  jQuery("input.addItemToSetControl").show(); $("#searchRefineBox").slideUp(250); $("#showRefine").show(); jQuery("#searchOptionsBox").slideUp(250); jQuery("#showOptions").show(); return false;'><?php print _t("Tools"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php
-		if($vo_result->numHits() > 0){
+			}
+
+			print $this->render('Search/search_controls_html.php');
 			print $this->render('Search/search_refine_html.php');
+			if ($vs_view != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections') && is_array($va_sets = $this->getVar('available_sets')) && sizeof($va_sets)) {
+				print $this->render('Search/search_tools_html.php');
+			}
 		}
 ?>
 	<div class="sectionBox">
 <?php
-		$vs_view = $vo_result_context->getCurrentView();
 		if ((!$vs_view) || ($vo_result->numHits() == 0) || (!in_array($vs_view, array_keys($this->getVar('result_views'))))) {
 			print $this->render('Results/ca_objects_search_no_results_html.php');
 		}else{

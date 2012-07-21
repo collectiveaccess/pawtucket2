@@ -35,6 +35,7 @@
 	$vs_display_version =				$this->getVar('primary_rep_display_version');
 	$va_display_options =				$this->getVar('primary_rep_display_options');
 
+	JavascriptLoadManager::register('cycle');
 ?>	
 	<div id="detailBody">
 		<div id="pageNav">
@@ -57,14 +58,7 @@
 		<h1><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
 		<div id="leftCol">
 <?php
-			if($this->request->config->get('show_add_this')){
-?>
-				<!-- AddThis Button BEGIN -->
-				<div class="unit"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0;"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end unit -->
-				<!-- AddThis Button END -->
-<?php
-			}
-			# --- identifier
+
 
 			# --- parent hierarchy info
 			if($t_object->get('parent_id')){
@@ -221,24 +215,21 @@
 			}
 			# --- map
 			if($this->request->config->get('ca_objects_map_attribute') && $t_object->get($this->request->config->get('ca_objects_map_attribute'))){
-				$o_map = new GeographicMap(285, 200, 'map');
+				$o_map = new GeographicMap(240, 200, 'map');
 				$o_map->mapFrom($t_object, $this->request->config->get('ca_objects_map_attribute'));
-				print "<div class='unit'>".$o_map->render('HTML')."</div>";
+				print "<div class='unit' style='margin-top:15px; margin-bottom:20px;'>".$o_map->render('HTML')."</div>";
 			}			
 			# --- output related object images as links
 			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if (sizeof($va_related_objects)) {
 				print "<div class='unit'><h2>"._t("Related Objects")."</h2>";
-				print "<table border='0' cellspacing='0' cellpadding='0' width='100%' id='objDetailRelObjects'>";
-				$col = 0;
-				$vn_numCols = 4;
+				print "<div id='objDetailRelObjects'>";
+
 				foreach($va_related_objects as $vn_rel_id => $va_info){
 					$t_rel_object = new ca_objects($va_info["object_id"]);
 					$va_reps = $t_rel_object->getPrimaryRepresentation(array('icon', 'small'), null, array('return_with_access' => $va_access_values));
-					if($col == 0){
-						print "<tr>";
-					}
-					print "<td align='center' valign='middle' class='imageIcon icon".$va_info["object_id"]."'>";
+
+					print "<div class='imageIcon icon".$va_info["object_id"]."' >";
 					print caNavLink($this->request, $va_reps['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_info["object_id"]));
 					
 					// set view vars for tooltip
@@ -249,28 +240,10 @@
 						".icon".$va_info["object_id"], $this->render('../Results/ca_objects_result_tooltip_html.php')
 					);
 					
-					print "</td>";
-					$col++;
-					if($col < $vn_numCols){
-						print "<td align='center'><!-- empty --></td>";
-					}
-					if($col == $vn_numCols){
-						print "</tr>";
-						$col = 0;
-					}
+					print "</div>";
+					
 				}
-				if(($col != 0) && ($col < $vn_numCols)){
-					while($col <= $vn_numCols){
-						if($col < $vn_numCols){
-							print "<td><!-- empty --></td>";
-						}
-						$col++;
-						if($col < $vn_numCols){
-							print "<td align='center'><!-- empty --></td>";
-						}
-					}
-				}
-				print "</table></div><!-- end unit -->";
+				print "</div></div><!-- end unit -->";
 			}
 ?>
 		</div><!-- end leftCol-->
@@ -279,16 +252,50 @@
 		if ($t_rep && $t_rep->getPrimaryKey()) {
 ?>
 			<div id="objDetailImage">
+			
 <?php
-			if($va_display_options['no_overlay']){
-				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
-			}else{
+			if ($vn_num_reps > 1) {
+?>			
+			<a href="#"><span id='prevImage'>&larr;</span></a>
+<?php
+			}
+?>			
+				<div id="slideshow" class="pics" style="float:left; margin-bottom:15px;">
+				
+<?php
+				$item_rep = $t_object->getRepresentations(array('mediumlarge', 'tiny'), null, array('return_with_access' => $va_access_values));
+				foreach ($item_rep as $i => $one_item) {
+					$slideWidth = $one_item['info']['mediumlarge']['WIDTH'];
+					$slidePadding = (580 - $slideWidth)/2;
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $one_item['representation_id']))."\"); return false;' ><img src='".$one_item['urls']['mediumlarge']."' style='margin-left:".$slidePadding."px; margin-right:".$slidePadding."px;' rel='".$one_item['urls']['tiny']."'/></a>";
+				}
+?>
+				</div>
+<?php
+			if ($vn_num_reps > 1) {
+?>				
+				<a href="#"><span id='nextImage'>&rarr;</span></a>
+<?php
+			}
+?>				
+			
+				<div style="height:1px; width:100%; clear:both;"></div>
+
+				
+			<div id='detailImageNav'></div>		
+				
+<?php
+
+			//if($va_display_options['no_overlay']){
+			//	print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
+			//}else{
 			//	print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
 				
- 				$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
-				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
-			}
+ 			//	$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+			//	print "<div id='cont'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</a></div>";
+			//}
 ?>
+			<div style='height:1px; width:100%; clear:both;'></div>
 			</div><!-- end objDetailImage -->
 			<div id="objDetailImageNav">
 				<div style="float:right;">
@@ -315,7 +322,7 @@
 
 					# --- output download link? 
 					if(caObjectsDisplayDownloadLink($this->request)){
-						print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1));
+						print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => 'original'));
 					}
 
 					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
@@ -388,20 +395,9 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 			}
 		if($this->request->isLoggedIn()){
 ?>
-			<h2><?php print _t("Add your rank, tags and comment"); ?></h2>
+			<h2><?php print _t("Add your comments"); ?></h2>
 			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id)); ?>" name="comment" enctype='multipart/form-data'>
-				<div class="formLabel">Rank
-					<select name="rank">
-						<option value="">-</option>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-					</select>
-				</div>
-				<div class="formLabel"><?php print _t("Tags (separated by commas)"); ?></div>
-				<input type="text" name="tags">
+
 				<div class="formLabel"><?php print _t("Media"); ?></div>
 				<input type="file" name="media1">
 				<div class="formLabel"><?php print _t("Comment"); ?></div>
@@ -428,3 +424,24 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 	
 	
 ?>
+	<script type="text/javascript">
+$(function() {
+
+    $('#slideshow').cycle({
+        fx:      'scrollHorz',
+        timeout:  0,
+        prev:    '#prevImage',
+        next:    '#nextImage',
+        pager:   '#detailImageNav',
+        
+        pagerAnchorBuilder: function(i, slide) { 
+        return '<a href="#"><img src="'
+        + jQuery(slide).find('img').attr('rel')
+        + '" /></a>'; 
+    }
+    });
+
+
+    
+});
+</script>

@@ -44,7 +44,7 @@
 			$carousel_ids[] = $the_item['object_id'];
 		}
 	}
-	
+	shuffle($carousel_ids);
 	$qr_set = ca_objects::createResultSet($carousel_ids);
 
 	
@@ -187,11 +187,12 @@
 					$randomImageHeight = $qr_set->getMediaInfo('ca_object_representations.media', 'medium', 'HEIGHT');
 					$randomImagePadding = ((410 - $randomImageHeight) / 2);
 					$object_title = $qr_set->get('ca_objects.preferred_labels');
+					$object_idno = $qr_set->get('ca_objects.idno');
 					$object_media = $qr_set->get('ca_object_representations.media.medium');
 					$vn_object_id = $qr_set->get('ca_objects.object_id');
 					print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
 					print caNavLink($this->request, $object_media, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-					print "<div id='browseRandomCaption'>".caNavLink($this->request, $object_title, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+					print "<div id='browseRandomCaption'>ID: ".caNavLink($this->request, $object_idno, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 				}
 				
 				
@@ -206,9 +207,17 @@
 		# --- show results
 		print $this->render('Results/paging_controls_html.php');
 ?>
-		<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
-<?php		
+		<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); $("#searchToolsBox").slideUp(250); $("#showTools").show(); jQuery("input.addItemToSetControl").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
+<?php
+		if($this->getVar('current_view') != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections')){
+?>
+		<a href='#' id='showTools' onclick='$("#searchToolsBox").slideDown(250); $("#showTools").hide(); jQuery("input.addItemToSetControl").show(); $("#searchOptionsBox").slideUp(250); $("#showOptions").show(); return false;'><?php print _t("Tools"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
+<?php
+		}
 		print $this->render('Search/search_controls_html.php');
+		if($this->getVar('current_view') != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections')){
+			print $this->render('Search/search_tools_html.php');
+		}
 		print "<div class='sectionBox'>";
 		$vs_view = $this->getVar('current_view');
 		if(in_array($vs_view, array_keys($this->getVar('result_views')))){

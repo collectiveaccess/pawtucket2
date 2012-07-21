@@ -1,4 +1,7 @@
 <?php
+	
+	JavascriptLoadManager::register('hierBrowser');
+	
 	$vn_object_id = $this->getVar("object_id");
 	$t_object = $this->getVar("t_object");
 	$va_access_values = $this->getVar("access_values");
@@ -64,7 +67,7 @@
 					<?php print _t("To e-mail address<br/>(Enter multiple addresses separated by commas)"); ?>
 				</div>
 				<div>
-					<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+					<input type="text" name="to_email" value="<?php print $vs_to_email; ?>" id="to_email"/>
 				</div>
 				<div class="formLabel">
 					<?php print ($va_errors["from_name"]) ? "<div class='formErrors'>".$va_errors["from_name"]."</div>" : ""; ?>
@@ -122,8 +125,23 @@
 <div id='bottomBar'><!-- empty --></div>
 	<script type="text/javascript">
 
-		jQuery('.scrollPane').jScrollPane({
-			
-			animateScroll: true,
+		jQuery(document).ready(function() {
+<?php
+		if($this->request->isLoggedIn()){
+?>
+			jQuery('#to_email').autocomplete('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', 
+				{ minChars: 3, matchSubset: 1, matchContains: 1, delay: 800, scroll: true, max: 100, extraParams: {},
+					formatResult: function(data, value) {
+						return jQuery.trim(value.replace(/<\/?[^>]+>/gi, ''));
+					}
+				}
+			);
+<?php
+		}
+?>
+			jQuery('.scrollPane').jScrollPane({
+				animateScroll: true,
+			});
 		});
+		
 	</script>

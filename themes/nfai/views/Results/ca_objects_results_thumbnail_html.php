@@ -42,6 +42,7 @@ if($vo_result) {
 		while(($vn_item_count < $vn_items_per_page) && ($vo_result->nextHit())) {
 			$vn_object_id = $vo_result->get('object_id');
 			$va_labels = $vo_result->getDisplayLabels();
+			$va_object_type = $vo_result->get('type_id', array('convertCodesToDisplayText' => true));
 			
 			$vs_caption = "";
 			foreach($va_labels as $vs_label){
@@ -58,6 +59,7 @@ if($vo_result) {
 			// Get thumbnail caption
 			$this->setVar('object_id', $vn_object_id);
 			$this->setVar('caption_title', $vs_caption);
+			$this->setVar('object_type', $va_object_type);
 			$this->setVar('caption_idno', $vo_result->get("ca_objects.idno"));
 			
 			print "</div><div class='searchThumbCaption searchThumbnail".$vn_object_id."'>".$this->render('Results/ca_objects_result_caption_html.php')."</div>";

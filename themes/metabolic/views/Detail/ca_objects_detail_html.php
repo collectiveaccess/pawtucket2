@@ -55,14 +55,14 @@
 ?>
 		</div><!-- end nav -->
 		<div class='titleBar'>
-			<div class='recordTitle'><h1><?php print $vs_title; ?></h1></div>
-			<div class='idno'>
-<?php
+			<div class='recordTitle'><h1>
+<?php	
 			if($t_object->get('idno')){
-				print "<b>"._t("Identifier").":</b> ".$t_object->get('idno')."<!-- end unit -->";
+				print $t_object->get('idno');
 			}
-?>
-			</div>
+?>			
+			</h1></div>
+
 		</div>
 		<div style='clear:both;height:16px;'></div>
 		<div id="rightCol">
@@ -73,14 +73,18 @@
 
 <?php
 			}
-			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
+			print "<h3>Title</h3><p>".$vs_title."</p>";
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
 			}			
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/>'))){
-				print "<h3>"._t("Alternate Title")."</h3><p>".$va_alt_name."</p><!-- end unit -->";
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/><br/>'))){
+				print "<h3>"._t("Alternate Title")."</h3><p style='line-height:1.1em;'>".$va_alt_name."</p><!-- end unit -->";
+			}
+			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
+				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
 			}			
+			print "<h3>Type</h3><p>".unicode_ucfirst($this->getVar('typename'))."</p>";
 			if($va_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true))){
 				if ($va_artType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".$va_artType."</p><!-- end unit -->";
@@ -111,18 +115,16 @@
 					print "<h3>"._t("Subtype")."</h3><p>".$va_toolType."</p><!-- end unit -->";
 				}
 			}
-			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
-				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
+			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
 			}
+			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
+			}			
 			if($va_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
 				print "<h3>"._t("Material")."</h3><p>".$va_material."</p><!-- end unit -->";
 			}	
-			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
-			}	
-			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
-			}	
+	
 			if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length') || $va_height = $t_object->get('ca_objects.dimensions.dimensions_height') || $va_width = $t_object->get('ca_objects.dimensions.dimensions_width') || $va_depth = $t_object->get('ca_objects.dimensions.dimensions_depth') || $va_weight = $t_object->get('ca_objects.dimensions.weight')){
 				print "<h3>"._t("Dimensions")."</h3><p>";
 					if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length')) {print $va_length." (length) ";}
@@ -136,6 +138,11 @@
 				}
 				print "</p><!-- end unit -->";
 			}
+			# --- description
+				if($vs_description_text = $t_object->get("ca_objects.description")){
+					print "<h3>Description</h3><div class='scrollPane' id='description' style=''><p>".$vs_description_text."</p></div>";				
+
+				}			
 			if($va_edition = $t_object->get('ca_objects.editionOfContainer.editionOf')){
 				print "<h3>"._t("Edition")."</h3><p>".$va_edition;
 				if($va_edition_date = $t_object->get('ca_objects.editionOfContainer.editionDate')){
@@ -214,13 +221,7 @@
 					}
 				}
 			}
-			# --- description
-				if($vs_description_text = $t_object->get("ca_objects.description")){
-					print "<h3>Description</h3><div class='scrollPane' id='description' style=''><p>".$vs_description_text."</p></div>";				
-?>
 
-<?php
-				}
 			# --- child hierarchy info
 			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_children) > 0){
@@ -358,24 +359,20 @@
 ?>		
 		</div><!-- end rightCol-->
 		<div id="leftCol">
-
-			<div id="objDetailImage">
 <?php
 		if ($t_rep && $t_rep->getPrimaryKey()) {
-
+?>
+			<div id="objDetailImage">
+<?php
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', 'mediumlarge', $this->getVar('primary_rep_display_options'))."</a>";
 			}
-		} else {
-			print "<div style='width: 367px; height: 250px; background-color:#fff; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);'> </div>";
-		}
 ?>
 			</div><!-- end objDetailImage -->
 			<div id="objDetailImageNav" >
 				<div style="float:right;">
-					<!-- bookmark link BEGIN -->
 <?php
 				if (($this->request->isLoggedIn()) && ($this->request->config->get('can_download_media') && $t_rep && $t_rep->getPrimaryKey())) {
 					print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => original)); 
@@ -385,11 +382,12 @@
 					if ($this->getVar('typename') != "Audio/Film/Video") {
 						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
 					}
-			}
+				}
 ?>
 				</div>			
 			</div><!-- end objDetailImageNav -->
 <?php
+		}
 		
 if (!$this->request->config->get('dont_allow_comments')) {
 		# --- user data --- comments - ranking - tagging
@@ -471,35 +469,35 @@ if (!$this->request->config->get('dont_allow_comments')) {
 <?php
 	}
 ?>
+			<div id='bottomBar'>
+<?php	
+			if($this->request->isLoggedIn()){
+				print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+			}else{
+				print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+			}
+
+			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+				}else{
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='Add to Set'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+				}
+			}
+		
+		
+			if(!$this->request->isLoggedIn()){
+				if (!$this->request->config->get('dont_allow_comments')) {
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
+				}
+			}
+			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
+			print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
+?>
+			</div><!-- end bottomBar -->
 		</div><!-- end leftCol -->
 
 	</div><!-- end detailBody -->
-	<div id='bottomBar'>
-<?php	
-					if($this->request->isLoggedIn()){
-						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-					}else{
-						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='Bookmark'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-					}
-
-					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
-						}else{
-							print caNavLink($this->request, _t("+ Add to Set"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
-						}
-					}
-
-
-	if(!$this->request->isLoggedIn()){
-		if (!$this->request->config->get('dont_allow_comments')) {
-			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='Comment'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
-		}
-	}
-	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='Email this record'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
-	print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='Share on Facebook'></a>";	
-?>
-	</div>
 <?php
 	require_once(__CA_LIB_DIR__.'/core/Parsers/COinS.php');
 	
@@ -516,9 +514,10 @@ if (!$this->request->config->get('dont_allow_comments')) {
 	}
 ?>
 	<script type="text/javascript">
-
-		jQuery('.scrollPane').jScrollPane({
-			
-			animateScroll: true,
+		jQuery(document).ready(function() {
+			jQuery('.scrollPane').jScrollPane({
+				
+				animateScroll: true,
+			});
 		});
 	</script>

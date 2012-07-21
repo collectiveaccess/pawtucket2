@@ -202,7 +202,7 @@
 						# attempt to display a small map instead of an image
 						$o_map = new GeographicMap(142, 72, 'timelineMap'.$pn_silo_id.$t_occ->get("ca_occurrences.occurrence_id"));
 						$o_map->mapFrom($t_occ, "ca_occurrences.georeference.geocode");
-						$vs_map = $o_map->render('HTML');
+						$vs_map = $o_map->render('JPEG', array('zoomLevel' => 12, 'mapType' => 'TERRAIN'));
 						$vs_image = $vs_map;
 					}
 				}
@@ -240,9 +240,9 @@
  			$va_action["georeference"] = $t_action->get('ca_occurrences.georeference.geocode');
  			# --- get a bigger map if there are no objects to show
  			if(is_array($va_action["objects"]) && sizeof($va_action["objects"]) > 0){
- 				$o_map = new GeographicMap(250, 128, 'map');
+ 				$o_map = new GeographicMap(250, 128, 'mapAction'.$pn_action_id.'Silo'.$pn_silo_id);
  			}else{
- 				$o_map = new GeographicMap(500, 300, 'map');
+ 				$o_map = new GeographicMap(500, 300, 'mapAction'.$pn_action_id.'Silo'.$pn_silo_id);
  			}
 			$o_map->mapFrom($t_action, "ca_occurrences.georeference.geocode");
 			$vs_map = $o_map->render('HTML');

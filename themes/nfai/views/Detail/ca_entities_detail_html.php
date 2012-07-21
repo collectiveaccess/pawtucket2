@@ -84,7 +84,7 @@ if (!$this->request->isAjax()) {
 				print "<div class='unit'><b>"._t("Entity Date")."</b><br/> ".$va_entity_date."</div><!-- end unit -->";
 			}
 			if($va_biography_description = $t_entity->get('ca_entities.biography.biography_description')){
-				print "<div class='unit'><b>"._t("Description")."</b><br/> ".$va_biography_description."</div><!-- end unit -->";
+				print "<div class='unit'><b>"._t("Biography/History")."</b><br/> ".$va_biography_description."</div><!-- end unit -->";
 			}
 			if($va_external_link = $t_entity->get('ca_entities.external_link')){
 				print "<div class='unit'><b>"._t("URL")."</b><br/> <a href='{$va_external_link}' target='_blank'>".$va_external_link."</a></div><!-- end unit -->";

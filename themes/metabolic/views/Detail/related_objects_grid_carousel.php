@@ -55,7 +55,11 @@
 		$va_media_info = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values));
 		$vn_padding_top = 0;
 		print "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail".$vn_object_id."'>";
-		print caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('object_id')));
+		$vs_display = "";
+		if(!($vs_display = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)))){
+			$vs_display = "<div class='textResult'>ID: ".$qr_hits->get("idno")."</div>";
+		}
+		print caNavLink($this->request, $vs_display, '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('object_id')));
 		
 		// Get thumbnail caption
 		$this->setVar('object_id', $vn_object_id);
@@ -148,9 +152,14 @@ if($this->getVar('num_pages') > 1){
 						imageGrid = '<table border="0" cellpadding="0px" cellspacing="0px" width="100%">';
 						var col = 0;
 						var tooltips = {};
+						var thumbnail = '';
 						jQuery.each(objects, function(k, v) {
 							if (col == 0) { imageGrid = imageGrid +  "<tr>\n"; }
-							imageGrid = imageGrid + "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail" + v['object_id'] + "'><a href='<?php print caNavUrl($this->request, "Detail", "Object", "Show"); ?>/object_id/" + v['object_id'] + "'>" + v['widethumbnail'] + "</a></div></td>\n";
+							thumbnail = v['widethumbnail'];
+							if(!thumbnail){
+								thumbnail = "<div class='textResult'>ID: " + v['idno'] + "</div>";
+							}
+							imageGrid = imageGrid + "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail" + v['object_id'] + "'><a href='<?php print caNavUrl($this->request, "Detail", "Object", "Show"); ?>/object_id/" + v['object_id'] + "'>" + thumbnail + "</a></div></td>\n";
 							col++;
 							if(col == numCols){
 								imageGrid = imageGrid + "</tr>";
@@ -175,7 +184,11 @@ if($this->getVar('num_pages') > 1){
 						
 						// Add tooltips
 						jQuery.each(objects, function(k, v) {
-							jQuery('.searchThumbnail' + v['object_id']).tooltip({ track: false, extraClass: 'tooltipFormat', showURL: false, bodyHandler: function() { return '<div class=\"tooltipImage\">' + v['small'] + '</div> <div class=\"tooltipCaption\"> <div><b>TITLE:</b> ' + v['label'] + '</div><div><b>ID:</b> ' + v['idno'] + '</div></div>' }});
+							var image = "";
+							if(v['small']){
+								image = v['small'];
+							}
+							jQuery('.searchThumbnail' + v['object_id']).tooltip({ track: false, extraClass: 'tooltipFormat', showURL: false, bodyHandler: function() { return '<div class=\"tooltipImage\">' + image + '</div> <div class=\"tooltipCaption\"> <div><b>TITLE:</b> ' + v['label'] + '</div><div><b>ID:</b> ' + v['idno'] + '</div></div>' }});
 						});
 						i++;
 					});
