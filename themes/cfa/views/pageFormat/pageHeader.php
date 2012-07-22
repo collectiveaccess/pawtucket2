@@ -58,7 +58,9 @@
 <li><a href="http://www.chicagofilmarchives.org/pres-projects">Preservation Projects</a></li>
 <li><a href="http://www.chicagofilmarchives.org/midwest-stories">Midwest Stories</a></li>
 <li><a href="http://www.chicagofilmarchives.org/home-movies">Home Movies</a></li>
-<li><a href="<?php print $this->request->config->get("cfa_stock_url"); ?>">Stock Footage Library</a></li>
+<!--<li><a href="<?php print $this->request->config->get("cfa_stock_url"); ?>">Stock Footage Library</a></li>-->
+<li><a href="http://www.chicagofilmarchives.org/stock-footage-library">Stock Footage Library</a></li>
+
 </ul></div>
 
 <div class="adunit_left"><a href="http://www.chicagofilmarchives.org/donate" title="Chicago Film Archives" rel="home"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/cfa/donate2.png" border="0" alt="dontate now"  /></a>
@@ -110,8 +112,12 @@ info@chicagofilmarchives.org</p>
 	foreach($va_collection_genres as $vn_genre_id => $va_genre_info){
 		print '<li class="page_item '.((($this->request->getController() == "CollectionsList") && ($this->request->getParameter("collection_genre_id", pInteger) == $vn_genre_id)) ? "current_page_item" : "").'">'.caNavLink($this->request, $va_genre_info["name_plural"], "", "cfa", "collectionsList", "Index", array("collection_genre_id" => $vn_genre_id)).'</li>';
 	}
+	$vs_facet_group = $this->request->getParameter('group', pString);
 ?>
-	<li class="page_item <?php print ($this->request->getController() == "Browse") ? "current_page_item" : ""; ?>"><?php print caNavLink($this->request, _t("Browse Collections"), "", "", "Browse", "clearCriteria"); ?></li>
+	<li class="page_item <?php print ($vs_facet_group == "collection") ? "current_page_item" : ""; ?>"><?php print caNavLink($this->request, _t("Browse Finding Aids"), "", "", "Browse", "clearCriteria", array('group' => 'collection')); ?></li>
+	<li class="page_item <?php print ($vs_facet_group == "item") ? "current_page_item" : ""; ?>"><?php print caNavLink($this->request, _t("Browse Items"), "", "", "Browse", "clearCriteria", array('group' => 'item')); ?></li>
+	<li class="page_item <?php print ($vs_facet_group == "type") ? "current_page_item" : ""; ?>"><?php print caNavLink($this->request, _t("Record Types"), "", "", "Browse", "clearCriteria", array('group' => 'type')); ?></li>
+
   </ul>
     <?php print "<div id='collectionSearchHeading'>"._t("Search Collections")."</div>"; ?>
     <div id="searchwrapperCollectionSearch"><form id="collectionSearchform" class="blog-search" method="get" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>">
