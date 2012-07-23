@@ -204,21 +204,25 @@
  			} else {
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('object_id', pInteger);
-				if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
-					//
-					// Select primary representation
-					//
-					$t_object = new ca_objects($pn_object_id);
-					$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
-					
-					$t_item = new ca_set_items($pn_item_id);
-					$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
-					$t_item->update();
-					
-					$va_errors = array();
-					$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
-				} else {
-					$va_errors[] = _t('Could not add item to lightbox');
+				if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
+					if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
+						//
+						// Select primary representation
+						//
+						$t_object = new ca_objects($pn_object_id);
+						$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
+						
+						$t_item = new ca_set_items($pn_item_id);
+						$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
+						$t_item->update();
+						
+						$va_errors = array();
+						$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
+					} else {
+						$va_errors[] = _t('Could not add item to lightbox');
+					}
+				}else{
+					$this->view->setVar('message', _t("Item already in set. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
 				}
 			}
  			
