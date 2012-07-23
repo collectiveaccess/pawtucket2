@@ -14,6 +14,14 @@
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/plain.css" media="screen" rel="stylesheet" type="text/css" />
 	<![endif]-->
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/global.css" rel="stylesheet" type="text/css" />
+<?php
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') && !strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh')){
+    	// User agent is Google Chrome on a PC
+?>
+		<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/chromePC.css" rel="stylesheet" type="text/css" />
+<?php
+	}
+?>
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/vkh7naz-d.css" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/sets.css" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/bookmarks.css" rel="stylesheet" type="text/css" />

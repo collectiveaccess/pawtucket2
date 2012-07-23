@@ -367,6 +367,7 @@
 								}
 								$va_data = $va_sorted_data;
 							}
+							
 							if ($vb_return_as_array) {
 								return $va_data;
 							} else {

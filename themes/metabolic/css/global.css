@@ -112,7 +112,7 @@ a img {
 .details {
 	font-size: 78%;
 }
-#detailBody #rightCol #description .details{
+#detailBody #rightCol #description {
 	font-size:1em;
 }
 .formErrors{
@@ -201,11 +201,12 @@ a.caption:hover{
 }
 
 #bottomBar {
-	width:300px; 
+	width:370px; 
 	float:left; 
 	text-align:left; 
-	clear:both;
+	clear:left;
 	margin-top: 25px;
+	
 }
 #bottomBar a{
 	font-size: .8em;
@@ -213,7 +214,6 @@ a.caption:hover{
 	letter-spacing: 2px;
 	text-transform: uppercase;
 	color: #7b7863;
-	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-right: 0px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
@@ -376,8 +376,9 @@ a.caption:hover{
   -o-border-radius: 15px;
   border-radius: 15px;
   padding: 2px 0px 2px 5px;
-  height: 14px;
+  /*height: 14px;*/
   margin: 0;
+  -webkit-appearance: searchfield;
 }
 
 /* iPhone [portrait + landscape] */
@@ -796,6 +797,7 @@ div.searchlight-results div.searchlight-selected {
 	font-size: 11px;
 	text-align:left;
 	min-height:300px;
+	margin-bottom:70px;
 }
 #rightCol.occurrence {
 	margin-top:40px; 
@@ -823,6 +825,10 @@ div.searchlight-results div.searchlight-selected {
   	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
   	font-weight: 300;
   	color: #333;
+}
+
+#detailBody #description p{
+	font-size: 1.2em;
 }
 #detailBody #rightRightCol p{
 	font-size: 1em;
@@ -906,13 +912,13 @@ div.searchlight-results div.searchlight-selected {
 	margin-bottom:0px;
 	text-align:center;
 	width: 475px;
-	overflow:hidden;
+	overflow:hidden;	
 }
 #objDetailImageNav {
-	margin:0px 0px 15px 0px;
+	margin:0px 0px 0px 0px;
 	font-size:12px;
 	text-align:center;
-	padding:5px 5px 0px 0px;
+	padding:5px 5px 15px 0px;
 	width: 475px;
 	height:15px;
 	text-align:left;
@@ -1308,6 +1314,12 @@ td.advSearchElement{
 	padding: 0px 0px 10px 0px;
 
 }
+#detailBody .searchResultTd .textResult, .relatedThumbBg .textResult{
+	text-align:center;
+	padding-top:30px;
+	font-size:11px;
+	color:#666;
+}
 .searchThumbBg{
 	width:170px;
 	height:113px;
@@ -1318,12 +1330,22 @@ td.advSearchElement{
 .searchThumbBg a{
 	border:none;
 }
+.searchThumbBgNoShadow{
+	width:170px;
+	height:113px;
+	position: relative;
+}
+
+.searchThumbBgNoShadow a{
+	border:none;
+}
 .relatedThumbBg {
 	width:110px;
 	height:75px;
 	position: relative;
 	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 	margin: 0px 7px 10px 7px;
+	background-color:#FFFFFF;
 }
 .searchThumbCaption{
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
@@ -1694,7 +1716,7 @@ input.addItemToSetControlInThumbnails {
   -o-border-radius: 15px;
   border-radius: 15px;
   padding: 2px 10px 2px 10px;
-  height: 14px;
+  /*height: 14px;*/
   margin-left: 5px;
   -webkit-appearance: searchfield;
   box-sizing: border-box;

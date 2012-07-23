@@ -165,8 +165,12 @@
 				$vs_caption = $t_rel_object->getLabelForDisplay();
 				# --- get the height of the image so can calculate padding needed to center vertically
 				$vn_padding_top = 0;
+				$vs_display = "";
+				if(!($vs_display = $va_reps["tags"]["widethumbnail"])){
+					$vs_display = "<div class='textResult'>ID: ".$t_rel_object->get('idno')."</div>";
+				}
 				print "<td align='left' valign='top' class='searchResultTd' style='width:110px;'><div class='relatedThumbBg searchThumbnail".$vn_object_id."'>";
-				print caNavLink($this->request, $va_reps["tags"]["widethumbnail"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
+				print caNavLink($this->request, $vs_display, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 				
 				// Get thumbnail caption
 				$this->setVar('object_id', $vn_object_id);
