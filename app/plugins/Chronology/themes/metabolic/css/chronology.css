@@ -352,6 +352,12 @@
 	width:500px;
 	/*height:315px; */
 }
+#contchrono {
+	width:500px;
+	height:400px;
+	text-align:center;
+	padding-top:10px;
+}
 .siloMoreInfoContainer .unit{
 	margin-bottom:15px;
 	line-height:1.5em;

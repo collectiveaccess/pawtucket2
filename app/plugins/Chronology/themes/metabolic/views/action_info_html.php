@@ -138,17 +138,20 @@
 	
 
 	if(is_array($va_action["objects"]) && sizeof($va_action["objects"])){
-		# --- if there is only one image, show a larger one. Otherwise show a grid of images
+		# --- if there is only one image, show a larger one - which is configured in media_display_conf under chronology. Otherwise show a grid of images
 		if(sizeof($va_action["objects"]) == 1){
 			$t_rel_object = new ca_objects();
 			foreach($va_action["objects"] as $vn_i => $va_object_info){
 				$t_rel_object->load($va_object_info['object_id']);
-				$va_reps = $t_rel_object->getPrimaryRepresentation(array('medium'), null, array('return_with_access' => $va_access_values));
+				$t_rep = $t_rel_object->getPrimaryRepresentationInstance(array('return_with_access' => $va_access_values));
+				# -- get version to display configured in media_display.conf
+				$va_chrono_display_info = caGetMediaDisplayInfo('chronology', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+				$vs_chrono_version = $va_chrono_display_info['display_version'];
 				$vn_object_id = $va_object_info['object_id'];
+$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+				print "<div style='text-align:center;'>".caNavLink($this->request, $t_rel_object->getLabelForDisplay().", ID:".$t_rel_object->get('idno'), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
+				print "<div id='contchrono'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 
-				print "<div style='text-align:center;'>".caNavLink($this->request, $va_reps["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
-
-				print "<div style='text-align:center;'>".$t_rel_object->getLabelForDisplay().", ID:".$t_rel_object->get('idno')."</div>";
 			}
 		}else{
 ?>

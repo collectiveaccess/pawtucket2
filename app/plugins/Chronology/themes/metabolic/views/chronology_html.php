@@ -122,7 +122,7 @@
 					} else {
 						var initIndex = 1;
 					}
-					jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions']; ?>,  itemLoadCallback: loadActions, start: initIndex});
+					jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions'] - 1; ?>,  itemLoadCallback: loadActions, start: initIndex});
 					jQuery('#silo<?php print $vn_silo_id; ?>').data('actionmap', <?php print json_encode($va_silo['actionmap']); ?>);
 					var slider_silo_id = <?php print $vn_silo_id; ?>; 
 					var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
