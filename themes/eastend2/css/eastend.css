@@ -1,0 +1,77 @@
+@charset "UTF-8";
+@import url("http://fast.fonts.com/t/1.css?apiType=css&projectid=b51d77bf-ea48-4579-9c99-d1deec15c3e6");
+@import url("fonts.css");
+/* CSS Document */
+
+
+body {font-family:"Avenir LT W01 35 Light"; color:#757575;background-color:#f7f7f7; padding:8px 0px 0px 0px; font-size:12px;}
+
+.caption {font-size:12px;line-height:140%;}
+.obl {font-family:"AvenirLTW01-45BookObliq";}
+.caps {text-transform:uppercase;}
+
+.clear {clear:both;}
+.padded {padding-top:20px;}
+
+#container{width:950px; margin:0px auto;}
+
+/*global styles for layout */
+
+#topnav{height:45px; font-size:12px; }
+#topnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
+.leftnav {float:left; width:230px;}
+.rightnav {float:left; padding-left:490px;width:220px;text-align:right; margin-right:10px;}
+.rightnav img{padding-right:2px;}
+.rightnav .social {padding-top:1px;float:left;}
+.rightnav input{display:inline; width:115px;}
+
+
+#logo {font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; float:left;line-height:41px;width:590px;}
+#mainnav{float:left; padding-left:50px; font-size:13px; height:41px;line-height:59px; vertical-align:bottom;}
+#mainnav ul{list-style-type:none;margin:0; padding:0;}
+#mainnav li{display:inline;margin:0; padding:0 0 0 15px; }
+#mainnav li a:link, #mainnav li a:visited{text-decoration:none; color:#757575;}
+#mainnav li a:hover {color:#71cde4;}
+
+#maincontent {padding-top:50px; clear:both;}
+
+#subnav {width:110px; float:left; font-size:13px;}
+.listhead {font-family:"Avenir LT W01 65 Medium";}
+#subnav ul{list-style-type:none;margin:0; padding:5px 0 20px 0;}
+#subnav ul li{list-style-type:none; margin:0; padding:0 0 8px 0;}
+
+#subnav a:link, #subnav a:visited{color:#757575; text-decoration:none;} 
+#subnav a:hover {color:#71cde4;}
+
+#subnav a.selected{color:#71cde4;}
+
+
+/*artist browser template styles */
+
+.ab_col{width:110px; padding-left:10px; padding-right:40px;float:left; font-size:11px;}
+.ab_col ul{list-style-type:none;margin:0; padding:0 0 15px 0;}
+.ab_col ul li{list-style-type:none; padding:0 0 8px 0; margin:0;}
+.ab_col img{padding:5px 0;}
+.ab_col a:link, .ab_col a:visited{text-decoration:none; color:#757575;}
+.ab_col a:hover{color:#71cde4;}
+
+#rightcol_featured{width:350px; float:left;}
+.ab_feature {background-color:#fff;padding-bottom:10px; margin-bottom:20px;}
+.ab_feature p{margin:5px;}
+
+
+/*artist detail template style */
+
+#ad_portrait {width:270px; float:left;margin-right:40px;}
+#ad_portrait img {width:270px;padding-top:10px; padding-bottom:10px;}
+
+#ad_content {float:left;}
+#ad_maincontent {width:500px;height:550px; overflow-y:scroll; overflow-x:hidden; padding-left:10px; font-size:12px; float:left;}
+
+.bio{font-size:12px; width:460px;line-height:130%;}
+.ad_thumbs{width:490px;padding-top:20px;}
+.ad_thumbs img{max-width:150px; padding-bottom:10px;}
+.ad_thumbs .col {width:150px; margin-right:10px;float:left;}
+.ad_thumbs .lastcol {width:150px; margin-right:10px;float:left;}
+
+.ad_gmap {width:310px; float:left;}
