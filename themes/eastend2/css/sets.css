@@ -691,7 +691,7 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 .billingShippingAddress .formLabel input, .billingShippingAddress .formLabel input[type="text"] {
 	width: 395px;
 }
-.billingShippingAddress .formLabelNarrow input, .billingShippingAddress .formLabelNarrow input[type="text"] {
+.billingShippingAddress .formLabelNarrow input, .billingShippingAddress .formLabelNarrow {
 	width: 165px;
 }
 #clientOrderForm .formLabelNarrow{

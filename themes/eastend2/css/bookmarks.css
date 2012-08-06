@@ -81,6 +81,19 @@
 div.folderInfo{
 	margin-left:10px;
 }
+div.folderInfo .removeFolder{
+	float:right;
+	width:15px;
+	height:15px;
+	margin: 0px 0px 0px 20px;
+	text-decoration:none;
+	background-image:url("../graphics/x.gif");
+	border: none;
+}
+div.folderInfo .removeFolder a{
+	border:0px;
+	text-decoration:none;
+}
 a.hide{	
 	text-decoration:none;
 	float:right;
@@ -93,6 +106,7 @@ a.hide:hover{
 }
 div.edit{
 	text-align:right;
+	margin-top:5px;
 }
 div.edit a{	
 	text-decoration:none;

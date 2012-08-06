@@ -92,6 +92,8 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "form"));
             }
             
+			$po_request->session->setVar('pawtucket2_browse_target', "ca_entities");
+			
 			//
  			// Minimal view list (all targets have a "full" results view)
  			//
@@ -134,6 +136,7 @@
  		}
  		# -------------------------------------------------------
  		function index() {
+			#print $this->ops_tablename;
 			JavascriptLoadManager::register('cycle');
  			$this->getDefaults();
  			
@@ -216,7 +219,7 @@
  			if ($ps_view = preg_replace('![^A-Za-z0-9_]+!', '', $this->request->getParameter('view', pString))) {
  				$vs_relative_path = 'Browse/ajax_browse_facet_'.$ps_view.'_html.php';
  				
- 				if (file_exists($this->request->getAppConfig()->get('application_plugins').'/eastend/views/'.$vs_relative_path)) {
+ 				if (file_exists($this->request->getAppConfig()->get('application_plugins').'/eastend/themes/eastend2/views/'.$vs_relative_path)) {
  					$pa_options['view'] = $vs_relative_path; 
  				}
  			}

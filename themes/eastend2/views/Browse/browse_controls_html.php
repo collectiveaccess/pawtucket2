@@ -62,8 +62,7 @@
 <?php
 			if (sizeof($va_criteria)) {
 				print "<div id='browseControls'>";
-				# --- I added the show_refine var to comment out the rfine results functionality
-				if ($vn_show_refine && sizeof($va_facets)) { 
+				if (sizeof($va_facets)) { 
 ?>
 					<div id="refineBrowse"><span class='refineHeading'><?php print _t('Refine results by'); ?>:</span>
 <?php
@@ -82,18 +81,17 @@
 				}
 
 				$vn_x = 0;
-				print "<div id='browseCriteria'>"._t("Your browse for ");
+				print "<div id='browseCriteria'><span class='criteriaHeading'>"._t("You browsed for: ")."</span>";
 				foreach($va_criteria as $vs_facet_name => $va_row_ids) {
 					$vn_x++;
 					$vn_row_c = 0;
 					foreach($va_row_ids as $vn_row_id => $vs_label) {
-						#print "{$vs_label}".caNavLink($this->request, 'x', 'close', '', 'Browse', 'removeCriteria', array('facet' => $vs_facet_name, 'id' => $vn_row_id))."\n";
-						print "<b>".$va_facet_info[$vs_facet_name]['label_singular']." - ".$vs_label."</b>\n";
+						print "{$vs_label}".caNavLink($this->request, 'x', 'close', '', 'Browse', 'removeCriteria', array('facet' => $vs_facet_name, 'id' => $vn_row_id))."\n";
 						$vn_row_c++;
 					}
+					
 				}
-				print " found ".$this->getVar('num_hits')." result(s)";
-				#print caNavLink($this->request, _t('start new search')." &rsaquo;", 'startOver', '', 'Browse', 'clearCriteria', array());
+				print caNavLink($this->request, _t('start new search')." &rsaquo;", 'startOver', '', 'Browse', 'clearCriteria', array());
 				print "</div><!-- end browseCriteria -->\n";
 				print "</div><!-- end browseControls -->";
 				
@@ -141,17 +139,17 @@
 <?php
 	if (sizeof($va_criteria) > 0) {
 		# --- show results
+		print $this->render('Results/paging_controls_html.php');
 ?>
-		<!--<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>-->
+		<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php		
-		#print $this->render('Search/search_controls_html.php');
+		print $this->render('Search/search_controls_html.php');
 		print "<div class='sectionBox'>";
 		$vs_view = $this->getVar('current_view');
 		if(in_array($vs_view, array_keys($this->getVar('result_views')))){
 			print $this->render('Results/'.$vs_browse_target.'_results_'.$vs_view.'_html.php');
 		}
 		print "</div>";
-		print $this->render('Results/paging_controls_browse_html.php');
 	}
 	if (!$this->request->isAjax()) {
 ?>

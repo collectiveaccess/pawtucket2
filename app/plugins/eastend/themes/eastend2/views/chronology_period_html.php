@@ -6,6 +6,7 @@
 	$q_objects = $va_period_data["objects"];
 	$q_occurrences = $va_period_data["occurrences"];
 	$q_entities = $va_period_data["entities"];
+	$q_places = $va_period_data["places"];
 ?>
 
 	<div id="chronoLeftCol">
@@ -27,9 +28,18 @@
 		
 ?>		
 		</div><!-- end chronoNav -->
+<?php
+		# --- map - this is displaying places associated with entities since that is the current place data available.  This should probably change!
+		if($q_places->numHits()){
+?>
 		<div id="chronoMap">
-			map here
+<?php
+			print $va_period_data["map"];
+?>
 		</div><!-- end chronoMap -->
+<?php
+		}
+?>
 		<div id="chronoLists">
 <?php
 			# --- list of all occurrences from the period
@@ -47,7 +57,9 @@
 			if($q_entities->numHits()){
 				print "<div class='chronoList'><H2>"._t("People")."</H2>";
 				while($q_entities->nextHit()){
-					print "<div class='chronoListItem'>".join(", ", $q_entities->getDisplayLabels())."</div>";
+					print "<div class='chronoListItem'>";
+					print "<a href='#' onclick='jQuery(\"#chronoRightCol\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+					print "</div>";
 				}
 				print "</div><!-- end chronoList -->";
 			}
@@ -57,11 +69,7 @@
 	</div><!-- end chronoLeftCol -->
 	<div id="chronoRightCol">
 <?php
-		if($q_objects->numHits()){
-			while($q_objects->nextHit()){
-				print "<div class='chronoThumbnail'>".caNavLink($this->request, $q_objects->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."</div>";
-			}
-		}
+	print $this->render('chronology_object_results_html.php');
 ?>
 	</div><!-- end chronoRightCol -->
 	
@@ -72,4 +80,5 @@
 	print "<br style='clear:both;'/><br/>num objects: ".$q_objects->numHits();
 	print "<br/>num occ: ".$q_occurrences->numHits();
 	print "<br/>num ent: ".$q_entities->numHits();
+	print "<br/>num places: ".$q_places->numHits();
 ?>

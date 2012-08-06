@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__."/ca/Search/PlaceSearch.php");
 	$t_entity 			= $this->getVar('t_item');
 	$vn_entity_id 		= $t_entity->getPrimaryKey();
 	
@@ -34,7 +35,7 @@
 
 if (!$this->request->isAjax()) {		
 ?>
-	<div id="detailBody">
+	<div id="detailBody"><div id="entity">
 		<div id="pageNav">
 <?php
 			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_entities', _t("Back"), ''))) {
@@ -52,9 +53,37 @@ if (!$this->request->isAjax()) {
 			}
 ?>
 		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
-		<div id="leftCol">		
+		<h1>
 <?php
+			print $vs_title;
+			if($t_entity->get("lifespans_date")){
+				print ", (".$t_entity->get("lifespans_date").")";
+			}
+			if($t_entity->get("nationality")){
+				print "<div class='nationality'>".$t_entity->get("nationality")."</div><!-- end nationality -->";
+			}
+?>
+		</h1>
+		<div id="leftCol">
+			<div id="portraitCol">
+<?php
+			# --- get portrait of entity
+			$va_portraits = $t_entity->get("ca_objects", array("restrictToRelationshipTypes" => array("portrait", "depicts"), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			foreach($va_portraits as $va_portrait){
+				$t_object = new ca_objects($va_portrait["object_id"]);
+				if($va_portrait = $t_object->getPrimaryRepresentation(array('preview'), null, array('return_with_access' => $va_access_values))){
+					print "<div>".$va_portrait['tags']['preview']."</div>";
+					break;
+				}
+			}
+			
+			# --- get medium and movements
+			if($vs_medium = $t_entity->get("fields_mediums", array('checkAccess' => $va_access_values, 'delimiter' => ', ', 'convertCodesToDisplayText' => true))){
+				print "<div>".$vs_medium."</div>";
+			}
+			if($vs_style = $t_entity->get("style_school", array('checkAccess' => $va_access_values, 'delimiter' => ', ', 'convertCodesToDisplayText' => true))){
+				print "<div>".$vs_style."</div>";
+			}
 			if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
 ?>
 				<!-- bookmark link BEGIN -->
@@ -70,101 +99,78 @@ if (!$this->request->isAjax()) {
 				<!-- bookmark link END -->
 <?php
 			}
-			# --- identifier
-			if($t_entity->get('idno')){
-				print "<div class='unit'><b>"._t("Identifier")."</b>: ".$t_entity->get('idno')."</div><!-- end unit -->";
-			}
-			# --- attributes
-			$va_attributes = $this->request->config->get('ca_entities_detail_display_attributes');
-			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
-				foreach($va_attributes as $vs_attribute_code){
-					if($vs_value = $t_entity->get("ca_entities.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_entity->getDisplayLabel("ca_entities.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
-					}
-				}
-			}
-			# --- description
-			if($this->request->config->get('ca_entities_description_attribute')){
-				if($vs_description_text = $t_entity->get("ca_entities.".$this->request->config->get('ca_entities_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
-?>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
-						});
-					</script>
+?>				
+			</div><!-- end portraitCol -->
 <?php
+			if($t_entity->get("ca_entities.scope_notes")){
+				print "<div id='descriptionCol'>".$t_entity->get("ca_entities.scope_notes")."</div><!-- end descriptionCol -->";
+			}	
+
+			print "<div id='relatedLists'>";			
+			
+			# --- occurrences
+			$va_occurrences = $t_entity->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			if(sizeof($va_occurrences) > 0){	
+?>
+				<div class="relatedListCol"><h2><?php print _t("Events"); ?></h2>
+<?php
+				foreach($va_occurrences as $va_occurrence) {
+					print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_occurrence["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $va_occurrence["occurrence_id"])) : $va_occurrence["label"])."<br/>(".$va_occurrence['relationship_typename'].")</div>";		
 				}
+?>
+				</div><!-- end relatedListCol -->
+<?php
 			}
+			
 			# --- entities
 			$va_entities = $t_entity->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_entities) > 0){	
 ?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
+				<div class="relatedListCol"><h2><?php print _t("Social Network"); ?></h2>
 <?php
 				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";		
+					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/>(".$va_entity['relationship_typename'].")</div>";		
 				}
 ?>
-				</div><!-- end unit -->
+				</div><!-- end relatedListCol -->
 <?php
 			}
 			
-			# --- occurrences
-			$va_occurrences = $t_entity->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			$va_sorted_occurrences = array();
-			if(sizeof($va_occurrences) > 0){
-				$t_occ = new ca_occurrences();
-				$va_item_types = $t_occ->getTypeList();
-				foreach($va_occurrences as $va_occurrence) {
-					$t_occ->load($va_occurrence['occurrence_id']);
-					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
+			# --- list of artists from the same movements
+			if($va_style_ids = caExtractValuesByUserLocale($t_entity->get("style_school", array('returnAsArray' => true, 'delimeter' => ', ', 'checkAccess' => $va_access_values)))){
+				$va_search_parts = "";
+				$vs_search_text = "";
+				foreach($va_style_ids as $vn_style_id){
+					$va_search_parts[] = "ca_entities.style_school: ".$vn_style_id;
 				}
-				
-				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
-?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
-<?php
-					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
+				$vs_search_text = join(" OR ", $va_search_parts);
+				$o_ent_search = new EntitySearch();
+				# -- exclude the current entity from list
+				$o_ent_search->addResultFilter("ca_entities.entity_id", "!=", $vn_entity_id);
+				#print_r($o_ent_search->getResultFilters());
+				$qr_entities = $o_ent_search->search($vs_search_text, array("sort" => "ca_entities.lname", "checkAccess" => $va_access_values));
+				if($qr_entities->numHits()){
+					print "<div class='relatedListCol'><H2>"._t("Artists From Same Movement")."</H2>";
+					while($qr_entities->nextHit()){
+						print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, join(", ", $qr_entities->getDisplayLabels()), '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_entities->get("ca_entities.entity_id"))) : join(", ", $qr_entities->getDisplayLabels()))."</div>";
 					}
-					print "</div><!-- end unit -->";
+					print "</div><!-- end relatedListCol -->";
 				}
 			}
-			# --- places
-			$va_places = $t_entity->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_places) > 0){
-				print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
-				foreach($va_places as $va_place_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".$va_place_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- collections
-			$va_collections = $t_entity->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_collections) > 0){
-				print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
-				foreach($va_collections as $va_collection_info){
-					print "<div>";
-					print (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." (".$va_collection_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- vocabulary terms
-			$va_terms = $t_entity->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_terms) > 0){
-				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
-				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
-				}
-				print "</div><!-- end unit -->";
-			}			
+
+			
+// 			# --- places
+// 			$va_places = $t_entity->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+// 			if(sizeof($va_places) > 0){
+// 				print "<div class='relatedListCol'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
+// 				foreach($va_places as $va_place_info){
+// 					print "<div>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".$va_place_info['relationship_typename'].")</div>";
+// 				}
+// 				print "</div><!-- end relatedListCol -->";
+// 			}
 
 ?>
+		</div><!-- end relatedLists -->
 	</div><!-- end leftCol -->
 	<div id="rightCol">
 		<div id="resultBox">
@@ -179,8 +185,20 @@ if (!$this->request->isAjax()) {
 if (!$this->request->isAjax()) {
 ?>
 		</div><!-- end resultBox -->
+<?php
+			$o_place_search = new PlaceSearch();
+			$qr_places = $o_place_search->search("ca_entities.entity_id: ".$vn_entity_id, array("checkAccess" => $va_access_values));
+ 			#print $qr_places->numHits();
+ 			if($qr_places->numHits()){
+				$o_map = new GeographicMap(400, 250, 'map');
+				#$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "eastend", "Chronology", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $va_access_values));
+				$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("request" => $this->request, "checkAccess" => $va_access_values));
+				#print_r($va_map_stats);
+				print '<div id="entityPlaceMap">'.$o_map->render('HTML', array('delimiter' => "<br/>")).'</div><!-- end entityPlaceMap -->';
+			}				
+?>		
 	</div><!-- end rightCol -->
-</div><!-- end detailBody -->
+</div><!-- end entity --></div><!-- end detailBody -->
 <?php
 }
 ?>
