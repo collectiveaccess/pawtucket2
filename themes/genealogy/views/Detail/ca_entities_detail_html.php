@@ -164,6 +164,11 @@ if (!$this->request->isAjax()) {
 				print "</div><!-- end unit -->";
 			}			
 
+			//
+			// Visualization link
+			//
+			print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', $this->request->getController(), 'GetViz', array('id' => $t_entity->getPrimaryKey()))."\"); return false;' ><img src='".$this->request->getThemeUrlPath()."/graphics/icons/visualization.png' border='0' title='Visualize relationships'></a>";
+
 ?>
 	</div><!-- end leftCol -->
 	<div id="rightCol">

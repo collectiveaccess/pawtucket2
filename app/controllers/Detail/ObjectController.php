@@ -107,6 +107,11 @@
  			$this->view->setVar('representation_id', $pn_representation_id);
  			$this->view->setVar('content_mode', $ps_content_mode);
  			
+ 			$t_rep = new ca_object_representations($pn_representation_id);
+ 			$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+			$vs_download_version = $va_download_display_info['display_version'];
+ 			$this->view->setVar('download_version', $vs_download_version);
+ 			
  			$va_page_list_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
  			
  			$va_pages = $va_page_list_cache[$pn_object_id.'/'.$pn_representation_id];

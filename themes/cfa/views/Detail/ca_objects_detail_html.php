@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+	require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 	$t_object = 						$this->getVar('t_item');
 	$vn_object_id = 					$t_object->get('object_id');
 	$vs_title = 						$this->getVar('label');
@@ -42,7 +44,7 @@
 	$o_lists = new ca_lists;
 	$vn_collection_id = $o_lists->getItemIDFromList('object_types', 'collection');
 	$vn_series_id = $o_lists->getItemIDFromList('object_types', 'series');
-	
+			
 ?>	
 	<div id="detailBody">
 <?php
@@ -133,8 +135,8 @@
 						foreach($va_entities as $va_entity) {
 							$t_related_entity->load($va_entity["entity_id"]);
 							print "<div".(($i < sizeof($va_entities) ? " style='margin-bottom:10px;'" : "")).">".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : caNavlink($this->request, $va_entity["label"], '', '', 'Search', 'Index', array('search' => 'entity_id:'.$va_entity["entity_id"])))." (".$va_entity['relationship_typename'].")";
-							if($t_related_entity->get("cfaDescription")){
-								print "<br/>".$t_related_entity->get("cfaDescription");
+							if($t_related_entity->get("biography")){
+								print "<br/>".$t_related_entity->get("biography");
 							}
 							print "</div>";
 							$i++;
@@ -261,16 +263,19 @@
 						</div><!-- end unit -->
 <?php
 					}
-				break;				
-				
 				break;
 				# --------------------------------
 				# --- ITEM --------------------------------
 				default:
-					# -- [, cfaGenre, cfaRelatedMaterials]
-					# --- identifier
-					if($t_object->get('idno')){
-						print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_object->get('idno')."</div><!-- end unit -->";
+					# --- get the related work record (occurrence with linked with rel type instantiation)
+					$t_work = new ca_occurrences();
+					$va_works = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("instantiation")));
+					if(sizeof($va_works) > 0){
+						# -- assume there is one related work, just load the first one in the array
+						foreach($va_works as $vn_rel_id => $va_work_info){
+							$t_work->load($va_work_info['occurrence_id']);
+							break;
+						}
 					}
 					
 					if ($t_rep && $t_rep->getPrimaryKey()) {
@@ -303,7 +308,35 @@
 						print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.cfaExtent")."</b><br/>".$t_object->get('ca_objects.cfaExtent.extentAmount')." - ".$t_object->get('ca_objects.cfaExtent.extent', array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
 					}
 					# --- attributes
-					$va_attributes = array("cfaColor", "cfaSoundAudio", "cfaSoundVideo", "cfaSoundFilm", "cfaDateProduced", "cfaAbstract", "cfadescription", "cfaShotLog", "cfaPreservationSponsor");
+					$va_attributes = array("cfaColor", "cfaSoundAudio", "cfaSoundVideo", "cfaSoundFilm");
+					if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
+						foreach($va_attributes as $vs_attribute_code){
+							if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array("convertCodesToDisplayText" => true))){
+								print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.{$vs_attribute_code}")."</b><br/> {$vs_value}</div><!-- end unit -->";
+							}
+						}
+					}
+					
+					# --- work record attribute - Date produced
+					if($vs_value = $t_work->get("ca_occurrences.cfaDateProduced", array("convertCodesToDisplayText" => true))){
+						print "<div class='unit'><b>"._t("Date Produced")."</b><br/> {$vs_value}</div><!-- end unit -->";
+					}
+					# --- work record attribute - Abstract
+					if($vs_value = $t_work->get("ca_occurrences.cfaAbstract", array("convertCodesToDisplayText" => true))){
+						print "<div class='unit'><b>"._t("Abstract")."</b><br/> {$vs_value}</div><!-- end unit -->";
+					}
+					# --- work record attribute - Description
+					if($vs_value = $t_work->get("ca_occurrences.cfaDescription", array("convertCodesToDisplayText" => true))){
+						print "<div class='unit'><b>"._t("Description")."</b><br/> {$vs_value}</div><!-- end unit -->";
+					}
+					
+					# --- work record attribute - log
+					if($vs_value = $t_work->get("ca_occurrences.cfaShotLog", array("convertCodesToDisplayText" => true))){
+						print "<div class='unit'><b>"._t("Log")."</b><br/> {$vs_value}</div><!-- end unit -->";
+					}
+					
+					# --- more attributes
+					$va_attributes = array("cfaPreservationSponsor");
 					if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 						foreach($va_attributes as $vs_attribute_code){
 							if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array("convertCodesToDisplayText" => true))){
@@ -312,8 +345,8 @@
 						}
 					}
 					$va_entities_output = array();
-					# --- distributor
-					$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("distributor")));
+					# --- distributor - from related occ work record
+					$va_entities = $t_work->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("distributor")));
 					if(sizeof($va_entities) > 0){	
 ?>
 						<div class="unit"><b><?php print ((sizeof($va_entities) > 1) ? _t("Distributor") : _t("Distributors")); ?></b><br/>
@@ -326,8 +359,8 @@
 						</div><!-- end unit -->
 <?php
 					}
-					# --- main credits
-					$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("director", "producer", "exec_producer", "co_producer", "production_co", "animator", "filmmaker", "videomaker", "writter")));
+					# --- main credits - from related occ work record
+					$va_entities = $t_work->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("director", "producer", "exec_producer", "co_producer", "production_co", "animator", "filmmaker", "videomaker", "writter")));
 					if(sizeof($va_entities) > 0){	
 ?>
 						<div class="unit"><b><?php print ((sizeof($va_entities) > 1) ? _t("Main Credit") : _t("Main Credits")); ?></b><br/>
@@ -340,8 +373,8 @@
 						</div><!-- end unit -->
 <?php
 					}
-					# --- additional credits
-					$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("editor", "composer", "sound", "music", "translator", "choreographer", "lighting_director", "casting", "post_prod")));
+					# --- additional credits - from related occ work record
+					$va_entities = $t_work->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("editor", "composer", "sound", "music", "translator", "choreographer", "lighting_director", "casting", "post_prod")));
 					if(sizeof($va_entities) > 0){	
 ?>
 						<div class="unit"><b><?php print ((sizeof($va_entities) > 1) ? _t("Additional Credit") : _t("Additional Credits")); ?></b><br/>
@@ -354,8 +387,8 @@
 						</div><!-- end unit -->
 <?php
 					}
-					# --- Participants and performers
-					$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("participant", "performer", "actor", "narrator", "commentator", "interviewer", "interviewee", "musician", "vocalist", "announcer", "panelist", "host", "moderator", "reporter", "performing_group")));
+					# --- Participants and performers - from related occ work record
+					$va_entities = $t_work->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname', 'restrict_to_relationship_types' => array("participant", "performer", "actor", "narrator", "commentator", "interviewer", "interviewee", "musician", "vocalist", "announcer", "panelist", "host", "moderator", "reporter", "performing_group")));
 					if(sizeof($va_entities) > 0){	
 ?>
 						<div class="unit"><b><?php print _t("Actors, Performers and Participants"); ?></b><br/>
@@ -368,16 +401,17 @@
 						</div><!-- end unit -->
 <?php
 					}
-					# --- vocabulary terms - genre
-					$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("genre")));
+					# --- vocabulary terms - genre - from work record
+					$va_terms = $t_work->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("genre")));
 					if(sizeof($va_terms) > 0){
 						print "<div class='unit'><b>"._t("Genre").((sizeof($va_terms) > 1) ? "s" : "")."</b><br/>";
 						foreach($va_terms as $va_term_info){
 							print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
 						}
 						print "</div><!-- end unit -->";
-					}# --- vocabulary terms - form
-					$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("form")));
+					}
+					# --- vocabulary terms - form - from work record
+					$va_terms = $t_work->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("form")));
 					if(sizeof($va_terms) > 0){
 						print "<div class='unit'><b>"._t("Form").((sizeof($va_terms) > 1) ? "s" : "")."</b><br/>";
 						foreach($va_terms as $va_term_info){
@@ -386,8 +420,8 @@
 						print "</div><!-- end unit -->";
 					}	
 					
-					# --- vocabulary terms - subjects
-					$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("subject")));
+					# --- vocabulary terms - subjects - from work record
+					$va_terms = $t_work->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrict_to_relationship_types' => array("subject")));
 					if(sizeof($va_terms) > 0){
 						print "<div class='unit'><b>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</b><br/>";
 						foreach($va_terms as $va_term_info){
@@ -395,8 +429,8 @@
 						}
 						print "</div><!-- end unit -->";
 					}	
-					# --- places
-					$va_places = $t_object->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+					# --- places - from work record
+					$va_places = $t_work->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 					
 					if(sizeof($va_places) > 0){
 						print "<div class='unit'><b>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</b><br/>";
@@ -419,27 +453,39 @@
 				break;
 				# --------------------------------
 			}
-
+			
 			# --- child hierarchy info Items
-			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_children) > 0){
+			# --- we need to get records with access set to accessible tot he public AND restricted.  Restricted records will not link to detail page.
+			$va_access_values_for_children = $va_access_values;
+			# --- add restricted to array
+			$va_access_values_for_children[] = 2;
+			$va_children_ids = array_values($t_object->get("ca_objects.children.object_id", array('returnAsArray' => 1, 'checkAccess' => $va_access_values_for_children, 'sort' => 'ca_objects.preferred_labels.name_sort', 'sort_direction' => 'ASC')));
+
+			if(sizeof($va_children_ids) > 0){
+				$t_child = new ca_objects();
+				$qr_children = $t_child->makeSearchResult('ca_objects', $va_children_ids);
 				print "<div class='unit'><b>"._t("%1 Item%2", unicode_ucfirst($this->getVar('typename')), ((sizeof($va_children) > 1) ? "s" : ""))."</b><br/>";
 				$i = 0;
-				foreach($va_children as $va_child){
+				
+				while($qr_children->nextHit()) {
+					$vn_object_id = $qr_children->get('ca_objects.object_id');
 					# only show the first 5 and have a more link
 					if($i == 5){
-						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>"._t("%1 More &rsaquo;", sizeof($va_children))."</a></div><!-- end moreChildrenLink -->";
+						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>"._t("%1 More &rsaquo;", sizeof($va_children_ids))."</a></div><!-- end moreChildrenLink -->";
 						print "<div id='moreChildren' style='display:none;'>";
 					}
-					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
+					if($qr_children->get("access") == 1){
+						print "<div>".caNavLink($this->request, $qr_children->get('ca_objects.preferred_labels.name'), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
+					}else{
+						print "<div>".$qr_children->get('ca_objects.preferred_labels.name')."</div>";
+					}
 					$i++;
-					if($i == sizeof($va_children)){
+					if($i == sizeof($va_children_ids)){
 						print "</div><!-- end moreChildren -->";
 					}
 				}
 				print "</div><!-- end unit -->";
 			}
-
 
 if (!$this->request->config->get('dont_allow_registration_and_login')) {
 		# --- user data --- comments - ranking - tagging

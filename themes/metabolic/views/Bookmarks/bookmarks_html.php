@@ -42,6 +42,7 @@
 <h1><?php print _t("Your Bookmarks"); ?></h1>
 <div id="bookmarksEditor">
 	<div id="rightCol">
+	<div id="menu">
 <?php
 	if ($vn_folder_id) {
 ?>
@@ -53,7 +54,7 @@
 			print "<div class='removeFolder'>".caNavLink($this->request, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', '', '', 'Bookmarks', 'deleteFolder', array('folder_id' => $vn_folder_id))."</div>";
 			print $this->getVar("folder_name");
 			
-			print "<div class='edit'><a href='#' id='editFolderButton' onclick='$(\"#editFolderButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Folder")." &rsaquo;</a></div>";
+			print "<div class='edit'><a href='#' id='editFolderButton' onclick='$(\"#editFolderButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>("._t("edit folder").")</a></div>";
 			print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
@@ -79,10 +80,11 @@
 <?php
 		}
 	}
+	if(is_array($va_folders) && sizeof($va_folders)){
 ?>
-
 		<h1><?php print _t("Your Folders"); ?></h1>
 <?php
+	}
 	foreach($va_folders as $va_folder) {
 		if($va_folder['folder_id'] == $vn_folder_id){
 			print "<div class='foldersListCurrent'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".$va_folder['name']."</div>\n";
@@ -142,7 +144,7 @@
 				</ul>
 				<a href='#' id='hideHelpTipsButton' onclick='$("#helpTips").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-
+	</div>
 	</div><!-- end divRightCol -->
 	<div id="leftCol">
 <?php

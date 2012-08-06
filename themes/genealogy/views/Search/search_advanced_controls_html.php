@@ -59,15 +59,7 @@ if (!$this->request->isAjax()) {
 		<div id="caAdvancedSearchForm">
 			<?php  print caFormTag($this->request, 'Index', 'caAdvancedSearch',  null, 'POST', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)); ?>
 
-			<div id="buttons">
-				<input type="submit" style="position: absolute; left: -9999px"/>
-				<div>
-					<a href="#" onclick="jQuery('#caAdvancedSearch').submit(); return false;"><?php print _t('Search'); ?></a>
-				</div>
-				<div>
-					<a href="#" onclick="jQuery('#caAdvancedSearch input[type!=hidden]').val(''); jQuery('#caAdvancedSearch select').val('');"><?php print _t('Reset'); ?></a>
-				</div>
-			</div>
+
 
 				<table border="0">
 <?php
@@ -97,7 +89,15 @@ if (!$this->request->isAjax()) {
 			<?php print caHTMLHiddenInput("target", array('value' => $t_subject->tableName())); ?>
 			<?php print caHTMLHiddenInput("_fields", array('value' => join(';', array_keys($va_form_field_with_subelements)))); ?>
 		</form>
-	
+			<div id="buttons">
+				<input type="submit" style="position: absolute; left: -9999px"/>
+				<div style="float:right; margin-left:15px;">
+					<a href="#" onclick="jQuery('#caAdvancedSearch').submit(); return false;"><?php print _t('Search'); ?></a>
+				</div>
+				<div style="float:left;">
+					<a href="#" onclick="jQuery('#caAdvancedSearch input[type!=hidden]').val(''); jQuery('#caAdvancedSearch select').val('');"><?php print _t('Clear'); ?></a>
+				</div>
+			</div>
 	</div><!-- end advancedSearch -->
 	<script type="text/javascript">
 		function caLoadAdvancedSearchForm() {

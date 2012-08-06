@@ -36,6 +36,7 @@ if($vo_result) {
 	$vn_item_count = 0;
 	$va_tooltips = array();
 	$t_list = new ca_lists();
+	print '<form id="caFindResultsForm">';
 	while(($vn_item_count < $vn_items_per_page) && ($vo_result->nextHit())) {
 		if (!$vs_idno = $vo_result->get('ca_objects.idno')) {
 			$vs_idno = "???";
@@ -44,6 +45,9 @@ if($vo_result) {
 		$vn_object_id = $vo_result->get('ca_objects.object_id');
 		
 		print "<div class='searchFullImageContainer'>";
+?>
+			<input type='checkbox' name='add_to_set_ids' value='<?php print (int)$vn_object_id; ?>' class="addItemToSetControl addItemToSetControlInThumbnails" />
+<?php
 		print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 		print "</div><!-- END searchFullImageContainer -->";
 		print "<div class='searchFullText'>";
@@ -59,5 +63,6 @@ if($vo_result) {
 		}
 		
 	}
+	print "</form>";
 }
 ?>

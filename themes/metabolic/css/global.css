@@ -64,7 +64,7 @@ h3{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0px;
 	padding: 0;
@@ -112,7 +112,7 @@ a img {
 .details {
 	font-size: 78%;
 }
-#detailBody #rightCol #description .details{
+#detailBody #rightCol #description {
 	font-size:1em;
 }
 .formErrors{
@@ -139,6 +139,7 @@ a img {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	letter-spacing: 2px;
 	text-transform: uppercase;
+	clear:both;
 }
 .divide{
 	border-bottom: 1px dotted #777;
@@ -177,7 +178,6 @@ a.caption:hover{
 	color: #000000;
 }
 
-
 /* ------------------------------------- */
 /* page structure */
 /* ------------------------------------- */
@@ -201,19 +201,19 @@ a.caption:hover{
 }
 
 #bottomBar {
-	width:300px; 
+	width:370px; 
 	float:left; 
 	text-align:left; 
-	clear:both;
+	clear:left;
 	margin-top: 25px;
+	
 }
 #bottomBar a{
 	font-size: .8em;
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
-	line-height: 1;
+	color: #7b7863;
 	margin-bottom: 0.5em;
 	margin-right: 0px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
@@ -288,18 +288,25 @@ a.caption:hover{
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	margin-bottom:20px;
 }
+
 #nav a{
 	color: #7c7c7c;
   	border: none;
 	text-decoration:none;
-	text-transform: uppercase;
+	
 	line-height:1em; 
 	margin-right: 25px;
 	float:left;
 }
+@media only screen and (max-device-width: 480px) {
+	#nav a { font-size: 20px; }
+}
 #nav a:hover{
 	color: #7c7c7c;
 	text-decoration:none;
+}
+.navLink a {
+	text-transform: lowercase;
 }
 .advancedSearch {
 	/*margin-right:70px;*/
@@ -369,8 +376,15 @@ a.caption:hover{
   -o-border-radius: 15px;
   border-radius: 15px;
   padding: 2px 0px 2px 5px;
-  height: 14px;
+  /*height: 14px;*/
   margin: 0;
+  -webkit-appearance: searchfield;
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	#search{ height: 40px;}
+	#search input[type="search"] {height: 28px;}
 }
 
 /* line 222, ../sass/styles.scss */
@@ -464,7 +478,7 @@ input[type="submit"]:active {
 }
 #footer a{
 	color:#666666;
-	font-size:11px;
+	font-size:12px;
 }
 
 /* -------------------------------------------------*/
@@ -673,6 +687,7 @@ div.searchlight-results div.searchlight-selected {
 	width:245px;
 	margin:0px;
 	border: 1px solid #e2e2e2;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -747,12 +762,12 @@ div.searchlight-results div.searchlight-selected {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	font-size: .8em;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 
 #detailBody #pageNav a{
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailBody #pageNav a:hover {
 	text-decoration:none;
@@ -782,6 +797,7 @@ div.searchlight-results div.searchlight-selected {
 	font-size: 11px;
 	text-align:left;
 	min-height:300px;
+	margin-bottom:70px;
 }
 #rightCol.occurrence {
 	margin-top:40px; 
@@ -809,6 +825,10 @@ div.searchlight-results div.searchlight-selected {
   	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
   	font-weight: 300;
   	color: #333;
+}
+
+#detailBody #description p{
+	font-size: 1.2em;
 }
 #detailBody #rightRightCol p{
 	font-size: 1em;
@@ -871,7 +891,7 @@ div.searchlight-results div.searchlight-selected {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	font-size: .8em;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailNavBar a {
 	text-decoration:none;
@@ -879,7 +899,7 @@ div.searchlight-results div.searchlight-selected {
 	letter-spacing: 2px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	text-transform:uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 }
 #detailNavBar #next{
 	display:inline;
@@ -892,13 +912,13 @@ div.searchlight-results div.searchlight-selected {
 	margin-bottom:0px;
 	text-align:center;
 	width: 475px;
-	overflow:hidden;
+	overflow:hidden;	
 }
 #objDetailImageNav {
-	margin:0px 0px 15px 0px;
+	margin:0px 0px 0px 0px;
 	font-size:12px;
 	text-align:center;
-	padding:5px 5px 0px 0px;
+	padding:5px 5px 15px 0px;
 	width: 475px;
 	height:15px;
 	text-align:left;
@@ -909,7 +929,7 @@ div.searchlight-results div.searchlight-selected {
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-left: 10px;
@@ -1113,6 +1133,11 @@ td.advSearchElement{
 	padding:0px 20px 10px 0px;
 	width:480px;
 }
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	td.advSearchElement{ width: 400px; }
+	#caAdvancedSearchForm input[type="text"] { width: 350px; }
+}
 .advSearchElement select {
 	min-width:150px;
 }
@@ -1289,6 +1314,12 @@ td.advSearchElement{
 	padding: 0px 0px 10px 0px;
 
 }
+#detailBody .searchResultTd .textResult, .relatedThumbBg .textResult{
+	text-align:center;
+	padding-top:30px;
+	font-size:11px;
+	color:#666;
+}
 .searchThumbBg{
 	width:170px;
 	height:113px;
@@ -1299,12 +1330,22 @@ td.advSearchElement{
 .searchThumbBg a{
 	border:none;
 }
+.searchThumbBgNoShadow{
+	width:170px;
+	height:113px;
+	position: relative;
+}
+
+.searchThumbBgNoShadow a{
+	border:none;
+}
 .relatedThumbBg {
 	width:110px;
 	height:75px;
 	position: relative;
 	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 	margin: 0px 7px 10px 7px;
+	background-color:#FFFFFF;
 }
 .searchThumbCaption{
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
@@ -1376,16 +1417,27 @@ td.advSearchElement{
 #mapBalloonText a{
 	text-decoration:none;
 }
+/* find results add to set controls */
+input.addItemToSetControl {
+	display: none;
+}
 
-/* search/browse options box - horizontal show hide */
-#showOptions{
+input.addItemToSetControlInThumbnails {
+	float: left;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+/* search/browse options box and tools box - horizontal show hide */
+#showOptions, #showTools{
 	float:right;
 	margin: 1px 10px 0px 10px;
 	font-size: .92em;
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	margin-right: 20px;
@@ -1396,10 +1448,10 @@ td.advSearchElement{
 	-webkit-margin-end: 0px;
 	font-weight:300;
 }
-#showOptions img{
+#showOptions img, #showTools img{
 	margin-right: 10px;
 }
-#hideOptions{
+#hideOptions, #hideTools{
 	position:absolute;
 	right:20px;
 	top:20px;
@@ -1410,7 +1462,7 @@ td.advSearchElement{
 	font-size:12px;
 	
 }
-#searchOptionsBox{
+#searchOptionsBox, #searchToolsBox{
 	position:relative;
 	clear:both;
 	margin: 0px 0px 0px 0px;
@@ -1421,12 +1473,12 @@ td.advSearchElement{
 #browse #searchOptionsBox{	/* need extra space above this box in the browse */
 	margin: 10px 0px 0px 0px;
 }
-#searchOptionsBox .col{
+#searchOptionsBox .col, #searchToolsBox .col{
 	float:left;
 	width:38%;
 	color:#828282;
 }
-#searchOptionsBox .col .unit{
+#searchOptionsBox .col .unit, #searchToolsBox .col .unit{
 	float:left;
 	padding:0px 20px 20px 10px;
 	color:#828282;
@@ -1446,7 +1498,7 @@ td.advSearchElement{
 	margin-right:10px;
 	border:0px;
 }
-#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading{
+#searchOptionsBox .col .heading, #searchOptionsBox .layout .heading, #searchToolsBox .col .heading{
 	font-size:14px;
 	font-weight:bold;
 	color:#000000;
@@ -1456,6 +1508,11 @@ td.advSearchElement{
 	background-color: #E2E2E2;
 	border:0px;
 	padding:20px 20px 10px 20px;
+}
+#searchToolsBox .bg{
+	background-color: #E2E2E2;
+	border:0px;
+	padding:15px;
 }
 #searchOptionsBox .apply{
 	margin:0px -20px 0px -20px;
@@ -1471,6 +1528,14 @@ td.advSearchElement{
 	text-transform:uppercase;
 }
 
+#searchToolsBox a.apply{
+	text-decoration: none;
+	font-weight:bold;
+	font-size:12px;
+	color:#000000;
+	text-transform:uppercase;
+}
+
 /* search refine controls - horizontal show hide */
 #showRefine{
 	float:right;
@@ -1479,7 +1544,7 @@ td.advSearchElement{
 	line-height: 1em;
 	letter-spacing: 2px;
 	text-transform: uppercase;
-	color: #B3AF90;
+	color: #7b7863;
 	line-height: 1;
 	margin-bottom: 0.5em;
 	padding: 0;
@@ -1651,13 +1716,18 @@ td.advSearchElement{
   -o-border-radius: 15px;
   border-radius: 15px;
   padding: 2px 10px 2px 10px;
-  height: 14px;
+  /*height: 14px;*/
   margin-left: 5px;
   -webkit-appearance: searchfield;
   box-sizing: border-box;
   -webkit-rtl-ordering: logical;
 -webkit-user-select: text;
 cursor: auto;
+}
+
+/* iPhone [portrait + landscape] */
+@media only screen and (max-device-width: 480px) {
+	#loginForm input[type="text"], #loginForm input[type="password"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {height: 24px;}
 }
 
 /* ------------------------------------- */
@@ -1934,7 +2004,6 @@ cursor: auto;
 	float:right;
 	width: 420px;
 	text-align: center;
-	border: 2px solid #e8e8e8;
 	height:440px;
 	overflow:hidden;
 }
@@ -2300,12 +2369,12 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 1.5%; 
-	left: 1.5%; 
+	top: 5%; 
+	left: 5%; 
 	border: 4px solid #ccc; 
 	background-color: #FFFFFF; 
-	width: 97%; 
-	height: 97%; 
+	width: 90%; 
+	height: 90%; 
 	display: none;
 	margin: 0 auto;
 	padding: 0px;
@@ -2315,16 +2384,18 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	position: absolute;
 	top: 0px;
 	right: 0px;
-	width:16px;
-	height:16px;
-	margin:10px;
-	background-image:url("../graphics/buttons/x.png");
+	width:34px;
+	height:34px;
+	margin:0px 3px 0px 0px;
+	background-image:url("../graphics/close.png");
 	background-repeat:no-repeat;
 	z-index: 32000;
 }
 #caMediaPanel #close a{
 	text-decoration:none;
-	font-size:16px;
+	font-size:32px;
+	width:34px;
+	height:34px;
 	border:0px;
 }
 #caMediaPanelContentArea {
@@ -2439,9 +2510,12 @@ div.hierarchyBrowseTab {
 {
 	overflow: hidden;
 	position: relative;
-
+	outline: none;
 }
 
+* :focus { 
+	outline: 0; 
+}
 .jspPane
 {
 	position: absolute;
@@ -2486,6 +2560,7 @@ div.hierarchyBrowseTab {
 {
 	background: #dde;
 	position: relative;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2503,6 +2578,7 @@ div.hierarchyBrowseTab {
 	top: 0;
 	left: 0;
 	cursor: pointer;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2526,6 +2602,7 @@ div.hierarchyBrowseTab {
 	text-indent: -20000px;
 	display: block;
 	cursor: pointer;
+	border-radius: 10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -2965,3 +3042,187 @@ div.hierarchyBrowseTab {
 
 
 /*  end detail page timeline styles */
+
+
+
+/* ------------- */
+/* jGrowl styles */
+/* ------------- */
+div.jGrowl {
+	padding: 			10px;
+	z-index: 			9999;
+	color: 				#fff;
+	font-size: 			12px;
+}
+
+/** Special IE6 Style Positioning **/
+div.ie6 {
+	position: 			absolute;
+}
+
+div.ie6.top-right {
+	right: 				auto;
+	bottom: 			auto;
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+  	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.top-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-right {
+	left: 				expression( ( 0 - jGrowl.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.bottom-left {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 - jGrowl.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+}
+
+div.ie6.center {
+	left: 				expression( ( 0 + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+	top: 				expression( ( 0 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+	width: 				100%;
+}
+
+/** Normal Style Positions **/
+body > div.jGrowl {
+	position:			fixed;
+	left: 				40%;
+	right: 				50%;
+	margin-top:			100px;
+}
+
+body > div.jGrowl.top-left {
+	left: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.top-right {
+	right: 				0px;
+	top: 				0px;
+}
+
+body > div.jGrowl.bottom-left {
+	left: 				0px;
+	bottom:				0px;
+}
+
+body > div.jGrowl.bottom-right {
+	right: 				0px;
+	bottom: 			0px;
+}
+
+body > div.jGrowl.center {
+	top: 				0px;
+	width: 				50%;
+	left: 				25%;
+}
+
+/** Cross Browser Styling **/
+div.center div.jGrowl-notification, div.center div.jGrowl-closer {
+	margin-left: 		auto;
+	margin-right: 		auto;
+}
+
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+	background-color: 		#FFFFFF;
+	width: 					235px;
+	padding: 				20px;
+	margin-top: 			40px;
+	margin-bottom: 			5px;
+	font-family: 			Arial, Helvetica, sans-serif;
+	font-size: 				1em;
+	text-align: 			left;
+	display: 				none;
+}
+
+div.jGrowl div.jGrowl-notification {
+	min-height: 			40px;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+div.jGrowl div.jGrowl-notification div.header {
+	font-weight: 			bold;
+	font-size:				1em;
+}
+
+div.jGrowl div.jGrowl-notification div.close {
+	z-index:				99;
+	float: 					right;
+	font-weight: 			bold;
+	font-size: 				1em;
+	cursor:					pointer;
+}
+
+div.jGrowl div.jGrowl-closer {
+	padding-top: 			4px;
+	padding-bottom: 		4px;
+	cursor: 				pointer;
+	font-size:				.9em;
+	font-weight: 			bold;
+	text-align: 			center;
+}
+
+/** Hide jGrowl when printing **/
+@media print {
+	div.jGrowl {
+		display: 			none;
+	}
+}
+
+
+/* autocompleter styles */
+.ac_results {
+	padding: 0px;
+	border: 1px solid #828282;
+	background-color: white;
+	overflow: hidden;
+	z-index: 99999;
+}
+
+.ac_results ul {
+	width: 100%;
+	list-style-position: outside;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.ac_results li {
+	margin: 0px;
+	padding: 2px 5px;
+	cursor: default;
+	display: block;
+	/* 
+	if width will be 100% horizontal scrollbar will apear 
+	when scroll mode will be used
+	*/
+	/*width: 100%;*/
+	font: menu;
+	font-size: 12px;
+	/* 
+	it is very important, if line-height not setted or setted 
+	in relative units scroll will be broken in firefox
+	*/
+	line-height: 16px;
+	overflow: hidden;
+}
+
+.ac_loading {
+	background: white url('indicator.gif') right center no-repeat;
+}
+
+.ac_odd {
+	background-color: #eee;
+}
+
+.ac_over {
+	background-color: #828282;
+	color: white;
+}
+
+/* end autocompleter styles */
