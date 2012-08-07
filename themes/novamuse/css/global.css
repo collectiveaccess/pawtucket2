@@ -1781,8 +1781,8 @@ a.facetHeadingLink h1{
 
 
 
-/* --- browse pop up panels --- */
-.browseSelectPanel, #browse .browseSelectPanel {  /* used in browse and details with browse */
+/* --- browse pop up panels 
+.browseSelectPanel, #browse .browseSelectPanel {  
 	position: absolute; 
 	top: 100px; 
 	left: 50%; 
@@ -1803,6 +1803,7 @@ a.facetHeadingLink h1{
 	-moz-border-radius-topright: 10px; 
 	-webkit-border-top-right-radius: 10px;
 }
+*/
 #browseFacetGroupingControls{ /*  used in browse and details with browse */
 	float:right;
 	margin: 10px 10px 0px 10px;

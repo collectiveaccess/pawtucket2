@@ -43,6 +43,7 @@
 	
  	$va_messages_by_transaction = $this->getVar('messages');
 ?>
+<div id='pageBody'>
 <div style="height:15px; width:100%; clear:both;"></div>
 <h1><?php print _t("Lightbox"); ?></h1>
 <div id="setItemEditor">
@@ -63,7 +64,7 @@
 			print "<strong>".$this->getVar("set_name")."</strong>";
 			print "&nbsp;&mdash;&nbsp;<em>"._t("This lightbox is %1", $vs_access)."</em>";
 			if ($this->getVar("set_access") == 1) {
-				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='27'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
+				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='27' class='setForm'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
 			}
 			if($this->getVar("set_description")){
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
@@ -261,14 +262,14 @@
 						
 						if ($va_item['name']) {
 							if (mb_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.mb_substr($va_item['name'], 0, 67).'...</em>';
+								$va_title[] = mb_substr($va_item['name'], 0, 67).'...';
 							} else {
-								$va_title[] = '<em>'.$va_item['name'].'</em>';
+								$va_title[] = $va_item['name'];
 							}
 						}
 						
 						if ($va_item['idno']) {
-							$va_title[] = '<strong>'._t('Id:').'</strong> '.$va_item['idno'];
+							$va_title[] = '<strong>'._t('ID:').'</strong> '.$va_item['idno'];
 						}
 						$vs_title = join('<br/>', $va_title);
 ?>
@@ -311,3 +312,4 @@
 		_makeSortable();
 	</script>
 </div><!-- end setItemEditor -->
+</div><!-- end pageBody -->

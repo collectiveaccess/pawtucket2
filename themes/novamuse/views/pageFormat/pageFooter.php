@@ -16,6 +16,17 @@ print TooltipManager::getLoadHTML();
 		</div>
 	</div>
 	<script type="text/javascript">
+	/* prevent dragging of image to desktop */
+	jQuery(document).ready(function() {
+		$("img").mousedown(function(){
+			return false;
+		});
+
+		$('img').bind('contextmenu', function(e){
+			return false;
+		});
+	});
+	
 	/*
 		Set up the "caMediaPanel" panel that will be triggered by links in object detail
 		Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php

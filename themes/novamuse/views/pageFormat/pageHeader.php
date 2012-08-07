@@ -50,7 +50,7 @@
 
 <div id="header">
 
-<div id="logo"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/nova_logo.png" width="237" height="156" alt="Nova Muse" /></div>
+<div id="logo"><?php print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/nova_logo.png' width='237' height='156' alt='Nova Muse' />", "", "", "", ""); ?></div>
 
 <div id="mainmenu">
 	<div class="button"><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></div>

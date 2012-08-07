@@ -4,3 +4,7 @@
 	margin-right:20px;
 	overflow-y:auto;
 }
+.memberImage{
+	float:left;
+	padding-right:10px;
+}

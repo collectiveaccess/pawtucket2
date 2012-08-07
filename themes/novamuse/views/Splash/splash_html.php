@@ -109,7 +109,7 @@
 				}
 ?>
 				<div class="clear"></div>
-				<p><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/share.png" width="48" height="19" /></a></p>    
+				<p><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></p>    
 				<!-- AddThis Button BEGIN -->
 				<div id="shareWidgetsContainer">
 					<div class="addthis_toolbox addthis_default_style " style="padding-left:50px;">

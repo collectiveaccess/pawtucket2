@@ -96,3 +96,14 @@ if($vo_result) {
 		print "\n</table>\n";
 	}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$("img").mousedown(function(){
+			return false;
+		});
+	
+		$('img').bind('contextmenu', function(e){
+			return false;
+		});
+	});
+</script>

@@ -29,6 +29,7 @@
 	$vo_result 				= $this->getVar('result');
 	$vo_result_context 		= $this->getVar('result_context');
  ?>
+ <div id="pageBody">
  	<div id="resultBox">
 <?php
 	if($vo_result) {
@@ -65,3 +66,4 @@
 	}
 ?>
 	</div><!-- end resultbox -->
+</div>

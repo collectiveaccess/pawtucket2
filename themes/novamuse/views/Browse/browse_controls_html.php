@@ -45,7 +45,9 @@
 		$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), array('medium'), array('checkAccess' => $this->getVar('access_values')));
 	}
 	JavascriptLoadManager::register('cycle');
-	
+?>
+	<div id="pageBody"> 
+<?php
 	if (!$this->request->isAjax()) {
 		if ($this->getVar('browse_selector')) {
 	?>
@@ -99,11 +101,11 @@
 				print $this->render('Browse/browse_intro_text_html.php');
 				print"<div style='clear:both; width: 100%; height: 15px;'></div>";
 				if (sizeof($va_facets)) { 
-					print "<div class='startBrowsingBy'>"._t("Start browsing by:")."</div>";
+					#print "<div class='startBrowsingBy'>"._t("Start browsing by:")."</div>";
 					print "<div id='facetList'>";
 					$va_available_facets = $this->getVar('available_facets');
 					foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
-						print "<div class='facetHeadingLink'><h1><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a></h1></div>\n";
+						print "<div class='facetHeadingLink'><h1><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".ucwords($va_facet_info['label_plural'])."</a></h1></div>\n";
 						print "<div class='facetDescription'>".$va_facet_info["description"]."</div>";
 					}
 					print "</div><!-- end facetList -->";
@@ -118,7 +120,7 @@
 						$va_random_items[$vn_object_id] = $va_object_info;
 						print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
 						print caNavLink($this->request, $va_media[$va_object_info['object_id']]["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-						print "<div id='browseRandomCaption'>".caNavLink($this->request, $va_object_info['title'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+						print "<div id='browseRandomCaption' class='subtitletextcaps'>".caNavLink($this->request, $va_object_info['title'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 					}
 					print "</div>";
 ?>
@@ -162,6 +164,8 @@
 	
 	</div>
 </div>
+<div style='width:100%, height:20px; clear:both;'></div>
+</div> <!-- end pageBody -->
 <script type="text/javascript">
 	var caUIBrowsePanel = caUI.initBrowsePanel({ 
 		facetUrl: '<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'getFacet'); ?>',

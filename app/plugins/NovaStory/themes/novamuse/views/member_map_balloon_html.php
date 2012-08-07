@@ -34,6 +34,10 @@
 	foreach($va_entity_ids as $vn_entity_id){
 		$t_entity->load($vn_entity_id);
 		print "<H1>".$t_entity->getLabelForDisplay()."</H1>";
+		$vs_image = "";
+		if($vs_image = $t_entity->get("mem_inst_image", array("version" => "thumbnail", "return" => "tag"))){
+			print "<div class='memberImage'>".$vs_image."</div>";
+		}
 		if($t_entity->get("biography")){
 			print "<p>";
 			print $t_entity->get("biography");
@@ -47,4 +51,4 @@
 		print "<p>".caNavLink($this->request, _t("More")." &rsaquo;", '', 'Detail', 'Entity', 'Show', array('entity_id' => $t_entity->get("ca_entities.entity_id")))."</p>";
 	}
 ?>
-	</div><!-- end memberMapBalloonContainer -->
+	<div style="clear:both"><!-- empty --></div></div><!-- end memberMapBalloonContainer -->

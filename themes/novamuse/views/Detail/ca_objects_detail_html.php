@@ -93,23 +93,25 @@
 			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 				print '<div class="nav1">';
 				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Add to Lightbox"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+					print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
 				}else{
-					print caNavLink($this->request, _t("Add to Lightbox"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+					print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
 				}
 				print '</div>';
 			}
-			print "<div class='nav2'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a></div>";
+			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a></div>";
 		}
 ?>
-			<div class="clear"></div>
-    		<p id="shareToggle"><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/share.png" width="48" height="19" /></p>
+			
+    		<div id="shareToggle"><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></div>
+			<div class='clear'></div>
 <?php
-			print "<p id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/thumb.jpeg' border='0'> Like This!", '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5));
 			if($this->getVar("ranking")){
 				$vn_numRankings = $this->getVar("numRankings");
-				print _t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people");
+				$like_message = "<span class='likebk' style='float:right;'>"._t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people")."</span>";
 			}
+			print "<p id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5));
+
 			print "</p>";
 			
 ?>
@@ -176,12 +178,27 @@
 
 		<div class="clear"></div>
 <?php
-	if($t_object->get("description")){
+	if($t_object->get("description") || $t_object->get("narrative")){
 ?>
 		<div class="detail-col1">
+<?php
+	}
+	if($t_object->get("narrative")){
+?>
+
+			<p><span class="subtitletextcaps"><?php print _t("Narrative"); ?>:</span></p>
+			<p class="narrativeText"><?php print $t_object->get("narrative", array("convertHTMLBreaks" => true)); ?></p>
+<?php
+	}
+	if($t_object->get("description")){
+?>
 			<p><span class="subtitletextcaps"><?php print _t("Description"); ?>:</span></p>
-			<p><?php print $t_object->get("description"); ?></p>
-		</div>
+			<p><?php print $t_object->get("description", array("convertHTMLBreaks" => true)); ?></p>
+<?php
+	}
+	if($t_object->get("description") || $t_object->get("narrative")){
+?>
+		</div><!-- end detail-col1 -->
 <?php
 	}
 ?>
@@ -223,7 +240,7 @@
 			<p class="subtitletextcaps">
 <?php
 				# --- entities
-				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("repository"), "returnAsArray" => 1, "checkAccess" => $va_access_values, "sort" => "surname"));
+				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("repository", "source"), "returnAsArray" => 1, "checkAccess" => $va_access_values, "sort" => "surname"));
 				if(sizeof($va_entities) > 0){	
 					print "<p class='subtitletextcaps'>";
 					foreach($va_entities as $va_entity) {
@@ -375,7 +392,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 <?php
 		}else{
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
-				print "<p>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
+				print "<p style='text-align:center;'>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
 			}
 		}
 	}
