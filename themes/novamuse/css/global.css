@@ -73,6 +73,7 @@ a{
 	padding:30px 0px 0px 20px;
 	background-color: #fff;
 }
+/*
 .notificationMessage{
 	color: #CA1919;
 	font-size:12px;
@@ -83,6 +84,7 @@ a{
 	clear:right;
 	float:right;
 }
+*/
 .divide{
 	height:3px;
 	background-color:#E2E2E2;
@@ -1148,6 +1150,7 @@ td.advSearchElement{
 	font-size:11px;
 	
 }
+/*
 #hideOptions{
 	position:absolute;
 	right:20px;
@@ -1159,6 +1162,7 @@ td.advSearchElement{
 	font-size:12px;
 	
 }
+*/
 #searchOptionsBox{
 	position:relative;
 	clear:both;
@@ -1198,7 +1202,6 @@ td.advSearchElement{
 #searchOptionsBox .col .heading, #searchOptionsBox .layout .heading{
 	font-size:14px;
 	font-weight:bold;
-	color:#000000;
 	margin-bottom:10px;
 }
 #searchOptionsBox .bg{
@@ -1242,7 +1245,7 @@ td.advSearchElement{
 	border:0px;
 	padding:10px 20px 10px 20px;
 }
-
+/*
 #hideRefine{
 	float:right;
 	margin: 0px 0px 0px 10px;
@@ -1251,7 +1254,7 @@ td.advSearchElement{
 	color:#828282;
 	font-size:12px;	
 }
-
+*/
 #searchRefineParameters{
 	float:left;
 	padding:3px 0px 0px 3px;
@@ -1316,6 +1319,8 @@ td.advSearchElement{
 	line-height: 1.3em;
 	width:600px;
 }
+
+/*
 #loginForm .bg, #registerForm .bg, #resetPassword .bg{
 	background-color: #e6e6e6;
 	border: 1px solid #E2E2E2;
@@ -1330,9 +1335,19 @@ td.advSearchElement{
 	-moz-border-radius-topright: 10px; 
 	-webkit-border-top-right-radius: 10px;
 }
+*/
 #loginForm div, #registerForm div{
 	margin-top:15px;
 	margin-bottom:15px;
+	font-family: WeissBT-Roman;
+	color: #19568C;
+	border: none;
+	display: block;
+	line-height: 150%;
+	padding: 0 0 1px;
+	text-transform: uppercase;
+	font-size: 12px;
+	font-style: normal;
 }
 #loginForm .button, #registerForm a.button, #resetPasswordForm a.button {
 	text-transform:uppercase;
@@ -1353,18 +1368,60 @@ td.advSearchElement{
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
+
 	outline-style:none;
 	outline-width:0px;
+	background: white url('../../../images/shadow.gif') repeat-x top;
+	border-bottom: 1px solid #DDD;
+	border-left: 1px solid #C3C3C3;
+	border-right: 1px solid #C3C3C3;
+	border-top: 1px solid #7C7C7C;
+	color: #333;
+	font-size: 100%;
+	margin: 0;
+	padding: 2px 0;
+
 }
 #loginForm input[type="text"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {
 	font-size:12px;
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
 	outline-style:none;
 	outline-width:0px;
+	background: white url('../../../images/shadow.gif') repeat-x top;
+	border-bottom: 1px solid #DDD;
+	border-left: 1px solid #C3C3C3;
+	border-right: 1px solid #C3C3C3;
+	border-top: 1px solid #7C7C7C;
+	color: #333;
+	font-size: 100%;
+	margin: 0;
+	padding: 2px 0;
+
+}
+#registerForm input[type="password"] {
+	width: 250px;
+}
+#loginForm input[type="text"], #loginForm input[type="password"] {
+	width: 180px;
+}
+#loginForm p, #registerForm p {
+	font-size: 12px;
+	color: #19568C;
+	line-height: 120%;
+	font-family: WeissBT-Roman;
+	font-style: italic;
+	text-transform: none;
+}
+#loginForm div.forgotThis  {
+	margin-top:-5px;
+	padding:0px;
+}
+#loginForm .forgotThis a{
+	text-decoration: none;
+	text-transform: none;
+
 }
 
 /* ------------------------------------- */

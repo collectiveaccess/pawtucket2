@@ -54,7 +54,7 @@
 
 <div id="mainmenu">
 	<div class="button"><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></div>
-    <div class="button"><?php print caNavLink($this->request, _t("Member Map"), "", "NovaStory", "MemberMap", "Index"); ?></div>
+    <div class="button"><?php print caNavLink($this->request, _t("Contributor Map"), "", "NovaStory", "MemberMap", "Index"); ?></div>
     <div class="button-last">
 <?php
 		if($this->request->isLoggedIn()){

@@ -2,8 +2,23 @@
 
 </div><!--end container-->
 <div class="clear"></div>
-<div id="footerlogos"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/pch.jpg"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/CommCulHerit_Fulcol.jpg"></div>
-
+<div id='footer'
+	<div>
+<?php
+		if ($this->request->isLoggedIn()) {
+			print "<div style='float:left;'>".caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout")."</div>";
+		}
+?>
+		&copy; 2012 ANSM
+	</div>
+<?php
+	if ($this->request->getController() == 'Splash') {
+?>
+		<div id="footerlogos"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/pch.jpg"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/CommCulHerit_Fulcol.jpg"></div>
+<?php
+	}
+?>
+</div>
 </body>
 </html>
 <?php
@@ -26,6 +41,11 @@ print TooltipManager::getLoadHTML();
 			return false;
 		});
 	});
+
+	$(function(){  // $(document).ready shorthand
+	  $('.notificationMessage').effect('fade', 'easeInSine', 5000);
+	});
+
 	
 	/*
 		Set up the "caMediaPanel" panel that will be triggered by links in object detail

@@ -73,7 +73,14 @@
 	<div id="contentcontainer">
 		<div id="objectcontainer">
 			<div class="objecttitle titletext"><?php print $vs_title; ?></div>
+			
 <?php
+if ($t_rep && $t_rep->getPrimaryKey()) {
+	$image = 1;
+} else {
+	$image = 0;
+	print "<div style='height:20px; clear:both; width:100%;'></div>";
+}
 		if ($t_rep && $t_rep->getPrimaryKey()) {
 ?>
   			<div class="objectslides">
@@ -87,7 +94,7 @@
  ?>
   			</div>
   			<!--<div class="objectnav">1 of 2</div>-->
-    		
+   		
 <?php
 
 			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
@@ -102,31 +109,37 @@
 			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a></div>";
 		}
 ?>
+
 			
     		<div id="shareToggle"><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></div>
-			<div class='clear'></div>
+			
 <?php
+		
 			if($this->getVar("ranking")){
 				$vn_numRankings = $this->getVar("numRankings");
 				$like_message = "<span class='likebk' style='float:right;'>"._t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people")."</span>";
 			}
-			print "<p id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5));
-
-			print "</p>";
+		if ($image == 1) {
+			print "<div class='clear'></div>";
+			print "<p id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</p>";
+		} else {
+			print "<p id='likeThisNoImage'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</p>";
+		}
+			
 			
 ?>
+			<div style='width: 100%; clear:both; height:1px;'></div> 
 			<!-- AddThis Button BEGIN -->
 			<div id="shareWidgetsContainer">
-				<div class="addthis_toolbox addthis_default_style " style="padding-left:50px;">
+				<div class="addthis_toolbox addthis_default_style" style="padding-left:50px;">
+					<a class="addthis_button_pinterest_pinit"></a>
 					<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
 					<a class="addthis_button_tweet"></a>
-					<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
 					<a class="addthis_counter addthis_pill_style"></a>
 				</div>
-				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4fb28b34285e728d"></script>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
 			</div>
 			<!-- AddThis Button END -->
-			
     	</div><!--end objectcontainer-->
 	</div><!--end contentcontainer-->
 
@@ -178,7 +191,7 @@
 
 		<div class="clear"></div>
 <?php
-	if($t_object->get("description") || $t_object->get("narrative")){
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse")){
 ?>
 		<div class="detail-col1">
 <?php
@@ -193,10 +206,16 @@
 	if($t_object->get("description")){
 ?>
 			<p><span class="subtitletextcaps"><?php print _t("Description"); ?>:</span></p>
-			<p><?php print $t_object->get("description", array("convertHTMLBreaks" => true)); ?></p>
+			<p class="descriptionText"><?php print $t_object->get("description", array("convertHTMLBreaks" => true)); ?></p>
 <?php
 	}
-	if($t_object->get("description") || $t_object->get("narrative")){
+	if($t_object->get("historyUse")){
+?>
+			<p><span class="subtitletextcaps"><?php print _t("History of Use"); ?>:</span></p>
+			<p class="descriptionText"><?php print $t_object->get("historyUse", array("convertHTMLBreaks" => true)); ?></p>
+<?php
+	}
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse")){
 ?>
 		</div><!-- end detail-col1 -->
 <?php
@@ -277,17 +296,17 @@
 			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', _t("Back"), ''))) {
 				print "<div class='itemNav'>";
 				if ($this->getVar('previous_id')) {
-					print "<div class='nav1'>".caNavLink($this->request, "&larr; "._t("Previous Entry"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'))."</div>";
+					print "<div class='prevnav'>".caNavLink($this->request, "&larr; "._t("Previous Entry"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'))."</div>";
 				}else{
 					# --- this is white text on white background - acts as spacer so back button will center properly
-					print "<div class='nav1'>&larr; "._t("Previous Entry")."</div>";
+					print "<div class='prevnav' style='color:#fff;'>&larr; "._t("Previous Entry")."</div>";
 				}
 				print $vs_back_link;
 				if ($this->getVar('next_id') > 0) {
-					print "<div class='nav2'>".caNavLink($this->request, _t("Next Entry")." &rarr;", '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'))."</div>";
+					print "<div class='nextnav'>".caNavLink($this->request, _t("Next Entry")." &rarr;", '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'))."</div>";
 				}else{
 					# --- this is white text on white background - acts as spacer so back button will center properly
-					print "<div class='nav2'>"._t("Next Entry")." &rarr;</div>";
+					print "<div class='nextnav' style='color:#fff;'>"._t("Next Entry")." &rarr;</div>";
 				}
 				print "</div>";
 			}
@@ -348,10 +367,6 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 					</div>
 <?php
 				}
-			}else{
-				if(!$vs_tags && !$this->getVar("ranking")){
-					$vs_login_message = _t("Login/register to be the first to comment on this object!");
-				}
 			}
 			if((is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
 ?>
@@ -392,7 +407,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 <?php
 		}else{
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
-				print "<p style='text-align:center;'>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
+				print "<p class='detail-login-link'>".caNavLink($this->request, _t("Do you know more about this item?<br/>Login to add your tags or comment to this object!"), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
 			}
 		}
 	}

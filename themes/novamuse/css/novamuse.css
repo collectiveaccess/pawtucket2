@@ -58,10 +58,30 @@ h1 {font-family: WeissBT-Roman; font-size:24px; color:#19568c;  }
 
 #mainmenu .button a:hover, #mainmenu .button-last a:hover {background-color:#0079c1;}
 
+.notificationMessage{
+	color: #19568c;
+	font-family:WeissBT-Roman;
+	font-size:16px;
+}
+div.notificationMessage{
+	width:300px;
+	padding:20px;
+	position: absolute;
+	left: 33%;
+	top:40%;
+	border: 2px solid #ccc;
+	background-color:#fff;
+	z-index:10000;
+	text-align:center;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	font-weight: bold;
+}
 
 #contentcontainer {width:957px;}
 
-#objectcontainer {width:479px; float:left;}
+#objectcontainer {width:479px; float:left; min-height:10px;} 
 
 #pageBody {padding:15px;}
 
@@ -71,6 +91,7 @@ h1 {font-family: WeissBT-Roman; font-size:24px; color:#19568c;  }
 
 #likeThis {float:left; -webkit-margin-before: 0em; margin-top: 15px; margin-left: 39px;}
 #likeThis a{ padding-right:10px; color:#0079c1;}
+#likeThisNoImage {float:left; -webkit-margin-before: 0em; margin-top: -4px; margin-left: 0px;}
 .likebk {
 	width:152px; 
 	height:23px; 
@@ -83,7 +104,7 @@ h1 {font-family: WeissBT-Roman; font-size:24px; color:#19568c;  }
 	padding-left:12px; 
 }
 #shareToggle{ margin-right:10px; float: left;}
-#shareWidgetsContainer{ display:none; text-align:center; margin: 20px 10px 20px 10px;}
+#shareWidgetsContainer{ display:none; text-align:center; margin: 10px 10px 20px 10px;}
 .objectnav{width:480px; color:#19568c; font-size:11px; text-align:center;padding-left:10px;}
 
 .itemNav{border-top:1px dotted #19568C; height:20px; padding:10px; margin-top:10px; text-align:center;}
@@ -94,17 +115,22 @@ h1 {font-family: WeissBT-Roman; font-size:24px; color:#19568c;  }
 .nav2 {float:left;color:#19568c; font-size:12px; color:#FFF;}
 .nav2 a{color:#0079c1;}
 
+.prevnav {float:left;}
+.nextnav {float:right;}
 
-#subcontentcontainer {width:457px; border-left:1px solid #ccc;float:left;}
+#subcontentcontainer {width:457px; border-left:1px solid #ccc;float:left; min-height:600px;}
 
 .detail-col1{width:218px; float:left; margin-left:10px;}
+.detail-col1 p {padding-right:5px;}
 .detail-col2{width:218px; float:left; margin-left:10px;}
 
 .detail-col2-home{width:218px; float:left; margin-left:10px;}
 .detail-col2-home .module{width:186px; text-align:left; margin:10px auto; padding-bottom:15px;line-height:140%;}
 .detail-col2-home .module img{padding-bottom:5px;}
 
-.narrativeText{ max-height:200px; overflow:auto;}
+.detail-login-link {text-align:center; margin-top:40px; font-weight:bold;}
+
+.narrativeText, .descriptionText{ max-height:200px; overflow:auto;}
 
 .thumbs-col1{margin-left:10px;}
 
@@ -126,8 +152,9 @@ h1 {font-family: WeissBT-Roman; font-size:24px; color:#19568c;  }
 
 .collection-badge {width:228px; margin-right:1px; height:50px; background-color:#71cdd0; float:left;text-align:center; padding-top:12px; border-bottom:1px solid #666;}
 
-#footerlogos{width:938px; margin:0 auto; text-align:center;padding-top:20px;}
+#footerlogos{width:938px; margin:0 auto; text-align:center;padding:10px 0px;}
 #footerlogos img{padding:0 10px 0 10px;}
+#footer {width: 938px; margin: 5px auto; text-align: right; padding-top: 0px;}
 
 /* form styles */
 
@@ -211,6 +238,19 @@ form li:after
 * html form li div
 {
 	display:inline-block;
+}
+
+input.setForm , {
+	background: white url('../../../images/shadow.gif') repeat-x top;
+	border-bottom: 1px solid #DDD;
+	border-left: 1px solid #C3C3C3;
+	border-right: 1px solid #C3C3C3;
+	border-top: 1px solid #7C7C7C;
+	color: #333;
+	font-size: 100%;
+	margin: 0;
+	padding: 2px 0;
+	width: 250px;
 }
 
 form li div
@@ -739,6 +779,17 @@ ul.password{
 .facetHeadingLink a {
 	color: #19568C;
 }
+.searchNav{
+	font-family: WeissBT-Roman;
+	font-size: 14px;
+	font-weight:bold;
+}
+.searchNav a{
+	font-family: WeissBT-Roman;
+}
+.searchNav .linkOff{
+	font-family: WeissBT-Roman;
+}
 #browseRandomCaption a{
 	font-family: arial;
 	font-size: 11px;
@@ -787,9 +838,59 @@ ul.password{
 }
 #searchOptionsBox .bg{
 	background-color: #f7f7f7;
+	font-family:arial;
+}
+#searchOptionsBox .heading {
+	font-family: WeissBT-Roman;
+	text-transform: uppercase;
+	color:#666;
 }
 #searchRefineBox .bg{
 	background-color: #f7f7f7;
+}
+#hideOptions{
+	position:absolute;
+	right:20px;
+	top:20px;
+	margin: 3px 0px 0px 10px;
+	text-decoration:none;
+	text-transform:uppercase;
+	color:#828282;
+	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;	
+}
+
+#searchOptionsBox .apply {
+	font-size:14px;
+	font-family: WeissBT-Roman;
+	font-weight: bold;
+}
+#searchRefineBox {
+	font-family: WeissBT-Roman;
+	font-size:14px;
+	font-weight: 700;
+}
+#searchRefineBox a{
+	font-family:arial;
+	font-size: 12px;
+	font-weight:400;
+	text-decoration: none;
+}
+#hideRefine {
+	float:right;
+	margin: 0px 0px 0px 10px;
+	text-decoration:none;
+	text-transform:uppercase;
+	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;
+}
+a#hideRefine {
+	color:#828282;	
+	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;
 }
 .textContent {
 	font-family: WeissBT-Roman;
@@ -799,6 +900,21 @@ ul.password{
 	margin-left: 10px;
 	margin-right: 10px;
 }
+/* Login */
+
+#loginForm .bg, #registerForm .bg, #resetPassword .bg{
+	padding:10px 15px 10px 10px;
+	margin:0px 0px 20px 0px;
+	background-color:#f7f7f7;
+	border: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-top-radius: 0px;
+	-webkit-border-top-right-radius: 20px;
+	-moz-border-radius-topright: 20px;
+	border-top-right-radius: 20px;
+}
+
 /*** Calendar **********************/
 div.calendar { position: relative; }
 

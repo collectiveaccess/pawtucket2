@@ -112,13 +112,13 @@
 				<p><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></p>    
 				<!-- AddThis Button BEGIN -->
 				<div id="shareWidgetsContainer">
-					<div class="addthis_toolbox addthis_default_style " style="padding-left:50px;">
-						<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-						<a class="addthis_button_tweet"></a>
-						<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-						<a class="addthis_counter addthis_pill_style"></a>
-					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4fb28b34285e728d"></script>
+					<div class="addthis_toolbox addthis_default_style" style="padding-left:50px;">
+					<a class="addthis_button_pinterest_pinit"></a>
+					<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+					<a class="addthis_button_tweet"></a>
+					<a class="addthis_counter addthis_pill_style"></a>
+				</div>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
 				</div>
 				<!-- AddThis Button END -->
 

@@ -63,7 +63,7 @@ if (!$this->request->isAjax()) {
 		</div><!-- end nav -->
 		<div style="width: 100%; clear:both; height:10px;"></div>
 		
-		<div id="leftCol" class="entity">		
+		<div id="leftCol" class="entity">
 <?php
 			if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
 ?>
@@ -107,6 +107,9 @@ if (!$this->request->isAjax()) {
 						print "<div class='unit'>".$t_entity->get("ca_entities.mem_inst_image", array("version" => "small", "return" => "tag"))."</div>";
 					}
 					if($t_entity->get("ca_entities.address")){
+						if($t_entity->get("ca_entities.mem_inst_region")){
+							print "<div class='unit'><b>"._t("Region").":</b> ".$t_entity->get("ca_entities.mem_inst_region", array('convertCodesToDisplayText' => true))."</div>";
+						}
 						print "<div class='unit'><b>"._t("Address").":</b><br/>";
 						if($t_entity->get("ca_entities.address.address1")){
 							print $t_entity->get("ca_entities.address.address1")."<br/>";
@@ -233,47 +236,6 @@ if (!$this->request->isAjax()) {
 				</div><!-- end unit -->
 <?php
 			}
-			
-			# --- occurrences
-			$va_occurrences = $t_entity->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			$va_sorted_occurrences = array();
-			if(sizeof($va_occurrences) > 0){
-				$t_occ = new ca_occurrences();
-				$va_item_types = $t_occ->getTypeList();
-				foreach($va_occurrences as $va_occurrence) {
-					$t_occ->load($va_occurrence['occurrence_id']);
-					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
-				}
-				
-				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
-?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
-<?php
-					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
-					}
-					print "</div><!-- end unit -->";
-				}
-			}
-			# --- places
-			$va_places = $t_entity->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_places) > 0){
-				print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
-				foreach($va_places as $va_place_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".$va_place_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- collections
-			$va_collections = $t_entity->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_collections) > 0){
-				print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
-				foreach($va_collections as $va_collection_info){
-					print "<div>";
-					print (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." (".$va_collection_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
 			# --- vocabulary terms
 			$va_terms = $t_entity->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_terms) > 0){
@@ -291,18 +253,7 @@ if (!$this->request->isAjax()) {
 			}
 			print "</div>";
 ?>
-		<div id="objUserData" class="entity">
-			<!-- AddThis Button BEGIN -->
-			<div class='unit'>
-				<div class="addthis_toolbox addthis_default_style" style="width:300px;">
-					<a class="addthis_button_facebook_like" style="width:85px;" fb:like:layout="button_count"></a>
-					<a class="addthis_button_tweet" style="width:85px;"></a>
-					<a class="addthis_button_google_plusone" g:plusone:size="medium" style="width:70px;"></a>
-					<a class="addthis_button_compact addthis_pill_style" style="width:20px;"></a>
-				</div>
-				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4fb28b34285e728d"></script>
-			</div>
-			<!-- AddThis Button END -->	
+		<div id="objUserData" class="entity">	
 <?php
 
 			$va_comments = $this->getVar("comments");
@@ -379,7 +330,18 @@ if (!$this->request->isAjax()) {
 if (!$this->request->isAjax()) {
 ?>
 		</div><!-- end resultBox -->
-	
+		<p style="float:left;"><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></p>
+		<!-- AddThis Button BEGIN -->
+		<div id="shareWidgetsContainer" style="margin-top:25px;">
+			<div class="addthis_toolbox addthis_default_style" style="padding-left:50px;">
+				<a class="addthis_button_pinterest_pinit"></a>
+				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+				<a class="addthis_button_tweet"></a>
+				<a class="addthis_counter addthis_pill_style"></a>
+			</div>
+			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
+		</div>
+		<!-- AddThis Button END -->
 	</div><!-- end rightCol -->
 </div><!-- end detailBody -->
 <?php
