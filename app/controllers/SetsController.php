@@ -204,21 +204,25 @@
  			} else {
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('object_id', pInteger);
-				if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
-					//
-					// Select primary representation
-					//
-					$t_object = new ca_objects($pn_object_id);
-					$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
-					
-					$t_item = new ca_set_items($pn_item_id);
-					$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
-					$t_item->update();
-					
-					$va_errors = array();
-					$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
-				} else {
-					$va_errors[] = _t('Could not add item to lightbox');
+				if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
+					if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
+						//
+						// Select primary representation
+						//
+						$t_object = new ca_objects($pn_object_id);
+						$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
+						
+						$t_item = new ca_set_items($pn_item_id);
+						$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
+						$t_item->update();
+						
+						$va_errors = array();
+						$this->view->setVar('message', _t("Successfully added item. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
+					} else {
+						$va_errors[] = _t('Could not add item to lightbox');
+					}
+				}else{
+					$this->view->setVar('message', _t("Item already in set. %1Click here to resume your search%2.", "<a href='".caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $pn_object_id))."'>", "</a>"));
 				}
 			}
  			
@@ -342,7 +346,7 @@
  			$ps_from_email = $this->request->getParameter('from_email', pString);
  			$ps_from_name = $this->request->getParameter('from_name', pString);
  			$ps_subject = $this->request->getParameter('subject', pString);
- 			$ps_message = $this->request->getParameter('message', pString);
+ 			$ps_message = $this->request->getParameter('email_message', pString);
  			
 			$o_purifier = new HTMLPurifier();
     		$ps_message = $o_purifier->purify($ps_message);
@@ -405,7 +409,7 @@
  				$this->view->setVar('from_email', $ps_from_email);
  				$this->view->setVar('from_name', $ps_from_name);
  				$this->view->setVar('subject', $ps_subject);
- 				$this->view->setVar('message', $ps_message);
+ 				$this->view->setVar('email_message', $ps_message);
  				
  				$this->notification->addNotification(_t("There were errors in your form"), "message");			
  			}
