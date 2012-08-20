@@ -32,134 +32,135 @@
 <div id="chronology">
 <?php
 	foreach($va_silos as $vn_silo_id => $va_silo) {
-		if(strtolower($va_silo['name']) == 'historical context'){
-			$vn_historical_context_silo_id = $vn_silo_id;
-			# --- output historical context timeline
+		if($va_silo[num_actions]){
+			if(strtolower($va_silo['name']) == 'historical context'){
+				$vn_historical_context_silo_id = $vn_silo_id;
+				# --- output historical context timeline
 ?>
-			<div class="historicalContextPlaceHolder" id="historicalContextPlaceHolder">
-				<div class="siloTitle"><a href="#" onClick="jQuery('#historicalContextPlaceHolder').hide(); jQuery('.historicalContextContainer').slideDown(); return false;"><?php print _t("historical context"); ?></div><!-- end siloTitle -->
-			</div><!-- end historicalContextPlaceHolder -->
-			<div class="historicalContextContainer">
-				<div class="hcInfo">
-					<div class="hcTitle"><?php print _t('historical context'); ?></div><!-- end hcTitle -->
-					<div class="hide"><a href="#" onClick="jQuery('.historicalContextContainer').slideUp(400, function() {jQuery('#historicalContextPlaceHolder').show();}); return false;">Hide ></a></div><!-- end hide -->
-				</div><!-- end hcInfo -->
-				<div class="timelineContainer"><ul id="silo<?php print $vn_silo_id; ?>" class="jcarousel-skin-chronology">
+				<div class="historicalContextPlaceHolder" id="historicalContextPlaceHolder">
+					<div class="siloTitle"><a href="#" onClick="jQuery('#historicalContextPlaceHolder').hide(); jQuery('.historicalContextContainer').slideDown(); return false;"><?php print _t("historical context"); ?></div><!-- end siloTitle -->
+				</div><!-- end historicalContextPlaceHolder -->
+				<div class="historicalContextContainer">
+					<div class="hcInfo">
+						<div class="hcTitle"><?php print _t('historical context'); ?></div><!-- end hcTitle -->
+						<div class="hide"><a href="#" onClick="jQuery('.historicalContextContainer').slideUp(400, function() {jQuery('#historicalContextPlaceHolder').show();}); return false;">Hide ></a></div><!-- end hide -->
+					</div><!-- end hcInfo -->
+					<div class="timelineContainer"><ul id="silo<?php print $vn_silo_id; ?>" class="jcarousel-skin-chronology">
 <?php
-				foreach($va_silo['actions'] as $vn_action_id => $va_action) {
-					$vs_entities = "";
-					if($va_action['entities']){
-						$vs_entities = "<div class='actionRelatedInfo'><span class='actionHeading'>"._t("People").":</span> ".$va_action['entities']."</div>";
+					foreach($va_silo['actions'] as $vn_action_id => $va_action) {
+						$vs_entities = "";
+						if($va_action['entities']){
+							$vs_entities = "<div class='actionRelatedInfo'><span class='actionHeading'>"._t("People").":</span> ".$va_action['entities']."</div>";
+						}
+						
+						print "<li><div class='action'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitle'>".$va_action['label']."</div>".$vs_entities."</div></li>\n"; // format used on load only
 					}
-					
-					print "<li><div class='action'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitle'>".$va_action['label']."</div>".$vs_entities."</div></li>\n"; // format used on load only
-				}
 ?>
-				</ul></div><!-- end timelineContainer -->				
-			</div><!-- end historicalContext -->
-
-<?php
-		}else{
-?>
-			<div class="siloPlaceHolder" id="siloPlaceHolder<?php print $vn_silo_id; ?>">
-				<div class="siloTitle"><a href="#" onClick="jQuery('#siloPlaceHolder<?php print $vn_silo_id; ?>').hide(); jQuery('#siloContainer<?php print $vn_silo_id; ?>').slideDown(); return false;"><?php print $va_silo['name']; ?></a> - <?php print _t("%1 Action%2", $va_silo["num_actions"], (sizeof($va_silo)) ? "s" : ""); ?></div><!-- end siloTitle -->
-			</div><!-- end siloPlaceHolder -->
-			<div class="siloContainer" id="siloContainer<?php print $vn_silo_id; ?>">
-				<div class="siloInfo">
-					<div class="siloTitle"><?php print $va_silo['name']; ?></div><!-- end siloTitle -->
-					<div style="font-weight:bold;"><?php print _t("%1 Action%2", $va_silo["num_actions"], ($va_silo["num_actions"]) ? "s" : ""); ?></div>
-					<div class="hide"><a href="#" onClick="jQuery('#siloMoreInfo<?php print $vn_silo_id; ?>').slideUp(400); jQuery('#siloContainer<?php print $vn_silo_id; ?>').slideUp(400, function() {jQuery('#siloPlaceHolder<?php print $vn_silo_id; ?>').show();}); return false;">Hide ></a></div><!-- end hide -->
-				</div><!-- end siloInfo -->
-				<div class="timelineContainer"><ul id="silo<?php print $vn_silo_id; ?>" class="jcarousel-skin-chronology">
-<?php
-				$t_object = new ca_objects();
-				foreach($va_silo['actions'] as $vn_action_id => $va_action) {
-					$vs_entities = "";
-					if($va_action['entities_array']){
-						$vs_entities = "<div class='actionRelatedInfo'><span class='actionHeading'>"._t("People").":</span> ".implode(", ", array_slice($va_action['entities_array'], 0, 3)).((sizeof($va_action['entities_array']) > 3) ? " (".(sizeof($va_action['entities_array']) - 3)." more)" : "")."</div>";
-					}
-					$vs_more = "";
-					$vs_clipped_label = "";
-					if(strlen($va_action['label']) > 100){
-						$vs_clipped_label = mb_substr($va_action['label'], 0, 80, 'utf-8')."...";
-						$vs_more = "&nbsp;&nbsp;&nbsp;<a href='#' onMouseOver=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'inline');\">More ></a>";
-					}else{
-						$vs_clipped_label = $va_action['label'];
-					}
-					$vs_image_placeholder = "<div class='actionImage'>".$vs_thumbnail."</div>";
-					$vs_image = "";
-					if($va_action['objectMedia']){
-						$vs_image = "<div class='actionImage'>".$va_action['objectMedia']."</div>";
-					}else{
-						$vs_image = $vs_image_placeholder;
-					}
-					
-					
-					print "<li><div class='action' id='actionContainer".$vn_action_id."'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); $(\"#silo".$vn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$vn_action_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
-				}
-?>
-				</ul>
-				<div class="sliderSynchContainer">
-					<div class='synchButton'><a href='#' id='sync<?php print $vn_silo_id; ?>'><img src='<?php print __CA_URL_ROOT__; ?>/app/plugins/Chronology/themes/metabolic/graphics/clock.png' border='0' title='synch timelines'></a></div>
-					<div class="sliderContainer">
-						<div class="slider" id="slider<?php print $vn_silo_id; ?>" style="position: relative;">
-							<div id="sliderPosInfo<?php print $vn_silo_id; ?>" class="sliderInfo"></div>
-						</div><!-- end slider -->
-					</div><!-- end sliderContainer -->
-				</div><!-- end sliderSynchContainer -->
-			</div><!-- end timelineContainer -->
-			</div><!-- end siloContainer -->
-			<div class='siloMoreInfoContainer' id='siloMoreInfo<?php print $vn_silo_id; ?>'></div><!-- end siloMoreInfoContainer -->
-<?php
-		}
-?>
+					</ul></div><!-- end timelineContainer -->				
+				</div><!-- end historicalContext -->
 	
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			var stateCookieJar = jQuery.cookieJar('caChronoCookieJar');
-			if(stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>")){
-				var initIndex = stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>");
-			} else {
-				var initIndex = 1;
+<?php
+			}else{
+?>
+				<div class="siloPlaceHolder" id="siloPlaceHolder<?php print $vn_silo_id; ?>">
+					<div class="siloTitle"><a href="#" onClick="jQuery('#siloPlaceHolder<?php print $vn_silo_id; ?>').hide(); jQuery('#siloContainer<?php print $vn_silo_id; ?>').slideDown(); return false;"><?php print $va_silo['name']; ?></a> - <?php print _t("%1 Action%2", $va_silo["num_actions"], (sizeof($va_silo)) ? "s" : ""); ?></div><!-- end siloTitle -->
+				</div><!-- end siloPlaceHolder -->
+				<div class="siloContainer" id="siloContainer<?php print $vn_silo_id; ?>">
+					<div class="siloInfo">
+						<div class="siloTitle"><?php print $va_silo['name']; ?></div><!-- end siloTitle -->
+						<div style="font-weight:bold;"><?php print _t("%1 Action%2", $va_silo["num_actions"], ($va_silo["num_actions"]) ? "s" : ""); ?></div>
+						<div class="hide"><a href="#" onClick="jQuery('#siloMoreInfo<?php print $vn_silo_id; ?>').slideUp(400); jQuery('#siloContainer<?php print $vn_silo_id; ?>').slideUp(400, function() {jQuery('#siloPlaceHolder<?php print $vn_silo_id; ?>').show();}); return false;">Hide ></a></div><!-- end hide -->
+					</div><!-- end siloInfo -->
+					<div class="timelineContainer"><ul id="silo<?php print $vn_silo_id; ?>" class="jcarousel-skin-chronology">
+<?php
+					$t_object = new ca_objects();
+					foreach($va_silo['actions'] as $vn_action_id => $va_action) {
+						$vs_entities = "";
+						if($va_action['entities_array']){
+							$vs_entities = "<div class='actionRelatedInfo'><span class='actionHeading'>"._t("People").":</span> ".implode(", ", array_slice($va_action['entities_array'], 0, 3)).((sizeof($va_action['entities_array']) > 3) ? " (".(sizeof($va_action['entities_array']) - 3)." more)" : "")."</div>";
+						}
+						$vs_more = "";
+						$vs_clipped_label = "";
+						if(strlen($va_action['label']) > 100){
+							$vs_clipped_label = mb_substr($va_action['label'], 0, 80, 'utf-8')."...";
+							$vs_more = "&nbsp;&nbsp;&nbsp;<a href='#' onMouseOver=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'inline');\">More ></a>";
+						}else{
+							$vs_clipped_label = $va_action['label'];
+						}
+						$vs_image_placeholder = "<div class='actionImage'>".$vs_thumbnail."</div>";
+						$vs_image = "";
+						if($va_action['objectMedia']){
+							$vs_image = "<div class='actionImage'>".$va_action['objectMedia']."</div>";
+						}else{
+							$vs_image = $vs_image_placeholder;
+						}
+						
+						
+						print "<li><div class='action' id='actionContainer".$vn_action_id."'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); $(\"#silo".$vn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$vn_action_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
+					}
+?>
+					</ul>
+					<div class="sliderSynchContainer">
+						<div class='synchButton'><a href='#' id='sync<?php print $vn_silo_id; ?>'><img src='<?php print __CA_URL_ROOT__; ?>/app/plugins/Chronology/themes/metabolic/graphics/clock.png' border='0' title='synch timelines'></a></div>
+						<div class="sliderContainer">
+							<div class="slider" id="slider<?php print $vn_silo_id; ?>" style="position: relative;">
+								<div id="sliderPosInfo<?php print $vn_silo_id; ?>" class="sliderInfo"></div>
+							</div><!-- end slider -->
+						</div><!-- end sliderContainer -->
+					</div><!-- end sliderSynchContainer -->
+				</div><!-- end timelineContainer -->
+				</div><!-- end siloContainer -->
+				<div class='siloMoreInfoContainer' id='siloMoreInfo<?php print $vn_silo_id; ?>'></div><!-- end siloMoreInfoContainer -->
+<?php
 			}
-			jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions'] - 1; ?>,  itemLoadCallback: loadActions, start: initIndex});
-			jQuery('#silo<?php print $vn_silo_id; ?>').data('actionmap', <?php print json_encode($va_silo['actionmap']); ?>);
-			var slider_silo_id = <?php print $vn_silo_id; ?>; 
-			var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
-			jQuery('#sliderPosInfo' + slider_silo_id).html(actionmap[0]['date']);
-			jQuery('#slider<?php print $vn_silo_id; ?>').slider({min:1, max:<?php print ($va_silo["num_actions"] - 5); ?>, animate: 'fast', 
-				start: function(event, ui) {
-					jQuery('#sliderPosInfo' + slider_silo_id).css('display', 'block');
-				},
-				slide: function(event, ui) {
+?>	
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					var stateCookieJar = jQuery.cookieJar('caChronoCookieJar');
+					if(stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>")){
+						var initIndex = stateCookieJar.get("caChronoTimeline<?php print $vn_silo_id; ?>");
+					} else {
+						var initIndex = 1;
+					}
+					jQuery('#silo<?php print $vn_silo_id; ?>').jcarousel({size: <?php print (int)$va_silo['num_actions'] - 1; ?>,  itemLoadCallback: loadActions, start: initIndex});
+					jQuery('#silo<?php print $vn_silo_id; ?>').data('actionmap', <?php print json_encode($va_silo['actionmap']); ?>);
+					var slider_silo_id = <?php print $vn_silo_id; ?>; 
 					var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
-					setTimeout(function() {
-						jQuery('#sliderPosInfo' + slider_silo_id).css('left', jQuery(ui.handle).position().left + 15 + "px").html(actionmap[ui.value]['date']);
-					}, 10);
-				},
-				stop: function(event, ui) { 
-					jQuery('#sliderPosInfo' + slider_silo_id).css('display', 'none');
-					jQuery('#silo' + slider_silo_id).data('jcarousel').scroll(ui.value, jQuery('#silo' + slider_silo_id).data('jcarousel').has(ui.value));
-				}
-			});
-			
-			// Update slider with current position
-			jQuery('#slider<?php print $vn_silo_id; ?>').slider("value", initIndex);
-			
-			jQuery('#sync<?php print $vn_silo_id; ?>').click( 
-				function(e) { 
-					var silo_id = jQuery(this).attr('id').replace(/^sync/, "");
-					var actionmap = jQuery('#silo' + silo_id).data('actionmap');
-					var carousel = jQuery('#silo' + silo_id).data('jcarousel');
-					var i = carousel.last - 2;
-					sync(silo_id, actionmap[i]['timestamp']);
+					jQuery('#sliderPosInfo' + slider_silo_id).html(actionmap[0]['date']);
+					jQuery('#slider<?php print $vn_silo_id; ?>').slider({min:1, max:<?php print ($va_silo["num_actions"] - 5); ?>, animate: 'fast', 
+						start: function(event, ui) {
+							jQuery('#sliderPosInfo' + slider_silo_id).css('display', 'block');
+						},
+						slide: function(event, ui) {
+							var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
+							setTimeout(function() {
+								jQuery('#sliderPosInfo' + slider_silo_id).css('left', jQuery(ui.handle).position().left + 15 + "px").html(actionmap[ui.value]['date']);
+							}, 10);
+						},
+						stop: function(event, ui) { 
+							jQuery('#sliderPosInfo' + slider_silo_id).css('display', 'none');
+							jQuery('#silo' + slider_silo_id).data('jcarousel').scroll(ui.value, jQuery('#silo' + slider_silo_id).data('jcarousel').has(ui.value));
+						}
+					});
 					
-					return false;
-				}
-			);
-		});
-	</script>
+					// Update slider with current position
+					jQuery('#slider<?php print $vn_silo_id; ?>').slider("value", initIndex);
+					
+					jQuery('#sync<?php print $vn_silo_id; ?>').click( 
+						function(e) { 
+							var silo_id = jQuery(this).attr('id').replace(/^sync/, "");
+							var actionmap = jQuery('#silo' + silo_id).data('actionmap');
+							var carousel = jQuery('#silo' + silo_id).data('jcarousel');
+							var i = carousel.last - 2;
+							sync(silo_id, actionmap[i]['timestamp']);
+							
+							return false;
+						}
+					);
+				});
+			</script>
 <?php		
+		}
 	}
 ?>
 </div><!-- end chronology -->
@@ -241,7 +242,7 @@
 			
 			if ((silo_id != <?php print (int)$vn_historical_context_silo_id; ?>)) {				
 				var actionmap = jQuery('#silo' + silo_id).data('actionmap');
-				if (actionmap) { 
+				if (actionmap && actionmap[carousel.first + 1]) { 
 					var silotime = actionmap[carousel.first + 1]['timestamp'];
 					
 					if (silotime && (state != 'init')) {

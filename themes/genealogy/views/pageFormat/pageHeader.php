@@ -20,23 +20,17 @@
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/js/DV/plain-datauri.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/js/DV/plain.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href='http://fonts.googleapis.com/css?family=Vollkorn' rel='stylesheet' type='text/css'>
-	<script type="text/javascript" src="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery.corner.js"></script>
 	<!--<![endif]-->
 	<!--[if lte IE 7]>
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/viewer.css" media="screen" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/plain.css" media="screen" rel="stylesheet" type="text/css" />
 	<![endif]-->
 		<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-tileviewer/jquery.tileviewer.css" type="text/css" media="screen" />
+	
 <?php
 	print JavascriptLoadManager::getLoadHTML($this->request->getBaseUrlPath());
 ?>
-	<script type="text/javascript">
-		 jQuery(document).ready(function() {
-			jQuery('#quickSearch').searchlight('<?php print $this->request->getBaseUrlPath(); ?>/index.php/Search/lookup', {showIcons: false, searchDelay: 100, minimumCharacters: 3, limitPerCategory: 3});
-		});
-		// initialize CA Utils
-			caUI.initUtils();
-	</script>
+
 </head>
 <body>
 
@@ -48,6 +42,8 @@
 	// get last search ('basic_search' is the find type used by the SearchController)
 	$o_result_context = new ResultContext($this->request, 'ca_objects', 'basic_search');
 	$vs_search = $o_result_context->getSearchExpression();
+	
+		if($this->request->isLoggedIn()){
 ?>
 			<div id="nav">
 				<div id="search"><form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get">
@@ -141,3 +137,9 @@
 ?>
 			</div><!-- end nav -->
 			<div id="pageArea">
+<?php
+		} else {
+			print "<div id='pageArea' class='login'>";
+		}
+?>
+			

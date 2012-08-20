@@ -186,6 +186,9 @@
 				}
 				
 				if ($vs_limit_facet_name) {
+					if (($va_configured_type_restrictions = $this->request->config->getList($this->ops_tablename.'_detail_browse_type_restrictions')) && is_array($va_configured_type_restrictions)) {
+						$this->opo_browse->setTypeRestrictions($va_configured_type_restrictions, array('includeChildren' => false));
+					}
 					$this->opo_browse->addCriteria($vs_limit_facet_name, array($vn_item_id));
 					$this->opo_browse->execute(array('checkAccess' => $va_access_values));
 					$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', $this->opo_browse->getBrowseID());
@@ -713,7 +716,7 @@
 				}
  			} else {
 				foreach(array('ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections') as $vs_rel_table) {
-					if ($vs_rel_table == $vs_table) { continue; }
+					//if ($vs_rel_table == $vs_table) { continue; }
 					$t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true);
 					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
 					

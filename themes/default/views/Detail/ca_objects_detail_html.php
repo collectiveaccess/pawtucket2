@@ -103,16 +103,15 @@
 			if(sizeof($va_children) > 0){
 				print "<div class='unit'><h2>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</h2> ";
 				$i = 0;
-				$va_children_ids = array_values($t_object->get("ca_objects.children.object_id", array('returnAsArray' => 1, 'checkAccess' => $va_access_values)));
-				foreach($va_children as $vn_i => $vs_name){
+				foreach($va_children as $va_child){
 					# only show the first 5 and have a more link
 					if($i == 5){
 						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>["._t("More")."]</a></div><!-- end moreChildrenLink -->";
 						print "<div id='moreChildren' style='display:none;'>";
 					}
-					print "<div>".caNavLink($this->request, $vs_name, '', 'Detail', 'Object', 'Show', array('object_id' => $va_children_ids[$vn_i]))."</div>";
+					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
 					$i++;
-					if(($i >= 5) && ($i == sizeof($va_children))){
+					if($i == sizeof($va_children)){
 						print "</div><!-- end moreChildren -->";
 					}
 				}
@@ -259,51 +258,70 @@
 			}
 ?>
 			</div><!-- end objDetailImage -->
-			<div id="objDetailImageNav">
-				<div style="float:right;">
-					<!-- bookmark link BEGIN -->
-<?php
-					if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
-
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Bookmark item"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-						}else{
-							print caNavLink($this->request, _t("+ Bookmark item"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-						}
-					}
-?>					
-					<!-- bookmark link END -->
-<?php
-					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
-						}else{
-							print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
-						}
-					}
-
-					# --- output download link? 
-					if(caObjectsDisplayDownloadLink($this->request)){
-						print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1));
-					}
-
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
-?>
-				</div>			
-			</div><!-- end objDetailImageNav -->
 <?php
 		}
+?>
+		<div id="objDetailToolbar">
+<?php
+			
+			if (!$this->request->config->get('dont_allow_registration_and_login')) {
+				if(!$this->request->isLoggedIn()){
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/comment.png' border='0' title='"._t("Login/register to rank, tag and comment on this item.")."'>", "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id));
+				}
+			}
+			print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/email.png' border='0' title='"._t("Email this record")."'>", "", "Share", "Share", "objectForm", array('object_id' => $vn_object_id));
+			if ($this->request->config->get('show_facebook_share')) {
+				print "<a href='http://www.facebook.com/sharer.php?u=".urlencode($this->request->config->get("site_host").caNavUrl($this->request, "Detail", "Object", "Show", array("object_id" => $vn_object_id)))."&t=".urlencode($vs_title)."'><img src='".$this->request->getThemeUrlPath()."/graphics/icons/facebook.png' border='0' title='"._t("Share on Facebook")."'></a>";	
+			}
+			# --- bookmark link
+			if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
+
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='"._t("Bookmark Item")."'>", '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+				}else{
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/bookmark.png' border='0' title='"._t("Bookmark Item")."'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+				}
+			}
+			if($t_rep && $t_rep->getPrimaryKey()){
+				# --- add to lightbox link
+				if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+					if($this->request->isLoggedIn()){
+						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='"._t("Add to Lightbox")."'>", '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+					}else{
+						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/lightbox.png' border='0' title='"._t("Add to Lightbox")."'>", '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+					}
+				}
+				# --- output download link? 
+				if(caObjectsDisplayDownloadLink($this->request)){
+					# -- get version to download configured in media_display.conf
+					$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+					$vs_download_version = $va_download_display_info['display_version'];
+					print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/download.png' border='0' title='"._t("Download Media")."'>", '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => $vs_download_version));
+				}
+				# --- zoom link
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' ><img src='".$this->request->getThemeUrlPath()."/graphics/icons/zoom.png' border='0' title='".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."'></a>";
+
+			}
+?>
+		</div><!-- end objDetailToolbar -->
+<?php
 if (!$this->request->config->get('dont_allow_registration_and_login')) {
+		$va_tags = $this->getVar("tags_array");
+		$va_comments = $this->getVar("comments");
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData">
 <?php
+			if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
+?>
+				<div class="divide" style="margin:12px 0px 10px 0px;"><!-- empty --></div>
+<?php			
+			}
 			if($this->getVar("ranking")){
 ?>
 				<h2 id="ranking"><?php print _t("Average User Ranking"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/user_ranking_<?php print $this->getVar("ranking"); ?>.gif" width="104" height="15" border="0" style="margin-left: 20px;"></h2>
 <?php
 			}
-			$va_tags = $this->getVar("tags_array");
 			if(is_array($va_tags) && sizeof($va_tags) > 0){
 				$va_tag_links = array();
 				foreach($va_tags as $vs_tag){
@@ -316,7 +334,6 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				</div>
 <?php
 			}
-			$va_comments = $this->getVar("comments");
 			if(is_array($va_comments) && (sizeof($va_comments) > 0)){
 ?>
 				<h2><div id="numComments">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div><?php print _t("User Comments"); ?></h2>
@@ -350,13 +367,11 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 					$vs_login_message = _t("Login/register to be the first to rank, tag and comment on this object!");
 				}
 			}
-			if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
-?>
-				<div class="divide" style="margin:12px 0px 10px 0px;"><!-- empty --></div>
-<?php			
-			}
+
 		if($this->request->isLoggedIn()){
 ?>
+
+			<div class="divide" style="margin:0px 0px 10px 0px;"><!-- empty --></div>
 			<h2><?php print _t("Add your rank, tags and comment"); ?></h2>
 			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id)); ?>" name="comment" enctype='multipart/form-data'>
 				<div class="formLabel">Rank
@@ -380,7 +395,9 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 <?php
 		}else{
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
-				print "<p>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to rank, tag and comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
+				if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
+					print "<p>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to rank, tag and comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</p>";
+				}
 			}
 		}
 ?>		
@@ -394,6 +411,14 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 	require_once(__CA_LIB_DIR__.'/core/Parsers/COinS.php');
 	
 	print COinS::getTags($t_object);
-	
+	# -- metatags for facebook sharing
+	MetaTagManager::addMeta('og:title', $vs_title);
+	if($t_rep && $t_rep->getPrimaryKey() && $vs_media_url = $t_rep->getMediaUrl('media', 'thumbnail')){
+		MetaTagManager::addMeta('og:image', $vs_media_url);
+		MetaTagManager::addLink('image_src', $vs_media_url);
+	}
+	if($vs_description_text){
+		MetaTagManager::addMeta('og:description', $vs_description_text);
+	}
 	
 ?>

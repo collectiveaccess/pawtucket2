@@ -1,50 +1,18 @@
-#/*** Button styles ***/
-.caDeleteItemButton {
-	float:right;
-	border:none;
-}
-.caDeleteLabelButton {
-	border:none;
-}
-.caAddItemButton a{
-	border:none;
-	margin-bottom:15px;
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-	color: #333;
-	font-size: 14px;
-}
-.caListItem {
-	width:100%;
-}
-
-.labelInfo {
-	width:100%;
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-}
-.labelInfo span{
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-}
-.labelInfo a {
-	color: #333;
-}
-.bundleContainer {
-	width:850px;
-}
+/*** Button styles ***/
 div.button{
 	padding-left:10px;
-	font-size: 12px;
+	font-size: 11px;
+	margin-bottom: 5px;
 }
 div.button a{
-	color: #666;
+	color: #134959;
 	text-decoration: none;
-	font-size: 12px;
+	font-size: 11px;
 	font-weight:bold;
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-	padding-top:3px;
 }
 
 div.button a:hover{
-	color: #8B2D16;;
+	color: #1FAA99;
 }
 div.button img{
 	vertical-align:middle;
@@ -103,7 +71,7 @@ a.form-button span, span.form-button button, span.form-button input, del.form-bu
 	display:inline-block;
 	line-height:1;
     letter-spacing:0 !important;
-    font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif !important;
+    font-family:"Arial" !important;
     font-size:12px !important;
     font-style:normal;    
     background-color:transparent;
@@ -204,7 +172,7 @@ div.form-header-button {
 	float: right;
 	text-align: center;
 	margin-left: 10px;
-	background-color: #e7e7e7;
+	background-color: #eeeeee;
 	padding: 3px;
 	-moz-border-radius-bottomleft: 8px; 
 	-webkit-border-bottom-left-radius: 8px;
@@ -233,25 +201,10 @@ img.form-button-left{  /** used to align images to the left **/
 /*** FORM ELEMENTS ***/
 input[type="text"], input[type="textarea"], textarea,  input[type="password"] {
 	font-size:12px;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, sans-serif;
 	border:1px solid #ddd;
 	padding:3px;
 	font-weight:normal;
-  border: 1px inset #CDD1D3;
- min-height:24px;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  -ms-border-radius: 15px;
-  -o-border-radius: 15px;
-  border-radius: 15px;
-  padding: 2px 10px 2px 10px;
- background-color: #f7f6ee;
-  margin-right: 10px;
-  -webkit-appearance: textfield;
-  box-sizing: border-box;
-  -webkit-rtl-ordering: logical;
--webkit-user-select: text;
-cursor: auto;
 }
 
 textarea:focus{
@@ -306,15 +259,18 @@ input.lookupBg, textarea.lookupBg {
 /*** FORMS ***/
 
 .sectionBox{
-	margin: 0px 0px 0px 0px;
-	padding-top: 5px;
-	margin-bottom: 10px;
-
+	background-color: #e6e6e6;
+	border: 1px solid #E2E2E2;
+	padding:10px;
+	margin:0px 0px 20px 0px;
+	border-radius: 10px;
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px;
 }
 
 /* Style for labels on standard form fields (ie. no error) */
 .formLabel {
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-family: Helvetica, sans-serif;
 	font-size:11px;
 	color: #333333;
 	margin-bottom: 5px;
@@ -322,33 +278,23 @@ input.lookupBg, textarea.lookupBg {
 	text-align: left;
 }
 .bundleLabel {
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-family: Helvetica, sans-serif;
 	font-size:13px;
 	color: #333;
-	margin-bottom: 10px;
-	padding: 2px;
+	margin: 5px 0px 10px 0px;
+	padding-top: 2px;
 	font-weight: bold;
 	text-align: left;
-	width: 100%;
-	border-bottom: 1px dotted #777;
+	border-bottom:1px dotted #FEFEFE;
+}
 
-	-moz-border-radius-topleft: 8px; 
-	-webkit-border-top-left-radius: 8px;
-	-moz-border-radius-topright: 8px; 
-	-webkit-border-top-right-radius: 8px;
-}
-.formLabelText {
-	padding-left:10px;
-	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-	font-size: 14px;
-}
 .settingsBundle {
 	padding: 10px;
 }
 
 /* Style for labels on form fields where an error has occurred */
 .formLabelError {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, sans-serif;
 	font-size:10px;
 	color: #cc0000;
 	margin-bottom: 5px;
@@ -356,22 +302,12 @@ input.lookupBg, textarea.lookupBg {
 }
 
 .bundleLabelError {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-family: Helvetica, sans-serif;
 	font-size:11px;
 	color: #cc0000;
 	margin-bottom: 5px;
 	text-align: left;
 }
-.textContent p{
-	font-size: 1.125em;
-  	line-height: 1.875;
-  	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
-  	font-weight: 300;
-  	color: #333;
-  	position: relative;
-}
-
-
 
 
 /*
@@ -1055,4 +991,3 @@ button.ui-button::-moz-focus-inner { border: 0; padding: 0; } /* reset extra pad
 .ui-daterangepicker-arrows .ui-daterangepicker-next:focus {
 	padding: 0;
 }
-

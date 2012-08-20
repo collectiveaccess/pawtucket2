@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2011 Whirl-i-Gig
+ * Copyright 2006-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -176,7 +176,7 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 	public function divineFileFormat($filepath) {
 		$ID3 = new getid3();
 		$info = $ID3->analyze($filepath);
-		if ($info['fileformat'] == 'riff') {
+		if (($info['fileformat'] == 'riff') && (!isset($info['video']))) {
 			if (isset($info['audio']['dataformat']) && ($info['audio']['dataformat'] == 'wav')) {
 				$info['mime_type'] = 'audio/x-wav';
 			}
@@ -528,9 +528,9 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				# Do conversion
 				#
 				if ($mimetype == 'audio/ogg') {
-					exec(escapeshellcmd($this->ops_path_to_ffmpeg." -f ".$this->info["IMPORT"][$this->properties["mimetype"]]." -i \"".$this->filepath."\"  -acodec libvorbis -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels."  -y \"".$filepath.".".$ext."\"")." 2>&1", $va_output, $vn_return);
+					exec($this->ops_path_to_ffmpeg." -f ".$this->info["IMPORT"][$this->properties["mimetype"]]." -i ".caEscapeShellArg($this->filepath)." -acodec libvorbis -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels."  -y ".caEscapeShellArg($filepath.".".$ext)." 2>&1", $va_output, $vn_return);
 				} else {
-					exec(escapeshellcmd($this->ops_path_to_ffmpeg." -f ".$this->info["IMPORT"][$this->properties["mimetype"]]." -i \"".$this->filepath."\" -f ".$this->info["EXPORT"][$mimetype]." -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels."  -y \"".$filepath.".".$ext."\"")." 2>&1", $va_output, $vn_return);
+					exec($this->ops_path_to_ffmpeg." -f ".$this->info["IMPORT"][$this->properties["mimetype"]]." -i ".caEscapeShellArg($this->filepath)." -f ".$this->info["EXPORT"][$mimetype]." -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels."  -y ".caEscapeShellArg($filepath.".".$ext)." 2>&1", $va_output, $vn_return);
 				}
 				if ($vn_return != 0) {
 					@unlink($filepath.".".$ext);
@@ -543,7 +543,7 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 						// add intro
 						$vs_tmp_filename = tempnam(caGetTempDirPath(), "audio");
 						if ($vs_intro_filepath) {
-							exec(escapeshellcmd($this->ops_path_to_ffmpeg." -i '".$vs_intro_filepath."' -f mp3 -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels." -y '".$vs_tmp_filename."'"), $va_output, $vn_return);
+							exec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($vs_intro_filepath)." -f mp3 -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels." -y ".caEscapeShellArg($vs_tmp_filename), $va_output, $vn_return);
 							if ($vn_return != 0) {
 								@unlink($filepath.".".$ext);
 								$this->postError(1610, _t("Error converting intro to %1 [%2]: %3", $this->typenames[$mimetype], $mimetype, join("; ", $va_output)), "WLPlugAudio->write()");
@@ -559,7 +559,7 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 						fclose($r_mp3fp);
 						if ($vs_outro_filepath) {
 							$vs_tmp_outro_filename = tempnam(caGetTempDirPath(), "audio");
-							exec(escapeshellcmd($this->ops_path_to_ffmpeg." -i '".$vs_outro_filepath."' -f mp3 -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels." -y '".$vs_tmp_outro_filename."'"), $va_output, $vn_return);
+							exec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($vs_outro_filepath)." -f mp3 -ab ".$vn_output_bitrate." -ar ".$vn_sample_frequency." -ac ".$vn_channels." -y ".caEscapeShellArg($vs_tmp_outro_filename), $va_output, $vn_return);
 							if ($vn_return != 0) {
 								@unlink($filepath.".".$ext);
 								$this->postError(1610, _t("Error converting outro to %1 [%2]: %3", $this->typenames[$mimetype], $mimetype, join("; ", $va_output)), "WLPlugAudio->write()");
@@ -605,32 +605,7 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				}
 			} else {
 				# use default media icons
-				if (file_exists($o_config->get("default_media_icons"))) {
-					$o_icon_info = Configuration::load($o_config->get("default_media_icons"));
-					if ($va_icon_info = $o_icon_info->getAssoc($this->handle["mime_type"])) {
-						$vs_icon_path = $o_icon_info->get("icon_folder_path");
-						
-						$vs_version = $this->get("version");
-						if (!$va_icon_info[$vs_version]) { $vs_version = 'small'; }
-						if (!copy($vs_icon_path."/".trim($va_icon_info[$vs_version]),$filepath.".".$ext)) {
-							$this->postError(1610, _t("Can't copy icon file for [%1] from %2 to %3", $vs_version, $vs_icon_path."/".trim($va_icon_info[$this->get("version")]), $filepath.".".$ext), "WLPlugAudio->write()");
-							return false;
-						}
-
-						// set
-						$va_old_properties = $this->properties;
-						$this->properties = array();
-						$this->properties["width"] = $va_old_properties["version_width"];
-						$this->properties["height"] = $va_old_properties["version_height"];
-						$this->properties["quality"] = $va_old_properties["quality"];
-					} else {
-						$this->postError(1610, _t("No icon available for media type '%1' (system misconfiguration)", $this->handle["mime_type"]), "WLPlugAudio->write()");
-						return false;
-					}
-				} else {
-					$this->postError(1610, _t("No icons available (system misconfiguration)"), "WLPlugAudio->write()");
-					return false;
-				}
+				return __CA_MEDIA_AUDIO_DEFAULT_ICON__;
 			}
 		}
 
@@ -681,7 +656,7 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 		
 		$vn_duration = $vn_end - $vn_start;
 		
-		exec(escapeshellcmd($this->ops_path_to_ffmpeg." -i '".$this->filepath."' -f mp3 -t {$vn_duration}  -y -ss {$vn_start} '{$ps_filepath}'"), $va_output, $vn_return);
+		exec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($this->filepath)." -f mp3 -t {$vn_duration}  -y -ss {$vn_start} ".caEscapeShellArg($ps_filepath), $va_output, $vn_return);
 		if ($vn_return != 0) {
 			@unlink($filepath.".".$ext);
 			$this->postError(1610, _t("Error extracting clip from %1 to %2: %3", $ps_start, $ps_end, join("; ", $va_output)), "WLPlugAudio->writeClip()");
@@ -766,9 +741,10 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 
 				switch($pa_options["player"]) {
 					case 'small':
+						JavascriptLoadManager::register("swfobject");
 						ob_start();
-						$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 165;
-						$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 38;
+						$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 165;
+						$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 38;
 ?>
 						<div style='width: {$vn_width}px; height: {$vn_height}px;'>
 							<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,0,0" width="<?php print $vn_viewer_width; ?>" height="<?php print $vn_viewer_height; ?>" id="<?php print $vs_id; ?>" align="">
@@ -785,9 +761,10 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 					case 'text':
 						return "<a href='$ps_url'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "Listen to MP3")."</a>";
 						break;
-					default:
-						$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 400;
-						$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 95;
+					case 'jplayer':
+						JavascriptLoadManager::register("jplayer");
+						$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+						$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 						ob_start();
 ?>
 			<div style="width: <?php print $vn_width; ?>px; height: <?php print $vn_height; ?>px;">
@@ -837,6 +814,24 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 <?php
 						return ob_get_clean();
 						break;
+					default:
+						JavascriptLoadManager::register("mediaelement");
+						
+						$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+						$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
+						ob_start();
+?>
+					<div class="caAudioPlayer">
+						<audio id="<?php print $vs_id; ?>" src="<?php print $ps_url; ?>" type="audio/mp3" controls="controls"></audio>
+					</div>	
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							jQuery('#<?php print $vs_id; ?>').mediaelementplayer({showTimecodeFrameCount: true, framesPerSecond: 100, audioWidth: <?php print (int)$vn_width; ?>, audioHeight: <?php print (int)$vn_height; ?>  });
+						});
+					</script>
+<?php
+						return ob_get_clean();
+						break;
 				}
 				break;
 				# ------------------------------------------------
@@ -848,8 +843,8 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				} else {
 					ob_start();
 					
-					$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 400;
-					$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 95;
+					$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+					$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 ?>
 					<div style="width: {$vn_width}px; height: {$vn_height}px;">
 						<table border="0" cellpadding="0" cellspacing="0">
@@ -874,8 +869,8 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				} else {
 					ob_start();
 					
-					$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 400;
-					$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 95;
+					$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+					$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 ?>
 					<div style="width: {$vn_width}px; height: {$vn_height}px;">
 						<table border="0" cellpadding="0" cellspacing="0">
@@ -900,8 +895,8 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				} else {
 					ob_start();
 					
-					$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 400;
-					$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 95;
+					$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+					$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 ?>
 					<div style="width: {$vn_width}px; height: {$vn_height}px;">
 						<table border="0" cellpadding="0" cellspacing="0">
@@ -925,8 +920,8 @@ class WLPlugMediaAudio Extends WLPlug Implements IWLPlugMedia {
 				$vs_flash_vars = 		$pa_options["viewer_parameters"];
 				$viewer_base_url =		$pa_options["viewer_base_url"];
 
-				$vn_width = ($pa_properties["viewer_width"] > 0) ? $pa_properties["viewer_width"] : 400;
-				$vn_height = ($pa_properties["viewer_height"] > 0) ? $pa_properties["viewer_height"] : 95;
+				$vn_width = ($pa_options["viewer_width"] > 0) ? $pa_options["viewer_width"] : 400;
+				$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 				
 				$vs_data_url =			$pa_options["data_url"];
 				$vs_poster_frame_url =	$pa_options["poster_frame_url"];

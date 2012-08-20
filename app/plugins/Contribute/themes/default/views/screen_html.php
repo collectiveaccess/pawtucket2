@@ -39,8 +39,9 @@
 		''
 	);
 ?>
+	<H1><?php print _t("Contribute"); ?></H1>
 	<div class='textContent'>
-		<p>Please provide the following information to contribute your media to the Metabolic Studio archive.  Required fields are marked with an *.<br/>When you have finished your submission, place the hard copy in the designated physical archive space.  If you need further assistance, please <?php print caNavLink($this->request, _t("contact"), '', '', 'About', 'contact')?> the studio archivists.</p>
+		<p><?php print _t("Please provide the following information to contribute your content to the archive.  Required fields are marked with an *."); ?></p>
 	</div>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -73,7 +74,7 @@
 			}
 			
 			print "<div style='height:15px; width: 100%;'></div>";
-			print "<div style='float:right;'>{$vs_control_box}</div>";
+			print "<div>{$vs_control_box}</div>";
 ?>
 			<input type='hidden' name='<?php print $t_subject->primaryKey(); ?>' value='0'/>
 			<input type='hidden' name='ui' value='<?php print ContributePlugin::$s_ui_code; ?>'/>

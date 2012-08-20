@@ -28,6 +28,10 @@
  
 	JavascriptLoadManager::register("cycle");
 	$t_object = new ca_objects();
+		$t_featured = new ca_sets();
+	$featured_set = $t_featured->load(array('set_code' => 'splash'));
+	$carousel_ids = $t_featured->getItemRowIDs(array('shuffle' => true));
+	$qr_set = ca_objects::createResultSet(array_keys($carousel_ids));
 	
 	$va_item_ids = $this->getVar('featured_content_slideshow_id_list');
 	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"));
@@ -47,21 +51,23 @@
 
 	<div id="hpFeatured1">
 <?php
-	$va_random_items = $t_object->getRandomItems(16, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictToTypes' => array('photography')));
-	$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), array('splashthumb'), array("checkAccess" => $va_access_values));
 $v_i = 0;
-	foreach($va_random_items as $vn_object_id => $va_object_info) {
-			$va_object_info['title'] = $va_labels[$vn_object_id];
-			$va_object_info['media'] = $va_media[$vn_object_id];
-			$va_random_items[$vn_object_id] = $va_object_info;
-			print "<div class='figureDiv'><div class='figure'";
+$m_i = 0;
+	while($qr_set->nextHit()) {
+
+		$object_media = $qr_set->get('ca_object_representations.media.splashthumb');
+		$vn_object_id = $qr_set->get('ca_objects.object_id');
+		print "<div class='figureDiv'><div class='figure'";
 			if ($v_i== 4){
 				print "style='margin-right:0px'";
 			}
-			print ">".caNavLink($this->request, $va_media[$va_object_info['object_id']]["tags"]["splashthumb"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+			print ">".caNavLink($this->request, $object_media, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 			$v_i ++;
+			$m_i ++;
 			if ($v_i > 3) {$v_i = 0;}
+			if ($m_i == 16) {break;}
 	}
+
 
 ?>
 	</div>

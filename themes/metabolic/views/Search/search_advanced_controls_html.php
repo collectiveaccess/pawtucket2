@@ -55,6 +55,9 @@ if (!$this->request->isAjax()) {
 }
 
  if ($va_form_fields && is_array($va_form_fields) && sizeof($va_form_fields)) {
+ if(($this->getVar('num_hits') == 0) && ($this->getVar('search'))) {
+ 	print "<p class='notificationMessage'>Your search found no results</p>";
+ };
 ?>
 		<div id="caAdvancedSearchFormBorder"><div id="caAdvancedSearchForm">
 		<H1><?php print _t("Advanced Search"); ?></H1>

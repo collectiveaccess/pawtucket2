@@ -1,7 +1,6 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<?php print $this->request->config->get('page_footer_text'); ?> 
-			[<?php print $this->request->session->elapsedTime(4).'s'; ?>/<?php print caGetMemoryUsage(); ?>]
+			
 		</div><!-- end footer -->
 		</div><!-- end pageArea -->
 		

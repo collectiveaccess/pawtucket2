@@ -174,7 +174,7 @@
  			# --- get the 12 most recently added objects to display
 			$va_recently_added_items = $t_object->getRecentlyAddedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
  			$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
- 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('small', 'thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
+ 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('small', 'icon','thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
 			foreach($va_recently_added_items as $vn_object_id => $va_object_info){
 				$va_object_info['title'] = $va_labels[$vn_object_id];
 				$va_object_info['media'] = $va_media[$vn_object_id];
@@ -183,9 +183,10 @@
 			$this->view->setVar('recently_added_objects', $va_recently_added_objects);
 			
 			if(is_array($va_recently_added_objects) && (sizeof($va_recently_added_objects) > 0)){
-				$va_object_info = array_shift($va_recently_added_objects);
+				$va_object_info = array_shift($va_recently_added_objects); 
 				$this->view->setVar('recently_added_id', $va_object_info['object_id']);
 				$this->view->setVar('recently_added_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
+				$this->view->setVar('recently_added_icon', $va_media[$va_object_info['object_id']]["tags"]["icon"]);
 				$this->view->setVar('recently_added_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
 				$this->view->setVar('recently_added_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
 				$this->view->setVar('recently_added_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);

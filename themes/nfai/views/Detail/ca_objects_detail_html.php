@@ -65,8 +65,19 @@
 <?php
 			}
 			# --- identifier
-			if($t_object->get('idno')){
+			if ($alt_id = $t_object->get('ca_objects.alternate_idnos', array('convertCodesToDisplayText' => true, 'template' => "^id_value (^id_source)", 'delimiter' => '<br/>'))) {	
+				print "<div class='unit'><b>"._t("Identifier")."</b><br/> ".$alt_id."</div><!-- end unit -->"; 
+			} elseif ($t_object->get('idno')){
 				print "<div class='unit'><b>"._t("Identifier")."</b><br/> ".$t_object->get('idno')."</div><!-- end unit -->";
+			}
+			if($va_repository = $t_object->get('ca_occurrences.preferred_labels', array('returnAsArray' => true))){
+				print "<div class='unit'><b>"._t("Repository")."</b><br/> ";
+				foreach($va_repository as $va_term => $va_metadata) {
+					
+						print caNavLink($this->request, $va_metadata, '', '', 'Search', 'Index', array('search' => urlencode($va_metadata)))."<br/>";
+					
+				}
+				print "</div>";
 			}
 			if($va_hierarchy = $t_object->get('ca_objects.hierarchy.preferred_labels', array('returnAsArray' => true))){
 				$va_hierarchy_id = $t_object->get('ca_objects.hierarchy.object_id', array('returnAsArray' => true));
@@ -83,27 +94,44 @@
 				}
 				print "</div><!-- end unit -->";
 			}
-			if($va_repository = $t_object->get('ca_occurrences.preferred_labels', array('returnAsArray' => true))){
-				print "<div class='unit'><b>"._t("Repository")."</b><br/> ";
-				foreach($va_repository as $va_term => $va_metadata) {
+			# --- child hierarchy info
+			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
+			if(sizeof($va_children) > 0){
+				print "<div class='unit'><b>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</b> ";
+				$i = 0;
+				foreach($va_children as $va_child){
+				$child_idno = $va_child['object_id'];
+					$the_child = new ca_objects($child_idno);
+					$child_type = $the_child->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+
+					# only show the first 5 and have a more link
+					if($i == 5){
+						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>["._t("More")."]</a></div><!-- end moreChildrenLink -->";
+						print "<div id='moreChildren' style='display:none;'>";
+					}
 					
-						print caNavLink($this->request, $va_metadata, '', '', 'Search', 'Index', array('search' => urlencode($va_metadata)))."<br/>";
-					
+					print "<div>".caNavLink($this->request, $va_child['name']." (".$child_type.") ", '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
+					$i++;
+					if(($i >= 5) && ($i == sizeof($va_children))){
+						print "</div><!-- end moreChildren -->";
+					}
 				}
-				print "</div>";
-			}
-			if($va_alttitle = $t_object->get('ca_objects.nonpreferred_labels')){
+				print "</div><!-- end unit -->";
+			}			
+
+			if($va_alttitle = $t_object->get('ca_objects.nonpreferred_labels', array('convertCodesToDisplayText' => true, 'template' => "^nonpreferred_labels.name (^type_id)", 'delimiter' => '<br/>'))){
 				print "<div class='unit'><b>"._t("Alternate Title")."</b><br/> ".$va_alttitle."</div><!-- end unit -->";
 			}
+			#print $t_object->get('ca_objects.nonpreferred_labels.type_id', array('convertCodesToDisplayText' => true));
 			if($t_object->get("ca_objects.date.dates_value")) {
 				$va_date = $t_object->get("ca_objects.date", array('convertCodesToDisplayText' => true, 'template' => "^dates_value (^dc_dates_types)", 'delimiter' => '<br/>'));
 				print "<div class='unit'><b>"._t("Date")."</b><br/> ".$va_date."</div><!-- end unit -->";
 			}
 			if($va_summary = $t_object->get('ca_objects.summary')){
-				print "<div class='unit'><b>"._t("Summary")."</b><br/> ".$va_summary."</div><!-- end unit -->";
+				print "<div class='unit' style='margin-top:15px;'><b>"._t("Summary")."</b><br/> ".$va_summary."</div><!-- end unit -->";
 			}
 			# --- entities
-			$va_entities = $t_object->get("ca_entities", array('restrict_to_relationship_types' => array('actor', 'adaptor', 'arranger', 'artist', 'commentator', 'conductor', 'creator', 'dancer', 'donor', 'editor', 'engineer', 'funder', 'illustrator', 'instrumentalist', 'interviewee', 'interviewer', 'librettist', 'lyricist', 'moderator', 'musician', 'narrator', 'originator', 'other', 'performer', 'photographer', 'producer', 'production_personnel', 'publisher', 'puppeteer', 'recordist', 'scribe', 'speaker', 'storyteller', 'transcriber', 'translator', 'videographer', 'vocalist'), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+			$va_entities = $t_object->get("ca_entities", array('restrict_to_relationship_types' => array('actor', 'adaptor', 'arranger', 'artist', 'commentator', 'conductor', 'creator', 'collector', 'contributor', 'dancer', 'donor', 'editor', 'engineer', 'funder', 'illustrator', 'instrumentalist', 'interviewee', 'interviewer', 'librettist', 'lyricist', 'moderator', 'musician', 'narrator', 'originator', 'other', 'performer', 'photographer', 'producer', 'production_personnel', 'publisher', 'puppeteer', 'recordist', 'scribe', 'speaker', 'storyteller', 'transcriber', 'translator', 'videographer', 'vocalist'), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
 			if(sizeof($va_entities) > 0){	
 ?>
 				<div class="unit"><b><?php print _t("Creator and/or Contributor") ?></b><br/>
@@ -123,15 +151,16 @@
 				</div><!-- end unit -->
 <?php
 			}
-			if($t_object->get("ca_objects.dacs_element_note.Dacs_Detail")) {
+			if(($t_object->get("ca_objects.dacs_element_note.aacs_dropdown", array('convertCodesToDisplayText' => true)) != 'General Note') && ($t_object->get("ca_objects.dacs_element_note.Dacs_Detail"))) {
 				$va_dacs = $t_object->get("ca_objects.dacs_element_note", array('convertCodesToDisplayText' => true, 'template' => "<b>^aacs_dropdown</b><br/>^Dacs_Detail", 'delimiter' => '<br/><br/>'));
 				print "<div class='unit'>".$va_dacs."</div><!-- end unit -->";
-			}			
-			if($va_extentnum = $t_object->get('ca_objects.extent.extent_number')){
-				print "<div class='unit'><b>"._t("Extent: Number")."</b><br/> ".$va_extentnum."</div><!-- end unit -->";
 			}
-			if($va_extenttype = $t_object->get('ca_objects.extent.extent_type')){
-				print "<div class='unit'><b>"._t("Extent: Type")."</b><br/> ".$va_extenttype."</div><!-- end unit -->";
+			if($va_finding_url = $t_object->get('ca_objects.finding_aid_url', array('delimiter' => '<br/>'))){
+				print "<div class='unit'><b>"._t('Finding Aid URL')." </b><br/><a href='".$va_finding_url."' target='_blank'>".$va_finding_url."</a></div><!-- end unit -->";
+			}		
+			if($t_object->get("ca_objects.extent_nfai.extent_number")) {
+				$va_extentnum = $t_object->get("ca_objects.extent_nfai", array( 'template' => "^extent_number (^extent_type)", 'delimiter' => '<br/>'));
+				print "<div class='unit'><b>"._t("Extent")."</b><br/> ".$va_extentnum."</div><!-- end unit -->";
 			}
 			if($va_adminbiohist = $t_object->get('ca_objects.adminbiohist')){
 				print "<div class='unit'><b>"._t("Administrative/Biographical History Element")."</b><br/> ".$va_adminbiohist."</div><!-- end unit -->";
@@ -148,14 +177,8 @@
 			if($va_copyright_notice = $t_object->get('ca_objects.copyright_notice')){
 				print "<div class='unit'><b>"._t("Copyright Notice")."</b><br/> ".$va_copyright_notice."</div><!-- end unit -->";
 			}
-			if($va_lcsh_language = $t_object->get('ca_objects.lcsh_language', array('returnAsArray'=> true, 'convertCodesToDisplayText' => true))){
-				print "<div class='unit'><b>"._t("Language")."</b><br/> ";
-				foreach($va_lcsh_language as $va_term => $va_metadata) {
-					foreach($va_metadata as $v_i => $va_thing) {
-						print caNavLink($this->request, $va_thing, '', '', 'Search', 'Index', array('search' => urlencode($va_thing)))."<br/>";
-					}
-				}
-				print "</div>";
+			if($va_language = $t_object->get('ca_objects.language', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => "^language_text (^language_type)"))){
+				print "<div class='unit'><b>"._t("Language")."</b><br/> ".$va_language."</div><!-- end unit -->";
 			}	
 			if($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray'=> true))){
 				print "<div class='unit'><b>"._t("LCSH Terms")."</b><br/> ";
@@ -166,24 +189,16 @@
 				}
 				print "</div>";
 			}	
-			if($va_subject = $t_object->get('ca_objects.subject')){
+			if($va_subject = $t_object->get('ca_objects.subject', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => "^subject_text (^subject_source)"))){
 				print "<div class='unit'><b>"._t("Other Subject Headings")."</b><br/> ".$va_subject."</div><!-- end unit -->";
 			}	
-			if($va_temporal_coverage = $t_object->get('ca_objects.temporal_coverage')){
-				print "<div class='unit'><b>"._t("Temporal Coverage")."</b><br/> ".$va_temporal_coverage."</div><!-- end unit -->";
+			if($va_temporal = $t_object->get('ca_objects.temporal_coverage', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => "^temporal_coverage_date (^temporal_coverage_note)"))){
+				print "<div class='unit'><b>"._t("Temporal Coverage")."</b><br/> ".$va_temporal."</div><!-- end unit -->";
 			}	
-			if($va_marc_geo = $t_object->get('ca_objects.marc_geo')){
-				print "<div class='unit'><b>"._t("Geographic Area")."</b><br/> ".$va_marc_geo."</div><!-- end unit -->";
-			}	
-			if($va_geonames = $t_object->get('ca_objects.geonames', array('returnAsArray'=> true))){
-				print "<div class='unit'><b>"._t("Geonames")."</b><br/> ";
-				foreach($va_geonames as $va_term => $va_metadata) {
-					foreach($va_metadata as $v_i => $va_thing) {
-						print caNavLink($this->request, $va_thing, '', '', 'Search', 'Index', array('search' => urlencode($va_thing)))."<br/>";
-					}
-				}
-				print "</div>";
-			}	
+
+			if($va_geo = $t_object->get('ca_objects.geographic_coverage', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => "^geo_coverage_text (^geo_coverage_source)"))){
+				print "<div class='unit'><b>"._t("Geographic Coverage")."</b><br/> ".$va_geo."</div><!-- end unit -->";
+			}				
 			if($va_link = $t_object->get('ca_objects.external_link', array('returnAsArray'=> true))){
 				print "<div class='unit'><b>"._t("URL")."</b><br/> ";
 				foreach($va_link as $va_term => $va_metadata) {
@@ -250,25 +265,7 @@
 <?php
 				}
 			}
-			# --- child hierarchy info
-			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_children) > 0){
-				print "<div class='unit'><h2>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</h2> ";
-				$i = 0;
-				foreach($va_children as $va_child){
-					# only show the first 5 and have a more link
-					if($i == 5){
-						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>["._t("More")."]</a></div><!-- end moreChildrenLink -->";
-						print "<div id='moreChildren' style='display:none;'>";
-					}
-					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
-					$i++;
-					if(($i >= 5) && ($i == sizeof($va_children))){
-						print "</div><!-- end moreChildren -->";
-					}
-				}
-				print "</div><!-- end unit -->";
-			}
+
 
 			# --- entities
 			$va_entities = $t_object->get("ca_entities", array('restrict_to_relationship_types' => array('actor', 'adaptor', 'arranger', 'artist', 'commentator', 'conductor', 'creator', 'dancer', 'donor', 'editor', 'engineer', 'funder', 'illustrator', 'instrumentalist', 'interviewee', 'interviewer', 'librettist', 'lyricist', 'moderator', 'musician', 'narrator', 'originator', 'other', 'performer', 'photographer', 'producer', 'production_personnel', 'publisher', 'puppeteer', 'recordist', 'scribe', 'speaker', 'storyteller', 'transcriber', 'translator', 'videographer', 'vocalist'), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
@@ -301,7 +298,7 @@
 				</div><!-- end unit -->
 <?php
 			}
-			
+/*			
 			# --- occurrences
 			$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			$va_sorted_occurrences = array();
@@ -323,6 +320,7 @@
 					print "</div><!-- end unit -->";
 				}
 			}
+*/
 			# --- places
 			$va_places = $t_object->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			
@@ -465,7 +463,7 @@
 			</div><!-- end objDetailImageNav -->
 <?php
 		}
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
+
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData">
@@ -557,9 +555,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 		}
 ?>		
 		</div><!-- end objUserData-->
-<?php
-	}
-?>
+
 		</div><!-- end rightCol -->
 	</div><!-- end detailBody -->
 <?php
