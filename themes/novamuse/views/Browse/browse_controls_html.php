@@ -55,7 +55,7 @@
 	<?php
 		}
 ?>
-	<h1><?php print _t('Browse the Archive'); ?></h1>
+	<h1><?php print _t('Browse the Collection'); ?></h1>
 	<div id="browse"><div id="resultBox"> 
 <?php
 	}

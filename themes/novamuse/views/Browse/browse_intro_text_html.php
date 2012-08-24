@@ -1,6 +1,6 @@
 <div class="textContent">
 	<div>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque malesuada risus vitae dolor elementum nec lobortis velit feugiat. Etiam eget est turpis. Donec semper luctus elit, nec iaculis sapien aliquet a. Duis in elit erat, vitae mattis arcu. Etiam sed felis et quam ullamcorper pretium rhoncus ut purus. 
+		<?php print _t("Not sure what to search for? Select one of these headings to start a search, and then refine your results through additional options."); ?>
 	</div>
 
 </div>
