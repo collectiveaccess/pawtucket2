@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/ca/Search/ObjectRepresentationSearchResult.php :
+ * app/lib/ca/RepresentationAnnotationPropertyCoders/TimeBasedAudioRepresentationAnnotationCoder.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2009 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,7 +24,7 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Search
+ * @subpackage BaseModel
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
@@ -33,20 +33,15 @@
  /**
   *
   */
+ 	require_once(__CA_LIB_DIR__.'/ca/RepresentationAnnotationPropertyCoders/TimeBasedRepresentationAnnotationCoder.php');
 
-include_once(__CA_LIB_DIR__."/ca/Search/BaseSearchResult.php");
-
-class ObjectRepresentationSearchResult extends BaseSearchResult {
-	# -------------------------------------
-	/**
-	 * Name of table for this type of search subject
-	 */
-	protected $ops_table_name = 'ca_object_representations';
-	# -------------------------------------
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
+	class TimeBasedAudioRepresentationAnnotationCoder extends TimeBasedRepresentationAnnotationCoder implements IRepresentationAnnotationPropertyCoder {
+	# ------------------------------------------------------------------
+		public function __construct() {
+			parent::__construct();
+			$this->ops_type = 'TimeBasedAudio';
+		}
+		# ------------------------------------------------------------------
 	}
-}
+	
+?>

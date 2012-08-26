@@ -1,13 +1,13 @@
 <?php
-/* ----------------------------------------------------------------------
- * app/phpweblib2/RequestRouter/Route.php : base class for routes
+/** ---------------------------------------------------------------------
+ * app/lib/ca/Browse/ListItemBrowseResult.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007 Whirl-i-Gig
+ * Copyright 2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,22 +23,32 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * @package CollectiveAccess
+ * @subpackage Browse
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
  * ----------------------------------------------------------------------
  */
  
+ /**
+  *
+  */
 
- 	class RequestRouterRoute {
- 		# -------------------------------------------------------
- 		var $opa_route_info;
- 		# -------------------------------------------------------
- 		public function __construct($pa_route_info=null) {
- 			if ($pa_route_info) { $this->setRouteInfo($pa_route_info); }	
- 		}
- 		# -------------------------------------------------------
- 		public function setRouteInfo($pa_route_info) {
- 			$this->opa_route_info = $pa_route_info;
- 		}
- 		# -------------------------------------------------------
- 		# -------------------------------------------------------
- 	}
- ?>
+include_once(__CA_LIB_DIR__."/ca/Search/BaseSearchResult.php");
+
+class ListItemBrowseResult extends BaseSearchResult {
+
+	# -------------------------------------
+	/**
+	 * Name of table for this type of search subject
+	 */
+	protected $ops_table_name = 'ca_list_items';
+	# -------------------------------------
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		parent::__construct();
+	}
+}
