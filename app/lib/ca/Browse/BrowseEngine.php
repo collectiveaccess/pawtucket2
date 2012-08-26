@@ -677,9 +677,11 @@
 			
 			if (is_array($va_facets_with_content)) {
 				$va_facets = $this->opa_browse_settings['facets'];	
+				$vs_facet_group = $this->getFacetGroup();
 				
 				$va_tmp = array();
 				foreach($va_facets_with_content as $vs_facet) {
+					if (($vs_facet_group && $va_facets[$vs_facet]['facet_groups'] && is_array($va_facets[$vs_facet]['facet_groups'])) && (!in_array($vs_facet_group, $va_facets[$vs_facet]['facet_groups']))) { continue; }
 					$va_tmp[$vs_facet] = $va_facets[$vs_facet];
 				}
 				return $va_tmp;
