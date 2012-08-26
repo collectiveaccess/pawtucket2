@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2011 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,7 +40,7 @@
 	);
 ?>
 	<div class='textContent'>
-		<p>Please provide the following information to contribute your media to the Metabolic Studio archive.  Required fields are marked with an *.<br/>When you have finished your submission, place the hard copy in the designated physical archive space.  If you need further assistance, please <?php print caNavLink($this->request, _t("contact"), '', '', 'About', 'contact')?> the studio archivists.</p>
+		<p>Please provide the following information to contribute your media to the Metabolic Studio archive.  Required fields are marked with an *.<br/>When you have finished your submission, place the hard copy in the designated physical archive space.  If you need further assistance, please contact the <a href="mailto:archive@metabolicstudio.org">studio archivists</a>.</p>
 	</div>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -59,7 +59,8 @@
 									'viewPath' => $this->getVar('viewPath'),
 									'graphicsPath' => $this->getVar('graphicsPath'),
 									'config' => $this->getVar('plugin_config'),
-									'omit' => array('hierarchy_location', 'hierarchy_navigation')
+									'omit' => array('hierarchy_location', 'hierarchy_navigation'),
+									'lookupUrl' => caNavUrl($this->request, 'Contribute/lookup', 'Entity', 'Get', array())
 								));
 			
 			print join("\n", $va_form_elements);
