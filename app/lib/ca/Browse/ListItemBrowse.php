@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/ca/Search/ObjectRepresentationSearchResult.php :
+ * app/lib/ca/Browse/ListItemBrowse.php : ca_list_items faceted browse
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -24,29 +24,34 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Search
+ * @subpackage Browse
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
  */
  
- /**
+  /**
   *
   */
-
-include_once(__CA_LIB_DIR__."/ca/Search/BaseSearchResult.php");
-
-class ObjectRepresentationSearchResult extends BaseSearchResult {
-	# -------------------------------------
-	/**
-	 * Name of table for this type of search subject
-	 */
-	protected $ops_table_name = 'ca_object_representations';
-	# -------------------------------------
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct();
+  
+ 	require_once(__CA_LIB_DIR__.'/ca/Browse/BaseBrowse.php');
+ 	require_once(__CA_LIB_DIR__.'/ca/Browse/ListItemBrowseResult.php');
+ 
+	class ListItemBrowse extends BaseBrowse {
+		# ------------------------------------------------------
+		/**
+		 * Which table does this class represent?
+		 */
+		protected $ops_tablename = "ca_list_items";
+		protected $ops_primary_key = "item_id";
+		# ----------------------------------------------------------------------
+		public function __construct($pn_browse_id=null, $ps_context='') {
+			parent::__construct($this->ops_tablename, $pn_browse_id, $ps_context);
+		}
+		# ------------------------------------------------------
+		public function getResults($pa_options=null) {
+			return parent::getResults(new ListItemBrowseResult(), $pa_options);
+		}
+		# ----------------------------------------------------------------------
 	}
-}
+?>

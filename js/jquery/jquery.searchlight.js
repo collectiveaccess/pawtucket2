@@ -47,7 +47,7 @@
         var results = $(document.createElement('div'));
         results.attr('className', 'searchlight-results-wrapper');
         results.css({
-            height: '100%'
+           // height: '100%'
         });
 
         if ($.browser.msie && parseFloat($.browser.version) <= 7) {
