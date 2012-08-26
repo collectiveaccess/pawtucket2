@@ -987,6 +987,8 @@
 									if (!$t_element->load(array('element_code' => $va_facet_info['element_code']))) {
 										return array();
 									}
+									
+									$vn_datatype = $t_element->get('datatype');
 									 
 									if ($va_facet_info['relative_to']) {
 										if ($va_relative_execute_sql_data = $this->_getRelativeExecuteSQLData($va_facet_info['relative_to'], $pa_options)) {
@@ -1013,8 +1015,18 @@
 										
 										if (is_array($va_value)) {
 											foreach($va_value as $vs_f => $vs_v) {
-												$va_attr_sql[] = "(ca_attribute_values.{$vs_f} = ?)";
-												$va_attr_values[] = $vs_v;
+												if ($vn_datatype == 3) {	// list
+													$t_list_item = new ca_list_items((int)$vs_v);
+													
+													// Include sub-items
+													$va_item_ids = $t_list_item->getHierarchyChildren(null, array('idsOnly' => true, 'includeSelf' => true));
+													$va_item_ids[] = (int)$vs_v;
+													$va_attr_sql[] = "(ca_attribute_values.{$vs_f} IN (?))";
+													$va_attr_values[] = $va_item_ids;
+												} else {
+													$va_attr_sql[] = "(ca_attribute_values.{$vs_f} = ?)";
+													$va_attr_values[] = $vs_v;
+												}
 											}
 										}
 										
