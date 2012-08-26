@@ -1,0 +1,13 @@
+#memberMapBalloonContainer{
+	max-height:200px;
+	width:400px;
+	margin-right:20px;
+	overflow-y:auto;
+}
+#memberMapBalloonContainer h1{
+	line-height:1.2em;
+}
+.memberImage{
+	float:left;
+	padding-right:10px;
+}

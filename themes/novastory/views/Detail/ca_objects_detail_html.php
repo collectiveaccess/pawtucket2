@@ -261,6 +261,10 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				if($t_object->get('ns_category')){
 					print "<div class='unit'><b>"._t("Category").":</b> ".$t_object->get('ns_category', array('convertCodesToDisplayText' => true))."</div><!-- end unit -->";
 				}
+				# --- novastory_category
+				if($t_object->get('novastory_category')){
+					print "<div class='unit'><b>"._t("NS - Category").":</b> ".$t_object->get('novastory_category', array('convertCodesToDisplayText' => true))."</div><!-- end unit -->";
+				}
 				# --- parent hierarchy info
 				if($t_object->get('parent_id')){
 					print "<div class='unit'><b>"._t("Part Of")."</b>: ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
