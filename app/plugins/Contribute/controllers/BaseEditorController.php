@@ -175,10 +175,10 @@
  			
  			// Set access and status
  			if(strlen($vn_access = ContributePlugin::getFormSetting('access'))) {
- 				$t_subject->set("access", $this->request->getParameter("access", pInteger));
+ 				$t_subject->set("access", $vn_access);
  			}
  			if(strlen($vn_status = ContributePlugin::getFormSetting('status'))) {
- 				$t_subject->set("status", $this->request->getParameter("status", pInteger));
+ 				$t_subject->set("status", $vn_status);
  			}
  			$vb_save_rc = $t_subject->saveBundlesForScreen($this->request->getActionExtra(), $this->request, array_merge($pa_options, array('ui_instance' => $t_ui)));
 			$this->view->setVar('t_ui', $t_ui);

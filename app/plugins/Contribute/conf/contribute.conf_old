@@ -1,5 +1,5 @@
 # Set to 0 to disable the Contribute plugin
-enabled = 0
+enabled = 1
 
 # navigation.conf menu code to place Contribute menu items *before*
 # Leave this blank if you want this to be the last (right most) item in the top-level navigation bar
@@ -21,7 +21,7 @@ uis = {
 		require_login = 1,
 
 		type = user,
-		status = 5,
+		status = 0,
 		access = 0,
 		table = ca_objects,
 		
@@ -48,7 +48,7 @@ uis = {
 		
 		set_post_submission_notification = 1,
 		post_submission_notification_message = _(Thank you for your submission!),
-		post_submission_notification_message_with_media = _(Thank you for your submission! Your media has been successfully uploaded to the archive for review.)
+		post_submission_notification_message_with_media = _(Thank you for your submission! Your media has been successfully uploaded to the archive.)
 	}
 }
 
