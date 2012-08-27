@@ -250,7 +250,7 @@
 			helper.parent.css({left: left + 'px'}).addClass("viewport-right");
 		}
 		// check vertical position
-		if (v.y + v.cy + 50 < h.offsetTop + h.offsetHeight) {
+		if (v.y + v.cy < h.offsetTop + h.offsetHeight) {
 			top -= h.offsetHeight + 20 + settings(current).top;
 			helper.parent.css({top: top + 'px'}).addClass("viewport-bottom");
 		}

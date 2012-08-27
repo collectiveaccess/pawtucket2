@@ -31,7 +31,7 @@
 <div id='pageBody'>
 <h1><?php print _t("Contributor Map"); ?></H1>
 <p class='textContent'>
-	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut sodales elit dictum massa aliquam in tincidunt metus pellentesque. Maecenas posuere, lectus eu varius venenatis, eros augue mollis est, quis placerat nisi massa et est. Ut quis leo risus. Phasellus ac justo dolor, ut mattis felis. In commodo neque non urna cursus consequat. Curabitur viverra, lacus id rutrum laoreet, elit turpis condimentum nibh, ut fermentum erat tellus scelerisque turpis. Vestibulum faucibus, mauris ut facilisis ultricies, dui risus dapibus arcu, sit amet suscipit velit enim vitae justo. 
+	<?php print _t("Museums, interpretive centres, and archives from across Nova Scotia contribute to NovaMuse. Click on a pin to learn more about each institution."); ?> 
 </p>
 <div style="clear:both; margin-top:10px;">
 	<?php print $this->getVar("map"); ?>

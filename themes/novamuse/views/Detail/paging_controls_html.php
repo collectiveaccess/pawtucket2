@@ -7,11 +7,11 @@
 		<div id='detailNavBar'>
 <?php	
 		if ($this->getVar('page') > 1) {
-			print "<div id='previous'><a href='#' onclick='jQuery(\"#resultBox\").load(\"".caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array_merge(array('page' => $this->getVar('page') - 1), $va_other_paging_parameters))."\"); return false;'>&lsaquo; "._t("Previous")."</a></div>";
+			print "<div id='previous'><a href='#' onclick='jQuery(\"#resultBox\").load(\"".caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array_merge(array('page' => $this->getVar('page') - 1), $va_other_paging_parameters))."\"); return false;'>"._t("Previous")."</a></div>";
 		}
 		
 		if ($this->getVar('page') < $this->getVar('num_pages')) {
-			print "<div id='next'><a href='#' onclick='jQuery(\"#resultBox\").load(\"".caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array_merge(array('page' => $this->getVar('page') + 1), $va_other_paging_parameters))."\"); return false;'>"._t("Next")." &rsaquo;</a></div>";
+			print "<div id='next'><a href='#' onclick='jQuery(\"#resultBox\").load(\"".caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array_merge(array('page' => $this->getVar('page') + 1), $va_other_paging_parameters))."\"); return false;'>"._t("Next")."</a></div>";
 		}
 ?>
 		</div><!-- end searchNav -->

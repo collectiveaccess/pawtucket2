@@ -36,8 +36,11 @@
 		$vs_caption .= "</i><br/>";
 	}
 	if($this->getVar('caption_idno')){
-		$vs_caption .= $this->getVar('caption_idno');
+		$vs_caption .= $this->getVar('caption_idno')."<br/>";
 	}
 	print caNavLink($this->request, $vs_caption, '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar("object_id")));
+	if($this->getVar('caption_memb_inst')){
+		print $this->getVar('caption_memb_inst');
+	}
 ?>
 </div>

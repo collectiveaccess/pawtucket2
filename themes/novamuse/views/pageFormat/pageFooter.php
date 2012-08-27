@@ -1,8 +1,7 @@
-<div class="clear"></div>
-
+	<div class="clear"></div>
 </div><!--end container-->
 <div class="clear"></div>
-<div id='footer'
+<div id='footer'>
 	<div>
 <?php
 		if ($this->request->isLoggedIn()) {
@@ -14,11 +13,11 @@
 <?php
 	if ($this->request->getController() == 'Splash') {
 ?>
-		<div id="footerlogos"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/pch.jpg"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/CommCulHerit_Fulcol.jpg"></div>
+		<div id="footerlogos"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/ansmLogo.png"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/pch.jpg"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/novamuse/sponsor_logos/CommCulHerit_Fulcol.jpg"></div>
 <?php
 	}
 ?>
-</div>
+</div><!-- end footer --><div class="clear"></div></div><!-- end pageArea -->
 </body>
 </html>
 <?php
