@@ -136,7 +136,7 @@
 			$this->view->setVar('featured_content_slideshow_id_list', $va_featured_ids);
 			
 			
-if(!$this->request->config->get("splash_disable_highest_rated_objects")){
+if(!(bool)$this->request->config->get("splash_disable_highest_rated_objects")){
 			if(!is_array($va_versions = $this->request->config->getList("splash_highest_rated_display_versions"))){ $va_versions = $va_default_versions; }
 
  			# --- user favorites get the highest ranked objects to display
@@ -175,32 +175,34 @@ if(!$this->request->config->get("splash_disable_highest_rated_objects")){
 			}
 }
 
-if(!$this->request->config->get("splash_disable_recently_added_objects_")){
+if(!(bool)$this->request->config->get("splash_disable_recently_added_objects")){
 			if(!is_array($va_versions = $this->request->config->getList("splash_recently_added_display_versions"))){ $va_versions = $va_default_versions; }
 				
  			# --- get the 12 most recently added objects to display
 			$va_recently_added_items = $t_object->getRecentlyAddedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));	
  			$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
  			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), $va_versions, array("checkAccess" => $va_access_values));
+			
 			foreach($va_recently_added_items as $vn_object_id => $va_object_info){
 				$va_object_info['title'] = $va_labels[$vn_object_id];
 				$va_object_info['media'] = $va_media[$vn_object_id];
  				$va_recently_added_objects[$vn_object_id] = $va_object_info;
+ 				
+				foreach($va_versions as $vs_version) {
+					$this->view->setVar('recently_added_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+				}
 			}
 			$this->view->setVar('recently_added_objects', $va_recently_added_objects);
 			if(is_array($va_recently_added_objects) && (sizeof($va_recently_added_objects) > 0)){
 				$va_object_info = array_shift($va_recently_added_objects); 
 				$this->view->setVar('recently_added_id', $va_object_info['object_id']);
 				
-				foreach($va_versions as $vs_version) {
-					$this->view->setVar('recently_added_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
-				}
 			} 	
 } else {
 			$this->view->setVar('recently_added_objects', array());
 }		
 			# --- get the 12 most viewed objects
-if(!$this->request->config->get("splash_disable_most_viewed_objects")){
+if(!(bool)$this->request->config->get("splash_disable_most_viewed_objects")){
 			if(!is_array($va_versions = $this->request->config->getList("splash_most_viewed_display_versions"))){ $va_versions = $va_default_versions; }
 			
 			$va_most_viewed_objects = $t_object->getMostViewedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
@@ -222,7 +224,7 @@ if(!$this->request->config->get("splash_disable_most_viewed_objects")){
 			} 
 }
 
-if(!$this->request->config->get("splash_disable_recently_viewed_objects")){
+if(!(bool)$this->request->config->get("splash_disable_recently_viewed_objects")){
 			if(!is_array($va_versions = $this->request->config->getList("splash_recently_viewed_display_versions"))){ $va_versions = $va_default_versions; }
 				
 			# --- get the 12 recently viewed objects
@@ -251,7 +253,7 @@ if(!$this->request->config->get("splash_disable_recently_viewed_objects")){
 			$this->view->setVar('recently_viewed_objects', array());
 }
 
-if(!$this->request->config->get("splash_disable_random_objects")){	
+if(!(bool)$this->request->config->get("splash_disable_random_objects")){	
 			if(!is_array($va_versions = $this->request->config->getList("splash_random_display_versions"))){ $va_versions = $va_default_versions; }
 					
 			# --- get random objects
