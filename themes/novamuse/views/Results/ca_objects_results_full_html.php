@@ -40,11 +40,32 @@ if($vo_result) {
 		if (!$vs_idno = $vo_result->get('ca_objects.idno')) {
 			$vs_idno = "???";
 		}
-		
+		$va_member_inst = $vo_result->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsArray" => 1, "checkAccess" => $va_access_values));
+		$vs_member_inst_link = "";
+		foreach($va_member_inst as $vn_relation_id => $va_member_inst_info){
+			$vs_member_inst_link = caNavLink($this->request, $va_member_inst_info["displayname"], "", "Detail", "Entity", "Show", array("entity_id" => $va_member_inst_info["entity_id"]));
+		}
 		$vn_object_id = $vo_result->get('ca_objects.object_id');
-		
+		$vs_image = $vo_result->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values));
+		if(!$vs_image){
+			# --- get the placeholder graphic from the novamuse theme
+			$va_themes = caExtractValuesByUserLocale($vo_result->get("novastory_category", array("returnAsArray" => true)));
+			$vs_placeholder = "";
+			if(sizeof($va_themes)){
+				$t_list_item = new ca_list_items();
+				foreach($va_themes as $k => $vs_list_item_id){
+					$t_list_item->load($vs_list_item_id);
+					if(file_exists($this->request->getThemeDirectoryPath()."/graphics/novamuse/placeholders/small/".$t_list_item->get("idno").".png")){
+						$vs_image = "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/small/".$t_list_item->get("idno").".png'>";
+					}
+				}
+			}
+			if(!$vs_image){
+				$vs_image = "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/small/placeholder.png'>";
+			}
+		}
 		print "<div class='searchFullImageContainer'>";
-		print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
+		print caNavLink($this->request, $vs_image, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 		print "</div><!-- END searchFullImageContainer -->";
 		print "<div class='searchFullText'>";
 		$va_labels = $vo_result->getDisplayLabels($this->request);
@@ -52,6 +73,10 @@ if($vo_result) {
 		print "<div class='searchFullTitle'>".caNavLink($this->request, $vs_caption, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 		print "<div class='searchFullTextTitle'>"._t("ID")."</div>\n";
 		print "<div class='searchFullTextTextBlock'>".$vo_result->get("ca_objects.idno")."</div>";
+		if($vs_member_inst_link){
+			print "<div class='searchFullTextTitle'>"._t("From the collection of")."</div>\n";
+			print "<div class='searchFullTextTextBlock'>".$vs_member_inst_link."</div>";
+		}
 		print "</div><!-- END searchFullText -->\n";
 		$vn_item_count++;
 		if(!$vo_result->isLastHit()){

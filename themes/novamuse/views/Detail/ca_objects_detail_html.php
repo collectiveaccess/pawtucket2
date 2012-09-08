@@ -37,6 +37,28 @@
 	$vs_display_version =				$this->getVar('primary_rep_display_version');
 	$va_display_options =				$this->getVar('primary_rep_display_options');
 	
+	$va_theme_info = array();
+	$va_themes = caExtractValuesByUserLocale($t_object->get("novastory_category", array("returnAsArray" => true)));
+	$vs_placeholder = "";
+	if(sizeof($va_themes)){
+		$t_list_item = new ca_list_items();
+		foreach($va_themes as $k => $vs_list_item_id){
+			$t_list_item->load($vs_list_item_id);
+			$va_theme_info["name"] = $t_list_item->getLabelForDisplay();
+			if(file_exists($this->request->getThemeDirectoryPath()."/graphics/novamuse/".$t_list_item->get("idno").".png")){
+				$va_theme_info["icon"] = $this->request->getThemeUrlPath()."/graphics/novamuse/".$t_list_item->get("idno").".png";
+			}
+			if(file_exists($this->request->getThemeDirectoryPath()."/graphics/novamuse/placeholders/".$t_list_item->get("idno").".png")){
+				$vs_placeholder = $this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/".$t_list_item->get("idno").".png";
+			}
+			$va_theme_info["id"] = $t_list_item->get("item_id");
+			$va_themes_info[] = $va_theme_info;
+		}
+	}
+	if(!$vs_placeholder){
+		$vs_placeholder = $this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/placeholder.png";	
+	}
+	
 	# --- get similar items by category
 	$va_categories = explode(",", $t_object->get('ns_category'));
 	$va_sim_items = array();
@@ -75,12 +97,6 @@
 			<div class="objecttitle titletext"><?php print $vs_title; ?></div>
 			
 <?php
-if ($t_rep && $t_rep->getPrimaryKey()) {
-	$image = 1;
-} else {
-	$image = 0;
-	print "<div style='height:20px; clear:both; width:100%;'></div>";
-}
 		if ($t_rep && $t_rep->getPrimaryKey()) {
 ?>
   			<div class="objectslides">
@@ -107,6 +123,8 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 				print '</div>';
 			}
 			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a></div>";
+		}else{
+			print "<div class='objectslides'><img src='".$vs_placeholder."'></div><div class='nav1Spacer'><!-- empty --></div>";
 		}
 ?>
 
@@ -119,14 +137,7 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 				$vn_numRankings = $this->getVar("numRankings");
 				$like_message = "<span class='likebk' style='float:right;'>"._t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people")."</span>";
 			}
-		if ($image == 1) {
-			print "<div class='clear'></div>";
-			print "<p id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</p>";
-		} else {
-			print "<p id='likeThisNoImage'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</p>";
-		}
-			
-			
+			print "<div id='likeThis'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/like.gif' border='0' style='margin-top:-2px;'>".$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</div>";
 ?>
 			<div style='width: 100%; clear:both; height:1px;'></div> 
 			<!-- AddThis Button BEGIN -->
@@ -140,25 +151,30 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
 			</div>
 			<!-- AddThis Button END -->
-    	</div><!--end objectcontainer-->
+<?php
+	# --- administrator's editing form for changing access and tagging themes (novastory_category)
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+		JavascriptLoadManager::register('bundleableEditor');
+?>
+		<div id="adminForm"></div>
+		<script type="text/javascript">
+		$(document).ready(function() {	
+			//load form
+			jQuery("#adminForm").load("<?php print caNavUrl($this->request, 'Cataloging', 'Form', 'edit', array('object_id' => $vn_object_id)); ?>");
+		});
+		</script>
+<?php
+	}
+			
+?>			
+    	</div><!--end objectcontainer-->	
 	</div><!--end contentcontainer-->
 
 	<div id="subcontentcontainer">
 <?php
 		$vs_text_theme = $t_object->get("novastory_category", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
-		$va_theme_info = array();
-		$va_themes = caExtractValuesByUserLocale($t_object->get("novastory_category", array("returnAsArray" => true)));
 		print "<div class='object-typeContainer'>";
-		if(sizeof($va_themes)){
-			$t_list_item = new ca_list_items();
-			foreach($va_themes as $k => $vs_list_item_id){
-				$t_list_item->load($vs_list_item_id);
-				$va_theme_info["name"] = $t_list_item->getLabelForDisplay();
-				if(file_exists($this->request->getThemeDirectoryPath()."/graphics/novamuse/".$t_list_item->get("idno").".png")){
-					$va_theme_info["icon"] = $this->request->getThemeUrlPath()."/graphics/novamuse/".$t_list_item->get("idno").".png";
-				}
-				$va_themes_info[] = $va_theme_info;
-			}
+		if(sizeof($va_theme_info)){
 		
 			print "<div id='objTypeCycle'>";
 			foreach($va_themes_info as $k => $va_theme_display_info){
@@ -166,7 +182,7 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 				if($va_theme_display_info["icon"]){
 					print "<img src='".$va_theme_display_info["icon"]."' alt='".$va_theme_display_info["name"]."' />";
 				}
-				print "<div class='object-type-name'>".$va_theme_display_info["name"]."</div>";
+				print "<div class='object-type-name'>".caNavLink($this->request, $va_theme_display_info["name"], "", "", "Browse", "clearAndAddCriteria", array("facet" => "novastory_category_facet", "id" => $va_theme_display_info["id"]))."</div>";
 				print "</div>";
 			}
 			print "</div><!-- end objTypeCycle -->";
@@ -185,13 +201,18 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 			}
 		}
 		print "</div><!-- end object-typeContainer -->";
+		$va_member_inst = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsArray" => 1, "checkAccess" => $va_access_values));
+		$vs_member_inst_link = "";
+		foreach($va_member_inst as $vn_relation_id => $va_member_inst_info){
+			$vs_member_inst_link = caNavLink($this->request, $va_member_inst_info["displayname"], "titletextcaps", "Detail", "Entity", "Show", array("entity_id" => $va_member_inst_info["entity_id"]));
+		}				
+		#$vs_member_inst_link = caNavLink($this->request, $t_object->get('source_id', array('convertCodesToDisplayText' => true)), "titletextcaps", "", "Browse", "clearAndAddCriteria", array("facet" => "source_facet", "id" => $t_object->get('source_id')));
 ?>
-		
-		<div class="collection-badge">from the collection of<br/><span class="titletextcaps"><?php print $t_object->get('source_id', array('convertCodesToDisplayText' => true)); ?></span></div>
+		<div class="collection-badge"><div class="collection-badge-padding">from the collection of<br/><?php print $vs_member_inst_link; ?></div></div>
 
 		<div class="clear"></div>
 <?php
-	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse")){
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
 ?>
 		<div class="detail-col1">
 <?php
@@ -215,7 +236,13 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 			<p class="descriptionText"><?php print $t_object->get("historyUse", array("convertHTMLBreaks" => true)); ?></p>
 <?php
 	}
-	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse")){
+	if($t_object->get("cataloguerRem")){
+?>
+			<p><span class="subtitletextcaps"><?php print _t("Notes"); ?>:</span></p>
+			<p class="descriptionText"><?php print $t_object->get("cataloguerRem", array("convertHTMLBreaks" => true)); ?></p>
+<?php
+	}
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
 ?>
 		</div><!-- end detail-col1 -->
 <?php
@@ -237,7 +264,7 @@ if ($t_rep && $t_rep->getPrimaryKey()) {
 				}
 				# --- category
 				if($t_object->get('ns_category')){
-					print _t("Category").": ".$t_object->get('ns_category', array('convertCodesToDisplayText' => true))."<br/>";
+					print _t("Category").": ".caNavLink($this->request, $t_object->get('ns_category', array('convertCodesToDisplayText' => true)), "", "", "Browse", "clearAndAddCriteria", array("facet" => "category_facet", "id" => $t_object->get('ns_category')))."<br/>";
 				}
 ?>
 			</p>

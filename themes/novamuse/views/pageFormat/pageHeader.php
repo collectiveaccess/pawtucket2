@@ -30,6 +30,12 @@
 	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-tileviewer/jquery.tileviewer.css" type="text/css" media="screen" />
 
 <?php
+	# --- since the catalogin plugin on the default page is loaded with Ajax, I check to see if we need to load it's stylesheet here
+	if(($this->request->isLoggedIn()) && ($this->request->hasRole("admin")) && ($this->request->getController() == "Object")){
+?>
+		<link href="<?php print $this->request->getBaseUrlPath(); ?>/app/plugins/Cataloging/themes/default/css/cataloging.css" rel="stylesheet" type="text/css" />
+<?php
+	}
 	print JavascriptLoadManager::getLoadHTML($this->request->getBaseUrlPath());
 ?>
 	<script type="text/javascript">
@@ -46,27 +52,27 @@
 	$o_result_context = new ResultContext($this->request, 'ca_objects', 'basic_search');
 	$vs_search = $o_result_context->getSearchExpression();
 ?>
-<div id="container">
+<div id="pageArea"><div id="container">
 
-<div id="header">
-
-<div id="logo"><?php print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/nova_logo.png' width='237' height='156' alt='Nova Muse' />", "", "", "", ""); ?></div>
-
-<div id="mainmenu">
-	<div class="button"><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></div>
-    <div class="button"><?php print caNavLink($this->request, _t("Contributor Map"), "", "NovaStory", "MemberMap", "Index"); ?></div>
-    <div class="button-last">
+	<div id="header">
+	
+		<div id="logo"><?php print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/novamuse.png' width='233' height='130' alt='Nova Muse' />", "", "", "", ""); ?></div>
+		
+		<div id="mainmenu">
+			<div class="navButtonFirst<?php print ($this->request->getController() == 'Splash') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></div>
+			<div class="navButton<?php print ($this->request->getController() == 'About') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></div>
+			<div class="navButton<?php print ($this->request->getController() == 'MemberMap') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Contributor Map"), "", "NovaStory", "MemberMap", "Index"); ?></div>
+			<div class="navButton<?php print ($this->request->getController() == 'Browse') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "clearCriteria"); ?></div>
+			<div class="navButton<?php print (($this->request->getController() == 'Sets') || ($this->request->getController() == 'LoginReg')) ? "Highlight" : ""; ?>">
 <?php
-		if($this->request->isLoggedIn()){
-			print caNavLink($this->request, _t("Your Lightbox"), "", "", "Sets", "Index");
-		}else{
-			print caNavLink($this->request, _t("Login/Register"), "", "", "LoginReg", "form");
-		}
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, _t("Your Lightbox"), "", "", "Sets", "Index");
+				}else{
+					print caNavLink($this->request, _t("Login/Register"), "", "", "LoginReg", "form");
+				}
 ?>
-    </div>
-    <div class="button"><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></div>
-    <div class="button"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "Index"); ?></div>
-    <div class="button-search"><form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get"><input name="search" type="text" value="<?php print ($vs_search) ? $vs_search : _t("Search"); ?>" size="18" onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" /></form></div>
-</div><!--end main menu-->
-</div><!--end header-->
-<div class="clear"></div>
+			</div>
+			<div class="navButton-search"><form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get"><input name="search" type="text" value="<?php print ($vs_search) ? $vs_search : _t("Search"); ?>" size="18" onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" /></form></div>
+		</div><!--end main menu-->
+	</div><!--end header-->
+	<div class="clear"></div>

@@ -40,65 +40,42 @@
 
 if (!$this->request->isAjax()) {		
 ?>
-	<div style="width: 100%; clear:both; height:15px;"></div>
+<div id='pageBody'>
 	<div id="detailBody" style="clear:both;">
-	<h1 style="float:left;"><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
+	<h1 style="float:left;"><?php print $vs_title; ?></h1>
 		<div id="pageNav">
 		
 <?php
 			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_entities', _t("Back"), ''))) {
 				if ($this->getVar('previous_id')) {
-					print caNavLink($this->request, "&lsaquo; "._t("Previous"), '', 'Detail', 'Entity', 'Show', array('entity_id' => $this->getVar('previous_id')), array('id' => 'previous'));
-				}else{
-					print "&lsaquo; "._t("Previous");
+					print caNavLink($this->request, "&larr; "._t("Previous Entry"), '', 'Detail', 'Entity', 'Show', array('entity_id' => $this->getVar('previous_id')), array('id' => 'previous'))."&nbsp;&nbsp;&nbsp;";
 				}
-				print "&nbsp;&nbsp;&nbsp;{$vs_back_link}&nbsp;&nbsp;&nbsp;";
+				print $vs_back_link;
 				if ($this->getVar('next_id') > 0) {
-					print caNavLink($this->request, _t("Next")." &rsaquo;", '', 'Detail', 'Entity', 'Show', array('entity_id' => $this->getVar('next_id')), array('id' => 'next'));
-				}else{
-					print _t("Next")." &rsaquo;";
+					print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("Next Entry")." &rarr;", '', 'Detail', 'Entity', 'Show', array('entity_id' => $this->getVar('next_id')), array('id' => 'next'));
 				}
 			}
 ?>
 		</div><!-- end nav -->
-		<div style="width: 100%; clear:both; height:10px;"></div>
 		
 		<div id="leftCol" class="entity">
+			<div class='unit'><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></div>
+			<!-- AddThis Button BEGIN -->
+			<div id="shareWidgetsContainer" style="margin-top:25px;">
+				<div class="addthis_toolbox addthis_default_style addthis_entity_page">
+					<a class="addthis_button_pinterest_pinit"></a>
+					<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+					<a class="addthis_button_tweet"></a>
+					<a class="addthis_counter addthis_pill_style"></a>
+				</div>
+				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
+			</div>
+			<!-- AddThis Button END -->
 <?php
-			if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
-?>
-				<!-- bookmark link BEGIN -->
-				<div class="unit">
-<?php
-				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
-				}else{
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
-				}
-?>
-				</div><!-- end unit -->
-				<!-- bookmark link END -->
-<?php
-			}
-			# --- identifier
-			if($t_entity->get('idno')){
-				print "<div class='unit'><b>"._t("Identifier")."</b>: ".$t_entity->get('idno')."</div><!-- end unit -->";
-			}
 			# --- description
 			if($this->request->config->get('ca_entities_description_attribute')){
 				if($vs_description_text = $t_entity->get("ca_entities.".$this->request->config->get('ca_entities_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
-?>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
-						});
-					</script>
-<?php
+					print "<div class='unit'>".$vs_description_text."</div><!-- end unit -->";				
 				}
 			}
 			switch($t_entity->get("type_id")){
@@ -108,9 +85,9 @@ if (!$this->request->isAjax()) {
 					}
 					if($t_entity->get("ca_entities.address")){
 						if($t_entity->get("ca_entities.mem_inst_region")){
-							print "<div class='unit'><b>"._t("Region").":</b> ".$t_entity->get("ca_entities.mem_inst_region", array('convertCodesToDisplayText' => true))."</div>";
+							print "<div class='unit'><span class='subtitletextcaps'>"._t("Region").":</span> ".caNavLink($this->request, $t_entity->get("ca_entities.mem_inst_region", array('convertCodesToDisplayText' => true)), "", "", "Browse", "clearAndAddCriteria", array("facet" => "region_facet", "id" => $t_entity->get("ca_entities.mem_inst_region")))."</div>";
 						}
-						print "<div class='unit'><b>"._t("Address").":</b><br/>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Address").":</span><br/>";
 						if($t_entity->get("ca_entities.address.address1")){
 							print $t_entity->get("ca_entities.address.address1")."<br/>";
 						}
@@ -139,45 +116,45 @@ if (!$this->request->isAjax()) {
 						print "</div><!-- end unit -->";
 					}
 					if($t_entity->get("ca_entities.external_link.url_entry")){
-						print "<div class='unit'><b>"._t("Link").":</b> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Link").":</span> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
 					}
 					
 				break;
 				# --------------------------
 				case $vn_organization_id:
 					if($t_entity->get("ca_entities.business_type")){
-						print "<div class='unit'><b>"._t("Business Type").":</b> ".$t_entity->get("ca_entities.business_type")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Business Type").":</span> ".$t_entity->get("ca_entities.business_type")."</div>";
 					}
 					if($t_entity->get("ca_entities.entity_founded")){
-						print "<div class='unit'><b>"._t("Date Founded").":</b> ".$t_entity->get("ca_entities.entity_founded")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Date Founded").":</span> ".$t_entity->get("ca_entities.entity_founded")."</div>";
 					}
 					if($t_entity->get("ca_entities.entity_incorporated")){
-						print "<div class='unit'><b>"._t("Date Incorporated").":</b> ".$t_entity->get("ca_entities.entity_incorporated")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Date Incorporated").":</span> ".$t_entity->get("ca_entities.entity_incorporated")."</div>";
 					}
 					if($t_entity->get("ca_entities.entity_liquidated")){
-						print "<div class='unit'><b>"._t("Date Liquidated").":</b> ".$t_entity->get("ca_entities.entity_liquidated")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Date Liquidated").":</span> ".$t_entity->get("ca_entities.entity_liquidated")."</div>";
 					}
 					if($t_entity->get("ca_entities.entity_brands")){
 						$va_brands = array();
 						foreach($t_entity->get("ca_entities.entity_brands", array("returnAsArray" => 1)) as $i => $va_brand_info){
 							$va_brands[] = $va_brand_info["entity_brands"];
 						}
-						print "<div class='unit'><b>"._t("Brand(s)").":</b> ".join(", ", $va_brands)."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Brand(s)").":</span> ".join(", ", $va_brands)."</div>";
 					}
 					if($t_entity->get("ca_entities.products")){
-						print "<div class='unit'><b>"._t("Product(s)").":</b> ".$t_entity->get("ca_entities.products")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Product(s)").":</span> ".$t_entity->get("ca_entities.products")."</div>";
 					}
 					if($t_entity->get("ca_entities.add_info")){
-						print "<div class='unit'><b>"._t("Additional Info").":</b> ".$t_entity->get("ca_entities.add_info")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Additional Info").":</span> ".$t_entity->get("ca_entities.add_info")."</div>";
 					}
 					if($t_entity->get("ca_entities.remarks")){
-						print "<div class='unit'><b>"._t("Remarks").":</b> ".$t_entity->get("ca_entities.remarks")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Remarks").":</span> ".$t_entity->get("ca_entities.remarks")."</div>";
 					}
 					if($t_entity->get("ca_entities.remarks_source")){
-						print "<div class='unit'><b>"._t("Remarks Source").":</b> ".$t_entity->get("ca_entities.remarks_source")."</div>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Remarks Source").":</span> ".$t_entity->get("ca_entities.remarks_source")."</div>";
 					}
 					if($t_entity->get("ca_entities.address")){
-						print "<div class='unit'><b>"._t("Address").":</b><br/>";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Address").":</span><br/>";
 						if($t_entity->get("ca_entities.address.address1")){
 							print $t_entity->get("ca_entities.address.address1")."<br/>";
 						}
@@ -206,17 +183,17 @@ if (!$this->request->isAjax()) {
 						print "</div><!-- end unit -->";
 					}
 					if($t_entity->get("ca_entities.external_link.url_entry")){
-						print "<div class='unit'><b>"._t("Link").":</b> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Link").":</span> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
 					}
 				break;
 				# --------------------------
 				# --- individuals and families
 				default:
 					if($t_entity->get("ca_entities.lifespan")){
-						print "<div class='unit'><b>"._t("Lifetime").":</b> ".$t_entity->get("ca_entities.lifespan")."</div><!-- end unit -->";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Lifetime").":</span> ".$t_entity->get("ca_entities.lifespan")."</div><!-- end unit -->";
 					}
 					if($t_entity->get("ca_entities.nationality")){
-						print "<div class='unit'><b>"._t("Nationality").":</b> ".$t_entity->get("ca_entities.nationality")."</div><!-- end unit -->";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Nationality").":</span> ".$t_entity->get("ca_entities.nationality")."</div><!-- end unit -->";
 					}
 					
 				break;
@@ -236,15 +213,6 @@ if (!$this->request->isAjax()) {
 				</div><!-- end unit -->
 <?php
 			}
-			# --- vocabulary terms
-			$va_terms = $t_entity->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_terms) > 0){
-				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
-				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
 			print "<div class='unit'>";
 			if($this->request->config->get('ca_entities_map_attribute') && $t_entity->get($this->request->config->get('ca_entities_map_attribute'))){
 				$o_map = new GeographicMap(285, 200, 'map');
@@ -252,70 +220,74 @@ if (!$this->request->isAjax()) {
 				print "<div class='unit'>".$o_map->render('HTML')."</div>";
 			}
 			print "</div>";
+		# --- user data --- comments - ranking - tagging
+		$va_comments = $this->getVar("comments");
+		if(is_array($va_comments) && (sizeof($va_comments) > 0)){	
+			print '<div id="objUserData">';
 ?>
-		<div id="objUserData" class="entity">	
+			<H2><div id="numComments">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div><?php print _t("User Comments"); ?></H2>
 <?php
-
-			$va_comments = $this->getVar("comments");
-			if(is_array($va_comments) && (sizeof($va_comments) > 0)){
+			foreach($va_comments as $va_comment){
+				if($va_comment["media1"]){
 ?>
-				<h2><div id="numComments">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div><?php print _t("User Comments"); ?></h2>
+					<div class="commentImage" id="commentMedia<?php print $va_comment["comment_id"]; ?>">
+						<?php print $va_comment["media1"]["tiny"]["TAG"]; ?>							
+					</div><!-- end commentImage -->
 <?php
-				foreach($va_comments as $va_comment){
-					if($va_comment["media1"]){
-?>
-						<div class="commentImage" id="commentMedia<?php print $va_comment["comment_id"]; ?>">
-							<?php print $va_comment["media1"]["tiny"]["TAG"]; ?>							
-						</div><!-- end commentImage -->
-<?php
-						TooltipManager::add(
-							"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
-						);
-					}
-					if($va_comment["comment"]){
+					TooltipManager::add(
+						"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
+					);
+				}
+				if($va_comment["comment"]){
 ?>					
-					<div class="comment">
-						<?php print $va_comment["comment"]; ?>
-					</div>
-<?php
-					}
-?>					
-					<div class="byLine">
-						<?php print $va_comment["author"].", ".$va_comment["date"]; ?>
-					</div>
+				<div class="comment">
+					<?php print $va_comment["comment"]; ?>
+				</div>
 <?php
 				}
-			}else{
-				if(!$vs_tags && !$this->getVar("ranking")){
-					$vs_login_message = _t("Login/register to be the first to comment on this object!");
-				}
+?>					
+				<div class="byLine">
+					<?php print $va_comment["author"].", ".$va_comment["date"]; ?>
+				</div>
+<?php
 			}
-			if($this->getVar("ranking") || (is_array($va_tags) && (sizeof($va_tags) > 0)) || (is_array($va_comments) && (sizeof($va_comments) > 0))){
 ?>
-				<div class="divide" style="margin:12px 0px 10px 0px;"><!-- empty --></div>
+			</div><!-- end objUserData -->
 <?php			
 			}
 		if($this->request->isLoggedIn()){
 ?>
-			<h2><?php print _t("Add Your Comments"); ?></h2>
-			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Entity', 'saveCommentRanking', array('entity_id' => $vn_entity_id)); ?>" name="comment" enctype='multipart/form-data'>
-
-				<div class="formLabel"><?php print _t("Media"); ?></div>
-				<input type="file" name="media1">
-				<div class="formLabel"><?php print _t("Comment"); ?></div>
-				<textarea name="comment" rows="5"></textarea>
-				<br><a href="#" name="commentSubmit" onclick="document.forms.comment.submit(); return false;"><?php print _t("Save"); ?></a>
+			<form class="appnitro" method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Entity', 'saveCommentRanking', array('entity_id' => $vn_entity_id)); ?>" name="comment" enctype='multipart/form-data'>
+				<div class="form_description">
+					<h2>Leave your comments</h2>
+					<p>You are logged in as <?php print trim($this->request->user->get("fname")." ".$this->request->user->get("lname"));?>.</p>
+				</div>						
+				<ul>
+					<li id="li_2" >
+						<label class="description" for="element_2">Comments </label>
+						<div>
+							<textarea id="element_2" name="comment" class="element textarea medium"></textarea> 
+						</div> 
+					</li>
+					<li id="li_3" >
+						<label class="description" for="element_3">Upload a File </label>
+						<div>
+							<input id="element_3" name="media1" class="element file" type="file"/> 
+						</div>  
+					</li>
+					<li class="buttons">
+						<input id="saveForm" class="button_text" type="submit" name="submit" value="Submit" />
+					</li>
+				</ul>
 			</form>
 <?php
 		}else{
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
-				print "<p>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'EntityDetail', 'entity_id' => $vn_entity_id))."</p>";
+				print "<p class='detail-login-link'>".caNavLink($this->request, _t("Do you know more about this record?<br/>Login to add your comment!"), "", "", "LoginReg", "form", array('site_last_page' => 'EntityDetail', 'entity_id' => $vn_entity_id))."</p>";
 			}
 		}
-?>	
-<div style="height:20px; clear:both; width: 100%;"></div>
+?>
 
-	</div><!-- end objUserData-->	
 	</div><!-- end leftCol -->
 	<div id="rightCol" class="entity">
 		<div id="resultBox">
@@ -330,20 +302,9 @@ if (!$this->request->isAjax()) {
 if (!$this->request->isAjax()) {
 ?>
 		</div><!-- end resultBox -->
-		<p style="float:left;"><a href="#" onclick="$('#shareWidgetsContainer').slideToggle(); return false;" class="shareButton">Share</a></p>
-		<!-- AddThis Button BEGIN -->
-		<div id="shareWidgetsContainer" style="margin-top:25px;">
-			<div class="addthis_toolbox addthis_default_style" style="padding-left:50px;">
-				<a class="addthis_button_pinterest_pinit"></a>
-				<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
-				<a class="addthis_button_tweet"></a>
-				<a class="addthis_counter addthis_pill_style"></a>
-			</div>
-			<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
-		</div>
-		<!-- AddThis Button END -->
 	</div><!-- end rightCol -->
 </div><!-- end detailBody -->
+</div><!-- end pageBody -->
 <?php
 }
 ?>
