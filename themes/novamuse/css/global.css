@@ -531,8 +531,12 @@ div.searchlight-results div.searchlight-selected {
 /* ------------------------------------- */
 
 .textContent {
-	margin: 10px 0px 15px 0px;
+	margin: 10px 10px 15px 10px;
 	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-size: 16px;
+	color: #19568C;
+	line-height: 130%;
 }
 
 .textContent div {
@@ -547,19 +551,13 @@ div.searchlight-results div.searchlight-selected {
 	float:right;
 	text-align:right;
 	width: 200px;
-	padding:0px 0px 10px 20px;
-	font-size:14px;
-	color: #E2E2E2;
+	padding:10px 0px 0px 20px;
+	color: #0079c1;
 	font-weight:normal;
 	margin-top: 0px;
-	font-family:arial;
 }
 #detailBody #pageNav a{
-	text-decoration:none;
-	color: #29578C;
-}
-#detailBody #pageNav a:hover {
-	color: #E2E2E2;
+	color: #0079c1;
 }
 #detailBody h1 {
 	width: 650px;
@@ -573,15 +571,15 @@ div.searchlight-results div.searchlight-selected {
 }
 #detailBody #leftCol .unit{
 	margin-bottom:12px;
-	color: #000000;
+	color: #19568c;
 }
 #detailBody #leftCol #description, #description p{
 	margin-top:12px;
-	color: #000000;
+	color: #19568c;
 }
 #detailBody #leftCol.entity{
 	width: 300px;
-	color: #000000;
+	color: #19568c;
 	font-family: arial;
 }
 #objDetailRelObjects td.imageIcon{
@@ -686,7 +684,7 @@ div.searchlight-results div.searchlight-selected {
 }
 /* nav bar on details with thumbnail grid */
 #detailNavBar{
-	background-color: #e6e6e6;
+	background-color: #f7f7f7;
 	margin:10px 0px 15px 0px;
 	text-align:center;
 	padding:8px 10px 5px 10px;
@@ -697,7 +695,9 @@ div.searchlight-results div.searchlight-selected {
 	font-size:14px;
 	font-weight:bold;
 	text-decoration:none;
-	color: #666666;
+	color: #19568c;
+		
+	font-family: WeissBT-Roman;
 }
 #detailNavBar #next{
 	float:right;
@@ -769,6 +769,9 @@ div.searchlight-results div.searchlight-selected {
 	-webkit-border-top-right-radius: 20px;
 	-moz-border-radius-topright: 20px;
 	border-top-right-radius: 20px;
+}
+.entity #objUserData{
+	margin:20px 20px 20px 0px;
 }
 #objUserData H2{
 	font-family:WeissBT-Roman;
@@ -958,7 +961,7 @@ td.advSearchElement{
 /* ------------------------------------- */
 #searchNavBg{
 	clear:both;
-	background-color: #E2E2E2;
+	background-color: #f7f7f7;
 }
 .searchNav{
 	text-align:center;
@@ -967,6 +970,9 @@ td.advSearchElement{
 	font-size:13px;
 	margin-left: auto;
 	margin-right: auto;	
+	font-family: WeissBT-Roman;
+	font-size: 14px;
+	font-weight:bold;
 }
 .searchNav form{
 	float:left;
@@ -996,17 +1002,17 @@ td.advSearchElement{
 	margin-bottom:2px;
 }
 .searchNav a{
-	font-family: Arial, sans-serif;
 	font-size:14px;
 	color: #000000;
 	font-weight:bold;
 	text-decoration:none;
+	font-family: WeissBT-Roman;
 }
 .searchNav a:hover{
 	color: #828282;
 }
 .searchNav .linkOff{
-	font-family: Arial, sans-serif;
+	font-family: WeissBT-Roman;
 	font-size:14px;
 	color: #B1B1B1;
 	font-weight:bold;
@@ -1145,12 +1151,13 @@ td.advSearchElement{
 	float:right;
 	margin: 1px 2px 0px 10px;
 	text-decoration:none;
-	text-transform:uppercase;
-	color:#828282;
-	font-size:11px;
+	
+	font-family: WeissBT-Roman;
+	font-size: 12px;
+	text-transform: uppercase;
+	color: #19568C;
 	
 }
-/*
 #hideOptions{
 	position:absolute;
 	right:20px;
@@ -1160,9 +1167,10 @@ td.advSearchElement{
 	text-transform:uppercase;
 	color:#828282;
 	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;
 	
 }
-*/
 #searchOptionsBox{
 	position:relative;
 	clear:both;
@@ -1203,17 +1211,24 @@ td.advSearchElement{
 	font-size:14px;
 	font-weight:bold;
 	margin-bottom:10px;
+	font-family: WeissBT-Roman;
+	text-transform: uppercase;
+	color:#666;
 }
 #searchOptionsBox .bg{
-	background-color: #E2E2E2;
 	border:0px;
 	padding:20px 20px 10px 20px;
+	background-color: #f7f7f7;
+	font-family:arial;
 }
 #searchOptionsBox .apply{
 	margin:0px -20px 0px -20px;
 	border-top:2px solid #F1F1F1;
 	padding:10px 10px 0px 10px;
 	text-align:center;
+	font-size:14px;
+	font-family: WeissBT-Roman;
+	font-weight: bold;
 }
 #searchOptionsBox .apply a{
 	text-decoration: none;
@@ -1228,33 +1243,48 @@ td.advSearchElement{
 	float:right;
 	margin: 1px 0px 0px 10px;
 	text-decoration:none;
-	text-transform:uppercase;
-	color:#828282;
-	font-size:11px;
+	font-family: WeissBT-Roman;
+	font-size: 12px;
+	text-transform: uppercase;
+	color: #19568C;
 	
 }
 #searchRefineBox{
 	clear:both;
 	margin: 0px 0px 0px 0px;
 	display:none;
-	font-size:12px;
 	color:#828282;
+	font-family: WeissBT-Roman;
+	font-size:14px;
+	font-weight: 700;
 }
+#searchRefineBox a{
+	font-family:arial;
+	font-size: 12px;
+	font-weight:400;
+	text-decoration: none;
+}
+
 #searchRefineBox .bg{
-	background-color: #E2E2E2;
+	background-color: #f7f7f7;
 	border:0px;
 	padding:10px 20px 10px 20px;
 }
-/*
 #hideRefine{
 	float:right;
 	margin: 0px 0px 0px 10px;
 	text-decoration:none;
 	text-transform:uppercase;
-	color:#828282;
-	font-size:12px;	
+	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;
 }
-*/
+a#hideRefine {
+	color:#828282;	
+	font-size:12px;
+	font-family: WeissBT-Roman;
+	font-weight: 700;
+}
 #searchRefineParameters{
 	float:left;
 	padding:3px 0px 0px 3px;
@@ -1319,23 +1349,18 @@ td.advSearchElement{
 	line-height: 1.3em;
 	width:600px;
 }
-
-/*
 #loginForm .bg, #registerForm .bg, #resetPassword .bg{
-	background-color: #e6e6e6;
-	border: 1px solid #E2E2E2;
-	padding:10px;
+	padding:10px 15px 10px 10px;
 	margin:0px 0px 20px 0px;
-	-moz-border-radius-bottomleft: 10px; 
-	-webkit-border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px; 
-	-webkit-border-bottom-right-radius: 10px;
-	-moz-border-radius-topleft: 10px; 
-	-webkit-border-top-left-radius: 10px;
-	-moz-border-radius-topright: 10px; 
-	-webkit-border-top-right-radius: 10px;
+	background-color:#f7f7f7;
+	border: 0px;
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-top-radius: 0px;
+	-webkit-border-top-right-radius: 20px;
+	-moz-border-radius-topright: 20px;
+	border-top-right-radius: 20px;
 }
-*/
 #loginForm div, #registerForm div{
 	margin-top:15px;
 	margin-bottom:15px;
@@ -1611,19 +1636,21 @@ td.advSearchElement{
 
 /* landing page */
 #facetList{
-	padding:10px;
 	width:400px;
 	float:left;
+	padding: 0px 10px 10px 10px;
 }
 .startBrowsingBy{
 	color: #828282;
 	font-size:13px;
 	padding-left:10px;
+	text-transform: uppercase;
 }
 .facetHeadingLink a{
 	margin-bottom:5px;
 	text-decoration:none;
 	font-size:18px;
+	color:#19568C;
 }
 a.facetHeadingLink h1{	
 	font-size:18px;
@@ -1641,7 +1668,7 @@ a.facetHeadingLink h1{
 	float:right;
 	width: 420px;
 	text-align: center;
-	border: 2px solid #e8e8e8;
+	border: 1px solid #ccc;
 	height:440px;
 }
 
@@ -1655,12 +1682,15 @@ a.facetHeadingLink h1{
 	padding: 10px 5px 5px 5px;
 }
 #browseRandomCaption a{
-	color: #666666;
-	font-size: 14px;
 	width: 400px;
 	text-align: center;
 	height: 20px;
 	text-decoration: none;
+	font-family: arial;
+	font-size: 11px;
+	text-transform: none;
+	text-decoration: underline;
+	color: #0079C1;
 }
 
 /* browse controls when browse has been initiated */
@@ -1838,29 +1868,29 @@ a.facetHeadingLink h1{
 
 
 
-/* --- browse pop up panels 
+/* --- browse pop up panels */
 .browseSelectPanel, #browse .browseSelectPanel {  
 	position: absolute; 
 	top: 100px; 
 	left: 50%; 
-	border: 3px solid #000000; 
+	border: 1px solid #999999; 
 	background-color: #FFFFFF; 
 	width: 900px; 
 	height: 400px; 
 	display: none;
 	margin-left: -465px;
 	padding: 10px;
-	background-image: url("../graphics/bgStripeBW.gif");
-	-moz-border-radius-bottomleft: 10px; 
-	-webkit-border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px; 
-	-webkit-border-bottom-right-radius: 10px;
-	-moz-border-radius-topleft: 10px; 
-	-webkit-border-top-left-radius: 10px;
-	-moz-border-radius-topright: 10px; 
-	-webkit-border-top-right-radius: 10px;
+	background-color: #f7f7f7;
+	-moz-border-radius-bottomleft: 5px; 
+	-webkit-border-bottom-left-radius: 5px;
+	-moz-border-radius-bottomright: 5px; 
+	-webkit-border-bottom-right-radius: 5px;
+	-moz-border-radius-topleft: 5px; 
+	-webkit-border-top-left-radius: 5px;
+	-moz-border-radius-topright: 5px; 
+	-webkit-border-top-right-radius: 5px;
+	border-radius:5px;
 }
-*/
 #browseFacetGroupingControls{ /*  used in browse and details with browse */
 	float:right;
 	margin: 10px 10px 0px 10px;
@@ -1885,14 +1915,15 @@ a.facetHeadingLink h1{
 	font-size: 34px;
 	font-weight:bold;
 	text-transform:uppercase;
-	color:#333333;
+	color:#19568c;
 	line-height:1em;
 	padding-bottom:5px;
+	font-family: WeissBT-Roman;
 }
 
 .browseSelectPanelContentArea { /*  used in browse and details with browse */
-	border: 1px solid #333333;
 	background-color: #FFFFFF;
+	border: 1px solid #eee;
 }
 
 #browseSelectPanelHeader { /*  used in browse and details with browse */
@@ -1900,19 +1931,21 @@ a.facetHeadingLink h1{
 	margin: 10px;
 	text-transform:uppercase;
 	font-size:14px;
-	color:#333333;
 	font-weight:bold;
 	height: 18px;
 	overflow:hidden;
 	width: 635px;
+	font-family: WeissBT-Roman;
+	color:#19568c;
 }
 #browseSelectPanelHeader a { /*  used in browse and details with browse */
 	text-decoration:none;
 	text-transform:uppercase;
 	font-size:14px;
-	color:#333333;
 	font-weight:bold;
 	padding-right:4px;
+	font-family: WeissBT-Roman;
+	color:#19568c;
 }
 
 #browseSelectPanelHeaderContent {
@@ -1955,20 +1988,21 @@ div.browseSelectPanelCacheError {
 
 .listDivide{ /*  used in browse and details with browse */
 	height:1px;
-	border-bottom: 1px #333333 solid;
+	border-bottom: 1px #eee solid;
 }
 
 div.browseSelectPanelListGroupHeading { /*  used in browse and details with browse */
 	font-size: 34px;
 	font-weight: bold;
-	padding-top: 5px;
+	padding-top: 15px;
 	margin-bottom: 5px;
-	color:#4c4c4c;
+	color:#19568c;
+	font-family: WeissBT-Roman;
 }
 
 a.browseSelectPanelListGroupHeading, a.browseSelectPanelListGroupHeading:hover { /*  used in browse and details with browse */
 	text-decoration: none;
-	color: #4c4c4c;
+	color: #19568c;
 }
 
 a.browseSelectPanelButton {   /*  used in browse and details with browse */
@@ -1989,7 +2023,7 @@ a.browseSelectPanelLink { /*  used in browse and details with browse */
 	font-size: 10px;
 	text-decoration:none;
 	font-size:12px;
-	color:#4c4c4c;
+	color:#0079c1;
 }
 
 a.browseSelectPanelLink:hover { /*  used in browse and details with browse */

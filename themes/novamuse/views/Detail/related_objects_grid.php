@@ -18,11 +18,32 @@
 		$va_media_info = $qr_hits->getMediaInfo('ca_object_representations.media','thumbnail');
 		$vn_padding_top = 0;
 		$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
+		$vs_image = $qr_hits->getMediaTag('ca_object_representations.media','thumbnail');
+		if(!$vs_image){
+			# --- get the placeholder graphic from the novamuse theme
+			$va_themes = caExtractValuesByUserLocale($qr_hits->get("novastory_category", array("returnAsArray" => true)));
+			$vs_placeholder = "";
+			if(sizeof($va_themes)){
+				$t_list_item = new ca_list_items();
+				foreach($va_themes as $k => $vs_list_item_id){
+					$t_list_item->load($vs_list_item_id);
+					if(file_exists($this->request->getThemeDirectoryPath()."/graphics/novamuse/placeholders/small/".$t_list_item->get("idno").".png")){
+						$vs_image = "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/small/".$t_list_item->get("idno").".png'>";
+						$vn_padding_top_bottom = 5;
+					}
+				}
+			}
+			if(!$vs_image){
+				$vs_image = "<img src='".$this->request->getThemeUrlPath()."/graphics/novamuse/placeholders/small/placeholder.png'>";
+				$vn_padding_top_bottom = 5;
+			}
+		}
+		
 		print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
 		if($this->request->config->get('allow_detail_for_ca_objects')){
-			print caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media','thumbnail'), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')));
+			print caNavLink($this->request, $vs_image, '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')));
 		}else{
-			print $qr_hits->getMediaTag('ca_object_representations.media','thumbnail');
+			print $vs_image;
 		}
 		// Get thumbnail caption
 		$this->setVar('object_id', $vn_object_id);
