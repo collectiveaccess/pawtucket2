@@ -226,7 +226,7 @@
 				}
 			}
  			
- 			$t_row = new ca_objects($pn_object_id);
+ 			//$t_row = new ca_objects($pn_object_id);
  			
  			$this->view->setVar('errors', $va_errors);
  			

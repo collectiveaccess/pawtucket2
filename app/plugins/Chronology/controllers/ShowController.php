@@ -235,7 +235,7 @@
  			$pn_silo_id = $this->request->getParameter('silo_id', pInteger);
  			$t_action = new ca_occurrences($pn_action_id);
  			$va_action = array();
- 			$va_action["objects"] = $t_action->get('ca_objects', array("restrict_to_relationship_types" => array("secondary"), "returnAsArray" => 1, 'checkAccess' => $this->opa_access_values));
+ 			$va_action["objects"] = $t_action->get('ca_objects', array("restrict_to_relationship_types" => array("display", "secondary"), "returnAsArray" => 1, 'checkAccess' => $this->opa_access_values));
  			$va_action["label"] = $t_action->getLabelforDisplay();
  			$va_action["georeference"] = $t_action->get('ca_occurrences.georeference.geocode');
  			# --- get a bigger map if there are no objects to show
