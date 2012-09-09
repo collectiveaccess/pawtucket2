@@ -37,21 +37,35 @@
 	
 	$vn_num_more_link = $this->request->config->get("num_items_before_more_link");
 	
+	$t_list = new ca_lists;
+	$vn_object_type_group = $t_list->getItemIDFromList('object_types', 'group');
+	
 ?>	
 <div id="pageHeading"><img src='<?php print $this->request->getThemeUrlPath(); ?>/graphics/ncr/t_artworks.gif' width='111' height='23' border='0'></div><!-- end pageHeading -->
 	<div id="detailBody">
 		<div id="pageNav">
 <?php
-			
-			if ($this->request->config->get('enable_bookmarks')) {
-				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark +"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-				}else{
-					print caNavLink($this->request, _t("Bookmark +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+			if($t_object->get("type_id") != $vn_object_type_group){
+				if(!$this->request->config->get('disable_my_collections')){
+					if($this->request->isLoggedIn()){
+						print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+					}else{
+						print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+					}
+				}
+				if ($this->request->config->get('enable_bookmarks')) {
+					if (!$this->request->config->get('disable_my_collections')) {
+						print "&nbsp;&nbsp;|&nbsp;&nbsp;";
+					}
+					if($this->request->isLoggedIn()){
+						print caNavLink($this->request, _t("Bookmark +"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+					}else{
+						print caNavLink($this->request, _t("Bookmark +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
+					}
 				}
 			}
 			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', _t("Back"), ''))) {
-				if ($this->request->config->get('enable_bookmarks')) {
+				if (($t_object->get("type_id") != $vn_object_type_group) && ($this->request->config->get('enable_bookmarks'))) {
 					print "&nbsp;&nbsp;|&nbsp;&nbsp;";
 				}
 				if ($this->getVar('previous_id')) {
@@ -69,9 +83,45 @@
 ?>
 		</div><!-- end nav -->
 <?php
-	$t_list = new ca_lists;
-	$vn_object_type_group = $t_list->getItemIDFromList('object_types', 'group');
 	if($t_object->get("type_id") == $vn_object_type_group){
+		if($t_object->get('ca_objects.idno')){
+			print "<div class='unit'><b>".$t_object->get('ca_objects.idno')."</b></div>";
+		}
+		print "<H2>";
+		# --- identifier
+		if($this->getVar('label')){
+			print $this->getVar('label');
+		}
+		# --- secondary and tertiary titles
+		$va_secondary_titles = $t_object->getNonPreferredLabels(null, false, array("restrict_to_types" => array("secondary"), "extractValuesByUserLocale" => true, "forDisplay" => true));
+		if(is_array($va_secondary_titles) && (sizeof($va_secondary_titles) > 0)){
+			foreach($va_secondary_titles as $vs_secondary_title){
+				print "<div class='alternateTitle'>".$vs_secondary_title."</div>";
+			}
+		}
+		$va_tertiary_titles = $t_object->getNonPreferredLabels(null, false, array("restrict_to_types" => array("tertiary"), "extractValuesByUserLocale" => true, "forDisplay" => true));
+		if(is_array($va_tertiary_titles) && (sizeof($va_tertiary_titles) > 0)){
+			foreach($va_tertiary_titles as $vs_tertiary_title){
+				print "<div class='alternateTitle'>".$vs_tertiary_title."</div>";
+			}
+		}
+		print "</H2>";
+		print "<div class='unit'>";
+		if($t_object->get("ca_objects.date.display_date")){
+			# --- get the start date to link the date to the chronology
+			$va_date_info = array_pop($t_object->get("ca_objects.date.parsed_date", array("rawDate" => true, "returnAsArray" => true)));
+			if($vn_start_date = intval($va_date_info["start"])){
+				print caNavLink($this->request, ($t_object->get("ca_objects.date.display_date")), '', 'Chronology', 'Detail', '', array('year' => $vn_start_date));
+				print "<br/>";
+			}else{
+				print ($t_object->get("ca_objects.date.display_date"))."<br/>";
+			}
+		}
+		# --- display number of sub-items
+		if($t_object->get("ca_objects.extent")){
+			print $t_object->get("extent")." "._t("example").(($t_object->get("ca_objects.extent") == 1) ? "" : "s");
+		}
+		print "</div><!-- end unit -->";
 		# ---------------------------------------------------
 		# --- display search result like display of child objects if this is a group record
 		# ---------------------------------------------------
@@ -85,7 +135,7 @@
 
 		$va_tooltips = array();
 		$col = 0;
-		print "<div id='artworkResults'>";
+		print "<div id='artworkResults' style='clear:right; margin-top:20px;'>";
 		while($vo_result->nextHit()) {
 			if (!$vs_idno = $vo_result->get('ca_objects.idno')) {
 				$vs_idno = "???";
@@ -404,8 +454,16 @@
 				if($t_object->get("ca_objects.num_of_elements")){
 					print ($t_object->get("ca_objects.num_of_elements"))."<br/>";
 				}
-				if($t_object->get("ca_objects.inscriptions")){
-					print ($t_object->get("ca_objects.inscriptions"))."<br/>";
+				if($vs_inscription = $t_object->get("ca_objects.inscriptions")){
+					// replace symbol codes with graphics
+					$vs_circle = caHTMLImage($this->request->getThemeUrlPath(true).'/graphics/symbols/bisected_circle_24_gray.png', array('width' => 12, 'height' => 12, 'alt' => 'circle line'));
+					$vs_hiragana_no = caHTMLImage($this->request->getThemeUrlPath(true).'/graphics/symbols/hiragana_no_24_gray.png', array('width' => 13, 'height' => 12, 'alt' => 'Hiragana no'));
+					$vs_inscription = preg_replace('!\[c\]!i', $vs_circle, $vs_inscription);
+					$vs_inscription = preg_replace('!\[circle/line\]!i', $vs_circle, $vs_inscription);
+					$vs_inscription = preg_replace('!\[no\]!i', $vs_hiragana_no, $vs_inscription);
+					$vs_inscription = preg_replace('!\[Hiragana no\]!i', $vs_hiragana_no, $vs_inscription);
+					
+					print $vs_inscription."<br/>";
 				}
 				print "</div><!-- end unit -->";
 				
