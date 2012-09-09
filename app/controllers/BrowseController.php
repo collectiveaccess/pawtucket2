@@ -95,6 +95,10 @@
  				if (sizeof($va_tmp) > 1) {
  					$va_target_list[$vs_target]->setTypeRestrictions(array($va_tmp[1]));
  				}
+ 				
+ 				if ($vs_facet_group = $po_request->config->get($va_tmp[0].'_browse_facet_group')) {
+ 					$va_target_list[$vs_target]->setFacetGroup($vs_facet_group);
+ 				}
  			}
  			$this->view->setVar('targets', $va_target_list);
  			

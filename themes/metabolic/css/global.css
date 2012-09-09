@@ -3213,7 +3213,7 @@ div.jGrowl div.jGrowl-closer {
 }
 
 .ac_loading {
-	background: white url('indicator.gif') right center no-repeat;
+	background: white url('indicator.gif') right center no-repeat !important;
 }
 
 .ac_odd {

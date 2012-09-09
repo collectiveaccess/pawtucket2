@@ -38,6 +38,7 @@
 	$va_errors 			= $this->getvar("errors");
 	$va_errors_edit_folder = $this->getVar("errors_edit_folder");
 	$va_errors_new_folder 	= $this->getVar("errors_new_folder");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <h1><?php print _t("Your Bookmarks"); ?></h1>
 <div id="bookmarksEditor">
@@ -189,6 +190,7 @@
 ?>
 	<div id="bookmarksList">
 <?php
+		$t_object_bookmark_item = new ca_objects();
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
 			$ibg = 1;
 			foreach($va_items as $vn_item_id => $va_item) {
@@ -200,13 +202,21 @@
 					$ps_bg_class = "bookmarkBg";
 					$ibg++;
 				}
+				$vs_thumbnail = "";
+				if($va_item["tablename"] == "ca_objects"){
+					$t_object_bookmark_item->load($va_item["row_id"]);
+					$va_media = array();
+					$va_media = $t_object_bookmark_item->getPrimaryRepresentation(array('tiny'), null, array('checkAccess' => $va_access_values));
+					$vs_thumbnail = $va_media["tags"]["tiny"];
+					#print_r($va_media);
+				}
 				print "<div class='bookmark ".$ps_bg_class."'>&rsaquo; ";
 				print caNavLink($this->request, "&nbsp;", 'removeBookmark', '', 'Bookmarks', 'DeleteItem', array("bookmark_id" => $vn_item_id));
+				if($vs_thumbnail){
+					print caNavLink($this->request, $vs_thumbnail, '', 'Detail', $va_item['controller'], 'Show', array($va_item['primary_key'] => $va_item['row_id']));
+				}
 				print caNavLink($this->request, $va_item['label'], '', 'Detail', $va_item['controller'], 'Show', array($va_item['primary_key'] => $va_item['row_id']));
-				print "</div>";
-?>
-
-<?php	
+				print "</div>";	
 
 			}
 		}

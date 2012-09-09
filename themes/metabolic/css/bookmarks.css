@@ -51,6 +51,10 @@
 	text-decoration:none;
 	color:#333;
 }
+#bookmarksList .bookmark a img{
+	vertical-align:middle;
+	margin-right:10px;
+}
 #bookmarksList .bookmarkBg {
 	background-color: none;
 	border-bottom: 1px dotted #777;
