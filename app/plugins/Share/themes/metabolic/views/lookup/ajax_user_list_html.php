@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	$va_user_list = array();
 	foreach($this->getVar('user_list') as $vn_item_id => $va_item) {
-		print $va_item['email'].'|'.str_replace("|", "-", $va_item['_display'])."|".$vn_item_id."|".$va_item['type_id']."|".$va_item['fname']."|".$va_item['lname']."\n";
+		$va_user_list[] = array(
+			'id' => $va_item['email'], 'name' => $va_item['email']
+		);
 	}
+	print json_encode($va_user_list);
 ?>
