@@ -259,6 +259,7 @@ div.searchlight-results div.searchlight-selected {
 	margin-top: 10px;
 	width: 360px;
 	text-align: left;
+	line-height:1.3em;
 }
 .tooltipText{ /* used in features */
 	text-align:center;
@@ -514,7 +515,7 @@ div.searchlight-results div.searchlight-selected {
 	float:right;
 	margin:0px;
 	text-align:right;
-	width: 230px;
+	width: 400px;
 	padding:0px 0px 5px 20px;
 	font-size:12px;
 	color: #e2e2e2;

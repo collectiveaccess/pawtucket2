@@ -64,7 +64,7 @@
 			<form method="post" action="<?php print caNavUrl($this->request, 'Share', 'Share', 'sendEmailObject', array('object_id' => $vn_object_id)); ?>" name="emailObject" enctype='multipart/form-data'>
 				<div class="formLabel">
 					<?php print ($va_errors["to_email"]) ? "<div class='formErrors'>".$va_errors["to_email"]."</div>" : ""; ?>
-					<?php print _t("To e-mail address<br/>(Enter multiple addresses separated by commas)"); ?>
+					<?php print $this->request->isLoggedIn() ? _t("To e-mail address") : _t("To e-mail address<br/>(Enter multiple addresses separated by commas)"); ?>
 				</div>
 				<div>
 					<input type="text" name="to_email" value="<?php print $vs_to_email; ?>" id="to_email"/>
@@ -129,13 +129,18 @@
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-			jQuery('#to_email').autocomplete('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', 
-				{ minChars: 3, matchSubset: 1, matchContains: 1, delay: 800, scroll: true, max: 100, extraParams: {},
-					formatResult: function(data, value) {
-						return jQuery.trim(value.replace(/<\/?[^>]+>/gi, ''));
+			jQuery('#to_email').tokenInput('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', {
+				onResult: function (results) {
+					if (results.length == 0) {
+						var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+						var emailinput = jQuery('#token-input-to_email').val();
+						if (emailinput.search(emailRegEx) >= 0) {
+							jQuery('#to_email').tokenInput("add", {id: emailinput, name: emailinput});
+						}
 					}
-				}
-			);
+                    return results;
+            	}, preventDuplicates: true
+            });
 <?php
 		}
 ?>
