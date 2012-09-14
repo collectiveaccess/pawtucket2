@@ -135,7 +135,7 @@
 						
  		}
  		# -------------------------------------------------------
- 		function index() {
+ 		public function index() {
 			#print $this->ops_tablename;
 			JavascriptLoadManager::register('cycle');
  			$this->getDefaults();
@@ -145,45 +145,6 @@
 			
  			parent::Index(true);
  			
- 			$va_featured_ids = array();
- 			$t_featured = new ca_sets();
- 			# --- featured artists set - set name assigned in eastend.conf - plugin conf file
-			$t_featured->load(array('set_code' => $this->opo_plugin_config->get('featured_artists_set_name')));
-			 # Enforce access control on set
- 			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_featured->get("access"), $this->opa_access_values))){
-  				$this->view->setVar('featured_set_id', $t_featured->get("set_id"));
- 				$va_featured_ids = array_keys(is_array($va_tmp = $t_featured->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'shuffle' => 1))) ? $va_tmp : array());	// These are the entity ids in the set
- 			}
- 			if(!is_array($va_featured_ids) || (sizeof($va_featured_ids) == 0)){
-				# put random entities in the features variable
- 				$o_db = new Db();
- 				$q_entities = $o_db->query("SELECT e.entity_id from ca_entities e WHERE e.access IN (".implode($this->opa_access_values, ", ").") ORDER BY RAND() LIMIT 10");
- 				if($q_entities->numRows() > 0){
- 					while($q_entities->nextRow()){
- 						$va_featured_ids[] = $q_entities->get("entity_id");
- 					}
- 				}
-			}
-			
-			# --- loop through featured ids and grab the entity's name, portrait, lifespan -lifespans_date, indexing_notes (brief description abouthow they relate to the east end)
-			$t_entity = new ca_entities();
-			$t_object = new ca_objects();
-			$va_featured_artists = array();
-			foreach($va_featured_ids as $vn_featured_entity_id){
-				$va_tmp = array();
-				$t_entity->load($vn_featured_entity_id);
-				$va_tmp["entity_id"] = $vn_featured_entity_id;
-				$va_tmp["lifespan"] = $t_entity->get("lifespans_date");
-				$va_tmp["indexing_notes"] = $t_entity->get("indexing_notes");
-				$va_tmp["name"] = $t_entity->getLabelForDisplay();
-				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
-				$va_object = array_shift($va_objects);
-				$t_object->load($va_object["object_id"]);
-				$va_portrait = $t_object->getPrimaryRepresentation(array("medium"));
-				$va_tmp["image"] = $va_portrait["tags"]["medium"];
-				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
-			}
-			$this->view->setVar("featured_artists", $va_featured_artists);
 			$this->render('artist_browser_html.php');
  		}
  		# -------------------------------------------------------
@@ -225,6 +186,49 @@
  			}
  			parent::getFacet($pa_options);
  		}
+		# -------------------------------------------------------
+		public function getFeaturedArtistSlideshow(){
+			$va_featured_ids = array();
+ 			$t_featured = new ca_sets();
+ 			# --- featured artists set - set name assigned in eastend.conf - plugin conf file
+			$t_featured->load(array('set_code' => $this->opo_plugin_config->get('featured_artists_set_name')));
+			 # Enforce access control on set
+ 			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_featured->get("access"), $this->opa_access_values))){
+  				$this->view->setVar('featured_set_id', $t_featured->get("set_id"));
+ 				$va_featured_ids = array_keys(is_array($va_tmp = $t_featured->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'shuffle' => 1))) ? $va_tmp : array());	// These are the entity ids in the set
+ 			}
+ 			if(!is_array($va_featured_ids) || (sizeof($va_featured_ids) == 0)){
+				# put random entities in the features variable
+ 				$o_db = new Db();
+ 				$q_entities = $o_db->query("SELECT e.entity_id from ca_entities e WHERE e.access IN (".implode($this->opa_access_values, ", ").") ORDER BY RAND() LIMIT 10");
+ 				if($q_entities->numRows() > 0){
+ 					while($q_entities->nextRow()){
+ 						$va_featured_ids[] = $q_entities->get("entity_id");
+ 					}
+ 				}
+			}
+			
+			# --- loop through featured ids and grab the entity's name, portrait, lifespan -lifespans_date, indexing_notes (brief description abouthow they relate to the east end)
+			$t_entity = new ca_entities();
+			$t_object = new ca_objects();
+			$va_featured_artists = array();
+			foreach($va_featured_ids as $vn_featured_entity_id){
+				$va_tmp = array();
+				$t_entity->load($vn_featured_entity_id);
+				$va_tmp["entity_id"] = $vn_featured_entity_id;
+				$va_tmp["lifespan"] = $t_entity->get("lifespans_date");
+				$va_tmp["indexing_notes"] = $t_entity->get("indexing_notes");
+				$va_tmp["name"] = $t_entity->getLabelForDisplay();
+				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
+				$va_object = array_shift($va_objects);
+				$t_object->load($va_object["object_id"]);
+				$va_portrait = $t_object->getPrimaryRepresentation(array("medium"));
+				$va_tmp["image"] = $va_portrait["tags"]["medium"];
+				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
+			}
+			$this->view->setVar("featured_artists", $va_featured_artists);
+			$this->render('featured_artists_html.php');
+		}
 		# -------------------------------------------------------
  	}
  ?>

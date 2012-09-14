@@ -34,6 +34,7 @@
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 	require_once(__CA_MODELS_DIR__."/ca_places.php");
+	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
  
  	class ChronologyController extends BaseSearchController {
@@ -133,7 +134,7 @@
 			$va_period_data["occurrences"] = $qr_occs;
 			
 			$o_ent_search = new EntitySearch();
-			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entities.lname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entity_labels.lname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_period_data["entities"] = $qr_entities;
 			
 			# -- make array of entity_ids so can find places associated with these entities to map
@@ -186,8 +187,7 @@
 			$qr_objects_refine = $o_obj_search_refine->search("ca_objects.creation_date:\"".$vn_y."\"".$vs_refine, array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			#print "ca_objects.creation_date:\"".$vn_y."\"".$vs_refine;
 			$va_period_data["objects"] = $qr_objects_refine;
-			$this->view->setVar('period_data', $va_period_data);
-			
+			$this->view->setVar('period_data', $va_period_data);			
 			$this->render('chronology_object_results_html.php');
  		}
  		# ------------------------------------------------------- 

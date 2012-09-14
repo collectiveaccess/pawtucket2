@@ -347,6 +347,7 @@ div.searchlight-results div.searchlight-selected {
 /* ------------------------------------- */
 /*  HOME PAGE */
 /* ------------------------------------- */
+/*
 #hpTextContainer {
 	width:270px; 
 	float:right;
@@ -409,6 +410,7 @@ div.searchlight-results div.searchlight-selected {
 	font-size:12px;
 	color:#333;
 }
+*/
 #featuredScroll {
 	text-align: center;
 	width: 610px;
@@ -1958,9 +1960,6 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	height: 100%;
 	overflow: auto;
 	text-align: center;
-}
-#caMediaOverlayContentMedia{
-	background-color:#000;
 }
 
 div.caMediaOverlayControls {

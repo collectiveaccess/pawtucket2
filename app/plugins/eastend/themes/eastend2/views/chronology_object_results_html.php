@@ -21,8 +21,29 @@
 	}
 
 	if($q_objects->numHits()){
+		$vs_col1 = "";
+		$vs_col2 = "";
+		$vs_date = "";
+		$vs_link = "";
+		$vn_i = 0;
 		while($q_objects->nextHit()){
-			print "<div class='chronoThumbnail'>".caNavLink($this->request, $q_objects->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."<br/>".$q_objects->get("creation_date")."</div>";
+			if($vs_image = $q_objects->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values))){
+				$vn_i++;
+				$vs_link = "";
+				$vs_link = caNavLink($this->request, $vs_image, "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."<br/>";
+				if($vs_date != $q_objects->get("creation_date")){
+					$vs_date = $q_objects->get("creation_date");
+					$vs_link = $vs_date."<br/>".$vs_link;
+				}
+				if($vn_i == 1){
+					$vs_col1 .= $vs_link;
+				}else{
+					$vs_col2 .= $vs_link;
+					$vn_i = 0;
+				}
+			}
 		}
+		print "<div class='col'>".$vs_col1."</div>";
+		print "<div class='col'>".$vs_col2."</div>";
 	}
 ?>
