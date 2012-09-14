@@ -64,6 +64,10 @@ var caUI = caUI || {};
 			currentSelectionDisplayFormat: '%1',
 			currentSelectionIDID: '',
 			
+			allowExtractionFromHierarchy: false,
+			extractFromHierarchyButtonIcon: null, 
+			extractFromHierarchyMessage: null,
+			
 			selectOnLoad: false,
 			onSelection: null,		/* function to call whenever an item is selected; passed item_id, parent_id, name, formatted display string and type_id */
 			
@@ -242,6 +246,10 @@ if (that.uiStyle == 'horizontal') {
 							}
 						}
 						
+						if ((l > 0) && (that.allowExtractionFromHierarchy) && (that.initItemID == item[data._primaryKey]) && that.extractFromHierarchyButtonIcon) {
+							moreButton += "<div style='float: right; margin-right: 5px; opacity: 0.3;' id='hierBrowser_" + that.name + "_extract_container'><a href='#' id='hierBrowser_" + that.name + "_extract'>" + that.extractFromHierarchyButtonIcon + "</a></div>";
+						}
+						
 						if ( (!((l == 0) && that.dontAllowEditForFirstLevel))) {
 							jQuery('#' + newLevelListID).append(
 								"<li class='" + that.className + "'>" + moreButton +"<a href='#' id='hierBrowser_" + that.name + '_level_' + l + '_item_' + item[data._primaryKey] + "' class='" + that.className + "'>"  +  jQuery('<div/>').text(item.name).html() + "</a></li>"
@@ -311,6 +319,12 @@ if (that.uiStyle == 'horizontal') {
 								return false;
 							});
 						}
+										
+						if ((that.allowExtractionFromHierarchy) && (that.extractFromHierarchyButtonIcon)) {
+							jQuery('#' + newLevelListID + ' #hierBrowser_' + that.name + '_extract').unbind('click.extract').bind('click.extract', function() {
+								that.extractItemFromHierarchy(item[data._primaryKey], item);
+							});
+						}
 } else {
 	if (that.uiStyle == 'vertical') {
 		jQuery("#" + newLevelListID).append(jQuery("<option></option>").val(item.item_id).text(item.name));
@@ -325,6 +339,8 @@ if (that.uiStyle == 'horizontal') {
 						if (parent_id && (that.selectedItemIDs.length == 0)) { that.selectedItemIDs[0] = parent_id; }
 					}
 				});
+				
+			
 				
 if (that.uiStyle == 'horizontal') {
 				if (!is_init) {
@@ -367,6 +383,7 @@ if (that.uiStyle == 'horizontal') {
 				
 				jQuery('#' + newLevelDivID + ' img._indicator').remove();		// hide loading indicator
 			});
+			
 			
 			that.levelLists[level] = newLevelDivID;
 			return newLevelDiv;
@@ -414,8 +431,27 @@ if (that.uiStyle == 'horizontal') {
 				that.selectedItemIDs.pop();
 			}
 			
+			jQuery("#hierBrowser_" + that.name + "_extract_container").css('opacity', 0.3);
+			
 			jQuery('#hierBrowser_' + that.name + '_' + l + ' a').removeClass(that.classNameSelected).addClass(that.className);
 			jQuery('#hierBrowser_' + that.name + '_level_' + l + '_item_' + item_id).addClass(that.classNameSelected);
+		}
+		// --------------------------------------------------------------------------------
+		// 
+		that.extractItemFromHierarchy = function(item_id, item) {
+			
+			if (that.currentSelectionDisplayID) {
+				jQuery('#' + that.currentSelectionDisplayID).html(that.extractFromHierarchyMessage);
+			}
+			
+			if (that.currentSelectionIDID) {
+				jQuery('#' + that.currentSelectionIDID).attr('value', null);
+			}
+			jQuery("#hierBrowser_" + that.name + "_extract_container").css('opacity', 1.0);
+			
+			if (that.onSelection) {
+				that.onSelection(item_id, null, item.name, that.extractFromHierarchyMessage, null);
+			}
 		}
 		// --------------------------------------------------------------------------------
 		// return database id (the primary key in the database, *NOT* the DOM ID) of currently selected item

@@ -326,13 +326,13 @@
 							print caNavLink($this->request, $va_item['representation_tag_thumbnail'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']));
 						}
 						
-						if ($va_item['name']) {
-							if (unicode_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
-							} else {
-								$va_title[] = '<em>'.$va_item['name'].'</em>';
-							}
-						}
+						#if ($va_item['name']) {
+						#	if (unicode_strlen($va_item['name']) > 70) {
+						#		$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
+						#	} else {
+						#		$va_title[] = '<em>'.$va_item['name'].'</em>';
+						#	}
+						#}
 						
 						if ($va_item['idno']) {
 							$va_title[] = '<strong>'._t('Id:').'</strong> '.$va_item['idno'];
