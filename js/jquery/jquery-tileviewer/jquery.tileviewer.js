@@ -385,7 +385,6 @@ var methods = {
                             var subtileid = Math.floor(x/factor) + Math.floor(y/factor)*xtilenum_up;
                         	var url = options.src + methods.getTilepicTileNum(layer.level+down, subtileid, layer);
                             var img = layer.tiles[url];
-                            console.log("1: " + url);
                             if(img && img.loaded) {
                                 //crop the source section
                                 var half_tilesize = layer.info.tilesize/factor;
