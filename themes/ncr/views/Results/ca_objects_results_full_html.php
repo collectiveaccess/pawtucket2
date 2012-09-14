@@ -31,8 +31,13 @@ $va_access_values =  	$this->getVar('access_values');
 $vo_result 				= $this->getVar('result');
 $vn_items_per_page		= $this->getVar('current_items_per_page');
 $vs_research_pending_output = "";
+$t_list = new ca_lists;
+$vn_object_type_group = $t_list->getItemIDFromList('object_types', 'group');
+$t_child = new ca_objects();
 
 if($vo_result) {
+	$t_list = new ca_lists;
+	$vn_object_type_group = $t_list->getItemIDFromList('object_types', 'group');
 	$col = 0;
 	print "<div id='artworkResults'>";
 	while(($vn_item_count < $vn_items_per_page) && ($vo_result->nextHit())) {
@@ -58,19 +63,50 @@ if($vo_result) {
 		$va_caption = array();
 		$va_caption[] = "<span class='resultidno'>".trim($vo_result->get("ca_objects.idno"))."</span>";
 		$va_caption[] = "<i>".join('; ', $va_labels)."</i>".(($vo_result->get('ca_objects.status') == 0) ? " <span class='pending'>*</span>" : "");
-		$va_caption[] = $vo_result->get("ca_objects.date.display_date");
-		$va_caption[] = $vo_result->get("ca_objects.technique");
+		if($vo_result->get("ca_objects.date.display_date")){
+			$va_caption[] = $vo_result->get("ca_objects.date.display_date");
+		}
+		if($vo_result->get("ca_objects.technique")){
+			$va_caption[] = $vo_result->get("ca_objects.technique");
+		}
+		if($vo_result->get("ca_objects.type_id") == $vn_object_type_group){
+			$va_caption[] = $vo_result->get("ca_objects.extent")." "._t("example").(($vo_result->get("ca_objects.extent") == 1) ? "" : "s");
+		}
 		$vs_caption = join(', ', $va_caption);
 		$vs_result = join('<br/>', $va_caption);
 		print "<div class='searchFullTitle'>".caNavLink($this->request, $vs_result, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 		print "</div><!-- END searchFullText --></td>";
 		// set view vars for tooltip if there is an image
-		if($vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))){
+		#if($vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))){
+			$va_children_caption = array();
+			$vs_child_caption = "";
 			$this->setVar('tooltip_representation', $vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)));
+			# --- if this is a group object, get the children to display in the tooltip
+			if($vo_result->get("type_id") == $vn_object_type_group){
+				$va_children = $vo_result->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
+				foreach($va_children as $k => $va_child_info){
+					$t_child->load($va_child_info["object_id"]);
+					$vs_child_caption = "<span class='resultidno'>".trim($t_child->get("ca_objects.idno"))."</span>, ";
+					$vs_child_caption .= "<i>".$va_child_info["name"]."</i>, ";
+					if($t_child->get("ca_objects.date.display_date")){
+						$vs_child_caption .= $t_child->get("ca_objects.date.display_date").", ";
+					}
+					if($t_child->get("ca_objects.technique")){
+						$vs_child_caption .= $t_child->get("ca_objects.technique");
+					}
+					if($t_child->get("ca_objects.type_id") == $vn_object_type_group){
+						$vs_child_caption .= $t_child->get("ca_objects.extent")." "._t("example").(($t_child->get("ca_objects.extent") == 1) ? "" : "s");
+					}
+					$va_children_caption[] = $vs_child_caption;
+				}
+				$this->setVar('tooltip_children', "<b>".sizeof($va_children_caption)." "._t("example%1", (sizeof($va_children_caption) == 1) ? "" : "s")."</b><br/>".join("<br/>", $va_children_caption));
+			}else{
+				$this->setVar('tooltip_children', '');
+			}
 			TooltipManager::add(
 				".result{$vn_object_id}", $this->render('Results/ca_objects_result_tooltip_html.php')
 			);
-		}
+		#}
 		$vn_item_count++;
 		$col++;
 		if($col == 2){
