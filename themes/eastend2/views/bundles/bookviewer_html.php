@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,30 +25,40 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- 	$vs_book_title = $this->getVar('bookTitle');
- 	$vs_book_url = $this->getVar('bookUrl');
- 
-	foreach($this->getVar('pages') as $vn_i => $va_page) {
-		$va_pages[] = "{ pageTitle:'".addslashes(preg_replace("![\n\r]+!", " ", $va_page['pageTitle']))."', pageUrl: '".$va_page['pageUrl']."', pageWidth: '".$va_page['pageWidth']."', pageHeight: '".$va_page['pageHeight']."', previewUrl: '".$va_page['previewUrl']."', previewWidth: '".$va_page['previewWidth']."', previewHeight: '".$va_page['previewHeight']."'}";
-	}
+ 	
+ 	$vn_object_id 				= $this->getVar('object_id');
+ 	$vn_representation_id 		= $this->getVar('representation_id');
+ 	$vs_content_mode 			= $this->getVar('content_mode');
+ 	$va_sections	 			= $this->getVar('sections');
+ 	$vs_display_type 			= $this->getVar('display_type');
+ 	$va_display_options 		= $this->getVar('display_options');
+ 	if (($vn_initial_page = $this->getVar('initial_page')) <= 0) {
+ 		$vn_initial_page = 1;
+ 	}
 ?>
-<div id="BookReader">
+<?php print ($vs_display_type != 'media_overlay') ? '<div id="BookReaderContainer">' : ''; ?><div id="BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>">
     <noscript>
-    <p>
-        <?php print _t('The BookReader requires JavaScript to be enabled. Please check that your browser supports JavaScript and that it is enabled in the browser settings.'); ?>
-    </p>
+    	<p><?php print _t('The BookReader requires JavaScript to be enabled. Please check that your browser supports JavaScript and that it is enabled in the browser settings.'); ?></p>
     </noscript>
-</div>
+</div><?php print ($vs_display_type != 'media_overlay') ? '</div>' : ''; ?>
 <script type="text/javascript">
 	var caBookReader = caUI.initBookReader({
-		pages: [<?php print join(", ", $va_pages); ?>],
-		bookTitle: '<?php print htmlspecialchars($vs_book_title, ENT_QUOTES, 'utf-8'); ?>',
-		bookUrl: '<?php print $vs_book_url; ?>',
-		imagesBaseUrl: '<?php print $this->request->getBaseUrlPath(); ?>/js/ia/images/',
-		initialPage: <?php print (($vn_page = (int)$this->getVar("page")) && ($vn_page > 0)) ? $vn_page : 1; ?>,
-		downloadIconImgHTML: "<?php print caNavIcon($this->request, __CA_NAV_BUTTON_DOWNLOAD__); ?>",
-		downloadUrl: '<?php print $vs_book_url;?>',
-		closeIconImgHTML: "<img src='<?php print $this->request->getThemeUrlPath()."/graphics/buttons/x.png"; ?>' border='0' width='15' height='15' alt='<?php print _t('Close'); ?>'/>"
+		containerID: 'BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',
+		docURL: '<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetPageListAsJSON', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
+		page: <?php print $vn_initial_page; ?>,
+		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
+		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
+		editButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/buttons/arrow_grey_right.gif" alt="<?php print _t('View'); ?>"/>',
+<?php
+	if (caObjectsDisplayDownloadLink($this->request)) {
+?>
+		downloadButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/buttons/download.png" alt="<?php print _t('Download'); ?>"/>'
+<?php
+	} else {
+?>
+		downloadButton: null
+<?php
+	}
+?>
 	});
 </script>
