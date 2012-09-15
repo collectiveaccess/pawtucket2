@@ -74,9 +74,10 @@
  		public function Index() {
  			
 			$o_search = new EntitySearch();
- 		 	$o_search->setTypeRestrictions(array($this->opn_member_institution_id));
+ 		 	#$o_search->setTypeRestrictions(array($this->opn_member_institution_id));
  			$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
-			$qr_res = $o_search->search("*", array('sort' => 'ca_entities.preferred_labels', 'sort_direction' => 'asc'));
+			//$qr_res = $o_search->search("*", array('sort' => 'ca_entity_labels.name', 'sort_direction' => 'asc'));
+ 			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_member_institution_id);		// This is fastest
  			$o_map = new GeographicMap(900, 500, 'map');
 			$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "NovaStory", "MemberMap", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
