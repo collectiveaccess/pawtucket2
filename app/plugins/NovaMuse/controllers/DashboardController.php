@@ -47,16 +47,16 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			
  			$this->ops_theme = __CA_THEME__;																	// get current theme
- 			if(!is_dir(__CA_APP_DIR__.'/plugins/NovaStory/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
+ 			if(!is_dir(__CA_APP_DIR__.'/plugins/NovaMuse/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
  				$this->ops_theme = 'default';
  			}
- 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/NovaStory/themes/'.$this->ops_theme.'/views'));
+ 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/NovaMuse/themes/'.$this->ops_theme.'/views'));
  			
-			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/NovaStory/conf/NovaStory.conf');
+			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/NovaMuse/conf/NovaMuse.conf');
  			
- 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaStory plugin is not enabled')); }
+ 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaMuse plugin is not enabled')); }
  			
- 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaStory/themes/".$this->ops_theme."/css/dashboard.css",'text/css');
+ 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaMuse/themes/".$this->ops_theme."/css/dashboard.css",'text/css');
  			
  			$this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'dashboard');
 
@@ -301,7 +301,7 @@
  			$vn_object_tablenum = $this->opn_objectTableNum;
  			$o_db = new db();
  			# --- get the element_id for date attribute
- 			$q_theme_element_id = $o_db->query("select element_id from ca_metadata_elements where element_code = 'novastory_category'");
+ 			$q_theme_element_id = $o_db->query("select element_id from ca_metadata_elements where element_code = 'NovaMuse_category'");
  			$q_theme_element_id->nextRow();
  			$vn_theme_element_id = $q_theme_element_id->get("element_id");
  			$t_list = new ca_lists();
@@ -313,7 +313,7 @@
  												GROUP BY v.item_id order by c DESC limit 5;");
 			if($q_top_categories->numRows() > 0){
 				while($q_top_categories->nextRow()){
-					$va_theme_links[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($q_top_categories->get("item_id")), "", "", "Browse", "clearAndAddCriteria", array("facet" => "novastory_category_facet", "id" => $q_top_categories->get("item_id")));
+					$va_theme_links[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($q_top_categories->get("item_id")), "", "", "Browse", "clearAndAddCriteria", array("facet" => "NovaMuse_category_facet", "id" => $q_top_categories->get("item_id")));
 				}
 			}
 			return $va_theme_links;		

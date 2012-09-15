@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * NovaStoryPlugin.php : 
+ * NovaMusePlugin.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,12 +26,12 @@
  * ----------------------------------------------------------------------
  */
  
-	class NovaStoryPlugin extends BaseApplicationPlugin {
+	class NovaMusePlugin extends BaseApplicationPlugin {
 		# -------------------------------------------------------
 		public function __construct($ps_plugin_path) {
-			$this->description = _t('Adds member map and stats dashboard to NovaStory site');
+			$this->description = _t('Adds member map and stats dashboard to NovaMuse site');
 			
-			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/NovaStory.conf');
+			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/NovaMuse.conf');
 			parent::__construct();
 		}
 		# -------------------------------------------------------
@@ -56,7 +56,7 @@
 				$va_menuMembers = array(
 					'displayName' => _t('member map'),
 					'default' => array(
-						'module' => 'NovaStory',
+						'module' => 'NovaMuse',
 						'controller' => 'MemberMap',
 						'action' => 'Index'
 					),
@@ -65,7 +65,7 @@
 				$va_menuDashboard = array(
 					'displayName' => _t('dashboard'),
 					'default' => array(
-						'module' => 'NovaStory',
+						'module' => 'NovaMuse',
 						'controller' => 'Dashboard',
 						'action' => 'Index'
 					),
@@ -73,13 +73,13 @@
 				);
 				
 				if (!isset($pa_menu_bar[$vs_put_before_menu_code])) {
-					$pa_menu_bar['NovaStory'] = $va_menu;
+					$pa_menu_bar['NovaMuse'] = $va_menu;
 				} else {
 					$va_new_menu_bar = array();
 					foreach($pa_menu_bar as $vs_menu_code => $va_menu_info) {
 						if ($vs_menu_code === $vs_put_before_menu_code) {
-							$va_new_menu_bar['NovaStoryDashboard'] = $va_menuDashboard;
-							$va_new_menu_bar['NovaStoryMembers'] = $va_menuMembers;
+							$va_new_menu_bar['NovaMuseDashboard'] = $va_menuDashboard;
+							$va_new_menu_bar['NovaMuseMembers'] = $va_menuMembers;
 						}
 						$va_new_menu_bar[$vs_menu_code] = $va_menu_info;
 					}
