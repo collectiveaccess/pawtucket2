@@ -116,7 +116,7 @@ if (!$this->request->isAjax()) {
 						print "</div><!-- end unit -->";
 					}
 					if($t_entity->get("ca_entities.external_link.url_entry")){
-						print "<div class='unit'><span class='subtitletextcaps'>"._t("Link").":</span> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
+						print "<div class='unit'><span class='subtitletextcaps'>"._t("Link").":</span> <a href='".$t_entity->get("ca_entities.external_link.url_entry")."' target='_blank'>".$t_entity->get("ca_entities.external_link.url_entry")."</a></div><!-- end unit -->";
 					}
 					
 				break;
