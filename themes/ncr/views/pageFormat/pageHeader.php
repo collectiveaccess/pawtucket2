@@ -7,6 +7,7 @@
 	
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/global.css" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/bookmarks.css" rel="stylesheet" type="text/css" />
+	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/sets.css" rel="stylesheet" type="text/css" />
 	<!--[if IE]>
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getThemeUrlPath(true); ?>/css/iestyles.css" />
 	<![endif]-->
@@ -92,12 +93,17 @@ $(document).ready(function() {
 				if($this->request->isLoggedIn()){
 ?>
 						<li><a href="#" onclick='$("#myAccountSubNav").slideDown(250); return false;'><?php print _t("my account"); ?></li>
-							<ul id="myAccountSubNav" style="display:<?php print (in_array($this->request->getController(), array("Bookmarks", "Preferences"))) ? "visible" : "none"; ?>">
+							<ul id="myAccountSubNav" style="display:<?php print (in_array($this->request->getController(), array("Bookmarks", "Preferences", "Sets"))) ? "visible" : "none"; ?>">
 <?php
 							if($this->request->config->get('enable_bookmarks')){
 ?>
 								<li><?php print caNavLink($this->request, _t("bookmarks"), "", "", "Bookmarks", "Index"); ?></li>
 <?php
+							}
+							if(!$this->request->config->get('disable_my_collections')){
+?>
+								<li><?php print caNavLink($this->request, _t("lightbox"), "", "", "Sets", "Index"); ?></li>
+<?php							
 							}
 ?>
 								<li><?php print caNavLink($this->request, _t("account information"), "", "", "Profile", "Edit"); ?></li>

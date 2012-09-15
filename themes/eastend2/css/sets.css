@@ -5,21 +5,14 @@
 	clear:right;
 	float:right;
 	width: 270px;
-	margin:0px;
-	padding:0px;
 }
 #setItemEditor #rightCol .boxBg{
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 15px 0px;
-	background-color: #E2E2E2;	
-	-moz-border-radius-bottomleft: 10px; 
-	-webkit-border-bottom-left-radius: 10px;
-	-moz-border-radius-bottomright: 10px; 
-	-webkit-border-bottom-right-radius: 10px;
-	-moz-border-radius-topleft: 10px; 
-	-webkit-border-top-left-radius: 10px;
-	-moz-border-radius-topright: 10px; 
-	-webkit-border-top-right-radius: 10px;
+	background-color: #E2E2E2;
+	border-radius: 10px;
+	-moz-border-radius: 10px; 
+	-webkit-border-radius: 10px;
 }
 #setItemEditor #rightCol H2{
 	padding-top:10px;
@@ -29,12 +22,12 @@
 #setItemEditor #leftCol{
 	width:620px;
 }
-.setItemList{
+#setItemList{
 	margin:0px;
 	padding:0px;
 }
 
-.setItems .setItem {
+#setItems .setItem {
 	position: relative;
 	display: block;
 	float: left; 
@@ -48,26 +41,26 @@
 	overflow: hidden;
 }
 
-.setItems .setItem:hover {
+#setItems .setItem:hover {
 	border: solid 1px #666;
 }
 
-.setItems div{
+#setItems div{
 	font-size: 10px;
 	margin: 5px 0px 0px 0px;
 	width:140px;
 	text-align:left;
 }
 
-.setItems a{
+#setItems a{
 	cursor:move;
 }
 
-.setItems a{
+#setItems a{
 	color: #636363;
 }
 
-.setItems .remove{
+#setItems .remove{
 	position: absolute;
 	left:130px;
 	top: 0px;
@@ -75,30 +68,27 @@
 	padding: 0px 1px 1px 2px;
 }
 
-.setItems .remove a{
+#setItems .remove a{
 	font-size: 9px;
 	color: #828282;
 	text-decoration:none;
 	font-weight:bold;
 }
-.setItems .remove a:hover{
+#setItems .remove a:hover{
 	color: #CA1919;
 }
 
 .setItemThumbnail {
 	padding: 10px 10px 3px 10px;
 }
-
-.setItems .setItemCaption {
+#setItems .setItemCaption {
 	padding-left: 10px;
 	width: 120px;
 }
-
-.setItems .setItemCaption a{
+#setItems .setItemCaption a{
 	text-decoration:none;
 	color:#000000;
 }
-
 #helpTips ul{
 	margin: 0px 0px 0px 5px;
 	padding:5px 5px 0px 22px;
@@ -109,14 +99,12 @@
 	margin: 0px 0px 10px 0px;
 	padding:0px;
 }
-#setItemEditor .optionsList{
+.optionsList{
 	margin-top:5px;
-	text-align:right;
-	padding-right:5px;
+	margin-left:10px;
 }
-#setItemEditor .optionsList a{
+.optionsList a{
 	text-decoration:none;
-	color:#666666;
 }
 .setsList{
 	margin-top:5px;
@@ -132,6 +120,28 @@
 }
 div.setInfo{
 	margin-left:10px;
+}
+a.hide{	
+	text-decoration:none;
+	float:right;
+	text-transform: uppercase;
+	font-size:13px;
+	color: #828282;
+}
+a.hide:hover{	
+	color:none;
+}
+div.edit{
+	text-align:right;
+}
+div.edit a{	
+	text-decoration:none;
+	text-transform: uppercase;
+	font-size:13px;
+	color: #828282;
+}
+div.edit a:hover{	
+	color:none;
 }
 #setItemEditor .reply a{	
 	text-decoration:none;
@@ -214,11 +224,15 @@ div.setInfo{
 #caClientCommunications{
 	padding-bottom:10px;
 }
-#newSetForm .formLabel, #editSetForm .formLabel, #caClientCommunications .formLabel, #caClientCommunicationsReplyForm .formLabel{
+#newSetForm .formLabel, #editSetForm .formLabel, #shareSetForm .formLabel, #caClientCommunications .formLabel, #caClientCommunicationsReplyForm .formLabel{
 	font-weight:bold;
 	margin: 10px 0px 2px 0px;
 }
-#newSetForm input, #editSetForm input, #caClientCommunications input, #caClientCommunicationsReplyForm input {
+#shareSetForm .formLabelNote, #newSetForm .formLabelNote, #editSetForm .formLabelNote, #caClientCommunications .formLabelNote, #caClientCommunicationsReplyForm .formLabelNote{
+	font-size:11px;
+	font-weight:normal;
+}
+#newSetForm input, #editSetForm input, #shareSetForm input, #caClientCommunications input, #caClientCommunicationsReplyForm input {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -227,7 +241,7 @@ div.setInfo{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm input[type="text"], #editSetForm input[type="text"], #caClientCommunications input[type="text"], #caClientCommunicationsReplyForm input[type="text"] {
+#newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"], #caClientCommunications input[type="text"], #caClientCommunicationsReplyForm input[type="text"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -236,7 +250,7 @@ div.setInfo{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm textarea, #editSetForm textarea, #caClientCommunications textarea, #caClientCommunicationsReplyForm textarea {
+#newSetForm textarea, #editSetForm textarea, #shareSetForm textarea, #caClientCommunications textarea, #caClientCommunicationsReplyForm textarea {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -245,7 +259,7 @@ div.setInfo{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm input[type="textarea"], #editSetForm input[type="textarea"], #caClientCommunications input[type="textarea"], #caClientCommunicationsReplyForm input['textarea'] {
+#newSetForm input[type="textarea"], #editSetForm input[type="textarea"], #shareSetForm input[type="textarea"], #caClientCommunications input[type="textarea"], #caClientCommunicationsReplyForm input['textarea'] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -254,7 +268,7 @@ div.setInfo{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm a, #editSetForm a, #editSetForm a, #caClientCommunications a, #caClientCommunicationsReplyForm a{
+#newSetForm a, #editSetForm a, #editSetForm a, #shareSetForm a, #caClientCommunications a, #caClientCommunicationsReplyForm a{
 	text-transform:uppercase;
 	font-family: Arial, sans-serif;
 	font-size:14px;
@@ -264,13 +278,22 @@ div.setInfo{
 	margin: 0px;
 	padding: 5px 0px 0px 0px;
 }
-#newSetForm a:hover, #editSetForm a:hover, #editSetForm a:hover, #caClientCommunications a:hover, #caClientCommunicationsReplyForm a:hover{
+#newSetForm a:hover, #editSetForm a:hover, #shareSetForm a:hover, #caClientCommunications a:hover, #caClientCommunicationsReplyForm a:hover{
 	color: #828282;
 	text-decoration:none;
 }
 
 
 /* Client services styles */
+#setItemEditor .newSetButton{
+	margin-top:5px;
+	text-align:right;
+	padding-right:5px;
+}
+#setItemEditor .newSetButton a{
+	text-decoration:none;
+	color:#666666;
+}
 #caClientCommunicationsMessageList {
 	overflow: auto;
 	max-height:500px;
@@ -331,6 +354,7 @@ div.setInfo{
 	font-size:11px;
 	cursor:pointer;
 	
+	border-radius:3px;
 	-moz-border-radius-bottomleft: 3px; 
 	-webkit-border-bottom-left-radius: 3px;
 	-moz-border-radius-bottomright: 3px; 
@@ -360,6 +384,7 @@ div.setInfo{
 	background-color:#EFEFEF;
 	
 	
+	border-radius:10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -455,6 +480,7 @@ a.caClientCommunicationsMessageSummaryCounter {
 	color: #FFFFFF;
 	padding:4px;
 	text-transform:uppercase;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -540,6 +566,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 /* List of orders */
 #caClientOrdersList {
 	border-spacing:3px;
+	border-top-right-radius:10px;
 	-moz-border-radius-topright: 10px; 
 	-webkit-border-top-right-radius: 10px;
 }
@@ -550,12 +577,16 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:13px;
 }
 #caClientOrdersList th.first{
+	border-bottom-left-radius:5px;
+	border-top-left-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-topleft: 5px; 
 	-webkit-border-top-left-radius: 5px;
 }
 #caClientOrdersList th.last{
+	border-bottom-right-radius:5px;
+	border-top-right-radius:5px;
 	-moz-border-radius-bottomright: 5px; 
 	-webkit-border-bottom-right-radius: 5px;
 	-moz-border-radius-topright: 5px; 
@@ -591,6 +622,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	border: 1px solid #E2E2E2;
 	padding:10px;
 	margin:0px 0px 20px 0px;
+	border-radius:10px;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
 	-moz-border-radius-bottomright: 10px; 
@@ -619,6 +651,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:15px;
 	padding:10px;
 	margin:0px 0px 10px 10px;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -659,6 +692,7 @@ a.caClientCommunicationsAttachedMediaControl:hover {
 	font-size:14px;
 	padding:5px 10px 4px 10px;
 	font-weight:bold;
+	border-radius:15px;
 	-moz-border-radius-bottomleft: 15px; 
 	-webkit-border-bottom-left-radius: 15px;
 	-moz-border-radius-bottomright: 15px; 
@@ -691,7 +725,7 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 .billingShippingAddress .formLabel input, .billingShippingAddress .formLabel input[type="text"] {
 	width: 395px;
 }
-.billingShippingAddress .formLabelNarrow input, .billingShippingAddress .formLabelNarrow input[type="text"] {
+.billingShippingAddress .formLabelNarrow input, .billingShippingAddress .formLabelNarrow {
 	width: 165px;
 }
 #clientOrderForm .formLabelNarrow{
@@ -716,6 +750,7 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 	font-weight:bold;
 	padding:5px;
 	margin:0px 0px 10px 10px;
+	border-radius:5px;
 	-moz-border-radius-bottomleft: 5px; 
 	-webkit-border-bottom-left-radius: 5px;
 	-moz-border-radius-bottomright: 5px; 
@@ -750,4 +785,122 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 	width:260px;
 	height:120px;
 	overflow:auto;
+}
+
+
+
+
+/* overlay (for slideshow) */
+#caSetsSlideshowPanel {
+	position: fixed; 
+	top: 0px; 
+	left: 0px;
+	width: 100%; 
+	height: 100%;
+	display: none;
+	margin: 0 auto;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#caSetsSlideshowPanel #close{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width:34px;
+	height:34px;
+	margin:0px 3px 0px 0px;
+	background-image:url("../graphics/close.png");
+	background-repeat:no-repeat;
+	z-index: 32000;
+}
+#caSetsSlideshowPanel #close a{
+	text-decoration:none;
+	font-size:32px;
+	width:34px;
+	height:34px;
+	border:0px;
+}
+#caSetsSlideshowPanelContentArea {
+	width: 700px; 
+	height: 700px;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:80%;
+	margin-left:auto;
+	margin-right:auto;
+}
+#caSetsSlideshow div{
+	width:100%;
+	text-align:center;
+}
+
+.caSetsSlideshowCaption{
+	color: #828282;
+	font-size:13px;
+	padding-top:10px;
+}
+/*#caSetsSlideshowPrevious {
+	position:absolute;
+	top:250px;
+	left:-20px;
+}
+#caSetsSlideshowNext {
+	position:absolute;
+	top:250px;
+	right:-20px;
+}*/
+#caSetsSlideshowPrevious {
+	float:left;
+}
+#caSetsSlideshowNext {
+	float:right;
+}
+#caSetsSlideshowNext a, #caSetsSlideshowPrevious a{
+	font-size:35px;
+	color:#828282;
+	text-decoration:none;
+}
+#caSetsSlideshowPlayPause a{
+	color:#828282;
+	font-size:20px;
+	text-decoration:none;
+}
+#caSetsSlideshowToolBar{
+	width:120px;
+	background-color:#EDEDED;
+	border-radius: 8px;
+	-moz-border-radius: 8px; 
+	-webkit-border-radius: 8px;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:20px;
+	margin-bottom:20px;
+	padding:10px;
+}
+
+/* styles for the slideshow when in media panel */
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer{
+	text-align:center;
+	position:relative;
+	width:100%;
+}
+
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer H1{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea .caSetsSlideshowCaption{
+	color: #FFF;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowToolBar{
+	background-color: #828282;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowNext a, #caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious a{
+	color:#ededed;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause a{
+	color:#ededed;
 }

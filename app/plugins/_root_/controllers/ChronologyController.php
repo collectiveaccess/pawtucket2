@@ -47,22 +47,22 @@
 			8 => array("start" =>1924, "end" => 1988, "label" => "1924 - 1988", "displayAllYears" => "0")
 		);
 		protected $ops_jumpToList = array(
-			'Birth' => 1904,
-			'Childhood' => 1907,
-			'Adolescence' => 1918,
-			'Academic Education' => 1924,
-			'Guggenheim Fellowship' => 1927,
-			'Early career' => 1932,
-			'Wartime Activism' => 1942,
-			'MacDougal Alley studio' => 1943,
-			'Bollingen travels' => 1949,
-			'Return to Japan' => 1950,
-			'Mid Career' => 1955,
-			'Long Island City studio' => 1961,
-			'Mure-cho studio' => 1969,
-			'Late Career' => 1981,
-			'Long Island City Museum' => 1981,
-			'Death' => 1988
+			'Birth (1904)' => 1904,
+			'Childhood (1907)' => 1907,
+			'Adolescence (1918)' => 1918,
+			'Academic Education (1924)' => 1924,
+			'Guggenheim Fellowship (1927)' => 1927,
+			'Early career (1932)' => 1932,
+			'Wartime Activism (1942)' => 1942,
+			'MacDougal Alley studio (1943)' => 1943,
+			'Bollingen travels (1949)' => 1949,
+			'Return to Japan (1950)' => 1950,
+			'Mid Career (1955)' => 1955,
+			'Long Island City studio (1961)' => 1961,
+			'Mure-cho studio (1969)' => 1969,
+			'Late Career (1981)' => 1981,
+			'Long Island City Museum (1981)' => 1981,
+			'Death (1988)' => 1988
 		);
  			
  		# -------------------------------------------------------
@@ -144,6 +144,22 @@
 			$va_years_info = array();
 
 			$qr_events = $o_search->search("ca_occurrences.access:1 AND ca_occurrences.type_id:{$vn_chronology_type_id} AND ca_occurrences.date.parsed_date:\"".$vn_y."\"", array("sort" => "ca_occurrences.date.parsed_date", "no_cache" => !$this->opb_cache_searches));
+			
+			$va_event_ids = array();
+			if($qr_events->numHits() > 0){
+				while($qr_events->nextHit()){
+					$va_event_ids[] = $qr_events->get("occurrence_id");
+				}
+			}
+			$opo_result_context = new ResultContext($this->request, "ca_occurrences", "basic_search");
+ 		
+			foreach($va_event_ids as $vn_event_id){
+				if($opo_result_context->getIndexInResultList($vn_event_id) != '?'){
+					$this->view->setVar("show_back_button", 1);
+					break;
+				}
+			}
+			$qr_events->seek(0);
 			$va_years_info["events"] = $qr_events;
 			
 			$qr_exhibitions = $o_search->search("ca_occurrences.access:1 AND ca_occurrences.type_id:{$vn_exhibition_type_id} AND ca_occurrences.date.parsed_date:\"".$vn_y."\"", array("sort" => "ca_occurrences.date.parsed_date", "no_cache" => !$this->opb_cache_searches));
@@ -291,6 +307,16 @@
  		 */ 
  		public function YearsList() {
  			return $this->render("Chronology/years_list_html.php");
+ 		}
+ 		# ------------------------------------------------------- 
+ 		/**
+ 		 * Returns content for overlay containing list of years
+ 		 */ 
+ 		public function PeriodsList() {
+ 		 	$va_jumpToList = $this->ops_jumpToList;
+ 			$this->view->setVar('jumpToList', $va_jumpToList);
+ 			
+ 			return $this->render("Chronology/periods_list_html.php");
  		}
  		# ------------------------------------------------------- 
  	}

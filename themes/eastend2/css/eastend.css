@@ -1,0 +1,152 @@
+@charset "UTF-8";
+@import url("http://fast.fonts.com/t/1.css?apiType=css&projectid=b51d77bf-ea48-4579-9c99-d1deec15c3e6");
+@import url("fonts.css");
+/* CSS Document */
+
+/* turquoise: #71cde4 */
+body {font-family:"Avenir LT W01 35 Light"; color:#757575;background-color:#f7f7f7; padding:8px 0px 0px 0px; font-size:12px;}
+a:link, a:visited{color:#757575; text-decoration:none;} 
+a:hover {color:#71cde4;}
+
+.caption {font-size:12px;line-height:140%;}
+.obl {font-family:"AvenirLTW01-45BookObliq";}
+.caps {text-transform:uppercase;}
+
+.clear {clear:both;}
+.padded {padding-top:20px;}
+.linedivide {margin-top:10px; padding-bottom:10px; border-top:1px solid #ccc;}
+
+h2 {margin:0; padding:0;}
+#container{width:950px; margin:0 auto;}
+
+/*global styles for layout */
+
+#topnav{height:45px; font-size:12px; }
+#topnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
+.leftnav {float:left; width:230px;}
+.rightnav {float:left; padding-left:490px;width:220px;text-align:right; margin-right:10px;}
+.rightnav img{padding-right:2px;}
+.rightnav .social {padding-top:1px;float:left;}
+.rightnav input{display:inline; width:115px;}
+
+
+#logo {font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; float:left;line-height:41px;width:590px;}
+#mainnav{float:left; padding-left:50px; font-size:13px; height:41px;line-height:59px; vertical-align:bottom;}
+#mainnav ul{list-style-type:none;margin:0; padding:0;}
+#mainnav li{display:inline;margin:0; padding:0 0 0 15px; }
+#mainnav li a:link, #mainnav li a:visited{text-decoration:none; color:#757575;}
+#mainnav li a:hover {color:#71cde4;}
+
+#maincontent {padding-top:50px; clear:both;}
+
+#subnav {width:110px; float:left; font-size:13px;}
+.listhead {font-family:"Avenir LT W01 65 Medium"; padding-bottom:5px;}
+#subnav ul{list-style-type:none;margin:0; padding:0px 0 20px 0;}
+#subnav ul li{list-style-type:none; margin:0; padding:0 0 8px 0;}
+
+#subnav a:link, #subnav a:visited{color:#757575; text-decoration:none;} 
+#subnav a:hover, #subnav #facetBox a:hover {color:#71cde4;}
+
+#subnav #facetBox{ padding-right:20px; line-height:1em;}
+#subnav #facetBox a:link, #subnav #facetBox a:visited{color:#565656; text-decoration:none; font-family:"AvenirLTW01-65MediumObl"; font-size:11px;} 
+#subnav #facetBox ul li{padding:0px 0px 12px 0px;}
+
+#subnav a.selected, #subnav #facetBox a.selected{color:#71cde4;}
+
+/*artist browser template styles */
+
+.ab_col{width:110px; padding-left:10px; padding-right:40px;float:left; font-size:11px;}
+.ab_col ul{list-style-type:none;margin:0; padding:0 0 15px 0;}
+.ab_col ul li{list-style-type:none; padding:0 0 8px 0; margin:0;}
+.ab_col img{padding:5px 0;}
+.ab_col a:link, .ab_col a:visited, .ab_feature a:link, .ab_feature a:visited{text-decoration:none; color:#757575;}
+.ab_col a:hover, .ab_feature a:hover{color:#71cde4;}
+
+#rightcol_featured{width:350px; float:right;}
+.ab_feature {background-color:#fff;padding-bottom:10px; margin-bottom:20px;}
+.ab_feature p{margin:5px;}
+.ab_feature_img {text-align:center; overflow:hidden; width: 350px; height:280px;}
+
+
+/*artist detail template style */
+
+#ad_portrait {width:240px; float:left; margin-right:25px;}
+#ad_portrait img {padding-top:10px; padding-bottom:10px;}
+
+#ad_content {float:left;}
+#ad_maincontent {width:570px; padding-bottom:20px; float:left;}
+#ad_maincontentCol1{width:200px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
+#ad_maincontentCol2{width:370px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
+.bio{font-size:12px; line-height:130%; padding-right:10px;}
+.ad_thumbs{width:490px;padding-top:20px;}
+.ad_thumbs img{max-width:150px; padding-bottom:10px;}
+.ad_thumbs .col {width:150px; margin-right:10px;float:left; text-align:center;}
+.ad_thumbs .lastcol {width:150px; margin-right:10px;float:left;}
+
+.ad_gmap {width:370px; float:right;}
+
+.ad_col{width:110px; padding-left:0px; padding-right:40px;float:left; font-size:11px;}
+.ad_col ul{list-style-type:none;margin:0; padding:0 0 15px 0;}
+.ad_col ul li{list-style-type:none; padding:0 0 8px 0; margin:0;}
+.ad_col img{padding:5px 0;}
+.ad_col a:link, .ab_col a:visited, .ab_feature a:link, .ab_feature a:visited{text-decoration:none; color:#757575;}
+.ad_col a:hover, .ab_feature a:hover{color:#71cde4;}
+
+
+/* artwork detail styles */
+#art_artist {height:50px; clear:both;}
+#art_detail {width:550px; float:left; margin-right:40px;}
+#art_detail img{max-width:550px;}
+#art_detail_info{width:190px;margin-left:10px;float:left;line-height:150%; }
+
+
+/*chronology styles */
+#chron_thumb {width:480px; float:left;}
+#chron_thumb .col {width:230px; padding-right:10px; float:left; font-size:12px;font-family:"Avenir LT W01 65 Medium";}
+#chron_thumb img {padding-bottom:10px;}
+#chron_info {width:270px; float:left; margin-left:40px; font-size:12px;}
+#chron_info ul {list-style-type:none; margin:0; padding:10px 0 10px 0;}
+#chron_info ul li{list-style-type:none; margin:0 0 10px 0; padding:0;}
+
+#chron_info ul li a:link, .ab_col a:visited{text-decoration:none; color:#757575;}
+#chron_info ul li a:hover{color:#71cde4;}
+
+/* hp content */
+#hpTextContainer {
+	width:275px; 
+	float:left;
+}
+#hpTextHeader{
+	font-size:24px;
+	color:#71cde4;
+	line-height:1.3em;
+	padding-right:25px;
+	padding-bottom:20px;
+}
+#hpText{
+	padding-right:40px;
+	line-height:1.5em;
+	font-size:18px;
+	color:#aaaaaa;
+}
+#hpFeatured{
+	float:right;
+	width:670px;
+}
+#hpFeaturedImg{
+	width:670px;
+	height:475px;
+	overflow:hidden;
+	background-color:#EDEDED;
+}
+#hpFeaturedScrollCaption {
+	padding-top: 10px;
+	text-align: left;
+	color: #666666;
+	font-size: 12px;
+	font-style: italic;
+}
+#hpFeaturedScrollCaption a{
+	text-decoration: none;
+	color: #666666;
+}
