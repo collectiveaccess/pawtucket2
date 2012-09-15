@@ -30,7 +30,12 @@
  	require_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
  	require_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
  	require_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
+ 	require_once(__CA_LIB_DIR__."/ca/Search/PlaceSearch.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+	require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
+	require_once(__CA_MODELS_DIR__."/ca_places.php");
+	require_once(__CA_MODELS_DIR__."/ca_entities.php");
+ 	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
  
  	class ChronologyController extends BaseSearchController {
  		# ------------------------------------------------------- 	
@@ -47,9 +52,10 @@
 		);
 		
 		private $opa_access_values;
-		private $opn_default_period;
+		private $opn_default_period = 1;
 		private $opo_plugin_config;			// plugin config file
  		private $ops_theme;						// current theme
+ 		private $ops_date_range;
  		
  			
  		# -------------------------------------------------------
@@ -76,9 +82,8 @@
  			}else{
  				$this->opa_access_values = caGetUserAccessValues($this->request);
  			}
- 			
- 			$this->opn_default_period = 1;
-            
+ 			$this->view->setVar('access_values', $this->opa_access_values);
+ 			 
             $t_list = new ca_lists();
 			$pn_type_restriction_id_entity = $t_list->getItemIDFromList('entity_types', 'individual');
 			
@@ -86,14 +91,7 @@
  			$o_search_result_context_entity = new ResultContext($this->request, "ca_entities", 'basic_search');
  			$o_search_result_context_entity->setTypeRestriction($pn_type_restriction_id_entity);
  			$o_search_result_context_entity->saveContext();
-		}
- 		# -------------------------------------------------------
- 		function Index() {
  			
- 			$va_periods = $this->opa_periods;
- 			$this->view->setVar('periods', $va_periods);
- 			
- 			$this->view->setVar('access_values', $this->opa_access_values);
  			
  			$va_periods = $this->opa_periods;
  			$this->view->setVar('periods', $this->opa_periods);
@@ -118,13 +116,17 @@
 			}
 			$this->view->setVar('year', $vn_year);
  			
- 			$vn_y = "";
  			if($va_periods[$vn_period]["displayAllYears"] == 1){
- 				$vn_y = $va_periods[$vn_period]["start"]." to ".$va_periods[$vn_period]["end"];
+ 				$this->ops_date_range = $va_periods[$vn_period]["start"]." to ".$va_periods[$vn_period]["end"];
  			}else{
- 				$vn_y = $vn_year;
+ 				$this->ops_date_range = $vn_year;
  			}
+ 			JavascriptLoadManager::register('maps'); 			
  			
+		}
+ 		# -------------------------------------------------------
+ 		function Index() {
+			$vn_y = $this->ops_date_range;
 			$va_period_data = array();
 			
 			$o_occ_search = new OccurrenceSearch();
@@ -132,8 +134,24 @@
 			$va_period_data["occurrences"] = $qr_occs;
 			
 			$o_ent_search = new EntitySearch();
-			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entities.lname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entity_labels.lname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_period_data["entities"] = $qr_entities;
+			
+			# -- make array of entity_ids so can find places associated with these entities to map
+			$va_entities = array();
+			if($qr_entities->numHits()){
+				while($qr_entities->nextHit()){
+					$va_entities[] = $qr_entities->get("entity_id");
+				}
+			}	
+			$qr_entities->seek(0);
+			$o_place_search = new PlaceSearch();
+			$o_place_search->addResultFilter("ca_entities.entity_id", "IN", join(',', $va_entities));
+			$qr_places = $o_place_search->search("*", array("no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+ 			$o_map = new GeographicMap(450, 250, 'map');
+			$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "eastend", "Chronology", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+			$va_period_data["map"] = $o_map->render('HTML', array('delimiter' => "<br/>"));
+			$va_period_data["places"] = $qr_places;
 			
 			$o_obj_search = new ObjectSearch();
 			$qr_objects = $o_obj_search->search("ca_objects.creation_date:\"".$vn_y."\"", array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
@@ -143,6 +161,48 @@
 			
  			$this->render('chronology_period_html.php');
  		}
+ 		# -------------------------------------------------------
+ 		function RefineSearch() {
+ 			$vs_refine = "";
+ 			
+ 			$pn_entity_id = $this->request->getParameter('entity_id', pInteger);
+ 			$this->view->setVar('entity_id', $pn_entity_id);
+ 			$t_entity = new ca_entities($pn_entity_id);
+ 			$this->view->setVar('entity_name', $t_entity->getLabelForDisplay());
+ 			if($pn_entity_id){
+ 				$vs_refine = " AND ca_entities.entity_id:".$pn_entity_id;
+ 			}
+ 			
+ 			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pInteger);
+ 			$this->view->setVar('occurrence_id', $pn_occurrence_id);
+ 			$t_occurrence = new ca_occurrences($pn_occurrence_id);
+ 			$this->view->setVar('occurrence_name', $t_occurrence->getLabelForDisplay());
+ 			if($pn_occurrence_id){
+ 				$vs_refine = " AND ca_occurrences.occurrence_id:".$pn_occurrence_id;
+ 			}
+ 			
+ 			$vn_y = $this->ops_date_range;
+			$va_period_data = array();
+			$o_obj_search_refine = new ObjectSearch();
+			$qr_objects_refine = $o_obj_search_refine->search("ca_objects.creation_date:\"".$vn_y."\"".$vs_refine, array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			#print "ca_objects.creation_date:\"".$vn_y."\"".$vs_refine;
+			$va_period_data["objects"] = $qr_objects_refine;
+			$this->view->setVar('period_data', $va_period_data);			
+			$this->render('chronology_object_results_html.php');
+ 		}
  		# ------------------------------------------------------- 
+ 		/**
+ 		 *
+ 		 */
+ 		public function getMapItemInfo() {
+ 			$pa_place_ids = explode(';', $this->request->getParameter('id', pString));
+ 			
+ 			$this->view->setVar('place_ids', $pa_place_ids);
+ 			$this->view->setVar('access_values', $this->opa_access_values);
+ 			
+ 		 	$this->render("chronology_map_balloon_html.php");		
+ 		}
+ 		
+ 		# -------------------------------------------------------
  	}
  ?>
