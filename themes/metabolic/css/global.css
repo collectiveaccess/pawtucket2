@@ -881,9 +881,13 @@ div.searchlight-results div.searchlight-selected {
 	font-weight:bold;
 	text-decoration:none;
 }
+#detailBody .grayLink a{
+	color:#7b7863;
+}
+
 /* nav bar on details with thumbnail grid */
 #detailNavBar{
-	margin:0px 0px 15px 0px;
+	margin:0px 30px 15px 10px;
 	text-align:center;
 	padding:0px 0px 0px 0px;
 	font-weight: 300;
@@ -900,6 +904,14 @@ div.searchlight-results div.searchlight-selected {
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	text-transform:uppercase;
 	color: #7b7863;
+}
+#detailNavBar a.next{
+	float:right;
+	margin-top:3px;
+}
+#detailNavBar a.previous{
+	float:left;
+	margin-top:3px;
 }
 #detailNavBar #next{
 	display:inline;

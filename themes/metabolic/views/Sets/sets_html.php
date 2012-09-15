@@ -180,8 +180,8 @@
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
 						}
 ?>
-						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span></div>
-						<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+						<?php print _t("To e-mail address"); ?></span></div>
+						<input type="text" name="to_email" id="to_email" value="<?php print $vs_to_email; ?>">
 						<div class="formLabel">
 <?php
 						if($va_errors_share_set["from_email"]){
@@ -404,5 +404,28 @@
 				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 			});
 		}
-	});
+<?php
+		if($this->request->isLoggedIn()){
+			JavascriptLoadManager::register('tokeninput');
+?>
+			jQuery('#to_email').tokenInput('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', {
+				onResult: function (results) {
+					if (results.length == 0) {
+						var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+						var emailinput = jQuery('#token-input-to_email').val();
+						if (emailinput.search(emailRegEx) >= 0) {
+							jQuery('#to_email').tokenInput("add", {id: emailinput, name: emailinput});
+						}
+					}
+                    return results;
+            	}, preventDuplicates: true
+            });
+<?php
+		}
+?>
+			jQuery('.scrollPane').jScrollPane({
+				animateScroll: true,
+			});
+		});
+		
 	</script>
