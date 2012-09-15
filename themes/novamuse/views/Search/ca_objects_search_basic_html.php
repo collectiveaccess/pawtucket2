@@ -34,7 +34,7 @@
 <?php
 	if($vo_result) {
 ?>
-		<h1><?php print _t("Objects from the Digital Archive"); ?></h1>
+		<h1><?php print _t("Objects from the Collections"); ?></h1>
 <?php
 		print $this->render('Results/paging_controls_html.php');
 		if($vo_result->numHits() > 0){

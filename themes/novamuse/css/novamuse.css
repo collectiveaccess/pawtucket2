@@ -72,6 +72,35 @@ a.titletextcaps{text-decoration:none;}
 #mainmenu .button-last a, #mainmenu .button-last a:link{display:block; width:228px; height:53px; background-color:#19568c; vertical-align:middle; text-align:center; color:#ffffff; border-bottom:1px solid #fff; text-decoration:none; text-transform:uppercase; line-height:53px; font-size:14px;float:left;}
 */
 
+#sideNav{
+	float:right;
+	width:120px;
+	background-color:#19568c;
+	color:#ffffff;
+	padding:15px 20px;
+	text-align:left;
+	margin: 12px 0px 15px 25px;
+}
+#sideNav a{
+	color:#ffffff;
+	text-decoration:none;
+	text-transform:uppercase;
+	font-size:11px;
+	font-family: WeissBT-Roman;
+}
+#sideNav a:hover{
+	text-decoration:underline;
+}
+#sideNav ul{
+	margin:0px;
+	padding:0px;
+	list-style-type: none;
+}
+
+#sideNav ul li{
+	margin:0px;
+	padding:5px 0px 5px 0px;
+}
 .notificationMessage{
 	color: #19568c;
 	font-family:WeissBT-Roman;
@@ -147,8 +176,9 @@ div.notificationMessage{
 #subcontentcontainer {width:458px; border-left:1px solid #ccc;float:left; min-height:600px; margin-bottom:15px;}
 
 .detail-col1{width:219px; float:left; margin-left:10px;}
-.detail-col1 p {padding-right:5px;}
+.detail-col1 p {padding-right:10px;}
 .detail-col2{width:219px; float:left; margin-left:10px;}
+.detail-col2 p{padding-right:5px;}
 
 .detail-col2-home{width:218px; float:left; margin-left:10px;}
 .detail-col2-home .module{width:186px; text-align:left; margin:10px auto; padding-bottom:15px;line-height:140%;}
@@ -157,8 +187,8 @@ div.notificationMessage{
 .detail-login-link {text-align:center; margin-top:40px; font-weight:bold;}
 #adminForm{ margin:15px;}
 
-.narrativeText, .descriptionText{ max-height:200px; overflow:auto;}
-
+.narrativeText, .descriptionText{ max-height:200px; overflow:auto; padding-top:0px; margin-top:0px; padding-right:10px;}
+p.noPadding {margin-bottom:0px; padding-bottom:0px;}
 .thumbs-col1{margin-left:10px;}
 
 .thumb{padding-right:10px; float:left;}
@@ -191,6 +221,11 @@ div.notificationMessage{
     cursor:pointer;
     font-family: Lucida Sans;
     font-size: 11px;
+}
+
+.dashboardStats div{
+	float:left;
+	width:350px;
 }
 
 /* form styles */
