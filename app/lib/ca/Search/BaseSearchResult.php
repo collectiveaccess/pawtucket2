@@ -129,7 +129,7 @@
 			
 				$vn_num = 0;
 				foreach($this->opa_filter_values as $vm_value) {
-					$vn_num .= $va_r[$this->ops_filter_field][$vm_value];
+					$vn_num += (int)$va_r[$this->ops_filter_field][$vm_value];
 				}
 				return $vn_num;
 			}

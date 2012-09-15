@@ -29,84 +29,32 @@
 	$t_object = new ca_objects();
 	
 	$va_item_ids = $this->getVar('featured_content_slideshow_id_list');
-	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"));
+	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("large", "mediumlarge"));
 	$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
  ?>
-	<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
-		<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel()" class="browseSelectPanelButton"></a>
-		<div id="splashBrowsePanelContent">
-		
-		</div>
-	</div>
-	<script type="text/javascript">
-		var caUIBrowsePanel = caUI.initBrowsePanel({ facetUrl: '<?php print caNavUrl($this->request, '', 'Browse', 'getFacet'); ?>'});
-	</script>
-	
-
 	<div id="hpFeatured">
 <?php
 	foreach ($va_item_media as $vn_object_id => $va_media) {
-			$vs_image_tag = $va_media["tags"]["mediumlarge"];
-			$vn_padding_top = 0;
-			$vn_padding_top = ((450 - $va_media["info"]["mediumlarge"]["HEIGHT"]) / 2);
-			print "<div style='margin-top:10px;'><div id='featuredScroll' style='margin-top:".$vn_padding_top."px; margin-bottom:".$vn_padding_top."px;'>".caNavLink($this->request, $vs_image_tag, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
-			print "<div id='featuredScrollCaption'>".caNavLink($this->request, $va_item_labels[$vn_object_id], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+		$vs_image_tag = $va_media["tags"]["large"];
+		print "<div><div id='hpFeaturedImg'>".caNavLink($this->request, $vs_image_tag, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
+		print "<div id='hpFeaturedScrollCaption'>".caNavLink($this->request, $va_item_labels[$vn_object_id], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 	}
 ?>
 	</div>
 	<div id="hpTextContainer">
+		<div id="hpTextHeader">
+			East End Stories, presented by the Parrish art Museum, explores the enduring presence of artists on the East End of Long Island.
+		</div>
 		<div id="hpText">
-<?php
-		print $this->render('Splash/splash_intro_text_html.php');
-?> 
-
+			Begin your journey by browsing the catalog of artists, finding hubs of activity on the map, or exploring the chronology.
 		</div>			
-
-		<div id="hpBrowseDiv">
-			<div id="hpBrowse">
-			<div class="hpBrowseTitle"><?php print _t("Quickly browse by"); ?>:</div>
-				<div id="hpBrowseFacet">
-<?php
-
-					$va_facets = $this->getVar('available_facets');
-					foreach($va_facets as $vs_facet_name => $va_facet_info) {
-?>
-						<a href="#" style="white-space:nowrap;" onclick='caUIBrowsePanel.showBrowsePanel("<?php print $vs_facet_name; ?>"); return false;'><?php print ucwords($va_facet_info['label_plural']); ?></a>
-<?php
-					}
-?>
-				</div>
-			</div><!-- end hpBrowse-->
-		</div>
-			
-		<div class="hpRss"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), 'caption', '', 'Feed', 'recentlyAdded'); ?></div>
 	</div>
-	
-	<div id="quickLinkItems">
-		<div class="quickLinkItem">			
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("random_object_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("random_object_id")), array('id' => 'splashRandomObject')); ?></td></tr></table>
-			<div class="title"><?php print _t("Random Object") ?></div>
-		</div>
-		<div class="quickLinkItem">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_viewed_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_viewed_id")), array('id' => 'splashRecentlyViewed')); ?></td></tr></table>
-			<div class="title"><?php print _t("Recently Viewed"); ?></div>
-		</div>
-		<div class="quickLinkItem" style="margin-right:0px;">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_added_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_added_id")), array('id' => 'splashRecentlyAdded')); ?></td></tr></table>
-			<div class="title"><?php print _t("Recently Added"); ?></div>
-		</div>	
-	</div>
-<?php
-	TooltipManager::add('#splashRandomObject', $this->getVar("random_object_medium")."<br/><div class='tooltipCaption'>".$this->getVar('random_object_title')."</div>");
-	TooltipManager::add('#splashRecentlyViewed', $this->getVar("recently_viewed_medium")."<br/><div class='tooltipCaption'>".$this->getVar('recently_viewed_title')."</div>");
-	TooltipManager::add('#splashRecentlyAdded', $this->getVar("recently_added_medium")."<br/><div class='tooltipCaption'>".$this->getVar('recently_added_title')."</div>");
-?>
 <script type="text/javascript">
 $(document).ready(function() {
    $('#hpFeatured').cycle({
-               fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
-               speed:  1000,
-               timeout: 4000
+		   fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+		   speed:  1000,
+		   timeout: 4000
        });
 });
 </script>

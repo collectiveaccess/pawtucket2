@@ -5,6 +5,7 @@
 
 	<div id='searchNavBg'><div class='searchNav'>
 <?php		
+
 		# --- mapped results are not paged
 		if(($this->getVar('num_pages') > 1)){
 			print "<div class='nav'>";

@@ -86,7 +86,7 @@
 ?>
 		<div id="contentcontainer">
 			<div id="objectcontainerHP">
-				<div class="homeIntro">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque consequat volutpat feugiat.</div><!-- end home intro -->
+				<div class="homeIntro">Navigate through some of the collections of Nova Scotia's community museums to learn about the province's past, and share your own stories and information about what is important to you.</div><!-- end home intro -->
 				<div id="objectslidesContainerHP">
 <?php
 					# --- featured objects
@@ -94,7 +94,7 @@
 						if($va_media['urls']['frontpage']){
 							$vs_image_tag = $va_media["tags"]["frontpage"];
 							$t_title_object = new ca_objects($vn_object_id);
-							$va_repo_name = $t_title_object->get('ca_entities.preferred_labels');
+							$va_repo_name = $t_title_object->get('ca_entities.preferred_labels', array("restrictToRelationshipTypes" => array("repository"), "checkAccess" => $va_access_values));
 							print "<div>";
 							print "<div class='objectslidesHP'>".caNavLink($this->request, $vs_image_tag, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."";
 							print "<div class='objectslidesCaptionHP'><b>"._t("Featured Item")."</b><br/>".caNavLink($this->request, $va_item_labels[$vn_object_id], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))." from the ".$va_repo_name."</div></div>";

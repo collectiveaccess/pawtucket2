@@ -1,0 +1,99 @@
+
+@import url("http://fast.fonts.com/t/1.css?apiType=css&projectid=b51d77bf-ea48-4579-9c99-d1deec15c3e6");
+
+@font-face{
+font-family:"Avenir LT W01 35 Light";
+src:url("Fonts/3511a780-31ca-4ee1-9083-89b1b7185748.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 35 Light";
+src:url("Fonts/3511a780-31ca-4ee1-9083-89b1b7185748.eot?iefix");
+src:url("Fonts/c4352a95-7a41-48c1-83ce-d8ffd2a3b118.woff") format("woff"),url("Fonts/3e419b5b-c789-488d-84cf-a64009cc308e.ttf") format("truetype"),url("Fonts/ca038835-1be3-4dc5-ba25-be1df6121499.svg#ca038835-1be3-4dc5-ba25-be1df6121499") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-35LightObli";
+src:url("Fonts/6500273c-8e8b-48d2-b0c0-dcae293c0120.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-35LightObli";
+src:url("Fonts/6500273c-8e8b-48d2-b0c0-dcae293c0120.eot?iefix");
+src:url("Fonts/47fd1045-6e5b-4c87-9235-cfbc2b42cde7.woff") format("woff"),url("Fonts/60662abb-0ac3-46b2-930f-4719462489c9.ttf") format("truetype"),url("Fonts/9cf39ac2-87a5-4c4e-a604-7cece19d30bd.svg#9cf39ac2-87a5-4c4e-a604-7cece19d30bd") format("svg");
+}
+@font-face{
+font-family:"Avenir LT W01 45 Book";
+src:url("Fonts/4f32268f-fd86-4960-b72c-4bb1ba75ec6f.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 45 Book";
+src:url("Fonts/4f32268f-fd86-4960-b72c-4bb1ba75ec6f.eot?iefix");
+src:url("Fonts/939cba03-5b40-4d01-9bc5-7589eca863db.woff") format("woff"),url("Fonts/849bc5b9-a2ff-4343-977b-26ba8bd24a60.ttf") format("truetype"),url("Fonts/f67fa3b5-c1d1-488f-8e60-a828b9ad56a4.svg#f67fa3b5-c1d1-488f-8e60-a828b9ad56a4") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-45BookObliq";
+src:url("Fonts/acc13cdc-338a-43e6-a156-e54a4c87582d.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-45BookObliq";
+src:url("Fonts/acc13cdc-338a-43e6-a156-e54a4c87582d.eot?iefix");
+src:url("Fonts/ca94ed56-18fc-4856-940a-70a072607c7c.woff") format("woff"),url("Fonts/dd6da407-70fe-4aa3-a1c7-64f0cb086f01.ttf") format("truetype"),url("Fonts/c7f424be-90e1-45b8-b617-ee3589a859bd.svg#c7f424be-90e1-45b8-b617-ee3589a859bd") format("svg");
+}
+@font-face{
+font-family:"Avenir LT W01 55 Roman";
+src:url("Fonts/2f5a6074-badc-4e08-83f1-ed67fe5c3d7c.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 55 Roman";
+src:url("Fonts/2f5a6074-badc-4e08-83f1-ed67fe5c3d7c.eot?iefix");
+src:url("Fonts/b9ebb19d-88c1-4cbd-9baf-cf51972422ec.woff") format("woff"),url("Fonts/5ed4f98e-9044-4810-88ff-74d412c1351f.ttf") format("truetype"),url("Fonts/4cb16859-16ca-4342-b89c-292dc83266af.svg#4cb16859-16ca-4342-b89c-292dc83266af") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-55Oblique";
+src:url("Fonts/8f21e618-9282-4df1-b556-73ee82bdd673.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-55Oblique";
+src:url("Fonts/8f21e618-9282-4df1-b556-73ee82bdd673.eot?iefix");
+src:url("Fonts/3695342c-b5e2-4010-b0d4-56f563465922.woff") format("woff"),url("Fonts/2ba9f875-66d9-414d-a426-5a012b443475.ttf") format("truetype"),url("Fonts/0a88351a-e628-4b1f-99eb-3a729518af0a.svg#0a88351a-e628-4b1f-99eb-3a729518af0a") format("svg");
+}
+@font-face{
+font-family:"Avenir LT W01 65 Medium";
+src:url("Fonts/212ab03d-5db2-4d6a-b94c-171cc702aa51.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 65 Medium";
+src:url("Fonts/212ab03d-5db2-4d6a-b94c-171cc702aa51.eot?iefix");
+src:url("Fonts/2cac77ec-9bc0-4ee7-87e4-27650190744f.woff") format("woff"),url("Fonts/aaf11848-aac2-4d09-9a9c-aac5ff7b8ff4.ttf") format("truetype"),url("Fonts/294099f3-8d00-4676-afc5-5e9d8d43ad69.svg#294099f3-8d00-4676-afc5-5e9d8d43ad69") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-65MediumObl";
+src:url("Fonts/2a6f81a2-475c-4831-9949-33d7748ee561.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-65MediumObl";
+src:url("Fonts/2a6f81a2-475c-4831-9949-33d7748ee561.eot?iefix");
+src:url("Fonts/e0af2f49-a399-482b-a54e-d745e268ec80.woff") format("woff"),url("Fonts/6803d3dd-2107-45fc-ac8a-a4fa13771547.ttf") format("truetype"),url("Fonts/1bb1acb5-8d4e-4800-88af-dbcf1fe96ef8.svg#1bb1acb5-8d4e-4800-88af-dbcf1fe96ef8") format("svg");
+}
+@font-face{
+font-family:"Avenir LT W01 85 Heavy";
+src:url("Fonts/f61bf0f6-c193-4100-b940-12a1a01dcee5.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 85 Heavy";
+src:url("Fonts/f61bf0f6-c193-4100-b940-12a1a01dcee5.eot?iefix");
+src:url("Fonts/7147ec3a-8ff8-4ec9-8c5c-bd1571dc6ae6.woff") format("woff"),url("Fonts/d1dc54b2-878d-4693-8d6e-b442e99fef68.ttf") format("truetype"),url("Fonts/731dd4d3-64da-427d-ba61-01575b3cf3f7.svg#731dd4d3-64da-427d-ba61-01575b3cf3f7") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-85HeavyObli";
+src:url("Fonts/7be0fdec-384a-42b5-ab27-c60a322cde7d.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-85HeavyObli";
+src:url("Fonts/7be0fdec-384a-42b5-ab27-c60a322cde7d.eot?iefix");
+src:url("Fonts/53554f6f-4b01-4815-87fe-82c49b8ba5a9.woff") format("woff"),url("Fonts/28dfedaf-6372-45a1-8833-b3078dc56a21.ttf") format("truetype"),url("Fonts/f747b6ee-4d13-4e45-815d-f33ac1b71d63.svg#f747b6ee-4d13-4e45-815d-f33ac1b71d63") format("svg");
+}
+@font-face{
+font-family:"Avenir LT W01 95 Black";
+src:url("Fonts/a24b3f55-c8c8-41a1-a77e-7cdf417d82f6.eot?iefix") format("eot");}
+@font-face{
+font-family:"Avenir LT W01 95 Black";
+src:url("Fonts/a24b3f55-c8c8-41a1-a77e-7cdf417d82f6.eot?iefix");
+src:url("Fonts/5a05cf7f-f332-456f-ae67-d8c26e0d35b3.woff") format("woff"),url("Fonts/c33278bc-988e-440b-b4be-6acc095e6044.ttf") format("truetype"),url("Fonts/7bdad4a5-289b-42f9-b6fa-c5883b9e9f23.svg#7bdad4a5-289b-42f9-b6fa-c5883b9e9f23") format("svg");
+}
+@font-face{
+font-family:"AvenirLTW01-95BlackObli";
+src:url("Fonts/fbf3e69b-73b2-406d-84bc-feda30a0a563.eot?iefix") format("eot");}
+@font-face{
+font-family:"AvenirLTW01-95BlackObli";
+src:url("Fonts/fbf3e69b-73b2-406d-84bc-feda30a0a563.eot?iefix");
+src:url("Fonts/36ec15b9-f8da-447f-8fed-a9cfdfb91fbb.woff") format("woff"),url("Fonts/230d6b14-6d44-4dd5-a6ae-a4287936e51e.ttf") format("truetype"),url("Fonts/9bce4920-94e2-4e4d-bd34-818801dd3eb3.svg#9bce4920-94e2-4e4d-bd34-818801dd3eb3") format("svg");
+}

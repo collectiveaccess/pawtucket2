@@ -536,13 +536,38 @@ div.searchlight-results div.searchlight-selected {
 	font-family: WeissBT-Roman;
 	font-size: 16px;
 	color: #19568C;
-	line-height: 130%;
+	line-height: 140%;
 }
 
 .textContent div {
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 }
-
+.textContent div .imageLeft{
+	float:left;
+	width:160px;
+	margin:0px 20px 20px 0px;
+}
+.imageRightCol{
+	clear:right;
+	float:right;
+	width:160px;
+	margin:0px 0px 25px 25px;
+}
+.imageRightCol .caption{
+	font-size:10px;
+}
+.memberInstList{
+	float:left;
+	width:350px;
+	padding-bottom:15px;
+}
+.mostPopular{
+	float:left;
+	width: 220px;
+}
+.mostPopular a{
+	font-size:11px;
+}
 
 /* ------------------------------------- */
 /* Detail pages */

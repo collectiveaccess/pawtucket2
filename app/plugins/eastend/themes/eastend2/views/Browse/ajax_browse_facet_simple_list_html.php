@@ -54,28 +54,25 @@
 
 	if (!$va_facet||!$vs_facet_name) { 
 ?>
-		<div class="browseSelectPanelList">
-			<div class="browseSelectPanelCacheError">
+		<div class="browseSelectPanelCacheError">
 <?php
 			print _t('These results are no longer available. <a href="%1">Click here to restart your browse</a>.', caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'clearCriteria')); 
 ?>
-				</div>
 		</div>
 <?php
 	} else {
 ?>
-		<div style="max-height:200px; overflow:auto; padding:5px 10px 10px 15px;">
+		<!--<span class="listhead"><?php print $vs_facet_name; ?></span>-->
+		<ul>
 <?php
-				foreach($va_facet as $vn_i => $va_item) {
-					$vs_label = caGetLabelForDisplay($va_facet, $va_item, $va_facet_info);
-					
-					#print "<div>".caNavLink($this->request, $vs_label, 'browseSelectPanelLink', $this->request->getModulePath(), $this->request->getController(), ((strlen($vm_modify_id)) ? 'modifyCriteria' : 'addCriteria'), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."</div>";
-					print "<div><a href='#' onclick='jQuery(\"#contentBox\").load(\"".caNavUrl($this->request, '', 'Browse', 'clearAndAddCriteria', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."\"); return false;'>".$vs_label."</a></div>";
-				}
+		foreach($va_facet as $vn_i => $va_item) {
+			$vs_label = caGetLabelForDisplay($va_facet, $va_item, $va_facet_info);
+			
+			#print "<div>".caNavLink($this->request, $vs_label, 'browseSelectPanelLink', $this->request->getModulePath(), $this->request->getController(), ((strlen($vm_modify_id)) ? 'modifyCriteria' : 'addCriteria'), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."</div>";
+			print "<li><a href='#' class='abFacetOptionsList' id='abFacetOptionsList".$va_item['id']."' onclick='jQuery(\".abFacetOptionsList\").removeClass(\"selected\"); jQuery(\"#abFacetOptionsList".$va_item['id']."\").addClass(\"selected\"); jQuery(\"#contentBox\").load(\"".caNavUrl($this->request, '', 'Browse', 'clearAndAddCriteria', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."\"); return false;'>".$vs_label."</a></li>";
+		}
 ?>
-		</div>
+		</ul>
 <?php
-
 	}
 ?>
-</div>
