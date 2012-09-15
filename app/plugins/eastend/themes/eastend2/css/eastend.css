@@ -14,19 +14,25 @@
 #chronoNav .placeholder{
 	color: #b5b5b5;
 }
+#chronoLeftCol #chronoLists{
+	margin:10px 0px 0px 0px;
+}
 #chronoLeftCol #chronoLists .chronoList{
 	float:left;
 	width:150px;
-	height:450px;
+	height:280px;
 	overflow-y:auto;
 }
 #chronoLeftCol #chronoLists .chronoList .chronoListItem{
 	padding:5px 0px 5px 0px;
 }
+#chronoLeftCol #chronoMap{
+	margin:10px 0px 0px 0px;
+}
 #chronoRightCol{
 	float:right;
 	width:400px;
-	height:500px;
+	height:600px;
 	overflow-y:auto;
 }
 #chronoRightCol .chronoThumbnail{
@@ -36,4 +42,32 @@
 	float:right;
 	text-align:center;
 	vertical-align:middle;
+}
+#chronoRefineCriteria{
+	padding:10px 10px 10px 10px;
+	margin:0px 0px 10px 0px;
+	background-color:#EDEDED;
+}
+#chronoRefineCriteria #chronoRefineCriteriaText{
+	font-size:20px;
+	float:left;
+}
+#chronoRefineCriteria #chronoRefineCriteriaLink{
+	float:right;
+	width:75px;
+	padding: 5px 0px 0px 25px;
+}
+#chronoRefineCriteria #chronoRefineCriteriaLink a{
+	font-weight:bold;
+	font-size:12px;
+}
+#chronologyMapBalloonContainer{
+	width:200px;
+	/*margin-right:20px;
+	max-height:150px;
+	overflow-y:auto;*/
+}
+#chronologyMapBalloonContainer H1{
+	font-size:14px;
+	font-weight:bold;
 }

@@ -38,12 +38,16 @@
 			foreach($va_matches as $vn_id => $va_match) {
 					if (!is_numeric($vn_id)) { continue; }
 					$vs_match = $va_match['label'];
+					$vs_match_stripped = preg_replace("![^A-Za-z\-\.0-9]+!", ' ', $va_match['label']);
 					
 					switch($vs_table) {
 						# --------------------------------------------------------
 						case 'ca_objects':
-							$vs_url = caNavUrl($this->request, 'Detail', 'Object', 'Show', array('object_id' => $vn_id));
-							
+							if ($this->request->config->get('allow_detail_for_ca_objects')) {
+								$vs_url = caNavUrl($this->request, 'Detail', 'Object', 'Show', array('object_id' => $vn_id));
+							} else {
+								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match_stripped));
+							}
 							$va_cur_data['results'][] = array(
 								$vs_url, $vs_match, ''
 							);
@@ -53,7 +57,7 @@
 							if ($this->request->config->get('allow_detail_for_ca_entities')) {
 								$vs_url = caNavUrl($this->request, 'Detail', 'Entity', 'Show', array('entity_id' => $vn_id));
 							} else {
-								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match));
+								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match_stripped));
 							}
 							$va_cur_data['results'][] = array(
 								$vs_url, $vs_match, ''
@@ -62,9 +66,9 @@
 						# --------------------------------------------------------
 						case 'ca_places':
 							if ($this->request->config->get('allow_detail_for_ca_places')) {
-								$vs_url = caNavUrl($this->request, 'Detail', 'Place', 'Show', array('entity_id' => $vn_id));
+								$vs_url = caNavUrl($this->request, 'Detail', 'Place', 'Show', array('place_id' => $vn_id));
 							} else {
-								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match));
+								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match_stripped));
 							}
 							$va_cur_data['results'][] = array(
 								$vs_url, $vs_match, ''
@@ -75,7 +79,7 @@
 							if ($this->request->config->get('allow_detail_for_ca_occurrences')) {
 								$vs_url = caNavUrl($this->request, 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_id));
 							} else {
-								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match));
+								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match_stripped));
 							}
 							$va_cur_data['results'][] = array(
 								$vs_url, $vs_match, ''
@@ -86,7 +90,7 @@
 							if ($this->request->config->get('allow_detail_for_ca_collections')) {
 								$vs_url = caNavUrl($this->request, 'Detail', 'Collection', 'Show', array('collection_id' => $vn_id));
 							} else {
-								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match));
+								$vs_url = caNavUrl($this->request, '', 'Search', 'Index', array('search' => $vs_match_stripped));
 							}
 							$va_cur_data['results'][] = array(
 								$vs_url, $vs_match, ''

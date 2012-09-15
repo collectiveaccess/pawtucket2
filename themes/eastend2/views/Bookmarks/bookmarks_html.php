@@ -50,6 +50,7 @@
 		# --- current folder info and form to edit
 		if($vn_folder_id){
 			print "<div class='folderInfo'>";
+			print "<div class='removeFolder'>".caNavLink($this->request, '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;', '', '', 'Bookmarks', 'deleteFolder', array('folder_id' => $vn_folder_id))."</div>";
 			print "<strong>".$this->getVar("folder_name")."</strong>";
 			
 			print "<div class='edit'><a href='#' id='editFolderButton' onclick='$(\"#editFolderButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Folder")." &rsaquo;</a></div>";
@@ -150,7 +151,7 @@
 ?>
 					<div class="error">
 <?php
-						print _t('There are no bookmark folders to edit. Create a folder to start.');
+						print _t('There are no bookmark folders to edit. Create a folder to begin.');
 ?>
 					</div>
 <?php		
