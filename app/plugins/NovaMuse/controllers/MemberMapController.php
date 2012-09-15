@@ -45,16 +45,16 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			
  			$this->ops_theme = __CA_THEME__;																	// get current theme
- 			if(!is_dir(__CA_APP_DIR__.'/plugins/NovaStory/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
+ 			if(!is_dir(__CA_APP_DIR__.'/plugins/NovaMuse/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
  				$this->ops_theme = 'default';
  			}
- 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/NovaStory/themes/'.$this->ops_theme.'/views'));
+ 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/NovaMuse/themes/'.$this->ops_theme.'/views'));
  			
-			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/NovaStory/conf/NovaStory.conf');
+			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/NovaMuse/conf/NovaMuse.conf');
  			
- 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaStory plugin is not enabled')); }
+ 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaMuse plugin is not enabled')); }
  			
- 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaStory/themes/".$this->ops_theme."/css/memberMap.css",'text/css');
+ 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaMuse/themes/".$this->ops_theme."/css/memberMap.css",'text/css');
  			JavascriptLoadManager::register('maps');
  			
  			$this->opo_result_context = new ResultContext($po_request, 'ca_entities', 'member_map');
@@ -79,7 +79,7 @@
 			//$qr_res = $o_search->search("*", array('sort' => 'ca_entity_labels.name', 'sort_direction' => 'asc'));
  			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_member_institution_id);		// This is fastest
  			$o_map = new GeographicMap(900, 500, 'map');
-			$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "NovaStory", "MemberMap", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+			$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "NovaMuse", "MemberMap", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
  			
  			$this->render('member_map_html.php');
