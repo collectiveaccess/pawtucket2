@@ -34,7 +34,9 @@
 	$vn_num_reps = 						$t_object->getRepresentationCount(array("return_with_access" => $va_access_values));
 	$vs_display_version =				$this->getVar('primary_rep_display_version');
 	$va_display_options =				$this->getVar('primary_rep_display_options');
-
+	$t_list = new ca_lists();
+	$vn_silo_id = $t_list->getItemIDFromList('collection_types', 'silo');
+ 	
 ?>	
 	<div id="detailBody">
 		<div id="pageNav">
@@ -115,14 +117,14 @@
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_toolType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypetool_facet", "id" => $t_object->get('ca_objects.toolType')))."</p><!-- end unit -->";
 				}
 			}
-			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
+			if($vs_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_technique, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_facet", "id" => $t_object->get('ca_objects.technique')))."</p><!-- end unit -->";
 			}
-			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
+			if($vs_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_techniquePhoto, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_photo_facet", "id" => $t_object->get('ca_objects.techniquePhoto')))."</p><!-- end unit -->";
 			}			
-			if($va_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Material")."</h3><p>".$va_material."</p><!-- end unit -->";
+			if($vs_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
+				print "<h3>"._t("Material")."</h3><p>".caNavLink($this->request, $vs_material, "", "", "Browse", "clearAndAddCriteria", array("facet" => "materials_facet", "id" => $t_object->get('ca_objects.materialMedium')))."</p><!-- end unit -->";
 			}	
 	
 			if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length') || $va_height = $t_object->get('ca_objects.dimensions.dimensions_height') || $va_width = $t_object->get('ca_objects.dimensions.dimensions_width') || $va_depth = $t_object->get('ca_objects.dimensions.dimensions_depth') || $va_weight = $t_object->get('ca_objects.dimensions.weight')){
@@ -299,11 +301,57 @@
 			$va_collections = $t_object->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){
 				print "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
+				#foreach($va_collections as $va_collection_info){
+				#	print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+				#}
 ?>
 				<div class='scrollPane'>
 <?php
+				$va_silos = array();
+				$va_collection_links = array();
+				$t_related_collection = new ca_collections();
 				foreach($va_collections as $va_collection_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					if($va_collection_info["item_type_id"] != $vn_silo_id){
+						# --- if the related collection is not a silo, check for a related silo to list it under
+						$t_related_collection->load($va_collection_info['collection_id']);
+						$va_related_silos = $t_related_collection->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('silo')));
+						if(sizeof($va_related_silos)){
+							foreach($va_related_silos as $va_related_silo){
+								$va_silos[$va_related_silo["collection_id"]][] = $va_collection_info['collection_id'];
+								$va_collection_links[$va_related_silo["collection_id"]] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_related_silo['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_related_silo['collection_id'])) : $va_related_silo['label']);						
+							}
+						}else{
+							if(!$va_silos[$va_collection_info['collection_id']]){
+								$va_silos[$va_collection_info['collection_id']] = array();
+							}
+						}
+					}else{
+						if(!$va_silos[$va_collection_info['collection_id']]){
+							$va_silos[$va_collection_info['collection_id']] = array();	
+						}
+					}
+					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
+					#print "<p>".."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+				}
+				if(sizeof($va_silos)){
+					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
+						print "<p>".$va_collection_links[$vn_silo_id];
+							$i = 0;
+							if(sizeof($va_projectsPhases)){
+								print " (";
+							}
+							foreach($va_projectsPhases as $vn_projectPhase_id){
+								print "<span class='grayLink'>".$va_collection_links[$vn_projectPhase_id]."</span>";
+								$i++;
+								if($i < sizeof($va_projectsPhases)){
+									print ", ";
+								}
+							}
+							if(sizeof($va_projectsPhases)){
+								print ")";
+							}
+						print "</p>";
+					}
 				}
 ?>
 				</div>

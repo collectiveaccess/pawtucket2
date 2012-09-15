@@ -105,12 +105,17 @@
 if($this->getVar('num_pages') > 1){
 ?>
 	<div id='detailNavBar'>
-		<a href="#" id="carousel-prev">&lsaquo; <?php print _t("Previous"); ?></a>
+		<a href="#" id="carousel-prev" class="previous">&lsaquo; <?php print _t("Previous"); ?></a>
+		<a href="#" id="carousel-next" class="next"><?php print _t("Next"); ?> &rsaquo;</a>
 <?php
 		$vn_num_results = $qr_hits->numHits();
-		print "&nbsp;&nbsp;&nbsp;<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+		print "<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+		print "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._t("Jump to page:");
 ?>
-		<a href="#" id="carousel-next"><?php print _t("Next"); ?> &rsaquo;</a>
+		<input id="carouselJumpToPage" style="width:20px; height:12 px; border:1px solid #848484;" value="" name="carouselJumpToPage"> <a href="#" id="carouselJump" style="font-size:16px;">&rsaquo;</a>
+	
+	
+	
 	</div><!-- end detailNavBar -->
 <?php
 }
@@ -132,6 +137,16 @@ if($this->getVar('num_pages') > 1){
 				carousel.prev();
 				return false;
 			});
+			
+			jQuery('#carouselJump').bind('click', function() { 
+					var carousel = jQuery('#relatedObjectsCarousel').data('jcarousel');
+					var page = parseInt(jQuery('#carouselJumpToPage').val());
+					carousel.scroll(page, true);
+					
+					return false;
+				}
+			);
+
 		};
 
 		function loadRelatedObjects(carousel, state) {
@@ -195,8 +210,7 @@ if($this->getVar('num_pages') > 1){
 					
 					break;
 				}
-			}
-			
+			}			
 		}
 </script>
 

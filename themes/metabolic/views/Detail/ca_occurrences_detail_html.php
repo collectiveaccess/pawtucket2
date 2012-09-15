@@ -31,6 +31,9 @@
 	$vs_title 					= $this->getVar('label');
 	
 	$va_access_values	= $this->getVar('access_values');
+	$t_list = new ca_lists();
+	$vn_silo_id = $t_list->getItemIDFromList('collection_types', 'silo');
+	
 
 if (!$this->request->isAjax()) {
 ?>
@@ -75,6 +78,20 @@ if (!$this->request->isAjax()) {
 			}
 			if($va_date = $t_occurrence->get('ca_occurrences.date.dates_value')){
 				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_occurrence->get('ca_occurrences.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
+			}			
+			if($va_links = $t_occurrence->get("ca_occurrences.external_link", array("returnAsArray" => true))){
+				print "<h3>"._t("LInk")."</h3><p>";
+				$va_linksToOutput = array();
+				foreach($va_links as $va_link){
+					if($va_link['url_source']){
+						$vs_link = "<a href='".$va_link['url_entry']."'>".$va_link['url_source']."</a>";
+					}else{
+						$vs_link = "<a href='".$va_link['url_entry']."'>".$va_link['url_entry']."</a>";
+					}
+					$va_linksToOutput[] = $vs_link;
+				}
+				print join("<br/>", $va_linksToOutput);
+				print "</p>";
 			}			
 			# --- description
 				if($vs_description_text = $t_occurrence->get("ca_occurrences.description")){
@@ -138,16 +155,65 @@ if (!$this->request->isAjax()) {
 			# --- collections
 			$va_collections = $t_occurrence->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){
-				print "<h3>"._t("Related Project/Silo")."</h3>";
+// 				print "<h3>"._t("Related Project/Silo")."</h3><div class='scrollPane'>";
+// 				foreach($va_collections as $va_collection_info){
+// 					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+// 				}
+// 				print "</div>";
+
+				print "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
 ?>
 				<div class='scrollPane'>
 <?php
+				$va_silos = array();
+				$va_collection_links = array();
+				$t_related_collection = new ca_collections();
 				foreach($va_collections as $va_collection_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					if($va_collection_info["item_type_id"] != $vn_silo_id){
+						# --- if the related collection is not a silo, check for a related silo to list it under
+						$t_related_collection->load($va_collection_info['collection_id']);
+						$va_related_silos = $t_related_collection->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('silo')));
+						if(sizeof($va_related_silos)){
+							foreach($va_related_silos as $va_related_silo){
+								$va_silos[$va_related_silo["collection_id"]][] = $va_collection_info['collection_id'];
+								$va_collection_links[$va_related_silo["collection_id"]] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_related_silo['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_related_silo['collection_id'])) : $va_related_silo['label']);						
+							}
+						}else{
+							if(!$va_silos[$va_collection_info['collection_id']]){
+								$va_silos[$va_collection_info['collection_id']] = array();
+							}
+						}
+					}else{
+						if(!$va_silos[$va_collection_info['collection_id']]){
+							$va_silos[$va_collection_info['collection_id']] = array();
+						}
+					}
+					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
+					#print "<p>".."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+				}
+				if(sizeof($va_silos)){
+					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
+						print "<p>".$va_collection_links[$vn_silo_id];
+							$i = 0;
+							if(sizeof($va_projectsPhases)){
+								print " (";
+							}
+							foreach($va_projectsPhases as $vn_projectPhase_id){
+								print "<span class='grayLink'>".$va_collection_links[$vn_projectPhase_id]."</spn>";
+								$i++;
+								if($i < sizeof($va_projectsPhases)){
+									print ", ";
+								}
+							}
+							if(sizeof($va_projectsPhases)){
+								print ")";
+							}
+						print "</p>";
+					}
 				}
 ?>
 				</div>
-<?php				
+<?php
 			}
 			# --- vocabulary terms
 			$va_terms = $t_occurrence->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
