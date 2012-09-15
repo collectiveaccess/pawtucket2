@@ -8,7 +8,7 @@
 			print "<div style='float:left;'>".caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout")."</div>";
 		}
 ?>
-		&copy; 2012 ANSM
+		&copy; 2012 ANSM [<?php print $this->request->session->elapsedTime(4).'s'; ?>/<?php print caGetMemoryUsage(); ?>]
 	</div>
 <?php
 	if ($this->request->getController() == 'Splash') {
