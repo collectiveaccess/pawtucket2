@@ -87,43 +87,43 @@
 				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
 			}			
 			print "<h3>Type</h3><p>".caNavLink($this->request, unicode_ucfirst($this->getVar('typename')), "", "", "Browse", "clearAndAddCriteria", array("facet" => "type_facet", "id" => $t_object->get('ca_objects.type_id')))."</p>";
-			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true))){
+			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_artType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_artType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypeart_facet", "id" => $t_object->get('ca_objects.artType')))."</p><!-- end unit -->";
 				}
 			}	
-			if($vs_audioType = $t_object->get('ca_objects.audioFilmType', array('convertCodesToDisplayText' => true))){
+			if($vs_audioType = $t_object->get('ca_objects.audioFilmType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_audioType != "-NONE-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_audioType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypeaudio_facet", "id" => $t_object->get('ca_objects.audioFilmType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_miscellaneous = $t_object->get('ca_objects.miscellaneousType', array('convertCodesToDisplayText' => true))){
+			if($vs_miscellaneous = $t_object->get('ca_objects.miscellaneousType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_miscellaneous != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_miscellaneous, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypemisc_facet", "id" => $t_object->get('ca_objects.miscellaneousType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_photographyType = $t_object->get('ca_objects.photographyType', array('convertCodesToDisplayText' => true))){
+			if($vs_photographyType = $t_object->get('ca_objects.photographyType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_photographyType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_photographyType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypephoto_facet", "id" => $t_object->get('ca_objects.photographyType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_textualType = $t_object->get('ca_objects.textualType', array('convertCodesToDisplayText' => true))){
+			if($vs_textualType = $t_object->get('ca_objects.textualType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_textualType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_textualType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypetext_facet", "id" => $t_object->get('ca_objects.textualType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_toolType = $t_object->get('ca_objects.toolType', array('convertCodesToDisplayText' => true))){
+			if($vs_toolType = $t_object->get('ca_objects.toolType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_toolType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_toolType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypetool_facet", "id" => $t_object->get('ca_objects.toolType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
+			if($vs_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_technique, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_facet", "id" => $t_object->get('ca_objects.technique')))."</p><!-- end unit -->";
 			}
-			if($vs_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
+			if($vs_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_techniquePhoto, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_photo_facet", "id" => $t_object->get('ca_objects.techniquePhoto')))."</p><!-- end unit -->";
 			}			
-			if($vs_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
+			if($vs_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				print "<h3>"._t("Material")."</h3><p>".caNavLink($this->request, $vs_material, "", "", "Browse", "clearAndAddCriteria", array("facet" => "materials_facet", "id" => $t_object->get('ca_objects.materialMedium')))."</p><!-- end unit -->";
 			}	
 	
@@ -220,7 +220,7 @@
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
-					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}")){
+					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 						print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
 					}
 				}
