@@ -731,6 +731,9 @@ div.searchlight-results div.searchlight-selected {
 	width: 580px;
 	height: 500px;
 }*/
+#cont {
+	padding-bottom:3px;
+}
 
 #objDetailImageNav {
 	background-color: #e6e6e6;
