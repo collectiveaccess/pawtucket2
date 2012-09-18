@@ -9011,15 +9011,15 @@ $pa_options["display_form_field_tips"] = true;
 				$va_wheres[] = 't.'.$vs_type_field_name.' IN ('.join(',', $va_types).')';
 			}
 		}
-		//$vs_join_sql = '';
-		//if (isset($pa_options['hasRepresentations']) && $pa_options['hasRepresentations'] && ($this->tableName() == 'ca_objects')) {
-		//	$vs_join_sql = ' INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = t.object_id';
-		//	$va_wheres[] = 'ca_objects_x_object_representations.is_primary = 1';
-		//	if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
-		//		$vs_join_sql .= ' INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id';
-		//		$va_wheres[] = 'ca_object_representations.access IN ('.join(',', $pa_options['checkAccess']).')';
-		//	}
-		//}
+		$vs_join_sql = '';
+		if (isset($pa_options['hasRepresentations']) && $pa_options['hasRepresentations'] && ($this->tableName() == 'ca_objects')) {
+			$vs_join_sql = ' INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = t.object_id';
+			$va_wheres[] = 'ca_objects_x_object_representations.is_primary = 1';
+			if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
+				$vs_join_sql .= ' INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id';
+				$va_wheres[] = 'ca_object_representations.access IN ('.join(',', $pa_options['checkAccess']).')';
+			}
+		}
 		
 		$vs_deleted_sql = '';
 		if ($this->hasField('deleted')) {
@@ -9034,6 +9034,7 @@ $pa_options["display_form_field_tips"] = true;
 		$vs_sql ="
 				SELECT t.*
 				FROM ".$this->tableName()." t
+				{$vs_join_sql}
 				{$vs_where_sql}
 				ORDER BY
 					t.".$vs_primary_key." DESC";

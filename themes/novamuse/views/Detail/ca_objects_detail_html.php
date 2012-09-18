@@ -62,6 +62,7 @@
 	# --- get similar items by category
 	$va_categories = explode(",", $t_object->get('ns_category'));
 	$va_sim_items = array();
+	
 	if(sizeof($va_categories)){
 		$vn_category = trim($va_categories[0]);
 		require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectBrowse.php');
@@ -72,17 +73,19 @@
 		$o_browse->execute(array('checkAccess' => $va_access_values));
 		$qr_sim_items = $o_browse->getResults();
 		if($qr_sim_items->numHits()){
-			# --- grab the first 100 items and shuffle array to randomize a bit
+			# --- grab the first 50 items and shuffle array to randomize a bit
 			$i = 0;
-			while($qr_sim_items->nextHit() && $i < 100){
-				$va_labels = array();
-				$va_labels = $qr_sim_items->getDisplayLabels($this->request);
-				$vs_label = join("; ", $va_labels);
-				$va_media_info = array();
-				$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'icon', null, array('checkAccess' => $va_access_values));
-				$vn_padding_top_bottom =  ((120 - $va_media_info["HEIGHT"]) / 2);
-				$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->getMediaTag('ca_object_representations.media', 'icon', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"), "padding" => $vn_padding_top_bottom);	
-				$i++;
+			while($qr_sim_items->nextHit() && $i < 50){
+				if($qr_sim_items->get("ca_objects.object_id") != $vn_object_id){
+					$va_labels = array();
+					$va_labels = $qr_sim_items->getDisplayLabels($this->request);
+					$vs_label = join("; ", $va_labels);
+					$va_media_info = array();
+					$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'icon', null, array('checkAccess' => $va_access_values));
+					$vn_padding_top_bottom =  ((120 - $va_media_info["HEIGHT"]) / 2);
+					$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->getMediaTag('ca_object_representations.media', 'icon', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"), "padding" => $vn_padding_top_bottom);	
+					$i++;
+				}				
 			}
 			# -- shuffle array
 			shuffle($va_sim_items);
@@ -122,7 +125,7 @@
 				}
 				print '</div>';
 			}
-			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a></div>";
+			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >"._t("Zoom")."</a></div>";
 		}else{
 			print "<div class='objectslides'><img src='".$vs_placeholder."'></div><div class='nav1Spacer'><!-- empty --></div>";
 		}
@@ -211,43 +214,7 @@
 		<div class="collection-badge"><div class="collection-badge-padding">from the collection of<br/><?php print $vs_member_inst_link; ?></div></div>
 
 		<div class="clear"></div>
-<?php
-	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
-?>
-		<div class="detail-col1">
-<?php
-	}
-	if($t_object->get("narrative")){
-?>
 
-			<p><span class="subtitletextcaps"><?php print _t("Narrative"); ?>:</span></p>
-			<p class="narrativeText"><?php print $t_object->get("narrative", array("convertHTMLBreaks" => true)); ?></p>
-<?php
-	}
-	if($t_object->get("description")){
-?>
-			<p><span class="subtitletextcaps"><?php print _t("Description"); ?>:</span></p>
-			<p class="descriptionText"><?php print $t_object->get("description", array("convertHTMLBreaks" => true)); ?></p>
-<?php
-	}
-	if($t_object->get("historyUse")){
-?>
-			<p><span class="subtitletextcaps"><?php print _t("History of Use"); ?>:</span></p>
-			<p class="descriptionText"><?php print $t_object->get("historyUse", array("convertHTMLBreaks" => true)); ?></p>
-<?php
-	}
-	if($t_object->get("cataloguerRem")){
-?>
-			<p><span class="subtitletextcaps"><?php print _t("Notes"); ?>:</span></p>
-			<p class="descriptionText"><?php print $t_object->get("cataloguerRem", array("convertHTMLBreaks" => true)); ?></p>
-<?php
-	}
-	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
-?>
-		</div><!-- end detail-col1 -->
-<?php
-	}
-?>
 		<div class="detail-col2">
 			<p class="subtitletextcaps">
 <?php
@@ -304,7 +271,43 @@
 			</p>
 
 		</div><!--end detail-col2-->
+<?php
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
+?>
+		<div class="detail-col1">
+<?php
+	}
+	if($t_object->get("narrative")){
+?>
 
+			<p class="noPadding"><span class="subtitletextcaps"><?php print _t("Narrative"); ?>:</span></p>
+			<div class="narrativeText"><?php print $t_object->get("narrative", array("convertHTMLBreaks" => true)); ?></div>
+<?php
+	}
+	if($t_object->get("description")){
+?>
+			<p class="noPadding"><span class="subtitletextcaps"><?php print _t("Description"); ?>:</span></p>
+			<div class="descriptionText"><?php print $t_object->get("description", array("convertHTMLBreaks" => true)); ?></div>
+<?php
+	}
+	if($t_object->get("historyUse")){
+?>
+			<p class="noPadding"><span class="subtitletextcaps"><?php print _t("History of Use"); ?>:</span></p>
+			<div class="descriptionText"><?php print $t_object->get("historyUse", array("convertHTMLBreaks" => true)); ?></div>
+<?php
+	}
+	if($t_object->get("cataloguerRem")){
+?>
+			<p class="noPadding"><span class="subtitletextcaps"><?php print _t("Notes"); ?>:</span></p>
+			<div class="descriptionText"><?php print $t_object->get("cataloguerRem", array("convertHTMLBreaks" => true)); ?></div>
+<?php
+	}
+	if($t_object->get("description") || $t_object->get("narrative") || $t_object->get("historyUse") || $t_object->get("cataloguerRem")){
+?>
+		</div><!-- end detail-col1 -->
+<?php
+	}
+?>
 		<div class="clear"></div>
 
 		
