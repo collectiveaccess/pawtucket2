@@ -79,12 +79,47 @@
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
-			}			
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/><br/>'))){
-				print "<h3>"._t("Alternate Title")."</h3><p style='line-height:1.1em;'>".$va_alt_name."</p><!-- end unit -->";
+			}	
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))){
+				#print "<pre>";
+				#print_r($va_alt_name[$vn_object_id]);
+				#print "</pre>";
+				if(sizeof($va_alt_name)){
+					print "<h3>"._t("Alternate Title%1", ((sizeof($va_alt_name) > 1) ? "s" : ""))."</h3>";
+					$vn_alternate_id = $t_list->getItemIDFromList('object_label_types', 'alt');
+					$vn_use_for_id = $t_list->getItemIDFromList('object_label_types', 'uf');
+					$vn_file_name_id = $t_list->getItemIDFromList('object_label_types', '16');
+					$vs_alternate = "";
+					$vs_use_for = "";
+					$vs_file_name = "";
+					$va_alt_name = array_pop($va_alt_name);
+					foreach($va_alt_name as $vn_x => $va_alt_title_info){
+						switch($va_alt_title_info["type_id"]){
+							case $vn_alternate_id:
+								$vs_alternate .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]."</p>";
+							break;
+							# ---
+							case $vn_use_for_id:
+								$vs_use_for .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]."</p>";
+							break;
+							# ---
+							case $vn_file_name_id:
+								$vs_file_name .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]." (file name)</p>";
+							break;
+							# ---
+						}
+					}
+					print $vs_alternate.$vs_use_for.$vs_file_name;
+				}
 			}
-			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
-				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
+			if(($va_dates = $t_object->get('ca_objects.date', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
+				if(sizeof($va_dates)){
+					print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
+					foreach($va_dates as $va_date){
+						#print_r($va_date);
+						print "<p>".$va_date["dates_value"]." <br/><span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
+					}
+				}
 			}			
 			print "<h3>Type</h3><p>".caNavLink($this->request, unicode_ucfirst($this->getVar('typename')), "", "", "Browse", "clearAndAddCriteria", array("facet" => "type_facet", "id" => $t_object->get('ca_objects.type_id')))."</p>";
 			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
