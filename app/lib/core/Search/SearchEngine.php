@@ -368,7 +368,7 @@ class SearchEngine extends SearchBase {
 		if (!in_array(strtolower($ps_direction), array('asc', 'desc'))) { $ps_direction = 'asc'; }
 		if (!is_array($pa_hits) || !sizeof($pa_hits)) { return $pa_hits; }
 		
-		$vs_search_tmp_table = $this->loadListIntoTemporaryResultTable($pa_hits, $pa_options['search']);
+		$vs_search_tmp_table = $this->loadListIntoTemporaryResultTable($pa_hits, md5(isset($pa_options['search']) ? $pa_options['search'] : rand(0, 1000000)));
 			
 		$t_table = $this->opo_datamodel->getInstanceByTableNum($this->opn_tablenum, true);
 		$vs_table_pk = $t_table->primaryKey();
