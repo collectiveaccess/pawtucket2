@@ -881,32 +881,64 @@ div.searchlight-results div.searchlight-selected {
 	font-weight:bold;
 	text-decoration:none;
 }
+#detailBody .grayLink a{
+	color:#7b7863;
+}
+
 /* nav bar on details with thumbnail grid */
 #detailNavBar{
-	margin:0px 0px 15px 0px;
+	margin:0px 30px 15px 10px;
 	text-align:center;
 	padding:0px 0px 0px 0px;
-	font-weight: 300;
+	/*font-weight: 300;
 	letter-spacing: 2px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	font-size: .8em;
 	text-transform:uppercase;
-	color: #7b7863;
+	color: #7b7863;*/
 }
 #detailNavBar a {
 	text-decoration:none;
-	font-weight: 300;
+	font-weight:bold;
+	/*font-weight: 300;
 	letter-spacing: 2px;
 	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
 	text-transform:uppercase;
-	color: #7b7863;
+	color: #7b7863;*/
+}
+#detailNavBar a:hover {
+	color:#787878;
+}
+#detailNavBar .nextPrevious{
+	float:right;
+	text-align:right;
+}
+#detailNavBar .nextPrevious .previous{
+	padding-right:5px;	
+}
+#detailNavBar .nextPrevious .next{
+	padding-left:5px;	
+}
+#detailNavBar .jumpToPageDetail{
+	float:left;
+	margin-top:-2px;
+	text-align:left;
+}
+
+/*#detailNavBar a.next{
+	float:right;
+	margin-top:3px;
+}
+#detailNavBar a.previous{
+	float:left;
+	margin-top:3px;
 }
 #detailNavBar #next{
 	display:inline;
 }
 #detailNavBar #previous{
 	display:inline;
-}
+}*/
 /* image on - object detail */
 #objDetailImage{
 	margin-bottom:0px;
