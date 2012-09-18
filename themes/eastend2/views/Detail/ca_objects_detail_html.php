@@ -90,8 +90,9 @@
 			print "</span></div>";
 		}
 		if ($t_rep && $t_rep->getPrimaryKey()) {
+			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
 ?>
-			<div id="art_detail">
+			<div id="art_detail" style="width:<?php print $va_media_info["WIDTH"]; ?>px;">
 <?php
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
@@ -100,14 +101,19 @@
 				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 			}
 			if($t_object->get("caption")){
-				print "<div id='caption'>".$t_object->get("caption")."</div><!-- end caption -->";
+				print "<div class='caption'>".$t_object->get("caption")."</div><!-- end caption -->";
 			}
 ?>
 			</div><!-- end art_detail -->
 <?php
+			# --- increase width of art_detail_info if the image is less than 580 px wide
+			$vn_info_width = 200;
+			if($va_media_info["WIDTH"] < 580){
+				$vn_info_width = $vn_info_width + (580 - $va_media_info["WIDTH"]);
+			}
 		}
 ?>
-		<div id="art_detail_info">	
+		<div id="art_detail_info" <?php print ($vn_info_width) ? "style='width:".$vn_info_width."px;'" : ""; ?>>	
 <?php
 			if($t_object->get("creation_date")){
 				$vs_date = ", ".$t_object->get("creation_date");
@@ -128,13 +134,21 @@
 					}
 				}
 			}
+
+			if($this->request->config->get('ca_objects_description_attribute')){
+				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
+					print "<p class='caption'>".$vs_description_text."</p>";
+				}
+			}
 			
 			# --- entities
 			$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
 			if(sizeof($va_entities) > 0){	
+				print "<p class='caption'>";
 				foreach($va_entities as $va_entity) {
-					print "<span class='caption'>".$va_entity['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."</span><br/>";
+					print $va_entity['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/>";
 				}
+				print "</p>";
 			}
 			
 			# --- occurrences
@@ -149,30 +163,28 @@
 				}
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
+					print "<p class='caption'>";
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<span class='caption'>".$va_info['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."</span><br/>";
+						print $va_info['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."<br/>";
 					}
+					print "</p>";
 				}
 			}
 			# --- places
 			$va_places = $t_object->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			
 			if(sizeof($va_places) > 0){
+				print "<p class='caption'>";
 				foreach($va_places as $va_place_info){
-					print "<span class='caption'>".$va_place_info['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."</span><br/>";
+					print $va_place_info['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."<br/>";
 				}
+				print "</p>";
 			}
 			# --- map
 			if($this->request->config->get('ca_objects_map_attribute') && $t_object->get($this->request->config->get('ca_objects_map_attribute'))){
-				$o_map = new GeographicMap(285, 200, 'map');
+				$o_map = new GeographicMap(200, 200, 'map');
 				$o_map->mapFrom($t_object, $this->request->config->get('ca_objects_map_attribute'));
-				print "<span class='caption'>".$o_map->render('HTML')."</span><br/>";
-			}
-
-			if($this->request->config->get('ca_objects_description_attribute')){
-				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-					print "<p class='caption'>".$vs_description_text."</p>";
-				}
+				print "<p class='caption'>".$o_map->render('HTML')."</p>";
 			}
 			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 				$vs_lightbox_link = "<span class='caption'>";
