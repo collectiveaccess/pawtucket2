@@ -78,9 +78,9 @@ h2 {margin:0; padding:0;}
 #ad_maincontentCol1{width:200px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
 #ad_maincontentCol2{width:370px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
 .bio{font-size:12px; line-height:130%; padding-right:10px;}
-.ad_thumbs{width:490px;padding-top:20px;}
-.ad_thumbs img{max-width:150px; padding-bottom:10px;}
-.ad_thumbs .col {width:150px; margin-right:10px;float:left; text-align:center;}
+.ad_thumbs{width:490px;padding-top:0px;}
+.ad_thumbs img{max-width:175px; padding-bottom:10px;}
+.ad_thumbs .col {width:175px; margin-left:10px;float:left; text-align:center;}
 .ad_thumbs .lastcol {width:150px; margin-right:10px;float:left;}
 
 .ad_gmap {width:370px; float:right;}
@@ -95,9 +95,8 @@ h2 {margin:0; padding:0;}
 
 /* artwork detail styles */
 #art_artist {height:50px; clear:both;}
-#art_detail {width:550px; float:left; margin-right:40px;}
-#art_detail img{max-width:550px;}
-#art_detail_info{width:190px;margin-left:10px;float:left;line-height:150%; }
+#art_detail {width:580px; float:left; margin-right:40px;}
+#art_detail_info{width:200px;margin-left:10px;float:left;line-height:150%;}
 
 
 /*chronology styles */
