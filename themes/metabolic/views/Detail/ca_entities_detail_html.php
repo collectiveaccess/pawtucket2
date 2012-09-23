@@ -146,7 +146,7 @@ if (!$this->request->isAjax()) {
 				$vn_rightColText .= "<H3>"._t("Related")." ".((sizeof($va_entities) > 1) ? _t("People/Organizations") : _t("Person/Organization"))."</h3>";
 				$vn_rightColText .= "<div class='scrollPane'>";
 				foreach($va_entities as $va_entity) {
-					$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <br/><span class='details'>(".$va_entity['relationship_typename'].")</span></p>";		
+					$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."  <span class='details'>(".$va_entity['relationship_typename'].")</span></p>";		
 				}
 				$vn_rightColText .= "</div>";
 			}
@@ -166,7 +166,7 @@ if (!$this->request->isAjax()) {
 					$vn_rightColText .= "<div class='scrollPane'>";
 					$vn_rightColText .= "<h3>"._t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : "")."</h3>";
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <br/><span class='details'>(".$va_info['relationship_typename'].")</span></p>";
+						$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
 					}
 					$vn_rightColText .= "</div>";
 				}
@@ -177,7 +177,7 @@ if (!$this->request->isAjax()) {
 				$vn_rightColText .= "<h3>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h3>";
 				$vn_rightColText .= "<div class='scrollPane'>";
 				foreach($va_places as $va_place_info){
-					$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." <br/><span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
+					$vn_rightColText .= "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." <span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
 				}
 				$vn_rightColText .= "</div>";				
 			}
@@ -188,7 +188,7 @@ if (!$this->request->isAjax()) {
 // 				$vn_rightColText .= "<div class='scrollPane'>";
 // 				foreach($va_collections as $va_collection_info){
 // 					$vn_rightColText .= "<p>";
-// 					$vn_rightColText .= (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <br/><span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
+// 					$vn_rightColText .= (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
 // 				}
 // 				$vn_rightColText .= "</div>";
 				$vn_rightColText .= "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
@@ -217,7 +217,7 @@ if (!$this->request->isAjax()) {
 						}
 					}
 					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
-					#print "<p>".."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					#print "<p> <span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
 				}
 				if(sizeof($va_silos)){
 					foreach($va_silos as $vn_silo_id => $va_projectsPhases){

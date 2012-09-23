@@ -76,22 +76,38 @@ if (!$this->request->isAjax()) {
 					}
 				}
 			}
-			if($va_date = $t_occurrence->get('ca_occurrences.date.dates_value')){
-				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_occurrence->get('ca_occurrences.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
-			}			
+			if(($va_dates = $t_occurrence->get('ca_occurrences.date', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
+				if(sizeof($va_dates)){
+					$va_dates_for_display = array();
+					foreach($va_dates as $va_date){
+						#print_r($va_date);
+						if($va_date["dates_value"]){
+							$va_dates_for_display[] = "<p>".$va_date["dates_value"]." <span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
+						}
+					}
+					if(sizeof($va_dates_for_display)){
+						print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
+						print implode("\n", $va_dates_for_display);
+					}
+				}
+			}
 			if($va_links = $t_occurrence->get("ca_occurrences.external_link", array("returnAsArray" => true))){
-				print "<h3>"._t("LInk")."</h3><p>";
 				$va_linksToOutput = array();
 				foreach($va_links as $va_link){
 					if($va_link['url_source']){
-						$vs_link = "<a href='".$va_link['url_entry']."'>".$va_link['url_source']."</a>";
-					}else{
-						$vs_link = "<a href='".$va_link['url_entry']."'>".$va_link['url_entry']."</a>";
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_source']."</a>";
+					}elseif($va_link['url_entry']){
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_entry']."</a>";
 					}
-					$va_linksToOutput[] = $vs_link;
+					if($vs_link){
+						$va_linksToOutput[] = $vs_link;
+					}
 				}
-				print join("<br/>", $va_linksToOutput);
-				print "</p>";
+				if(sizeof($va_linksToOutput)){
+					print "<h3>"._t("Link")."</h3><p>";
+					print join("<br/>", $va_linksToOutput);
+					print "</p>";
+				}
 			}			
 			# --- description
 				if($vs_description_text = $t_occurrence->get("ca_occurrences.description")){
@@ -107,7 +123,7 @@ if (!$this->request->isAjax()) {
 				<div class='scrollPane'>
 <?php
 				foreach($va_entities as $va_entity) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/><span class='details'> (".$va_entity['relationship_typename'].")</span></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span></p>";
 				}
 ?>
 				</div>
@@ -131,7 +147,7 @@ if (!$this->request->isAjax()) {
 				<div class='scrollPane'>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."<br/><span class='details'> (".$va_info['relationship_typename'].")</span></p>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
 					}
 ?>
 				</div>
@@ -146,7 +162,7 @@ if (!$this->request->isAjax()) {
 				<div class='scrollPane'>
 <?php
 				foreach($va_places as $va_place_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."<br/><span class='details'> (".$va_place_info['relationship_typename'].")</span></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." <span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
 				}
 ?>
 				</div>
@@ -157,7 +173,7 @@ if (!$this->request->isAjax()) {
 			if(sizeof($va_collections) > 0){
 // 				print "<h3>"._t("Related Project/Silo")."</h3><div class='scrollPane'>";
 // 				foreach($va_collections as $va_collection_info){
-// 					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+// 					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
 // 				}
 // 				print "</div>";
 
@@ -189,7 +205,7 @@ if (!$this->request->isAjax()) {
 						}
 					}
 					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
-					#print "<p>".."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					#print "<p> <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
 				}
 				if(sizeof($va_silos)){
 					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
