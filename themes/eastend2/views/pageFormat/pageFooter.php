@@ -1,4 +1,4 @@
-		</div><!--end main content-->
+		<div style="clear:both;"></div></div><!--end main content-->
 <?php
 print TooltipManager::getLoadHTML();
 ?>

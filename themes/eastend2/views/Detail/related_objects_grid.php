@@ -30,9 +30,12 @@
 	$vn_c = 0;
 	$vn_itemc = 0;
 	$vn_numCols = 2;
-	
+	if($this->getVar('num_cols')){
+		$vn_numCols = $this->getVar('num_cols');
+	}
+	$vs_detailType = $this->getVar('detailType');
 	$va_access_values	= $this->getVar('access_values');
-	if($qr_hits->numHits()){	
+	if($qr_hits->numHits()){
 		# --- loop through all results and build 3 columns to output later
 		$va_col1 = array();
 		$va_col2 = array();
@@ -41,15 +44,15 @@
 		while($qr_hits->nextHit()){
 			$vn_object_id = $qr_hits->get('object_id');
 			$vs_caption = join("; ", $qr_hits->getDisplayLabels());
-			${"va_col".$vn_col}[] = caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')), array("id" => "searchThumbnail".$qr_hits->get('ca_objects.object_id')));
+			${"va_col".$vn_col}[] = caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'relatedGrid', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')), array("id" => "searchThumbnail".$qr_hits->get('ca_objects.object_id')));
 				
 			// set view vars for tooltip
-			$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
-			$this->setVar('tooltip_title', $vs_caption);
-			$this->setVar('tooltip_idno', $qr_hits->get('idno'));
-			TooltipManager::add(
-				"#searchThumbnail{$vn_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
-			);
+			//$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
+			//$this->setVar('tooltip_title', $vs_caption);
+			//$this->setVar('tooltip_idno', $qr_hits->get('idno'));
+			//TooltipManager::add(
+			//	"#searchThumbnail{$vn_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
+			//);
 	
 			$vn_col++;
 			if($vn_col > $vn_numCols){
@@ -57,7 +60,7 @@
 			}
 		}
 ?>
-		<div class="ad_thumbs">	
+		<div class="ad_thumbs" <?php print ($vn_numCols == 3) ? "style='width:555px;'" : ""; ?>><div>	
 <?php
 			$i = 1;
 			while($i <= $vn_numCols ){
@@ -65,7 +68,15 @@
 				$i++;
 			}
 ?>
-		</div><!--end ad_thumbs-->
+		<div style="clear:both;"><!-- empty --></div></div></div><!--end ad_thumbs-->
+		<script type="text/javascript">
+			// Initialize the plugin
+			$(document).ready(function () {
+				$("div.ad_thumbs").smoothDivScroll({
+					visibleHotSpotBackgrounds: "always"
+				});
+			});
+		</script>
 <?php
 	}
 ?>

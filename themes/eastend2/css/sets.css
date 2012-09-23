@@ -4,15 +4,16 @@
 #setItemEditor #rightCol{
 	clear:right;
 	float:right;
-	width: 270px;
+	width: 290px;
+	margin-right:10px;
+}
+#setItemEditor #rightCol .boxBg H2{
+	padding-top:25px;
 }
 #setItemEditor #rightCol .boxBg{
-	padding: 0px 10px 10px 10px;
+	padding: 0px 20px 20px 20px;
 	margin: 0px 0px 15px 0px;
-	background-color: #E2E2E2;
-	border-radius: 10px;
-	-moz-border-radius: 10px; 
-	-webkit-border-radius: 10px;
+	background-color: #FFFFFF;
 }
 #setItemEditor #rightCol H2{
 	padding-top:10px;
@@ -20,7 +21,7 @@
 }
 
 #setItemEditor #leftCol{
-	width:620px;
+	width:630px;
 }
 #setItemList{
 	margin:0px;
@@ -34,15 +35,16 @@
 	list-style-type: none;
 	height: 200px; 
 	width: 140px; 
-	border: solid 1px #828282;
-	margin: 5px 10px 5px 0px;
+	border: solid 1px #eee;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+	margin: 5px 15px 10px 0px;
 	background: #F5F5F5;
 	text-align: center;
-	overflow: hidden;
 }
 
 #setItems .setItem:hover {
-	border: solid 1px #666;
+	border: solid 1px #aaa;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
 }
 
 #setItems div{
@@ -62,20 +64,38 @@
 
 #setItems .remove{
 	position: absolute;
-	left:130px;
-	top: 0px;
+	left:127px;
+	top: -10px;
 	width:7px;
-	padding: 0px 1px 1px 2px;
+	padding: 2px 1px 1px 5px;
+	background-color:#aaa;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
-
+#setItems .remove:hover{
+	position: absolute;
+	left:127px;
+	top: -10px;
+	width:7px;
+	padding: 2px 1px 1px 5px;
+	background-color:#CA1919;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 #setItems .remove a{
-	font-size: 9px;
-	color: #828282;
+	font-size: 10px;
+	color: #fff;
 	text-decoration:none;
 	font-weight:bold;
-}
-#setItems .remove a:hover{
-	color: #CA1919;
+	cursor:default;
 }
 
 .setItemThumbnail {
@@ -126,10 +146,9 @@ a.hide{
 	float:right;
 	text-transform: uppercase;
 	font-size:13px;
-	color: #828282;
 }
-a.hide:hover{	
-	color:none;
+a.hide:hover{
+	color:#71cde4;
 }
 div.edit{
 	text-align:right;
@@ -140,8 +159,8 @@ div.edit a{
 	font-size:13px;
 	color: #828282;
 }
-div.edit a:hover{	
-	color:none;
+div.edit a:hover{
+	color:#71cde4;
 }
 #setItemEditor .reply a{	
 	text-decoration:none;
@@ -150,9 +169,6 @@ div.edit a:hover{
 	font-size:12px;
 	color: #828282;	
 	padding-top:5px;
-}
-#setItemEditor .reply a:hover{	
-	color:none;
 }
 #setItemEditor .inquire{
 	text-align:center;
@@ -179,7 +195,7 @@ div.edit a:hover{
 	padding:0px;
 }
 #setItemEditor a.hide:hover{	
-	color:none;
+	color:#71cde4;
 }
 #setItemEditor div.edit{
 	text-align:right;
@@ -190,8 +206,8 @@ div.edit a:hover{
 	font-size:12px;
 	color: #828282;
 }
-#setItemEditor div.edit a:hover{	
-	color:none;
+#setItemEditor div.edit a:hover{
+	color:#71cde4;
 }
 
 #setItemEditor div.save{
@@ -204,10 +220,9 @@ div.edit a:hover{
 	color: #545454;
 	font-weight:bold;
 }
-#setItemEditor div.save a:hover{	
-	color:none;
+#setItemEditor div.save a:hover{
+	color:#71cde4;
 }
-
 #setItemEditor a.save {
 	text-decoration:none;
 	text-transform: uppercase;
@@ -215,9 +230,8 @@ div.edit a:hover{
 	color: #545454;
 	font-weight:bold;
 }
-
-#setItemEditor a.save:hover{	
-	color:none;
+#setItemEditor a.save:hover{
+	color:#71cde4;
 }
 
 /*  FORMS */
@@ -279,10 +293,8 @@ div.edit a:hover{
 	padding: 5px 0px 0px 0px;
 }
 #newSetForm a:hover, #editSetForm a:hover, #shareSetForm a:hover, #caClientCommunications a:hover, #caClientCommunicationsReplyForm a:hover{
-	color: #828282;
-	text-decoration:none;
+	color:#71cde4;
 }
-
 
 /* Client services styles */
 #setItemEditor .newSetButton{
