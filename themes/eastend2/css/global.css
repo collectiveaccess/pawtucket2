@@ -1307,8 +1307,8 @@ td.advSearchElement{
 	width:600px;
 }
 #loginForm .bg, #registerForm .bg, #resetPassword .bg{
-	background-color: #e6e6e6;
-	border: 1px solid #E2E2E2;
+	background-color: #FFFFFF;
+	border:0px;
 	padding:10px;
 	margin:0px 0px 20px 0px;
 	-moz-border-radius-bottomleft: 10px; 
@@ -1325,16 +1325,14 @@ td.advSearchElement{
 	margin-bottom:15px;
 }
 #loginForm .button, #registerForm a.button, #resetPasswordForm a.button {
-	text-transform:uppercase;
 	font-size:14px;
-	color: #828282;
 	font-weight:bold;
 	text-decoration:none;
-	margin: 5px 0px 0px 0px;
-	padding: 0px 0px 0px 5px;
+	margin: 0px 0px 0px 0px;
+	padding: 10px 0px 0px 0px;
 }
 #loginForm a.button:hover, #registerForm a.button:hover, #resetPasswordForm a.button:hover{
-	color: #545454;
+	color: #71cde4;
 	text-decoration:none;
 }
 
@@ -1343,16 +1341,25 @@ td.advSearchElement{
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
+	border: 1px solid #DEDEDE;
 	outline-style:none;
 	outline-width:0px;
+}
+#registerForm input {
+	width:550px;
+}
+#loginForm input {
+	width:220px;
+}
+#resetPasswordForm input {
+	width:200px;
 }
 #loginForm input[type="text"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {
 	font-size:12px;
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
+	border: 1px solid #DEDEDE;
 	outline-style:none;
 	outline-width:0px;
 }

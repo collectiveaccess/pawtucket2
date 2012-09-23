@@ -9,7 +9,6 @@
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/sets.css" rel="stylesheet" type="text/css" media="screen" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/bookmarks.css" rel="stylesheet" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/videojs/video-js.css" type="text/css" media="screen" />
-	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-jplayer/jplayer.blue.monday.css" type="text/css" media="screen" />
 	<link rel="stylesheet" href="<?php print $this->request->getBaseUrlPath(); ?>/js/jquery/jquery-autocomplete/jquery.autocomplete.css" type="text/css" media="screen" />
  	<!--[if IE]>
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getThemeUrlPath(true); ?>/css/iestyles.css" />
@@ -62,6 +61,7 @@
 				if($this->request->isLoggedIn()){
 					#print "<li>".caNavLink($this->request, _t("Login"), "", "", "LoginReg", "logout")."</li>";
 					print "<li>".caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")."</li>";
+					#print "<li>".caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout")."</li>";
 				}else{
 					print "<li>".caNavLink($this->request, _t("Login"), "", "", "LoginReg", "form")."</li>";
 				}
