@@ -104,7 +104,7 @@
 							break;
 							# ---
 							case $vn_file_name_id:
-								$vs_file_name .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]." (file name)</p>";
+								$vs_file_name .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]." <span class='details'>(file name)</span></p>";
 							break;
 							# ---
 						}
@@ -114,10 +114,16 @@
 			}
 			if(($va_dates = $t_object->get('ca_objects.date', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
 				if(sizeof($va_dates)){
-					print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
+					$va_dates_for_display = array();
 					foreach($va_dates as $va_date){
 						#print_r($va_date);
-						print "<p>".$va_date["dates_value"]." <br/><span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
+						if($va_date["dates_value"]){
+							$va_dates_for_display[] = "<p>".$va_date["dates_value"]." <span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
+						}
+					}
+					if(sizeof($va_dates_for_display)){
+						print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
+						print implode("\n", $va_dates_for_display);
 					}
 				}
 			}			
@@ -171,7 +177,7 @@
 					if($va_weight = $t_object->get('ca_objects.dimensions.weight')) {print $va_height." (weight) ";}
 				
 				if ($va_dimensions_type = $t_object->get('ca_objects.dimensions.Type', array('convertCodesToDisplayText' => true))) {
-					print "<br/><span class='details'>(".$va_dimensions_type." dimensions)</span>";
+					print " <span class='details'>(".$va_dimensions_type." dimensions)</span>";
 				}
 				print "</p><!-- end unit -->";
 			}
@@ -183,14 +189,14 @@
 			if($va_edition = $t_object->get('ca_objects.editionOfContainer.editionOf')){
 				print "<h3>"._t("Edition")."</h3><p>".$va_edition;
 				if($va_edition_date = $t_object->get('ca_objects.editionOfContainer.editionDate')){
-					print "<span class='details'> (".$va_edition_date.")</span>";
+					print " <span class='details'>(".$va_edition_date.")</span>";
 				}			
 				print "</p><!-- end unit -->";
 			}
 			if($va_printedOn = $t_object->get('ca_objects.printedOnContainer.printedOn')){
 				print "<h3>"._t("Printed On")."</h3><p>".$va_printedOn;
 				if($va_printedOnDate = $t_object->get('ca_objects.printedOnContainer.printedDate')){
-					print "<span class='details'> (".$va_printedOnDate.")</span>";
+					print " <span class='details'>(".$va_printedOnDate.")</span>";
 				}			
 				print "</p><!-- end unit -->";
 			}			
@@ -221,26 +227,26 @@
 			if($t_object->get('ca_objects.planting.lastPlantingDate') | $t_object->get('ca_objects.planting.lastPlantingAmount') | $t_object->get('ca_objects.planting.nextPlantingDate')){
 				print "<h3>"._t("Planting Information")."</h3><p>";
 				if ($va_planting = ($t_object->get('ca_objects.planting.lastPlantingDate'))) {
-					print $va_planting."<span class='details'> (planting date)</span><br/>";
+					print $va_planting." <span class='details'>(planting date)</span><br/>";
 				}
 				if ($va_amount = ($t_object->get('ca_objects.planting.lastPlantingAmount'))) {
-					print $va_amount."<span class='details'> (planting amount)</span><br/>";
+					print $va_amount." <span class='details'>(planting amount)</span><br/>";
 				}
 				if ($va_date = ($t_object->get('ca_objects.planting.nextPlantingDate'))) {
-					print $va_date."<span class='details'> (next planting)</span><br/>";
+					print $va_date." <span class='details'>(next planting)</span><br/>";
 				}				
 				print "</p><!-- end unit -->";
 			}	
 			if($t_object->get('ca_objects.harvesting.lastHarvestingDate') | $t_object->get('ca_objects.harvesting.lastHarvestingAmount') | $t_object->get('ca_objects.harvesting.nextHarvestDate')){
 				print "<h3>"._t("Harvesting Information")."</h3><p>";
 				if ($va_harvesting = ($t_object->get('ca_objects.harvesting.lastHarvestingDate'))) {
-					print $va_harvesting."<span class='details'> (harvesting date)</span><br/>";
+					print $va_harvesting." <span class='details'>(harvesting date)</span><br/>";
 				}
 				if ($va_h_amount = ($t_object->get('ca_objects.harvesting.lastHarvestingAmount'))) {
-					print $va_h_amount."<span class='details'> (harvesting amount)</span><br/>";
+					print $va_h_amount." <span class='details'>(harvesting amount)</span><br/>";
 				}
 				if ($va_h_date = ($t_object->get('ca_objects.harvesting.nextHarvestDate'))) {
-					print $va_h_date."<span class='details'> (next harvesting)</span><br/>";
+					print $va_h_date." <span class='details'>(next harvesting)</span><br/>";
 				}				
 				print "</p><!-- end unit -->";
 			}			
@@ -258,6 +264,24 @@
 					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 						print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
 					}
+				}
+			}
+			if($va_links = $t_object->get("ca_objects.external_link", array("returnAsArray" => true))){
+				$va_linksToOutput = array();
+				foreach($va_links as $va_link){
+					if($va_link['url_source']){
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_source']."</a>";
+					}elseif($va_link['url_entry']){
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_entry']."</a>";
+					}
+					if($vs_link){
+						$va_linksToOutput[] = $vs_link;
+					}
+				}
+				if(sizeof($va_linksToOutput)){
+					print "<h3>"._t("Link")."</h3><p>";
+					print join("<br/>", $va_linksToOutput);
+					print "</p>";
 				}
 			}
 
@@ -288,7 +312,7 @@
 				<div class='scrollPane'>
 <?php
 				foreach($va_entities as $va_entity) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/><span class='details'> (".$va_entity['relationship_typename'].")</span><br/></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span><br/></p>";
 				}
 ?>
 				</div>				
@@ -312,7 +336,7 @@
 					<div class='scrollPane'>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."<br/><span class='details'> (".$va_info['relationship_typename'].")</span></p>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
 					}
 ?>
 					</div>
@@ -328,7 +352,7 @@
 				<div class='scrollPane'>
 <?php
 				foreach($va_places as $va_place_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."<br/><span class='details'> (".$va_place_info['relationship_typename'].")</span></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." <span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
 				}
 				print "</div>";
 			}
@@ -337,7 +361,7 @@
 			if(sizeof($va_collections) > 0){
 				print "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
 				#foreach($va_collections as $va_collection_info){
-				#	print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+				#	print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
 				#}
 ?>
 				<div class='scrollPane'>
@@ -366,7 +390,7 @@
 						}
 					}
 					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
-					#print "<p>".."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					#print "<p> <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
 				}
 				if(sizeof($va_silos)){
 					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
@@ -397,7 +421,7 @@
 			if(sizeof($va_object_lots) > 0){
 				print "<div class='unit'><h3>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h3>";
 				foreach($va_object_lots as $va_object_lot_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])."<br/><span class='details'> (".$va_object_lot_info['relationship_typename'].")</span></div>";
+					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])." <span class='details'>(".$va_object_lot_info['relationship_typename'].")</span></div>";
 				}
 				print "</div><!-- end unit -->";
 			}
@@ -452,7 +476,8 @@
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', 'mediumlarge', $this->getVar('primary_rep_display_options'))."</a>";
+				$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 			}
 ?>
 			</div><!-- end objDetailImage -->
