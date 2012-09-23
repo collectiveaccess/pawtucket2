@@ -31,6 +31,7 @@
  	require_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
  	require_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
  	require_once(__CA_LIB_DIR__."/ca/Search/PlaceSearch.php");
+ 	require_once(__CA_LIB_DIR__."/ca/Search/ListItemSearch.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 	require_once(__CA_MODELS_DIR__."/ca_places.php");
@@ -67,6 +68,7 @@
 
  			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/eastend/themes/'.$this->ops_theme.'/views'));
  			
+ 			JavascriptLoadManager::register('smoothDivScrollVertical');
  			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/eastend/themes/".$this->ops_theme."/css/eastend.css",'text/css');
  		 	
  			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/eastend/conf/eastend.conf');
@@ -84,6 +86,8 @@
  			}
  			$this->view->setVar('access_values', $this->opa_access_values);
  			 
+            $this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'basic_search');
+            
             $t_list = new ca_lists();
 			$pn_type_restriction_id_entity = $t_list->getItemIDFromList('entity_types', 'individual');
 			
@@ -134,28 +138,42 @@
 			$va_period_data["occurrences"] = $qr_occs;
 			
 			$o_ent_search = new EntitySearch();
-			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entity_labels.lname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$qr_entities = $o_ent_search->search("ca_entities.arrival_date:\"".$vn_y."\"", array("sort" => "ca_entity_labels.surname", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_period_data["entities"] = $qr_entities;
+						
+			$o_styles_schools_search = new ListItemSearch();
+			$qr_styles_schools_search = $o_styles_schools_search->search("ca_list_items.term_date:\"".$vn_y."\"", array("sort" => "ca_list_item_labels.name_singular", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$va_period_data["styles_schools"] = $qr_styles_schools_search;
 			
 			# -- make array of entity_ids so can find places associated with these entities to map
-			$va_entities = array();
-			if($qr_entities->numHits()){
-				while($qr_entities->nextHit()){
-					$va_entities[] = $qr_entities->get("entity_id");
-				}
-			}	
-			$qr_entities->seek(0);
-			$o_place_search = new PlaceSearch();
-			$o_place_search->addResultFilter("ca_entities.entity_id", "IN", join(',', $va_entities));
-			$qr_places = $o_place_search->search("*", array("no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
- 			$o_map = new GeographicMap(450, 250, 'map');
-			$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "eastend", "Chronology", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
-			$va_period_data["map"] = $o_map->render('HTML', array('delimiter' => "<br/>"));
-			$va_period_data["places"] = $qr_places;
+			// $va_entities = array();
+// 			if($qr_entities->numHits()){
+// 				while($qr_entities->nextHit()){
+// 					$va_entities[] = $qr_entities->get("entity_id");
+// 				}
+// 			}	
+// 			$qr_entities->seek(0);
+// 			$o_place_search = new PlaceSearch();
+// 			$o_place_search->addResultFilter("ca_entities.entity_id", "IN", join(',', $va_entities));
+// 			$qr_places = $o_place_search->search("*", array("no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+//  			$o_map = new GeographicMap(450, 250, 'map');
+// 			$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "eastend", "Chronology", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+// 			$va_period_data["map"] = $o_map->render('HTML', array('delimiter' => "<br/>"));
+// 			$va_period_data["places"] = $qr_places;
 			
 			$o_obj_search = new ObjectSearch();
 			$qr_objects = $o_obj_search->search("ca_objects.creation_date:\"".$vn_y."\"", array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_period_data["objects"] = $qr_objects;
+			
+			$va_object_ids = array();
+			while($qr_objects->nextHit()){
+				$va_object_ids[] = $qr_objects->get("ca_objects.object_id");
+			}
+			$qr_objects->seek(0);
+			$this->opo_result_context->setParameter('chronology', 1);
+			$this->opo_result_context->setResultList($va_object_ids);
+			$this->opo_result_context->setAsLastFind();
+			$this->opo_result_context->saveContext();
 			
 			$this->view->setVar('period_data', $va_period_data);
 			
@@ -179,6 +197,15 @@
  			$this->view->setVar('occurrence_name', $t_occurrence->getLabelForDisplay());
  			if($pn_occurrence_id){
  				$vs_refine = " AND ca_occurrences.occurrence_id:".$pn_occurrence_id;
+ 			}
+ 			
+ 			# --- style school
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$this->view->setVar('item_id', $pn_item_id);
+ 			$t_list_item = new ca_list_items($pn_item_id);
+ 			$this->view->setVar('style_school_name', $t_list_item->getLabelForDisplay());
+ 			if($pn_item_id){
+ 				$vs_refine = " AND ca_list_items.item_id:".$pn_item_id;
  			}
  			
  			$vn_y = $this->ops_date_range;
