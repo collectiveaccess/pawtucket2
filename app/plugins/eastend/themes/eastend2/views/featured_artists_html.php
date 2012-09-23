@@ -7,7 +7,7 @@
 			print "<div class='ab_feature'>";
 			print "<div class='ab_feature_img'>".caNavLink($this->request, $va_featured_artist["image"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $vn_entity_id))."</div>";
 			print "<p><span class='caption caps'>".caNavLink($this->request, $va_featured_artist["name"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $vn_entity_id))." ".$va_featured_artist["lifespan"]."</span><br />";
-			print "<span class='caption obl'>".$va_featured_artist["indexing_notes"]."</span>";
+			print "<span class='captionSmall obl'>".$va_featured_artist["indexing_notes"]."</span>";
 			print "<br /></p></div><!--end ab_feature-->";
 		}
 		print "</div><!-- featuredArtistSlideShow -->";

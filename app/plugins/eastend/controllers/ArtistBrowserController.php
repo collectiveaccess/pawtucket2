@@ -222,8 +222,8 @@
 				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
 				$va_object = array_shift($va_objects);
 				$t_object->load($va_object["object_id"]);
-				$va_portrait = $t_object->getPrimaryRepresentation(array("medium"));
-				$va_tmp["image"] = $va_portrait["tags"]["medium"];
+				$va_portrait = $t_object->getPrimaryRepresentation(array("abSlideShow"));
+				$va_tmp["image"] = $va_portrait["tags"]["abSlideShow"];
 				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
 			}
 			$this->view->setVar("featured_artists", $va_featured_artists);
