@@ -25,7 +25,7 @@ h2 {margin:0; padding:0;}
 /*global styles for layout */
 
 #topnav{height:45px; font-size:12px; }
-#topnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
+#topnav .leftnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
 .leftnav {float:left; width:230px;}
 .rightnav {float:left; padding-left:490px;width:220px;text-align:right; margin-right:10px;}
 .rightnav img{padding-right:2px;}
@@ -34,6 +34,7 @@ h2 {margin:0; padding:0;}
 
 
 #logo {font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; float:left;line-height:41px;width:590px;}
+#logo a{font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; text-decoration:none; }
 #mainnav{float:right; padding-right:10px; font-size:13px; height:41px;line-height:59px; vertical-align:bottom;}
 #mainnav ul{list-style-type:none;margin:0; padding:0;}
 #mainnav li{display:inline;margin:0; padding:0 0 0 15px; }

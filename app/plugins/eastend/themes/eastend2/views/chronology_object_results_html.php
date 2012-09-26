@@ -8,7 +8,7 @@
 	$pn_item_id = $this->getVar("item_id");
 	$ps_style_school_name = $this->getVar("style_school_name");
 	
-	print "<div id='chron_thumbScroll' class='chron_thumbScroll".$pn_entity_id.$pn_occurrence_id.$pn_item_id."'><div>";
+	print "<div id='chron_thumbScroll' class='chron_thumbScroll".$pn_entity_id.$pn_occurrence_id.$pn_item_id."'><div class='cols'>";
 	if($pn_entity_id){
 		print "<div id='chronoRefineCriteria'>";
 		print "<div id='chronoRefineCriteriaText'>".$ps_entity_name."</div><!-- end chronoRefineCriteriaText -->";
@@ -40,8 +40,8 @@
 				$vn_i++;
 				$vs_link = "";
 				$vs_link = caNavLink($this->request, $vs_image, "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."<br/>";
-				if($vs_date != $q_objects->get("creation_date")){
-					$vs_date = $q_objects->get("creation_date");
+				if($vs_date != $q_objects->get("ca_objects.creation_date")){
+					$vs_date = $q_objects->get("ca_objects.creation_date");
 					$vs_link = $vs_date."<br/>".$vs_link;
 				}
 				if($vn_i == 1){
@@ -64,8 +64,9 @@
 		<script type="text/javascript">
 			// Initialize the plugin
 			$(document).ready(function () {
-				$("div#chron_thumbScroll").smoothDivScroll({
-					visibleHotSpotBackgrounds: "always"
+				$("#chron_thumbScroll").smoothDivScroll({
+					visibleHotSpotBackgrounds: "always",
+					countOnlyClass: ".cols"
 				});
 			});
 		</script>

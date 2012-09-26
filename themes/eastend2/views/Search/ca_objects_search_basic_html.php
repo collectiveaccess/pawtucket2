@@ -28,11 +28,13 @@
  
 	$vo_result 				= $this->getVar('result');
 	$vo_result_context 		= $this->getVar('result_context');
- ?>
- 	<div id="resultBox">
-<?php
+
 	if($vo_result) {
+		if (!$this->request->isAjax()) {
+			print $this->render('Results/ca_objects_search_secondary_results.php');
+		}
 ?>
+ 	<div id="resultBox" style="clear:both;">
 		<h1><?php print _t("Objects from the Digital Archive"); ?></h1>
 <?php
 		print $this->render('Results/paging_controls_html.php');
@@ -57,8 +59,6 @@
 		}else{
 			print $this->render('Results/ca_objects_results_'.$vs_view.'_html.php');
 		}
-		
-		print $this->render('Results/ca_objects_search_secondary_results.php');
 ?>		
 	</div><!-- end sectionbox -->
 <?php
