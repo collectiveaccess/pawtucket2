@@ -68,7 +68,7 @@
  		protected $opa_sorts;
  		
  		
- 		protected $ops_find_type = 'artist_browse';
+ 		protected $ops_find_type = 'artist_browser';
  		
  		protected $opo_plugin_config;			// plugin config file
  		protected $opo_result_context;			// current result context
@@ -112,6 +112,8 @@
 
 
 			$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
+			#$this->opo_result_context->setAsLastFind();
+			
 			$this->opo_browse = new EntityBrowse();
 			
 			// get configured result views, if specified
