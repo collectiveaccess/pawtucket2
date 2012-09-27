@@ -205,6 +205,13 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
+
+#newSetForm ul, #editSetForm ul, #shareSetForm ul {
+	width:244px; 
+}
+#newSetForm li, #editSetForm li, #shareSetForm li {
+	width:244px; 
+}
 #newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
@@ -212,7 +219,7 @@ div.edit a:hover{
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:240px;
+	width:240px; 
 }
 #newSetForm textarea, #editSetForm textarea, #shareSetForm textarea {
 	font-size:11px;

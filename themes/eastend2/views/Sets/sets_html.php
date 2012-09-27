@@ -126,9 +126,9 @@
 <?php
 	foreach($va_sets as $va_set) {
 		if($va_set['set_id'] == $vn_set_id){
-			print "<div class='setsListCurrent'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".$va_set['name']."</div>\n";
+			print "<div class='setsListCurrent'>&rsaquo; ".$va_set['name']."</div>\n";
 		}else{
-			print "<div class='setsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".caNavLink($this->request, $va_set['name'], '', '', 'Sets', 'index', array('set_id' => $va_set['set_id']))."</div>\n";
+			print "<div class='setsList'>&rsaquo; ".caNavLink($this->request, $va_set['name'], '', '', 'Sets', 'index', array('set_id' => $va_set['set_id']))."</div>\n";
 		}
 	}
 ?>
@@ -136,17 +136,17 @@
 		<h2><?php print _t("Options"); ?></h2>
 <?php
 	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
-		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</a></div>";
+		print "<div class='optionsList'>&rsaquo; <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</a></div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this lightbox"); ?></a></div>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new lightbox"); ?></a></div>
+		<div class="optionsList">&rsaquo; <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this lightbox"); ?></a></div>
+		<div class="optionsList">&rsaquo; <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new lightbox"); ?></a></div>
 <?php
 	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
-		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".caNavLink($this->request, _t("Download lightbox as PDF"), '', '', 'Sets', 'export', array('set_id' => $vn_set_id, 'output_type' => '_pdf', 'download' => 1))."</div>";
+		print "<div class='optionsList'>&rsaquo; ".caNavLink($this->request, _t("Download lightbox as PDF"), '', '', 'Sets', 'export', array('set_id' => $vn_set_id, 'output_type' => '_pdf', 'download' => 1))."</div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
+		<div class="optionsList">&rsaquo; <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
 			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Make a new lightbox"); ?></h2>
 					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">

@@ -34,7 +34,9 @@
 	$vn_num_reps = 						$t_object->getRepresentationCount(array("return_with_access" => $va_access_values));
 	$vs_display_version =				$this->getVar('primary_rep_display_version');
 	$va_display_options =				$this->getVar('primary_rep_display_options');
-
+	$t_list = new ca_lists();
+	$vn_silo_id = $t_list->getItemIDFromList('collection_types', 'silo');
+ 	
 ?>	
 	<div id="detailBody">
 		<div id="pageNav">
@@ -77,52 +79,93 @@
 			# --- identifier
 			if($va_alt_id = $t_object->get('ca_objects.altID')){
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
-			}			
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/><br/>'))){
-				print "<h3>"._t("Alternate Title")."</h3><p style='line-height:1.1em;'>".$va_alt_name."</p><!-- end unit -->";
+			}	
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))){
+				#print "<pre>";
+				#print_r($va_alt_name[$vn_object_id]);
+				#print "</pre>";
+				if(sizeof($va_alt_name)){
+					print "<h3>"._t("Alternate Title%1", ((sizeof($va_alt_name) > 1) ? "s" : ""))."</h3>";
+					$vn_alternate_id = $t_list->getItemIDFromList('object_label_types', 'alt');
+					$vn_use_for_id = $t_list->getItemIDFromList('object_label_types', 'uf');
+					$vn_file_name_id = $t_list->getItemIDFromList('object_label_types', '16');
+					$vs_alternate = "";
+					$vs_use_for = "";
+					$vs_file_name = "";
+					$va_alt_name = array_pop($va_alt_name);
+					foreach($va_alt_name as $vn_x => $va_alt_title_info){
+						switch($va_alt_title_info["type_id"]){
+							case $vn_alternate_id:
+								$vs_alternate .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]."</p>";
+							break;
+							# ---
+							case $vn_use_for_id:
+								$vs_use_for .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]."</p>";
+							break;
+							# ---
+							case $vn_file_name_id:
+								$vs_file_name .= "<p style='line-height:1.1em;'>".$va_alt_title_info["name"]." <span class='details'>(file name)</span></p>";
+							break;
+							# ---
+						}
+					}
+					print $vs_alternate.$vs_use_for.$vs_file_name;
+				}
 			}
-			if(($va_date = $t_object->get('ca_objects.date.dates_value'))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
-				print "<h3>"._t("Date")."</h3><p>".$va_date." <br/><span class='details'>(".strtolower($t_object->get('ca_objects.date.dc_dates_types', array('convertCodesToDisplayText' => true))).")</span></p><!-- end unit -->";
+			if(($va_dates = $t_object->get('ca_objects.date', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
+				if(sizeof($va_dates)){
+					$va_dates_for_display = array();
+					foreach($va_dates as $va_date){
+						#print_r($va_date);
+						if($va_date["dates_value"]){
+							$va_dates_for_display[] = "<p>".$va_date["dates_value"]." <span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
+						}
+					}
+					if(sizeof($va_dates_for_display)){
+						print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
+						print implode("\n", $va_dates_for_display);
+					}
+				}
 			}			
 			print "<h3>Type</h3><p>".caNavLink($this->request, unicode_ucfirst($this->getVar('typename')), "", "", "Browse", "clearAndAddCriteria", array("facet" => "type_facet", "id" => $t_object->get('ca_objects.type_id')))."</p>";
-			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true))){
+			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_artType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_artType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypeart_facet", "id" => $t_object->get('ca_objects.artType')))."</p><!-- end unit -->";
 				}
 			}	
-			if($vs_audioType = $t_object->get('ca_objects.audioFilmType', array('convertCodesToDisplayText' => true))){
+			if($vs_audioType = $t_object->get('ca_objects.audioFilmType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_audioType != "-NONE-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_audioType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypeaudio_facet", "id" => $t_object->get('ca_objects.audioFilmType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_miscellaneous = $t_object->get('ca_objects.miscellaneousType', array('convertCodesToDisplayText' => true))){
+			if($vs_miscellaneous = $t_object->get('ca_objects.miscellaneousType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_miscellaneous != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_miscellaneous, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypemisc_facet", "id" => $t_object->get('ca_objects.miscellaneousType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_photographyType = $t_object->get('ca_objects.photographyType', array('convertCodesToDisplayText' => true))){
+			if($vs_photographyType = $t_object->get('ca_objects.photographyType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_photographyType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_photographyType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypephoto_facet", "id" => $t_object->get('ca_objects.photographyType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_textualType = $t_object->get('ca_objects.textualType', array('convertCodesToDisplayText' => true))){
+			if($vs_textualType = $t_object->get('ca_objects.textualType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_textualType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_textualType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypetext_facet", "id" => $t_object->get('ca_objects.textualType')))."</p><!-- end unit -->";
 				}
 			}
-			if($vs_toolType = $t_object->get('ca_objects.toolType', array('convertCodesToDisplayText' => true))){
+			if($vs_toolType = $t_object->get('ca_objects.toolType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_toolType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_toolType, "", "", "Browse", "clearAndAddCriteria", array("facet" => "subtypetool_facet", "id" => $t_object->get('ca_objects.toolType')))."</p><!-- end unit -->";
 				}
 			}
-			if($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_technique."</p><!-- end unit -->";
+			if($vs_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
+				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_technique, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_facet", "id" => $t_object->get('ca_objects.technique')))."</p><!-- end unit -->";
 			}
-			if($va_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Technique")."</h3><p>".$va_techniquePhoto."</p><!-- end unit -->";
+			if($vs_techniquePhoto = $t_object->get('ca_objects.techniquePhoto', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
+				print "<h3>"._t("Technique")."</h3><p>".caNavLink($this->request, $vs_techniquePhoto, "", "", "Browse", "clearAndAddCriteria", array("facet" => "technique_photo_facet", "id" => $t_object->get('ca_objects.techniquePhoto')))."</p><!-- end unit -->";
 			}			
-			if($va_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true))){
-				print "<h3>"._t("Material")."</h3><p>".$va_material."</p><!-- end unit -->";
+			if($vs_material = $t_object->get('ca_objects.materialMedium', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
+				print "<h3>"._t("Material")."</h3><p>".caNavLink($this->request, $vs_material, "", "", "Browse", "clearAndAddCriteria", array("facet" => "materials_facet", "id" => $t_object->get('ca_objects.materialMedium')))."</p><!-- end unit -->";
 			}	
 	
 			if($va_length = $t_object->get('ca_objects.dimensions.dimensions_length') || $va_height = $t_object->get('ca_objects.dimensions.dimensions_height') || $va_width = $t_object->get('ca_objects.dimensions.dimensions_width') || $va_depth = $t_object->get('ca_objects.dimensions.dimensions_depth') || $va_weight = $t_object->get('ca_objects.dimensions.weight')){
@@ -134,7 +177,7 @@
 					if($va_weight = $t_object->get('ca_objects.dimensions.weight')) {print $va_height." (weight) ";}
 				
 				if ($va_dimensions_type = $t_object->get('ca_objects.dimensions.Type', array('convertCodesToDisplayText' => true))) {
-					print "<br/><span class='details'>(".$va_dimensions_type." dimensions)</span>";
+					print " <span class='details'>(".$va_dimensions_type." dimensions)</span>";
 				}
 				print "</p><!-- end unit -->";
 			}
@@ -146,14 +189,14 @@
 			if($va_edition = $t_object->get('ca_objects.editionOfContainer.editionOf')){
 				print "<h3>"._t("Edition")."</h3><p>".$va_edition;
 				if($va_edition_date = $t_object->get('ca_objects.editionOfContainer.editionDate')){
-					print "<span class='details'> (".$va_edition_date.")</span>";
+					print " <span class='details'>(".$va_edition_date.")</span>";
 				}			
 				print "</p><!-- end unit -->";
 			}
 			if($va_printedOn = $t_object->get('ca_objects.printedOnContainer.printedOn')){
 				print "<h3>"._t("Printed On")."</h3><p>".$va_printedOn;
 				if($va_printedOnDate = $t_object->get('ca_objects.printedOnContainer.printedDate')){
-					print "<span class='details'> (".$va_printedOnDate.")</span>";
+					print " <span class='details'>(".$va_printedOnDate.")</span>";
 				}			
 				print "</p><!-- end unit -->";
 			}			
@@ -184,26 +227,26 @@
 			if($t_object->get('ca_objects.planting.lastPlantingDate') | $t_object->get('ca_objects.planting.lastPlantingAmount') | $t_object->get('ca_objects.planting.nextPlantingDate')){
 				print "<h3>"._t("Planting Information")."</h3><p>";
 				if ($va_planting = ($t_object->get('ca_objects.planting.lastPlantingDate'))) {
-					print $va_planting."<span class='details'> (planting date)</span><br/>";
+					print $va_planting." <span class='details'>(planting date)</span><br/>";
 				}
 				if ($va_amount = ($t_object->get('ca_objects.planting.lastPlantingAmount'))) {
-					print $va_amount."<span class='details'> (planting amount)</span><br/>";
+					print $va_amount." <span class='details'>(planting amount)</span><br/>";
 				}
 				if ($va_date = ($t_object->get('ca_objects.planting.nextPlantingDate'))) {
-					print $va_date."<span class='details'> (next planting)</span><br/>";
+					print $va_date." <span class='details'>(next planting)</span><br/>";
 				}				
 				print "</p><!-- end unit -->";
 			}	
 			if($t_object->get('ca_objects.harvesting.lastHarvestingDate') | $t_object->get('ca_objects.harvesting.lastHarvestingAmount') | $t_object->get('ca_objects.harvesting.nextHarvestDate')){
 				print "<h3>"._t("Harvesting Information")."</h3><p>";
 				if ($va_harvesting = ($t_object->get('ca_objects.harvesting.lastHarvestingDate'))) {
-					print $va_harvesting."<span class='details'> (harvesting date)</span><br/>";
+					print $va_harvesting." <span class='details'>(harvesting date)</span><br/>";
 				}
 				if ($va_h_amount = ($t_object->get('ca_objects.harvesting.lastHarvestingAmount'))) {
-					print $va_h_amount."<span class='details'> (harvesting amount)</span><br/>";
+					print $va_h_amount." <span class='details'>(harvesting amount)</span><br/>";
 				}
 				if ($va_h_date = ($t_object->get('ca_objects.harvesting.nextHarvestDate'))) {
-					print $va_h_date."<span class='details'> (next harvesting)</span><br/>";
+					print $va_h_date." <span class='details'>(next harvesting)</span><br/>";
 				}				
 				print "</p><!-- end unit -->";
 			}			
@@ -218,9 +261,27 @@
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
-					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}")){
+					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 						print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
 					}
+				}
+			}
+			if($va_links = $t_object->get("ca_objects.external_link", array("returnAsArray" => true))){
+				$va_linksToOutput = array();
+				foreach($va_links as $va_link){
+					if($va_link['url_source']){
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_source']."</a>";
+					}elseif($va_link['url_entry']){
+						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_entry']."</a>";
+					}
+					if($vs_link){
+						$va_linksToOutput[] = $vs_link;
+					}
+				}
+				if(sizeof($va_linksToOutput)){
+					print "<h3>"._t("Link")."</h3><p>";
+					print join("<br/>", $va_linksToOutput);
+					print "</p>";
 				}
 			}
 
@@ -251,7 +312,7 @@
 				<div class='scrollPane'>
 <?php
 				foreach($va_entities as $va_entity) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/><span class='details'> (".$va_entity['relationship_typename'].")</span><br/></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span><br/></p>";
 				}
 ?>
 				</div>				
@@ -275,7 +336,7 @@
 					<div class='scrollPane'>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."<br/><span class='details'> (".$va_info['relationship_typename'].")</span></p>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
 					}
 ?>
 					</div>
@@ -291,7 +352,7 @@
 				<div class='scrollPane'>
 <?php
 				foreach($va_places as $va_place_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."<br/><span class='details'> (".$va_place_info['relationship_typename'].")</span></p>";
+					print "<p>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." <span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
 				}
 				print "</div>";
 			}
@@ -299,11 +360,57 @@
 			$va_collections = $t_object->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){
 				print "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
+				#foreach($va_collections as $va_collection_info){
+				#	print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
+				#}
 ?>
 				<div class='scrollPane'>
 <?php
+				$va_silos = array();
+				$va_collection_links = array();
+				$t_related_collection = new ca_collections();
 				foreach($va_collections as $va_collection_info){
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])."<br/><span class='details'> (".$va_collection_info['relationship_typename'].")</span></p>";
+					if($va_collection_info["item_type_id"] != $vn_silo_id){
+						# --- if the related collection is not a silo, check for a related silo to list it under
+						$t_related_collection->load($va_collection_info['collection_id']);
+						$va_related_silos = $t_related_collection->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('silo')));
+						if(sizeof($va_related_silos)){
+							foreach($va_related_silos as $va_related_silo){
+								$va_silos[$va_related_silo["collection_id"]][] = $va_collection_info['collection_id'];
+								$va_collection_links[$va_related_silo["collection_id"]] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_related_silo['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_related_silo['collection_id'])) : $va_related_silo['label']);						
+							}
+						}else{
+							if(!$va_silos[$va_collection_info['collection_id']]){
+								$va_silos[$va_collection_info['collection_id']] = array();
+							}
+						}
+					}else{
+						if(!$va_silos[$va_collection_info['collection_id']]){
+							$va_silos[$va_collection_info['collection_id']] = array();	
+						}
+					}
+					$va_collection_links[$va_collection_info['collection_id']] = (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label']);
+					#print "<p> <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
+				}
+				if(sizeof($va_silos)){
+					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
+						print "<p>".$va_collection_links[$vn_silo_id];
+							$i = 0;
+							if(sizeof($va_projectsPhases)){
+								print " (";
+							}
+							foreach($va_projectsPhases as $vn_projectPhase_id){
+								print "<span class='grayLink'>".$va_collection_links[$vn_projectPhase_id]."</span>";
+								$i++;
+								if($i < sizeof($va_projectsPhases)){
+									print ", ";
+								}
+							}
+							if(sizeof($va_projectsPhases)){
+								print ")";
+							}
+						print "</p>";
+					}
 				}
 ?>
 				</div>
@@ -314,7 +421,7 @@
 			if(sizeof($va_object_lots) > 0){
 				print "<div class='unit'><h3>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h3>";
 				foreach($va_object_lots as $va_object_lot_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])."<br/><span class='details'> (".$va_object_lot_info['relationship_typename'].")</span></div>";
+					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])." <span class='details'>(".$va_object_lot_info['relationship_typename'].")</span></div>";
 				}
 				print "</div><!-- end unit -->";
 			}
@@ -369,7 +476,8 @@
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', 'mediumlarge', $this->getVar('primary_rep_display_options'))."</a>";
+				$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 			}
 ?>
 			</div><!-- end objDetailImage -->

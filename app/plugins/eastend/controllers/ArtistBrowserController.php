@@ -68,7 +68,7 @@
  		protected $opa_sorts;
  		
  		
- 		protected $ops_find_type = 'artist_browse';
+ 		protected $ops_find_type = 'artist_browser';
  		
  		protected $opo_plugin_config;			// plugin config file
  		protected $opo_result_context;			// current result context
@@ -112,6 +112,8 @@
 
 
 			$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
+			#$this->opo_result_context->setAsLastFind();
+			
 			$this->opo_browse = new EntityBrowse();
 			
 			// get configured result views, if specified
@@ -222,8 +224,8 @@
 				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
 				$va_object = array_shift($va_objects);
 				$t_object->load($va_object["object_id"]);
-				$va_portrait = $t_object->getPrimaryRepresentation(array("medium"));
-				$va_tmp["image"] = $va_portrait["tags"]["medium"];
+				$va_portrait = $t_object->getPrimaryRepresentation(array("abSlideShow"));
+				$va_tmp["image"] = $va_portrait["tags"]["abSlideShow"];
 				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
 			}
 			$this->view->setVar("featured_artists", $va_featured_artists);
