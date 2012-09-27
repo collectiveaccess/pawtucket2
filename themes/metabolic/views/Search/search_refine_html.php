@@ -38,7 +38,7 @@
 					$c = 0;
 					foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
 						$c++;
-						print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a>\n";
+						print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a>";
 						if($c < sizeof($va_available_facets)){
 							print ", ";
 						}

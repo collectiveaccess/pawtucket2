@@ -44,12 +44,12 @@
 	vertical-align:middle;
 }
 #chronoRefineCriteria{
-	padding:10px 10px 10px 10px;
-	margin:0px 0px 10px 0px;
-	background-color:#EDEDED;
+	margin:0px;
+	padding:0px;
 }
 #chronoRefineCriteria #chronoRefineCriteriaText{
 	font-size:20px;
+	padding-bottom:10px;
 	float:left;
 }
 #chronoRefineCriteria #chronoRefineCriteriaLink{
@@ -58,7 +58,6 @@
 	padding: 5px 0px 0px 25px;
 }
 #chronoRefineCriteria #chronoRefineCriteriaLink a{
-	font-weight:bold;
 	font-size:12px;
 }
 #chronologyMapBalloonContainer{

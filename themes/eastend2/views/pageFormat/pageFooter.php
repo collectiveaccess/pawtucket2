@@ -1,4 +1,4 @@
-		</div><!--end main content-->
+		<div style="clear:both;"></div></div><!--end main content-->
 <?php
 print TooltipManager::getLoadHTML();
 ?>
@@ -26,6 +26,9 @@ print TooltipManager::getLoadHTML();
 				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 			});
 		}
+	});
+	$(function(){  // $(document).ready shorthand
+	  $('.notificationMessage').effect('fade', 'easeInSine', 5000);
 	});
 	</script>
 	</body>

@@ -61,7 +61,7 @@
 		<div id="mainmenu">
 			<div class="navButtonFirst<?php print ($this->request->getController() == 'Splash') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></div>
 			<div class="navButton<?php print ($this->request->getController() == 'About') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></div>
-			<div class="navButton<?php print ($this->request->getController() == 'MemberMap') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Contributor Map"), "", "NovaStory", "MemberMap", "Index"); ?></div>
+			<div class="navButton<?php print ($this->request->getController() == 'MemberMap') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Contributor Map"), "", "NovaMuse", "MemberMap", "Index"); ?></div>
 			<div class="navButton<?php print ($this->request->getController() == 'Browse') ? "Highlight" : ""; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "clearCriteria"); ?></div>
 			<div class="navButton<?php print (($this->request->getController() == 'Sets') || ($this->request->getController() == 'LoginReg')) ? "Highlight" : ""; ?>">
 <?php

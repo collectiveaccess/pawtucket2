@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,6 +28,7 @@
 	$pn_object_id 				= $this->getVar('object_id');
 	$t_rep 						= $this->getVar('t_object_representation');
 	$vs_display_version 		= $this->getVar('rep_display_version');
+	$vs_alt_display_version 	= $this->getVar('rep_alt_display_version');
 	$va_display_options	 		= $this->getVar('rep_display_options');
 	
 	$va_versions 				= $this->getVar('versions');	
@@ -41,6 +42,7 @@
 	<div id="caMediaOverlayContent">
 <?php
 		$va_display_options['id'] = '_caMediaOverlayMediaDisplay';
+		if ($vs_alt_display_version) { $va_display_options['alt_image_tag'] = $t_rep->getMediaTag('media', $vs_alt_display_version); }
 		print $t_rep->getMediaTag('media', $vs_display_version, $va_display_options);
 ?>
 	</div><!-- end caMediaOverlayContent -->
