@@ -53,8 +53,8 @@ if($vo_result) {
 			$va_portraits = $t_entity->get("ca_objects", array("restrictToRelationshipTypes" => array("portrait"), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			foreach($va_portraits as $va_portrait){
 				$t_object = new ca_objects($va_portrait["object_id"]);
-				if($va_portrait = $t_object->getPrimaryRepresentation(array('thumbnail'), null, array('return_with_access' => $va_access_values))){
-					$va_entity_results[$vs_letter]["image"] = caNavLink($this->request, $va_portrait['tags']['thumbnail'], '', 'Detail', 'Entity', 'Show', array('entity_id' => $vn_entity_id), array("title" => $t_entity->get("ca_entity_labels.displayname")));
+				if($va_portrait = $t_object->getPrimaryRepresentation(array('abHeadShot'), null, array('return_with_access' => $va_access_values))){
+					$va_entity_results[$vs_letter]["image"] = caNavLink($this->request, $va_portrait['tags']['abHeadShot'], '', 'Detail', 'Entity', 'Show', array('entity_id' => $vn_entity_id), array("title" => $t_entity->get("ca_entity_labels.displayname")));
 					break;
 				}
 			}

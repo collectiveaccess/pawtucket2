@@ -1310,6 +1310,32 @@ td.advSearchElement{
 .facetDescription{
 	margin-bottom:20px;
 }
+#browseSlideshow {
+	float:right;
+	width: 420px;
+	text-align: center;
+	border: 2px solid #e8e8e8;
+	height:440px;
+	overflow:hidden;
+}
+
+#browseRandomImage {
+	text-align: center;
+	margin: 0px auto 0px auto;
+	width: 420px;
+	height:400px;
+}
+#browseRandomCaption {
+	padding: 10px 5px 5px 5px;
+}
+#browseRandomCaption a{
+	color: #666666;
+	font-size: 14px;
+	width: 400px;
+	text-align: center;
+	height: 20px;
+	text-decoration: none;
+}
 
 /* browse controls when browse has been initiated */
 #browseControls{
@@ -1639,51 +1665,91 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 25px; 
-	left: 50%; 
-	border: 4px solid #ccc; 
-	background-color: #FFFFFF; 
-	width: 840px; 
-	height: 700px; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
 	display: none;
-	margin-left: -430px;
-	padding: 7px;
+	margin: 0px;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
 #caMediaPanel #close{
 	float: right;
 	width:15px;
-	height:15px;
-	margin:0px;
-	background-image:url("../graphics/x.gif");
+	height:16px;
+	margin:10px;
+	background-image:url("../graphics/buttons/x.png");
 }
 #caMediaPanel #close a{
 	text-decoration:none;
-	font-size:15px;
+	font-size:16px;
 }
 #caMediaPanelContentArea {
-
+	width: 100%; 
+	height: 100%;
 }
-
-
 
 #caMediaOverlayContent {
-	margin-top: 15px;
-	margin-left: 0px;
-	
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 	text-align: center;
 }
-#caMediaOverlayThumbnails{
-	padding: 10px 0px 0px 0px;
+
+div.caMediaOverlayControls {
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
 	text-align:center;
-	height:90px;
-	width:840px;
-	overflow:auto;
+	position:absolute;
+	padding: 10px 0px 10px 0px;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.1;
+	
 }
-#caMediaOverlayThumbnails img{
-	margin:0px 1px 0px 1px;
+div.caMediaOverlayControls:hover {
+	opacity:1.0;
+	background-color:rgba(0,0,0,0.5);
 }
-#caMediaOverlayThumbnails div{
-	margin:0px auto 0px auto;
+div.caMediaOverlayControls a{
+	text-decoration:none;
+	font-weight:bold;
+	font-size:16px;
+	color:#FFF;
+}
+div.caMediaOverlayControls a:hover{
+	color:#FFF;
+}
+div.caMediaOverlayControls .close{
+	float:right;
+	width:15px;
+	height:16px;
+	background-image:url("../graphics/buttons/x_white.png");
+	margin: 0px 10px 0px 20px;
+}
+div.caMediaOverlayControls .download{
+	float:right;
+	margin-left:20px;
+}
+div.caMediaOverlayControls .objectInfo{
+	font-size:11px;
+	color:#FFF;
+	padding-left:10px;
+	text-align:left;
+	width:40%;
+	float:left;
+}
+div.caMediaOverlayControls .repNav {
+	float:left;
+	width:16%;
+	padding: 0px 2% 0px 2%;
+	text-align:center;
+	color:#FFF;
 }
 
 /* Advanced search */

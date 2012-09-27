@@ -75,16 +75,21 @@ a:hover{
 	padding:5px;
 	background-color: #E2E2E2;
 }
-.notificationMessage{
-	color: #CA1919;
-	font-size:14px;
-	font-weight:bold;
-	margin:10px 0px 10px 0px;
-	padding:5px;
-	background-color: #E2E2E2;
-	margin-left: auto;
-	margin-right: auto;
-	width: 890px;
+
+div.notificationMessage{
+	width:300px;
+	padding:20px;
+	position: absolute;
+	left: 50%;
+	margin-left:-150px;
+	top:40%;
+	background-color:#fff;
+	z-index:10000;
+	text-align:center;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	font-weight: bold;
 }
 .divide{
 	height:3px;
@@ -1013,7 +1018,7 @@ td.advSearchElement{
 }
 .searchSec{
 	float:left;
-	width:440px;
+	width:49%;
 	padding-top:5px;
 	height:250px;
 }
@@ -1046,9 +1051,6 @@ td.advSearchElement{
 	padding: 10px;
 	line-height:1.6em;
 }
-.searchSec .results a{
-	color:#000000;
-}
 
 
 /* thumbnail view  - also used in details with thumbnail grid */
@@ -1062,20 +1064,15 @@ td.advSearchElement{
 	position: relative;
 }
 .searchThumbCaption{
-	color: #000000;
 	padding:3px 0px 0px 0px;
 	font-size:11px;
 	text-align:left;
 }
 .searchThumbCaption a{
-	color: #333333;
 	width:130px;
 	padding:3px 0px 0px 0px;
 	font-size:11px;
 	text-decoration:none;
-}
-.searchThumbCaption a:hover{
-	color: #999999;
 }
 
 /* full results */
@@ -1307,8 +1304,8 @@ td.advSearchElement{
 	width:600px;
 }
 #loginForm .bg, #registerForm .bg, #resetPassword .bg{
-	background-color: #e6e6e6;
-	border: 1px solid #E2E2E2;
+	background-color: #FFFFFF;
+	border:0px;
 	padding:10px;
 	margin:0px 0px 20px 0px;
 	-moz-border-radius-bottomleft: 10px; 
@@ -1325,16 +1322,14 @@ td.advSearchElement{
 	margin-bottom:15px;
 }
 #loginForm .button, #registerForm a.button, #resetPasswordForm a.button {
-	text-transform:uppercase;
 	font-size:14px;
-	color: #828282;
 	font-weight:bold;
 	text-decoration:none;
-	margin: 5px 0px 0px 0px;
-	padding: 0px 0px 0px 5px;
+	margin: 0px 0px 0px 0px;
+	padding: 10px 0px 0px 0px;
 }
 #loginForm a.button:hover, #registerForm a.button:hover, #resetPasswordForm a.button:hover{
-	color: #545454;
+	color: #71cde4;
 	text-decoration:none;
 }
 
@@ -1343,16 +1338,25 @@ td.advSearchElement{
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
+	border: 1px solid #DEDEDE;
 	outline-style:none;
 	outline-width:0px;
+}
+#registerForm input {
+	width:550px;
+}
+#loginForm input {
+	width:220px;
+}
+#resetPasswordForm input {
+	width:200px;
 }
 #loginForm input[type="text"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {
 	font-size:12px;
 	font-weight: normal;
 	padding: 4px;
 	margin: 0px;
-	border: 1px solid #828282;
+	border: 1px solid #DEDEDE;
 	outline-style:none;
 	outline-width:0px;
 }

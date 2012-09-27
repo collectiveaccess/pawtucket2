@@ -37,7 +37,7 @@
 <?php
 		}
 ?>
-				<h1><?php print _t('Entities'); ?></h1>
+				<h1><?php print _t('People and Organizations'); ?></h1>
 				<div class="searchSecNav">
 <?php
 					if ($vn_num_hits > $vn_num_hits_per_page) {

@@ -29,13 +29,13 @@
 	$t_object = new ca_objects();
 	
 	$va_item_ids = $this->getVar('featured_content_slideshow_id_list');
-	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("large", "mediumlarge"));
+	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("hpFeatured"));
 	$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
  ?>
 	<div id="hpFeatured">
 <?php
 	foreach ($va_item_media as $vn_object_id => $va_media) {
-		$vs_image_tag = $va_media["tags"]["large"];
+		$vs_image_tag = $va_media["tags"]["hpFeatured"];
 		print "<div><div id='hpFeaturedImg'>".caNavLink($this->request, $vs_image_tag, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 		print "<div id='hpFeaturedScrollCaption'>".caNavLink($this->request, $va_item_labels[$vn_object_id], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
 	}
