@@ -9,6 +9,7 @@ a:link, a:visited{color:#757575; text-decoration:none;}
 a:hover {color:#71cde4;}
 
 .caption {font-size:12px;line-height:140%;}
+.captionSmall {font-size:11px;line-height:140%;}
 .obl {font-family:"AvenirLTW01-45BookObliq";}
 .caps {text-transform:uppercase;}
 
@@ -16,13 +17,15 @@ a:hover {color:#71cde4;}
 .padded {padding-top:20px;}
 .linedivide {margin-top:10px; padding-bottom:10px; border-top:1px solid #ccc;}
 
+h1 {font-family:"Avenir LT W01 65 Medium"; text-transform:uppercase; font-weight:normal; line-height:1.4em; margin:0; padding:0;}
 h2 {margin:0; padding:0;}
-#container{width:950px; margin:0 auto;}
+
+#container{width:950px; margin:0px auto 20px auto;}
 
 /*global styles for layout */
 
 #topnav{height:45px; font-size:12px; }
-#topnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
+#topnav .leftnav a:link, #topnav a:visited{color:#71cde4; text-decoration:none; display:block; background-image:url(../graphics/eastend/backarrow.gif); background-repeat:no-repeat; padding-left:15px; background-position:left center; }
 .leftnav {float:left; width:230px;}
 .rightnav {float:left; padding-left:490px;width:220px;text-align:right; margin-right:10px;}
 .rightnav img{padding-right:2px;}
@@ -31,7 +34,8 @@ h2 {margin:0; padding:0;}
 
 
 #logo {font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; float:left;line-height:41px;width:590px;}
-#mainnav{float:left; padding-left:50px; font-size:13px; height:41px;line-height:59px; vertical-align:bottom;}
+#logo a{font-family:"Avenir LT W01 95 Black"; font-size:41px; color:#71cde4; text-transform:uppercase; text-decoration:none; }
+#mainnav{float:right; padding-right:10px; font-size:13px; height:41px;line-height:59px; vertical-align:bottom;}
 #mainnav ul{list-style-type:none;margin:0; padding:0;}
 #mainnav li{display:inline;margin:0; padding:0 0 0 15px; }
 #mainnav li a:link, #mainnav li a:visited{text-decoration:none; color:#757575;}
@@ -64,7 +68,7 @@ h2 {margin:0; padding:0;}
 
 #rightcol_featured{width:350px; float:right;}
 .ab_feature {background-color:#fff;padding-bottom:10px; margin-bottom:20px;}
-.ab_feature p{margin:5px;}
+.ab_feature p{margin:10px;}
 .ab_feature_img {text-align:center; overflow:hidden; width: 350px; height:280px;}
 
 
@@ -75,17 +79,16 @@ h2 {margin:0; padding:0;}
 
 #ad_content {float:left;}
 #ad_maincontent {width:570px; padding-bottom:20px; float:left;}
-#ad_maincontentCol1{width:200px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
-#ad_maincontentCol2{width:370px; height:300px; overflow-y:auto; overflow-x:hidden; float:left;}
+#ad_maincontentCol1{width:200px; height:300px; float:left; position:relative;}
+#ad_maincontentCol2{width:370px; height:300px; float:left;}
 .bio{font-size:12px; line-height:130%; padding-right:10px;}
-.ad_thumbs{width:490px;padding-top:0px;}
-.ad_thumbs img{max-width:175px; padding-bottom:10px;}
-.ad_thumbs .col {width:175px; margin-left:10px;float:left; text-align:center;}
-.ad_thumbs .lastcol {width:150px; margin-right:10px;float:left;}
+.ad_thumbs{width:370px; height:300px; position:relative;}
+.ad_thumbs img{padding-bottom:10px;}
+.ad_thumbs .col {width:185px; float:left; text-align:right;}
 
-.ad_gmap {width:370px; float:right;}
+.ad_gmap {width:355px; float:right;}
 
-.ad_col{width:110px; padding-left:0px; padding-right:40px;float:left; font-size:11px;}
+.ad_col{width:120px; height: 225px; position: relative; padding-left:0px; margin-right:40px; float:left; font-size:11px;}
 .ad_col ul{list-style-type:none;margin:0; padding:0 0 15px 0;}
 .ad_col ul li{list-style-type:none; padding:0 0 8px 0; margin:0;}
 .ad_col img{padding:5px 0;}
@@ -94,16 +97,33 @@ h2 {margin:0; padding:0;}
 
 
 /* artwork detail styles */
+#art_content {float:left; width: 828px;}
+#art_title {clear:both; margin-bottom:15px;}
 #art_artist {height:50px; clear:both;}
 #art_detail {width:580px; float:left; margin-right:40px;}
-#art_detail_info{width:200px;margin-left:10px;float:left;line-height:150%;}
+#art_detail_info{width:200px;margin-left:0px;float:left;line-height:150%;}
+.art_related_list{width:200px; height:155px; position:relative; margin:0px 0px 15px 0px; padding:0px;}
 
+/* exhibition detail styles */
+#ex_content {float:left; width: 828px;}
+#ex_title {height:50px; clear:both;}
+#ex_content #ex_grid .ad_thumbs{ height:525px;}
+#ex_content #ex_grid .ad_thumbs .col {width:185px; float:left; text-align:left;}
+#ex_content #ex_grid{ float:left; width:555px; margin-right:35px;}
+#ex_content #ex_img{ float:left; margin-right:45px;}
+#ex_detail_info{width:238px; float:left; line-height:150%; margin:0px;}
+div#ex_description{width:238px; height:200px; position:relative; margin-bottom:15px;}
+div#ex_description p{margin:0px; padding:0px 0px 10px 0px;}
+div.ex_related_list{width:238px; height:145px; position:relative; margin:0px 0px 15px 0px; padding:0px;}
 
-/*chronology styles */
-#chron_thumb {width:480px; float:left;}
-#chron_thumb .col {width:230px; padding-right:10px; float:left; font-size:12px;font-family:"Avenir LT W01 65 Medium";}
-#chron_thumb img {padding-bottom:10px;}
-#chron_info {width:270px; float:left; margin-left:40px; font-size:12px;}
+/*chronology styles  - there are more styles defined in the plugin stylesheet */
+#chron_content {float:left; width:830px;}
+#chron_thumb {width:520px; float:left;}
+#chron_thumbScroll {width:520px; height:550px; position:relative;}
+#chron_thumb #chron_thumbScroll .col {width:250px; padding-right:10px; float:left; font-size:12px;font-family:"Avenir LT W01 65 Medium";}
+#chron_thumb #chron_thumbScroll img {padding-bottom:10px;}
+#chron_info {width:270px; float:right; font-size:12px;}
+.chronoLists {width:270px; height:227px; position:relative;}
 #chron_info ul {list-style-type:none; margin:0; padding:10px 0 10px 0;}
 #chron_info ul li{list-style-type:none; margin:0 0 10px 0; padding:0;}
 
@@ -148,4 +168,25 @@ h2 {margin:0; padding:0;}
 #hpFeaturedScrollCaption a{
 	text-decoration: none;
 	color: #666666;
+}
+
+
+/* scrolling div styles */
+
+/* Replace the last selector for the type of element you have in
+   your scroller. If you have div's use #makeMeScrollable div.scrollableArea div,
+   if you have links use #makeMeScrollable div.scrollableArea a and so on. */
+.ad_col div.scrollableArea div, #ad_maincontentCol1 div.scrollableArea div, .ad_thumbs div.scrollableArea div, #chron_thumbScroll div.scrollableArea div, .chronoLists div.scrollableArea div, #ex_description div.scrollableArea div, .ex_related_list div.scrollableArea div, .art_related_list  div.scrollableArea div
+{
+	position: relative;
+	margin: 0;
+	padding: 0;
+	/* If you don't want the images in the scroller to be selectable, try the following
+	   block of code. It's just a nice feature that prevent the images from
+	   accidentally becoming selected/inverted when the user interacts with the scroller. */
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
 }
