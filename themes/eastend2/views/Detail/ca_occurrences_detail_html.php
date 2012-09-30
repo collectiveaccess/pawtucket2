@@ -75,7 +75,8 @@
 			}else{
 				// set parameters for paging controls view
 				$this->setVar('other_paging_parameters', array(
-					'occurrence_id' => $vn_occurrence_id
+					'occurrence_id' => $vn_occurrence_id,
+					'detail_type' => 'occ_detail'
 				));
 				$this->setVar('num_cols', 3);
 				$this->setVar('detailType', 'occurrence');

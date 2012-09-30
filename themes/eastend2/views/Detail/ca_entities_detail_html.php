@@ -76,6 +76,7 @@ if (!$this->request->isAjax()) {
 		$va_portraits = $t_entity->get("ca_objects", array("restrictToRelationshipTypes" => array("portrait"), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
 		foreach($va_portraits as $va_portrait){
 			$t_object = new ca_objects($va_portrait["object_id"]);
+			$this->setVar('exclude_object_id', $va_portrait["object_id"]);
 			if($va_portrait = $t_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values))){
 				print $va_portrait['tags']['small']."<br/>";
 				break;
@@ -110,7 +111,8 @@ if (!$this->request->isAjax()) {
 }
 		// set parameters for paging controls view
 		$this->setVar('other_paging_parameters', array(
-			'entity_id' => $vn_entity_id
+			'entity_id' => $vn_entity_id,
+			'detail_type' => 'entity_detail'
 		));
 		print $this->render('related_objects_grid.php');
 
@@ -185,11 +187,15 @@ if (!$this->request->isAjax()) {
 
 	$o_place_search = new PlaceSearch();
 	$qr_places = $o_place_search->search("ca_entities.entity_id: ".$vn_entity_id, array("checkAccess" => $va_access_values));
-	#print $qr_places->numHits();
+	#while($qr_places->nextHit()){
+	#	print $qr_places->get("ca_place_labels.name");
+	#}
 	if($qr_places->numHits()){
 		$o_map = new GeographicMap(355, 225, 'map');
 		$va_map_stats = $o_map->mapFrom($qr_places, "georeference", array("request" => $this->request, "checkAccess" => $va_access_values));
-		print '<div class="ad_gmap">'.$o_map->render('HTML', array('delimiter' => "<br/>")).'</div><!-- end ad_gmap -->';
+		if($va_map_stats['points'] > 0){
+			print '<div class="ad_gmap">'.$o_map->render('HTML', array('delimiter' => "<br/>")).'</div><!-- end ad_gmap -->';
+		}
 	}				
 ?>
 
