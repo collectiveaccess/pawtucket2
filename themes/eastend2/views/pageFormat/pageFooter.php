@@ -27,6 +27,9 @@ print TooltipManager::getLoadHTML();
 			});
 		}
 	});
+	$(function(){  // $(document).ready shorthand
+	  $('.notificationMessage').effect('fade', 'easeInSine', 5000);
+	});
 	</script>
 	</body>
 </html>

@@ -36,7 +36,6 @@
 	$va_display_options =				$this->getVar('primary_rep_display_options');
 	
 	JavascriptLoadManager::register('smoothDivScrollVertical');
-
 ?>
 	<div id="subnav">
 <?php
