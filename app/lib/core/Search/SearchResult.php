@@ -175,14 +175,14 @@ class SearchResult extends BaseObject {
 		$va_row_ids = array();
 		
 		$vn_cur_row_index = $this->opo_engine_result->currentRow();
-		$this->seek($pn_start);
+		self::seek($pn_start);
 		
 		$vn_i=0;
 		while(self::nextHit() && ($vn_i < $pn_num_rows)) {
 			$va_row_ids[] = $this->opo_engine_result->get($this->ops_table_pk);
 			$vn_i++;
 		}
-		$this->seek($vn_cur_row_index + 1);
+		self::seek($vn_cur_row_index + 1);
 		
 		return $this->opa_row_ids_to_prefetch_cache[$ps_tablename.'/'.$pn_start.'/'.$pn_num_rows] = $va_row_ids;
 	}
@@ -1609,7 +1609,7 @@ class SearchResult extends BaseObject {
 		if (($vn_cur_row_index = $this->opo_engine_result->currentRow()) < 0) {
 			$vn_cur_row_index = 0;
 		}
-		$this->seek(0);
+		self::seek(0);
 		$va_result = array();
 		
 		// loop through result and try to fetch values of the given field list
@@ -1633,7 +1633,7 @@ class SearchResult extends BaseObject {
 		}
 		
 		// restore current position
-		$this->seek($vn_cur_row_index);
+		self::seek($vn_cur_row_index);
 		
 		// user wants the arrays to be sorted
 		if($vb_sort) {
