@@ -43,7 +43,7 @@
 	</div>
 	<div id="hpTextContainer">
 		<div id="hpTextHeader">
-			East End Stories, presented by the Parrish art Museum, explores the enduring presence of artists on the East End of Long Island.
+			East End Stories, presented by the Parrish Art Museum, explores the enduring presence of artists on the East End of Long Island.
 		</div>
 		<div id="hpText">
 			Begin your journey by browsing the catalog of artists, finding hubs of activity on the map, or exploring the chronology.
