@@ -126,7 +126,9 @@
 					jQuery('#silo<?php print $vn_silo_id; ?>').data('actionmap', <?php print json_encode($va_silo['actionmap']); ?>);
 					var slider_silo_id = <?php print $vn_silo_id; ?>; 
 					var actionmap = jQuery('#silo' + slider_silo_id).data('actionmap');
-					jQuery('#sliderPosInfo' + slider_silo_id).html(actionmap[0]['date']);
+					if (actionmap && actionmap[0] && actionmap[0]['date']) {
+						jQuery('#sliderPosInfo' + slider_silo_id).html(actionmap[0]['date']);
+					}
 					jQuery('#slider<?php print $vn_silo_id; ?>').slider({min:1, max:<?php print ($va_silo["num_actions"] - 5); ?>, animate: 'fast', 
 						start: function(event, ui) {
 							jQuery('#sliderPosInfo' + slider_silo_id).css('display', 'block');

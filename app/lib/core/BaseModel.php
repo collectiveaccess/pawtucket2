@@ -3224,7 +3224,7 @@ class BaseModel extends BaseObject {
 	 * @return string html tag
 	 */
 	public function getMediaTag($ps_field, $ps_version, $pa_options=null) {
-		$va_media_info = $this->getMediaInfo($ps_field);
+		if (!is_array($va_media_info = $this->getMediaInfo($ps_field))) { return ""; }
 		if (!is_array($va_media_info[$ps_version])) {
 			return "";
 		}
@@ -3592,6 +3592,7 @@ class BaseModel extends BaseObject {
 	 * Supported options:
 	 * 		delete_old_media = set to zero to prevent that old media files are deleted; defaults to 1
 	 *		these_versions_only = if set to an array of valid version names, then only the specified versions are updated with the currently updated file; ignored if no media already exists
+	 *		dont_allow_duplicate_media = if set to true, and the model as a field named "md5" then media will be rejected if a row already exists with the same MD5 signature
 	 */
 	public function _processMedia($ps_field, $pa_options=null) {
 		global $AUTH_CURRENT_USER_ID;
@@ -3668,6 +3669,21 @@ class BaseModel extends BaseObject {
 			}
 			
 			if (isset($this->_SET_FILES[$ps_field]['tmp_name']) && (file_exists($this->_SET_FILES[$ps_field]['tmp_name']))) {
+				if (!isset($pa_options['dont_allow_duplicate_media'])) {
+					$pa_options['dont_allow_duplicate_media'] = (bool)$this->getAppConfig()->get('dont_allow_duplicate_media');
+				}
+				if (isset($pa_options['dont_allow_duplicate_media']) && $pa_options['dont_allow_duplicate_media']) {
+					if($this->hasField('md5')) {
+						$qr_dupe_chk = $this->getDb()->query("
+							SELECT ".$this->primaryKey()." FROM ".$this->tableName()." WHERE md5 = ? ".($this->hasField('deleted') ? ' AND deleted = 0': '')."
+						", (string)md5_file($this->_SET_FILES[$ps_field]['tmp_name']));
+						
+						if ($qr_dupe_chk->nextRow()) {
+							$this->postError(1600, _t("Media already exists in database"),"BaseModel->_processMedia()");
+							return false;
+						}
+					}
+				}
 
 				// ImageMagick partly relies on file extensions to properly identify images (RAW images in particular)
 				// therefore we rename the temporary file here (using the extension of the original filename, if any)
@@ -3719,6 +3735,10 @@ class BaseModel extends BaseObject {
 						"FETCHED_ON" => $vn_url_fetched_on
 					 )
 				);
+				
+				if (isset($this->_SET_FILES[$ps_field]['options']['TRANSFORMATION_HISTORY']) && is_array($this->_SET_FILES[$ps_field]['options']['TRANSFORMATION_HISTORY'])) {
+					$media_desc['TRANSFORMATION_HISTORY'] = $this->_SET_FILES[$ps_field]['options']['TRANSFORMATION_HISTORY'];
+				}
 				
 				#
 				# Extract metadata from file
@@ -4278,25 +4298,34 @@ class BaseModel extends BaseObject {
 		if (!is_array($va_media_info)) {
 			return null;
 		}
-		
-		$vs_path = $this->getMediaPath($ps_field, 'original');
+			
+		if(isset($pa_options['revert']) && $pa_options['revert'] && isset($va_media_info['_undo_'])) {
+			$vs_path = $vs_undo_path = $this->getMediaPath($ps_field, '_undo_');
+			$va_transformation_history = array();
+		} else {
+			$vs_path = $this->getMediaPath($ps_field, 'original');
+			// Copy original into "undo" slot (if undo slot is empty)
+			$vs_undo_path = (!isset($va_media_info['_undo_'])) ? $vs_path : $this->getMediaPath($ps_field, '_undo_');
+			if (!is_array($va_transformation_history = $va_media_info['TRANSFORMATION_HISTORY'])) {
+				$va_transformation_history = array();
+			}
+		}
 		
 		// TODO: Check if transformation valid for this media
 		
-		// Copy original into "undo" slot (if undo slot is empty)
-		$vs_undo_path = (!isset($va_media_info['_undo_'])) ? $vs_path : $this->getMediaPath($ps_field, '_undo_');
 		
 		// Apply transformation to original
 		$o_media = new Media();
 		$o_media->read($vs_path);
 		$o_media->transform($ps_op, $pa_params);
+		$va_transformation_history[$ps_op][] = $pa_params;
 		
 		$vs_tmp_basename = tempnam(caGetTempDirPath(), 'ca_media_rotation_tmp');
 		$o_media->write($vs_tmp_basename, $o_media->get('mimetype'), array());
 		
 		// Regenerate derivatives 
 		$this->setMode(ACCESS_WRITE);
-		$this->set($ps_field, $vs_tmp_basename.".".$va_media_info['original']['EXTENSION'], $vs_undo_path ? array('undo' => $vs_undo_path) : null);
+		$this->set($ps_field, $vs_tmp_basename.".".$va_media_info['original']['EXTENSION'], $vs_undo_path ? array('undo' => $vs_undo_path, 'TRANSFORMATION_HISTORY' => $va_transformation_history) : array('TRANSFORMATION_HISTORY' => $va_transformation_history));
 		$this->setAsChanged($ps_field);
 		$this->update();
 		
@@ -4326,11 +4355,30 @@ class BaseModel extends BaseObject {
 		
 		// Regenerate derivatives 
 		$this->setMode(ACCESS_WRITE);
-		$this->set($ps_field, $vs_undo_path ? $vs_undo_path : $vs_path);
+		$this->set($ps_field, $vs_undo_path ? $vs_undo_path : $vs_path, array('TRANSFORMATION_HISTORY' => array()));
 		$this->setAsChanged($ps_field);
 		$this->update();
 		
 		return $this->numErrors() ? false : true;
+	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Get history of transformations applied to media in specified field of current loaded
+	 *
+	 * @param string $ps_field The name of the media field; if omitted the history for all operations is returned
+	 * @param string $ps_op The name of the media transformation operation to fetch history for
+	 *
+	 * @return array List of transformations for the given operation, or null if the history cannot be retrieved
+	 */
+	public function getMediaTransformationHistory($ps_field, $ps_op=null) {
+		$va_media_info = $this->getMediaInfo($ps_field);
+		if (!is_array($va_media_info)) {
+			return null;
+		}
+		if ($ps_op && isset($va_media_info['TRANSFORMATION_HISTORY'][$ps_op])	&& is_array($va_media_info['TRANSFORMATION_HISTORY'][$ps_op])) {
+			return $va_media_info['TRANSFORMATION_HISTORY'][$ps_op];
+		}
+		return (isset($va_media_info['TRANSFORMATION_HISTORY']) && is_array($va_media_info['TRANSFORMATION_HISTORY'])) ? $va_media_info['TRANSFORMATION_HISTORY'] : array();
 	}
 	# --------------------------------------------------------------------------------
 	/**
