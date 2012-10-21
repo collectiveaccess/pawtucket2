@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2010 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,7 +30,7 @@
 	
 	$t_set 				= $this->getVar('t_set');			// object for ca_sets record of set we're currently editing
 	$t_new_set 			= $this->getVar('t_set');			// object for ca_sets record of set we're currently editing
-	$vn_set_id 			= $t_set->getPrimaryKey();			// primary key of set we're currently editing
+	$vn_set_id 			= $t_set->getPrimaryKey();		// primary key of set we're currently editing
 	$va_items 			= $this->getVar('items');			// array of items in the set we're currently editing
 	
 	$va_sets 			= $this->getVar('set_list');		// list of existing sets this user has access to
@@ -38,184 +38,244 @@
 	$va_errors 			= $this->getvar("errors");
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
+	$va_errors_share_set 	= $this->getVar("errors_share_set");
 	
-	$o_client_services_config = $this->getVar('client_services_config');
+	# --- share - email a friend
+	# --- if there were errors in the form, the form paramas are passed back to preload the form
+	$vs_to_email = $this->getVar("to_email");
+	$vs_from_email = $this->getVar("from_email");
+	$vs_from_name = $this->getVar("from_name");
+	$vs_subject = $this->getVar("subject");
+	$vs_message = $this->getVar("email_message");
 	
- 	$va_messages_by_transaction = $this->getVar('messages');
+	# --- if params have not been passed, set some defaults
+	if(!$vs_subject && !$va_errors['subject']){
+		$vs_subject = $t_set->getLabelForDisplay();
+	}
+	if(!$vs_from_email && $this->request->isLoggedIn() && !$va_errors['from_email']){
+		$vs_from_email = $this->request->user->get("email");
+	}	
+	if(!$vs_from_name && $this->request->isLoggedIn() && !$va_errors['from_name']){
+		$vs_from_name = $this->request->user->getName();
+	}
 ?>
 <h1><?php print _t("Lightbox"); ?></h1>
 <div id="setItemEditor">
+	<div id="rightCol"><div class="boxBg">
 <?php
-	//
-	// Right column (info display and edit forms)
-	//
+	if ($vn_set_id) {
 ?>
-	<div id="rightCol">
+		<h2><?php print _t("Current Lightbox"); ?></h2>
 <?php
-	//
-	// Action buttons (create new set)
-	//
-	print "<div class='optionsList'><a href='#' id='newSetButton' onclick='caShowCollectionForm(\"new\"); return false;'>"._t("Start a new lightbox")." &rsaquo;</a></div>";
-?>
-		<div id="currentSetContainer">
-<?php
-		if ($vn_set_id) {
-?>
-			<div class="boxBg">
-			<h2><?php print _t("Now Viewing"); ?></h2>
-<?php
-			# --- current set info and form to edit
-			if($vn_set_id){
-				print "<div class='setInfo'>";
-				print "<strong>".$this->getVar("set_name")."</strong>";
-				print "<div class='edit'><a href='#' id='editSetButton' onclick='jQuery(\"#editSetButton\").slideUp(1); jQuery(\"#editForm\").slideDown(250); return false;'>"._t("Edit")." &rsaquo;</a></div>";
-				print "</div>";
+		# --- current set info and form to edit
+		if($vn_set_id){
+			print "<div class='setInfo'>";
+			if($this->getVar("set_access") == 1){
+				$vs_access = _t("public");
+			}else{
+				$vs_access = _t("private");
+			}
+			print "<strong>".$this->getVar("set_name")."</strong>";
+			print "&nbsp;&mdash;&nbsp;<em>"._t("This lightbox is %1", $vs_access)."</em>";
+			if ($this->getVar("set_access") == 1) {
+				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='27'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
+			}
+			if($this->getVar("set_description")){
+				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
+			}
+			
+			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Lightbox")." &rsaquo;</a></div>";
+			print "</div>";
 ?>					
-				<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
+			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Lightbox Information"); ?></h2>
 <?php
-					if($va_errors_edit_set["edit_set"]){
-						print "<div class='formErrors'>".$va_errors_edit_set["edit_set"]."</div>";
+				if($va_errors_edit_set["edit_set"]){
+					print "<div class='formErrors'>".$va_errors_edit_set["edit_set"]."</div>";
+				}
+?>
+				<form action="<?php print caNavUrl($this->request, 'Sets', 'saveSetInfo', ''); ?>" method="post" id="editSetForm">
+<?php
+					if($va_errors_edit_set["name"]){
+						print "<div class='formErrors' style='text-align: left;'>".$va_errors_edit_set["name"]."</div>";
 					}
 ?>
-					<form action="<?php print caNavUrl($this->request, 'Sets', 'saveSetInfo', ''); ?>" method="post" id="editSetForm">
+					<div class="formLabel"><?php print _t("Title"); ?><br/>
+						<input type="text" name="name" value="<?php print htmlspecialchars($t_set->getLabelForDisplay(), ENT_QUOTES, 'UTF-8'); ?>">
+					</div>
+					<div class="formLabel"><?php print _t("Display Option"); ?><br/>
+						<select name="access" id="access">
+							<option value="0" <?php print ($this->getVar("set_access") == 0) ? "selected" : ""; ?>><?php print _t("Private"); ?></option>
+							<option value="1"  <?php print ($this->getVar("set_access") == 1) ? "selected=" : ""; ?>><?php print _t("Public"); ?></option>
+						</select>
+					</div>
+					<div class="formLabel"><?php print _t("Description"); ?><br/>
+						<textarea name="description" rows="5"><?php print htmlspecialchars($t_set->getAttributesForDisplay('set_intro'), ENT_QUOTES, 'UTF-8'); ?></textarea>
+					</div>
+					<a href="#" name="newSetSubmit" onclick="document.forms.editSetForm.submit(); return false;"><?php print _t("Save"); ?></a>
+					<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
+				</form>
+				<a href='#' id='editSetButton' onclick='$("#editForm").slideUp(250); $("#editSetButton").slideDown(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+			</div><!-- end editForm -->
 <?php
-						if($va_errors_edit_set["name"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_edit_set["name"]."</div>";
+		}
+	}
+?>
+
+		<h2><?php print _t("Your Lightboxes"); ?></h2>
+<?php
+	foreach($va_sets as $va_set) {
+		if($va_set['set_id'] == $vn_set_id){
+			print "<div class='setsListCurrent'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".$va_set['name']."</div>\n";
+		}else{
+			print "<div class='setsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".caNavLink($this->request, $va_set['name'], '', '', 'Sets', 'index', array('set_id' => $va_set['set_id']))."</div>\n";
+		}
+	}
+?>
+		
+		<h2><?php print _t("Options"); ?></h2>
+<?php
+	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
+		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</a></div>";
+	}
+?>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this lightbox"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new lightbox"); ?></a></div>
+<?php
+	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
+		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".caNavLink($this->request, _t("Download lightbox as PDF"), '', '', 'Sets', 'export', array('set_id' => $vn_set_id, 'output_type' => '_pdf', 'download' => 1))."</div>";
+	}
+?>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
+			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Make a new lightbox"); ?></h2>
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
+<?php
+						if($va_errors_new_set["name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_new_set["name"]."</div>";
 						}
 ?>
-						<div class="formLabel"><?php print _t("Title"); ?></div>
-						<input type="text" name="name" value="<?php print htmlspecialchars($t_set->getLabelForDisplay(), ENT_QUOTES, 'UTF-8'); ?>">
-						<div class="formLabel"><?php print _t("Notes"); ?></div>
-						<textarea name="description" rows="5"><?php print htmlspecialchars($t_set->get('ca_sets.set_description'), ENT_QUOTES, 'UTF-8'); ?></textarea>
-
-						<a href="#" name="newSetSubmit" onclick="jQuery('#editSetForm').submit(); return false;"><?php print _t("Save"); ?></a>
+						<div class="formLabel"><?php print _t("Title"); ?><br/>
+							<input type="text" name="name">
+						</div>
+						<div class="formLabel"><?php print _t("Display Option"); ?><br/>
+							<select name="access" id="access">
+								<option value="0"><?php print _t("Private"); ?></option>
+								<option value="1"><?php print _t("Public"); ?></option>
+							</select>
+						</div>
+						<div class="formLabel"><?php print _t("Description"); ?><br/>
+							<textarea name="description" rows="5"></textarea>
+						</div>
+						<a href="#" name="newSetSubmit" onclick="document.forms.newSetForm.submit(); return false;"><?php print _t("Save"); ?></a>
+					</form>
+				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+			</div>
+			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Share this lightbox"); ?></h2>
+<?php
+				if($t_set->get("access") == 0){
+					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this lightbox you must first edit the lightbox and make the display option Public")."</div>";
+				}else{
+?>
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" id="shareSetForm">
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["to_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
+						}
+?>
+						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span><br/>
+							<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+						</div>
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["from_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_email"]."</div>";
+						}
+?>
+						<?php print _t("Your e-mail address"); ?><br/>
+							<input type="text" name="from_email" value="<?php print $vs_from_email; ?>">
+						</div>
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["from_name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_name"]."</div>";
+						}
+?>
+						<?php print _t("Your name"); ?><br/>
+							<input type="text" name="from_name" value="<?php print $vs_from_name; ?>">
+						</div>
+						<div class="formLabel">
+<?php
+						if($va_errors_share_set["subject"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["subject"]."</div>";
+						}
+?>
+						<?php print _t("Subject"); ?><br/>
+							<input type="text" name="subject" value="<?php print $vs_subject; ?>">
+						</div>
+						<div class="formLabel"><?php print _t("Message"); ?><br/>
+							<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
+						</div>
+						<a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
 					</form>
-					<a href='#' onclick='jQuery("#editForm").slideUp(250); jQuery("#editSetButton").slideDown(250); return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
-				</div><!-- end editForm -->
+				<a href='#' id='editSetButton' onclick='$("#shareForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 <?php
-			}
+				}
 ?>
 			</div>
+			<div id="helpTips" style="display:none;">
 <?php
-		}
+			print "<h2>"._t("Help Tips")."</h2>";
+?>
+				<ul>
+					<li><strong><?php print _t("How do I add content to my lightbox?"); ?></strong>
+						<div>
+							<?php print _t("You can add images and video to your lightbox while you are browsing the website.  You'll find <em>Add to Lightbox</em> links beneath images and video throughout the site."); ?>
+						</div>
+					</li>
+				</ul>
+				<ul>
+					<li><strong><?php print _t("Can I have more than one lightbox?"); ?></strong>
+						<div>
+							<?php print _t("Yes.  Click the <em>Make a new lightbox</em> link above to create a new lightbox."); ?>
+						</div>
+					</li>
+				</ul>
+				<ul>
+					<li><strong><?php print _t("How do I change between lightboxes?"); ?></strong>
+						<div>
+							<?php print _t("Click on the name of the lightbox you want to work with in the <em>YOUR LIGHTBOXES</em> list."); ?>
+						</div>
+					</li>
+				</ul>
+				<ul>
+					<li><strong><?php print _t("How can I change the name of my lightbox?"); ?></strong>
+						<div>
+							<?php print _t("Click the <em>EDIT</em> link in the <em>CURRENT LIGHTBOX</em> box above.  A form will slide open allowing you to change the name, display options and description of the lightbox you are currently working with."); ?>
+						</div>
+					</li>
+				</ul>
+				<ul>
+					<li><strong><?php print _t("Can I change the order of the content in my lightbox's slide show?"); ?></strong>
+						<div>
+							<?php print _t("Yes.  You can organize the content in your lightboxes by dragging and dropping them into your preferred order.  Your changes are automatically saved once you drop the content into place."); ?>
+						</div>
+					</li>
+				</ul>
+				<ul>
+					<li><strong><?php print _t("Can I share my lightbox with others?"); ?></strong>
+						<div>
+							<?php print _t("Yes.  When you set the display option of your lightbox to <em>Public</em>, your lightbox's slideshow becomes publicly accessible.  You can share the link to your slideshow with friends, students and colleagues."); ?>
+						</div>
+					</li>
+				</ul>
+				<a href='#' id='editSetButton' onclick='$("#helpTips").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+			</div>
 
-		//
-		// Client communication form
-		//
-		if ((bool)$o_client_services_config->get('enable_user_communication')) {
-			//
-			// Start a conversation, or reply to an existing one
-			//
-?>
-		<div id="caClientCommunicationsContainer" class="boxBg">
-<?php
-			if(sizeof($va_messages_by_transaction)){
-				print "<div class='reply'><a href='#' onclick='jQuery(\"#newFormContainer\").slideUp(0); jQuery(\".reply\").hide(); jQuery(\"#caClientCommunications\").slideDown(250); return false;'>"._t("Reply")."  &rsaquo;</a></div>";
-?>
-			<h2><?php print _t("Inbox"); ?></h2>
-<?php
-			}else{
-?>
-			<h2 style="display:none;" id="inquiryTitle"><?php print _t("Inquiry"); ?></h2>
-<?php	
-			}
-			if(!sizeof($va_messages_by_transaction)){
-				print "<div class='inquire' id='inquiry'><a href='#' onclick='jQuery(\"#newFormContainer\").slideUp(0); jQuery(\"#caClientCommunications\").slideDown(250); jQuery(\"#inquiry\").hide(); jQuery(\"#inquiryTitle\").show(); return false;'>"._t("Inquire about items in your lightbox")."  &rsaquo;</a></div>";
-			}
-?>
-			<div id="caClientCommunications" style="display:none;">
-<?php
-				print caFormTag($this->request, 'SendReply', 'caClientCommunicationsReplyForm', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
-				$t_comm = new ca_commerce_communications();
-				
-				// Get subject line from last message to use as default for replies
-				if (is_array($va_last_transaction = $va_messages_by_transaction[array_pop(array_keys($va_messages_by_transaction))])) {
-					$va_last_message = $va_last_transaction[array_pop(array_keys($va_last_transaction))];
-				} else {
-					$va_last_message = array('subject' => _t('New inquiry'));
-				}
-				
-				$vs_subject = isset($va_last_message['subject']) ? $va_last_message['subject'] : '';
-				if (sizeof($va_messages_by_transaction) && (!preg_match('!'._t("Re:").'!i', $vs_subject))) {
-					$vs_subject = _t("Re:").' '.$vs_subject;
-				}
-				
-				$t_comm->set('subject', $vs_subject);
-				#print "<div class='formLabel'>"._t('Date:').' '.caGetLocalizedDateRange($t=time(), $t, array('dateFormat' => 'delimited'))."</div>";
-				#print "<div class='formLabel'>"._t('To:')." ".$this->request->config->get('app_display_name')."</div>";
-				
-				foreach($t_comm->getFormFields() as $vs_f => $va_info) {
-					switch($vs_f) {
-						case 'subject':
-						case 'message':
-						case 'transaction_id':
-							print $t_comm->htmlFormElement($vs_f, "<div class='formLabel'>^LABEL<br/>^ELEMENT</div>")."\n";
-							break;
-					}
-				}
-				
-				print caHTMLHiddenInput('set_id', array('value' => $t_set->getPrimaryKey()));
-				
-				print "<a href='#' onclick='jQuery(\"#caClientCommunicationsReplyForm\").submit(); return false;' class='save'>"._t("Send")."</a>";
-?>
-				<a href='#' id='editSetButton' onclick='jQuery("#caClientCommunications").slideUp(200); <?php print (!sizeof($va_messages_by_transaction)) ? "jQuery(\"#inquiryTitle\").hide(); jQuery(\"#inquiry\").show(); " : " jQuery(\".reply\").show(); "; ?>return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
-				</form>
-			</div>
-<?php
-			if(sizeof($va_messages_by_transaction)){
-?>
- 			<div id="caClientCommunicationsMessageList">
-<?php
-				//
-				// List of messages
-				//
-				foreach($va_messages_by_transaction as $vn_tranaction_id => $va_messages) {
-					$va_message = array_pop($va_messages);
-					$va_messages = array_reverse($va_messages);
-					print caClientServicesFormatMessageSummaryPawtucket($this->request, $va_message, array('viewContentDivID' => 'caClientCommunicationsMessageDisplay', 'additionalMessages' => $va_messages));
-				}
-?> 	
- 			</div>
-<?php
-			}
-?>
- 		</div>	
-<?php
-		}
-?>
-	</div>
-	<div id="newSetContainer" class="boxBg" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
-<?php
-		//
-		// New set form
-		//	
-?>
-		<div id="newFormContainer">
-			<h2><?php print _t("Your new lightbox"); ?></h2>
-				<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
-<?php
-					if($va_errors_new_set["name"]){
-						print "<div class='formErrors' style='text-align: left;'>".$va_errors_new_set["name"]."</div>";
-					}
-?>
-					<div class="formLabel"><?php print _t("Title"); ?></div>
-					<input type="text" name="name">
-					<div class="formLabel"><?php print _t("Notes"); ?></div>
-					<textarea name="description" rows="5"></textarea>
-					<a href="#" name="newSetSubmit" onclick="jQuery('#newSetForm').submit(); return false;"><?php print _t("Save"); ?></a>
-				</form>
-			<a href='#' id='editSetButton' onclick='caShowCollectionForm("current"); return false;' class='hide'><?php print _t("Cancel"); ?> &rsaquo;</a>
-		</div>
-	</div>
-<?php
-?>
-	</div><!-- end div rightCol -->
-<?php
-	//
-	// Left column (display of set items)
-	//
-?>
+	</div><!-- end boxBg --></div><!-- end divRightCol -->
 	<div id="leftCol">
 <?php
 		if (!sizeof($va_sets)) {
@@ -257,10 +317,11 @@
 			print "<div class='message'>".implode(", ", $va_errors)."</div>";
 		}
 ?>
-	<div id="setItems" class="setItems">
-		<ul id="setItemList" class="setItemList">
+	<div id="setItems">
+		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
+
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
@@ -275,8 +336,8 @@
 						}
 						
 						if ($va_item['name']) {
-							if (mb_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.mb_substr($va_item['name'], 0, 67).'...</em>';
+							if (unicode_strlen($va_item['name']) > 70) {
+								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
 							} else {
 								$va_title[] = '<em>'.$va_item['name'].'</em>';
 							}
@@ -299,25 +360,6 @@
 	</div><!-- end setItems -->
 </div><!-- leftCol -->
 	<script type="text/javascript">
-		function caShowCollectionForm(mode, delay) {
-			if (delay == undefined) { delay = 200; }
-			if (mode == 'new') {
-				jQuery("#currentSetContainer").slideUp(delay); jQuery("#newSetContainer").slideDown(delay);
-			} else {
-				jQuery("#currentSetContainer").slideDown(delay); jQuery("#newSetContainer").slideUp(delay);
-			}
-		}
-		
-		function showHideCommunicationAttachedMedia() {
-			jQuery('#caClientCommunicationsAttachedMedia').slideToggle(250, function() {
-				if(jQuery('#caClientCommunicationsAttachedMedia').css("display") == 'none') {
-					jQuery('#caClientCommunicationsAttachedMediaControl').html("Show attached media &rsaquo;");
-				} else {
-					jQuery('#caClientCommunicationsAttachedMediaControl').html("Hide attached media &rsaquo;");
-				}
-			});
-		}
-		
 		jQuery(".setDeleteButton").click(
 			function() {
 				var id = this.id.replace('setItemDelete', '');
@@ -343,53 +385,33 @@
 			});
 		}
 		_makeSortable();
-
-<?php
-	if (sizeof($va_errors_new_set) > 0) {
-?>
-		jQuery(document).ready(function() {
-			caShowCollectionForm('new', 0);
-		});
-<?php
-	}
-?>
 	</script>
 </div><!-- end setItemEditor -->
 
-
-<div id="caClientCommunicationsViewerPanel"> 
-	<div id="close"><a href="#" onclick="caClientCommunicationsViewerPanelRef.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
-	<div id="caClientCommunicationsViewerPanelContentArea">
-	 
+	<div id="caSetsSlideshowPanel"> 
+		<div id="close"><a href="#" onclick="caSetsSlideshowPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
+		<div id="caSetsSlideshowPanelContentArea">
+		
+		</div>
 	</div>
-</div>
-<script type="text/javascript">
-/*
-	Set up the "caClientCommunicationsViewerPanel" panel that will be triggered by links in communication list
-*/
-var caClientCommunicationsViewerPanelRef;
-jQuery(document).ready(function() {
-	if (caUI.initPanel) {
-		caClientCommunicationsViewerPanelRef = caUI.initPanel({ 
-			panelID: 'caClientCommunicationsViewerPanel',						/* DOM ID of the <div> enclosing the panel */
-			panelContentID: 'caClientCommunicationsViewerPanelContentArea',		/* DOM ID of the content area <div> in the panel */
-			exposeBackgroundColor: '#000000',					/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
-			exposeBackgroundOpacity: 0.5,						/* opacity of background color masking out page content; 1.0 is opaque */
-			panelTransitionSpeed: 400, 							/* time it takes the panel to fade in/out in milliseconds */
-			allowMobileSafariZooming: true,
-			mobileSafariViewportTagID: '_msafari_viewport',
-			closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
-		});
-	}
-	
-	jQuery('.caClientCommunicationsAdditionalMessageSummary, .caClientCommunicationsMessageSummaryContainer').click(function() {
-		var id = jQuery(this).attr('id');
-		var bits = id.split(/_/);
-		caClientCommunicationsViewerPanelRef.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'ViewMessage'); ?>/communication_id/" + bits[1]);
+	<script type="text/javascript">
+	/*
+		Set up the "caSetsSlideshowPanel" panel that will be triggered by links in sets interface
+		Note that the actual <div>'s implementing the panel are located here in views/Sets/sets_html.php
+	*/
+	var caSetsSlideshowPanel;
+	jQuery(document).ready(function() {
+		if (caUI.initPanel) {
+			caSetsSlideshowPanel = caUI.initPanel({ 
+				panelID: 'caSetsSlideshowPanel',										/* DOM ID of the <div> enclosing the panel */
+				panelContentID: 'caSetsSlideshowPanelContentArea',		/* DOM ID of the content area <div> in the panel */
+				exposeBackgroundColor: '#000000',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
+				exposeBackgroundOpacity: 0.8,							/* opacity of background color masking out page content; 1.0 is opaque */
+				panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
+				allowMobileSafariZooming: true,
+				mobileSafariViewportTagID: '_msafari_viewport',
+				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
+			});
+		}
 	});
-	
-	jQuery('.caClientCommunicationsMessageSummaryCounter').click(function() {	// prevent bubbling when clicking counter
-		return false;
-	});
-});
-</script>
+	</script>

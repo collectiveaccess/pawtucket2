@@ -8,15 +8,11 @@
  
 <p>The work of Ms. Bon and the Metabolic Studio work remaps our biosphere. Not A Cornfield and Strawberry Flag mark historically significant properties that are key in the development of the City of Los Angeles. The Studio’s work in the Owens Valley, which is now in its fifth year, focuses on the resources that were mined out of the Owens Valley: silver and water. The work is an act of consciousness aimed at November 8, 2013, the anniversary that will mark one hundred years since the water was removed from the valley.</p>
  
-<p>
-Signature projects within the archive:<br/>
-The Anabolic Monument<br/>
-Not A Cornfield<br/>
-Strawberry Flag<br/>
-AgH20 <br/>
-Liminal Camera
-</p>
-	
-	<p><div class="hpRss"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), 'caption', '', 'Feed', 'recentlyAdded'); ?></div></p>
 
+<!--	<p><div class="hpRss"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), 'caption', '', 'Feed', 'recentlyAdded'); ?></div></p>
+-->
+<h1>Contact</h1>
+<p>
+For further assistance with the archive, please contact <a href='mailto:archive@metabolicstudio.org'>archive@metabolicstudio.org</a>.
+</p>
 </div>

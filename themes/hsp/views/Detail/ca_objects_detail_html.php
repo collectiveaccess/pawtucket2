@@ -63,6 +63,17 @@
 		if ($t_rep && $t_rep->getPrimaryKey()) {
 ?>
 			<div id="rightCol">
+				<div id="addToLightbox">
+<?php
+					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+						if($this->request->isLoggedIn()){
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/hsp/addToCart.png'> "._t("Purchase Image"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+						}else{
+							print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/hsp/addToCart.png'> "._t("Purchase Image"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+						}
+					}			
+?>
+				</div>
 				<div id="objDetailImage">
 <?php
 			if($va_display_options['no_overlay']){
@@ -76,14 +87,6 @@
 				<div id="objDetailImageNav">
 <?php				
 						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
-						
-						if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
-							if($this->request->isLoggedIn()){
-								print "&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("Save images to gallery for purchase +"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
-							}else{
-								print "&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("Save images to gallery for purchase +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
-							}
-						}
 
 ?>			
 				</div><!-- end objDetailImageNav -->

@@ -230,9 +230,8 @@
  		# -------------------------------------------------------
  		 public function DeleteFolder() {
  			if ($this->request->isLoggedIn()) { 
-				$t_folder = $this->_getFolder();
 				
-				if (!$t_folder->getPrimaryKey()) {
+				if (!$t_folder = $this->_getFolder()) {
 					$this->notification->addNotification(_t("The folder does not exist"), __NOTIFICATION_TYPE_ERROR__);	
 					return;
 				}
@@ -259,6 +258,7 @@
 				}else{
 					$this->view->setVar('message', _t("Deleted bookmark folder"));
 					$this->request->user->setVar('current_folder_id', '');
+					$this->request->setParameter('folder_id', '');
 				}
 				
 			} else {

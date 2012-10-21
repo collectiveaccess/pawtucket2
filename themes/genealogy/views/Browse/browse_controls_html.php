@@ -98,7 +98,7 @@
 			} else {
 				print $this->render('Browse/browse_intro_text_html.php');
 				if (sizeof($va_facets)) { 
-					print "<div class='startBrowsingBy'>"._t("Start browsing by:")."</div>";
+					
 					print "<div id='facetList'>";
 					$va_available_facets = $this->getVar('available_facets');
 					foreach($va_available_facets as $vs_facet_code => $va_facet_info) {

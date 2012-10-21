@@ -133,6 +133,16 @@ width:30px;
 height:28px;
 }
 
+#collectionSearchHelpLink{
+	padding: 0px;
+	margin:-5px 0px 0px 0px;
+	text-align:right;
+}
+#collectionSearchHelpLink a{
+	color:#8c8c8c;
+	text-decoration:underline;
+	font-size:11px;
+}
 
 
 /* ----top 2 column navigation styles------ */
@@ -280,8 +290,13 @@ a:hover{text-decoration:none; color:#666; }
 #main_content_preservation a.listHeading:active{text-decoration:underline; color:#484848; font-weight:bold;}
 #main_content_preservation a.listHeading:hover{text-decoration:underline; color:#484848; font-weight:bold;}
 #main_content_preservation a.listHeading:visited{text-decoration:none; color:#346f95; font-weight:bold;}
+#main_content_preservation a.listLink:link{text-decoration:none; color:#346f95;}
+#main_content_preservation a.listLink:active{text-decoration:underline; color:#484848;}
+#main_content_preservation a.listLink:hover{text-decoration:underline; color:#484848;}
+#main_content_preservation a.listLink:visited{text-decoration:none; color:#346f95;}
 #main_content_preservation .listMedia{ margin-bottom: 8px;}
 #main_content_preservation .resultUnit{ margin-bottom: 20px;}
+#main_content_preservation .resultUnit .itemResultText{ font-size:12px; line-height:1.3em;}
 
 
 /*----------*/

@@ -44,6 +44,7 @@
  	$va_messages_by_transaction = $this->getVar('messages');
 ?>
 <h1><?php print _t("Galleries"); ?></h1>
+<div id="setItemEditor">
 <p>
 	Digital images, archival prints, and permission to reproduce, publish, exhibit, or distribute these materials are available, for a fee, through our Rights and Reproductions department.
 </p>
@@ -55,7 +56,7 @@
 	</ol>
 	Want something from our collections that isn’t in the Digital Library? Submit an inquiry with as much information as possible about what you’re looking for (title, call number, collection, etc.), what type of image you need, and how you wish to use it.
 </p>
-<div id="setItemEditor">
+
 <?php
 	//
 	// Right column (info display and edit forms)

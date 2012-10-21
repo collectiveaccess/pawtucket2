@@ -1,19 +1,81 @@
 <?php
+/* ----------------------------------------------------------------------
+ * pawtucket2/themes/default/views/Sets/sets_slideshow_html.php : 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2009-2010 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+ 
 	$t_set = $this->getVar('t_set');
 	$vn_set_id = $this->getVar('set_id');
+	$va_items = $this->getVar('items');
 ?>
-<div id="contentArea">
-	<h1><?php print _t("Slideshow").": ".caNavLink($this->request, $t_set->getLabelForDisplay(), '', '', 'Sets', 'index', array()); ?></h1>
-	<div id="slideshow_player">
-		<h1><?php print _t('You must have the Flash Plug-in version 9.0.0 or better installed to play slideshows'); ?></h1>
-		<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
-	</div>
-	
-	
-	<script type="text/javascript">
-		jQuery(document).ready(function() { swfobject.embedSWF(
-			"/viewers/apps/Slideshow.swf", "slideshow_player", "900", "600", "9.0.0", "swf/expressInstall.swf", 
-			{'data' : '<?php print caNavUrl($this->request, '', 'Sets', 'getSetXML', array('set_id' => $vn_set_id)); ?>?_isFlex=1'}, {'allowscriptaccess': 'always', 'allowfullscreen' : 'true', 'allowNetworking' : 'all'}); }
-		);
-	</script>
-</div>
+<div id="caSetsSlideshowContainer">
+	<h1><?php print $t_set->getLabelForDisplay(); ?></h1>
+	<div id="caSetsSlideshow">
+<?php
+		if(is_array($va_items) && sizeof($va_items)){
+			$i = 1;
+			$t_set_item = new ca_objects();
+			foreach($va_items as $va_item){
+				$t_set_item->load($va_item["row_id"]);
+				# --- pad the top to center vertically
+				$vn_top_padding = round(((450 - $va_item["representation_height_mediumlarge"])/2))."px";
+				print "<div>";
+				print "<div style='padding-top: ".$vn_top_padding."'>".caNavLink($this->request, $va_item["representation_tag_mediumlarge"], "", "Detail", "Object", "Show", array("object_id" => $va_item["object_id"]))."</div>";
+				print "<div class='caSetsSlideshowCaption'>(".$i."/".sizeof($va_items).")</br>";
+				print $t_set_item->get("idno").", ";
+				print "<i>".$va_item["set_item_label"]."</i>, ";
+				if($t_set_item->get("ca_objects.date.display_date")){
+					print $t_set_item->get("ca_objects.date.display_date").", ";
+				}
+				if($t_set_item->get("ca_objects.technique")){
+					print $t_set_item->get("ca_objects.technique");
+				}
+				print "</div><!-- end caSetsSlideshowCaption -->";
+				print "</div>";
+				$i++;
+			}
+		}
+?>
+	</div><!-- end caSetsSlideshow -->
+	<div id="caSetsSlideshowToolBar">
+		<div id="caSetsSlideshowPrevious"><a href="#" id="caSetsSlideshowPreviousLink">&lsaquo; </a></div><!-- end caSetsSlideshowPrevious -->
+		<div id="caSetsSlideshowNext"><a href="#" id="caSetsSlideshowNextLink">&rsaquo; </a></div><!-- end caSetsSlideshowNext -->
+		<div id="caSetsSlideshowPlayPause"><a href="#" onClick="$('#caSetsSlideshow').cycle('toggle'); $(this).text($(this).text() == '►' ? 'ǁ' : '►');">►</a></div><!-- end caSetsSlideshowPlayPause -->
+		
+	</div><!-- end caSetsSlideshowToolBar -->
+</div><!-- end caSetsSlideshowContainer -->
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#caSetsSlideshow').cycle({
+				   fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+				   speed:  1000,
+				   timeout: 4000,
+					prev:   '#caSetsSlideshowPreviousLink', 
+					next:   '#caSetsSlideshowNextLink'
+		   });
+		   $('#caSetsSlideshow').cycle('pause');
+	});
+</script>

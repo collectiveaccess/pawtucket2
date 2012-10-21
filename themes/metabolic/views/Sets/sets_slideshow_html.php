@@ -28,18 +28,43 @@
  
 	$t_set = $this->getVar('t_set');
 	$vn_set_id = $this->getVar('set_id');
+	$va_items = $this->getVar('items');
 ?>
-<div id="contentArea">
-	<h1><?php print _t("Slideshow").": ".caNavLink($this->request, $t_set->getLabelForDisplay(), '', '', 'Sets', 'index', array()); ?></h1>
-	<div id="slideshow_player">
-		<h1><?php print _t('You must have the Flash Plug-in version 9.0.0 or better installed to play slideshows'); ?></h1>
-		<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
-	</div>
+<div id="caSetsSlideshowContainer">
+	<h1><?php print $t_set->getLabelForDisplay(); ?></h1>
+	<div id="caSetsSlideshow">
+<?php
+		if(is_array($va_items) && sizeof($va_items)){
+			$i = 1;
+			foreach($va_items as $va_item){
+				# --- pad the top to center vertically
+				$vn_top_padding = round(((450 - $va_item["representation_height_mediumlarge"])/2))."px";
+				print "<div>";
+				print "<div style='padding-top: ".$vn_top_padding."'>".caNavLink($this->request, $va_item["representation_tag_mediumlarge"], "", "Detail", "Object", "Show", array("object_id" => $va_item["object_id"]))."</div>";
+				print "<div class='caSetsSlideshowCaption'>(".$i."/".sizeof($va_items).")&nbsp;&nbsp;&nbsp;".$va_item["set_item_label"]."</div><!-- end caSetsSlideshowCaption -->";
+				print "</div>";
+				$i++;
+			}
+		}
+?>
+	</div><!-- end caSetsSlideshow -->
+	<div id="caSetsSlideshowToolBar">
+		<div id="caSetsSlideshowPrevious"><a href="#" id="caSetsSlideshowPreviousLink">&lsaquo; </a></div><!-- end caSetsSlideshowPrevious -->
+		<div id="caSetsSlideshowNext"><a href="#" id="caSetsSlideshowNextLink">&rsaquo; </a></div><!-- end caSetsSlideshowNext -->
+		<div id="caSetsSlideshowPlayPause"><a href="#" onClick="$('#caSetsSlideshow').cycle('toggle'); $(this).text($(this).text() == '►' ? 'ǁ' : '►');">►</a></div><!-- end caSetsSlideshowPlayPause -->
 		
-	<script type="text/javascript">
-		jQuery(document).ready(function() { swfobject.embedSWF(
-			"/viewers/apps/Slideshow.swf", "slideshow_player", "900", "600", "9.0.0", "swf/expressInstall.swf", 
-			{'data' : '<?php print caNavUrl($this->request, '', 'Sets', 'getSetXML', array('set_id' => $vn_set_id)); ?>?_isFlex=1'}, {'allowscriptaccess': 'always', 'allowfullscreen' : 'true', 'allowNetworking' : 'all'}); }
-		);
-	</script>
-</div>
+	</div><!-- end caSetsSlideshowToolBar -->
+</div><!-- end caSetsSlideshowContainer -->
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#caSetsSlideshow').cycle({
+				   fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+				   speed:  1000,
+				   timeout: 4000,
+					prev:   '#caSetsSlideshowPreviousLink', 
+					next:   '#caSetsSlideshowNextLink'
+		   });
+		   $('#caSetsSlideshow').cycle('pause');
+	});
+</script>

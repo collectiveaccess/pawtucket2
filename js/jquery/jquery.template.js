@@ -44,13 +44,24 @@ jQuery.fn.template = function( objValues ){
  			// {n} replaces "n" with the value for n with the value straight from objValues
  			// {{n}} replaces "n" with the value from objValues where all double quotes are replaced with &quot; (this is useful for putting values in <input> form elements)
  			var objValueEscaped = objValues[ strKey ] + "";
- 			objValueEscaped = objValueEscaped.replace(/["]/g, '&quot;')
+ 			objValueEscaped = objValueEscaped.replace(/["]/g, '&quot;');
+ 			objValueEscaped = objValueEscaped.replace(/[\']/g, '&apos;')
+ 			
+ 			var objValueSlashed = objValues[ strKey ] + "";
+ 			objValueSlashed = objValueSlashed.replace(/["]/g, '\\"');
+ 			objValueSlashed = objValueSlashed.replace(/[\']/g, "\\'");
+ 			
+ 			// Replace the value with quotes converted to entities {{n}}
+			strHTML = strHTML.replace(
+				new RegExp( "\{\\{\\{" + strSafeKey + "\\}\\}\\}", "gi" ),
+				objValueSlashed
+				);
 			// Replace the value with quotes converted to entities {{n}}
 			strHTML = strHTML.replace(
 				new RegExp( "\\{\\{" + strSafeKey + "\\}\\}", "gi" ),
 				objValueEscaped
 				);
-			// Replace the value without escapeing {n}
+			// Replace the value without escaping {n}
 			strHTML = strHTML.replace(
 				new RegExp( "\\{" + strSafeKey + "\\}", "gi" ),
 				objValues[ strKey ]

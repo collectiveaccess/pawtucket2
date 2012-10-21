@@ -459,7 +459,7 @@ div.searchlight-results div.searchlight-selected {
 	padding: 10px 10px 5px 10px;
 	line-height:1.5em;
 	font-size:12px;
-	width:245px;
+	width:345px;
 	border: 1px solid #e2e2e2;
 	-moz-border-radius-bottomleft: 10px; 
 	-webkit-border-bottom-left-radius: 10px;
@@ -707,7 +707,7 @@ div.searchlight-results div.searchlight-selected {
 	padding: 0px 2px 0px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:574px;
+	width:310px;
 }
 #objUserData input[type="text"] {
 	font-size:11px;
@@ -715,7 +715,7 @@ div.searchlight-results div.searchlight-selected {
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:574px;
+	width:310px;
 	outline-style:none;
 	outline-width:0px;
 }
@@ -732,7 +732,7 @@ div.searchlight-results div.searchlight-selected {
 	padding: 0px 2px 0px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:574px;
+	width:310px;
 }
 #objUserData input[type="textarea"] {
 	font-size:11px;
