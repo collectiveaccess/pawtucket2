@@ -33,6 +33,7 @@ $vn_items_per_page 	= $this->getVar('current_items_per_page');
 $va_access_values 		= $this->getVar('access_values');
 
 if($vo_result) {
+	print '<form id="caFindResultsForm">';
 	print '<table border="0" cellpadding="0px" cellspacing="0px" width="100%">'."\n<tr>\n";
 		$vn_display_cols = 5;
 		$vn_col = 0;
@@ -52,7 +53,11 @@ if($vo_result) {
 			$vn_padding_top = 0;
 			$vn_padding_top_bottom =  0;
 			
-			print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
+			print "<td align='center' valign='top' class='searchResultTd'><div class='".(($vo_result->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values))) ? "searchThumbBg" : "searchThumbBgNoShadow")." searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
+?>
+				<input type='checkbox' name='add_to_set_ids' value='<?php print (int)$vn_object_id; ?>' class="addItemToSetControl addItemToSetControlInThumbnails" />
+					
+<?php
 			print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 			
 			// Get thumbnail caption
@@ -93,6 +98,6 @@ if($vo_result) {
 			print "</tr>\n";
 		}
 		
-		print "\n</table>\n";
+		print "\n</table></form>\n";
 	}
 ?>

@@ -480,8 +480,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				$va_placements = $this->getAvailableBundles($this->get('table_num'));
 			}
 		}
-		ca_bundle_displays::$s_placement_list_cache[$vn_display_id] = $va_placements;
-		return $va_placements;
+		return ca_bundle_displays::$s_placement_list_cache[$vn_display_id] = $va_placements;
 	}
 	# ------------------------------------------------------
 	/**
@@ -1083,7 +1082,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 					'displayType' => DT_CHECKBOXES,
 					'width' => 10, 'height' => 1,
 					'takesLocale' => false,
-					'default' => '1',
+					'default' => '0',
 					'label' => _t('Show hierarchy?'),
 					'description' => _t('If checked the full hierarchical path will be shown.')
 				),
@@ -1518,8 +1517,6 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				$va_tmp2 = $va_tmp;
 				if ((in_array($vs_tmp = array_pop($va_tmp2), array('related')))) {
 					$va_tmp2[] = $vs_tmp;
-				} else {
-					array_push($va_tmp2, $vs_tmp);
 				}
 				$va_tmp2[] = $t_instance->primaryKey();
 				
@@ -1532,11 +1529,11 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 					foreach($va_display_texts as $vn_i => $va_text) {
 						
 						if (is_array($va_text)) {
-							if (in_array('hierarchy', $va_tmp)) {
+							if (in_array('hierarchy', $va_tmp2)) {
 								$vs_text = array_pop($va_text);
-								$vn_id = $po_result->get($va_tmp[0].'.'.$t_instance->primaryKey());
+								$vn_id = $po_result->get($va_tmp2[0].'.'.$t_instance->primaryKey());
 							} else {
-								if (in_array('related', $va_tmp)) {
+								if (in_array('related', $va_tmp2)) {
 									$vs_text = $va_text[$t_instance->getLabelDisplayField()];
 								} else {
 									if (is_array($va_text)) {
@@ -1550,7 +1547,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 							$vs_text = $va_text;
 						}
 						
-						$va_links[] = caEditorLink($pa_options['request'], $vs_text, '', $va_tmp[0], $vn_id);
+						$va_links[] = caEditorLink($pa_options['request'], $vs_text, '', $va_tmp2[0], $vn_id);
 					}
 				}
 				$vs_val = join($pa_options['delimiter'], $va_links);
@@ -1593,8 +1590,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}
 			
-			$t_locale = new ca_locales();
-			$va_locale_list = $t_locale->getLocaleList(array('index_by_code' => true));
+			$va_locale_list = ca_locales::getLocaleList(array('index_by_code' => true));
 			
 			$va_available_bundles = $t_display->getAvailableBundles();
 			foreach($va_bundles as $vn_i => $vs_bundle) {

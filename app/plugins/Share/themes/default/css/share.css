@@ -1,0 +1,67 @@
+#shareObjectInfo{
+	float:right;
+	width:300px;
+}
+#shareObjectInfo .unit{
+	margin-bottom:12px;
+}
+#shareForm{
+	float:left;
+	width:500px;
+}
+#shareForm .formLabel{
+	font-weight:bold;
+	margin: 10px 0px 3px 0px;
+}
+#shareForm input {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+}
+#shareForm input[type="text"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+}
+#shareForm input[type="file"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+}
+#shareForm textarea {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+	font-family: Arial, sans-serif;
+}
+#shareForm input[type="textarea"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:100%;
+}
+#shareForm form a{
+	text-transform:uppercase;
+	font-size:14px;
+	color: #828282;
+	font-weight:bold;
+	text-decoration:none;
+	margin: 5px 0px 0px 0px;
+}
+#shareForm form a:hover{
+	color: #000000;
+	text-decoration:none;
+}

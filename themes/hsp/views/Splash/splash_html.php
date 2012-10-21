@@ -28,7 +28,11 @@
 		</div>
 		<div id="hpTextContainer">
 			<H2>Welcome to The Historical Society of Pennsylvania's Digital Library</H2>
+			<div id="hpPurchaseLink">
+				<?php print caNavLink($this->request, _t("You can now purchase images in the Digital Library!"), "button", "", "About", "faq#purchase"); ?>
+			</div><!-- end hpPurchaseLink -->
 			<div id="hpText">
+				<a href="index.php/About/faq#purchase">Please click here to learn how to purchase images</a><p>
 				We invite you to explore the origins and diversity of Pennsylvania and the United States, from the colonial period and the nation's founding to the experience of contemporary life. Conduct research in the online catalogs, browse our exhibits and publications, and join us in preserving and understanding our heritage as a diverse and dynamic people.			
 			</div><!-- end hpText -->
 			<div id="hpBrowse">
@@ -65,6 +69,7 @@ $(document).ready(function() {
 			</div><!-- end hpFeatured -->
 			<div id="hpText">
 				<div id="title">Welcome to The Historical Society of Pennsylvania's Collection Search</div><!-- end title -->
+				<a href="index.php/About/faq#purchase">Please click here to learn how to purchase images</a><p>
 				We invite you to explore the origins and diversity of Pennsylvania and the United States, from the colonial period and the nation's founding to the experience of contemporary life. Conduct research in the online catalogs, browse our exhibits and publications, and join us in preserving and understanding our heritage as a diverse and dynamic people.
 
 				<div id="hpBrowse">

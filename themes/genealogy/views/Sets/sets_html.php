@@ -108,7 +108,7 @@
 			// Start a conversation, or reply to an existing one
 			//
 ?>
-		<div id="caClientCommunicationsContainer" class="boxBg">
+		<div id="caClientCommunicationsContainer" >
 <?php
 			if(sizeof($va_messages_by_transaction)){
 				print "<div class='reply'><a href='#' onclick='jQuery(\"#newFormContainer\").slideUp(0); jQuery(\".reply\").hide(); jQuery(\"#caClientCommunications\").slideDown(250); return false;'>"._t("Reply")."  &rsaquo;</a></div>";
@@ -120,9 +120,7 @@
 			<h2 style="display:none;" id="inquiryTitle"><?php print _t("Inquiry"); ?></h2>
 <?php	
 			}
-			if(!sizeof($va_messages_by_transaction)){
-				print "<div class='inquire' id='inquiry'><a href='#' onclick='jQuery(\"#newFormContainer\").slideUp(0); jQuery(\"#caClientCommunications\").slideDown(250); jQuery(\"#inquiry\").hide(); jQuery(\"#inquiryTitle\").show(); return false;'>"._t("Inquire about items in your lightbox")."  &rsaquo;</a></div>";
-			}
+
 ?>
 			<div id="caClientCommunications" style="display:none;">
 <?php

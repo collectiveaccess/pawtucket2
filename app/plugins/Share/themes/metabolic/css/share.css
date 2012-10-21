@@ -1,0 +1,103 @@
+#shareObjectInfo{
+	float:right;
+	width:300px;
+}
+#shareObjectInfo .scrollPane {
+	width:300px;	
+}
+#shareObjectInfo .recordTitle {
+	width: 310px;
+	overflow:hidden;
+}
+#shareObjectInfo h3{
+	font-size: .80em;
+	line-height:1em;
+	margin-bottom:0px;
+}
+#shareObjectInfo p{
+	font-size: 1em;
+  	line-height: 1em;
+  	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+  	font-weight: 300;
+  	color: #333;
+}
+#shareForm{
+	float:left;
+	width:500px;
+}
+#shareForm .formLabel{
+	margin: 10px 0px 0.3em 0px;
+	font-size: .92em;
+	line-height: 1.2em;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	color: #333;
+	padding: 0;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-weight:300;
+}
+#shareForm input {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+}
+#shareForm input[type="text"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+}
+#shareForm input[type="file"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+}
+#shareForm textarea {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:470px;
+	font-family: Arial, sans-serif;
+}
+#shareForm input[type="textarea"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #828282;
+	width:100%;
+}
+#shareForm .button{
+	margin:12px 0px 0px 0px;
+}
+#shareForm .button a{
+	text-transform:uppercase;
+	font-size:14px;
+	background-color: #FFFFFF;
+	color: #545454;
+	font-weight:bold;
+	text-decoration:none;
+	line-height:1em;
+	padding: 5px 5px 3px 5px;
+	-webkit-border-radius: 8px;
+  	-moz-border-radius: 8px;
+ 	-ms-border-radius: 8px;
+  	-o-border-radius: 8px;
+  	border-radius: 8px;
+	-moz-box-shadow: 2px 2px 5px #666;
+	-webkit-box-shadow: 2px 2px 5px #666;
+	box-shadow: 2px 2px 5px #666;
+}
+#shareForm .button a:hover{
+	color: #000000;
+	text-decoration:none;
+}

@@ -95,14 +95,13 @@ if (!$this->request->isAjax()) {
 						$t_set = new ca_sets();
 						$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'user_id' => $this->request->getUserID())));
 						if(is_array($va_sets) && (sizeof($va_sets) > 0)){
-							print "|<div id='lightboxLink'>
-										<a href='#' onclick='$(\"#lightboxList\").toggle(0, function(){
+							print "|<div id='lightboxLink'><a href='#' onclick='$(\"#lightboxList\").toggle(0, function(){
 																								if($(\"#lightboxLink\").hasClass(\"lightboxLinkActive\")) {
 																									$(\"#lightboxLink\").removeClass(\"lightboxLinkActive\");
 																								} else {
 																									$(\"#lightboxLink\").addClass(\"lightboxLinkActive\");
 																								}
-																								});')>Galleries</a>";
+																								});')><img src='".$this->request->getThemeUrlPath()."/graphics/cart.png'> Galleries</a>";
 							if(is_array($va_message_set_ids) && sizeof($va_message_set_ids)){
 								print "<img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' class='lightboxList' border='0'/> ";
 							}

@@ -1,7 +1,7 @@
 <h1>Digital Library FAQ</h1>
 <div class="textContent">
 	<div>
-		<b><i>How do I purchase an image I see in the Digital Library?</i></b><br/>
+		<a name="purchase"></a><b><i>How do I purchase an image I see in the Digital Library?</i></b><br/>
 		Digital images, archival prints, and permission to reproduce, publish, exhibit, or distribute these materials are available, for a fee, through our Rights and Reproductions department.  To purchase images, please <?php print caNavLink($this->request, "Login/Register", "", "", "LoginReg", "form"); ?> with a new or existing Digital Library account.  Once you are logged in, add images to your gallery, check off the requested services for each image, and click the “Purchase or Inquire about Items” link to submit your order.
 		<A href="#messagingvideo">This video demonstration</a> provides an example of how the communication process for most orders and queries work with the digital library.  
 	</div>
@@ -54,3 +54,5 @@
 		<A name="imagesearchvideo">Video on how to search for images</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/4rHuVb1Wpmc" frameborder="0" allowfullscreen></iframe><p>
 		<A name="imageviewervideo">Video on how to use the image viewer</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/WK_-z0eLLyc" frameborder="0" allowfullscreen></iframe><p>
 		<A name="messagingvideo">Video on how to send messages and communicate</a><br/><iframe width="420" height="315" src="http://www.youtube.com/embed/RlXRMpT8Hq8" frameborder="0" allowfullscreen></iframe><p>
+	</div>
+</div>

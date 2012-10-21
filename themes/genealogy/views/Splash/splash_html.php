@@ -76,26 +76,38 @@
 			
 		
 	</div>
-	
-	<div id="quickLinkItems">
-		<div class="quickLinkItem">			
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("random_object_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("random_object_id")), array('id' => 'splashRandomObject')); ?></td></tr></table>
-			<div class="title"><?php print _t("Random Object") ?></div>
-		</div>
-		<div class="quickLinkItem">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_viewed_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_viewed_id")), array('id' => 'splashRecentlyViewed')); ?></td></tr></table>
-			<div class="title"><?php print _t("Recently Viewed"); ?></div>
-		</div>
-		<div class="quickLinkItem" style="margin-right:0px;">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><?php print caNavLink($this->request, $this->getVar("recently_added_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_added_id")), array('id' => 'splashRecentlyAdded')); ?></td></tr></table>
-			<div class="title"><?php print _t("Recently Added"); ?></div>
-		</div>	
-	</div>
+
+
+		
+		<div id="recentlyAdded">
+		<div class="hpBrowseTitle"><?php print _t("Recently Added"); ?></div>
 <?php
-	TooltipManager::add('#splashRandomObject', $this->getVar("random_object_medium")."<br/><div class='tooltipCaption'>".$this->getVar('random_object_title')."</div>");
-	TooltipManager::add('#splashRecentlyViewed', $this->getVar("recently_viewed_medium")."<br/><div class='tooltipCaption'>".$this->getVar('recently_viewed_title')."</div>");
-	TooltipManager::add('#splashRecentlyAdded', $this->getVar("recently_added_medium")."<br/><div class='tooltipCaption'>".$this->getVar('recently_added_title')."</div>");
+		$va_recently_added_items = $t_object->getRecentlyAddedItems(9, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
+		$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
+		$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('small', 'icon','thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
+		foreach($va_recently_added_items as $vn_object_id => $va_object_info){
+			$va_object_info['title'] = $va_labels[$vn_object_id];
+			$va_object_info['media'] = $va_media[$vn_object_id];
+			$va_recently_added_objects[$vn_object_id] = $va_object_info;
+		}
+		$recent_array = $va_recently_added_objects;
+		$v_i = 0;
+		foreach ($recent_array as $id => $recent) {
+			$recent_id = $recent["object_id"];
+			
+			$v_i++;
+			if ($v_i == 3) {
+				print "<div class='recentlyAddedItem'>".caNavLink($this->request, $recent['media']['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' =>  $recent['object_id']))."</div>";  
+				$v_i = 0;
+			} else {
+			 	print "<div class='recentlyAddedItem' style='margin-right: 10px;'>".caNavLink($this->request, $recent['media']['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' =>  $recent['object_id']))."</div>"; 
+			}
+				
+		}
 ?>
+		</div>
+
+
 <script type="text/javascript">
 $(document).ready(function() {
    $('#hpFeatured').cycle({

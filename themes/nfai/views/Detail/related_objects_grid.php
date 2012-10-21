@@ -32,13 +32,15 @@
 	$vn_numCols = 2;
 	
 	$va_access_values	= $this->getVar('access_values');
-	
+	$t_object = new ca_objects();
+	$t_occ	= $this->getVar('t_item');
 ?>
 	<table border="0" cellpadding="0px" cellspacing="0px" width="100%">
 <?php
-	while(($vn_itemc < $this->getVar('items_per_page')) && ($qr_hits->nextHit())) {
+	while(($vn_itemc < 10) && ($qr_hits->nextHit())) {
 		if ($vn_c == 0) { print "<tr>\n"; }
 		$vn_object_id = $qr_hits->get('object_id');
+		$va_object_type = $qr_hits->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
 		$va_labels = $qr_hits->getDisplayLabels();
 		$vs_caption = "";
 		foreach($va_labels as $vs_label){
@@ -55,6 +57,7 @@
 		$this->setVar('object_id', $vn_object_id);
 		$this->setVar('caption_title', $vs_caption);
 		$this->setVar('caption_idno', $qr_hits->get('idno'));
+		$this->setVar('object_type', $va_object_type);
 		
 		print "</div><div class='searchThumbCaption searchThumbnail".$vn_object_id."'>".$this->render('../Results/ca_objects_result_caption_html.php')."</div>\n</td>\n";
 
