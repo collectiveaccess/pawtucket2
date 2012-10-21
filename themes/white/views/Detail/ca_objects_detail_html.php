@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * pawtucket2/themes/default/views/Detail/ca_objects_detail_html.php : 
+ * pawtucket2/themes/default/views/ca_objects_detail_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,88 +25,165 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_object = 					$this->getVar('t_item');
-	$vn_object_id = 				$t_object->get('object_id');
-	$vs_title = 					$this->getVar('label');
-	$va_related_objects = 			$this->getVar('related_objects');
+	$t_object = 			$this->getVar('t_item');
+	$vn_object_id = 		$t_object->get('object_id');
+	$vs_title = 			$this->getVar('label');
+	$va_related_objects = 	$this->getVar('related_objects');
 	
-	$t_rep = 						$this->getVar('t_primary_rep');
-	$vs_display_version =			$this->getVar('primary_rep_display_version');
+	$va_reps = $t_object->getRepresentations(array('large'));
 	
-	$t_rel_types = 					$this->getVar('t_relationship_types');
-
+	$t_rel_types = 			$this->getVar('t_relationship_types');
+	
+	$va_access_values = 				$this->getVar('access_values');
+	$t_rep = 							$this->getVar('t_primary_rep');
+	$vn_num_reps = 						$t_object->getRepresentationCount(array("return_with_access" => $va_access_values));
+	$vs_display_version =				$this->getVar('primary_rep_display_version');
+	$va_display_options =				$this->getVar('primary_rep_display_options');
+	
+	if (!$vs_default_image_version = $this->request->config->get('ca_objects_representation_default_image_display_version')) { $vs_default_image_version = 'mediumlarge'; }
 ?>	
 	<div id="detailBody">
 		<div id="pageNav">
 <?php
-			if ($this->getVar('previous_id')) {
-				print caNavLink($this->request, "&lsaquo; "._t("Previous"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'));
-			}else{
-				print "&lsaquo; "._t("Previous");
+			print ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', "<img src='".$this->request->getThemeUrlPath()."/graphics/arrow_up_grey.gif' width='11' height='10' border='0'> "._t("back to results"), '');
+
+			if (($this->getVar('next_id')) || ($this->getVar('previous_id'))) {	
+				print "&nbsp;&nbsp;&nbsp;";
 			}
-			print "&nbsp;&nbsp;&nbsp;";
-			print ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', _t("Back"), '');
-			print "&nbsp;&nbsp;&nbsp;";
+			if ($this->getVar('previous_id')) {
+				print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/arrow_grey_left.gif' width='10' height='10' border='0'> "._t("previous"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'));
+			}
+			if (($this->getVar('next_id')) && ($this->getVar('previous_id'))) {	
+				print "&nbsp;&nbsp;|&nbsp;&nbsp;";
+			}
 			if ($this->getVar('next_id') > 0) {
-				print caNavLink($this->request, _t("Next")." &rsaquo;", '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'));
-			}else{
-				print _t("Next")." &rsaquo;";
+				print caNavLink($this->request, _t("next")." <img src='".$this->request->getThemeUrlPath()."/graphics/arrow_grey_right.gif' width='10' height='10' border='0'>", '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'));
 			}
 ?>
 		</div><!-- end nav -->
 		<h1><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
-		<div id="leftCol">
+
+<div id="rightCol">
 <?php
-			if($this->request->config->get('show_add_this')){
-?>
-				<!-- AddThis Button BEGIN -->
-				<div class="unit"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0;"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end unit -->
-				<!-- AddThis Button END -->
-<?php
-			}
-			# --- identifier
-			if($this->getVar('idno')){
-				print "<div class='unit'><b>"._t("Identifier").":</b> ".$this->getVar('idno')."</div><!-- end unit -->";
-			}
+		if ($t_rep && $t_rep->getPrimaryKey()) {
 			
-			# --- attributes
-			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
-			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
-				foreach($va_attributes as $vs_attribute_code){
-					if($t_object->get("ca_objects.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_object->getAttributeLabel($vs_attribute_code).":</b> ".$t_object->get("ca_objects.{$vs_attribute_code}")."</div><!-- end unit -->";
-					}
-				}
-			}
-			# --- description
-			if($this->request->config->get('ca_objects_description_attribute')){
-				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_object->getAttributeLabel($this->request->config->get('ca_objects_description_attribute')).":</b> ".$vs_description_text."</div></div><!-- end unit -->";				
 ?>
+			<div id="objDetailImage">
+				<div id="objDetailRepScrollingViewer">
+					<div id="objDetailRepScrollingViewerImageContainer"></div>
+				</div>
+				<div id="objDetailImageNav">
+					<div >
+
+<?php
+#		if ($vn_num_reps > 1) {
+#			print "(Click to view ".($vn_num_reps - 1)." additional images)";
+#		}
+
+				if (sizeof($va_reps) > 1) {
+?>
+					<a href="#" onclick="caObjDetailRepScroller.scrollToPreviousImage(); return false;" id="previousImage"><?php print _t("< previous"); ?></a>
+					&nbsp;<span id='objDetailRepScrollingViewerCounter'></span>&nbsp;
+					<a href="#" onclick="caObjDetailRepScroller.scrollToNextImage(); return false;" id="nextImage"><?php print _t("next >"); ?></a>
+<?php
+				}
+				
+				
+?>				
+				</div>
+
 					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
+<?php
+foreach($va_reps as $va_rep) {
+       $va_imgs[] = "{url:'".$va_rep['urls']['large']."', width: ".$va_rep['info']['large']['WIDTH'].", height: ".
+       $va_rep['info']['large']['HEIGHT'].", link: '#', onclick: 'caMediaPanel.showPanel(\\'".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\\');', onclickZoom:'', rel: '#objectInfoRepresentationOverlay'}";
+}
+?>
+
+						var caObjDetailRepScroller = caUI.initImageScroller([<?php print join(",", $va_imgs); ?>], 'objDetailRepScrollingViewerImageContainer', {
+								containerWidth: 700, containerHeight: 600,
+								imageCounterID: 'objDetailRepScrollingViewerCounter',
+								scrollingImageClass: 'objDetailRepScrollerImage',
+								scrollingImagePrefixID: 'objDetailRep'
+								
 						});
 					</script>
+					<div id="objectInfoRepresentationOverlay"> 
+						<div id="objectInfoRepresentationOverlayContentContainer">
+							
+						</div>
+					</div>
+			</div><!-- end objDetailImage -->
 <?php
-				}
+		}
+?>
+		</div><!-- end rightCol -->
+		
+		
+		<div id="leftCol" ><div class="primaryinfo">		
+<?php
+			# --- identifier
+			if($vs_idno = $t_object->get('ca_objects.idno')){
+				print "<div class='unit'><h2>"._t("Title")."</h2> ".$vs_title."</div><!-- end unit -->";
+				print "<div class='unit'><h2>"._t("Date")."</h2> ".$t_object->get('ca_objects.dates.dates_value')."</div><!-- end unit -->";
 			}
+			if($vs_materials = $t_object->get('ca_objects.materials')){
+				print "<div class='unit'><h2>"._t("Materials")."</h2> ".$vs_materials."</div><!-- end unit -->";
+			}
+			if($vs_image_format = $t_object->get('ca_objects.image_format')){
+				print "<div class='unit'><h2>"._t("Image Format")."</h2> ".$vs_image_format."</div><!-- end unit -->";
+			}
+			if($vs_description = $t_object->get('ca_objects.description')){
+				print "<div class='unit'><h2>"._t("Description")."</h2> ".$vs_description."</div><!-- end unit -->";
+			}
+			
+?>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#description').expander({
+				slicePoint: 300,
+				expandText: '<?php print _t('[more]'); ?>',
+				userCollapse: false
+			});
+		});
+	</script>
+	
+	</div><!-- end primaryInfo -->
+	<div class="relatedinfo">
+<?php
+			#}
 
 			# --- entities
-			$va_entities = array();
-			if(sizeof($this->getVar('entities'))){	
+			$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			if(sizeof($va_entities)){	
 ?>
-				<div class="unit"><H2><?php print _t("Related")." ".((sizeof($this->getVar('entities') > 1)) ? _t("Entities") : _t("Entity")); ?></H2>
+				<div class="relatedinfo"><div class="unit">
 <?php
-				$va_entity_rel_types = $t_rel_types->getRelationshipInfo('ca_objects_x_entities');
-				foreach($this->getVar('entities') as $va_entity) {
+				
+				$va_entities_by_rel_type = array();
+				foreach($va_entities as $va_entity) {
+					if (!is_array($va_entities_by_rel_type[$va_entity['relationship_typename']])) { $va_entities_by_rel_type[$va_entity['relationship_typename']] = array(); }
+					array_push($va_entities_by_rel_type[$va_entity['relationship_typename']], $va_entity);
+				}
+				
+				// Loop through types
+				foreach($va_entities_by_rel_type as $vs_type => $va_entities) {
+					// Print type name
+					print "<div class=\"unit\"><h2>".unicode_ucfirst($vs_type)."</h2>\n";
+					
+					// Print entities for current type
+					foreach($va_entities as $vn_index => $va_entity) {
 ?>
-					<div><?php print (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".unicode_ucfirst($va_entity_rel_types[$va_entity['relationship_type_id']]['typename']).")"; ?></div>
+					<div><?php print (($this->request->config->get('allow_detail_for_ca_entities')) ? 
+						caNavLink($this->request, $va_entity['label'], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) 
+						: 
+						caNavLink($this->request, $va_entity['label'], '', '', 'Search', 'Index', array('search' => '"'.$va_entity['label'].'"'))); 
+					
+					?></div>
 <?php					
+					}
+					print "</div>";
 				}
 ?>
 				</div><!-- end unit -->
@@ -114,73 +191,37 @@
 			}
 			
 			# --- occurrences
-			$va_occurrences = array();
-			if(sizeof($this->getVar('occurrences'))){
+			$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			if(sizeof($va_occurrences)){
 				$t_occ = new ca_occurrences();
 				$va_item_types = $t_occ->getTypeList();
-				foreach($this->getVar('occurrences') as $va_occurrence) {
+				$va_occurrences_by_type = array();
+				foreach($va_occurrences as $va_occurrence) {
 					$t_occ->load($va_occurrence['occurrence_id']);
-					$va_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = array("label" => $va_occurrence['label'], "date" => $t_occ->getAttributesForDisplay("dates", '^dates_value'), "relationship_type_id" => $va_occurrence['relationship_type_id']);
+					$va_occurrences_by_type[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = array("label" => $va_occurrence['label'], "date" => $t_occ->getAttributesForDisplay("dates", '^dates_value'), "relationship_typename" => $va_occurrence['relationship_typename']);
 				}
 				
-				$va_occ_rel_types = $t_rel_types->getRelationshipInfo('ca_objects_x_occurrences');
-				foreach($va_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
+				foreach($va_occurrences_by_type as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
 						<div class="unit"><H2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></H2>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
 ?>
-						<div><?php print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".unicode_ucfirst($va_occ_rel_types[$va_info['relationship_type_id']]['typename']).")"; ?></div>
+						<div><?php print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".unicode_ucfirst($va_info['relationship_typename']).")"; ?><br /></div>
 <?php					
 					}
 					print "</div><!-- end unit -->";
 				}
 			}
-			# --- places
-			if($this->getVar('places')){
-				print "<div class='unit'><H2>"._t("Related Place").((sizeof($this->getVar('places')) > 1) ? "s" : "")."</H2>";
-				$va_place_rel_types = $t_rel_types->getRelationshipInfo('ca_objects_x_places');
-				foreach($this->getVar('places') as $va_place_info){
-					print "<div>";
-					print (($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".unicode_ucfirst($va_place_rel_types[$va_place_info['relationship_type_id']]['typename']).")";
-					print "</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- collections
-			if($this->getVar('collections')){
-				print "<div class='unit'><H2>"._t("Related Collection").((sizeof($this->getVar('collections')) > 1) ? "s" : "")."</H2>";
-				$va_collection_rel_types = $t_rel_types->getRelationshipInfo('ca_objects_x_collections');
-				foreach($this->getVar('collections') as $va_collection_info){
-					print "<div>";
-					print (($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." (".unicode_ucfirst($va_collection_rel_types[$va_collection_info['relationship_type_id']]['typename']).")";
-					print "</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-		
-
 			
 			# --- vocabulary terms
-			$va_terms = array();
-			if(sizeof($this->getVar('terms'))){
-				foreach($this->getVar('terms') as $va_term) {
-					$va_terms[$va_term['item_id']] = $va_term['name_singular'];
+			$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			if(sizeof($va_terms) > 0){
+				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
+				foreach($va_terms as $va_term_info){
+					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
 				}
-				
-				if (sizeof($va_terms)) {
-?>
-					<div class="unit"><H2><?php print _t('Subjects'); ?></H2>
-<?php				
-					foreach($va_terms as $vn_item_id => $vs_term) {
-?>
-						<div><?php print caNavLink($this->request, $vs_term, '', '', 'Search', 'Index', array('search' => $vs_term)); ?></div>
-<?php				
-					}
-?>
-					</div><!-- end unit -->
-<?php
-				}
+				print "</div><!-- end unit -->";
 			}
 			
 			# --- hierarchy info
@@ -191,26 +232,28 @@
 				print "<div class='unit'><b>"._t("Parts")."</b>: ".caNavLink($this->request, $this->getVar('num_children')." parts of this ".$this->getVar('object_type'), '', '', 'Search', 'Search', array('search' => "children:".$vn_object_id))."</div>";
 			}
 			
-			
 			# --- output related object images as links
+			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if (sizeof($va_related_objects)) {
 				print "<div class='unit'><h2>"._t("Related Objects")."</h2>";
 				print "<table border='0' cellspacing='0' cellpadding='0' width='100%' id='objDetailRelObjects'>";
 				$col = 0;
 				$vn_numCols = 4;
-				foreach($va_related_objects as $vn_rel_object_id => $va_info){
+				foreach($va_related_objects as $vn_rel_id => $va_info){
+					$t_rel_object = new ca_objects($va_info["object_id"]);
+					$va_reps = $t_rel_object->getPrimaryRepresentation(array('icon', 'small'), null, array('return_with_access' => $va_access_values));
 					if($col == 0){
 						print "<tr>";
 					}
-					print "<td align='center' valign='middle' class='imageIcon icon".$vn_rel_object_id."'>";
-					print caNavLink($this->request, $va_info['reps']['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_rel_object_id));
+					print "<td align='center' valign='middle' class='imageIcon icon".$va_info["object_id"]."'>";
+					print caNavLink($this->request, $va_reps['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_info["object_id"]));
 					
 					// set view vars for tooltip
-					$this->setVar('tooltip_representation', $va_info['reps']['tags']['small']);
+					$this->setVar('tooltip_representation', $va_reps['tags']['small']);
 					$this->setVar('tooltip_title', $va_info['label']);
 					$this->setVar('tooltip_idno', $va_info["idno"]);
 					TooltipManager::add(
-						".icon{$vn_rel_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
+						".icon".$va_info["object_id"], $this->render('../Results/ca_objects_result_tooltip_html.php')
 					);
 					
 					print "</td>";
@@ -227,7 +270,7 @@
 					while($col <= $vn_numCols){
 						if($col < $vn_numCols){
 							print "<td><!-- empty --></td>";
-						}
+						} 
 						$col++;
 						if($col < $vn_numCols){
 							print "<td align='center'><!-- empty --></td>";
@@ -236,104 +279,9 @@
 				}
 				print "</table></div><!-- end unit -->";
 			}
-?>
-		</div><!-- end leftCol-->
-		<div id="rightCol">
-<?php
-		if ($t_rep && $t_rep->getPrimaryKey()) {
-?>
-			<div id="objDetailImage">
-<?php
-			print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
-?>
-			</div><!-- end objDetailImage -->
-			<div id="objDetailImageNav">
-				<div style="float:right;">
-<?php
-					if (!$this->request->config->get('dont_allow_registration_and_login')) {
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("Add to Set +"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id), array('style' => 'margin-right:20px;'));
-						}else{
-							print caNavLink($this->request, _t("Add to Set +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets'), array('style' => 'margin-right:20px;'));
-						}
-					}
-					
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
-
-?>
-				</div>			
-			</div><!-- end objDetailImageNav -->
-<?php
-		}
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
-		# --- user data --- comments - ranking - tagging
-?>			
-		<div id="objUserData">
-<?php
-			if($this->getVar("ranking")){
-?>
-				<h2><?php print _t("Average User Ranking"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/user_ranking_<?php print $this->getVar("ranking"); ?>.gif" width="104" height="15" border="0" style="margin-left: 20px;"></h2>
 			
-<?php
-			}
-			$va_comments = $this->getVar("comments");
-			if(is_array($va_comments) && (sizeof($va_comments) > 0)){
-				if($this->getVar("ranking")){
 ?>
-					<div class="divide" style="margin:10px 0px 10px 0px;"><!-- empty --></div>
-<?php
-				}
-?>
-				<h2><div id="numComments">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div><?php print _t("User Comments"); ?></h2>
-<?php
-				foreach($va_comments as $va_comment){
-?>
-					<div class="comment">
-						<?php print $va_comment["comment"]; ?>
-					</div>
-					<div class="byLine">
-						<?php print $va_comment["author"].", ".$va_comment["date"]; ?>
-					</div>
-<?php
-				}
-			}else{
-				$vs_login_message = _t("Login/register to be the first to rank, tag and comment on this object!");
-			}
-		if($this->request->isLoggedIn()){
-			if($this->getVar("ranking") || (is_array($va_comments) && (sizeof($va_comments) > 0))){
-?>
-				<div class="divide" style="margin: 0px 0px 10px 0px;"><!-- empty --></div>
-<?php
-			}
-?>
-			<h2><?php print _t("Add your rank, tags and comment"); ?></h2>
-			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id)); ?>" name="comment">
-				<div class="formLabel">Rank
-					<select name="rank">
-						<option value="">-</option>
-						<option value="1">1</option>
-						<option value="2">2</option>
-						<option value="3">3</option>
-						<option value="4">4</option>
-						<option value="5">5</option>
-					</select>
-				</div>
-				<div class="formLabel"><?php print _t("Tags (separated by commas)"); ?></div>
-				<input type="text" name="tags">
-				<div class="formLabel"><?php print _t("Comment"); ?></div>
-				<textarea name="comment" rows="5"></textarea>
-				<br><a href="#" name="commentSubmit" onclick="document.forms.comment.submit(); return false;"><?php print _t("Save"); ?></a>
-			</form>
-<?php
-		}else{
-			if (!$this->request->config->get('dont_allow_registration_and_login')) {
-				print "<p>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to rank, tag and comment on this item.")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail'))."</p>";
-			}
-		}
-?>		
-		</div><!-- end objUserData-->
-<?php
-	}
-?>
-		</div><!-- end rightCol -->
+			</div><!-- end relatedinfo-->
+		</div><!-- end leftCol--> 
+		
 	</div><!-- end detailBody -->
