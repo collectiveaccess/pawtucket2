@@ -52,7 +52,8 @@
 			4 => array("start" =>1940, "end" => 1959, "label" => "1940 - 1960", "displayAllYears" => 1),
 			5 => array("start" =>1960, "end" => 1979, "label" => "1960 - 1980", "displayAllYears" => 1),
 			6 => array("start" =>1980, "end" => 1999, "label" => "1980 - 2000", "displayAllYears" => 1),
-			7 => array("start" =>2000, "end" => 2050, "label" => "2000 - present", "displayAllYears" => 1)
+			8 => array("start" =>2000, "end" => 2010, "label" => "2000 - 2010", "displayAllYears" => 1),
+			7 => array("start" =>2010, "end" => 2060, "label" => "2010 - present", "displayAllYears" => 1)
 		);
 		
 		private $opa_access_values;
@@ -216,7 +217,7 @@
 // 			$va_period_data["places"] = $qr_places;
 			
 			$o_obj_search = new ObjectSearch();
-			$qr_objects = $o_obj_search->search("ca_objects.creation_date:\"".$vn_y."\"", array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$qr_objects = $o_obj_search->search("ca_objects.creation_date:\"".$vn_y."\" AND (ca_object.object_status:349 OR ca_object.object_status:347 OR ca_object.object_status:193)", array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_period_data["objects"] = $qr_objects;
 			
 			$va_object_ids = array();
@@ -265,7 +266,7 @@
  			$vn_y = $this->ops_date_range;
 			$va_period_data = array();
 			$o_obj_search_refine = new ObjectSearch();
-			$qr_objects_refine = $o_obj_search_refine->search("ca_objects.creation_date:\"".$vn_y."\"".$vs_refine, array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
+			$qr_objects_refine = $o_obj_search_refine->search("ca_objects.creation_date:\"".$vn_y."\" AND (ca_object.object_status:349 OR ca_object.object_status:347 OR ca_object.object_status:193)".$vs_refine, array("sort" => "ca_objects.creation_date", "no_cache" => !$this->opb_cache_searches, "checkAccess" => $this->opa_access_values));
 			$va_object_ids = array();
 			while($qr_objects_refine->nextHit()){
 				$va_object_ids[] = $qr_objects_refine->get("ca_objects.object_id");
@@ -275,7 +276,6 @@
 			$this->opo_result_context->setResultList($va_object_ids);
 			$this->opo_result_context->setParameter("period", $this->opn_period);
 			$this->opo_result_context->saveContext();
-			#print "ca_objects.creation_date:\"".$vn_y."\"".$vs_refine;
 			$va_period_data["objects"] = $qr_objects_refine;
 			$this->view->setVar('period_data', $va_period_data);			
 			$this->render('chronology_object_results_html.php');
