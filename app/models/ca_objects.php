@@ -1207,7 +1207,7 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 		$o_db = $this->getDb();
 		
 		$qr_res = $o_db->query("
-			SELECT oxor.object_id, orep.media
+			SELECT oxor.object_id, orep.media, orep.representation_id
 			FROM ca_object_representations orep
 			INNER JOIN ca_objects_x_object_representations AS oxor ON oxor.representation_id = orep.representation_id
 			WHERE
@@ -1218,11 +1218,14 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 		while($qr_res->nextRow()) {
 			$va_media_tags = array();
 			foreach($pa_versions as $vs_version) {
-				$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
-				$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
-				$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
+				$vn_object_id = $qr_res->get('object_id');
+				
+				$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version, array_merge($pa_options, array('id' => ($pa_options['id'] ? $pa_options['id'] : 'video_player').$vn_object_id)));
+				$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version, null, $pa_options);
+				$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version, $pa_options);
+				$va_media_tags['representation_id'] = $qr_res->get('representation_id');
 			}
-			$va_media[$qr_res->get('object_id')] = $va_media_tags;
+			$va_media[$vn_object_id] = $va_media_tags;
 		}
 		return $va_media;
 	}
