@@ -47,9 +47,20 @@
 		$vn_col = 1;
 		while($qr_hits->nextHit()){
 			$vn_object_id = $qr_hits->get('object_id');
-			if($vn_object_id != $vn_exclude_object_id){
+			if(($vn_object_id != $vn_exclude_object_id) && ($qr_hits->get("ca_objects.object_status") != 348)){
 				$vs_caption = join("; ", $qr_hits->getDisplayLabels());
-				${"va_col".$vn_col}[] = caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'relatedGrid', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')), array("id" => "searchThumbnail".$qr_hits->get('ca_objects.object_id')));
+				$vs_vaga_class = "";
+				if($qr_hits->get("object_status") == 349){
+					$vs_vaga_class = " vagaDisclaimer";
+					$vn_vaga_disclaimer_output = 1;
+				}
+				$va_media_info_orig = $qr_hits->getMediaInfo('ca_object_representations.media', 'original');
+				$va_media_info_grid = $qr_hits->getMediaInfo('ca_object_representations.media', 'relatedGrid');
+				$vs_icon = "";
+				if(caGetMediaClass($va_media_info_orig["MIMETYPE"]) == "video"){
+					$vs_icon = "<span class='videoIconRelatedGrid' style='width:".$va_media_info_grid["WIDTH"]."px; height:".$va_media_info_grid["HEIGHT"]."px;'><!-- empty --></span>";
+				}
+				${"va_col".$vn_col}[] = "<span style='position:relative;'>".caNavLink($this->request, $vs_icon.$qr_hits->getMediaTag('ca_object_representations.media', 'relatedGrid', array('checkAccess' => $va_access_values)), $vs_vaga_class, 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')), array("id" => "searchThumbnail".$qr_hits->get('ca_objects.object_id')))."</span>";
 					
 				// set view vars for tooltip
 				//$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
