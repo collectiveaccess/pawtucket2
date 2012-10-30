@@ -252,7 +252,10 @@
 			}			
 			if($va_lauren = $t_object->get('ca_objects.lBSelected.selected2', array('convertCodesToDisplayText' => true))){
 				print "<h3>"._t("Lauren Selection")."</h3><p>".$va_lauren."</p><!-- end unit -->";
-			}			
+			}
+			if($va_formatted_citation = $t_object->get('ca_objects.formatted_citation')){
+				print "<h3>"._t("Citation")."</h3><p>".$va_formatted_citation."</p><!-- end unit -->";
+			}						
 			# --- parent hierarchy info
 			if($t_object->get('parent_id')){
 				print "<div class='unit'><b>"._t("Part Of")."</b>: ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
@@ -486,6 +489,8 @@
 <?php
 				if (($this->request->isLoggedIn()) && ($this->request->config->get('can_download_media') && $t_rep && $t_rep->getPrimaryKey())) {
 					print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => original)); 
+				} else {
+					print caNavLink($this->request, _t("+ Download Media"), '', '', 'LoginReg', 'form');
 				}
 				
 				if ($t_rep && $t_rep->getPrimaryKey()) {
@@ -497,6 +502,12 @@
 				</div>			
 			</div><!-- end objDetailImageNav -->
 <?php
+			if($vn_num_reps > 1) {
+				$thumb_rep = $t_object->getRepresentations(array('widethumbnail'));
+				foreach (array_slice($thumb_rep, 1) as $id => $thumb) {
+					print "<div class='relatedThumbBg' style='float:left; margin-left:0px; margin-right:14px;'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $thumb['representation_id']))."\"); return false;' >".$thumb['tags']['widethumbnail']."</a></div>";
+				}
+			}
 		}
 		
 if (!$this->request->config->get('dont_allow_comments')) {
