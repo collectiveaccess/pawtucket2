@@ -5,26 +5,26 @@
 	$pn_previous_id = $this->getVar('previous_id');
 	$va_action = $this->getVar('action');
 	
-	$vs_thumbnail = "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/imagePlaceholder.jpg' border='0'>";
+	$vs_thumbnail = "<img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/imagePlaceholder.jpg' border='0'>";
 
 ?>
 	<div class="siloMoreInfoContent"><div class="siloPrevious">
 <?php
 		if($pn_previous_id){
-			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first - 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_previous_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
-			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToPreviousAction({$pn_silo_id}, {$pn_previous_id}); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
+			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first - 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_previous_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
+			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction', array('action_id' => $pn_previous_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToPreviousAction({$pn_silo_id}, {$pn_previous_id}); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowLeftChronoSmall.png' border='0'></a>";
 		}else{
-			print "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowLeftChronoSmallOff.png' border='0'>";
+			print "<img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowLeftChronoSmallOff.png' border='0'>";
 		}
 ?>
 	</div><!-- end siloPrevious -->
 	<div class="siloNext">
 <?php
 		if($pn_next_id){
-			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first + 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_next_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
-			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToNextAction({$pn_silo_id}, {$pn_next_id}); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
+			#print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").scroll(jQuery(\"#silo".$pn_silo_id."\").data(\"jcarousel\").first + 1, true); $(\"#silo".$pn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$pn_next_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
+			print "<a href='#' onclick='jQuery(\"#siloMoreInfo".$pn_silo_id."\").load(\"".caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction', array('action_id' => $pn_next_id, 'silo_id' => $pn_silo_id))."\"); scrollTimelineToNextAction({$pn_silo_id}, {$pn_next_id}); return false;'><img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowRightChronoSmall.png' border='0'></a>";
 		}else{
-			print "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/arrowRightChronoSmallOff.png' border='0'>";
+			print "<img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/arrowRightChronoSmallOff.png' border='0'>";
 		}
 ?>
 	</div><!-- end siloNext -->
