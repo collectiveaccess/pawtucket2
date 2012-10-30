@@ -76,10 +76,20 @@ if (!$this->request->isAjax()) {
 		$va_portraits = $t_entity->get("ca_objects", array("restrictToRelationshipTypes" => array("portrait"), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
 		foreach($va_portraits as $va_portrait){
 			$t_object = new ca_objects($va_portrait["object_id"]);
-			$this->setVar('exclude_object_id', $va_portrait["object_id"]);
-			if($va_portrait = $t_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values))){
-				print $va_portrait['tags']['small']."<br/>";
-				break;
+			if($t_object->get("object_status") != 348){
+				$this->setVar('exclude_object_id', $va_portrait["object_id"]);
+				if($va_portrait = $t_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values))){
+					if($t_object->get("object_status") == 349){
+						$vs_vaga_class = " vagaDisclaimer";
+					}
+					print "<span class='portraitImgTT".$vs_vaga_class."'>".$va_portrait['tags']['small']."</span><br/>";
+					if($t_object->get("ca_objects.caption")){
+						TooltipManager::add(
+							".portraitImgTT", "<div style='width:300px;'>".$t_object->get("ca_objects.caption").(($vs_vaga_class) ? "Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a>" : "")."</div>"
+						);					
+					}
+					break;
+				}
 			}
 		}
 		if($t_entity->get("nationality")){
@@ -198,17 +208,96 @@ if (!$this->request->isAjax()) {
 		}
 	}				
 ?>
+<div class="clear padded"></div>
+<div id="ad_comments">
+<?php
+	$va_comments = $this->getVar("comments");
+	if(is_array($va_comments) && (sizeof($va_comments) > 0)){
+?>
+	<div id="ad_comments_list"><div class="ad_comments_list_bg">
+<?php
+		# --- user data --- comments --- images
+?>
+			<div id="numComments" style="float:right;">(<?php print sizeof($va_comments)." ".((sizeof($va_comments) > 1) ? _t("comments") : _t("comment")); ?>)</div>
+			<div class="listhead caps"><?php print _t("User Comments"); ?></div>
+<?php
+			foreach($va_comments as $va_comment){
+				if($va_comment["media1"]){
+?>
+					<div class="commentImage" id="commentMedia<?php print $va_comment["comment_id"]; ?>">
+						<?php print $va_comment["media1"]["tiny"]["TAG"]; ?>							
+					</div><!-- end commentImage -->
+<?php
+					TooltipManager::add(
+						"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
+					);
+				}
+				if($va_comment["comment"]){
+?>					
+				<div class="comment">
+					<?php print $va_comment["comment"]; ?>
+				</div>
+<?php
+				}
+?>					
+				<div class="byLine">
+					<?php print $va_comment["author"].", ".$va_comment["date"]; ?>
+				</div>
+<?php
+			}
+?>
+	</div></div>
+<?php
+	}
+?>
+	<div id="ad_comments_form">
+<?php
+	if($this->request->isLoggedIn()){
+?>
 
+		<div class="ad_comments_form_bg">
+			<div class="listhead caps"><?php print _t("Contribute your story to the community archive"); ?></div>
+			<form method="post" action="<?php print caNavUrl($this->request, 'Detail', 'Entity', 'saveCommentRanking', array('entity_id' => $vn_entity_id)); ?>" name="comment" enctype='multipart/form-data'>
+				<br/><?php print _t("Media"); ?><br/>
+				<input type="file" name="media1"><br/><br/>
+				<?php print _t("Comment"); ?><br/>
+				<textarea name="comment" rows="5"></textarea><br/>
+				<br><a href="#" name="commentSubmit" onclick="document.forms.comment.submit(); return false;"><?php print _t("Save"); ?> &raquo;</a>
+			</form>
+		</div>
+<?php
+	}else{
+		print "<div class='listhead'>".caNavLink($this->request, (($vs_login_message) ? $vs_login_message : _t("Please login/register to share your story about this artist")), "", "", "LoginReg", "form", array('site_last_page' => 'ObjectDetail', 'object_id' => $vn_object_id))."</div>";
+	}
+?>
+	</div>
+</div>
 </div><!--end ad_content-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	<script type="text/javascript">
 		// Initialize the plugin
 		$(document).ready(function () {
 			$("div.ad_col").smoothDivScroll({
-				visibleHotSpotBackgrounds: "hover"
+				visibleHotSpotBackgrounds: "always",
+				hotSpotScrollingInterval: 45
 			});
 		
 			$("div#ad_maincontentCol1").smoothDivScroll({
-				visibleHotSpotBackgrounds: "hover"
+				visibleHotSpotBackgrounds: "always",
+				hotSpotScrollingInterval: 45
 			});
 		});
 	</script>

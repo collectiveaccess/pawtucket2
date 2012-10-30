@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Results/ca_objects_result_tooltip_html.php :
+ * themes/default/views/ca_collections_search_no_results_html.php :
  * 		thumbnail search results
  * ----------------------------------------------------------------------
  * CollectiveAccess
@@ -8,7 +8,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2010 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,31 +26,7 @@
  *
  * ----------------------------------------------------------------------
  */
+
+
+	print "<p>"._t("To search for collections, simply type in the words that best describe what you are looking for and click on the \"search\" button. By default, the search engine will return only matches that contain all of the words in your search. The more words entered, the more restrictive the search.")."</p>";
 ?>
-<div class="tooltipImage">
-<?php
-	if(!$this->getVar('tooltip_no_image')){
-		print $this->getVar('tooltip_representation');
-	}
-?>
-</div>
-<div class="tooltipCaption">
-<?php
-	if($this->getVar('tooltip_title')){
-		print "<div><b>TITLE:</b> ";
-		print (unicode_strlen($this->getVar('tooltip_title')) > 200) ? substr(strip_tags($this->getVar('tooltip_title')), '0', '200')."..." : $this->getVar('tooltip_title');
-		print "</div>";
-	}
-	if($this->getVar('tooltip_idno')){
-		print "<div><b>ID:</b> ";
-		print $this->getVar('tooltip_idno');
-		print "</div>";
-	}	
-	if($this->getVar('tooltip_caption')){
-		print "<div>".$this->getVar('tooltip_caption')."<br/><br/></div>";
-	}
-	if($this->getVar('tooltip_vaga')){
-		print "<div>Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a></div>";
-	}
-?>
-</div>
