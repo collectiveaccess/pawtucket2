@@ -39,7 +39,12 @@
 			if($vs_image = $q_objects->getMediaTag('ca_object_representations.media', 'chronoGrid', array('checkAccess' => $va_access_values))){
 				$vn_i++;
 				$vs_link = "";
-				$vs_link = caNavLink($this->request, $vs_image, "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."<br/>";
+				$vs_vaga_class = "";
+				if($q_objects->get("ca_objects.object_status") == 349){
+					$vs_vaga_class = "vagaDisclaimer";
+					$vn_vaga_disclaimer_output = 1;
+				}
+				$vs_link = caNavLink($this->request, $vs_image, $vs_vaga_class, "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."<br/>";
 				if($vs_date != $q_objects->get("ca_objects.creation_date")){
 					$vs_date = $q_objects->get("ca_objects.creation_date");
 					$vs_link = $vs_date."<br/>".$vs_link;
@@ -54,7 +59,11 @@
 		}
 		print "<div class='col'>".$vs_col1."</div>";
 		print "<div class='col'>".$vs_col2."</div>";
-
+		if($vn_vaga_disclaimer_output){
+			TooltipManager::add(
+				".vagaDisclaimer", "<div style='width:250px;'>Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a></div>"
+			);
+		}
 	}
 ?>
 	<div style='clear:both;'><!-- empty --></div></div></div><!-- end chron_thumbScroll -->

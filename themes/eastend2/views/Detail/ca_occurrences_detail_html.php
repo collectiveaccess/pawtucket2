@@ -86,7 +86,7 @@
 			<div id="ex_detail_info">
 <?php
 			$vn_descriptionOutput = 0;
-			if($vs_description_text = $t_occurrence->get("ca_occurrences.description")){
+			if($vs_description_text = trim($t_occurrence->get("ca_occurrences.description"))){
 				$vn_descriptionOutput = 1;
 				print "<div id='ex_description'><div class='caption'>".$vs_description_text."</div></div>";
 ?>
@@ -94,7 +94,7 @@
 					// Initialize the plugin
 					$(document).ready(function () {
 						$("div.#ex_description").smoothDivScroll({
-							visibleHotSpotBackgrounds: "hover",
+							visibleHotSpotBackgrounds: "always",
 							hotSpotScrollingInterval: 45
 						});
 					});
@@ -130,7 +130,7 @@
 						// Initialize the plugin
 						$(document).ready(function () {
 							$("div.ex_related_list").smoothDivScroll({
-								visibleHotSpotBackgrounds: "hover",
+								visibleHotSpotBackgrounds: "always",
 								hotSpotScrollingInterval: 45
 							});
 						});

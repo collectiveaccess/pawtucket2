@@ -30,7 +30,7 @@
 <script type="text/javascript">
 $(document).ready(function() {	
 	//load a browse by type = individual to populate page on load
-	jQuery("#contentBox").load("<?php print caNavUrl($this->request, '', 'Browse', 'clearAndAddCriteria', array('facet' => 'type_facet', 'id' => $vn_individual)); ?>");
+	jQuery("#contentBox").load("<?php print caNavUrl($this->request, 'eastend', 'ArtistBrowser', 'clearAndAddCriteria', array('facet' => 'type_facet', 'id' => $vn_individual)); ?>");
 });
 </script>
 
