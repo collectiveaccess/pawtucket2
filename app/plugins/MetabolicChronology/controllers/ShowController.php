@@ -49,19 +49,19 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			
  			$this->ops_theme = __CA_THEME__;																	// get current theme
- 			if(!is_dir(__CA_APP_DIR__.'/plugins/Chronology/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
+ 			if(!is_dir(__CA_APP_DIR__.'/plugins/MetabolicChronology/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
  				$this->ops_theme = 'default';
  			}
- 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/Chronology/themes/'.$this->ops_theme.'/views'));
+ 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/MetabolicChronology/themes/'.$this->ops_theme.'/views'));
  			
-			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/Chronology/conf/Chronology.conf');
+			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/MetabolicChronology/conf/Chronology.conf');
  			
- 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('Chronology plugin is not enabled')); }
+ 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('Metabolic Chronology plugin is not enabled')); }
  			
  			$this->_initView($pa_options);
- 			$this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'Chronology');
+ 			$this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'MetabolicChronology');
  			
- 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/Chronology/themes/".$this->ops_theme."/css/chronology.css",'text/css');
+ 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/MetabolicChronology/themes/".$this->ops_theme."/css/chronology.css",'text/css');
  			JavascriptLoadManager::register('jcarousel');
  			JavascriptLoadManager::register('maps');
  			
@@ -87,7 +87,7 @@
  		 *
  		 */
  		public function Index() {
- 			$o_cache = caGetCacheObject('chronology', 3600);
+ 			$o_cache = caGetCacheObject('MetabolicChronology', 3600);
  		
  			if ((!is_array($va_silos = $o_cache->load('silo_list')) || $this->request->getParameter('nocache', pInteger)) || !$this->opo_plugin_config->get('doCaching')) {
 				$va_access_values = caGetUserAccessValues($this->request);
@@ -255,7 +255,7 @@
  			$va_action["date"] = $t_action->get('date', array('template' => "^dates_value"));
  			
  			# --- get next and previous ids
- 			$o_cache = caGetCacheObject('chronology', 3600);
+ 			$o_cache = caGetCacheObject('MetabolicChronology', 3600);
  			$va_silos = $o_cache->load('silo_list');
  			$va_silo_actionmap = $va_silos[$pn_silo_id]['actionmap'];
  			
@@ -325,7 +325,7 @@
  		 *
  		 */
  		protected function _initView($pa_options=null) {
- 			$this->view->setVar('graphicsPath', $this->request->getBaseUrlPath()."/app/plugins/Chronology/themes/".$this->ops_theme."/graphics");
+ 			$this->view->setVar('graphicsPath', $this->request->getBaseUrlPath()."/app/plugins/MetabolicChronology/themes/".$this->ops_theme."/graphics");
  			$this->view->setVar('viewPath', array_shift($this->view->getViewPaths()));
  		}
  		# -------------------------------------------------------

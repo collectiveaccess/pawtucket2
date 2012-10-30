@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * ChronologyPlugin.php : 
+ * MetabolicChronologyPlugin.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	class ChronologyPlugin extends BaseApplicationPlugin {
+	class MetabolicChronologyPlugin extends BaseApplicationPlugin {
 		# -------------------------------------------------------
 		public function __construct($ps_plugin_path) {
 			$this->description = _t('Adds chronology display functionality to Pawtucket');
@@ -56,7 +56,7 @@
 				$va_menu = array(
 					'displayName' => _t('Chronology'),
 					'default' => array(
-						'module' => 'Chronology',
+						'module' => 'MetabolicChronology',
 						'controller' => 'Show',
 						'action' => 'Index'
 					),

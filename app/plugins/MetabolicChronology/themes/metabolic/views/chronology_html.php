@@ -27,7 +27,7 @@
  */
  
 	$va_silos = $this->getVar('silos');
-	$vs_thumbnail = "<img src='".__CA_URL_ROOT__."/app/plugins/Chronology/themes/metabolic/graphics/imagePlaceholder.jpg' border='0'>";
+	$vs_thumbnail = "<img src='".__CA_URL_ROOT__."/app/plugins/MetabolicChronology/themes/metabolic/graphics/imagePlaceholder.jpg' border='0'>";
 ?>
 <div id="chronology">
 <?php
@@ -96,12 +96,12 @@
 						}
 						
 						
-						print "<li><div class='action' id='actionContainer".$vn_action_id."'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'Chronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); $(\"#silo".$vn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$vn_action_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
+						print "<li><div class='action' id='actionContainer".$vn_action_id."'><div class='actionDate'>".$va_action['date']."</div><div class='actionTitleExtended' id='actionTitleExtended".$vn_action_id."' onMouseOut=\"jQuery('#actionTitleExtended".$vn_action_id."').css('display', 'none');\">".$va_action['label']."</div><div class='actionTitle'>".$vs_clipped_label.$vs_more."</div>".$vs_image.$vs_entities."<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo".$vn_silo_id."\").load(\"".caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction', array('action_id' => $vn_action_id, 'silo_id' => $vn_silo_id, 'dontInitiateScroll' => 1))."\", function() { jQuery(\"#siloMoreInfo".$vn_silo_id."\").slideDown(400, function(){ scrollWindow(".$vn_silo_id."); }); }); $(\"#silo".$vn_silo_id."\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer".$vn_action_id."\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'>"._t("More Info >")."</a></div></div></li>\n"; // format used on load only
 					}
 ?>
 					</ul>
 					<div class="sliderSynchContainer">
-						<div class='synchButton'><a href='#' id='sync<?php print $vn_silo_id; ?>'><img src='<?php print __CA_URL_ROOT__; ?>/app/plugins/Chronology/themes/metabolic/graphics/clock.png' border='0' title='synch timelines'></a></div>
+						<div class='synchButton'><a href='#' id='sync<?php print $vn_silo_id; ?>'><img src='<?php print __CA_URL_ROOT__; ?>/app/plugins/MetabolicChronology/themes/metabolic/graphics/clock.png' border='0' title='synch timelines'></a></div>
 						<div class="sliderContainer">
 							<div class="slider" id="slider<?php print $vn_silo_id; ?>" style="position: relative;">
 								<div id="sliderPosInfo<?php print $vn_silo_id; ?>" class="sliderInfo"></div>
@@ -221,7 +221,7 @@
 								var image = "<div class='actionImage'><?php print $vs_thumbnail; ?></div>";
 							}
 							
-							carousel.add(i, "<li><div id='actionContainer" + k + "' class='action'><div class='actionDate'>" + v['date'] + "</div>" + titleExtended + "<div class='actionTitle'>" + clipped_label + more + "</div>" + image + entities + "<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").load(\"<?php print caNavUrl($this->request, 'Chronology', 'Show', 'getAction'); ?>/dontInitiateScroll/1/silo_id/" + v['silo_id'] + "/action_id/" + k + "\", function() { jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").slideDown(400, function(){ scrollWindow(" + v['silo_id'] + ");}); }); $(\"#silo" + v['silo_id'] + "\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer" + k + "\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><?php print _t("More Info >"); ?></a></div></div></li>");	// format used when dynamically loading
+							carousel.add(i, "<li><div id='actionContainer" + k + "' class='action'><div class='actionDate'>" + v['date'] + "</div>" + titleExtended + "<div class='actionTitle'>" + clipped_label + more + "</div>" + image + entities + "<div class='actionMoreInfo'><a href='#' onclick='jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").load(\"<?php print caNavUrl($this->request, 'MetabolicChronology', 'Show', 'getAction'); ?>/dontInitiateScroll/1/silo_id/" + v['silo_id'] + "/action_id/" + k + "\", function() { jQuery(\"#siloMoreInfo" + v['silo_id'] + "\").slideDown(400, function(){ scrollWindow(" + v['silo_id'] + ");}); }); $(\"#silo" + v['silo_id'] + "\").find(\".actionHighlighted\").removeClass(\"actionHighlighted\").addClass(\"action\"); jQuery(\"#actionContainer" + k + "\").removeClass(\"action\").addClass(\"actionHighlighted\"); return false;'><?php print _t("More Info >"); ?></a></div></div></li>");	// format used when dynamically loading
 							
 							
 							// Set current highlight
