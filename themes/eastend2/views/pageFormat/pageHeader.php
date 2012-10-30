@@ -54,7 +54,7 @@
 		<ul>
 			<li><?php print caNavLink($this->request, _t("Chronology"), "", "eastend", "Chronology", "Index"); ?></li>
 			<li><?php print caNavLink($this->request, _t("Artists"), "", "eastend", "ArtistBrowser", "Index"); ?></li>
-			<li><a href="#">Map</a></li>
+			<!--<li><a href="#">Map</a></li>-->
 <?php
 			if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				if($this->request->isLoggedIn()){

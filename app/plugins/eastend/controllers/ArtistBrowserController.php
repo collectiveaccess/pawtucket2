@@ -134,6 +134,28 @@
 					'ca_entities.idno_sort' => _t('Idno')
 				);
 			}
+			
+			$va_sources = array();
+			$t_list_item = new ca_lists();
+			$vn_aoee_source = $t_list_item->getItemIDFromList("entity_sources", "aoee");
+			$va_sources[] = $vn_aoee_source;
+			$this->aoee_source = $vn_aoee_source;
+			$this->view->setVar('aoee_source', $vn_aoee_source);
+			
+			$vn_aoee_featured_source = $t_list_item->getItemIDFromList("entity_sources", "featured");
+			$va_sources[] = $vn_aoee_featured_source;
+			$this->aoee_featured_source = $vn_aoee_featured_source;
+			$this->view->setVar('aoee_featured_source', $vn_aoee_featured_source);
+			
+			$vn_aoee_priority_source = $t_list_item->getItemIDFromList("entity_sources", "priority");
+			$va_sources[] = $vn_aoee_priority_source;
+			$this->aoee_priority_source = $vn_aoee_priority_source;
+			$this->view->setVar('aoee_priority_source', $vn_aoee_priority_source);
+			
+			$this->aoee_sourcea = $va_sources;
+			$this->view->setVar('aoee_sources', $va_sources);
+			
+			$this->opo_browse->addResultFilter("ca_entities.source_id", "IN", join(',', $va_sources));
 						
  		}
  		# -------------------------------------------------------
@@ -165,7 +187,7 @@
  		/**
  		 *
  		 * This is a version of the getfacet function in the main browse controller.
- 		 * Difference are: this clears all criteria before generating the facet since the artist browser only supports single level browsing, we need all facets to show up all the time
+ 		 * Difference are: this clears all criteria before generating the facet since the artist browser only supports single level browsing, we need all facets to show up all the time - also needs to set the search to ristrict by entity source
  		 * this facet view that is included is in the plugin's views/Browse folder - *not* the theme's views/Browse folder
  		 *
  		 * Looks for 'view' parameter and sets browse facet view to alternate based upon parameter value if specified.
@@ -178,6 +200,7 @@
  		public function getFacet($pa_options=null) {
  			// Remove any browse criteria previously set
 			$this->opo_browse->removeAllCriteria();
+			$this->opo_browse->addCriteria('_search', 'ca_entities.source_id:'.$this->aoee_featured_source.' or ca_entities.source_id:'.$this->aoee_source.' or ca_entities.source_id:'.$this->aoee_priority_source);
 			if (!is_array($pa_options)) { $pa_options = array(); }
  			if ($ps_view = preg_replace('![^A-Za-z0-9_]+!', '', $this->request->getParameter('view', pString))) {
  				$vs_relative_path = 'Browse/ajax_browse_facet_'.$ps_view.'_html.php';
@@ -221,16 +244,37 @@
 				$va_tmp["lifespan"] = $t_entity->get("lifespans_date");
 				$va_tmp["indexing_notes"] = $t_entity->get("indexing_notes");
 				$va_tmp["name"] = $t_entity->getLabelForDisplay();
-				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
+				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('portrait')));
 				$va_object = array_shift($va_objects);
 				$t_object->load($va_object["object_id"]);
 				$va_portrait = $t_object->getPrimaryRepresentation(array("abSlideShow"));
-				$va_tmp["image"] = $va_portrait["tags"]["abSlideShow"];
+				# --- don't show records with status ars/vaga don't show image
+				if($t_object->get("ca_objects.object_status") != 348){
+					if($t_object->get("ca_objects.object_status") == 349){
+						$va_tmp["vaga_class"] = "vagaDisclaimer";
+					}
+					$va_tmp["image"] = $va_portrait["tags"]["abSlideShow"];
+					$va_tmp["caption"] = $t_object->get("ca_objects.caption");
+				}
 				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
 			}
 			$this->view->setVar("featured_artists", $va_featured_artists);
 			$this->render('featured_artists_html.php');
 		}
+		# -------------------------------------------------------
+		/**
+		 * Overrides base controller!
+		 */
+ 		public function clearAndAddCriteria() {
+ 			$this->getDefaults();
+ 			$this->opo_browse->removeAllCriteria();
+ 			$ps_facet_name = $this->request->getParameter('facet', pString);
+ 			$this->opo_browse->addCriteria('_search', 'ca_entities.source_id:'.$this->aoee_featured_source.' or ca_entities.source_id:'.$this->aoee_source.' or ca_entities.source_id:'.$this->aoee_priority_source);
+ 			$this->opo_browse->addCriteria($ps_facet_name, array($this->request->getParameter('id', pString)));
+ 			
+ 			$this->view->setVar('result_views', array('full'));
+ 			parent::Index();
+ 		}
 		# -------------------------------------------------------
  	}
  ?>

@@ -321,10 +321,12 @@
 		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
+			$t_object = new ca_objects();
 
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
+				$t_object->load($va_item["row_id"]);
 ?>
 				<li class='setItem' id='setItem<?php print $vn_item_id; ?>'>
 					<div id='setItemContainer<?php print $vn_item_id; ?>' class='imagecontainer'>
@@ -346,6 +348,16 @@
 						if ($va_item['idno']) {
 							$va_title[] = '<strong>'._t('Id:').'</strong> '.$va_item['idno'];
 						}
+						if($t_object->get("creation_date")){
+							$va_title[] = $t_object->get("creation_date");
+						}
+						$va_creator = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+						if(sizeof($va_creator) > 0){	
+							foreach($va_creator as $va_entity) {
+								$va_title[] = (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"]);
+							}
+						}
+						
 						$vs_title = join('<br/>', $va_title);
 ?>
 						</div>

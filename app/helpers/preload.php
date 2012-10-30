@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2009 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,6 +35,7 @@
    */
    
 	require(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+	require(__CA_APP_DIR__."/helpers/requestHelpers.php");
 	require(__CA_APP_DIR__."/helpers/navigationHelpers.php");
 	require(__CA_APP_DIR__."/helpers/mailHelpers.php");
 	require(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
