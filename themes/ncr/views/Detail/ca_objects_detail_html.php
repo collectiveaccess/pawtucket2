@@ -39,6 +39,7 @@
 	
 	$t_list = new ca_lists;
 	$vn_object_type_group = $t_list->getItemIDFromList('object_types', 'group');
+	require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 	
 ?>	
 <div id="pageHeading"><img src='<?php print $this->request->getThemeUrlPath(); ?>/graphics/ncr/t_artworks.gif' width='111' height='23' border='0'></div><!-- end pageHeading -->
@@ -84,6 +85,9 @@
 		</div><!-- end nav -->
 <?php
 	if($t_object->get("type_id") == $vn_object_type_group){
+		# -------------------------------------------------------
+		# --- GROUP RECORD DISPLAY
+		# -------------------------------------------------------
 		if($t_object->get('ca_objects.idno')){
 			print "<div class='unit'><b>".$t_object->get('ca_objects.idno')."</b></div>";
 		}
@@ -135,58 +139,200 @@
 
 		$va_tooltips = array();
 		$col = 0;
-		print "<div id='artworkResults' style='clear:right; margin-top:20px;'>";
+		print "<div style='clear:right; margin:20px 0px 20px 0px;'>";
+		$va_child_artworks = array();
 		while($vo_result->nextHit()) {
-			if (!$vs_idno = $vo_result->get('ca_objects.idno')) {
-				$vs_idno = "???";
-			}
-			
-			$vn_object_id = $vo_result->get('ca_objects.object_id');
-			if($col == 0){
-				print "<table border='0' cellspacing='0' cellpaddin='0'><tr>";
-			}
-			print "<td valign='middle' class='searchFullImageCell'>";
-			print "<div class='searchFullImageContainer result".$vn_object_id."'>";
-			if($vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values))){
-				print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-			}else{
-				print "<div class='searchFullImageContainerPlaceHolder'>&nbsp;</div>";
-			}
-			print "</div><!-- END searchFullImageContainer --></td>";
-			print "<td><div class='searchFullText'>";
-			$va_labels = $vo_result->getDisplayLabels($this->request);
-			$va_caption = array();
-			$va_caption[] = "<span class='resultidno'>".trim($vo_result->get("ca_objects.idno"))."</span>";
-			$va_caption[] = "<i>".join('; ', $va_labels)."</i>".(($vo_result->get('ca_objects.status') == 0) ? " <span class='pending'>*</span>" : "");
-			$va_caption[] = $vo_result->get("ca_objects.date.display_date");
-			$va_caption[] = $vo_result->get("ca_objects.technique");
-			$vs_caption = join(', ', $va_caption);
-			$vs_result = join('<br/>', $va_caption);
-			print "<div class='searchFullTitle'>".caNavLink($this->request, $vs_result, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
-			print "</div><!-- END searchFullText --></td>";
-			// set view vars for tooltip if there is an image
-			if($vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))){
-				$this->setVar('tooltip_representation', $vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)));
-				TooltipManager::add(
-					".result{$vn_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
-				);
-			}
-			$vn_item_count++;
-			$col++;
-			if($col == 2){
-				$col = 0;
-				print "</tr></table>\n";
-			}else{
-				print "<td style='width:15px;'>&nbsp;</td>";
-			}
-			if(!$vs_research_pending_output && ($vo_result->get('ca_objects.status') == 0)){
-				$vs_research_pending_output = 1;
+			if($vo_result->get("ca_objects.object_id") != $vn_object_id){
+				$va_child_artworks[] = $vo_result->get("ca_objects.object_id");
+				if (!$vs_idno = $vo_result->get('ca_objects.idno')) {
+					$vs_idno = "???";
+				}
+				
+				$vn_child_object_id = $vo_result->get('ca_objects.object_id');
+				if($col == 0){
+					print "<table border='0' cellspacing='0' cellpaddin='0'><tr>";
+				}
+				print "<td valign='middle' class='searchFullImageCell'>";
+				print "<div class='searchFullImageContainer result".$vn_child_object_id."'>";
+				if($vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values))){
+					print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_child_object_id));
+				}else{
+					print "<div class='searchFullImageContainerPlaceHolder'>&nbsp;</div>";
+				}
+				print "</div><!-- END searchFullImageContainer --></td>";
+				print "<td><div class='searchFullText'>";
+				$va_labels = $vo_result->getDisplayLabels($this->request);
+				$va_caption = array();
+				$va_caption[] = "<span class='resultidno'>".trim($vo_result->get("ca_objects.idno"))."</span>";
+				$va_caption[] = "<i>".join('; ', $va_labels)."</i>".(($vo_result->get('ca_objects.status') == 0) ? " <span class='pending'>*</span>" : "");
+				$va_caption[] = $vo_result->get("ca_objects.date.display_date");
+				$va_caption[] = $vo_result->get("ca_objects.technique");
+				$vs_caption = join(', ', $va_caption);
+				$vs_result = join('<br/>', $va_caption);
+				print "<div class='searchFullTitle'>".caNavLink($this->request, $vs_result, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_child_object_id))."</div>";
+				print "</div><!-- END searchFullText --></td>";
+				// set view vars for tooltip if there is an image
+				if($vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))){
+					$this->setVar('tooltip_representation', $vo_result->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)));
+					TooltipManager::add(
+						".result{$vn_child_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
+					);
+				}
+				$vn_item_count++;
+				$col++;
+				if($col == 2){
+					$col = 0;
+					print "</tr></table>\n";
+				}else{
+					print "<td style='width:15px;'>&nbsp;</td>";
+				}
+				if(!$vs_research_pending_output && ($vo_result->get('ca_objects.status') == 0)){
+					$vs_research_pending_output = 1;
+				}
 			}
 		}
 		if($col == 1){
 			print "</tr></table>\n"; 
 		}
 		print "</div>";
+		
+		#print $vs_occ_search_text;
+		$o_db = new Db();
+		$q_date_element = $o_db->query("SELECT element_id FROM ca_metadata_elements WHERE element_code = 'parsed_date'");
+		if($q_date_element->numRows() > 0){
+			$q_date_element->nextRow();
+			$vn_parsed_date_element_id = $q_date_element->get("element_id");
+		}
+		$t_occ = new ca_occurrences();
+		$vn_occ_tablenum = $t_occ->tableNum();
+		if($vn_parsed_date_element_id){
+			//$q_date_element->numRows();
+			$q_occs = $o_db->query("SELECT o.occurrence_id, o.type_id, av.value_decimal1
+									FROM ca_occurrences o
+									INNER JOIN ca_objects_x_occurrences AS oxo ON oxo.occurrence_id = o.occurrence_id
+									INNER JOIN ca_attributes AS a ON a.row_id = o.occurrence_id
+									INNER JOIN ca_attribute_values AS av ON a.attribute_id = av.attribute_id
+									WHERE oxo.object_id IN (".join(", ", $va_child_artworks).") AND o.access=1 AND a.table_num = ".$vn_occ_tablenum." AND av.element_id = ".$vn_parsed_date_element_id."
+									ORDER BY av.value_decimal1
+									");
+		}
+		$va_sorted_occurrences = array();
+		#$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => array('ca_occurrences.date.parsed_date')));
+		if($q_occs->numRows()){
+			$va_item_types = $t_occ->getTypeList();
+			while($q_occs->nextRow()) {
+				# --- get the objects associated to each record to list out after bib or exhibition listing
+				$q_obj = $o_db->query("SELECT o.idno
+									FROM ca_objects_x_occurrences oxo
+									INNER JOIN ca_objects AS o ON oxo.object_id = o.object_id
+									WHERE oxo.occurrence_id = ? AND o.access=1 AND o.object_id IN (".join(", ", $va_child_artworks).")
+									ORDER BY o.idno_sort
+									", $q_occs->get("ca_occurrences.occurrence_id"));
+				$va_related_obj_idnos = array();
+				if($q_obj->numRows()){
+					while($q_obj->nextRow()){
+						$va_related_obj_idnos[] = $q_obj->get("ca_objects.idno");
+					}
+				}				
+				$t_occ->load($q_occs->get('occurrence_id'));
+				$vs_venue = "";
+				$va_venues = array();
+				$va_venues = $t_occ->get('ca_entities', array('restrict_to_relationship_types' => array('primary_venue'), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
+				if(sizeof($va_venues) > 0){
+					$va_venue_name = array();
+					foreach($va_venues as $va_venue_info){
+						$va_venue_name[] = $va_venue_info["displayname"];
+					}
+					$vs_venue = implode($va_venue_name, ", ");
+				}
+				$va_sorted_occurrences[$q_occs->get('ca_occurrences.type_id')][$q_occs->get('occurrence_id')] = array("label" => $t_occ->getLabelForDisplay(), "date" => $t_occ->get("ca_occurrences.date.display_date"), "year_published" => $t_occ->get("ca_occurrences.bib_year_published"), "venue" => $vs_venue, "bib_full_citation" => $t_occ->get("ca_occurrences.bib_full_citation"), "idno" => $t_occ->get("ca_occurrences.idno"), "source_info" => caUnserializeForDatabase($va_occurrence['source_info']), "status" => $t_occ->get("ca_occurrences.status"), "object_idno" => join(", ", $va_related_obj_idnos));
+			}
+			
+			krsort($va_sorted_occurrences);
+			foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
+				$vs_title = "";
+				switch($va_item_types[$vn_occurrence_type_id]['idno']){
+					case "bibliography":
+						$vs_title = "Bibliography";
+					break;
+					# --------------------------------------
+					case "exhibition":
+						$vs_title = $va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : "");
+					break;
+					# --------------------------------------
+				}
+				if($vs_title){
+?>
+					<div class="unit"><H3><?php print $vs_title; ?></H3>
+<?php
+				}
+				$i = 0;
+				foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info){
+					switch($va_item_types[$vn_occurrence_type_id]['idno']){
+						case "exhibition":
+							$vs_exhibition_title = "\"".$va_info['label'].",\" ";
+							if($va_info["venue"]){
+								$vs_exhibition_title .= $va_info["venue"];
+							}
+							if($va_info["date"]){
+								$vs_exhibition_title .= ", ".$va_info["date"];
+							}
+							$vs_exhibition_title .= " [".$va_info["object_idno"]."]";
+							if($i == $vn_num_more_link){
+								print "<div id='exhibitionMore' class='relatedMoreItems'>";
+							}
+							print "<div class='indent'>";
+							print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $vs_exhibition_title, '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"]);
+							print "</div>";
+
+						break;
+						# ------------------------------
+						case "bibliography":
+							if($i == $vn_num_more_link){
+								print "<div id='bibliographyMore' class='relatedMoreItems'>";
+							}
+							$va_source_info = $va_info["source_info"];
+							if($va_info["status"] > 0){
+								$va_illustration_info = array();
+								$vs_illustration_info = "";
+								if($va_source_info["page_number"]){
+									$va_illustration_info[] = _t("p. ").$va_source_info["page_number"];
+								}
+								if($va_source_info["catalogue_number"]){
+									$va_illustration_info[] = _t("no. ").$va_source_info["catalogue_number"];
+								}
+								if($va_source_info["figure_number"]){
+									$va_illustration_info[] = _t("fig. ").$va_source_info["figure_number"];
+								}
+								$vs_illustration_info = implode(", ", $va_illustration_info);
+								if($vs_illustration_info){
+									$va_info['bib_full_citation'] = $va_info['bib_full_citation']." ".$vs_illustration_info.".";
+								}
+							}
+							print "<div class='indent'>";
+							print (($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info['bib_full_citation']." [".$va_info["object_idno"]."]", '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["bib_full_citation"]);
+							print "</div>";
+
+						break;
+						# ------------------------------
+					}
+					$i++;
+
+				}
+				if($i > $vn_num_more_link){
+					print "</div>";
+					print "<div class='moreLink'><a href='#' id='occ".$va_item_types[$vn_occurrence_type_id]['idno']."MoreLink' onclick='jQuery(\"#".$va_item_types[$vn_occurrence_type_id]['idno']."More\").slideDown(250); jQuery(\"#occ".$va_item_types[$vn_occurrence_type_id]['idno']."MoreLink\").hide(); return false;'>".(sizeof($va_occurrence_list) - $vn_num_more_link)._t(" More like this")." &rsaquo;</a></div>";
+				}
+				# --- check for title becuase we're skipping chronology occ records
+				if($vs_title){
+					print "</div><!-- end unit -->";
+				}
+			}
+		}
+		
+		
+		
+		
 		if($vs_research_pending_output){
 			print "<div class='pendingMessage'>* Research Pending</div>";
 		}
@@ -196,8 +342,10 @@
 		# ---------------------------------------------------
 		if($t_object->get("status") == 0){
 			if ($t_rep && $t_rep->getPrimaryKey()) {
+				$va_media_info = $t_rep->getMediaInfo('media', "preview");
+				$vn_image_width = $va_media_info["WIDTH"] + 2;
 	?>
-					<div id="objDetailImage" style="float:left; margin-right:20px; margin-bottom:20px;">
+					<div id="objDetailImage" style="float:left; margin-right:20px; margin-bottom:20px; clear:right;">
 	<?php
 					print $t_rep->getMediaTag('media', "preview", $this->getVar('primary_rep_display_options'));
 					if($t_rep->get("image_credit_line")){
@@ -221,10 +369,11 @@
 					}
 			}else{
 				print "<div id='objDetailImagePlaceHolderSmall' style='float:left; margin-right:20px; margin-bottom:20px;'><!-- empty --></div>";
+				$vn_image_width = 180;
 			}
 ?>
-		<div>
-			<div class="pendingInfo">
+		
+			<div class="pendingInfo" style="width:<?php print 720-$vn_image_width; ?>px;">
 <?php
 				if($t_object->get('ca_objects.idno')){
 					print "<div class='unit'><b>".$t_object->get('ca_objects.idno')."</b></div>";
@@ -293,6 +442,10 @@
 					if(sizeof($va_related_objs) > 0){
 						$va_rel_objs_by_type = array_merge($va_rel_objs_by_type, $va_related_objs);
 					}
+					#print "<pre>";
+					#print_r($va_rel_objs_by_type);
+					#print "</pre>";
+					ksort($va_rel_objs_by_type);
 					$t_rel_object = new ca_objects();
 					foreach($va_rel_objs_by_type as $vs_relationship_typename => $va_rel_obj_by_type){
 						$i = 0;
@@ -355,7 +508,7 @@
 					print "</div><!-- end unit -->";
 				}
 ?>
-			</div>
+			
 <?php
 		}else{
 		# ---------------------------------------------------
@@ -372,31 +525,20 @@
 					if($va_display_options['no_overlay']){
 						print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 					}else{
-						#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
 						$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
 						print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 					}
 ?>
 					</div><!-- end objDetailImage -->
-<?php
-					// if($t_rep->get("image_credit_line")){
-	// 					# --- get width of image so caption matches
-	// 					$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
-	// 					print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
-	// 					if($t_rep->get("image_credit_line")){
-	// 						print "<i>".$t_rep->get("image_credit_line")."</i>";
-	// 					}
-	// 					print " &ndash; &copy; INFGM</div>";
-	// 				}
-	?>
-					<div id="objDetailImageNav">
+
+<!--					<div id="objDetailImageNav">
 <?php					
 						#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
 							
 						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
 	
 ?>		
-					</div><!-- end objDetailImageNav -->
+					</div>-->
 <?php
 			}else{
 				print "<div id='objDetailImagePlaceHolder'><!-- empty --></div>";
@@ -523,6 +665,7 @@
 						$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = array("label" => $va_occurrence['label'], "date" => $t_occ->get("ca_occurrences.date.display_date"), "year_published" => $t_occ->get("ca_occurrences.bib_year_published"), "venue" => $vs_venue, "bib_full_citation" => $t_occ->get("ca_occurrences.bib_full_citation"), "idno" => $t_occ->get("ca_occurrences.idno"), "source_info" => caUnserializeForDatabase($va_occurrence['source_info']), "status" => $t_occ->get("ca_occurrences.status"));
 					}
 					
+					krsort($va_sorted_occurrences);
 					foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 						$vs_title = "";
 						switch($va_item_types[$vn_occurrence_type_id]['idno']){
@@ -644,63 +787,89 @@
 					if(sizeof($va_related_objs) > 0){
 						$va_rel_objs_by_type = array_merge($va_rel_objs_by_type, $va_related_objs);
 					}
-					$t_rel_object = new ca_objects();
+					#print "<pre>";
+					#print_r($va_rel_objs_by_type);
+					#print "</pre>";
+					ksort($va_rel_objs_by_type);
+					# --- switch order of version and study
+					$va_new_rel_objs_by_type = array();
 					foreach($va_rel_objs_by_type as $vs_relationship_typename => $va_rel_obj_by_type){
-						$i = 0;
-						if(($vs_relationship_typename == "Study") && (sizeof($va_rel_obj_by_type) > 1)){
-							print "<H3 style='clear:left;'>Studies</H3>";
-						}else{
-							print "<H3 style='clear:left;'>".$vs_relationship_typename.((sizeof($va_rel_obj_by_type) > 1) ? "s" : "")."</H3>";
+						switch($vs_relationship_typename){
+							case "Study":
+								$va_new_rel_objs_by_type['Version'] = $va_rel_objs_by_type['Version'];
+								$va_new_rel_objs_by_type['Study'] = $va_rel_objs_by_type['Study'];
+							break;
+							# -----------------------
+							case "Version":
+								continue;
+							break;
+							# -----------------------
+							default:
+								$va_new_rel_objs_by_type[$vs_relationship_typename] = $va_rel_obj_by_type;
+							break;
+							# -----------------------
 						}
-						foreach($va_rel_obj_by_type as $vn_rel_id => $va_info){
-							if($i == $vn_num_more_link){
-								print "<div id='artworkMore".str_replace(" ", "_", $vs_relationship_typename)."' class='relatedMoreItems'>";
-							}
-							$vn_rel_object_id = $va_info['object_id'];
-							$t_rel_object->load($vn_rel_object_id);
-							print "<div id='relArtwork".$vn_rel_object_id."'  class='relArtwork' ".(((($i/2) - floor($i/2)) == 0) ? "style='clear:left;'" : "").">";
-							$va_rep = array();
-							$vs_rep = "";
-							if($t_rel_object->getPrimaryRepresentation(array('tiny'), null, array('return_with_access' => $va_access_values))){
-								$va_rep = $t_rel_object->getPrimaryRepresentation(array('tiny'), null, array('return_with_access' => $va_access_values));
-								$vs_rep = $va_rep["tags"]["tiny"];
-								print "<div class='relArtworkImage' id='relArtworkImage".$vn_rel_object_id."'>".caNavLink($this->request, $vs_rep, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_rel_object_id))."</div>";
+					}
+					$va_rel_objs_by_type = $va_new_rel_objs_by_type;
+					$t_rel_object = new ca_objects();
+					if(is_array($va_rel_objs_by_type) && sizeof($va_rel_objs_by_type)){
+						foreach($va_rel_objs_by_type as $vs_relationship_typename => $va_rel_obj_by_type){
+							$i = 0;
+							if(($vs_relationship_typename == "Study") && (sizeof($va_rel_obj_by_type) > 1)){
+								print "<H3 style='clear:left;'>Studies</H3>";
 							}else{
-								print "<div class='relArtworkImagePlaceHolder'><!-- empty --></div>";
+								print "<H3 style='clear:left;'>".$vs_relationship_typename.((sizeof($va_rel_obj_by_type) > 1) ? "s" : "")."</H3>";
 							}
-							print "<div>";
-							if($t_rel_object->get("ca_objects.idno")){
-								print "<span class='resultidno'>".trim($t_rel_object->get("ca_objects.idno"))."</span><br/>";
+							foreach($va_rel_obj_by_type as $vn_rel_id => $va_info){
+								if($i == $vn_num_more_link){
+									print "<div id='artworkMore".str_replace(" ", "_", $vs_relationship_typename)."' class='relatedMoreItems'>";
+								}
+								$vn_rel_object_id = $va_info['object_id'];
+								$t_rel_object->load($vn_rel_object_id);
+								print "<div id='relArtwork".$vn_rel_object_id."'  class='relArtwork' ".(((($i/2) - floor($i/2)) == 0) ? "style='clear:left;'" : "").">";
+								$va_rep = array();
+								$vs_rep = "";
+								if($t_rel_object->getPrimaryRepresentation(array('tiny'), null, array('return_with_access' => $va_access_values))){
+									$va_rep = $t_rel_object->getPrimaryRepresentation(array('tiny'), null, array('return_with_access' => $va_access_values));
+									$vs_rep = $va_rep["tags"]["tiny"];
+									print "<div class='relArtworkImage' id='relArtworkImage".$vn_rel_object_id."'>".caNavLink($this->request, $vs_rep, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_rel_object_id))."</div>";
+								}else{
+									print "<div class='relArtworkImagePlaceHolder'><!-- empty --></div>";
+								}
+								print "<div>";
+								if($t_rel_object->get("ca_objects.idno")){
+									print "<span class='resultidno'>".trim($t_rel_object->get("ca_objects.idno"))."</span><br/>";
+								}
+								if($this->request->config->get('allow_detail_for_ca_objects')){
+									print caNavLink($this->request, "<i>".$va_info['label']."</i>", '', 'Detail', 'Object', 'Show', array('object_id' => $vn_rel_object_id))."<br/>";
+								}else{
+									print "<i>".$va_info['label']."</i><br/>";
+								}
+								
+								if($t_rel_object->get("ca_objects.date.display_date")){
+									print $t_rel_object->get("ca_objects.date.display_date")."<br/>";
+								}
+								if($t_rel_object->get("ca_objects.technique")){
+									print $t_rel_object->get("ca_objects.technique");
+								}
+								#print " (".unicode_ucfirst($va_info['relationship_typename']).")";
+								print "</div></div>";
+								// set view vars for tooltip
+								
+								$va_rep = $t_rel_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values));
+								if($va_rep['tags']['small']){
+									$this->setVar('tooltip_representation', $va_rep['tags']['small']);
+									TooltipManager::add(
+										"#relArtworkImage{$vn_rel_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
+									);
+								}
+								$i++;
+								
 							}
-							if($this->request->config->get('allow_detail_for_ca_objects')){
-								print caNavLink($this->request, "<i>".$va_info['label']."</i>", '', 'Detail', 'Object', 'Show', array('object_id' => $vn_rel_object_id))."<br/>";
-							}else{
-								print "<i>".$va_info['label']."</i><br/>";
+							if($i > $vn_num_more_link){
+								print "</div>";
+								print "<div class='moreLink'><a href='#' id='artworkMoreLink".str_replace(" ", "_", $vs_relationship_typename)."' onclick='jQuery(\"#artworkMore".str_replace(" ", "_", $vs_relationship_typename)."\").slideDown(250); jQuery(\"#artworkMoreLink".str_replace(" ", "_", $vs_relationship_typename)."\").hide(); return false;'>".(sizeof($va_rel_obj_by_type) - $vn_num_more_link)._t(" More like this")." &rsaquo;</a></div>";
 							}
-							
-							if($t_rel_object->get("ca_objects.date.display_date")){
-								print $t_rel_object->get("ca_objects.date.display_date")."<br/>";
-							}
-							if($t_rel_object->get("ca_objects.technique")){
-								print $t_rel_object->get("ca_objects.technique");
-							}
-							#print " (".unicode_ucfirst($va_info['relationship_typename']).")";
-							print "</div></div>";
-							// set view vars for tooltip
-							
-							$va_rep = $t_rel_object->getPrimaryRepresentation(array('small'), null, array('return_with_access' => $va_access_values));
-							if($va_rep['tags']['small']){
-								$this->setVar('tooltip_representation', $va_rep['tags']['small']);
-								TooltipManager::add(
-									"#relArtworkImage{$vn_rel_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
-								);
-							}
-							$i++;
-							
-						}
-						if($i > $vn_num_more_link){
-							print "</div>";
-							print "<div class='moreLink'><a href='#' id='artworkMoreLink".str_replace(" ", "_", $vs_relationship_typename)."' onclick='jQuery(\"#artworkMore".str_replace(" ", "_", $vs_relationship_typename)."\").slideDown(250); jQuery(\"#artworkMoreLink".str_replace(" ", "_", $vs_relationship_typename)."\").hide(); return false;'>".(sizeof($va_rel_obj_by_type) - $vn_num_more_link)._t(" More like this")." &rsaquo;</a></div>";
 						}
 					}
 					print "</div><!-- end unit -->";
