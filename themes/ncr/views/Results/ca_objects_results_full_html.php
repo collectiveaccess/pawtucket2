@@ -87,7 +87,7 @@ if($vo_result) {
 				foreach($va_children as $k => $va_child_info){
 					$t_child->load($va_child_info["object_id"]);
 					$vs_child_caption = "<span class='resultidno'>".trim($t_child->get("ca_objects.idno"))."</span>, ";
-					$vs_child_caption .= "<i>".$va_child_info["name"]."</i>, ";
+					#$vs_child_caption .= "<i>".$va_child_info["name"]."</i>, ";
 					if($t_child->get("ca_objects.date.display_date")){
 						$vs_child_caption .= $t_child->get("ca_objects.date.display_date").", ";
 					}
@@ -99,7 +99,7 @@ if($vo_result) {
 					}
 					$va_children_caption[] = $vs_child_caption;
 				}
-				$this->setVar('tooltip_children', "<b>".sizeof($va_children_caption)." "._t("example%1", (sizeof($va_children_caption) == 1) ? "" : "s")."</b><br/>".join("<br/>", $va_children_caption));
+				$this->setVar('tooltip_children', "<b>".sizeof($va_children_caption)." "._t("example%1", (sizeof($va_children_caption) == 1) ? "" : "s")."</b><br/>".join("; ", $va_children_caption));
 			}else{
 				$this->setVar('tooltip_children', '');
 			}
