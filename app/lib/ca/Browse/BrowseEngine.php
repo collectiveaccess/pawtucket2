@@ -1363,6 +1363,7 @@
 									}
 									$va_options = $pa_options;
 									unset($va_options['sort']);					// browse engine takes care of sort so there is no reason to waste time having the search engine do so
+									$va_options['filterNonPrimaryRepresentations'] = true;	// filter out non-primary representations in ca_objects results to save (a bit) of time
 									
 									$qr_res = $o_search->search($va_row_ids[0], $va_options);
 
@@ -2261,14 +2262,25 @@
 							$qr_res = $this->opo_db->query($vs_sql, $vs_list_name);
 						//print $vs_sql." [$vs_list_name]";
 							return ((int)$qr_res->numRows() > 1) ? true : false;
-						} else {
+						} else {						
+							// Get label ordering fields
+							$va_ordering_fields_to_fetch = (isset($va_facet_info['order_by_label_fields']) && is_array($va_facet_info['order_by_label_fields'])) ? $va_facet_info['order_by_label_fields'] : array();
+	
+							$va_orderbys = array();
+							$t_rel_item_label = new ca_list_item_labels();
+							foreach($va_ordering_fields_to_fetch as $vs_sort_by_field) {
+								if (!$t_rel_item_label->hasField($vs_sort_by_field)) { continue; }
+								$va_orderbys[] = $va_label_selects[] = 'lil.'.$vs_sort_by_field;
+							}
+							
+							$vs_order_by = (sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
 							$vs_sql = "
 								SELECT DISTINCT lil.item_id, lil.name_singular, lil.name_plural, lil.locale_id
 								FROM ca_list_items li
 								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = li.item_id
 								{$vs_join_sql}
 								WHERE
-									ca_lists.list_code = ? {$vs_where_sql}";
+									ca_lists.list_code = ? {$vs_where_sql} {$vs_order_by}";
 							//print $vs_sql." [$vs_list_name]";
 							$qr_res = $this->opo_db->query($vs_sql, $vs_list_name);
 							
@@ -3206,7 +3218,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			if (!is_array($va_results)) { $va_results = array(); }
 			
 			if ($po_result) {
-				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num), array());
+				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num), array(), $pa_options);
 				
 				return $po_result;
 			} else {
