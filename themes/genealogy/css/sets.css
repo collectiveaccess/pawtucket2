@@ -34,56 +34,77 @@
 	padding:0px;
 }
 
-.setItems .setItem {
+#setItems .setItem {
 	position: relative;
 	display: block;
 	float: left; 
 	list-style-type: none;
-	height: 200px; 
+	height: 190px; 
 	width: 140px; 
-	border: solid 1px #828282;
+	border: solid 1px #eee;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 	margin: 5px 10px 5px 0px;
 	background: #F5F5F5;
 	text-align: center;
-	overflow: hidden;
+	
 }
 
-.setItems .setItem:hover {
-	border: solid 1px #666;
+#setItems .setItem:hover {
+	border: solid 1px #aaa;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
 }
 
-.setItems div{
+#setItems div{
 	font-size: 10px;
 	margin: 5px 0px 0px 0px;
-	width:140px;
+
 	text-align:left;
 }
 
-.setItems a{
+#setItems a{
 	cursor:move;
 }
 
-.setItems a{
+#setItems a{
 	color: #636363;
 }
 
-.setItems .remove{
+#setItems .remove{
 	position: absolute;
-	left:130px;
-	top: 0px;
+	left:128px;
+	top: -10px;
 	width:7px;
-	padding: 0px 1px 1px 2px;
+	padding: 3px 1px 1px 6px;
+	background-color:#aaa;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:10px;
+	height:12px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
-
-.setItems .remove a{
-	font-size: 9px;
-	color: #828282;
+#setItems .remove:hover{
+	position: absolute;
+	left:128px;
+	top: -10px;
+	width:7px;
+	padding: 3px 1px 1px 6px;
+	background-color:#CA1919;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:10px;
+	height:12px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+#setItems .remove a{
+	font-size: 10px;
+	color: #fff;
 	text-decoration:none;
 	font-weight:bold;
+	cursor:default;
 }
-.setItems .remove a:hover{
-	color: #CA1919;
-}
+
 
 .setItemThumbnail {
 	padding: 10px 10px 3px 10px;
@@ -91,7 +112,6 @@
 
 .setItems .setItemCaption {
 	padding-left: 10px;
-	width: 120px;
 }
 
 .setItems .setItemCaption a{

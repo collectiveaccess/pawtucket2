@@ -1989,7 +1989,7 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 
 #caMediaOverlayContent {
-	margin-top: 5px;
+	margin-top: -5px;
 	margin-left: 0px;
 	margin-left: auto;
 	margin-right: auto;
