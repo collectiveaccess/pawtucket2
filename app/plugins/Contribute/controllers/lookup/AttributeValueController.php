@@ -29,9 +29,21 @@
  	require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
  
  	//
- 	// This lookup controller doesn't extent BaseLookupController
+ 	// This lookup controller doesn't extend BaseLookupController
  	// since direct lookups on attributes are handled specially – not via the search engine
  	class AttributeValueController extends ActionController {
+ 		# -------------------------------------------------------
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			$this->ops_theme = __CA_THEME__;																	// get current theme
+ 			if(!is_dir(__CA_APP_DIR__.'/plugins/Contribute/themes/'.$this->ops_theme.'/views')) {		// if theme is not defined for this plugin, try to use "default" theme
+ 				$this->ops_theme = 'default';
+ 			}
+ 			
+ 			$this->opo_plugin_config = Configuration::load($po_request->getAppConfig()->get('application_plugins').'/Contribute/conf/contribute.conf');
+ 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('Contribute plugin is not enabled')); }
+ 			
+ 			parent::__construct($po_request, $po_response, array(__CA_APP_DIR__.'/plugins/Contribute/themes/'.$this->ops_theme.'/views'));
+ 		}
  		# -------------------------------------------------------
  		# AJAX handlers
  		# -------------------------------------------------------
@@ -92,7 +104,7 @@
 			", (int)$t_element->getPrimaryKey(), (string)$ps_query.'%');
 			
 			$this->view->setVar('attribute_value_list', $qr_res->getAllFieldValues('value_longtext1'));
-			return $this->render('ajax_attribute_value_list_html.php');
+			return $this->render('lookup/ajax_attribute_value_list_html.php');
 		}
 		# -------------------------------------------------------
  		/**

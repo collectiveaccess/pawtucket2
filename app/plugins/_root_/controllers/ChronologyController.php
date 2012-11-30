@@ -47,22 +47,22 @@
 			8 => array("start" =>1924, "end" => 1988, "label" => "1924 - 1988", "displayAllYears" => "0")
 		);
 		protected $ops_jumpToList = array(
-			'Birth' => 1904,
-			'Childhood' => 1907,
-			'Adolescence' => 1918,
-			'Academic Education' => 1924,
-			'Guggenheim Fellowship' => 1927,
-			'Early career' => 1932,
-			'Wartime Activism' => 1942,
-			'MacDougal Alley studio' => 1943,
-			'Bollingen travels' => 1949,
-			'Return to Japan' => 1950,
-			'Mid Career' => 1955,
-			'Long Island City studio' => 1961,
-			'Mure-cho studio' => 1969,
-			'Late Career' => 1981,
-			'Long Island City Museum' => 1981,
-			'Death' => 1988
+			'Birth (1904)' => 1904,
+			'Childhood (1907)' => 1907,
+			'Adolescence (1918)' => 1918,
+			'Academic Education (1924)' => 1924,
+			'Guggenheim Fellowship (1927)' => 1927,
+			'Early career (1932)' => 1932,
+			'Wartime Activism (1942)' => 1942,
+			'MacDougal Alley studio (1943)' => 1943,
+			'Bollingen travels (1949)' => 1949,
+			'Return to Japan (1950)' => 1950,
+			'Mid Career (1955)' => 1955,
+			'Long Island City studio (1961)' => 1961,
+			'Mure-cho studio (1969)' => 1969,
+			'Late Career (1981)' => 1981,
+			'Long Island City Museum (1981)' => 1981,
+			'Death (1988)' => 1988
 		);
  			
  		# -------------------------------------------------------
@@ -144,6 +144,22 @@
 			$va_years_info = array();
 
 			$qr_events = $o_search->search("ca_occurrences.access:1 AND ca_occurrences.type_id:{$vn_chronology_type_id} AND ca_occurrences.date.parsed_date:\"".$vn_y."\"", array("sort" => "ca_occurrences.date.parsed_date", "no_cache" => !$this->opb_cache_searches));
+			
+			$va_event_ids = array();
+			if($qr_events->numHits() > 0){
+				while($qr_events->nextHit()){
+					$va_event_ids[] = $qr_events->get("occurrence_id");
+				}
+			}
+			$opo_result_context = new ResultContext($this->request, "ca_occurrences", "basic_search");
+ 		
+			foreach($va_event_ids as $vn_event_id){
+				if($opo_result_context->getIndexInResultList($vn_event_id) != '?'){
+					$this->view->setVar("show_back_button", 1);
+					break;
+				}
+			}
+			$qr_events->seek(0);
 			$va_years_info["events"] = $qr_events;
 			
 			$qr_exhibitions = $o_search->search("ca_occurrences.access:1 AND ca_occurrences.type_id:{$vn_exhibition_type_id} AND ca_occurrences.date.parsed_date:\"".$vn_y."\"", array("sort" => "ca_occurrences.date.parsed_date", "no_cache" => !$this->opb_cache_searches));
@@ -161,29 +177,39 @@
 			
 			$this->view->setVar('years_info', $va_years_info);
 			$this->view->setVar('num_images', $qr_chron_images->numHits());
+			$va_reps = array();
 			if($qr_chron_images->numHits() > 0){
 				while($qr_chron_images->nextHit()){
 					$t_image_object = new ca_objects($qr_chron_images->get("object_id"));
 					# Media representations to display (objects only)
 					if ($t_primary_rep = $t_image_object->getPrimaryRepresentationInstance()) {
 						if (!sizeof($va_access_values) || in_array($t_primary_rep->get('access'), $va_access_values)) { 		// check rep access
-							$this->view->setVar("image_object_id", $qr_chron_images->get("object_id"));
-							$this->view->setVar("image_description", $t_image_object->get("ca_objects.description"));
-							$this->view->setVar("image_photographer", $t_image_object->get("ca_objects.provenance"));
-							$this->view->setVar('t_primary_rep', $t_primary_rep);
-							
-							$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_primary_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-							
-							$this->view->setVar('primary_rep_display_version', $va_rep_display_info['display_version']);
-							unset($va_display_info['display_version']);
-							$va_rep_display_info['poster_frame_url'] = $t_primary_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-							unset($va_display_info['poster_frame_version']);
-							$this->view->setVar('primary_rep_display_options', $va_rep_display_info);
-							break;
+							# --- build array of thumbnails on related images for display under main image
+							$va_temp = array();
+							$va_temp["representation_id"] = $t_primary_rep->get("representation_id");
+							$va_temp["rep_tinyicon"] = $t_primary_rep->getMediaTag('media', 'tinyicon');
+							$va_temp["object_id"] = $qr_chron_images->get("object_id");
+							$va_reps[$qr_chron_images->get("object_id")] = $va_temp;
+							if(!$vn_display_image_set){
+								$vn_display_image_set = 1;
+								$this->view->setVar("image_object_id", $qr_chron_images->get("object_id"));
+								$this->view->setVar("image_description", $t_image_object->get("ca_objects.description"));
+								$this->view->setVar("image_photographer", $t_image_object->get("ca_objects.provenance"));
+								$this->view->setVar('t_primary_rep', $t_primary_rep);
+								
+								$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_primary_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+								
+								$this->view->setVar('primary_rep_display_version', $va_rep_display_info['display_version']);
+								unset($va_display_info['display_version']);
+								$va_rep_display_info['poster_frame_url'] = $t_primary_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
+								unset($va_display_info['poster_frame_version']);
+								$this->view->setVar('primary_rep_display_options', $va_rep_display_info);
+							}
 						}
 					}
 				}
 			}
+			$this->view->setVar("reps", $va_reps);
  			$this->render('Chronology/year_detail_html.php');
  		}
  		# -------------------------------------------------------
@@ -231,17 +257,10 @@
 			$va_rep_display_info = caGetMediaDisplayInfo($ps_media_context, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			
 			// set version
-			$this->view->setVar('rep_display_version', $va_rep_display_info['display_version']);
-			unset($va_display_info['display_version']);
-			
-			// set poster frame URL
-			$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-			unset($va_display_info['poster_frame_version']);
-			
-			$va_rep_display_info['viewer_base_url'] = $t_rep->getAppConfig()->get('ca_url_root');
+			$this->view->setVar('display_version', $va_rep_display_info['display_version']);
 			
 			// set other options
-			$this->view->setVar('rep_display_options', $va_rep_display_info);
+			$this->view->setVar('display_options', $va_rep_display_info);
 	
 			// Get all representation as icons for navigation
 			# --- do a search for all chronology image objects
@@ -267,21 +286,38 @@
 			$va_thumbnails = array();
 			if($qr_chron_images->numHits() > 0){
 				$t_image_objects = new ca_objects();
+				$i = 1;
 				while($qr_chron_images->nextHit()){
-					$t_image_objects->load($qr_chron_images->get("object_id"));
+					$t_image_objects->load($qr_chron_images->get("ca_objects.object_id"));
 					if ($t_primary_rep = $t_image_objects->getPrimaryRepresentationInstance()){
 						$va_temp =  array();
 						if (!sizeof($va_access_values) || in_array($t_primary_rep->get('access'), $va_access_values)) {
 							$va_temp["representation_id"] = $t_primary_rep->get("representation_id");
-							$va_temp["rep"] = $t_primary_rep->getMediaTag('media', 'icon');
-							$va_temp["object_id"] = $qr_chron_images->get("object_id");
+							$va_temp["rep_icon"] = $t_primary_rep->getMediaTag('media', 'icon');
+							$va_temp["rep_tiny"] = $t_primary_rep->getMediaTag('media', 'tinyicon');
+							$va_temp["object_id"] = $qr_chron_images->get("ca_objects.object_id");
+
+							$va_thumbnails[$qr_chron_images->get("ca_objects.object_id")] = $va_temp;
+							if($vn_getNext == 1){
+								$this->view->setVar("next_object_id", $qr_chron_images->get("object_id"));
+								$this->view->setVar("next_representation_id", $t_primary_rep->get("representation_id"));
+								$vn_getNext = 0;
+							}
+							if($qr_chron_images->get("object_id") == $pn_object_id){
+								$this->view->setVar("representation_index", $i);
+								$this->view->setVar("previous_object_id", $vn_prev_obj_id);
+								$this->view->setVar("previous_representation_id", $vn_prev_rep_id);
+								$vn_getNext = 1;
+							}
+							$vn_prev_obj_id = $qr_chron_images->get("object_id");
+							$vn_prev_rep_id = $t_primary_rep->get("representation_id");
+							
+							$i++;
 						}
-						$va_thumbnails[$qr_chron_images->get("object_id")] = $va_temp;
 					}
 				}
 			}
-			$this->view->setVar('thumbnails', $va_thumbnails);
- 			
+			$this->view->setVar('reps', $va_thumbnails);			
  			
  			return $this->render("Chronology/{$ps_view_name}.php");
  		}
@@ -291,6 +327,16 @@
  		 */ 
  		public function YearsList() {
  			return $this->render("Chronology/years_list_html.php");
+ 		}
+ 		# ------------------------------------------------------- 
+ 		/**
+ 		 * Returns content for overlay containing list of years
+ 		 */ 
+ 		public function PeriodsList() {
+ 		 	$va_jumpToList = $this->ops_jumpToList;
+ 			$this->view->setVar('jumpToList', $va_jumpToList);
+ 			
+ 			return $this->render("Chronology/periods_list_html.php");
  		}
  		# ------------------------------------------------------- 
  	}

@@ -34,285 +34,229 @@
 	$vn_num_reps = 						$t_object->getRepresentationCount(array("return_with_access" => $va_access_values));
 	$vs_display_version =				$this->getVar('primary_rep_display_version');
 	$va_display_options =				$this->getVar('primary_rep_display_options');
+	
+	JavascriptLoadManager::register('smoothDivScrollVertical');
+?>
+	<div id="subnav">
+<?php
+		if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', _t("Back"), ''))) {
+			print "<ul><li>";
+			if ($this->getVar('previous_id')) {
+				print caNavLink($this->request, "&laquo; "._t("Previous"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'));
+			}else{
+				print "&laquo; "._t("Previous");
+			}
+			print "</li>";
+			print "<li>&nbsp;&nbsp;&nbsp;".$vs_back_link."</li>";
+			print "<li>";
+			if ($this->getVar('next_id') > 0) {
+				print caNavLink($this->request, "&raquo; "._t("Next"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'));
+			}else{
+				print "&raquo; "._t("Next");
+			}
+			print "</li></ul>";
+		}else{
+			print "<ul><li>".caNavLink($this->request, "&laquo; "._t("Artist Browser"), "", "eastend", "ArtistBrowser", "Index")."</li></ul>";
+		}
+?>
+	</div><!--end subnav-->
 
-?>	
-	<div id="detailBody">
-		<div id="pageNav">
+	<div id="art_content">
 <?php
-			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', _t("Back"), ''))) {
-				if ($this->getVar('previous_id')) {
-					print caNavLink($this->request, "&lsaquo; "._t("Previous"), '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('previous_id')), array('id' => 'previous'));
-				}else{
-					print "&lsaquo; "._t("Previous");
-				}
-				print "&nbsp;&nbsp;&nbsp;{$vs_back_link}&nbsp;&nbsp;&nbsp;";
-				if ($this->getVar('next_id') > 0) {
-					print caNavLink($this->request, _t("Next")." &rsaquo;", '', 'Detail', 'Object', 'Show', array('object_id' => $this->getVar('next_id')), array('id' => 'next'));
-				}else{
-					print _t("Next")." &rsaquo;";
-				}
+		if($t_object->get("creation_date")){
+			$vs_date = ", ".$t_object->get("creation_date");
+		}
+		print "<div id='art_title'><span class='listhead caps'>".$vs_title;
+		if($vs_date){
+			print $vs_date;
+		}
+		print "</div>";
+		
+		print "<div style='clear:both;'>";
+		if ($t_rep && $t_rep->getPrimaryKey()) {
+			$vs_vaga_class = "";
+			if($t_object->get("object_status") == 349){
+				$vs_vaga_class = "vagaDisclaimer";
+			}
+			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+			$vn_width = $va_media_info["WIDTH"];;
+			if($vn_width > 580){
+				$vn_width = 580;
 			}
 ?>
-		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
-		<div id="leftCol">
+			<div id="art_detail" <?php print ($vs_vaga_class) ? "class='".$vs_vaga_class."'" : ""; ?> style="width:<?php print $vn_width; ?>px;">
 <?php
-			if($this->request->config->get('show_add_this')){
-?>
-				<!-- AddThis Button BEGIN -->
-				<div class="unit"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0;"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end unit -->
-				<!-- AddThis Button END -->
-<?php
+			if($t_object->get("object_status") == 348){
+				# --- VAGA ARS do not show image
+				print "<div id='imgPlaceholderDetail'>Image not available for view</div>";
+			}else{
+				if($va_display_options['no_overlay']){
+					print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
+				}else{
+					$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+					print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
+				}
 			}
+			if($t_object->get("caption")){
+				print "<div class='caption' style='margin-bottom:3px;'>";
+				if($vs_vaga_class){
+					print "<a href='http://www.vagarights.com' target='_blank'>";
+				}
+				print $t_object->get("caption");
+				if($vs_vaga_class){
+					print "</a>";
+				}
+				print "</div><!-- end caption -->";
+			}
+			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+				$vs_lightbox_link = "<div class='caption'>";
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+				}else{
+					print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+				}
+				print "</div>";
+			}
+?>
+			</div><!-- end art_detail -->
+<?php
+			# --- increase width of art_detail_info if the image is less than 580 px wide
+			$vn_info_width = 200;
+			if($va_media_info["WIDTH"] < 580){
+				$vn_info_width = $vn_info_width + (580 - $va_media_info["WIDTH"]);
+			}
+		}
+?>
+		<div id="art_detail_info" <?php print ($vn_info_width) ? "style='width:".$vn_info_width."px;'" : ""; ?>>	
+<?php			
+			# --- creator
+			$va_creator = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+			$t_creator = new ca_entities();
+			if(sizeof($va_creator) > 0){	
+				foreach($va_creator as $va_entity) {
+					$vs_creator = (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"]);
+					# --- load the entity record for the creator so can grab the portrait
+					$t_creator->load($va_entity["entity_id"]);
+				}
+				# --- get the portrait of the creator
+	// 			$va_portraits = $t_creator->get("ca_objects", array("restrictToRelationshipTypes" => array("portrait"), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
+	// 			foreach($va_portraits as $va_portrait){
+	// 				$t_object = new ca_objects($va_portrait["object_id"]);
+	// 				if($va_portrait = $t_object->getPrimaryRepresentation(array('tiny'), null, array('return_with_access' => $va_access_values))){
+	// 					print "<div id='portrait'>".$va_portrait['tags']['tiny']."</div><!-- end portrait -->";
+	// 					break;
+	// 				}
+	// 			}
+				if($t_creator->get("lifespans_date")){
+					$vs_lifespan = $t_creator->get("lifespans_date");
+				}
+				print "<span class='caption listhead caps'>".$vs_creator;
+				if($vs_lifespan){
+					print " (".$vs_lifespan.")";
+				}
+				print "</span><br/>";
+			}
+			
 			# --- identifier
 			if($t_object->get('idno')){
-				print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_object->get('idno')."</div><!-- end unit -->";
-			}
-			# --- parent hierarchy info
-			if($t_object->get('parent_id')){
-				print "<div class='unit'><b>"._t("Part Of")."</b>: ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
+				print "<span class='caption'>Identifier: ".$t_object->get('idno')."</span><br/>";
 			}
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
-					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_object->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
+					if($vs_value = $t_object->get("ca_objects.{$vs_attribute_code}", array('delimiter' => ', ', 'convertCodesToDisplayText' => true))){
+						print "<span class='caption'>".$vs_value."</span><br/>";
 					}
 				}
 			}
-			# --- description
-			if($this->request->config->get('ca_objects_description_attribute')){
-				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
-?>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
-						});
-					</script>
-<?php
-				}
-			}
-			# --- child hierarchy info
-			$va_children = $t_object->get("ca_objects.children.preferred_labels", array('returnAsArray' => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_children) > 0){
-				print "<div class='unit'><h2>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</h2> ";
-				$i = 0;
-				foreach($va_children as $va_child){
-					# only show the first 5 and have a more link
-					if($i == 5){
-						print "<div id='moreChildrenLink'><a href='#' onclick='$(\"#moreChildren\").slideDown(250); $(\"#moreChildrenLink\").hide(1); return false;'>["._t("More")."]</a></div><!-- end moreChildrenLink -->";
-						print "<div id='moreChildren' style='display:none;'>";
-					}
-					print "<div>".caNavLink($this->request, $va_child['name'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_child['object_id']))."</div>";
-					$i++;
-					if($i == sizeof($va_children)){
-						print "</div><!-- end moreChildren -->";
-					}
-				}
-				print "</div><!-- end unit -->";
-			}
+
+			# if($this->request->config->get('ca_objects_description_attribute')){
+// 			#	if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
+// 			#		print "<p class='caption'>".$vs_description_text."</p>";
+// 			#	}
+// 			#}
+			
 			# --- entities
-			$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+			$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
 			if(sizeof($va_entities) > 0){	
-?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
-<?php
+				print "<p class='caption'>";
 				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";
+					print $va_entity['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])."<br/>";
 				}
-?>
-				</div><!-- end unit -->
-<?php
+				print "</p>";
 			}
 			
 			# --- occurrences
 			$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			$va_sorted_occurrences = array();
-			if(sizeof($va_occurrences) > 0){
-				$t_occ = new ca_occurrences();
-				$va_item_types = $t_occ->getTypeList();
-				foreach($va_occurrences as $va_occurrence) {
-					$t_occ->load($va_occurrence['occurrence_id']);
-					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
+			$vn_scrollOccurrences = 0;
+			if(sizeof($va_occurrences) > 0){	
+				if(sizeof($va_occurrences) > 6){
+					$vn_scrollOccurrences = 1;
 				}
-				
-				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
+				if(sizeof($va_entities) == 0){
+					print "<br/>";
+				}
 ?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
+				<div class='listhead caps' style='padding-bottom:0px;'><?php print _t("Related Exhibitions & Events"); ?></div>
 <?php
-					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
-					}
-					print "</div><!-- end unit -->";
+				$va_occurrences_sorted = array();
+				foreach($va_occurrences as $va_occurrence) {
+					$va_occurrences_sorted[$va_occurrence['relationship_typename']][] = "<div style='padding-bottom:5px;'>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_occurrence["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $va_occurrence["occurrence_id"])) : $va_occurrence["label"])."</div>";
 				}
+?>
+				<div class='art_related_list' style='<?php print ($vn_scrollOccurrences) ? "" : " height:auto;"; print ($vn_info_width) ? " width: ".$vn_info_width."px;" : ""; ?>'>
+<?php
+					foreach($va_occurrences_sorted as $vs_relationship_type => $va_links){
+						print "<div class='caption'><i>".$vs_relationship_type."</i></div>";
+						foreach($va_links as $vs_link){
+							print $vs_link;
+						}
+					}
+					if($vn_scrollOccurrences){
+?>
+					<script type="text/javascript">
+						// Initialize the plugin
+						$(document).ready(function () {
+							$("div.art_related_list").smoothDivScroll({
+								visibleHotSpotBackgrounds: "always",
+								hotSpotScrollingInterval: 45
+							});
+						});
+					</script>
+<?php
+					}
+?>
+				</div><!-- end ex_related_list -->
+<?php
 			}
+			
 			# --- places
 			$va_places = $t_object->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			
 			if(sizeof($va_places) > 0){
-				print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
+				print "<p class='caption'>";
 				foreach($va_places as $va_place_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".$va_place_info['relationship_typename'].")</div>";
+					print $va_place_info['relationship_typename'].": ".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])."<br/>";
 				}
-				print "</div><!-- end unit -->";
-			}
-			# --- collections
-			$va_collections = $t_object->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_collections) > 0){
-				print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
-				foreach($va_collections as $va_collection_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." (".$va_collection_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- lots
-			$va_object_lots = $t_object->get("ca_object_lots", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_object_lots) > 0){
-				print "<div class='unit'><h2>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h2>";
-				foreach($va_object_lots as $va_object_lot_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])." (".$va_object_lot_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
-			# --- vocabulary terms
-			$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_terms) > 0){
-				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
-				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
-				}
-				print "</div><!-- end unit -->";
+				print "</p>";
 			}
 			# --- map
 			if($this->request->config->get('ca_objects_map_attribute') && $t_object->get($this->request->config->get('ca_objects_map_attribute'))){
-				$o_map = new GeographicMap(285, 200, 'map');
+				$o_map = new GeographicMap(200, 200, 'map');
 				$o_map->mapFrom($t_object, $this->request->config->get('ca_objects_map_attribute'));
-				print "<div class='unit'>".$o_map->render('HTML')."</div>";
-			}			
-			# --- output related object images as links
-			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if (sizeof($va_related_objects)) {
-				print "<div class='unit'><h2>"._t("Related Objects")."</h2>";
-				print "<table border='0' cellspacing='0' cellpadding='0' width='100%' id='objDetailRelObjects'>";
-				$col = 0;
-				$vn_numCols = 4;
-				foreach($va_related_objects as $vn_rel_id => $va_info){
-					$t_rel_object = new ca_objects($va_info["object_id"]);
-					$va_reps = $t_rel_object->getPrimaryRepresentation(array('icon', 'small'), null, array('return_with_access' => $va_access_values));
-					if($col == 0){
-						print "<tr>";
-					}
-					print "<td align='center' valign='middle' class='imageIcon icon".$va_info["object_id"]."'>";
-					print caNavLink($this->request, $va_reps['tags']['icon'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_info["object_id"]));
-					
-					// set view vars for tooltip
-					$this->setVar('tooltip_representation', $va_reps['tags']['small']);
-					$this->setVar('tooltip_title', $va_info['label']);
-					$this->setVar('tooltip_idno', $va_info["idno"]);
-					TooltipManager::add(
-						".icon".$va_info["object_id"], $this->render('../Results/ca_objects_result_tooltip_html.php')
-					);
-					
-					print "</td>";
-					$col++;
-					if($col < $vn_numCols){
-						print "<td align='center'><!-- empty --></td>";
-					}
-					if($col == $vn_numCols){
-						print "</tr>";
-						$col = 0;
-					}
-				}
-				if(($col != 0) && ($col < $vn_numCols)){
-					while($col <= $vn_numCols){
-						if($col < $vn_numCols){
-							print "<td><!-- empty --></td>";
-						}
-						$col++;
-						if($col < $vn_numCols){
-							print "<td align='center'><!-- empty --></td>";
-						}
-					}
-				}
-				print "</table></div><!-- end unit -->";
+				print "<p class='caption'>".$o_map->render('HTML')."</p>";
 			}
+			
 ?>
-		</div><!-- end leftCol-->
-		<div id="rightCol">
-<?php
-		if ($t_rep && $t_rep->getPrimaryKey()) {
-?>
-			<div id="objDetailImage">
-<?php
-			if($va_display_options['no_overlay']){
-				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
-			}else{
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
-			}
-?>
-			</div><!-- end objDetailImage -->
-			<div id="objDetailImageNav">
-				<div style="float:right;">
-					<!-- bookmark link BEGIN -->
-<?php
-					if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
+		</div> <!--end art_detail_info-->
+		</div>
+	</div><!--end art_content-->
 
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Bookmark item"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-						}else{
-							print caNavLink($this->request, _t("+ Bookmark item"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'));
-						}
-					}
-?>					
-					<!-- bookmark link END -->
-<?php
-					if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
-						if($this->request->isLoggedIn()){
-							print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
-						}else{
-							print caNavLink($this->request, _t("+ Add to Lightbox"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
-						}
-					}
 
-					# --- output download link? 
-					if($this->request->config->get('allow_ca_objects_representation_download')){
-						$vn_can_download = 0;
-						switch($this->request->config->get('allow_ca_objects_representation_download')){
-							case "anyone":
-								$vn_can_download = 1;
-							break;
-							# ------------------------------------------
-							case "logged_in":
-								if ($this->request->isLoggedIn()) {
-									$vn_can_download = 1;
-								}
-							break;
-							# ------------------------------------------
-							case "logged_in_privileged":
-								if (($this->request->isLoggedIn()) && ($this->request->user->canDoAction('can_download_media'))) {
-									$vn_can_download = 1;
-								}
-							break;
-							# ------------------------------------------
-						}
-						if ($vn_can_download) {
-							print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1));
-						}
-					}
-
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
-?>
-				</div>			
-			</div><!-- end objDetailImageNav -->
 <?php
-		}
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
+# --- $x is a hack to hide comment form - not sure if this is needed
+if ($x && !$this->request->config->get('dont_allow_registration_and_login')) {
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData">
@@ -406,10 +350,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 		</div><!-- end objUserData-->
 <?php
 	}
-?>
-		</div><!-- end rightCol -->
-	</div><!-- end detailBody -->
-<?php
+
 	require_once(__CA_LIB_DIR__.'/core/Parsers/COinS.php');
 	
 	print COinS::getTags($t_object);

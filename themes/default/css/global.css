@@ -536,7 +536,7 @@ div.searchlight-results div.searchlight-selected {
 	color: #828282;
 }
 #detailBody #pageNav a:hover {
-	color: #E2E2E2;
+	color: #666666;
 }
 #detailBody #leftCol{
 	float:left;
@@ -1915,7 +1915,7 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.1;
+	opacity:.5;
 	
 }
 div.caMediaOverlayControls:hover {
@@ -1956,6 +1956,27 @@ div.caMediaOverlayControls .repNav {
 	padding: 0px 2% 0px 2%;
 	text-align:center;
 	color:#FFF;
+}
+div.caMediaOverlayRepThumbs {
+	color:#FFF;
+	font-size: 11px;
+	text-align:right;
+	position:absolute;
+	top:60px;
+	right:11px;
+	padding:3px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.3;	
+}
+div.caMediaOverlayRepThumbs:hover {
+	opacity:1;	
+}
+div.caMediaOverlayRepThumbs img{
+	margin:2px;
+	border:1px solid transparent;
+}
+div.caMediaOverlayRepThumbs a.selectedRep img{
+	border:1px solid #FFF;
 }
 
 /* Advanced search */

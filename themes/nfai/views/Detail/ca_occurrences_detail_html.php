@@ -94,14 +94,14 @@ if (!$this->request->isAjax()) {
 				print "<div class='unit'><b>"._t("Repository State")."</b><br/> ".$va_repository_state."</div><!-- end unit -->";
 			}
 			if($t_occurrence->get('ca_occurrences.repository_description.repository_description_text') && $t_occurrence->get('ca_occurrences.repository_description.repository_description_source')) {
-				$va_repository_description = $t_occurrence->get('ca_occurrences.repository_description', array('template' => "^repository_description_text <br/><b>Repository Description Source</b><br/>^repository_description_source", 'delimiter' => '<br/>'));
-				print "<div class='unit'><b>"._t("Repository Description")."</b><br/> ".$va_repository_description."</div><!-- end unit -->";
+				$va_repository_description = $t_occurrence->get('ca_occurrences.repository_description', array('template' => "<b>Repository Description</b><br/> ^repository_description_text <br/><br/><b>Repository Description Source</b><br/>^repository_description_source", 'delimiter' => '<br/><br/>'));
+				print "<div class='unit'>".$va_repository_description."</div><!-- end unit -->";
 			}			
 			if($va_repository_contact = $t_occurrence->get('ca_occurrences.repository_contact', array('template' => "^rep_contact_name (^rep_contact_role)", 'delimiter' => '<br/>'))){
 				print "<div class='unit'><b>"._t("Repository Contact")."</b><br/> ".$va_repository_contact."</div><!-- end unit -->";
 			}
-			if($va_repository_url = $t_occurrence->get('ca_occurrences.external_link', array('delimiter' => '<br/>'))){
-				print "<div class='unit'><b>URL </b><br/><a href='$va_repository_url' target='_blank'>".$va_repository_url."</a></div><!-- end unit -->";
+			if($va_repository_url = $t_occurrence->get('ca_occurrences.repository_url', array('delimiter' => '<br/>'))){
+				print "<div class='unit'><b>URL </b><br/><a href='".$va_repository_url."' target='_blank'>".$va_repository_url."</a></div><!-- end unit -->";
 			}
 			if($va_address = $t_occurrence->get('ca_occurrences.address', array('template' => "^address1 <br/> ^address2 <br/> ^city, ^stateprovince ^postalcode <br/> ^country", 'delimiter' => '<br/>'))){
 				print "<div class='unit'><b>"._t("Address")."</b><br/> ".$va_address."</div><!-- end unit -->";

@@ -46,7 +46,7 @@
 	$vs_from_email = $this->getVar("from_email");
 	$vs_from_name = $this->getVar("from_name");
 	$vs_subject = $this->getVar("subject");
-	$vs_message = $this->getVar("message");
+	$vs_message = $this->getVar("email_message");
 	
 	# --- if params have not been passed, set some defaults
 	if(!$vs_subject && !$va_errors['subject']){
@@ -62,6 +62,7 @@
 <h1><?php print _t("Your Sets"); ?></h1>
 <div id="setItemEditor">
 	<div id="rightCol">
+	<div id="setsMenu">
 <?php
 	if ($vn_set_id) {
 ?>
@@ -179,8 +180,8 @@
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
 						}
 ?>
-						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span></div>
-						<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+						<?php print _t("To e-mail address"); ?></span></div>
+						<input type="text" name="to_email" id="to_email" value="<?php print $vs_to_email; ?>">
 						<div class="formLabel">
 <?php
 						if($va_errors_share_set["from_email"]){
@@ -207,7 +208,7 @@
 						<?php print _t("Subject"); ?></div>
 						<input type="text" name="subject" value="<?php print $vs_subject; ?>">
 						<div class="formLabel"><?php print _t("Message"); ?></div>
-						<textarea name="message" rows="5"><?php print $vs_message; ?></textarea>
+						<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
 						<br/><a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
 					</form>
@@ -264,7 +265,7 @@
 				</ul>
 				<a href='#' id='editSetButton' onclick='$("#helpTips").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-
+	</div><!-- end setsMenu -->
 	</div><!-- end divRightCol -->
 	<div id="leftCol">
 <?php
@@ -311,7 +312,14 @@
 		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
-
+			foreach ($va_items as $vn_item_id => $va_item) {
+				$set_keys[] = $va_item['row_id'];
+			}
+			$qr_results = ca_objects::createResultSet($set_keys);
+			$va_set_item_metadata = array();
+			while($qr_results->nextHit()) {
+				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'));
+			}
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
@@ -325,13 +333,13 @@
 							print caNavLink($this->request, $va_item['representation_tag_thumbnail'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']));
 						}
 						
-						if ($va_item['name']) {
-							if (unicode_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
-							} else {
-								$va_title[] = '<em>'.$va_item['name'].'</em>';
-							}
-						}
+						#if ($va_item['name']) {
+						#	if (unicode_strlen($va_item['name']) > 70) {
+						#		$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
+						#	} else {
+						#		$va_title[] = '<em>'.$va_item['name'].'</em>';
+						#	}
+						#}
 						
 						if ($va_item['idno']) {
 							$va_title[] = '<strong>'._t('Id:').'</strong> '.$va_item['idno'];
@@ -342,7 +350,13 @@
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>
-<?php	
+<?php
+			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
+			if ($va_type == 25) {
+				TooltipManager::add(
+					"#setItem".$vn_item_id, "<div class='setTooltip'><b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/><b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/><b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"]."</div>"
+				);
+				}
 			}
 		}
 ?>
@@ -403,5 +417,28 @@
 				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 			});
 		}
-	});
+<?php
+		if($this->request->isLoggedIn()){
+			JavascriptLoadManager::register('tokeninput');
+?>
+			jQuery('#to_email').tokenInput('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', {
+				onResult: function (results) {
+					if (results.length == 0) {
+						var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+						var emailinput = jQuery('#token-input-to_email').val();
+						if (emailinput.search(emailRegEx) >= 0) {
+							jQuery('#to_email').tokenInput("add", {id: emailinput, name: emailinput});
+						}
+					}
+                    return results;
+            	}, preventDuplicates: true
+            });
+<?php
+		}
+?>
+			jQuery('.scrollPane').jScrollPane({
+				animateScroll: true,
+			});
+		});
+		
 	</script>

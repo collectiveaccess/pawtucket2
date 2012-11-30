@@ -29,67 +29,83 @@
 	$qr_hits = $this->getVar('browse_results');
 	$vn_c = 0;
 	$vn_itemc = 0;
-	$vn_numCols = 4;
-?>
-	<table border="0" cellpadding="0px" cellspacing="0px" width="100%">
-<?php
-	while(($vn_itemc < $this->getVar('items_per_page')) && ($qr_hits->nextHit())) {
-		if ($vn_c == 0) { print "<tr>\n"; }
-		$vn_object_id = $qr_hits->get('object_id');
-		$va_labels = $qr_hits->getDisplayLabels();
-		$vs_caption = "";
-		foreach($va_labels as $vs_label){
-			$vs_caption .= $vs_label;
-		}
-		# --- get the height of the image so can calculate padding needed to center vertically
-		$va_media_info = $qr_hits->getMediaInfo('ca_object_representations.media','thumbnail');
-		$vn_padding_top = 0;
-		$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
-		print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
-		if($this->request->config->get('allow_detail_for_ca_objects')){
-			print caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media','thumbnail'), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')));
-		}else{
-			print $qr_hits->getMediaTag('ca_object_representations.media','thumbnail');
-		}
-		// Get thumbnail caption
-		$this->setVar('object_id', $vn_object_id);
-		$this->setVar('caption_title', $vs_caption);
-		$this->setVar('caption_idno', $qr_hits->get('idno'));
-		
-		print "</div><div class='searchThumbCaption searchThumbnail".$vn_object_id."'>".$this->render('../Results/ca_objects_result_caption_html.php')."</div>\n</td>\n";
-
-		
-		// set view vars for tooltip
-		$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media','small'));
-		$this->setVar('tooltip_title', $vs_caption);
-		$this->setVar('tooltip_idno', $qr_hits->get('idno'));
-		TooltipManager::add(
-			".searchThumbnail{$vn_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
-		);
-		
-		$vn_c++;
-		$vn_itemc++;
-		
-		if ($vn_c == $vn_numCols) {
-			print "</tr>\n";
-			$vn_c = 0;
-		}else{
-			print "<td><!-- empty for spacing --></td>";
-		}
+	$vn_numCols = 2;
+	if($this->getVar('num_cols')){
+		$vn_numCols = $this->getVar('num_cols');
 	}
-	if(($vn_c > 0) && ($vn_c < $vn_numCols)){
-		while($vn_c < $vn_numCols){
-			print "<td class='searchResultTd'><!-- empty --></td>\n";
-			$vn_c++;
-			if($vn_c < $vn_numCols){
-				print "<td><!-- empty for spacing --></td>";
+	$va_other_params = $this->getVar('other_paging_parameters');
+	# --- exclude the portrait on entity detail pages
+	$vn_exclude_object_id = $this->getVar('exclude_object_id');
+	$vs_detailType = $this->getVar('detailType');
+	$va_access_values	= $this->getVar('access_values');
+	$va_related_objects = array();
+	if($qr_hits->numHits()){
+		# --- loop through all results and build 3 columns to output later
+		$va_col1 = array();
+		$va_col2 = array();
+		$va_col3 = array();
+		$vn_col = 1;
+		while($qr_hits->nextHit()){
+			$vn_object_id = $qr_hits->get('object_id');
+			if(($vn_object_id != $vn_exclude_object_id) && ($qr_hits->get("ca_objects.object_status") != 348)){
+				$vs_caption = join("; ", $qr_hits->getDisplayLabels());
+				$vs_vaga_class = "";
+				if($qr_hits->get("object_status") == 349){
+					$vs_vaga_class = " vagaDisclaimer";
+					$vn_vaga_disclaimer_output = 1;
+				}
+				$va_media_info_orig = $qr_hits->getMediaInfo('ca_object_representations.media', 'original');
+				$va_media_info_grid = $qr_hits->getMediaInfo('ca_object_representations.media', 'relatedGrid');
+				$vs_icon = "";
+				if(caGetMediaClass($va_media_info_orig["MIMETYPE"]) == "video"){
+					$vs_icon = "<span class='videoIconRelatedGrid' style='width:".$va_media_info_grid["WIDTH"]."px; height:".$va_media_info_grid["HEIGHT"]."px;'><!-- empty --></span>";
+				}
+				${"va_col".$vn_col}[] = "<span style='position:relative;'>".caNavLink($this->request, $vs_icon.$qr_hits->getMediaTag('ca_object_representations.media', 'relatedGrid', array('checkAccess' => $va_access_values)), $vs_vaga_class, 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')), array("id" => "searchThumbnail".$qr_hits->get('ca_objects.object_id')))."</span>";
+					
+				// set view vars for tooltip
+				//$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
+				//$this->setVar('tooltip_title', $vs_caption);
+				//$this->setVar('tooltip_idno', $qr_hits->get('idno'));
+				//TooltipManager::add(
+				//	"#searchThumbnail{$vn_object_id}", $this->render('../Results/ca_objects_result_tooltip_html.php')
+				//);
+		
+				$vn_col++;
+				if($vn_col > $vn_numCols){
+					$vn_col = 1;
+				}
+				$va_related_objects[] = $vn_object_id;
 			}
 		}
-		print "</tr>\n";
-	}
+		# save object id's in result context
+		$o_search_result_context = new ResultContext($this->request, "ca_objects", $va_other_params['detail_type']);
+		$o_search_result_context->setAsLastFind();
+		if($va_other_params['entity_id']){
+			$o_search_result_context->setParameter("entity_id", $va_other_params['entity_id']);
+		}
+		if($va_other_params['occurrence_id']){
+			$o_search_result_context->setParameter("occurrence_id", $va_other_params['occurrence_id']);
+		}
+		$o_search_result_context->setResultList($va_related_objects);
+		$o_search_result_context->saveContext();
 ?>
-	</table>
+		<div class="ad_thumbs" <?php print ($vn_numCols == 3) ? "style='width:555px;'" : ""; ?>><div>	
 <?php
-
-	print $this->render('paging_controls_html.php');
+			$i = 1;
+			while($i <= $vn_numCols ){
+				print '<div class="col">'.join("<br/>", ${"va_col".$i}).'</div>';
+				$i++;
+			}
+?>
+		<div style="clear:both;"><!-- empty --></div></div></div><!--end ad_thumbs-->
+		<script type="text/javascript">
+			// Initialize the plugin
+			$(document).ready(function () {
+				$("div.ad_thumbs").smoothDivScroll({
+					visibleHotSpotBackgrounds: "always"
+				});
+			});
+		</script>
+<?php
+	}
 ?>

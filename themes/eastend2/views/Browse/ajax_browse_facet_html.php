@@ -32,6 +32,7 @@
 	
 	$va_types = $this->getVar('type_list');
 	$va_relationship_types = $this->getVar('relationship_type_list');
+	$t_subject = $this->getVar('t_subject');
 	
 	$vb_individual_group_display = (bool)$this->getVar('individual_group_display');
 
@@ -54,7 +55,7 @@
 ?>
 <script type="text/javascript">
 	function caUpdateFacetDisplay(grouping) {
-		caUIBrowsePanel.showBrowsePanel('<?php print $vs_facet_name; ?>', <?php print ((intval($vm_modify_id) > 0) ? 'true' : 'false'); ?>, <?php print ((intval($vm_modify_id) > 0) ?  $vm_modify_id : 'null'); ?>, grouping);
+		caUIBrowsePanel.showBrowsePanel('<?php print $vs_facet_name; ?>', <?php print ((intval($vm_modify_id) > 0) ? 'true' : 'false'); ?>, <?php print ((intval($vm_modify_id) > 0) ?  $vm_modify_id : 'null'); ?>, grouping, false, '<?php print $t_subject->tableName(); ?>');
 	}
 </script>
 <div style="float: right;" id='browseFacetGroupingControls'>
@@ -159,23 +160,23 @@
 					$va_groups = array();
 					switch($vs_grouping_field) {
 						case 'label':
-							$va_groups[] = mb_substr(trim($va_item[$va_label_order_by_fields[0]]), 0, 1, 'UTF-8');	
+							$va_groups[] = mb_substr(caStripLeadingPunctuation($va_item[$va_label_order_by_fields[0]]), 0, 1, 'UTF-8');	
 							break;
 						case 'relationship_types':
 							foreach($va_item['rel_type_id'] as $vs_g) {
 								if (isset($va_relationship_types[$vs_g]['typename'])) {
-									$va_groups[] = trim($va_relationship_types[$vs_g]['typename']);
+									$va_groups[] = caStripLeadingPunctuation($va_relationship_types[$vs_g]['typename']);
 								} else {
-									$va_groups[] = trim($vs_g);
+									$va_groups[] = caStripLeadingPunctuation($vs_g);
 								}
 							}
 							break;
 						case 'type':
 							foreach($va_item['type_id'] as $vs_g) {
 								if (isset($va_types[$vs_g]['name_plural'])) {
-									$va_groups[] = trim($va_types[$vs_g]['name_plural']);
+									$va_groups[] = caStripLeadingPunctuation($va_types[$vs_g]['name_plural']);
 								} else {
-									$va_groups[] = trim(_t('Type ').$vs_g);
+									$va_groups[] = caStripLeadingPunctuation(_t('Type ').$vs_g);
 								}
 							}
 							break;
@@ -188,7 +189,7 @@
 											foreach($va_item['ca_attribute_'.$vn_grouping_attribute_id] as $vn_i => $va_v) {
 												$va_v = $o_tep->normalizeDateRange($va_v['value_decimal1'], $va_v['value_decimal2'], (isset($va_tmp[1]) && in_array($va_tmp[1], array('years', 'decades', 'centuries'))) ? $va_tmp[1] : 'decades');
 												foreach($va_v as $vn_i => $vn_v) {
-													$va_groups[] = trim($vn_v);
+													$va_groups[] = caStripLeadingPunctuation($vn_v);
 												}
 											}
 										}
@@ -196,13 +197,13 @@
 									default:
 										if(isset($va_item['ca_attribute_'.$vn_grouping_attribute_id]) && is_array($va_item['ca_attribute_'.$vn_grouping_attribute_id])) {
 											foreach($va_item['ca_attribute_'.$vn_grouping_attribute_id] as $vn_i => $va_v) {
-												$va_groups[] = trim($va_v['value_longtext1']);
+												$va_groups[] = caStripLeadingPunctuation($va_v['value_longtext1']);
 											}
 										}
 										break;
 								}
 							} else {
-								$va_groups[] = mb_substr(trim($va_item[$va_label_order_by_fields[0]]), 0, 1, 'UTF-8');	
+								$va_groups[] = mb_substr(caStripLeadingPunctuation($va_item[$va_label_order_by_fields[0]]), 0, 1, 'UTF-8');	
 							}
 							break;
 					}
@@ -237,9 +238,9 @@
 		
 		foreach($va_groups as $vs_group) {
 			if ($vb_individual_group_display) {
-				print " <a href='#' onclick='loadFacetGroup(\"".(($vs_group === '~') ? '~' : $vs_group)."\"); return false;' ".(($vs_g == $vs_group) ? "class='browseSelectPanelFacetGroupSelected'" : "class='browseSelectPanelFacetGroup'").">{$vs_group}</a> ";
+				print " <a href='#' onclick='loadFacetGroup(\"{$vs_group}\"); return false;' ".(($vs_g == $vs_group) ? "class='browseSelectPanelFacetGroupSelected'" : "class='browseSelectPanelFacetGroup'").">{$vs_group}</a> ";
 			} else {
-				print " <a href='#".(($vs_group === '~') ? '~' : $vs_group)."'>{$vs_group}</a> ";
+				print " <a href='#{$vs_group}'>{$vs_group}</a> ";
 			}
 		}
 ?>

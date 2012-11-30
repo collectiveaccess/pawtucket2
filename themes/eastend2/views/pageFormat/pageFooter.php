@@ -1,13 +1,12 @@
-		<div style="clear:both; height:1px;"><!-- empty --></div></div><!-- end pageArea -->
-		<div id="footer">
-			<?php print $this->request->config->get('page_footer_text'); ?> 
-			[<?php print $this->request->session->elapsedTime(4).'s'; ?>/<?php print caGetMemoryUsage(); ?>]
-		</div><!-- end footer -->
+		<div style="clear:both;"></div></div><!--end main content-->
 <?php
+# --- tooltip for vaga images - changes to this should also be made in ajaxfooter
+TooltipManager::add(
+	".vagaDisclaimer", "<div style='width:250px;'>Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a></div>"
+);
 print TooltipManager::getLoadHTML();
 ?>
 	<div id="caMediaPanel"> 
-		<div id="close"><a href="#" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
 		<div id="caMediaPanelContentArea">
 		
 		</div>
@@ -31,6 +30,9 @@ print TooltipManager::getLoadHTML();
 				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 			});
 		}
+	});
+	$(function(){  // $(document).ready shorthand
+	  $('.notificationMessage').effect('fade', 'easeInSine', 5000);
 	});
 	</script>
 	</body>

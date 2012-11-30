@@ -55,7 +55,11 @@
 		$va_media_info = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values));
 		$vn_padding_top = 0;
 		print "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail".$vn_object_id."'>";
-		print caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('object_id')));
+		$vs_display = "";
+		if(!($vs_display = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)))){
+			$vs_display = "<div class='textResult'>ID: ".$qr_hits->get("idno")."</div>";
+		}
+		print caNavLink($this->request, $vs_display, '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('object_id')));
 		
 		// Get thumbnail caption
 		$this->setVar('object_id', $vn_object_id);
@@ -99,14 +103,28 @@
 	</table></li></ul></div>
 <?php
 if($this->getVar('num_pages') > 1){
+	$vn_num_results = $qr_hits->numHits();
 ?>
 	<div id='detailNavBar'>
-		<a href="#" id="carousel-prev">&lsaquo; <?php print _t("Previous"); ?></a>
+		<div class="nextPrevious">
+			<a href="#" id="carousel-prev" class="previous">&lsaquo; <?php print _t("Previous"); ?></a>
 <?php
-		$vn_num_results = $qr_hits->numHits();
-		print "&nbsp;&nbsp;&nbsp;<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+			print "<span id='pageCounterStart'>Page 1</span>/".ceil($vn_num_results/$this->getVar('items_per_page'));
 ?>
-		<a href="#" id="carousel-next"><?php print _t("Next"); ?> &rsaquo;</a>
+			<a href="#" id="carousel-next" class="next"><?php print _t("Next"); ?> &rsaquo;</a>
+		</div>
+<?php
+		print "<div class='jumpToPageDetail'>"._t("Jump to page:");
+?>
+			<input id="carouselJumpToPage" style="width:25px; height:12 px; border:1px solid #848484;" value="" name="carouselJumpToPage"> <a href="#" id="carouselJump">GO</a>
+		</div>
+<?php
+		print "Displaying ".$vn_num_results." item".(($vn_num_results == 1) ? "" : "s");
+		
+		#print "<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+		
+
+?>	
 	</div><!-- end detailNavBar -->
 <?php
 }
@@ -128,18 +146,30 @@ if($this->getVar('num_pages') > 1){
 				carousel.prev();
 				return false;
 			});
+			
+			jQuery('#carouselJump').bind('click', function() { 
+					var carousel = jQuery('#relatedObjectsCarousel').data('jcarousel');
+					var page = parseInt(jQuery('#carouselJumpToPage').val());
+					carousel.scroll(page, true);
+					
+					return false;
+				}
+			);
+
 		};
 
 		function loadRelatedObjects(carousel, state) {
 			var id = <?php print $vn_id; ?>;
 			var numCols = <?php print $vn_numCols ?>;
 			var startImageCount = (carousel.first - 1) * <?php print $this->getVar('items_per_page'); ?> + 1;
-			jQuery('#imageCounterStart').html(startImageCount);
-			var endImageCount = carousel.first * <?php print $this->getVar('items_per_page'); ?>;
-			if(endImageCount > <?php print $qr_hits->numHits(); ?>){
-				endImageCount = <?php print $qr_hits->numHits(); ?>;
-			}
-			jQuery('#imageCounterEnd').html(endImageCount);
+			jQuery('#pageCounterStart').html(carousel.first);
+			
+//			jQuery('#imageCounterStart').html(startImageCount);
+// 			var endImageCount = carousel.first * <?php print $this->getVar('items_per_page'); ?>;
+// 			if(endImageCount > <?php print $qr_hits->numHits(); ?>){
+// 				endImageCount = <?php print $qr_hits->numHits(); ?>;
+// 			}
+// 			jQuery('#imageCounterEnd').html(endImageCount);
 			for (var i = carousel.first; i <= (carousel.last + 1); i++) {
 				// Check if the item already exists
 				if (!carousel.has(i)) {
@@ -148,9 +178,14 @@ if($this->getVar('num_pages') > 1){
 						imageGrid = '<table border="0" cellpadding="0px" cellspacing="0px" width="100%">';
 						var col = 0;
 						var tooltips = {};
+						var thumbnail = '';
 						jQuery.each(objects, function(k, v) {
 							if (col == 0) { imageGrid = imageGrid +  "<tr>\n"; }
-							imageGrid = imageGrid + "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail" + v['object_id'] + "'><a href='<?php print caNavUrl($this->request, "Detail", "Object", "Show"); ?>/object_id/" + v['object_id'] + "'>" + v['widethumbnail'] + "</a></div></td>\n";
+							thumbnail = v['widethumbnail'];
+							if(!thumbnail){
+								thumbnail = "<div class='textResult'>ID: " + v['idno'] + "</div>";
+							}
+							imageGrid = imageGrid + "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail" + v['object_id'] + "'><a href='<?php print caNavUrl($this->request, "Detail", "Object", "Show"); ?>/object_id/" + v['object_id'] + "'>" + thumbnail + "</a></div></td>\n";
 							col++;
 							if(col == numCols){
 								imageGrid = imageGrid + "</tr>";
@@ -175,15 +210,18 @@ if($this->getVar('num_pages') > 1){
 						
 						// Add tooltips
 						jQuery.each(objects, function(k, v) {
-							jQuery('.searchThumbnail' + v['object_id']).tooltip({ track: false, extraClass: 'tooltipFormat', showURL: false, bodyHandler: function() { return '<div class=\"tooltipImage\">' + v['small'] + '</div> <div class=\"tooltipCaption\"> <div><b>TITLE:</b> ' + v['label'] + '</div><div><b>ID:</b> ' + v['idno'] + '</div></div>' }});
+							var image = "";
+							if(v['small']){
+								image = v['small'];
+							}
+							jQuery('.searchThumbnail' + v['object_id']).tooltip({ track: false, extraClass: 'tooltipFormat', showURL: false, bodyHandler: function() { return '<div class=\"tooltipImage\">' + image + '</div> <div class=\"tooltipCaption\"> <div><b>TITLE:</b> ' + v['label'] + '</div><div><b>ID:</b> ' + v['idno'] + '</div></div>' }});
 						});
 						i++;
 					});
 					
 					break;
 				}
-			}
-			
+			}			
 		}
 </script>
 
