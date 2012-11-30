@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/ca/Service/ItemInfoService.php
+ * app/lib/ca/Service/TourService.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,11 +40,10 @@ require_once(__CA_LIB_DIR__."/core/Datamodel.php");
 require_once(__CA_LIB_DIR__."/core/Db.php");
 require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
 require_once(__CA_MODELS_DIR__."/ca_locales.php");
-require_once(__CA_MODELS_DIR__."/ca_sets.php");
-require_once(__CA_MODELS_DIR__."/ca_set_items.php");
-require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
+require_once(__CA_MODELS_DIR__."/ca_tours.php");
+require_once(__CA_MODELS_DIR__."/ca_tour_stops.php");
 
-class ItemInfoService extends BaseService {
+class TourService extends BaseService {
 	# -------------------------------------------------------
 	protected $opo_dm;
 	# -------------------------------------------------------
@@ -56,8 +55,8 @@ class ItemInfoService extends BaseService {
 	/**
 	 * Unified get function
 	 *
-	 * @param string $type [ca_objects, ca_entities, ca_places, ca_occurrences, ca_collections, ca_list_items]
-	 * @param array $item_ids list of primary keys
+	 * @param string $type [ca_tours, ca_tour_stops]
+	 * @param int $item_id primary key
 	 * @param array $bundles list of bundles to get
 	 * For example:
 	 * array("ca_objects.status","ca_entities.preferred_labels.displayname")
@@ -87,32 +86,26 @@ class ItemInfoService extends BaseService {
 	 * -convertCodesToDisplayText: if set, id values refering to foreign keys are returned as preferred label text in the current locale
 	 * @return array associative array of bundle contents
 	 */
-	public function get($type,$item_ids,$bundles,$options){
-		if(!($t_subject_instance = $this->getTableInstance($type,null,true))){
-			throw new SoapFault("Server", "Invalid type");
+	public function get($type,$item_id,$bundles,$options){
+		if(!($t_subject_instance = $this->getTableInstance($type,$item_id,true))){
+			throw new SoapFault("Server", "Invalid type or item_id");
 		}
-		$va_return = array();
-		if(is_array($item_ids)){
-			// reindex array to account for bad indexing by the user which could result in SQL errors in the code blow
-			$item_ids = array_values($item_ids);
-			$qr_result = $t_subject_instance->makeSearchResult($type, $item_ids);
-			if(!$qr_result){
-				throw new SoapFault("Server","Couldn't convert list of items to search result");
-			}
-			while($qr_result->nextHit()) {
-				foreach($bundles as $vs_bundle){
-					if($this->_isBadBundle($vs_bundle)){
-						continue;
-					}
-					if(isset($options[$vs_bundle])){
-						$va_return[$qr_result->get($t_subject_instance->primaryKey())][$vs_bundle] = $qr_result->get($vs_bundle,$options[$vs_bundle]);
-					} else {
-						$va_return[$qr_result->get($t_subject_instance->primaryKey())][$vs_bundle] = $qr_result->get($vs_bundle);
-					}
+		if(!is_array($bundles) && is_string($bundles)){
+			return $t_subject_instance->get($bundles,$options); // hope this is safe
+		} else {
+			$va_return = array();
+			foreach($bundles as $vs_bundle){
+				if($this->_isBadBundle($vs_bundle)){
+					continue;
+				}
+				if(isset($options[$vs_bundle])){
+					$va_return[$vs_bundle] = $t_subject_instance->get($vs_bundle,$options[$vs_bundle]);
+				} else {
+					$va_return[$vs_bundle] = $t_subject_instance->get($vs_bundle);
 				}
 			}
+			return $va_return;
 		}
-		return $va_return;
 	}
 	# -------------------------------------------------------
 	/**
@@ -130,21 +123,21 @@ class ItemInfoService extends BaseService {
 	/**
 	 * Get data for specified item
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_object_lots", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @return array associative array (field_name => field_value)
 	 * @throws SoapFault
 	 */
 	public function getItem($type, $item_id){
 		if(!($t_subject_instance = $this->getTableInstance($type,$item_id))){
-			throw new SoapFault("Server", "Invalid type $type or item_id $item_id");
+			throw new SoapFault("Server", "Invalid type or item_id");
 		}
 		return $t_subject_instance->getValuesForExport();
 	}
 	# -------------------------------------------------------
 	/**
 	 * Returns list of metdata element codes applicable to the specified type (type_id)
-	 * @param string $type can be one of: "ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: "ca_tours", "ca_tour_stops"]
 	 * @param int $type_id type identifier
 	 * @param boolean $include_sub_element_codes determines whether to return only top-level element codes or not
 	 * @return array list of applicable element codes
@@ -159,7 +152,7 @@ class ItemInfoService extends BaseService {
 	# -------------------------------------------------------
 	/**
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @return array
 	 * @throws SoapFault
@@ -182,17 +175,16 @@ class ItemInfoService extends BaseService {
 					"element_code" => $vo_value->getElementCode(),
 					"element_id" => $vo_value->getElementID(),
 					"attribute_info" => $t_subject_instance->getAttributeLabelAndDescription($vo_value->getElementCode()),
-					"datatype" => $va_element_type_cfg[$t_element->get("datatype")]
-				);
+					"datatype" => $va_element_type_cfg[$t_element->get("datatype")]				);
 			}
-			$va_return[$vo_attr->getAttributeID()] = $va_attr;
+			$va_return[] = $va_attr;
 		}
 		return $va_return;
 	}
 	# -------------------------------------------------------
 	/**
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @param string $attribute_code_or_id
 	 * @return array
@@ -203,25 +195,20 @@ class ItemInfoService extends BaseService {
 			throw new SoapFault("Server", "Invalid type or item_id");
 		}
 		$t_locale = new ca_locales();
-		$t_element = new ca_metadata_elements();
+
 		$va_attrs = $t_subject_instance->getAttributesByElement($attribute_code_or_id);
 		$va_return = array();
-		$va_element_type_cfg = ca_metadata_elements::getAttributeTypes();
 		foreach($va_attrs as $vo_attr){
 			$va_attr = array();
 			foreach($vo_attr->getValues() as $vo_value){
-				$t_element->load($vo_value->getElementID());
 				$va_attr[] = array(
+					"element_id" => $vo_value->getElementID(),
 					"value_id" => $vo_value->getValueID(),
 					"display_value" => $vo_value->getDisplayValue(),
-					"element_code" => $vo_value->getElementCode(),
-					"element_id" => $vo_value->getElementID(),
-					"attribute_info" => $t_subject_instance->getAttributeLabelAndDescription($vo_value->getElementCode()),
-					"datatype" => $va_element_type_cfg[$t_element->get("datatype")],
 					"locale" => $t_locale->localeIDToCode($vo_attr->getLocaleID()),
 				);
 			}
-			$va_return[$vo_attr->getAttributeID()] = $va_attr;
+			$va_return[] = $va_attr;
 		}
 		return $va_return;
 	}
@@ -229,7 +216,7 @@ class ItemInfoService extends BaseService {
 	/**
 	 * Returns text of attributes in the user's currently selected locale, or else falls back to whatever locale is available
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @param string $attribute_code_or_id
 	 * @param string $template
@@ -248,7 +235,7 @@ class ItemInfoService extends BaseService {
 	/**
 	 * Get all labels attached to specified item
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @param string $mode can be either preferred, nonpreferred or all
 	 * @return array
@@ -271,7 +258,7 @@ class ItemInfoService extends BaseService {
 	/**
 	 * Get label for display
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @return string
 	 * @throws SoapFault
@@ -287,99 +274,12 @@ class ItemInfoService extends BaseService {
 		}
 	}
 	# -------------------------------------------------------
-	/**
-	 * Get all representations for specified object
-	 *
-	 * @param int $object_id identifier of the object
-	 * @param array $versions list of media versions that should be included in the result
-	 * @return array
-	 * @throws SoapFault
-	 */
-	public function getObjectRepresentations($object_id,$versions){
-		if(!($t_subject_instance = $this->getTableInstance("ca_objects",$object_id))){
-			throw new SoapFault("Server", "Invalid object_id");
-		}
-		$va_reps = $t_subject_instance->getRepresentations($versions);
-		foreach($va_reps as &$va_rep){
-			$va_rep["media"] = "<[[CDATA[".caUnserializeForDatabase($va_rep["media"])."]]>";
-			$va_rep["media_metadata"] = "<[[CDATA[".caUnserializeForDatabase($va_rep["media_metadata"])."]]>";
-		}
-		return $va_reps;
-	}
-	# -------------------------------------------------------
-	/**
-	 * Get available versions for a list of object representations
-	 * 
-	 * @param array $representation_ids list of object representation_ids
-	 * @return array associative array which maps representation_ids to the list of available versions
-	 * @throws SoapFault
-	 */
-	public function getObjectRepresentationVersions($representation_ids){
-		if(!is_array($representation_ids)){
-			throw new SoapFault("Server","Invalid argument");
-		}
-		$va_return = array();
-		foreach($representation_ids as $vn_rep_id){
-			if(!($t_subject_instance = $this->getTableInstance("ca_object_representations",$vn_rep_id))){
-				throw new SoapFault("Server", "Invalid representation_id");
-			}
-			$va_return[$vn_rep_id] = $t_subject_instance->getMediaVersions("media");
-		}
-		
-		return $va_return;
-	}
-	# -------------------------------------------------------
-	/**
-	 * Get URLs to media versions using MD5 hash of original file
-	 *
-	 * @param string $md5 MD5 hash for media to fetch urls for
-	 * @param array $versions list of media versions that should be included in the result
-	 * @return array
-	 * @throws SoapFault
-	 */
-	public function getObjectRepresentationURLByMD5($md5,$versions){
-		if(!$versions) { return array(); }
-		if (!is_array($versions)) { $versions = array($versions); }
-		if(!($t_subject_instance = $this->getTableInstance("ca_object_representations", null))){
-			throw new SoapFault("Server", "Couldn't create instance");
-		}
-		if (!$t_subject_instance->load(array('md5' => $md5, 'deleted' => 0))) {
-			throw new SoapFault("Server", "Media with MD5 does not exist");
-		}
-		
-		$va_urls = array();
-		foreach($versions as $version) {
-			if ($vs_url = $t_subject_instance->getMediaUrl('media', $version)) {
-				$va_urls[$version] = $vs_url;
-			}
-		}
-		return $va_urls;
-	}
-	# -------------------------------------------------------
-	/**
-	 * Get primary representation for specified object
-	 *
-	 * @param int $object_id
-	 * @param array $pa_versions list of media versions that should be included in the result
-	 * @return array
-	 * @throws SoapFault
-	 */
-	public function getPrimaryObjectRepresentation($object_id,$versions){
-		if(!($t_subject_instance = $this->getTableInstance("ca_objects",$object_id))){
-			throw new SoapFault("Server", "Invalid object_id");
-		}
-		$va_rep = $t_subject_instance->getPrimaryRepresentation($versions);
-		$va_rep["media"] = caUnserializeForDatabase($va_rep["media"]);
-		$va_rep["media_metadata"] = caUnserializeForDatabase($va_rep["media_metadata"]);
-		return $va_rep;
-	}
-	# -------------------------------------------------------
 
 	# -------------------------------------------------------
 	/**
 	 * Get all relationships between specified items and items of related_type
 	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
+	 * @param string $type can be one of: ["ca_tours", "ca_tour_stops"]
 	 * @param int $item_id primary key
 	 * @param string $related_type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
 	 * @param array options Supported options:
@@ -392,7 +292,7 @@ class ItemInfoService extends BaseService {
  	 *		restrict_to_relationship_types = restricts returned items to those related to the current row by the specified relationship type(s). You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
  	 *		restrictToRelationshipTypes = synonym for restrict_to_relationship_types
  	 *
- 	 *		exclude_relationship_types - omits any items related to the current row with any of the specified types from the returned set of its. You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
+ 	 *		exclude_relationship_types = omits any items related to the current row with any of the specified types from the returned set of its. You can pass either an array of types or a single type. The types can be relationship type_code's or type_id's.
  	 *		excludeRelationshipTypes = synonym for exclude_relationship_types
  	 * 		exclude_type = excludes returned items of the specified type; only supports a single type which can be specified as a list item_code or item_id
  	 *		excludeType = synonym for exclude_type
@@ -407,7 +307,7 @@ class ItemInfoService extends BaseService {
  	 *		row_id - primary key value to use when fetching related items; if omitted or set to a false value (eg. null, false, 0) then the currently loaded primary key value is used [default]
  	 *		limit - number of items to limit return set to; default is 1000
  	 *		sort = optional array of bundles to sort returned values on. Currently only supported when getting related values via simple related <table_name> and <table_name>.related invokations. Eg. from a ca_objects results you can use the 'sort' option got get('ca_entities'), get('ca_entities.related') or get('ca_objects.related'). The bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics, label fields and attributes) are sortable.
-	 *		bundles = associative array of bundle => bundle_options pairs in @see BaseModel::get() notation to retrieve for each related item
+	 *
 	 * @return array
 	 * @throws SoapFault
 	 */
@@ -416,21 +316,7 @@ class ItemInfoService extends BaseService {
 			throw new SoapFault("Server", "Invalid type or item_id");
 		}
 		if(method_exists($t_subject_instance,"getRelatedItems")){
-			$va_items = $t_subject_instance->getRelatedItems($related_type, $options);
-			if(is_array($options["bundles"])){
-				$t_related_instance = $this->getTableInstance($related_type);
-				$qr_result = $t_related_instance->makeSearchResult($related_type, array_keys($va_items));
-				while($qr_result->nextHit()){
-					foreach($options["bundles"] as $vs_bundle => $vs_bundle_options){
-						if($this->_isBadBundle($vs_bundle)){
-							continue;
-						}
-						$va_items[$qr_result->get($t_related_instance->primaryKey())][$vs_bundle] = $qr_result->get($vs_bundle,$va_bundle_options);
-					}
-				}
-			}
-			
-			return $va_items;
+			return $t_subject_instance->getRelatedItems($related_type, $options);
 		} else {
 			throw new SoapFault("Server", "Invalid type");
 		}
@@ -497,29 +383,29 @@ class ItemInfoService extends BaseService {
 	}
 	# -------------------------------------------------------
 	/**
-	 * Gets list of all sets
+	 * Gets list of all tours
 	 *
 	 * @return array
 	 * @throws SoapFault
 	 */
-	public function getSets(){
-		$t_set = new ca_sets();
-		return $t_set->getSets(array('user_id' => $this->opo_request->getUserID()));
+	public function getTours(){
+		$t_tour = new ca_tours();
+		return caExtractValuesByUserLocale($t_tour->getListOfTours());
 	}
 	# -------------------------------------------------------
 	/**
-	 * Gets set info for specified set
+	 * Gets info for specified tour
 	 *
-	 * @param int $set_id
+	 * @param int $tour_id
 	 * @return array
 	 * @throws SoapFault
 	 */
-	public function getSet($set_id){
-		$t_set = new ca_sets();
-		if(!$t_set->load($set_id)){
-			throw new SoapFault("Server", "Invalid set_id");
+	public function getTour($tour_id){
+		$t_tour = new ca_tours();
+		if(!$t_tour->load($tour_id)){
+			throw new SoapFault("Server", "Invalid tour_id");
 		}
-		return $t_set->getFieldValuesArray();
+		return $t_tour->getFieldValuesArray();
 	}
 	# -------------------------------------------------------
 	/**
@@ -537,28 +423,12 @@ class ItemInfoService extends BaseService {
 	 * @return array
 	 * @throws SoapFault
 	 */
-	public function getSetItems($set_id,$options){
-		$t_set = new ca_sets();
-		if(!$t_set->load($set_id)){
-			throw new SoapFault("Server", "Invalid set_id");
+	public function getTourStops($tour_id,$options){
+		$t_tour = new ca_tours();
+		if(!$t_tour->load($tour_id)){
+			throw new SoapFault("Server", "Invalid tour_id");
 		}
-		$options["user_id"] = $this->opo_request->getUserID();
-		return $t_set->getItems($options);
-	}
-	# -------------------------------------------------------
-	/**
-	 * Returns list of sets item is member of
-	 *
-	 * @param string $type can be one of: ["ca_objects", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"]
-	 * @param int $item_id primary key
-	 * @return array
-	 */
-	public function getSetsForItem($type, $item_id){
-		if(!($this->getTableInstance($type,$item_id))){
-			throw new SoapFault("Server", "Invalid type or ID");
-		}
-		$t_set = new ca_sets();
-		return $t_set->getSetsForItem($type, $item_id, array('user_id' => $this->opo_request->getUserID()));
+		return $t_tour->getStops();
 	}
 	# -------------------------------------------------------
 	/**
@@ -583,52 +453,6 @@ class ItemInfoService extends BaseService {
 	}
 	# -------------------------------------------------------
 	/**
-	 * Returns an associative array of ID => timestamp mappings for items which have changed since <timestamp>
-	 * 
-	 * @param string $type can be one of: [ca_objects, ca_entities, ca_places, ca_occurrences, ca_collections, ca_list_items]
-	 * @param int $timestamp unix timestamp
-	 * @return array item_id => timestamp map for last changes
-	 */
-	public function getLastChangedItems($type, $timestamp){
-		$t_subject = $this->getTableInstance($type);
-		$vo_db = new Db();
-
-		$qr_subject_results = $vo_db->query("
-			SELECT max(wcl.log_datetime) timestamp,wcls.subject_row_id
-			FROM ca_change_log wcl
-			INNER JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
-			WHERE
-				wcls.subject_table_num=?
-				AND
-				wcl.log_datetime > ".intval($timestamp)."
-			GROUP BY wcls.subject_row_id;
-		",intval($t_subject->tableNum()));
-
-		$va_last_changes = array();
-		while($qr_subject_results->nextRow()){
-			$va_last_changes[intval($qr_subject_results->get("subject_row_id"))] = intval($qr_subject_results->get("timestamp"));
-		}
-
-		$qr_logged_results = $vo_db->query("
-			SELECT max(wcl.log_datetime) timestamp,wcl.logged_row_id
-			FROM ca_change_log wcl
-			WHERE
-				wcl.logged_table_num=?
-				AND
-				wcl.log_datetime > ".intval($timestamp)."
-			GROUP BY wcl.logged_row_id;
-		",intval($t_subject->tableNum()));
-
-		while($qr_logged_results->nextRow()){
-			if($va_last_changes[intval($qr_logged_results->get("logged_row_id"))] < intval($qr_logged_results->get("timestamp"))) {
-				$va_last_changes[intval($qr_logged_results->get("logged_row_id"))] = intval($qr_logged_results->get("timestamp"));
-			}
-		}
-
-		return $va_last_changes;
-	}
-	# -------------------------------------------------------
-	/**
 	 * Get a list of available languages
 	 *
 	 * @param array $pa_options List of options. Possible keys:
@@ -646,7 +470,7 @@ class ItemInfoService extends BaseService {
 	# Utilities
 	# -------------------------------------------------------
 	private function getTableInstance($ps_type, $pn_type_id_to_load=null,$pb_check_bm_with_attributes=false){
-		if(!in_array($ps_type, array("ca_objects", "ca_object_lots", "ca_entities", "ca_places", "ca_occurrences", "ca_collections", "ca_list_items", "ca_object_representations", "ca_storage_locations", "ca_movements", "ca_loans", "ca_tours", "ca_tour_stops"))){
+		if(!in_array($ps_type, array("ca_tours", "ca_tour_stops"))){
 			throw new SoapFault("Server", "Invalid type or item_id");
 		} else {
 			require_once(__CA_MODELS_DIR__."/{$ps_type}.php");
