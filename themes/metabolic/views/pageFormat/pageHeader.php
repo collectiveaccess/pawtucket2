@@ -14,6 +14,14 @@
 	<link href="<?php print $this->request->getBaseUrlPath(); ?>/plain.css" media="screen" rel="stylesheet" type="text/css" />
 	<![endif]-->
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/global.css" rel="stylesheet" type="text/css" />
+<?php
+	if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') && !strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh')){
+    	// User agent is Google Chrome on a PC
+?>
+		<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/chromePC.css" rel="stylesheet" type="text/css" />
+<?php
+	}
+?>
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/vkh7naz-d.css" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/sets.css" rel="stylesheet" type="text/css" />
 	<link href="<?php print $this->request->getThemeUrlPath(true); ?>/css/bookmarks.css" rel="stylesheet" type="text/css" />
@@ -74,7 +82,13 @@
 				
 	<?php				
 
-					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
+					print "<div style='float:left; text-transform:uppercase;'>";
+					#join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
+					print caNavLink($this->request, _t("About"), "", "", "About", "Index");
+					print caNavLink($this->request, _t("Browse"), "", "", "Browse", "Index");
+					print caNavLink($this->request, _t("My Sets"), "", "", "Sets", "Index");
+					print caNavLink($this->request, _t("Chronology"), "", "MetabolicChronology", "Show", "Index");
+					print caNavLink($this->request, _t("Contribute"), "", "Contribute", "Form", "Edit");
 					if($this->request->isLoggedIn()){
 						print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout");
 					}else{
@@ -84,7 +98,7 @@
 
 
 					if($this->request->isLoggedIn()){
-						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(my sets)"), "", "", "Sets", "Index")."</div>";
+						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(bookmarks)"), "", "", "Bookmarks", "Index")."</div>";
 					}		 
 			
 				# Locale selection

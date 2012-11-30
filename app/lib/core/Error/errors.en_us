@@ -163,6 +163,7 @@
 2035 = Invalid attempt to set parent id to NULL
 2040 = Could not load parent record
 2045 = Parent record had invalid hierarchical indexing
+2055 = Cannot duplicate root of hierarchy
 
 # --- PrintForm errors
 2200 = Form configuration file does not exist
@@ -191,6 +192,8 @@
 2520 = Can't set type id after item is created
 2550 = Item has been deleted
 2560 = Item is not correct type
+2570 = Can't change access control list for this item
+2580 = You do not have access to this item
 
 # --- Object representation errors
 2700 = Could not update primary flag for representation

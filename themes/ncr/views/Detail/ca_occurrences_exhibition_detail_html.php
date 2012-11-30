@@ -33,12 +33,64 @@
 	$vn_num_more_link = $this->request->config->get("num_items_before_more_link");
 	JavascriptLoadManager::register('panel');
 
+	if($t_occurrence->get("status") != 0){	
+		# --- check for images of the exhibitions
+		$va_exhibition_images = array_slice($t_occurrence->get("ca_objects", array('restrict_to_relationship_types' => array('describes'), "returnAsArray" => 1, 'checkAccess' => $va_access_values)), 0, 9);
+		if(sizeof($va_exhibition_images) > 0){
+			$vn_exhibition_image_id = "";
+			$va_reps = array();
+			foreach($va_exhibition_images as $vn_rel_id => $va_info){
+				$vn_exhibition_image_id = $va_info["object_id"];
+				$t_image_object = new ca_objects($vn_exhibition_image_id);
+				if($t_rep = $t_image_object->getPrimaryRepresentationInstance()) {
+					if (!sizeof($va_access_values) || in_array($t_rep->get('access'), $va_access_values)) {
+						# --- build array of thumbnails on related images for display under main image
+						$va_temp = array();
+						
+						$va_temp["representation_id"] = $t_rep->get("representation_id");
+						$va_temp["rep_tinyicon"] = $t_rep->getMediaTag('media', 'tinyicon');
+						$va_temp["object_id"] = $va_info["object_id"];
+						$va_reps[$va_info["object_id"]] = $va_temp;
+						
+						# Media representations to display (objects only)
+						if (!$vn_first_rep_set){
+							$vn_first_rep_set = 1;
+							$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+								
+							$vs_display_version = $va_rep_display_info['display_version'];
+							unset($va_display_info['display_version']);
+							$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
+							unset($va_display_info['poster_frame_version']);
+							$va_display_options = $va_rep_display_info;
+							$vs_display_rep = $t_rep->getMediaTag('media', $vs_display_version, $va_display_options);
+							$vn_display_rep_id = $t_rep->get("representation_id");
+							$vn_display_object_id = $va_info["object_id"];
+							$vn_display_caption = $t_rep->get("image_credit_line");
+							$va_display_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+							$vn_display_media_width = $va_display_media_info["WIDTH"];
+						}
+					}
+				}
+			}
+		}
+	}
+
 if (!$this->request->isAjax()) {
 ?>
 <div id="pageHeading"><img src='<?php print $this->request->getThemeUrlPath(); ?>/graphics/ncr/t_exhibitions.gif' width='129' height='23' border='0'></div><!-- end pageHeading -->
 	<div id="detailBody">
 		<div id="pageNav">
 <?php
+			if(($t_occurrence->get("status") != 0) && ($t_rep && $t_rep->getPrimaryKey()) && !$this->request->config->get('disable_my_collections')){
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'Sets', 'addItem', array('object_id' => $vn_display_object_id));
+				}else{
+					print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_display_object_id));
+				}
+				if ($this->request->config->get('enable_bookmarks')) {
+					print "&nbsp;&nbsp;|&nbsp;&nbsp;";
+				}
+			}
 			if ($this->request->config->get('enable_bookmarks')) {
 				if($this->request->isLoggedIn()){
 					print caNavLink($this->request, _t("Bookmark +"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
@@ -118,59 +170,34 @@ if (!$this->request->isAjax()) {
 	# ---------------------------------------------------
 	# --- DISPLAY FULL INFO
 	# ---------------------------------------------------
-
-	# --- check for images of the exhibitions
-	$va_exhibition_images = $t_occurrence->get("ca_objects", array('restrict_to_relationship_types' => array('describes'), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
-	if(sizeof($va_exhibition_images) > 0){
-		$vn_exhibition_image_id = "";
-		foreach($va_exhibition_images as $vn_rel_id => $va_info){
-			$vn_exhibition_image_id = $va_info["object_id"];
-			$t_image_object = new ca_objects($vn_exhibition_image_id);
-			# Media representations to display (objects only)
-			if ($t_rep = $t_image_object->getPrimaryRepresentationInstance()) {
-				if (!sizeof($va_access_values) || in_array($t_rep->get('access'), $va_access_values)) { 		// check rep access
-					$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-					
-					$vs_display_version = $va_rep_display_info['display_version'];
-					unset($va_display_info['display_version']);
-					$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-					unset($va_display_info['poster_frame_version']);
-					$va_display_options = $va_rep_display_info;
-					break;
-				}
-			}
-		}
-	}
-
-		if ($t_rep && $t_rep->getPrimaryKey()) {
+		if ($vn_display_rep_id) {		
 ?>
 			<div id="rightCol">
 				<div id="objDetailImage">
 <?php
-				if($va_display_options['no_overlay']){
-					print $t_rep->getMediaTag('media', $vs_display_version, $va_display_options);
-				}else{
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'OccurrenceMediaOverlay', 'GetOccurrenceMediaOverlay', array('occurrence_id' => $vn_occurrence_id, 'object_id' => $vn_exhibition_image_id, 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $va_display_options)."</a>";
-					#print $t_rep->getMediaTag('media', $vs_display_version, $va_display_options);
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'OccurrenceMediaOverlay', 'GetOccurrenceMediaOverlay', array('occurrence_id' => $vn_occurrence_id, 'object_id' => $vn_display_object_id, 'representation_id' => $vn_display_rep_id))."\"); return false;' >".$vs_display_rep."</a>";
+				if($vn_display_caption){
+					if($vn_display_media_width){
+						print "<div class='objDetailImageCaption' style='width:".$vn_display_media_width."px'>";
+					}else{
+						print "<div class='objDetailImageCaption'>";
+					}
+					print "<i>".$vn_display_caption."</i>";
+					print " &ndash; &copy; INFGM</div>";
+				}
+				if(sizeof($va_reps) > 1){
+					print "<div class='objDetailImageThumbs'>";
+					$i = 1;
+					foreach($va_reps as $vn_object_id => $va_rep){
+						if(($vn_display_rep_id != $va_rep["representation_id"]) && ($i < 9)){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'OccurrenceMediaOverlay', 'GetOccurrenceMediaOverlay', array('occurrence_id' => $vn_occurrence_id, 'object_id' => $vn_object_id, 'representation_id' => $va_rep["representation_id"]))."\"); return false;' >".$va_rep['rep_tinyicon']."</a>";
+							$i++;
+						}
+					}
+					print "</div>";
 				}
 ?>
 				</div><!-- end objDetailImage -->
-<?php
-				if($t_rep->get("image_credit_line")){
-					# --- get width of image so caption matches
-					$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
-					print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
-					if($t_rep->get("image_credit_line")){
-						print "<i>".$t_rep->get("image_credit_line")."</i>";
-					}
-					print " &ndash; &copy; INFGM</div>";
-				}
-?>
-				<div id="objDetailImageNav">
-<?php					
-						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'OccurrenceMediaOverlay', 'GetOccurrenceMediaOverlay', array('occurrence_id' => $vn_occurrence_id, 'object_id' => $vn_exhibition_image_id, 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".((sizeof($va_exhibition_images) > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
-?>		
-				</div><!-- end objDetailImageNav -->
 			</div><!-- end rightCol -->
 <?php
 		}

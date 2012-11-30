@@ -68,7 +68,7 @@
  		protected $opa_sorts;
  		
  		
- 		protected $ops_find_type = 'artist_browse';
+ 		protected $ops_find_type = 'artist_browser';
  		
  		protected $opo_plugin_config;			// plugin config file
  		protected $opo_result_context;			// current result context
@@ -92,6 +92,8 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "form"));
             }
             
+			$po_request->session->setVar('pawtucket2_browse_target', "ca_entities");
+			
 			//
  			// Minimal view list (all targets have a "full" results view)
  			//
@@ -110,6 +112,8 @@
 
 
 			$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
+			#$this->opo_result_context->setAsLastFind();
+			
 			$this->opo_browse = new EntityBrowse();
 			
 			// get configured result views, if specified
@@ -130,10 +134,33 @@
 					'ca_entities.idno_sort' => _t('Idno')
 				);
 			}
+			
+			$va_sources = array();
+			$t_list_item = new ca_lists();
+			$vn_aoee_source = $t_list_item->getItemIDFromList("entity_sources", "aoee");
+			$va_sources[] = $vn_aoee_source;
+			$this->aoee_source = $vn_aoee_source;
+			$this->view->setVar('aoee_source', $vn_aoee_source);
+			
+			$vn_aoee_featured_source = $t_list_item->getItemIDFromList("entity_sources", "featured");
+			$va_sources[] = $vn_aoee_featured_source;
+			$this->aoee_featured_source = $vn_aoee_featured_source;
+			$this->view->setVar('aoee_featured_source', $vn_aoee_featured_source);
+			
+			$vn_aoee_priority_source = $t_list_item->getItemIDFromList("entity_sources", "priority");
+			$va_sources[] = $vn_aoee_priority_source;
+			$this->aoee_priority_source = $vn_aoee_priority_source;
+			$this->view->setVar('aoee_priority_source', $vn_aoee_priority_source);
+			
+			$this->aoee_sourcea = $va_sources;
+			$this->view->setVar('aoee_sources', $va_sources);
+			
+			$this->opo_browse->addResultFilter("ca_entities.source_id", "IN", join(',', $va_sources));
 						
  		}
  		# -------------------------------------------------------
- 		function index() {
+ 		public function index() {
+			#print $this->ops_tablename;
 			JavascriptLoadManager::register('cycle');
  			$this->getDefaults();
  			
@@ -142,7 +169,51 @@
 			
  			parent::Index(true);
  			
- 			$va_featured_ids = array();
+			$this->render('artist_browser_html.php');
+ 		}
+ 		# -------------------------------------------------------
+		public function browseName($ps_mode='singular') {
+ 			return ($ps_mode == 'singular') ? _t('browse') : _t('browses');
+ 		}
+ 		# -------------------------------------------------------
+ 		private function getDefaults() { 
+ 		 	if (($vn_items_per_page_default = (int)$this->request->config->get('items_per_page_default_for_'.$this->ops_tablename.'_browse')) > 0) {
+				$this->opn_items_per_page_default = $vn_items_per_page_default;
+			} else {
+				$this->opn_items_per_page_default = $this->opa_items_per_page[0];
+			}
+		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 * This is a version of the getfacet function in the main browse controller.
+ 		 * Difference are: this clears all criteria before generating the facet since the artist browser only supports single level browsing, we need all facets to show up all the time - also needs to set the search to ristrict by entity source
+ 		 * this facet view that is included is in the plugin's views/Browse folder - *not* the theme's views/Browse folder
+ 		 *
+ 		 * Looks for 'view' parameter and sets browse facet view to alternate based upon parameter value if specified.
+ 		 * This lets you set a custom browse facet view from a link.
+ 		 * Note that the view parameter is NOT a full view name. Rather it is a simple text string (letters, numbers and underscores only)
+ 		 * that is inserted between "ajax_browse_facet_" and "_html.php" to construct a view name in themes/<theme_name>/views/Browse.
+ 		 * If a view with this name exists it will be used, otherwise the default view in Browse/ajax_browse_facet_html.php.
+ 		 *
+ 		 */
+ 		public function getFacet($pa_options=null) {
+ 			// Remove any browse criteria previously set
+			$this->opo_browse->removeAllCriteria();
+			$this->opo_browse->addCriteria('_search', 'ca_entities.source_id:'.$this->aoee_featured_source.' or ca_entities.source_id:'.$this->aoee_source.' or ca_entities.source_id:'.$this->aoee_priority_source);
+			if (!is_array($pa_options)) { $pa_options = array(); }
+ 			if ($ps_view = preg_replace('![^A-Za-z0-9_]+!', '', $this->request->getParameter('view', pString))) {
+ 				$vs_relative_path = 'Browse/ajax_browse_facet_'.$ps_view.'_html.php';
+ 				
+ 				if (file_exists($this->request->getAppConfig()->get('application_plugins').'/eastend/themes/eastend2/views/'.$vs_relative_path)) {
+ 					$pa_options['view'] = $vs_relative_path; 
+ 				}
+ 			}
+ 			parent::getFacet($pa_options);
+ 		}
+		# -------------------------------------------------------
+		public function getFeaturedArtistSlideshow(){
+			$va_featured_ids = array();
  			$t_featured = new ca_sets();
  			# --- featured artists set - set name assigned in eastend.conf - plugin conf file
 			$t_featured->load(array('set_code' => $this->opo_plugin_config->get('featured_artists_set_name')));
@@ -173,54 +244,36 @@
 				$va_tmp["lifespan"] = $t_entity->get("lifespans_date");
 				$va_tmp["indexing_notes"] = $t_entity->get("indexing_notes");
 				$va_tmp["name"] = $t_entity->getLabelForDisplay();
-				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('depicts')));
+				$va_objects = $t_entity->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $this->opa_access_values, 'restrict_to_relationship_types' => array('portrait')));
 				$va_object = array_shift($va_objects);
 				$t_object->load($va_object["object_id"]);
-				$va_portrait = $t_object->getPrimaryRepresentation(array("medium"));
-				$va_tmp["image"] = $va_portrait["tags"]["medium"];
+				$va_portrait = $t_object->getPrimaryRepresentation(array("abSlideShow"));
+				# --- don't show records with status ars/vaga don't show image
+				if($t_object->get("ca_objects.object_status") != 348){
+					if($t_object->get("ca_objects.object_status") == 349){
+						$va_tmp["vaga_class"] = "vagaDisclaimer";
+					}
+					$va_tmp["image"] = $va_portrait["tags"]["abSlideShow"];
+					$va_tmp["caption"] = $t_object->get("ca_objects.caption");
+				}
 				$va_featured_artists[$vn_featured_entity_id] = $va_tmp;
 			}
 			$this->view->setVar("featured_artists", $va_featured_artists);
-			$this->render('artist_browser_html.php');
- 		}
- 		# -------------------------------------------------------
-		public function browseName($ps_mode='singular') {
- 			return ($ps_mode == 'singular') ? _t('browse') : _t('browses');
- 		}
- 		# -------------------------------------------------------
- 		private function getDefaults() { 
- 		 	if (($vn_items_per_page_default = (int)$this->request->config->get('items_per_page_default_for_'.$this->ops_tablename.'_browse')) > 0) {
-				$this->opn_items_per_page_default = $vn_items_per_page_default;
-			} else {
-				$this->opn_items_per_page_default = $this->opa_items_per_page[0];
-			}
+			$this->render('featured_artists_html.php');
 		}
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 * This is a version of the getfacet function in the main browse controller.
- 		 * Difference are: this clears all criteria before generating the facet since the artist browser only supports single level browsing, we need all facets to show up all the time
- 		 * this facet view that is included is in the plugin's views/Browse folder - *not* the theme's views/Browse folder
- 		 *
- 		 * Looks for 'view' parameter and sets browse facet view to alternate based upon parameter value if specified.
- 		 * This lets you set a custom browse facet view from a link.
- 		 * Note that the view parameter is NOT a full view name. Rather it is a simple text string (letters, numbers and underscores only)
- 		 * that is inserted between "ajax_browse_facet_" and "_html.php" to construct a view name in themes/<theme_name>/views/Browse.
- 		 * If a view with this name exists it will be used, otherwise the default view in Browse/ajax_browse_facet_html.php.
- 		 *
- 		 */
- 		public function getFacet($pa_options=null) {
- 			// Remove any browse criteria previously set
-			$this->opo_browse->removeAllCriteria();
-			if (!is_array($pa_options)) { $pa_options = array(); }
- 			if ($ps_view = preg_replace('![^A-Za-z0-9_]+!', '', $this->request->getParameter('view', pString))) {
- 				$vs_relative_path = 'Browse/ajax_browse_facet_'.$ps_view.'_html.php';
- 				
- 				if (file_exists($this->request->getAppConfig()->get('application_plugins').'/eastend/views/'.$vs_relative_path)) {
- 					$pa_options['view'] = $vs_relative_path; 
- 				}
- 			}
- 			parent::getFacet($pa_options);
+		# -------------------------------------------------------
+		/**
+		 * Overrides base controller!
+		 */
+ 		public function clearAndAddCriteria() {
+ 			$this->getDefaults();
+ 			$this->opo_browse->removeAllCriteria();
+ 			$ps_facet_name = $this->request->getParameter('facet', pString);
+ 			$this->opo_browse->addCriteria('_search', 'ca_entities.source_id:'.$this->aoee_featured_source.' or ca_entities.source_id:'.$this->aoee_source.' or ca_entities.source_id:'.$this->aoee_priority_source);
+ 			$this->opo_browse->addCriteria($ps_facet_name, array($this->request->getParameter('id', pString)));
+ 			
+ 			$this->view->setVar('result_views', array('full'));
+ 			parent::Index();
  		}
 		# -------------------------------------------------------
  	}

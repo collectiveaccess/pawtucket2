@@ -46,7 +46,7 @@
 	$vs_from_email = $this->getVar("from_email");
 	$vs_from_name = $this->getVar("from_name");
 	$vs_subject = $this->getVar("subject");
-	$vs_message = $this->getVar("message");
+	$vs_message = $this->getVar("email_message");
 	
 	# --- if params have not been passed, set some defaults
 	if(!$vs_subject && !$va_errors['subject']){
@@ -216,7 +216,7 @@
 							<input type="text" name="subject" value="<?php print $vs_subject; ?>">
 						</div>
 						<div class="formLabel"><?php print _t("Message"); ?><br/>
-							<textarea name="message" rows="5"><?php print $vs_message; ?></textarea>
+							<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
 						</div>
 						<a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
@@ -334,10 +334,12 @@
 						if ($va_item['representation_tag_thumbnail']) {
 							print caNavLink($this->request, $va_item['representation_tag_thumbnail'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']));
 						}
-						
+?>
+						</div>
+<?php
 						if ($va_item['name']) {
-							if (unicode_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
+							if (unicode_strlen($va_item['name']) > 60) {
+								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 57).'...</em>';
 							} else {
 								$va_title[] = '<em>'.$va_item['name'].'</em>';
 							}
@@ -348,7 +350,6 @@
 						}
 						$vs_title = join('<br/>', $va_title);
 ?>
-						</div>
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>

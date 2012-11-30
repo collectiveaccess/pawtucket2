@@ -53,7 +53,7 @@ if($vo_result) {
 			$vn_padding_top = 0;
 			$vn_padding_top_bottom =  0;
 			
-			print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
+			print "<td align='center' valign='top' class='searchResultTd'><div class='".(($vo_result->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values))) ? "searchThumbBg" : "searchThumbBgNoShadow")." searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
 ?>
 				<input type='checkbox' name='add_to_set_ids' value='<?php print (int)$vn_object_id; ?>' class="addItemToSetControl addItemToSetControlInThumbnails" />
 					

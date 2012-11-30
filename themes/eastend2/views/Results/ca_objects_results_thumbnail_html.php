@@ -48,17 +48,34 @@ if($vo_result) {
 				$vs_caption .= $vs_label;
 			}
 			# --- get the height of the image so can calculate padding needed to center vertically
-			$va_media_info = $vo_result->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
-			$vn_padding_top = 0;
-			$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
-			
-			print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
-			print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-			
+			if($vo_result->get("ca_objects.object_status") != 348){
+				$va_media_info = $vo_result->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
+				$vn_padding_top = 0;
+				$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
+			}
+			$va_media_info_orig = $vo_result->getMediaInfo('ca_object_representations.media', 'original');
+			$vs_video_icon = "";
+			if(caGetMediaClass($va_media_info_orig["MIMETYPE"]) == "video"){
+				$vs_video_icon = "<div class='videoIconResults'><!-- empty --></div>"; 
+			}
+			print "<td align='center' valign='top' class='searchResultTd'>".caNavLink($this->request, $vs_video_icon, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."<div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding: ".$vn_padding_top_bottom."px 0px ".$vn_padding_top_bottom."px 0px;'>";
+			if($vo_result->get("ca_objects.object_status") != 348){
+				print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
+				$this->setVar('tooltip_no_image', 0);
+			}else{
+				print "<div class='imagePlaceholderThumb'>Image not available</div>";
+				$this->setVar('tooltip_no_image', 1);
+			}
 			// Get thumbnail caption
 			$this->setVar('object_id', $vn_object_id);
 			$this->setVar('caption_title', $vs_caption);
 			$this->setVar('caption_idno', $vo_result->get("ca_objects.idno"));
+			$this->setVar('tooltip_caption', $vo_result->get("ca_objects.caption"));
+			if($vo_result->get("ca_objects.object_status") == 349){
+				$this->setVar('tooltip_vaga', 1);
+			}else{
+				$this->setVar('tooltip_vaga', 0);
+			}
 			
 			print "</div><div class='searchThumbCaption searchThumbnail".$vn_object_id."'>".$this->render('Results/ca_objects_result_caption_html.php')."</div>";
 			print "</td>\n";

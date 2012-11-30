@@ -17,7 +17,9 @@
 						<div>
 							<b><?php print _t("Password"); ?></b><br/>
 							<input type="password" name="password" />
-							<a href="#" name="login" class="button" onclick="document.forms.login.submit(); return false;"><?php print _t("Login"); ?></a>
+						</div>
+						<div>
+							<a href="#" name="login" class="button" onclick="document.forms.login.submit(); return false;"><?php print _t("Login"); ?> &raquo;</a>
 						</div>
 						<input type="submit" value="Submit" style="position: absolute; top: 0; left: 0; z-index: 0; width: 1px; height: 1px; visibility: hidden;" /> 
 						
@@ -41,7 +43,7 @@
 	
 	?>
 							<div><b><?php print _t("Your e-mail address"); ?></b><br/>
-								<input type="text" name="reset_email" value="" /><a href="#" class="button" onclick="document.forms.reset_password.submit(); return false;"><?php print _t("Go"); ?></a>
+								<input type="text" name="reset_email" value="" /> <a href="#" class="button" onclick="document.forms.reset_password.submit(); return false;"><?php print _t("Go"); ?></a>
 							</div>
 							<input type="hidden" name="action" value="send">
 						</form>
@@ -73,6 +75,17 @@
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["email"]."</div>";
 						}
 						print $this->getVar("email");
+						
+						// Output user profile settings if defined
+						$va_user_profile_settings = $this->getVar('profile_settings');
+						if (is_array($va_user_profile_settings) && sizeof($va_user_profile_settings)) {
+							foreach($va_user_profile_settings as $vs_field => $va_info) {
+								if($va_errors[$vs_field]){
+									print "<div class='formErrors' style='text-align: left;'>".$va_errors[$vs_field]."</div>";
+								}
+								print $va_info['formatted_element'];
+							}
+						}
 			
 						if($va_errors["security"]){
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors["security"]."</div>";
@@ -90,8 +103,12 @@
 						}
 						print $this->getVar("password");
 ?>
-						<div><b><?php print _t('Re-Type password'); ?></b><br/><input type="password" name="password2" size="60" />
-						<a href="#" name="register" class="button" onclick="document.forms.registration.submit(); return false;"><?php print _t("Register"); ?></a></div>
+						<div>
+							<b><?php print _t('Re-Type password'); ?></b><br/><input type="password" name="password2" size="60" />
+						</div>
+						<div>
+							<a href="#" name="register" class="button" onclick="document.forms.registration.submit(); return false;"><?php print _t("Register"); ?> &raquo;</a>
+						</div>
 			
 									
 						<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">

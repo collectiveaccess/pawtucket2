@@ -37,7 +37,7 @@
 <?php
 			}
 ?>
-				<h1><?php print _t('Occurrences'); ?></h1>
+				<h1><?php print _t('Exhibitions and Events'); ?></h1>
 				<div class="searchSecNav">
 <?php
 					if ($vn_num_hits > $vn_num_hits_per_page) {

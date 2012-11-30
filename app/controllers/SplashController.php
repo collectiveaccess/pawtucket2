@@ -88,13 +88,11 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 				
 			$this->opo_browse = new ObjectBrowse($this->opo_result_context->getSearchExpression(), 'pawtucket2');
- 				
  		}
  		# -------------------------------------------------------
  		function Index() {
  			// Remove any browse criteria previously set
 			$this->opo_browse->removeAllCriteria();
-			
  			parent::Index(true);
  			JavascriptLoadManager::register('imageScroller');
  			JavascriptLoadManager::register('browsable');
@@ -109,6 +107,8 @@
  			}else{
  				$va_access_values = caGetUserAccessValues($this->request);
  			}
+ 			
+ 			$va_default_versions = array('thumbnail', 'icon', 'small', 'preview', 'medium', 'preview', 'widepreview');
  				
  			# --- featured items set - set name assigned in app.conf
 			$t_featured->load(array('set_code' => $this->request->config->get('featured_set_name')));
@@ -134,25 +134,29 @@
 			$this->view->setVar('featured_content_label', $t_object->getLabelForDisplay());
 			
 			$this->view->setVar('featured_content_slideshow_id_list', $va_featured_ids);
- 			
+			
+			
+if(!(bool)$this->request->config->get("splash_disable_highest_rated_objects")){
+			if(!is_array($va_versions = $this->request->config->getList("splash_highest_rated_display_versions"))){ $va_versions = $va_default_versions; }
+
  			# --- user favorites get the highest ranked objects to display
 			$va_user_favorites_items = $t_object->getHighestRated(true, 12, $va_access_values);
 			if(sizeof($va_user_favorites_items) > 0){
 				if(is_array($va_user_favorites_items) && (sizeof($va_user_favorites_items) > 0)){
 					$t_object = new ca_objects($va_user_favorites_items[0]);
- 					$va_rep = $t_object->getPrimaryRepresentation(array('thumbnail', 'small', 'preview', 'widepreview'), null, array('return_with_access' => $va_access_values));
+ 					$va_rep = $t_object->getPrimaryRepresentation($va_versions, null, array('return_with_access' => $va_access_values));
 					$this->view->setVar('user_favorites_id', $va_user_favorites_items[0]);
-					$this->view->setVar('user_favorites_thumb', $va_rep["tags"]["thumbnail"]);
-					$this->view->setVar('user_favorites_small', $va_rep["tags"]["small"]);
-					$this->view->setVar('user_favorites_preview', $va_rep["tags"]["preview"]);
-					$this->view->setVar('user_favorites_widepreview', $va_rep["tags"]["widepreview"]);
+					
+					foreach($va_versions as $vs_version) {
+						$this->view->setVar('user_favorites_'.$vs_version, $va_rep['tags'][$vs_version]);
+					}
 				}
 			}else{
 				$this->view->setVar('user_favorites_is_random', 1);
 				# if no ranks set, choose a random object
 				$va_random_items = $t_object->getRandomItems(1, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
 				$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_random_items));
-				$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), array('small', 'thumbnail', 'preview','medium', 'widepreview'), array("checkAccess" => $va_access_values));
+				$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), $va_versions, array("checkAccess" => $va_access_values));
 
 				foreach($va_random_items as $vn_object_id => $va_object_info) {
 					$va_object_info['title'] = $va_labels[$vn_object_id];
@@ -163,60 +167,70 @@
 				if(is_array($va_random_items) && (sizeof($va_random_items) > 0)){
 					$va_object_info = array_shift($va_random_items);
 					$this->view->setVar('user_favorites_id', $va_object_info['object_id']);
-					$this->view->setVar('user_favorites_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
-					$this->view->setVar('user_favorites_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
-					$this->view->setVar('user_favorites_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
-					$this->view->setVar('user_favorites_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);
-					$this->view->setVar('user_favorites_medium', $va_media[$va_object_info['object_id']]["tags"]["medium"]);
+					
+					foreach($va_versions as $vs_version) {
+						$this->view->setVar('user_favorites_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+					}
 				} 	
 			}
-			
+}
+
+if(!(bool)$this->request->config->get("splash_disable_recently_added_objects")){
+			if(!is_array($va_versions = $this->request->config->getList("splash_recently_added_display_versions"))){ $va_versions = $va_default_versions; }
+				
  			# --- get the 12 most recently added objects to display
-			$va_recently_added_items = $t_object->getRecentlyAddedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
+			$va_recently_added_items = $t_object->getRecentlyAddedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));	
  			$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
- 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('small', 'icon','thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
+ 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), $va_versions, array("checkAccess" => $va_access_values));
+			
 			foreach($va_recently_added_items as $vn_object_id => $va_object_info){
 				$va_object_info['title'] = $va_labels[$vn_object_id];
 				$va_object_info['media'] = $va_media[$vn_object_id];
  				$va_recently_added_objects[$vn_object_id] = $va_object_info;
+ 				
+				foreach($va_versions as $vs_version) {
+					$this->view->setVar('recently_added_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+				}
 			}
 			$this->view->setVar('recently_added_objects', $va_recently_added_objects);
-			
 			if(is_array($va_recently_added_objects) && (sizeof($va_recently_added_objects) > 0)){
 				$va_object_info = array_shift($va_recently_added_objects); 
 				$this->view->setVar('recently_added_id', $va_object_info['object_id']);
-				$this->view->setVar('recently_added_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
-				$this->view->setVar('recently_added_icon', $va_media[$va_object_info['object_id']]["tags"]["icon"]);
-				$this->view->setVar('recently_added_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
-				$this->view->setVar('recently_added_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
-				$this->view->setVar('recently_added_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);
-				$this->view->setVar('recently_added_medium', $va_media[$va_object_info['object_id']]["tags"]["medium"]);
+				
 			} 	
- 			
+} else {
+			$this->view->setVar('recently_added_objects', array());
+}		
 			# --- get the 12 most viewed objects
+if(!(bool)$this->request->config->get("splash_disable_most_viewed_objects")){
+			if(!is_array($va_versions = $this->request->config->getList("splash_most_viewed_display_versions"))){ $va_versions = $va_default_versions; }
+			
 			$va_most_viewed_objects = $t_object->getMostViewedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
  			$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_most_viewed_objects));
- 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_most_viewed_objects), array('small', 'thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
+ 			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_most_viewed_objects), $va_versions, array("checkAccess" => $va_access_values));
 			foreach($va_most_viewed_objects as $vn_object_id => $va_object_info){
 				$va_object_info['title'] = $va_labels[$vn_object_id];
 				$va_object_info['media'] = $va_media[$vn_object_id];
  				$va_most_viewed_objects[$vn_object_id] = $va_object_info;
 			}
 			$this->view->setVar('most_viewed_objects', $va_most_viewed_objects);
-			
 			if(is_array($va_most_viewed_objects) && (sizeof($va_most_viewed_objects) > 0)){
 				$va_object_info = array_shift($va_most_viewed_objects);
 				$this->view->setVar('most_viewed_id', $va_object_info['object_id']);
-				$this->view->setVar('most_viewed_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
-				$this->view->setVar('most_viewed_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
-				$this->view->setVar('most_viewed_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);
-				$this->view->setVar('most_viewed_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
-				$this->view->setVar('most_viewed_medium', $va_media[$va_object_info['object_id']]["tags"]["medium"]);
-			} 	
+				
+				foreach($va_versions as $vs_version) {
+					$this->view->setVar('most_viewed_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+				}
+			} 
+}
+
+if(!(bool)$this->request->config->get("splash_disable_recently_viewed_objects")){
+			if(!is_array($va_versions = $this->request->config->getList("splash_recently_viewed_display_versions"))){ $va_versions = $va_default_versions; }
+				
 			# --- get the 12 recently viewed objects
 			$va_recently_viewed_objects = $t_object->getRecentlyViewedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
  			$va_labels = $t_object->getPreferredDisplayLabelsForIDs($va_recently_viewed_objects);
- 			$va_media = $t_object->getPrimaryMediaForIDs($va_recently_viewed_objects, array('small', 'thumbnail', 'preview', 'widepreview', 'medium'), array("checkAccess" => $va_access_values));
+ 			$va_media = $t_object->getPrimaryMediaForIDs($va_recently_viewed_objects, $va_versions, array("checkAccess" => $va_access_values));
 			$va_recently_viewed_objects_for_display = array();
 			foreach($va_recently_viewed_objects as $vn_object_id){
 				$va_recently_viewed_objects_for_display[$vn_object_id] = array(
@@ -225,23 +239,28 @@
 					'media' => $va_media[$vn_object_id]
 				);
 			}
+
 			$this->view->setVar('recently_viewed_objects', $va_recently_viewed_objects_for_display);
-			
 			if(is_array($va_recently_viewed_objects) && (sizeof($va_recently_viewed_objects) > 0)){
 				$va_object_info = array_shift($va_recently_viewed_objects_for_display);
 				$this->view->setVar('recently_viewed_id', $va_object_info['object_id']);
-				$this->view->setVar('recently_viewed_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
-				$this->view->setVar('recently_viewed_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
-				$this->view->setVar('recently_viewed_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);
-				$this->view->setVar('recently_viewed_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
-				$this->view->setVar('recently_viewed_medium', $va_media[$va_object_info['object_id']]["tags"]["medium"]);
+				
+				foreach($va_versions as $vs_version) {
+					$this->view->setVar('recently_viewed_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+				}
 			} 
-			
+} else {
+			$this->view->setVar('recently_viewed_objects', array());
+}
+
+if(!(bool)$this->request->config->get("splash_disable_random_objects")){	
+			if(!is_array($va_versions = $this->request->config->getList("splash_random_display_versions"))){ $va_versions = $va_default_versions; }
+					
 			# --- get random objects
 			$va_random_items = $t_object->getRandomItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
 			$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_random_items));
-			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), array('small', 'thumbnail', 'preview','medium', 'widepreview'), array("checkAccess" => $va_access_values));
-
+			$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_random_items), $va_versions, array("checkAccess" => $va_access_values));
+	
 			foreach($va_random_items as $vn_object_id => $va_object_info) {
 				$va_object_info['title'] = $va_labels[$vn_object_id];
 				$va_object_info['media'] = $va_media[$vn_object_id];
@@ -251,13 +270,14 @@
 			if(is_array($va_random_items) && (sizeof($va_random_items) > 0)){
 				$va_object_info = array_shift($va_random_items);
 				$this->view->setVar('random_object_id', $va_object_info['object_id']);
-				$this->view->setVar('random_object_thumb', $va_media[$va_object_info['object_id']]["tags"]["thumbnail"]);
-				$this->view->setVar('random_object_small', $va_media[$va_object_info['object_id']]["tags"]["small"]);
-				$this->view->setVar('random_object_preview', $va_media[$va_object_info['object_id']]["tags"]["preview"]);
-				$this->view->setVar('random_object_widepreview', $va_media[$va_object_info['object_id']]["tags"]["widepreview"]);
-				$this->view->setVar('random_object_medium', $va_media[$va_object_info['object_id']]["tags"]["medium"]);
+				
+				foreach($va_versions as $vs_version) {
+					$this->view->setVar('random_object_'.$vs_version, $va_media[$va_object_info['object_id']]['tags'][$vs_version]);
+				}
 			} 	
- 			
+} else {
+			$this->view->setVar('random_objects', array());
+}
  			$this->render('Splash/splash_html.php');
  		}
  		# -------------------------------------------------------

@@ -32,6 +32,8 @@
 	$va_criteria 			= is_array($this->getVar('criteria')) ? $this->getVar('criteria') : array();
 	$va_results 			= $this->getVar('result');
 	
+	$o_result_context		= $this->getVar('result_context');
+	
 	$vs_browse_target		= $this->getVar('target');
 	
 	$t_object = new ca_objects();
@@ -50,7 +52,20 @@
 	# --- back to list of all collections
 	print "<div id='browseBackButton'>".caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/cfa/leftArrow.png' border='0'  alt='Back to list' /> "._t("Back to list"), "", "cfa", "collectionsList", "Index")."</div>";
 ?>
-	<h2 class="entry-title"><?php print _t('Browse Collections'); ?></h2>
+	<h2 class="entry-title"><?php 
+		switch($o_result_context->getParameter('facet_group', true)) {
+			case 'item':
+				print _t('Browse Items');
+				break;
+			case 'type':
+				print _t('Browse records');
+				break;
+			case 'collection':
+			default:
+				print _t('Browse Collections');
+				break;
+		}
+?></h2>
 	<div id="browse"><div id="resultBox"> 
 <?php
 	}

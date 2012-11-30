@@ -1,20 +1,37 @@
 #setItemEditor {
 	background: #FFFFFF;
 }
+
 #setItemEditor #rightCol{
 	clear:right;
 	float:right;
-	background-color: #E2E2E2;
 	width: 250px;
-	padding: 0px 10px 10px 10px;
+	padding: 0px 10px 0px 10px;
 	margin: 0px 0px 15px 0px;
-	border-radius: 10px;
-	-moz-border-radius: 10px; 
-	-webkit-border-radius: 10px;
+	background-color: transparent;
+  	border-width: 20px;
+  	-webkit-border-image: url("../graphics/cardborderimage.jpg") 20 stretch; 
+  	-moz-border-image: url("../graphics/cardborderimage.jpg") 20 stretch;
+  	-o-border-image: url("../graphics/cardborderimage.jpg") 20 stretch;
+ 	border-image: url("../graphics/cardborderimage.jpg") 20 fill stretch;
+ 	
 }
-#setItemEditor #rightCol H2{
-	padding-top:10px;
-	color:#828282;
+#setItemEditor #setsMenu{
+	background: url("../graphics/cardhole.jpg") no-repeat center bottom, url("../graphics/cardbackground.jpg") repeat center top;
+	padding-bottom:90px;
+}
+#setsMenu h2 {
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-size:14px;
+	font-weight:bold;
+	color: #333;
+	margin:0px 0px 7px 0px;
+	line-height:1.1em;
+	font-size: 1.5em;
+ 	line-height: 1.125;
+  	margin: 0.8em 0 0.7em;
+  	padding-top: 0;
+  	text-transform:none;
 }
 
 #setItemEditor #leftCol{
@@ -30,17 +47,19 @@
 	display: block;
 	float: left; 
 	list-style-type: none;
-	height: 200px; 
+	height: 180px; 
 	width: 140px; 
-	border: solid 1px #828282;
+	border: solid 1px #eee;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 	margin: 5px 10px 5px 0px;
 	background: #F5F5F5;
 	text-align: center;
-	overflow: hidden;
+	
 }
 
 #setItems .setItem:hover {
-	border: solid 1px #666;
+	border: solid 1px #aaa;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
 }
 
 #setItems div{
@@ -60,34 +79,62 @@
 
 #setItems .remove{
 	position: absolute;
-	left:130px;
-	top: 0px;
+	left:127px;
+	top: -10px;
 	width:7px;
-	padding: 0px 1px 1px 2px;
+	padding: 2px 1px 1px 5px;
+	background-color:#aaa;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
-
+#setItems .remove:hover{
+	position: absolute;
+	left:127px;
+	top: -10px;
+	width:7px;
+	padding: 2px 1px 1px 5px;
+	background-color:#CA1919;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 #setItems .remove a{
-	font-size: 9px;
-	color: #828282;
+	font-size: 10px;
+	color: #fff;
 	text-decoration:none;
 	font-weight:bold;
+	cursor:default;
 }
-#setItems .remove a:hover{
-	color: #CA1919;
-}
+
 
 .setItemThumbnail {
 	padding: 10px 10px 3px 10px;
 }
 #setItems .setItemCaption {
-	padding-left: 10px;
-	width: 120px;
+font-style: italic;
+font-size: 1.1em;
+line-height: 1.4286;
+color: #666;
+letter-spacing: 1px;
+width: 120px;
+padding-left: 10px;
+overflow: hidden;
 }
 #setItems .setItemCaption a{
 	text-decoration:none;
 	color:#000000;
 }
-
+.setTooltip {
+	text-align:left;
+	padding:5px;
+}
 #helpTips ul{
 	margin: 0px 0px 0px 5px;
 	padding:5px 5px 0px 22px;
@@ -161,6 +208,13 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:240px;
 }
+
+#newSetForm ul, #editSetForm ul, #shareSetForm ul {
+	width:244px; 
+}
+#newSetForm li, #editSetForm li, #shareSetForm li {
+	width:244px; 
+}
 #newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
@@ -168,7 +222,7 @@ div.edit a:hover{
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:240px;
+	width:240px; 
 }
 #newSetForm textarea, #editSetForm textarea, #shareSetForm textarea {
 	font-size:11px;

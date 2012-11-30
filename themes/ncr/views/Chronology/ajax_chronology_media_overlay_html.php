@@ -27,54 +27,101 @@
  */
 	$pn_object_id 				= $this->getVar('object_id');
 	$t_rep 						= $this->getVar('t_object_representation');
-	$vs_display_version 		= $this->getVar('rep_display_version');
-	$va_display_options	 		= $this->getVar('rep_display_options');
+	$vs_display_version 		= $this->getVar('display_version');
+	$va_display_options	 		= $this->getVar('display_options');
 	
 	$va_versions 				= $this->getVar('versions');	
 	$vn_representation_id 		= $t_rep->getPrimaryKey();
-	$va_thumbnails 				= $this->getVar('thumbnails');
+	$va_reps 					= $this->getVar('reps');
 	$pn_year					= $this->getVar('year');
 	$vs_caption					= $this->getVar('caption');
 	$vs_photographer			= $this->getVar('photographer');
-	# --- view height is in % not pixels!
-	# --- take some % off the viewer height to accommodate the capiton text
-	$va_display_options['viewer_height'] = ($va_display_options['viewer_height'] - 3)."%";
-	# --- if there are more than one reps, make the viewer height shorter to accommodate the thumbnails at the bottom
-	if(sizeof($va_thumbnails) > 1){
-		$va_display_options['viewer_height'] = ($va_display_options['viewer_height'] - 15)."%";
-	}
+	$vs_container_id 			= $this->getVar('containerID');
+	
+		if(sizeof($va_reps) > 1){
+			$vs_version = "icon";
+			$vn_num_cols = 1;
+			if(sizeof($va_reps) > 5){
+				$vn_num_cols = 2;
+			}
+			if(sizeof($va_reps) > 14){
+				$vs_version = "tinyicon";
+				$vn_num_cols = 2;
+			}
+			
 ?>
-	<div class="caMediaOverlayControls"><!-- empty - need spaceer so can see close button --></div>
+		<!-- multiple rep thumbnails - ONLY for media overlay -->
+		<div class="caMediaOverlayRepThumbs">
+<?php
+			$i = 0;
+			foreach($va_reps as $vn_object_id => $va_rep_info){
+				print "<a href='#' ".(($pn_object_id == $vn_object_id) ? "class='selectedRep' " : "")."onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('representation_id' => (int)$va_rep_info["representation_id"], 'object_id' => (int)$vn_object_id, 'year' => (int)$pn_year))."\");'>".$va_rep_info['rep_'.$vs_version]."</a>";
+				$i++;
+				if($i == $vn_num_cols){
+					$i = 0;
+					print "<br/>";
+				}
+			}
+?>
+		</div><!-- end caMediaOverlayRepThumbs -->
+<?php
+		}
+?>
+	<!-- Controls - ONLY for media overlay -->
+	<div class="caMediaOverlayControls">
+			<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+			<div class='objectInfo'>
+<?php
+			# --- caption text
+			if($vs_caption || $vs_photographer){
+				# --- get width of image so caption matches
+				$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+				if($vs_caption){
+					print "<i>".$vs_caption."</i>";
+				}
+				if($vs_caption && $vs_photographer){
+					print " &ndash; ";
+				}
+				if($vs_photographer){
+					print _t("Photograph").": ".$vs_photographer;
+				}
+				print " &ndash; &copy; INFGM";
+			}
+
+?>			
+			</div>
+			<div class='overlayLightboxLink'>
+<?php
+			if($this->request->isLoggedIn()){
+				print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'Sets', 'addItem', array('object_id' => $pn_object_id));
+			}else{
+				print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $pn_object_id));
+			}
+?>
+			</div>
+			<div class='repNav'>
+<?php
+				if ($this->getVar('previous_representation_id')) {
+					print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('representation_id' => (int)$this->getVar('previous_representation_id'), 'object_id' => (int)$this->getVar('previous_object_id'), 'year' => (int)$pn_year))."\");'>←</a>";
+				}
+				if (sizeof($va_reps) > 1) {
+					print ' '._t("%1 of %2", $this->getVar('representation_index'), sizeof($va_reps)).' ';
+				}
+				if ($this->getVar('next_representation_id')) {
+					print "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('representation_id' => (int)$this->getVar('next_representation_id'), 'object_id' => (int)$this->getVar('next_object_id'), 'year' => (int)$pn_year))."\");'>→</a>";
+				}
+?>
+			</div>
+	</div><!-- end caMediaOverlayControls -->
 	<div id="caMediaOverlayContent">
+		<div class='closeUpperLeft'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
 <?php
-		$va_display_options['id'] = '_caMediaOverlayMediaDisplay';
-		print $t_rep->getMediaTag('media', $vs_display_version, $va_display_options);
-		if($vs_caption || $vs_photographer){
-			# --- get width of image so caption matches
-			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
-			print "<div class='chronologyImageCaption'>";
-			if($vs_caption){
-				print "<i>".$vs_caption."</i>";
-			}
-			if($vs_caption && $vs_photographer){
-				print " &ndash; ";
-			}
-			if($vs_photographer){
-				print _t("Photograph").": ".$vs_photographer;
-			}
-			print " &ndash; &copy; INFGM</div>";
-		}
-?>
-<?php
-	# --- get all reps and if there are more than one to display thumbnail links
-	if(sizeof($va_thumbnails) > 1){
-		print "<div id='caMediaOverlayThumbnails'>";
-		# --- calculate with of div - we set the width so we can force side to side scrolling if there are a lot of reps
-		print "<div style='width:".(74*(sizeof($va_thumbnails)))."px;'>";
-		foreach($va_thumbnails as $vn_thumb_object_id => $va_rep_info){
-			print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('object_id' => $vn_thumb_object_id, 'representation_id' => $va_rep_info['representation_id'], 'year' => $pn_year))."\"); return false;' >".$va_rep_info["rep"]."</a>";
-		}
-		print "</div></div><!-- caMediaOverlayThumbnails -->";
-	}
+	// return standard tag
+	if (!is_array($va_display_options)) { $va_display_options = array(); }
+	print $t_rep->getMediaTag('media', $vs_display_version, array_merge($va_display_options, array(
+		'id' => 'caMediaOverlayContentMedia', 
+		'viewer_base_url' => $this->request->getBaseUrlPath()
+	)));
+
 ?>
 </div><!-- end caMediaOverlayContent -->

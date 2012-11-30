@@ -5,71 +5,130 @@
 	$va_period_data = $this->getVar("period_data");
 	$q_objects = $va_period_data["objects"];
 	$q_occurrences = $va_period_data["occurrences"];
+	$q_styles_schools = $va_period_data["styles_schools"];
 	$q_entities = $va_period_data["entities"];
+	
+	$va_entities_with_objects = $va_period_data["entities_with_objects"];
+	$va_occurrences_with_objects = $va_period_data["occurrences_with_objects"];		// NOT CURRENTLY USED
+	$va_list_items_with_objects = $va_period_data["list_items_with_objects"];
 ?>
 
-	<div id="chronoLeftCol">
-		<div id="chronoNav">
+	<div id="subnav">
+		<ul>
 <?php
-		if($va_periods[$pn_period - 1]){
-			print caNavLink($this->request, "<", "", "eastend", "Chronology", "Index", array("period" => $pn_period - 1));
-		}else{
-			print "<span class='placeholder'><</span>";
-		}
-		print "&nbsp;&nbsp;&nbsp;";
-		print $va_periods[$pn_period]["label"];
-		print "&nbsp;&nbsp;&nbsp;";
-		if($va_periods[$pn_period + 1]){
-			print caNavLink($this->request, ">", "", "eastend", "Chronology", "Index", array("period" => $pn_period + 1));
-		}else{
-			print "<span class='placeholder'><</span>";
-		}
-		
-?>		
-		</div><!-- end chronoNav -->
-		<div id="chronoMap">
-			map here
-		</div><!-- end chronoMap -->
-		<div id="chronoLists">
+			foreach($va_periods as $vn_period => $va_period_info){
+				print "<li>".caNavLink($this->request, $va_period_info["label"].(($vn_period == $pn_period) ? " &raquo;" : ""), ($vn_period == $pn_period) ? "selected" : "", "eastend", "Chronology", "Index", array("period" => $vn_period))."</li>";
+			}
+?>
+		</ul>		
+	</div><!--end subnav-->
+	<div id="chron_content">
+		<div id="chron_thumb">
 <?php
+			print $this->render('chronology_object_results_html.php');
+?>
+		</div> <!--end chron_thumb-->
+		<div id="chron_info">
+			<h2><?php print $va_periods[$pn_period]["label"]; ?></h2>
+<?php
+			# --- set the height of the scrolling lists based on how many lists there are, this way the height of the column matches the height of the image column
+			$vn_col_height = 490;
+			$vn_num_cols = 0;
+			if($q_occurrences->numHits()){
+				$vn_num_cols++;
+			}
+			if($q_styles_schools->numHits()){
+				$vn_num_cols++;
+			}
+			if($q_entities->numHits()){
+				$vn_num_cols++;
+			}
+			switch($vn_num_cols){
+				case 1:
+					$vn_col_height = 490;
+				break;
+				# ---
+				case 2:
+					$vn_col_height = 227;
+				break;
+				# ---
+				case 3:
+					$vn_col_height = 139;
+				break;
+				# ---
+			}
 			# --- list of all occurrences from the period
 			if($q_occurrences->numHits()){
-				print "<div class='chronoList'><H2>"._t("Events & Exhibitions")."</H2>";
+				print "<div class='linedivide'></div>";
+				print "<span class='listhead caps'>"._t("Events & Exhibitions")."</span>";
+				print "<div class='chronoLists' style='height:".$vn_col_height."px;'><div><ul>";
 				while($q_occurrences->nextHit()){
-					print "<div class='chronoListItem'>".join(", ", $q_occurrences->getDisplayLabels())."</div>";
+					print "<li>";
+					#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'occurrence_id' => $q_occurrences->get("occurrence_id")))."\"); return false;'>".join(", ", $q_occurrences->getDisplayLabels())."</a>";
+					print caNavLink($this->request, join(", ", $q_occurrences->getDisplayLabels()), "", "Detail", "Occurrence", "Show", array("occurrence_id" => $q_occurrences->get("occurrence_id")));
+					print "</li>";
 				}
-				print "</div><!-- end chronoList -->";
+				print "</ul></div></div>";
 			}
-?>
-			<div class="chronoList">
-<?php
+			# --- list of all styles and schools from the period
+			if($q_styles_schools->numHits()){
+				print "<div class='linedivide'></div>";
+				print "<span class='listhead caps'>"._t("Styles & Schools")."</span>";
+				print "<div class='chronoLists' style='height:".$vn_col_height."px;'><div><ul>";
+				while($q_styles_schools->nextHit()){
+					$vn_item_id = $q_styles_schools->get("item_id");
+					print "<li>";
+					if (!in_array($vn_item_id, $va_list_items_with_objects)) {
+						print join(", ", $q_styles_schools->getDisplayLabels());
+					} else {
+						//print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'item_id' => $vn_item_id))."\"); return false;'>".join(", ", $q_styles_schools->getDisplayLabels())."</a>";
+						print "<a href='#' onclick='jQuery(\"#chron_thumbScroll\").smoothDivScroll(\"getAjaxContent\", \"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'item_id' => $vn_item_id))."\",\"replace\"); return false;'>".join(", ", $q_styles_schools->getDisplayLabels())."</a>";
+						
+						#print join(", ", $q_styles_schools->getDisplayLabels());
+					}
+					print "</li>";
+				}
+				print "</ul></div></div>";
+			}
 			# --- list of all people from the period
 			if($q_entities->numHits()){
-				print "<div class='chronoList'><H2>"._t("People")."</H2>";
+				print "<div class='linedivide'></div><span class='listhead caps'>"._t("People")."</span>";
+				print "<div class='chronoLists' style='height:".$vn_col_height."px;'><div><ul>";
 				while($q_entities->nextHit()){
-					print "<div class='chronoListItem'>".join(", ", $q_entities->getDisplayLabels())."</div>";
+					$vn_entity_id = $q_entities->get('entity_id');
+					print "<li>";
+					if (!in_array($vn_entity_id, $va_entities_with_objects)) {
+						print join(", ", $q_entities->getDisplayLabels());
+					} else {
+						//print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $vn_entity_id))."\", function() { $(\"div#chron_thumbScroll\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						
+						print "<a href='#' onclick='jQuery(\"#chron_thumbScroll\").smoothDivScroll(\"getAjaxContent\", \"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $vn_entity_id))."\",\"replace\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						
+						
+						#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\", function() { $(\"div.chron_thumbScroll".$q_entities->get("entity_id")."\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); alert(\"what?\"); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";						
+					}
+					print "</li>";
 				}
-				print "</div><!-- end chronoList -->";
+				print "</ul></div></div>";
 			}
 ?>
-			</div><!-- end chronoList -->
-		</div><!-- end chronoLists -->
-	</div><!-- end chronoLeftCol -->
-	<div id="chronoRightCol">
-<?php
-		if($q_objects->numHits()){
-			while($q_objects->nextHit()){
-				print "<div class='chronoThumbnail'>".caNavLink($this->request, $q_objects->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), "", "Detail", "Object", "Show", array("object_id" => $q_objects->get("object_id")))."</div>";
-			}
-		}
-?>
-	</div><!-- end chronoRightCol -->
+		</div><!--end chron_info-->
+	</div><!--end chron_content-->	
+	<script type="text/javascript">
+		// Initialize the plugin
+		$(document).ready(function () {
+			$("div.chronoLists").smoothDivScroll({
+				visibleHotSpotBackgrounds: "always",
+				hotSpotScrollingInterval: 45
+			});
+		});
+	</script>
 	
 	
 	
 	
-<?php	
-	print "<br style='clear:both;'/><br/>num objects: ".$q_objects->numHits();
-	print "<br/>num occ: ".$q_occurrences->numHits();
-	print "<br/>num ent: ".$q_entities->numHits();
-?>
+	
+	
+	
+	
