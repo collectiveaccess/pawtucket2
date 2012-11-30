@@ -260,13 +260,18 @@
 <?php
 			}
 ?>			
-				<div id="slideshow" class="pics" style="margin-bottom:15px; width: 580px; float:left;">
+				<div id="slideshow" class="pics" style="margin-bottom:0px; width: 580px; float:left;">
 <?php
 				$item_rep = $t_object->getRepresentations(array('mediumlarge', 'tiny'), null, array('return_with_access' => $va_access_values));
 				foreach ($item_rep as $i => $one_item) {
 					$slideWidth = $one_item['info']['mediumlarge']['WIDTH'];
 					$slideHeight = $one_item['info']['mediumlarge']['HEIGHT'];
-					$slidePadding = (580 - $slideWidth)/2;
+					
+					if ($vn_num_reps > 1) {
+						$slidePadding = (580 - $slideWidth)/2;
+					} else {
+						$slidePadding = (630 - $slideWidth)/2;
+					}
 					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $one_item['representation_id']))."\"); return false;' ><img src='".$one_item['urls']['mediumlarge']."' style='margin-left:".$slidePadding."px; margin-right:".$slidePadding."px;' rel='".$one_item['urls']['tiny']."' width='".$slideWidth."' height='".$slideHeight."'/></a>";
 				}
 ?>
@@ -282,7 +287,7 @@
 				<div style="height:1px; width:100%; clear:both;"></div>
 
 				
-			<div id='detailImageNav'></div>		
+			<!--<div id='detailImageNav'></div>	-->	
 				
 <?php
 
@@ -329,6 +334,7 @@
 ?>
 				</div>			
 			</div><!-- end objDetailImageNav -->
+			<div id='detailThumbNav' style='clear:both; max-height:150px; overflow-y: scroll'></div>
 <?php
 		}
 if (!$this->request->config->get('dont_allow_registration_and_login')) {
@@ -432,7 +438,7 @@ $(function() {
         timeout:  0,
         prev:    '#prevImage',
         next:    '#nextImage',
-        pager:   '#detailImageNav',
+        pager:   '#detailThumbNav',
         
         pagerAnchorBuilder: function(i, slide) { 
         return '<a href="#"><img src="'

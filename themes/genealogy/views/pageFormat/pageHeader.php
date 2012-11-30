@@ -70,39 +70,12 @@
 							
 						}
 						
-						if(!$this->request->config->get('disable_my_collections')){
-							# --- get all sets for user
- 							$t_set = new ca_sets();
- 							$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'user_id' => $this->request->getUserID())));
- 							if(is_array($va_sets) && (sizeof($va_sets) > 1)){
- 								print "<div id='lightboxLink'>
- 											<a href='#' onclick='$(\"#lightboxList\").toggle(0, function(){
-																									if($(\"#lightboxLink\").hasClass(\"lightboxLinkActive\")) {
-																										$(\"#lightboxLink\").removeClass(\"lightboxLinkActive\");
-																									} else {
-																										$(\"#lightboxLink\").addClass(\"lightboxLinkActive\");
-																									}
-																									});')>Lightbox</a>";
- 								if(is_array($va_message_set_ids) && sizeof($va_message_set_ids)){
-									print " <img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>";
-								}
-								print "<div id='lightboxList'><b>"._t("your lightboxes").":</b><br/>";
- 								foreach($va_sets as $va_set){
- 									print caNavLink($this->request, ((strlen($va_set["name"]) > 30) ? substr($va_set["name"], 0, 30)."..." : $va_set["name"]), "", "", "Sets", "Index", array("set_id" => $va_set["set_id"]));
- 									if(is_array($va_message_set_ids) && in_array($va_set["set_id"], $va_message_set_ids)){
-										print " <img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>";
-									}
-									print "<br/>";
- 								}
- 								print "</div>";
-	 							print "</div>";
- 							}else{
+
  								print caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index");
  								if(is_array($va_message_set_ids) && sizeof($va_message_set_ids)){
 									print " <img src='".$this->request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>";
 								}
- 							}
-						}
+ 
 						
 				
 						
