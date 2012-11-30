@@ -306,6 +306,7 @@ if (that.uiStyle == 'horizontal') {
 					
 					var foundSelected = false;
 					jQuery.each(data, function(i, item) {
+						if (!item) { return; }
 						jQuery('#' + newLevelDivID).data('itemCount', data['_itemCount']);
 						if (item[data._primaryKey]) {
 							if ((is_init) && (level == 0) && (!that.selectedItemIDs[0])) {
@@ -638,7 +639,7 @@ if (that.uiStyle == 'horizontal') {
 		// END method definitions
 		// --------------------------------------------------------------------------------
 		//
-		// initialize before returning object
+		// Initialize before returning object
 		that.setUpHierarchy(that.initItemID ? that.initItemID : that.defaultItemID);
 		
 		return that;
