@@ -312,7 +312,14 @@
 		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
-
+			foreach ($va_items as $vn_item_id => $va_item) {
+				$set_keys[] = $va_item['row_id'];
+			}
+			$qr_results = ca_objects::createResultSet($set_keys);
+			$va_set_item_metadata = array();
+			while($qr_results->nextHit()) {
+				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'));
+			}
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
@@ -343,7 +350,13 @@
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>
-<?php	
+<?php
+			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
+			if ($va_type == 25) {
+				TooltipManager::add(
+					"#setItem".$vn_item_id, "<div class='setTooltip'><b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/><b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/><b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"]."</div>"
+				);
+				}
 			}
 		}
 ?>

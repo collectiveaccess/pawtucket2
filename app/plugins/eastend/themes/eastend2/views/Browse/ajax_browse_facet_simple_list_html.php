@@ -69,7 +69,7 @@
 			$vs_label = caGetLabelForDisplay($va_facet, $va_item, $va_facet_info);
 			
 			#print "<div>".caNavLink($this->request, $vs_label, 'browseSelectPanelLink', $this->request->getModulePath(), $this->request->getController(), ((strlen($vm_modify_id)) ? 'modifyCriteria' : 'addCriteria'), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."</div>";
-			print "<li><a href='#' class='abFacetOptionsList' id='abFacetOptionsList".$va_item['id']."' onclick='jQuery(\".abFacetOptionsList\").removeClass(\"selected\"); jQuery(\"#abFacetOptionsList".$va_item['id']."\").addClass(\"selected\"); jQuery(\"#contentBox\").load(\"".caNavUrl($this->request, '', 'Browse', 'clearAndAddCriteria', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."\"); return false;'>".$vs_label."</a></li>";
+			print "<li><a href='#' class='abFacetOptionsList' id='abFacetOptionsList".$va_item['id']."' onclick='jQuery(\".abFacetOptionsList\").removeClass(\"selected\"); jQuery(\"#abFacetOptionsList".$va_item['id']."\").addClass(\"selected\"); jQuery(\"#contentBox\").load(\"".caNavUrl($this->request, 'eastend', 'ArtistBrowser', 'clearAndAddCriteria', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."\"); return false;'>".$vs_label."</a></li>";
 		}
 ?>
 		</ul>

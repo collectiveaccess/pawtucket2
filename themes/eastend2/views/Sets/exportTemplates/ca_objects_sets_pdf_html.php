@@ -37,13 +37,14 @@
 <!--
 /* commentaire dans un css */
 table { border: 1px solid #999999; color: #000000; text-wrap: normal; font-size: 11px; margin:15px;}
-table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 135px; height: 120px; padding: 5px; font-size: 11px;}
+table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 125px; height: 120px; padding: 5px; font-size: 11px;}
 tr.odd   { background-color: #f2f2f2; }
 .displayHeader { background-color: #EEEEEE; padding: 5px; border: 1px solid #999999; font-size: 12px; }
 .pageHeader { background-color: #FFFFFF; margin: 0px 10px 20px 10px; padding: 0px 5px 20px 5px; width: 100%; height: 45px; }
 .pageHeader img{ vertical-align:middle; }
 .headerText { color: #000; margin: 0px 0px 10px 20px; }
 .pagingText { color: #000; margin: 0px 0px 10px 20px; text-align: right; }
+.pageTitle { font-weight:bold; font-size:41px; color:#71cde4; text-transform:uppercase;}
 -->
 </style>
 
@@ -51,9 +52,7 @@ tr.odd   { background-color: #f2f2f2; }
 	<page_header>
 		<div class='pageHeader'>
 <?php
-			if(file_exists($this->request->getThemeDirectoryPath().'/graphics/CAlogo.gif')){
-				print '<img src="'.$this->request->getThemeDirectoryPath().'/graphics/CAlogo.gif"/>';
- 			}
+			print "<div class='pageTitle'>Parrish East End Stories</div>";
 			print "<span class='headerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</span>";
 			print "<span class='headerText'>".(($vn_num_items == 1) ? _t('%1 item', $vn_num_items) : _t('%1 items', $vn_num_items))."</span>";
 			print "<span class='headerText'>".mb_substr($vs_title, 0, 30).((mb_strlen($vs_title) > 30) ? '...' : '')."</span>";
@@ -67,17 +66,33 @@ tr.odd   { background-color: #f2f2f2; }
 			<th class="displayHeader"><?php print _t("Media"); ?></th>
 			<th class="displayHeader"><?php print _t("ID"); ?></th>
 			<th class="displayHeader"><?php print _t("Title"); ?></th>
+			<th class="displayHeader"><?php print _t("Date"); ?></th>
+			<th class="displayHeader"><?php print _t("Creator"); ?></th>
 		</tr>
 <?php
 		$i = 0;
+		$t_object = new ca_objects();
 		foreach($va_items as $va_item){
 			$vn_object_id = $va_item['object_id'];
+			$t_object->load($vn_object_id);
 			
 			($i == 2) ? $i = 0 : "";
 			print "<tr".(($i == 1) ? " class='odd'" : "").">";
 			print "<td>".((file_exists(str_replace($this->request->config->get("site_host"), $this->request->config->get("ca_base_dir"), $va_item["representation_url_thumbnail"]))) ? $va_item["representation_tag_thumbnail"] : "")."</td>";
 			print "<td>".$va_item["idno"]."</td>";
 			print "<td>".$va_item["name"]."</td>";
+			print "<td>";
+			if($t_object->get("creation_date")){
+				print $t_object->get("creation_date");
+			}
+			print "</td><td>";
+			$va_creator = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+			if(sizeof($va_creator) > 0){	
+				foreach($va_creator as $va_entity) {
+					print $va_entity["label"]."<br/>";
+				}
+			}
+			print "</td>";
 ?>	
 			</tr>
 <?php

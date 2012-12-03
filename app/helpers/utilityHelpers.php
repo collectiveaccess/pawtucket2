@@ -1326,6 +1326,30 @@ function caFileIsIncludable($ps_file) {
 			'end' => $o_tep->getText(array_merge($pa_options, array('end_as_iso8601' => true)))
 		);
 	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 *
+	 * @param string $ps_date_expression Start of date range, as Unix timestamp
+	 * @param array $pa_options All options supported by TimeExpressionParser::getText() are supported
+	 *
+	 * @return array
+	 */
+	function caNormalizeDateRange($ps_date_expression, $ps_normalization=null, $pa_options=null) {
+		if (!is_array($pa_options)) { $pa_options = array(); }
+		$o_tep = new TimeExpressionParser();
+		
+		if (!$o_tep->parse($ps_date_expression)) { return null; }
+		
+		$va_dates = $o_tep->getHistoricTimestamps();
+		$va_dates = $o_tep->normalizeDateRange($va_dates['start'], $va_dates['end'], $ps_normalization);
+		if (!is_array($va_dates)) { return null; }
+		
+		if (isset($pa_options['returnAsArray']) && $pa_options['returnAsArray']) {
+			return $va_dates;
+		}
+		return array_shift($va_dates);
+	}
 	# ----------------------------------------
 	/**
 	 *

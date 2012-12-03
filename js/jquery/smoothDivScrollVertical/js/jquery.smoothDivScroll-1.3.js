@@ -1025,7 +1025,8 @@
 			var tempScrollableAreaHeight = 0, foundStartAtElement = false, o = this.options, el = this.element;
 
 			// Add up the total height of all the items inside the scrollable area
-			el.data("scrollableArea").children(o.countOnlyClass).each(function () {
+			var a = (o.countOnlyClass) ? el.data("scrollableArea").find(o.countOnlyClass) : el.data("scrollableArea").children();
+			a.each(function () {
 				// Check to see if the current element in the loop is the one where the scrolling should start
 				if ((o.startAtElementId.length > 0) && (($(this).attr("id")) === o.startAtElementId)) {
 					el.data("startingPosition", tempScrollableAreaHeight);
