@@ -1420,6 +1420,7 @@ td.searchFullImageCell{
 	height:12px;
 	outline: none;
 	background-color:#FFFFFF;
+	color: #4b4b4b;
 }
 #loginForm input[type="text"], #registerForm input[type="text"], #resetPassword input[type="text"], #resetPasswordForm input[type="text"] {
 	font-size:12px;
@@ -1430,9 +1431,11 @@ td.searchFullImageCell{
 	height:12px;
 	outline: none;
 	background-color:#FFFFFF;
+	color: #4b4b4b;
 }
 #registerForm input, #registerForm input[type="text"], #resetPasswordForm input[type="text"]{
 	width:260px;
+	color: #4b4b4b;
 }
 
 /* ------------------------------------- */
