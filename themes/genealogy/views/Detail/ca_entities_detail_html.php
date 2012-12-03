@@ -52,7 +52,7 @@ if (!$this->request->isAjax()) {
 			}
 ?>
 		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h1>
+		<h1><?php print $vs_title; ?></h1>
 		<div id="leftCol">		
 <?php
 			if((!$this->request->config->get('dont_allow_registration_and_login')) && $this->request->config->get('enable_bookmarks')){
@@ -70,10 +70,7 @@ if (!$this->request->isAjax()) {
 				<!-- bookmark link END -->
 <?php
 			}
-			# --- identifier
-			if($t_entity->get('idno')){
-				print "<div class='unit'><b>"._t("Identifier")."</b>: ".$t_entity->get('idno')."</div><!-- end unit -->";
-			}
+
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_entities_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
@@ -83,9 +80,26 @@ if (!$this->request->isAjax()) {
 					}
 				}
 			}
+			if ($va_entity_name = $t_entity->get("ca_entities.preferred_labels", array('template' => '^forename ^middlename ^surname<br/>'))){
+				print "<div class='unit'><h2>"._t('Full Name')."</h2> ".$va_entity_name."</div>";
+			}	
+			if ($va_alt_name = $t_entity->get("ca_entities.nonpreferred_labels", array('template' => '^forename ^other_forenames ^middlename ^surname<br/>'))){
+				print "<div class='unit'><h2>"._t('Other Names')."</h2> ".$va_alt_name."</div>";
+			}			
+			if ($va_description_text = $t_entity->get("ca_entities.life_dates")){
+				print "<div class='unit'><h2>"._t('Lifetime')."</h2> ".$va_description_text."</div>";
+			}
+			if ($t_entity->get("ca_entities.entity_dates.date")) {	
+				if ($va_entity_date = $t_entity->get("ca_entities.entity_dates", array('template' => '^date_type: ^date', 'delimiter' => '<br/>','convertCodesToDisplayText' => true))){
+					print "<div class='unit'><h2>"._t('Other Dates')."</h2> ".$va_entity_date."</div>";
+				}
+			}
+			if ($va_nationality = $t_entity->get("ca_entities.nationality", array('convertCodesToDisplayText' => true))){
+				print "<div class='unit'><h2>"._t('Nationality')."</h2> ".$va_nationality."</div>";
+			}			
 			# --- description
 			if($this->request->config->get('ca_entities_description_attribute')){
-				if($vs_description_text = $t_entity->get("ca_entities.".$this->request->config->get('ca_entities_description_attribute'))){
+				if($vs_description_text = $t_entity->get("ca_entities.biography")){
 					print "<div class='unit'><div id='description'><b>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
 ?>
 					<script type="text/javascript">
@@ -102,15 +116,37 @@ if (!$this->request->isAjax()) {
 			}
 			# --- entities
 			$va_entities = $t_entity->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_entities) > 0){	
+			if(sizeof($va_entities)){	
 ?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
+				<div class="relatedinfo"><div class="unit">
 <?php
+				
+				$va_entities_by_rel_type = array();
 				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";		
+					if (!is_array($va_entities_by_rel_type[$va_entity['relationship_typename']])) { $va_entities_by_rel_type[$va_entity['relationship_typename']] = array(); }
+					array_push($va_entities_by_rel_type[$va_entity['relationship_typename']], $va_entity);
+				}
+				
+				// Loop through types
+				foreach($va_entities_by_rel_type as $vs_type => $va_entities) {
+					// Print type name
+					print "<div class=\"unit\"><h2>".unicode_ucfirst($vs_type)."</h2>\n";
+					
+					// Print entities for current type
+					foreach($va_entities as $vn_index => $va_entity) {
+?>
+					<div><?php print (($this->request->config->get('allow_detail_for_ca_entities')) ? 
+						caNavLink($this->request, $va_entity['label'], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) 
+						: 
+						caNavLink($this->request, $va_entity['label'], '', '', 'Search', 'Index', array('search' => '"'.$va_entity['label'].'"'))); 
+					
+					?></div>
+<?php					
+					}
+					print "</div>";
 				}
 ?>
-				</div><!-- end unit -->
+				</div></div><!-- end unit -->
 <?php
 			}
 			
@@ -144,6 +180,12 @@ if (!$this->request->isAjax()) {
 				}
 				print "</div><!-- end unit -->";
 			}
+			# --- map
+			if($this->request->config->get('ca_objects_map_attribute') && $t_entity->get($this->request->config->get('ca_objects_map_attribute'))){
+				$o_map = new GeographicMap(230, 200, 'map');
+				$o_map->mapFrom($t_entity, $this->request->config->get('ca_objects_map_attribute'));
+				print "<div class='unit' style='margin-top:15px; margin-bottom:20px;'>".$o_map->render('HTML')."</div>";
+			}			
 			# --- collections
 			$va_collections = $t_entity->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){
@@ -172,7 +214,7 @@ if (!$this->request->isAjax()) {
 ?>
 	</div><!-- end leftCol -->
 	<div id="rightCol">
-		<div id="resultBox">
+		
 <?php
 }
 	// set parameters for paging controls view
@@ -181,11 +223,12 @@ if (!$this->request->isAjax()) {
 	));
 	print $this->render('related_objects_grid.php');
 	
-if (!$this->request->isAjax()) {
+
 ?>
-		</div><!-- end resultBox -->
+		
+	<div style='height:20px; clear:both; width: 100%'></div>
 	</div><!-- end rightCol -->
 </div><!-- end detailBody -->
 <?php
-}
+
 ?>
