@@ -78,10 +78,12 @@ table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 
 				print "<tr>";
 			}
 			print "<td><table class='imageTable' cellpadding='0' cellspacing='0'><tr><td>";
-			print "<img src='".$t_rep->getMediaUrl("media", "medium")."' width='".$va_item["representation_width_thumbnail"]."' height='".$va_item["representation_height_thumbnail"]."' border='0'>";
+			if ($t_rep) {
+				print "<img src='".$t_rep->getMediaUrl("media", "medium")."' width='".$va_item["representation_width_thumbnail"]."' height='".$va_item["representation_height_thumbnail"]."' border='0'>";
+			}
 			print "</td></tr></table>";
 			#print "<td><table class='imageTable' cellpadding='0' cellspacing='0'><tr><td>".((file_exists(str_replace($this->request->config->get("site_host"), $this->request->config->get("ca_base_dir"), $va_item["representation_url_thumbnail"]))) ? $va_item["representation_tag_thumbnail"] : "")."</td></tr></table>";
-			print "<table class='imageCaptionTable' cellpadding='0' cellspacing='0'><tr><td>".$va_item["idno"]."<br/>".$t_object->get("ca_collections.preferred_labels", array("delimiter" => "; "))."</td></tr></table></td>";
+			print "<table class='imageCaptionTable' cellpadding='0' cellspacing='0'><tr><td>".$va_item["idno"]."<br/>".$t_object->get("ca_objects.altID")."<br/>".$t_object->get("ca_collections.preferred_labels", array("delimiter" => "; "))."</td></tr></table></td>";
 			if($i == 4){
 				print "</tr>";
 				$i = 0;

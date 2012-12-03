@@ -61,13 +61,7 @@ if (!$this->request->isAjax()) {
 				print "<div class='unit'><b>"._t("Identifier")."</b>: ".$this->getVar('idno')."</div><!-- end unit -->";
 			}
 ?>
-			<div class="unit">
-				<H2>Heading</H2>
-				<div><a href="#">list item</a></div>
-				<div><a href="#">list item</a></div>
-			</div><!-- end unit -->
 			
-			<div class="unit"><b>Heading:</b> info</div><!-- end unit -->
 <?php
 			# --- entities
 			$va_entities = array();

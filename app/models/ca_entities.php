@@ -292,6 +292,11 @@ class ca_entities extends BundlableLabelableBaseModelWithAttributes implements I
 	protected $SEARCH_RESULT_CLASSNAME = 'EntitySearchResult';
 	
 	# ------------------------------------------------------
+	# ACL
+	# ------------------------------------------------------
+	protected $SUPPORTS_ACL = true;
+	
+	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
 	# are listed here is the order in which they will be returned using getFields()
 
@@ -451,6 +456,7 @@ class ca_entities extends BundlableLabelableBaseModelWithAttributes implements I
 	 public function getHierarchyList($pb_dummy=false) {
 	 	$vn_pk = $this->getPrimaryKey();
 	 	if (!$vn_pk) { return null; }		// have to load a row first
+	 	$vs_template = $this->getAppConfig()->get('ca_entities_hierarchy_browser_display_settings');
 	 	
 	 	$vs_label = $this->getLabelForDisplay(false);
 	 	$vs_hier_fld = $this->getProperty('HIERARCHY_ID_FLD');
@@ -470,12 +476,12 @@ class ca_entities extends BundlableLabelableBaseModelWithAttributes implements I
 	 	$va_entity_hierarchy_root = array(
 	 		$t_entity->get($vs_hier_fld) => array(
 	 			'entity_id' => $vn_pk,
-	 			'name' => $vs_label,
+	 			'name' => $vs_name = caProcessTemplateForIDs($vs_template, 'ca_entities', array($vn_pk)),
 	 			'hierarchy_id' => $vn_hier_id,
 	 			'children' => sizeof($va_children)
 	 		),
 	 		'entity_id' => $vn_pk,
-			'name' => $vs_label,
+			'name' => $vs_name,
 			'hierarchy_id' => $vn_hier_id,
 			'children' => sizeof($va_children)
 	 	);

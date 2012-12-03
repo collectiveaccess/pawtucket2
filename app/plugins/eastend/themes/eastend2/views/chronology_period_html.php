@@ -7,6 +7,10 @@
 	$q_occurrences = $va_period_data["occurrences"];
 	$q_styles_schools = $va_period_data["styles_schools"];
 	$q_entities = $va_period_data["entities"];
+	
+	$va_entities_with_objects = $va_period_data["entities_with_objects"];
+	$va_occurrences_with_objects = $va_period_data["occurrences_with_objects"];		// NOT CURRENTLY USED
+	$va_list_items_with_objects = $va_period_data["list_items_with_objects"];
 ?>
 
 	<div id="subnav">
@@ -72,9 +76,16 @@
 				print "<span class='listhead caps'>"._t("Styles & Schools")."</span>";
 				print "<div class='chronoLists' style='height:".$vn_col_height."px;'><div><ul>";
 				while($q_styles_schools->nextHit()){
+					$vn_item_id = $q_styles_schools->get("item_id");
 					print "<li>";
-					print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'item_id' => $q_styles_schools->get("item_id")))."\"); return false;'>".join(", ", $q_styles_schools->getDisplayLabels())."</a>";
-					#print join(", ", $q_styles_schools->getDisplayLabels());
+					if (!in_array($vn_item_id, $va_list_items_with_objects)) {
+						print join(", ", $q_styles_schools->getDisplayLabels());
+					} else {
+						//print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'item_id' => $vn_item_id))."\"); return false;'>".join(", ", $q_styles_schools->getDisplayLabels())."</a>";
+						print "<a href='#' onclick='jQuery(\"#chron_thumbScroll\").smoothDivScroll(\"getAjaxContent\", \"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'item_id' => $vn_item_id))."\",\"replace\"); return false;'>".join(", ", $q_styles_schools->getDisplayLabels())."</a>";
+						
+						#print join(", ", $q_styles_schools->getDisplayLabels());
+					}
 					print "</li>";
 				}
 				print "</ul></div></div>";
@@ -84,10 +95,19 @@
 				print "<div class='linedivide'></div><span class='listhead caps'>"._t("People")."</span>";
 				print "<div class='chronoLists' style='height:".$vn_col_height."px;'><div><ul>";
 				while($q_entities->nextHit()){
+					$vn_entity_id = $q_entities->get('entity_id');
 					print "<li>";
-					print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\", function() { $(\"div#chron_thumbScroll\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
-					#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\", function() { $(\"div.chron_thumbScroll".$q_entities->get("entity_id")."\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); alert(\"what?\"); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
-					#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+					if (!in_array($vn_entity_id, $va_entities_with_objects)) {
+						print join(", ", $q_entities->getDisplayLabels());
+					} else {
+						//print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $vn_entity_id))."\", function() { $(\"div#chron_thumbScroll\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						
+						print "<a href='#' onclick='jQuery(\"#chron_thumbScroll\").smoothDivScroll(\"getAjaxContent\", \"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $vn_entity_id))."\",\"replace\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						
+						
+						#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\", function() { $(\"div.chron_thumbScroll".$q_entities->get("entity_id")."\").smoothDivScroll({ visibleHotSpotBackgrounds: \"always\" }); alert(\"what?\"); }); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";
+						#print "<a href='#' onclick='jQuery(\"#chron_thumb\").load(\"".caNavUrl($this->request, 'eastend', 'Chronology', 'RefineSearch', array('period' => $pn_period, 'entity_id' => $q_entities->get("entity_id")))."\"); return false;'>".join(", ", $q_entities->getDisplayLabels())."</a>";						
+					}
 					print "</li>";
 				}
 				print "</ul></div></div>";
@@ -99,7 +119,7 @@
 		// Initialize the plugin
 		$(document).ready(function () {
 			$("div.chronoLists").smoothDivScroll({
-				visibleHotSpotBackgrounds: "hover",
+				visibleHotSpotBackgrounds: "always",
 				hotSpotScrollingInterval: 45
 			});
 		});
