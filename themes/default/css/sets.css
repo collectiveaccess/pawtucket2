@@ -34,15 +34,16 @@
 	list-style-type: none;
 	height: 200px; 
 	width: 140px; 
-	border: solid 1px #828282;
+	border: solid 1px #ccc;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 	margin: 5px 10px 5px 0px;
 	background: #F5F5F5;
 	text-align: center;
-	overflow: hidden;
 }
 
 #setItems .setItem:hover {
-	border: solid 1px #666;
+	border: solid 1px #aaa;
+	box-shadow: 1px 1px 4px rgba(0, 0, 0, .75);
 }
 
 #setItems div{
@@ -60,7 +61,7 @@
 	color: #636363;
 }
 
-#setItems .remove{
+/*#setItems .remove{
 	position: absolute;
 	left:130px;
 	top: 0px;
@@ -76,10 +77,46 @@
 }
 #setItems .remove a:hover{
 	color: #CA1919;
+}*/
+#setItems .remove{
+	position: absolute;
+	left:127px;
+	top: -10px;
+	padding: 3px 1px 1px 6px;
+	background-color:#828282;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+#setItems .remove:hover{
+	position: absolute;
+	left:127px;
+	top: -10px;
+	padding: 3px 1px 1px 6px;
+	background-color:#333;
+	-moz-border-radius: 8px;
+	border-radius:8px;
+	-webkit-border-radius: 8px;
+	width:11px;
+	height:13px;
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+#setItems .remove a{
+	font-size: 10px;
+	color: #fff;
+	text-decoration:none;
+	font-weight:bold;
+	cursor:default;
 }
 
-.setItemThumbnail {
+#setItems div.setItemThumbnail {
 	padding: 10px 10px 3px 10px;
+	text-align:center;
+	width:120px;
+	margin:0px;
 }
 #setItems .setItemCaption {
 	padding-left: 10px;

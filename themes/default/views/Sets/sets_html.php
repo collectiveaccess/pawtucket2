@@ -334,10 +334,12 @@
 						if ($va_item['representation_tag_thumbnail']) {
 							print caNavLink($this->request, $va_item['representation_tag_thumbnail'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']));
 						}
-						
+?>
+						</div>
+<?php
 						if ($va_item['name']) {
-							if (unicode_strlen($va_item['name']) > 70) {
-								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 67).'...</em>';
+							if (unicode_strlen($va_item['name']) > 60) {
+								$va_title[] = '<em>'.unicode_substr($va_item['name'], 0, 57).'...</em>';
 							} else {
 								$va_title[] = '<em>'.$va_item['name'].'</em>';
 							}
@@ -348,7 +350,6 @@
 						}
 						$vs_title = join('<br/>', $va_title);
 ?>
-						</div>
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>

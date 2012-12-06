@@ -33,13 +33,14 @@
 	
 	$va_access_values	= $this->getVar('access_values');
 
-	print "<div id='ajaxImage'></div>";
 
 	$qr_hits->seek(0);
-	
+/*	
 	$va_class_map = caGetMediaMimetypeToDisplayClassMap('detail');	// return array with keys=mimetypes and values=generic class (eg. "image", "video", "audio"; we'll use these to segregate the representations)
 	$va_hits_by_class = array();
 	while($qr_hits->nextHit()) {
+		$va_medium_url = $qr_hits->getMediaUrl('ca_object_representations.media', 'mediumlarge');
+		$va_tiny_url = $qr_hits->getMediaUrl('ca_object_representations.media', 'tiny');
 		$vs_mimetype = $qr_hits->getMediaInfo('ca_object_representations.media', 'original', 'MIMETYPE');
 		$vs_class = $va_class_map[$vs_mimetype];
 		
@@ -49,85 +50,40 @@
 			'videotag' => $qr_hits->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values))
 		);
 	}
+*/	
 	
-	
-	print "<div id='relatedRecords'>";
-		//print "<div class='slide' style='width: 100%;'>";
-		$v_i = 0;
-		foreach($va_hits_by_class['images'] as $va_rep) {
-			if ($v_i == 0) { 
-				print "<div class='slide'>"; 
-			}
-			$vn_representation_id = $va_rep['representation_id'];
-			$vs_tag = $va_rep['tag'];
+	print "<div id='objDetailImage'>";
+
 			
-			print "<a href='#' class='relatedRecordsImage' id='relatedRecordsImage{$vn_representation_id}'>{$vs_tag}</a>";
+?>			
+			<a href="#"><span id='prevImage'>&larr;</span></a>
+<?php
+			
+?>			
+				<div id="slideshow" class="pics" style="margin-bottom:15px; width: 580px; float:left;">
+<?php
+				while($qr_hits->nextHit()) {
+					$va_medium_url = $qr_hits->getMediaUrl('ca_object_representations.media', 'mediumlarge');
+					$va_tiny_url = $qr_hits->getMediaUrl('ca_object_representations.media', 'tiny');
+					$va_medium_height = $qr_hits->getMediaInfo('ca_object_representations.media', 'mediumlarge', 'HEIGHT');
+					$va_medium_width = $qr_hits->getMediaInfo('ca_object_representations.media', 'mediumlarge', 'WIDTH');
+					$va_object_id = $qr_hits->get('object_id');
+					$slidePadding = (580 - $va_medium_width)/2;
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $va_object_id, 'representation_id' => $one_item['representation_id']))."\"); return false;' ><img src='".$va_medium_url."' style='margin-left:".$slidePadding."px; margin-right:".$slidePadding."px;' rel='".$va_tiny_url."' width='".$va_medium_width."' height='".$va_medium_height."'/></a>";
+				}
+?>
+				</div>
+<?php
+			
+?>				
+				<a href="#"><span id='nextImage'>&rarr;</span></a>
+<?php
 			
 ?>
-<script type="text/javascript">	
-
-		$("#relatedRecordsImage<?php print $vn_representation_id; ?>").click(function(){
-			$("#ajaxImage").load(
-				"<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetMedia'); ?>", 
-				{
-					representation_id: <?php print $vn_representation_id; ?>,
-					version: 'mediumlarge'
-				}
-			);
-		});
-</script>
+			<div id='detailImageNav' style='clear:both; width: 100%; max-height:150px; overflow-y: scroll'></div>
+				
+		</div>
 <?php
-			$v_i ++;	
-			if ($v_i == 5) {
-				print "</div>";
-				$v_i = 0;
-			}
-		}
-		//print "</div>\n";	
-		
-		if ($v_i > 0) {
-			print "</div>";
-		}
-
-	print "</div>\n";
-	
-	print "<div id='navigation'></div>";
-	
-if(is_array($va_hits_by_class['video'])) {
-	print "<div class='mediaTitle'>"._t("Related Videos")."</div>";
-	
-		foreach($va_hits_by_class['video'] as $va_rep) {
-			$vn_representation_id = $va_rep['representation_id'];
-			print "<div id='videoThumb'><a href='#' class='relatedRecordsVideo' id='relatedRecordsVideo{$vn_representation_id}'>".$va_rep['videotag']."</a></div>";
-			
-	?>
-	<script type="text/javascript">	
-	
-			$("#relatedRecordsVideo<?php print $vn_representation_id; ?>").click(function(){
-				$("#ajaxImage").load(
-					"<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetMedia'); ?>", 
-					{
-						representation_id: <?php print $vn_representation_id; ?>,
-						version: 'mediumlarge'
-					}
-				);
-			});
-	</script>
-	<?php		
-			
-		}
-}
-
-if(is_array($va_hits_by_class['audio'])) {
-	print "<div class='mediaTitle'>"._t("Related Audio")."</div>";
-	
-	print "<div id='videoDiv'>";
-	foreach($va_hits_by_class['audio'] as $va_rep) {
-		$vn_representation_id = $va_rep['representation_id'];
-		print "<div id='videoThumb'>".$va_rep['videotag']."</div>";		
-	}	
-	print "</div>";
-}
 /*
 	while(($vn_itemc < $this->getVar('items_per_page')) && ($qr_hits->nextHit())) {
 		if ($vn_c == 0) { print "<tr>\n"; }
@@ -187,14 +143,25 @@ if(is_array($va_hits_by_class['audio'])) {
 	JavascriptLoadManager::register('cycle');		// load "ca.cycle" javascript library
 ?>
 
-<script type="text/javascript">
-$(document).ready(function() {
-   $('#relatedRecords').cycle({
-               fx: 'scrollLeft', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
-               speed:  1000,
-               timeout: 0,
-               pager: '#navigation'
-       });
+	<script type="text/javascript">
+$(function() {
+
+    $('#slideshow').cycle({
+        fx:      'scrollHorz',
+        timeout:  0,
+        prev:    '#prevImage',
+        next:    '#nextImage',
+        pager:   '#detailImageNav',
+        
+        pagerAnchorBuilder: function(i, slide) { 
+        return '<a href="#"><img src="'
+        + jQuery(slide).find('img').attr('rel')
+        + '" /></a>'; 
+    }
+    });
+
+
+    
 });
 </script>
 
