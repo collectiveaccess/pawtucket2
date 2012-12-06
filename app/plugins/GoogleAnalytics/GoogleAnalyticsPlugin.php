@@ -32,7 +32,7 @@
 			$this->description = _t('Adds Google Analytics functionality to Pawtucket');
 			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/GoogleAnalytics.conf');
 			$account=$this->opo_config->get('account');
-			$googleAnalyticsCode = "\n// GoogleAnalytics \n var _gaq = _gaq || []; _gaq.push(['_setAccount', '^account']); _gaq.push(['_trackPageview']); \n function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); \n";
+			$googleAnalyticsCode = "\n// GoogleAnalytics \n var _gaq = _gaq || []; _gaq.push(['_setAccount', '^account']); _gaq.push(['_trackPageview']); \n (function() {var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); \n";
 			// If a defined GoogleAnalytics account is defined, include the javascript code 
 			if ($account) {
 				$googleAnalyticsCode = str_replace("^account",$account,$googleAnalyticsCode);
