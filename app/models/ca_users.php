@@ -103,6 +103,13 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 				'LABEL' => _t('E-mail'), 'DESCRIPTION' => _t('The e-mail address of this user. The address will be used for all mail-based system notifications and alerts to this user.'),
 				'BOUNDS_LENGTH' => array(0,255)
 		),
+		'entity_id' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => '',
+				'LABEL' => _t('Related entity (optional)'), 'DESCRIPTION' => _t('The entity this user login is associated with.')
+		),
 		'vars' => array(
 				'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
 				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
@@ -146,13 +153,6 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 				'DEFAULT' => '',
 				'LABEL' => _t('Confirmation key'), 'DESCRIPTION' => _t('Confirmation key used for email verification.'),
 				'BOUNDS_LENGTH' => array(0,32)
-		),
-		'entity_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Entity'), 'DESCRIPTION' => _t('The entity this user login is associated with.')
 		)
  	)
 );
@@ -1343,7 +1343,10 @@ class ca_users extends BaseModel {
 			if (!isset($va_prefs)) {
 				return isset($va_pref_info["default"]) ? $va_pref_info["default"] : null;
 			}
-			return isset($va_prefs[$ps_pref]) ? $va_prefs[$ps_pref] : ($va_pref_info["default"] ? $va_pref_info["default"] : null);
+			if(isset($va_prefs[$ps_pref])) {
+				return $va_prefs[$ps_pref] ? $va_prefs[$ps_pref] : ($va_pref_info["default"] ? $va_pref_info["default"] : null);
+			}
+			return ($va_pref_info["default"] ? $va_pref_info["default"] : null);
 		} else {
 			$this->postError(920, _t("%1 is not a valid user preference", $ps_pref),"User->getPreference()");
 			return null;

@@ -255,6 +255,10 @@ class ca_storage_locations extends BundlableLabelableBaseModelWithAttributes imp
 	protected $ID_NUMBERING_ID_FIELD = 'idno';				// name of field containing user-defined identifier
 	protected $ID_NUMBERING_SORT_FIELD = 'idno_sort';		// name of field containing version of identifier for sorting (is normalized with padding to sort numbers properly)
 	
+	# ------------------------------------------------------
+	# ACL
+	# ------------------------------------------------------
+	protected $SUPPORTS_ACL = true;
 	
 	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
@@ -301,7 +305,6 @@ class ca_storage_locations extends BundlableLabelableBaseModelWithAttributes imp
 	 * Return array containing information about all storage location hierarchies, including their root_id's
 	 */
 	 public function getHierarchyList($pb_dummy=false) {
-		
 		$vn_root_id = $this->getHierarchyRootID();
 		$t_root = new ca_storage_locations($vn_root_id);
 		$qr_children = $t_root->getHierarchyChildrenAsQuery();
@@ -309,7 +312,7 @@ class ca_storage_locations extends BundlableLabelableBaseModelWithAttributes imp
 		
 		return array(array(
 			'location_id' => $t_root->getPrimaryKey(),
-			'name' => 'Root',
+			'name' => _t('Storage locations'),
 			'children' => $qr_children->numRows(),
 			'has_children' => $qr_children->numRows() ? true : false
 		));

@@ -78,7 +78,7 @@
 			print "<strong>".$this->getVar("set_name")."</strong>";
 			print "&nbsp;&mdash;&nbsp;<em>"._t("This lightbox is %1", $vs_access)."</em>";
 			if ($this->getVar("set_access") == 1) {
-				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='20'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
+				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='20'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id, 'public_display' => 1), array('target' => '_ext'))."</textarea></form></div>";
 			}
 			if($this->getVar("set_description")){
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";

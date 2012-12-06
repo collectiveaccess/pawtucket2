@@ -42,7 +42,7 @@ $(document).ready(function() {
 						<input type="password" name="password" style="float:left;" /> <a href="#" name="searchButtonSubmit" onclick="document.forms.login.submit(); return false;"> <div class="form-submit" style="margin-left:5px;"></div></a>
 					</div>
 					<div style="clear:left;"><?php print _t("Research for the <i>Isamu Noguchi Catalogue Raisonn&eacute;</i> is currently ongoing and information provided on this site is subject to change at any time. The site and its content are for noncommercial, educational, and scholarly use only. Unauthorized reproduction of images and content is strictly prohibited. By entering, I agree to the %1.", caNavLink($this->request, _t("Terms & Conditions of Use"), "", "", "About", "TermsConditions")); ?></div>
-					<input type="submit" name="" value="" style="display:none;">
+					<input type="submit" name="" value="" style="position: absolute; top: -10px; left: -10px; z-index: -2; width: 1px; height: 1px;">
 				</form>
 				<div style="<?php print ($this->getVar("resetFormOpen")) ? "display:none;" : ""; ?>"><a href="#"  onclick='$("#resetPasswordLink").slideDown(1); $("#resetPasswordLink").slideUp(1); $("#resetPassword").slideDown(250); return false;' id="resetPasswordLink"><?php print _t("Forgot your password?"); ?></a></div>
 			<div id="resetPassword" style="<?php print ($this->getVar("resetFormOpen")) ? "" : "display:none;"; ?>">

@@ -215,7 +215,7 @@
 			}
 			# --- map
 			if($this->request->config->get('ca_objects_map_attribute') && $t_object->get($this->request->config->get('ca_objects_map_attribute'))){
-				$o_map = new GeographicMap(240, 200, 'map');
+				$o_map = new GeographicMap(230, 200, 'map');
 				$o_map->mapFrom($t_object, $this->request->config->get('ca_objects_map_attribute'));
 				print "<div class='unit' style='margin-top:15px; margin-bottom:20px;'>".$o_map->render('HTML')."</div>";
 			}			
@@ -260,14 +260,19 @@
 <?php
 			}
 ?>			
-				<div id="slideshow" class="pics" style="float:left; margin-bottom:15px;">
-				
+				<div id="slideshow" class="pics" style="margin-bottom:0px; width: 580px; float:left;">
 <?php
 				$item_rep = $t_object->getRepresentations(array('mediumlarge', 'tiny'), null, array('return_with_access' => $va_access_values));
 				foreach ($item_rep as $i => $one_item) {
 					$slideWidth = $one_item['info']['mediumlarge']['WIDTH'];
-					$slidePadding = (580 - $slideWidth)/2;
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $one_item['representation_id']))."\"); return false;' ><img src='".$one_item['urls']['mediumlarge']."' style='margin-left:".$slidePadding."px; margin-right:".$slidePadding."px;' rel='".$one_item['urls']['tiny']."'/></a>";
+					$slideHeight = $one_item['info']['mediumlarge']['HEIGHT'];
+					
+					if ($vn_num_reps > 1) {
+						$slidePadding = (580 - $slideWidth)/2;
+					} else {
+						$slidePadding = (630 - $slideWidth)/2;
+					}
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $one_item['representation_id']))."\"); return false;' ><img src='".$one_item['urls']['mediumlarge']."' style='margin-left:".$slidePadding."px; margin-right:".$slidePadding."px;' rel='".$one_item['urls']['tiny']."' width='".$slideWidth."' height='".$slideHeight."'/></a>";
 				}
 ?>
 				</div>
@@ -282,7 +287,7 @@
 				<div style="height:1px; width:100%; clear:both;"></div>
 
 				
-			<div id='detailImageNav'></div>		
+			<!--<div id='detailImageNav'></div>	-->	
 				
 <?php
 
@@ -321,14 +326,15 @@
 					}
 
 					# --- output download link? 
-					if(caObjectsDisplayDownloadLink($this->request)){
-						print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => 'original'));
-					}
+					#if(caObjectsDisplayDownloadLink($this->request)){
+					#	print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => 'original'));
+					#} 
 
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
+					#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
 ?>
 				</div>			
 			</div><!-- end objDetailImageNav -->
+			<div id='detailThumbNav' style='clear:both; max-height:150px; overflow-y: scroll'></div>
 <?php
 		}
 if (!$this->request->config->get('dont_allow_registration_and_login')) {
@@ -432,7 +438,7 @@ $(function() {
         timeout:  0,
         prev:    '#prevImage',
         next:    '#nextImage',
-        pager:   '#detailImageNav',
+        pager:   '#detailThumbNav',
         
         pagerAnchorBuilder: function(i, slide) { 
         return '<a href="#"><img src="'

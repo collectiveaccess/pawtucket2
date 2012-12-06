@@ -835,7 +835,7 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 	border:0px;
 }
 #caSetsSlideshowPanelContentArea {
-	width: 700px; 
+	width: 1000px; 
 	height: 700px;
 	margin-left:auto;
 	margin-right:auto;
@@ -902,24 +902,128 @@ div#clientOrderSummary div.billingShippingAddress, div#clientOrderForm div.billi
 }
 
 /* styles for the slideshow when in media panel */
-#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer{
+#caSetsSlideshowPanelContentArea #caSetsSlideshowContainer, #caSetsSlideshowContainer{
 	text-align:center;
 	position:relative;
 	width:100%;
 }
-
+#caSetsSlideshowContainer H1{
+	color: #000;
+}
 #caSetsSlideshowPanelContentArea #caSetsSlideshowContainer H1{
 	color: #FFF;
+}
+.caSetsSlideshowCaption{
+	color: #000;
 }
 #caSetsSlideshowPanelContentArea .caSetsSlideshowCaption{
 	color: #FFF;
 }
-#caSetsSlideshowPanelContentArea #caSetsSlideshowToolBar{
+#caSetsSlideshowPanelContentArea #caSetsSlideshowToolBar, #caSetsSlideshowToolBar{
 	background-color: #828282;
 }
-#caSetsSlideshowPanelContentArea #caSetsSlideshowNext a, #caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious a{
-	color:#ededed;
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause a, #caSetsSlideshowPlayPause a{
+	color:#000;
+}
+div#caSetsSlideshowPrevious{
+	width:25px;
+	height:35px;
+	background-color:#828282;
+	left:-25px;
+	top:200px;
+	position:absolute;
+	border-top-left-radius:8px;
+	border-bottom-left-radius:8px;
+	opacity:.3;
+	color:#fff;
+	font-size:35px;
+	font-weight:bold;
+	line-height:1em;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious{
+	width:25px;
+	height:35px;
+	background-color:#FFFFFF;
+	left:-25px;
+	top:300px;
+	position:absolute;
+	border-top-left-radius:8px;
+	border-bottom-left-radius:8px;
+	opacity:.1;
+	color:#000;
+	font-size:35px;
+	font-weight:bold;
+	line-height:1em;
+}
+div#caSetsSlideshowNext{
+	width:25px;
+	height:35px;
+	background-color:#828282;
+	right:-25px;
+	top:200px;
+	position:absolute;
+	border-top-right-radius:8px;
+	border-bottom-right-radius:8px;
+	opacity:.3;
+	color:#fff;
+	font-size:35px;
+	font-weight:bold;
+	line-height:1em;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowNext{
+	width:25px;
+	height:35px;
+	background-color:#FFFFFF;
+	right:-25px;
+	top:300px;
+	position:absolute;
+	border-top-right-radius:8px;
+	border-bottom-right-radius:8px;
+	opacity:.1;
+	color:#000;
+	font-size:35px;
+	font-weight:bold;
+	line-height:1em;
+}
+div#caSetsSlideshowPlayPause{
+	width:35px;
+	height:25px;
+	background-color:#828282;
+	right:25px;
+	bottom:18px;
+	position:absolute;
+	border-bottom-left-radius:8px;
+	border-bottom-right-radius:8px;
+	opacity:.3;
+	color:#000;
+	font-size:25px;
+	font-weight:bold;
+	line-height:1em;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause{
+	width:35px;
+	height:25px;
+	background-color:#FFFFFF;
+	right:25px;
+	bottom:18px;
+	position:absolute;
+	border-bottom-left-radius:8px;
+	border-bottom-right-radius:8px;
+	opacity:.1;
+	color:#000;
+	font-size:25px;
+	font-weight:bold;
+	line-height:1em;
+}
+#caSetsSlideshowPlayPause a{
+	color:#FFF;
+	font-size:15px;
 }
 #caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause a{
-	color:#ededed;
+	color:#000;
+	font-size:15px;
+}
+#caSetsSlideshowPanelContentArea #caSetsSlideshowPrevious:hover, #caSetsSlideshowPanelContentArea #caSetsSlideshowNext:hover, #caSetsSlideshowPanelContentArea #caSetsSlideshowPlayPause:hover, #caSetsSlideshowPrevious:hover, #caSetsSlideshowNext:hover, #caSetsSlideshowPlayPause:hover{
+	opacity:1;
+	cursor:pointer;
 }
