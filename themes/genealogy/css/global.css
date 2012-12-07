@@ -659,7 +659,7 @@ ul {
 	float:right
 }
 #detailBody #rightColDetail{
-	width:600px;
+	width:630px;
 	text-align:left;
 	float:right
 }
@@ -725,6 +725,18 @@ ul {
 	float:left;
 }
 /* image on - object detail */
+#detailThumbNav {
+	width:630px;
+	float:left;
+	margin-top:-20px;
+	margin-bottom:20px;
+	text-align: center;
+	padding-top:10px;
+}
+#detailThumbNav a {
+	padding-right:5px;
+	padding-bottom:5px;
+}
 #objDetailImage{
 	margin-bottom:0px;
 	text-align:center;
@@ -732,12 +744,9 @@ ul {
 	width: 630px;
 	padding: 5px 5px 5px 5px;
 }
-
-
-
 #objDetailImageNav {
 	background-color: #fff;
-	margin:0px 0px 15px 0px;
+	margin:0px 0px 0px 0px;
 	font-size:12px;
 	text-align:center;
 	padding:5px 0px 8px 0px;
@@ -777,6 +786,9 @@ ul {
 }
 
 /* user comment/rank form */
+#objUserData {
+	clear:both;
+}
 #objUserData #ranking, #objUserData #tags{
 	margin-bottom:12px;
 }
@@ -1418,6 +1430,10 @@ td.advSearchElement{
 	font-size:11px;
 	text-decoration:underline;
 }
+.setItemCaption {
+	font-style:normal;
+	padding:0px 10px 3px 10px;
+}
 /* set detail */
 #gallerySetDetail #setItemsGrid{
 	float:left;
@@ -1505,6 +1521,9 @@ td.advSearchElement{
 	font-size:11px;
 	color:#000000;
 }
+
+
+
 
 /* ------------------------------------- */
 /*  FAVORITES PAGE */
@@ -1959,16 +1978,15 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 
 
 /* overlay (for object representations) */
+/* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 1.5%; 
-	left: 1.5%; 
-	border: 4px solid #ccc; 
-	background-color: #FFFFFF; 
-	width: 97%; 
-	height: 97%; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
 	display: none;
-	margin: 0 auto;
+	margin: 0px;
 	padding: 0px;
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
@@ -1985,44 +2003,144 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 }
 #caMediaPanelContentArea {
 	width: 100%; 
-	height: 100%; 
+	height: 100%;
 }
-
 #caMediaOverlayContent {
-	margin-top: 5px;
-	margin-left: 0px;
-	margin-left: auto;
-	margin-right: auto;
+	margin: 0px;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
 	text-align: center;
 }
+.closeUpperLeft {
+	position:absolute;
+	left:5px;
+	top:5px;
+	width:15px;
+	height:16px;
+	/*background-image:url("../graphics/buttons/x_white.png");*/
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+}
+.closeUpperLeft a{
+	text-decoration:none;
+}
 
 div.caMediaOverlayControls {
-	background-color: #FFFFFF;
-	padding: 3px;
-	font-size: 9px;
-	margin-left: 0px;
-	height: 25px;
-	border-bottom:2px solid #ededed;
-}
-
-select.caMediaOverlayControls {
-	font-size: 9px;
-}
-#caMediaOverlayThumbnails{
-	padding: 10px 0px 0px 0px;
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
 	text-align:center;
-	height:90px;
-	width:840px;
-	overflow:auto;
+	position:absolute;
+	padding: 10px 0px 10px 0px;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.75;	
 }
-#caMediaOverlayThumbnails img{
-	margin:0px 1px 0px 1px;
+p.caMediaOverlayControls {
+	color:#ffffff;
 }
-#caMediaOverlayThumbnails div{
-	margin:0px auto 0px auto;
+div.caMediaOverlayControls a{
+	text-decoration:none;
+	font-weight:bold;
+	color:#FFF;
+}
+div.caMediaOverlayControls a:hover{
+	color:#FFF;
+}
+div.caMediaOverlayControls .close{
+	float:right;
+	width:15px;
+	height:16px;
+	background-image:url("../graphics/buttons/x_white.png");
+	margin: 0px 10px 0px 20px;
+}
+div.caMediaOverlayControls .download{
+	float:right;
+	margin-left:20px;
+}
+div.caMediaOverlayControls .objectInfo{
+	font-size:12px;
+	color:#FFF;
+	padding-left:10px;
+	text-align:left;
+	width:40%;
+	float:left;
+	min-height:2px;
+}
+div.caMediaOverlayControls .overlayLightboxLink{
+	font-size:12px;
+	color:#FFF;
+	padding-right:50px;
+	text-align:center;
+	width:30%;
+	float:right;
+	min-height:2px;
+}
+div.caMediaOverlayControls .overlayLightboxLink a{
+	font-size:13px;
+	color:#FFF;
+	text-deocration:none;
+	font-weight:normal;
+}
+div.caMediaOverlayControls .captionRight {
+	float:left; 
+	width:45%; 
+	margin-left:25px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .captionLeft {
+	float:left; 
+	width:45%; 
+	margin-left:15px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink {
+	float:left;
+	text-align:left;
+	color:white;
+	font-size:12px;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink a{
+	font-size:12px;
+}
+div.caMediaOverlayControls .repNav {
+	float:left;
+	width:16%;
+	padding: 0px 2% 0px 2%;
+	text-align:center;
+	color:#FFF;
+	font-size:12px;
+}
+div.caMediaOverlayRepThumbs {
+	color:#FFF;
+	font-size: 11px;
+	text-align:right;
+	position:absolute;
+	top:60px;
+	right:11px;
+	padding:3px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.3;	
+}
+div.caMediaOverlayRepThumbs:hover {
+	opacity:1;	
+}
+div.caMediaOverlayRepThumbs img{
+	margin:2px;
+	border:1px solid transparent;
+}
+div.caMediaOverlayRepThumbs a.selectedRep img{
+	border:1px solid #FFF;
 }
 
 /* Advanced search */
