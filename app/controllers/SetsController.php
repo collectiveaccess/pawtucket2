@@ -47,6 +47,7 @@
  			
 			JavascriptLoadManager::register("panel");
 			JavascriptLoadManager::register('cycle');
+			JavascriptLoadManager::register('bundleableEditor');
  		}
  		# -------------------------------------------------------
  		/** 
@@ -72,12 +73,12 @@
  		 * Uses _getSetID() to figure out the ID of the current set, then returns a ca_sets object for it
  		 * and also sets the 'current_set_id' user variable
  		 */
- 		private function _getSet() {
+ 		private function _getSet($vs_access_level = __CA_SET_EDIT_ACCESS__) {
  			$t_set = new ca_sets();
  			$vn_set_id = $this->_getSetID();
  			$t_set->load($vn_set_id);
  			
- 			if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__))) {
+ 			if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $vs_access_level))) {
  				$this->request->user->setVar('current_set_id', $vn_set_id);
  				return $t_set;
  			}
@@ -89,7 +90,7 @@
  		 */
  		function Index() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { $t_set = new ca_sets(); }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $t_set = new ca_sets(); }
  			
  			JavascriptLoadManager::register('sortableUI');
  			
@@ -167,7 +168,12 @@
  		public function addItem() {
  			global $g_ui_locale_id; // current locale_id for user
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { 
+ 			if (!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
+ 				if($t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
+ 					$this->view->setVar('message', _t("You can not add items to this set.  You have read only access."));
+ 					$this->index();
+ 					return;
+ 				}
  				# --- if there is not a set for this user, make a new set for them
  				$t_new_set = new ca_sets();
 				
@@ -277,6 +283,8 @@
 						// add new label
 						$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
 					}
+				}else{
+					$this->view->setVar('message', _t("You can not edit this set.  You have read only access."));
 				}
 			}
  			$this->view->setVar('errors_edit_set', $va_errors_edit_set);
@@ -332,11 +340,11 @@
  			$this->index();
  		}
  		# -------------------------------------------------------
- 		public function shareSet() {
+ 		public function emailSet() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
  			global $g_ui_locale_id; // current locale_id for user
  			
- 			$va_errors_share_set = array();
+ 			$va_errors_email_set = array();
  			
  			$t_set = new ca_sets();
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
@@ -359,7 +367,7 @@
 			$va_to_email = array();
 			$va_to_email_process = array();
 			if(!$ps_to_email){
-				$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+				$va_errors_email_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
 			}else{
 				# --- explode on commas to support multiple addresses - then check each one
 				$va_to_email_process = explode(",", $ps_to_email);
@@ -369,23 +377,23 @@
 						$va_to_email[$vs_email_to_verify] = "";
 					}else{
 						$ps_to_email = "";
-						$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+						$va_errors_email_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
 					}
 				}
 			}
 			if(!$ps_subject){
-				$va_errors_share_set["subject"] = _t("Please enter a subject");
+				$va_errors_email_set["subject"] = _t("Please enter a subject");
 			}
 			if(!$ps_from_email || !caCheckEmailAddress($ps_from_email)){
 				$ps_from_email = "";
-				$va_errors_share_set["from_email"] = _t("Please enter a valid email address");
+				$va_errors_email_set["from_email"] = _t("Please enter a valid email address");
 			}
 			if(!$ps_from_name){
-				$va_errors_share_set["from_name"] = _t("Please enter your name");
+				$va_errors_email_set["from_name"] = _t("Please enter your name");
 			}
 			
 
- 			if(sizeof($va_errors_share_set) == 0){
+ 			if(sizeof($va_errors_email_set) == 0){
 				# -- generate mail text from template - get both html and text versions
 				ob_start();
 				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_text.tpl");
@@ -400,10 +408,10 @@
  					$this->notification->addNotification(_t("Your email was sent"), "message");
  				}else{
  					$this->notification->addNotification(_t("Your email could not be sent"), "message");
- 					$va_errors_share_set["email"] = 1;
+ 					$va_errors_email_set["email"] = 1;
  				}
  			}
- 			if(sizeof($va_errors_share_set)){
+ 			if(sizeof($va_errors_email_set)){
  				# --- there were errors in the form data, so reload form with errors displayed - pass params to preload form
  				$this->view->setVar('to_email', $ps_to_email);
  				$this->view->setVar('from_email', $ps_from_email);
@@ -414,9 +422,43 @@
  				$this->notification->addNotification(_t("There were errors in your form"), "message");			
  			}
  			
- 			$this->view->setVar('errors_share_set', $va_errors_share_set);
+ 			$this->view->setVar('errors_email_set', $va_errors_email_set);
  			$this->index();
- 		} 		
+ 		}	
+ 		# -------------------------------------------------------
+ 		public function shareSet() {
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set = new ca_sets();
+ 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__, $pn_set_id)) {
+ 				$this->notification->addNotification(_t("You cannot share this set"), "message");
+ 			} else {
+				$t_set->load($pn_set_id);
+				
+				$vs_form_prefix = 'shareSetForm_';
+				$va_users_to_set = array();
+				foreach($_REQUEST as $vs_key => $vs_val) { 
+					if (preg_match("!^{$vs_form_prefix}id(.*)$!", $vs_key, $va_matches)) {
+						$vn_user_id = (int)$this->request->getParameter($vs_form_prefix.'id'.$va_matches[1], pInteger);
+						$vn_access = $this->request->getParameter($vs_form_prefix.'access_'.$va_matches[1], pInteger);
+						if ($vn_access > 0) {
+							$va_users_to_set[$vn_user_id] = $vn_access;
+						}
+					}
+				}
+				
+				$t_set->setUsers($va_users_to_set);
+				
+				if($t_set->numErrors()) {
+					$this->notification->addNotification(_t("There were errors while sharing: %1", join("; ", $t_set->getErrors())), "message");	
+				} else {
+					$vn_c = sizeof($va_users_to_set);
+					$this->notification->addNotification(($vn_c == 1) ? _t("Shared set with %1 user", $vn_c) : _t("Shared set with %1 users", $vn_c), "message");	
+				}
+				
+			}
+			
+ 			$this->index();
+ 		}
  		# -------------------------------------------------------
  		/**
  		 *
@@ -451,7 +493,7 @@
 		 */
 		public function export() {
 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { 
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { 
  				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
 				$this->Index();
  			}
@@ -560,7 +602,7 @@
  		public function ReorderItems() {
  			if ($this->request->isLoggedIn()) {  
  				$va_access_values = caGetUserAccessValues($this->request);
-				$t_set = $this->_getSet();
+				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
 				
 				if (!$t_set->getPrimaryKey()) {
 					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
@@ -621,7 +663,7 @@
  		 */
  		public function DeleteItem() {
  			if ($this->request->isLoggedIn()) { 
-				$t_set = $this->_getSet();
+				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
 				
 				if (!$t_set->getPrimaryKey()) {
 					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
@@ -768,7 +810,7 @@
  		 */
  		public function DeleteSet() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if ($t_set = $this->_getSet()) { 
+ 			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
  				$vs_set_name = $t_set->getLabelForDisplay();
  				$t_set->setMode(ACCESS_WRITE);
  				$t_set->delete();
