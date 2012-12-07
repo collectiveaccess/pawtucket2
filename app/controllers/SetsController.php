@@ -513,23 +513,18 @@
 
 			switch($ps_output_type) {
 				case '_pdf':
+					require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
 					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
-					require_once(__CA_LIB_DIR__."/core/Print/html2pdf/html2pdf.class.php");
-					
-					try {
-						$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
-						$vo_html2pdf = new HTML2PDF('P','letter','en');
-						$vo_html2pdf->setDefaultFont("dejavusans");
-						$vo_html2pdf->WriteHTML($vs_content);
-						header("Content-Disposition: attachment; filename=".$vs_output_filename.".pdf");
-						header("Content-type: application/pdf");
-			
-						$vo_html2pdf->Output($vs_output_filename.".pdf");
-						$vb_printed_properly = true;
-					} catch (Exception $e) {
-						$vb_printed_properly = false;
-						$this->postError(3100, _t("Could not generate PDF"),"SetsController->PrintSummary()");
-					}
+					header("Content-Disposition: attachment; filename=export_results.pdf");
+					header("Content-type: application/pdf");
+					$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
+					$o_pdf = new DOMPDF();
+					// Page sizes: 'letter', 'legal', 'A4'
+					// Orientation:  'portrait' or 'landscape'
+					$o_pdf->set_paper("letter", "portrait");
+					$o_pdf->load_html($vs_content, 'utf-8');
+					$o_pdf->render();
+					$o_pdf->stream($vs_output_file_name.".pdf");
 					return;
 					break;
 				case '_csv':
