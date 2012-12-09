@@ -3300,19 +3300,38 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if (!($vs_sortable_value_fld = Attribute::getSortFieldForDatatype($t_element->get('datatype')))) {
 								return $pa_hits;
 							}
-							$vs_sortable_value_fld = 'attr_vals.'.$vs_sortable_value_fld;
 							
-							$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
-							$vs_locale_where = ($vn_num_locales > 1) ? 'attr.locale_id' : '';
-							$vs_sql = "
-								SELECT attr.row_id, attr.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
-								FROM ca_attributes attr
-								INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
-								INNER JOIN {$vs_browse_tmp_table} ON {$vs_browse_tmp_table}.row_id = attr.row_id
-								WHERE
-									(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (attr_vals.{$vs_sort_field} IS NOT NULL)
-							";
-							//print $vs_sql." ; $vn_element_id/; ".$this->opn_browse_table_num."<br>";
+							if ((int)$t_element->get('datatype') == 3) {
+								$vs_sortable_value_fld = 'lil.name_plural';
+								
+								$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
+								$vs_locale_where = ($vn_num_locales > 1) ? ', lil.locale_id' : '';
+					
+								$vs_sql = "
+									SELECT attr.row_id, lil.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
+									FROM ca_attributes attr
+									INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
+									INNER JOIN ca_list_item_labels AS lil ON lil.item_id = attr_vals.item_id
+									INNER JOIN {$vs_browse_tmp_table} ON {$vs_browse_tmp_table}.row_id = attr.row_id
+									WHERE
+										(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (lil.{$vs_sort_field} IS NOT NULL)
+								";
+							} else {
+								$vs_sortable_value_fld = 'attr_vals.'.$vs_sortable_value_fld;
+						
+								$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
+								$vs_locale_where = ($vn_num_locales > 1) ? ', attr.locale_id' : '';
+								
+								$vs_sql = "
+									SELECT attr.row_id, attr.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
+									FROM ca_attributes attr
+									INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
+									INNER JOIN {$vs_browse_tmp_table} ON {$vs_browse_tmp_table}.row_id = attr.row_id
+									WHERE
+										(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (attr_vals.{$vs_sort_field} IS NOT NULL)
+								";
+								//print $vs_sql." ; $vn_element_id/; ".$this->opn_browse_table_num."<br>";
+							}
 							$qr_sort = $this->opo_db->query($vs_sql, (int)$vn_element_id, (int)$this->opn_browse_table_num);
 							
 							while($qr_sort->nextRow()) {

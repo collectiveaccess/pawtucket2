@@ -31,13 +31,13 @@
 		if (($vn_num_hits = $qr_entities->numHits()) > 0) {
 			$vn_num_hits_per_page 	= $this->getVar('secondaryItemsPerPage');
 			$vn_page 				= $this->getVar('page_ca_entities');
-		if (!$this->request->isAjax()) {
+		
 ?>
 			<div class="searchSec" id="entitiesSecondaryResults">
 <?php
-		}
+		
 ?>
-				<h1><?php print _t('Entities'); ?></h1>
+				<h1 class="results"><?php print _t('Entities'); ?></h1>
 				<div class="searchSecNav">
 <?php
 					if ($vn_num_hits > $vn_num_hits_per_page) {
@@ -75,12 +75,12 @@
 ?>
 				</div><!-- end results -->
 <?php
-			if (!$this->request->isAjax()) {
+			
 ?>
 			</div>
 			<div class="searchSecSpacer">&nbsp;</div>
 <?php
-			}
+			
 		}
 	}
 ?>
