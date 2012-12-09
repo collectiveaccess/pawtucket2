@@ -318,7 +318,7 @@
 			$qr_results = ca_objects::createResultSet($set_keys);
 			$va_set_item_metadata = array();
 			while($qr_results->nextHit()) {
-				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'));
+				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'), "filename" => $qr_results->get('ca_objects.preferred_labels'), "altid" => $qr_results->get('ca_objects.altID'));
 			}
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
@@ -351,14 +351,36 @@
 					</div>
 				</li>
 <?php
-			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
-			if ($va_type == 25) {
-				TooltipManager::add(
-					"#setItem".$vn_item_id, "<div class='setTooltip'><b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/><b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/><b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"]."</div>"
-				);
+#			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
+#			if ($va_type == 25) {
+				$vs_tooltip_text = "<div class='setTooltip'>";
+				
+				if ($va_item['idno']) {
+					$vs_tooltip_text.= "<b>ID: </b>".$va_item['idno']."<br/>";
 				}
+				if ($va_set_item_metadata[$va_item['row_id']]["altid"]) {
+					$vs_tooltip_text.= "<b>Alt ID: </b>".$va_set_item_metadata[$va_item['row_id']]["altid"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["filename"]) {
+					$vs_tooltip_text.= "<b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["filename"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["title"]) {
+					$vs_tooltip_text.= "<b>Publication Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_set_item_metadata[$va_item['row_id']]["author"]]) {
+					$vs_tooltip_text.= "<b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["publication"]) {
+					$vs_tooltip_text.= "<b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"];
+				}
+				$vs_tooltip_text.= "</div>";
+				TooltipManager::add(
+					"#setItem".$vn_item_id, $vs_tooltip_text
+				);
+#				}
 			}
 		}
+		
 ?>
 		</ul>
 	</div><!-- end setItems -->

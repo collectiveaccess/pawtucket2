@@ -62,9 +62,9 @@ if (!$this->request->isAjax()) {
 				<div class="unit">
 <?php
 				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
+					print caNavLink($this->request, _t("Bookmark Exhibition +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
 				}else{
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
+					print caNavLink($this->request, _t("Bookmark Exhibition +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
 				}
 ?>
 				</div><!-- end unit -->
@@ -72,49 +72,55 @@ if (!$this->request->isAjax()) {
 <?php
 			}
 			# --- identifier
-			if($t_occurrence->get('idno')){
-				print "<div class='unit'><b>"._t("Identifier")."</b>: ".$t_occurrence->get('idno')."</div><!-- end unit -->";
+#			if($t_occurrence->get('idno')){
+#				print "<div class='unit'><span class='metatitle'>"._t("Identifier")."</span><br/> ".$t_occurrence->get('idno')."</div><!-- end unit -->";
+#			}
+			if ($va_curator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Curator</span><br/>".$va_curator."</div>";
 			}
+			if ($va_artists = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'contributor'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Artists + Contributors</span><br/>".$va_artists."</div>";
+			}
+			if ($va_collaborator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collaborator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Collaborators</span><br/>".$va_collaborator."</div>";
+			}			
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_occurrences_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
 					if($vs_value = $t_occurrence->get("ca_occurrences.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_occurrence->getDisplayLabel("ca_occurrences.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
+						print "<div class='unit'><span class='metatitle'>".$t_occurrence->getDisplayLabel("ca_occurrences.{$vs_attribute_code}")."</span><br/> {$vs_value}</div><!-- end unit -->";
 					}
 				}
 			}
 			# --- description
 			if($this->request->config->get('ca_occurrences_description_attribute')){
 				if($vs_description_text = $t_occurrence->get("ca_occurrences.".$this->request->config->get('ca_occurrences_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_occurrence->getDisplayLabel("ca_occurrences.".$this->request->config->get('ca_occurrences_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
-?>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
-						});
-					</script>
+					if (strlen($vs_description_text) <= 300) {
+						print "<div class='unit'><span class='metatitle'>Description</span><br/> {$vs_description_text}</div><!-- end unit -->";				
+					} else {
+						$vs_short_description = substr($vs_description_text, 0, 400);
+						print "<div class='unit' id='short'><span class='metatitle' >Description</span><br/> {$vs_short_description} ";?><a href='#' onclick='$("#long").show(); $("#short").hide()'> [more]</a></div><!-- end unit -->				
+<?php						
+						print "<div class='unit' style='display:none;' id='long'><span class='metatitle'>Description</span><br/> {$vs_description_text} ";?><a href='#' onclick='$("#short").show(); $("#long").hide()'> [less]</a></div><!-- end unit -->				
 <?php
+					}
 				}
 			}
 
-			# --- entities
-			$va_entities = $t_occurrence->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_entities) > 0){	
+#			# --- entities
+#			$va_entities = $t_occurrence->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+#			if(sizeof($va_entities) > 0){	
 ?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
+<!--				<div class="unit"><span class='metatitle'><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></span><br/> -->
 <?php
-				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";
-				}
+#				foreach($va_entities as $va_entity) {
+#					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." ".$va_entity["relationship_typename"]."</p>";
+#				}
 ?>
-				</div><!-- end unit -->
+<!--				</div> end unit -->
 <?php
-			}
+#			}
 			
 			# --- occurrences
 			$va_occurrences = $t_occurrence->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
@@ -129,10 +135,10 @@ if (!$this->request->isAjax()) {
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
+						<div class="unit"><span class='metatitle'><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></span><br/>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</p>";
 					}
 					print "</div><!-- end unit -->";
 				}
@@ -158,9 +164,9 @@ if (!$this->request->isAjax()) {
 			# --- vocabulary terms
 			$va_terms = $t_occurrence->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_terms) > 0){
-				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
+				print "<div class='unit'><span class='metatitle'>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</span><br/>";
 				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
+					print "<p>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</p>";
 				}
 				print "</div><!-- end unit -->";
 			}
@@ -168,6 +174,7 @@ if (!$this->request->isAjax()) {
 	</div><!-- end leftCol -->
 			
 	<div id="rightCol">
+
 		<div id="resultBox">
 <?php
 }
@@ -183,6 +190,7 @@ if (!$this->request->isAjax()) {
 
 
 	</div><!-- end rightCol -->
+	<div class='seeMore' style='margin:10px 0px 10px 0px'><a href='#'>Back to Top</a></div>
 </div><!-- end detailBody -->
 <?php
 }
