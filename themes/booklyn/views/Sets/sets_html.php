@@ -39,7 +39,7 @@
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
 ?>
-<h1><?php print _t("Your Collections"); ?></h1>
+<h1 class="results"><?php print _t("Your Collections"); ?></h1>
 <div id="setItemEditor">
 	<div id="rightCol">
 <?php
@@ -55,8 +55,8 @@
 			}else{
 				$vs_access = _t("private");
 			}
-			print "<strong>".$this->getVar("set_name")."</strong>";
-			print "&nbsp;&mdash;&nbsp;<em>"._t("This collection is %1", $vs_access)."</em>";
+			print "<strong>".$this->getVar("set_name")."</strong></div>";
+			print "<span class='subSetInfo'>"._t("This collection is %1", $vs_access)."</span>";
 			if ($this->getVar("set_access") == 1) {
 				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='27'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
 			}
@@ -65,7 +65,7 @@
 			}
 			
 			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Collection")." &rsaquo;</a></div>";
-			print "</div>";
+			#print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Collection Information"); ?></h2>
@@ -259,7 +259,7 @@
 						}
 						
 						if ($va_item['idno']) {
-							$va_title[] = '<strong>'._t('Id:').'</strong> '.$va_item['idno'];
+							$va_title[] = $va_item['idno'];
 						}
 						$vs_title = join('<br/>', $va_title);
 ?>
@@ -272,6 +272,7 @@
 		}
 ?>
 		</ul>
+		<div style="clear:both;height:1px;"></div>
 	</div><!-- end setItems -->
 </div><!-- leftCol -->
 	<script type="text/javascript">

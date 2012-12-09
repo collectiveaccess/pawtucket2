@@ -44,11 +44,11 @@
 	if (!$this->request->isAjax()) {
 		if ($this->getVar('browse_selector')) {
 	?>
-			<div class="browseTargetSelect"><?php print _t('Browse for').' '.$this->getVar('browse_selector'); ?></div>
+<!--			<div class="browseTargetSelect"><?php print _t('Browse for').' '.$this->getVar('browse_selector'); ?></div> -->
 	<?php
 		}
 ?>
-	<h1><?php print _t('Browse the Archive'); ?></h1>
+	<h1 class='results'><?php print _t('Browse the Archive'); ?></h1>
 	<div id="browse"><div id="resultBox"> 
 <?php
 	}
@@ -64,7 +64,7 @@
 						$vn_i = 1;
 						$va_available_facets = $this->getVar('available_facets');
 						foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
-							print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");' class='facetLink'>".$va_facet_info['label_plural']."</a>";
+							print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\"); return false;' class='facetLink'>".$va_facet_info['label_plural']."</a>";
 							if($vn_i < sizeof($va_available_facets)){
 								print ", ";
 							}
@@ -97,7 +97,7 @@
 					print "<div id='facetList'>";
 					$va_available_facets = $this->getVar('available_facets');
 					foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
-						print "<div class='facetHeadingLink'><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a></div>\n";
+						print "<div class='facetHeadingLink'><a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\"); return false;'>".$va_facet_info['label_plural']."</a></div>\n";
 						print "<div class='facetDescription'>".$va_facet_info["description"]."</div>";
 					}
 					print "</div><!-- end facetList -->";
@@ -139,7 +139,7 @@
 	</div><!-- end resultbox --></div><!-- end browse -->
 
 <div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
-	<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel()" class="browseSelectPanelButton">&nbsp;</a>
+	<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel(); return false;" class="browseSelectPanelButton">&nbsp;</a>
 	<div id="splashBrowsePanelContent">
 	
 	</div>

@@ -39,7 +39,7 @@
 	$va_errors_edit_folder = $this->getVar("errors_edit_folder");
 	$va_errors_new_folder 	= $this->getVar("errors_new_folder");
 ?>
-<h1><?php print _t("Your Bookmarks"); ?></h1>
+<h1 class="results"><?php print _t("Your Bookmarks"); ?></h1>
 <div id="bookmarksEditor">
 	<div id="rightCol">
 <?php

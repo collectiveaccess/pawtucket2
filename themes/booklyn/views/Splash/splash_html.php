@@ -33,15 +33,7 @@
 	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"));
 	$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
  ?>
-	<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
-		<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel()" class="browseSelectPanelButton"></a>
-		<div id="splashBrowsePanelContent">
-		
-		</div>
-	</div>
-	<script type="text/javascript">
-		var caUIBrowsePanel = caUI.initBrowsePanel({ facetUrl: '<?php print caNavUrl($this->request, '', 'Browse', 'getFacet'); ?>'});
-	</script>
+
 	
 
 	<div id="hpFeatured">
@@ -55,32 +47,17 @@
 	}
 ?>
 	</div>
-	<div id="hpTextContainer">
-		<div id="hpText">
+	<div id="newsList" style="width:200px; margin-top:30px;">
+		<div class="item detail">
 <?php
 		print $this->render('Splash/splash_intro_text_html.php');
 ?> 
 
 		</div>			
 
-		<div id="hpBrowseDiv">
-			<div id="hpBrowse">
-			<div class="hpBrowseTitle"><?php print _t("Quickly browse by"); ?>:</div>
-				<div id="hpBrowseFacet">
-<?php
 
-					$va_facets = $this->getVar('available_facets');
-					foreach($va_facets as $vs_facet_name => $va_facet_info) {
-?>
-						<a href="#" style="white-space:nowrap;" onclick='caUIBrowsePanel.showBrowsePanel("<?php print $vs_facet_name; ?>")'><?php print ucwords($va_facet_info['label_plural']); ?></a>
-<?php
-					}
-?>
-				</div>
-			</div><!-- end hpBrowse-->
-		</div>
 			
-		<div class="hpRss"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), 'caption', '', 'Feed', 'recentlyAdded'); ?></div>
+		<div class="item detail"><div class="description" style="margin-top:20px;"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), '', '', 'Feed', 'recentlyAdded'); ?></div></div>
 	</div>
 	
 

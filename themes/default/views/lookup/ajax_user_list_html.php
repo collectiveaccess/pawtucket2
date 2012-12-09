@@ -1,6 +1,6 @@
-<?php 
+<?php
 /* ----------------------------------------------------------------------
- * themes/default/views/find/Search/ajax_refine_facets_html.php 
+ * lookup/ajax_user_list_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,19 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$o_browse 				= $this->getVar('browse');
-	$va_available_facets 	= $o_browse->getInfoForAvailableFacets();
-	$va_criteria 			= $o_browse->getCriteriaWithLabels();
-	$va_facet_info 			= $o_browse->getInfoForFacets();
-	
-	print _t('Filter results by').": ";
-	$c = 0;
-	foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
-		$c++;
-		print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a>";
-		if($c < sizeof($va_available_facets)){
-			print ", ";
-		}
+	foreach($this->getVar('user_list') as $vn_item_id => $va_item) {
+		print str_replace("|", "-", $va_item['_display'])."|".$vn_item_id."|".$va_item['type_id']."|".($va_item['fname'] ? $va_item['fname'] : $va_item['_query'])."|".$va_item['lname']."|".$va_item['email']."\n";
 	}
 ?>

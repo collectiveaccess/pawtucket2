@@ -50,7 +50,7 @@ if (!$this->request->isAjax()) {
 		 print "<div style='float: right;'><form action='#'>".caHTMLSelect('form', $va_forms, array('onchange' => 'caLoadAdvancedSearchForm();', 'id' => 'caAdvancedSearchFormSelector'), array('value' => $vs_form))."</form></div>\n";
 	}
 ?>
-	<H1><?php print _t("Advanced Search"); ?></H1>
+	<H1 class="results" style="margin-top:15px;"><?php print _t("Advanced Search"); ?></H1>
 <?php
 }
 
@@ -59,15 +59,7 @@ if (!$this->request->isAjax()) {
 		<div id="caAdvancedSearchForm">
 			<?php  print caFormTag($this->request, 'Index', 'caAdvancedSearch',  null, 'POST', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)); ?>
 
-			<div id="buttons">
-				<input type="submit" style="position: absolute; left: -9999px"/>
-				<div>
-					<a href="#" onclick="jQuery('#caAdvancedSearch').submit(); return false;"><?php print _t('Search'); ?></a>
-				</div>
-				<div>
-					<a href="#" onclick="jQuery('#caAdvancedSearch input[type!=hidden]').val(''); jQuery('#caAdvancedSearch select').val('');"><?php print _t('Reset'); ?></a>
-				</div>
-			</div>
+
 
 				<table border="0">
 <?php
@@ -97,7 +89,16 @@ if (!$this->request->isAjax()) {
 			<?php print caHTMLHiddenInput("target", array('value' => $t_subject->tableName())); ?>
 			<?php print caHTMLHiddenInput("_fields", array('value' => join(';', array_keys($va_form_field_with_subelements)))); ?>
 		</form>
-	
+		<div style="height:1px; clear:both;"></div>
+			<div id="buttons">
+				<input type="submit" style="position: absolute; left: -9999px"/>
+				<div style="text-align:left">
+					<a href="#" onclick="jQuery('#caAdvancedSearch input[type!=hidden]').val(''); jQuery('#caAdvancedSearch select').val('');"><?php print _t('Reset'); ?></a>
+					
+					<a href="#" onclick="jQuery('#caAdvancedSearch').submit(); return false;"><?php print _t('Search'); ?></a>
+				</div>
+			</div>
+		<div style="height:1px; clear:both;"></div>
 	</div><!-- end advancedSearch -->
 	<script type="text/javascript">
 		function caLoadAdvancedSearchForm() {

@@ -1,13 +1,13 @@
-<?php 
+<?php
 /* ----------------------------------------------------------------------
- * themes/default/views/find/Search/ajax_refine_facets_html.php 
+ * app/controllers/lookup/UserController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012 Whirl-i-Gig
+ * Copyright 2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,19 +25,22 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__."/ca/BaseLookupController.php");
  
-	$o_browse 				= $this->getVar('browse');
-	$va_available_facets 	= $o_browse->getInfoForAvailableFacets();
-	$va_criteria 			= $o_browse->getCriteriaWithLabels();
-	$va_facet_info 			= $o_browse->getInfoForFacets();
-	
-	print _t('Filter results by').": ";
-	$c = 0;
-	foreach($va_available_facets as $vs_facet_code => $va_facet_info) {
-		$c++;
-		print "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");'>".$va_facet_info['label_plural']."</a>";
-		if($c < sizeof($va_available_facets)){
-			print ", ";
-		}
-	}
-?>
+ 	class UserController extends BaseLookupController {
+ 		# -------------------------------------------------------
+ 		protected $opb_uses_hierarchy_browser = false;
+ 		protected $ops_table_name = 'ca_users';		// name of "subject" table (what we're editing)
+ 		protected $ops_name_singular = 'user';
+ 		protected $ops_search_class = 'UserSearch';
+ 		protected $opa_filters = array(
+ 			'ca_users.userclass' => array(0, 1)
+ 		);
+ 		# -------------------------------------------------------
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			if (!$po_request->isLoggedIn()) { die(_t("Must be logged in")); }
+			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 		}
+ 		# -------------------------------------------------------
+ 	}
+ ?>
