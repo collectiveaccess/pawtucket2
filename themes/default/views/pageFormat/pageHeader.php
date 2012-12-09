@@ -34,7 +34,7 @@
 			jQuery('#quickSearch').searchlight('<?php print $this->request->getBaseUrlPath(); ?>/index.php/Search/lookup', {showIcons: false, searchDelay: 100, minimumCharacters: 3, limitPerCategory: 3});
 		});
 		// initialize CA Utils
-			caUI.initUtils();
+			var caUIUtils = caUI.initUtils();
 	</script>
 </head>
 <body>
