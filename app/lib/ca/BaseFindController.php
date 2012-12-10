@@ -42,6 +42,7 @@
 	require_once(__CA_LIB_DIR__."/core/Parsers/ZipFile.php");
 	require_once(__CA_LIB_DIR__."/core/AccessRestrictions.php");
  	require_once(__CA_LIB_DIR__.'/core/Print/PrintForms.php');
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	
 	class BaseFindController extends ActionController {
 		# ------------------------------------------------------------------
@@ -204,8 +205,12 @@
 					'code' => '_pdf'
 				),
 				array(
+					'name' => _t('PDF (Long)'),
+					'code' => '_pdflong'
+				),				
+				array(
 					'name' => _t('PDF (Thumbnails)'),
-					'code' => '_pdfthumb'
+					'code' => '_pdfthumb' 
 				)
 			);
 			

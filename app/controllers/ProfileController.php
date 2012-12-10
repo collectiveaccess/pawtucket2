@@ -89,7 +89,7 @@
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
 				foreach($va_profile_prefs as $vs_pref) {
 					$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
-					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
+					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value, true)) {
 						$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
 						
 						$t_user->clearErrors();

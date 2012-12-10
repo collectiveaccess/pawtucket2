@@ -92,6 +92,10 @@
 	require_once(__CA_LIB_DIR__.'/ca/ContentCaching.php');
 	$app->registerPlugin(new ContentCaching());
 	
+	//
+	// Load mobile
+	//
+	if (caDeviceIsMobile()) { JavascriptLoadManager::register('mobile'); }
 	
 	// Prevent caching
 	$resp->addHeader("Cache-Control", "no-cache, must-revalidate");

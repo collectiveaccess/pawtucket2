@@ -275,6 +275,12 @@
 				if($t_user->numErrors()) {
 					$va_errors["register"] = join("; ", $t_user->getErrors());
 				}else{
+					# --- add default roles
+					if (($va_default_roles = $this->request->config->getList('registration_default_roles')) && sizeof($va_default_roles)) {
+						$t_user->addRoles($va_default_roles);
+					}
+					
+					
 					# --- send email confirmation
 					# -- generate email subject line from template
 					ob_start();

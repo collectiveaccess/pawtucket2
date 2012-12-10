@@ -135,6 +135,18 @@
 			}
 			return parent::numHits();
 		}
+		# ------------------------------------------------------------------
+		public function seek($pn_index) {
+			if ($this->ops_filter_field) {
+				parent::seek(0);
+				for($vn_i=0; $vn_i < $pn_index; $vn_i++) {
+					$this->nextHit();
+				}
+				return true;
+			} else {
+				return parent::seek($pn_index);
+			}
+		}
 		# -------------------------------------------------------
 	}
 ?>
