@@ -103,14 +103,28 @@
 	</table></li></ul></div>
 <?php
 if($this->getVar('num_pages') > 1){
+	$vn_num_results = $qr_hits->numHits();
 ?>
 	<div id='detailNavBar'>
-		<a href="#" id="carousel-prev">&lsaquo; <?php print _t("Previous"); ?></a>
+		<div class="nextPrevious">
+			<a href="#" id="carousel-prev" class="previous">&lsaquo; <?php print _t("Previous"); ?></a>
 <?php
-		$vn_num_results = $qr_hits->numHits();
-		print "&nbsp;&nbsp;&nbsp;<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+			print "<span id='pageCounterStart'>Page 1</span>/".ceil($vn_num_results/$this->getVar('items_per_page'));
 ?>
-		<a href="#" id="carousel-next"><?php print _t("Next"); ?> &rsaquo;</a>
+			<a href="#" id="carousel-next" class="next"><?php print _t("Next"); ?> &rsaquo;</a>
+		</div>
+<?php
+		print "<div class='jumpToPageDetail'>"._t("Jump to page:");
+?>
+			<input id="carouselJumpToPage" style="width:25px; height:12 px; border:1px solid #848484;" value="" name="carouselJumpToPage"> <a href="#" id="carouselJump">GO</a>
+		</div>
+<?php
+		print "Displaying ".$vn_num_results." item".(($vn_num_results == 1) ? "" : "s");
+		
+		#print "<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+		
+
+?>	
 	</div><!-- end detailNavBar -->
 <?php
 }
@@ -132,18 +146,30 @@ if($this->getVar('num_pages') > 1){
 				carousel.prev();
 				return false;
 			});
+			
+			jQuery('#carouselJump').bind('click', function() { 
+					var carousel = jQuery('#relatedObjectsCarousel').data('jcarousel');
+					var page = parseInt(jQuery('#carouselJumpToPage').val());
+					carousel.scroll(page, true);
+					
+					return false;
+				}
+			);
+
 		};
 
 		function loadRelatedObjects(carousel, state) {
 			var id = <?php print $vn_id; ?>;
 			var numCols = <?php print $vn_numCols ?>;
 			var startImageCount = (carousel.first - 1) * <?php print $this->getVar('items_per_page'); ?> + 1;
-			jQuery('#imageCounterStart').html(startImageCount);
-			var endImageCount = carousel.first * <?php print $this->getVar('items_per_page'); ?>;
-			if(endImageCount > <?php print $qr_hits->numHits(); ?>){
-				endImageCount = <?php print $qr_hits->numHits(); ?>;
-			}
-			jQuery('#imageCounterEnd').html(endImageCount);
+			jQuery('#pageCounterStart').html(carousel.first);
+			
+//			jQuery('#imageCounterStart').html(startImageCount);
+// 			var endImageCount = carousel.first * <?php print $this->getVar('items_per_page'); ?>;
+// 			if(endImageCount > <?php print $qr_hits->numHits(); ?>){
+// 				endImageCount = <?php print $qr_hits->numHits(); ?>;
+// 			}
+// 			jQuery('#imageCounterEnd').html(endImageCount);
 			for (var i = carousel.first; i <= (carousel.last + 1); i++) {
 				// Check if the item already exists
 				if (!carousel.has(i)) {
@@ -195,8 +221,7 @@ if($this->getVar('num_pages') > 1){
 					
 					break;
 				}
-			}
-			
+			}			
 		}
 </script>
 

@@ -39,6 +39,7 @@
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
 	$va_errors_share_set 	= $this->getVar("errors_share_set");
+	$va_errors_email_set 	= $this->getVar("errors_email_set");
 	
 	# --- share - email a friend
 	# --- if there were errors in the form, the form paramas are passed back to preload the form
@@ -58,6 +59,8 @@
 	if(!$vs_from_name && $this->request->isLoggedIn() && !$va_errors['from_name']){
 		$vs_from_name = $this->request->user->getName();
 	}
+	# --- what kind of access does user have to set?  Read or edit?
+	$vn_edit_access = $t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__);
 ?>
 <div id="pageHeading"><img src='<?php print $this->request->getThemeUrlPath(); ?>/graphics/ncr/t_lightbox.gif' border='0'></div><!-- end pageHeading -->
 <div id="setItemEditor">
@@ -78,13 +81,14 @@
 			print "<strong>".$this->getVar("set_name")."</strong>";
 			print "&nbsp;&mdash;&nbsp;<em>"._t("This lightbox is %1", $vs_access)."</em>";
 			if ($this->getVar("set_access") == 1) {
-				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='20'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id), array('target' => '_ext'))."</textarea></form></div>";
+				print "<div style='margin:5px 0px 5px 0px;'>"._t('Public URL').":<br/><form><textarea rows='2' cols='20'>".$this->request->config->get('site_host').caNavUrl($this->request, '', 'Sets', 'Slideshow', array('set_id' => $vn_set_id, 'public_display' => 1), array('target' => '_ext'))."</textarea></form></div>";
 			}
 			if($this->getVar("set_description")){
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
 			}
-			
-			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Lightbox")." &rsaquo;</a></div>";
+			if($vn_edit_access){			
+				print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Lightbox")." &rsaquo;</a></div>";
+			}
 			print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
@@ -171,18 +175,18 @@
 					</form>
 				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
+			<div id="shareForm" <?php print (sizeof($va_errors_email_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Share this lightbox"); ?></h2>
 <?php
 				if($t_set->get("access") == 0){
 					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this lightbox you must first edit the lightbox and make the display option Public")."</div>";
 				}else{
 ?>
-					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" id="shareSetForm">
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'emailSet', ''); ?>" method="post" id="shareSetForm">
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["to_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
+						if($va_errors_email_set["to_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["to_email"]."</div>";
 						}
 ?>
 						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span><br/>
@@ -190,8 +194,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_email"]."</div>";
+						if($va_errors_email_set["from_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["from_email"]."</div>";
 						}
 ?>
 						<?php print _t("Your e-mail address"); ?><br/>
@@ -199,8 +203,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_name"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_name"]."</div>";
+						if($va_errors_email_set["from_name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["from_name"]."</div>";
 						}
 ?>
 						<?php print _t("Your name"); ?><br/>
@@ -208,8 +212,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["subject"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["subject"]."</div>";
+						if($va_errors_email_set["subject"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["subject"]."</div>";
 						}
 ?>
 						<?php print _t("Subject"); ?><br/>
@@ -328,7 +332,13 @@
 ?>
 				<li class='setItem' id='setItem<?php print $vn_item_id; ?>'>
 					<div id='setItemContainer<?php print $vn_item_id; ?>' class='imagecontainer'>
+<?php
+						if($vn_edit_access){
+?>
 						<div class='remove'><a href='#' class='setDeleteButton' id='setItemDelete<?php print $vn_item_id; ?>'>X</a></div>
+<?php
+						}
+?>
 						<div class='setItemThumbnail'>
 <?php
 						if ($va_item['representation_tag_thumbnail']) {
@@ -369,6 +379,9 @@
 		</ul>
 	</div><!-- end setItems -->
 </div><!-- leftCol -->
+<?php
+	if($vn_edit_access){
+?>
 	<script type="text/javascript">
 		jQuery(".setDeleteButton").click(
 			function() {
@@ -396,6 +409,9 @@
 		}
 		_makeSortable();
 	</script>
+<?php
+	}
+?>
 </div><!-- end setItemEditor -->
 
 	<div id="caSetsSlideshowPanel"> 

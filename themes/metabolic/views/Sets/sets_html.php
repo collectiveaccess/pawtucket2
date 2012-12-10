@@ -180,8 +180,8 @@
 							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
 						}
 ?>
-						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span></div>
-						<input type="text" name="to_email" value="<?php print $vs_to_email; ?>">
+						<?php print _t("To e-mail address"); ?></span></div>
+						<input type="text" name="to_email" id="to_email" value="<?php print $vs_to_email; ?>">
 						<div class="formLabel">
 <?php
 						if($va_errors_share_set["from_email"]){
@@ -312,7 +312,14 @@
 		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
-
+			foreach ($va_items as $vn_item_id => $va_item) {
+				$set_keys[] = $va_item['row_id'];
+			}
+			$qr_results = ca_objects::createResultSet($set_keys);
+			$va_set_item_metadata = array();
+			while($qr_results->nextHit()) {
+				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'), "filename" => $qr_results->get('ca_objects.preferred_labels'), "altid" => $qr_results->get('ca_objects.altID'));
+			}
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
@@ -343,9 +350,37 @@
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>
-<?php	
+<?php
+#			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
+#			if ($va_type == 25) {
+				$vs_tooltip_text = "<div class='setTooltip'>";
+				
+				if ($va_item['idno']) {
+					$vs_tooltip_text.= "<b>ID: </b>".$va_item['idno']."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["altid"]) {
+					$vs_tooltip_text.= "<b>Alt ID: </b>".$va_set_item_metadata[$va_item['row_id']]["altid"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["filename"]) {
+					$vs_tooltip_text.= "<b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["filename"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["title"]) {
+					$vs_tooltip_text.= "<b>Publication Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_set_item_metadata[$va_item['row_id']]["author"]]) {
+					$vs_tooltip_text.= "<b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["publication"]) {
+					$vs_tooltip_text.= "<b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"];
+				}
+				$vs_tooltip_text.= "</div>";
+				TooltipManager::add(
+					"#setItem".$vn_item_id, $vs_tooltip_text
+				);
+#				}
 			}
 		}
+		
 ?>
 		</ul>
 	</div><!-- end setItems -->
@@ -404,5 +439,28 @@
 				closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 			});
 		}
-	});
+<?php
+		if($this->request->isLoggedIn()){
+			JavascriptLoadManager::register('tokeninput');
+?>
+			jQuery('#to_email').tokenInput('<?php print caNavUrl($this->request, 'Share/lookup', 'User', 'Get'); ?>', {
+				onResult: function (results) {
+					if (results.length == 0) {
+						var emailRegEx = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+						var emailinput = jQuery('#token-input-to_email').val();
+						if (emailinput.search(emailRegEx) >= 0) {
+							jQuery('#to_email').tokenInput("add", {id: emailinput, name: emailinput});
+						}
+					}
+                    return results;
+            	}, preventDuplicates: true
+            });
+<?php
+		}
+?>
+			jQuery('.scrollPane').jScrollPane({
+				animateScroll: true,
+			});
+		});
+		
 	</script>

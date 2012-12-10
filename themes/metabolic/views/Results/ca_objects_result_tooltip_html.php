@@ -42,5 +42,10 @@
 		print $this->getVar('tooltip_idno');
 		print "</div>";
 	}
+	if($this->getVar('tooltip_altid')){
+		print "<div><b>Alternate ID:</b> ";
+		print $this->getVar('tooltip_altid');
+		print "</div>";
+	}
 ?>
 </div>
