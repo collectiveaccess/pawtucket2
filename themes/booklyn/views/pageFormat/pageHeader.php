@@ -44,7 +44,7 @@
 	</div>
 <?php
 	//<script type="text/javascript">
-	//	var caUIBrowsePanel = caUI.initBrowsePanel({ facetUrl: '<?php print caNavUrl($this->request, '', 'Browse', 'getFacet'); ?>'});
+	//	var caUIBrowsePanel = caUI.initBrowsePanel({ facetUrl: '<?php print caNavUrl($this->request, '', 'Browse', 'getFacet'); '});
 	//</script>
 ?>
 </head>
@@ -120,7 +120,7 @@
 				<div class="nav">
 				<ul> 
 					<li><?php print caNavLink($this->request, 'Artists', '', 'About', 'Artists', '')?></li>
-					<li><a href="#">Art + Books</a></li>
+					<li><?php print caNavLink($this->request, 'Art + Books', '', '', '', '')?></li>
 					<li><a href="http://booklyn.org/wp/education">Education</a></li>
 					<li><a href="http://booklyn.org/wp/category/news">News</a></li>
 					<li><a href="http://booklyn.org/wp/calendar">Calendar</a></li>
