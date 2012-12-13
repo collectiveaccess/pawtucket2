@@ -138,9 +138,9 @@
 ?>
 	</div><!-- end resultbox --></div><!-- end browse -->
 
-<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
+<div id="staticBrowsePanel" class="browseSelectPanelStatic" style="z-index:1000;">
 	<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel(); return false;" class="browseSelectPanelButton">&nbsp;</a>
-	<div id="splashBrowsePanelContent">
+	<div id="staticBrowsePanelContent">
 	
 	</div>
 </div>
@@ -148,7 +148,11 @@
 	var caUIBrowsePanel = caUI.initBrowsePanel({ 
 		facetUrl: '<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'getFacet'); ?>',
 		addCriteriaUrl: '<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'addCriteria'); ?>',
-		singleFacetValues: <?php print json_encode($this->getVar('single_facet_values')); ?>
+		singleFacetValues: <?php print json_encode($this->getVar('single_facet_values')); ?>,
+		useStaticDiv: true,
+		panelID: 'staticBrowsePanel',
+		panelContentID: 'staticBrowsePanelContent'
+		
 	});
 	
 	//
