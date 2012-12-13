@@ -36,12 +36,6 @@
 			jQuery('#quickSearch').searchlight('<?php print $this->request->getBaseUrlPath(); ?>/index.php/Search/lookup', {showIcons: false, searchDelay: 100, minimumCharacters: 3, limitPerCategory: 3});
 		});
 	</script>
-		<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
-		<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel()" class="browseSelectPanelButton"></a>
-		<div id="splashBrowsePanelContent">
-		
-		</div>
-	</div>
 <?php
 	//<script type="text/javascript">
 	//	var caUIBrowsePanel = caUI.initBrowsePanel({ facetUrl: '<?php print caNavUrl($this->request, '', 'Browse', 'getFacet'); '});
