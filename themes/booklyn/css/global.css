@@ -382,13 +382,12 @@ div.searchlight-results div.searchlight-selected {
 	color:#333333;
 }
 #hpFeatured{
-	float:left;
-	margin: 0px 0px 0px 0px;
+	float:right;
+	margin: 0px 20px 15px 0px;
 	width:400px;
 	border: 0px solid #e8e8e8;
-	height: 450px;
 	overflow: hidden;
-	background-color:#eee;
+	background-color:#fff;
 	overflow:hidden;
 }
 #featuredScrollCaption {
@@ -408,9 +407,9 @@ div.searchlight-results div.searchlight-selected {
 	font-weight:normal;
 	color: #444444;
 	margin:0px 0px 0px 0px;
-	font-weight:bold;
-	
+	font-weight:bold;	
 }
+
 #hpFeatured table{
 	border: 0px solid #CCCCCC;
 	width:400px;
@@ -418,6 +417,10 @@ div.searchlight-results div.searchlight-selected {
 	background-color:#eee;
 	float:left;
 	overflow:hidden;
+}
+.featuredImg {
+	float:left;
+	margin: 0px 15px 14px 0px;
 }
 .hpRss{
 	float:left;
@@ -2132,6 +2135,42 @@ div.hierarchyBrowseTab {
 	line-height: 19px;
 	letter-spacing: 0.3em;
 	text-transform: uppercase;
+	color: #737373;
+}
+.artistList a:hover{
+	color:#90BCC4;
+}
+.featuredTitle {
+	float:right;
+	clear:right; 
+	width:400px;
+	font-family: 'OratorStdMedium';
+	font-size: 12px;
+	line-height: 17px;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	color: #737373;
+}
+.featuredTitleSmall {
+	font-family: 'OratorStdMedium';
+	font-size: 12px;
+	line-height: 17px;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	color: #737373;
+	width:200px;
+	margin-top:5px;
+}
+div.featuredTitleSmall a{
+	color: #737373;
+}
+div.featuredTitleSmall a:hover{
+	color: #737373;
+}
+div.featuredTitle a{
+	color: #737373;
+}
+div.featuredTitle a:hover{
 	color: #737373;
 }
 div.artistDiv {

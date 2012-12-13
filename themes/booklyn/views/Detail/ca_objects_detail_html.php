@@ -104,10 +104,10 @@
 					if (strlen($vs_description_text) <= 300) {
 						print "<div class='unit'><span class='metatitle'>".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))."</span><br/> {$vs_description_text}</div><!-- end unit -->";				
 					} else {
-						$vs_short_description = substr($vs_description_text, 0, 400);
-						print "<div class='unit' id='short'><span class='metatitle' >".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))."</span><br/> {$vs_short_description} ";?><a href='#' onclick='$("#long").show(); $("#short").hide()'> [more]</a></div><!-- end unit -->				
+						$vs_short_description = $vs_description_text;
+						print "<div class='unit'><div id='short' style='height:250px; overflow:hidden; color:#737373;'><span class='metatitle' >".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))."</span><br/> {$vs_short_description} ";?></div><a href='#' id ='more' onclick='$("#long").show(); $("#short").hide(); $("#more").hide(); $("#less").show()'> [more]</a></div><!-- end unit -->				
 <?php						
-						print "<div class='unit' style='display:none;' id='long'><span class='metatitle'>".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))."</span><br/> {$vs_description_text} ";?><a href='#' onclick='$("#short").show(); $("#long").hide()'> [less]</a></div><!-- end unit -->				
+						print "<div class='unit'><div style='display:none;color:#737373;' id='long'><span class='metatitle'>".$t_object->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))."</span><br/> {$vs_description_text} ";?></div><a href='#' id='less' style='display:none;' onclick='$("#short").show(); $("#long").hide(); $("#more").show(); $("#less").hide()'> [less]</a></div><!-- end unit -->				
 <?php
 					}
 				}
@@ -296,9 +296,9 @@
 				print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ "._t("Zoom/more media")."</a></p>";
 
 					if(($this->request->isLoggedIn())&&($this->request->config->get('enable_bookmarks'))){
-						print "<p>".caNavLink($this->request, _t("+ Bookmark item"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'))."</p>";
+						print "<p>".caNavLink($this->request, _t("+ Bookmark"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'))."</p>";
 					}else{
-						print "<p>".caNavLink($this->request, _t("+ Bookmark item"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'))."</p>";
+						print "<p>".caNavLink($this->request, _t("+ Bookmark"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_object_id, 'tablename' => 'ca_objects'))."</p>";
 					}
 ?>					
 					<!-- bookmark link END -->
@@ -310,6 +310,10 @@
 							print "<p>".caNavLink($this->request, _t("+ Add to Collection"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id))."</p>";
 						}
 					}
+					if($va_purchase = $t_object->get('ca_objects.purchase_address')){
+						print "<p><a href='".$va_purchase."' target='_blank'>"._t("+ Purchase")."</a></p><!-- end unit -->";
+					}
+					
 
 #					if (($this->request->isLoggedIn()) && ($this->request->user->canDoAction('can_download_media'))) {
 #						print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1), array('style' => "margin-right:20px;"));
@@ -321,7 +325,7 @@
 			</div><!-- end objDetailImageNav -->
 <?php
 		}
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
+if ($this->request->config->get('dont_allow_registration_and_loginzzzzz')) {
 		# --- user data --- comments - ranking - tagging
 ?>			
 		<div id="objUserData">
