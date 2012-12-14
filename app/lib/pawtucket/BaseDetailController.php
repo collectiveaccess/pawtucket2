@@ -575,7 +575,7 @@
 
 			require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
 			$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
-			header("Content-Disposition: attachment; filename=export_results.pdf");
+			header("Content-Disposition: attachment; filename=".$vs_output_file_name.".pdf");
 			header("Content-type: application/pdf");
 			$vs_content = $this->render('downloadTemplates/'.$this->ops_tablename.'_pdf_html.php');
 			$o_pdf = new DOMPDF();
