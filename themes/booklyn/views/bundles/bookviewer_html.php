@@ -30,21 +30,24 @@
  	$vn_representation_id 		= $this->getVar('representation_id');
  	$vs_content_mode 			= $this->getVar('content_mode');
  	$va_sections	 			= $this->getVar('sections');
+ 	$vs_display_type 			= $this->getVar('display_type');
+ 	$va_display_options 		= $this->getVar('display_options');
  	if (($vn_initial_page = $this->getVar('initial_page')) <= 0) {
  		$vn_initial_page = 1;
  	}
 ?>
-<div id="BookReader">
+<?php print ($vs_display_type != 'media_overlay') ? '<div id="BookReaderContainer">' : ''; ?><div id="BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>">
     <noscript>
     	<p><?php print _t('The BookReader requires JavaScript to be enabled. Please check that your browser supports JavaScript and that it is enabled in the browser settings.'); ?></p>
     </noscript>
-</div>
+</div><?php print ($vs_display_type != 'media_overlay') ? '</div>' : ''; ?>
 <script type="text/javascript">
 	var caBookReader = caUI.initBookReader({
+		containerID: 'BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',
 		docURL: '<?php print caNavUrl($this->request, 'Detail', 'Object', 'GetPageListAsJSON', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
-		sidebar: <?php print (sizeof($va_sections) > 0) ? "true" : "false"; ?>,
-		closeButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/buttons/x.png" alt="<?php print _t('Close'); ?>"/>',
+		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
+		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
 		editButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/buttons/arrow_grey_right.gif" alt="<?php print _t('View'); ?>"/>',
 <?php
 	if (caObjectsDisplayDownloadLink($this->request)) {

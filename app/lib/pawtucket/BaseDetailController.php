@@ -177,13 +177,21 @@
 				}
 				
 				// look for 'authority' facet for current detail table type so we can limit the object browse to the currently displayed item
-				$vs_limit_facet_name = null;
-				foreach($this->opo_browse->getInfoForFacets() as $vs_facet_name => $va_facet_info) {
-					if (($va_facet_info['type'] === 'authority') && ($va_facet_info['table'] === $this->ops_tablename)) {
-						$vs_limit_facet_name = $vs_facet_name;
-						break;
-					}
-				}
+				//$vs_limit_facet_name = null;
+				//foreach($this->opo_browse->getInfoForFacets() as $vs_facet_name => $va_facet_info) {
+				//	if (($va_facet_info['type'] === 'authority') && ($va_facet_info['table'] === $this->ops_tablename)) {
+				//		$vs_limit_facet_name = $vs_facet_name;
+				//		break;
+				//	}
+				//}
+				$this->opo_browse->addFacetConfiguration($vs_limit_facet_name = '_detail_browse_'.$this->ops_tablename, array(
+					'type' => 'authority', 'table' => $this->ops_tablename, 'relationship_table' => 'ca_objects_x_entities',
+					'restrict_to_types' => array(), 'restrict_to_relationship_types' => array(),
+					'label_singular' => 'Detail browse by '.$this->ops_tablename, 
+					'label_plural' => 'Detail browse by '.$this->ops_tablename,
+					'group_mode' => 'none',
+					'indefinite_article' => 'a'
+				));
 				
 				if ($vs_limit_facet_name) {
 					if (($va_configured_type_restrictions = $this->request->config->getList($this->ops_tablename.'_detail_browse_type_restrictions')) && is_array($va_configured_type_restrictions)) {
@@ -216,6 +224,7 @@
 					} else {
 						$vn_num_pages = 0;
 					}
+					
 					$this->view->setVar('browse_results', $qr_hits);
 					$this->view->setVar('num_pages', (int)$vn_num_pages);
 					$this->view->setVar('items_per_page', (int)$vn_items_per_page);
