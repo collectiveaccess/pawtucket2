@@ -59,7 +59,6 @@
 			print "<span class='headerText'>".mb_substr($vs_title, 0, 30).((mb_strlen($vs_title) > 30) ? '...' : '')."</span>";
 ?>
 		</div>
-	</page_header>
 
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
