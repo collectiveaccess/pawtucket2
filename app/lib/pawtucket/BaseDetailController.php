@@ -577,7 +577,7 @@
 			$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
 			header("Content-Disposition: attachment; filename=export_results.pdf");
 			header("Content-type: application/pdf");
-			$vs_content = $this->render('downloadTemplates/ca_objects_pdf_html.php');
+			$vs_content = $this->render('downloadTemplates/'.$this->ops_tablename.'_pdf_html.php');
 			$o_pdf = new DOMPDF();
 			// Page sizes: 'letter', 'legal', 'A4'
 			// Orientation:  'portrait' or 'landscape'
