@@ -323,6 +323,14 @@ class BaseModel extends BaseObject {
 	 */
 	static $s_ca_models_definitions;
 	
+	/**
+	 * Array of cached relationship info arrays
+	 */
+	static $s_relationship_info_cache = array();
+	
+	/**
+	 * Cached field values for load()'ed rows
+	 */
 	static $s_instance_cache = array();
 	
 	/**
@@ -1033,7 +1041,6 @@ class BaseModel extends BaseObject {
 					$vm_value = preg_replace("/[\"']/", "", $vm_value);
 				}
 
-
 				// what markup is supported for text fields?
 				$vs_markup_type = $this->getFieldInfo($vs_field, "MARKUP_TYPE");
 
@@ -1041,7 +1048,7 @@ class BaseModel extends BaseObject {
 				if (!($vs_markup_type == __CA_MT_HTML__)) {
 					$vm_value = htmlspecialchars($vm_value, ENT_QUOTES, 'UTF-8');
 				}
-
+								
 				$vs_cur_value = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 				switch ($pa_fields_type) {
 					case (FT_NUMBER):
@@ -1259,6 +1266,7 @@ class BaseModel extends BaseObject {
 						}
 						break;
 					case (FT_TEXT):
+						$vm_value = (string)$vm_value;
 						if (is_string($vm_value)) {
 							$vm_value = stripSlashes($vm_value);
 						}
@@ -1273,7 +1281,7 @@ class BaseModel extends BaseObject {
 								if (!($vs_list_multiple_delimiter = $this->getFieldInfo($vs_field, 'LIST_MULTIPLE_DELIMITER'))) { $vs_list_multiple_delimiter = ';'; }
 								$vs_string_value = join($vs_list_multiple_delimiter, $vm_value);
 								$vs_string_value = str_replace("\0", '', $vs_string_value);
-								if ($vs_cur_value != $vs_string_value) {
+								if ($vs_cur_value !== $vs_string_value) {
 									$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
 								}
 								$this->_FIELD_VALUES[$vs_field] = $vs_string_value;
@@ -1282,19 +1290,19 @@ class BaseModel extends BaseObject {
 							$vm_value = str_replace("\0", '', $vm_value);
 							if ($this->getFieldInfo($vs_field, "ENTITY_ENCODE_INPUT")) {
 								$vs_value_entity_encoded = htmlentities(html_entity_decode($vm_value));
-								if ($vs_cur_value != $vs_value_entity_encoded) {
+								if ($vs_cur_value !== $vs_value_entity_encoded) {
 									$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
 								}
 								$this->_FIELD_VALUES[$vs_field] = $vs_value_entity_encoded;
 							} else {
 								if ($this->getFieldInfo($vs_field, "URL_ENCODE_INPUT")) {
 									$vs_value_url_encoded = urlencode($vm_value);
-									if ($vs_cur_value != $vs_value_url_encoded) {
+									if ($vs_cur_value !== $vs_value_url_encoded) {
 										$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
 									}
 									$this->_FIELD_VALUES[$vs_field] = $vs_value_url_encoded;
 								} else {
-									if ($vs_cur_value != $vm_value) {
+									if ($vs_cur_value !== $vm_value) {
 										$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
 									}
 									$this->_FIELD_VALUES[$vs_field] = $vm_value;
@@ -6043,6 +6051,55 @@ class BaseModel extends BaseObject {
 			return null;
 		}
 	}
+	
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @param array, optional associative array of options. Valid keys for the array are:
+	 *		returnDeleted = return deleted records in list (def. false)
+	 * @return DbRes
+	 */
+	public function &getHierarchyChildCountsForIDs($pa_ids, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
+		$va_additional_table_wheres = array();
+		
+		if(!is_array($pa_ids)) { 
+			if (!$pa_ids) {
+				return null; 
+			} else {
+				$pa_ids = array($pa_ids);
+			}
+		}
+		
+		if (!sizeof($pa_ids)) { return array(); }
+		
+		$o_db = $this->getDb();
+		$vs_table_name = $this->tableName();
+		$vs_pk = $this->primaryKey();
+		
+		foreach($pa_ids as $vn_i => $vn_id) {
+			$pa_ids[$vn_i] = (int)$vn_id;
+		}
+		
+		if ($this->hasField('deleted') && (!isset($pa_options['returnDeleted']) || (!$pa_options['returnDeleted']))) {
+			$va_additional_table_wheres[] = "({$vs_table_name}.deleted = 0)";
+		}
+		
+		
+		$qr_res = $o_db->query("
+			SELECT parent_id,  count(*) c
+			FROM {$vs_table_name}
+			WHERE
+				parent_id IN (?) ".((sizeof($va_additional_table_wheres)) ? " AND ".join(" AND ", $va_additional_table_wheres) : "")."
+			GROUP BY parent_id
+		", array($pa_ids));
+		
+		$va_counts = array();
+		while($qr_res->nextRow()) {
+			$va_counts[(int)$qr_res->get('parent_id')] = (int)$qr_res->get('c');
+		}
+		return $va_counts;
+	}
 	# --------------------------------------------------------------------------------------------
 	/**
 	 * Get *direct* child records for currently loaded record or one specified by $pn_id
@@ -7502,13 +7559,17 @@ $pa_options["display_form_field_tips"] = true;
 	 * @param string $ps_effective_date Optional date expression to qualify relation with. Any expression that the TimeExpressionParser can handle is supported here.
 	 * @param string $ps_source_info Text field for storing information about source of relationship. Not currently used.
 	 * @param string $ps_direction Optional direction specification for self-relationships (relationships linking two rows in the same table). Valid values are 'ltor' (left-to-right) and  'rtol' (right-to-left); the direction determines which "side" of the relationship the currently loaded row is on: 'ltor' puts the current row on the left side. For many self-relations the direction determines the nature and display text for the relationship.
+	 * @param array $pa_options Array of additional options:
+	 *		allowDuplicates = if set to true, attempts to add a relationship that already exists will succeed. Default is false – duplicate relationships will not be created.
+	 *		setErrorOnDuplicate = if set to true, an error will be set if an attempt is made to add a duplicate relationship. Default is false – don't set error. addRelationship() will always return false when creation of a duplicate relationship fails, no matter how the setErrorOnDuplicate option is set.
 	 * @return boolean True on success, false on error.
 	 */
-	public function addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $ps_source_info=null, $ps_direction=null, $pn_rank=null) {
+	public function addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $ps_source_info=null, $ps_direction=null, $pn_rank=null, $pa_options=null) {
 		if(!($va_rel_info = $this->_getRelationshipInfo($pm_rel_table_name_or_num))) { 
 			$this->postError(1240, _t('Related table specification "%1" is not valid', $pm_rel_table_name_or_num), 'BaseModel->addRelationship()');
 			return false; 
 		}
+		
 		$t_item_rel = $va_rel_info['t_item_rel'];
 		
 		if ($pm_type_id && !is_numeric($pm_type_id)) {
@@ -7520,13 +7581,19 @@ $pa_options["display_form_field_tips"] = true;
 			$pn_type_id = $pm_type_id;
 		}
 		
-		
 		if (!is_numeric($pn_rel_id)) {
 			if ($t_rel_item = $this->_DATAMODEL->getInstanceByTableName($va_rel_info['related_table_name'], true)) {
 				if (($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) && $t_rel_item->load(array($vs_idno_fld => $pn_rel_id))) {
 					$pn_rel_id = $t_rel_item->getPrimaryKey();
 				}
 			}
+		}
+		
+		if ((!isset($pa_options['allowDuplicates']) || !$pa_options['allowDuplicates']) && $this->relationshipExists($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_direction)) {
+			if (isset($pa_options['setErrorOnDuplicate']) && $pa_options['setErrorOnDuplicate']) {
+				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship');
+			}
+			return false;
 		}
 		
 
@@ -7633,9 +7700,12 @@ $pa_options["display_form_field_tips"] = true;
 	 * @param string $ps_effective_date Optional date expression to qualify relation with. Any expression that the TimeExpressionParser can handle is supported here.
 	 * @param string $ps_source_info Text field for storing information about source of relationship. Not currently used.
 	 * @param string $ps_direction Optional direction specification for self-relationships (relationships linking two rows in the same table). Valid values are 'ltor' (left-to-right) and  'rtol' (right-to-left); the direction determines which "side" of the relationship the currently loaded row is on: 'ltor' puts the current row on the left side. For many self-relations the direction determines the nature and display text for the relationship.
+	 * @param array $pa_options Array of additional options:
+	 *		allowDuplicates = if set to true, attempts to edit a relationship to match one that already exists will succeed. Default is false – duplicate relationships will not be created.
+	 *		setErrorOnDuplicate = if set to true, an error will be set if an attempt is made to create a duplicate relationship. Default is false – don't set error. editRelationship() will always return false when editing of a relationship fails, no matter how the setErrorOnDuplicate option is set.
 	 * @return boolean True on success, false on error.
 	 */
-	public function editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $pa_source_info=null, $ps_direction=null, $pn_rank=null) {
+	public function editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $pa_source_info=null, $ps_direction=null, $pn_rank=null, $pa_options=null) {
 		if(!($va_rel_info = $this->_getRelationshipInfo($pm_rel_table_name_or_num))) { 
 			$this->postError(1240, _t('Related table specification "%1" is not valid', $pm_rel_table_name_or_num), 'BaseModel->editRelationship()');
 			return false; 
@@ -7651,6 +7721,20 @@ $pa_options["display_form_field_tips"] = true;
 			$pn_type_id = $pm_type_id;
 		}
 		
+		if (!is_numeric($pn_rel_id)) {
+			if ($t_rel_item = $this->_DATAMODEL->getInstanceByTableName($va_rel_info['related_table_name'], true)) {
+				if (($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) && $t_rel_item->load(array($vs_idno_fld => $pn_rel_id))) {
+					$pn_rel_id = $t_rel_item->getPrimaryKey();
+				}
+			}
+		}
+		
+		if ((!isset($pa_options['allowDuplicates']) || !$pa_options['allowDuplicates']) && $this->relationshipExists($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_direction)) {
+			if (isset($pa_options['setErrorOnDuplicate']) && $pa_options['setErrorOnDuplicate']) {
+				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship');
+			}
+			return false;
+		}
 		
 		if ($va_rel_info['related_table_name'] == $this->tableName()) {
 			// is self relation
@@ -8047,6 +8131,9 @@ $pa_options["display_form_field_tips"] = true;
 	 *
 	 */
 	private function _getRelationshipInfo($pm_rel_table_name_or_num) {
+		if (isset(BaseModel::$s_relationship_info_cache[$this->tableName()][$pm_rel_table_name_or_num])) {
+			return BaseModel::$s_relationship_info_cache[$this->tableName()][$pm_rel_table_name_or_num];
+		}
 		if (is_numeric($pm_rel_table_name_or_num)) {
 			$vs_related_table_name = $this->getAppDataModel()->getTableName($pm_rel_table_name_or_num);
 		} else {
@@ -8057,7 +8144,7 @@ $pa_options["display_form_field_tips"] = true;
 		if ($this->tableName() == $vs_related_table_name) {
 			// self relations
 			if ($vs_self_relation_table = $this->getSelfRelationTableName()) {
-				$t_item_rel = $this->getAppDatamodel()->getTableInstance($vs_self_relation_table);
+				$t_item_rel = $this->getAppDatamodel()->getInstanceByTableName($vs_self_relation_table, true);
 			} else {
 				return null;
 			}
@@ -8066,10 +8153,10 @@ $pa_options["display_form_field_tips"] = true;
 			
 			switch(sizeof($va_path)) {
 				case 3:
-					$t_item_rel = $this->getAppDatamodel()->getTableInstance($va_path[1]);
+					$t_item_rel = $this->getAppDatamodel()->getInstanceByTableName($va_path[1], true);
 					break;
 				case 2:
-					$t_item_rel = $this->getAppDatamodel()->getTableInstance($va_path[1]);
+					$t_item_rel = $this->getAppDatamodel()->getInstanceByTableName($va_path[1], true);
 					if (!sizeof($va_rel_keys = $this->_DATAMODEL->getOneToManyRelations($this->tableName(), $va_path[1]))) {
 						$va_rel_keys = $this->_DATAMODEL->getOneToManyRelations($va_path[1], $this->tableName());
 					}
@@ -8081,7 +8168,7 @@ $pa_options["display_form_field_tips"] = true;
 			}
 		}
 		
-		return array(
+		return BaseModel::$s_relationship_info_cache[$this->tableName()][$vs_related_table_name] = BaseModel::$s_relationship_info_cache[$this->tableName()][$pm_rel_table_name_or_num] = array(
 			'related_table_name' => $vs_related_table_name,
 			'path' => $va_path,
 			'rel_keys' => $va_rel_keys,
@@ -8097,7 +8184,7 @@ $pa_options["display_form_field_tips"] = true;
 	 * @param mixed $pm_type_id Relationship type type_code or type_id, as defined in the ca_relationship_types table. This is required for all relationships that use relationship types. This includes all of the most common types of relationships.
 	 * @param string $ps_effective_date Optional date expression to qualify relation with. Any expression that the TimeExpressionParser can handle is supported here.
 	 * @param string $ps_direction Optional direction specification for self-relationships (relationships linking two rows in the same table). Valid values are 'ltor' (left-to-right) and  'rtol' (right-to-left); the direction determines which "side" of the relationship the currently loaded row is on: 'ltor' puts the current row on the left side. For many self-relations the direction determines the nature and display text for the relationship.
-	 * @return boolean True on success, false on error.
+	 * @return mixed Array of matched relation_ids on success, false on error.
 	 */
 	public function relationshipExists($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $ps_direction=null) {
 		if(!($va_rel_info = $this->_getRelationshipInfo($pm_rel_table_name_or_num))) { 
@@ -8173,16 +8260,17 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		$qr_res = $o_db->query("
-			SELECT *
+			SELECT relation_id
 			FROM {$vs_rel_table_name}
 			WHERE
 				{$vs_left_field_name} = ? AND {$vs_right_field_name} = ?
 				{$vs_type_sql} {$vs_timestamp_sql}
 		", $va_query_params);
 		
-		if ($qr_res->nextRow()) {
-			return true;
+		if (sizeof($va_ids = $qr_res->getAllFieldValues('relation_id'))) {
+			return $va_ids;
 		}
+		
 		return false;
 	}
 	# --------------------------------------------------------------------------------------------
