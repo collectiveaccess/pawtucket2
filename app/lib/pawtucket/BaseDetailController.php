@@ -533,6 +533,52 @@
 			$this->render('export_xml.php');
 		}
  		# -------------------------------------------------------
+		# Download Summary
+		# -------------------------------------------------------
+		/**
+		 * Download Summary of displayed item
+		 */
+		public function downloadSummary() {
+			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) {
+ 				die("Invalid table name ".$this->ops_tablename." for detail");		// shouldn't happen
+ 			}
+			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
+  				$this->notification->addNotification(_t("Invalid ID"), "message");
+ 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				return;
+ 			}
+ 			if(!$t_item->load($vn_item_id)){
+  				$this->notification->addNotification(_t("ID does not exist"), "message");
+ 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				return;
+ 			}
+			
+			$this->view->setVar('t_item', $t_item);
+ 			if($this->request->config->get("dont_enforce_access_settings")){
+ 				$va_access_values = array();
+ 			}else{
+ 				$va_access_values = caGetUserAccessValues($this->request);
+ 			}
+ 			$this->view->setVar('access_values', $va_access_values);
+ 			
+ 			$vs_output_filename = $t_item->getLabelForDisplay();
+			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
+
+			require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+			$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
+			header("Content-Disposition: attachment; filename=export_results.pdf");
+			header("Content-type: application/pdf");
+			$vs_content = $this->render('downloadTemplates/ca_objects_pdf_html.php');
+			$o_pdf = new DOMPDF();
+			// Page sizes: 'letter', 'legal', 'A4'
+			// Orientation:  'portrait' or 'landscape'
+			$o_pdf->set_paper("letter", "portrait");
+			$o_pdf->load_html($vs_content, 'utf-8');
+			$o_pdf->render();
+			$o_pdf->stream($vs_output_file_name.".pdf");
+			return;	
+		}
+		# -------------------------------------------------------
  		/**
  		  *
  		  */
