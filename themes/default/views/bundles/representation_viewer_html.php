@@ -44,7 +44,7 @@
 	$va_pages = $va_sections = array();
 	$vb_use_book_reader = false;
 	$vn_open_to_page = 1;
-
+	$va_access_values = caGetUserAccessValues($this->request);
 
 		$vb_should_use_book_viewer = isset($va_display_options['use_book_viewer']) && (bool)$va_display_options['use_book_viewer'];
 
