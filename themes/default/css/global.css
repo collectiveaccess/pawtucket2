@@ -1950,6 +1950,9 @@ div.caMediaOverlayControls .objectInfo{
 	width:40%;
 	float:left;
 }
+div.caMediaOverlayControls .objectInfo a{
+	font-size:11px;
+}
 div.caMediaOverlayControls .repNav {
 	float:left;
 	width:16%;
@@ -1979,6 +1982,30 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	border:1px solid #FFF;
 }
 
+/* used in simpleGallery media overlay */
+
+div.caMediaOverlayControls .simpleGalleryRepNav {
+	padding: 0px;
+	text-align:center;
+	color:#FFF;
+}
+div.caMediaOverlayControls div.simpleGalleryCaption{
+	font-size:11px;
+	color:#FFF;
+	text-align:left;
+	padding:0px 10px 10px 10px;
+	clear:both;
+}
+div.caMediaOverlayControls div.simpleGallerySetItemDescription{
+	font-size:11px;
+	color:#FFF;
+	text-align:left;
+	padding:0px 10px 5px 10px;
+	clear:both;
+}
+div.caMediaOverlayControls div.simpleGallerySetItemDescription a{
+	font-size:11px;
+}
 /* Advanced search */
 .advSearchLabel {
 	font-weight: bold;
