@@ -102,19 +102,19 @@
 					}
 					print "</div><!-- end facetList -->";
 				}
-				print "<div id='browseSlideshow'>";
-				foreach($va_random_items as $vn_object_id => $va_object_info) {
-					$randomImageHeight = $va_media[$va_object_info['object_id']]["info"]["medium"]["HEIGHT"];
-					$randomImagePadding = ((410 - $randomImageHeight) / 2);
-					$va_object_info['title'] = $va_labels[$vn_object_id];
-					$va_object_info['media'] = $va_media[$vn_object_id];
-					$va_random_items[$vn_object_id] = $va_object_info;
-					print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
-					print caNavLink($this->request, $va_media[$va_object_info['object_id']]["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
-					print "<div id='browseRandomCaption'>".caNavLink($this->request, $va_object_info['title'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
-				}
+#				print "<div id='browseSlideshow'>";
+##				foreach($va_random_items as $vn_object_id => $va_object_info) {
+#					$randomImageHeight = $va_media[$va_object_info['object_id']]["info"]["medium"]["HEIGHT"];
+#					$randomImagePadding = ((410 - $randomImageHeight) / 2);
+#					$va_object_info['title'] = $va_labels[$vn_object_id];
+#					$va_object_info['media'] = $va_media[$vn_object_id];
+#					$va_random_items[$vn_object_id] = $va_object_info;
+#					print "<div id='browseRandomImage' style='padding:".$randomImagePadding."px 0px ".$randomImagePadding."px 0px;'>";
+#					print caNavLink($this->request, $va_media[$va_object_info['object_id']]["tags"]["medium"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
+#					print "<div id='browseRandomCaption'>".caNavLink($this->request, $va_object_info['title'], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div></div>";
+#				}
 				
-				print "</div>";
+#				print "</div>";
 			}
 
 ?>
