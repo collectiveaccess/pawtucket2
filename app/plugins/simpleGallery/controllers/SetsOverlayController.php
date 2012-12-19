@@ -38,6 +38,7 @@
  		 * Returns content for overlay containing details for object representation linked to occurrence
  		 */ 
  		public function getSetsOverlay() {
+ 			$this->view->setVar('display_type', 'media_overlay');
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$pn_object_id = $this->request->getParameter('object_id', pInteger);
  			$this->view->setVar('object_id', $pn_object_id);
@@ -50,8 +51,8 @@
  			$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
 			$this->view->setVar('set_item_id', $pn_set_item_id);
 			
-			$pn_set_item_description = $this->opo_plugin_config->get('set_item_description_element_code');
- 			$this->view->setVar('set_item_description', $pn_set_item_description);
+			$ps_set_item_description_code = $this->opo_plugin_config->get('set_item_description_element_code');
+ 			$this->view->setVar('set_item_description', $ps_set_item_description_code);
  			
  			$this->view->setVar('object_id', $pn_object_id);
  			$t_object = new ca_objects($pn_object_id);
@@ -81,32 +82,21 @@
 			$this->view->setVar('version', $va_rep_display_info['display_version']);
 			unset($va_display_info['display_version']);
 			
-			// set poster frame URL
-			//$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-			//unset($va_display_info['poster_frame_version']);
-			
-			//$va_rep_display_info['viewer_base_url'] = $t_rep->getAppConfig()->get('ca_url_root');
-			
 			// set other options
 			$this->view->setVar('display_options', $va_rep_display_info);
 					
-			
-			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
- 			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
- 			$this->view->setVar("display_type", $ps_display_type);
-			$this->view->setVar("containerID", $ps_containerID);
+			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
+ 			$this->view->setVar("containerID", $ps_containerID);
 	
 			// Get all objects asscoiated with this set and show primary reps as icons for navigation
-			//****THIS WONT WORK
-			#$va_exhibition_images = $t_set->get("ca_objects", array('restrict_to_relationship_types' => array('describes'), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			$va_exhibition_images = $t_set->getItems(array("checkAccess" => $va_access_values));
+			$va_set_items = $t_set->getItems(array("checkAccess" => $va_access_values));
 			#print "<pre>";
-			#print_r($va_exhibition_images);
+			#print_r($va_set_items);
 			#print "</pre>";
-			if(sizeof($va_exhibition_images) > 0){
+			if(sizeof($va_set_items) > 0){
 				$t_image_objects = new ca_objects();
 				$i = 1;
-				foreach($va_exhibition_images as $vn_rel_id => $va_inter){
+				foreach($va_set_items as $vn_rel_id => $va_inter){
 					foreach ($va_inter as $id => $va_info) {	
 						$t_image_objects->load($va_info["row_id"]);
 						if ($t_primary_rep = $t_image_objects->getPrimaryRepresentationInstance()){

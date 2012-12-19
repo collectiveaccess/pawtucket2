@@ -79,5 +79,5 @@ $va_first_items_from_sets 	= $this->getVar('first_items_from_sets');
 			);
 		}
 	}
-	print "</div><!-- end setItemsGrid -->";
 ?>
+	</div><!-- end setItemsGrid --></div><!-- end gallerySetDetail -->
