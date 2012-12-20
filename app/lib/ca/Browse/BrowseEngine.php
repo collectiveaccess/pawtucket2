@@ -115,6 +115,19 @@
 		}
 		# ------------------------------------------------------
 		/**
+		 * Dynamically insert facet configuration
+		 *
+		 * @param string $ps_facet_name The name of the facet to insert
+		 * @return bool true if add succeeded
+		 */
+		public function addFacetConfiguration($ps_facet_name, $pa_options) {
+			$this->opa_browse_settings['facets'][$ps_facet_name] = $pa_options;
+			$this->_processBrowseSettings();
+			
+			return true;
+		}
+		# ------------------------------------------------------
+		/**
 		 * Forces reload of the browse instance (ie. a cached browse) from the database
 		 *
 		 * @param int $pn_browse_id The id of the browse to reload

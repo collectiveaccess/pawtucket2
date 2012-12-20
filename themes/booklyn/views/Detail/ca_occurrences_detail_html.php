@@ -62,9 +62,9 @@ if (!$this->request->isAjax()) {
 				<div class="unit">
 <?php
 				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark Exhibition +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
 				}else{
-					print caNavLink($this->request, _t("Bookmark Exhibition +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_occurrence_id, 'tablename' => 'ca_occurrences'));
 				}
 ?>
 				</div><!-- end unit -->
@@ -75,23 +75,14 @@ if (!$this->request->isAjax()) {
 #			if($t_occurrence->get('idno')){
 #				print "<div class='unit'><span class='metatitle'>"._t("Identifier")."</span><br/> ".$t_occurrence->get('idno')."</div><!-- end unit -->";
 #			}
+			if ($va_venue = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Venue</span><br/>".$va_venue."</div>";
+			}
+			if ($va_dates = $t_occurrence->get('ca_occurrences.exhibition_date.exhDatesValue', array('delimiter' => '<br/>'))) {
+				print "<div class='unit'><span class='metatitle'>Exhibition Dates</span><br/>".$va_dates."</div>";
+			}			
 			if ($va_curator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
 				print "<div class='unit'><span class='metatitle'>Curator</span><br/>".$va_curator."</div>";
-			}
-			if ($va_artists = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'contributor'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
-				print "<div class='unit'><span class='metatitle'>Artists + Contributors</span><br/>".$va_artists."</div>";
-			}
-			if ($va_collaborator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collaborator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
-				print "<div class='unit'><span class='metatitle'>Collaborators</span><br/>".$va_collaborator."</div>";
-			}			
-			# --- attributes
-			$va_attributes = $this->request->config->get('ca_occurrences_detail_display_attributes');
-			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
-				foreach($va_attributes as $vs_attribute_code){
-					if($vs_value = $t_occurrence->get("ca_occurrences.{$vs_attribute_code}")){
-						print "<div class='unit'><span class='metatitle'>".$t_occurrence->getDisplayLabel("ca_occurrences.{$vs_attribute_code}")."</span><br/> {$vs_value}</div><!-- end unit -->";
-					}
-				}
 			}
 			# --- description
 			if($this->request->config->get('ca_occurrences_description_attribute')){
@@ -106,7 +97,25 @@ if (!$this->request->isAjax()) {
 <?php
 					}
 				}
+			}			
+			if ($va_artists = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'contributor'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Artists + Contributors</span><br/>".$va_artists."</div>";
 			}
+			if ($va_collaborator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collaborator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Collaborators</span><br/>".$va_collaborator."</div>";
+			}	
+	
+							
+			# --- attributes
+			$va_attributes = $this->request->config->get('ca_occurrences_detail_display_attributes');
+			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
+				foreach($va_attributes as $vs_attribute_code){
+					if($vs_value = $t_occurrence->get("ca_occurrences.{$vs_attribute_code}")){
+						print "<div class='unit'><span class='metatitle'>".$t_occurrence->getDisplayLabel("ca_occurrences.{$vs_attribute_code}")."</span><br/> {$vs_value}</div><!-- end unit -->";
+					}
+				}
+			}
+
 
 #			# --- entities
 #			$va_entities = $t_occurrence->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));

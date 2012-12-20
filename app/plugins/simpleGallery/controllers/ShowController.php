@@ -170,6 +170,7 @@
 			$va_set_item_info["info"] = $va_rep[0]['info'];
 			$va_set_item_info["label"] = $t_set_item->getLabelForDisplay();
 			$va_set_item_info["description"] = $t_set_item->get($this->opo_plugin_config->get('set_description_element_code'), array('convertLineBreaks' => true));
+			$va_set_item_info["item_description"] = $t_set_item->get($this->opo_plugin_config->get('set_item_description_element_code'), array('convertLineBreaks' => true));
 			$va_set_item_info["row_id"] = $t_set_item->get("row_id");
 			$va_set_item_info["lesson"] = $t_set_item->get('set_item_description');
 			

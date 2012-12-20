@@ -301,7 +301,7 @@
  			$vn_object_tablenum = $this->opn_objectTableNum;
  			$o_db = new db();
  			# --- get the element_id for date attribute
- 			$q_theme_element_id = $o_db->query("select element_id from ca_metadata_elements where element_code = 'NovaMuse_category'");
+ 			$q_theme_element_id = $o_db->query("select element_id from ca_metadata_elements where element_code = 'NovaStory_category'");
  			$q_theme_element_id->nextRow();
  			$vn_theme_element_id = $q_theme_element_id->get("element_id");
  			$t_list = new ca_lists();

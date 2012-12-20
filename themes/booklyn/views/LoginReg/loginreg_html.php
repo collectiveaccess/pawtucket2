@@ -56,7 +56,7 @@
 					<form action="<?php print caNavUrl($this->request, '', 'LoginReg', 'register', array()); ?>" method="post" name="registration">
 					<p>
 <?php
-						print _t("As a member, you can rank, tag and comment on photos and videos. You can create your own photo albums and view them as slide shows.");
+						print _t("Register to bookmark artworks and artists and to create your own slideshows.");
 ?>
 					</p>
 <?php
