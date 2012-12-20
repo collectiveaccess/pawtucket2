@@ -112,7 +112,7 @@
 					}
 				}
 			}	
-				
+#			print caNavLink($this-request, "download", "", "Detail", "Object", "downloadSummary", array ('object_id' => $vn_object_id));	
 #			if($va_status = $t_object->get('ca_objects.object_status', array('convertCodesToDisplayText' => true))){
 #				print "<div class='unit'><span class='metatitle'>"._t("Status")."</span><br/> ".$va_status."</div><!-- end unit -->";
 #				if($va_price = $t_object->get('ca_objects.retailPrice')){

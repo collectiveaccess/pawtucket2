@@ -33,6 +33,9 @@ h1.results{
 	font-family: 'DIN-Black';
 	margin: 0 0 8px 0;
 }
+h1.results a{
+	color:#999999;
+}
 h2{
 	text-transform: uppercase;
 	font-family: Helvetica, sans-serif;
@@ -1503,29 +1506,37 @@ td.advSearchElement{
 /* landing page */
 #facetList{
 	padding:10px;
-	width:400px;
+	width:650px;
 	float:left;
+	background-color:#f9f9f9;
 }
 .startBrowsingBy{
-	color: #828282;
-	font-size:13px;
-	padding-left:10px;
+	font-size: 12px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
+	color:#999;
+	margin-bottom:5px;
 }
 .facetHeadingLink{
 	margin-bottom:5px;
+	margin-top:5px;
+	float:left;
+	padding-right:25px;
 }
 .facetHeadingLink a{
-	font-weight:bold;
-	font-size:15px;
-	text-decoration:underline;
-	color: #828282;
-	text-transform:capitalize;
+	text-decoration: none;
+	color: #333;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 .facetHeadingLink a:hover{
 	color:#333333;
 }
 .facetDescription{
-	margin-bottom:20px;
+	margin-bottom:0px;
 }
 #browseSlideshow {
 	float:right;
@@ -1566,12 +1577,16 @@ td.advSearchElement{
 	font-size:14px;
 }
 #refineBrowse a.facetLink{
-	font-size:14px;
-	color:#000000;
-	text-decoration:underline;
+	text-decoration: none;
+	color: #333;
+	font-size: 13px;
+	line-height: 15px;
+	font-family: 'DIN-Medium';
+	padding-left:2px;
+	text-transform:capitalize;
 }
 #refineBrowse a.facetLink:hover{
-	color:#000000;
+	color:#8C8C8C;
 }
 #browseCriteria{
 	margin:0px;
@@ -1752,21 +1767,32 @@ td.advSearchElement{
 }
 
 .browseSelectPanelStatic, #browse .browseSelectPanelStatic {  /* used in browse and details with browse into static non-overlay panel */
-	position: absolute; 
-	top: 100px; 
-	left: 600px; 
-	
-	width: 900px; 
-	height: 400px;
-	border: 1px solid #cc0000;
+	position: relative;  
+	width: 650px; 
+	margin-bottom:35px;
 }
-
+#staticBrowsePanel {
+	clear:both;
+}
+#staticBrowsePanelContent #title{
+	font-family: 'DIN-Black';
+	font-size: 20px;
+	line-height: 17px;
+	color: #90BCC4;
+	text-transform: uppercase;
+	float:left;
+	margin:10px;
+}
 #browseFacetGroupingControls{ /*  used in browse and details with browse */
-	float:right;
+	clear:both;
 	margin: 10px 10px 0px 10px;
-	color:#333333;
-	text-transform:uppercase;
+	padding-right: 4px;
+	text-decoration: none;
+	color: #333;
 	font-size: 11px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 #browseFacetGroupingControls a{ /*  used in browse  and details with browse */
 	text-decoration:none;
@@ -1774,6 +1800,7 @@ td.advSearchElement{
 	text-transform:uppercase;
 	font-weight:bold;
 	font-size: 11px;
+	padding-left:3px;
 }
 #browseFacetGroupingControls a.selected{ /*  used in browse and details with browse */
 	text-decoration:underline;
@@ -1782,16 +1809,15 @@ td.advSearchElement{
 	font-size: 11px;
 }
 .browseSelectPanel #title{ /*  used in browse and details with browse */
-	font-size: 34px;
-	font-weight:bold;
-	text-transform:uppercase;
-	color:#333333;
-	line-height:1em;
 	padding-bottom:5px;
+	font-family: 'DIN-Black';
+	font-size: 17px;
+	line-height: 17px;
+	color: #D9D9D9;
+	text-transform: uppercase;
 }
 
 .browseSelectPanelContentArea { /*  used in browse and details with browse */
-	border: 1px solid #333333;
 	background-color: #FFFFFF;
 }
 
@@ -1803,16 +1829,18 @@ td.advSearchElement{
 	color:#333333;
 	font-weight:bold;
 	height: 18px;
-	overflow:hidden;
-	width: 635px;
+	clear:both;
+/*	overflow:hidden;
+	width: 635px; */
 }
 #browseSelectPanelHeader a { /*  used in browse and details with browse */
-	text-decoration:none;
-	text-transform:uppercase;
-	font-size:14px;
-	color:#333333;
-	font-weight:bold;
 	padding-right:4px;
+	text-decoration: none;
+	color: #333;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 
 #browseSelectPanelHeaderContent {
@@ -1828,8 +1856,7 @@ td.advSearchElement{
 
 .browseSelectPanelList { /*  used in browse and details with browse */
 	margin: 0px;
-	width: 878px;
-	height: 310px;
+	width: 600px;
 	overflow: auto;
 	padding: 0px 10px 10px 10px;;
 	color:#333333;
@@ -1838,12 +1865,12 @@ td.advSearchElement{
 
 td.browseSelectPanelListCell { /*  used in browse and details with browse */
 	padding:3px;
-	width:20%;
+	width:200px; 
 }
 
 
 table.browseSelectPanelListTable { /*  used in browse and details with browse */
-	width: 100%;
+	
 }
 
 div.browseSelectPanelCacheError {
@@ -1855,20 +1882,22 @@ div.browseSelectPanelCacheError {
 
 .listDivide{ /*  used in browse and details with browse */
 	height:1px;
-	border-bottom: 1px #333333 solid;
+	border-bottom: 4px #000000 solid;
 }
 
 div.browseSelectPanelListGroupHeading { /*  used in browse and details with browse */
-	font-size: 34px;
-	font-weight: bold;
+	font-family: 'DIN-Black';
+	font-size: 20px;
+	line-height: 17px;
+	color: #333;
+	text-transform: uppercase;
 	padding-top: 5px;
-	margin-bottom: 5px;
-	color:#4c4c4c;
+	margin: 10px 10px 10px 5px;
 }
 
 a.browseSelectPanelListGroupHeading, a.browseSelectPanelListGroupHeading:hover { /*  used in browse and details with browse */
 	text-decoration: none;
-	color: #4c4c4c;
+	color: #333;
 }
 
 a.browseSelectPanelButton {   /*  used in browse and details with browse */
@@ -1879,6 +1908,8 @@ a.browseSelectPanelButton {   /*  used in browse and details with browse */
 	width:19px;
 	height:19px;
 	text-decoration:none;
+	clear:both;
+	display:none;
 }
 
 a.browseSelectPanelButton:hover {
@@ -1886,14 +1917,16 @@ a.browseSelectPanelButton:hover {
 }
 
 a.browseSelectPanelLink { /*  used in browse and details with browse */
-	font-size: 10px;
-	text-decoration:none;
-	font-size:12px;
-	color:#4c4c4c;
+	font-family: 'OratorStdMedium';
+	font-size: 12px;
+	line-height: 19px;
+	letter-spacing: 0.3em;
+	text-transform: uppercase;
+	color: #737373;
 }
 
 a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
-	color:#999999;
+	color:#90BCC4;
 }
 
 
