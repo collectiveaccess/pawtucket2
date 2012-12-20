@@ -61,9 +61,9 @@ if (!$this->request->isAjax()) {
 				<div class="unit">
 <?php
 				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark artist +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
 				}else{
-					print caNavLink($this->request, _t("Bookmark artist +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
 				}
 ?>
 				</div><!-- end unit -->
@@ -79,7 +79,7 @@ if (!$this->request->isAjax()) {
 			if ($va_bio = $t_entity->get('ca_entities.artist_bio')) {
 				print "<div class='unit' id='bio'><span class='metatitle'>Biography</span><br/>".$va_bio."</div>";
 			}
-			if ($va_instit = $t_entity->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('institutional'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+			if ($va_instit = $t_entity->get('ca_entities.related.preferred_labels', array('restrictToRelationshipTypes' => array('in_collection'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
 				print "<div class='unit'><span class='metatitle'>Institutional Collectors</span><br/>".$va_instit."</div>";
 			}				
 ?>
