@@ -113,7 +113,7 @@ class RequestHTTP extends Request {
 	
 		# get session
 		$vs_app_name = $this->config->get("app_name");
-		$this->session = new Session($vs_app_name, isset($pa_options["dont_create_new_session"]) ? $pa_options["dont_create_new_session"] : false);
+		$this->session = new Session($vs_app_name, isset($pa_options["dont_create_new_session"]) ? (bool)$pa_options["dont_create_new_session"] : false);
 		
 		if (!isset($pa_options["dont_add_default_handlers"]) || !$pa_options["dont_add_default_handlers"]) {
 			$this->addUserHandler("ca_users");
