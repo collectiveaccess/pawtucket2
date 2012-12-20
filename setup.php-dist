@@ -2,7 +2,7 @@
 # --------------------------------------------------------------------------------------------
 #
 # ::::::::::::::::::::::
-# ::: Pawtucket v1.2 :::
+# ::: Pawtucket v1.3 :::
 # ::::::::::::::::::::::
 #
 # Public-access front-end for CollectiveAccess 
@@ -187,7 +187,7 @@ if (!(file_exists($_CA_CONFIG_PATH))) {
 	die("Configuration file is missing for hostname '".$_SERVER['HTTP_HOST']."'");
 }
 
-set_include_path(__CA_LIB_DIR__.'/ca'.PATH_SEPARATOR.__CA_LIB_DIR__.'/core'.PATH_SEPARATOR.__CA_MODELS_DIR__);
+set_include_path(__CA_LIB_DIR__.'/ca'.PATH_SEPARATOR.__CA_LIB_DIR__.'/core'.PATH_SEPARATOR.__CA_MODELS_DIR__.PATH_SEPARATOR.get_include_path());
 
 # The path to the main instance configuration file defined as a constant
 define('__CA_APP_CONFIG__', $_CA_CONFIG_PATH);
