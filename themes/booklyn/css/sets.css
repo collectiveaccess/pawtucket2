@@ -4,14 +4,20 @@
 #setItemEditor #rightCol{
 	clear:right;
 	float:right;
-	background-color: #E2E2E2;
-	width: 250px;
+	background-color: #f9f9f9;
+	width: 200px;
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 15px 0px;
+	min-height: 188px;
 }
 #setItemEditor #rightCol H2{
-	padding-top:10px;
-	color:#828282;
+	margin-top: 15px;
+	text-decoration: none;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 
 #setItemEditor #leftCol{
@@ -20,8 +26,11 @@
 #setItemList{
 	margin:0px;
 	padding:0px;
+	
 }
-
+#setItems {
+	margin-bottom:35px;
+}
 #setItems .setItem {
 	position: relative;
 	display: block;
@@ -29,15 +38,14 @@
 	list-style-type: none;
 	height: 200px; 
 	width: 140px; 
-	border: solid 1px #828282;
+	border: solid 1px #eee;
 	margin: 5px 10px 5px 0px;
-	background: #F5F5F5;
+	background: #f9f9f9;
 	text-align: center;
-	overflow: hidden;
 }
 
 #setItems .setItem:hover {
-	border: solid 1px #666;
+	border: solid 1px #999;
 }
 
 #setItems div{
@@ -46,7 +54,15 @@
 	width:140px;
 	text-align:left;
 }
-
+#setItemEditor #rightCol a{
+	margin-top: 15px;
+	text-decoration: none;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
+}
 #setItems a{
 	cursor:move;
 }
@@ -58,19 +74,29 @@
 #setItems .remove{
 	position: absolute;
 	left:130px;
-	top: 0px;
-	width:7px;
-	padding: 0px 1px 1px 2px;
+	top: -10px;
+	width:12px;
+	height:10px;
+	padding: 3px 1px 5px 6px;
+	-moz-border-radius-bottomleft: 10px; 
+	-webkit-border-bottom-left-radius: 10px;
+	-moz-border-radius-bottomright: 10px; 
+	-webkit-border-bottom-right-radius: 10px;
+	-moz-border-radius-topleft: 10px; 
+	-webkit-border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px; 
+	-webkit-border-top-right-radius: 10px;
+	background-color:#333;
 }
 
 #setItems .remove a{
-	font-size: 9px;
-	color: #828282;
+	font-size: 11px;
+	color: #fff;
 	text-decoration:none;
 	font-weight:bold;
 }
-#setItems .remove a:hover{
-	color: #CA1919;
+#setItems .remove:hover{
+	background-color: #CA1919;
 }
 
 .setItemThumbnail {
@@ -82,7 +108,9 @@
 }
 #setItems .setItemCaption a{
 	text-decoration:none;
-	color:#000000;
+	color: #737373;
+	line-height: 1.3em;
+	margin-top: 5px;
 }
 
 #helpTips ul{
@@ -94,6 +122,12 @@
 	list-style-image: url(../graphics/arrow_right_gray.gif);
 	margin: 0px 0px 10px 0px;
 	padding:0px;
+	color: #737373;
+	line-height: 1.3em;
+}
+#helpTips div{
+	color: #737373;
+	line-height: 1.3em;
 }
 .optionsList{
 	margin-top:5px;
@@ -101,13 +135,21 @@
 }
 .optionsList a{
 	text-decoration:none;
+	color:#90BCC4;
+	line-height: 1.3em;
 }
 .setsList{
 	margin-top:5px;
 	margin-left:10px;
 }
 .setsListCurrent{
-	color:#828282;
+margin-top: 15px;
+text-decoration: none;
+color: #8C8C8C;
+font-size: 13px;
+line-height: 13px;
+font-family: 'DIN-Medium';
+text-transform: uppercase;
 	margin-top:5px;
 	margin-left:10px;
 }
@@ -115,14 +157,29 @@
 	text-decoration:none;
 }
 div.setInfo{
-	margin-left:10px;
+	margin-left: 0px;
+	font-family: 'DIN-Black';
+	font-size: 14px;
+	line-height: 14px;
+	color: #666;
+	text-transform: uppercase;
+	margin-bottom: 10px;
+	clear: right;
+	margin-top: 10px;
+}
+.subSetInfo {
+	color:#737373;
+	line-height: 1.3em;
+	font-style:italic;
 }
 a.hide{	
-	text-decoration:none;
-	float:right;
+	margin-top: 15px;
+	text-decoration: none;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
 	text-transform: uppercase;
-	font-size:13px;
-	color: #828282;
 }
 a.hide:hover{	
 	color:none;
@@ -134,7 +191,7 @@ div.edit a{
 	text-decoration:none;
 	text-transform: uppercase;
 	font-size:13px;
-	color: #828282;
+	color: #90BCC4;
 }
 div.edit a:hover{	
 	color:none;
@@ -144,6 +201,7 @@ div.edit a:hover{
 #newSetForm .formLabel, #editSetForm .formLabel{
 	font-weight:bold;
 	margin: 10px 0px 2px 0px;
+	color: #333;
 }
 #newSetForm input, #editSetForm input {
 	font-size:11px;
@@ -161,7 +219,7 @@ div.edit a:hover{
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:240px;
+	width:190px;
 }
 #newSetForm textarea, #editSetForm textarea {
 	font-size:11px;
@@ -170,7 +228,7 @@ div.edit a:hover{
 	padding: 0px 2px 0px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:240px;
+	width:190px;
 }
 #newSetForm input[type="textarea"], #editSetForm input[type="textarea"] {
 	font-size:11px;
@@ -179,7 +237,7 @@ div.edit a:hover{
 	padding: 2px 2px 2px 2px;
 	margin: 0px;
 	border: 1px solid #828282;
-	width:240px;
+	width:190px;
 }
 #newSetForm a, #editSetForm a{
 	text-transform:uppercase;

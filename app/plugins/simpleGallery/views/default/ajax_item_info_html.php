@@ -70,16 +70,16 @@
 	if($va_item['object_label']){
 		print "<div id='galleryOverlayImageCaption'>".caNavLink($this->request, $va_item['object_label'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']))."</div>";
 	}
-	if($va_item['label'] || $va_item['description']){
+	if($va_item['label'] || $va_item['item_description']){
 ?> 	
 		<div class="galleryOverlayContent" <?php print ($vn_text_height) ? "style='height:".$vn_text_height."px;'" : ""; ?>>
 <?php
 			if($va_item['label']){
 				print "<div><b>".$va_item['label']."</b></div>";
 			}
-			if($va_item['description']){
+			if($va_item['item_description']){
 				print "<div>";
-				print $va_item['description'];
+				print $va_item['item_description'];
 				print "<br/>".caNavLink($this->request, _t('See this object in the archive'), '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id']))." &raquo";
 				print "</div>";				
 			}

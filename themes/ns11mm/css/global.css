@@ -210,7 +210,7 @@ a.caption:hover{
 	font-weight: normal;
 	padding: 2px 2px 0px 2px;
 	border: 0px;
-	width:122px;
+	width:115px;
 	color:#888;
 }
 #nav #search a{
@@ -293,12 +293,14 @@ div.searchlight-results div.searchlight-selected {
 /*  HOME PAGE */
 /* ------------------------------------- */
 #hpText{
-	width:615px;
-	padding-top:15px;
+	width:580px;
+	padding:15px 10px 10px 5px;
 	line-height:1.5em;
+	
 }
 #hpText div{
 	margin-bottom:10px;
+	clear:both;
 }
 #featuredLabel{
 	font-size:12px;
@@ -311,7 +313,7 @@ div.searchlight-results div.searchlight-selected {
 	float:right;
 	margin: 0px 0px 30px 0px;
 	width:580px;
-	height:500px;
+	height:340px;
 	padding:15px;
 }
 #hpFeatured .title{
@@ -324,8 +326,7 @@ div.searchlight-results div.searchlight-selected {
 }
 #hpFeatured table{
 	width:580px;
-	height:450px;
-	border: 3px solid #eee;
+	height:340px;
 }
 .hpRss{
 	clear:both;
@@ -333,13 +334,14 @@ div.searchlight-results div.searchlight-selected {
 }
 #quickLinkItems{
 	clear:both;
-	margin-top: 15px;
+	margin-top: 55px;
 	font-size:14px;
+	margin: 15px 0px 0px 80px;
 }
 
 #quickLinkItems .quickLinkItem{
 	float:left;
-	margin: 0px 10px 0px 0px;
+	margin: 240px 50px 0px 0px;
 	width:220px;
 	height:190px;
 	padding:0px;
@@ -376,7 +378,7 @@ div.searchlight-results div.searchlight-selected {
 #hpBrowse{
 	line-height:1.5em;
 	font-size:14px;
-	float:left;
+	/*float:left;*/
 	width:255px;
 	margin:34px 0px 0px 15px;
 
@@ -1087,9 +1089,8 @@ td.advSearchElement{
 }
 #galleryLanding .setInfo{
 	margin:10px 10px 15px 0px;
-	float:left;
+	float:right;
 	width:690px;
-	height:292px;
 	overflow:hidden;
 }
 #galleryLanding .setInfo .setImage{
@@ -1097,7 +1098,7 @@ td.advSearchElement{
 	margin-right:10px;
 	width:400px;
 	height:292px;
-	background-color:#e2e2e2;
+	background-color:#fff;
 	text-align:center;
 }
 .setImageDiv {
@@ -1113,14 +1114,18 @@ td.advSearchElement{
 	text-decoration:none;
 }
 #galleryLanding .setInfo .setText{
-	margin-bottom:5px;
+	margin-bottom: 0px;
 	font-size:15px;
 	line-height:1.7em;
+}
+#galleryLanding .setText p{
+	margin-bottom: 1em;
 }
 #galleryLanding .setInfo .setMoreLink a{
 	font-weight:normal;
 	font-size:15px;
 	text-decoration:underline;
+	float:right;
 }
 /* set detail */
 #gallerySetDetail #setItemsGrid{
@@ -1136,10 +1141,9 @@ td.advSearchElement{
 	margin:0px;
 }
 #gallerySetDetail .setItem{
-	float:left;
 	margin:0px 6px 6px 0px;
-	width:220px;
-	height:120px;
+	width:465px;
+	height:300px;
 	background-color:#E2E2E2;
 }
 #gallerySetDetail #allSets{
@@ -1187,11 +1191,12 @@ td.advSearchElement{
 }
 #galleryOverlayImage{   
 	text-align:center;
+	width:580px;
 }
 #galleryOverlayImageCaption{   
-	text-align:center;
-	font-style:italic;
-	font-size:13px;
+	text-align:left;
+	font-style:none;
+	font-size:15px;
 	padding:3px 0px 0px 0px;
 }
 .galleryOverlayContent {	
@@ -1211,8 +1216,54 @@ td.advSearchElement{
 	color:#000000;
 	padding-top:10px;
 }
-#setItemDescription {
-	
+.lessonCaption {
+	font-weight:normal;
+	font-family: arial, sans-serif;
+	color: #4D4D4F;
+	line-height: 1.3em;
+}
+.lessonCaption li, .lessonCaption ul{
+	padding-bottom:10px;
+	list-style-type:circle;
+	text-indent: 0px;
+}
+div.lessonCaption {
+	width: 230px;
+	margin-top:15px;
+	margin-left:0px;
+	font-family: arial, sans-serif;
+	color: #4D4D4F;
+	line-height: 1.3em;
+	font-size:15px;
+}
+.captionRight {
+	float:left; 
+	width:45%; 
+	margin-left:25px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+.captionLeft {
+	float:left; 
+	width:45%; 
+	margin-left:15px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+.recordLink {
+	float:left;
+	text-align:left;
+	color:white;
+	font-size:12px;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+div.recordLink a{
+	font-size:12px;
 }
 
 /* ------------------------------------- */
@@ -1287,6 +1338,11 @@ td.advSearchElement{
 	margin-top: 10px;
 	margin-bottom:10px;
 }
+.aboutHeader {
+	font-size:24px;
+	margin-top: 10px;
+	margin-bottom:10px;
+}
 #facetList{
 	padding-top:10px;
 }
@@ -1309,32 +1365,6 @@ td.advSearchElement{
 }
 .facetDescription{
 	margin-bottom:20px;
-}
-#browseSlideshow {
-	float:right;
-	width: 420px;
-	text-align: center;
-	border: 2px solid #e8e8e8;
-	height:440px;
-	overflow:hidden;
-}
-
-#browseRandomImage {
-	text-align: center;
-	margin: 0px auto 0px auto;
-	width: 420px;
-	height:400px;
-}
-#browseRandomCaption {
-	padding: 10px 5px 5px 5px;
-}
-#browseRandomCaption a{
-	color: #666666;
-	font-size: 14px;
-	width: 400px;
-	text-align: center;
-	height: 20px;
-	text-decoration: none;
 }
 
 /* browse controls when browse has been initiated */
@@ -1661,7 +1691,6 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	color:#999999;
 }
 
-
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
@@ -1689,13 +1718,50 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 	width: 100%; 
 	height: 100%;
 }
-
+#setsPanel {
+	position: fixed; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
+	display: none;
+	margin: 0px;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#setsPanel #close{
+	float: right;
+	width:15px;
+	height:16px;
+	margin:10px;
+	background-image:url("../graphics/buttons/x.png");
+}
+#setsPanel #close a{
+	text-decoration:none;
+	font-size:16px;
+}
+#setsPanelContentArea {
+	width: 100%; 
+	height: 100%;
+}
 #caMediaOverlayContent {
 	margin: 0px;
 	width: 100%;
 	height: 100%;
 	overflow: auto;
 	text-align: center;
+}
+.closeUpperLeft {
+	position:absolute;
+	left:5px;
+	top:5px;
+	width:15px;
+	height:16px;
+	/*background-image:url("../graphics/buttons/x_white.png");*/
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+}
+.closeUpperLeft a{
+	text-decoration:none;
 }
 
 div.caMediaOverlayControls {
@@ -1709,17 +1775,13 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.1;
+	opacity:.75;
 	
 }
-div.caMediaOverlayControls:hover {
-	opacity:1.0;
-	background-color:rgba(0,0,0,0.5);
-}
+
 div.caMediaOverlayControls a{
 	text-decoration:none;
 	font-weight:bold;
-	font-size:16px;
 	color:#FFF;
 }
 div.caMediaOverlayControls a:hover{
@@ -1737,12 +1799,28 @@ div.caMediaOverlayControls .download{
 	margin-left:20px;
 }
 div.caMediaOverlayControls .objectInfo{
-	font-size:11px;
+	font-size:12px;
 	color:#FFF;
 	padding-left:10px;
 	text-align:left;
 	width:40%;
 	float:left;
+	min-height:2px;
+}
+div.caMediaOverlayControls .overlayLightboxLink{
+	font-size:12px;
+	color:#FFF;
+	padding-right:50px;
+	text-align:center;
+	width:30%;
+	float:right;
+	min-height:2px;
+}
+div.caMediaOverlayControls .overlayLightboxLink a{
+	font-size:13px;
+	color:#FFF;
+	text-deocration:none;
+	font-weight:normal;
 }
 div.caMediaOverlayControls .repNav {
 	float:left;
@@ -1750,9 +1828,85 @@ div.caMediaOverlayControls .repNav {
 	padding: 0px 2% 0px 2%;
 	text-align:center;
 	color:#FFF;
+	font-size:12px;
+}
+div.caMediaOverlayRepThumbs {
+	color:#FFF;
+	font-size: 11px;
+	text-align:right;
+	position:absolute;
+	top:60px;
+	right:11px;
+	padding:3px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.3;	
+}
+div.caMediaOverlayRepThumbs:hover {
+	opacity:1;	
+}
+div.caMediaOverlayRepThumbs img{
+	margin:2px;
+	border:1px solid transparent;
+}
+div.caMediaOverlayRepThumbs a.selectedRep img{
+	border:1px solid #FFF;
 }
 
-/* Advanced search */
+/* overlay (for object representations) 
+#caMediaPanel {
+	position: fixed; 
+	top: 25px; 
+	left: 50%; 
+	border: 4px solid #ccc; 
+	background-color: #FFFFFF; 
+	width: 840px; 
+	min-height: 550px; 
+	display: none;
+	margin-left: -430px;
+	padding: 7px;
+}
+#caMediaPanel #close{
+	float: right;
+	width:15px;
+	height:15px;
+	margin:0px;
+	background-image:url("../graphics/x.gif");
+}
+#caMediaPanel #close a{
+	text-decoration:none;
+	font-size:15px;
+}
+#caMediaPanelContentArea {
+
+}
+
+
+
+#caMediaOverlayContent {
+	margin-top: 15px;
+	margin-left: 0px;
+	
+	text-align: center;
+}
+#caMediaOverlayContentCaption {
+	margin: 10px auto 10px auto;
+	font-style: italic;
+}
+#caMediaOverlayThumbnails{
+	padding: 10px 0px 0px 0px;
+	text-align:center;
+	height:90px;
+	width:840px;
+	overflow:auto;
+}
+#caMediaOverlayThumbnails img{
+	margin:0px 1px 0px 1px;
+}
+#caMediaOverlayThumbnails div{
+	margin:0px auto 0px auto;
+}
+
+ Advanced search */
 .advSearchLabel {
 	font-weight: bold;
 }
