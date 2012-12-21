@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 124
+/!svn/ver/8042/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default
+END
+set_info_html.php
+K 25
+svn:wc:ra_dav:version-url
+V 142
+/!svn/ver/6399/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default/set_info_html.php
+END
+tooltip_html.php
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/!svn/ver/5816/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default/tooltip_html.php
+END
+ajax_item_info_html.php
+K 25
+svn:wc:ra_dav:version-url
+V 148
+/!svn/ver/6808/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default/ajax_item_info_html.php
+END
+landing_html.php
+K 25
+svn:wc:ra_dav:version-url
+V 141
+/!svn/ver/8042/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default/landing_html.php
+END
+intro_text_html.php
+K 25
+svn:wc:ra_dav:version-url
+V 144
+/!svn/ver/8042/CollectiveAccess/frontends/Pawtucket2/branches/cleanup_before_release/app/plugins/simpleGallery/views/default/intro_text_html.php
+END

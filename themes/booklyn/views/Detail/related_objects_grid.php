@@ -45,9 +45,12 @@
 			$vs_caption .= $vs_label;
 		}
 		# --- get the height of the image so can calculate padding needed to center vertically
+		$va_media_stats = $qr_hits->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
 		$va_media_info = $qr_hits->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values));
+		$image_height = $va_media_stats['HEIGHT'];
 		$vn_padding_top = 0;
-		print "<td align='left' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' ";
+		$vn_padding_top = ((120 - $image_height)/2);
+		print "<td align='left' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding-top:{$vn_padding_top}px; padding-bottom:{$vn_padding_top}px;'>";
 		print caNavLink($this->request, $qr_hits->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('ca_objects.object_id')));
 		
 		// Get thumbnail caption

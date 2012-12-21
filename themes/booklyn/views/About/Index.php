@@ -1,4 +1,4 @@
-<h1>About the Collection</h1>
+<h1 class="results">Artists and Organizations</h1>
 <div class="textContent">
 	<p>Booklyn's mission is to promote artist books as an art form and an educational resource. In addition to assisting artists in exhibiting, distributing, and publishing artist books, we provide the general public and educational institutions with services and programming centered around contemporary artists books.</p>
 
