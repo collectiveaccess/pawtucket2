@@ -144,8 +144,13 @@
  			}else{
  				$va_access_values = caGetUserAccessValues($this->request);
  			}
- 			$this->view->setVar('items', caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
+ 			$this->view->setVar('items', $va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
+ 
  			
+ 			$va_found_item_ids = array();
+ 			foreach($va_items as $vn_i => $va_item) {
+ 				$va_found_item_ids[] = $va_item['row_id'];
+ 			}
  			
  			$t_trans = new ca_commerce_transactions();
  			$t_trans->load(array('set_id' => $t_set->getPrimaryKey()));
@@ -153,6 +158,12 @@
  			
  			$t_comm = new ca_commerce_communications();
  			$this->view->setVar('messages', $t_comm->getMessages($this->request->getUserID(), array('transaction_id' => $vn_transaction_id)));
+ 			
+ 			
+ 			$opo_result_context = new ResultContext($this->request, 'ca_objects', 'sets');
+			$opo_result_context->setResultList($va_found_item_ids);
+			$opo_result_context->setAsLastFind();
+			$opo_result_context->saveContext();
  			
  			# --- use a different view if client services is enabled
  			if($this->request->config->get("enable_client_services")){
