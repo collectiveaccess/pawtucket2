@@ -107,7 +107,7 @@
 			print "<div id='objDetailImage'><img src='".$this->request->getThemeUrlPath()."/graphics/city/absent.jpg' border='0'></div>";
 		}
 ?>
-			<h3 style="clear:right;"><?php print unicode_ucfirst($this->getVar('typename')).': '.$vs_title; ?></h3>
+			<h3 style="clear:right;"><?php print unicode_ucfirst($this->getVar('typename')).': <a href="'.caNavUrl($this->request, '', '', '').'#fragment-2">'.$vs_title.'</a>'; ?></h3>
 			<div class="searchboxitemtext">
 <?php
 			# --- identifier
@@ -167,8 +167,8 @@
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
-					if($t_object->get("ca_objects.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_object->getAttributeLabel($vs_attribute_code).":</b> ".$t_object->get("ca_objects.{$vs_attribute_code}")."</div><!-- end unit -->";
+					if($vs_val = $t_object->get("ca_objects.{$vs_attribute_code}")){
+						print "<div class='unit'><b>".$t_object->getAttributeLabel($vs_attribute_code).":</b> {$vs_val}</div><!-- end unit -->";
 					}
 				}
 			}
@@ -262,9 +262,11 @@
 			$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_terms) > 0){
 				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
+				print "<ul>";
 				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
+					print "<li>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</li>";
 				}
+				print "</ul>";
 				print "</div><!-- end unit -->";
 			}
 			
