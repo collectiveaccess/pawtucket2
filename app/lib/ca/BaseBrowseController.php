@@ -396,7 +396,7 @@
 			}
 						
  			foreach($pa_ids as $pn_id) {
- 				$va_json_data = array('_primaryKey' => 'id');
+ 				$va_json_data = array();
 				
 				$va_tmp = explode(":", $pn_id);
 				$vn_id = $va_tmp[0];
@@ -440,7 +440,7 @@
 							$vn_last_id = null;
 							$vn_c = 0;
 							foreach($va_hierarchy_list as $vn_i => $va_item) {
-								if (!in_array($vn_i, $va_hier_ids)) { continue; }	// only show hierarchies that have items in browse result
+								if (sizeof($va_hier_ids) && !in_array($vn_i, $va_hier_ids)) { continue; }	// only show hierarchies that have items in browse result
 								if ($vn_start <= $vn_c) {
 									$va_item['id'] = $va_item[$t_item->primaryKey()];
 									if (!isset($va_facet[$va_item['id']]) && ($vn_root == $va_item['id'])) { continue; }
@@ -452,9 +452,12 @@
 								$vn_c++;
 								if (!is_null($vn_max_items_per_page) && ($vn_c >= ($vn_max_items_per_page + $vn_start))) { break; }
 							}
-							if (sizeof($va_json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
-								$vn_id = $vn_last_id;
-								unset($va_json_data[$vn_last_id]);
+							
+							if (method_exists($t_item, "getHierarchyList") && (in_array($t_item->getHierarchyType(), array(__CA_HIER_TYPE_SIMPLE_MONO__, __CA_HIER_TYPE_MULTI_MONO__)))) {
+								if (sizeof($va_json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
+									$vn_id = $vn_last_id;
+									unset($va_json_data[$vn_last_id]);
+								}
 							}
 						}
 						if ($vn_id) {
@@ -475,6 +478,14 @@
 						}
 						break;
 				}
+				
+				// Sort by name
+				usort($va_json_data, function($a, $b) {
+					return strcmp($a["name"], $b["name"]);
+				});
+				
+				$va_json_data['_primaryKey'] = 'id';
+				$va_json_data['_itemCount'] = sizeof($va_json_data) - 1;
 				$va_level_data[$pn_id] = $va_json_data;
 			}
  			if (!trim($this->request->getParameter('init', pString))) {
@@ -524,7 +535,7 @@
 					$t_item = $this->opo_datamodel->getInstanceByTableName($va_facet_info['table']);
 					$t_item->load($pn_id);
 					
-					if (method_exists($t_item, "getHierarchyList")) { 
+					if (method_exists($t_item, "getHierarchyList") && (in_array($t_item->getHierarchyType(), array(__CA_HIER_TYPE_SIMPLE_MONO__, __CA_HIER_TYPE_MULTI_MONO__)))) { 
 						$va_access_values = caGetUserAccessValues($this->request);
 						$va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
 						$va_hierarchy_list = $t_item->getHierarchyList(true);
@@ -541,8 +552,11 @@
 					if ($t_item->getPrimaryKey()) { 
 						$va_ancestors = array_reverse($t_item->getHierarchyAncestors(null, array('includeSelf' => true, 'idsOnly' => true)));
 					}
-					if ($vn_hierarchies_in_use <= 1) {
-						array_shift($va_ancestors);
+					
+					if (method_exists($t_item, "getHierarchyList") && (in_array($t_item->getHierarchyType(), array(__CA_HIER_TYPE_SIMPLE_MONO__, __CA_HIER_TYPE_MULTI_MONO__)))) {
+						if ($vn_hierarchies_in_use <= 1) {
+							array_shift($va_ancestors);
+						}
 					}
 					break;
 			}
