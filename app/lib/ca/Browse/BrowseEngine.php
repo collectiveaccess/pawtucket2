@@ -1624,6 +1624,7 @@
 			
 			$va_hier_ids = array();
 			foreach($va_facet_cache[$ps_facet_name] as $vn_id => $va_item) {
+				if (!isset($va_item['hierarchy_id']) || !$va_item['hierarchy_id']) { continue; }
 				$va_hier_ids[$va_item['hierarchy_id']] = true;
 			}
 			return array_keys($va_hier_ids);
