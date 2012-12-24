@@ -4,9 +4,11 @@
 /* CSS Document */
 
 /* turquoise: #71cde4 */
-body {font-family:"Avenir LT W01 35 Light"; color:#757575;background-color:#f7f7f7; padding:8px 0px 0px 0px; font-size:12px;}
+body {font-family:"Avenir LT W01 35 Light", helvetica, arial; color:#757575;background-color:#f7f7f7; padding:8px 0px 0px 0px; font-size:12px;}
 a:link, a:visited{color:#757575; text-decoration:none;} 
 a:hover {color:#71cde4;}
+
+img { border:0px; }
 
 .caption {font-size:12px;line-height:140%;}
 .captionSmall {font-size:11px;line-height:140%;}
@@ -75,16 +77,17 @@ h2 {margin:0; padding:0;}
 /*artist detail template style */
 
 #ad_portrait {width:240px; float:left; margin-right:25px;}
-#ad_portrait img {padding-top:10px; padding-bottom:10px;}
-
+#ad_portrait img {padding-top:10px;}
+#ad_portrait .portraitCaption { padding: 2px 0px 5px 0px; font-size:10px;}
 #ad_content {float:left;}
-#ad_maincontent {width:570px; padding-bottom:20px; float:left;}
+#ad_maincontent {width:570px; padding-bottom:10px; float:left;}
 #ad_maincontentCol1{width:200px; height:300px; float:left; position:relative;}
 #ad_maincontentCol2{width:370px; height:300px; float:left;}
 .bio{font-size:12px; line-height:130%; padding-right:10px;}
 .ad_thumbs{width:370px; height:300px; position:relative;}
 .ad_thumbs img{padding-bottom:10px;}
 .ad_thumbs .col {width:185px; float:left; text-align:right;}
+.ad_thumbs .col div{position:relative;}
 
 .ad_gmap {width:355px; float:right;}
 
@@ -95,12 +98,111 @@ h2 {margin:0; padding:0;}
 .ad_col a:link, .ab_col a:visited, .ab_feature a:link, .ab_feature a:visited{text-decoration:none; color:#757575;}
 .ad_col a:hover, .ab_feature a:hover{color:#71cde4;}
 
+#ad_comments_list{
+	float:left;
+	width:440px;
+	margin-right:40px;
+}
+#ad_comments_form{
+	float:left;
+	width:355px;
+	margin:0px;
+	padding:0px;
+}
+.ad_comments_form_bg, .ad_comments_list_bg {
+	background-color:#FFFFFF;
+	padding:17px 20px 20px 20px;
+}
+
+# --- entity comments
+#ad_comments_list #numComments{
+	float:right;
+	font-size:11px;
+	font-weight:normal;
+	text-transform: none;
+	width:100px;
+}
+#ad_comments_list .commentImage{
+	clear:left;
+	float:left;
+	padding:5px 8px 5px 0px;
+}
+#ad_comments_list .comment{
+	margin: 0px;
+	font-size:12px;
+	line-height: 1.3em;
+}
+#ad_comments_list .byLine{
+	padding: 4px 0px 20px 0px;
+	font-size:11px;
+	font-style:italic;
+	clear:left;
+	text-align:right;
+}
+# --- entity comments form
+#ad_comments_form input {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #DEDEDE;
+	width:305px;
+}
+#ad_comments_form input[type="text"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #DEDEDE;
+	width:305px;
+	outline-style:none;
+	outline-width:0px;
+}
+#ad_comments_form input[type="file"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #DEDEDE;
+}
+#ad_comments_form textarea {
+	font-size:11px;
+	font-weight: normal;
+	padding: 0px 2px 0px 2px;
+	margin: 0px;
+	border: 1px solid #DEDEDE;
+	width:305px;
+	font-family: Helvetica, sans-serif;
+}
+#ad_comments_form input[type="textarea"] {
+	font-size:11px;
+	font-weight: normal;
+	padding: 2px 2px 2px 2px;
+	margin: 0px;
+	border: 1px solid #DEDEDE;
+	width:305px;
+	outline-style:none;
+	outline-width:0px;
+	font-family: Helvetica, sans-serif;
+}
+#ad_comments_form form a{
+	font-size:14px;
+	font-weight:bold;
+	text-decoration:none;
+	padding: 10px 0px 0px 0px;
+}
+#ad_comments_form form a:hover{
+	color: #71cde4;
+	text-decoration:none;
+}
+
 
 /* artwork detail styles */
 #art_content {float:left; width: 828px;}
-#art_title {clear:both; margin-bottom:15px;}
+#art_title {clear:both; margin-bottom:15px;color:#545454; width:585px; font-size:13px;border-bottom:1px solid #e3e3e3; padding-right:247px;}
 #art_artist {height:50px; clear:both;}
 #art_detail {width:580px; float:left; margin-right:40px;}
+#imgPlaceholderDetail { background-color:#EDEDED; padding-top:175px; padding-bottom:175px; color:#999; font-size:16px; text-align:center; margin-bottom:2px;}
 #art_detail_info{width:200px;margin-left:0px;float:left;line-height:150%;}
 .art_related_list{width:200px; height:155px; position:relative; margin:0px 0px 15px 0px; padding:0px;}
 
@@ -170,6 +272,9 @@ div.ex_related_list{width:238px; height:145px; position:relative; margin:0px 0px
 	color: #666666;
 }
 
+.imagePlaceholderThumb{
+	background-color:#EDEDED; color:#999; padding-top:50px; height:70px; width:120px; font-size:10px;
+}
 
 /* scrolling div styles */
 
@@ -189,4 +294,28 @@ div.ex_related_list{width:238px; height:145px; position:relative; margin:0px 0px
 	-moz-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+}
+
+span.videoIconRelatedGrid{
+	position:absolute;
+	background-image:url(../graphics/eastend/videoPlay.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+	z-index: 10;
+}
+.videoIconResults{
+	background-image:url(../graphics/eastend/videoPlay.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+	position:absolute;
+	z-index: 10;
+	width:130px;
+	height:130px;
+}
+.videoIconResultsFull{
+	background-image:url(../graphics/eastend/videoPlay.png);
+	background-repeat:no-repeat;
+	background-position:center center;
+	position:absolute;
+	z-index: 10;
 }

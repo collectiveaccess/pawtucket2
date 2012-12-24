@@ -252,7 +252,10 @@
 			}			
 			if($va_lauren = $t_object->get('ca_objects.lBSelected.selected2', array('convertCodesToDisplayText' => true))){
 				print "<h3>"._t("Lauren Selection")."</h3><p>".$va_lauren."</p><!-- end unit -->";
-			}			
+			}
+			if($va_formatted_citation = $t_object->get('ca_objects.formatted_citation')){
+				print "<h3>"._t("Citation")."</h3><p>".$va_formatted_citation."</p><!-- end unit -->";
+			}						
 			# --- parent hierarchy info
 			if($t_object->get('parent_id')){
 				print "<div class='unit'><b>"._t("Part Of")."</b>: ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
@@ -309,13 +312,18 @@
 			if(sizeof($va_entities) > 0){	
 ?>
 				<h3><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("People/Organizations") : _t("Person/Organization")); ?></h3>
-				<div class='scrollPane'>
+				<p>
 <?php
+				$vn_i = 1;
 				foreach($va_entities as $va_entity) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span><br/></p>";
+					print (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span>";
+					if($vn_i < sizeof($va_entities)){
+						print ", ";
+					}
 				}
+				$vn_i++;
 ?>
-				</div>				
+				</p>				
 <?php
 			}
 			
@@ -327,8 +335,14 @@
 				$va_item_types = $t_occ->getTypeList();
 				foreach($va_occurrences as $va_occurrence) {
 					$t_occ->load($va_occurrence['occurrence_id']);
+					$va_rel_entities = array();
+					$va_rel_entities = $t_occ->get("ca_entities", array('restrictToTypes' => array('organization'), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+					$va_occurrence["related_entities"] = $va_rel_entities;
 					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
 				}
+				
+				$t_list = new ca_lists();
+				$vn_exhibition_type_id = $t_list->getItemIDFromList("occurrence_types", "exhibition");
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
@@ -336,7 +350,19 @@
 					<div class='scrollPane'>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"]);
+						if($vn_exhibition_type_id == $vn_occurrence_type_id){
+							# --- this is an exhibition, so try to display organizations related to the exhibition
+							$vn_i = 1;
+							foreach($va_info['related_entities'] as $va_organization){
+								print ", ".$va_organization["displayname"];
+								if($vn_i < sizeof($va_info['related_entities'])){
+									print ", ";
+								}
+								$vn_i++;
+							}
+						}
+						print " <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
 					}
 ?>
 					</div>
@@ -486,6 +512,8 @@
 <?php
 				if (($this->request->isLoggedIn()) && ($this->request->config->get('can_download_media') && $t_rep && $t_rep->getPrimaryKey())) {
 					print caNavLink($this->request, _t("+ Download Media"), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => original)); 
+				} else {
+					print caNavLink($this->request, _t("+ Download Media"), '', '', 'LoginReg', 'form');
 				}
 				
 				if ($t_rep && $t_rep->getPrimaryKey()) {
@@ -497,6 +525,12 @@
 				</div>			
 			</div><!-- end objDetailImageNav -->
 <?php
+			if($vn_num_reps > 1) {
+				$thumb_rep = $t_object->getRepresentations(array('widethumbnail'));
+				foreach (array_slice($thumb_rep, 1) as $id => $thumb) {
+					print "<div class='relatedThumbBg' style='float:left; margin-left:0px; margin-right:14px;'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $thumb['representation_id']))."\"); return false;' >".$thumb['tags']['widethumbnail']."</a></div>";
+				}
+			}
 		}
 		
 if (!$this->request->config->get('dont_allow_comments')) {

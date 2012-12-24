@@ -67,7 +67,7 @@
  			
  			$t_set = new ca_sets();
  			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_public_set_type_id)));
- 			$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $va_access_values));
+ 			$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $va_access_values));
  			$va_set_descriptions = $t_set->getAttributeFromSets($this->opo_plugin_config->get('set_description_element_code'), array_keys($va_sets), array("checkAccess" => $va_access_values));
  			$this->view->setVar('sets', $va_sets);
  			$this->view->setVar('first_items_from_sets', $va_set_first_items);
@@ -91,7 +91,7 @@
  			}
  			
  			$this->view->setVar('t_set', $t_set);
- 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('widepreview', 'medium'), "checkAccess" => $va_access_values)));
+ 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('widepreview', 'medium', 'setimage'), "checkAccess" => $va_access_values)));
  			$this->view->setVar('items', $va_items);
  			
  			$va_row_ids = array();
@@ -170,7 +170,9 @@
 			$va_set_item_info["info"] = $va_rep[0]['info'];
 			$va_set_item_info["label"] = $t_set_item->getLabelForDisplay();
 			$va_set_item_info["description"] = $t_set_item->get($this->opo_plugin_config->get('set_description_element_code'), array('convertLineBreaks' => true));
+			$va_set_item_info["item_description"] = $t_set_item->get($this->opo_plugin_config->get('set_item_description_element_code'), array('convertLineBreaks' => true));
 			$va_set_item_info["row_id"] = $t_set_item->get("row_id");
+			$va_set_item_info["lesson"] = $t_set_item->get('set_item_description');
 			
 			$t_object = new ca_objects($t_set_item->get("row_id"));
 			$va_set_item_info["object_label"] = $t_object->getLabelForDisplay();

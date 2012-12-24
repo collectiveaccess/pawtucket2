@@ -238,15 +238,15 @@ div.edit a:hover{
 #caClientCommunications{
 	padding-bottom:10px;
 }
-#newSetForm .formLabel, #editSetForm .formLabel, #shareSetForm .formLabel, #caClientCommunications .formLabel, #caClientCommunicationsReplyForm .formLabel{
+#newSetForm .formLabel, #editSetForm .formLabel, #emailSetForm .formLabel, #shareSetForm .formLabel, #caClientCommunications .formLabel, #caClientCommunicationsReplyForm .formLabel{
 	font-weight:bold;
 	margin: 10px 0px 2px 0px;
 }
-#shareSetForm .formLabelNote, #newSetForm .formLabelNote, #editSetForm .formLabelNote, #caClientCommunications .formLabelNote, #caClientCommunicationsReplyForm .formLabelNote{
+#shareSetForm .formLabelNote, #emailSetForm .formLabelNote, #newSetForm .formLabelNote, #editSetForm .formLabelNote, #caClientCommunications .formLabelNote, #caClientCommunicationsReplyForm .formLabelNote{
 	font-size:11px;
 	font-weight:normal;
 }
-#newSetForm input, #editSetForm input, #shareSetForm input, #caClientCommunications input, #caClientCommunicationsReplyForm input {
+#newSetForm input, #editSetForm input, #shareSetForm input, #emailSetForm input, #caClientCommunications input, #caClientCommunicationsReplyForm input {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -255,7 +255,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"], #caClientCommunications input[type="text"], #caClientCommunicationsReplyForm input[type="text"] {
+#newSetForm input[type="text"], #editSetForm input[type="text"], #shareSetForm input[type="text"], #emailSetForm input[type="text"], #caClientCommunications input[type="text"], #caClientCommunicationsReplyForm input[type="text"] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -264,7 +264,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm textarea, #editSetForm textarea, #shareSetForm textarea, #caClientCommunications textarea, #caClientCommunicationsReplyForm textarea {
+#newSetForm textarea, #editSetForm textarea, #shareSetForm textarea, #emailSetForm textarea, #caClientCommunications textarea, #caClientCommunicationsReplyForm textarea {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -273,7 +273,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm input[type="textarea"], #editSetForm input[type="textarea"], #shareSetForm input[type="textarea"], #caClientCommunications input[type="textarea"], #caClientCommunicationsReplyForm input['textarea'] {
+#newSetForm input[type="textarea"], #editSetForm input[type="textarea"], #shareSetForm input[type="textarea"], #emailSetForm input[type="textarea"], #caClientCommunications input[type="textarea"], #caClientCommunicationsReplyForm input['textarea'] {
 	font-size:11px;
 	font-family: Arial, sans-serif;
 	font-weight: normal;
@@ -282,7 +282,7 @@ div.edit a:hover{
 	border: 1px solid #828282;
 	width:245px;
 }
-#newSetForm a, #editSetForm a, #editSetForm a, #shareSetForm a, #caClientCommunications a, #caClientCommunicationsReplyForm a{
+#newSetForm a, #editSetForm a, #editSetForm a, #shareSetForm a, #emailSetForm a, #caClientCommunications a, #caClientCommunicationsReplyForm a{
 	text-transform:uppercase;
 	font-family: Arial, sans-serif;
 	font-size:14px;
@@ -292,7 +292,7 @@ div.edit a:hover{
 	margin: 0px;
 	padding: 5px 0px 0px 0px;
 }
-#newSetForm a:hover, #editSetForm a:hover, #shareSetForm a:hover, #caClientCommunications a:hover, #caClientCommunicationsReplyForm a:hover{
+#newSetForm a:hover, #editSetForm a:hover, #shareSetForm a:hover, #emailSetForm a:hover, #caClientCommunications a:hover, #caClientCommunicationsReplyForm a:hover{
 	color:#71cde4;
 }
 

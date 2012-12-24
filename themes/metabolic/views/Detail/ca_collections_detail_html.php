@@ -145,13 +145,18 @@ if (!$this->request->isAjax()) {
 			if(sizeof($va_entities) > 0){	
 ?>
 				<h3><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("People/Organizations") : _t("Person/Organization")); ?></h3>
-				<div class='scrollPane'>
+				<p>
 <?php
+				$vn_i = 1;
 				foreach($va_entities as $va_entity) {
-					print "<p>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span></p>\n";
+					print (($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." <span class='details'>(".$va_entity['relationship_typename'].")</span>\n";
+					if($vn_i < sizeof($va_entities)){
+						print ", ";
+					}
+					$vn_i++;
 				}
 ?>
-				</div>
+				</p>
 <?php
 			}
 ?>
@@ -165,8 +170,14 @@ if (!$this->request->isAjax()) {
 				$va_item_types = $t_occ->getTypeList();
 				foreach($va_occurrences as $va_occurrence) {
 					$t_occ->load($va_occurrence['occurrence_id']);
+					$va_rel_entities = array();
+					$va_rel_entities = $t_occ->get("ca_entities", array('restrictToTypes' => array('organization'), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+					$va_occurrence["related_entities"] = $va_rel_entities;
 					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
 				}
+				
+				$t_list = new ca_lists();
+				$vn_exhibition_type_id = $t_list->getItemIDFromList("occurrence_types", "exhibition");
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
@@ -174,7 +185,19 @@ if (!$this->request->isAjax()) {
 						<div class='scrollPane'>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p style='margin-bottom:5px;'>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." <span class='details'>(".$va_info['relationship_typename'].")</span></p>";				
+						print "<p style='margin-bottom:5px;'>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"]);
+						if($vn_exhibition_type_id == $vn_occurrence_type_id){
+							# --- this is an exhibition, so try to display organizations related to the exhibition
+							$vn_i = 1;
+							foreach($va_info['related_entities'] as $va_organization){
+								print ", ".$va_organization["displayname"];
+								if($vn_i < sizeof($va_info['related_entities'])){
+									print ", ";
+								}
+								$vn_i++;
+							}
+						}
+						print " <span class='details'>(".$va_info['relationship_typename'].")</span></p>";				
 					}
 					print "</div>";
 				}

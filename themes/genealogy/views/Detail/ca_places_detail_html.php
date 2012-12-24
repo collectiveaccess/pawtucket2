@@ -82,9 +82,9 @@ if (!$this->request->isAjax()) {
 				}
 			}
 			# --- description
-			if($this->request->config->get('ca_places_description_attribute')){
-				if($vs_description_text = $t_place->get("ca_places.".$this->request->config->get('ca_places_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_place->getDisplayLabel("ca_places.".$this->request->config->get('ca_places_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
+
+				if($vs_description_text = $t_place->get("ca_places.description")){
+					print "<div class='unit'><div id='description'><h2>Description</h2> {$vs_description_text}</div></div><!-- end unit -->";				
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -97,7 +97,7 @@ if (!$this->request->isAjax()) {
 					</script>
 <?php
 				}
-			}
+			
 			# --- entities
 			$va_entities = $t_place->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_entities) > 0){	
@@ -142,6 +142,12 @@ if (!$this->request->isAjax()) {
 				}
 				print "</div><!-- end unit -->";
 			}
+			# --- map
+			if($this->request->config->get('ca_objects_map_attribute') && $t_place->get($this->request->config->get('ca_objects_map_attribute'))){
+				$o_map = new GeographicMap(230, 200, 'map');
+				$o_map->mapFrom($t_place, $this->request->config->get('ca_objects_map_attribute'));
+				print "<div class='unit' style='margin-top:15px; margin-bottom:20px;'>".$o_map->render('HTML')."</div>";
+			}			
 			# --- collections
 			$va_collections = $t_place->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2011 Whirl-i-Gig
+ * Copyright 2008-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,6 +27,7 @@
  */
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
+	define("__CA_APP_TYPE__", "PAWTUCKET");
 	
 	if (!file_exists('./setup.php')) { print "No setup.php file found!"; exit; }
 	require('./setup.php');
@@ -92,6 +93,10 @@
 	require_once(__CA_LIB_DIR__.'/ca/ContentCaching.php');
 	$app->registerPlugin(new ContentCaching());
 	
+	//
+	// Load mobile
+	//
+	if (caDeviceIsMobile()) { JavascriptLoadManager::register('mobile'); }
 	
 	// Prevent caching
 	$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
