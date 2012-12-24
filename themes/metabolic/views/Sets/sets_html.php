@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,6 +39,7 @@
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
 	$va_errors_share_set 	= $this->getVar("errors_share_set");
+	$va_errors_email_set 	= $this->getVar("errors_email_set");
 	
 	# --- share - email a friend
 	# --- if there were errors in the form, the form paramas are passed back to preload the form
@@ -58,6 +59,8 @@
 	if(!$vs_from_name && $this->request->isLoggedIn() && !$va_errors['from_name']){
 		$vs_from_name = $this->request->user->getName();
 	}
+	# --- what kind of access does user have to set?  Read or edit?
+	$vn_edit_access = $t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__);
 ?>
 <h1><?php print _t("Your Sets"); ?></h1>
 <div id="setItemEditor">
@@ -84,8 +87,9 @@
 			if($this->getVar("set_description")){
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
 			}
-			
-			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Set")." &rsaquo;</a></div>";
+			if($vn_edit_access){			
+				print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Set")." &rsaquo;</a></div>";
+			}
 			print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
@@ -137,14 +141,21 @@
 		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</a></div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this set"); ?></a></div>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new set"); ?></a></div>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='emailSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideUp(1); $("#emailForm").slideDown(250); return false;'><?php print _t("Email this set"); ?></a></div>
+<?php
+	if($vn_edit_access && $this->request->config->get("show_sets_access_form")){
+?>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='shareSetButton' onclick='$("#emailForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this set"); ?></a></div>
+<?php
+	}
+?>
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='newSetButton' onclick='$("#emailForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new set"); ?></a></div>
 <?php
 	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
 		print "<div class='optionsList'><img src='".$this->request->getThemeUrlPath()."/graphics/arrow_right_gray.gif' width='9' height='10' border='0'> ".caNavLink($this->request, _t("Download set as PDF"), '', '', 'Sets', 'export', array('set_id' => $vn_set_id, 'output_type' => '_pdf', 'download' => 1))."</div>";
 	}
 ?>
-		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
+		<div class="optionsList"><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="9" height="10" border="0"> <a href='#' id='helpTipsButton' onclick='$("#emailForm").slideUp(1); $("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
 			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Make a new set"); ?></h2>
 					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
@@ -166,26 +177,26 @@
 					</form>
 				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
-				<h2><?php print _t("Share this set"); ?></h2>
+			<div id="emailForm" <?php print (sizeof($va_errors_email_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Email this set"); ?></h2>
 <?php
 				if($t_set->get("access") == 0){
 					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this set you must first edit the set and make the display option Public")."</div>";
 				}else{
 ?>
-					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" id="shareSetForm">
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'emailSet', ''); ?>" method="post" id="emailSetForm">
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["to_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
+						if($va_errors_email_set["to_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["to_email"]."</div>";
 						}
 ?>
 						<?php print _t("To e-mail address"); ?></span></div>
 						<input type="text" name="to_email" id="to_email" value="<?php print $vs_to_email; ?>">
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_email"]."</div>";
+						if($va_errors_email_set["from_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["from_email"]."</div>";
 						}
 ?>
 						<?php print _t("Your e-mail address"); ?></div>
@@ -193,30 +204,53 @@
 
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_name"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_name"]."</div>";
+						if($va_errors_email_set["from_name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["from_name"]."</div>";
 						}
 ?>
 						<?php print _t("Your name"); ?></div>
 						<input type="text" name="from_name" value="<?php print $vs_from_name; ?>">
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["subject"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["subject"]."</div>";
+						if($va_errors_email_set["subject"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_errors_email_set["subject"]."</div>";
 						}
 ?>
 						<?php print _t("Subject"); ?></div>
 						<input type="text" name="subject" value="<?php print $vs_subject; ?>">
 						<div class="formLabel"><?php print _t("Message"); ?></div>
 						<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
-						<br/><a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
+						<br/><a href="#" name="emailSetSubmit" onclick="document.forms.emailSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
 					</form>
-				<a href='#' id='editSetButton' onclick='$("#shareForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+				<a href='#' id='editSetButton' onclick='$("#emailForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 <?php
 				}
 ?>
 			</div>
+<?php
+			if($vn_edit_access && $this->request->config->get("show_sets_access_form")){
+?>
+			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Share this set"); ?></h2>
+<?php
+	
+?>
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" name="shareSetForm" id="shareSetForm">
+<?php
+	print $t_set->getUserHTMLFormBundle($this->request, 'shareSetForm', $t_set->tableNum(), $t_set->getPrimaryKey(), $this->request->user->getPrimaryKey());
+?>
+						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
+						<br/><a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Save"); ?></a>
+					</form>
+				<a href='#' id='editSetButton' onclick='$("#shareForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+<?php
+			
+?>
+			</div>
+<?php
+			}
+?>
 			<div id="helpTips" style="display:none;">
 <?php
 			print "<h2>"._t("Help Tips")."</h2>";
@@ -312,14 +346,27 @@
 		<ul id="setItemList">
 <?php
 		if (is_array($va_items) && (sizeof($va_items) > 0)) {
-
+			foreach ($va_items as $vn_item_id => $va_item) {
+				$set_keys[] = $va_item['row_id'];
+			}
+			$qr_results = ca_objects::createResultSet($set_keys);
+			$va_set_item_metadata = array();
+			while($qr_results->nextHit()) {
+				 $va_set_item_metadata[$qr_results->get("object_id")] = array("title" => $qr_results->get("ca_objects.references.title"), "author" => $qr_results->get("ca_objects.references.author"), "publication" => $qr_results->get("ca_objects.references.publication"), "type" => $qr_results->get('ca_objects.type_id'), "filename" => $qr_results->get('ca_objects.preferred_labels'), "altid" => $qr_results->get('ca_objects.altID'));
+			}
 			foreach($va_items as $vn_item_id => $va_item) {
 				$vs_title = "";
 				$va_title = array();
 ?>
 				<li class='setItem' id='setItem<?php print $vn_item_id; ?>'>
 					<div id='setItemContainer<?php print $vn_item_id; ?>' class='imagecontainer'>
+<?php
+						if($vn_edit_access){
+?>
 						<div class='remove'><a href='#' class='setDeleteButton' id='setItemDelete<?php print $vn_item_id; ?>'>X</a></div>
+<?php
+						}
+?>						
 						<div class='setItemThumbnail'>
 <?php
 						if ($va_item['representation_tag_thumbnail']) {
@@ -343,13 +390,44 @@
 						<div id='caption<?php print $vn_item_id; ?>' class='setItemCaption'><?php print caNavLink($this->request, $vs_title, '', 'Detail', 'Object', 'Show', array('object_id' => $va_item['row_id'])); ?></div>
 					</div>
 				</li>
-<?php	
+<?php
+#			$va_type = $va_set_item_metadata[$va_item['row_id']]["type"];
+#			if ($va_type == 25) {
+				$vs_tooltip_text = "<div class='setTooltip'>";
+				
+				if ($va_item['idno']) {
+					$vs_tooltip_text.= "<b>ID: </b>".$va_item['idno']."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["altid"]) {
+					$vs_tooltip_text.= "<b>Alt ID: </b>".$va_set_item_metadata[$va_item['row_id']]["altid"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["filename"]) {
+					$vs_tooltip_text.= "<b>Title: </b>".$va_set_item_metadata[$va_item['row_id']]["filename"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["title"]) {
+					$vs_tooltip_text.= "<b>Publication Title: </b>".$va_set_item_metadata[$va_item['row_id']]["title"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_set_item_metadata[$va_item['row_id']]["author"]]) {
+					$vs_tooltip_text.= "<b>Author: </b>".$va_set_item_metadata[$va_item['row_id']]["author"]."<br/>";
+				}
+				if ($va_set_item_metadata[$va_item['row_id']]["publication"]) {
+					$vs_tooltip_text.= "<b>Publication Name: </b>".$va_set_item_metadata[$va_item['row_id']]["publication"];
+				}
+				$vs_tooltip_text.= "</div>";
+				TooltipManager::add(
+					"#setItem".$vn_item_id, $vs_tooltip_text
+				);
+#				}
 			}
 		}
+		
 ?>
 		</ul>
 	</div><!-- end setItems -->
 </div><!-- leftCol -->
+<?php
+	if($vn_edit_access){
+?>
 	<script type="text/javascript">
 		jQuery(".setDeleteButton").click(
 			function() {
@@ -377,6 +455,9 @@
 		}
 		_makeSortable();
 	</script>
+<?php
+	}
+?>
 </div><!-- end setItemEditor -->
 
 	<div id="caSetsSlideshowPanel"> 

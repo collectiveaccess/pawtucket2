@@ -188,16 +188,10 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				<!-- AddThis Button END -->
 <?php
 			}
-			# --- identifier
-			if($t_object->get('idno')){
-				print "<div class='unit'><div class='unitHeader'>"._t("Identifier")."</div> ".$t_object->get('idno')."</div><!-- end unit -->";
-			}
 			if($va_format = $t_object->get('ca_objects.dc_format')) {
 				print "<div class='unit'><div class='unitHeader'>"._t("Format").": </div>".$va_format."</div>";
 			}
-			if($va_credit_line = $t_object->get('ca_objects.credit_line')) {
-				print "<div class='unit'><div class='unitHeader'>"._t("Credit Line")." </div>".$va_credit_line."</div>";
-			}
+
 			# --- description
 			if($this->request->config->get('ca_objects_description_attribute')){
 				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
@@ -221,14 +215,28 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 				}
 			}
 			if($va_historical_notes = $t_object->get('ca_objects.public_historical_notes')) {
-				print "<div class='unit' id='historical'><div class='unitHeader'>"._t("Historical Notes")." </div>".$va_historical_notes."</div>";
-			}	
-			if($va_date = $t_object->get('ca_objects.dates_value')) {
-				print "<div class='unit'><div class='unitHeader'>"._t("Date")." </div>".$va_date."</div>";
-			}		
+				print "<div class='unit' id='historical'><div class='unitHeader'>"._t("History")." </div>".$va_historical_notes."</div>";
+			}
+			if($va_credit_line = $t_object->get('ca_objects.credit_line')) {
+				print "<div class='unit'><div class='unitHeader'>"._t("Credit Line")." </div>".$va_credit_line."</div>";
+			}
+			if($va_photo_credit = $t_object->get('ca_object_representations.photo_credit', array('delimiter' => ', '))) {
+				print "<div class='unit'><div class='unitHeader'>"._t("Photo Credit")." </div>".$va_photo_credit."</div>";
+			}			
 			if($va_dimensions = $t_object->get('ca_objects.dimensions_as_text')) {
 				print "<div class='unit'><div class='unitHeader'>"._t("Dimensions")." </div>".$va_dimensions."</div>";
 			}
+			if($va_weight = $t_object->get('ca_objects.dc_weight')) {
+				print "<div class='unit'><div class='unitHeader'>"._t("Weight")." </div>".$va_weight."</div>";
+			} 
+			# --- identifier
+			if($t_object->get('idno')){
+				print "<div class='unit'><div class='unitHeader'>"._t("Identifier")."</div> ".$t_object->get('idno')."</div><!-- end unit -->";
+			}			
+			if($va_date = $t_object->get('ca_objects.dates_value')) {
+				print "<div class='unit'><div class='unitHeader'>"._t("Date")." </div>".$va_date."</div>";
+			}		
+			
 			# --- parent hierarchy info
 			if($t_object->get('parent_id')){
 				print "<div class='unit'><b>"._t("Part Of")."</b>: ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";

@@ -129,15 +129,15 @@
 					
 					$va_row[] = "<td class='browseSelectPanelListCell'>".caNavLink($this->request, $vs_label, 'browseSelectPanelLink', $this->request->getModulePath(), $this->request->getController(), ((strlen($vm_modify_id)) ? 'modifyCriteria' : 'addCriteria'), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."</td>";
 					
-					if (sizeof($va_row) == 5) {
+					if (sizeof($va_row) == 3) {
 						print "<tr valign='top'>".join('', $va_row)."</tr>\n";
 						
 						$va_row = array();
 					}
 				}
 				if (sizeof($va_row) > 0) {
-					if (sizeof($va_row) < 5) {
-						for($vn_i = sizeof($va_row); $vn_i <= 5; $vn_i++) {
+					if (sizeof($va_row) < 3) {
+						for($vn_i = sizeof($va_row); $vn_i <= 3; $vn_i++) {
 							$va_row[] = '<td> </td>';
 						}
 					}
@@ -266,15 +266,15 @@
 					
 						$va_row[] = "<td class='browseSelectPanelListCell'>".caNavLink($this->request, $vs_label, 'browseSelectPanelLink', $this->request->getModulePath(), $this->request->getController(), ((strlen($vm_modify_id) > 0) ? 'modifyCriteria' : 'addCriteria'), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'mod_id' => $vm_modify_id))."</td>";
 						
-						if (sizeof($va_row) == 5) {
+						if (sizeof($va_row) == 3) {
 							print "<tr valign='top'>".join('', $va_row)."</tr>\n";
 							
 							$va_row = array();
 						}
 					}
 					if (sizeof($va_row) > 0) {
-						if (sizeof($va_row) < 5) {
-							for($vn_i = sizeof($va_row); $vn_i <= 5; $vn_i++) {
+						if (sizeof($va_row) < 2) {
+							for($vn_i = sizeof($va_row); $vn_i <= 2; $vn_i++) {
 								$va_row[] = '<td> </td>';
 							}
 						}

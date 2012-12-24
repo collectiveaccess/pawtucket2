@@ -119,7 +119,7 @@
 		// Initialize the plugin
 		$(document).ready(function () {
 			$("div.chronoLists").smoothDivScroll({
-				visibleHotSpotBackgrounds: "hover",
+				visibleHotSpotBackgrounds: "always",
 				hotSpotScrollingInterval: 45
 			});
 		});

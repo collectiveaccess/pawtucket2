@@ -61,67 +61,58 @@ if (!$this->request->isAjax()) {
 				<div class="unit">
 <?php
 				if($this->request->isLoggedIn()){
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
 				}else{
-					print caNavLink($this->request, _t("Bookmark item +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
+					print caNavLink($this->request, _t("Bookmark +"), 'button', '', 'LoginReg', 'form', array('site_last_page' => 'Bookmarks', 'row_id' => $vn_entity_id, 'tablename' => 'ca_entities'));
 				}
 ?>
 				</div><!-- end unit -->
 				<!-- bookmark link END -->
 <?php
 			}
-			if ($va_company = $t_entity->get('ca_entities.company')) {
-				print "<div class='unit'><b>Company: </b>".$va_company."</div>";
+			if ($va_company = $t_entity->get('ca_entities.company.companyName')) {
+				print "<div class='unit'><span class='metatitle'>Press Name</span><br/>".$va_company."</div>";
 			}
-			if ($va_bio = $t_entity->get('ca_entities.artist_bio')) {
-				print "<div class='unit'><b>Biography: </b>".$va_bio."</div>";
-			}	
-			if ($va_url = $t_entity->get('ca_entities.external_link.url_entry')){
-				if ($va_name = $t_entity->get('ca_entities.external_link.url_source')){
-					print "<div class='unit'><b>"._t('Website').": </b><a href='".$va_url."' target='_blank'>".$va_name."</a></div>";
-				} else {
-			   		print "<div class='unit'><b>"._t('Website').": </b>".$va_url."</div>";
-			   	}
+			if($va_origin = $t_entity->get('ca_entities.address', array('template' => '^city<ifdef code="city,stateprovince">, </ifdef>^stateprovince ^country', 'delimiter' => '<br/>'))){
+				print "<div class='unit'><span class='metatitle'>"._t("Location")."</span><br/> ".$va_origin."</div><!-- end unit -->";
 			}			
+			if ($va_bio = $t_entity->get('ca_entities.artist_bio')) {
+				print "<div class='unit' id='bio'><span class='metatitle'>Biography</span><br/>".$va_bio."</div>";
+			}
+			if ($va_instit = $t_entity->get('ca_entities.related.preferred_labels', array('restrictToRelationshipTypes' => array('in_collection'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>Institutional Collectors</span><br/>".$va_instit."</div>";
+			}				
+?>
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							jQuery('#bio').expander({
+								slicePoint: 400,
+								expandText: '<?php print _t('[more]'); ?>',
+								userCollapseText: '[less]'
+							});
+						});
+					</script>
+<?php			
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_entities_detail_display_attributes');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
 					if($vs_value = $t_entity->get("ca_entities.{$vs_attribute_code}")){
-						print "<div class='unit'><b>".$t_entity->getDisplayLabel("ca_entities.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
+						print "<div class='unit'><span class='metatitle'>".$t_entity->getDisplayLabel("ca_entities.{$vs_attribute_code}")."</span><br/> {$vs_value}</div><!-- end unit -->";
 					}
 				}
 			}
 			# --- description
 			if($this->request->config->get('ca_entities_description_attribute')){
 				if($vs_description_text = $t_entity->get("ca_entities.".$this->request->config->get('ca_entities_description_attribute'))){
-					print "<div class='unit'><div id='description'><b>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute')).":</b> {$vs_description_text}</div></div><!-- end unit -->";				
+					print "<div class='unit'><span class='metatitle'>".$t_entity->getDisplayLabel('ca_entities.'.$this->request->config->get('ca_entities_description_attribute'))."</span><br/> {$vs_description_text}</div><!-- end unit -->";				
 ?>
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery('#description').expander({
-								slicePoint: 300,
-								expandText: '<?php print _t('[more]'); ?>',
-								userCollapse: false
-							});
-						});
-					</script>
+
+
 <?php
 				}
 			}
-			# --- entities
-			$va_entities = $t_entity->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_entities) > 0){	
-?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
-<?php
-				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";		
-				}
-?>
-				</div><!-- end unit -->
-<?php
-			}
+
 			
 			# --- occurrences
 			$va_occurrences = $t_entity->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
@@ -136,14 +127,21 @@ if (!$this->request->isAjax()) {
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
 ?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
+						<div class="unit"><span class='metatitle'><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></span><br/>
 <?php
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
+						print "<p>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])."</p>";
 					}
 					print "</div><!-- end unit -->";
 				}
 			}
+			if ($va_url = $t_entity->get('ca_entities.external_link.url_entry')){
+				if ($va_name = $t_entity->get('ca_entities.external_link.url_source')){
+					print "<div class='unit'><span class='metatitle'>"._t('Website')."</span><br/><a href='".$va_url."' target='_blank'>".$va_name."</a></div>";
+				} else {
+			   		print "<div class='unit'><span class='metatitle'>"._t('Website')."</span><br/><a href='".$va_url."' target='_blank'>".$va_url."</a></div>";
+			   	}
+			}			
 			# --- places
 			$va_places = $t_entity->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_places) > 0){
@@ -189,6 +187,7 @@ if (!$this->request->isAjax()) {
 ?>
 		</div><!-- end resultBox -->
 	</div><!-- end rightCol -->
+	<div class='seeMore' style='margin:10px 0px 25px 0px'><a href='#'>Back to Top</a></div>
 </div><!-- end detailBody -->
 <?php
 }

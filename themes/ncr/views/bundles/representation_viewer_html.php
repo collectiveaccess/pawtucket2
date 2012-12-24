@@ -44,6 +44,7 @@
 	$va_pages = $va_sections = array();
 	$vb_use_book_reader = false;
 	$vn_open_to_page = 1;
+	$va_access_values = caGetUserAccessValues($this->request);
 
 
 		$vb_should_use_book_viewer = isset($va_display_options['use_book_viewer']) && (bool)$va_display_options['use_book_viewer'];
@@ -257,12 +258,69 @@
 			
 			print $o_view->render('bookviewer_html.php');
 		} else {
-			# --- only display next and previous nav if in overaly
+		
 			if($vs_display_type == 'media_overlay'){
+				if(sizeof($va_reps) > 1){
+					$vs_version = "icon";
+					$vn_num_cols = 1;
+					if(sizeof($va_reps) > 5){
+						$vn_num_cols = 2;
+					}
+					if(sizeof($va_reps) > 14){
+						$va_reps = $t_object->getRepresentations(array('tinyicon'), null, array("return_with_access" => $va_access_values));
+						$vs_version = "tinyicon";
+						$vn_num_cols = 2;
+					}
+					
 ?>
-				<!-- Controls -->
-				<div class="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayControls' : 'caMediaDisplayControls'; ?>">
-			
+				<!-- multiple rep thumbnails - ONLY for media overlay -->
+				<div class="caMediaOverlayRepThumbs">
+<?php
+					$i = 0;
+					foreach($va_reps as $vn_rep_id => $va_rep_info){
+						print "<a href='#' ".(($vn_rep_id == $vn_representation_id) ? "class='selectedRep' " : "")."onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_rep_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>".$va_rep_info['tags'][$vs_version]."</a>";
+						$i++;
+						if($i == $vn_num_cols){
+							$i = 0;
+							print "<br/>";
+						}
+					}
+?>
+				</div><!-- end caMediaOverlayRepThumbs -->
+<?php
+			}
+?>
+	<!-- Controls - ONLY for media overlay -->
+	<div class="caMediaOverlayControls">
+			<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+<?php
+			if(caObjectsDisplayDownloadLink($this->request)){
+?>
+
+				<div class='download'>
+<?php 
+						# -- get version to download configured in media_display.conf
+						$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+						$vs_download_version = $va_download_display_info['display_version'];
+						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/buttons/downloadWhite.png' border='0' title='"._t("Download Media")."'>", '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
+?>				
+				</div>
+<?php
+			}
+?>
+			<div class='objectInfo'>
+<?php
+			# --- caption text - Noguchi NCR specific!
+			if($t_rep->get("image_credit_line")){
+				if($t_rep->get("image_credit_line")){
+					print "<i>".$t_rep->get("image_credit_line")."</i>";
+				}
+				print " &ndash; &copy; INFGM";
+			}
+
+?>			
+			</div>
+			<div class='repNav'>
 <?php
 				if ($vn_id = $this->getVar('previous_representation_id')) {
 					print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>←</a>";
@@ -274,31 +332,55 @@
 					print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>→</a>";
 				}
 ?>
-				</div><!-- end caMediaOverlayControls -->
+			</div>
+	</div><!-- end caMediaOverlayControls -->
 <?php
 			}
 ?>
 	<div id="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContent' : 'caMediaDisplayContent'; ?>">
 <?php
+	if($vs_display_type == 'media_overlay'){
+?>
+		<div class='closeUpperLeft'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+<?php
+	}
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }
-	print $t_rep->getMediaTag('media', $vs_show_version, array_merge($va_display_options, array(
+	$vs_tag = $t_rep->getMediaTag('media', $vs_show_version, array_merge($va_display_options, array(
 		'id' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia' : 'caMediaDisplayContentMedia', 
 		'viewer_base_url' => $this->request->getBaseUrlPath()
 	)));
-
-
-# --- caption text - Noguchi NCR specific!
-	if($t_rep->get("image_credit_line")){
-		# --- get width of image so caption matches
-		$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
-		print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
-		if($t_rep->get("image_credit_line")){
-			print "<i>".$t_rep->get("image_credit_line")."</i>";
-		}
-		print " &ndash; &copy; INFGM</div>";
+	# --- should the media be clickable to open the overlay?
+	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
+		print $vs_tag;
+	}else{
+		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$vs_tag."</a>";
 	}
-?>	
+	if($vs_display_type != 'media_overlay'){
+		# --- caption text - Noguchi NCR specific!
+		if($t_rep->get("image_credit_line")){
+			# --- get width of image so caption matches
+			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+			print "<div class='objDetailImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
+			if($t_rep->get("image_credit_line")){
+				print "<i>".$t_rep->get("image_credit_line")."</i>";
+			}
+			print " &ndash; &copy; INFGM</div>";
+		}
+		$va_reps = $va_reps = array_slice($t_object->getRepresentations(array('tinyicon'), null, array("return_with_access" => $va_access_values)), 0, 9);
+		if(sizeof($va_reps) > 1){
+			print "<div class='objDetailImageThumbs'>";
+			$i = 1;
+			foreach($va_reps as $vn_i => $va_rep){
+				if(($va_rep["representation_id"] != $vn_representation_id) && ($i < 9)){
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"]))."\"); return false;' >".$va_rep['tags']['tinyicon']."</a>";
+					$i++;
+				}
+			}
+			print "</div>";
+		}
+	}
+?>
 	</div><!-- end caMediaOverlayContent -->
 <?php
 	}

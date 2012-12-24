@@ -1915,7 +1915,7 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.1;
+	opacity:.5;
 	
 }
 div.caMediaOverlayControls:hover {
@@ -1925,8 +1925,7 @@ div.caMediaOverlayControls:hover {
 div.caMediaOverlayControls a{
 	text-decoration:none;
 	font-weight:bold;
-	font-size:16px;
-	color:#FFF;
+	color:#FFF; 
 }
 div.caMediaOverlayControls a:hover{
 	color:#FFF;
@@ -1950,6 +1949,35 @@ div.caMediaOverlayControls .objectInfo{
 	width:40%;
 	float:left;
 }
+div.caMediaOverlayControls .captionRight {
+	float:left; 
+	width:45%; 
+	margin-left:25px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .captionLeft {
+	float:left; 
+	width:45%; 
+	margin-left:15px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink {
+	float:left;
+	text-align:left;
+	color:white;
+	font-size:12px;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink a{
+	font-size:12px;
+}
 div.caMediaOverlayControls .repNav {
 	float:left;
 	width:16%;
@@ -1957,7 +1985,52 @@ div.caMediaOverlayControls .repNav {
 	text-align:center;
 	color:#FFF;
 }
+div.caMediaOverlayRepThumbs {
+	color:#FFF;
+	font-size: 11px;
+	text-align:right;
+	position:absolute;
+	top:60px;
+	right:11px;
+	padding:3px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.3;	
+}
+div.caMediaOverlayRepThumbs:hover {
+	opacity:1;	
+}
+div.caMediaOverlayRepThumbs img{
+	margin:2px;
+	border:1px solid transparent;
+}
+div.caMediaOverlayRepThumbs a.selectedRep img{
+	border:1px solid #FFF;
+}
 
+/* used in simpleGallery media overlay */
+
+div.caMediaOverlayControls .simpleGalleryRepNav {
+	padding: 0px;
+	text-align:center;
+	color:#FFF;
+}
+div.caMediaOverlayControls div.simpleGalleryCaption{
+	font-size:11px;
+	color:#FFF;
+	text-align:left;
+	padding:0px 10px 10px 10px;
+	clear:both;
+}
+div.caMediaOverlayControls div.simpleGallerySetItemDescription{
+	font-size:11px;
+	color:#FFF;
+	text-align:left;
+	padding:0px 10px 5px 10px;
+	clear:both;
+}
+div.caMediaOverlayControls div.simpleGallerySetItemDescription a{
+	font-size:11px;
+}
 /* Advanced search */
 .advSearchLabel {
 	font-weight: bold;
@@ -2283,3 +2356,54 @@ div.jGrowl div.jGrowl-closer {
 		display: 			none;
 	}
 }
+/* autocompleter styles */
+.ac_results {
+	padding: 0px;
+	border: 1px solid #828282;
+	background-color: white;
+	overflow: hidden;
+	z-index: 99999;
+}
+
+.ac_results ul {
+	width: 100%;
+	list-style-position: outside;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.ac_results li {
+	margin: 0px;
+	padding: 2px 5px;
+	cursor: default;
+	display: block;
+	/* 
+	if width will be 100% horizontal scrollbar will apear 
+	when scroll mode will be used
+	*/
+	/*width: 100%;*/
+	font: menu;
+	font-size: 12px;
+	/* 
+	it is very important, if line-height not setted or setted 
+	in relative units scroll will be broken in firefox
+	*/
+	line-height: 16px;
+	overflow: hidden;
+}
+
+.ac_loading {
+	background: white url('indicator.gif') right center no-repeat !important;
+}
+
+.ac_odd {
+	background-color: #eee;
+}
+
+.ac_over {
+	background-color: #828282;
+	color: white;
+}
+
+/* end autocompleter styles */

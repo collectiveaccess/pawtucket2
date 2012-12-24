@@ -40,6 +40,7 @@
  		public function getOccurrenceMediaOverlay() {
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pInteger);
  			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+ 			$this->view->setVar('object_id', $pn_object_id);
  			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
  			
  			$this->view->setVar('occurrence_id', $pn_occurrence_id);
@@ -47,6 +48,7 @@
  			
  			$this->view->setVar('object_id', $pn_object_id);
  			$t_object = new ca_objects($pn_object_id);
+ 			$this->view->setVar('t_object', $t_object);
  			
  			$t_rep = new ca_object_representations($pn_representation_id);
  			$this->view->setVar('representation_id', $pn_representation_id);
@@ -65,45 +67,65 @@
  			if (sizeof($va_access_values) && (!in_array($t_object->get('access'), $va_access_values))) { die("Invalid object_id"); }
  			if (sizeof($va_access_values) && (!in_array($t_rep->get('access'), $va_access_values))) { die("Invalid rep_id"); }
  			
-			$this->view->setVar('t_display_rep', $t_rep);
-			
 			// Get media for display using configured rules
 			$va_rep_display_info = caGetMediaDisplayInfo("media_overlay", $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			
 			// set version
-			$this->view->setVar('rep_display_version', $va_rep_display_info['display_version']);
+			$this->view->setVar('version', $va_rep_display_info['display_version']);
 			unset($va_display_info['display_version']);
 			
 			// set poster frame URL
-			$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-			unset($va_display_info['poster_frame_version']);
+			//$va_rep_display_info['poster_frame_url'] = $t_rep->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
+			//unset($va_display_info['poster_frame_version']);
 			
-			$va_rep_display_info['viewer_base_url'] = $t_rep->getAppConfig()->get('ca_url_root');
+			//$va_rep_display_info['viewer_base_url'] = $t_rep->getAppConfig()->get('ca_url_root');
 			
 			// set other options
-			$this->view->setVar('rep_display_options', $va_rep_display_info);
+			$this->view->setVar('display_options', $va_rep_display_info);
+			
+			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
+ 			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
+ 			$this->view->setVar("display_type", $ps_display_type);
+			$this->view->setVar("containerID", $ps_containerID);
 	
 			// Get all objects asscoiated with this occurrence and show primary reps as icons for navigation
 			$va_exhibition_images = $t_occurrence->get("ca_objects", array('restrict_to_relationship_types' => array('describes'), "returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if(sizeof($va_exhibition_images) > 0){
 				$t_image_objects = new ca_objects();
+				$i = 1;
 				foreach($va_exhibition_images as $vn_rel_id => $va_info){
 					$t_image_objects->load($va_info["object_id"]);
 					if ($t_primary_rep = $t_image_objects->getPrimaryRepresentationInstance()){
 						$va_temp =  array();
 						if (!sizeof($va_access_values) || in_array($t_primary_rep->get('access'), $va_access_values)) {
 							$va_temp["representation_id"] = $t_primary_rep->get("representation_id");
-							$va_temp["rep"] = $t_primary_rep->getMediaTag('media', 'icon');
+							$va_temp["rep_icon"] = $t_primary_rep->getMediaTag('media', 'icon');
+							$va_temp["rep_tinyicon"] = $t_primary_rep->getMediaTag('media', 'tinyicon');
 							$va_temp["object_id"] = $va_info["object_id"];
+
+							$va_thumbnails[$va_info["object_id"]] = $va_temp;
+							if($vn_getNext == 1){
+								$this->view->setVar("next_object_id", $va_info["object_id"]);
+								$this->view->setVar("next_representation_id", $t_primary_rep->get("representation_id"));
+								$vn_getNext = 0;
+							}
+							if($va_info["object_id"] == $pn_object_id){
+								$this->view->setVar("representation_index", $i);
+								$this->view->setVar("previous_object_id", $vn_prev_obj_id);
+								$this->view->setVar("previous_representation_id", $vn_prev_rep_id);
+								$vn_getNext = 1;
+							}
+							$vn_prev_obj_id = $va_info["object_id"];
+							$vn_prev_rep_id = $t_primary_rep->get("representation_id");
+							
+							$i++;
 						}
-						$va_thumbnails[$va_info["object_id"]] = $va_temp;
 					}
-				}
-				
+				}				
 			}
 			
-			$this->view->setVar('thumbnails', $va_thumbnails);
- 			
+			$this->view->setVar('reps', $va_thumbnails);
+
  			return $this->render("Detail/ajax_ca_occurrences_media_overlay_html.php");
  		}
  	}

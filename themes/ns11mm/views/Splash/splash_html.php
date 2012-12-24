@@ -21,6 +21,27 @@
 		$feat_obj_content_widepreview = $va_rep["tags"]["widepreview"];
 		$vs_featured_content_label = $t_object->getLabelForDisplay();
 	}
+	
+# --- Recently Added
+
+# --- get the 12 most recently added objects to display
+		$va_recently_added_items = $t_object->getRecentlyAddedItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
+		$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
+		$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('small', 'thumbnail', 'preview', 'widepreview'), array("checkAccess" => $va_access_values));
+		foreach($va_recently_added_items as $vn_object_id => $va_object_info){
+			$va_object_info['title'] = $va_labels[$vn_object_id];
+			$va_object_info['media'] = $va_media[$vn_object_id];
+			$va_recently_added_objects[$vn_object_id] = $va_object_info;
+		}
+		#$this->view->setVar('recently_added_objects', $va_recently_added_objects);
+		
+		if(is_array($va_recently_added_objects) && (sizeof($va_recently_added_objects) > 0)){
+			$va_object_info = array_shift($va_recently_added_objects);
+			$recently_added_id = $va_object_info['object_id'];
+			
+			$recently_added_widepreview = $va_media[$va_object_info['object_id']]["tags"]["widepreview"];
+		} 		
+	
 ?>
 		<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
 			<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel()" class="browseSelectPanelButton"></a>
@@ -38,9 +59,12 @@
 		$vn_padding_top_bottom = (450 - $vn_image_height)/2;
 ?></pre>
 		<div id="hpFeatured">
-			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><div style="padding-top:<?php print $vn_padding_top_bottom?>px; padding-bottom:<?php print $vn_padding_top_bottom?>px;"><?php print caNavLink($this->request, $this->getVar("featured_content_mediumlarge"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("featured_content_id"))); ?></div></td></tr></table>
+			<table cellpadding="0" cellspacing="0"><tr><td valign="middle" align="center"><div>
+				<img src='<?php print $this->request->getThemeUrlPath() ?>/graphics/ladyliberty.png' border='0'>
+				<?php # print caNavLink($this->request, $this->getVar("featured_content_mediumlarge"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("featured_content_id"))); ?>
+			</div></td></tr></table>
 			<div id="featuredLabel">
-				<?php print $this->getVar("featured_content_label"); ?>
+				<?php # print $this->getVar("featured_content_label"); ?>
 			</div><!-- end featuredLabel -->
 		<div id="hpText">
 <?php
@@ -66,17 +90,13 @@
 			</div><!-- end hpBrowse-->
 
 		<div id="quickLinkItems">
-			<div class="quickLinkItem" style="margin-left:5px;">
-				<div class="title"><?php print ($this->getVar("user_favorites_is_random")) ? _t("Random selection") : _t("User favorites"); ?></div>
-				<?php print caNavLink($this->request, $this->getVar("random_object_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("user_favorites_id"))); ?>
+			<div class="quickLinkItem" >
+				<div class="title"><?php print _t("Recently Added"); ?></div>
+				<?php print caNavLink($this->request, $recently_added_widepreview, '', 'Detail', 'Object', 'Show', array('object_id' =>  $recently_added_id)); ?>
 			</div>
 			<div class="quickLinkItem">
 				<div class="title"><?php print _t("Most Viewed"); ?></div>
 				<?php print caNavLink($this->request, $this->getVar("most_viewed_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("most_viewed_id"))); ?>
-			</div>
-			<div class="quickLinkItem" >
-				<div class="title"><?php print _t("Recently Added"); ?></div>
-				<?php print caNavLink($this->request, $this->getVar("recently_added_widepreview"), '', 'Detail', 'Object', 'Show', array('object_id' =>  $this->getVar("recently_added_id"))); ?>
 			</div>
 			<div class="quickLinkItem" style="margin-right:0px;">
 				<div class="title"><?php print _t("Featured Object"); ?></div>

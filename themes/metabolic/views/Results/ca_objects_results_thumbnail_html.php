@@ -72,6 +72,7 @@ if($vo_result) {
 			$this->setVar('tooltip_representation', $vs_media_tag = $vo_result->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
 			$this->setVar('tooltip_title', $vs_caption);
 			$this->setVar('tooltip_idno', $vo_result->get("ca_objects.idno"));
+			$this->setVar('tooltip_altid', $vo_result->get("ca_objects.altID"));
 			TooltipManager::add(
 				".searchThumbnail{$vn_object_id}", $this->render('Results/ca_objects_result_tooltip_html.php')
 			);
