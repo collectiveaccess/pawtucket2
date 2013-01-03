@@ -605,6 +605,9 @@ div.searchlight-results div.searchlight-selected {
 	margin: 0px;
 	padding-bottom:5px;
 }
+#detailBody #leftCol a .line {
+	color: #90BCC4; 
+}
 #detailBody #leftCol p{
 	color: #737373;
 }
@@ -2150,7 +2153,6 @@ div.hierarchyBrowseTab {
 	font-weight: normal;
 	margin-left:-10px;
 }
-
 #mainContainer #content #sidebar .pageInfo h1 {
 	color: #D9D9D9;
 }

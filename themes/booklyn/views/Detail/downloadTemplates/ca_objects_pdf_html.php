@@ -33,23 +33,37 @@
 	<HEAD>
 		<style type="text/css">
 			<!--
-			div, p { font-size: 11px; font-family: Helvetica, sans-serif;}
+			div, p, table { font-size: 11px; font-family: Helvetica, sans-serif;}
 			.unit { padding:0px 0px 10px 0px;}
 			H1 { font-weight:bold; font-size: 13px; font-family: Helvetica, sans-serif; margin:0px 0px 10px 0px; }
 			H2 { font-weight:bold; font-size: 11px; font-family: Helvetica, sans-serif; margin-bottom:2px; }
 			.media { float:right; padding:0px 0px 10px 10px; width:400px; }
-			.pageHeader { margin: 0px 10px 20px 0px; padding: 0px 5px 0px 5px; width: 100%; font-family: Helvetica, sans-serif; }
+			.pageHeader { margin: 0px auto 20px auto; padding: 0px 5px 0px 5px; width: 100%; font-family: Helvetica, sans-serif; text-align:center;}
 			.pageHeader img{ vertical-align:middle;  }
-			.notes { font-style:italic; color:#828282; margin-top:20px; }
+			.notes { font-style:italic; color:#828282; margin-top:20px; width:100%; clear:both}
+			.subHeader { width:100%; text-align:center; margin:0px auto 10px auto; clear:both; }
 			-->
 		</style>
 	</HEAD>
 	<BODY>
 		
 <?php
-		if(file_exists($this->request->getThemeDirectoryPath().'/graphics/CAlogo.gif')){
-			print '<div class="pageHeader"><img src="'.$this->request->getThemeDirectoryPath().'/graphics/CAlogo.gif"/></div>';
+		if(file_exists($this->request->getThemeDirectoryPath().'/graphics/booklyn_logo_pdf.jpg')){
+			print '<div class="pageHeader"><img src="'.$this->request->getThemeDirectoryPath().'/graphics/booklyn_logo_pdf.jpg" width="197" height="72"/></div>';
 		}
+		print "<div class='subHeader'>";
+			if($va_artist = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', ', 'checkAccess' => $va_access_values, 'sort' => 'surname'))){
+				print "<H1>".$va_artist."</H1><!-- end unit -->";
+			}
+			print "<H1>";
+			print "<i>".$t_item->getLabelForDisplay()."</i>";
+			if($va_date = $t_item->get('ca_objects.pub_date.pubDatesValue')) {
+				print ", ".$va_date;
+			}
+			
+			print "</H1>";
+			
+		print "</div><!-- end subHeader -->";		
 		if($t_rep = $t_item->getPrimaryRepresentationInstance(array('return_with_access' => $va_access_values))){
 			$va_rep_display_info = caGetMediaDisplayInfo("summary", $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			if (!($vs_version = $va_rep_display_info['display_version'])) { $vs_version = "large"; }
@@ -57,7 +71,28 @@
 			<div class="media"><img src="<?php print $t_rep->getMediaPath("media", $vs_version); ?>"></div>
 <?php
 		}
-		print "<H1>".$t_item->getLabelForDisplay()."</H1>";
+
+		if($va_publisher = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'delimiter' => ', ', 'checkAccess' => $va_access_values, 'sort' => 'surname'))){
+			print "<div class='line'><span><b>"._t("Publisher").":</b></span> ".$va_publisher."</div><!-- end unit -->";
+		}
+		if($va_origin = $t_item->get('ca_objects.originLocation', array('template' => '^locationCity<ifdef code="locationCity,locationState">, </ifdef>^locationState ^locationCountry'))){
+			print "<div class='unit'><span><b>"._t("Origin").": </b></span> ".$va_origin."</div><!-- end unit -->";
+		}
+		if($va_medium = $t_item->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))){
+			print "<div class='line'><span><b>"._t("Medium").": </b></span> ".$va_medium."</div><!-- end unit -->";
+		}
+		if(($va_binding = $t_item->get('ca_objects.bindingType', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) && ($t_item->get('ca_objects.bindingType') != 233)){
+			print "<div class='line'><span><b>"._t("Binding").": </b></span> ".$va_binding."</div><!-- end unit -->";
+		}
+		if($va_height = $t_item->get('ca_objects.overall_dimensions', array('template' => '^foot_length <ifdef code="foot_length">W </ifdef> <ifdef code="foot_length,spine_length">x</ifdef> ^spine_length<ifdef code="spine_length"> H</ifdef> <ifdef code="spine_length,depth">x</ifdef> ^depth<ifdef code="depth"> D</ifdef>'))){
+			print "<div class='line'><span><b>"._t("Dimensions").": </b></span> ".$va_height."</div><!-- end unit -->";
+		}	
+		if($va_pages = $t_item->get('ca_objects.pages', array('delimiter' => ', '))){
+			print "<div class='line'><span><b>"._t("Pages").": </b></span> ".$va_pages."</div><!-- end unit -->";
+		}
+		if($va_edition = $t_item->get('ca_objects.editionSize')){
+			print "<div class='line'><span><b>"._t("Edition Size").": </b></span> ".$va_edition."</div><!-- end unit -->";
+		}											
 		# --- identifier
 		if($t_item->get('idno')){
 			print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_item->get('idno')."</div><!-- end unit -->";
@@ -91,77 +126,44 @@
 			print "</div><!-- end unit -->";
 		}
 		# --- entities
-		$va_entities = $t_item->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
-		if(sizeof($va_entities) > 0){	
-?>
-			<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
-<?php
-			foreach($va_entities as $va_entity) {
-				print "<div>".$va_entity["label"]." (".$va_entity['relationship_typename'].")</div>";
+		$va_contributors = array();
+		if ($va_entities = $t_item->get("ca_entities", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+			foreach($va_entities as $key => $entity_array) {
+				if (($entity_array['relationship_typename']) == 'contributor') {
+					$va_contributors[] = $entity_array['displayname'];
+				}
 			}
-?>
-			</div><!-- end unit -->
-<?php
+			print "<div class='unit'><b>"._t('Other Contributors').": </b>".join(", ",$va_contributors)."</div>";
 		}
-		
-		# --- occurrences
-		$va_occurrences = $t_item->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-		$va_sorted_occurrences = array();
-		if(sizeof($va_occurrences) > 0){
-			$t_occ = new ca_occurrences();
-			$va_item_types = $t_occ->getTypeList();
-			foreach($va_occurrences as $va_occurrence) {
-				$t_occ->load($va_occurrence['occurrence_id']);
-				$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
+		#print "<div style='clear:both; width:100%;'>";
+		print "<table style='float:left; width:40%; margin-right:10px;'>";
+		# --- collectors
+		$va_collectors = array();
+		if ($va_institutions = $t_item->get("ca_entities", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+			print "<tr><td><b>Institutional Collectors:</b></td></tr>";
+			foreach($va_institutions as $key => $institution_array) {
+				if (($institution_array['relationship_typename']) == 'institutional collector') {
+					print "<tr><td>".$institution_array['displayname']."</td></tr>";
+				}
+			}
+			#print "<div class='unit'><b>"._t('Institutional Collections').": </b><br/>".join("<br/> ",$va_collectors)."</div>";
+			
+		}
+		print "</table";
+		print "<table style='width:40%; float:left'>";		
+		# --- exhibitions
+		$va_exhibitions = array();
+		if ($va_exhibition_array = $t_item->get("ca_occurrences", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'name'))) {
+			
+			print "<tr><td><b>"._t('Exhibitions').":</td></tr>";
+			foreach($va_exhibition_array as $key => $exhibition_array) {
+				print "<tr><td>".$exhibition_array['label']."</td></tr>";
 			}
 			
-			foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
-?>
-					<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
-<?php
-				foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-					print "<div>".$va_info["label"]." (".$va_info['relationship_typename'].")</div>";
-				}
-				print "</div><!-- end unit -->";
-			}
+			
 		}
-		# --- places
-		$va_places = $t_item->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-		
-		if(sizeof($va_places) > 0){
-			print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
-			foreach($va_places as $va_place_info){
-				print "<div>".$va_place_info['label']." (".$va_place_info['relationship_typename'].")</div>";
-			}
-			print "</div><!-- end unit -->";
-		}
-		# --- collections
-		$va_collections = $t_item->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-		if(sizeof($va_collections) > 0){
-			print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
-			foreach($va_collections as $va_collection_info){
-				print "<div>".$va_collection_info['label']." (".$va_collection_info['relationship_typename'].")</div>";
-			}
-			print "</div><!-- end unit -->";
-		}
-		# --- lots
-		$va_object_lots = $t_item->get("ca_object_lots", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-		if(sizeof($va_object_lots) > 0){
-			print "<div class='unit'><h2>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h2>";
-			foreach($va_object_lots as $va_object_lot_info){
-				print "<div>".$va_object_lot_info['label']." (".$va_object_lot_info['relationship_typename'].")</div>";
-			}
-			print "</div><!-- end unit -->";
-		}
-		# --- vocabulary terms
-		$va_terms = $t_item->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-		if(sizeof($va_terms) > 0){
-			print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
-			foreach($va_terms as $va_term_info){
-				print "<div>".$va_term_info['label']."</div>";
-			}
-			print "</div><!-- end unit -->";
-		}
+		print "</table>";
+		#print "</div><!-- end spacer -->";
 		print "<div class='notes'><b>Downloaded:</b> ".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</unit>";
 ?>	
 	
