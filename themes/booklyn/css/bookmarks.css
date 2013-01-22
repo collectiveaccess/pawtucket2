@@ -1,39 +1,65 @@
+
+
 #bookmarksEditor {
 	background: #FFFFFF;
+	margin-top:15px;
 }
 #bookmarksEditor #rightCol{
 	clear:right;
 	float:right;
-	background-color: #E2E2E2;
-	width: 250px;
+	background-color: #f9f9f9;
+	width: 200px;
 	padding: 0px 10px 10px 10px;
 	margin: 0px 0px 15px 0px;
 }
 #bookmarksEditor #rightCol H2{
-	padding-top:10px;
-	color:#828282;
+	margin-top:15px;
+	text-decoration: none;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase; 
 }
-
+#bookmarksEditor #rightCol a{
+	color:#90BCC4;
+}
 #bookmarksEditor #leftCol{
-	width:620px;
+	width:400px;
+
 }
 #bookmarksList .bookmark {
 	padding:5px 10px 5px 10px;
-	font-size:13px;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 #bookmarksList .bookmark a{
 	font-size:13px;
 	text-decoration:none;
+	color:#333;
+	margin-top: 15px;
+	text-decoration: none;
+	color: #8C8C8C;
+	font-size: 13px;
+	line-height: 13px;
+	font-family: 'DIN-Medium';
+	text-transform: uppercase;
 }
 #bookmarksList .bookmark a:hover{
 	text-decoration:underline;
 	color:#828282;
 }
-#bookmarksList .bookmarkBg {
-	background-color: #EDEDED;
+.bookmark {
+	margin-bottom:5px;
+}	
+#bookmarksList .bookmarkBg, #bookmarksList .bookmark {
+	background-color: #f9f9f9;
 }
 #bookmarksList .bookmark:hover {
-	background-color: #dedede;
+	background-color: #f9f9f9;
 }
 
 #bookmarksList a.removeBookmark{
@@ -78,7 +104,15 @@
 	text-decoration:none;
 }
 div.folderInfo{
-	margin-left:10px;
+	margin-left:0px;
+	font-family: 'DIN-Black';
+	font-size: 14px;
+	line-height: 14px;
+	color:#666;
+	text-transform: uppercase;
+	margin-bottom:10px;
+	clear:right;
+	margin-top:10px;
 }
 a.hide{	
 	text-decoration:none;
@@ -92,12 +126,15 @@ a.hide:hover{
 }
 div.edit{
 	text-align:right;
+	padding-top:15px;
 }
 div.edit a{	
-	text-decoration:none;
+	text-decoration: none;
+	color: #90BCC4;
+	font-size: 13px;
+	line-height: 3px;
+	font-family: 'DIN-Medium';
 	text-transform: uppercase;
-	font-size:13px;
-	color: #828282;
 }
 div.edit a:hover{	
 	color:none;

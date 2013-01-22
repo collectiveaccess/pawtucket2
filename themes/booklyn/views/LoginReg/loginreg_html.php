@@ -2,7 +2,7 @@
 	global $g_ui_locale;
 ?>
 			<div id="loginForm">
-				<h1><?php print _t("Login"); ?></h1>
+				<h1 class="results"><?php print _t("Login"); ?></h1>
 <?php
 				if($this->getVar("loginMessage")){
 					print "<div class='formErrors'>".$this->getVar("loginMessage")."</div>";
@@ -17,7 +17,8 @@
 						<div>
 							<b><?php print _t("Password"); ?></b><br/>
 							<input type="password" name="password" />
-							<a href="#" name="login" class="button" onclick="document.forms.login.submit(); return false;"><?php print _t("Login"); ?></a>
+							<p><a href="#" name="login" class="button" onclick="document.forms.login.submit(); return false;"><?php print _t("Login"); ?></a></p>
+							<div style='clear:both;height:1px;'></div>
 						</div>
 						
 						
@@ -50,12 +51,12 @@
 				
 			</div><!-- end loginForm -->
 			<div id="registerForm">
-				<h1><?php print _t("Register"); ?></h1>
+				<h1 class="results"><?php print _t("Register"); ?></h1>
 				<div class="bg">
 					<form action="<?php print caNavUrl($this->request, '', 'LoginReg', 'register', array()); ?>" method="post" name="registration">
 					<p>
 <?php
-						print _t("As a member, you can rank, tag and comment on photos and videos. You can create your own photo albums and view them as slide shows.");
+						print _t("Register to bookmark artworks and artists and to create your own slideshows.");
 ?>
 					</p>
 <?php
@@ -91,10 +92,11 @@
 						print $this->getVar("password");
 ?>
 						<div><b><?php print _t('Re-Type password'); ?></b><br/><input type="password" name="password2" size="60" />
-						<a href="#" name="register" class="button" onclick="document.forms.registration.submit(); return false;"><?php print _t("Register"); ?></a></div>
+						<p><a href="#" name="register" class="button" onclick="document.forms.registration.submit(); return false;"><?php print _t("Register"); ?></a></p></div>
 			
 									
 						<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
-					</form>					
+					</form>	
+					<div style='clear:both;height:1px;'></div>				
 				</div><!-- end bg -->
 			</div><!-- end registerForm -->

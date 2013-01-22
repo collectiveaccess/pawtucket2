@@ -39,6 +39,7 @@
 	$va_errors_edit_set = $this->getVar("errors_edit_set");
 	$va_errors_new_set 	= $this->getVar("errors_new_set");
 	$va_errors_share_set 	= $this->getVar("errors_share_set");
+	$va_errors_email_set 	= $this->getVar("errors_email_set");
 	
 	# --- share - email a friend
 	# --- if there were errors in the form, the form paramas are passed back to preload the form
@@ -58,6 +59,8 @@
 	if(!$vs_from_name && $this->request->isLoggedIn() && !$va_errors['from_name']){
 		$vs_from_name = $this->request->user->getName();
 	}
+	# --- what kind of access does user have to set?  Read or edit?
+	$vn_edit_access = $t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__);
 ?>
 <h1><?php print _t("Lightbox"); ?></h1>
 <div id="setItemEditor">
@@ -83,8 +86,9 @@
 			if($this->getVar("set_description")){
 				print "<div style='margin-top:5px;'>".$this->getVar("set_description")."</div>";
 			}
-			
-			print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Lightbox")." &rsaquo;</a></div>";
+			if($vn_edit_access){			
+				print "<div class='edit'><a href='#' id='editSetButton' onclick='$(\"#editSetButton\").slideUp(1); $(\"#editForm\").slideDown(250); return false;'>"._t("Edit Lightbox")." &rsaquo;</a></div>";
+			}
 			print "</div>";
 ?>					
 			<div id="editForm" <?php print (sizeof($va_errors_edit_set) > 0) ? "" : "style='display:none;'"; ?>>
@@ -139,14 +143,14 @@
 		print "<div class='optionsList'>&rsaquo; <a href='#' onclick='caSetsSlideshowPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'SlideShow', array('set_id' => $vn_set_id))."\"); return false;' >"._t("View slideshow")."</a></div>";
 	}
 ?>
-		<div class="optionsList">&rsaquo; <a href='#' id='shareSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#shareForm").slideDown(250); return false;'><?php print _t("Share this lightbox"); ?></a></div>
-		<div class="optionsList">&rsaquo; <a href='#' id='newSetButton' onclick='$("#shareForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new lightbox"); ?></a></div>
+		<div class="optionsList">&rsaquo; <a href='#' id='emailSetButton' onclick='$("#newForm").slideUp(1); $("#helpTips").slideUp(1); $("#emailForm").slideDown(250); return false;'><?php print _t("Email this lightbox"); ?></a></div>
+		<div class="optionsList">&rsaquo; <a href='#' id='newSetButton' onclick='$("#emailForm").slideUp(1); $("#helpTips").slideUp(1); $("#newForm").slideDown(250); return false;'><?php print _t("Make a new lightbox"); ?></a></div>
 <?php
 	if (($vn_set_id) && (is_array($va_items) && (sizeof($va_items) > 0))) {
 		print "<div class='optionsList'>&rsaquo; ".caNavLink($this->request, _t("Download lightbox as PDF"), '', '', 'Sets', 'export', array('set_id' => $vn_set_id, 'output_type' => '_pdf', 'download' => 1))."</div>";
 	}
 ?>
-		<div class="optionsList">&rsaquo; <a href='#' id='helpTipsButton' onclick='$("#shareForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
+		<div class="optionsList">&rsaquo; <a href='#' id='helpTipsButton' onclick='$("#emailForm").slideUp(1); $("#newForm").slideUp(1); $("#helpTips").slideDown(250); return false;'><?php print _t("View help tips"); ?></a></div>			
 			<div id="newForm" <?php print (sizeof($va_errors_new_set) > 0) ? "" : "style='display:none;'"; ?>>
 				<h2><?php print _t("Make a new lightbox"); ?></h2>
 					<form action="<?php print caNavUrl($this->request, 'Sets', 'addNewSet', ''); ?>" method="post" id="newSetForm">
@@ -171,18 +175,18 @@
 					</form>
 				<a href='#' id='editSetButton' onclick='$("#newForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 			</div>
-			<div id="shareForm" <?php print (sizeof($va_errors_share_set) > 0) ? "" : "style='display:none;'"; ?>>
-				<h2><?php print _t("Share this lightbox"); ?></h2>
+			<div id="emailForm" <?php print (sizeof($va_errors_email_set) > 0) ? "" : "style='display:none;'"; ?>>
+				<h2><?php print _t("Email this lightbox"); ?></h2>
 <?php
 				if($t_set->get("access") == 0){
 					print "<div class='formErrors' style='text-align: left;'>"._t("To email a link to this lightbox you must first edit the lightbox and make the display option Public")."</div>";
 				}else{
 ?>
-					<form action="<?php print caNavUrl($this->request, 'Sets', 'shareSet', ''); ?>" method="post" id="shareSetForm">
+					<form action="<?php print caNavUrl($this->request, 'Sets', 'emailSet', ''); ?>" method="post" id="emailSetForm">
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["to_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["to_email"]."</div>";
+						if($va_va_errors_email_set["to_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_va_errors_email_set["to_email"]."</div>";
 						}
 ?>
 						<?php print _t("To e-mail address")."<br/><span class='formLabelNote'>"._t("(Enter multiple addresses separated by commas)"); ?></span><br/>
@@ -190,8 +194,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_email"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_email"]."</div>";
+						if($va_va_errors_email_set["from_email"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_va_errors_email_set["from_email"]."</div>";
 						}
 ?>
 						<?php print _t("Your e-mail address"); ?><br/>
@@ -199,8 +203,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["from_name"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["from_name"]."</div>";
+						if($va_va_errors_email_set["from_name"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_va_errors_email_set["from_name"]."</div>";
 						}
 ?>
 						<?php print _t("Your name"); ?><br/>
@@ -208,8 +212,8 @@
 						</div>
 						<div class="formLabel">
 <?php
-						if($va_errors_share_set["subject"]){
-							print "<div class='formErrors' style='text-align: left;'>".$va_errors_share_set["subject"]."</div>";
+						if($va_va_errors_email_set["subject"]){
+							print "<div class='formErrors' style='text-align: left;'>".$va_va_errors_email_set["subject"]."</div>";
 						}
 ?>
 						<?php print _t("Subject"); ?><br/>
@@ -218,10 +222,10 @@
 						<div class="formLabel"><?php print _t("Message"); ?><br/>
 							<textarea name="email_message" rows="5"><?php print $vs_message; ?></textarea>
 						</div>
-						<a href="#" name="shareSetSubmit" onclick="document.forms.shareSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
+						<a href="#" name="emailSetSubmit" onclick="document.forms.emailSetForm.submit(); return false;"><?php print _t("Send"); ?></a>
 						<input type='hidden' name='set_id' value='<?php print $vn_set_id; ?>'/>
 					</form>
-				<a href='#' id='editSetButton' onclick='$("#shareForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
+				<a href='#' id='editSetButton' onclick='$("#emailForm").slideUp(250); return false;' class='hide'><?php print _t("Hide"); ?> &rsaquo;</a>
 <?php
 				}
 ?>
@@ -330,7 +334,13 @@
 ?>
 				<li class='setItem' id='setItem<?php print $vn_item_id; ?>'>
 					<div id='setItemContainer<?php print $vn_item_id; ?>' class='imagecontainer'>
-						<div class='remove'><a href='#' class='setDeleteButton' id='setItemDelete<?php print $vn_item_id; ?>'>X</a></div>
+<?php
+						if($vn_edit_access){
+?>
+							<div class='remove'><a href='#' class='setDeleteButton' id='setItemDelete<?php print $vn_item_id; ?>'>X</a></div>
+<?php
+						}
+?>
 						<div class='setItemThumbnail'>
 <?php
 						if ($va_item['representation_tag_thumbnail']) {
@@ -406,6 +416,9 @@
 		
 		</div>
 	</div>
+<?php
+	if($vn_edit_access){
+?>
 	<script type="text/javascript">
 	/*
 		Set up the "caSetsSlideshowPanel" panel that will be triggered by links in sets interface
@@ -427,3 +440,6 @@
 		}
 	});
 	</script>
+<?php
+	}
+?>

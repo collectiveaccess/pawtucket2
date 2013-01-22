@@ -122,8 +122,19 @@ if($this->getVar("show_back_button")){
 		}
 		# --- IMAGE - display 1 image associated with the year or years
 		if ($t_rep && $t_rep->getPrimaryKey()) {
+			# --- get width of image so caption and lightbox link matches
+			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+				
 ?>
-			<div id="rightCol"><div id="objDetailImage">
+			<div id="rightCol"><div class="chronAddLightbox" style="width:<?php print $va_media_info["WIDTH"]."px"; ?>">
+<?php
+				if($this->request->isLoggedIn()){
+					print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'Sets', 'addItem', array('object_id' => $pn_object_id));
+				}else{
+					print caNavLink($this->request, _t("Add to Lightbox +"), '', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $pn_object_id));
+				}
+?>
+				</div><div id="objDetailImage">
 <?php
 				if($va_display_options['no_overlay']){
 					print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
@@ -134,8 +145,6 @@ if($this->getVar("show_back_button")){
 				</div><!-- end objDetailImage -->
 <?php
 				if($this->getVar("image_description") || $this->getVar("image_photographer")){
-					# --- get width of image so caption matches
-					$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
 					print "<div class='chronologyImageCaption' style='width:".$va_media_info["WIDTH"]."px'>";
 					if($this->getVar("image_description")){
 						print "<i>".$this->getVar("image_description")."</i>";
@@ -148,12 +157,23 @@ if($this->getVar("show_back_button")){
 					}
 					print " &ndash; &copy; INFGM</div>";
 				}
+				$va_reps = array_slice($this->getVar("reps"), 0, 9);
+				if(sizeof($va_reps) > 1){
+					print "<div class='objDetailImageThumbs'>";
+					foreach($va_reps as $vn_i => $va_rep){
+						if(($va_rep["representation_id"] != $t_rep->get("representation_id")) && ($i < 9)){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('year' => $vn_year, 'object_id' => $va_rep["object_id"], 'representation_id' => $va_rep["representation_id"]))."\"); return false;' >".$va_rep['rep_tinyicon']."</a>";
+							$i++;
+						}
+					}
+					print "</div>";
+				}
 ?>
-				<div id="objDetailImageNav">
+				<!--<div id="objDetailImageNav">
 <?php
 						print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Chronology', 'GetChronologyMediaOverlay', array('object_id' => $vn_image_object_id, 'representation_id' => $t_rep->getPrimaryKey(), 'year' => $vn_year))."\"); return false;' >".(($vn_num_images > 1) ? _t("Zoom/more media") : _t("Zoom"))." +</a>";
 ?>		
-				</div><!-- end objDetailImageNav -->
+				</div>-->
 			</div><!-- end rightCol -->
 <?php
 		}		

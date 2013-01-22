@@ -209,7 +209,7 @@
 ?>
 		<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); $("#searchToolsBox").slideUp(250); $("#showTools").show(); jQuery("input.addItemToSetControl").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php
-		if($this->getVar('current_view') != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections')){
+		if($this->getVar('current_view') != 'map' && $this->request->isLoggedIn() && !$this->request->config->get('disable_my_collections') && is_array($this->getVar('available_sets')) && sizeof($this->getVar('available_sets'))){
 ?>
 		<a href='#' id='showTools' onclick='$("#searchToolsBox").slideDown(250); $("#showTools").hide(); jQuery("input.addItemToSetControl").show(); $("#searchOptionsBox").slideUp(250); $("#showOptions").show(); return false;'><?php print _t("Tools"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php

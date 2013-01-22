@@ -33,22 +33,22 @@
 	$vn_num_items_per_page = 6;
 	
 ?>
-<style type="text/css">
-<!--
-/* commentaire dans un css */
-table { border: 1px solid #999999; color: #000000; text-wrap: normal; font-size: 11px; margin:15px;}
-table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 135px; height: 120px; padding: 5px; font-size: 11px;}
-tr.odd   { background-color: #f2f2f2; }
-.displayHeader { background-color: #EEEEEE; padding: 5px; border: 1px solid #999999; font-size: 12px; }
-.pageHeader { background-color: #FFFFFF; margin: 0px 10px 20px 10px; padding: 0px 5px 20px 5px; width: 100%; height: 45px; }
-.pageHeader img{ vertical-align:middle; }
-.headerText { color: #000; margin: 0px 0px 10px 20px; }
-.pagingText { color: #000; margin: 0px 0px 10px 20px; text-align: right; }
--->
-</style>
-
-	<page backtop="50px">
-	<page_header>
+<HTML>
+	<HEAD>
+		<style type="text/css">
+			<!--
+			table { border: 1px solid #999999; color: #000000; text-wrap: normal; font-size: 11px; margin:15px; font-family: Helvetica, sans-serif;}
+			table td { border: 1px solid #999999; color: #000000; text-wrap: normal; width: 135px; height: 120px; padding: 5px; font-size: 11px; font-family: Helvetica, sans-serif;}
+			tr.odd   { background-color: #f2f2f2; }
+			.displayHeader { background-color: #EEEEEE; padding: 5px; border: 1px solid #999999; font-size: 12px; font-family: Helvetica, sans-serif; }
+			.pageHeader { background-color: #FFFFFF; margin: 0px 10px 20px 10px; padding: 0px 5px 20px 5px; width: 100%; height: 45px; font-family: Helvetica, sans-serif; }
+			.pageHeader img{ vertical-align:middle;  }
+			.headerText { color: #000; margin: 0px 0px 10px 20px; font-family: Helvetica, sans-serif; }
+			.pagingText { color: #000; margin: 0px 0px 10px 20px; text-align: right; font-family: Helvetica, sans-serif;}
+			-->
+		</style>
+	</HEAD>
+	<BODY>
 		<div class='pageHeader'>
 <?php
 			if(file_exists($this->request->getThemeDirectoryPath().'/graphics/CAlogo.gif')){
@@ -57,10 +57,8 @@ tr.odd   { background-color: #f2f2f2; }
 			print "<span class='headerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</span>";
 			print "<span class='headerText'>".(($vn_num_items == 1) ? _t('%1 item', $vn_num_items) : _t('%1 items', $vn_num_items))."</span>";
 			print "<span class='headerText'>".mb_substr($vs_title, 0, 30).((mb_strlen($vs_title) > 30) ? '...' : '')."</span>";
-			print "<span class='pagingText'>"._t("page [%1]/[%2]", "[page_cu]", "[page_nb]")."</span>";
 ?>
 		</div>
-	</page_header>
 
 	<table width="100%" cellpadding="0" cellspacing="0">
 		<tr>
@@ -86,4 +84,5 @@ tr.odd   { background-color: #f2f2f2; }
 ?>
 
 	</table>
-	</page>
+	</BODY>
+</HTML>

@@ -28,7 +28,7 @@
  
 $t_set 				= $this->getVar('t_set');
 $va_items 		= $this->getVar('items');
-
+$va_set_id		= $t_set->get("set_id");
 $va_set_list 		= $this->getVar('sets');
 $va_first_items_from_sets 	= $this->getVar('first_items_from_sets');
 ?>
@@ -64,7 +64,9 @@ $va_first_items_from_sets 	= $this->getVar('first_items_from_sets');
 	foreach($va_items as $va_item) {
 ?>
 		<div class="setItem" id="item<?php print $va_item['item_id']; ?>">
-			<a href="#" onclick="caMediaPanel.showPanel('<?php print caNavUrl($this->request, 'simpleGallery', 'Show', 'setItemInfo', array('set_item_id' => $va_item['item_id'], 'set_id' => $t_set->get("set_id"))); ?>'); return false;"><?php print $va_item['representation_tag_widepreview']; ?></a>
+<?php		
+	print	"<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'simpleGallery/SetsOverlay', 'getSetsOverlay', array('set_id' => $va_set_id, 'set_item_id' => $va_item['item_id'], 'object_id' => $va_item['object_id'], 'representation_id' => $va_item['representation_id']))."\"); return false;' >".$va_item['representation_tag_widepreview']."</a>";
+?>		
 		</div>
 <?php
 		if($va_item['caption'] || $va_item['representation_tag_medium']){
@@ -77,5 +79,5 @@ $va_first_items_from_sets 	= $this->getVar('first_items_from_sets');
 			);
 		}
 	}
-	print "</div><!-- end setItemsGrid -->";
 ?>
+	</div><!-- end setItemsGrid --></div><!-- end gallerySetDetail -->

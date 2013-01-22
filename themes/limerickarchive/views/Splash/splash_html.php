@@ -64,16 +64,14 @@
 			
 <div id="tabs" style="margin-top:20px;">
     <ul>
-
-       	<li class="tabThree" style="height:34px; "><a href="#fragment-3"><span style="float:left;">Most Viewed</span><!--<img style="margin: -3px -5px 0px 7px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/viewed.png" border="0" width="27" height="27"/>--></a></li>
+		<li class="tabOne" style="height:34px; "><a href="#fragment-1"><span style="float:left;">Search</span><!--<img style="margin-left:15px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/search1.png" border="0" width="23" height="23"/>--></a></li>
+       	<li class="tabTwo" style="height:34px; "><a href="#fragment-2"><span style="float:left;">Browse</span><!--<img style="margin:-5px 0px 0px 10px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/book.png" border="0" width="30" height="30"/>--></a></li>
+    	<li class="tabThree" style="height:34px; "><a href="#fragment-3"><span style="float:left;">Most Viewed</span><!--<img style="margin: -3px -5px 0px 7px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/viewed.png" border="0" width="27" height="27"/>--></a></li>
         <li class="tabFour" style="height:34px; "><a href="#fragment-4"><span style="float:left;">What's New</span><!--<img style="margin:-3px 0px 0px 10px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/clip.png" border="0" width="24" height="24"/>--></a></li>
-    	<li class="tabTwo" style="height:34px; "><a href="#fragment-2"><span style="float:left;">Browse</span><!--<img style="margin:-5px 0px 0px 10px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/book.png" border="0" width="30" height="30"/>--></a></li>
     	<li class="tabFive" style="height:34px; "><a href="#fragment-5"><span style="float:left;">Showcase</span><!--<img style="margin:-5px 0px 0px 10px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/book.png" border="0" width="30" height="30"/>--></a></li>
-    	<li class="tabOne" style="height:34px; "><a href="#fragment-1"><span style="float:left;">Search</span><!--<img style="margin-left:15px; float:right;" src="<?php print $this->request->getThemeUrlPath(true)?>/graphics/city/search1.png" border="0" width="23" height="23"/>--></a></li>
     </ul>
     <div id="fragment-3">
     	<div class="contentstyle">
-
 <?php
 	$vn_most_viewed_count = 0;
 	if(is_array($va_most_viewed) && sizeof($va_most_viewed) > 0){
@@ -81,7 +79,7 @@
 			$vs_thumb = $va_info["widepreview"];
 			$vs_label = $va_info["label"];
 ?>
-			<div class="mostviewed"><div class="mostviewedcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id)).caNavLink($this->request, $vs_label, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));?></div></div>
+			<div class="mostviewed"><div class="mostviewedcontainer"><div class="imgcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div><div class='labelcontainer'>".caNavLink($this->request, ((mb_strlen($vs_label) > 50) ? mb_substr($vs_label, 0, 47)."..." : $vs_label), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id), array("title" => $vs_label));?></div></div></div>
 <?php
 			$vn_most_viewed_count++;
 		}
@@ -100,7 +98,7 @@
 			$vs_thumb = $va_info["widepreview"];
 			$vs_label = $va_info["label"];
 ?>
-			<div class="mostviewed"><div class="mostviewedcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id)).caNavLink($this->request, $vs_label, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));?></div></div>
+			<div class="mostviewed"><div class="mostviewedcontainer"><div class="imgcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div><div class='labelcontainer'>".caNavLink($this->request, ((mb_strlen($vs_label) > 50) ? mb_substr($vs_label, 0, 47)."..." : $vs_label), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id), array("title" => $vs_label));?></div></div></div>
 <?php
 			$vn_recently_added_count++;
 		}
@@ -188,7 +186,7 @@ if($xxx){
 			$va_labels = $o_showcase_collection_results->getDisplayLabels($this->request);
 			$vs_label = join($va_labels, "; ");
 ?>
-			<div class="mostviewed"><div class="mostviewedcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Collection', 'Show', array('collection_id' => $o_showcase_collection_results->get("ca_collections.collection_id"))).caNavLink($this->request, $vs_label, '', 'Detail', 'Collection', 'Show', array('collection_id' => $o_showcase_collection_results->get("ca_collections.collection_id")));?></div></div>
+			<div class="mostviewed"><div class="mostviewedcontainer"><div class="imgcontainer"><?php print caNavLink($this->request, $vs_thumb, '', 'Detail', 'Collection', 'Show', array('collection_id' => $o_showcase_collection_results->get("ca_collections.collection_id")))."</div><div class='labelcontainer'>".caNavLink($this->request, ((mb_strlen($vs_label) > 50) ? mb_substr($vs_label, 0, 47)."..." : $vs_label), '', 'Detail', 'Collection', 'Show', array('collection_id' => $o_showcase_collection_results->get("ca_collections.collection_id"), array("title" => $vs_label)));?></div></div></div>
 <?php
 			$vn_collection_count++;
 		}

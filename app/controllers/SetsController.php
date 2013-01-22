@@ -47,6 +47,7 @@
  			
 			JavascriptLoadManager::register("panel");
 			JavascriptLoadManager::register('cycle');
+			JavascriptLoadManager::register('bundleableEditor');
  		}
  		# -------------------------------------------------------
  		/** 
@@ -72,12 +73,12 @@
  		 * Uses _getSetID() to figure out the ID of the current set, then returns a ca_sets object for it
  		 * and also sets the 'current_set_id' user variable
  		 */
- 		private function _getSet() {
+ 		private function _getSet($vs_access_level = __CA_SET_EDIT_ACCESS__) {
  			$t_set = new ca_sets();
  			$vn_set_id = $this->_getSetID();
  			$t_set->load($vn_set_id);
  			
- 			if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__))) {
+ 			if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $vs_access_level))) {
  				$this->request->user->setVar('current_set_id', $vn_set_id);
  				return $t_set;
  			}
@@ -89,7 +90,7 @@
  		 */
  		function Index() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { $t_set = new ca_sets(); }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $t_set = new ca_sets(); }
  			
  			JavascriptLoadManager::register('sortableUI');
  			
@@ -143,8 +144,13 @@
  			}else{
  				$va_access_values = caGetUserAccessValues($this->request);
  			}
- 			$this->view->setVar('items', caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
+ 			$this->view->setVar('items', $va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID()))));
+ 
  			
+ 			$va_found_item_ids = array();
+ 			foreach($va_items as $vn_i => $va_item) {
+ 				$va_found_item_ids[] = $va_item['row_id'];
+ 			}
  			
  			$t_trans = new ca_commerce_transactions();
  			$t_trans->load(array('set_id' => $t_set->getPrimaryKey()));
@@ -152,6 +158,12 @@
  			
  			$t_comm = new ca_commerce_communications();
  			$this->view->setVar('messages', $t_comm->getMessages($this->request->getUserID(), array('transaction_id' => $vn_transaction_id)));
+ 			
+ 			
+ 			$opo_result_context = new ResultContext($this->request, 'ca_objects', 'sets');
+			$opo_result_context->setResultList($va_found_item_ids);
+			$opo_result_context->setAsLastFind();
+			$opo_result_context->saveContext();
  			
  			# --- use a different view if client services is enabled
  			if($this->request->config->get("enable_client_services")){
@@ -167,7 +179,12 @@
  		public function addItem() {
  			global $g_ui_locale_id; // current locale_id for user
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { 
+ 			if (!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
+ 				if($t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
+ 					$this->view->setVar('message', _t("You can not add items to this set.  You have read only access."));
+ 					$this->index();
+ 					return;
+ 				}
  				# --- if there is not a set for this user, make a new set for them
  				$t_new_set = new ca_sets();
 				
@@ -277,6 +294,8 @@
 						// add new label
 						$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
 					}
+				}else{
+					$this->view->setVar('message', _t("You can not edit this set.  You have read only access."));
 				}
 			}
  			$this->view->setVar('errors_edit_set', $va_errors_edit_set);
@@ -332,11 +351,11 @@
  			$this->index();
  		}
  		# -------------------------------------------------------
- 		public function shareSet() {
+ 		public function emailSet() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
  			global $g_ui_locale_id; // current locale_id for user
  			
- 			$va_errors_share_set = array();
+ 			$va_errors_email_set = array();
  			
  			$t_set = new ca_sets();
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
@@ -359,7 +378,7 @@
 			$va_to_email = array();
 			$va_to_email_process = array();
 			if(!$ps_to_email){
-				$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+				$va_errors_email_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
 			}else{
 				# --- explode on commas to support multiple addresses - then check each one
 				$va_to_email_process = explode(",", $ps_to_email);
@@ -369,23 +388,23 @@
 						$va_to_email[$vs_email_to_verify] = "";
 					}else{
 						$ps_to_email = "";
-						$va_errors_share_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+						$va_errors_email_set["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
 					}
 				}
 			}
 			if(!$ps_subject){
-				$va_errors_share_set["subject"] = _t("Please enter a subject");
+				$va_errors_email_set["subject"] = _t("Please enter a subject");
 			}
 			if(!$ps_from_email || !caCheckEmailAddress($ps_from_email)){
 				$ps_from_email = "";
-				$va_errors_share_set["from_email"] = _t("Please enter a valid email address");
+				$va_errors_email_set["from_email"] = _t("Please enter a valid email address");
 			}
 			if(!$ps_from_name){
-				$va_errors_share_set["from_name"] = _t("Please enter your name");
+				$va_errors_email_set["from_name"] = _t("Please enter your name");
 			}
 			
 
- 			if(sizeof($va_errors_share_set) == 0){
+ 			if(sizeof($va_errors_email_set) == 0){
 				# -- generate mail text from template - get both html and text versions
 				ob_start();
 				require($this->request->getViewsDirectoryPath()."/Sets/mailTemplates/share_email_text.tpl");
@@ -400,10 +419,10 @@
  					$this->notification->addNotification(_t("Your email was sent"), "message");
  				}else{
  					$this->notification->addNotification(_t("Your email could not be sent"), "message");
- 					$va_errors_share_set["email"] = 1;
+ 					$va_errors_email_set["email"] = 1;
  				}
  			}
- 			if(sizeof($va_errors_share_set)){
+ 			if(sizeof($va_errors_email_set)){
  				# --- there were errors in the form data, so reload form with errors displayed - pass params to preload form
  				$this->view->setVar('to_email', $ps_to_email);
  				$this->view->setVar('from_email', $ps_from_email);
@@ -414,9 +433,43 @@
  				$this->notification->addNotification(_t("There were errors in your form"), "message");			
  			}
  			
- 			$this->view->setVar('errors_share_set', $va_errors_share_set);
+ 			$this->view->setVar('errors_email_set', $va_errors_email_set);
  			$this->index();
- 		} 		
+ 		}	
+ 		# -------------------------------------------------------
+ 		public function shareSet() {
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set = new ca_sets();
+ 			if (!$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__, $pn_set_id)) {
+ 				$this->notification->addNotification(_t("You cannot share this set"), "message");
+ 			} else {
+				$t_set->load($pn_set_id);
+				
+				$vs_form_prefix = 'shareSetForm_';
+				$va_users_to_set = array();
+				foreach($_REQUEST as $vs_key => $vs_val) { 
+					if (preg_match("!^{$vs_form_prefix}id(.*)$!", $vs_key, $va_matches)) {
+						$vn_user_id = (int)$this->request->getParameter($vs_form_prefix.'id'.$va_matches[1], pInteger);
+						$vn_access = $this->request->getParameter($vs_form_prefix.'access_'.$va_matches[1], pInteger);
+						if ($vn_access > 0) {
+							$va_users_to_set[$vn_user_id] = $vn_access;
+						}
+					}
+				}
+				
+				$t_set->setUsers($va_users_to_set);
+				
+				if($t_set->numErrors()) {
+					$this->notification->addNotification(_t("There were errors while sharing: %1", join("; ", $t_set->getErrors())), "message");	
+				} else {
+					$vn_c = sizeof($va_users_to_set);
+					$this->notification->addNotification(($vn_c == 1) ? _t("Shared set with %1 user", $vn_c) : _t("Shared set with %1 users", $vn_c), "message");	
+				}
+				
+			}
+			
+ 			$this->index();
+ 		}
  		# -------------------------------------------------------
  		/**
  		 *
@@ -451,7 +504,7 @@
 		 */
 		public function export() {
 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if (!$t_set = $this->_getSet()) { 
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { 
  				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
 				$this->Index();
  			}
@@ -471,23 +524,18 @@
 
 			switch($ps_output_type) {
 				case '_pdf':
+					require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
 					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
-					require_once(__CA_LIB_DIR__."/core/Print/html2pdf/html2pdf.class.php");
-					
-					try {
-						$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
-						$vo_html2pdf = new HTML2PDF('P','letter','en');
-						$vo_html2pdf->setDefaultFont("dejavusans");
-						$vo_html2pdf->WriteHTML($vs_content);
-						header("Content-Disposition: attachment; filename=".$vs_output_filename.".pdf");
-						header("Content-type: application/pdf");
-			
-						$vo_html2pdf->Output($vs_output_filename.".pdf");
-						$vb_printed_properly = true;
-					} catch (Exception $e) {
-						$vb_printed_properly = false;
-						$this->postError(3100, _t("Could not generate PDF"),"SetsController->PrintSummary()");
-					}
+					header("Content-Disposition: attachment; filename=export_results.pdf");
+					header("Content-type: application/pdf");
+					$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
+					$o_pdf = new DOMPDF();
+					// Page sizes: 'letter', 'legal', 'A4'
+					// Orientation:  'portrait' or 'landscape'
+					$o_pdf->set_paper("letter", "portrait");
+					$o_pdf->load_html($vs_content, 'utf-8');
+					$o_pdf->render();
+					$o_pdf->stream($vs_output_file_name.".pdf");
 					return;
 					break;
 				case '_csv':
@@ -560,7 +608,7 @@
  		public function ReorderItems() {
  			if ($this->request->isLoggedIn()) {  
  				$va_access_values = caGetUserAccessValues($this->request);
-				$t_set = $this->_getSet();
+				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
 				
 				if (!$t_set->getPrimaryKey()) {
 					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
@@ -621,7 +669,7 @@
  		 */
  		public function DeleteItem() {
  			if ($this->request->isLoggedIn()) { 
-				$t_set = $this->_getSet();
+				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
 				
 				if (!$t_set->getPrimaryKey()) {
 					$this->notification->addNotification(_t("The lightbox does not exist"), __NOTIFICATION_TYPE_ERROR__);	
@@ -768,7 +816,7 @@
  		 */
  		public function DeleteSet() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'form')); return; }
- 			if ($t_set = $this->_getSet()) { 
+ 			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
  				$vs_set_name = $t_set->getLabelForDisplay();
  				$t_set->setMode(ACCESS_WRITE);
  				$t_set->delete();

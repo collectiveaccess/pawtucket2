@@ -82,7 +82,13 @@
 				
 	<?php				
 
-					print "<div style='float:left; text-transform:uppercase;'>".join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
+					print "<div style='float:left; text-transform:uppercase;'>";
+					#join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
+					print caNavLink($this->request, _t("About"), "", "", "About", "Index");
+					print caNavLink($this->request, _t("Browse"), "", "", "Browse", "Index");
+					print caNavLink($this->request, _t("My Sets"), "", "", "Sets", "Index");
+					print caNavLink($this->request, _t("Chronology"), "", "MetabolicChronology", "Show", "Index");
+					print caNavLink($this->request, _t("Contribute"), "", "Contribute", "Form", "Edit");
 					if($this->request->isLoggedIn()){
 						print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "logout");
 					}else{
@@ -92,7 +98,7 @@
 
 
 					if($this->request->isLoggedIn()){
-						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(my sets)"), "", "", "Sets", "Index")."</div>";
+						print "<div style='float:right; text-transform:lowercase;' class='navLink'>".caNavLink($this->request, _t("(bookmarks)"), "", "", "Bookmarks", "Index")."</div>";
 					}		 
 			
 				# Locale selection

@@ -1,5 +1,9 @@
 		<div style="clear:both;"></div></div><!--end main content-->
 <?php
+# --- tooltip for vaga images - changes to this should also be made in ajaxfooter
+TooltipManager::add(
+	".vagaDisclaimer", "<div style='width:250px;'>Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a></div>"
+);
 print TooltipManager::getLoadHTML();
 ?>
 	<div id="caMediaPanel"> 

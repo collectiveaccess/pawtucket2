@@ -241,7 +241,7 @@ class SearchEngine extends SearchBase {
 			));
 		}
 		if ($po_result) {
-			$po_result->init($o_res, $this->opa_tables);
+			$po_result->init($o_res, $this->opa_tables, $pa_options);
 			return $po_result;
 		} else {
 			return new SearchResult($o_res, $this->opa_tables);
@@ -433,6 +433,22 @@ class SearchEngine extends SearchBase {
 			
 			$va_tmp = explode('.', $vs_field);
 			
+			// Rewrite for <table>.preferred_labels.* syntax
+			if ($va_tmp[1] == 'preferred_labels') {
+				if ($t_labeled_item_table = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true)) {
+					if ($t_label_table = $t_labeled_item_table->getLabelTableInstance()) {
+						$va_tmp2 = array($t_label_table->tableName());
+						if (isset($va_tmp[2]) && $t_label_table->hasField($va_tmp[2])) {
+							$va_tmp2[] = $va_tmp[2];
+						} else {
+							$va_tmp2[] = $t_labeled_item_table->getLabelDisplayField();
+						}
+						$va_tmp = $va_tmp2;
+						$vs_field = join(".", $va_tmp);
+					}
+				}
+			}
+			
 			if ($va_tmp[0] == $vs_table_name) {
 				//
 				// sort field is in search table
@@ -446,21 +462,40 @@ class SearchEngine extends SearchBase {
 					if ($t_element->load(array('element_code' => $vs_sort_element_code))) {
 						$vn_element_id = $t_element->getPrimaryKey();
 						
-						if (!($vs_sortable_value_fld = 'attr_vals.'.Attribute::getSortFieldForDatatype($t_element->get('datatype')))) {
+						if (!($vs_sortable_value_fld = Attribute::getSortFieldForDatatype($t_element->get('datatype')))) {
 							return $pa_hits;
 						}
 						
-						$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
-						$vs_locale_where = ($vn_num_locales > 1) ? 'attr.locale_id' : '';
-						$vs_sql = "
-							SELECT attr.row_id, attr.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
-							FROM ca_attributes attr
-							INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
-							INNER JOIN {$vs_search_tmp_table} ON {$vs_search_tmp_table}.row_id = attr.row_id
-							WHERE
-								(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (attr_vals.{$vs_sort_field} IS NOT NULL)
-						";
-						//print $vs_sql." ; $vn_element_id/; ".$this->opn_tablenum."<br>";
+						if ((int)$t_element->get('datatype') == 3) {
+							$vs_sortable_value_fld = 'lil.name_plural';
+							
+							$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
+							$vs_locale_where = ($vn_num_locales > 1) ? ', lil.locale_id' : '';
+				
+							$vs_sql = "
+								SELECT attr.row_id, lil.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
+								FROM ca_attributes attr
+								INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
+								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = attr_vals.item_id
+								INNER JOIN {$vs_browse_tmp_table} ON {$vs_browse_tmp_table}.row_id = attr.row_id
+								WHERE
+									(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (lil.{$vs_sort_field} IS NOT NULL)
+							";
+						} else {
+							$vs_sortable_value_fld = 'attr_vals.'.$vs_sortable_value_fld;
+						
+							$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
+							$vs_locale_where = ($vn_num_locales > 1) ? 'attr.locale_id' : '';
+							$vs_sql = "
+								SELECT attr.row_id, attr.locale_id, lower({$vs_sortable_value_fld}) {$vs_sort_field}
+								FROM ca_attributes attr
+								INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
+								INNER JOIN {$vs_search_tmp_table} ON {$vs_search_tmp_table}.row_id = attr.row_id
+								WHERE
+									(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (attr_vals.{$vs_sort_field} IS NOT NULL)
+							";
+							//print $vs_sql." ; $vn_element_id/; ".$this->opn_tablenum."<br>";
+						}
 						$qr_sort = $this->opo_db->query($vs_sql, (int)$vn_element_id, (int)$this->opn_tablenum);
 						
 						while($qr_sort->nextRow()) {
@@ -973,7 +1008,7 @@ class SearchEngine extends SearchBase {
 		
 		$this->opa_search_type_ids = array();
 		foreach($pa_type_codes_or_ids as $vs_code_or_id) {
-			if (!(int)$vs_code_or_id) { continue; }
+			if (!strlen($vs_code_or_id)) { continue; }
 			if (!is_numeric($vs_code_or_id)) {
 				$vn_type_id = $t_list->getItemIDFromList($vs_list_name, $vs_code_or_id);
 			} else {
@@ -990,7 +1025,6 @@ class SearchEngine extends SearchBase {
 				$this->opa_search_type_ids = array_merge($this->opa_search_type_ids, $va_ids);
 			}
 		}
-		
 		return true;
 	}
 	# ------------------------------------------------------

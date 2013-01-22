@@ -52,7 +52,7 @@
 	}
 	# --------------------------------------------------------------------------------------------
 	 /**
-	  * 
+	  * Return true if user agent of current request appears to be Mobile (Eg. iPhone) 
 	  *
 	  * @return bool
 	  */
@@ -60,8 +60,7 @@
 		if (preg_match('!iPhone!i', $_SERVER['HTTP_USER_AGENT'])) {
 			return true;
 		}
-				
-		return true;
+		return false;
 	}
 	# ---------------------------------------------------------------------------------------------
  ?>

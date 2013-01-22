@@ -34,7 +34,7 @@ $va_access_values 		= $this->getVar('access_values');
 
 if($vo_result) {
 	print '<table border="0" cellpadding="0px" cellspacing="0px" width="100%">'."\n<tr>\n";
-		$vn_display_cols = 6;
+		$vn_display_cols = 5;
 		$vn_col = 0;
 		$vn_item_count = 0;
 		
@@ -50,9 +50,9 @@ if($vo_result) {
 			# --- get the height of the image so can calculate padding needed to center vertically
 			$va_media_info = $vo_result->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
 			$vn_padding_top = 0;
-			$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
+			$vn_padding_top_bottom =  ((120 - $va_media_info["HEIGHT"]) / 2);
 			
-			print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' >";
+			print "<td align='center' valign='top' class='searchResultTd'><div class='searchThumbBg searchThumbnail".$vn_object_id."' style='padding-top:{$vn_padding_top_bottom}px; padding-bottom:{$vn_padding_top_bottom}px;'>";
 			print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 			
 			// Get thumbnail caption

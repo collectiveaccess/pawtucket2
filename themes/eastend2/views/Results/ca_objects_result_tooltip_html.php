@@ -28,7 +28,11 @@
  */
 ?>
 <div class="tooltipImage">
-	<?php print $this->getVar('tooltip_representation'); ?>
+<?php
+	if(!$this->getVar('tooltip_no_image')){
+		print $this->getVar('tooltip_representation');
+	}
+?>
 </div>
 <div class="tooltipCaption">
 <?php
@@ -41,6 +45,12 @@
 		print "<div><b>ID:</b> ";
 		print $this->getVar('tooltip_idno');
 		print "</div>";
+	}	
+	if($this->getVar('tooltip_caption')){
+		print "<div>".$this->getVar('tooltip_caption')."<br/><br/></div>";
+	}
+	if($this->getVar('tooltip_vaga')){
+		print "<div>Reproduction of this image, including downloading, is prohibited without written authorization from VAGA, 350 Fifth Avenue, Suite 2820, New York, NY 10118. Tel: 212-736-6666; Fax: 212-736-6767; e-mail:info@vagarights.com; web: <a href='www.vagarights.com' target='_blank'>www.vagarights.com</a></div>";
 	}
 ?>
 </div>

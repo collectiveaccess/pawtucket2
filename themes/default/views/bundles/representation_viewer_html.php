@@ -44,7 +44,7 @@
 	$va_pages = $va_sections = array();
 	$vb_use_book_reader = false;
 	$vn_open_to_page = 1;
-
+	$va_access_values = caGetUserAccessValues($this->request);
 
 		$vb_should_use_book_viewer = isset($va_display_options['use_book_viewer']) && (bool)$va_display_options['use_book_viewer'];
 
@@ -259,6 +259,35 @@
 		} else {
 		
 			if($vs_display_type == 'media_overlay'){
+				if(sizeof($va_reps) > 1){
+					$vs_version = "icon";
+					$vn_num_cols = 1;
+					if(sizeof($va_reps) > 5){
+						$vn_num_cols = 2;
+					}
+					if(sizeof($va_reps) > 14){
+						$va_reps = $t_object->getRepresentations(array('tinyicon'), null, array("return_with_access" => $va_access_values));
+						$vs_version = "tinyicon";
+						$vn_num_cols = 2;
+					}
+					
+?>
+					<!-- multiple rep thumbnails - ONLY for media overlay -->
+					<div class="caMediaOverlayRepThumbs">
+<?php
+						$i = 0;
+						foreach($va_reps as $vn_rep_id => $va_rep_info){
+							print "<a href='#' ".(($vn_rep_id == $vn_representation_id) ? "class='selectedRep' " : "")."onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('representation_id' => (int)$vn_rep_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>".$va_rep_info['tags'][$vs_version]."</a>";
+							$i++;
+							if($i == $vn_num_cols){
+								$i = 0;
+								print "<br/>";
+							}
+						}
+?>
+					</div><!-- end caMediaOverlayRepThumbs -->
+<?php
+				}
 ?>
 	<!-- Controls - only for media overlay -->
 	<div class="caMediaOverlayControls">
