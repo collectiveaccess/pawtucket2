@@ -74,18 +74,39 @@
 		
 		print "<div style='clear:both;'>";
 		if ($t_rep && $t_rep->getPrimaryKey()) {
+			$vs_vaga_class = "";
+			if($t_object->get("object_status") == 349){
+				$vs_vaga_class = "vagaDisclaimer";
+			}
 			$va_media_info = $t_rep->getMediaInfo('media', $vs_display_version);
+			$vn_width = $va_media_info["WIDTH"];;
+			if($vn_width > 580){
+				$vn_width = 580;
+			}
 ?>
-			<div id="art_detail" style="width:<?php print $va_media_info["WIDTH"]; ?>px;">
+			<div id="art_detail" <?php print ($vs_vaga_class) ? "class='".$vs_vaga_class."'" : ""; ?> style="width:<?php print $vn_width; ?>px;">
 <?php
-			if($va_display_options['no_overlay']){
-				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
+			if($t_object->get("object_status") == 348){
+				# --- VAGA ARS do not show image
+				print "<div id='imgPlaceholderDetail'>Image not available for view</div>";
 			}else{
-				$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
-				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
+				if($va_display_options['no_overlay']){
+					print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
+				}else{
+					$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+					print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
+				}
 			}
 			if($t_object->get("caption")){
-				print "<div class='caption' style='margin-bottom:3px;'>".$t_object->get("caption")."</div><!-- end caption -->";
+				print "<div class='caption' style='margin-bottom:3px;'>";
+				if($vs_vaga_class){
+					print "<a href='http://www.vagarights.com' target='_blank'>";
+				}
+				print $t_object->get("caption");
+				if($vs_vaga_class){
+					print "</a>";
+				}
+				print "</div><!-- end caption -->";
 			}
 			if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
 				$vs_lightbox_link = "<div class='caption'>";
@@ -150,11 +171,11 @@
 				}
 			}
 
-			if($this->request->config->get('ca_objects_description_attribute')){
-				if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-					print "<p class='caption'>".$vs_description_text."</p>";
-				}
-			}
+			# if($this->request->config->get('ca_objects_description_attribute')){
+// 			#	if($vs_description_text = $t_object->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
+// 			#		print "<p class='caption'>".$vs_description_text."</p>";
+// 			#	}
+// 			#}
 			
 			# --- entities
 			$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("maker", "artist"), "returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
@@ -172,6 +193,9 @@
 			if(sizeof($va_occurrences) > 0){	
 				if(sizeof($va_occurrences) > 6){
 					$vn_scrollOccurrences = 1;
+				}
+				if(sizeof($va_entities) == 0){
+					print "<br/>";
 				}
 ?>
 				<div class='listhead caps' style='padding-bottom:0px;'><?php print _t("Related Exhibitions & Events"); ?></div>
@@ -195,7 +219,7 @@
 						// Initialize the plugin
 						$(document).ready(function () {
 							$("div.art_related_list").smoothDivScroll({
-								visibleHotSpotBackgrounds: "hover",
+								visibleHotSpotBackgrounds: "always",
 								hotSpotScrollingInterval: 45
 							});
 						});

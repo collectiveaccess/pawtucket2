@@ -8,7 +8,7 @@
 print TooltipManager::getLoadHTML();
 ?>
 	<div id="caMediaPanel"> 
-		<div id="close"><a href="#" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
+		<!--<div id="close"><a href="#" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>-->
 		<div id="caMediaPanelContentArea">
 		
 		</div>

@@ -117,22 +117,17 @@
 				}
 				print "</div><!-- end unit -->";
 			}
+			
 			# --- entities
-			$va_entities = $t_object->get("ca_entities", array("returnAsArray" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
+			$va_entities = $t_object->get("ca_entities", array("template" => "<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)", "returnAsLink" => true, "returnAllLocales" => false, "returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
 			if(sizeof($va_entities) > 0){	
-?>
-				<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
-<?php
-				foreach($va_entities as $va_entity) {
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_entities')) ? caNavLink($this->request, $va_entity["label"], '', 'Detail', 'Entity', 'Show', array('entity_id' => $va_entity["entity_id"])) : $va_entity["label"])." (".$va_entity['relationship_typename'].")</div>";
-				}
-?>
-				</div><!-- end unit -->
-<?php
+				print "<div class='unit'><h2>"._t("Related entities")."</h2>";
+				print join("<br/>\n", $va_entities);
+				print "</div><!-- end unit -->";
 			}
 			
 			# --- occurrences
-			$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			$va_occurrences = $t_object->get("ca_occurrences", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
 			$va_sorted_occurrences = array();
 			if(sizeof($va_occurrences) > 0){
 				$t_occ = new ca_occurrences();
@@ -143,62 +138,58 @@
 				}
 				
 				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
-?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
-<?php
+					print "<div class='unit'><h2>"._t("Related %1", $va_item_types[$vn_occurrence_type_id]['name_plural'])."</h2>";
 					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
 						print "<div>".(($this->request->config->get('allow_detail_for_ca_occurrences')) ? caNavLink($this->request, $va_info["label"], '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $vn_rel_occurrence_id)) : $va_info["label"])." (".$va_info['relationship_typename'].")</div>";
 					}
 					print "</div><!-- end unit -->";
 				}
 			}
+			
 			# --- places
-			$va_places = $t_object->get("ca_places", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			$va_places = $t_object->get("ca_places", array("template" => "<l>^ca_places.preferred_labels.name</l> (^relationship_typename)", "returnAsLink" => true, "returnAsArray" => true, 'checkAccess' => $va_access_values));
 			
 			if(sizeof($va_places) > 0){
-				print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
-				foreach($va_places as $va_place_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_places')) ? caNavLink($this->request, $va_place_info['label'], '', 'Detail', 'Place', 'Show', array('place_id' => $va_place_info['place_id'])) : $va_place_info['label'])." (".$va_place_info['relationship_typename'].")</div>";
-				}
+				print "<div class='unit'><h2>"._t("Related places")."</h2>";
+				print join("<br/>\n", $va_places);
 				print "</div><!-- end unit -->";
 			}
+			
 			# --- collections
-			$va_collections = $t_object->get("ca_collections", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			$va_collections = $t_object->get("ca_collections", array("template" => "<l>^ca_collections.preferred_labels.name</l> (^relationship_typename)", "returnAsLink" => true, "returnAsArray" => true, 'checkAccess' => $va_access_values));
 			if(sizeof($va_collections) > 0){
-				print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
-				foreach($va_collections as $va_collection_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." (".$va_collection_info['relationship_typename'].")</div>";
-				}
+				print "<div class='unit'><h2>"._t("Related collections")."</h2>";
+				print join("<br/>\n", $va_collections);
 				print "</div><!-- end unit -->";
 			}
+			
 			# --- lots
-			$va_object_lots = $t_object->get("ca_object_lots", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			$va_object_lots = $t_object->get("ca_object_lots", array("template" => "<l>^preferred_labels.name</l> (^idno_stub)", "returnAsLink" => true, "returnAsArray" => true, 'checkAccess' => $va_access_values));
 			if(sizeof($va_object_lots) > 0){
-				print "<div class='unit'><h2>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h2>";
-				foreach($va_object_lots as $va_object_lot_info){
-					print "<div>".(($this->request->config->get('allow_detail_for_ca_object_lots')) ? caNavLink($this->request, $va_object_lot_info['label'], '', 'Detail', 'ObjectLots', 'Show', array('lot_id' => $va_object_lot_info['lot_id'])) : $va_object_lot_info['label'])." (".$va_object_lot_info['relationship_typename'].")</div>";
-				}
+				print "<div class='unit'><h2>"._t("Related lot")."</h2>";
+				print join("<br/>\n", $va_object_lots);
 				print "</div><!-- end unit -->";
 			}
+			
 			# --- vocabulary terms
-			$va_terms = $t_object->get("ca_list_items", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
+			$va_terms = $t_object->get("ca_list_items", array("template" => "<l>^ca_list_items.preferred_labels.name_plural</l> (^relationship_typename)", "returnAsLink" => true, "returnAsArray" => true, 'checkAccess' => $va_access_values));
 			if(sizeof($va_terms) > 0){
-				print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
-				foreach($va_terms as $va_term_info){
-					print "<div>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</div>";
-				}
+				print "<div class='unit'><h2>"._t("Subjects")."</h2>";
+				print join("<br/>\n", $va_terms);
 				print "</div><!-- end unit -->";
 			}
+			
 			# --- map
 			if($this->request->config->get('ca_objects_map_attribute') && $t_object->get($this->request->config->get('ca_objects_map_attribute'))){
 				$o_map = new GeographicMap(285, 200, 'map');
 				$o_map->mapFrom($t_object, $this->request->config->get('ca_objects_map_attribute'));
 				print "<div class='unit'>".$o_map->render('HTML')."</div>";
-			}			
+			}	
+					
 			# --- output related object images as links
 			$va_related_objects = $t_object->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
 			if (sizeof($va_related_objects)) {
-				print "<div class='unit'><h2>"._t("Related Objects")."</h2>";
+				print "<div class='unit'><h2>"._t("Related objects")."</h2>";
 				print "<table border='0' cellspacing='0' cellpadding='0' width='100%' id='objDetailRelObjects'>";
 				$col = 0;
 				$vn_numCols = 4;

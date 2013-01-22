@@ -7,7 +7,7 @@
   			<div id="block-n911mm-1" class="block block-n911mm region-odd odd region-count-1 count-1">
   
   				<div class="content">
-    				<div class="content-bottom-block"><a href="/interactive-911-timeline">
+    				<div class="content-bottom-block"><a href="http://www.911memorial.org/interactive-911-timelines">
   					<h3 class="title" title="Explore">Explore</h3>
   						<div class="content"><img src="http://www.911memorial.org/sites/all/files/imagecache/info_block_image/infoblock/Capture1.png" alt="Explore" title="Explore"  class="imagecache imagecache-info_block_image" width="220" height="120" />
   							<div class="subcontent">
@@ -17,7 +17,7 @@
   						</div>
 						</a><!-- what is this? -->
 					</div>
-					<div class="content-bottom-block"><a href="/getting-here">
+					<div class="content-bottom-block"><a href="http://www.911memorial.org/getting-here">
   					<h3 class="title" title="Visit">Visit</h3>
  						<div class="content"><img src="http://www.911memorial.org/sites/all/files/imagecache/info_block_image/infoblock/seealso-image2o.jpg" alt="Visit" title="Visit"  class="imagecache imagecache-info_block_image" width="220" height="120" />
  							<div class="subcontent">
@@ -27,7 +27,7 @@
 						</div>
 						</a>
 					</div>
-					<div class="content-bottom-block"><a href="/donations">
+					<div class="content-bottom-block"><a href="http://www.911memorial.org/donations">
   					<h3 class="title" title="Get Involved">Get Involved</h3>
   						<div class="content"><img src="http://www.911memorial.org/sites/all/files/imagecache/info_block_image/infoblock/seealso-image3o.jpg" alt="Get Involved" title="Get Involved"  class="imagecache imagecache-info_block_image" width="220" height="120" />
   							<div class="subcontent">
@@ -37,7 +37,7 @@
   						</div>
 						</a>
 					</div>
-					<div class="content-bottom-block last"><a href="/contribute-memorial-exhibition">
+					<div class="content-bottom-block last"><a href="http://www.911memorial.org/contribute-memorial-exhibition">
   					<h3 class="title" title="Remember">Remember</h3>
 						<div class="content"><img src="http://www.911memorial.org/sites/all/files/imagecache/info_block_image/infoblock/inmemoriam_infoblock.png" alt="Remember" title="Remember"  class="imagecache imagecache-info_block_image" width="220" height="120" />
 							<div class="subcontent">
@@ -69,7 +69,7 @@
     					<div class="footer-top-block">
     						<h2><img src="http://www.911memorial.org/sites/all/files/textimage/31/13033188326895.png" alt="" title="" width="145" height="23" /></h2>
     						<p>The National September 11 Memorial &amp; Museum is only possible because of your support.</p>
-							<p><a href="/donations">All donations are tax deductible.&nbsp;<span>»</span></a></p>
+							<p><a href="http://www.911memorial.org/donations">All donations are tax deductible.&nbsp;<span>»</span></a></p>
 						</div>
 					</div>
 				</div> <!-- /.block -->
@@ -102,11 +102,11 @@
         	<div class="footer-bottom-img"></div>
         	<div class="footer-menu">
           		<ul class="menu">
-          			<li class="leaf first"><a href="/contact-us" title="">Contact Us</a></li>
-					<li class="leaf"><a href="/privacy-policy" title="">Terms of Use / Privacy Policy</a></li>
-					<li class="leaf"><a href="/financial-information" title="">Financial Information</a></li>
+          			<li class="leaf first"><a href="http://www.911memorial.org/contact-us" title="">Contact Us</a></li>
+					<li class="leaf"><a href="http://www.911memorial.org/privacy-policy" title="">Terms of Use / Privacy Policy</a></li>
+					<li class="leaf"><a href="http://www.911memorial.org/financial-information" title="">Financial Information</a></li>
 					<li class="leaf"><a href="https://secure.ethicspoint.com/domain/en/report_custom.asp?clientid=19476" title="">Ethics Point Hotline</a></li>
-					<li class="leaf last"><a href="/sitemap" title="">Site Map</a></li>
+					<li class="leaf last"><a href="http://www.911memorial.org/sitemap" title="">Site Map</a></li>
 				</ul>
 			</div>
       	</div>
@@ -116,7 +116,7 @@
 print TooltipManager::getLoadHTML();
 ?>
 	<div id="caMediaPanel"> 
-		<div id="close"><a href="#" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
+		<!--<div id="close"><a href="#" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>-->
 		<div id="caMediaPanelContentArea">
 		
 		</div>
@@ -136,10 +136,40 @@ print TooltipManager::getLoadHTML();
 				exposeBackgroundOpacity: 0.5,							/* opacity of background color masking out page content; 1.0 is opaque */
 				panelTransitionSpeed: 200, 									/* time it takes the panel to fade in/out in milliseconds */
 				allowMobileSafariZooming: true,
-				mobileSafariViewportTagID: '_msafari_viewport'
+				mobileSafariViewportTagID: '_msafari_viewport',
+				closeButtonSelector: '.close'
 			});
 		}
 	});
 	</script>
+	
+<!--	<div id="setsPanel"> 
+		<div id="close"><a href="#" onclick="researchPendingPanel.hidePanel(); return false;">&nbsp;&nbsp;&nbsp;</a></div>
+		<div id="setsPanelContentArea">
+			
+		</div>
+	</div>
+	<script type="text/javascript">
+	/*
+		Set up the "researchPendingPanel" panel that will be triggered by links in object detail
+		Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php
+	*/
+	var setsPanel;
+	jQuery(document).ready(function() {
+		if (caUI.initPanel) {
+			setsPanel = caUI.initPanel({ 
+				panelID: 'setsPanel',										/* DOM ID of the <div> enclosing the panel */
+				panelContentID: 'setsPanelContentArea',		/* DOM ID of the content area <div> in the panel */
+				exposeBackgroundColor: '#ffffff',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
+				exposeBackgroundOpacity: 0.85,							/* opacity of background color masking out page content; 1.0 is opaque */
+				panelTransitionSpeed: 200, 									/* time it takes the panel to fade in/out in milliseconds */
+				allowMobileSafariZooming: true,
+				mobileSafariViewportTagID: '_msafari_viewport',
+				closeButtonSelector: '.close'
+			});
+		}
+	});
+	</script>
+-->
 	</body>
 </html>
