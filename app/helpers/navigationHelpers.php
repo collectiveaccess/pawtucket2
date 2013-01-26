@@ -58,8 +58,9 @@
  	define('__CA_NAV_BUTTON_MAGNIFY__', 19);
  	define('__CA_NAV_BUTTON_OVERVIEW__', 20);
  	define('__CA_NAV_BUTTON_PAN__', 21);
- 	
- 	
+ 	define('__CA_NAV_BUTTON_CHANGE__', 22);
+ 	define('__CA_NAV_BUTTON_BATCH_EDIT__', 23);
+ 		
  	define('__CA_NAV_BUTTON_ICON_POS_LEFT__', 0);
  	define('__CA_NAV_BUTTON_ICON_POS_RIGHT__', 1);
  	define('__CA_NAV_BUTTON_ICON_POS_TOP__', 2);
@@ -473,11 +474,17 @@
 			case __CA_NAV_BUTTON_EDIT__:
 				$vs_img_name = 'edit';
 				break;
+			case __CA_NAV_BUTTON_BATCH_EDIT__:
+				$vs_img_name = 'batch_edit';
+				break;
 			case __CA_NAV_BUTTON_ALERT__:
 				$vs_img_name = 'alert';
 				break;
 			case __CA_NAV_BUTTON_SEARCH__:
 				$vs_img_name = 'lens';
+				break;
+			case __CA_NAV_BUTTON_GLASS__:
+				$vs_img_name = 'glass';
 				break;
 			case __CA_NAV_BUTTON_INFO__:
 				$vs_img_name = 'info';
@@ -529,6 +536,9 @@
 				break;
 			case __CA_NAV_BUTTON_PAN__:
 				$vs_img_name = 'pan';
+				break;
+			case __CA_NAV_BUTTON_CHANGE__:
+				$vs_img_name = 'change';
 				break;
 			default:
 				$vs_img_name = '';
@@ -866,8 +876,18 @@
 	# ------------------------------------------------------------------------------------------------
 	/**
 	 * Returns urls for JSON lookup services
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_table The database table name or number for which you want to perform lookups
+	 * @param array $pa_attributes Optional array of attributes to add to the lookup url
+	 * @return array An array of lookup urls key'ed by use. Keys are:
+	 *		ancestorList = Hierarchical ancestor lookup 
+	 *		levelList = Hierarchical level lookup - returns a single level of the hierarchy
+	 *		search = Simple text search lookup
+	 *		idno = Duplicate idno lookup
+	 *		intrinsic = Checks value of instrinsic field and return list of primary keys that use the specified value
 	 */
-	function caJSONLookupServiceUrl($po_request, $ps_table) {
+	function caJSONLookupServiceUrl($po_request, $ps_table, $pa_attributes=null) {
 		$o_dm = Datamodel::load();
 		
 		if (is_numeric($ps_table)) {
@@ -980,11 +1000,11 @@
 				break;
 		}
 		return array(
-			'ancestorList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyAncestorList'),
-			'levelList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyLevel'),
-			'search' => caNavUrl($po_request, $vs_module, $vs_controller, 'Get'),
-			'idno' => caNavUrl($po_request, $vs_module, $vs_controller, 'IDNo'),
-			'intrinsic' => caNavUrl($po_request, $vs_module, $vs_controller, 'intrinsic')
+			'ancestorList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyAncestorList', $pa_attributes),
+			'levelList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyLevel', $pa_attributes),
+			'search' => caNavUrl($po_request, $vs_module, $vs_controller, 'Get', $pa_attributes),
+			'idno' => caNavUrl($po_request, $vs_module, $vs_controller, 'IDNo', $pa_attributes),
+			'intrinsic' => caNavUrl($po_request, $vs_module, $vs_controller, 'intrinsic', $pa_attributes)
 		);
 	}
 	# ------------------------------------------------------------------------------------------------
