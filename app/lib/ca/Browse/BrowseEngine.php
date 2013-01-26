@@ -2883,6 +2883,23 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						$va_wheres[] = "(".$t_subject->tableName().'.'.$t_subject->primaryKey()." IN (".join(',', $va_results)."))";
 					}
 					
+					if (!is_array($va_restrict_to_lists = $va_facet_info['restrict_to_lists'])) { $va_restrict_to_lists = array(); }
+					if (is_array($va_restrict_to_lists) && (sizeof($va_restrict_to_lists) > 0) && ($t_rel_item->tableName() == 'ca_list_items')) {
+						$va_list_ids = array();
+						foreach($va_restrict_to_lists as $vm_list) {
+							if (is_numeric($vm_list)) {
+								$vn_list_id = (int)$vm_list;
+							} else {
+								$vn_list_id = (int)ca_lists::getListID($vm_list);
+							}
+							if ($vn_list_id) { $va_list_ids[] = $vn_list_id; }
+						}
+						
+						if (sizeof($va_list_ids) > 0) {
+							$va_wheres[] = "{$vs_rel_table_name}.list_id IN (".join(',', $va_list_ids).")";
+						}
+					}
+					
 					if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
 						$va_wheres[] = "{$vs_rel_table_name}.type_id IN (".join(',', $va_restrict_to_types).")";
 					}
@@ -3223,7 +3240,14 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		/**
 		 * Fetch the subject rows found by an execute()'d browse
 		 */
-		public function getResults($po_result=null, $pa_options=null) {
+		public function getResults($pa_options=null) {
+			return $this->doGetResults(null, $pa_options);
+		}
+		# ------------------------------------------------------
+		/**
+		 * Fetch the subject rows found by an execute()'d browse
+		 */
+		protected function doGetResults($po_result=null, $pa_options=null) {
 			if (!is_array($this->opa_browse_settings)) { return null; }
 			$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_browse_table_name, true);
 			$vb_will_sort = (isset($pa_options['sort']) && $pa_options['sort'] && (($this->getCachedSortSetting() != $pa_options['sort']) || ($this->getCachedSortDirectionSetting() != $pa_options['sort_direction'])));
@@ -3233,7 +3257,9 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			
 			if(sizeof($va_results =  $this->opo_ca_browse_cache->getResults())) {
 				if ($vb_will_sort) {
-					$va_results = array_keys($this->sortHits(array_flip($va_results), $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null)));
+					$va_results_flipped = array_flip($va_results);
+					$va_tmp = $this->sortHits($va_results_flipped, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
+					$va_results = array_keys($va_tmp);
 
 					$this->opo_ca_browse_cache->setParameter('table_num', $this->opn_browse_table_num); 
 					$this->opo_ca_browse_cache->setParameter('sort', $pa_options['sort']);
@@ -3436,7 +3462,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 				// Grab values and index for sorting later
 				//
 				
-				$vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
+				$va_tmp = explode('.', $vs_sortable_value_fld);
+				$vs_sort_field = array_pop($va_tmp);
 				$vs_join_sql = join("\n", $va_joins);
 				$vs_sql = "
 					SELECT {$vs_table_name}.{$vs_table_pk}{$vs_locale_where}, lower({$vs_sortable_value_fld}) {$vs_sort_field}
