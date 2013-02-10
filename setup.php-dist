@@ -233,6 +233,25 @@ define("__CA_LIB_DIR__", __CA_APP_DIR__."/lib");
 # Path to CollectiveAccess 'lib' directory containing software libraries CA needs to function
 define("__CA_CONF_DIR__", __CA_APP_DIR__."/conf");
 
+
+# Set path to instance configuration file
+# (If you want to run several CA distinct instances using a single install you can add additional configuration files here.)
+$_CA_INSTANCE_CONFIG_FILES = array(
+	'_default_'	=> __CA_CONF_DIR__.'/app.conf'	// the _default_ value must always be defined
+);
+
+if (!isset($_SERVER['HTTP_HOST']) || !isset($_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']]) || !($_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']])) {
+	$_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES['_default_'];
+} 
+if (!(file_exists($_CA_CONFIG_PATH))) {
+	$opa_error_messages = array("Configuration files are missing for hostname '".$_SERVER['HTTP_HOST']."'!<br/>Please check the <em>__CA_BASE_DIR__</em> configuration setting in your <em>setup.php</em> file.");
+	if (!include_once("./themes/default/views/system/configuration_error_html.php")) {
+		die("Fatal error: Configuration files are missing for hostname '".$_SERVER['HTTP_HOST']."'! Please check the __CA_BASE_DIR__ configuration setting in your setup.php file.");
+	}
+	exit();
+}
+
+
 # Path to CollectiveAccess 'themes' directory containing visual presentation elements - views (templates), CSS, graphics and, potentially, configuration
 define("__CA_THEMES_DIR__", __CA_BASE_DIR__."/themes");
 
@@ -250,24 +269,6 @@ define("__CA_THEMES_URL__", __CA_URL_ROOT__."/themes");
 # Theme-specific configuration simply allows you to override selected application configuration as-needed to suit the specific theme
 define("__CA_LOCAL_CONFIG_DIRECTORY__", __CA_THEMES_DIR__."/".__CA_THEME__."/conf");
 
-
-# Set path to instance configuration file
-# (If you want to run several CA distinct instances using a single install
-#  you can add additional configuration files here. See http://trac.collectiveaccess.org/wiki/MultipleInstances)
-$_CA_INSTANCE_CONFIG_FILES = array(
-	'_default_'	=> __CA_CONF_DIR__.'/app.conf'	// the _default_ value must always be defined
-);
-
-if (!isset($_SERVER['HTTP_HOST']) || !isset($_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']]) || !($_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES[$_SERVER['HTTP_HOST']])) {
-	$_CA_CONFIG_PATH = $_CA_INSTANCE_CONFIG_FILES['_default_'];
-} 
-if (!(file_exists($_CA_CONFIG_PATH))) {
-	$opa_error_messages = array("Configuration files are missing for hostname '".$_SERVER['HTTP_HOST']."'!<br/>Please check the <em>__CA_BASE_DIR__</em> configuration setting in your <em>setup.php</em> file.");
-	if (!include_once("./themes/default/views/system/configuration_error_html.php")) {
-		die("Fatal error: Configuration files are missing for hostname '".$_SERVER['HTTP_HOST']."'! Please check the __CA_BASE_DIR__ configuration setting in your setup.php file.");
-	}
-	exit();
-}
 
 set_include_path(__CA_LIB_DIR__.'/ca'.PATH_SEPARATOR.__CA_LIB_DIR__.'/core'.PATH_SEPARATOR.__CA_MODELS_DIR__.PATH_SEPARATOR.get_include_path());
 
