@@ -301,8 +301,9 @@ function caFileIsIncludable($ps_file) {
 		if(substr($dir, -1, 1) == "/"){
 			$dir = substr($dir, 0, strlen($dir) - 1);
 		}
-		if ($handle = opendir($dir)) {
-			while (false !== ($item = readdir($handle))) {
+		
+		if($va_paths = scandir($dir, 0)) {
+			foreach($va_paths as $item) {
 				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
 					$vb_is_dir = is_dir("{$dir}/{$item}");
 					if ($pb_recursive && $vb_is_dir) { 
@@ -314,7 +315,6 @@ function caFileIsIncludable($ps_file) {
 					}
 				}
 			}
-			closedir($handle);
 		}
 		
 		if ($pb_sort) {
@@ -889,7 +889,7 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $pa_sort_keys An array of keys in the second-level array to sort by
 	 * @return array The sorted array
 	*/
-	function caSortArrayByKeyInValue($pa_values, $pa_sort_keys) {
+	function caSortArrayByKeyInValue($pa_values, $pa_sort_keys, $ps_sort_direction="ASC") {
 		$va_sort_keys = array();
 		foreach ($pa_sort_keys as $vs_field) {
 			$va_tmp = explode('.', $vs_field);
@@ -905,6 +905,9 @@ function caFileIsIncludable($ps_file) {
 			$va_sorted_by_key[join('/', $va_key)][$vn_id] = $va_data;
 		}
 		ksort($va_sorted_by_key);
+		if (strtolower($ps_sort_direction) == 'desc') {
+			$va_sorted_by_key = array_reverse($va_sorted_by_key);
+		}
 		
 		$pa_values = array();
 		foreach($va_sorted_by_key as $vs_key => $va_data) {
@@ -1568,6 +1571,21 @@ function caFileIsIncludable($ps_file) {
             $len--;
         }
         return($arabic);
+	}
+	
+	# ----------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caWriteServerConfigHints() {
+		if (file_exists(__CA_APP_DIR__."/tmp/server_config_hints.txt")) { return false; }
+		return @file_put_contents(__CA_APP_DIR__."/tmp/server_config_hints.txt", serialize(
+			array(
+				'SCRIPT_FILENAME' => $_SERVER['SCRIPT_FILENAME'],
+				'HTTP_HOST' => $_SERVER['HTTP_HOST'],
+				'DOCUMENT_ROOT' => $_SERVER['DOCUMENT_ROOT']
+			)
+		));
 	}
 	# ----------------------------------------
 ?>
