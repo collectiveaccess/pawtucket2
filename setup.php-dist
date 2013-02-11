@@ -111,6 +111,28 @@ define("__CA_SMTP_PORT__", 25);
 #define("__CA_SMTP_PASSWORD__", 'my_smtp_password');
 
 
+#
+# You can set your time zone here. The default is to use US Eastern Standard Time. 
+# You can, and should, set an explicit time zone if you are not in the Eastern United States.
+# A list of valid time zone settings is available at http://us3.php.net/manual/en/timezones.php
+#
+date_default_timezone_set('America/New_York');
+
+
+#
+# __CA_DEFAULT_LOCALE__ = The locale to use when no user-preferred locale has been set
+#
+# The locale set here is used in situations where no locale is specifically set by the user: prior to login
+# or prior to setting your preferred locale in user preferences for the first time.
+#
+# You should set this to the locale in which your users generally work.
+#
+# Note that whatever value you set *MUST* be configured in your system, either by hand or by an installation
+# profile. The default value is US/English, which exists in most configurations.
+# 
+define("__CA_DEFAULT_LOCALE__", "en_US");
+
+
 # *** 
 # __   __          _                _                  
 # \ \ / /__  _   _( )_ __ ___    __| | ___  _ __   ___ 
@@ -141,20 +163,6 @@ define("__CA_SMTP_PORT__", 25);
 # available at http://docs.collectiveaccess.org
 #
 define("__CA_QUEUE_ENABLED__", 0);
-
-
-#
-# __CA_DEFAULT_LOCALE__ = The locale to use when no user-preferred locale has been set
-#
-# The locale set here is used in situations where no locale is specifically set by the user: prior to login
-# or prior to setting your preferred locale in user preferences for the first time.
-#
-# You should set this to the locale in which your users generally work.
-#
-# Note that whatever value you set *MUST* be configured in your system, either by hand or by an installation
-# profile. The default value is US/English, which exists in most configurations.
-# 
-define("__CA_DEFAULT_LOCALE__", "en_US");
 
 
 #
@@ -194,14 +202,6 @@ define("__CA_URL_ROOT__", str_replace($_SERVER['DOCUMENT_ROOT'], '', __CA_BASE_D
 #		If you must set this manually, it must be the full host name. Do not include http:// or any other prefixes.
 #
 define("__CA_SITE_HOSTNAME__", $_SERVER['HTTP_HOST']);
-
-
-#
-# You can set your time zone here. The default is to use US Eastern Standard Time. 
-# You can, and should, set an explicit time zone if you are not in the Eastern United States.
-# A list of valid time zone settings is available at http://us3.php.net/manual/en/timezones.php
-#
-date_default_timezone_set('America/New_York');
 
 
 #
