@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2012 Whirl-i-Gig
+ * Copyright 2008-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -83,7 +83,7 @@
 			$vn_element_id = $t_element->getPrimaryKey();
 			
 			// check restriction min/max settings
-			$t_restriction = $t_element->getTypeRestrictionInstance($this->tableNum(), $this->getTypeID());
+			$t_restriction = $t_element->getTypeRestrictionInstanceForElement($this->tableNum(), $this->getTypeID());
 			if (!$t_restriction) { return null; }		// attribute not bound to this type
 			$vn_min = $t_restriction->getSetting('minAttributesPerRow');
 			$vn_max = $t_restriction->getSetting('maxAttributesPerRow');
@@ -242,7 +242,7 @@
 			// check restriction min/max settings
 			if (!isset($pa_options['dontCheckMinMax']) || !$pa_options['dontCheckMinMax']) { 
 				if (!($t_element = $this->_getElementInstance($t_attr->get('element_id')))) { return false; }
-				$t_restriction = $t_element->getTypeRestrictionInstance($this->tableNum(), $this->getTypeID());
+				$t_restriction = $t_element->getTypeRestrictionInstanceForElement($this->tableNum(), $this->getTypeID());
 				if (!$t_restriction) { return null; }		// attribute not bound to this type
 				$vn_min = $t_restriction->getSetting('minAttributesPerRow');
 				$vn_max = $t_restriction->getSetting('maxAttributesPerRow');
@@ -401,7 +401,7 @@
 			return $va_field_values;
 		}
 		# ------------------------------------------------------------------
-		public function load($pm_id=null) {
+		public function load($pm_id=null, $pb_use_cache=true) {
 			$this->init();
 			$this->setFieldValuesArray(array());
 			if ($vn_c = parent::load($pm_id)) {
@@ -420,7 +420,7 @@
 			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			if (!is_array($pa_options)) { $pa_options = array(); }
-			$pa_options['dont_do_search_indexing'] = true;
+			//$pa_options['dont_do_search_indexing'] = true;
 			
 			$va_field_values = $this->getFieldValuesArray();		// get pre-insert field values (including attribute values)
 			
@@ -481,7 +481,7 @@
 			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			if (!is_array($pa_options)) { $pa_options = array(); }
-			$pa_options['dont_do_search_indexing'] = true;
+			//$pa_options['dont_do_search_indexing'] = true;
 			
 			$va_field_values = $this->getFieldValuesArray();		// get pre-update field values (including attribute values)
 			// change status for attributes is only available **before** update
@@ -507,7 +507,7 @@
 			return false;
 		}
 		# ------------------------------------------------------------------
-		public function delete($pb_delete_related=false, $pa_options=null) {
+		public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
 			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			if (!$this->inTransaction()) {
@@ -517,7 +517,7 @@
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			
 			$vn_id = $this->getPrimaryKey();
-			if(parent::delete($pb_delete_related, $pa_options)) {
+			if(parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) {
 				// Delete any associated attributes and attribute_values
 				if (!($qr_res = $this->getDb()->query("
 					DELETE FROM ca_attribute_values 
@@ -785,8 +785,11 @@
 										foreach($va_values as $vn_id => $va_attribute_values) {
 											foreach($va_attribute_values as $vn_attribute_id => $va_data) {
 												if(isset($va_data[$va_tmp[2]])) {
-													if (!$vs_template) { $vs_template = "^".$va_tmp[2]; }
-													$va_subvalues[$vn_attribute_id] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('returnAsArray' => false, 'placeholderPrefix' => $va_tmp[1])));
+													if ($vs_template) { 
+														$va_subvalues[$vn_attribute_id] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('returnAsArray' => false, 'placeholderPrefix' => $va_tmp[1])));
+													} else {
+														$va_subvalues[$vn_attribute_id] = $va_data;
+													}
 												}
 											}
 										}
@@ -1042,6 +1045,8 @@
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			if (!is_array($pa_bundle_settings)) { $pa_bundle_settings = array(); }
 			
+			$vb_batch = (isset($pa_options['batch']) && $pa_options['batch']) ? true : false;
+			
 			if (!($t_element = $this->_getElementInstance($pm_element_code_or_id))) {
 				return false;
 			}
@@ -1098,6 +1103,9 @@
 					$vs_br = "";
 				}
 
+				if (isset($pa_bundle_settings['usewysiwygeditor']) && strlen($pa_bundle_settings['usewysiwygeditor']) == 0) {
+					unset($pa_bundle_settings['usewysiwygeditor']);	// let null usewysiwygeditor bundle option fall back to metadata element setting
+				}
 				$va_elements_by_container[$va_element['parent_id']][] = $vs_br.ca_attributes::attributeHtmlFormElement($va_element, array_merge($pa_bundle_settings, array_merge($pa_options, array(
 					'label' => (sizeof($va_element_set) > 1) ? $va_label['name'] : '',
 					'description' => $va_label['description'],
@@ -1140,9 +1148,10 @@
 			$o_view->setVar('render_mode', $t_element->getSetting('render'));	// only set for list attributes (as of 26 Sept 2010 at least)
 			
 			if ($t_restriction = $this->getTypeRestrictionInstance($t_element->get('element_id'))) {
-				$o_view->setVar('min_num_repeats', $t_restriction->getSetting('minAttributesPerRow'));
-				$o_view->setVar('max_num_repeats', $t_restriction->getSetting('maxAttributesPerRow'));
-				$o_view->setVar('min_num_to_display', $t_restriction->getSetting('minimumAttributeBundlesToDisplay'));
+				// If batch mode force minimums to zero
+				$o_view->setVar('max_num_repeats', $vb_batch  ? 9999 : $t_restriction->getSetting('maxAttributesPerRow'));
+				$o_view->setVar('min_num_repeats', $vb_batch ? 0 : $t_restriction->getSetting('minAttributesPerRow'));
+				$o_view->setVar('min_num_to_display', $vb_batch ? 1 : $t_restriction->getSetting('minimumAttributeBundlesToDisplay'));
 			}
 			
 			// these are lists of associative arrays representing attributes that were rejected in a save() action
@@ -1159,6 +1168,9 @@
 			
 			// pass bundle settings to view
 			$o_view->setVar('settings', $pa_bundle_settings);
+			
+			// Is this being used in the batch editor?
+			$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 			
 			return $o_view->render('ca_attributes.php');
 		}
@@ -1539,7 +1551,7 @@
 			
 			$vs_table = $this->tableName();
 			foreach($va_elements as $vn_element_id => $vs_element_code) {
-				$va_vals = $this->get("{$vs_table}.{$vs_element_code}", array("returnAsArray" => true, "returnAllLocales" => true));
+				$va_vals = $this->get("{$vs_table}.{$vs_element_code}", array("returnAsArray" => true, "returnAllLocales" => true, 'forDuplication' => true));
 				if (!is_array($va_vals)) { continue; }
 				foreach($va_vals as $vn_id => $va_vals_by_locale) {
 					foreach($va_vals_by_locale as $vn_locale_id => $va_vals_by_attr_id) {
@@ -1691,6 +1703,20 @@
  			BaseModelWithAttributes::$s_applicable_element_code_cache[$this->tableNum().'/'.$pn_type_id.'/'.($pb_include_sub_element_codes ? 1 : 0)] = $va_codes;
  			return $va_codes;
  		}
+ 		# ------------------------------------------------------------------
+		/**
+		 *
+		 */
+ 		public function getApplicableElementCodesForTypes($pa_type_ids, $pb_include_sub_element_codes=false, $pb_dont_cache=true) {
+ 			$va_codes = array();
+ 			foreach($pa_type_ids as $vn_i => $vn_type_id) {
+ 				$va_tmp = $this->getApplicableElementCodes($vn_type_id, $pb_include_sub_element_codes, $pb_dont_cache);
+ 				foreach($va_tmp as $vn_element_id => $vs_element_code) {
+ 					$va_codes[$vn_element_id] = $vs_element_code;
+ 				}
+ 			}
+ 			return $va_codes;
+ 		}
 		# ------------------------------------------------------------------
 		/**
 		 *
@@ -1769,6 +1795,7 @@
 				$this->postError(1950, _t("Element code or id must not be blank"), "BaseModelWithAttributes->_getElementInstance()");
 				return false;
 			}
+			
  			if (isset(BaseModelWithAttributes::$s_element_instance_cache[$pm_element_code_or_id]) && BaseModelWithAttributes::$s_element_instance_cache[$pm_element_code_or_id]) {
  				return BaseModelWithAttributes::$s_element_instance_cache[$pm_element_code_or_id];
  			}

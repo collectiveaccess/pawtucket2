@@ -38,7 +38,7 @@
 	$va_item_classifications = array();
 	if($qr_hits->numHits()){
 		while($qr_hits->nextHit()){
-			$va_items[$qr_hits->get("ca_objects.showcase_classification")][] = array("object_id" => $qr_hits->get("ca_objects.object_id"), "label" => join($qr_hits->getDisplayLabels(), "; "), "image" => $qr_hits->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values)));
+			$va_items[$qr_hits->get("ca_objects.showcase_classification")][] = array("object_id" => $qr_hits->get("ca_objects.object_id"), "label" => join($qr_hits->getDisplayLabels(), "; "), "image" => $qr_hits->getMediaTag('ca_object_representations.media', 'widepreview', array('checkAccess' => $va_access_values)), "classification" => $qr_hits->get("ca_objects.showcase_classification", array('convertCodesToDisplayText' => true)));
 		}
 		$va_item_classifications = array_keys($va_items);
 	}
@@ -113,7 +113,9 @@
 						foreach($va_classification_for_tabs as $vn_item_id => $va_item_info){
 							$va_subclassification_for_tabs = caExtractValuesByUserLocale($o_lists->getChildItemsForList("archival_showcase_classification", $vn_item_id, array('directChildrenOnly' => true)));
 							$va_subclassification_ids = array_keys($va_subclassification_for_tabs);
-							if(!in_array($vn_item_id, $va_item_classifications) && !sizeof(array_intersect($va_item_classifications, $va_subclassification_ids))){
+							$va_item_subclassifications = array_intersect($va_item_classifications, $va_subclassification_ids);
+						
+							if(!in_array($vn_item_id, $va_item_classifications) && !sizeof($va_item_subclassifications)){
 								continue;
 							}
 ?>
@@ -123,12 +125,12 @@
 								# --- items for top level classification
 								if($va_items[$vn_item_id]){
 									foreach($va_items[$vn_item_id] as $va_items_for_classification){
-									
 ?>
-									<div class="showcaseItem"><div class="showcaseItemContainer"><?php print caNavLink($this->request, $va_items_for_classification['image'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_classification['object_id'])).caNavLink($this->request, $va_items_for_classification['label'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_classification['object_id']));?></div></div>
+									<div class="showcaseItem"><div class="showcaseItemContainer"><div class="imgcontainer"><?php print caNavLink($this->request, $va_items_for_classification['image'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_classification['object_id']))."</div><div class='labelcontainer'>".caNavLink($this->request, ((mb_strlen($va_items_for_classification['label']) > 50) ? mb_substr($va_items_for_classification['label'], 0, 47)."..." : $va_items_for_classification['label']), '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_classification['object_id']), array("title" => $va_items_for_classification['label']));?></div></div></div>
 <?php
 									}
-								}else{
+								}
+								if(sizeof($va_item_subclassifications)){
 									# --- items for child classifications
 									$vs_subGroupItems = "";
 									print "<div class='subItemCategoriesListHeading'>Show ".$va_item_info['name_plural']." About:</div><div class='subItemCategoriesList'>";
@@ -137,13 +139,14 @@
 											print "<span class='itemSubCategory' id='category".$vn_sub_item_id."'><a href='#' onclick='$(\".itemSubCategory\").removeClass(\"itemSubCategoryHighlight\"); $(\"#category".$vn_sub_item_id."\").addClass(\"itemSubCategoryHighlight\"); $(\".itemGroup\").hide(); $(\"#group".$vn_sub_item_id."\").toggle(); return false;'>".$va_sub_item_info['name_plural']."</a></span>";
 											$vs_subGroupItems .= "<div class='itemGroup' id='group".$vn_sub_item_id."'>";
 											foreach($va_items[$vn_sub_item_id] as $va_items_for_sub_classification){
-												$vs_subGroupItems .= '<div class="showcaseItem"><div class="showcaseItemContainer">'.caNavLink($this->request, $va_items_for_sub_classification['image'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_sub_classification['object_id'])).caNavLink($this->request, $va_items_for_sub_classification['label'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_sub_classification['object_id'])).'</div></div>';
+												$vs_subGroupItems .= '<div class="showcaseItem"><div class="showcaseItemContainer"><div class="imgcontainer">'.caNavLink($this->request, $va_items_for_sub_classification['image'], '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_sub_classification['object_id']))."</div><div class='labelcontainer'>".caNavLink($this->request, ((mb_strlen($va_items_for_sub_classification['label']) > 50) ? mb_substr($va_items_for_sub_classification['label'], 0, 47)."..." : $va_items_for_sub_classification['label']), '', 'Detail', 'Object', 'Show', array('object_id' => $va_items_for_sub_classification['object_id']), array("title" => $va_items_for_sub_classification['label'])).'</div></div></div>';
 											}
 											$vs_subGroupItems .= "</div>";
 										}
 									}
 									print "</div><!-- end subItemCategoriesList -->".$vs_subGroupItems;
 								}
+								
 ?>
 							</div><!-- end contentstyle -->
 							<div style="clear:both; height:1px;"><!-- empty --></div>

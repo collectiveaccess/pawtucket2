@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -82,8 +82,14 @@
 			}
  		}
  		# -------------------------------------------------------
- 		function Index($pb_dont_render_view=false, $pa_options=null) {
- 			parent::Index($po_search, $pa_options);
+ 		/**
+ 		 *
+ 		 */
+ 		public function Index($pa_options=null) {
+ 			$po_search = isset($pa_options['search']) ? $pa_options['search'] : null;
+ 			$pb_dont_render_view = (isset($pa_options['dontRenderView']) && (bool)$pa_options['dontRenderView']) ? true : false;
+ 			
+ 			parent::Index($pa_options);
  			JavascriptLoadManager::register('browsable');
 			JavascriptLoadManager::register('hierBrowser');
  			
@@ -116,12 +122,19 @@
  			}
  			
  			if (!($vs_view 			= $this->opo_result_context->getCurrentView())) { 
- 				$vs_view = $this->ops_view_default ? $this->ops_view_default : array_shift(array_keys($this->opa_views)); 
+ 				$va_tmp = array_keys($this->opa_views);
+ 				$vs_view = $this->ops_view_default ? $this->ops_view_default : array_shift($va_tmp); 
  				$this->opo_result_context->setCurrentView($vs_view);
  			}
- 			if (!isset($this->opa_views[$vs_view])) { $vs_view = array_shift(array_keys($this->opa_views)); }
+ 			if (!isset($this->opa_views[$vs_view])) { 
+ 				$va_tmp = array_keys($this->opa_views);
+ 				$vs_view = array_shift($va_tmp); 
+ 			}
  			
- 			if (!($vs_sort 	= $this->opo_result_context->getCurrentSort())) { $vs_sort = array_shift(array_keys($this->opa_sorts)); }
+ 			if (!($vs_sort 	= $this->opo_result_context->getCurrentSort())) { 
+ 				$va_tmp = array_keys($this->opa_sorts);
+ 				$vs_sort = array_shift($va_tmp); 
+ 			}
 			$vs_sort_direction = $this->opo_result_context->getCurrentSortDirection();
 			
  			if (!$vn_page_num || $vb_criteria_have_changed) { $vn_page_num = 1; }
@@ -348,7 +361,9 @@
  			$this->view->setVar('facet_name', $ps_facet_name);
  			
  			$this->view->setVar('individual_group_display', isset($va_facet_info['individual_group_display']) ? (bool)$va_facet_info['individual_group_display'] : false);
- 			
+
+ 			// this should be 'facet' but we don't want to render all old 'ajax_browse_facet_html' views (pawtucket themes) unusable
+ 			$this->view->setVar('grouped_facet',$this->opo_browse->getFacetWithGroups($ps_facet_name, $va_facet_info["group_mode"], $vs_grouping, array('sort' => 'name', 'checkAccess' => $va_access_values)));
  			
  			// generate type menu and type value list for related authority table facet
  			if ($va_facet_info['type'] === 'authority') {
@@ -619,7 +634,7 @@
  		# Sidebar info handler
  		# -------------------------------------------------------
  		public function Tools($pa_parameters) {
- 			parent::Tools($pa_parameters, $po_search);
+ 			parent::Tools($pa_parameters);
 			
 			$this->view->setVar('mode_type_singular', $this->browseName('singular'));
 			$this->view->setVar('mode_type_plural', $this->browseName('plural'));

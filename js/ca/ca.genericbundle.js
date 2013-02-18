@@ -60,6 +60,8 @@ var caUI = caUI || {};
 			defaultValues: {},
 			readonly: 0,
 			
+			sortInitialValuesBy: null,
+			
 			isSortable: false,
 			listSortOrderID: null,
 			listSortItems: null // if set, limits sorting to items specified by selector
@@ -78,7 +80,7 @@ var caUI = caUI || {};
 		}
 		
 		that.showUnsavedChangesWarning = function(b) {
-			if(typeof caUI.utils.showUnsavedChangesWarning === 'function') {
+			if(caUI && caUI.utils && typeof caUI.utils.showUnsavedChangesWarning === 'function') {
 				if (b === undefined) { b = true; }
 				caUI.utils.showUnsavedChangesWarning(b);
 			}
@@ -362,8 +364,24 @@ var caUI = caUI || {};
 		
 		// create initial values
 		var initalizedCount = 0;
+		var initialValuesSorted = [];
+		
+		// create an array so we can sort
 		jQuery.each(that.initialValues, function(k, v) {
-			that.addToBundle(k, v, true);
+			v['_key'] = k;
+			initialValuesSorted.push(v);
+		});
+		
+		// perform configured sort
+		if (that.sortInitialValuesBy) {
+			initialValuesSorted.sort(function(a, b) { 
+				return a[that.sortInitialValuesBy] - b[that.sortInitialValuesBy];
+			});
+		}
+		
+		// create the bundles
+		jQuery.each(initialValuesSorted, function(k, v) {
+			that.addToBundle(v['_key'], v, true);
 			initalizedCount++;
 		});
 		

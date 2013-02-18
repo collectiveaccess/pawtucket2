@@ -15,7 +15,7 @@
 	
 	<address>Phone: 00353 (0)61 400010 &nbsp; <span>&#124;</span> &nbsp; Fax: 00353 (0)61 400355 &nbsp; <span>&#124;</span> &nbsp; Email: <a href="mailto:webservices@limerickcity.ie">webservices@limerickcity.ie</a></address>
 	
-	<p>&copy; 2009-2011 Limerick City Council</p>
+	<p>&copy; 2009-2012 Limerick City Council</p>
 	
 </div>
 <?php
