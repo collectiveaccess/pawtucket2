@@ -1925,8 +1925,7 @@ div.caMediaOverlayControls:hover {
 div.caMediaOverlayControls a{
 	text-decoration:none;
 	font-weight:bold;
-	font-size:16px;
-	color:#FFF;
+	color:#FFF; 
 }
 div.caMediaOverlayControls a:hover{
 	color:#FFF;
@@ -1950,8 +1949,34 @@ div.caMediaOverlayControls .objectInfo{
 	width:40%;
 	float:left;
 }
-div.caMediaOverlayControls .objectInfo a{
-	font-size:11px;
+div.caMediaOverlayControls .captionRight {
+	float:left; 
+	width:45%; 
+	margin-left:25px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .captionLeft {
+	float:left; 
+	width:45%; 
+	margin-left:15px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink {
+	float:left;
+	text-align:left;
+	color:white;
+	font-size:12px;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink a{
+	font-size:12px;
 }
 div.caMediaOverlayControls .repNav {
 	float:left;

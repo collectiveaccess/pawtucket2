@@ -565,7 +565,11 @@ form#searchform input#searchbutton {
 	font-weight: bold;
 	padding: 10px 0;
 }
-
+.searchboxitem h3 a {
+	color: #44515A;
+	font-weight: bold;
+	padding: 10px 0;
+}
 .searchboxitem h4 {
 	color: #313131;
 	font-size: 86%;
@@ -860,7 +864,10 @@ padding: 0px 10px 10px 10px;
 	font-size:1.05em;
 	clear:right;
 }
-
+.searchboxitemtext a{
+	text-decoration:underline;
+	color: #44515A;
+}
 
 .searchboxes .searchbox-pagination {
 	margin-left: 0;
@@ -1062,6 +1069,7 @@ thead th {
 	color: #FFFFFF;
 }
 .subItemCategoriesListHeading{
+	clear:left;
 	font-size:16px;
 	font-weight:bold;
 	margin:10px 0px 10px 0px;
@@ -1081,21 +1089,36 @@ thead th {
 }
 .mostviewed, .showcaseItem {
 	float:left;
-	width:180px;
+	width:160px;
+	margin:10px;
 	overflow:hidden;
 }
 .itemGroup {
 	display:none;
 }
 .mostviewedcontainer, .showcaseItemContainer {
-	height:143px;
-	width:180px;
-	margin:10px;
+	height:155px;
+	width:160px;
+	overflow:hidden;
 	background-color:#ccc;
 	line-height:1.75em;
 }
+.mostviewedcontainer .imgcontainer, .showcaseItemContainer .imgcontainer {
+	width:160px;
+	margin: 0px 0px 0px -20px;
+}
+.mostviewedcontainer .labelcontainer, .showcaseItemContainer .labelcontainer {
+	width:150px;
+	margin: 5px;
+	font-size:11px;
+	text-align:center;
+	line-height:1.1em;
+}
 .mostviewedcontainer a{
 	text-decoration: none;
+	font-size:11px;
+	text-align:center;
+	line-height:1.1em;
 }
 .mostviewedcontainer a:hover{
 	text-decoration: none;
@@ -1315,6 +1338,10 @@ div.searchlight-results div.searchlight-selected {
 #detailBody #leftCol .unit{
 	margin-bottom:12px;
 	color: #313131;
+}
+.unit ul{
+	padding:0px 0px 0px 15px;
+	margin:0px;
 }
 #detailBody #leftCol #description{
 	margin-top:12px;

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2010 Whirl-i-Gig
+ * Copyright 2008-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -343,7 +343,8 @@
 			}
  			$this->view->setVar('secondaryItemsPerPage', $this->opa_items_per_secondary_search_page);
  			
- 			return parent::Index($this->opo_browse, $pa_options);
+ 			$pa_options['search'] = $this->opo_browse;
+ 			return parent::Index($pa_options);
  		}
  		# -------------------------------------------------------
  		/**

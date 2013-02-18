@@ -105,7 +105,7 @@
  		 * In general you should always have the table wide views defined. Then you can define type-specific views for your
  		 * application on an as-needed basis.
  		 */
- 		public function Show() {
+ 		public function Show($pa_options=null) {
  			JavascriptLoadManager::register('viz');
  			JavascriptLoadManager::register("ca", "panel");
  			JavascriptLoadManager::register("jit");
@@ -352,11 +352,15 @@
  			//
  			// Render view
  			//
- 			if ($this->getView()->viewExists($this->ops_tablename.'_'.$t_item->getTypeCode().'_detail_html.php')) {
- 				$this->render($this->ops_tablename.'_'.$t_item->getTypeCode().'_detail_html.php');
+ 			if(isset($pa_options['view']) && $pa_options['view']) {
+ 				$this->render($pa_options['view']);
  			} else {
- 				$this->render($this->ops_tablename.'_detail_html.php');
- 			}
+				if ($this->getView()->viewExists($this->ops_tablename.'_'.$t_item->getTypeCode().'_detail_html.php')) {
+					$this->render($this->ops_tablename.'_'.$t_item->getTypeCode().'_detail_html.php');
+				} else {
+					$this->render($this->ops_tablename.'_detail_html.php');
+				}
+			}
  		}
  		# -------------------------------------------------------
  		# Tagging and commenting

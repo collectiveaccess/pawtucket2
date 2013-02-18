@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,22 @@
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	
  	class SetsOverlayController extends BaseDetailController {
+		# -------------------------------------------------------
+ 		private $ops_theme;						// current theme
+ 		# -------------------------------------------------------
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
+			$this->opo_plugin_config = Configuration::load($this->request->getAppConfig()->get('application_plugins').'/simpleGallery/conf/simpleGallery.conf');
+ 			
+ 			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('simpleGallery plugin is not enabled')); }
+ 			
+ 			$this->ops_theme = __CA_THEME__;																		// get current theme
+ 			if(!is_dir(__CA_APP_DIR__.'/plugins/simpleGallery/views/'.$this->ops_theme)) {		// if theme is not defined for this plugin, try to use "default" theme
+ 				$this->ops_theme = 'default';
+ 			}
+ 			
+ 			$this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'simple_gallery');
+ 		}
 		# -------------------------------------------------------
  		/**
  		 * Returns content for overlay containing details for object representation linked to occurrence
@@ -133,6 +149,7 @@
 			
 			$this->view->setVar('reps', $va_thumbnails);
 
- 			return $this->render("default/ajax_ca_sets_media_overlay_html.php");
+ 			return $this->render($this->ops_theme."/ajax_ca_sets_media_overlay_html.php");
  		}
+ 		# -------------------------------------------------------
  	}
