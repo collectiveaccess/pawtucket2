@@ -70,17 +70,19 @@ if (!$this->request->isAjax()) {
 				<!-- bookmark link END -->
 <?php
 			}
-			if ($va_company = $t_entity->get('ca_entities.company.companyName')) {
-				print "<div class='unit'><span class='metatitle'>Press Name</span><br/>".$va_company."</div>";
+			if ($t_entity->get('ca_entities.type_id') != 79) {
+				if ($va_company = $t_entity->get('ca_entities.company.companyName')) {
+					print "<div class='unit'><span class='metatitle'>Press Name</span><br/>".$va_company."</div>";
+				}
 			}
-			if($va_origin = $t_entity->get('ca_entities.address', array('template' => '^city<ifdef code="city,stateprovince">, </ifdef>^stateprovince ^country', 'delimiter' => '<br/>'))){
+			if(($va_origin = $t_entity->get('ca_entities.address', array('template' => '^city<ifdef code="city,stateprovince">, </ifdef>^stateprovince ^country', 'delimiter' => '<br/>')))){
 				print "<div class='unit'><span class='metatitle'>"._t("Location")."</span><br/> ".$va_origin."</div><!-- end unit -->";
-			}			
+			}		
 			if ($va_bio = $t_entity->get('ca_entities.artist_bio')) {
 				print "<div class='unit' id='bio'><span class='metatitle'>Biography</span><br/>".$va_bio."</div>";
 			}
-			if ($va_instit = $t_entity->get('ca_entities.related.preferred_labels', array('restrictToRelationshipTypes' => array('in_collection'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
-				print "<div class='unit'><span class='metatitle'>Institutional Collectors</span><br/>".$va_instit."</div>";
+			if ($va_instit = $t_entity->get('ca_entities.related.preferred_labels', array('restrictToRelationshipTypes' => array('in_collection'), 'returnAsLink' => true, 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+				print "<div class='unit'><span class='metatitle'>In Collection</span><br/>".$va_instit."</div>";
 			}				
 ?>
 					<script type="text/javascript">

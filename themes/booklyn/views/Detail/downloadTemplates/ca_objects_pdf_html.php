@@ -31,17 +31,20 @@
 ?>
 <HTML>
 	<HEAD>
+		<link rel="stylesheet" href="http://booklyn.org/wp/wp-content/themes/baa-theme/css/pdf_fonts.css" type="text/css" media="screen">
 		<style type="text/css">
-			<!--
-			div, p, table { font-size: 11px; font-family: Helvetica, sans-serif;}
+			<!--			
+			div, p, table { font-size: 11px; font-family: Helvetica, sans-serif; color: #000;}
+			span {font-family: 'DIN-Black-TT';}
+			.footer {font-family: 'DIN-Black-TT'; font-size: 11px;}
 			.unit { padding:0px 0px 10px 0px;}
-			H1 { font-weight:bold; font-size: 13px; font-family: Helvetica, sans-serif; margin:0px 0px 10px 0px; }
-			H2 { font-weight:bold; font-size: 11px; font-family: Helvetica, sans-serif; margin-bottom:2px; }
+			.sub { font-weight:bold; font-size: 13px; font-family: 'DIN-Black-TT'; margin:0px 0px 10px 0px; color: #90BCC4;}
+			H2 { font-weight:bold; font-size: 11px; font-family: 'DIN-Black-TT'; }
 			.media { float:right; padding:0px 0px 10px 10px; width:400px; }
 			.pageHeader { margin: 0px auto 20px auto; padding: 0px 5px 0px 5px; width: 100%; font-family: Helvetica, sans-serif; text-align:center;}
 			.pageHeader img{ vertical-align:middle;  }
 			.notes { font-style:italic; color:#828282; margin-top:20px; width:100%; clear:both}
-			.subHeader { width:100%; text-align:center; margin:0px auto 10px auto; clear:both; }
+			div.subHeader{ width:100%; text-align:center; font-size: 13px; margin:0px auto 20px auto; clear:both; font-family: 'DIN-Black-TT'; color: #90BCC4;}
 			-->
 		</style>
 	</HEAD>
@@ -51,17 +54,21 @@
 		if(file_exists($this->request->getThemeDirectoryPath().'/graphics/booklyn_logo_pdf.jpg')){
 			print '<div class="pageHeader"><img src="'.$this->request->getThemeDirectoryPath().'/graphics/booklyn_logo_pdf.jpg" width="197" height="72"/></div>';
 		}
-		print "<div class='subHeader'>";
+?>		
+		<div class='subHeader'>
+<?php		
 			if($va_artist = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', ', 'checkAccess' => $va_access_values, 'sort' => 'surname'))){
-				print "<H1>".$va_artist."</H1><!-- end unit -->";
+?>				
+				<?php print $va_artist."<br/>"?>
+<?php			
 			}
-			print "<H1>";
-			print "<i>".$t_item->getLabelForDisplay()."</i>";
+			
+			print $t_item->getLabelForDisplay();
 			if($va_date = $t_item->get('ca_objects.pub_date.pubDatesValue')) {
 				print ", ".$va_date;
 			}
 			
-			print "</H1>";
+			
 			
 		print "</div><!-- end subHeader -->";		
 		if($t_rep = $t_item->getPrimaryRepresentationInstance(array('return_with_access' => $va_access_values))){
@@ -73,47 +80,43 @@
 		}
 
 		if($va_publisher = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'delimiter' => ', ', 'checkAccess' => $va_access_values, 'sort' => 'surname'))){
-			print "<div class='line'><span><b>"._t("Publisher").":</b></span> ".$va_publisher."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Publisher").":</span> ".$va_publisher."</div><!-- end unit -->";
 		}
 		if($va_origin = $t_item->get('ca_objects.originLocation', array('template' => '^locationCity<ifdef code="locationCity,locationState">, </ifdef>^locationState ^locationCountry'))){
-			print "<div class='unit'><span><b>"._t("Origin").": </b></span> ".$va_origin."</div><!-- end unit -->";
+			print "<div class='unit'><span>"._t("Origin").": </span> ".$va_origin."</div><!-- end unit -->";
 		}
 		if($va_medium = $t_item->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))){
-			print "<div class='line'><span><b>"._t("Medium").": </b></span> ".$va_medium."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Medium").": </span> ".$va_medium."</div><!-- end unit -->";
 		}
 		if(($va_binding = $t_item->get('ca_objects.bindingType', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) && ($t_item->get('ca_objects.bindingType') != 233)){
-			print "<div class='line'><span><b>"._t("Binding").": </b></span> ".$va_binding."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Binding").": </span> ".$va_binding."</div><!-- end unit -->";
 		}
 		if($va_height = $t_item->get('ca_objects.overall_dimensions', array('template' => '^foot_length <ifdef code="foot_length">W </ifdef> <ifdef code="foot_length,spine_length">x</ifdef> ^spine_length<ifdef code="spine_length"> H</ifdef> <ifdef code="spine_length,depth">x</ifdef> ^depth<ifdef code="depth"> D</ifdef>'))){
-			print "<div class='line'><span><b>"._t("Dimensions").": </b></span> ".$va_height."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Dimensions").": </span> ".$va_height."</div><!-- end unit -->";
 		}	
 		if($va_pages = $t_item->get('ca_objects.pages', array('delimiter' => ', '))){
-			print "<div class='line'><span><b>"._t("Pages").": </b></span> ".$va_pages."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Pages").": </span> ".$va_pages."</div><!-- end unit -->";
 		}
 		if($va_edition = $t_item->get('ca_objects.editionSize')){
-			print "<div class='line'><span><b>"._t("Edition Size").": </b></span> ".$va_edition."</div><!-- end unit -->";
+			print "<div class='line'><span>"._t("Edition Size").": </span> ".$va_edition."</div><!-- end unit -->";
 		}											
-		# --- identifier
-		if($t_item->get('idno')){
-			print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_item->get('idno')."</div><!-- end unit -->";
-		}
 		# --- parent hierarchy info
 		if($t_item->get('parent_id')){
-			print "<div class='unit'><b>"._t("Part Of")."</b>: ".$t_item->get("ca_objects.parent.preferred_labels.name")."</div>";
+			print "<div class='unit'>"._t("Part Of").": ".$t_item->get("ca_objects.parent.preferred_labels.name")."</div>";
 		}
 		# --- attributes
 		$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 		if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 			foreach($va_attributes as $vs_attribute_code){
 				if($vs_value = $t_item->get("ca_objects.{$vs_attribute_code}")){
-					print "<div class='unit'><b>".$t_item->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
+					print "<div class='unit'>".$t_item->getDisplayLabel("ca_objects.{$vs_attribute_code}").": {$vs_value}</div><!-- end unit -->";
 				}
 			}
 		}
 		# --- description
 		if($this->request->config->get('ca_objects_description_attribute')){
 			if($vs_description_text = $t_item->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-				print "<div class='unit'><b>".$t_item->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute')).":</b> {$vs_description_text}</div><!-- end unit -->";				
+				print "<div class='unit'><span>".$t_item->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute')).": </span>{$vs_description_text}</div><!-- end unit -->";				
 			}
 		}
 		# --- child hierarchy info
@@ -126,28 +129,15 @@
 			print "</div><!-- end unit -->";
 		}
 		# --- entities
-		$va_contributors = array();
-		if ($va_entities = $t_item->get("ca_entities", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
-			foreach($va_entities as $key => $entity_array) {
-				if (($entity_array['relationship_typename']) == 'contributor') {
-					$va_contributors[] = $entity_array['displayname'];
-				}
-			}
-			print "<div class='unit'><b>"._t('Other Contributors').": </b>".join(", ",$va_contributors)."</div>";
+		
+		if ($va_entities = $t_item->get("ca_entities", array('restrictToRelationshipTypes' => array('contributor'), 'checkAccess' => $va_access_values, 'sort' => 'surname', 'delimiter' => ', '))) {
+			print "<div class='unit'>"._t('Other Contributors').": ".$va_entities."</div>";
 		}
-		#print "<div style='clear:both; width:100%;'>";
 		print "<table style='float:left; width:40%; margin-right:10px;'>";
 		# --- collectors
-		$va_collectors = array();
-		if ($va_institutions = $t_item->get("ca_entities", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
-			print "<tr><td><b>Institutional Collectors:</b></td></tr>";
-			foreach($va_institutions as $key => $institution_array) {
-				if (($institution_array['relationship_typename']) == 'institutional collector') {
-					print "<tr><td>".$institution_array['displayname']."</td></tr>";
-				}
-			}
-			#print "<div class='unit'><b>"._t('Institutional Collections').": </b><br/>".join("<br/> ",$va_collectors)."</div>";
-			
+
+		if ($va_institutions = $t_item->get("ca_entities", array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('institutional'), 'sort' => 'surname', 'template' => '<tr><td>^preferred_labels</td></tr>'))) {
+			print "<tr><td><span>Institutional Collectors:</span></td></tr>".$va_institutions;
 		}
 		print "</table";
 		print "<table style='width:40%; float:left'>";		
@@ -155,7 +145,7 @@
 		$va_exhibitions = array();
 		if ($va_exhibition_array = $t_item->get("ca_occurrences", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'name'))) {
 			
-			print "<tr><td><b>"._t('Exhibitions').":</td></tr>";
+			print "<tr><td><span>"._t('Exhibitions').":</span></td></tr>";
 			foreach($va_exhibition_array as $key => $exhibition_array) {
 				print "<tr><td>".$exhibition_array['label']."</td></tr>";
 			}
@@ -164,9 +154,11 @@
 		}
 		print "</table>";
 		#print "</div><!-- end spacer -->";
-		print "<div class='notes'><b>Downloaded:</b> ".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</unit>";
+		#print "<div class='notes'><b>Downloaded:</b> ".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</unit>";
 ?>	
-	
+	<div class='footer' style='width:100%; text-align:center; clear:both; '>Booklyn Artists Alliance - 37 Greenpoint Avenue, Suite E4G / Box 23 Brooklyn, NY 11222<br/>
+		718-383-9621 - Booklyn.org - mweber@booklyn.org
+	</div>
 	
 	</BODY>
 </HTML>

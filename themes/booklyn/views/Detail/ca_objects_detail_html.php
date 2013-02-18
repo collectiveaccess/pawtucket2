@@ -287,14 +287,16 @@
 			}else{
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
 			}
+		}
 ?>
 			</div><!-- end objDetailImage -->
 			<div id="objDetailImageNav">
 				<div style="float:right;">
 					<!-- bookmark link BEGIN -->
 <?php
+			if ($t_rep && $t_rep->getPrimaryKey()) {
 				print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ "._t("Zoom/more media")."</a></p>";
-
+			} 
 					if(($this->request->isLoggedIn())&&($this->request->config->get('enable_bookmarks'))){
 						print "<p>".caNavLink($this->request, _t("+ Bookmark"), '', '', 'Bookmarks', 'addBookmark', array('row_id' => $vn_object_id, 'tablename' => 'ca_objects'))."</p>";
 					}else{
@@ -325,7 +327,7 @@
 				<div style="width:100%; clear:both; height:1px"></div>		
 			</div><!-- end objDetailImageNav -->
 <?php
-		}
+		
 if ($this->request->config->get('dont_allow_registration_and_loginzzzzz')) {
 		# --- user data --- comments - ranking - tagging
 ?>			

@@ -46,12 +46,13 @@ if($vo_result) {
 		print "<div class='searchFullImageContainer'>";
 		print caNavLink($this->request, $vo_result->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id));
 		print "</div><!-- END searchFullImageContainer -->";
-		print "<div class='searchFullText'>";
+		print "<div class='searchFullText' >";
 		$va_labels = $vo_result->getDisplayLabels($this->request);
 		$vs_caption = join('<br/>', $va_labels);
 		print "<div class='searchFullTitle'>".caNavLink($this->request, $vs_caption, '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
-		print "<div class='searchFullTextTitle'>"._t("ID")."</div>\n";
-		print "<div class='searchFullTextTextBlock'>".$vo_result->get("ca_objects.idno")."</div>";
+		print "<div class='searchFullTextTextBlock'>".$vo_result->get("ca_entities.preferred_labels", array('delimiter' => ', ', 'restrictToRelationshipTypes' => array('artist')))."</div>";
+		print "<div class='searchFullTextTextBlock'>".$vo_result->get("ca_objects.pub_date.pubDatesValue", array('delimiter' => ', '))."</div>";
+		
 		print "</div><!-- END searchFullText -->\n";
 		$vn_item_count++;
 		if(!$vo_result->isLastHit()){
