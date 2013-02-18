@@ -130,11 +130,12 @@ a.caption:hover{
 	width: 1000px;
 	background-color: white;
 	margin: 0 auto 0 auto;
-	min-height: 650px;
+	min-height: 550px;
 /*	-moz-box-shadow: 0px 0px 44px 0px #111;
 	-webkit-box-shadow: 0px 0px 44px 0px #111;
 	box-shadow: 0px 0px 44px 0px #111;*/
 }
+
 #pageArea{
 	width: 650px;
 	min-height: 500px;
@@ -549,6 +550,9 @@ div.searchlight-results div.searchlight-selected {
 /* Detail pages */
 /* ------------------------------------- */
 
+#detailBody {
+	min-height:450px;
+}
 #detailBody h1 {
 	color: #90BCC4;
 	font-size: 15px;
@@ -1039,7 +1043,7 @@ td.advSearchElement{
 }
 .searchFullText{
 	float:left;
-	width:630px;
+	width:375px;
 	text-align:left;
 	margin: 10px 0px 0px 0px;
 }
@@ -1246,11 +1250,18 @@ td.advSearchElement{
 	padding:5px;
 }
 #entityResults a, #collectionResults a, #occurrenceResults a, #placeResults a{
-	font-weight:bold;
-	size:14px;
+	text-decoration: none;
+	color: #333;
+	font-size: 13px;
+	line-height: 15px;
+	font-family: 'DIN-Medium';
+	padding-left: 2px;
+}
+#entityResults a:hover, #collectionResults a:hover, #occurrenceResults a:hover, #placeResults a:hover{
+	text-decoration:underline;
 }
 #entityResults .resultBg, #collectionResults .resultBg, #occurrenceResults .resultBg, #placeResults .resultBg{
-	background-color: #F2F2F2;
+	background-color: #F9F9F9;
 }
 
 
@@ -1772,7 +1783,6 @@ td.advSearchElement{
 .browseSelectPanelStatic, #browse .browseSelectPanelStatic {  /* used in browse and details with browse into static non-overlay panel */
 	position: relative;  
 	width: 650px; 
-	margin-bottom:35px;
 }
 #staticBrowsePanel {
 	clear:both;
@@ -1920,12 +1930,12 @@ a.browseSelectPanelButton:hover {
 }
 
 a.browseSelectPanelLink { /*  used in browse and details with browse */
-	font-family: 'OratorStdMedium';
-	font-size: 12px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
 	line-height: 19px;
-	letter-spacing: 0.3em;
-	text-transform: uppercase;
 	color: #737373;
+	padding: 0px;
+	margin: 0px;
 }
 
 a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
@@ -2176,12 +2186,13 @@ div.hierarchyBrowseTab {
 	line-height: 19px;
 }
 .artistList a{
-	font-family: 'OratorStdMedium';
-	font-size: 12px;
-	line-height: 19px;
-	letter-spacing: 0.3em;
-	text-transform: uppercase;
-	color: #737373;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 10px;
+line-height: 19px;
+color: #737373;
+padding: 0px;
+margin: 0px;
+
 }
 .artistList a:hover{
 	color:#90BCC4;
@@ -2236,6 +2247,6 @@ div.seeMore {
 	color: #8C8C8C;
 	font-size: 13px;
 	line-height: 13px;
-	font-family: 'DIN-Medium';
+	font-family: 'OratorStdMedium';
 	text-transform: uppercase;
 }
