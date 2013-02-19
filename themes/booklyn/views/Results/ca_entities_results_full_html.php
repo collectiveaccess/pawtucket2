@@ -53,9 +53,7 @@ if($vo_result) {
 		$va_labels = $vo_result->getDisplayLabels($this->request);
 		print "<div".(($vs_class) ? " class='$vs_class'" : "").">";
 		print caNavLink($this->request, join($va_labels, "; "), '', 'Detail', 'Entity', 'Show', array('entity_id' => $vn_entity_id));
-		if($vs_idno){
-			print ", ".$vs_idno;
-		}
+
 		print "</div>\n";
 		$vn_i++;
 		
