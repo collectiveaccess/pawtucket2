@@ -931,7 +931,7 @@ td.advSearchElement{
 	position:relative;
 }
 #featuredCol #scrollFeatured #scrollFeaturedContainer, #userFavsCol #scrollUserFavs #scrollUserFavsContainer, #mostViewedCol #scrollMostViewed #scrollMostViewedContainer, #recentlyAddedCol #scrollRecentlyAdded #scrollRecentlyAddedContainer{
-	position:absolute;
+	position:relative;
 }
 
 
