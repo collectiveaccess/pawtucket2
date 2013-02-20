@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HTML5 ✰ Boilerplate
  *
  * style.css contains a reset, font normalization and some base styles.
@@ -28,8 +28,11 @@ time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
+  outline: 0;
   font-size: 100%;
+  font: inherit;
   vertical-align: baseline;
+  background: transparent;
 }
 
 article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {

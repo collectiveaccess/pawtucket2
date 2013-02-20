@@ -96,21 +96,21 @@
 				if (sizeof($va_facets)) { 
 					//Roundabout added config options
 					$ra_categories = array(
-						'artists' => $this->request->config->get('ra_browse_artists'),
-						'costumes' => $this->request->config->get('ra_browse_costumes'),
-						'orchestrations' => $this->request->config->get('ra_browse_orchestrations'),
+						'productions' => $this->request->config->get('ra_browse_productions'),
 						'photographs' => $this->request->config->get('ra_browse_photographs'),
 						'playbills' => $this->request->config->get('ra_browse_playbills'),
-						'posters' => $this->request->config->get('ra_browse_posters'),
-						'productions' => $this->request->config->get('ra_browse_productions'),	
+						'video' => $this->request->config->get('ra_browse_video'),
+						'artists' => $this->request->config->get('ra_browse_artists'),
+						'costumes' => $this->request->config->get('ra_browse_costumes'),
+						'posters' => $this->request->config->get('ra_browse_posters'),	
 						'scripts' => $this->request->config->get('ra_browse_scripts'),
+						'orchestrations' => $this->request->config->get('ra_browse_orchestrations'),						
 						'sketch' => $this->request->config->get('ra_browse_sketch'),
-						'video' => $this->request->config->get('ra_browse_video')
 					);
 					$va_available_facets = $this->getVar('available_facets'); 
 ?>
 					
-					<ul class="browse-thumbs-list">
+				<ul class="browse-thumbs-list">
 					
 <?php
 					//print "<div class='startBrowsingBy'>"._t("Start browsing by:")."</div>";
@@ -120,8 +120,8 @@
 						if($va_facet_info['label_plural'] != 'Object types') {
 							$desc = $ra_categories[strtolower($va_facet_info['label_plural'])]['description'];
 							$newDesc = (strlen($desc) > 120) ? substr($desc, 0, 120).'...' : $desc;
-							
-?>
+							$sort_no = $ra_categories[strtolower($va_facet_info['label_plural'])]['sort'];
+?>		
 							
 <?php 
 							  
@@ -136,7 +136,7 @@
 							$html .= "</a>"; 
 							$html .= "</li>";
 									
-							$array_categories[$va_facet_info['label_plural']] = $html;
+							$array_categories[$sort_no] = $html;
 							/*	echo "<li>";
 								echo "<a href='#' onclick='caUIBrowsePanel.showBrowsePanel(\"{$vs_facet_code}\");' class='thumb-link'>";		
 								echo 	"<img src='".$this->request->getThemeUrlPath()."/img/".$ra_categories[strtolower($va_facet_info['label_plural'])]['thumb']."' />";
@@ -158,18 +158,19 @@
 						if($category != 'artists' && $category != 'productions') {
 							$desc = $value['description'];
 							$newDesc = (strlen($desc) > 120) ? substr($desc, 0, 120).'...' : $desc;
+							$sort_no = $value['sort'];
 
 							$html = '<li>';
-							$html .=	'<a href="' .caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'modifyCriteria'). '/facet/objects_facet/id/' .$value['id']. '/mod_id/0" class="thumb-link">';
+							$html .=	'<a href="' .caNavUrl($this->request, '', 'Browse', 'modifyCriteria'). '/facet/objects_facet/id/' .$value['id']. '/mod_id/0" class="thumb-link">';
 							$html .=		'<img src="' .$this->request->getThemeUrlPath(). '/img/' .$value['thumb']. '" />';
 							$html .=	'</a>';
-							$html .=	'<a href="' .caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'modifyCriteria'). '/facet/objects_facet/id/' .$value['id']. '/mod_id/0">';
+							$html .=	'<a href="' .caNavUrl($this->request, '', 'Browse', 'modifyCriteria'). '/facet/objects_facet/id/' .$value['id']. '/mod_id/0">';
 							$html .=		'<h4>' .$value['title']. '</h4>';
 							$html .=		'<p>' .$newDesc. '</p>';
 							$html .=	'</a>';
 							$html .='</li> ';
 								
-							$array_categories[$value['title']] = $html;
+							$array_categories[$sort_no] = $html;
 						} // end if
 					} // end foreach
 					ksort($array_categories, SORT_STRING);

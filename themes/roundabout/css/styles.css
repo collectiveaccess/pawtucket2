@@ -6,37 +6,68 @@
 
 body {
 	color: #686868;
-	font-family: helvetica, arial, sans-serif;
-	font-size: 12px;
-	line-height: 16px;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 14px;
+	line-height: 18px;
 }
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3 {
 	color: #242424;
 	font-family: "HelveticaNeueBlackCondensed", "HelveticaNeue-Black-Condensed", "Helvetica Neue Black Condensed", "HelveticaNeueBlack", "HelveticaNeue-Black", "Helvetica Neue Black", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Arial Narrow", "Arial", sans-serif;
-	font-stretch: condensed;
+	/*font-stretch: condensed;*/
 	text-transform: uppercase;
-	font-weight: 800;
+	/*font-weight: 800;*/
 }
 h1 {
+	color: #303030;
 	font-size: 50px;
 	line-height: 45px;
-	margin: 0 0 15px;
+	margin: 0 0 10px 0;
 }
+/*
 	h1 .cufon {
 		height: 45px !important;
 	}
+*/
 h2 {
+	color: #303030;
 	font-size: 35px;
 	line-height: 32px;
-	margin: 0 0 20px;
+	margin: 0 0 10px 0;
 }
 h3 {
+	color: #303030;
 	font-size: 22px;
 	line-height: 20px;
-	margin: 0 0 10px;
+	margin: 0 0 4px 0;
 }
 h3 a {
-	color: #000;
+	color: #303030;
+}
+
+h4 {
+	color: #303030;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 18px;
+	text-transform: uppercase;
+	margin: 0 0 4px 0;
+}
+
+h5 {
+	color: #303030;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 14px;
+	margin: 0 0 4px 0;
+}
+
+h6 {
+	color: #303030;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 14px;
+	margin: 0 0 2px 0;
 }
 
 a {}
@@ -44,9 +75,9 @@ a.btn {
 	background-color: #2a79b2;
 	color: #fff;
 	font-family: "HelveticaNeueBlackCondensed", "HelveticaNeue-Black-Condensed", "Helvetica Neue Black Condensed", "HelveticaNeueBlack", "HelveticaNeue-Black", "Helvetica Neue Black", "HelveticaNeue", "Helvetica Neue", 'TeXGyreHerosCnBold', "Arial Narrow", "Arial", sans-serif;
-	font-stretch: condensed;
+	/*font-stretch: condensed;*/
 	text-transform: uppercase;
-	font-weight: 800;
+	/*font-weight: 800;*/
 	padding: 6px 10px;
 	-webkit-transition: background-color .5s ease-in-out;
 	-moz-transition: background-color .5s ease-in-out;
@@ -72,8 +103,9 @@ a.btn {
 		/*height: 16px;*/
 		/*end cufon*/
 	    line-height: 16px;
-		padding: 7px 8px 5px 8px;
+		padding: 5px 8px 3px 8px;
 		text-transform: uppercase;
+		white-space: nowrap;
 		width: auto;
 		-webkit-transition: background-color .3s ease-in-out;
 		-moz-transition: background-color .3s ease-in-out;
@@ -82,6 +114,7 @@ a.btn {
 		transition: background-color .3s ease-in-out;
 	}
 		a.block-btn:hover {
+			color: #fff;
 			background-color: #1b4b6e;
 			-webkit-transition: background-color .3s ease-in-out;
 			-moz-transition: background-color .3s ease-in-out;
@@ -148,30 +181,35 @@ div.error {
 	margin: 0 0 39px;
 }
 #header.page-home {
-	background: #060401;
+	background: #fff;
 }	
 	.header-top {
-		height: 26px;
-		padding: 20px;
+		height: 21px;
+		padding: 20px 32px 0 0;
 		text-align: right;
+		float:right;
 	}
 		.header-top a.roundabout-link {
 			font-size: 11px;
 			font-weight: 100;
 		}
 		#header.page-home .header-top a.roundabout-link {
-			color: #fff;		
+			color: #000;		
 		}
 		#header.page-home .header-top a.roundabout-link:hover {
 			color: #b2b2b2;
 		}
 	.header-logo {
-		background: url('../img/roundabout-logo-white.png') no-repeat;
 		display: block;
-		height: 69px;
+		height: 100px;
+		margin: 0;
+		width:350px;
+		height:140px;
+		overflow:hidden;
 	}
 	#header.page-home .header-logo {
-		background: url('../img/roundabout-logo.png') no-repeat;
+		width:350px;
+		height:140px;
 	}
 		.header-callout {
 			left: 0;
@@ -203,11 +241,16 @@ div.error {
 				background: url('../img/bg-header-callout-btm.png') repeat;
 				height: 6px;
 			}
-	#header h2 {
+	#header div.ir {
 		background: url('../img/roundabout-header.png') #b2b2b2 no-repeat;
 		height: 55px;
 		margin: 0;
 	}	
+	#header #search {
+		float:right;
+		text-indent: 0em;
+		margin-right:20px;
+	}
 
 /*** Main Nav ***/
 #nav {
@@ -293,28 +336,28 @@ div.error {
 			}
 			
 /*** Search Box - Main nav ***/
-#nav #search{
-	background: url('../img/sprite-icons.png') #fff no-repeat 142px 5px;
+#header #search{
+	background: url('../img/sprite-icons.png') #fff no-repeat 242px 5px;
 	float: right;
 	height: 18px;
-	margin: 13px 0 0 0;
+	margin: 17px 20px 0 0;
     overflow: hidden;
 	padding: 2px 20px 0 5px;
     position: relative;
-	width: 131px;
+	width: 231px;
 }
-	#nav #search input {
+	#header #search input {
 		border: 0px;
         background: none;
 		height: 15px;
 	}
-	#nav #search input[type="text"] {
+	#header #search input[type="text"] {
 		color: #7f7f7f;
 		font-size: 12px;
 		margin-top: 0px;
-		width: 125px;
+		width: 225px;
 	}
-	#nav #search a{
+	#header #search a{
 		height: 20px;
         position: absolute;
         right: 0;
@@ -387,21 +430,15 @@ div.header-img {
 	width: 268px;
 }
 	.promo-block {
-		background: #efefef;
-		border: solid 1px #e1e1e1;
+		border-bottom: solid 2px #000;
 		font-size: 13px;
 		line-height: 15px;
-		margin: 0 0 22px;
-		padding: 20px;
+		margin: 0px;
+		padding: 20px 0px 20px 0px;
 		position: relative;
 	}
 	.shadow {
-		background: url('../img/sidebar-shadow.png');
-		height: 17px;
-		left: -1px;
-		position: absolute;
-		top: -1px;
-		width: 280px;
+
 	}
 /*** Single Column ***/
 .single-col {
@@ -413,6 +450,22 @@ div.header-img {
 	padding: 0 0 0 20px;
 	width: 658px;
 }
+
+.home-info-col {
+    float: left;
+    width: 270px;
+    margin: 0 40px 20px 0;
+    padding-bottom: 40px;
+}
+
+	.home-info-col p a {
+	    font-weight:normal;
+	}
+	.home-info-col img {
+	    display: block;
+	    width: 270px;
+	    height: 140px;
+	}
 
 /*** Search - Homepage callout ***/
 .search-callout {
@@ -428,7 +481,7 @@ div.header-img {
 		height: 2px;
 		margin-right: 15px;
 		padding: 5px 0 0;
-		width: 210px;
+		width: 230px;
 	}
 	.search-callout form {
 		float: left;
@@ -451,11 +504,12 @@ div.header-img {
 	}
 /*** Featured List Plugin ***/
 .featured-list {
-	
+	outline: 0;
 }	
 	.featured-list th, .featured-list td {
 		padding: 0 32px 0 0;
 		width: 180px;
+		outline: 0;
 	}
 		.featured-list td.featured-desc {
 		}
@@ -480,7 +534,6 @@ div.header-img {
 		}
 /*** Recently Added Plugin - Homepage ***/
 #scrollRecentlyAdded {
-	height: 600px;
 	overflow: hidden;
 	position: relative;
 }
@@ -546,7 +599,7 @@ ul.browse-thumbs-list {}
 	ul.browse-thumbs-list li {
 		float: left;
 		height: 270px;
-		margin: 0 20px 20px 0;
+		margin: 0 20px 10px 0;
 		overflow: hidden;
 		width: 198px;
 	}
@@ -792,13 +845,16 @@ ul.advanced_search_controls_list {
 	width: 1000px;
 }
 	.footer-logo {
-		background: url('../img/roundabout-logo-footer.png');
 		display: block;
-		height: 19px;
-		width: 323px;
+		height: 70px;
+		width: 175px;
+		overflow:hidden;
 	}
 	#footer li {
 		float: left;
+		color: #5c5c5c;
+		font-size: 11px;
+		line-height: 16px;
 	}
 		#footer li.first {
 			width: 380px;
@@ -1316,7 +1372,9 @@ img.about-page-img {
 	margin-left: 12px;
 }
 			
-			
+.splashHeader {
+	padding-bottom:5px;
+}			
 			
 			
 			
