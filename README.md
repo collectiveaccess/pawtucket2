@@ -33,3 +33,6 @@ Pawtucket fit into most any existing design scheme.
 How to Install
 --------------
 You can find installation instructions for Pawtucket at http://docs.collectiveaccess.org/wiki/Installing_Pawtucket
+Release notes are available at http://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket_1.3
+
+If you are updating an existing installation see http://docs.collectiveaccess.org/wiki/Upgrading_Pawtucket
