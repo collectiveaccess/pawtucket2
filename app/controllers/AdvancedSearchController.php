@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -286,7 +286,8 @@
  			$this->opo_result_context->setSearchExpression($ps_search);
  			$this->opo_result_context->saveContext(true);
  			
- 			return parent::Index($this->opo_browse, array_merge($pa_options, array('view' => 'Search/ca_objects_search_advanced_html.php', 'vars' => array('form' => $ps_form, 'form_codes' => $pa_form_codes))));
+ 			$pa_options['search'] = $this->opo_browse;
+ 			return parent::Index(array_merge($pa_options, array('view' => 'Search/ca_objects_search_advanced_html.php', 'vars' => array('form' => $ps_form, 'form_codes' => $pa_form_codes))));
  		}
  		# -------------------------------------------------------
  		/**

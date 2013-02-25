@@ -98,10 +98,10 @@ if (!$this->request->isAjax()) {
 					}
 				}
 			}			
-			if ($va_artists = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'contributor'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+			if ($va_artists = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'contributor'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname', 'returnAsLink' => true))) {
 				print "<div class='unit'><span class='metatitle'>Artists + Contributors</span><br/>".$va_artists."</div>";
 			}
-			if ($va_collaborator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collaborator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname'))) {
+			if ($va_collaborator = $t_occurrence->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collaborator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'sort' => 'surname', 'returnAsLink' => true))) {
 				print "<div class='unit'><span class='metatitle'>Collaborators</span><br/>".$va_collaborator."</div>";
 			}	
 	

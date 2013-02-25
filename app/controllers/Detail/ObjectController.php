@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -54,9 +54,9 @@
  		/**
  		 * Displays the basic info for an object
  		 */ 
- 		public function Show() {
+ 		public function Show($pa_options=null) {
  			JavascriptLoadManager::register('panel');
- 			parent::Show();
+ 			parent::Show($pa_options);
  			
  			// redirect user if not logged in
 			if (($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn()))||($this->request->config->get('show_bristol_only')&&!($this->request->isLoggedIn()))) {
@@ -308,6 +308,14 @@
 			if ($vs_path) { unlink($vs_path); }
 			return $vn_rc;
 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function GetObjectDetailMedia() {
+ 			$this->show(array('view' => 'ajax_ca_objects_detail_image_html.php'));
+			
+ 		}
  		# -------------------------------------------------------
  		public function RecordRepresentationSelection() {
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);

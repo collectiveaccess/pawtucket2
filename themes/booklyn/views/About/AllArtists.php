@@ -33,7 +33,7 @@
 	if ($qr_orgs->numHits()) {
 		while($qr_orgs->nextHit()) {
 			if (($qr_orgs->get('ca_entities.type_id') == 79)&&($qr_orgs->get('ca_entities.artist_status') != 247)) {
-				$vn_org_id = $qr_artists->get('ca_entities.entity_id');
+				$vn_org_id = $qr_orgs->get('ca_entities.entity_id');
 				print "<div class='artistList'>".caNavLink($this->request, $qr_orgs->get('ca_entities.preferred_labels'), '', 'Detail','Entity', 'Show', array('entity_id' => $vn_org_id))."</div>";
 			}
 		}
@@ -42,7 +42,7 @@
 </div>
 <div class='seeMore'>
 <?php
-	print caNavLink($this->request, '- See Less', '','','About','Artists');
+	print caNavLink($this->request, '+ RETURN TO CURRENT ARTISTS AND ORGANIZATIONS', '','','About','Artists');
 ?>
 </div>
 <div style="height:35px; width:100%; clear:both"></div>
