@@ -29,7 +29,7 @@
 	$t_object = new ca_objects();
 	
 	$va_item_ids = $this->getVar('featured_content_slideshow_id_list');
-	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"));
+	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"), array('checkAccess' => array(1)));
 	$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
  ?>
 	<div id="splashBrowsePanel" class="browseSelectPanel" style="z-index:1000;">
