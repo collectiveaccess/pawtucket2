@@ -1,0 +1,59 @@
+.findingAid h1{
+	font-size:30px;
+}
+element.style {
+}
+#detailBody.findingAid #leftCol .unit{
+	padding-left: 35px;
+	margin-bottom: 10px;
+}
+.unitTitle {
+	color:#333;
+	font-weight:bold;
+}
+.findingAid .header {
+	font-size:18px;
+	color:#333;
+	padding:10px 0px 10px 0px;
+}
+.findingAid .header a{
+	color:#333;
+}
+#detailBody.findingAid #rightCol{
+	width:300px;
+	background-color:#f6f6f6;
+	padding:25px;
+}
+#detailBody.findingAid #leftCol{
+	width:580px; 
+	padding:25px;
+	font-size: 14px;
+}
+.subCol{
+	margin-left:30px;
+	font-weight:normal;
+}
+.subCol a{
+	font-weight:normal;
+}
+.col {
+
+}
+.shadow {
+	background: url('../../../../../../themes/roundabout/img/sidebar-shadow.png');
+	height: 17px;
+	left: -1px;
+	position: absolute;
+	top: -1px;
+	width: 280px;
+}	
+#detailBody.findingAid .promo-block {
+	background: #efefef;
+	border-bottom:0px;
+	border: solid 1px #e1e1e1;
+	font-size: 13px;
+	line-height: 15px;
+	margin: 0 0 22px;
+	padding: 20px;
+	position: relative;
+}	

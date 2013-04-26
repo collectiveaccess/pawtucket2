@@ -60,7 +60,6 @@
 		if (preg_match('!iPhone!i', $_SERVER['HTTP_USER_AGENT'])) {
 			return true;
 		}
-				
 		return false;
 	}
 	# ---------------------------------------------------------------------------------------------

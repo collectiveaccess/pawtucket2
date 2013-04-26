@@ -1,21 +1,21 @@
-			<div class="clearfix"></div>
+﻿			<div class="clearfix"></div>
 		<!--end #main-->
 		</div>
 	<!-- end #pageArea -->
 	</div>
 	<div id="footer">
-		<a href="http://roundabouttheatre.org" class="footer-logo ir">Roundabout Theatre Company</a>
+		<a href="http://roundabouttheatre.org" class="footer-logo "><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/sprite-logo.png" border="0" width="175"></a>
 		<ul>
 			<li class="first">
 				<br/>
-				Roundabout Theatre Archives are made possible <br/>
+				Roundabout Theatre Company Archives are made possible <br/>
 				by generous funding from the Leon Levy Foundation.
 			</li>
 			<li class="second">
 				Roundabout Theatre Company Archivist <br/>
-				212-719-9393 <br/>
+				(212) 719-9393 <br/>
 				<a href="mailto:archives@roundabouttheatre.org">archives@roundabouttheatre.org</a>
-			</li>
+			</li> 
 			<li class="third">
 				<br/>
 				<br/>

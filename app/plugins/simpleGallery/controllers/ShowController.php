@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -156,9 +156,10 @@
  			
  			
  			$va_set_item_info["item_id"] = $t_set_item->get("item_id");
-			$va_rep = $t_set_item->getRepresentations(array("mediumlarge", "small"), null, array("return_with_access" => $va_access_values));
+			$va_reps = $t_set_item->getRepresentations(array("mediumlarge", "small"), null, array("return_with_access" => $va_access_values));
+			$va_rep = array_shift($va_rep);
 			
-			$this->view->setVar('t_object_representation', $t_rep = new ca_object_representations($va_rep[0]['representation_id']));
+			$this->view->setVar('t_object_representation', $t_rep = new ca_object_representations($va_rep['representation_id']));
 			$va_rep_display_info = caGetMediaDisplayInfo('cropped_gallery_media_overlay', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			
 			$this->view->setVar('rep_display_version', $va_rep_display_info['display_version']);
@@ -167,7 +168,7 @@
 			unset($va_display_info['poster_frame_version']);
 			$this->view->setVar('rep_display_options', $va_rep_display_info);
 
-			$va_set_item_info["info"] = $va_rep[0]['info'];
+			$va_set_item_info["info"] = $va_rep['info'];
 			$va_set_item_info["label"] = $t_set_item->getLabelForDisplay();
 			$va_set_item_info["description"] = $t_set_item->get($this->opo_plugin_config->get('set_description_element_code'), array('convertLineBreaks' => true));
 			$va_set_item_info["item_description"] = $t_set_item->get($this->opo_plugin_config->get('set_item_description_element_code'), array('convertLineBreaks' => true));

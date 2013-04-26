@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */	
+	$o_purifier = new HTMLPurifier();
 	$t_item = $this->getVar("t_item");
 	$va_access_values = $this->getVar("access_values");
 	
@@ -57,28 +58,28 @@
 			<div class="media"><img src="<?php print $t_rep->getMediaPath("media", $vs_version); ?>"></div>
 <?php
 		}
-		print "<H1>".$t_item->getLabelForDisplay()."</H1>";
+		print "<H1>".$o_purifier->purify($t_item->getLabelForDisplay())."</H1>";
 		# --- identifier
 		if($t_item->get('idno')){
-			print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_item->get('idno')."</div><!-- end unit -->";
+			print "<div class='unit'><b>"._t("Identifier").":</b> ".$o_purifier->purify($t_item->get('idno'))."</div><!-- end unit -->";
 		}
 		# --- parent hierarchy info
 		if($t_item->get('parent_id')){
-			print "<div class='unit'><b>"._t("Part Of")."</b>: ".$t_item->get("ca_objects.parent.preferred_labels.name")."</div>";
+			print "<div class='unit'><b>"._t("Part Of")."</b>: ".$o_purifier->purify($t_item->get("ca_objects.parent.preferred_labels.name"))."</div>";
 		}
 		# --- attributes
 		$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes');
 		if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 			foreach($va_attributes as $vs_attribute_code){
-				if($vs_value = $t_item->get("ca_objects.{$vs_attribute_code}")){
-					print "<div class='unit'><b>".$t_item->getDisplayLabel("ca_objects.{$vs_attribute_code}").":</b> {$vs_value}</div><!-- end unit -->";
+				if($vs_value = $o_purifier->purify($t_item->get("ca_objects.{$vs_attribute_code}"))){
+					print "<div class='unit'><b>".$o_purifier->purify($t_item->getDisplayLabel("ca_objects.{$vs_attribute_code}")).":</b> {$vs_value}</div><!-- end unit -->";
 				}
 			}
 		}
 		# --- description
 		if($this->request->config->get('ca_objects_description_attribute')){
-			if($vs_description_text = $t_item->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))){
-				print "<div class='unit'><b>".$t_item->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute')).":</b> {$vs_description_text}</div><!-- end unit -->";				
+			if($vs_description_text = $o_purifier->purify($t_item->get("ca_objects.".$this->request->config->get('ca_objects_description_attribute')))){
+				print "<div class='unit'><b>".$o_purifier->purify($t_item->getDisplayLabel("ca_objects.".$this->request->config->get('ca_objects_description_attribute'))).":</b> {$vs_description_text}</div><!-- end unit -->";				
 			}
 		}
 		# --- child hierarchy info
@@ -86,7 +87,7 @@
 		if(sizeof($va_children) > 0){
 			print "<div class='unit'><h2>"._t("Part%1", ((sizeof($va_children) > 1) ? "s" : ""))."</h2> ";
 			foreach($va_children as $va_child){
-				print "<div>".$va_child['name']."</div>";
+				print "<div>".$o_purifier->purify($va_child['name'])."</div>";
 			}
 			print "</div><!-- end unit -->";
 		}
@@ -97,7 +98,7 @@
 			<div class="unit"><h2><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("Entities") : _t("Entity")); ?></h2>
 <?php
 			foreach($va_entities as $va_entity) {
-				print "<div>".$va_entity["label"]." (".$va_entity['relationship_typename'].")</div>";
+				print "<div>".$o_purifier->purify($va_entity["label"])." (".$o_purifier->purify($va_entity['relationship_typename']).")</div>";
 			}
 ?>
 			</div><!-- end unit -->
@@ -120,7 +121,7 @@
 					<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h2>
 <?php
 				foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-					print "<div>".$va_info["label"]." (".$va_info['relationship_typename'].")</div>";
+					print "<div>".$o_purifier->purify($va_info["label"])." (".$o_purifier->purify($va_info['relationship_typename']).")</div>";
 				}
 				print "</div><!-- end unit -->";
 			}
@@ -131,7 +132,7 @@
 		if(sizeof($va_places) > 0){
 			print "<div class='unit'><h2>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h2>";
 			foreach($va_places as $va_place_info){
-				print "<div>".$va_place_info['label']." (".$va_place_info['relationship_typename'].")</div>";
+				print "<div>".$o_purifier->purify($va_place_info['label'])." (".$o_purifier->purify($va_place_info['relationship_typename']).")</div>";
 			}
 			print "</div><!-- end unit -->";
 		}
@@ -140,7 +141,7 @@
 		if(sizeof($va_collections) > 0){
 			print "<div class='unit'><h2>"._t("Related Collection").((sizeof($va_collections) > 1) ? "s" : "")."</h2>";
 			foreach($va_collections as $va_collection_info){
-				print "<div>".$va_collection_info['label']." (".$va_collection_info['relationship_typename'].")</div>";
+				print "<div>".$o_purifier->purify($va_collection_info['label'])." (".$o_purifier->purify($va_collection_info['relationship_typename']).")</div>";
 			}
 			print "</div><!-- end unit -->";
 		}
@@ -149,7 +150,7 @@
 		if(sizeof($va_object_lots) > 0){
 			print "<div class='unit'><h2>"._t("Related Lot").((sizeof($va_object_lots) > 1) ? "s" : "")."</h2>";
 			foreach($va_object_lots as $va_object_lot_info){
-				print "<div>".$va_object_lot_info['label']." (".$va_object_lot_info['relationship_typename'].")</div>";
+				print "<div>".$o_purifier->purify($va_object_lot_info['label'])." (".$o_purifier->purify($va_object_lot_info['relationship_typename']).")</div>";
 			}
 			print "</div><!-- end unit -->";
 		}
@@ -158,7 +159,7 @@
 		if(sizeof($va_terms) > 0){
 			print "<div class='unit'><h2>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h2>";
 			foreach($va_terms as $va_term_info){
-				print "<div>".$va_term_info['label']."</div>";
+				print "<div>".$o_purifier->purify($va_term_info['label'])."</div>";
 			}
 			print "</div><!-- end unit -->";
 		}

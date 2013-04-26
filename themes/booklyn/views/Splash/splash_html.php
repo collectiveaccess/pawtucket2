@@ -39,15 +39,16 @@
 	}
 	
 	$va_item_ids = $va_featured_ids;
-	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge", "widepreview"));
 	
+	$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge", "widepreview", "splashpic"));
 	$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
- 
- 
- 
+
+ 	$title_id = array_shift(array_keys($va_item_media));
+ 	$t_object = new ca_objects($title_id);
+ 	$va_artist_name = $t_object->get('ca_entities.preferred_labels.displayname', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ' and '));
  ?>
 
-	<h1 class='results'>Featured Art: Booklyn</h1>
+	<h1 class='results'>Featured Art: <?php print $va_artist_name;?></h1>
 	<div style="height:25px;width:100%"></div>
 <!--	<div id="hpFeatured">-->
 <?php
@@ -77,7 +78,7 @@
 		} else {
 			$t_object = new ca_objects($vn_object_id);
 			print "<div id='hpFeatured'>";
-			print "<div class='featuredImg' style='margin-bottom:5px'>".caNavLink($this->request, $va_media["tags"]["mediumlarge"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
+			print "<div class='featuredImg' style='margin-bottom:5px'>".caNavLink($this->request, $va_media["tags"]["splashpic"], '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 			print "<div class='featuredTitle'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))), '', 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id))."</div>";
 
 			print "</div>";
