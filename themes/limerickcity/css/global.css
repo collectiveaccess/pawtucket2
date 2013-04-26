@@ -1335,6 +1335,20 @@ div.searchlight-results div.searchlight-selected {
 	height: 336;
 	overflow: hidden;
 }
+#objDetailImage{
+	margin-bottom:0px;
+	text-align:center;
+	border: 2px solid #e6e6e6;
+	width: 550px;
+	padding: 5px 5px 5px 5px;
+}
+
+#cont {
+	width: 550px;
+	height: 500px;
+}
+
+
 #objDetailImageNav {
 	background-color: #EBF1F1;
 	margin:0px 0px 15px 0px;
@@ -2448,38 +2462,55 @@ a.browseSelectPanelLink:hover { /*  used in browse and details with browse */
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
-	top: 25px; 
-	left: 50%; 
+	top: 1.5%; 
+	left: 1.5%; 
 	border: 4px solid #ccc; 
 	background-color: #FFFFFF; 
-	width: 840px; 
-	height: 600px; 
+	width: 97%; 
+	height: 97%; 
 	display: none;
-	margin-left: -430px;
-	padding: 7px;
+	margin: 0 auto;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
 }
 #caMediaPanel #close{
 	float: right;
 	width:15px;
-	height:15px;
-	margin:0px;
-	background-image:url("../graphics/x.gif");
+	height:16px;
+	margin:10px;
+	background-image:url("../graphics/buttons/x.png");
 }
 #caMediaPanel #close a{
 	text-decoration:none;
-	font-size:15px;
+	font-size:16px;
 }
 #caMediaPanelContentArea {
-
+	width: 100%; 
+	height: 100%; 
 }
 
-
-
 #caMediaOverlayContent {
-	margin-top: 15px;
+	margin-top: 5px;
 	margin-left: 0px;
-	
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
 	text-align: center;
+}
+
+div.caMediaOverlayControls {
+	background-color: #FFFFFF;
+	padding: 3px;
+	font-size: 9px;
+	margin-left: 0px;
+	height: 25px;
+	border-bottom:2px solid #ededed;
+}
+
+select.caMediaOverlayControls {
+	font-size: 9px;
 }
 #caMediaOverlayThumbnails{
 	padding: 10px 0px 0px 0px;
