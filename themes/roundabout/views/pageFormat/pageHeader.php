@@ -26,6 +26,27 @@
 	
 	<script src="<?php print $this->request->getThemeUrlPath(); ?>/js/scripts.js"></script>
 	
+		<script>
+		
+		/**
+		*	Google Analytics Code: POP customized
+		**/
+
+		var _gaq = _gaq || [];
+		(function () {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+
+			var pop = document.createElement('script'); pop.type = 'text/javascript'; pop.async = true;
+			pop.src = '<?php print $this->request->getThemeUrlPath(); ?>/js/popanalytics.js';
+			var js = document.getElementsByTagName('script')[0]; js.parentNode.insertBefore(pop, js);
+
+		})();
+		/* END Google Analytics Code: POP customized */
+	
+	</script>
+	
 	<script type="text/javascript">
 		 jQuery(document).ready(function() {
 			jQuery('#quickSearch').searchlight('<?php print $this->request->getBaseUrlPath(); ?>/index.php/Search/lookup', {showIcons: false, searchDelay: 100, minimumCharacters: 2, limitPerCategory: 3});
@@ -40,15 +61,16 @@
 		<div id="pageArea">
 			<div id="header" <?php print ($this->request->getController() == "Splash") ? 'class="page-home"' : ''; ?>>
 				<div class="header-top">
-					<a href="http://www.roundabouttheatre.org" class="roundabout-link">Visit www.roundabouttheatre.org for show tickets and information</a>
+					<a href="http://roundabouttheatre.org" class="roundabout-link">Visit the Roundabout website for show tickets and information</a>
+					<div class="clearfix"></div>
 				</div>
-				<a href="<?php print caNavUrl($this->request, '', 'Splash', 'Index'); ?>" class="header-logo ir">Roundabout Theatre Archive Home</a>
+				<a href="http://archive.roundabouttheatre.org" class="header-logo "><img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/sprite-logo.png" border="0" width="350"></a>
 				<?php
 					// get last search ('basic_search' is the find type used by the SearchController)
 					$o_result_context = new ResultContext($this->request, 'ca_objects', 'basic_search');
 					$vs_search = $o_result_context->getSearchExpression();
 				?>
-					<div id="nav">
+<!--					<div id="nav">
 						<div id="search">
 							<form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get">
 								<a href="#" class="ir" name="searchButtonSubmit" onclick="document.forms.header_search.submit(); return false;"><?php print _t("Search"); ?></a>
@@ -62,7 +84,8 @@
 							<li class='third<?php print ($this->request->getController() == "AdvancedSearch") ? " nav-on" : ""; ?>'><?php print caNavLink($this->request, "<span class='ir'>Advanced Search</span><span class='rollover'></span>", "", "", "AdvancedSearch", "Index"); ?></li>
 							<li class='fourth<?php print ($this->request->getController() == "About") ? " nav-on" : ""; ?>'><?php print caNavLink($this->request, "<span class='ir'>About</span><span class='rollover'></span>", "", "", "About", "Index"); ?></li>
 						</ul>
-					</div><!-- end nav -->
+					</div>
+ -->
 <?php
 				//print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/graphics/".$this->request->config->get('header_img')."' border='0'>", "", "", "", "");
 				
@@ -71,8 +94,8 @@
 		
 				if($this->request->getController() == "Splash") {
 ?>
-					<div class="header-img">
-						<img src="<?php echo $this->request->getThemeUrlPath(); ?>/img/<?php echo $this->request->config->get('header_img'); ?>" />
+<!--					<div class="header-img">
+						<img src="<?php echo $this->request->config->get('header_img'); ?>" />
 						<div class="header-callout">
 							<div class="header-callout-top">
 								<p><?php echo $this->request->config->get('header_text'); ?></p>
@@ -82,11 +105,19 @@
 							</div>
 						</div>
 					</div> 
+-->					
 <?php
 				} // end if
 ?>
-				<h2 class="ir">Roundabout Archives</h2>
-			<!-- end #header -->
+				<div class="ir">
+					<div style='float:left;'>Archives</div>
+						<div id="search">
+							<form name="header_search" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>" method="get">
+								<a href="#" class="ir" name="searchButtonSubmit" onclick="document.forms.header_search.submit(); return false;"><?php print _t("Search"); ?></a>
+								<input type="text" name="search" placeholder="Search Archive" onclick='jQuery("#quickSearch").select();' id="quickSearch" autocomplete="off" />
+							</form>
+						</div>
+				</div>		
 			</div>
 			
 			<div id="main" role="main">

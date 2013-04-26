@@ -127,23 +127,30 @@
 		<a href='#' id='showOptions' onclick='$("#searchOptionsBox").slideDown(250); $("#showOptions").hide(); return false;'><?php print _t("Options"); ?> <img src="<?php print $this->request->getThemeUrlPath(); ?>/graphics/arrow_right_gray.gif" width="6" height="7" border="0"></a>
 <?php		
 		print $this->render('Search/search_controls_html.php');
+	}	
+?>		
+		<div id="staticBrowsePanel" class="browseSelectPanelStatic" style="z-index:1000;">
+		<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel(); return false;" class="browseSelectPanelButton">&nbsp;</a>
+			<div id="staticBrowsePanelContent">
+
+			</div>
+		</div>
+	
+<?php	
+	if (sizeof($va_criteria) > 0) {		
 		print "<div class='sectionBox'>";
 		$vs_view = $this->getVar('current_view');
 		if(in_array($vs_view, array_keys($this->getVar('result_views')))){
 			print $this->render('Results/'.$vs_browse_target.'_results_'.$vs_view.'_html.php');
 		}
+		print "<div style='width:100%; height:35px;'></div>";
 		print "</div>";
 	}
 	if (!$this->request->isAjax()) {
 ?>
 	</div><!-- end resultbox --></div><!-- end browse -->
 
-<div id="staticBrowsePanel" class="browseSelectPanelStatic" style="z-index:1000;">
-	<a href="#" onclick="caUIBrowsePanel.hideBrowsePanel(); return false;" class="browseSelectPanelButton">&nbsp;</a>
-	<div id="staticBrowsePanelContent">
-	
-	</div>
-</div>
+
 <script type="text/javascript">
 	var caUIBrowsePanel = caUI.initBrowsePanel({ 
 		facetUrl: '<?php print caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), 'getFacet'); ?>',

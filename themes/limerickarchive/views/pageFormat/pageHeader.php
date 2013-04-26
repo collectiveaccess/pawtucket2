@@ -191,6 +191,10 @@
    				
    				case "Collection" :
   				print " &gt; Showcase";
+  				if($this->request->getParameter('collection_id', pInteger)){
+  					$t_collection = new ca_collections($this->request->getParameter('collection_id', pInteger));
+  					print " &gt; ".$t_collection->getLabelForDisplay();
+  				}
    				break;
    				
    				case "Favorites" :

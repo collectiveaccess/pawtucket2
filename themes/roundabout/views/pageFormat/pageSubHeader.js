@@ -16,7 +16,7 @@
 <?php
 				} // end if
 ?>
-				<h2 class="ir">Roundabout Archives</h2>
+				<h2 class="ir">Archives</h2>
 			<!-- end #header -->
 			</div>
 			

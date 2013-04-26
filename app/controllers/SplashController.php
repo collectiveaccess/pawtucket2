@@ -90,10 +90,10 @@
 			$this->opo_browse = new ObjectBrowse($this->opo_result_context->getSearchExpression(), 'pawtucket2');
  		}
  		# -------------------------------------------------------
- 		function Index() {
+ 		function Index($pa_options=null) {
  			// Remove any browse criteria previously set
 			$this->opo_browse->removeAllCriteria();
- 			parent::Index(true);
+ 			parent::Index(array('dontRenderView' => true));
  			JavascriptLoadManager::register('imageScroller');
  			JavascriptLoadManager::register('browsable');
  			JavascriptLoadManager::register('tabUI');
