@@ -34,7 +34,13 @@
 
 if (!$this->request->isAjax()) {
 ?>
-	<div id="detailBody">
+	<div id="detailBody">		
+		<div id="leftCol" >
+			<!--img src="<?php print $this->request->getThemeUrlPath()?>/graphics/city/the-jim-kemmy-municipal-museum-02.jpg" alt="" title="" /-->
+			<div class="maincol">
+				
+				<h1>Collection: <?php print $vs_title; ?></h1>
+		
 		<div id="pageNav">
 <?php
 			if (($this->getVar('is_in_result_list')) && ($vs_back_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_collections', _t("Back"), ''))) {
@@ -52,7 +58,6 @@ if (!$this->request->isAjax()) {
 			}
 ?>
 		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($t_collection->getTypeName()).': '.$vs_title; ?></h1>
 		<div id="leftCol">	
 <?php
 			# --- identifier
@@ -167,6 +172,7 @@ if (!$this->request->isAjax()) {
 		</div><!-- end resultBox -->
 
 
+		</div><!-- end maincol -->
 	</div><!-- end rightCol -->
 </div><!-- end detailBody -->
 <?php
