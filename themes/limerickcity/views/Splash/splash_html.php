@@ -1,4 +1,6 @@
 <?php
+	$t_list = new ca_lists();
+	$vn_collection_type_id = $t_list->getItemIDFromList("object_types", "object");
 	JavascriptLoadManager::register('tabUI');
 	
 	# --- get the access values for checking permissions
@@ -23,17 +25,25 @@
 		}
 	}
 	# --- recently added
-	$va_recently_added_ids = $t_object->getRecentlyAddedItems(15, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
+	$va_recently_added_ids = $t_object->getRecentlyAddedItems(500, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));
 	if(is_array($va_recently_added_ids) && sizeof($va_recently_added_ids) > 0){
 		$va_recently_added = array();
+		$i = 0;
 		foreach($va_recently_added_ids as $va_item_info){
+			if($i >= 15){
+				break;
+			}
+			$t_object->load($vn_r_object_id);
+			if($t_object->get("type_id") != $vn_collection_type_id){
+				continue;
+			}
 			$va_temp = array();
 			$vn_r_object_id = $va_item_info['object_id'];
-			$t_object->load($vn_r_object_id);
 			$va_reps = $t_object->getPrimaryRepresentation(array('thumbnail', 'widepreview'), null, array('return_with_access' => $va_access_values));
 			$va_temp["widepreview"] = $va_reps["tags"]["widepreview"];
 			$va_temp["label"] = $t_object->get("ca_objects.preferred_labels");
 			$va_recently_added[$vn_r_object_id] = $va_temp;
+			$i++;
 		}
 	}
 ?>

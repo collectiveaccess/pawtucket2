@@ -130,12 +130,6 @@
 			if($t_object->get('dimensions_text'))
 				print "<div class='unit'><b>"._t("Physical Dimensions").":</b> ".$t_object->get('dimensions_text')."</div><!-- end unit -->";
 
-			if($t_object->get('date')){
-				$date=str_replace(",133,"," to ",$t_object->get('date'));
-				$date=str_replace(",134","",$date);
-				$date=str_replace(",137","",$date);
-				print "<div class='unit'><b>"._t("Date").":</b> ".$date."</div><!-- end unit -->";
-			}
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes_other');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
