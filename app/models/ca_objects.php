@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2012 Whirl-i-Gig
+ * Copyright 2008-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,6 +40,7 @@ require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 require_once(__CA_MODELS_DIR__."/ca_objects_x_object_representations.php");
 require_once(__CA_MODELS_DIR__."/ca_commerce_orders.php");
 require_once(__CA_MODELS_DIR__."/ca_commerce_order_items.php");
+require_once(__CA_MODELS_DIR__."/ca_object_lots.php");
 require_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
 
 
@@ -416,13 +417,33 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 		$this->BUNDLES['ca_commerce_order_history'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Order history'));
 	}
 	# ------------------------------------------------------
+	/**
+	 * Override set() to do idno_stub lookups on lots
+	 *
+	 */
+	public function set($pa_fields, $pm_value="", $pa_options=null) {
+		if (!is_array($pa_fields)) {
+			$pa_fields = array($pa_fields => $pm_value);
+		}
+		foreach($pa_fields as $vs_fld => $vs_val) {
+			if (($vs_fld == 'lot_id') && (preg_match("![^\d]+!", $vs_val))) {
+				$t_lot = new ca_object_lots();
+				if ($t_lot->load(array('idno_stub' => $vs_val))) {
+					$vn_lot_id = (int)$t_lot->getPrimaryKey();
+					$pa_fields[$vs_fld] = $vn_lot_id;
+				}
+			}
+		}
+		return parent::set($pa_fields, null, $pa_options);
+	}
+	# ------------------------------------------------------
 	public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null){
 		// nuke related representations
 		foreach($this->getRepresentations() as $va_rep){
 			// check if representation is in use anywhere else 
 			$qr_res = $this->getDb()->query("SELECT count(*) c FROM ca_objects_x_object_representations WHERE object_id <> ? AND representation_id = ?", (int)$this->getPrimaryKey(), (int)$va_rep["representation_id"]);
 			if ($qr_res->nextRow() && ($qr_res->get('c') == 0)) {
-				$this->removeRepresentation($va_rep["representation_id"]);
+				$this->removeRepresentation($va_rep["representation_id"], array('dontCheckPrimaryValue' => true));
 			}
 		}
 
@@ -1305,7 +1326,14 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 			}
 			$va_media[$qr_res->get('object_id')] = $va_media_tags;
 		}
-		return $va_media;
+		
+		// Preserve order of input ids
+		$va_media_sorted = array();
+		foreach($pa_ids as $vn_object_id) {
+			$va_media_sorted[$vn_object_id] = $va_media[$vn_object_id];
+		} 
+		
+		return $va_media_sorted;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -1355,10 +1383,10 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 		
 		$vs_type_sql = '';
 		if ($pn_type_id) {
-			$va_type_ids = caMakeTypeIDList('ca_objects', array($pn_type_id));
-			$pn_type_id = array_shift($va_type_ids);
-			$vs_type_sql = " AND cap.type_id = ?";
-			$va_params[] = (int)$pn_type_id;
+			if(sizeof($va_type_ids = caMakeTypeIDList('ca_objects', array($pn_type_id)))) {
+				$vs_type_sql = " AND cap.type_id IN (?)";
+				$va_params[] = $va_type_ids;
+			}
 		}
 		
 		if ($pn_parent_id) {
@@ -1371,7 +1399,7 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 				FROM ca_objects cap
 				INNER JOIN ca_object_labels AS capl ON capl.object_id = cap.object_id
 				WHERE
-					capl.name = ? {$vs_type_sql} {$vs_parent_sql}
+					capl.name = ? {$vs_type_sql} {$vs_parent_sql} AND cap.deleted = 0
 			", $va_params);
 		
 		$va_object_ids = array();
@@ -1379,6 +1407,13 @@ class ca_objects extends BundlableLabelableBaseModelWithAttributes implements IB
 			$va_object_ids[] = $qr_res->get('object_id');
 		}
 		return $va_object_ids;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getIDsByLabel($pa_label_values, $pn_parent_id=null, $pn_type_id=null) {
+		return $this->getObjectIDsByName($pa_label_values['name'], $pn_parent_id, $pn_type_id);
 	}
  	# ------------------------------------------------------
  	# Client services
