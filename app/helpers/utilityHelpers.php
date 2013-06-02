@@ -54,32 +54,35 @@ global $ca_translation_cache;
 $ca_translation_cache = array();
 function _t($ps_key) {
 	global $ca_translation_cache, $_;
-	global $_;
 	
-	if (!sizeof(func_get_args()) && isset($ca_translation_cache[$ps_key])) { return $ca_translation_cache[$ps_key]; }
-	
-	if (is_array($_)) {
-		$vs_str = $ps_key;
-		foreach($_ as $o_locale) {
-			if ($o_locale->isTranslated($ps_key)) {
-				$vs_str = $o_locale->_($ps_key);
-				break;
-			}
-		}
-	} else {
-		if (!is_object($_)) { 
+	if (!isset($ca_translation_cache[$ps_key])) {
+		if (is_array($_)) {
 			$vs_str = $ps_key;
+			foreach($_ as $o_locale) {
+				if ($o_locale->isTranslated($ps_key)) {
+					$vs_str = $o_locale->_($ps_key);
+					break;
+				}
+			}
 		} else {
-			$vs_str = $_->_($ps_key);
-		} 
+			if (!is_object($_)) { 
+				$vs_str = $ps_key;
+			} else {
+				$vs_str = $_->_($ps_key);
+			} 
+		}
+		$ca_translation_cache[$ps_key] = $vs_str;
+	} else {
+		$vs_str = $ca_translation_cache[$ps_key];
 	}
+	
 	if (sizeof($va_args = func_get_args()) > 1) {
 		$vn_num_args = sizeof($va_args) - 1;
 		for($vn_i=$vn_num_args; $vn_i >= 1; $vn_i--) {
 			$vs_str = str_replace("%{$vn_i}", $va_args[$vn_i], $vs_str);
 		}
 	}
-	return $ca_translation_cache[$ps_key] = $vs_str;
+	return $vs_str;
 }
 
 /**
@@ -140,6 +143,15 @@ function caEscapeForXML($ps_text) {
 	$ps_text = str_replace("'", "&apos;", $ps_text);
 	
 	return str_replace("\"", "&quot;", $ps_text);
+}
+# ----------------------------------------
+function caUnescapeFromXML($ps_text) {
+	$ps_text = str_replace("&amp;", "&", $ps_text);
+	$ps_text = str_replace("&lt;", "<",  $ps_text);
+	$ps_text = str_replace("&gt;", ">", $ps_text);
+	$ps_text = str_replace("&apos;", "'", $ps_text);
+	
+	return str_replace("&quot;", "\"", $ps_text);
 }
 # ----------------------------------------
 function caMakeProperUTF8ForXML($ps_text){
@@ -307,7 +319,7 @@ function caFileIsIncludable($ps_file) {
 				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
 					$vb_is_dir = is_dir("{$dir}/{$item}");
 					if ($pb_recursive && $vb_is_dir) { 
-						$va_file_list = array_merge($va_file_list, caGetDirectoryContentsAsList("{$dir}/{$item}", true, $pb_include_hidden_files));
+						$va_file_list = array_merge($va_file_list, array_flip(caGetDirectoryContentsAsList("{$dir}/{$item}", true, $pb_include_hidden_files)));
 					} else { 
 						if (!$vb_is_dir) { 
 							$va_file_list["{$dir}/{$item}"] = true;
@@ -320,8 +332,7 @@ function caFileIsIncludable($ps_file) {
 		if ($pb_sort) {
 			ksort($va_file_list);
 		}
-		$va_file_list = array_keys($va_file_list);
-		return $va_file_list;
+		return array_keys($va_file_list);
 	}
 	# ----------------------------------------
 	/**
@@ -417,6 +428,15 @@ function caFileIsIncludable($ps_file) {
 		unlink ($vs_new_file);
 		
 		return true;
+	}
+	# ----------------------------------------
+	function caIsArchive($ps_filename){
+		// what once was the PHAR extension is built in since PHP 5.3
+		// can actually handle zip and tar.gz (and probably a lot more)
+		if(!class_exists("PharData")) return false; 
+		$list = @scandir('phar://'.$ps_filename);
+	
+		return (bool)$list;
 	}
 	# ----------------------------------------
 	function caGetOSFamily() {
@@ -732,9 +752,10 @@ function caFileIsIncludable($ps_file) {
 	 * Both text fractions (ex. 3/4) and Unicode fraction glyphs (ex. ¾) may be used.
 	 *
 	 * @param string $ps_fractional_expression String including fractional expression to convert
+	 * @param string $locale The locale of the string to use the right decimal separator
 	 * @return string $ps_fractional_expression with fractions replaced with decimal equivalents
 	 */
-	function caConvertFractionalNumberToDecimal($ps_fractional_expression) {
+	function caConvertFractionalNumberToDecimal($ps_fractional_expression, $locale="en_US") {
 		// convert ascii fractions (eg. 1/2) to decimal
 		if (preg_match('!^([\d]*)[ ]*([\d]+)/([\d]+)!', $ps_fractional_expression, $va_matches)) {
 			if ((float)$va_matches[2] > 0) {
@@ -744,13 +765,15 @@ function caFileIsIncludable($ps_file) {
 			}
 			$vn_val = sprintf("%4.3f", ((float)$va_matches[1] + $vn_val));
 			
+			$vn_val = caConvertFloatToLocale($vn_val, $locale);
 			$ps_fractional_expression = str_replace($va_matches[0], $vn_val, $ps_fractional_expression);
 		} else {
+			$sep = caGetDecimalSeparator($locale);
 			// replace unicode fractions with decimal equivalents
 			foreach(array(
-				'½' => '.5','⅓' => '.333',
-				'⅔' => '.667','¼' => '.25',
-				'¾' => '.75') as $vs_glyph => $vs_val
+				'½' => $sep.'5', '⅓' => $sep.'333',
+				'⅔' => $sep.'667', '¼' => $sep.'25',
+				'¾'	=> $sep.'75') as $vs_glyph => $vs_val
 			) {
 				$ps_fractional_expression = preg_replace('![ ]*'.$vs_glyph.'!u', $vs_val, $ps_fractional_expression);	
 			}
@@ -783,22 +806,43 @@ function caFileIsIncludable($ps_file) {
 	 * format needed for calculations (eg 54.33)
 	 *
 	 * @param string $ps_value The value to convert
+	 * @param string $locale The locale of the value
 	 * @return float The converted value
 	 */
-	function caConvertLocaleSpecificFloat($ps_value) {
-		$va_locale = localeconv();
-		$va_search = array(
-			$va_locale['decimal_point'], 
-			$va_locale['mon_decimal_point'], 
-			$va_locale['thousands_sep'], 
-			$va_locale['mon_thousands_sep'], 
-			$va_locale['currency_symbol'], 
-			$va_locale['int_curr_symbol']
-		);
-		$va_replace = array('.', '.', '', '', '', '');
-	
-		$vs_converted_value = str_replace($va_search, $va_replace, $ps_value);
-		return (float)$vs_converted_value;
+	function caConvertLocaleSpecificFloat($ps_value, $locale = "en_US") {
+		if (!function_exists("NumberFormatter")) { return $ps_value; }
+		$fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL );
+		return (float)$fmt->parse($ps_value);
+	}
+	# ---------------------------------------
+	/**
+	 * Takes a standard formatted float (eg. 54.33) and converts it to the locale
+	 * format needed for display (eg 54,33)
+	 *
+	 * @param string $ps_value The value to convert
+	 * @param string $locale Which locale is to be used to return the value
+	 * @return float The converted value
+	 */
+	function caConvertFloatToLocale($ps_value, $locale = "en_US") {
+		if (!function_exists("NumberFormatter")) { return $ps_value; }
+		$fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL );
+		return $fmt->format($ps_value);
+	}
+	# ---------------------------------------
+	/**
+	 * Get the decimal separator
+	 *
+	 * @param string $ps_value The value to convert
+	 * @param string $locale Which locale is to be used to return the value
+	 * @return float The converted value
+	 */
+	function caGetDecimalSeparator($locale = "en_US") {
+		if (!function_exists("NumberFormatter")) { return $ps_value; }
+		if ($locale != "en_US") {
+			$fmt = new NumberFormatter($locale, NumberFormatter::DECIMAL );
+			return $fmt->getSymbol(NumberFormatter::DECIMAL_SEPARATOR_SYMBOL);
+		}
+		return ".";
 	}
 	# ---------------------------------------
 	/**
@@ -1166,6 +1210,29 @@ function caFileIsIncludable($ps_file) {
 		return $result.$newLine;
 	}
 	# ---------------------------------------
+	function caFormatXML($ps_xml){  
+		require_once(__CA_LIB_DIR__.'/core/Parsers/XMLFormatter.php');
+
+		$va_options = array(
+			"paddingString" => " ",
+			"paddingMultiplier" => 2,
+			"wordwrapCData" => false,
+		);
+
+		$vr_input = fopen('data://text/plain,'.$ps_xml, 'r');
+		$vr_output = fopen('php://temp', 'w+');
+
+		$vo_formatter = new XML_Formatter($vr_input, $vr_output, $va_options);
+
+		try {
+			$vo_formatter->format();
+			rewind($vr_output);
+			return stream_get_contents($vr_output)."\n";
+		} catch (EXception $e) {
+			return false;
+		}
+	}
+	# ---------------------------------------
 	/**
 	  * Parses natural language date and returns pair of Unix timestamps defining date/time range
 	  *
@@ -1436,6 +1503,19 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
+	 * Determines if current request was via service.php
+	 *
+	 * @return boolean true if request addressed service.php, false if not
+	 */
+	function caIsServiceRequest() {
+		if(isset($_SERVER['SCRIPT_NAME']) && ($_SERVER['SCRIPT_NAME'] == '/service.php')){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	# ---------------------------------------
+	/**
 	 * 
 	 *
 	 * @param array $pa_options
@@ -1586,6 +1666,87 @@ function caFileIsIncludable($ps_file) {
 				'DOCUMENT_ROOT' => $_SERVER['DOCUMENT_ROOT']
 			)
 		));
+	}
+	# ----------------------------------------
+	/**
+	 * Generic debug function for shiny variable output
+	 * @param mixed $vm_data content to print
+	 * @param string $vs_label optional label to prefix the output with
+	 * @param boolean $print_r Flag to switch between print_r() and var_export() for data conversion to string. 
+	 * 		Set $print_r to TRUE when dealing with a recursive data structure as var_export() will generate an error.
+	 */
+	function caDebug($vm_data, $vs_label = null, $print_r = false) {
+		if(defined('__CA_ENABLE_DEBUG_OUTPUT__') && __CA_ENABLE_DEBUG_OUTPUT__) {
+			if(caIsRunFromCLI()){
+				// simply dump stuff on command line
+				if($vs_label) { print $vs_label.":\n"; }
+				if($print_r) {
+					print_r($vm_data);
+				} else {
+					var_export($vm_data);
+				}
+				print "\n";
+				return;
+			} else if (caIsServiceRequest()){
+				$vs_data = ($print_r ? print_r($vm_data, TRUE) : var_export($vm_data, TRUE));
+				if($vs_label){
+					$vs_string = '<debugLabel>' . $vs_label . '</debugLabel>' . "\n";
+				} else {
+					$vs_string = "";
+				}
+				$vs_string .= '<debug>' . $vs_data . '</debug>';
+				$vs_string .= "\n\n";
+			} else {
+				$vs_string = htmlspecialchars(($print_r ? print_r($vm_data, TRUE) : var_export($vm_data, TRUE)), ENT_QUOTES, 'UTF-8');
+				$vs_string = '<pre>' . $vs_string . '</pre>';
+				$vs_string = trim($vs_label ? "<div class='debugLabel'>$vs_label:</div> $vs_string" : $vs_string);
+				$vs_string = '<div class="debug">'. $vs_string . '</div>';
+			}
+
+			global $g_response;
+			if(is_object($g_response)){
+				$g_response->addContent($vs_string,'default');
+			} else {
+				// on the off chance that someone wants to debug something that happens before 
+				// the response object is generated (like config checks), print content
+				// to output buffer to avoid headers already sent warning. The output is sent
+				// when someone (e.g. View.php) starts a new buffer.
+				ob_start();
+				print $vs_string;
+			}
+		}
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 *
+	 */
+	function caMakeSearchResult($ps_table, $pa_ids) {
+		$o_dm = Datamodel::load();
+		if ($t_instance = $o_dm->getInstanceByTableName($ps_table, true)) {
+			return $t_instance->makeSearchResult($ps_table, $pa_ids);
+		}
+		return null;
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caExtractValuesFromArrayList($pa_array, $ps_key, $pa_options=null) {
+		$vb_preserve_keys = (isset($pa_options['preserveKeys'])) ? (bool)$pa_options['preserveKeys'] : true;
+		$vb_include_blanks = (isset($pa_options['includeBlanks'])) ? (bool)$pa_options['includeBlanks'] : false;
+		
+		$va_extracted_values = array();
+		foreach($pa_array as $vs_k => $va_v) {
+			if (!$vb_include_blanks && (!isset($va_v[$ps_key]) ||(strlen($va_v[$ps_key]) == 0))) { continue; }
+			if ($vb_preserve_keys) {
+				$va_extracted_values[$vs_k] = $va_v[$ps_key];
+			} else {
+				$va_extracted_values[] = $va_v[$ps_key];
+			}
+		}
+		
+		return $va_extracted_values;
 	}
 	# ----------------------------------------
 ?>
