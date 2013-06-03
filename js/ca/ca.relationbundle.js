@@ -92,17 +92,19 @@ var caUI = caUI || {};
 						
 						if(!parseInt(ui.item.id) && options.quickaddPanel) {
 							var panelUrl = options.quickaddUrl;
-							if (ui.item._query) { panelUrl += '/q/' + escape(ui.item._query); }
+							//if (ui.item._query) { panelUrl += '/q/' + escape(ui.item._query); }
 							if (options && options.types) {
-								options.types = options.types.join(",");
+								if(Object.prototype.toString.call(options.types) === '[object Array]') {
+									options.types = options.types.join(",");
+								}
 								if (options.types.length > 0) {
 									panelUrl += '/types/' + options.types;
 								}
 							}
-							if (options.fieldNamePrefix && (options.fieldNamePrefix.length > 0)) {
-								panelUrl += '/field_name_prefix/' + options.fieldNamePrefix;
-							}
-							options.quickaddPanel.showPanel(panelUrl);
+							//if (options.fieldNamePrefix && (options.fieldNamePrefix.length > 0)) {
+							//	panelUrl += '/field_name_prefix/' + options.fieldNamePrefix;
+							//}
+							options.quickaddPanel.showPanel(panelUrl, null, null, {q: ui.item._query, field_name_prefix: options.fieldNamePrefix});
 							jQuery('#' + options.quickaddPanel.getPanelContentID()).data('autocompleteInputID', autocompleter_id);
 							jQuery('#' + options.quickaddPanel.getPanelContentID()).data('autocompleteItemIDID', options.itemID + id + ' #' + options.fieldNamePrefix + 'id' + id);
 							jQuery('#' + options.quickaddPanel.getPanelContentID()).data('autocompleteTypeIDID', options.itemID + id + ' #' + options.fieldNamePrefix + 'type_id' + id);
