@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/core/Plugins/Media/XMLDoc.php :
+ * app/lib/core/Plugins/Media/Mesh.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,7 +35,7 @@
   */
  
 /**
- * Plugin for processing XML documents
+ * Plugin for processing 3D object files
  */
  
 include_once(__CA_LIB_DIR__."/core/Plugins/Media/BaseMediaPlugin.php");
@@ -43,8 +43,9 @@ include_once(__CA_LIB_DIR__."/core/Plugins/IWLPlugMedia.php");
 include_once(__CA_LIB_DIR__."/core/Configuration.php");
 include_once(__CA_LIB_DIR__."/core/Media.php");
 include_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
+include_once(__CA_LIB_DIR__."/core/Parsers/PlyToStl.php");
 
-class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
+class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 	var $errors = array();
 	
 	var $filepath;
@@ -56,13 +57,15 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 	
 	var $info = array(
 		"IMPORT" => array(
-			"text/xml" 					=> "xml"
+			"application/ply" 					=> "ply",
+			"application/stl" 					=> "stl",
+			"application/surf" 					=> "surf",
 		),
 		
 		"EXPORT" => array(
-			"text/xml" 								=> "xml",
-			"application/pdf"						=> "pdf",
-			"text/html"								=> "html",
+			"application/ply" 						=> "ply",
+			"application/stl" 						=> "stl",
+			"application/surf" 						=> "surf",
 			"text/plain"							=> "txt",
 			"image/jpeg"							=> "jpg",
 			"image/png"								=> "png"
@@ -73,8 +76,8 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 		),
 		
 		"PROPERTIES" => array(
-			"width" 			=> 'R',
-			"height" 			=> 'R',
+			"width" 			=> 'W',
+			"height" 			=> 'W',
 			"version_width" 	=> 'R', // width version icon should be output at (set by transform())
 			"version_height" 	=> 'R',	// height version icon should be output at (set by transform())
 			"mimetype" 			=> 'W',
@@ -85,31 +88,32 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 			'version'			=> 'W'	// required of all plug-ins
 		),
 		
-		"NAME" => "XMLDoc",
+		"NAME" => "3D",
 		
 		"MULTIPAGE_CONVERSION" => false, // if true, means plug-in support methods to transform and return all pages of a multipage document file (ex. a PDF)
-		"NO_CONVERSION" => false
+		"NO_CONVERSION" => true
 	);
 	
 	var $typenames = array(
-		"application/pdf" 				=> "PDF",
-		"text/xml" 						=> "XML document",
-		"text/html" 					=> "HTML",
-		"text/plain" 					=> "Plain text",
-		"image/jpeg"					=> "JPEG",
-		"image/png"						=> "PNG"
+		"application/ply" 				=> "Polygon File Format",
+		"application/stl" 				=> "Standard Tessellation Language File",
+		"application/surf" 				=> "Surface Grid Format",
 	);
 	
 	var $magick_names = array(
-		"application/pdf" 				=> "PDF",
-		"text/xml" 						=> "XML",
-		"text/html" 					=> "HTML",
-		"text/plain" 					=> "TXT"
+		"application/ply" 				=> "PLY",
+		"application/stl" 				=> "STL",
+		"application/surf" 				=> "SURF",
 	);
 	
 	# ------------------------------------------------
 	public function __construct() {
-		$this->description = _t('Accepts and processes XML-format documents');
+		$this->description = _t('Accepts files describing 3D models');
+
+		$this->opo_config = Configuration::load();
+		$vs_external_app_config_path = $this->opo_config->get('external_applications');
+		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->ops_python_path = $this->opo_external_app_config->get('python_app');
 	}
 	# ------------------------------------------------
 	# Tell WebLib what kinds of media this plug-in supports
@@ -135,18 +139,40 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 		if ($ps_filepath == '') {
 			return '';
 		}
-		
+
+		$this->filepath = $ps_filepath;
+
+		// PLY and STL are basically a simple text files describing polygons
+		// SURF is binary but with a plain text meta part at the beginning
 		if ($r_fp = @fopen($ps_filepath, "r")) {
-			$vs_sig = fgets($r_fp, 10); 
-			if (preg_match('!<\?xml!', $vs_sig)) {
+			$vs_sig = fgets($r_fp, 20); 
+			if (preg_match('!^ply!', $vs_sig)) {
 				$this->properties = $this->handle = $this->ohandle = array(
-					"mimetype" => 'text/xml',
+					"mimetype" => 'application/ply',
 					"filesize" => filesize($ps_filepath),
-					"typename" => "XML document"
+					"typename" => "Polygon File Format"
 				);
-				return "text/xml";
+				return "application/ply";
+			}
+			if (preg_match('!^solid!', $vs_sig)) {
+				$this->properties = $this->handle = $this->ohandle = array(
+					"mimetype" => 'application/stl',
+					"filesize" => filesize($ps_filepath),
+					"typename" => "Standard Tessellation Language File"
+				);
+				return "application/stl";
+			}
+			if (preg_match('!\#\ HyperSurface!', $vs_sig)) {
+				$this->properties = $this->handle = $this->ohandle = array(
+					"mimetype" => 'application/surf',
+					"filesize" => filesize($ps_filepath),
+					"typename" => "Surface Grid Format"
+				);
+				return "application/surf";
 			}
 		}
+
+		$this->filepath = null;
 		return '';
 	}
 	# ----------------------------------------------------------
@@ -155,7 +181,6 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 			if ($this->info["PROPERTIES"][$property]) {
 				return $this->properties[$property];
 			} else {
-				//print "Invalid property";
 				return '';
 			}
 		} else {
@@ -178,7 +203,7 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 				}
 			} else {
 				# invalid property
-				$this->postError(1650, _t("Can't set property %1", $property), "WLPlugMediaXMLDoc->set()");
+				$this->postError(1650, _t("Can't set property %1", $property), "WLPlugMediaMesh->set()");
 				return '';
 			}
 		} else {
@@ -193,18 +218,7 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 	 * @return String Extracted text
 	 */
 	public function getExtractedText() {
-		$this->handle['content'] = '';
-		$o_xml_config = Configuration::load($this->opo_config->get('xml_config'));
-		
-		if ((bool)$o_xml_config->get('xml_index_content_for_search')) {
-			if ($r_fp = fopen($this->filepath, 'r')) {
-				while(($vs_line = fgetss($r_fp, 4096)) !== false) {
-					$this->handle['content'] .= $vs_line;
-				}
-				fclose($r_fp);
-			}
-		}
-		return isset($this->handle['content']) ? $this->handle['content'] : '';
+		return '';
 	}
 	# ------------------------------------------------
 	/**
@@ -221,63 +235,15 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 			# noop
 		} else {
 			if (!file_exists($ps_filepath)) {
-				$this->postError(3000, _t("File %1 does not exist", $ps_filepath), "WLPlugMediaXMLDoc->read()");
+				$this->postError(3000, _t("File %1 does not exist", $ps_filepath), "WLPlugMediaMesh->read()");
 				$this->handle = $this->filepath = "";
 				return false;
 			}
 			if (!($this->divineFileFormat($ps_filepath))) {
-				$this->postError(3005, _t("File %1 is not an XML document", $ps_filepath), "WLPlugMediaXMLDoc->read()");
+				$this->postError(3005, _t("File %1 is not a 3D model", $ps_filepath), "WLPlugMediaMesh->read()");
 				$this->handle = $this->filepath = "";
 				return false;
 			}
-		}
-		$o_xml_config = Configuration::load($this->opo_config->get('xml_config'));
-		$vs_xml_resource_path = $o_xml_config->get('xml_resource_directory');
-		
-		$this->filepath = $ps_filepath;
-		
-		libxml_use_internal_errors(true);
-		if ($o_xml = DOMDocument::load($ps_filepath, LIBXML_DTDVALID)) {
-			// get schema
-			$o_root = $o_xml->childNodes->item(0);
-			
-			
-			if ($vb_require_schema = (bool)$o_xml_config->get('xml_do_validation')) {
-				if (!($vs_schema_path = $o_root->getAttribute('xsi:noNamespaceSchemaLocation'))) {
-					$vs_schema_path = $o_root->getAttribute('xsi:schemaLocation');
-				}
-				$vs_schema_path = preg_replace('![\.]+!', '.', $vs_schema_path);
-				if (!$vs_schema_path) {
-					$this->postError(3010, _t("No XML schema specified in XML file"), "WLPlugMediaXMLDoc->read()");
-					$this->handle = $this->filepath = "";
-					return false;
-				}
-				
-				if (!file_exists($vs_xml_resource_path.'/schemas/'.$vs_schema_path)) {
-					$this->postError(3015, _t("Specified XML schema is not installed"), "WLPlugMediaXMLDoc->read()");
-					$this->handle = $this->filepath = "";
-					return false;
-				}
-			
-				// validate schema
-				if (!$o_xml->schemaValidate($vs_xml_resource_path.'/schemas/'.$vs_schema_path)) {
-					$va_xml_errors = libxml_get_errors(); 
-					$va_xml_error_messages = array();
-					foreach ($va_xml_errors as $va_xml_error) { 
-						$va_xml_error_messages[] = _t('At line %1', $va_xml_error->line).': '.$va_xml_error->message;
-					} 
-					libxml_clear_errors();
-					$this->postError(3020, _t("Validation against XML schema failed with errors:<br/>".join('; ', $va_xml_error_messages)), "WLPlugMediaXMLDoc->read()");
-					$this->handle = $this->filepath = "";
-					return false;
-				} 
-			}
-			
-			return true;
-		} else {
-			$this->postError(1651, _t("Could not open %1", $ps_filepath), "WLPlugMediaXMLDoc->read()");
-			$this->handle = $this->filepath = "";
-			return false;
 		}
 			
 		return true;	
@@ -288,7 +254,7 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 		
 		if (!($this->info["TRANSFORMATIONS"][$operation])) {
 			# invalid transformation
-			$this->postError(1655, _t("Invalid transformation %1", $operation), "WLPlugMediaXMLDoc->transform()");
+			$this->postError(1655, _t("Invalid transformation %1", $operation), "WLPlugMediaMesh->transform()");
 			return false;
 		}
 		
@@ -315,37 +281,31 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# ----------------------------------------------------------
 	public function write($ps_filepath, $ps_mimetype) {
 		if (!$this->handle) { return false; }
+
+		$this->properties["width"] = $this->properties["version_width"];
+		$this->properties["height"] = $this->properties["version_height"];
 		
 		# is mimetype valid?
 		if (!($vs_ext = $this->info["EXPORT"][$ps_mimetype])) {
-			$this->postError(1610, _t("Can't convert file to %1", $ps_mimetype), "WLPlugMediaXMLDoc->write()");
+			$this->postError(1610, _t("Can't convert file to %1", $ps_mimetype), "WLPlugMediaMesh->write()");
 			return false;
-		} 
-		
-		# write the file
-		if ($ps_mimetype == "text/xml") {
-			if ( !copy($this->filepath, $ps_filepath.".xml") ) {
-				$this->postError(1610, _t("Couldn't write file to %1", $ps_filepath), "WLPlugMediaXMLDoc->write()");
-				return false;
+		}
+
+		# pretty restricted, but we can convert ply to stl!
+		if(($this->properties['mimetype'] == 'application/ply') && ($ps_mimetype == 'application/stl')){
+			if(file_exists($this->filepath)){
+				if(PlyToStl::convert($this->filepath,$ps_filepath.'.stl')){
+					return $ps_filepath.'.stl';	
+				} else {
+					@unlink($ps_filepath.'.stl');
+					$this->postError(1610, _t("Couldn't convert ply model to stl"), "WLPlugMediaMesh->write()");
+					return false;
+				}
 			}
-		} else {
-			# use default media icons
-			return __CA_MEDIA_DOCUMENT_DEFAULT_ICON__;
 		}
 		
-		
-		$this->properties["mimetype"] = $ps_mimetype;
-		$this->properties["filesize"] = filesize($ps_filepath.".".$vs_ext);
-		
-		if (!($this->properties["width"] = $this->get("version_width"))) {
-			$this->properties["width"] = $this->get("version_height");
-		}
-		if (!($this->properties["height"] = $this->get("version_height"))) {
-			$this->properties["height"] = $this->get("version_width");
-		}
-		//$this->properties["typename"] = $this->typenames[$ps_mimetype];
-		
-		return $ps_filepath.".".$vs_ext;
+		# use default media icons
+		return __CA_MEDIA_3D_DEFAULT_ICON__;
 	}
 	# ------------------------------------------------
 	/** 
@@ -403,51 +363,31 @@ class WLPlugMediaXMLDoc Extends BaseMediaPlugin Implements IWLPlugMedia {
 	}
 	# ------------------------------------------------
 	public function htmlTag($ps_url, $pa_properties, $pa_options=null, $pa_volume_info=null) {
+		JavascriptLoadManager::register('3dmodels');
+
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
-		foreach(array(
-			'name', 'url', 'viewer_width', 'viewer_height', 'idname',
-			'viewer_base_url', 'width', 'height',
-			'vspace', 'hspace', 'alt', 'title', 'usemap', 'align', 'border', 'class', 'style'
-		) as $vs_k) {
-			if (!isset($pa_options[$vs_k])) { $pa_options[$vs_k] = null; }
-		}
-		
-		if(preg_match("/\.xml\$/", $ps_url)) {
-			if (!$this->opo_config) { $this->opo_config = Configuration::load(); }
-			$o_xml_config = Configuration::load($this->opo_config->get('xml_config'));
-			$vs_xml_resource_path = $o_xml_config->get('xml_resource_directory');
-			
-			if (file_exists($vs_xml_resource_path.'/xsl/styl.xslt')) {
-				$o_xsl = new DOMDocument();
-				$o_xsl->load($vs_xml_resource_path.'/xsl/styl.xslt');
-				
-				$o_xml = new DOMDocument();
-				$o_xml->load($ps_url);
-				
-				$o_xsl_proc = new XSLTProcessor();
-				$o_xsl_proc->importStylesheet($o_xsl);
-				return $o_xsl_proc->transformToXML($o_xml);
-			} else {
-				return "<a href='{$ps_url}'>"._t('View XML file')."</a>";
-			}
+		$vn_width = $pa_options["viewer_width"] ? $pa_options["viewer_width"] : 820;
+		$vn_height = $pa_options["viewer_height"] ? $pa_options["viewer_height"] : 520;
 
+		$vs_id = $pa_options["id"] ? $pa_options["id"] : "mesh_canvas";
+
+		if(in_array($pa_properties['mimetype'], array("application/stl"))){
+			ob_start();
+?>
+<canvas id="<?php print $vs_id; ?>" style="border: 1px solid;" width="<?php print $vn_width; ?>" height="<?php print $vn_height; ?>" ></canvas>
+<script type="text/javascript">
+	var canvas = document.getElementById('<?php print $vs_id; ?>');
+	var viewer = new JSC3D.Viewer(canvas);
+	viewer.setParameter('SceneUrl', '<?php print $ps_url; ?>');
+	viewer.setParameter('RenderMode', 'flat');
+	viewer.init();
+	viewer.update();
+</script>
+<?php
+			return ob_get_clean();
 		} else {
-			if(preg_match("/\.pdf\$/", $ps_url)) {
-				if ($pa_options['embed']) {
-					$vn_viewer_width = intval($pa_options['viewer_width']);
-					if ($vn_viewer_width < 100) { $vn_viewer_width = 400; }
-					$vn_viewer_height = intval($pa_options['viewer_height']);
-					if ($vn_viewer_height < 100) { $vn_viewer_height = 400; }
-					return "<object data='{$ps_url}' type='application/pdf' width='{$vn_viewer_width}' height='{$vn_viewer_height}'><p><a href='$ps_url' target='_pdf'>"._t("View PDF file")."</a></p></object>";
-				} else {
-					return "<a href='$ps_url' target='_pdf'>"._t("View PDF file")."</a>";
-				}
-			} else {
-				if (!is_array($pa_options)) { $pa_options = array(); }
-				if (!is_array($pa_properties)) { $pa_properties = array(); }
-				return caHTMLImage($ps_url, array_merge($pa_options, $pa_properties));
-			}
+			return caGetDefaultMediaIconTag(__CA_MEDIA_3D_DEFAULT_ICON__,$vn_width,$vn_height);
 		}
 	}
 	# ------------------------------------------------
