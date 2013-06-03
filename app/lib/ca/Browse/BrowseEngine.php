@@ -2431,7 +2431,7 @@
 								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = li.item_id
 								{$vs_join_sql}
 								WHERE
-									ca_lists.list_code = ? {$vs_where_sql} {$vs_order_by}";
+									ca_lists.list_code = ?  AND lil.is_preferred = 1 {$vs_where_sql} {$vs_order_by}";
 							//print $vs_sql." [$vs_list_name]";
 							$qr_res = $this->opo_db->query($vs_sql, $vs_list_name);
 							
@@ -3911,7 +3911,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			$va_type_list = $t_instance->getTypeList();
 			
 			foreach($pa_type_codes_or_ids as $vs_code_or_id) {
-				if (!$vs_code_or_id) { continue; }
+				if (!trim($vs_code_or_id)) { continue; }
 				if (!is_numeric($vs_code_or_id)) {
 					$vn_type_id = $t_list->getItemIDFromList($vs_list_name, $vs_code_or_id);
 				} else {
