@@ -1,1 +1,0 @@
-<?php print caNavLink($this->request, "Register and login", "", "", "LoginReg", "form", array("site_last_page" => "default")); ?> to rank, tag and comment on objects. Your five star selections and the pieces most viewed are on display here along with our newest acquisitions. 
