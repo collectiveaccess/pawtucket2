@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,13 +26,16 @@
  * ----------------------------------------------------------------------
  */
  
- require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
+	require_once(__CA_LIB_DIR__."/core/Error.php");
  
  	class ErrorController extends ActionController {
  		# -------------------------------------------------------
 		
  		# -------------------------------------------------------
  		function Show() {
+ 			$o_purify = new HTMLPurifier();
+ 			
  			$va_nums = explode(';', $this->request->getParameter('n', pString));
  			
  			$va_error_messages = array();
@@ -44,7 +47,7 @@
  				}
  			}
  			$this->view->setVar('error_messages', $va_error_messages);
- 			$this->view->setVar('referrer', $this->request->getParameter('r', pString));
+ 			$this->view->setVar('referrer', $o_purify->purify($this->request->getParameter('r', pString)));
  			$this->render('error_html.php');
  		}
  		# -------------------------------------------------------
