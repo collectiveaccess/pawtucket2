@@ -260,7 +260,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			$this->errors = array_merge($this->errors, $t_placement->errors);
 			return false;
 		}
-		unset($_SESSION['screen_cache']);
 		return $t_placement->getPrimaryKey();
 	}
 	# ------------------------------------------------------
@@ -290,7 +289,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			}
 			
 			unset(ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]);
-			unset($_SESSION['screen_cache']);
 			return true;
 		}
 		return false;
@@ -427,21 +425,44 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					);
 					break;
 				case 'attribute':
+					$va_additional_settings = array(
+						'sort' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'width' => "200px", 'height' => "1",
+							'takesLocale' => false,
+							'default' => '1',
+							'label' => _t('Sort using'),
+							'showSortableElementsFor' => $va_elements[preg_replace('!ca_attribute_!', '', $vs_bundle)]['element_id'],
+							'description' => _t('Method used to sort repeating values.')
+						),
+						'sortDirection' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'width' => "200px", 'height' => "1",
+							'takesLocale' => false,
+							'default' => 'ASC',
+							'options' => array(
+								_t('Ascending') => 'ASC',
+								_t('Descending') => 'DESC'
+							),
+							'label' => _t('Sort direction'),
+							'description' => _t('Direction of sort.')
+						)
+					);
 					if ($va_elements[preg_replace('!ca_attribute_!', '', $vs_bundle)]['datatype'] == 1) {		// 1=text
-						$va_additional_settings = array(
-							'usewysiwygeditor' => array(
-								'formatType' => FT_TEXT,
-								'displayType' => DT_SELECT,
-								'options' => array(
-									_t('yes') => 1,
-									_t('no') => 0,
-									_t('use default') => null
-								),
-								'default' => '',
-								'width' => "100px", 'height' => 1,
-								'label' => _t('Use rich text editor'),
-								'description' => _t('Check this option if you want to use a word-processor like editor with this text field. If you expect users to enter rich text (italic, bold, underline) then you might want to enable this.')
-							)
+						$va_additional_settings['usewysiwygeditor'] = array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'options' => array(
+								_t('yes') => 1,
+								_t('no') => 0,
+								_t('use default') => null
+							),
+							'default' => '',
+							'width' => "100px", 'height' => 1,
+							'label' => _t('Use rich text editor'),
+							'description' => _t('Check this option if you want to use a word-processor like editor with this text field. If you expect users to enter rich text (italic, bold, underline) then you might want to enable this.')
 						);
 					}
 					break;
@@ -512,6 +533,24 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 							),
 							'label' => _t('Sort direction'),
 							'description' => _t('Direction of sort, when not in a user-specified order.')
+						),
+						'colorFirstItem' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_COLORPICKER,
+							'width' => "10", 'height' => "1",
+							'takesLocale' => false,
+							'default' => '',
+							'label' => _t('First item color'),
+							'description' => _t('If set first item in list will use this color.')
+						),
+						'colorLastItem' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_COLORPICKER,
+							'width' => "10", 'height' => "1",
+							'takesLocale' => false,
+							'default' => '',
+							'label' => _t('Last item color'),
+							'description' => _t('If set last item in list will use this color.')
 						),
 						'dontShowDeleteButton' => array(
 							'formatType' => FT_TEXT,
@@ -708,7 +747,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			$this->errors = $t_restriction->errors();
 			return false;
 		}
-		unset($_SESSION['screen_cache']);
 		return true;
 	}
 	# ----------------------------------------
@@ -754,7 +792,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}
 		}
-		unset($_SESSION['screen_cache']);
 		return true;
 	}
 	# ----------------------------------------
