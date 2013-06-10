@@ -89,7 +89,6 @@ class SearchIndexer extends SearchBase {
 		$va_tables_to_index = $va_tables_by_size = array();
 		foreach($va_table_names as $vs_table) {
 			$vn_table_num = $this->opo_datamodel->getTableNum($vs_table);
-			$t_instance = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
 			$va_fields_to_index = $this->getFieldsToIndex($vn_table_num);
 			if (!is_array($va_fields_to_index) || (sizeof($va_fields_to_index) == 0)) {
 				continue;
@@ -99,7 +98,8 @@ class SearchIndexer extends SearchBase {
 			$qr_all->nextRow();
 			$vn_num_rows = (int)$qr_all->get('c');
 
-			$va_tables_to_index[$vs_table] = array('name' => $vs_table, 'num' => $vn_table_num, 'count' => $vn_num_rows, 'displayName' => $t_instance->getProperty('NAME_PLURAL'));
+			$vs_display_name = $this->opo_datamodel->getTableProperty($vs_table, 'NAME_PLURAL');
+			$va_tables_to_index[$vs_table] = array('name' => $vs_table, 'num' => $vn_table_num, 'count' => $vn_num_rows, 'displayName' => $vs_display_name);
 			$va_tables_by_size[$vs_table] = $vn_num_rows;
 		}
 		
@@ -749,7 +749,7 @@ if (!$this->opo_engine->can('incremental_reindexing') || $pb_reindex_mode) {
 									if ($vb_is_attr) {
 										$this->opo_engine->indexField($vn_related_tablenum, 'A'.$va_matches[1], $qr_res->get($vs_related_pk), trim($va_field_data[$vs_rel_field]), $va_rel_field_info);
 									} else {
-										$this->opo_engine->indexField($vn_related_tablenum, $this->opo_datamodel->getFieldNum($vs_related_table, $vs_rel_field), $qr_res->get($vs_related_pk), trim($va_field_data[$vs_rel_field]), $va_rel_field_info);
+										$this->opo_engine->indexField($vn_related_tablenum, 'I'.(int)$this->opo_datamodel->getFieldNum($vs_related_table, $vs_rel_field), $qr_res->get($vs_related_pk), trim($va_field_data[$vs_rel_field]), $va_rel_field_info);
 									}
 									break;	
 							}
@@ -758,6 +758,7 @@ if (!$this->opo_engine->can('incremental_reindexing') || $pb_reindex_mode) {
 //
 						}
 					}
+					
 					if (isset($va_fields_to_index['_count'])) {
 						$this->opo_engine->indexField($pn_subject_tablenum, '_count', $pn_subject_row_id, $qr_res->numRows(), array());
 					}
@@ -805,6 +806,7 @@ if (!$this->opo_engine->can('incremental_reindexing') || $pb_reindex_mode) {
 										}
 									}
 								}
+								
 								$this->opo_engine->indexField($t_instance->tableNum(), '_hier_ancestors', $vn_subj_id, join($va_field_content,"\n"), array());
 							}
 						}
