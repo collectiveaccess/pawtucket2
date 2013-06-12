@@ -29,11 +29,11 @@
 	$vn_object_id = 				$t_object->get('object_id');
 	$vs_title = 						$this->getVar('label');
 	
+	$va_access_values = 				$this->getVar('access_values');
 	$t_rep = 							$this->getVar('t_primary_rep');
-	$vs_display_version =		$this->getVar('primary_rep_display_version');
-	$va_display_options =		$this->getVar('primary_rep_display_options');
-	
-	$va_access_values = 		$this->getVar('access_values');
+	$vn_num_reps = 						$t_object->getRepresentationCount(array("return_with_access" => $va_access_values));
+	$vs_display_version =				$this->getVar('primary_rep_display_version');
+	$va_display_options =				$this->getVar('primary_rep_display_options');
 
 ?>	
 	<div id="detailBody">		
@@ -74,7 +74,8 @@
 			if($va_display_options['no_overlay']){
 				print $t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'));
 			}else{
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$t_rep->getMediaTag('media', $vs_display_version, $this->getVar('primary_rep_display_options'))."</a>";
+				$va_opts = array('display' => 'detail', 'object_id' => $vn_object_id, 'containerID' => 'cont');
+				print "<div id='cont'>".$t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts)."</div>";
 			}
 ?>
 			</div><!-- end objDetailImage -->
@@ -89,7 +90,7 @@
 						}
 					}
 					
-					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetObjectMediaOverlay', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >"._t("Zoom/more media")." +</a>";
+					print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >+ ".(($vn_num_reps > 1) ? _t("Zoom/more media") : _t("Zoom"))."</a>";
 ?>
 				</div>			
 			</div><!-- end objDetailImageNav -->
@@ -126,6 +127,15 @@
 			if($t_object->get('idno')){
 				print "<div class='unit'><b>"._t("Identifier").":</b> ".$t_object->get('idno')."</div><!-- end unit -->";
 			}	
+			if($t_object->get('dimensions_text'))
+				print "<div class='unit'><b>"._t("Physical Dimensions").":</b> ".$t_object->get('dimensions_text')."</div><!-- end unit -->";
+
+			if($t_object->get('date')){
+				$date=str_replace(",133,"," to ",$t_object->get('date'));
+				$date=str_replace(",134","",$date);
+				$date=str_replace(",137","",$date);
+				print "<div class='unit'><b>"._t("Date").":</b> ".$date."</div><!-- end unit -->";
+			}
 			# --- attributes
 			$va_attributes = $this->request->config->get('ca_objects_detail_display_attributes_other');
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){

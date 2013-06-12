@@ -25,13 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
-	require_once(__CA_LIB_DIR__."/ca/ImportExport/DataExporter.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
  	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
  	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
 	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
-	require_once(__CA_MODELS_DIR__."/ca_bundle_mappings.php");
 	require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
 	require_once(__CA_MODELS_DIR__."/ca_lists.php");
  	
@@ -525,12 +523,12 @@
  			}
 			$ps_mapping = $this->request->getParameter('mapping', pString);
 			
-			$t_mapping = new ca_bundle_mappings();
-			if(!$t_mapping->load(array('mapping_code' => $ps_mapping))) {
-				$this->notification->addNotification(_t("Mapping does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
- 				return;
-			}
+			// $t_mapping = new ca_bundle_mappings();
+// 			if(!$t_mapping->load(array('mapping_code' => $ps_mapping))) {
+// 				$this->notification->addNotification(_t("Mapping does not exist"), "message");
+//  				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+//  				return;
+// 			}
 			if(!$t_mapping->get('access')) {
 				$this->notification->addNotification(_t("Export format cannot be used"), "message");
  				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
@@ -538,10 +536,10 @@
 			}
 			$vn_mapping_id = $t_mapping->getPrimaryKey();
 			
-			$o_export = new DataExporter();
-			$this->view->setVar('export_mimetype', $o_export->exportMimetype($vn_mapping_id));
-			$this->view->setVar('export_data', $o_export->export($vn_mapping_id, $t_item, null, array('returnOutput' => true, 'returnAsString' => true)));
-			$this->view->setVar('export_filename', preg_replace('![\W]+!', '_', substr($t_item->getLabelForDisplay(), 0, 40).'_'.$o_export->exportTarget($vn_mapping_id)).'.'.$o_export->exportFileExtension($vn_mapping_id));
+			//$o_export = new DataExporter();
+			//$this->view->setVar('export_mimetype', $o_export->exportMimetype($vn_mapping_id));
+			//$this->view->setVar('export_data', $o_export->export($vn_mapping_id, $t_item, null, array('returnOutput' => true, 'returnAsString' => true)));
+			//$this->view->setVar('export_filename', preg_replace('![\W]+!', '_', substr($t_item->getLabelForDisplay(), 0, 40).'_'.$o_export->exportTarget($vn_mapping_id)).'.'.$o_export->exportFileExtension($vn_mapping_id));
 			
 			$this->render('export_xml.php');
 		}

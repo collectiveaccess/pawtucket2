@@ -48,7 +48,7 @@ if($vo_result) {
 				$vs_caption .= $vs_label;
 			}
 			# --- get the height of the image so can calculate padding needed to center vertically
-			$va_media_info = $vo_result->getMediaInfo('ca_object_representations.media', 'thumbnail', array('checkAccess' => $va_access_values));
+			$va_media_info = $vo_result->getMediaInfo('ca_object_representations.media', 'thumbnail', null, array('checkAccess' => $va_access_values));
 			$vn_padding_top = 0;
 			if ($va_media_info) {
 				$vn_padding_top_bottom =  ((130 - $va_media_info["HEIGHT"]) / 2);
