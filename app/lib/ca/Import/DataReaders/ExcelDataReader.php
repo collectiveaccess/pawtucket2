@@ -53,9 +53,10 @@ class ExcelDataReader extends BaseDataReader {
 		parent::__construct($ps_source, $pa_options);
 		
 		$this->ops_title = _t('Excel XLSX data reader');
+		$this->ops_display_name = _t('Excel XLS/XLSX');
 		$this->ops_description = _t('Reads Microsoft Excel XLSX files');
 		
-		$this->opa_formats = array('XLS', 'XLSX');
+		$this->opa_formats = array('xlsx');	// must be all lowercase to allow for case-insensitive matching
 	}
 	# -------------------------------------------------------
 	/**
@@ -107,7 +108,10 @@ class ExcelDataReader extends BaseDataReader {
 			$vn_last_col_set = null;
 			foreach ($o_cells as $o_cell) {
 				if (PHPExcel_Shared_Date::isDateTime($o_cell)) {
-					$this->opa_row_buf[] = $vs_val = caGetLocalizedDate(PHPExcel_Shared_Date::ExcelToPHP(trim((string)$o_cell->getValue())));
+					if (!($vs_val = caGetLocalizedDate(PHPExcel_Shared_Date::ExcelToPHP(trim((string)$o_cell->getValue()))))) {
+						$vs_val = trim((string)$o_cell->getValue());
+					}
+					$this->opa_row_buf[] = $vs_val;
 				} else {
 					$this->opa_row_buf[] = $vs_val = trim((string)$o_cell->getValue());
 				}
@@ -170,6 +174,15 @@ class ExcelDataReader extends BaseDataReader {
 	 */
 	public function numRows() {
 		return $this->opo_handle->getActiveSheet()->getHighestRow();
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 * 
+	 * @return int
+	 */
+	public function getInputType() {
+		return __CA_DATA_READER_INPUT_FILE__;
 	}
 	# -------------------------------------------------------
 }

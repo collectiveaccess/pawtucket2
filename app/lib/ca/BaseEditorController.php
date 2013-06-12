@@ -38,12 +38,10 @@
  	require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
  	require_once(__CA_MODELS_DIR__."/ca_attributes.php");
  	require_once(__CA_MODELS_DIR__."/ca_attribute_values.php");
- 	require_once(__CA_MODELS_DIR__."/ca_bundle_mappings.php");
  	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
  	require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
  	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
-	require_once(__CA_LIB_DIR__."/ca/ImportExport/DataExporter.php");
 	require_once(__CA_LIB_DIR__."/core/Logging/Eventlog.php");
  
  	class BaseEditorController extends ActionController {
@@ -56,7 +54,10 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
-			
+ 			
+ 			JavascriptLoadManager::register('bundleListEditorUI');
+ 			JavascriptLoadManager::register('panel');
+ 			
  			$this->opo_datamodel = Datamodel::load();
  			$this->opo_app_plugin_manager = new ApplicationPluginManager();
  			$this->opo_result_context = new ResultContext($po_request, $this->ops_table_name, ResultContext::getLastFind($po_request, $this->ops_table_name));
@@ -171,8 +172,10 @@
  				}
  			}
  			
- 			// get default screen
  			
+ 			//
+ 			// get default screen
+ 			//
  			if (!($vn_type_id = $t_subject->getTypeID())) {
  				$vn_type_id = $this->request->getParameter($t_subject->getTypeFieldName(), pInteger);
  			}
@@ -359,8 +362,9 @@
  			# trigger "SaveItem" hook 
  		
 			$this->opo_app_plugin_manager->hookSaveItem(array('id' => $vn_subject_id, 'table_num' => $t_subject->tableNum(), 'table_name' => $t_subject->tableName(), 'instance' => $t_subject, 'is_insert' => $vb_is_insert));
- 			if (method_exists($this, "postSave")) {
  			
+ 			if (method_exists($this, "postSave")) {
+ 				$this->postSave($t_subject, $vb_is_insert);
  			}
  			$this->render('screen_html.php');
  		}
@@ -908,6 +912,12 @@
  				// an existing record since it is only relevant for newly created records.
  				if (!$vn_subject_id) {
  					$this->view->setVar('above_id', $vn_above_id = $this->request->getParameter('above_id', pInteger));
+ 					$t_subject->set($vs_parent_id_fld, $vn_parent_id);
+ 					
+ 					$t_parent = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name);
+ 					if ($t_parent->load($vn_parent_id)) {
+ 						$t_subject->set('idno', $t_parent->get('idno'));
+ 					}
  				}
  				return array($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id);
  			}
@@ -1181,9 +1191,10 @@
  			if (is_array($va_hier)) {
  				
  				$va_types_by_parent_id = array();
- 				$vn_root_id = null;
+ 				$vn_root_id = $t_list->getRootItemIDForList($t_subject->getTypeListCode());
+
 				foreach($va_hier as $vn_item_id => $va_item) {
-					if (!$vn_root_id) { $vn_root_id = $va_item['parent_id']; continue; }
+					if ($vn_item_id == $vn_root_id) { continue; } // skip root
 					$va_types_by_parent_id[$va_item['parent_id']][] = $va_item;
 				}
 				foreach($va_hier as $vn_item_id => $va_item) {
@@ -1314,10 +1325,10 @@
  			list($vn_subject_id, $t_subject) = $this->_initView();
 			$pn_mapping_id = $this->request->getParameter('mapping_id', pInteger);
 			
-			$o_export = new DataExporter();
-			$this->view->setVar('export_mimetype', $o_export->exportMimetype($pn_mapping_id));
-			$this->view->setVar('export_data', $o_export->export($pn_mapping_id, $t_subject, null, array('returnOutput' => true, 'returnAsString' => true)));
-			$this->view->setVar('export_filename', preg_replace('![\W]+!', '_', substr($t_subject->getLabelForDisplay(), 0, 40).'_'.$o_export->exportTarget($pn_mapping_id)).'.'.$o_export->exportFileExtension($pn_mapping_id));
+			//$o_export = new DataExporter();
+			//$this->view->setVar('export_mimetype', $o_export->exportMimetype($pn_mapping_id));
+			//$this->view->setVar('export_data', $o_export->export($pn_mapping_id, $t_subject, null, array('returnOutput' => true, 'returnAsString' => true)));
+			//$this->view->setVar('export_filename', preg_replace('![\W]+!', '_', substr($t_subject->getLabelForDisplay(), 0, 40).'_'.$o_export->exportTarget($pn_mapping_id)).'.'.$o_export->exportFileExtension($pn_mapping_id));
 			
 			$this->render('../generic/export_xml.php');
 		}
@@ -1365,6 +1376,20 @@
 			
 			$this->render('../generic/ajax_toggle_item_watch_json.php');
 		}
+		# -------------------------------------------------------
+ 		/**
+ 		 * xxx
+ 		 *
+ 		 * @param array $pa_options Array of options passed through to _initView 
+ 		 */
+ 		public function getHierarchyForDisplay($pa_options=null) {
+ 			list($vn_subject_id, $t_subject) = $this->_initView();
+ 			
+ 			$vs_hierarchy_display = $t_subject->getHierarchyNavigationHTMLFormBundle($this->request, 'caHierarchyOverviewPanelBrowser', array(), array('open_hierarchy' => true, 'no_close_button' => true, 'hierarchy_browse_tab_class' => 'foo'));
+ 			$this->view->setVar('hierarchy_display', $vs_hierarchy_display);
+ 			
+ 			$this->render("../generic/ajax_hierarchy_overview_html.php");
+ 		}
 		# ------------------------------------------------------------------
  		# Sidebar info handler
  		# ------------------------------------------------------------------
@@ -1408,6 +1433,15 @@
 							'includeSelf' => false
 						)
 					), $vs_pk, $vs_display_field, 'idno'));
+					
+					$this->view->setVar('object_collection_collection_ancestors', array()); // collections to display as object parents when ca_objects_x_collections_hierarchy_enabled is enabled
+					if (($t_item->tableName() == 'ca_objects') && $t_item->getAppConfig()->get('ca_objects_x_collections_hierarchy_enabled')) {
+						// Is object part of a collection?
+						if(is_array($va_collections = $t_item->getRelatedItems('ca_collections'))) {
+							$this->view->setVar('object_collection_collection_ancestors', $va_collections);
+						}
+					}
+					
 					$this->view->setVar('ancestors', $va_ancestors);
 					
 					$va_children = caExtractValuesByUserLocaleFromHierarchyChildList(
@@ -1428,8 +1462,8 @@
 			$this->view->setVar('screen', $this->request->getActionExtra());						// name of screen
 			$this->view->setVar('result_context', $this->getResultContext());
 			
-			$t_mappings = new ca_bundle_mappings();
-			$va_mappings = $t_mappings->getAvailableMappings($t_item->tableNum(), array('E', 'X'));
+//			$t_mappings = new ca_bundle_mappings();
+			$va_mappings = array(); //$t_mappings->getAvailableMappings($t_item->tableNum(), array('E', 'X'));
 			
 			$va_export_options = array();
 			foreach($va_mappings as $vn_mapping_id => $va_mapping_info) {

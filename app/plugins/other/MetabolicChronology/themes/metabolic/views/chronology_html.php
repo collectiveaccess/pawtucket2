@@ -32,7 +32,7 @@
 <div id="chronology">
 <?php
 	foreach($va_silos as $vn_silo_id => $va_silo) {
-		if($va_silo[num_actions]){
+		if($va_silo['num_actions']){
 			if(strtolower($va_silo['name']) == 'historical context'){
 				$vn_historical_context_silo_id = $vn_silo_id;
 				# --- output historical context timeline
