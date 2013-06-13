@@ -34,5 +34,6 @@ if (!$this->request->config->get('do_secondary_searches')) { return; }
 	print $this->render('Results/search_secondary_results/ca_entities_html.php');
 	print $this->render('Results/search_secondary_results/ca_places_html.php');
 	print $this->render('Results/search_secondary_results/ca_occurrences_html.php');
+	print $this->render('Results/search_secondary_results/ca_productions_html.php');
 	print $this->render('Results/search_secondary_results/ca_collections_html.php');
 ?>
