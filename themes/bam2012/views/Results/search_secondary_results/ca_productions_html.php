@@ -27,29 +27,29 @@
  */
 	
 	if ($this->request->config->get('do_secondary_search_for_ca_occurrences')) {
-		$qr_occurrences = $this->getVar('secondary_search_ca_occurrences');
+		$qr_occurrences = $this->getVar('secondary_search_ca_productions');
 		if (($vn_num_hits = $qr_occurrences->numHits()) > 0) {
 			$vn_num_hits_per_page 	= $this->getVar('secondaryItemsPerPage');
-			$vn_page 				= $this->getVar('page_ca_occurrences');
+			$vn_page 				= $this->getVar('page_ca_productions');
 			if (!$this->request->isAjax()) {
 ?>
-			<div class="searchSec" id="occurrencesSecondaryResults">
+			<div class="searchSec" id="productionsSecondaryResults">
 <?php
 			}
 ?>
-				<h1><?php print _t('Works'); ?></h1>
+				<h1><?php print _t('Productions'); ?></h1>
 				<div class="searchSecNav">
 <?php
 					if ($vn_num_hits > $vn_num_hits_per_page) {
 						print "<div class='nav'>";
 						if ($vn_page > 0) {
-							print "<a href='#' onclick='jQuery(\"#occurrencesSecondaryResults\").load(\"".caNavUrl($this->request, '', 'Search', 'secondarySearch', array('spage' => $vn_page - 1, 'type' => 'ca_occurrences'))."\"); return false;'>&lsaquo; "._t("Previous")."</a>";
+							print "<a href='#' onclick='jQuery(\"#productionsSecondaryResults\").load(\"".caNavUrl($this->request, '', 'Search', 'secondarySearch', array('spage' => $vn_page - 1, 'type' => 'ca_productions'))."\"); return false;'>&lsaquo; "._t("Previous")."</a>";
 						}
 						if (($vn_page > 0) && ($vn_page < (ceil($vn_num_hits/$vn_num_hits_per_page) - 1))) {
 							print " | ";
 						}
 						if ($vn_page < (ceil($vn_num_hits/$vn_num_hits_per_page) - 1)) {
-							print "<a href='#' onclick='jQuery(\"#occurrencesSecondaryResults\").load(\"".caNavUrl($this->request, '', 'Search', 'secondarySearch', array('spage' => $vn_page + 1, 'type' => 'ca_occurrences'))."\"); return false;'>"._t("Next")." &rsaquo;</a>";
+							print "<a href='#' onclick='jQuery(\"#productionsSecondaryResults\").load(\"".caNavUrl($this->request, '', 'Search', 'secondarySearch', array('spage' => $vn_page + 1, 'type' => 'ca_productions'))."\"); return false;'>"._t("Next")." &rsaquo;</a>";
 						}
 						print "</div><!-- end nav -->\n";
 					}
