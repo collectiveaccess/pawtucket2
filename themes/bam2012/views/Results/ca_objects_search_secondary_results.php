@@ -32,7 +32,6 @@ if (!$this->request->config->get('do_secondary_searches')) { return; }
 <div class="divide" style="margin:5px 0px 10px 0px; clear:both;">&nbsp;</div>
 <?php
 	print $this->render('Results/search_secondary_results/ca_entities_html.php');
-	print $this->render('Results/search_secondary_results/ca_places_html.php');
 	print $this->render('Results/search_secondary_results/ca_occurrences_html.php');
 	print $this->render('Results/search_secondary_results/ca_productions_html.php');
 	print $this->render('Results/search_secondary_results/ca_collections_html.php');

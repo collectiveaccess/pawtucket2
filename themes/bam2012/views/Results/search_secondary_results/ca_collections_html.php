@@ -31,11 +31,11 @@
 		if (($vn_num_hits = $qr_collections->numHits()) > 0) {
 			$vn_num_hits_per_page 	= $this->getVar('secondaryItemsPerPage');
 			$vn_page 				= $this->getVar('page_ca_collections');
-			if (!$this->request->isAjax()) {
+		
 ?>
-			<div class="searchSec" id="collectionsSecondaryResults" style="clear:both;">
+			<div class="searchSec" id="collectionsSecondaryResults">
 <?php
-			}
+			
 ?>
 				<h1><?php print _t('Collections'); ?></h1>
 				<div class="searchSecNav">
@@ -77,13 +77,13 @@
 				<div style='width:100%; clear:both'></div>
 				</div><!-- end results -->
 <?php
-			if (!$this->request->isAjax()) {
+
 ?>
 			<div style='width:100%; clear:both'></div>
 			</div>
 			<div class="searchSecSpacer">&nbsp;</div>
 <?php
-			}
+			
 			
 		}
 	}
