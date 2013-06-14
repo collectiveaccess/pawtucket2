@@ -31,11 +31,11 @@
 		if (($vn_num_hits = $qr_occurrences->numHits()) > 0) {
 			$vn_num_hits_per_page 	= $this->getVar('secondaryItemsPerPage');
 			$vn_page 				= $this->getVar('page_ca_occurrences');
-			if (!$this->request->isAjax()) {
+			
 ?>
 			<div class="searchSec" id="occurrencesSecondaryResults">
 <?php
-			}
+			
 ?>
 				<h1><?php print _t('Works'); ?></h1>
 				<div class="searchSecNav">
@@ -62,7 +62,7 @@
 					$vn_c = 0;
 					$vb_link_to_occurrence_detail = (int)$this->request->config->get('allow_detail_for_ca_occurrences') ? true : false;
 					while($qr_occurrences->nextHit()) {
-						$vs_name = join('; ', $qr_occurrences->getDisplayLabels($this->request));
+						$vs_name = $qr_occurrences->get('ca_occurrences.preferred_labels');
 						
 						if ($vb_link_to_occurrence_detail) {
 							print caNavLink($this->request, $vs_name, '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $qr_occurrences->get("occurrence_id")));
@@ -78,11 +78,11 @@
 ?>
 				</div><!-- end results -->
 <?php
-			if (!$this->request->isAjax()) {
+		
 ?>
 			</div><div class="searchSecSpacer">&nbsp;</div>
 <?php
-			}
+			
 			
 		}
 	}

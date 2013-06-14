@@ -31,11 +31,11 @@
 		if (($vn_num_hits = $qr_entities->numHits()) > 0) {
 			$vn_num_hits_per_page 	= $this->getVar('secondaryItemsPerPage');
 			$vn_page 				= $this->getVar('page_ca_entities');
-		if (!$this->request->isAjax()) {
+		
 ?>
 			<div class="searchSec" id="entitiesSecondaryResults">
 <?php
-		}
+		
 ?>
 				<h1><?php print _t('People'); ?></h1>
 				<div class="searchSecNav">
@@ -61,11 +61,12 @@
 					$vn_c = 0;
 					$vb_link_to_entity_detail = (int)$this->request->config->get('allow_detail_for_ca_entities') ? true : false;
 					while($qr_entities->nextHit()) {
-						$vs_name = join('; ', $qr_entities->getDisplayLabels($this->request));
+						$va_entity_label = $qr_entities->get('ca_entities.preferred_labels');
+
 						if ($vb_link_to_entity_detail) {
-							print caNavLink($this->request, $vs_name, '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_entities->get("entity_id")));
+							print caNavLink($this->request, $va_entity_label, '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_entities->get("entity_id")));
 						} else {
-							print caNavLink($this->request, $vs_name, '', '', 'Search', 'Index', array('search' => $vs_name));
+							print caNavLink($this->request, $va_entity_label, '', '', 'Search', 'Index', array('search' => $vs_name));
 						}
 						print "<br/>\n";
 						$vn_c++;
@@ -75,12 +76,12 @@
 ?>
 				</div><!-- end results -->
 <?php
-			if (!$this->request->isAjax()) {
+			
 ?>
 			</div>
 			<div class="searchSecSpacer">&nbsp;</div>
 <?php
-			}
+			
 		}
 	}
 ?>
