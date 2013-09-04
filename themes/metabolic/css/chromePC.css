@@ -1,7 +1,0 @@
-#search input[type="search"] {
-  -webkit-appearance: textfield;
-}
-
-#loginForm input[type="text"], #loginForm input[type="password"], #registerForm input[type="text"], #resetPasswordForm input[type="text"] {
-	-webkit-appearance: none;
-}
