@@ -195,7 +195,7 @@ class ItemService extends BaseJSONService {
 			if($va_vals = $t_instance->get($this->ops_table.".".$vs_code,
 				array("convertCodesToDisplayText" => true,"returnAllLocales" => true)))
 			{
-				$va_vals_by_locale = end($va_vals); // i seriously have no idea what that additional level of nesting in the return format is for
+				$va_vals_by_locale = end($va_vals); // I seriously have no idea what that additional level of nesting in the return format is for
 				$va_attribute_values = array();
 				foreach($va_vals_by_locale as $vn_locale_id => $va_locale_vals) {
 					foreach($va_locale_vals as $vs_val_id => $va_actual_data){
