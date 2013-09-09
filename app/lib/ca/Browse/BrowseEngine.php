@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -2740,7 +2740,7 @@
 							$qr_res = $this->opo_db->query($vs_sql);
 						
 							if ($qr_res->nextRow()) {
-								return ((int)$qr_res->numRows() > 1) ? true : false;
+								return ((int)$qr_res->numRows() > 0) ? true : false;
 							}
 							return false;
 						} else {
@@ -3209,7 +3209,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								if ($va_fetched_row[$vs_hier_parent_id_fld]) {
 									$va_facet_parents[$va_fetched_row[$vs_hier_parent_id_fld]] = true;
 								}
-								if (is_array($va_restrict_to_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
+								if (is_array($va_restrict_to_types) && sizeof($va_restrict_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
 									continue; 
 								}
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]] = array(
