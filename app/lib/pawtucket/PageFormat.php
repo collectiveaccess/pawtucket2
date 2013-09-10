@@ -67,6 +67,9 @@
 				$this->getResponse()->prependContent($o_view->render('pageFormat/notifications.php'), 'notifications');
 			}
 			
+			//$nav = new AppNavigation($this->getRequest(), $this->getResponse());
+			$o_view->setVar('nav', $nav);
+			//$this->getResponse()->prependContent($o_view->render('pageFormat/menuBar.php'), 'menubar');
 			$this->getResponse()->prependContent($o_view->render('pageFormat/pageHeader.php'), 'head');
 			$this->getResponse()->appendContent($o_view->render('pageFormat/pageFooter.php'), 'footer');
 		}
