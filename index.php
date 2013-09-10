@@ -84,10 +84,10 @@
 	// PageFormat plug-in generates header/footer shell around page content
 	//
 	if (!$g_request->isAjax() && !$g_request->isDownload()) {
-		require_once(__CA_LIB_DIR__.'/ca/PageFormat.php');
+		require_once(__CA_LIB_DIR__.'/pawtucket/PageFormat.php');
 		$app->registerPlugin(new PageFormat());
 	} else {
-		require_once(__CA_LIB_DIR__.'/ca/AjaxFooter.php');
+		require_once(__CA_LIB_DIR__.'/pawtucket/AjaxFooter.php');
 		$app->registerPlugin(new AjaxFooter());
 	}
 	
