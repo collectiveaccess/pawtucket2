@@ -267,7 +267,7 @@ $vs_buf .= "
 	 *
 	 */
 	public function getAttributeBundleHTML($pa_element_info, $pa_options=null) {
- 		JavascriptLoadManager::register('maps');
+ 		AssetLoadManager::register('maps');
  		
 		$o_config = Configuration::load();
 		

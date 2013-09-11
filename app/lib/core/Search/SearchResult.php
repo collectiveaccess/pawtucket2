@@ -459,7 +459,6 @@ class SearchResult extends BaseObject {
 		
 		$vn_row_id = $this->opo_engine_result->get($this->ops_table_pk);	
 		
-		
 		// try to lazy load (slower)...
 		
 //

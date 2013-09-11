@@ -100,7 +100,7 @@
 	//
 	// Load mobile
 	//
-	if (caDeviceIsMobile()) { JavascriptLoadManager::register('mobile'); }
+	if (caDeviceIsMobile()) { AssetLoadManager::register('mobile'); }
 	
 	// Prevent caching
 	$resp->addHeader("Cache-Control", "no-cache, must-revalidate");

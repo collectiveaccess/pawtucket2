@@ -74,7 +74,11 @@
 	 */
 	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null) {
 
-		$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName();
+		if(defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) {
+			$vs_url = $po_request->getBaseUrlPath();
+		} else {
+			$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName();
+		}
 		
 		if ($ps_module_path) {
 			$vs_url .= '/'.$ps_module_path;

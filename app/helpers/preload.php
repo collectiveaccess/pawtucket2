@@ -46,11 +46,10 @@
 	require(__CA_LIB_DIR__."/ca/Search/DidYouMean.php");
 	
 	require(__CA_LIB_DIR__."/ca/MetaTagManager.php");
-	require(__CA_LIB_DIR__."/ca/JavascriptLoadManager.php");
+	require(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
 	require(__CA_LIB_DIR__."/ca/TooltipManager.php");
 
 	require(__CA_LIB_DIR__."/ca/ResultContext.php");
-	require(__CA_LIB_DIR__."/ca/AppNavigation.php");
 	
 	require(__CA_LIB_DIR__."/core/Controller/ActionController.php");
 	
@@ -58,7 +57,4 @@
 	
 	// initialize Tooltip manager
 	TooltipManager::init();
-	
-	require(__CA_MODELS_DIR__.'/ca_sets.php');
-	require(__CA_MODELS_DIR__.'/ca_commerce_communications.php');
 ?>

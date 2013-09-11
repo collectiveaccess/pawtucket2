@@ -54,8 +54,8 @@
 		
 			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			JavascriptLoadManager::register('maps');
- 			JavascriptLoadManager::register('jcarousel');
+ 			AssetLoadManager::register('maps');
+ 			AssetLoadManager::register('jcarousel');
  		}
  		# -------------------------------------------------------
  		/**
@@ -104,12 +104,12 @@
  		 * application on an as-needed basis.
  		 */
  		public function Show($pa_options=null) {
- 			JavascriptLoadManager::register('viz');
- 			JavascriptLoadManager::register("ca", "panel");
- 			JavascriptLoadManager::register("jit");
- 			JavascriptLoadManager::register('browsable');
- 			JavascriptLoadManager::register('imageScroller');
- 			JavascriptLoadManager::register('jquery', 'expander');
+ 			AssetLoadManager::register('viz');
+ 			AssetLoadManager::register("ca", "panel");
+ 			AssetLoadManager::register("jit");
+ 			AssetLoadManager::register('browsable');
+ 			AssetLoadManager::register('imageScroller');
+ 			AssetLoadManager::register('jquery', 'expander');
  			
  			$va_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar('access_values', $va_access_values);
