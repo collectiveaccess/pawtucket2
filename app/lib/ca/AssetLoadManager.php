@@ -104,25 +104,33 @@
 			$va_packages = $g_asset_config->getAssoc('packages');
 			$va_theme_packages = $g_asset_config->getAssoc('themePackages');
 			
-			if (is_array($va_theme_packages)) {
-				$va_packages += $va_theme_packages;
-			}
+			if (!is_array($va_packages)) { $va_packages = array(); }
+			if (!is_array($va_theme_packages)) { $va_theme_packages = array(); }
 			
 			if ($ps_library) {
 				// register package/library
 				$va_pack_path = explode('/', $ps_package);
 				$vs_main_package = array_shift($va_pack_path);
-				if (!($va_list = $va_packages[$vs_main_package])) { return false; }
+				
+				$vb_is_theme_specific = false;
+				if (($va_list = $va_packages[$vs_main_package])) {
+					// noop
+				} elseif (($va_list = $va_theme_packages[$vs_main_package])) {
+					$vb_is_theme_specific = true;
+				}
 				 
+				if (!is_array($va_list)) { return false; }
+				
 				while(sizeof($va_pack_path) > 0) {
 					$vs_pack = array_shift($va_pack_path);
 					$va_list = $va_list[$vs_pack];
-					
+				
 				}
 				if (isset($va_list[$ps_library]) && $va_list[$ps_library]) {
-					$g_asset_load_list[$ps_package.'/'.$va_list[$ps_library]] = true;
+					$g_asset_load_list[$ps_package.'/'.$va_list[$ps_library]] = $vb_is_theme_specific ? "THEME" : "APP";
 					return true;
 				}
+				
 			} else {
 				// register loadset
 				if(!is_array($va_theme_loadsets = $g_asset_config->getAssoc('themeLoadSets'))) { $va_theme_loadsets = array(); }
@@ -164,16 +172,19 @@
 		/** 
 		 * Returns HTML to load registered libraries. Typically you'll output this HTML in the <head> of your page.
 		 * 
-		 * @param $ps_baseurlpath (string) - URL path containing the application's "js" directory.
+		 * @param RequestHTTP $po_request The current request
 		 * @return string - HTML loading registered libraries
 		 */
-		static function getLoadHTML($ps_baseurlpath) {
+		static function getLoadHTML($po_request) {
 			global $g_asset_config, $g_asset_load_list, $g_asset_complementary;
+			
+			$vs_baseurlpath = $po_request->getBaseUrlPath();
+			$vs_themeurlpath = $po_request->getThemeUrlPath();
 			
 			if (!$g_asset_config) { AssetLoadManager::init(); }
 			$vs_buf = '';
 			if (is_array($g_asset_load_list)) {
-				foreach($g_asset_load_list as $vs_lib => $vn_x) { 
+				foreach($g_asset_load_list as $vs_lib => $vs_type) { 
 					if (AssetLoadManager::useMinified()) {
 						$va_tmp = explode(".", $vs_lib);
 						array_splice($va_tmp, -1, 0, array('min'));
@@ -183,7 +194,7 @@
 					if (preg_match('!(http[s]{0,1}://.*)!', $vs_lib, $va_matches)) { 
 						$vs_url = $va_matches[1];
 					} else {
-						$vs_url = "{$ps_baseurlpath}/assets/{$vs_lib}";
+						$vs_url = (($vs_type == 'THEME') ? $vs_themeurlpath : $vs_baseurlpath)."/assets/{$vs_lib}";
 					}
 					
 					if (preg_match('!\.css$!', $vs_lib)) {

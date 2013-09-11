@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 
 	<?php print MetaTagManager::getHTML(); ?>
-	<?php print AssetLoadManager::getLoadHTML($this->request->getBaseUrlPath()); ?>
+	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 </head>
