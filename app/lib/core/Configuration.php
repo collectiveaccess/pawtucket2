@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2012 Whirl-i-Gig
+ * Copyright 2000-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -288,6 +288,7 @@ class Configuration {
 
 		$va_token_history = array();
 		$vn_line_num = 0;
+		$vb_merge_mode = false;
 		while (!feof($r_file)) {
 			$vn_line_num++;
 			
@@ -295,6 +296,8 @@ class Configuration {
 			$vs_buffer = trim(fgets($r_file, 32000));
 
 			# skip comments (start with '#') or blank lines
+			if (strtolower(substr($vs_buffer,0,7)) == '#!merge') { $vb_merge_mode = true; }
+			if (strtolower(substr($vs_buffer,0,9)) == '#!replace') { $vb_merge_mode = false; }
 			if (!$vs_buffer || (substr($vs_buffer,0,1) === "#")) { continue; }
 
 			$va_token_tmp = preg_split("/([={}\[\]\",]){1}/", $vs_buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
@@ -339,11 +342,15 @@ class Configuration {
 					case 10:
 						switch($vs_token) {
 							case '[':
-								$this->ops_config_settings["lists"][$vs_key] = array();
+								if(!is_array($this->ops_config_settings["lists"][$vs_key]) || !$vb_merge_mode) {
+									$this->ops_config_settings["lists"][$vs_key] = array();
+								}
 								$vn_state = 30;
 								break;
 							case '{':
-								$this->ops_config_settings["assoc"][$vs_key] = array();
+								if(!is_array($this->ops_config_settings["assoc"][$vs_key]) || !$vb_merge_mode) {
+									$this->ops_config_settings["assoc"][$vs_key] = array();
+								}
 								$va_assoc_pointer_stack[] = &$this->ops_config_settings["assoc"][$vs_key];
 								$vn_state = 40;
 								break;
@@ -561,7 +568,10 @@ class Configuration {
 							case '{':
 								if (!$vn_in_quote) {
 									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open {; KEY IS '$vs_assoc_key'\n"; }
-									$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+									
+									if (!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
+										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+									}
 									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
 									$vn_state = 40;
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
@@ -600,7 +610,10 @@ class Configuration {
 							# open list
 							case '[':
 								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open [; KEY IS '$vs_assoc_key'\n"; }
-								$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+								
+								if(!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
+									$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+								}
 								$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
 								$vn_state = 60;
 								$vn_in_quote = 0;

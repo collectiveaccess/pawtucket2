@@ -133,6 +133,18 @@ date_default_timezone_set('America/New_York');
 define("__CA_DEFAULT_LOCALE__", "en_US");
 
 
+#
+# __CA_USE_CLEAN_URLS__ = Determines if clean urls should be generated.
+#
+# If you have mod_rewrite on your server you may be this to a non-zero value
+# to have Pawtucket use "clean" urls – urls without the index.php handler included
+#
+# Only set this if your web server includes mod_rewrite and it is enabled using
+# the provided .htaccess file
+# 
+
+define("__CA_USE_CLEAN_URLS__", 0);
+
 # *** 
 # __   __          _                _                  
 # \ \ / /__  _   _( )_ __ ___    __| | ___  _ __   ___ 

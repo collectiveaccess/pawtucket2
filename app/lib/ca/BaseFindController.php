@@ -115,7 +115,7 @@
 							'inlineEditingListValues' => $va_display_item['inlineEditingListValues']
 						));
 						
-						JavascriptLoadManager::register('panel');
+						AssetLoadManager::register('panel');
 					}
 				}
 			}
@@ -149,7 +149,7 @@
 					);
 				}
 				if ($vs_view == 'editable') {
-					JavascriptLoadManager::register('panel');
+					AssetLoadManager::register('panel');
 				}
 			}
 			

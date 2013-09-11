@@ -241,7 +241,7 @@
  			if ($va_settings['usewysiwygeditor']) {
  				$o_config = Configuration::load();
  				if (!is_array($va_toolbar_config = $o_config->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
- 				JavascriptLoadManager::register("ckeditor");
+ 				AssetLoadManager::register("ckeditor");
  				
  				$vs_element = "<script type='text/javascript'>jQuery(document).ready(function() {
 						var ckEditor = CKEDITOR.replace( '{fieldNamePrefix}".$pa_element_info['element_id']."_{n}',

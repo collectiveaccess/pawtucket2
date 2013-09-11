@@ -57,9 +57,9 @@
 			if ($ps_table) { $this->setTable($ps_table); }
 			
 			// Need to pull in Javascript for these in case they are loaded via AJAX
-			JavascriptLoadManager::register("openlayers");
-			JavascriptLoadManager::register("maps");
-			JavascriptLoadManager::register("timeline");
+			AssetLoadManager::register("openlayers");
+			AssetLoadManager::register("maps");
+			AssetLoadManager::register("timeline");
 		}
 		# --------------------------------------------------------------------------------
 		/**
