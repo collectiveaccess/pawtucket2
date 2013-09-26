@@ -79,7 +79,7 @@
 
 			$o_db = $this->getDb();
 			
-			if (!($vs_linking_table = $this->_getRepresentationRelationshipTableName())) { return null; }
+			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
 		
 			$qr_reps = $o_db->query("
@@ -233,7 +233,7 @@
 				$vs_access_sql = '';
 			}
 			
-			if (!($vs_linking_table = $this->_getRepresentationRelationshipTableName())) { return null; }
+			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
 		
 			$o_db = $this->getDb();
@@ -289,7 +289,7 @@
 				$vs_access_sql = '';
 			}
 			
-			if (!($vs_linking_table = $this->_getRepresentationRelationshipTableName())) { return null; }
+			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
 		
 			$o_db = $this->getDb();
@@ -768,7 +768,7 @@
 			$o_db = $this->getDb();
 			
 			
-			if (!($vs_linking_table = $this->_getRepresentationRelationshipTableName())) { return null; }
+			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
 		
 			$qr_res = $o_db->query("
@@ -815,7 +815,7 @@
 			}
 			$o_db = $this->getDb();
 			
-			if (!($vs_linking_table = $this->_getRepresentationRelationshipTableName())) { return null; }
+			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
 		
 			$qr_res = $o_db->query("
@@ -837,9 +837,9 @@
 		/**
 		 *
 		 */
-		private function _getRepresentationRelationshipTableName() {
+		static function getRepresentationRelationshipTableName($ps_table) {
 			$o_dm = Datamodel::load();
-			$va_path = $o_dm->getPath($this->tableName(), 'ca_object_representations');
+			$va_path = $o_dm->getPath($ps_table, 'ca_object_representations');
 			if (!is_array($va_path) || (sizeof($va_path) != 3)) { return null; }
 			$va_path = array_keys($va_path);
 			return $va_path[1];

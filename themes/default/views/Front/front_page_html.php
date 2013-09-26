@@ -33,7 +33,20 @@
  
 ?>
  <!-- Fixed navbar -->
+
     <div class="container theme-showcase">
+    
+<?php
+#	$o_collection_search = new CollectionSearch();
+#	$qr_collections = $o_collection_search->search("ca_collections.access:1", array('sort' => 'ca_collections.preferred_labels', 'sort_direction' => 'asc'));
+	
+#	if ($qr_collections->numHits()) {
+#		while($qr_collections->nextHit()) {
+#			print $qr_collections->get('ca_collections.preferred_labels', array('delimiter' => '<br/>'));
+#		}
+#	}
+
+?>    
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
       <div class="jumbotron">

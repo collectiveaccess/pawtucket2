@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2009 Whirl-i-Gig
+ * Copyright 2007-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -101,6 +101,11 @@ class ActionController extends BaseObject {
 	public function &getView() {
 		if (!$this->opo_view) { $this->initView(); }
 		return $this->opo_view;
+	}
+	# -------------------------------------------------------
+	public function viewExists($ps_path) {
+		if (!$this->opo_view) { $this->initView(); }
+		return $this->opo_view->viewExists($ps_path);
 	}
 	# -------------------------------------------------------
 	public function &render($ps_view, $pb_dont_add_content_to_response=false) {
