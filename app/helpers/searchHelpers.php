@@ -307,4 +307,74 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		return array_keys($va_aps);
 	}
 	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
+		if (!is_array($pa_options)) { $pa_options = array(); }
+		
+		$va_ret = array();
+		$vn_i = 0;
+		foreach($pa_blocks as $vs_block => $va_block_info) {
+			if (!($o_search = caGetSearchInstance($va_block_info['table']))) { continue; }
+			
+			if (!is_array($va_block_info['options'])) { $va_block_info['options'] = array(); }
+			$va_options = array_merge($pa_options, $va_block_info['options']);
+			
+			$qr_res = $o_search->search($ps_search_expression, $va_options);
+			
+			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
+			$o_view->setVar('result', $qr_res);
+			$o_view->setVar('count', $vn_count = $qr_res->numHits());
+			$o_view->setVar('block', $vs_block);
+			$o_view->setVar('blockInfo', $va_block_info);
+			$o_view->setVar('blockIndex', $vn_i);
+			
+			$vs_html = $o_view->render($va_block_info['view']);
+			$va_ret[$vs_block] = array(
+				//'result' => $qr_res,
+				'count' => $vn_count,
+				'html' => $vs_html,
+				'displayName' => $va_block_info['displayName']
+			);
+			$vn_i++;
+		}
+		
+		return $va_ret;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caSplitSearchResultByType($pr_res, $pa_options=null) {
+		$o_dm = Datamodel::load();
+		if (!($t_instance = $o_dm->getInstanceByTableName($pr_res->tableName(), true))) { return null; }
+		
+		if (!($vs_type_fld = $t_instance->getTypeFieldName())) { return null; }
+		$vs_table = $t_instance->tableName();
+		$va_types = $t_instance->getTypeList();
+		
+		$pr_res->seek(0);
+		$va_type_ids = array();
+		while($pr_res->nextHit()) {
+			$va_type_ids[$pr_res->get($vs_type_fld)]++;
+		}
+		
+		$va_results = array();
+		foreach($va_type_ids as $vn_type_id => $vn_count) {
+			$qr_res = $pr_res->getClone();
+			$qr_res->filterResult("{$vs_table}.{$vs_type_fld}", array($vn_type_id));
+			$qr_res->seek(0);
+			$va_results[$vn_type_id] = array(
+				'type' => $va_types[$vn_type_id],
+				'result' =>$qr_res
+			);
+		}
+		return $va_results;
+	}
+	# ---------------------------------------
 ?>

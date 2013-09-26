@@ -10,7 +10,12 @@
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 </head>
 <body>
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div id="hpLogo">
+<?php	
+	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/MF_logo.jpg' border='0'>", '', '', '','');
+?>	
+	</div>
+	<div class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -18,34 +23,73 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="<?php print $this->request->getBaseUrlPath(); ?>/">Pawtucket</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
             <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
               <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li class="divider"></li>
-                <li class="dropdown-header">Nav header</li>
-                <li><a href="#">Separated link</a></li>
-                <li><a href="#">One more separated link</a></li>
+                <li><a href="#">Visit</a></li>
+                <li><a href="#">Calendar</a></li>
+                <li><a href="#">History</a></li>
+                <li><a href="#">Get Involved</a></li>
+                <li><a href="#">Rentals</a></li>
+                <li><a href="#">Press Room</a></li>
+                <li><a href="#">Staff</a></li>
               </ul>
             </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Art</a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Exhibitions</a></li>
+                <li><a href="#">Permanent Installations</a></li>
+                <li><a href="#">Artist Limited Editions</a></li>
+                <li><a href="#">Search All Art</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learn</a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Schools + Teachers</a></li>
+                <li><a href="#">Kids + Families</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Public Programs</a></li>
+                <li><a href="#">The Space I'm In</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support</a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Donate</a></li>
+                <li><a href="#">Membership</a></li>
+                <li><a href="#">Sponsorship</a></li>
+                <li><a href="#">Annual Fund</a></li>
+                <li><a href="#">Our Partners</a></li>
+                <li><a href="#">Urban Garden Party</a></li>                
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
+              <ul class="dropdown-menu">
+                <li><a href="#">About</a></li>
+                <li><a href="<?php print caNavUrl($this->request, '', 'List', 'Collections', array()); ?>">Collections</a></li>
+                <li><a href="#">p{ART}icipate</a></li>
+                <li><a href="#">Highlights</a></li>
+                <li><a href="#">Rights + Reproduction</a></li>
+                <li><a href="#">Search</a></li>    
+              </ul>
+            </li>            
           </ul>
-          <form class="navbar-form pull-right" action="<?php print caNavUrl($this->request, '', 'Search', 'Index'); ?>">
+          <form class="navbar-form pull-right" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 			<div class="input-group">
-				<input type="search" class="form-control" placeholder="Search" name="search"/>
+				<input type="search" class="form-control" placeholder="" name="search"/>
 				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default">Search</button>
+					<button type="submit" class="btn btn-default"></button>
 				</span> 
 			</div>
 		</form>
         </div><!--/.nav-collapse -->
       </div>
     </div>
+     
+     <div class="artYou">art you can get into</div>

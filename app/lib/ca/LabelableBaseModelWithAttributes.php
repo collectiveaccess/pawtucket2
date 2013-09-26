@@ -363,7 +363,7 @@
 		 * @return mixed Depending upon the returnAs option setting, an array, subclass of LabelableBaseModelWithAttributes or integer may be returned.
 		 */
 		public static function find($pa_values, $pa_options=null) {
-			if (!is_array($pa_values) || (sizeof($pa_values) == 0)) { return null; }
+			if (!is_array($pa_values) || (sizeof($pa_values) == 0)) { return parent::find($pa_values, $pa_options); }
 			
 			$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
 	
