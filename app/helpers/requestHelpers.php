@@ -74,5 +74,22 @@
 		$o_config = Configuration::load();
 		return (bool)$o_config->get('use_identifiers_in_urls');
 	}
+	# --------------------------------------------------------------------------------------------
+	 /**
+	  * 
+	  *
+	  * @return string
+	  */
+	function caUrlNameToTable($ps_name) {
+		$va_url_names_to_tables = array(
+ 			'objects' 		=> 'ca_objects',
+ 			'entities' 		=> 'ca_entities',
+ 			'places' 		=> 'ca_places',
+ 			'occurrences' 	=> 'ca_occurrences',
+ 			'collections' 	=> 'ca_collections'
+ 		);
+ 		
+ 		return isset($va_url_names_to_tables[$ps_name]) ? $va_url_names_to_tables[$ps_name] : null;
+	}
 	# ---------------------------------------------------------------------------------------------
  ?>

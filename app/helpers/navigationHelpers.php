@@ -79,6 +79,9 @@
 		} else {
 			$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName();
 		}
+		if ($ps_module_path == '*') { $ps_module_path = $po_request->getModulePath(); }
+		if ($ps_controller == '*') { $ps_controller = $po_request->getController(); }
+		if ($ps_action == '*') { $ps_action = $po_request->getAction(); }
 		
 		if ($ps_module_path) {
 			$vs_url .= '/'.$ps_module_path;

@@ -121,6 +121,7 @@
 		// Preserve order of input ids
 		$va_media_sorted = array();
 		foreach($pa_ids as $vn_id) {
+			if(!isset($va_media[$vn_id]) || !$va_media[$vn_id]) { continue; }
 			$va_media_sorted[$vn_id] = $va_media[$vn_id];
 		} 
 		
