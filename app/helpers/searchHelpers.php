@@ -317,6 +317,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		$va_ret = array();
 		$vn_i = 0;
+		$vn_total_cnt = 0;
 		foreach($pa_blocks as $vs_block => $va_block_info) {
 			if (!($o_search = caGetSearchInstance($va_block_info['table']))) { continue; }
 			
@@ -339,8 +340,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				'html' => $vs_html,
 				'displayName' => $va_block_info['displayName']
 			);
+			$vn_total_cnt += $vn_count;
 			$vn_i++;
 		}
+		$va_ret['_info_'] = array(
+			'totalCount' => $vn_total_cnt
+		);
 		
 		return $va_ret;
 	}

@@ -171,4 +171,31 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		}
 	}
 	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return Configuration 
+	 */
+	function caGetBrowseConfig() {
+		$o_config = Configuration::load();
+		return Configuration::load($o_config->get('browse_config'));
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caGetInfoForBrowseType($ps_browse_type) {
+		$o_browse_config = caGetBrowseConfig();
+		
+		$va_browse_types = $o_browse_config->getAssoc('browseTypes');
+		$ps_browse_type = strtolower($ps_browse_type);
+		
+		if (isset($va_browse_types[$ps_browse_type])) {
+			return $va_browse_types[$ps_browse_type];
+		}
+		return null;
+	}
+	# ---------------------------------------
 ?>
