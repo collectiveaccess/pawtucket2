@@ -46,6 +46,7 @@
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	require_once(__CA_MODELS_DIR__.'/ca_acl.php');
+	require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
  
 	class BrowseEngine extends BaseFindEngine {
 		# ------------------------------------------------------
@@ -2177,15 +2178,13 @@
 						$va_wheres[] = "(".$vs_browse_table_name.".access IN (".join(',', $pa_options['checkAccess'])."))";
 					}
 					
-					if ($vs_browse_type_limit_sql) {
-						$va_wheres[] = $vs_browse_type_limit_sql;
-					}
-					
 					if ($t_item->hasField('deleted')) {
 						$va_wheres[] = "(".$vs_browse_table_name.".deleted = 0)";
 					}
 					
 					if ($va_facet_info['relative_to']) {
+						// TODO: We need to reset type restrictions when doing relative_to everywhere!!!!
+						$vs_browse_type_limit_sql = '';
 						if ($t_subject->hasField('deleted')) {
 							$va_wheres[] = "(".$t_subject->tableName().".deleted = 0)";
 						}
@@ -2193,6 +2192,11 @@
 							$va_joins = array_merge($va_joins, $va_relative_sql_data['joins']);
 							$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 						}
+					}
+					
+					
+					if ($vs_browse_type_limit_sql) {
+						$va_wheres[] = $vs_browse_type_limit_sql;
 					}
 					
 					if ($this->opo_config->get('perform_item_level_access_checking')) {
@@ -3035,22 +3039,11 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						$va_wheres[] = "{$vs_rel_table_name}.type_id NOT IN (".join(',', $va_exclude_types_expanded).")";
 					}
 					
-					if ((sizeof($va_restrict_to_relationship_types) > 0) && is_object($t_item_rel)) {
-						$va_wheres[] = $t_item_rel->tableName().".type_id IN (".join(',', $va_restrict_to_relationship_types).")";
-					}
-					if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel)) {
-						$va_wheres[] = $t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types).")";
-					}
-					
 					if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
 						$va_wheres[] = "(".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess'])."))";				// exclude non-accessible authority items
 						if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {	
 							$va_wheres[] = "(".$vs_browse_table_name.".access IN (".join(',', $pa_options['checkAccess'])."))";		// exclude non-accessible browse items
 						}
-					}
-					
-					if ($vs_browse_type_limit_sql) {
-						$va_wheres[] = $vs_browse_type_limit_sql;
 					}
 					
 					if ($t_item->hasField('deleted') && !$va_facet_info['show_all_when_first_facet']) {
@@ -3107,6 +3100,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 					
 					if ($va_facet_info['relative_to']) {
+						// TODO: do this everywhere
+						$va_restrict_to_relationship_types = array();
+						$vs_browse_type_limit_sql = '';
+						
 						if ($t_subject->hasField('deleted')) {
 							$va_wheres[] = "(".$t_subject->tableName().".deleted = 0)";
 						}
@@ -3114,6 +3111,17 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							$va_joins = array_merge($va_joins, $va_relative_sql_data['joins']);
 							$va_wheres = array_merge($va_wheres, $va_relative_sql_data['wheres']);
 						}
+					}
+					
+					
+					if ((sizeof($va_restrict_to_relationship_types) > 0) && is_object($t_item_rel)) {
+						$va_wheres[] = $t_item_rel->tableName().".type_id IN (".join(',', $va_restrict_to_relationship_types).")";
+					}
+					if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel)) {
+						$va_wheres[] = $t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types).")";
+					}
+					if ($vs_browse_type_limit_sql) {
+						$va_wheres[] = $vs_browse_type_limit_sql;
 					}
 					
 					if ($this->opo_config->get('perform_item_level_access_checking')) {
