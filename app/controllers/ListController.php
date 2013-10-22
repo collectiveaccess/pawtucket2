@@ -32,13 +32,6 @@
  		/**
  		 *
  		 */
- 		private $opa_url_names_to_tables = array(
- 			'objects' 		=> 'ca_objects',
- 			'entities' 		=> 'ca_entities',
- 			'places' 		=> 'ca_places',
- 			'occurrences' 	=> 'ca_occurrences',
- 			'collections' 	=> 'ca_collections'
- 		);
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
@@ -52,18 +45,16 @@
  		public function __call($ps_function, $pa_args) {
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
- 			if (!isset($this->opa_url_names_to_tables[$ps_function]) || (!($vs_table = $this->opa_url_names_to_tables[$ps_function]))) {
+ 			if (!($vs_class = caUrlNameToTable($ps_function))) {
  				// invalid detail type – throw error
  				die("Invalid list type");
  			}
- 			
- 			$vs_class = $this->opa_url_names_to_tables[$ps_function];
  			
  			$qr_res = $vs_class::find(array(), array('returnAs' => 'SearchResult'));
  			$this->view->setVar('result', $qr_res);
  			
  			
- 			$this->render("Lists/{$vs_table}_html.php");
+ 			$this->render("Lists/{$vs_class}_html.php");
  		}
  		# -------------------------------------------------------
 	}
