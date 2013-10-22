@@ -73,10 +73,9 @@
               <ul class="dropdown-menu">
                 <li><a href="#">About</a></li>
                 <li><a href="<?php print caNavUrl($this->request, '', 'List', 'Collections', array()); ?>">Collections</a></li>
-                <li><a href="#">p{ART}icipate</a></li>
-                <li><a href="#">Highlights</a></li>
-                <li><a href="#">Rights + Reproduction</a></li>
-                <li><a href="#">Search</a></li>    
+                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
+                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
+                <li><a href="#">p{ART}icipate</a></li>  
               </ul>
             </li>            
           </ul>
