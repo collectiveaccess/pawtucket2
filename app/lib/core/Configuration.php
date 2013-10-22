@@ -413,7 +413,9 @@ class Configuration {
 								if ($vn_in_quote) {
 									$vs_scalar_value .= ",";
 								} else {
-									$this->ops_config_settings["lists"][$vs_key][] = $this->_interpolateScalar($this->_trimScalar($vs_scalar_value));
+									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
+										$this->ops_config_settings["lists"][$vs_key][] = $vs_item;
+									}
 									$vs_scalar_value = "";
 								}
 								$vb_escape_set = false;
@@ -424,7 +426,7 @@ class Configuration {
 									$vs_scalar_value .= "]";
 								} else {
 									# accept list
-									if (strlen($vs_item = $this->_interpolateScalar($this->_trimScalar($vs_scalar_value))) > 0) {
+									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
 										$this->ops_config_settings["lists"][$vs_key][] = $vs_item;
 									}
 									# initialize
@@ -654,7 +656,9 @@ class Configuration {
 								if ($vn_in_quote) {
 									$vs_scalar_value .= ",";
 								} else {
-									$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $this->_trimScalar($vs_scalar_value);
+									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
+										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $vs_item;
+									}
 									$vs_scalar_value = "";
 								}
 								$vb_escape_set = false;
@@ -666,10 +670,10 @@ class Configuration {
 								} else {
 									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got ]; KEY IS '$vs_assoc_key'\n"; }
 									# accept list
-									if ($vs_item = $this->_trimScalar($vs_scalar_value)) {
+									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $vs_item;
-										array_pop($va_assoc_pointer_stack);
 									}
+									array_pop($va_assoc_pointer_stack);
 									# initialize
 									$vn_state = 40;
 									$vs_assoc_key = '';
