@@ -35,6 +35,7 @@
   */
  
 require_once(__CA_LIB_DIR__.'/core/BaseObject.php');
+require_once(__CA_LIB_DIR__.'/core/Datamodel.php');
 require_once(__CA_LIB_DIR__.'/core/View.php');
 require_once(__CA_LIB_DIR__.'/core/Controller/Request/NotificationManager.php');
 
@@ -89,6 +90,10 @@ class ActionController extends BaseObject {
 				return isset($this->{$ps_key}) ? $this->{$ps_key} : null;
 				break;
 		}
+	}
+	# -------------------------------------------------------
+	public function getAppDatamodel() {
+		return Datamodel::load();
 	}
 	# -------------------------------------------------------
 	public function initView() {
