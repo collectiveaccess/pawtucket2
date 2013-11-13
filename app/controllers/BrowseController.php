@@ -46,7 +46,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$ps_function = strtolower($ps_function);
- 			//$ps_type = $this->request->getActionExtra();
+ 			$ps_type = $this->request->getActionExtra();
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
@@ -110,7 +110,7 @@
  			$this->view->setVar('key', $o_browse->getBrowseID());
  			
  			//
- 			// Current criterial
+ 			// Current criteria
  			//
  			$va_criteria = $o_browse->getCriteriaWithLabels();
  			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
@@ -131,7 +131,12 @@
  			$qr_res = $o_browse->getResults();
  			$this->view->setVar('result', $qr_res);
  			
+ 			$this->view->setVar('hits_per_block', 10);
+ 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
  			
+ 			if ($vn_type_id) {
+ 				if ($this->render("Browse/{$vs_class}_{$vs_type}_html.php")) { return; }
+ 			} 
  			$this->render("Browse/{$vs_class}_html.php");
  		}
  		# -------------------------------------------------------
