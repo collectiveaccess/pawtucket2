@@ -12,7 +12,7 @@
 <body>
 	<div id="hpLogo">
 <?php	
-	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/MF_logo.jpg' border='0'>", '', '', '','');
+	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/ca_logo.png' border='0'>", '', '', '','');
 ?>	
 	</div>
 	<div class="navbar navbar-inverse">
@@ -29,12 +29,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
               <ul class="dropdown-menu">
-                <li><a href="#">Visit</a></li>
-                <li><a href="#">Calendar</a></li>
                 <li><a href="#">History</a></li>
-                <li><a href="#">Get Involved</a></li>
-                <li><a href="#">Rentals</a></li>
-                <li><a href="#">Press Room</a></li>
                 <li><a href="#">Staff</a></li>
               </ul>
             </li>
@@ -45,16 +40,6 @@
                 <li><a href="#">Permanent Installations</a></li>
                 <li><a href="#">Artist Limited Editions</a></li>
                 <li><a href="#">Search All Art</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learn</a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Schools + Teachers</a></li>
-                <li><a href="#">Kids + Families</a></li>
-                <li><a href="#">Community</a></li>
-                <li><a href="#">Public Programs</a></li>
-                <li><a href="#">The Space I'm In</a></li>
               </ul>
             </li>
             <li class="dropdown">
@@ -73,9 +58,7 @@
               <ul class="dropdown-menu">
                 <li><a href="#">About</a></li>
                 <li><a href="<?php print caNavUrl($this->request, '', 'List', 'Collections', array()); ?>">Collections</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
-                <li><a href="#">p{ART}icipate</a></li>  
+                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Productions</a></li>
               </ul>
             </li>            
           </ul>
@@ -90,5 +73,3 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-     
-     <div class="artYou">art you can get into</div>

@@ -38,8 +38,8 @@ h4 {
 	margin-top: 18px;
 }
 .navbar {
-	margin-top:17px;
-	width: 820px;
+	margin:17px 0 0 10px;
+	width: 630px;
 	background-color: #000;
 	height: 65px;
 	float:left;
