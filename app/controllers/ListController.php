@@ -26,6 +26,7 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	
  	class ListController extends ActionController {
  		# -------------------------------------------------------

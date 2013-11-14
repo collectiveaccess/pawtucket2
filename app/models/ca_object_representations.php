@@ -1372,7 +1372,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
  		$vn_object_id = (isset($pa_options['object_id']) && $pa_options['object_id']) ? $pa_options['object_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
- 		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
  		
@@ -1389,9 +1388,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		
 		$t_set_item = new ca_set_items();
 		if ($vn_item_id) { $t_set_item->load($vn_item_id); }
-		
-		$t_order_item = new ca_commerce_order_items();
-		if ($vn_order_item_id) { $t_order_item->load($vn_order_item_id); }
 		
 		$o_view->setVar('containerID', $vs_container_dom_id);
 		
@@ -1442,10 +1438,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			}
 			$o_view->setVar('version', $ps_version);
 			$o_view->setVar('version_info', $this->getMediaInfo('media', $ps_version));
-			
  			$o_view->setVar('t_object', $t_object);
  			$o_view->setVar('t_set_item', $t_set_item);
- 			$o_view->setVar('t_order_item', $t_order_item);
  			$o_view->setVar('only_show_reps_in_order', $vb_only_show_reps_in_order);
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);

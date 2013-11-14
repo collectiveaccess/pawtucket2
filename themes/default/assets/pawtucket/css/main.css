@@ -1,5 +1,5 @@
 body {
-	margin: 0px auto 10px auto;
+	margin: 0px auto 10px auto !important;
 	width: 970px;
 	font-family: "ProximaNovaRegular";
 	line-height:14px;
@@ -580,4 +580,159 @@ h2 span.artist {
 .browseResult.artist .artistName a{
 	text-transform:uppercase;
 	color:#999;
+}
+
+/* overlay (for object representations) */
+#caMediaPanel {
+	position: fixed; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
+	display: none;
+	margin: 0px;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#caMediaPanel #close{
+	float: right;
+	width:15px;
+	height:16px;
+	margin:10px;
+	background-image:url("../graphics/buttons/x.png");
+}
+#caMediaPanel #close a{
+	text-decoration:none;
+	font-size:16px;
+}
+#caMediaPanelContentArea {
+	width: 100%; 
+	height: 100%;
+}
+
+#caMediaOverlayContent {
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	text-align: center;
+}
+
+div.caMediaOverlayControls {
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
+	text-align:center;
+	position:absolute;
+	padding: 10px 0px 10px 0px;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.5;
+	
+}
+div.caMediaOverlayControls:hover {
+	opacity:1.0;
+	background-color:rgba(0,0,0,0.5);
+}
+div.caMediaOverlayControls a{
+	text-decoration:none;
+	font-weight:bold;
+	color:#FFF; 
+}
+div.caMediaOverlayControls a:hover{
+	color:#FFF;
+}
+div.caMediaOverlayControls .close{
+	float:right;
+	width:15px;
+	height:16px;
+	background-image:url("../graphics/buttons/x_white.png");
+	margin: 0px 10px 0px 20px;
+}
+div.caMediaOverlayControls .download{
+	float:right;
+	margin-left:20px;
+}
+div.caMediaOverlayControls .objectInfo{
+	font-size:11px;
+	color:#FFF;
+	padding-left:10px;
+	text-align:left;
+	width:40%;
+	float:left;
+}
+div.caMediaOverlayControls .captionRight {
+	float:left; 
+	width:45%; 
+	margin-left:25px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .captionLeft {
+	float:left; 
+	width:45%; 
+	margin-left:15px; 
+	color:#fff; 
+	text-align:left;
+	font-size:14px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink {
+	float:left;
+	text-align:left;
+	color:white;
+	font-size:12px;
+	margin-left:15px;
+	margin-bottom:10px;
+}
+div.caMediaOverlayControls .recordLink a{
+	font-size:12px;
+}
+div.caMediaOverlayControls .repNav {
+	float:left;
+	width:16%;
+	padding: 0px 2% 0px 2%;
+	text-align:center;
+	color:#FFF;
+}
+div.caMediaOverlayRepThumbs {
+	color:#FFF;
+	font-size: 11px;
+	text-align:right;
+	position:absolute;
+	top:60px;
+	right:11px;
+	padding:3px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.3;	
+}
+div.caMediaOverlayRepThumbs:hover {
+	opacity:1;	
+}
+div.caMediaOverlayRepThumbs img{
+	margin:2px;
+	border:1px solid transparent;
+}
+div.caMediaOverlayRepThumbs a.selectedRep img{
+	border:1px solid #FFF;
+}
+
+/* form overlay */
+#caFormOverlay{
+	margin:20% auto 0px auto;
+	background-color: #FFFFFF;
+	padding:20px;
+	width:400px;
+}
+#caFormOverlay .close{
+	float:right;
+	width:15px;
+	height:16px;
+	background-image:url("../graphics/buttons/x.png");
+	margin: -15px -15px 0px 0px;
+	opacity:1.0;
 }

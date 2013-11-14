@@ -74,7 +74,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 		),
 		'password' => array(
 				'FIELD_TYPE' => FT_PASSWORD, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 60, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Password'), 'DESCRIPTION' => _t('The login password for this user. Passwords must be at least 4 characters and should ideally contain a combination of letters and numbers. Passwords are case-sensitive.'),
@@ -82,7 +82,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 		),
 		'fname' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 60, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('First name'), 'DESCRIPTION' => _t('The forename of this user.'),
@@ -90,7 +90,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 		),
 		'lname' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 60, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Last name'), 'DESCRIPTION' => _t('The surname of this user.'),
@@ -98,7 +98,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 		),
 		'email' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 60, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('E-mail'), 'DESCRIPTION' => _t('The e-mail address of this user. The address will be used for all mail-based system notifications and alerts to this user.'),
