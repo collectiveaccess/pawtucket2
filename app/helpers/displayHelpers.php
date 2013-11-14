@@ -357,7 +357,7 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 			$pa_attributes['alt'] = $vs_img_name;
 		}
 		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
+		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";
 	
 		return $vs_button;
 	}
