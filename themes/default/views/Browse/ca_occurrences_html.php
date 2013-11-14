@@ -9,7 +9,6 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
-	AssetLoadManager::register('timeline');
 if (!$vb_ajax) {	// !ajax
 ?>
 <div id='pageArea' class='browseOccurrences'>
@@ -51,25 +50,6 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		} // !ajax
 		
-		
-?>
-
-<div id="timeline-embed"></div>
-    <script>
-            $(document).ready(function() {
-                createStoryJS({
-                    type:       'timeline',
-                    width:      '900',
-                    height:     '600',
-                    source:     '/test.json',
-                    embed_id:   'timeline-embed'
-                });
-            });
-        </script>
-
-<?php
-	//productionDate
-if(false) {	
 		$vn_c = 0;
 		$qr_res->seek($vn_start);
 		while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
@@ -98,7 +78,7 @@ if(false) {
 		}
 		
 		print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key));
-}
+
 		if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
