@@ -1,6 +1,8 @@
 <?php
 	$t_item = $this->getVar('item');
 	#$t_item->dump();
+	$va_access_values = 				caGetUserAccessValues($this->request);
+	$t_rep = 							$t_rep = $t_item->getPrimaryRepresentationInstance();
 	
 #	print_R(caGetPrimaryRepresentationsForIDs(array(4), array('return' => 'tags', 'versions' => 'icon')));
 ?>
@@ -15,24 +17,31 @@
 			print "<div class='detailSubtitle'>".$t_item->get('ca_objects.creation_date')."</div>"; 
 ?>
 		</div>
-		<div id='mediaArea'>
-			<div class='mediaLarge'>
 <?php
-			$va_rep = $t_item->getPrimaryRepresentation(array('large'));
-			print $va_rep['tags']['large'];
-?>			
-			</div>
-			<div class='mediaThumbs'>
-			
-			</div>
-		</div><!-- end mediaArea-->
+		if ($t_rep && $t_rep->getPrimaryKey()) {
+?>
+			<div id='mediaArea'>			
+				<div id="mediaLarge">
+<?php
+				print caObjectDetailMedia($this->request, $t_item->get("object_id"), $t_rep);
+?>
+				</div><!-- end mediaLarge -->
+<?php
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >"._t("Zoom")."</a>";
+?>
+				<div class='mediaThumbs'>
+				
+				</div>
+			</div><!-- end mediaArea-->
+<?php
+			}
+?>
 		<div id='infoArea'>
 <?php
 		if (($vs_description = $t_item->get('ca_objects.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
 			print "<div class='description'><div class='title'>"._t('Description')."</div>".$vs_description."</div>";
 		}
-?>	
-	
+?>		
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 <?php

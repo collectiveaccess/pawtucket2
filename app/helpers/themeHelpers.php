@@ -170,3 +170,21 @@
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
 	}
 	# ---------------------------------------
+	/**
+	 * Returns the primary representation for display on the object detail page
+	 * uses settings from media_display.conf
+	 */
+	function caObjectDetailMedia($o_request, $pn_object_id, $t_representation, $pa_options=null) {
+		$va_access_values = caGetUserAccessValues($o_request);
+		if (!sizeof($va_access_values) || in_array($t_representation->get('access'), $va_access_values)) { 		// check rep access
+			$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+			
+			$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
+		
+			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
+			return "<div id='cont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>";
+		}else{
+			return "representation is not accessible to the public";
+		}
+	}
+	# ---------------------------------------

@@ -27,6 +27,7 @@
  */
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
  	
  	class DetailController extends ActionController {
  		# -------------------------------------------------------
@@ -50,6 +51,8 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
+ 			AssetLoadManager::register("panel");
+ 			AssetLoadManager::register("mediaViewer");
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
  			if (!isset($this->opa_url_names_to_tables[$ps_function]) || (!($vs_table = $this->opa_url_names_to_tables[$ps_function]))) {
@@ -78,6 +81,68 @@
  				// If no type specific view use the default
  				$this->render("Details/{$vs_table}_default_html.php");
  			}
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns content for overlay containing details for object representation
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		object_id = the id of the ca_objects record to display
+ 		 *		representation_id = the id of the ca_object_representations record to display; the representation must belong to the specified object
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *		order_item_id = ca_commerce_order_items.item_id value to limit representation display to
+ 		 *
+ 		 */ 
+ 		public function GetRepresentationInfo() {
+ 			$vn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
+ 			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
+ 			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
+ 			
+ 			if(!$vn_object_id) { $vn_object_id = 0; }
+ 			$t_rep = new ca_object_representations($pn_representation_id);
+ 			
+ 			$va_opts = array('display' => $ps_display_type, 'object_id' => $vn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
+ 			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
+
+ 			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
+ 		}
+		# -------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */ 
+ 		public function GetPageListAsJSON() {
+ 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+ 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$ps_content_mode = $this->request->getParameter('content_mode', pString);
+ 			
+ 			$this->view->setVar('object_id', $pn_object_id);
+ 			$this->view->setVar('representation_id', $pn_representation_id);
+ 			$this->view->setVar('content_mode', $ps_content_mode);
+ 			
+ 			$t_rep = new ca_object_representations($pn_representation_id);
+ 			$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+			$vs_download_version = $va_download_display_info['display_version'];
+ 			$this->view->setVar('download_version', $vs_download_version);
+ 			
+ 			$va_page_list_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
+ 			
+ 			$va_pages = $va_page_list_cache[$pn_object_id.'/'.$pn_representation_id];
+ 			if (!isset($va_pages)) {
+ 				// Page cache not set?
+ 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetPage');
+ 				return;
+ 			}
+ 			
+ 			$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
+ 			$this->view->setVar('pages', $va_pages);
+ 			$this->view->setVar('sections', $va_section_cache[$pn_object_id.'/'.$pn_representation_id]);
+ 			
+ 			$this->view->setVar('is_searchable', MediaContentLocationIndexer::hasIndexing('ca_object_representations', $pn_representation_id));
+ 			
+ 			$this->render('Details/object_representation_page_list_json.php');
  		}
  		# -------------------------------------------------------
 	}
