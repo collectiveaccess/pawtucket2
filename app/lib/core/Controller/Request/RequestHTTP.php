@@ -166,6 +166,7 @@ class RequestHTTP extends Request {
 			$this->ops_script_name = array_pop($va_tmp);
 		}
 		
+		/* allow authentication via URL for web service API like so: http://user:pw@example.com/ */
 		if($this->ops_script_name=="service.php"){
 			$this->ops_raw_post_data = file_get_contents("php://input");
 
@@ -182,8 +183,12 @@ class RequestHTTP extends Request {
 		}
 		
 		$this->ops_base_path = join('/', $va_tmp);
-		$this->ops_full_path = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
-		$this->ops_path_info = isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '';
+		$this->ops_full_path = $_SERVER['REQUEST_URI'];
+		if (!preg_match("!/index.php!", $this->ops_full_path) && !preg_match("!/service.php!", $this->ops_full_path)) { $this->ops_full_path = rtrim($this->ops_full_path, "/")."/index.php"; }
+		$vs_path_info = str_replace($_SERVER['SCRIPT_NAME'], "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
+		
+		$this->ops_path_info = $vs_path_info ? $vs_path_info : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
+		$this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."!", "", $this->ops_path_info);
 	}
 	# -------------------------------------------------------
 	/** 
@@ -466,6 +471,20 @@ class RequestHTTP extends Request {
 		}
 		
 		die("Invalid parameter type for $ps_name\n");
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getParameters($pa_http_methods=null) {
+		if($pa_http_methods && !is_array($pa_http_methods)) { $pa_http_methods = array($pa_http_methods); }
+		$va_params = array();
+		foreach($pa_http_methods as $vs_http_method) {
+			if (isset($this->opa_params[$vs_http_method]) && is_array($this->opa_params[$vs_http_method])) {
+				$va_params = array_merge($va_params, $this->opa_params[$vs_http_method]);
+			}
+		}
+		return $va_params;
 	}
 	# -------------------------------------------------------
 	function setParameter($ps_name, $pm_value, $ps_http_method='GET') {
