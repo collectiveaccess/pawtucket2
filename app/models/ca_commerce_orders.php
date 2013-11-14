@@ -532,17 +532,20 @@ class ca_commerce_orders extends BaseModel {
 		$va_available_payment_methods = BaseModel::$s_ca_models_definitions['ca_commerce_orders']['FIELDS']['payment_method']['BOUNDS_CHOICE_LIST'];
 
 		$va_used_payment_methods = array();
-		foreach($va_available_payment_methods as $vs_label => $vs_code) {
-			if (in_array($vs_code, $va_configured_payment_options)) {
-				$va_used_payment_methods[$vs_label] = $vs_code;
-			}
-		}
 		
-		if (is_array($va_service_groups = $this->opo_client_services_config->getAssoc("service_groups"))) {
-			foreach($va_service_groups as $vs_group => $va_services_in_group) {
-				foreach($va_services_in_group['services'] as $vs_service => $va_service_info) {
-					$this->opo_services_list[$vs_service] = $va_service_info;
-				}	
+		if (is_array($va_configured_payment_options) && is_array($va_configured_payment_options)) { 
+			foreach($va_available_payment_methods as $vs_label => $vs_code) {
+				if (in_array($vs_code, $va_configured_payment_options)) {
+					$va_used_payment_methods[$vs_label] = $vs_code;
+				}
+			}
+		
+			if (is_array($va_service_groups = $this->opo_client_services_config->getAssoc("service_groups"))) {
+				foreach($va_service_groups as $vs_group => $va_services_in_group) {
+					foreach($va_services_in_group['services'] as $vs_service => $va_service_info) {
+						$this->opo_services_list[$vs_service] = $va_service_info;
+					}	
+				}
 			}
 		}
 		
