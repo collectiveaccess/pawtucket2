@@ -2270,6 +2270,26 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
+	 * Returns 
+	 *
+	 * @param int $pn_start_timestamp Start of date range, as Unix timestamp
+	 * @param array $pa_options All options supported by TimeExpressionParser::getText() are supported
+	 *
+	 * @return string Localized date range expression
+	 */
+	function caGetDateRangeForTimelineJS($pa_historic_timestamps, $pa_options=null) {
+		$o_tep = new TimeExpressionParser();
+		
+		$va_start = $o_tep->getHistoricDateParts($pa_historic_timestamps[0]);
+		$va_end = $o_tep->getHistoricDateParts($pa_historic_timestamps[1]);
+		
+		return array(
+			'start' => $va_start['year'].','.$va_start['month'].','.$va_start['day'],
+			'end' => $va_end['year'].','.$va_end['month'].','.$va_end['day'],
+		);
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
 	 * Returns text describing dimensions of object representation
 	 *
 	 * @param DbResult or ca_object_representations instance $po_rep An object containing representation data. Can be either a DbResult object (ie. a query result) or ca_object_representations instance (an instance representing a row in the ca_object_representation class)
