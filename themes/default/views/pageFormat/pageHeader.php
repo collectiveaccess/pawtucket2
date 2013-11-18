@@ -58,7 +58,8 @@
               <ul class="dropdown-menu">
                 <li><a href="#">About</a></li>
                 <li><a href="<?php print caNavUrl($this->request, '', 'List', 'Collections', array()); ?>">Collections</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Productions</a></li>
+                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
+                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Productions', array()); ?>">Browse Productions</a></li>
               </ul>
             </li>            
           </ul>
