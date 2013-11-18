@@ -1,36 +1,86 @@
 <?php
 	$t_set = new ca_sets();
 	$va_write_sets = $this->getVar("write_sets");
+	#$va_write_sets = array();
 	$va_read_sets = $this->getVar("read_sets");
+	#$va_read_sets = array();
 	$va_access_values = $this->getVar("access_values");
-	
-	print "<H1>Lightboxes</H1>";
-	print "<p>Write access sets:";
-	#print_r($va_write_sets);
-	foreach($va_write_sets as $vn_set_id => $va_set_info){
-		$t_set->load($vn_set_id);
-		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->user->get("user_id"), "thumbnailVersions" => array("preview", "icon"), "checkAccess" => $va_access_values, "limit" => 4)));
-		print "<div style='width:220px; height:275px; border:1px solid #666666; float:left; margin:5px;'>";
-		if(sizeof($va_set_items)){
-			$vn_i = 1;
-			foreach($va_set_items as $va_set_item){
-				if($vn_i == 1){
-					print caNavLink($this->request, $va_set_item["representation_tag_preview"], "", "", "Sets", "setDetail", array("set_id" => $vn_set_id))."<br/>";
-				}else{
-					print $va_set_item["representation_tag_icon"];
-				}
-				$vn_i++;
-			}
-		}else{
-			print "no items in set";
-		}
-		print "<div>".$t_set->get("ca_sets.preferred_labels.name")."</div>";
-		print "<div>Owned by: ".trim($va_set_info["fname"]." ".$va_set_info["lname"])."</div>";
-		print "<div>Num items: ".$t_set->getItemCount(array("user_id" => $this->request->user->get("user_id"), "checkAccess" => $va_access_values))."</div>";
-		print "</div>";
-	}
-	print "<div style='clear:both;'><!-- empty --></div></p>";
-	print "<p>Read access sets:<pre>";
-	print_r($va_read_sets);
-	print "</pre></p>";
+#print_r($va_read_sets);	
 ?>
+	<H1>Lightboxes</H1>
+	<div class="row">
+<?php
+	$vn_col_span = 3;
+	$vn_col_span_sm = 6;
+	$vb_read_and_write = false;
+	if((sizeof($va_write_sets)) && (sizeof($va_read_sets))){
+		$vb_read_and_write = true;
+		$vn_col_span = 6;
+		$vn_col_span_sm = 12;
+	}
+	$vn_items_per_row = 12/$vn_col_span;
+	if($vb_read_and_write){
+		print "<div class='col-sm-5 col-md-5 col-lg-5'>\n";
+	}else{
+		print "<div class='col-sm-10 col-md-10 col-lg-10'>\n";
+	}
+	if(sizeof($va_write_sets)){
+		print "<H3>Write access sets</H3>\n";
+		$vn_i_set = 0;
+		foreach($va_write_sets as $vn_set_id => $va_set_info){
+			if($vn_i_set == 0){
+				print "<div class='row'>\n";
+			}
+			$vn_i_set++;
+			$t_set->load($vn_set_id);
+			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
+			print caLightboxSetListItem($this->request, $t_set, $va_access_values);
+			print "\n</div><!-- end col -->\n";
+			if($vn_i_set == $vn_items_per_row){
+				print "</div><!-- end row -->\n";
+				$vn_i_set = 0;
+			}
+		}
+		if($vn_i_set && ($vn_i_set < $vn_items_per_row)){
+			while($vn_i_set < $vn_items_per_row){
+				print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'></div>\n";
+				$vn_i_set++;
+			}
+			print "</div><!-- end row -->\n";
+		}
+	}
+	if($vb_read_and_write){
+		print "</div><!-- end col-5 --><div class='col-sm-5 col-md-5 col-lg-5'>\n";
+	}
+	
+	if(sizeof($va_read_sets)){
+		print "<H3>Read access sets</H3>\n";
+		$vn_i_set = 0;
+		foreach($va_read_sets as $vn_set_id => $va_set_info){
+			if($vn_i_set == 0){
+				print "<div class='row'>\n";
+			}
+			$vn_i_set++;
+			$t_set->load($vn_set_id);
+			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
+			print caLightboxSetListItem($this->request, $t_set, $va_access_values);
+			print "</div><!-- end col -->\n";
+			if($vn_i_set == $vn_items_per_row){
+				print "</div><!-- end row -->\n";
+				$vn_i_set = 0;
+			}
+		}
+		if($vn_i_set && ($vn_i_set < $vn_items_per_row)){
+			while($vn_i_set < $vn_items_per_row){
+				print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'></div>\n";
+				$vn_i_set++;
+			}
+			print "</div><!-- end row -->\n";
+		}
+	}
+?>
+		</div><!-- end col-md-5 or 10 -->
+		<div class="col-sm-2 col-md-2 col-lg-2">
+			<h3>activity stream</h3>
+		</div><!-- end col 2 -->
+	</div><!-- end row -->

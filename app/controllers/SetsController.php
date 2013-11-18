@@ -27,6 +27,7 @@
  */
  
 	require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
@@ -58,6 +59,59 @@
 			$this->view->setVar("set", $t_set);
 			$this->view->setVar("set_items", $va_set_items);
 			$this->render("Sets/set_detail_thumbnail_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function AjaxListComments() {
+ 			$o_datamodel = new Datamodel();
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			# --- check this is a valid table to have comments in the lightbox
+ 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index();}
+ 			# --- load table
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
+ 			$t_item->load($pn_item_id);
+ 			$va_comments = $t_item->getComments();
+ 			
+ 			$this->view->setVar("tablename", $ps_tablename);
+ 			$this->view->setVar("item_id", $pn_item_id);
+ 			$this->view->setVar("comments", $va_comments);
+			$this->render("Sets/ajax_comments.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function AjaxSaveComment() {
+ 			# --- when close is set to true, will make the form view disappear after saving form
+ 			$vb_close = false;
+ 			$o_datamodel = new Datamodel();
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			# --- check this is a valid table to have comments in the lightbox
+ 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index(); }
+ 			# --- load table
+ 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$t_item->load($pn_item_id);
+ 			$ps_comment = $this->request->getParameter('comment', pString);
+ 			if(!$ps_comment){
+ 				$vs_error = _t("Please enter a comment");
+ 				$this->AjaxListComments();
+ 				return;
+ 			}else{
+ 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, array("purify" => true))){
+ 					$vs_message = _t("Saved comment");
+ 					$vb_close = true;
+ 				}else{
+ 					$vs_error = _t("There were errors adding your comment: ".join("; ", $t_item->getErrors()));
+ 					$this->AjaxListComments();
+ 					return;
+ 				}
+ 			}
+ 			$this->view->setVar("tablename", $ps_tablename);
+ 			$this->view->setVar("item_id", $pn_item_id);
+ 			$this->view->setVar("message", $vs_message);
+			$this->view->setVar("error", $vs_error);
+			$this->view->setVar("close", $vb_close);
+			$this->render("Sets/ajax_comments.php");
  		}
  		# ------------------------------------------------------
  		/** 
