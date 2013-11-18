@@ -97,7 +97,7 @@
  				$this->AjaxListComments();
  				return;
  			}else{
- 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, array("purify" => true))){
+ 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, null, array("purify" => true))){
  					$vs_message = _t("Saved comment");
  					$vb_close = true;
  				}else{
