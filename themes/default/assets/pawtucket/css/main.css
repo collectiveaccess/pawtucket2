@@ -225,8 +225,14 @@ hr {
 	margin-right:15px;
 	line-height:24px;
 }
+
 #contentArea {
 	padding-top:25px;
+	width:785px;
+	float:right;
+}
+
+#timelineContentArea {
 	width:785px;
 	float:right;
 }
@@ -544,7 +550,7 @@ h2 span.artist {
 
 /* Browse Page */
 
-#pageArea.browseEntities #pageTitle {
+#pageArea.browse #pageTitle {
 	height:auto;
 }
 .facetLabel, .facetLabel a{
@@ -735,4 +741,32 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	background-image:url("../graphics/buttons/x.png");
 	margin: -15px -15px 0px 0px;
 	opacity:1.0;
+}
+
+/* browse overlay */
+#caBrowsePanel {
+	position: fixed; 
+	top: 0; 
+	left: 0;
+	width: 100%; 
+	height: 100%; 
+	display: none;
+	margin: 0px;
+	padding: 0px;
+	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+}
+#caBrowsePanel #close{
+	float: right;
+	width:15px;
+	height:16px;
+	margin:10px;
+	background-image:url("../graphics/buttons/x.png");
+}
+#caBrowsePanel #close a{
+	text-decoration:none;
+	font-size:16px;
+}
+#caBrowsePanelContentArea {
+	width: 100%; 
+	height: 100%;
 }

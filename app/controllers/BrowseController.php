@@ -57,12 +57,13 @@
  			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, array(), array('castTo' => 'array'));
  			
  			
- 			$vs_data_format = $this->request->getParameter('format', pString);
- 			if(!in_array($vs_data_format, array('html', 'timeline', 'timelineJSON'))) {
- 				$vs_data_format = 'html';
+ 			$ps_view = $this->request->getParameter('view', pString);
+ 			if(!in_array($ps_view, array('list', 'images', 'timeline', 'timelineData'))) {
+ 				$ps_view = 'images';
  			}
+ 			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
- 			//if ($vs_data_format != 'timeline') {
+ 			//if ($ps_view != 'timeline') {
 				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 				$this->view->setVar('t_instance', $t_instance);
@@ -84,6 +85,16 @@
 				if ((bool)$this->request->getParameter('clear', pInteger)) {
 					$o_browse->removeAllCriteria();
 				}
+				
+				if ($this->request->getParameter('getFacet', pInteger)) {
+					$vs_facet = $this->request->getParameter('facet', pString);
+					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
+					$this->view->setVar('facet_name', $vs_facet);
+					$this->view->setVar('view', $ps_view);
+					$this->view->setVar('key', $o_browse->getBrowseID());
+					$this->render("Browse/{$vs_class}_facet_html.php");
+					return;
+				}
 			
 				//
 				// Add criteria and execute
@@ -95,7 +106,7 @@
 						$o_browse->addCriteria("_search", array("*"));
 					}
 				}
-			//print_R($o_browse->getCriteria());
+	
 				$o_browse->execute();
 			
 				//
@@ -145,9 +156,10 @@
 			//}
  			
  			if ($vn_type_id) {
- 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$vs_data_format}.php")) { return; }
+ 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
- 			$this->render("Browse/{$vs_class}_{$vs_data_format}.php");
+ 			
+ 			$this->render("Browse/{$vs_class}_{$ps_view}_{$vs_format}.php");
  		}
  		# -------------------------------------------------------
 	}
