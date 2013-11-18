@@ -828,38 +828,38 @@
 		$vs_table = $ps_table;
 		
 		
-		$vs_module = 'Detail';
-		$vs_action = 'Show';
+		$vs_module = '';
+		$vs_controller = 'Detail';
 		switch($ps_table) {
 			case 'ca_objects':
 			case 57:
-				$vs_controller = 'Object';
+				$vs_action = 'objects';
 				break;
 			case 'ca_object_lots':
 			case 51:
-				$vs_controller = 'ObjectLot';
+				$vs_action = 'lots';
 				break;
 			case 'ca_entities':
 			case 20:
-				$vs_controller = 'Entity';
+				$vs_action = 'entities';
 				break;
 			case 'ca_places':
 			case 72:
-				$vs_controller = 'Place';
+				$vs_action = 'places';
 				break;
 			case 'ca_occurrences':
 			case 67:
-				$vs_controller = 'Occurrence';
+				$vs_action = 'occurrences';
 				break;
 			case 'ca_collections':
 			case 13:
-				$vs_controller = 'Collection';
+				$vs_action = 'collections';
 				break;
 			case 'ca_list_items':
 			case 33:
 				$t_table->load($pn_id);
 				$vs_module = '';
-				$vs_controller = 'Search';
+				$vs_action = 'Search';
 				$vs_action = 'Index';
 				$vs_pk = 'search';
 				$pn_id = $t_table->get('ca_list_items.preferred_labels.name_plural');
@@ -869,6 +869,7 @@
 				break;
 		}
 		
+		$vs_action .= "/{$pn_id}";
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {
 			// Make sure record link points to exists
@@ -888,7 +889,7 @@
 			);
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
-			$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
+			//$pa_additional_parameters = array_merge(array('id' => $pn_id), $pa_additional_parameters);
 			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
 		}
 	}

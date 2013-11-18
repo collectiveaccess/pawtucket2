@@ -11,12 +11,12 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
-<div id='pageArea' class='browseEntities'>
+<div id='pageArea' class='browse'>
 	<div id='pageTitle'>
 <?php 
-		print _t('Browse Artists');
+		print _t('Browse Productions');
 		
-		print "<div class='facetLabel' style='margin-bottom:10px;'><a href='".caNavUrl($this->request, '', 'Browse', 'Artists', array())."' >View All</a></div>";
+		print "<div class='facetLabel' style='margin-bottom:10px;'><a href='".caNavUrl($this->request, '', 'Browse', 'Productions', array())."' >View All</a></div>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			print "<div class='facetLabel'>Filter by ".$va_facet_info['label_singular']."</div>"; 
@@ -55,7 +55,7 @@ if (!$vb_ajax) {	// !ajax
 		while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 			print "<div class='browseResult artist'>";
 			
-			$va_entity_id = $qr_res->get('ca_entities.idno');
+			$va_occurrence_id = $qr_res->get('ca_occurrences.idno');
 			$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 			$va_first_object_id = $va_related_objects[0];
 			$t_object = new ca_objects($va_first_object_id);
@@ -65,18 +65,13 @@ if (!$vb_ajax) {	// !ajax
 			$t_object_representation = new ca_object_representations($va_rep_id);
 			$va_image_width = $t_object_representation->getMediaInfo('ca_object_representations.media', 'small', 'WIDTH');
 
-			if ($t_object->get('ca_collections.date.dates_value')){
-				$va_dates_value = ", ".$t_object->get('ca_collections.date.dates_value');
-			} else {
-				$va_dates_value = "";
-			}
 			
 			print "<div class='resultImg'>";
 			print $t_object_representation->getMediaTag('ca_object_representations.media', 'small');
 			print "</div>";
 			
-			print "<div class='artworkInfo' style='width:".$va_image_width."px;'>".caNavLink($this->request, $t_object->get('ca_collections.preferred_labels')."".$va_dates_value, '', '', 'Detail', 'Entities/'.$va_entity_id)."</div>";			
-			print "<div class='artistName'>".caNavLink($this->request, $qr_res->get('ca_entities.preferred_labels.displayname'), '', '', 'Detail', 'Entities/'.$va_entity_id)."</div>";
+			print "<div class='artworkInfo' style='width:".$va_image_width."px;'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."".$va_dates_value, '', '', 'Detail', 'Occurrences/'.$va_occurrence_id)."</div>";			
+			print "<div class='occurrenceName'>".caNavLink($this->request, $qr_res->get('ca_occurrences.preferred_labels.name'), '', '', 'Detail', 'Occurrences/'.$va_occurrence_id)."</div>";
 			print "</div>";
 			
 			$vn_c++;

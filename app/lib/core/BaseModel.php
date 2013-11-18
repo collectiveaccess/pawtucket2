@@ -1026,6 +1026,78 @@ class BaseModel extends BaseObject {
 			return $vs_prop;
 		}
 	}
+	
+	/**
+	 * Fetches intrinsic field values from specified fields and rows. If field list is omitted
+	 * an array with all intrinsic fields is returned. Note that this method returns only those
+	 * fields that are present in the table underlying the model. Configured metadata attributes 
+	 * for the model are not returned. See BaseModelWithAttributes::getAttributeForIDs() if you 
+	 * need to fetch attribute values for several rows in a single pass.
+	 *
+	 * You can control which fields are returned using the $pa_fields parameter, an array of field names. If this
+	 * is empty or omitted all fields in the table will be returned. For best performance use as few fields as possible.
+	 *
+	 * Note that if you request only a single field value the returned array will have values set to the request field. If more
+	 * than one field is requested the values in the returned array will be arrays key'ed on field name.
+	 * 
+	 * The primary key for each row is always returned as a key in the returned array of values. The key will not be included 
+	 * with field values unless you explicitly request it in the $pa_fields array. 
+	 *
+	 * @param array $pa_ids List of primary keys to fetch field values for
+	 * @param array $pa_fields List of fields to return values for. 
+	 * @param array $pa_options options array; can be omitted:
+	 * 		There are no options yet.
+	 * @return array An array with keys set to primary keys of fetched rows and values set to either (a) a field value when
+	 * only a single field is requested or (b) an array key'ed on field name when more than one field is requested
+	 *
+	 * @SeeAlso BaseModelWithAttributes::getAttributeForIDs()
+	 */
+	public function getFieldValuesForIDs($pa_ids, $pa_fields=null, $pa_options=null) {
+		if ((!is_array($pa_ids) && (int)$pa_ids > 0)) { $pa_ids = array($pa_ids); }
+		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+		
+		$va_ids = array();
+		foreach($pa_ids as $vn_id) {
+			if ((int)$vn_id <= 0) { continue; }
+			$va_ids[] = (int)$vn_id;
+		}
+		if (!sizeof($va_ids)) { return null; }
+		
+		
+		$vs_table_name = $this->tableName();
+		$vs_pk = $this->primaryKey();
+		
+		$va_fld_list = array();
+		if (is_array($pa_fields) && sizeof($pa_fields)) {
+			foreach($pa_fields as $vs_fld) {
+				if ($this->hasField($vs_fld)) {
+					$va_fld_list[$vs_fld] = true;
+				}
+			}
+			$va_fld_list = array_keys($va_fld_list);
+		}
+		$vs_fld_list = (sizeof($va_fld_list)) ? join(", ", $va_fld_list) : "*";
+		
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			SELECT {$vs_pk}, {$vs_fld_list}
+			FROM {$vs_table_name}
+			WHERE
+				{$vs_pk} IN (?)
+		", array($va_ids));
+		
+		$va_vals = array();
+		$vs_single_fld = (sizeof($va_fld_list) == 1) ? $va_fld_list[0] : null;
+		while($qr_res->nextRow()) {
+			if ($vs_single_fld) {
+				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->get($vs_single_fld);
+			} else {
+				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->getRow();
+			}
+		}
+		return $va_vals;
+	}
 
 	/**
 	 * Set field value(s) for the table row represented by this object
@@ -1569,6 +1641,51 @@ class BaseModel extends BaseObject {
 		return false;
 	}
 	# --------------------------------------------------------------------------------
+	/**
+	 * Returns array of intrinsic field value arrays for the specified rows
+	 *
+	 * @param array $pa_ids An array of row_ids to get field values for
+	 * @param $ps_table_name string The table to fetch values from. If omitted the name of the subclass through which the method was invoked is uses. This means that, for example, ca_entities::getFieldValueArraysForIDs(array(1,2,3)) and BaseModel::getFieldValueArraysForIDs(array(1,2,3), "ca_entities") are the same thing.
+	 * @return array An array of value arrays indexed by row_id
+	 */
+	static function getFieldValueArraysForIDs($pa_ids, $ps_table_name=null) {
+		if(!is_array($pa_ids) && is_numeric($pa_ids)) {
+			$pa_ids = array($pa_ids);
+		}
+		if (!sizeof($pa_ids)) { return array(); }
+		$va_value_arrays = array();
+		
+		$o_dm = Datamodel::load();
+		
+		$vs_table_name = $ps_table_name ? $ps_table_name : get_called_class();
+		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table_name, true))) { return false; }
+		$vs_pk = $t_instance->primaryKey();
+		
+		// first check cache
+		foreach($pa_ids as $vn_i => $vn_id) {
+			if (isset(BaseModel::$s_instance_cache[$vs_table_name][$vn_id])) {
+				$va_value_arrays[$vn_id] = BaseModel::$s_instance_cache[$vs_table_name][$vn_id];
+				unset($pa_ids[$vn_i]);
+			}
+		}
+		
+		if (!sizeof($pa_ids)) { return $va_value_arrays; }
+		
+		$o_db = $t_instance->getDb();
+		
+		$qr_res = $o_db->query("
+			SELECT * FROM {$vs_table_name} WHERE {$vs_pk} IN (?)
+		", array($pa_ids));
+		
+		// pull values from database
+		while($qr_res->nextRow()) {
+			$va_row = $qr_res->getRow();
+			$va_value_arrays[$va_row[$vs_pk]] = $va_row;
+		}
+		
+		return $va_value_arrays;
+	}
+	# --------------------------------------------------------------------------------
 	# --- Content methods (just your standard Create, Return, Update, Delete methods)
 	# --------------------------------------------------------------------------------
 	/**
@@ -2035,7 +2152,7 @@ class BaseModel extends BaseObject {
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
-							if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $end_field_name = $this->_FIELD_VALUES[$end_field_name]; }
+							if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
 							
 							$vs_fields .= "{$start_field_name}, {$end_field_name},";
 							$vs_values .= "{$vm_start_val}, {$vm_end_val},";
@@ -6060,12 +6177,14 @@ class BaseModel extends BaseObject {
 					return null;
 				}
 			}
-			$vn_hierarchy_id = $this->get($vs_hier_id_fld);
 			
 			$vs_hier_id_sql = "";
-			if ($vn_hierarchy_id) {
-				// TODO: verify hierarchy_id exists
-				$vs_hier_id_sql = " AND (".$vs_hier_id_fld." = ".$vn_hierarchy_id.")";
+			if ($vs_hier_id_fld) {
+				$vn_hierarchy_id = $this->get($vs_hier_id_fld);
+				if ($vn_hierarchy_id) {
+					// TODO: verify hierarchy_id exists
+					$vs_hier_id_sql = " AND (".$vs_hier_id_fld." = ".$vn_hierarchy_id.")";
+				}
 			}
 			
 			
@@ -6829,7 +6948,7 @@ class BaseModel extends BaseObject {
 				'select_item_text', 'hide_select_if_only_one_option', 'field_errors', 'display_form_field_tips', 'form_name',
 				'no_tooltips', 'tooltip_namespace', 'extraLabelText', 'width', 'height', 'label', 'list_code', 'hide_select_if_no_options', 'id',
 				'lookup_url', 'progress_indicator', 'error_icon', 'maxPixelWidth', 'displayMediaVersion', 'FIELD_TYPE', 'DISPLAY_TYPE', 'choiceList',
-				'readonly'
+				'readonly', 'description'
 			) 
 			as $vs_key) {
 			if(!isset($pa_options[$vs_key])) { $pa_options[$vs_key] = null; }
@@ -7631,7 +7750,7 @@ $pa_options["display_form_field_tips"] = true;
 				) {
 					if (preg_match("/\^DESCRIPTION/", $ps_formatted_element)) {
 						$ps_formatted_element = str_replace("^LABEL",$vs_field_label, $ps_formatted_element);
-						$ps_formatted_element = str_replace("^DESCRIPTION",$va_attr["DESCRIPTION"], $ps_formatted_element);
+						$ps_formatted_element = str_replace("^DESCRIPTION",((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $ps_formatted_element);
 					} else {
 						// no explicit placement of description text, so...
 						$vs_field_id = '_'.$this->tableName().'_'.$this->getPrimaryKey().'_'.$pa_options["name"].'_'.$pa_options['form_name'];
@@ -7639,7 +7758,7 @@ $pa_options["display_form_field_tips"] = true;
 
 
 						if (!isset($pa_options['no_tooltips']) || !$pa_options['no_tooltips']) {
-							TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_field_label}</h3>".$va_attr["DESCRIPTION"], $pa_options['tooltip_namespace']);
+							TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_field_label}</h3>".((isset($pa_options["description"]) && $pa_options["description"]) ? $pa_options["description"] : $va_attr["DESCRIPTION"]), $pa_options['tooltip_namespace']);
 						}
 					}
 
@@ -8016,7 +8135,7 @@ $pa_options["display_form_field_tips"] = true;
 					if ($this->tableName() == $va_rel_info['rel_keys']['one_table']) {
 						if ($t_item_rel->load($pn_relation_id)) {
 							$t_item_rel->setMode(ACCESS_WRITE);
-							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], null);
+							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], $this->getPrimaryKey());
 							$t_item_rel->update();
 							
 							if ($t_item_rel->numErrors()) {
@@ -8350,6 +8469,7 @@ $pa_options["display_form_field_tips"] = true;
 			
 			$va_new_relations = array();
 			foreach($va_to_reindex_relations as $vn_relation_id => $va_row) {
+				$t_item_rel->clear();
 				$t_item_rel->setMode(ACCESS_WRITE);
 				unset($va_row[$vs_rel_pk]);
 				$va_row[$vs_item_pk] = $pn_to_id;
@@ -9888,7 +10008,7 @@ $pa_options["display_form_field_tips"] = true;
 	 * @return mixed Depending upon the returnAs option setting, an array, subclass of BaseModel or integer may be returned.
 	 */
 	public static function find($pa_values, $pa_options=null) {
-		if (!is_array($pa_values)) { return null; }
+		if (!is_array($pa_values) || (sizeof($pa_values) == 0)) { return null; }
 		$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
 		$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 			
@@ -9954,12 +10074,9 @@ $pa_options["display_form_field_tips"] = true;
 				$va_sql_wheres[] = "({$vs_field} = {$vm_value})";
 			}
 		}
-		//if(!sizeof($va_sql_wheres)) { return null; }
-		
-		$vs_sql_wheres = sizeof($va_sql_wheres) ? " AND (".join(" {$ps_boolean} ", $va_sql_wheres).")" : "";
-		
-		$vs_deleted_sql = ($t_instance->hasField('deleted')) ? '(deleted = 0) ' : '';
-		$vs_sql = "SELECT * FROM {$vs_table} WHERE {$vs_deleted_sql} {$vs_sql_wheres}";
+		if(!sizeof($va_sql_wheres)) { return null; }
+		$vs_deleted_sql = ($t_instance->hasField('deleted')) ? '(deleted = 0) AND ' : '';
+		$vs_sql = "SELECT * FROM {$vs_table} WHERE {$vs_deleted_sql} (".join(" {$ps_boolean} ", $va_sql_wheres).")";
 		
 		if (isset($pa_options['transaction']) && ($pa_options['transaction'] instanceof Transaction)) {
 			$o_db = $pa_options['transaction']->getDb();
@@ -9994,6 +10111,7 @@ $pa_options["display_form_field_tips"] = true;
 						if ($vn_limit && ($vn_c >= $vn_limit)) { break; }
 					}
 				}
+				return $va_instances;
 				break;
 			case 'firstid':
 				if($qr_res->nextRow()) {
