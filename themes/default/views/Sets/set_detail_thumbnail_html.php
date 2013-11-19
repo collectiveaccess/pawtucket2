@@ -48,6 +48,9 @@
 ?>
 		</div><!-- end col 10 -->
 		<div class="col-sm-2 col-md-2 col-lg-2">
+<?php
+	print caNavLink($this->request, _t('View as presentation'), '', '*', '*', 'Present', array('set_id' => $t_set->getPrimaryKey()), array('target' => '_blank'));
+?>
 			<h3>comments/ info</h3>
 		</div><!-- end col-md-2 -->
 	</div><!-- end row -->

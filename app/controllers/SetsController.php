@@ -36,6 +36,9 @@
  		# -------------------------------------------------------
  		 protected $opa_access_values;
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
@@ -44,7 +47,10 @@
  			$this->view->setVar("access_values", $this->opa_access_values);
  		}
  		# -------------------------------------------------------
- 		function Index() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function Index() {
  			$t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "checkAccess" => $this->opa_access_values, "access" => 1));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "access" => 2));
@@ -53,7 +59,10 @@
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
- 		function setDetail() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function setDetail() {
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->user->get("user_id"), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
 			$this->view->setVar("set", $t_set);
@@ -61,7 +70,10 @@
 			$this->render("Sets/set_detail_thumbnail_html.php");
  		}
  		# ------------------------------------------------------
- 		function AjaxListComments() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function AjaxListComments() {
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$ps_tablename = $this->request->getParameter('tablename', pString);
@@ -79,7 +91,10 @@
 			$this->render("Sets/ajax_comments.php");
  		}
  		# ------------------------------------------------------
- 		function AjaxSaveComment() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function AjaxSaveComment() {
  			# --- when close is set to true, will make the form view disappear after saving form
  			$vb_close = false;
  			$o_datamodel = new Datamodel();
@@ -112,6 +127,19 @@
 			$this->view->setVar("error", $vs_error);
 			$this->view->setVar("close", $vb_close);
 			$this->render("Sets/ajax_comments.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function Present() {
+ 			AssetLoadManager::register("reveal.js");
+ 			$o_app = AppController::getInstance();
+ 			$o_app->removeAllPlugins();
+ 			$t_set = $this->_getSet();
+ 			$this->view->setVar("set", $t_set);
+ 			
+ 			$this->render("Sets/present_html.php");
  		}
  		# ------------------------------------------------------
  		/** 
