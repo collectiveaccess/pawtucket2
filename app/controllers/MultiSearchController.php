@@ -49,7 +49,7 @@
 					'options' => array()
 				),
 				'occurrences' => array(
-					'displayName' => _t('Occurrences'),
+					'displayName' => _t('Works'),
 					'table' => 'ca_occurrences',
 					'types' => null,
 					'view' => 'Search/ca_occurrences_search_subview_html.php',

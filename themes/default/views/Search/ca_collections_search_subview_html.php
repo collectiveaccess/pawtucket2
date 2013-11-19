@@ -5,7 +5,7 @@
 if ($qr_results->numHits() > 0) {
 ?>
 	<div class='blockTitle'>
-		<?php print _t('Artworks'); ?>
+		<?php print _t('Collections'); ?>
 	</div>
 	<div class='blockResults'>
 		<div style='width:100000px'>
