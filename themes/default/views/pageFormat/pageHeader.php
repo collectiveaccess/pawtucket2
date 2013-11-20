@@ -8,6 +8,13 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+    		$('.browseNavCell').click(function(e) {
+       		 	e.stopPropagation();
+    		});
+    	});
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-default" role="navigation"><div class="container">
@@ -69,11 +76,26 @@
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
 			<ul class="dropdown-menu">
-			  <li><a href="#">Action</a></li>
-			  <li><a href="#">Another action</a></li>
-			  <li><a href="#">Something else here</a></li>
-			  <li class="divider"></li>
-			  <li><a href="#">Separated link</a></li>
+				<li>
+<?php
+	$vs_facet_list = caGetFacetForMenuBar($this->request);
+	
+	if($vs_facet_list) {
+?>
+	<table class="table table-bordered">
+		<tbody>
+			<tr><?php print $vs_facet_list; ?></tr>
+		</tbody>
+	</table>
+	<div id='browseNavFacet'> </div>
+<?php
+	} else {
+?>
+		No facets available
+<?php
+	}
+?>
+				</li>
 			</ul>
 		  </li>
 		</ul>
@@ -81,84 +103,3 @@
 	</nav>
 	
 	<div class="container"><div id="pageArea">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-	<div class="navbar navbar-inverse">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div class="navbar-collapse collapse">
-          <ul class="nav navbar-nav">
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
-              <ul class="dropdown-menu">
-                <li><a href="#">History</a></li>
-                <li><a href="#">Staff</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Art</a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Exhibitions</a></li>
-                <li><a href="#">Permanent Installations</a></li>
-                <li><a href="#">Artist Limited Editions</a></li>
-                <li><a href="#">Search All Art</a></li>
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support</a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Donate</a></li>
-                <li><a href="#">Membership</a></li>
-                <li><a href="#">Sponsorship</a></li>
-                <li><a href="#">Annual Fund</a></li>
-                <li><a href="#">Our Partners</a></li>
-                <li><a href="#">Urban Garden Party</a></li>                
-              </ul>
-            </li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
-              <ul class="dropdown-menu">
-                <li><a href="#">About</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'List', 'Collections', array()); ?>">Collections</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
-                <li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Productions', array()); ?>">Browse Productions</a></li>
-              </ul>
-            </li>            
-          </ul>
-          <form class="navbar-form pull-right" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-			<div class="input-group">
-				<input type="search" class="form-control" placeholder="" name="search"/>
-				<span class="input-group-btn">
-					<button type="submit" class="btn btn-default"></button>
-				</span> 
-			</div>
-		</form>
-        </div>
-      </div>
-    </div>
- -->

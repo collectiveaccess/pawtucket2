@@ -54,7 +54,6 @@
  			}
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
- 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, array(), array('castTo' => 'array'));
  			
  			
  			$ps_view = $this->request->getParameter('view', pString);
@@ -69,6 +68,7 @@
 				$this->view->setVar('t_instance', $t_instance);
 			
 				$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
+				$this->view->setVar('view', $ps_view);
 			
 				//
 				// Load existing browse if key is specified
@@ -86,11 +86,11 @@
 					$o_browse->removeAllCriteria();
 				}
 				
+					
 				if ($this->request->getParameter('getFacet', pInteger)) {
 					$vs_facet = $this->request->getParameter('facet', pString);
 					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
 					$this->view->setVar('facet_name', $vs_facet);
-					$this->view->setVar('view', $ps_view);
 					$this->view->setVar('key', $o_browse->getBrowseID());
 					$this->render("Browse/{$vs_class}_facet_html.php");
 					return;
@@ -127,7 +127,8 @@
 			
 				$this->view->setVar('facets', $va_facets);
 			
-				$this->view->setVar('key', $o_browse->getBrowseID());
+				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
 			
 				//
 				// Current criteria
