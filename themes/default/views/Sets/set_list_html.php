@@ -50,7 +50,7 @@
 			$vn_i_set++;
 			$t_set->load($vn_set_id);
 			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
-			print caLightboxSetListItem($this->request, $t_set, $va_access_values);
+			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => true));
 			print "\n</div><!-- end col -->\n";
 			if($vn_i_set == $vn_items_per_row){
 				print "</div><!-- end row -->\n";
@@ -79,7 +79,7 @@
 			$vn_i_set++;
 			$t_set->load($vn_set_id);
 			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
-			print caLightboxSetListItem($this->request, $t_set, $va_access_values);
+			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => false));
 			print "</div><!-- end col -->\n";
 			if($vn_i_set == $vn_items_per_row){
 				print "</div><!-- end row -->\n";
