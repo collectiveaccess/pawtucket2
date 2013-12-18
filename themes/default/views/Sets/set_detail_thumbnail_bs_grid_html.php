@@ -24,22 +24,39 @@
 	</div><!-- end btn-group -->
 </H1>
 	<div class="row">
-		<div class="col-sm-10 col-md-10 col-lg-10">
-			<div class="row" id="sortable">
+		<div class='col-sm-10 col-md-10 col-lg-10'>
 <?php
 	if(sizeof($va_set_items)){
 		$vn_i_col = 0;
 		$vn_num_cols = 4;
 		foreach($va_set_items as $va_set_item){
-			print "<div class='col-sm-4 col-md-3 col-lg-3' id='row-".$va_set_item["row_id"]."'>";
+			if($vn_i_col == 0){
+				print "<div class='row'>";
+			}
+			$vn_i_col++;
+			
+			
+			print "<div class='col-sm-4 col-md-3 col-lg-3'>";
 			print caLightboxSetDetailItem($this->request, $va_set_item);
 			print "</div><!-- end col 3 -->";
+			if($vn_i_col == $vn_num_cols){
+				print "</div><!-- end row -->";
+				$vn_i_col = 0;
+			}
+		}
+		# --- complete cols in row if necessary
+		
+		if($vn_i_col && ($vn_i_col < $vn_num_cols)){
+			while($vn_i_col < $vn_num_cols){
+				print "<div class='col-sm-4 col-md-3 col-lg-3'></div>\n";
+				$vn_i_col++;
+			}
+			print "</div><!-- end row -->\n";
 		}
 	}else{
 		print "<div>No items in set</div>";
 	}
 ?>
-			</div><!-- end row -->
 		</div><!-- end col 10 -->
 		<div class="col-sm-2 col-md-2 col-lg-2">
 <?php
@@ -89,20 +106,3 @@
 ?>
 		</div><!-- end col-md-2 -->
 	</div><!-- end row -->
-	<script type='text/javascript'>
-		 $(function() {
-			$("#sortable").sortable({ 
-				cursor: "move",
-				opacity: 0.8,
-				update: function( event, ui ) {
-					var data = $(this).sortable('serialize');
-					// POST to server using $.post or $.ajax
-					$.ajax({
-						type: 'POST',
-						url: '<?php print caNavUrl($this->request, "", "Sets", "AjaxReorderItems"); ?>/row_ids/' + data
-					});
-				}
-			});
-			$("#sortable").disableSelection();
-		});
-	</script>

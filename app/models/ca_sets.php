@@ -1920,5 +1920,121 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			return false;
 		}
 	}
+	# ---------------------------------------------------------------
+	public function getSetChangeLog($va_set_ids){
+		if(is_array($va_set_ids) && sizeof($va_set_ids)){
+			$o_dm = $this->getAppDatamodel();
+			$o_db = $this->getDB();
+
+
+// 			$q_change_log_sets = $o_db->query("
+// 						SELECT DISTINCT
+// 							wcl.log_id, wcl.log_datetime, wcl.user_id, wcl.changetype, wcl.logged_table_num, wcl.logged_row_id,
+// 							wclsnap.snapshot, wcl.unit_id, wu.email, wu.fname, wu.lname
+// 						FROM ca_change_log wcl
+// 						INNER JOIN ca_change_log_snapshots AS wclsnap ON wclsnap.log_id = wcl.log_id
+// 						LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
+// 						LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
+// 						WHERE
+// 							(
+// 								(wcl.logged_table_num = ".((int)$o_dm->getTableNum("ca_set_items")).") AND (wcl.logged_row_id IN (".implode(", ", $va_set_ids)."))
+// 							)
+// 						ORDER BY wcl.log_datetime desc
+// 					");
+// 				$va_set_change_log = array();
+// 				if($q_change_log_sets->numRows()){
+// 					while($q_change_log_sets->nextRow()){
+// 						$va_tmp = array();
+// 						$va_tmp = $q_change_log_sets->getRow();
+// 						$va_tmp['snapshot'] = caUnserializeForDatabase($q_change_log_sets->get('snapshot'));
+// 						$va_set_change_log[$q_change_log_sets->get('log_datetime')] = $va_tmp;
+// 					}
+// 				}
+			
+			global $g_ui_locale_id;
+			$q_change_log = $o_db->query("
+						SELECT DISTINCT
+							wcl.log_id, wcl.log_datetime log_datetime, wcl.user_id, wcl.changetype, wcl.logged_table_num, wcl.logged_row_id,
+							wclsnap.snapshot, wcl.unit_id, wu.email, wu.fname, wu.lname, csl.name, wcl.logged_row_id set_id
+						FROM ca_change_log wcl
+						INNER JOIN ca_change_log_snapshots AS wclsnap ON wclsnap.log_id = wcl.log_id
+						LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
+						LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
+						INNER JOIN ca_set_labels AS csl ON csl.set_id = wcl.logged_row_id
+						WHERE
+							(
+								(wcl.logged_table_num = ".((int)$this->tableNum()).") AND (wcl.logged_row_id IN (".implode(", ", $va_set_ids)."))
+								AND (csl.locale_id = ?)
+							)
+						UNION
+						SELECT DISTINCT
+							wcl.log_id, wcl.log_datetime, wcl.user_id, wcl.changetype, wcl.logged_table_num, wcl.logged_row_id,
+							wclsnap.snapshot, wcl.unit_id, wu.email, wu.fname, wu.lname, csl.name, wcls.subject_row_id set_id
+						FROM ca_change_log wcl
+						INNER JOIN ca_change_log_snapshots AS wclsnap ON wclsnap.log_id = wcl.log_id
+						LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
+						LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
+						INNER JOIN ca_set_labels AS csl ON csl.set_id = wcls.subject_row_id
+						WHERE
+							 (
+								(wcls.subject_table_num = ".((int)$this->tableNum()).") AND (wcls.subject_row_id IN (".implode(", ", $va_set_ids).")) AND wcl.logged_table_num IN (".$o_dm->getTableNum("ca_set_items").", ".$o_dm->getTableNum("ca_sets_x_users").", ".$o_dm->getTableNum("ca_sets_x_user_groups").")
+								AND (csl.locale_id = ?)
+							)
+						ORDER BY log_datetime desc
+					", $g_ui_locale_id, $g_ui_locale_id);
+				$va_set_change_log = array();
+				if($q_change_log->numRows()){
+					while($q_change_log->nextRow()){
+						$va_tmp = array();
+						$va_tmp = $q_change_log->getRow();
+ 						$va_tmp['snapshot'] = caUnserializeForDatabase($q_change_log->get('snapshot'));
+ 						$va_set_change_log[$q_change_log->get('log_datetime')] = $va_tmp;
+					}
+				}
+				
+				# --- comments
+				# --- set comments
+				$q_set_comments = $o_db->query("
+								SELECT c.created_on log_datetime, c.comment, wu.email, wu.fname, wu.lname, c.table_num, c.row_id set_id, csl.name
+								FROM ca_item_comments c
+								LEFT JOIN ca_users AS wu ON c.user_id = wu.user_id
+								INNER JOIN ca_set_labels AS csl ON csl.set_id = c.row_id
+								WHERE c.table_num = ".((int)$this->tableNum())." AND c.row_id IN (".implode(", ", $va_set_ids).")
+								ORDER BY c.created_on desc
+							");
+				if($q_set_comments->numRows()){
+					while($q_set_comments->nextRow()){
+						$va_tmp = array();
+						$va_tmp = $q_set_comments->getRow();
+ 						$va_tmp["logged_table_num"] = $o_dm->getTableNum("ca_item_comments");
+ 						$va_set_change_log[$q_set_comments->get('log_datetime')] = $va_tmp;
+					}
+				}
+				
+				# --- item comments
+				$q_set_item_comments = $o_db->query("
+								SELECT c.created_on log_datetime, c.comment, wu.email, wu.fname, wu.lname, c.table_num, si.set_id set_id, csl.name
+								FROM ca_item_comments c
+								LEFT JOIN ca_users AS wu ON c.user_id = wu.user_id
+								INNER JOIN ca_set_items as si ON si.item_id = c.row_id
+								INNER JOIN ca_set_labels AS csl ON csl.set_id = si.set_id
+								WHERE c.table_num = ".($o_dm->getTableNum("ca_set_items"))." AND si.set_id IN (".implode(", ", $va_set_ids).")
+								ORDER BY c.created_on desc
+							");
+				if($q_set_item_comments->numRows()){
+					while($q_set_item_comments->nextRow()){
+						$va_tmp = array();
+						$va_tmp = $q_set_item_comments->getRow();
+ 						$va_tmp["logged_table_num"] = $o_dm->getTableNum("ca_item_comments");
+ 						$va_set_change_log[$q_set_item_comments->get('log_datetime')] = $va_tmp;
+					}
+				}
+				ksort($va_set_change_log);
+				return array_reverse($va_set_change_log);
+		}else{
+			return false;
+		}
+	}
+	# ---------------------------------------------------------------
 }
 ?>

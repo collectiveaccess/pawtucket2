@@ -195,6 +195,7 @@
 		if(!$t_set->get("set_id")){
 			return false;
 		}
+
 		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $o_request->user->get("user_id"), "thumbnailVersions" => array("preview", "icon"), "checkAccess" => $va_check_access, "limit" => 4)));
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set->get("set_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set->get("set_id")."\").hide();'><div class='lbItemContent'>\n";
@@ -214,11 +215,12 @@
 			}
 			$vs_set_display .= caNavLink($o_request, $vs_image_block, "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")));
 			$vs_set_display .= "<div id='comment".$t_set->get("set_id")."' class='lbSetComment'><!-- load comments here --></div>\n";
-			$vs_set_display .= "<div><small>".$t_set->get("ca_sets.preferred_labels.name")."</small></div>\n";
+			$vs_set_display .= "<div class='clearfix'><!-- empty --></div><div><small>".$t_set->getLabelForDisplay()."</small></div>\n";
 			$vs_set_display .= "</div><!-- end lbItemContent -->\n";
 			$vs_set_display .= "<div class='lbExpandedInfo' id='lbExpandedInfo".$t_set->get("set_id")."'>\n<hr><div><small>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</small></div>\n";
 			$vs_set_display .= "<div><small>Num items: ".$t_set->getItemCount(array("user_id" => $o_request->user->get("user_id"), "checkAccess" => $va_check_access))."</small></div>\n";
-			$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'tablename' => 'ca_sets'))."\", function(){jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getRatingsCount()."</small></a></div>\n";
+			$vs_set_display .= "<div class='pull-right'>".caNavLink($o_request, '<span class="glyphicon glyphicon-remove"></span>', '', '', 'Sets', 'DeleteSet', array('set_id' => $t_set->get("set_id")), array("title" => _t("Delete")))."</div>\n";
+			$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'tablename' => 'ca_sets'))."\", function(){jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a></div>\n";
 			$vs_set_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 		return $vs_set_display;
 	}
@@ -238,7 +240,7 @@
 		$vs_set_item_display .= "<div><small>".$va_set_item["set_item_label"]."</small></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
 		$vs_set_item_display .= "<div class='lbExpandedInfo' id='lbExpandedInfo".$t_set_item->get("item_id")."'>\n<hr>\n";
-		$vs_set_item_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set_item->get("item_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set_item->get("item_id"), 'tablename' => 'ca_set_items'))."\", function(){jQuery(\"#comment".$t_set_item->get("item_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getRatingsCount()."</small></a></div>\n";
+		$vs_set_item_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set_item->get("item_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set_item->get("item_id"), 'tablename' => 'ca_set_items'))."\", function(){jQuery(\"#comment".$t_set_item->get("item_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getNumComments()."</small></a></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 		return $vs_set_item_display;
 	}

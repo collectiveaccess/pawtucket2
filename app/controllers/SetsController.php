@@ -31,37 +31,292 @@
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  
  	class SetsController extends ActionController {
  		# -------------------------------------------------------
  		 protected $opa_access_values;
+ 		 protected $opa_user_groups;
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar("access_values", $this->opa_access_values);
+ 			$t_user_groups = new ca_user_groups();
+ 			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->user->get("user_id"));
+ 			$this->view->setVar("user_groups", $this->opa_user_groups);
  		}
  		# -------------------------------------------------------
  		function Index() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
  			$t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "checkAccess" => $this->opa_access_values, "access" => 1));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "access" => 2));
+ 			# --- remove write sets from the read array
+ 			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
  			$this->view->setVar("read_sets", $va_read_sets);
  			$this->view->setVar("write_sets", $va_write_sets);
+ 			$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
+ 			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
+ 			$this->view->setVar("activity", $va_set_change_log);
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
  		function setDetail() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->user->get("user_id"), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
 			$this->view->setVar("set", $t_set);
 			$this->view->setVar("set_items", $va_set_items);
+			$va_comments = $t_set->getComments();
+ 			$this->view->setVar("comments", $va_comments);
 			$this->render("Sets/set_detail_thumbnail_html.php");
  		}
  		# ------------------------------------------------------
+ 		function setForm() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			# --- if set exists, we're being redirected here after attempting a save
+ 			if (!$t_set){
+ 				# --- set_id is passed, so we're editing a set
+ 				if($this->request->getParameter('set_id', pInteger)){
+					$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
+					# --- pass name and description to populate form
+					$this->view->setVar("name", $t_set->getLabelForDisplay());
+					$this->view->setVar("description", $t_set->get("description"));
+				}else{
+					$t_set = new ca_sets();
+				}
+ 			}
+ 			$this->view->setVar("set", $t_set);
+ 			$this->render("Sets/form_set_info_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function saveSetInfo() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			$va_errors = array();
+ 			$o_purifier = new HTMLPurifier();
+ 			
+ 			# --- set_id is passed through form, otherwise we're saving a new set
+ 			if($this->request->getParameter('set_id', pInteger)){
+ 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
+ 			}else{
+ 				$t_set = new ca_sets();
+ 			}
+ 			# --- check for errors
+ 			# --- set name - required
+ 			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
+ 			if(!$ps_name){
+ 				$va_errors["name"] = _t("Please enter the name of your lightbox");
+ 			}else{
+ 				$this->view->setVar("name", $ps_name);
+ 			}
+ 			# --- set description - optional
+ 			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+ 			$this->view->setVar("description", $ps_description);
+
+ 			$t_list = new ca_lists();
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', 'user');
+ 			$t_object = new ca_objects();
+ 			$vn_object_table_num = $t_object->tableNum();
+ 			if(sizeof($va_errors) == 0){
+				$t_set->setMode(ACCESS_WRITE);
+				$t_set->set('access', $this->request->getParameter('access', pInteger));
+				if($t_set->get("set_id")){
+					# --- edit/add description
+					$t_set->replaceAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+					$t_set->update();
+				}else{
+					$t_set->set('table_num', $vn_object_table_num);
+					$t_set->set('type_id', $vn_set_type_user);
+					$t_set->set('user_id', $this->request->getUserID());
+					$t_set->set('set_code', $this->request->getUserID().'_'.time());
+					# --- create new attribute
+					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+					$t_set->insert();
+				}
+				if($t_set->numErrors()) {
+					$va_errors["general"] = join("; ", $t_set->getErrors());
+					$this->view->setVar('errors', $va_errors);
+					$this->setForm();
+				}else{
+					# --- save name
+					if (sizeof($va_labels = caExtractValuesByUserLocale($t_set->getLabels(array($g_ui_locale_id), __CA_LABEL_TYPE_PREFERRED__)))) {
+						# --- edit label	
+						foreach($va_labels as $vn_set_id => $va_label) {
+							$t_set->editLabel($va_label[0]['label_id'], array('name' => $ps_name), $g_ui_locale_id);
+						}
+					} else {
+						# --- add new label
+						$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
+					}
+					
+					# --- select the current set
+					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
+					
+					$this->view->setVar("message", _t('Saved lightbox.'));
+ 					$this->render("Form/reload_html.php");
+				}
+			}else{
+				$this->view->setVar('errors', $va_errors);
+				$this->setForm();
+			} 			
+ 		}
+ 		# ------------------------------------------------------
+ 		function shareSetForm() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			$this->render("Sets/form_share_set_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function saveShareSet() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
+ 			$o_purifier = new HTMLPurifier();$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
+ 			$pn_group_id = $this->request->getParameter('group_id', pInteger);
+ 			if(!$pn_group_id && !$ps_user){
+ 				$va_errors["general"] = _t("Please select a user or group");
+ 			}
+ 			$pn_access = $this->request->getParameter('access', pInteger);
+ 			if(!$pn_access){
+ 				$va_errors["access"] = _t("Please select an access level");
+ 			}
+ 			if(sizeof($va_errors) == 0){
+				if($pn_group_id){
+					$t_sets_x_user_groups = new ca_sets_x_user_groups();
+					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
+						$this->view->setVar("message", _t('Group already has access to the set'));
+						$this->render("Form/reload_html.php");
+					}else{
+						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
+						$t_sets_x_user_groups->set('access',  $pn_access);
+						$t_sets_x_user_groups->set('group_id',  $pn_group_id);
+						$t_sets_x_user_groups->set('set_id',  $t_set->get("set_id"));
+						$t_sets_x_user_groups->insert();
+						if($t_sets_x_user_groups->numErrors()) {
+							$va_errors["general"] = join("; ", $t_sets_x_user_groups->getErrors());
+							$this->view->setVar('errors', $va_errors);
+							$this->shareSetForm();
+						}else{
+							$this->view->setVar("message", _t('Shared set'));
+							$this->render("Form/reload_html.php");
+						}
+					}
+				}else{
+					# --- lookup the user
+					$t_user = new ca_users(array("email" => $ps_user));
+					if($vn_user_id = $t_user->get("user_id")){
+						$t_sets_x_users = new ca_sets_x_users();
+						if($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id))){
+							$this->view->setVar("message", _t('User already has access to the set'));
+							$this->render("Form/reload_html.php");
+						}else{
+							$t_sets_x_users->setMode(ACCESS_WRITE);
+							$t_sets_x_users->set('access',  $pn_access);
+							$t_sets_x_users->set('user_id',  $vn_user_id);
+							$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
+							$t_sets_x_users->insert();
+							if($t_sets_x_users->numErrors()) {
+								$va_errors["general"] = join("; ", $t_sets_x_users->getErrors());
+								$this->view->setVar('errors', $va_errors);
+								$this->shareSetForm();
+							}else{
+								$this->view->setVar("message", _t('Shared set'));
+								$this->render("Form/reload_html.php");
+							}
+						}
+					}else{
+						$va_errors["user"] = _t("The email address you entered does not belong to a registered user");
+						$this->view->setVar('errors', $va_errors);
+						$this->shareSetForm();
+					}
+				}
+			}else{
+				$this->view->setVar('errors', $va_errors);
+				$this->shareSetForm();
+			} 		
+ 		}
+ 		# ------------------------------------------------------
+ 		function userGroupList() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			$this->render("Sets/user_group_list_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function userGroupForm() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			if(!$t_user_group){
+ 				$t_user_group = new ca_user_groups();
+ 			}
+ 			$this->view->setVar("user_group",$t_user_group);
+ 			$this->render("Sets/form_user_group_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function saveUserGroup() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			$va_errors = array();
+ 			$o_purifier = new HTMLPurifier();
+ 			
+ 			$t_user_group = new ca_user_groups();
+ 			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
+ 				$t_user_group->load($pn_group_id);
+ 			}
+ 			
+ 			# --- check for errors
+ 			# --- group name - required
+ 			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
+ 			if(!$ps_name){
+ 				$va_errors["name"] = _t("Please enter the name of your user group");
+ 			}else{
+ 				$this->view->setVar("name", $ps_name);
+ 			}
+ 			# --- user group description - optional
+ 			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+ 			$this->view->setVar("description", $ps_description);
+
+ 			if(sizeof($va_errors) == 0){
+				$t_user_group->setMode(ACCESS_WRITE);
+				$t_user_group->set('name',  $ps_name);
+				$t_user_group->set('description',  $ps_description);
+				if($t_user_group->get("group_id")){
+					$t_user_group->update();
+				}else{
+					$t_user_group->set('user_id', $this->request->getUserID());
+					$t_user_group->set('code', 'lb_'.$this->request->getUserID().'_'.time());
+					$t_user_group->insert();
+					if($t_user_group->get("group_id")){
+						$t_user_group->addUsers($this->request->user->get("user_id"));
+					}
+				}
+				if($t_user_group->numErrors()) {
+					$va_errors["general"] = join("; ", $t_user_group->getErrors());
+					$this->view->setVar('errors', $va_errors);
+					$this->userGroupForm();
+				}else{
+					# --- add current user to group
+					$this->view->setVar("message", _t('Saved user group.'));
+ 					$this->render("Form/reload_html.php");
+				}
+			}else{
+				$this->view->setVar('errors', $va_errors);
+				$this->userGroupForm();
+			} 			
+ 		}
+ 		# ------------------------------------------------------
  		function AjaxListComments() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$ps_tablename = $this->request->getParameter('tablename', pString);
@@ -80,6 +335,8 @@
  		}
  		# ------------------------------------------------------
  		function AjaxSaveComment() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
  			# --- when close is set to true, will make the form view disappear after saving form
  			$vb_close = false;
  			$o_datamodel = new Datamodel();
@@ -97,7 +354,8 @@
  				$this->AjaxListComments();
  				return;
  			}else{
- 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, null, array("purify" => true))){
+ 				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
+ 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, $this->request->user->get("user_id"), array("purify" => true))){
  					$vs_message = _t("Saved comment");
  					$vb_close = true;
  				}else{
@@ -114,6 +372,72 @@
 			$this->render("Sets/ajax_comments.php");
  		}
  		# ------------------------------------------------------
+ 		function saveComment() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			$o_datamodel = new Datamodel();
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			# --- check this is a valid table to have comments in the lightbox
+ 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index(); }
+ 			# --- load table
+ 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$t_item->load($pn_item_id);
+ 			$ps_comment = $this->request->getParameter('comment', pString);
+ 			if(!$ps_comment){
+ 					$this->notification->addNotification(_t("Please enter a comment"), __NOTIFICATION_TYPE_ERROR__);
+ 			}else{
+ 				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
+ 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, $this->request->user->get("user_id"), array("purify" => true))){
+ 					$this->notification->addNotification(_t("Saved comment"), __NOTIFICATION_TYPE_INFO__);
+ 				}else{
+ 					$this->notification->addNotification(_t("There were errors saving your comment"), __NOTIFICATION_TYPE_ERROR__);
+ 				}
+ 			}
+ 			if($ps_tablename == "ca_sets"){
+ 				$this->setDetail();
+ 			}
+ 		}
+ 		# -------------------------------------------------------
+ 		public function DeleteSet() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
+ 				$vs_set_name = $t_set->getLabelForDisplay();
+ 				$t_set->setMode(ACCESS_WRITE);
+ 				$t_set->delete();
+ 				
+ 				if($t_set->numErrors()) {
+ 					$this->notification->addNotification(_t("<em>%1</em> could not be deleted: %2", $vs_set_name, join("; ", $t_set->getErrors())), __NOTIFICATION_TYPE_ERROR__);
+ 				} else {
+ 					$this->notification->addNotification(_t("<em>%1</em> was deleted", $vs_set_name), __NOTIFICATION_TYPE_INFO__);
+ 				}
+ 			}
+ 			$this->Index();
+ 		}
+ 		# ------------------------------------------------------
+ 		public function AjaxReorderItems() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+				
+				$this->view->setVar("set_id", $t_set->get("set_id"));
+				
+				$va_row_ids = array();
+				$va_row_ids_raw = explode('&', $this->request->getParameter('row_ids', pString));
+				foreach($va_row_ids_raw as $vn_row_id_raw){
+					$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
+				}
+				$va_errors = $t_set->reorderItems($va_row_ids);
+			}else{
+				$va_errors[] = _t("set is not defined");
+			}
+			$this->view->setVar('errors', $va_errors);
+			$this->render('Sets/ajax_reorder_items_json.php');
+ 		}
+ 		# -------------------------------------------------------
+ 		
+ 		
  		/** 
  		 * Return set_id from request with fallback to user var, or if nothing there then get the users' first set
  		 */
