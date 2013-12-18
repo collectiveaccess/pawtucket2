@@ -4,7 +4,7 @@
 ?>
 <div id='pageArea' class='artwork'>
 	<div id='pageTitle'>
-		<?php print "Installation"; ?>
+		<?php print "Collection"; ?>
 	</div>
 	<div id='contentArea'>
 		<div id='detailHeader'>
@@ -68,13 +68,7 @@
 			print "<div class='description'><div class='title'>"._t('Description')."</div>".$vs_collection."</div>";
 		}
 ?>	
-			<div class='floorplan'>
-<?php
-				print "<div class='title'>"._t('Install Location')."</div>";
-				print "<div class='floor'>Fourth Floor</div>";
-				print "<div class='plan'><img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/floorplan.png' border='0'></div>";
-?>		
-			</div>
+			
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 	<div id='relatedInfo'>

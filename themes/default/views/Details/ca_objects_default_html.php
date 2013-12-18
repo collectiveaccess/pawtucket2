@@ -85,7 +85,7 @@
 	# Related Artworks Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle'>"._t('Related Installations')."</div>";
+		print "<div class='blockTitle'>"._t('Related collections')."</div>";
 			print "<div class='blockResults'>";
 				print "<div style='width:100000px'>";
 				$vn_i = 0;

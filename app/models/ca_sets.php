@@ -1227,7 +1227,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * Returns information on items in current set
 	 *
 	 * @param array $pa_options Optional array of options. Supported options are:
-	 *			user_id = user_id of the current user; used to determine paintings may be shown
+	 *			user_id = user_id of the current user; used to determine what may be shown
 	 *			thumbnailVersions = A list of of a media versions to return with each item. Only used if the set content type is ca_objects.
 	 *			thumbnailVersion = Same as 'thumbnailVersions' except it is a single value. (Maintained for compatibility with older code.)
 	 *			limit = Limits the total number of records to be returned
