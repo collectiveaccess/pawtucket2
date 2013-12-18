@@ -1397,12 +1397,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		$va_row_insert_sql = array();
 		
 		$pn_subject_tablenum = (int)$pn_subject_tablenum;
-		$vn_row_id = (int)$vn_row_id;
 		$pn_content_tablenum = (int)$pn_content_tablenum;
 		$pn_content_row_id = (int)$pn_content_row_id;
 		$vn_boost = (int)$vn_boost;
 		$vn_access = (int)$vn_access;
-		
 		
 		foreach($pa_subject_row_ids as $vn_row_id) {
 			$vn_seq = 0;

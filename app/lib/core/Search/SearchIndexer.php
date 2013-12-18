@@ -1185,7 +1185,19 @@ if (!$vb_can_do_incremental_indexing || $pb_reindex_mode) {
 									
 									if (!$vn_fld_num) { continue; }
 									
+									// Is there an alternate key?
+									if (is_array($va_table_info['keys'])) {
+										foreach($va_table_info['keys'] as $vs_code => $va_key_info) {
+											if (is_array($va_key_info[$vs_dep_table]) && is_array($va_key_info[$vs_dep_table][$vs_subject_tablename])) {
+												$vs_dep_pk = $va_key_info[$vs_dep_table][$vs_subject_tablename]['right_key'];
+											} elseif (is_array($va_key_info[$vs_subject_tablename]) && is_array($va_key_info[$vs_subject_tablename][$vs_dep_table])) {
+												$vs_dep_pk = $va_key_info[$vs_subject_tablename][$vs_dep_table]['left_key'];
+											}
+										}
+									}
+									
 									$vn_fld_row_id = $qr_rel_rows->get($vn_rel_pk);
+									
 									$vn_row_id = $qr_rel_rows->get($vs_dep_pk);
 									$vs_key = $vn_dep_tablenum.'/'.$vn_row_id.'/'.$vn_rel_tablenum.'/'.$vn_fld_row_id;
 									

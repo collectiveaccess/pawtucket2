@@ -1,13 +1,18 @@
 <?php
 	$va_errors = $this->getVar("errors");
+	if($this->request->isAjax()){
 ?>
-<div id="caFormOverlay"><div class="close" onclick="caMediaPanel.hidePanel(); return false;">&nbsp;</div>
+<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+<?php
+	}
+?>
+<H2><?php print _t("Register"); ?></H2>
 <?php
 	if($va_errors["register"]){
 		print "<div>".$va_errors["register"]."</div>";
 	}
 ?>
-	<form id="RegForm" action="#">
+	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>">
 <?php
 		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
@@ -50,7 +55,9 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>
 </div>
-
+<?php
+	if($this->request->isAjax()){
+?>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').submit(function(e){		
@@ -63,3 +70,6 @@
 		});
 	});
 </script>
+<?php
+	}
+?>

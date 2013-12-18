@@ -29,6 +29,7 @@
 	require_once(__CA_LIB_DIR__."/core/Error.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_users.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
  
  	class LoginRegController extends ActionController {
  		# -------------------------------------------------------
@@ -39,7 +40,7 @@
  		}
  		# -------------------------------------------------------
  		function loginForm() {
- 			$this->render("LoginReg/form_login_html.php");
+			$this->render("LoginReg/form_login_html.php");
  		}
  		# ------------------------------------------------------
  		function registerForm($t_user = "") {
@@ -72,8 +73,36 @@
  				$this->view->setVar("message", _t("Login failed"));
  				$this->loginForm();
 			} else {
- 				$this->view->setVar("message", _t("You are now logged in"));
- 				$this->render("Form/reload_html.php");
+ 				# --- user is joining a user group from a supplied link
+ 				if($this->request->session->getVar("join_user_group_id")){
+ 					print $this->request->user->get("user_id");
+ 					if(!$this->request->user->inGroup($this->request->session->getVar("join_user_group_id"))){
+ 						$this->request->user->addToGroups($this->request->session->getVar("join_user_group_id"));
+ 						$this->request->session->setVar("join_user_group_id", "");
+ 						$vs_group_message = _t(" and added to the group");
+ 					}else{
+ 						$this->request->session->setVar("join_user_group_id", "");
+ 						$vs_group_message = _t(" you are already a member of the group");
+ 					}
+ 				}
+ 				if($this->request->isAjax()){
+ 					$this->view->setVar("message", _t("You are now logged in"));
+ 					$this->render("Form/reload_html.php");
+ 				}else{
+ 					$vs_action = $vs_controller = $vs_module_path = '';
+					if ($vs_default_action = $this->request->config->get('default_action')) {
+						$va_tmp = explode('/', $vs_default_action);
+						$vs_action = array_pop($va_tmp);
+						if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
+						if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+					} else {
+						$vs_controller = 'Splash';
+						$vs_action = 'Index';
+					}
+					$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+					$this->notification->addNotification(_t("You have been logged in").$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+ 					$this->response->setRedirect($vs_url);
+ 				}
  			}
  		}
  		# -------------------------------------------------------
@@ -237,7 +266,17 @@
 					if (($va_default_roles = $this->request->config->getList('registration_default_roles')) && sizeof($va_default_roles)) {
 						$t_user->addRoles($va_default_roles);
 					}
-					
+					# --- user is joining a user group from a supplied link
+					if($this->request->session->getVar("join_user_group_id")){
+						if(!$t_user->inGroup($this->request->session->getVar("join_user_group_id"))){
+							$t_user->addToGroups($this->request->session->getVar("join_user_group_id"));
+							$this->request->session->setVar("join_user_group_id", "");
+							$vs_group_message = _t(" You were added to the group");
+						}else{
+							$this->request->session->setVar("join_user_group_id", "");
+							$vs_group_message = _t(" You are already a member of the group");
+						}
+					}
 					
 					# --- send email confirmation
 					# -- generate email subject line from template
@@ -264,8 +303,24 @@
 					$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
 			
 					if($this->request->isLoggedIn()){
-						$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.'));
- 						$this->render("Form/reload_html.php");
+						if($this->request->isAjax()){
+							$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
+ 							$this->render("Form/reload_html.php");
+						}else{
+							$vs_action = $vs_controller = $vs_module_path = '';
+							if ($vs_default_action = $this->request->config->get('default_action')) {
+								$va_tmp = explode('/', $vs_default_action);
+								$vs_action = array_pop($va_tmp);
+								if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
+								if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+							} else {
+								$vs_controller = 'Splash';
+								$vs_action = 'Index';
+							}
+							$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+							$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+							$this->response->setRedirect($vs_url);
+						}
 					}else{
 						$va_errors["register"] = _t("Login failed.");
 					}
@@ -277,6 +332,32 @@
 			$this->registerForm($t_user);
  		}
  		# -------------------------------------------------------
+ 		function joinGroup() {
+			$t_user_group = new ca_user_groups();
+			$pn_group_id = $this->request->getParameter("group_id", pInteger);
+			if($pn_group_id){
+				if($this->request->isLoggedIn()){
+					if(!$this->request->user->inGroup($pn_group_id)){
+						$this->request->user->addToGroups($pn_group_id);
+						$this->request->session->setVar("join_user_group_id", "");
+						$vs_group_message = _t("You were added to the group");
+					}else{
+						$this->request->session->setVar("join_user_group_id", "");
+						$vs_group_message = _t("You are already a member of the group");
+					}
+					$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
+					$this->response->setRedirect(caNavUrl($this->request, "", "Sets", "Index"));
+				}else{
+					$t_user_group->load($pn_group_id);
+					$this->request->session->setVar("join_user_group_id", $pn_group_id);
+					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
+					$this->loginForm();
+				}
+			}else{	
+				$this->view->setVar("message", _t("Invalid user group"));
+			}
+ 		}
+ 		# ------------------------------------------------------
 
  	}
  ?>

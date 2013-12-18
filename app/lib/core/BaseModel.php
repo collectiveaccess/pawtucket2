@@ -9305,6 +9305,32 @@ $pa_options["display_form_field_tips"] = true;
 	}
 	# --------------------------------------------------------------------------------------------
 	/** 
+	 * Returns number of user comments for item
+	 */ 
+	public function getNumComments($pb_moderation_status=true) {
+		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
+	
+		$vs_moderation_sql = '';
+		if (!is_null($pb_moderation_status)) {
+			$vs_moderation_sql = ($pb_moderation_status) ? ' AND (ca_item_comments.moderated_on IS NOT NULL)' : ' AND (ca_item_comments.moderated_on IS NULL)';
+		}
+		
+		$o_db = $this->getDb();
+		$qr_comments = $o_db->query("
+			SELECT count(*) c
+			FROM ca_item_comments
+			WHERE
+				(comment != '') AND (table_num = ?) AND (row_id = ?) {$vs_moderation_sql}
+		", $this->tableNum(), $vn_row_id);
+		
+		if ($qr_comments->nextRow()) {
+			return round($qr_comments->get('c'));
+		} else {
+			return null;
+		}
+	}
+	# --------------------------------------------------------------------------------------------
+	/** 
 	 * Returns number of user ratings for item
 	 */ 
 	public function getNumRatings($pb_moderation_status=true) {
