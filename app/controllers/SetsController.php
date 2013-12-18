@@ -40,26 +40,22 @@
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
  		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar("access_values", $this->opa_access_values);
  			$t_user_groups = new ca_user_groups();
- 			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->user->get("user_id"));
+ 			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
  		}
  		# -------------------------------------------------------
  		function Index() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
  			
-
  			$t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "checkAccess" => $this->opa_access_values, "access" => 1));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "access" => 2));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
  			# --- remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
  			$this->view->setVar("read_sets", $va_read_sets);
@@ -74,7 +70,7 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
  			
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->user->get("user_id"), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
+ 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
 			$this->view->setVar("set", $t_set);
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();
@@ -127,7 +123,7 @@
  			$this->view->setVar("description", $ps_description);
 
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', 'user');
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
  			$t_object = new ca_objects();
  			$vn_object_table_num = $t_object->tableNum();
  			if(sizeof($va_errors) == 0){
@@ -197,7 +193,7 @@
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
-						$this->view->setVar("message", _t('Group already has access to the set'));
+						$this->view->setVar("message", _t('Group already has access to the lightbox'));
 						$this->render("Form/reload_html.php");
 					}else{
 						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
@@ -210,7 +206,7 @@
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
-							$this->view->setVar("message", _t('Shared set'));
+							$this->view->setVar("message", _t('Shared lightbox'));
 							$this->render("Form/reload_html.php");
 						}
 					}
@@ -220,7 +216,7 @@
 					if($vn_user_id = $t_user->get("user_id")){
 						$t_sets_x_users = new ca_sets_x_users();
 						if($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id))){
-							$this->view->setVar("message", _t('User already has access to the set'));
+							$this->view->setVar("message", _t('User already has access to the lightbox'));
 							$this->render("Form/reload_html.php");
 						}else{
 							$t_sets_x_users->setMode(ACCESS_WRITE);
@@ -233,7 +229,7 @@
 								$this->view->setVar('errors', $va_errors);
 								$this->shareSetForm();
 							}else{
-								$this->view->setVar("message", _t('Shared set'));
+								$this->view->setVar("message", _t('Shared lightbox'));
 								$this->render("Form/reload_html.php");
 							}
 						}
@@ -300,7 +296,7 @@
 					$t_user_group->set('code', 'lb_'.$this->request->getUserID().'_'.time());
 					$t_user_group->insert();
 					if($t_user_group->get("group_id")){
-						$t_user_group->addUsers($this->request->user->get("user_id"));
+						$t_user_group->addUsers($this->request->getUserID());
 					}
 				}
 				if($t_user_group->numErrors()) {
@@ -359,7 +355,7 @@
  				return;
  			}else{
  				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
- 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, $this->request->user->get("user_id"), array("purify" => true))){
+ 				if($t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
  					$vs_message = _t("Saved comment");
  					$vb_close = true;
  				}else{
@@ -393,7 +389,7 @@
  					$this->notification->addNotification(_t("Please enter a comment"), __NOTIFICATION_TYPE_ERROR__);
  			}else{
  				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
- 				if($t_item->addComment($ps_comment, null, $this->request->user->get("user_id"), null, null, null, 1, $this->request->user->get("user_id"), array("purify" => true))){
+ 				if($t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
  					$this->notification->addNotification(_t("Saved comment"), __NOTIFICATION_TYPE_INFO__);
  				}else{
  					$this->notification->addNotification(_t("There were errors saving your comment"), __NOTIFICATION_TYPE_ERROR__);
@@ -434,13 +430,134 @@
 				}
 				$va_errors = $t_set->reorderItems($va_row_ids);
 			}else{
-				$va_errors[] = _t("set is not defined");
+				$va_errors[] = _t("lightbox is not defined or you don't have access to the lightbox");
 			}
 			$this->view->setVar('errors', $va_errors);
 			$this->render('Sets/ajax_reorder_items_json.php');
  		}
  		# -------------------------------------------------------
-  		/** 
+ 		public function AjaxDeleteItem() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+				
+				$pn_item_id = $this->request->getParameter('item_id', pInteger);
+				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
+					$va_errors = array();
+				} else {
+					$va_errors[] = _t('Could not remove item from lightbox');
+				}
+				$this->view->setVar('set_id', $pn_set_id);
+				$this->view->setVar('item_id', $pn_item_id);
+			} else {
+				$va_errors['general'] = _t('You do not have access to the lightbox');	
+			}
+ 			
+ 			$this->view->setVar('errors', $va_errors);
+ 			$this->render('Sets/ajax_delete_item_json.php');
+ 		}
+ 		# -------------------------------------------------------
+ 		public function AjaxAddItem() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			$va_errors = array();
+ 			$o_purifier = new HTMLPurifier();
+ 			
+ 			# --- set_id is passed through form, otherwise we're saving a new set, and adding the item to it
+ 			if($this->request->getParameter('set_id', pInteger)){
+ 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
+ 				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
+ 					$va_errors["general"] = _t("You can not add items to this lightbox.  You have read only access.");
+ 					$this->view->setVar('errors', $va_errors);
+ 					$this->addItemForm();
+ 					return;
+ 				}
+ 			}else{
+ 				$t_set = new ca_sets();
+				# --- set name - if not sent, make a decent default
+				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
+				if(!$ps_name){
+					$ps_name = _t("Your lightbox");
+				}
+				# --- set description - optional
+				$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+	
+				$t_list = new ca_lists();
+				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				$t_object = new ca_objects();
+				$vn_object_table_num = $t_object->tableNum();
+				$t_set->setMode(ACCESS_WRITE);
+				$t_set->set('access', $this->request->getParameter('access', pInteger));
+				$t_set->set('table_num', $vn_object_table_num);
+				$t_set->set('type_id', $vn_set_type_user);
+				$t_set->set('user_id', $this->request->getUserID());
+				$t_set->set('set_code', $this->request->getUserID().'_'.time());
+				# --- create new attribute
+				if($ps_description){
+					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+				}
+				$t_set->insert();
+				if($t_set->numErrors()) {
+					$va_errors["general"] = join("; ", $t_set->getErrors());
+					$this->view->setVar('errors', $va_errors);
+					$this->addItemForm();
+					return;
+				}else{
+					# --- save name - add new label
+					$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
+					# --- select the current set
+					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
+
+				}			
+			}
+			if($t_set){
+				$pn_item_id = null;
+				$pn_object_id = $this->request->getParameter('object_id', pInteger);
+				if($pn_object_id){
+					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
+						if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
+							//
+							// Select primary representation
+							//
+							$t_object = new ca_objects($pn_object_id);
+							$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
+							
+							$t_item = new ca_set_items($pn_item_id);
+							$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
+							$t_item->update();
+							
+							$va_errors = array();
+							$this->view->setVar('message', _t("Successfully added item."));
+							$this->render("Form/reload_html.php");
+						} else {
+							$va_errors["message"] = _t('Could not add item to lightbox');
+							$this->render("Form/reload_html.php");
+						}
+					}else{
+						$this->view->setVar('message', _t("Item already in lightbox."));
+						$this->render("Form/reload_html.php");
+					}				
+				}else{
+					$this->view->setVar('message', _t("Object ID is not defined"));
+					$this->render("Form/reload_html.php");
+				}
+			}
+ 		}
+ 		# -------------------------------------------------------
+ 		public function addItemForm(){
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			$this->view->setvar("set", new ca_Sets());
+ 			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
+ 			if($this->request->getParameter('object_id', pInteger)){
+ 				$this->render("Sets/form_add_set_item_html.php");
+ 			}else{
+ 				$this->view->setVar('message', _t("Object ID is not defined"));
+				$this->render("Form/reload_html.php");
+ 			}
+ 		}
+ 		# -------------------------------------------------------
+ 		
+ 		/** 
  		 * Return set_id from request with fallback to user var, or if nothing there then get the users' first set
  		 */
  		private function _getSetID() {
@@ -465,6 +582,12 @@
 				
 				if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $vs_access_level))) {
 					$this->request->user->setVar('current_set_id', $vn_set_id);
+					# --- pass the access level the user has to the set - needed to display the proper controls in views
+					$vb_write_access = false;
+					if($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
+						$vb_write_access = true;
+					}
+					$this->view->setVar("write_access", $vb_write_access);
 					return $t_set;
 				}
 			}
