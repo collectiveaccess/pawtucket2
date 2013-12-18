@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -196,6 +196,34 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			return $va_browse_types[$ps_browse_type];
 		}
 		return null;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return  
+	 */
+	function caGetFacetForMenuBar($po_request) {
+		$vs_key = $po_request->session->getVar('objects_last_browse_id');
+		
+		if (!($va_browse_info = caGetInfoForBrowseType('objects'))) {
+			// invalid browse type – throw error
+			return null;
+		}
+		$o_browse = caGetBrowseInstance('ca_objects');
+		if ($vs_key) { $o_browse->reload($vs_key); }
+		$o_browse->execute();
+	
+		//$vs_class = $va_browse_info['table'];
+		//$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+		$va_facets = $o_browse->getInfoForAvailableFacets();
+		
+		$vs_buf = '';
+		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			$vs_buf .= "<td class='browseNavCell'><a href='#' onclick='jQuery(\"#browseNavFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key))."\"); jQuery(\".browseNavFacetNameSelected\").removeClass(\"browseNavFacetNameSelected\"); jQuery(this).addClass(\"browseNavFacetNameSelected\"); return false;'>{$va_facet_info['label_plural']}</a></td>";
+		}
+		
+		return $vs_buf;
 	}
 	# ---------------------------------------
 ?>

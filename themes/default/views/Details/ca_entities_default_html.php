@@ -4,7 +4,7 @@
 ?>
 <div id='pageArea' class='entities'>
 	<div id='pageTitle'>
-		<?php print "Artists"; ?>
+		<?php print "People"; ?>
 	</div>
 	<div id='contentArea'>
 		<div id='detailHeader'>

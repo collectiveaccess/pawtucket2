@@ -6,7 +6,7 @@
 				<li><i class="fa fa-youtube-play"></i></li>
 			</ul>
 			<div>
-				Whirl-i-gig 320 Dean Street 2nd floor Brooklyn, NY 11217
+				Whirl-i-Gig, 320 Dean Street 2nd floor, Brooklyn, NY 11217 USA
 			</div>
 			<ul class="list-inline">
 				<li><a href="#">Link 1</a></li>

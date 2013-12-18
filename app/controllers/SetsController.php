@@ -40,6 +40,9 @@
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
@@ -53,6 +56,7 @@
  		function Index() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
  			
+
  			$t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "checkAccess" => $this->opa_access_values, "access" => 1));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->user->get("user_id"), "access" => 2));
@@ -436,9 +440,7 @@
 			$this->render('Sets/ajax_reorder_items_json.php');
  		}
  		# -------------------------------------------------------
- 		
- 		
- 		/** 
+  		/** 
  		 * Return set_id from request with fallback to user var, or if nothing there then get the users' first set
  		 */
  		private function _getSetID() {

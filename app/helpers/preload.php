@@ -55,6 +55,7 @@
 	require(__CA_LIB_DIR__."/core/Controller/ActionController.php");
 	
 	require(__CA_MODELS_DIR__."/ca_acl.php");
+	require(__CA_APP_DIR__."/helpers/browseHelpers.php");
 	
 	// initialize Tooltip manager
 	TooltipManager::init();

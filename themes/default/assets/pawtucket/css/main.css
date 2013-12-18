@@ -530,16 +530,15 @@ hr {
 	line-height:24px;
 }
 
-/*
+
 #contentArea {
-	padding-top:25px;
-	width:785px;
+	width: 830px;
 	float:right;
 }
-*/
+
 
 #timelineContentArea {
-	width:785px;
+	width: 830px;
 	float:right;
 }
 
@@ -886,9 +885,13 @@ h2 span.artist {
 	height:150px;
 	overflow:hidden;
 	background-color:#eee;
-	min-width:150px;
+	min-width:120px;
 	margin-bottom:5px;
 }
+.browseResult.artist .artistName div{
+	max-width: 500px;
+}
+
 .browseResult.artist .artistName a{
 	text-transform:uppercase;
 	color:#999;
@@ -1096,4 +1099,25 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 #caBrowsePanelContentArea {
 	width: 100%; 
 	height: 100%;
+}
+
+.browseNavCell {
+	white-space: nowrap;
+}
+
+
+.nav .dropdown .dropdown-menu {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.browseNavFacetName {
+	text-decoration: none;
+}
+
+.browseNavFacetNameSelected {
+	text-decoration: none;
+	font-weight: bold;
+	font-style: italic;
+	color: #000;
 }
