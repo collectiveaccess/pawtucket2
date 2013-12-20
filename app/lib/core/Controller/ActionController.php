@@ -113,10 +113,15 @@ class ActionController extends BaseObject {
 		return $this->opo_view->viewExists($ps_path);
 	}
 	# -------------------------------------------------------
-	public function &render($ps_view, $pb_dont_add_content_to_response=false) {
+	public function getTagListForView($ps_path) {
+		if (!$this->opo_view) { $this->initView(); }
+		return $this->opo_view->getTagList($ps_path);
+	}
+	# -------------------------------------------------------
+	public function &render($ps_view, $pb_dont_add_content_to_response=false, $pb_dont_replace_tags=false) {
 		if (!$this->opo_view) { $this->initView(); }
 		
-		$vs_content = $this->opo_view->render($ps_view);
+		$vs_content = $this->opo_view->render($ps_view, $pb_dont_replace_tags);
 		
 		if ($this->opo_view->numErrors() > 0) {
 			$this->errors = $this->opo_view->errors;

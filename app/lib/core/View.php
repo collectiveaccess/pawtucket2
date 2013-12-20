@@ -136,21 +136,83 @@ class View extends BaseObject {
 		return false;
 	}
 	# -------------------------------------------------------
-	public function render($ps_filename) {
-		ob_start();
+	/**
+	 *
+	 */
+	public function isCompiled($ps_filepath) {
+		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
+		if (!file_exists($vs_compiled_path)) { return false; }
+		
+		// Check if template change date is newer than compiled
+		$va_view_stat = @stat($ps_filepath);
+		$va_compiled_stat = @stat($vs_compiled_path);
+		if ($va_view_stat['mtime'] > $va_compiled_stat['mtime']) { return false; }
+		
+		return $vs_compiled_path;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function compile($ps_filepath) {
+		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
+			return json_decode(file_get_contents($vs_compiled_path));
+		}
+		$vs_buf = $this->_render($ps_filepath);
+		
+		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
+		preg_match_all("!\{\{\{([^\}]+)\}\}\}!", $vs_buf, $va_matches);
+		
+		$va_tags = $va_matches[1];
+		if (!is_array($va_tags)) { $va_tags = array(); }
+		file_put_contents($vs_compiled_path, json_encode($va_tags));
+		return $va_tags;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getTagList($ps_filename) {
 		$vb_output = false;
-		// handling the current locale, for example fr_FR
-		$locale=$_SESSION['session_vars']['lang'];
+		
+		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
+		
+		$va_tags = null;
 		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$locale)) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
 				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				require($vs_path.'/'.$ps_filename.".".$locale);
+				$va_tags = $this->compile($vs_path.'/'.$ps_filename.".".$vs_locale);
+				break;
+			}
+			elseif (file_exists($vs_path.'/'.$ps_filename)) {
+				// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
+				$va_tags = $this->compile($vs_path.'/'.$ps_filename);
+				break;
+			}
+		}
+		
+		return $va_tags;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+		$vb_output = false;
+		
+		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
+		
+		$vs_buf = null;
+		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
+				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
+				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$vs_locale);
 				$vb_output = true;
 				break;
 			}
 			elseif (file_exists($vs_path.'/'.$ps_filename)) {
 				// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
-				require($vs_path.'/'.$ps_filename);
+				$vs_buf = $this->_render($vs_path.'/'.$ps_filename);
 				$vb_output = true;
 				break;
 			}
@@ -158,6 +220,28 @@ class View extends BaseObject {
 		if (!$vb_output) {
 			$this->postError(2400, _t("View %1 was not found", $ps_filename), "View->render()");
 		}
+		
+		if (!$pb_dont_do_var_replacement) {
+			$va_compile = $this->compile($vs_path.'/'.$ps_filename);
+			$va_vars = $this->getAllVars();
+			foreach($va_compile as $vs_var) {
+				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf);
+				
+			}
+		}
+		
+		return $vs_buf;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _render($ps_filename) {
+		ob_start();
+		
+		require($ps_filename);
+		
 		return ob_get_clean();
 	}
 	# -------------------------------------------------------
