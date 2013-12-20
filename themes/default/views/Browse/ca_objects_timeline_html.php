@@ -2,7 +2,7 @@
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_key 			= $this->getVar('key');					// cache key for current browse
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
@@ -13,6 +13,15 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div id='pageArea' class='browse'>
+	<div id='sortMenu' class='view'>
+<?php
+		print caNavLink($this->request, _t('View by image'), '', '*', '*', '*', array('view' => 'image', 'key' => $vs_browse_key));
+		print " | ";
+		print caNavLink($this->request, _t('View by timeline'), '', '*', '*', '*', array('view' => 'timeline', 'key' => $vs_browse_key));
+?>
+	</div>
+	<div class='clearfix'></div>
+	
 	<div id='pageTitle'>
 <?php 
 		print _t('Browse');
@@ -48,7 +57,7 @@ if (!$vb_ajax) {	// !ajax
 				type:       'timeline',
 				width:      '900',
 				height:     '600',
-				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_key)); ?>',
+				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed'
 			});
 		});

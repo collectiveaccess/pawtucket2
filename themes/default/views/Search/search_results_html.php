@@ -15,9 +15,9 @@
 			print "<div class='count'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].") </div>"; 
 		}
 ?>
-			<div id='sortMenu'>
+<!--			<div id='sortMenu'>
 				<span>Sort by: <a href='#'>has media</a> / <a href='#'>date</a> / <a href='#'>title</a></span>
-			</div>
+			</div>-->
 		</div>
 	</div>	
 
