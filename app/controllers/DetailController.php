@@ -96,12 +96,12 @@
  			$va_tag_list = $this->getTagListForView($vs_path);				// get list of tags in view
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
- 				if (strpos($vs_tag, "^") !== false) {
+ 				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
  					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag));
  				} elseif (strpos($vs_tag, ".") !== false) {
  					$this->view->setVar($vs_tag, $t_table->get($vs_tag));
  				} else {
- 					$this->view->setVar($vs_tag, "&lt;EMPTY&gt;");
+ 					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}
  			}
  			

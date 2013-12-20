@@ -9,6 +9,7 @@
 {{{ca_entities.notes}}}
 
 <p>
-	{{{<ifdef code="ca_objects"><h3>Related objects ^</h3></ifdef>}}}
+	{{{<ifcount code="ca_objects" min="1" max="1"><h3>Related object</h3></ifcount>}}}
+	{{{<ifcount code="ca_objects" min="2"><h3>Related objects</h3></ifcount>}}}
 	{{{<unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit>}}}
 </p>

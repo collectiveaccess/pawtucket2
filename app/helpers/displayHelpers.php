@@ -2020,30 +2020,35 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 				$vs_content = $va_match_spaces[1].$vs_content;
 			}
 			$vn_min = (int)$o_ifcount->getAttribute('min');
-			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = $vn_min; }
+			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = null; }
 			
-			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max);
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => (string)$o_ifcount->getAttribute('code'));
 			
 			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
 			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
 		}
 		
 		$va_resolve_links_using_row_ids = array();
-		
-		// Process <ifcount> directives
-		$vn_count = $qr_res->numHits();
-		foreach($va_ifcounts as $vs_code => $va_ifcount) {
-			if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
-				$ps_template = str_replace($va_ifcount['directive'], $va_ifcount['content'], $ps_template);
-			} else {
-				$ps_template = str_replace($va_ifcount['directive'], '', $ps_template);
-			}
-		}
-		
+		$x = 0;
 		$va_tag_val_list = $va_defined_tag_list = array();
 		while($qr_res->nextHit()) {
 			$vs_pk_val = $qr_res->get($vs_pk);
 			$va_proc_templates[$vn_i] = preg_replace("![\r\n\t]+!", "", html_entity_decode($ps_template));	// DomDocument messes with white space and encodes entities so we normalize things here so the str_ireplace() replacement below doesn't fail
+		
+		
+		// Process <ifcount> directives
+		foreach($va_ifcounts as $va_ifcount) {
+			if($t_table = $o_dm->getInstanceByTableName($va_ifcount['code'], true)) {
+				$vn_count = sizeof($qr_res->get($va_ifcount['code'].".".$t_table->primaryKey(), array('returnAsArray' => true)));
+			} else {
+				$vn_count = sizeof($qr_res->get($va_ifcount['code'], array('returnAsArray' => true)));
+			}	
+			if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
+				$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], $va_ifcount['content'], $va_proc_templates[$vn_i] );
+			} else {
+				$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], '', $va_proc_templates[$vn_i] );
+			}
+		}
 		
 			foreach($va_units as $va_unit) {
 				if (!$va_unit['content']) { continue; }
