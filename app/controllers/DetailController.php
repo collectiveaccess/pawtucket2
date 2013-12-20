@@ -34,17 +34,19 @@
  		/**
  		 *
  		 */
- 		private $opa_url_names_to_tables = array(
- 			'objects' 		=> 'ca_objects',
- 			'entities' 		=> 'ca_entities',
- 			'places' 		=> 'ca_places',
- 			'occurrences' 	=> 'ca_occurrences',
- 			'collections' 	=> 'ca_collections'
- 		);
+ 		protected $opa_detail_types = null;
+ 		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $config = null;
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
+ 			$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/detail.conf');
+ 			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  		}
  		# -------------------------------------------------------
  		/**
@@ -53,9 +55,10 @@
  		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
+ 			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
- 			if (!isset($this->opa_url_names_to_tables[$ps_function]) || (!($vs_table = $this->opa_url_names_to_tables[$ps_function]))) {
+ 			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
  			}
@@ -75,12 +78,34 @@
  			
  			// find view
  			//		first look for type-specific view
- 			if ($this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
- 				$this->render($vs_path);
- 			} else {
+ 			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
  				// If no type specific view use the default
- 				$this->render("Details/{$vs_table}_default_html.php");
+ 				$vs_path = "Details/{$vs_table}_default_html.php";
  			}
+ 			
+ 			//
+ 			// Tag substitution
+ 			//
+ 			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
+ 			// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+ 			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+ 			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+ 			// context of the item being detailed.
+ 			//
+ 			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
+ 			$va_tag_list = $this->getTagListForView($vs_path);				// get list of tags in view
+ 			foreach($va_tag_list as $vs_tag) {
+ 				if (in_array($vs_tag, $va_defined_vars)) { continue; }
+ 				if (strpos($vs_tag, "^") !== false) {
+ 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag));
+ 				} elseif (strpos($vs_tag, ".") !== false) {
+ 					$this->view->setVar($vs_tag, $t_table->get($vs_tag));
+ 				} else {
+ 					$this->view->setVar($vs_tag, "&lt;EMPTY&gt;");
+ 				}
+ 			}
+ 			
+ 			$this->render($vs_path);
  		}
  		# -------------------------------------------------------
  		/**
