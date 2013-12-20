@@ -30,17 +30,37 @@
  
  	class BaseMultiSearchController extends ActionController {
  		# -------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */
  		protected $ops_find_type = 'basic_search';
  		
- 		
+ 		/**
+ 		 * 
+ 		 */
  		protected $opa_result_contexts = array();
+ 		
+ 		/**
+ 		 * List of searches to execute
+ 		 */
  		protected $opa_search_blocks = array();
  		
+ 		/**
+ 		 *
+ 		 */
  		protected $opa_access_values = array();
+ 		
+ 		/**
+ 		 * Search configuation file
+ 		 */
+ 		protected $config = null;
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
+ 			$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/search.conf');
+ 			$this->opa_search_blocks = $this->config->getAssoc('multisearchTypes');
  			
  			// Create result context for each block
  			foreach($this->opa_search_blocks as $vs_block => $va_block_info) {

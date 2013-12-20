@@ -33,36 +33,6 @@
  				
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			$this->opa_search_blocks = array(
-				'objects' => array(
-					'displayName' => _t('Objects'),
-					'table' => 'ca_objects',
-					'types' => null,
-					'view' => 'Search/ca_objects_search_subview_html.php',
-					'options' => array()
-				),
-				'entities' => array(
-					'displayName' => _t('People'),
-					'table' => 'ca_entities',
-					'types' => null,
-					'view' => 'Search/ca_entities_search_subview_html.php',
-					'options' => array()
-				),
-				'occurrences' => array(
-					'displayName' => _t('Works'),
-					'table' => 'ca_occurrences',
-					'types' => null,
-					'view' => 'Search/ca_occurrences_search_subview_html.php',
-					'options' => array()
-				),
-				'collections' => array(
-					'displayName' => _t('Collections'),
-					'table' => 'ca_collections',
-					'types' => null,
-					'view' => 'Search/ca_collections_search_subview_html.php',
-					'options' => array()
-				)
-			);
 		
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}
