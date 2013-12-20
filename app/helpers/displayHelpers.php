@@ -515,6 +515,10 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 		jQuery(document).ready(function() {
 			jQuery(document).bind('keydown.ctrl_f', function() {
 				caHierarchyOverviewPanel.hidePanel({dontCloseMask:1});
+				caEditorFieldList.onOpenCallback = function(){
+					var selector = '#' + caEditorFieldList.panelID + ' a.editorFieldListLink:link';
+					jQuery(selector).first().focus();
+				};
 				caEditorFieldList.showPanel();
 			});
 			jQuery('#editorFieldListContentArea').html(jQuery(\"#editorFieldListHTML\").html());
@@ -528,7 +532,7 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 <div id=\"editorFieldListHTML\">";
 		if (is_array($pa_bundle_list)) { 
 			foreach($pa_bundle_list as $vs_anchor => $va_info) {
-				$vs_buf .= "<a href=\"#\" onclick=\"jQuery.scrollTo('a[name={$vs_anchor}]', {duration: 350, offset: -80 }); return false;\" class=\"editorFieldListLink\">".$va_info['name']."</a><br/>";
+				$vs_buf .= "<a href=\"#\" onclick=\"jQuery.scrollTo('a[name={$vs_anchor}]', {duration: 350, offset: -80 , onAfter : function(selector, data){jQuery(selector).parent('.bundleLabel').find('a:link').first().focus();}}); return false;\" class=\"editorFieldListLink\">".$va_info['name']."</a><br/>";
 			}	
 		}
 		$vs_buf .= "</div>\n";
@@ -769,7 +773,9 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 				
 				$t_lot = new ca_object_lots($vn_lot_id);
 				if(!($vs_lot_displayname = $t_lot->get('idno_stub'))) {
-					$vs_lot_displayname = "Lot {$vn_lot_id}";	
+					if((!$vs_lot_displayname = $t_lot->getLabelForDisplay())){
+						$vs_lot_displayname = "Lot {$vn_lot_id}";		
+					}
 				}
 				if ($vs_lot_displayname) {
 					if(!($vs_part_of_lot_msg = $po_view->request->config->get("ca_objects_inspector_part_of_lot_msg"))){
@@ -1468,6 +1474,10 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 		
 		$t_set 					= $po_view->getVar('t_set');
 		$t_item 				= $po_view->getVar('t_item');
+		$vs_table_name = $t_item->tableName();
+		if (($vs_priv_table_name = $vs_table_name) == 'ca_list_items') {
+			$vs_priv_table_name = 'ca_lists';
+		}
 		
 		$o_result_context		= $po_view->getVar('result_context');
 		$t_ui 					= $po_view->getVar('t_ui');
@@ -1486,6 +1496,22 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 		
 		$vs_buf .= "<h4><div id='caColorbox' style='border: 6px solid #{$vs_color}; padding-bottom:15px;'>\n";
 		
+		if($po_view->request->user->canDoAction("can_edit_".$vs_priv_table_name) && (sizeof($t_item->getTypeList()) > 1)){
+			if ($po_view->request->user->canDoAction("can_change_type_{$vs_table_name}")) {
+				
+				$vs_buf .= "<div id='inspectorChangeType'><div id='inspectorChangeTypeButton'><a href='#' onclick='caTypeChangePanel.showPanel(); return false;'>".caNavIcon($po_view->request, __CA_NAV_BUTTON_CHANGE__, null, array('title' => _t('Change type')))."</a></div></div>\n";
+				
+				$vo_change_type_view = new View($po_view->request, $po_view->request->getViewsDirectoryPath()."/bundles/");
+				$vo_change_type_view->setVar('t_item', $t_item);
+				$vo_change_type_view->setVar('t_set', $t_set);
+				$vo_change_type_view->setVar('set_id', $t_set->getPrimaryKey());
+				
+				FooterManager::add($vo_change_type_view->render("batch_change_type_html.php"));
+			}
+			$vs_buf .= "<strong>"._t("Editing %1", $vs_type_name).": </strong>\n";
+		}else{
+			$vs_buf .= "<strong>"._t("Viewing %1", $vs_type_name).": </strong>\n";
+		}
 		
 		$vn_item_count = $t_set->getItemCount(array('user_id' => $po_view->request->getUserID()));
 		$vs_item_name = ($vn_item_count == 1) ? $t_item->getProperty("NAME_SINGULAR"): $t_item->getProperty("NAME_PLURAL");
@@ -1520,7 +1546,7 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 			$vs_buf .= "<div class='button' style='text-align:right;'><a href='#' id='inspectorMoreInfo'>"._t("More options")."</a> &rsaquo;</div>
 				<div id='inspectorInfo' style='background-color:#f9f9f9; border: 1px solid #eee;'>";
 			$vs_buf .= caNavLink($po_view->request, 
-				caNavIcon($po_view->request, __CA_NAV_BUTTON_DEL_BUNDLE__,null,array('style' => 'margin-bottom:-2px;'))."&nbsp;"._t("Batch delete all records")
+				caNavIcon($po_view->request, __CA_NAV_BUTTON_DEL_BUNDLE__, null, array('style' => 'margin-top:7px; vertical-align: text-bottom;'))." "._t("Delete <strong><em>all</em></strong> records in set")
 				, null, 'batch', 'Editor', 'Delete', array('set_id' => $t_set->getPrimaryKey())
 			);
 
@@ -1839,6 +1865,8 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 		
 		$ps_template = preg_replace("![\r\n\t]+!", "", html_entity_decode($ps_template));		//DomDocument kills newlines and tabs so we do the same to the template
 		$ps_template = preg_replace("!relativeTo[ ]*\=!i", "relativeto=", $ps_template);		//DomDocument forces attribute names to all lower case so we need to adjust the template to match 
+		$ps_template = preg_replace("!restrictToTypes[ ]*\=!i", "restricttotypes=", $ps_template);
+		$ps_template = preg_replace("!restrictToRelationshipTypes[ ]*\=!i", "restricttorelationshiptypes=", $ps_template);
 		$ps_template = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $ps_template);	//DomDocument converts quotes around attributes from single to double quotes, so we need to normalize the template to match 
 		$ps_template = preg_replace("!\>[ ]+\<!", "><", $ps_template);
 			
@@ -1850,11 +1878,17 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 			
 			$vs_content = preg_replace("!^<[^\>]+>!", "", $vs_html);
 			$vs_content = preg_replace("!<[^\>]+>$!", "", $vs_content);
-			
 			$vs_content = preg_replace("!>[ ]+<$!", "><", $vs_content);
 			
 			// DomDocument messes with white space and encodes entities so we normalize the directive here so the str_ireplace() replacement below doesn't fail
-			$va_units[] = $va_unit = array('tag' => $vs_unit_tag = "[[#{$vn_unit_id}]]", 'directive' => preg_replace("![\r\n\t]+!", "", html_entity_decode($vs_html)), 'content' => $vs_content, 'relativeTo' => (string)$o_unit->getAttribute("relativeto"), 'delimiter' => (string)$o_unit->getAttribute("delimiter"));
+			$va_units[] = $va_unit = array(
+				'tag' => $vs_unit_tag = "[[#{$vn_unit_id}]]",
+				'directive' => preg_replace("![\r\n\t]+!", "", html_entity_decode($vs_html)),
+				'content' => $vs_content, 'relativeTo' => (string)$o_unit->getAttribute("relativeto"),
+				'delimiter' => (string)$o_unit->getAttribute("delimiter"),
+				'restrictToTypes' => (string)$o_unit->getAttribute("restricttotypes"),
+				'restrictToRelationshipTypes' => (string)$o_unit->getAttribute("restricttorelationshiptypes")
+			);
 			$ps_template = str_ireplace($va_unit['directive'], $vs_unit_tag, $ps_template);
 			$vn_unit_id++;
 		}
@@ -1878,8 +1912,7 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 		$o_ifnotdefs = $o_dom->getElementsByTagName("ifnotdef");		// if not defined
 		$o_mores = $o_dom->getElementsByTagName("more");				// more tags – content suppressed if there are no defined values following the tag pair
 		$o_betweens = $o_dom->getElementsByTagName("between");			// between tags – content suppressed if there are not defined values on both sides of the tag pair
-		
-		$o_options = $o_dom->getElementsByTagName("options");
+		$o_ifcounts = $o_dom->getElementsByTagName("ifcount");
 		
 		
 		$va_if = array();
@@ -1970,19 +2003,63 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 			$va_betweens[] = array('directive' => $vs_html, 'content' => $vs_content);
 		}
 		
+		$va_ifcounts = array();
+		foreach($o_ifcounts as $o_ifcount) {
+			if (!$o_ifcount) { continue; }
+			
+			$vs_html = $o_dom->saveXML($o_ifcount);
+			$vs_content = preg_replace("!^<[^\>]+>!", "", $vs_html);
+			$vs_content = preg_replace("!<[^\>]+>$!", "", $vs_content);
+			
+			//
+			// Hack to get around DomDocument trimming leading spaces off of parsed HTML
+			// We try here to detect the trimming and shunt those spaces back where they belong. Seems to work :-)
+			//
+			if (preg_match("!([ ]+){$vs_content}!", $ps_template, $va_match_spaces)) {
+				$vs_html = preg_replace("!{$vs_content}!", $va_match_spaces[1].$vs_content, $vs_html);
+				$vs_content = $va_match_spaces[1].$vs_content;
+			}
+			$vn_min = (int)$o_ifcount->getAttribute('min');
+			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = $vn_min; }
+			
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max);
+			
+			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
+			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+		}
 		
 		$va_resolve_links_using_row_ids = array();
+		
+		// Process <ifcount> directives
+		$vn_count = $qr_res->numHits();
+		foreach($va_ifcounts as $vs_code => $va_ifcount) {
+			if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
+				$ps_template = str_replace($va_ifcount['directive'], $va_ifcount['content'], $ps_template);
+			} else {
+				$ps_template = str_replace($va_ifcount['directive'], '', $ps_template);
+			}
+		}
 		
 		$va_tag_val_list = $va_defined_tag_list = array();
 		while($qr_res->nextHit()) {
 			$vs_pk_val = $qr_res->get($vs_pk);
 			$va_proc_templates[$vn_i] = preg_replace("![\r\n\t]+!", "", html_entity_decode($ps_template));	// DomDocument messes with white space and encodes entities so we normalize things here so the str_ireplace() replacement below doesn't fail
-			
+		
 			foreach($va_units as $va_unit) {
 				if (!$va_unit['content']) { continue; }
 				$va_relative_to_tmp = $va_unit['relativeTo'] ? explode(".", $va_unit['relativeTo']) : array($ps_tablename);
 				if (!($t_instance = $o_dm->getInstanceByTableName($va_relative_to_tmp[0], true))) { continue; }
 				$vs_unit_delimiter = caGetOption('delimiter', $va_unit, '; ');
+
+				// additional get options for pulling related records
+				$va_get_options = array('returnAsArray' => true);
+
+				if ($va_unit['restrictToTypes'] && strlen($va_unit['restrictToTypes'])>0) {
+					$va_get_options['restrictToTypes'] = explode('|', $va_unit['restrictToTypes']);
+				}
+				if ($va_unit['restrictToRelationshipTypes'] && strlen($va_unit['restrictToRelationshipTypes'])>0) {
+					$va_get_options['restrictToRelationshipTypes'] = explode('|', $va_unit['restrictToRelationshipTypes']);
+				}
 			
 				if (
 					((sizeof($va_relative_to_tmp) == 1) && ($va_relative_to_tmp[0] == $ps_tablename))
@@ -1992,15 +2069,15 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 					
 					switch(strtolower($va_relative_to_tmp[1])) {
 						case 'hierarchy':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".hierarchy.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".hierarchy.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						case 'parent':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".parent.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".parent.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						case 'children':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".children.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".children.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						default:
@@ -2010,23 +2087,23 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 				} else { 
 					switch(strtolower($va_relative_to_tmp[1])) {
 						case 'hierarchy':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".hierarchy.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".hierarchy.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						case 'parent':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".parent.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".parent.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						case 'children':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".children.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".children.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						case 'related':
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".related.".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".related.".$t_instance->primaryKey(), $va_get_options);
 							$va_relative_ids = array_values($va_relative_ids);
 							break;
 						default:
-							$va_relative_ids = $qr_res->get($t_instance->tableName().".".$t_instance->primaryKey(), array('returnAsArray' => true));
+							$va_relative_ids = $qr_res->get($t_instance->tableName().".".$t_instance->primaryKey(), $va_get_options);
 							break;
 					}
 				}
@@ -2636,13 +2713,36 @@ require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 			$vn_filesize = @filesize($po_rep->getMediaPath('media', $ps_version));
 		}
 		if ($vn_filesize) {
-			$va_dimensions[] = sprintf("%4.1f", $vn_filesize/(1024*1024)).'mb';
+			$va_dimensions[] = caFormatFileSize($vn_filesize);
 		}
 		
 		if(isset($pa_options['returnAsArray']) && $pa_options['returnAsArray']) {
 			return $va_dimensions;
 		}
 		return join('; ', $va_dimensions);
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 * @return string 
+	 */
+	function caFormatFileSize($pn_bytes) {
+		if ($pn_bytes >= 1073741824) {
+			$pn_bytes = number_format($pn_bytes/1073741824, 2).'gb';
+		}
+		elseif ($pn_bytes >= 1048576) {
+			$pn_bytes = number_format($pn_bytes/1048576, 2).'mb';
+		} elseif ($pn_bytes >= 1024) {
+			$pn_bytes = number_format($pn_bytes/1024, 2).'kb';
+		} elseif ($pn_bytes > 1) {
+			$pn_bytes = $pn_bytes.'b';
+		} elseif ($pn_bytes == 1) {
+			$pn_bytes = $pn_bytes.'b';
+		} else {
+			$pn_bytes = '0b';
+		}
+
+		return $pn_bytes;
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -2676,8 +2776,8 @@ $ca_relationship_lookup_parse_cache = array();
 		$vs_hier_fld 					= $pt_rel->getProperty('HIERARCHY_ID_FLD');
 		$vs_idno_fld 					= $pt_rel->getProperty('ID_NUMBERING_ID_FIELD');
 		$vs_idno_sort_fld 				= $pt_rel->getProperty('ID_NUMBERING_SORT_FIELD');
-		$vs_rel_pk 						= $pt_rel->primaryKey();
-		$vs_rel_table					= $pt_rel->tableName();
+		$vs_rel_pk            			= caGetOption('primaryKey', $pa_options, $pt_rel->primaryKey());
+ 		$vs_rel_table         			= caGetOption('table', $pa_options, $pt_rel->tableName());
 		
 		if (!isset($pa_options['config']) || !is_object($pa_options['config'])) {
 			$o_config = Configuration::load();
@@ -3042,7 +3142,9 @@ $ca_relationship_lookup_parse_cache = array();
 		if (!in_array(__CA_APP_TYPE__, array('PROVIDENCE', 'PAWTUCKET'))) { return $pa_text; }
 		if (__CA_APP_TYPE__ == 'PAWTUCKET') {
 			$o_config = Configuration::load();
-			if (!$o_config->get("allow_detail_for_{$ps_table_name}")) { return $pa_text; }
+			
+			// TODO: CHECK detail.conf
+			//if (!$o_config->get("allow_detail_for_{$ps_table_name}")) { return $pa_text; }
 		}
 		
 		$vb_can_handle_target = false;
