@@ -251,7 +251,7 @@
 		}
 		$vs_set_item_display = "";
 		$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
-		$vs_set_item_display .= caNavLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_preview"]."</div>", "", "", "Detail", "Object", array("object_id" => $va_set_item["row_id"]));
+		$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_preview"]."</div>", '', 'ca_objects', $va_set_item["row_id"]);
 		$vs_set_item_display .= "<div id='comment".$t_set_item->get("item_id")."' class='lbSetComment'><!-- load comments here --></div>\n";
 		$vs_set_item_display .= "<div><small>".$va_set_item["set_item_label"]."</small></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
