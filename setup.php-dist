@@ -276,6 +276,10 @@ define("__CA_THEME__", $g_configuration_cache_suffix = caGetPreferredThemeForCur
 # Root-relative URL path to 'themes' directory
 define("__CA_THEMES_URL__", __CA_URL_ROOT__."/themes");
 
+# Directory and URL paths to current theme
+define("__CA_THEME_DIR__", __CA_THEMES_DIR__."/".__CA_THEME__);
+define("__CA_THEME_URL__", __CA_THEMES_URL__."/".__CA_THEME__);
+
 # Path to local config directory - configuration containing theme-specific configuration
 # Note that this is not the same as the __CA_CONF_DIR__, which contains general application configuration
 # Theme-specific configuration simply allows you to override selected application configuration as-needed to suit the specific theme
