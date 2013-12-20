@@ -592,7 +592,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				
 				if ($vb_is_related || ($va_tmp[0] !== $this->tableName())) {		// must be related table			
-					$t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true);
+					if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 					$vs_pk = $t_instance->primaryKey();
 					
 					if ($vs_template && !$vb_return_all_locales) {
@@ -751,6 +751,15 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 			
 		return parent::get($ps_field, $pa_options);
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getWithTemplate($ps_template, $pa_options=null) {
+		if(!$this->getPrimaryKey()) { return null; }
+		$vs_table_name = $this->tableName();	
+		return caProcessTemplateForIDs($ps_template, $vs_table_name, array($this->getPrimaryKey()), $pa_options);
 	}
 	# ------------------------------------------------------
 	/**
