@@ -97,82 +97,89 @@
 ?>
 		</div><!-- end col-md-5 or 10 -->
 		<div class="col-sm-2 col-md-2 col-lg-2">
+<?php
+		if(is_array($va_activity_stream) && sizeof($va_activity_stream)) {
+?>
 			<h3><?php print _t("activity stream"); ?></h3>
 			 <div style="height:700px; overflow-y:auto; line-height:1.1em;">
 <?php
-			$o_dm = new Datamodel();
-			$t_activity_set = new ca_sets();
-			$t_group = new ca_user_groups();
-			foreach($va_activity_stream as $va_activity){
-				print "<div><small>";
-				print $va_activity["fname"]." ".$va_activity["lname"]." ";
-				switch($va_activity["logged_table_num"]){
-					case $o_dm->getTableNum("ca_set_items"):
-						switch($va_activity["changetype"]){
-							case "I":
-								print _t("added an item to %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-							case "U":
-								print _t("changed an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-							case "D":
-								print _t("removed and item from %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-						}
-					break;
-					# ----------------------------------------
-					case $o_dm->getTableNum("ca_sets_x_user_groups"):
-						$t_group->load($va_activity["snapshot"]["group_id"]);
-						switch($va_activity["changetype"]){
-							case "I":
-								print _t("shared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
-							break;
-							# ----------------------------------------
-							case "U":
-								print _t("changed how they share %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
-							break;
-							# ----------------------------------------
-							case "D":
-								print _t("unshared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
-							break;
-							# ----------------------------------------
-						}
-					break;
-					# ----------------------------------------
-					case $o_dm->getTableNum("ca_item_comments"):
-						if($va_activity["table_num"] == $o_dm->getTableNum("ca_sets")){
-							print _t("commented on %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-						}elseif($va_activity["table_num"] == $o_dm->getTableNum("ca_set_items")){
-							print _t("commented on an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-						}
-						print ": <i>".((mb_strlen($va_activity["comment"]) > 38) ? mb_substr($va_activity["comment"], 0, 38)."..." : $va_activity["comment"])."</i>";
-					break;
-					# ----------------------------------------
-					case $o_dm->getTableNum("ca_sets"):
-						switch($va_activity["changetype"]){
-							case "I":
-								print _t("made %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-							case "U":
-								print _t("edited %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-							case "D":
-								print _t("deleted %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
-							break;
-							# ----------------------------------------
-						}
-					break;
-					# ----------------------------------------
+				$o_dm = new Datamodel();
+				$t_activity_set = new ca_sets();
+				$t_group = new ca_user_groups();
+			
+				foreach($va_activity_stream as $va_activity){
+					print "<div><small>";
+					print $va_activity["fname"]." ".$va_activity["lname"]." ";
+					switch($va_activity["logged_table_num"]){
+						case $o_dm->getTableNum("ca_set_items"):
+							switch($va_activity["changetype"]){
+								case "I":
+									print _t("added an item to %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+								case "U":
+									print _t("changed an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+								case "D":
+									print _t("removed and item from %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+							}
+						break;
+						# ----------------------------------------
+						case $o_dm->getTableNum("ca_sets_x_user_groups"):
+							$t_group->load($va_activity["snapshot"]["group_id"]);
+							switch($va_activity["changetype"]){
+								case "I":
+									print _t("shared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+								break;
+								# ----------------------------------------
+								case "U":
+									print _t("changed how they share %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+								break;
+								# ----------------------------------------
+								case "D":
+									print _t("unshared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+								break;
+								# ----------------------------------------
+							}
+						break;
+						# ----------------------------------------
+						case $o_dm->getTableNum("ca_item_comments"):
+							if($va_activity["table_num"] == $o_dm->getTableNum("ca_sets")){
+								print _t("commented on %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+							}elseif($va_activity["table_num"] == $o_dm->getTableNum("ca_set_items")){
+								print _t("commented on an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+							}
+							print ": <i>".((mb_strlen($va_activity["comment"]) > 38) ? mb_substr($va_activity["comment"], 0, 38)."..." : $va_activity["comment"])."</i>";
+						break;
+						# ----------------------------------------
+						case $o_dm->getTableNum("ca_sets"):
+							switch($va_activity["changetype"]){
+								case "I":
+									print _t("made %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+								case "U":
+									print _t("edited %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+								case "D":
+									print _t("deleted %1", caNavLink($this->request, $va_activity["name"], "", "", "Sets", "setDetail", array("set_id" => $va_activity["set_id"])));
+								break;
+								# ----------------------------------------
+							}
+						break;
+						# ----------------------------------------
+					}
+					print "<br/><small>".date("n/j/y g:iA", $va_activity["log_datetime"])."</small></small>";
+					print "</div><HR>";
 				}
-				print "<br/><small>".date("n/j/y g:iA", $va_activity["log_datetime"])."</small></small>";
-				print "</div><HR>";
-			}
 ?>
 			</div><!-- end scroll -->
+<?php
+	}
+?>
 		</div><!-- end col 2 -->
 	</div><!-- end row -->
