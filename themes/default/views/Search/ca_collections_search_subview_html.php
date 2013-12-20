@@ -19,6 +19,7 @@ if ($qr_results->numHits() > 0) {
 				if (sizeof($va_images) > 0){
 					foreach ($va_images as $image_id => $va_image) {
 						print caNavLink($this->request, "<div class='objImage'>".$va_image."</div>", '', '', 'Detail', 'Collections/'.$qr_results->getIdentifierForUrl());
+						break;
 					} 
 				} else {
 					print "<div class='objImage'></div>";
