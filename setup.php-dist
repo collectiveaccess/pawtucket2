@@ -75,8 +75,8 @@ define("__CA_APP_NAME__", "collectiveaccess");
 #		
 #
 $_CA_THEMES_BY_DEVICE = array(
-	'iPhone' 		=> 'iphone',		// use the 'iphone' theme for iPhone devices such as iPhone and iPod Touch
-	'_default_' 	=> 'default'		// use the 'default' theme for everything else
+	'_default_' 	=> 'default',		// use the 'default' theme for almost everything
+    'iPhone' 		=> 'default'		// use to switch to another theme for iPhone devices such as iPhone and iPod Touch
 );
 
 
