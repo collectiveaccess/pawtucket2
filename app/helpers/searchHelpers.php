@@ -338,7 +338,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				//'result' => $qr_res,
 				'count' => $vn_count,
 				'html' => $vs_html,
-				'displayName' => $va_block_info['displayName']
+				'displayName' => $va_block_info['displayName'],
+				'ids' => $qr_res->getPrimaryKeyValues()
 			);
 			$vn_total_cnt += $vn_count;
 			$vn_i++;

@@ -477,7 +477,7 @@
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
 			
-			$o_find_navigation = Configuration::load($po_request->config->get('find_navigation'));
+			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$vs_last_find];
 			if (!$va_nav) { return false; }
@@ -501,10 +501,14 @@
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
 			
-			$o_find_navigation = Configuration::load($po_request->config->get('find_navigation'));
+			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$vs_last_find];
 			if (!$va_nav) { return false; }
+			
+			if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
+			$vs_controller_class = $va_nav['controller']."Controller";
+			$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
 			
 			$va_params = array();
 			if (is_array($va_nav['params'])) {

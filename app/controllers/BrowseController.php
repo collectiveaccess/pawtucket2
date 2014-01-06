@@ -33,14 +33,17 @@
  		/**
  		 *
  		 */
+ 		private $ops_find_type = "browse";
  		
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  		}
  		# -------------------------------------------------------
- 		
  		/**
  		 *
  		 */ 
@@ -54,6 +57,9 @@
  			}
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
+ 			$this->opo_result_context->setAsLastFind();
  			
  			
  			$ps_view = $this->request->getParameter('view', pString);
@@ -129,6 +135,7 @@
 			
 				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+				
 			
 				//
 				// Current criteria
@@ -154,6 +161,11 @@
 			
 				$this->view->setVar('hits_per_block', 10);
 				$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+				
+
+				$this->opo_result_context->setParameter('key', $vs_key);
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+				$this->opo_result_context->saveContext();
 			//}
  			
  			if ($vn_type_id) {
@@ -161,6 +173,22 @@
  			} 
  			
  			$this->render("Browse/{$vs_class}_{$ps_view}_{$vs_format}.php");
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Browse',
+ 				'action' => $po_request->getAction(),
+ 				'params' => array(
+ 					'key'
+ 				)
+ 			);
+			return $va_ret;
  		}
  		# -------------------------------------------------------
 	}

@@ -1,6 +1,12 @@
 <?php
 	$t_object = $this->getVar('item');
 ?>
+
+
+{{{previousLink}}}
+{{{resultsLink}}}
+{{{nextLink}}}
+
 <div style="float: right;">
 <?php
 	if ($this->request->isLoggedIn()) {
