@@ -13,10 +13,11 @@
 ?>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share Lightbox"); ?></a></li>
-			<li class="divider"></li>
 <?php
 		}
 ?>
+			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "export", array("output_type" => "_pdf", "download" => true)); ?></li>
+			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>

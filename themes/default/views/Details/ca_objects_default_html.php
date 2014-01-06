@@ -30,7 +30,7 @@
 {{{<ifdef code="ca_objects.idno">Identifer: ^ca_objects.idno<br/></ifdef>}}}
 {{{<ifdef code="ca_objects.containerID">Box/series: ^ca_objects.containerID<br/></ifdef>}}}
 
-{{{<ifdef code="ca_objects.description">ca_objects.description<br/></ifdef>}}}
+{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdef>}}}
 
 
 {{{<ifdef code="ca_objects.dateSet.setDisplayValue">Date: ^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
