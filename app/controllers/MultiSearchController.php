@@ -29,9 +29,12 @@
  	
  	class MultiSearchController extends BaseMultiSearchController {
  		# -------------------------------------------------------
- 		protected $ops_find_type = 'basic_search';
+ 		protected $ops_find_type = 'multisearch';
  				
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -48,9 +51,28 @@
  			return parent::Index($pa_options);
  		}
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
 		public function searchName($ps_mode='singular') {
  			return ($ps_mode == 'singular') ? _t('search') : _t('searches');
  		}
 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'MultiSearch',
+ 				'action' => 'Index',
+ 				'params' => array(
+ 					'search'
+ 				)
+ 			);
+			return $va_ret;
+ 		}
+ 		# -------------------------------------------------------
 	}
  ?>

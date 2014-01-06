@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -93,11 +93,12 @@
 		 *
 		 * Whether you use a loadSet or a package/library combination, if it doesn't have a definition in assets.conf nothing will be loaded.
 		 *
-		 * @param $ps_package (string) - The package name containing the library to be loaded *or* a loadSet name. LoadSets describe a set of libraries to be loaded as a unit.
-		 * @param $ps_library (string) - The name of the library contained in $ps_package to be loaded.
+		 * @param $ps_package (string) The package name containing the library to be loaded *or* a loadSet name. LoadSets describe a set of libraries to be loaded as a unit.
+		 * @param $ps_library (string) The name of the library contained in $ps_package to be loaded.
+		 * @param $pn_priority (integer) Control order in which libraries are loaded. Higher numbers indicate earlier loading. Default is 10.
 		 * @return bool - false if load failed, true if load succeeded
 		 */
-		static function register($ps_package, $ps_library=null) {
+		static function register($ps_package, $ps_library=null, $pn_priority=10) {
 			global $g_asset_config, $g_asset_load_list;
 			
 			if (!$g_asset_config) { AssetLoadManager::init(); }
@@ -127,7 +128,12 @@
 				
 				}
 				if (isset($va_list[$ps_library]) && $va_list[$ps_library]) {
-					$g_asset_load_list[$ps_package.'/'.$va_list[$ps_library]] = $vb_is_theme_specific ? "THEME" : "APP";
+					$va_tmp = explode(":", $va_list[$ps_library]);
+					if (sizeof($va_tmp) == 2) {
+						$va_list[$ps_library] = $va_tmp[0];
+						$pn_priority = (int)$va_tmp[1];
+					}
+					$g_asset_load_list[$pn_priority][$ps_package.'/'.$va_list[$ps_library]] = $vb_is_theme_specific ? "THEME" : "APP";
 					return true;
 				}
 				
@@ -157,7 +163,7 @@
 		/**
 		 * Causes the specified code to be loaded.
 		 *
-		 * @param $ps_scriptcontent (string) - script content to load
+		 * @param $ps_scriptcontent (string) script content to load
 		 * @return (bool) - false if empty code, true if load succeeded
 		 */
 		static function addComplementaryScript($ps_content=null) {
@@ -172,7 +178,7 @@
 		/** 
 		 * Returns HTML to load registered libraries. Typically you'll output this HTML in the <head> of your page.
 		 * 
-		 * @param RequestHTTP $po_request The current request
+		 * @param (RequestHTTP) $po_request - The current request
 		 * @return string - HTML loading registered libraries
 		 */
 		static function getLoadHTML($po_request) {
@@ -184,25 +190,28 @@
 			if (!$g_asset_config) { AssetLoadManager::init(); }
 			$vs_buf = '';
 			if (is_array($g_asset_load_list)) {
-				foreach($g_asset_load_list as $vs_lib => $vs_type) { 
-					if (AssetLoadManager::useMinified()) {
-						$va_tmp = explode(".", $vs_lib);
-						array_splice($va_tmp, -1, 0, array('min'));
-						$vs_lib = join('.', $va_tmp);
-					}
+				ksort($g_asset_load_list);
+				foreach($g_asset_load_list as $vn_priority => $va_libs) { 
+					foreach($va_libs as $vs_lib => $vs_type) { 
+						if (AssetLoadManager::useMinified()) {
+							$va_tmp = explode(".", $vs_lib);
+							array_splice($va_tmp, -1, 0, array('min'));
+							$vs_lib = join('.', $va_tmp);
+						}
 					
-					if (preg_match('!(http[s]{0,1}://.*)!', $vs_lib, $va_matches)) { 
-						$vs_url = $va_matches[1];
-					} else {
-						$vs_url = (($vs_type == 'THEME') ? $vs_themeurlpath : $vs_baseurlpath)."/assets/{$vs_lib}";
-					}
+						if (preg_match('!(http[s]{0,1}://.*)!', $vs_lib, $va_matches)) { 
+							$vs_url = $va_matches[1];
+						} else {
+							$vs_url = (($vs_type == 'THEME') ? $vs_themeurlpath : $vs_baseurlpath)."/assets/{$vs_lib}";
+						}
 					
-					if (preg_match('!\.css$!', $vs_lib)) {
-						$vs_buf .= "<link rel='stylesheet' href='{$vs_url}' type='text/css' media='screen'/>\n";
-					} elseif(preg_match('!\.properties$!', $vs_lib)) {
-						$vs_buf .= "<link rel='resource' href='{$vs_url}' type='application/l10n' />\n";
-					} else {
-						$vs_buf .= "<script src='{$vs_url}' type='text/javascript'></script>\n";
+						if (preg_match('!\.css$!', $vs_lib)) {
+							$vs_buf .= "<link rel='stylesheet' href='{$vs_url}' type='text/css' media='screen'/>\n";
+						} elseif(preg_match('!\.properties$!', $vs_lib)) {
+							$vs_buf .= "<link rel='resource' href='{$vs_url}' type='application/l10n' />\n";
+						} else {
+							$vs_buf .= "<script src='{$vs_url}' type='text/javascript'></script>\n";
+						}
 					}
 				}
 			}

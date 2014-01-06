@@ -95,15 +95,20 @@
 		
 		if (is_array($pa_other_params) && sizeof($pa_other_params)) {
 			$vn_i = 0;
-			foreach($pa_other_params as $vs_name => $vs_value) {
-				if (in_array($vs_name, array('module', 'controller', 'action'))) { continue; }
-				if (is_array($vs_value)) { // is the value is array we need to serialize is... just treat it as a list of values which *should* be what it is.
-					$vs_value = join(";", $vs_value);
+			
+			if (caIsAssociativeArray($pa_other_params)) {
+				foreach($pa_other_params as $vs_name => $vs_value) {
+					if (in_array($vs_name, array('module', 'controller', 'action'))) { continue; }
+					if (is_array($vs_value)) { // is the value is array we need to serialize is... just treat it as a list of values which *should* be what it is.
+						$vs_value = join(";", $vs_value);
+					}
+				
+					$vs_url .= '/'.$vs_name."/".urlencode($vs_value);
+				
+					$vn_i++;
 				}
-				
-				$vs_url .= '/'.$vs_name."/".urlencode($vs_value);
-				
-				$vn_i++;
+			} else {
+				$vs_url .= "/".join("/", $pa_other_params);
 			}
 		}
 		return $vs_url;

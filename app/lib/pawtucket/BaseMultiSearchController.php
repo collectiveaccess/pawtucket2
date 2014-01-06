@@ -28,12 +28,12 @@
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
  	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
  
- 	class BaseMultiSearchController extends ActionController {
+ 	abstract class BaseMultiSearchController extends ActionController {
  		# -------------------------------------------------------
  		/**
  		 * 
  		 */
- 		protected $ops_find_type = 'basic_search';
+ 		protected $ops_find_type = 'multisearch';
  		
  		/**
  		 * 
@@ -64,7 +64,8 @@
  			
  			// Create result context for each block
  			foreach($this->opa_search_blocks as $vs_block => $va_block_info) {
- 				$this->opa_result_contexts[$vs_block] = new ResultContext($po_request, $va_block_info['table'], $this->ops_find_type.'_'.$vs_block);
+ 				$this->opa_result_contexts[$vs_block] = new ResultContext($po_request, $va_block_info['table'], $this->ops_find_type);
+ 				$this->opa_result_contexts[$vs_block]->setAsLastFind();
  			}
  			
  			$this->opa_access_values = caGetUserAccessValues($po_request);
@@ -89,10 +90,18 @@
  			$this->view->setVar('search', $vs_search);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
- 			$this->view->setVar('results', caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values)));
+ 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values)));
+ 			
+ 			foreach($this->opa_result_contexts as $vs_block => $o_context) {
+ 				$o_context->setParameter('search', $vs_search);
+ 				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
+ 				$o_context->saveContext();
+ 			}
  			
  			$this->render('Search/search_results_html.php');
  		}
+ 		# -------------------------------------------------------
+ 		abstract public static function getReturnToResultsUrl($po_request);
  		# -------------------------------------------------------
  	}
  ?>

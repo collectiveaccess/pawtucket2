@@ -30,46 +30,99 @@
  * ----------------------------------------------------------------------
  */
 ?>
-    <div id="myCarousel" class="carousel slide" data-ride="carousel">
-      <!-- Indicators -->
-      <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-      </ol>
-      <div class="carousel-inner">
-        <div class="item active">
-          <div style="width:1024px; height:300px; background-color:#828282;"></div>
-           <div class="container">
-            <div class="carousel-caption">
-              <h1>Example headline.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-             </div>
-          </div>
-        </div>
-        <div class="item">
-          <div style="width:1024px; height:300px; background-color:#828282;"></div>
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>Another example headline.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-             </div>
-          </div>
-        </div>
-        <div class="item">
-          <div style="width:1024px; height:300px; background-color:#828282;"></div>
-          <div class="container">
-            <div class="carousel-caption">
-              <h1>One more for good measure.</h1>
-              <p>Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.</p>
-              </div>
-          </div>
-        </div>
-      </div>
-      <a class="left carousel-control" href="#myCarousel" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
-      <a class="right carousel-control" href="#myCarousel" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
-    </div><!-- /.carousel -->
-    <H1>Welcome</H1>
-    <p>
-    	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit, vitae pretium orci purus venenatis orci. Nullam lectus ante, pellentesque luctus commodo rutrum, imperdiet et nunc. Nulla lacus turpis, commodo sit amet faucibus ac, sodales sed urna. Vestibulum porta pharetra feugiat. Donec tempor leo at elit pulvinar vehicula. Aliquam eu rhoncus mauris, ullamcorper malesuada est. Nullam porttitor est neque, ac ornare turpis condimentum ut. Cras id mollis diam. Curabitur et ante risus. Aliquam molestie metus eu lorem sagittis feugiat. Proin vel urna vel turpis iaculis pulvinar vel a mi. Phasellus aliquet lectus viverra condimentum eleifend. Integer aliquam molestie pharetra. Etiam non mollis arcu. Sed massa sem, auctor vulputate enim rhoncus, faucibus varius orci. 
-    </p>
+	<div id="frontPage">
+<?php
+	$va_item_ids = $this->getVar('featured_set_item_ids');
+	if(is_array($va_item_ids) && sizeof($va_item_ids)){
+		$t_object = new ca_objects();
+		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"), array('checkAccess' => caGetUserAccessValues($this->request)));
+		$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
+	}
+	if(is_array($va_item_media) && sizeof($va_item_media)){
+?>   
+		<div class="jcarousel-wrapper">
+			<!-- Carousel -->
+			<div class="jcarousel">
+				<ul>
+<?php
+					foreach($va_item_media as $vn_object_id => $va_media){
+						print caDetailLink($this->request, $va_media["tags"]["mediumlarge"], '', 'ca_objects', $vn_object_id);
+					}
+?>
+				</ul>
+			</div><!-- end jcarousel -->
+<?php
+			if(sizeof($va_item_media) > 1){
+?>
+			<!-- Prev/next controls -->
+			<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
+			<a href="#" class="jcarousel-control-next">&rsaquo;</a>
+		
+			<!-- Pagination -->
+			<p class="jcarousel-pagination">
+			<!-- Pagination items will be generated in here -->
+			</p>
+<?php
+			}
+?>
+		</div><!-- end jcarousel-wrapper -->
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				/*
+				Carousel initialization
+				*/
+				$('.jcarousel')
+					.jcarousel({
+						// Options go here
+					});
+		
+				/*
+				 Prev control initialization
+				 */
+				$('.jcarousel-control-prev')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '-=1'
+					});
+		
+				/*
+				 Next control initialization
+				 */
+				$('.jcarousel-control-next')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '+=1'
+					});
+		
+				/*
+				 Pagination initialization
+				 */
+				$('.jcarousel-pagination')
+					.on('jcarouselpagination:active', 'a', function() {
+						$(this).addClass('active');
+					})
+					.on('jcarouselpagination:inactive', 'a', function() {
+						$(this).removeClass('active');
+					})
+					.jcarouselPagination({
+						// Options go here
+					});
+			});
+		</script>
+<?php
+	}
+?>
+    	<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+	</div>

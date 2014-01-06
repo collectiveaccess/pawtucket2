@@ -6,7 +6,7 @@
 				<li><i class="fa fa-youtube-play"></i></li>
 			</ul>
 			<div>
-				Whirl-i-Gig, 320 Dean Street 2nd floor, Brooklyn, NY 11217 USA
+				Footer text here
 			</div>
 			<ul class="list-inline">
 				<li><a href="#">Link 1</a></li>
