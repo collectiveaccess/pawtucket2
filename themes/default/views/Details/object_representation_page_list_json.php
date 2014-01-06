@@ -50,7 +50,7 @@
 			),
 			'pageList' => $va_pages,
 			'downloadUrl' => in_array($vs_content_mode, array('multiple_representations', 'hierarchy_of_representations')) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadMedia', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => $vs_download_version)): caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'download' => 1, 'version' => $vs_download_version)),
-			'search' => $vb_is_searchable ? caNavUrl($this->request,  'Detail', 'Object', 'SearchWithinMedia', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id))."/q/{query}" : null
+			'search' => $vb_is_searchable ? caNavUrl($this->request,  '*', '*', 'SearchWithinMedia', array('object_id' => $pn_object_id, 'representation_id' => $pn_representation_id))."/q/{query}" : null
 		)
 	));
 ?>

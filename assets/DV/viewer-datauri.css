@@ -1098,7 +1098,7 @@
 
 .DV-views div span{
   display: block;
-  padding: 9px 14px 20px;
+  padding: 9px 14px 8px;
   background: #bfbfbf url("data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAABGCAYAAAANSP5dAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAFFJREFUeNqMjksKwDAIRI33P6c3ENzotNiFjUiIi8fo+FsiAjYzYlUlBkBMb3yqkLVERPyNTBPV0oyzOxxa7eQd0L+a1JReoCbc/bBvV48AAwC7MZ0bq+i8UgAAAABJRU5ErkJggg==");
   border: 1px solid #777; border-top-color: #888;
   font: 10px Arial, Helvetica, sans-serif;
@@ -1556,7 +1556,7 @@
   display: none;
 }
   .DV-hideSidebar .DV-searchBar {
-    right: 15px;
+    right: 0px;
   }
   
 .DV-hideFooter .DV-footer {
