@@ -10,7 +10,6 @@
 <?php
 	}
 ?>
-	{{{ca_object_representations.media.small}}}
 </div>
 
 <h1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</h1>
@@ -24,7 +23,7 @@
 {{{<ifdef code="ca_objects.idno">Identifer: ^ca_objects.idno<br/></ifdef>}}}
 {{{<ifdef code="ca_objects.containerID">Box/series: ^ca_objects.containerID<br/></ifdef>}}}
 
-{{{<ifdef code="ca_objects.description">ca_objects.description<br/></ifdef>}}}
+{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdef>}}}
 
 
 {{{<ifdef code="ca_objects.dateSet.setDisplayValue">Date: ^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}

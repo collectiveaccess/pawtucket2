@@ -51,7 +51,7 @@
  		}
  		# -------------------------------------------------------
  		function Index() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1));
@@ -67,7 +67,7 @@
  		}
  		# ------------------------------------------------------
  		function setDetail() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
@@ -79,7 +79,7 @@
  		}
  		# ------------------------------------------------------
  		function setForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			# --- if set exists, we're being redirected here after attempting a save
  			if (!$t_set){
@@ -98,7 +98,7 @@
  		}
  		# ------------------------------------------------------
  		function saveSetInfo() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -171,13 +171,13 @@
  		}
  		# ------------------------------------------------------
  		function shareSetForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$this->render("Sets/form_share_set_html.php");
  		}
  		# ------------------------------------------------------
  		function saveShareSet() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  			$o_purifier = new HTMLPurifier();$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
@@ -246,13 +246,13 @@
  		}
  		# ------------------------------------------------------
  		function userGroupList() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$this->render("Sets/user_group_list_html.php");
  		}
  		# ------------------------------------------------------
  		function userGroupForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			if(!$t_user_group){
  				$t_user_group = new ca_user_groups();
@@ -262,7 +262,7 @@
  		}
  		# ------------------------------------------------------
  		function saveUserGroup() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -315,7 +315,7 @@
  		}
  		# ------------------------------------------------------
  		function AjaxListComments() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
@@ -335,7 +335,7 @@
  		}
  		# ------------------------------------------------------
  		function AjaxSaveComment() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			# --- when close is set to true, will make the form view disappear after saving form
  			$vb_close = false;
@@ -373,7 +373,7 @@
  		}
  		# ------------------------------------------------------
  		function saveComment() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
@@ -401,7 +401,7 @@
  		}
  		# -------------------------------------------------------
  		public function DeleteSet() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
  				$vs_set_name = $t_set->getLabelForDisplay();
@@ -418,7 +418,7 @@
  		}
  		# ------------------------------------------------------
  		public function AjaxReorderItems() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
 			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
 				$this->view->setVar("set_id", $t_set->get("set_id"));
@@ -437,7 +437,7 @@
  		}
  		# -------------------------------------------------------
  		public function AjaxDeleteItem() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
 			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
 				$pn_item_id = $this->request->getParameter('item_id', pInteger);
@@ -457,7 +457,7 @@
  		}
  		# -------------------------------------------------------
  		public function AjaxAddItem() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -545,7 +545,7 @@
  		}
  		# -------------------------------------------------------
  		public function addItemForm(){
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', '', '')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			if($this->request->getParameter('object_id', pInteger)){
@@ -555,6 +555,78 @@
 				$this->render("Form/reload_html.php");
  			}
  		}
+ 		# ----------------------------------------------------------
+		# --- Export --- Generate  export file of current set items
+		# ----------------------------------------------------------
+		public function export() {
+			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { 
+ 				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
+				$this->Index();
+ 			}
+ 			set_time_limit(7200);
+ 			$ps_output_type = $this->request->getParameter('output_type', pString);
+ 			$this->view->setVar('t_set', $t_set);
+ 			
+ 			if($this->request->config->get("dont_enforce_access_settings")){
+ 				$va_access_values = array();
+ 			}else{
+ 				$va_access_values = caGetUserAccessValues($this->request);
+ 			}
+ 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID())));
+ 			$this->view->setVar('items', $va_items);
+			$vs_output_filename = $t_set->getLabelForDisplay();
+			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
+
+			switch($ps_output_type) {
+				case '_pdf':
+				default:
+					require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
+					header("Content-Disposition: attachment; filename=export_results.pdf");
+					header("Content-type: application/pdf");
+					$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
+					$o_pdf = new DOMPDF();
+					// Page sizes: 'letter', 'legal', 'A4'
+					// Orientation:  'portrait' or 'landscape'
+					$o_pdf->set_paper("letter", "portrait");
+					$o_pdf->load_html($vs_content, 'utf-8');
+					$o_pdf->render();
+					$o_pdf->stream($vs_output_file_name.".pdf");
+					return;
+					break;
+				case '_csv':
+					$vs_delimiter = ",";
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_csv');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";
+					break;
+				case '_tab':
+					$vs_delimiter = "\t";	
+					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_tab');
+					$vs_file_extension = 'txt';
+					$vs_mimetype = "text/plain";	
+					break;
+			}
+
+			header("Content-Disposition: attachment; filename=export_".$vs_output_file_name.".".$vs_file_extension);
+			header("Content-type: ".$vs_mimetype);
+			
+			$va_rows = array();
+			# --- headings
+			$va_row[] = _t("Media");
+			$va_row[] = _t("ID");
+			$va_row[] = _t("Label");
+			$va_rows[] = join($vs_delimiter, $va_row);
+			foreach($va_items as $va_item){
+				$va_row = array();
+				$va_row[] = $va_item["representation_url_thumbnail"];
+				$va_row[] = $va_item["idno"];
+				$va_row[] = $va_item["name"];
+				$va_rows[] = join($vs_delimiter, $va_row);
+			}
+			$this->opo_response->addContent(join("\n", $va_rows), 'view');		
+		}
  		# -------------------------------------------------------
  		
  		/** 
