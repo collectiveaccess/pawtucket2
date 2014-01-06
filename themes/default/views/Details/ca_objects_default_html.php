@@ -10,7 +10,7 @@
 <?php
 	}
 ?>
-	{{{ca_object_representations.media.small}}}
+	{{{representationViewer}}}
 </div>
 
 <h1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</h1>
