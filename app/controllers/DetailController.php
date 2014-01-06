@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -75,6 +75,13 @@
  			$this->view->setVar('detailType', $vs_table);
  			$this->view->setVar('item', $t_table);
  			$this->view->setVar('itemType', $vs_type);
+ 			
+ 			//
+ 			//
+ 			//
+ 			if ($t_representation = $t_table->getPrimaryRepresentationInstance()) {
+ 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
+ 			}
  			
  			// find view
  			//		first look for type-specific view
@@ -169,6 +176,19 @@
  			
  			$this->render('Details/object_representation_page_list_json.php');
  		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */ 
+ 		public function SearchWithinMedia() {
+ 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$ps_q = $this->request->getParameter('q', pString);
+ 			
+ 			$va_results = MediaContentLocationIndexer::SearchWithinMedia($ps_q, 'ca_object_representations', $pn_representation_id, 'media');
+ 			$this->view->setVar('results', $va_results);
+ 			
+ 			$this->render('Details/object_representation_within_media_search_results_json.php');
+		}
  		# -------------------------------------------------------
 	}
  ?>
