@@ -4,9 +4,11 @@
 	$vs_view = $this->getVar('view');
 	$vs_key = $this->getVar('key');
 	
+	$vb_is_nav = (bool)$this->getVar('isNav');
+	
 	$vn_cols = 4;
 ?>
-<table class="table table-bordered">
+<table class="table <?php print $vb_is_nav ? "browseNavTable" : "table-bordered"; ?>">
 	<tbody>
 <?php
 	$vn_i = 0;

@@ -201,7 +201,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	/**
 	 * 
 	 *
-	 * @return  
+	 * @return (string)
 	 */
 	function caGetFacetForMenuBar($po_request) {
 		$vs_key = '';//$po_request->session->getVar('objects_last_browse_id');
@@ -220,7 +220,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		$vs_buf = '';
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
-			$vs_buf .= "<td class='browseNavCell'><a href='#' onclick='jQuery(\"#browseNavFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key))."\"); jQuery(\".browseNavFacetNameSelected\").removeClass(\"browseNavFacetNameSelected\"); jQuery(this).addClass(\"browseNavFacetNameSelected\"); return false;'>{$va_facet_info['label_plural']}</a></td>";
+			$vs_buf .= "<td class='browseNavFacet'><a href='#' onclick='jQuery(\"#browseNavFacetContent\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(\".browseNavFacetSelected\").removeClass(\"browseNavFacetSelected\").parent().removeClass(\"browseNavFacetSelected\"); jQuery(this).addClass(\"browseNavFacetSelected\").parent().addClass(\"browseNavFacetSelected\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></td>";
 		}
 		
 		return $vs_buf;

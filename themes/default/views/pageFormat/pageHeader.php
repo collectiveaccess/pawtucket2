@@ -74,18 +74,18 @@
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
 			<ul class="dropdown-menu dropdown-browse-menu">
-				<li>
+				<li class="browseNavFacet">
 <?php
 	$vs_facet_list = caGetFacetForMenuBar($this->request);
 	
 	if($vs_facet_list) {
 ?>
-	<table class="table table-bordered">
+	<table class="table browseNavTable">
 		<tbody>
 			<tr><?php print $vs_facet_list; ?></tr>
 		</tbody>
 	</table>
-	<div id='browseNavFacet'> </div>
+	<div id='browseNavFacetContent'> </div>
 <?php
 	} else {
 ?>

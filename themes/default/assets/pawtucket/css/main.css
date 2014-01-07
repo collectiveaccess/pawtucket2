@@ -1246,23 +1246,68 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	height: 100%;
 }
 
-.browseNavCell {
-	white-space: nowrap;
+/* browse menu */
+.browseNavTable {
+	margin: 0px;
+	padding: 0px 0px -5px 0px;
+}
+
+td.browseNavFacet a {
+	text-decoration: none;
+	font-style: normal;
+	color: #000;
+}
+
+td.browseNavFacet a:hover {
+	text-decoration: none;
+	font-weight: bold;
+	color: #000;
+}
+
+td.browseNavFacetSelected {
+	text-decoration: none;
+	font-weight: bold;
+	font-style: italic;
+	background-color: #c9c9c9;
+	color: #000;
+}
+
+.browseNavFacet {
+	background-color: #f7f7f7;
+	width: 700px;
+	
+	text-align: center;
+	
+	font-family: DIN17SBOP-Regular;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 14px;
+	color: #000;
+}
+
+#browseNavFacetContent table tbody tr td {
+	text-align: left;
+}
+
+#browseNavFacetContent, #browseNavFacetContent table tbody tr td a {
+	font-family: DIN17SBOP-Regular;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 11px;
+	color: #000;
+}
+
+#browseNavFacetContent, #browseNavFacetContent table tbody tr td a:hover {
+	text-decoration: none;
+	font-family: DIN17SBOP-Regular;
+	font-weight: normal;
+	font-style: italic;
+	font-size: 11px;
+	color: #000;
 }
 
 
 .nav .dropdown .dropdown-menu {
     max-height: 400px;
     overflow: auto;
-}
-
-.browseNavFacetName {
-	text-decoration: none;
-}
-
-.browseNavFacetNameSelected {
-	text-decoration: none;
-	font-weight: bold;
-	font-style: italic;
-	color: #000;
 }
