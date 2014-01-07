@@ -47,7 +47,7 @@
 		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
-		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
+		closeButton: '<?php print ((bool)$this->request->getParameter('overlay', pInteger)) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
 		editButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/arrow_grey_right.gif" alt="<?php print _t('View'); ?>"/>',
 <?php
 	if (caObjectsDisplayDownloadLink($this->request)) {
@@ -62,3 +62,6 @@
 ?>
 	});
 </script>
+<?php
+print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'overlay' => 1))."\"); return false;' >[+] Full screen</a>";
+?>

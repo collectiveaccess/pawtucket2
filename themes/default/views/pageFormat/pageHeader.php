@@ -10,9 +10,7 @@
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-    		$('.browseNavCell').click(function(e) {
-       		 	e.stopPropagation();
-    		});
+    		jQuery('.dropdown-browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 </script>
 </head>
@@ -75,7 +73,7 @@
 		  <li class="active"><a href="#">About</a></li>
 		  <li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
-			<ul class="dropdown-menu">
+			<ul class="dropdown-menu dropdown-browse-menu">
 				<li>
 <?php
 	$vs_facet_list = caGetFacetForMenuBar($this->request);
