@@ -48,7 +48,9 @@
 			$vs_dates = $qr_res->get('ca_objects.dateSet.setDisplayValue', array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
 			$va_dates = explode(";", $vs_dates);
 			
-			$va_timeline_dates = caGetDateRangeForTimelineJS(explode("/", $va_dates[0]));
+			$va_date_list = explode("/", $va_dates[0]);
+			if (!$va_date_list[0] || !$va_date_list[1]) continue; 
+			$va_timeline_dates = caGetDateRangeForTimelineJS($va_date_list);
 			
 		
 			if (is_array($va_series = $qr_res->get('ca_objects.series', array('convertCodesToDisplayText' => true, 'returnAsArray' => true)))) {
@@ -77,7 +79,7 @@
 			);
 			//caDetailLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id,
 			$vn_c++;
-			//if ($vn_c > 2000) { break; }
+			if ($vn_c > 2000) { break; }
 		}
 		
 		

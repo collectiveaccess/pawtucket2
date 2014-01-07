@@ -204,7 +204,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return  
 	 */
 	function caGetFacetForMenuBar($po_request) {
-		$vs_key = $po_request->session->getVar('objects_last_browse_id');
+		$vs_key = '';//$po_request->session->getVar('objects_last_browse_id');
 		
 		if (!($va_browse_info = caGetInfoForBrowseType('objects'))) {
 			// invalid browse type – throw error

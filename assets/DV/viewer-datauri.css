@@ -147,6 +147,7 @@
 .DV-trigger{
   cursor: pointer;
   cursor: hand;
+  height: 37px !important;
 }
 
  .DV-annotations{

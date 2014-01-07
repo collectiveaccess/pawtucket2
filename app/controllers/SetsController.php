@@ -627,6 +627,19 @@
 			}
 			$this->opo_response->addContent(join("\n", $va_rows), 'view');		
 		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		public function Present() {
+			AssetLoadManager::register("reveal.js");
+			$o_app = AppController::getInstance();
+			$o_app->removeAllPlugins();
+			$t_set = $this->_getSet();
+			$this->view->setVar("set", $t_set);
+
+			$this->render("Sets/present_html.php");
+		}
  		# -------------------------------------------------------
  		
  		/** 

@@ -16,6 +16,7 @@
 <?php
 		}
 ?>
+			<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
 			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "export", array("output_type" => "_pdf", "download" => true)); ?></li>
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
@@ -28,7 +29,7 @@
 <?php
 			}
 ?>
-			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => 52)); ?>"); return false;' ><?php print _t("Add Item to Lightbox"); ?></a></li>
+			<!--<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => 52)); ?>"); return false;' ><?php print _t("Add Item to Lightbox"); ?></a></li>-->
 		</ul>
 	</div><!-- end btn-group -->
 </H1>

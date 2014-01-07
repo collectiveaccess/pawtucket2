@@ -99,6 +99,8 @@
  			//
  			if ($t_representation = $t_table->getPrimaryRepresentationInstance()) {
  				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
+ 			} else {
+ 				$this->view->setVar("representationViewer", "");
  			}
  			
  			// find view

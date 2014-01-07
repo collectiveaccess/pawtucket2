@@ -985,8 +985,8 @@ h2 span.artist {
 
 /* bookreader */
 #BookReaderContainer{
-	width: 580px;
-	height: 500px;
+	width: 600px;
+	height: 550px;
 }
 /* overlay (for object representations) */
 #caMediaPanel {
