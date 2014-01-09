@@ -7,32 +7,34 @@
 <h2><?php print _t("Add item to lightbox"); ?></h2>
 <?php
 	if($va_errors["general"]){
-		print "<div>".$va_errors["general"]."</div>";
+		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
 	}
 ?>
-	<form id="AddItemForm" action="#">
+	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
 		if(is_array($va_write_sets) && sizeof($va_write_sets)){
 			$t_write_set = new ca_sets();
-			print "<p><select name='set_id'>";
+			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";
 			print "<option value=''>"._t("Select a lightbox")."</option>\n";
 			foreach($va_write_sets as $va_write_set){
 				$t_write_set->load($va_write_set["set_id"]);
 				print "<option value='".$va_write_set["set_id"]."'>".$t_write_set->getLabelForDisplay()."</option>\n";
 			}
 			print "</select>\n";
-			print "</p>"._t("OR");
+			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR Create a New Lightbox")."</H3></div></div><!-- end form-group -->\n";
 		}
-		print "<p>"._t("create a new ligthbox");
-		print "<div><b>"._t("Name")."</b><br/><input type='text' name='name' value='Your lightbox'></div>\n";
-		print $t_set->htmlFormElement("access","<div><b>"._t("Display Option")."</b><br/>^ELEMENT</div>\n");
-		print "<div><b>"._t("Description")."</b><br/><input type='text' name='description' value=''></div>\n";
-		print "</p>\n";
+		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='Your lightbox' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='description' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+
 ?>
-		<div>
-			<input type="submit" value="Save">
-			<input type="hidden" name="object_id" value="<?php print $this->getVar("object_id"); ?>">
-		</div>
+		<div class="form-group">
+			<div class="col-sm-offset-4 col-sm-7">
+				<button type="submit" class="btn btn-default">Save</button>
+			</div><!-- end col-sm-7 -->
+		</div><!-- end form-group -->
+		<input type="hidden" name="object_id" value="<?php print $this->getVar("object_id"); ?>">
 	</form>
 </div>
 
