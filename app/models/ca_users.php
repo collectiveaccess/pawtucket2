@@ -1678,6 +1678,7 @@ class ca_users extends BaseModel {
 	 *		useTable = if true and displayType for element in DT_CHECKBOXES checkboxes will be formatted in a table with numTableColumns columns
 	 *		numTableColumns = Number of columns to use when formatting checkboxes as a table. Default, if omitted, is 3
 	 *		genericUIList = forces FT_*_EDITOR_UI to return single UI list for table rather than by type
+	 *		classname = class added to input
 	 * @return string HTML code to generate form widget
 	 */	
 	public function preferenceHtmlFormElement($ps_pref, $ps_format=null, $pa_options=null) {
@@ -1714,9 +1715,9 @@ class ca_users extends BaseModel {
 					}
 					
 					if ($vn_display_height > 1) {
-						$vs_output = "<textarea name='pref_$ps_pref' rows='".$vn_display_height."' cols='".$vn_display_width."'>".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."</textarea>\n";
+						$vs_output = "<textarea name='pref_$ps_pref' rows='".$vn_display_height."' cols='".$vn_display_width."'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "").">".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."</textarea>\n";
 					} else {
-						$vs_output = "<input type='text' name='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length' value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'/>\n";
+						$vs_output = "<input type='text' name='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length' value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "")."/>\n";
 					}
 					break;
 				# ---------------------------------
@@ -1855,7 +1856,7 @@ class ca_users extends BaseModel {
 					if (!is_array($va_opts) || (sizeof($va_opts) == 0)) { $vs_output = ''; break; }
 					
 					
-					$vs_output = "<select name='pref_{$ps_pref}'>\n";
+					$vs_output = "<select name='pref_{$ps_pref}'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "").">\n";
 					foreach($va_opts as $vs_opt => $vs_val) {
 						$vs_selected = ($vs_val == $vs_current_value) ? "selected='1'" : "";
 						$vs_output .= "<option value='".htmlspecialchars($vs_val, ENT_QUOTES, 'UTF-8')."' $vs_selected>".$vs_opt."</option>\n";	
@@ -1866,7 +1867,7 @@ class ca_users extends BaseModel {
 				case 'DT_CHECKBOXES':
 					if ($va_pref_info["formatType"] == 'FT_BIT') {
 						$vs_selected = ($vs_current_value) ? "CHECKED" : "";
-						$vs_output .= "<input type='checkbox' name='pref_$ps_pref' value='1' $vs_selected>\n";	
+						$vs_output .= "<input type='checkbox' name='pref_$ps_pref' value='1' ".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "")." $vs_selected>\n";	
 					} else {
 						if ($vb_use_table = (isset($pa_options['useTable']) && (bool)$pa_options['useTable'])) {
 							$vs_output .= "<table width='100%'>";
@@ -1883,7 +1884,7 @@ class ca_users extends BaseModel {
 							
 							if ($vb_use_table && ($vn_c == 0)) { $vs_output .= "<tr>"; }
 							if ($vb_use_table) { $vs_output .= "<td width='".(floor(100/$vn_num_table_columns))."%'>"; }
-							$vs_output .= "<input type='checkbox' name='pref_".$ps_pref."[]' value='".htmlspecialchars($vs_val, ENT_QUOTES, 'UTF-8')."' $vs_selected> ".$vs_opt." \n";	
+							$vs_output .= "<input type='checkbox' name='pref_".$ps_pref."[]' value='".htmlspecialchars($vs_val, ENT_QUOTES, 'UTF-8')."'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "")." $vs_selected> ".$vs_opt." \n";	
 							
 							if ($vb_use_table) { $vs_output .= "</td>"; }
 							$vn_c++;
@@ -1896,13 +1897,13 @@ class ca_users extends BaseModel {
 					break;
 				# ---------------------------------
 				case 'DT_STATEPROV_LIST':
-					$vs_output .= caHTMLSelect("pref_{$ps_pref}_select", array(), array('id' => "pref_{$ps_pref}_select"), array('value' => $vs_current_value));
-					$vs_output .= caHTMLTextInput("pref_{$ps_pref}_name", array('id' => "pref_{$ps_pref}_text", 'value' => $vs_current_value));
+					$vs_output .= caHTMLSelect("pref_{$ps_pref}_select", array(), array('id' => "pref_{$ps_pref}_select", "class" => $pa_options['classname']), array('value' => $vs_current_value));
+					$vs_output .= caHTMLTextInput("pref_{$ps_pref}_name", array('id' => "pref_{$ps_pref}_text", 'value' => $vs_current_value, "class" => $pa_options['classname']));
 					
 					break;
 				# ---------------------------------
 				case 'DT_COUNTRY_LIST':
-					$vs_output .= caHTMLSelect("pref_{$ps_pref}", caGetCountryList(), array('id' => "pref_{$ps_pref}"), array('value' => $vs_current_value));
+					$vs_output .= caHTMLSelect("pref_{$ps_pref}", caGetCountryList(), array('id' => "pref_{$ps_pref}", "class" => $pa_options['classname']), array('value' => $vs_current_value));
 						
 					if ($va_pref_info['stateProvPref']) {
 						$vs_output .="<script type='text/javascript'>\n";
@@ -1922,7 +1923,7 @@ class ca_users extends BaseModel {
 				case 'DT_RADIO_BUTTONS':
 					foreach($va_pref_info["choiceList"] as $vs_opt => $vs_val) {
 						$vs_selected = ($vs_val == $vs_current_value) ? "CHECKED" : "";
-						$vs_output .= "<input type='radio' name='pref_$ps_pref' value='".htmlspecialchars($vs_val, ENT_QUOTES, 'UTF-8')."' $vs_selected> ".$vs_opt." \n";	
+						$vs_output .= "<input type='radio' name='pref_$ps_pref' value='".htmlspecialchars($vs_val, ENT_QUOTES, 'UTF-8')."'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "")." $vs_selected> ".$vs_opt." \n";	
 					}
 					break;
 				# ---------------------------------
@@ -1937,7 +1938,7 @@ class ca_users extends BaseModel {
 						$vn_max_input_length = $vn_display_width;
 					}
 					
-					$vs_output = "<input type='password' name='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length' value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'/>\n";
+					$vs_output = "<input type='password' name='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length' value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'".((isset($pa_options['classname'])) ? " class='".$pa_options['classname']."'" : "")."/>\n";
 					
 					break;
 				# ---------------------------------
