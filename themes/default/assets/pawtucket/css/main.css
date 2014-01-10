@@ -126,7 +126,7 @@ a, a:active, a:focus {
 }
 
 @media (min-width: 768px) {
-  .form-group {
+  .navbar-form .form-group {
   	width:140px;
   }
 }
@@ -168,6 +168,23 @@ a, a:active, a:focus {
       -ms-user-select: none;
        -o-user-select: none;
           user-select: none;
+}
+/* --------------------------------- */
+/* forms */
+/* --------------------------------- */
+#caFormOverlay H2 {
+	text-transform:uppercase;
+	padding-top:0px;
+	margin-top:0px;
+}
+/* form overlay */
+#caFormOverlay{
+	margin:15% auto 0px auto;
+	background-color: #FFFFFF;
+	padding:20px;
+	width:400px;
+	max-height:500px;
+	overflow:auto;
 }
 /* --------------------------------- */
 /* footer */
@@ -1206,17 +1223,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	border:1px solid #FFF;
 }
 
-/* form overlay */
-#caFormOverlay{
-	margin:20% auto 0px auto;
-	background-color: #FFFFFF;
-	padding:20px;
-	width:400px;
-}
-#caFormOverlay H2{
-	padding-top:0px;
-	margin-top:0px;
-}
+
 
 /* browse overlay */
 #caBrowsePanel {

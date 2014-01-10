@@ -47,17 +47,14 @@
  			if(!is_object($t_user)){
  				$t_user = new ca_users();
  			}
- 			$this->view->setVar("fname", $t_user->htmlFormElement("fname","<div><b>"._t("First name")."</b><br/>^ELEMENT</div>"));
- 			$this->view->setVar("lname", $t_user->htmlFormElement("lname","<div><b>"._t("Last name")."</b><br/>^ELEMENT</div>"));
- 			$this->view->setVar("email", $t_user->htmlFormElement("email","<div><b>"._t("Email address")."</b><br/>^ELEMENT</div>"));
- 			$this->view->setVar("password", $t_user->htmlFormElement("password","<div><b>"._t("Password")."</b><br/>^ELEMENT</div>", array('value' => '')));
+ 			$this->view->setVar("t_user", $t_user);
  			
  			$va_profile_prefs = $t_user->getValidPreferences('profile');
  			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
  				$va_elements = array();
 				foreach($va_profile_prefs as $vs_pref) {
 					$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='".$vs_pref."' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
 				}
 				
 				$this->view->setVar("profile_settings", $va_elements);
@@ -69,8 +66,7 @@
  		function login() {
 			$t_user = new ca_users();
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
-				$this->notification->addNotification(_t("Login failed"), __NOTIFICATION_TYPE_INFO__);
- 				$this->view->setVar("message", _t("Login failed"));
+				$this->view->setVar("message", _t("Login failed"));
  				$this->loginForm();
 			} else {
  				# --- user is joining a user group from a supplied link

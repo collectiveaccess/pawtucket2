@@ -2,11 +2,11 @@
 	$vs_message = $this->getVar("message");
 	if($vs_message){
 ?>
-	<div id="caFormOverlay"><div class="message">
+	<div id="caFormOverlay"><div class='alert alert-info'>
 <?php
 		print $vs_message;
 ?>
-	</div><!-- end message --></div><!-- end caFormOverlay -->
+	</div><!-- end alert --></div><!-- end caFormOverlay -->
 <?php
 	}
 ?>

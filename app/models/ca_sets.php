@@ -1125,7 +1125,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 */
 	public function getRowIDRanks($pa_options=null) {
 		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
-		if (!$this->haveAccessToSet($pa_options['user_id'], __CA_SET_READ_ACCESS__)) { return false; }
+		//if (!$this->haveAccessToSet($pa_options['user_id'], __CA_SET_READ_ACCESS__)) { return false; }
 		
 		$va_items = caExtractValuesByUserLocale($this->getItems($pa_options));
 		$va_ranks = array();
