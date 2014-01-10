@@ -802,7 +802,7 @@ h2 span.artist {
 #pageArea.entities .description, #pageArea.occurrences .description{
 	width:auto;
 }
-.collectionSet .objImage {
+.collectionSet .objectImage {
 	margin-bottom:5px;
 	background-color:#eee;
 	width:220px;
@@ -904,7 +904,7 @@ h2 span.artist {
 	width:100%;
 	overflow-y:hidden;
 }
-#objectsBlock .objectResult {
+#objectsBlock .blockResults #objectsResult {
 	float:left;
 	width:160px;
 	height:160px;
@@ -913,7 +913,7 @@ h2 span.artist {
 	margin-right:15px;
 	line-height:16px;
 }
-#objectsBlock .objectResult .objImage{
+#objectsBlock #blockResults #objectsResult #objectImage{
 	width:160px;
 	height:105px;
 	overflow:hidden;
@@ -948,7 +948,7 @@ h2 span.artist {
 	margin-right:15px;
 	line-height:16px;
 }
-#collectionsBlock .objImage {
+#collectionsBlock .objectImage {
 	width:150px;
 	height:105px;
 	overflow:hidden;
