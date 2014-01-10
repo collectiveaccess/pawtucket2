@@ -12,7 +12,7 @@
 		<div class='resultCounts'>
 <?php
 		foreach($this->getVar('blockNames') as $vs_block) {
-			print "<div class='count'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].") </div>"; 
+			print "<div class='count'><a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']."</a> (".$va_results[$vs_block]['count'].") </div>"; 
 		}
 ?>
 <!--			<div id='sortMenu'>
@@ -28,8 +28,12 @@
 
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
+			<a name='<?php print $vs_block; ?>'/>
 			<div id="<?php print $vs_block; ?>Block" >
 				<?php print $va_results[$vs_block]['html']; ?>
+<?php
+
+?>
 			</div>
 <?php
 		} 
@@ -38,3 +42,21 @@
 	}
 ?>
 </div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+<?php
+	foreach($this->getVar('blockNames') as $vs_block) {
+?>
+		jQuery('#<?php print $vs_block; ?>Result').jscroll({
+			debug: true,
+			autoTrigger: true,
+			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+			padding: 20,
+			nextSelector: 'a.jscroll-next'
+		});
+<?php
+	}
+?>
+	});
+</script>

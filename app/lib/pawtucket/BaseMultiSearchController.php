@@ -92,6 +92,7 @@
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
  			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values)));
  			
+ 			if (!is_array($va_results)) { print $va_results; return; } 
  			foreach($this->opa_result_contexts as $vs_block => $o_context) {
  				$o_context->setParameter('search', $vs_search);
  				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());

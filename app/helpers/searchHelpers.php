@@ -308,12 +308,35 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	}
 	# ---------------------------------------
 	/**
+	 * Performs search using expression for each provided search "block." A block defines a
+	 * search on a specific item (Eg. ca_objects, ca_entities), with or without type restriction, with
+	 * results rendered using a provided view. The results for all blocks are returned in an array.
 	 * 
+	 * Used by MultiSearch to generate results. Blame Sophie for the function name.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_search_expression
+	 * @param array $pa_blocks
+	 * @param array $pa_options
 	 *
 	 * @return array 
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
+		
+		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
+		
+		//
+		// Block are lazy-loaded using Ajax requests with additional items as they are scrolled.
+		// "Ajax mode" is used by caPuppySearch to render a single block when it is scrolled
+		// The block to be rendered is specified in the "block" request parameter. The offset
+		// from the beginning of the result to start rendering from is specified in the "s" request parameter.
+		//
+		$vb_ajax_mode = false;
+		if ($po_request->isAjax() && ($ps_block = $po_request->getParameter('block', pString)) && isset($pa_blocks[$ps_block])) {
+			$pa_blocks = array($ps_block => $pa_blocks[$ps_block]);
+			$vb_ajax_mode = true;
+		}
 		
 		$va_ret = array();
 		$vn_i = 0;
@@ -326,23 +349,43 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			
 			$qr_res = $o_search->search($ps_search_expression, $va_options);
 			
+			// In Ajax mode we scroll to an offset
+			$vn_start = 0;
+			if ($vb_ajax_mode) {
+				if (($vn_start = $po_request->getParameter('s', pInteger)) < $qr_res->numHits()) {
+					$qr_res->seek($vn_start);
+				} else {
+					// If the offset is past the end of the result return an empty string to halt the continuous scrolling
+					return '';
+				}
+			}
+			
+			$vn_items_per_page = caGetOption('itemsPerPage', $va_block_info, $vn_items_per_page_default);
+			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
 			$o_view->setVar('result', $qr_res);
 			$o_view->setVar('count', $vn_count = $qr_res->numHits());
 			$o_view->setVar('block', $vs_block);
 			$o_view->setVar('blockInfo', $va_block_info);
 			$o_view->setVar('blockIndex', $vn_i);
+			$o_view->setVar('start', $vn_start);
+			$o_view->setVar('itemsPerPage', $vn_items_per_page);
 			
 			$vs_html = $o_view->render($va_block_info['view']);
-			$va_ret[$vs_block] = array(
-				//'result' => $qr_res,
-				'count' => $vn_count,
-				'html' => $vs_html,
-				'displayName' => $va_block_info['displayName'],
-				'ids' => $qr_res->getPrimaryKeyValues()
-			);
-			$vn_total_cnt += $vn_count;
-			$vn_i++;
+			
+			if ($vb_ajax_mode) {
+				// In Ajax mode return rendered HTML for the single block
+				return $vs_html;
+			} else {
+				$va_ret[$vs_block] = array(
+					'count' => $vn_count,
+					'html' => $vs_html,
+					'displayName' => $va_block_info['displayName'],
+					'ids' => $qr_res->getPrimaryKeyValues()
+				);
+				$vn_total_cnt += $vn_count;
+				$vn_i++;
+			}
 		}
 		$va_ret['_info_'] = array(
 			'totalCount' => $vn_total_cnt
