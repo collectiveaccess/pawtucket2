@@ -68,6 +68,9 @@
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
+ 			
+ 			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+ 			
  			//if ($ps_view != 'timeline') {
 				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
