@@ -34,8 +34,8 @@
 					caMediaPanel = caUI.initPanel({ 
 						panelID: 'caMediaPanel',										/* DOM ID of the <div> enclosing the panel */
 						panelContentID: 'caMediaPanelContentArea',		/* DOM ID of the content area <div> in the panel */
-						exposeBackgroundColor: '#000000',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
-						exposeBackgroundOpacity: 0.8,							/* opacity of background color masking out page content; 1.0 is opaque */
+						exposeBackgroundColor: '#FFFFFF',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
+						exposeBackgroundOpacity: 0.7,							/* opacity of background color masking out page content; 1.0 is opaque */
 						panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
 						allowMobileSafariZooming: true,
 						mobileSafariViewportTagID: '_msafari_viewport',

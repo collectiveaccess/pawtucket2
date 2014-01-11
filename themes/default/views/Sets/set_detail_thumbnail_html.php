@@ -38,8 +38,6 @@
 			<div class="row" id="sortable">
 <?php
 	if(sizeof($va_set_items)){
-		$vn_i_col = 0;
-		$vn_num_cols = 4;
 		foreach($va_set_items as $va_set_item){
 			print "<div class='col-sm-4 col-md-3 col-lg-3 lbItem".$va_set_item["item_id"]."' id='row-".$va_set_item["row_id"]."'>";
 			print caLightboxSetDetailItem($this->request, $va_set_item, array("write_access" => $vb_write_access));
@@ -72,10 +70,12 @@
 					print "<div>".$vs_comment_error."</div>";
 				}
 ?>
-					<div>
+					<div class="form-group">
 						<textarea name="comment" placeholder="add your comment" class="form-control"></textarea>
-					</div>
-					<input type="submit" value="Save" class="pull-right btn btn-default btn-xs">
+					</div><!-- end form-group -->
+					<div class="form-group text-right">
+						<button type="submit" class="btn btn-default btn-xs">Save</button>
+					</div><!-- end form-group -->
 					<input type="hidden" name="tablename" value="ca_sets">
 					<input type="hidden" name="item_id" value="<?php print $t_set->get("set_id"); ?>">
 				</form>
