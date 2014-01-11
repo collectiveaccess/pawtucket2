@@ -12,38 +12,46 @@
 	AssetLoadManager::register('timeline');
 if (!$vb_ajax) {	// !ajax
 ?>
-<div id='pageArea' class='browse'>
-	<div id='sortMenu' class='view'>
+<div id='browseResults'>
+	<div id="bViewButtons">
 <?php
-		print caNavLink($this->request, _t('View by image'), '', '*', '*', '*', array('view' => 'image', 'key' => $vs_browse_key));
-		print " | ";
-		print caNavLink($this->request, _t('View by timeline'), '', '*', '*', '*', array('view' => 'timeline', 'key' => $vs_browse_key));
+		print caNavLink($this->request, '<span class="glyphicon glyphicon-th"></span>', '', '*', '*', '*', array('view' => 'image', 'key' => $vs_browse_key));
+		print " ";
+		print caNavLink($this->request, '<span class="glyphicon glyphicon-time"></span>', 'active', '*', '*', '*', array('view' => 'timeline', 'key' => $vs_browse_key));
 ?>
-	</div>
-	<div class='clearfix'></div>
-	
-	<div id='pageTitle'>
+	</div>		
+	<H1>
 <?php 
-		print _t('Browse');
-		
-		print $this->render("Browse/browse_refine_subview_html.php");	
+		print _t('%1 Object %2', $qr_res->numHits(), ($qr_res->numHits() == 1) ? "Result" : "Results");	
 ?>		
-		
-		
-	</div>
-	<div id='timelineContentArea'>
-		
-	<?php
-		$vn_criteria_count = 0;
-		if (sizeof($va_criteria) > 0) {
-			foreach($va_criteria as $va_criterion) {
-				if ($va_criterion['facet_name'] == '_search') { continue; }
-				print "<div class='chosenFacet'>".$va_criterion['facet'].': '.$va_criterion['value'].'   '."</div>";
-			}
-			print "<div style='float: right;' class='startOver'>".caNavLink($this->request, _t('Start over'), '', '*', '*','*', array('clear' => 1, 'view' => 'timeline'))."</div>";
-		}
+		<div class="btn-group">
+			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+			<ul class="dropdown-menu" role="menu">
+				<!--<li class="divider"></li>-->
+<?php
+				if (sizeof($va_criteria) > 0) {
+					print "<li><a href='".caNavUrl($this->request, '', '*', '*', array('view' => $vs_view))."' >"._t("Start Over")."</a></li>";
+				}	
 ?>
-		<div class='browseResults'>
+			</ul>
+		</div><!-- end btn-group -->
+	</H1>
+	<div class="row" style="clear:both;">
+		<div class='col-sm-8 col-md-9 col-lg-10'>
+			<H2>
+<?php
+			if (sizeof($va_criteria) > 0) {
+				$i = 0;
+				foreach($va_criteria as $va_criterion) {
+					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
+					$i++;
+					if($i < sizeof($va_criteria)){
+						print ", ";
+					}
+				}
+			}
+?>		
+			&nbsp;</H2>
 <?php
 		} // !ajax
 		
@@ -55,7 +63,7 @@ if (!$vb_ajax) {	// !ajax
 		$(document).ready(function() {
 			createStoryJS({
 				type:       'timeline',
-				width:      '900',
+				width:      '800',
 				height:     '600',
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed'
@@ -68,9 +76,14 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
 
-	</div><!-- end contentArea-->
-</div><!-- end pageArea-->	
+		</div><!-- end col-10 -->
+		<div class="col-sm-4 col-md-3 col-lg-2">
 <?php
-			print $this->render('Browse/browse_panel_subview_html.php');
+			print $this->render("Browse/browse_refine_subview_html.php");
+?>			
+		</div><!-- end col-2 -->
+	</div><!-- end row -->
+</div><!-- end browseResults -->
+<?php
 		} //!ajax
 ?>
