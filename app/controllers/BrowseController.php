@@ -159,7 +159,7 @@
 				$qr_res = $o_browse->getResults();
 				$this->view->setVar('result', $qr_res);
 			
-				$this->view->setVar('hits_per_block', 10);
+				$this->view->setVar('hits_per_block', 12);
 				$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 				
 
