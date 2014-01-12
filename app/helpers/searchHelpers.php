@@ -367,14 +367,27 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 			$qr_res = $o_search->search($ps_search_expression, $va_options);
 			
+			
 			// In Ajax mode we scroll to an offset
 			$vn_start = 0;
 			if ($vb_ajax_mode) {
 				if (($vn_start = $po_request->getParameter('s', pInteger)) < $qr_res->numHits()) {
 					$qr_res->seek($vn_start);
+					if (isset($va_contexts[$vs_block])) {
+						$va_contexts[$vs_block]->setParameter('start', $vn_start);
+						$va_contexts[$vs_block]->saveContext();
+					}
 				} else {
 					// If the offset is past the end of the result return an empty string to halt the continuous scrolling
 					return '';
+				}
+			} else {				
+				//
+				// Reset start if it's a new search
+				//
+				if ($va_contexts[$vs_block]->getSearchExpression(true) != $ps_search_expression) {
+					$va_contexts[$vs_block]->setParameter('start', 0);
+					$va_contexts[$vs_block]->saveContext();
 				}
 			}
 			
@@ -398,7 +411,17 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort"), array("value" => $ps_sort)) : ''));
 			$o_view->setVar('sortByControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
+			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('search', $ps_search_expression);
+			$o_view->setVar('cacheKey', md5($ps_search_expression));
+			
+			if (!$vb_ajax_mode) {
+				if (isset($va_contexts[$vs_block])) {
+					$o_view->setVar('initializeWithStart', (int)$va_contexts[$vs_block]->getParameter('start'));
+				} else {
+					$o_view->setVar('initializeWithStart', 0);
+				}
+			}
 			
 			$vs_html = $o_view->render($va_block_info['view']);
 			

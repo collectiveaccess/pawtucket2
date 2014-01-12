@@ -80,14 +80,16 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
+						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						itemsPerColumn: <?php print $vn_items_per_column; ?>,
 						itemWidth: 230,
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
-						itemLoadURL: '<?php print ($vb_has_more ? caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)) : ''); ?>',
+						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
 						sortParameter: '{{{block}}}Sort',
-						sortControlSelector: '#{{{block}}}_sort'
+						sortControlSelector: '#{{{block}}}_sort',
+						cacheKey: '{{{cacheKey}}}'
 					});
 				});
 			</script>

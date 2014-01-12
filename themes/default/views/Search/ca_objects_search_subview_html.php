@@ -33,12 +33,13 @@
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
+	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<div class='blockTitle'>
-				<?php print $va_block_info['displayName']; ?>
+				<?php print $va_block_info['displayName']."/$vn_init_with_start/".$qr_results->numHits(); ?>
 				
 				<div class="blockSortControl">{{{sortByControl}}}</div>
 			</div>
@@ -58,7 +59,7 @@
 			</div>
 <?php
 			$vn_count++;
-			if ($vn_count == $vn_hits_per_block) {break;} 
+			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 ?>
 <?php	
@@ -70,13 +71,16 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
+						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
+						preloadCount: <?php print $vn_init_with_start; ?>,
 						itemWidth: 175,
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print ($vb_has_more ? caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)) : ''); ?>',
 						itemContainerSelector: '.blockResultsScroller',
 						sortParameter: '{{{block}}}Sort',
-						sortControlSelector: '#{{{block}}}_sort'
+						sortControlSelector: '#{{{block}}}_sort',
+						cacheKey: '{{{cacheKey}}}'
 					});
 				});
 			</script>

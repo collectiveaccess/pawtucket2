@@ -95,8 +95,9 @@
  			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString))) { 
  				$this->response->addContent($va_results[$vs_block]['html']); 
  				
-				if ($o_context = $this->opa_result_contexts[$vs_block]) {
-					$o_context->setCurrentSort($va_results[$vs_block]['sort']);
+				if (($o_context = $this->opa_result_contexts[$vs_block])) {
+					if ($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
+					$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
 					$o_context->saveContext();
 				}
  				return; 
@@ -105,7 +106,7 @@
  				$o_context->setParameter('search', $vs_search);
  				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
  				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
- 				$o_context->setCurrentSort($va_results[$vs_block]['sort']);
+ 				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
  				$o_context->saveContext();
  			}
  			
