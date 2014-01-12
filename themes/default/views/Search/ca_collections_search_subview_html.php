@@ -32,6 +32,7 @@
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -68,7 +69,7 @@
 			</div>
 <?php
 			$vn_count++;
-			if ($vn_count == $vn_hits_per_block) {break;}
+			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 		
 		if (!$this->request->isAjax()) {
@@ -81,6 +82,7 @@
 					jQuery('#{{{block}}}Results').hscroll({
 						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
+						preloadCount: <?php print $vn_init_with_start; ?>,
 						itemWidth: 165,
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
