@@ -31,32 +31,55 @@
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
+	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vs_search 			= (string)$this->getVar('search');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<div class='blockTitle'>
 				<?php print $va_block_info['displayName']; ?>
+				
+				<div class="blockSortControl">{{{sortByControl}}}</div>
 			</div>
-			<div class='blockResults' style='height:207px;'>
-				<div style='width:100000px' id='{{{block}}}Result'>
+			<div class='blockResults'>
+				<div id='{{{block}}}Results'>
+					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
-			print "<div id='{{{block}}}Result'>";
-			print caNavLink($this->request, "<div id='{{{block}}}Image'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'Objects/'.$qr_results->getIdentifierForUrl());
-			print "<div>".caNavLink($this->request, $qr_results->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'Objects/'.$qr_results->getIdentifierForUrl())."</div>";
-			print "</div>";
+?>
+			<div class='{{{block}}}Result'>
+				<?php print caNavLink($this->request, "<div class='{{{block}}}Image'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'Objects/'.$qr_results->getIdentifierForUrl()); ?>
+				<div>
+					<?php print caNavLink($this->request, $qr_results->get('ca_objects.preferred_labels.name'), '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl()); ?>
+				</div>
+			</div>
+<?php
 			$vn_count++;
 			if ($vn_count == $vn_hits_per_block) {break;} 
 		}
-		print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'block' => $vs_block));
-
+?>
+<?php	
 		if (!$this->request->isAjax()) {
 ?>
-		</div>
-	</div>
+					</div>
+				</div>
+			</div>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#{{{block}}}Results').hscroll({
+						itemCount: <?php print $qr_results->numHits(); ?>,
+						itemWidth: 175,
+						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
+						itemLoadURL: '<?php print ($vb_has_more ? caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)) : ''); ?>',
+						itemContainerSelector: '.blockResultsScroller',
+						sortParameter: '{{{block}}}Sort',
+						sortControlSelector: '#{{{block}}}_sort'
+					});
+				});
+			</script>
 <?php
 		}
 	}
