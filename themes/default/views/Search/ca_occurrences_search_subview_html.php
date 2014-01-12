@@ -78,6 +78,7 @@
 			</div>
 			<script type="text/javascript">
 				jQuery('#{{{block}}}Results').hscroll({
+						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						itemsPerColumn: <?php print $vn_items_per_column; ?>,
 						itemWidth: 230,

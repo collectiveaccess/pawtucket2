@@ -31,7 +31,9 @@
     $.hscroll = {
         defaults: {
             debug: false,
+            name: 'hscroll',
             itemCount: 0,
+            preloadCount: 0,
             itemWidth: 0,
             itemsPerLoad: 0,
             itemsPerColumn: 1,
@@ -39,7 +41,8 @@
             itemContainerSelector: '.blockResultsScroller',
             itemLoadURL: '',
             sortParameter: 'sort',
-            sortControlSelector: null
+            sortControlSelector: null,
+            cacheKey: null
         }
     };
 
@@ -47,36 +50,54 @@
     var hScroll = function($e, options) {
 
 		var _options = $.extend({}, $.hscroll.defaults, options || {})
-		var start = 0;
-        
+		
+		var loadedTo = _options.preloadCount;
+		var loading = false;
+		
+		
         var data = $e.data('hscroll');
+        
         if (!data) { data = {}; }
         data['initialized'] = true;
-        data['sort'] = _options.itemSort;
-        $e.data('hscroll', data);
+        data['sort'] = (_options.sortControlSelector) ? jQuery(_options.sortControlSelector).val() : _options.itemSort;
         
+        $e.data('hscroll', data);
+      	
+      	var jar = jQuery.cookieJar(_options.name+"_hscrollData");
+      	if (jar.get('cacheKey') !== (_options.cacheKey + '_' + data['sort'])) {
+      		jar.set('scrollPos', 0);
+      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort']));
+      	}
+      	var scrollPos = jar.get('scrollPos');
+      	
         $e.find(_options.itemContainerSelector).css("width", _calculateWidth() + "px");
         
+    	if (scrollPos > 0) {
+      		$e.scrollLeft(scrollPos);
+        }
+        
         $e.bind("scroll.hscroll", function(e) {
-        	if (start + _options.itemsPerLoad  >= _options.itemCount) { return; }
-        	
         	var left = parseInt($e.scrollLeft());
-        	var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);
-        	var loads = Math.ceil(start/_options.itemsPerLoad) + 1;
+        	jar.set('scrollPos', left);
         	
-        	if (((loadWidth * loads) - left) < loadWidth) {
-        		start += _options.itemsPerLoad;
-        		_load(start);
+        	if (loadedTo >= _options.itemCount) { return; }
+        	
+        	var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
+        	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
+        	
+        	if (((loadWidth * loads) - left) < loadWidth) {													// if there's less than a load width perform a load
+        		_load(loadedTo + _options.itemsPerLoad);
         	}
         });
         
          $e.bind("resort.hscroll", function(e) {
-         	start = 0;
+         	loadedTo = 0;
          	$e.find(_options.itemContainerSelector).html('').css("width", _calculateWidth() + "px");
          	$e.scrollLeft(0);
+         	jar.set('scrollPos', 0);
+      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort']));
          	_load(0);
          });
-         
          
 		if (_options.sortControlSelector) {
 			jQuery(_options.sortControlSelector).bind("change", function(e) {
@@ -90,8 +111,9 @@
 		// Calculate width of scroll track
 		//
 		function _calculateWidth() {
-        	var loads = Math.ceil(start/_options.itemsPerLoad) + 1;
-			var w = loads * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn) * _options.itemWidth;
+			var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
+        	var loads = Math.floor(loadedTo/_options.itemsPerLoad);
+			var w = loads * loadWidth;
 			
 			// Add space for the next page if needed
 			if ((loads * _options.itemsPerLoad) < _options.itemCount) {
@@ -106,15 +128,31 @@
 			return w;
 		}
 		
-		function _load(start) {
-			var opts = { s: start };
-			opts[_options.sortParameter] = data.sort;
+		function _load(to) {
+			if(loading) { return; }
+			loading = true;
 			
+			if (to < loadedTo) { return; }
+			
+			data = $e.data('hscroll'); 
+			
+			var opts = { s: loadedTo };
+			opts[_options.sortParameter] = data.sort;
 			jQuery.get(_options.itemLoadURL, opts, function(data, textStatus, jqXHR) {
 				$e.find(_options.itemContainerSelector).append(data);
+				loadedTo += _options.itemsPerLoad;
+				
+				if (to > loadedTo) {
+					loading = false;
+					_load(loadedTo + _options.itemsPerLoad);
+				} else {
+					$e.find(_options.itemContainerSelector).css("width", _calculateWidth() + "px");
+					
+					loading = false;
+				}
 			});
 			
-			$e.find(_options.itemContainerSelector).css("width", _calculateWidth() + "px");
+			
 		}
 		
 		// Remove the hscroll events
@@ -122,7 +160,6 @@
             return _$e.unbind('.hscroll').removeData('hscroll');
         }
        
-
         // Expose API methods 
         $.extend($e.hscroll, {
             destroy: _destroy
@@ -138,6 +175,7 @@
                 
             if (data && data.initialized && m.sort) {
             	data.sort = m.sort;
+                $this.data('hscroll', data);
             	$this.trigger("resort");
             	return;
             }
