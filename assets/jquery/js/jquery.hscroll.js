@@ -75,6 +75,9 @@
     	if (scrollPos > 0) {
       		$e.scrollLeft(scrollPos);
         }
+        if (_needsLoad()) {
+			_load(loadedTo + _options.itemsPerLoad);
+		}
         
         $e.bind("scroll.hscroll", function(e) {
         	var left = parseInt($e.scrollLeft());
@@ -82,10 +85,9 @@
         	
         	if (loadedTo >= _options.itemCount) { return; }
         	
-        	var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
-        	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
         	
-        	if (((loadWidth * loads) - left) < loadWidth) {													// if there's less than a load width perform a load
+        	if (_needsLoad()) {													
+        		console.log("do load for ", _options.name);
         		_load(loadedTo + _options.itemsPerLoad);
         	}
         });
@@ -107,6 +109,18 @@
         
         // Private
 
+		
+		function _needsLoad() {
+			var left = parseInt($e.scrollLeft());
+			var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
+        	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
+        	
+        	if (((loadWidth * loads) - left) < loadWidth) {													// if there's less than a load width perform a load
+        		return true;
+        	}
+        	return false;
+		}
+		
 		//
 		// Calculate width of scroll track
 		//

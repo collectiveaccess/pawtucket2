@@ -33,6 +33,7 @@
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -66,7 +67,7 @@
 				$vb_div_open = false;
 				$vn_i = 0;
 			}
-			if ($vn_count >= $vn_hits_per_block) {break;}
+			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 		
 		if ($vb_div_open) {print "</div>";}
@@ -80,6 +81,7 @@
 				jQuery('#{{{block}}}Results').hscroll({
 						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
+						preloadCount: <?php print $vn_init_with_start; ?>,
 						itemsPerColumn: <?php print $vn_items_per_column; ?>,
 						itemWidth: 230,
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,

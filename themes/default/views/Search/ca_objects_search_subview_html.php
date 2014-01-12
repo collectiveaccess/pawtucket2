@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<div class='blockTitle'>
-				<?php print $va_block_info['displayName']."/$vn_init_with_start/".$qr_results->numHits(); ?>
+				<?php print $va_block_info['displayName']; ?>
 				
 				<div class="blockSortControl">{{{sortByControl}}}</div>
 			</div>
