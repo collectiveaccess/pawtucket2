@@ -31,42 +31,64 @@
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
+	$vb_has_more 		= (bool)$this->getVar('hasMore');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<div class='blockTitle'>
 				<?php print $va_block_info['displayName']; ?>
+				
+				<div class="blockSortControl">{{{sortByControl}}}</div>
 			</div>
 			<div class='blockResults'>
-				<div style='width:100000px' id='{{{block}}}Result'>
+				<div id='{{{block}}}Results'>
+					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
 			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true));
-
-			print "<div class='{{{block}}}Result'>";
+?>
+			<div class='{{{block}}}Result'>
+<?php
 			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags'));
 			if (sizeof($va_images) > 0){
 				foreach ($va_images as $image_id => $va_image) {
-					print caNavLink($this->request, "<div class='objectImage'>".$va_image."</div>", '', '', 'Detail', 'Collections/'.$qr_results->getIdentifierForUrl());
+					print caNavLink($this->request, "<div class='{{{block}}}Image'>".$va_image."</div>", '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
 					break;
 				} 
 			} else {
-				print "<div class='objectImage'></div>";
+				print "<div class='{{{block}}}Image'></div>";
 			}
-			print "<div>".caNavLink($this->request, $qr_results->get('ca_collections.preferred_labels.name'), '', '', 'Detail', 'Collections/'.$qr_results->getIdentifierForUrl())."</div>";
-			print "</div>";
+?>
+				<div>
+					<?php print caNavLink($this->request, $qr_results->get('ca_collections.preferred_labels.name'), '', '', 'Detail', 'Collections/'.$qr_results->getIdentifierForUrl()); ?>
+				</div>
+			</div>
+<?php
 			$vn_count++;
-			if ($vn_count == 25) {break;}
+			if ($vn_count == $vn_hits_per_block) {break;}
 		}
-		print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'block' => $vs_block));
 		
 		if (!$this->request->isAjax()) {
 ?>
+					</div>
 				</div>
 			</div>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#{{{block}}}Results').hscroll({
+						itemCount: <?php print $qr_results->numHits(); ?>,
+						itemWidth: 165,
+						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
+						itemLoadURL: '<?php print ($vb_has_more ? caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)) : ''); ?>',
+						itemContainerSelector: '.blockResultsScroller',
+						sortParameter: '{{{block}}}Sort',
+						sortControlSelector: '#{{{block}}}_sort'
+					});
+				});
+			</script>
 <?php
 		}
 	}

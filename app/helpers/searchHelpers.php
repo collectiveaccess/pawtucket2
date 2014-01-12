@@ -318,6 +318,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @param string $ps_search_expression
 	 * @param array $pa_blocks
 	 * @param array $pa_options
+	 *			itemsPerPage =
+	 *			itemsPerColumn =
+	 *			contexts =
+	 *			... any other options passed through as-is to SearchEngine::search()
 	 *
 	 * @return array 
 	 */
@@ -325,6 +329,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
+		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
+		
+		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
+		unset($pa_options['contexts']);
 		
 		//
 		// Block are lazy-loaded using Ajax requests with additional items as they are scrolled.
@@ -347,6 +355,16 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if (!is_array($va_block_info['options'])) { $va_block_info['options'] = array(); }
 			$va_options = array_merge($pa_options, $va_block_info['options']);
 			
+			
+ 			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
+ 				if (isset($va_contexts[$vs_block])) {
+ 					$ps_sort = $va_contexts[$vs_block]->getCurrentSort();
+ 				}
+ 			}
+ 			
+ 			
+ 			$va_options['sort'] = $ps_sort;
+		
 			$qr_res = $o_search->search($ps_search_expression, $va_options);
 			
 			// In Ajax mode we scroll to an offset
@@ -360,31 +378,43 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				}
 			}
 			
+			
 			$vn_items_per_page = caGetOption('itemsPerPage', $va_block_info, $vn_items_per_page_default);
+			$vn_items_per_column = caGetOption('itemsPerColumn', $va_block_info, $vn_items_per_column_default);
+			
+			$vn_count = $qr_res->numHits();
+			$va_sort_by = ($vn_count > 1) ? caGetOption('sortBy', $va_block_info, null) : null;
 			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
 			$o_view->setVar('result', $qr_res);
-			$o_view->setVar('count', $vn_count = $qr_res->numHits());
+			$o_view->setVar('count', $vn_count);
 			$o_view->setVar('block', $vs_block);
 			$o_view->setVar('blockInfo', $va_block_info);
 			$o_view->setVar('blockIndex', $vn_i);
 			$o_view->setVar('start', $vn_start);
 			$o_view->setVar('itemsPerPage', $vn_items_per_page);
+			$o_view->setVar('itemsPerColumn', $vn_items_per_column);
+			$o_view->setVar('hasMore', (bool)($vn_count > $vn_start + $vn_items_per_page));
+			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
+			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort"), array("value" => $ps_sort)) : ''));
+			$o_view->setVar('sortByControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
+			$o_view->setVar('search', $ps_search_expression);
 			
 			$vs_html = $o_view->render($va_block_info['view']);
 			
+			$va_ret[$vs_block] = array(
+				'count' => $vn_count,
+				'html' => $vs_html,
+				'displayName' => $va_block_info['displayName'],
+				'ids' => $qr_res->getPrimaryKeyValues(),
+				'sort' => $ps_sort
+			);
+			$vn_total_cnt += $vn_count;
+			$vn_i++;
+			
 			if ($vb_ajax_mode) {
 				// In Ajax mode return rendered HTML for the single block
-				return $vs_html;
-			} else {
-				$va_ret[$vs_block] = array(
-					'count' => $vn_count,
-					'html' => $vs_html,
-					'displayName' => $va_block_info['displayName'],
-					'ids' => $qr_res->getPrimaryKeyValues()
-				);
-				$vn_total_cnt += $vn_count;
-				$vn_i++;
+				return $va_ret;
 			}
 		}
 		$va_ret['_info_'] = array(

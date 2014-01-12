@@ -1021,6 +1021,7 @@ h2 span.artist {
 }
 
 .blockTitle {
+	position: relative;
 	float:left;
 	width:170px;
 	background-color:#000;
@@ -1034,14 +1035,30 @@ h2 span.artist {
 
 .blockResults {
 	float:left;
-	width:785px;
+	width:837px;
 	height:207px;
 	
 	border-bottom:1px solid #ccc;
 	margin-left:15px;
 	padding-top:15px;
 	padding-bottom:15px;
-	overflow-y:scroll;
+	overflow:hidden;
+}
+
+.blockResultsScroller {
+	height: 190px;	/* Needs to be some height */
+}
+
+div.blockSortControl {
+	position: absolute;
+	color: #fff;
+	right: 5px;
+	bottom: 5px;
+	font-size: 10px;
+}
+
+div.blockSortControl select {
+	font-size: 9px;
 }
 
 #objectsBlock, #entitiesBlock, #placesBlock, #occurrencesBlock, #collectionsBlock {
@@ -1050,7 +1067,10 @@ h2 span.artist {
 }
 
 #objectsResults, #entitiesResults, #placesResults, #occurrencesResults, #collectionsResults {
-	width:100000px;
+	overflow-x:scroll;
+	overflow-y:hidden;
+	
+	width:100%;
 }
 
 .objectsResult  {
@@ -1073,62 +1093,45 @@ h2 span.artist {
 
 .entitiesSet {
 	float:left;
+	width:200px;
+	height:190px;
+	margin-right:20px;
+	overflow:hidden;
 }
 
 .entitiesResult {
 	margin-bottom:15px;
 	font-family: DIN17SBOP-Bold;
 	line-height:16px;
-	margin-right:30px;
-	width:200px;
 }
 
-.entitiesResult a {
-	color:#000;
-}
-
-.entitiesResult a:hover {
-	color:#000;
-}
 
 .placesSet {
 	float:left;
+	width:200px;
+	height:190px;
+	margin-right:20px;
+	overflow:hidden;
 }
 
 .placesResult {
 	margin-bottom:15px;
 	font-family: DIN17SBOP-Bold;
 	line-height:16px;
-	margin-right:30px;
-	width:200px;
-}
-
-.placesResult a {
-	color:#000;
-}
-
-.placesResult a:hover {
-	color:#000;
 }
 
 .occurrencesSet {
 	float:left;
+	width:200px;
+	height:190px;
+	margin-right:20px;
+	overflow:hidden;
 }
 
 .occurrencesResult {
 	margin-bottom:15px;
 	font-family: DIN17SBOP-Bold;
 	line-height:16px;
-	margin-right:30px;
-	width:200px;
-}
-
-.occurrencesResult a {
-	color:#000;
-}
-
-.occurrencesResult a:hover {
-	color:#000;
 }
 
 .collectionsResult {
@@ -1147,14 +1150,6 @@ h2 span.artist {
 	overflow:hidden;
 	margin-bottom:5px;
 	background-color:#eee;
-}
-
-.collectionResult a {
-	color:#000;
-}
-
-.collectionResult a:hover {
-	color:#000;
 }
 
 
