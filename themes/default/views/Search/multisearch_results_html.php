@@ -24,7 +24,7 @@
 		//
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
-			<a name='<?php print $vs_block; ?>'/>
+			<a name='<?php print $vs_block; ?>'></a>
 			<div id="<?php print $vs_block; ?>Block" >
 				<?php print $va_results[$vs_block]['html']; ?>
 			</div>
