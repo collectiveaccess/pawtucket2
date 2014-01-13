@@ -479,4 +479,31 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		return $va_results;
 	}
 	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return Configuration 
+	 */
+	function caGetSearchConfig() {
+		$o_config = Configuration::load();
+		return Configuration::load($o_config->get('search_config'));
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caGetInfoForSearchType($ps_search_type) {
+		$o_browse_config = caGetSearchConfig();
+		
+		$va_search_types = $o_browse_config->getAssoc('searchTypes');
+		$ps_search_type = strtolower($ps_search_type);
+		
+		if (isset($va_search_types[$ps_search_type])) {
+			return $va_search_types[$ps_search_type];
+		}
+		return null;
+	}
+	# ---------------------------------------
 ?>
