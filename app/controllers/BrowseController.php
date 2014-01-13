@@ -51,7 +51,7 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
- 			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 			if (!($va_browse_info = caGetInfoForSearchType($ps_function))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			}

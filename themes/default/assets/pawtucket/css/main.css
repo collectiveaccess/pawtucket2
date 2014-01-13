@@ -1049,6 +1049,11 @@ h2 span.artist {
 	height: 190px;	/* Needs to be some height */
 }
 
+.blockResultsFull {
+	text-decoration: none;
+	font-size: 11px;
+}
+
 div.blockSortControl {
 	position: absolute;
 	color: #fff;

@@ -40,6 +40,8 @@
 ?>
 			<div class='blockTitle'>
 				<?php print $va_block_info['displayName']; ?>
+				<br/>
+				<?php print caNavLink($this->request, _t('Full results &gt;'), 'blockResultsFull', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?>
 				
 				<div class="blockSortControl">{{{sortByControl}}}</div>
 			</div>
