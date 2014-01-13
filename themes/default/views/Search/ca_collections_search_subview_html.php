@@ -82,7 +82,7 @@
 					jQuery('#{{{block}}}Results').hscroll({
 						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
-						preloadCount: <?php print $vn_init_with_start; ?>,
+						preloadCount: <?php print $vn_count; ?>,
 						itemWidth: 165,
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
