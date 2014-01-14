@@ -39,6 +39,7 @@ require_once(__CA_LIB_DIR__.'/core/Configuration.php');
 require_once(__CA_LIB_DIR__.'/core/Parsers/TimeExpressionParser.php');
 require_once(__CA_LIB_DIR__.'/core/Parsers/ExpressionParser.php');
 require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
+require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 	
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -3104,7 +3105,7 @@ $ca_relationship_lookup_parse_cache = array();
 	 *
 	 */
 	function caObjectsDisplayDownloadLink($po_request) {
-		$o_config = Configuration::load();
+		$o_config = caGetDetailConfig();
 		$vn_can_download = false;
 		if($o_config->get('allow_ca_objects_representation_download')){
 			switch($o_config->get('allow_ca_objects_representation_download')){

@@ -47,6 +47,9 @@
  			
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
+ 			$this->opo_datamodel = Datamodel::load();
+ 			$va_access_values = caGetUserAccessValues($this->request);
+ 		 	$this->opa_access_values = $va_access_values;
  		}
  		# -------------------------------------------------------
  		/**
@@ -63,9 +66,7 @@
  				die("Invalid detail type");
  			}
  			
- 			$o_dm = Datamodel::load();
- 			
- 			$t_table = $o_dm->getInstanceByTableName($vs_table, true);
+ 			$t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
  			if (!$t_table->load(caUseIdentifiersInUrls() ? array('idno' => $ps_id) : (int)$ps_id)) {
  				// invalid id - throw error
  			}
@@ -141,6 +142,11 @@
  			
  			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_table->getPrimaryKey(), $t_table, $va_comments, $va_tags));
  			
+ 			//
+ 			// share link
+ 			//
+ 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_table->tableName(), "item_id" => $t_table->getPrimaryKey()))."\"); return false;'>Share</a>");
+
  			// find view
  			//		first look for type-specific view
  			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
@@ -440,8 +446,7 @@
  		}
  		# -------------------------------------------------------
  		public function saveCommentTagging() {
- 			$o_dm = Datamodel::load();
- 			if(!$t_item = $o_dm->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
+			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
  				die("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
  			}
 
@@ -516,5 +521,160 @@
  			}
  		}
  		# -------------------------------------------------------
+ 		# share - email item
+ 		# -------------------------------------------------------
+ 		function ShareForm() {
+ 			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
+ 				die("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
+ 			}
+			if(!$t_item->load($pn_item_id)){
+  				die("ID does not exist");		// shouldn't happen
+ 			}
+ 			
+ 			$this->view->setVar('t_item', $t_item);
+ 			$this->view->setVar('item_id', $pn_item_id);
+ 			$this->view->setVar('tablename', $ps_tablename);
+ 			$this->render("Details/form_share_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		 public function sendShare() {
+ 			$va_errors = array();
+ 			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
+ 				die("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
+ 			}
+			if(!$t_item->load($pn_item_id)){
+  				$this->view->setVar("message", _t("ID does not exist"));
+ 				$this->render("Form/reload_html.php");
+ 				return;
+ 			}
+ 			$o_purifier = new HTMLPurifier();
+    		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
+ 			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
+ 			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
+ 			$ps_subject = $o_purifier->purify($this->request->getParameter('subject', pString));
+ 			$ps_message = $o_purifier->purify($this->request->getParameter('message', pString));
+ 			$pn_security = $this->request->getParameter('security', pInteger);
+ 			$pn_sum = $this->request->getParameter('sum', pInteger);
+			
+			# --- check vars are set and email addresses are valid
+			$va_to_email = array();
+			$va_to_email_process = array();
+			if(!$ps_to_email){
+				$va_errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+			}else{
+				# --- explode on commas to support multiple addresses - then check each one
+				$va_to_email_process = explode(",", $ps_to_email);
+				foreach($va_to_email_process as $vs_email_to_verify){
+					$vs_email_to_verify = trim($vs_email_to_verify);
+					if(caCheckEmailAddress($vs_email_to_verify)){
+						$va_to_email[$vs_email_to_verify] = "";
+					}else{
+						$ps_to_email = "";
+						$va_errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+					}
+				}
+			}
+			if(!$ps_from_email || !caCheckEmailAddress($ps_from_email)){
+				$ps_from_email = "";
+				$va_errors["from_email"] = _t("Please enter a valid email address");
+			}
+			if(!$ps_from_name){
+				$va_errors["from_name"] = _t("Please enter your name");
+			}
+			if(!$ps_subject){
+				$va_errors["subject"] = _t("Please enter a subject");
+			}
+			if(!$ps_message){
+				$va_errors["message"] = _t("Please enter a message");
+			}
+			if(!$this->request->isLoggedIn()){
+				# --- check for security answer if not logged in
+				if ((!$pn_security)) {
+					$va_errors["security"] = _t("Please answer the security question.");
+				}else{
+					if($pn_security != $pn_sum){
+						$va_errors["security"] = _t("Your answer was incorrect, please try again");
+					}
+				}
+			}
+ 			
+ 			$this->view->setVar('t_item', $t_item);
+ 			$this->view->setVar('item_id', $pn_item_id);
+ 			$this->view->setVar('tablename', $ps_tablename);
+
+ 			if(sizeof($va_errors) == 0){
+				# -- generate mail text from template - get both html and text versions
+				ob_start();
+				if($ps_tablename == "ca_objects"){
+					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_text.tpl");
+				}else{
+					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_text.tpl");
+				}
+				$vs_mail_message_text = ob_get_contents();
+				ob_end_clean();
+				ob_start();
+				if($ps_tablename == "ca_objects"){
+					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_html.tpl");
+				}else{
+					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_html.tpl");
+				}
+				$vs_mail_message_html = ob_get_contents();
+				ob_end_clean();
+				
+				$va_media = null;
+				if($ps_tablename == "ca_objects"){
+					# --- get media for attachment
+					$vs_media_version = "";
+					# Media representation to email
+					# --- version is set in media_display.conf.
+					if (method_exists($t_item, 'getPrimaryRepresentationInstance')) {
+						if ($t_primary_rep = $t_item->getPrimaryRepresentationInstance()) {
+							if (!sizeof($this->opa_access_values) || in_array($t_primary_rep->get('access'), $this->opa_access_values)) { 		// check rep access
+								$va_media = array();
+								$va_rep_display_info = caGetMediaDisplayInfo('email', $t_primary_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+								
+								$vs_media_version = $va_rep_display_info['display_version'];
+								
+								$va_media['path'] = $t_primary_rep->getMediaPath('media', $vs_media_version);
+								$va_media_info = $t_primary_rep->getFileInfo('media', $vs_media_version);
+								if(!$va_media['name'] = $va_media_info['ORIGINAL_FILENAME']){
+									$va_media['name'] = $va_media_info[$vs_media_version]['FILENAME'];
+								}
+								# --- this is the mimetype of the version being downloaded
+								$va_media["mimetype"] = $va_media_info[$vs_media_version]['MIMETYPE'];
+							}
+						}
+					}		
+				}
+				if(caSendmail($va_to_email, array($ps_from_email => $ps_from_name), $ps_subject, $vs_mail_message_text, $vs_mail_message_html, null, null, $va_media)){
+ 					$this->view->setVar("message", _t("Your email was sent"));
+					$this->render("Form/reload_html.php");
+					return;
+ 				}else{
+ 					$va_errors["general"] = _t("Your email could not be sent");
+ 				}
+ 			}
+ 			if(sizeof($va_errors)){
+ 				# --- there were errors in the form data, so reload form with errors displayed - pass params to preload form
+ 				$this->view->setVar('to_email', $ps_to_email);
+ 				$this->view->setVar('from_email', $ps_from_email);
+ 				$this->view->setVar('from_name', $ps_from_name);
+ 				$this->view->setVar('subject', $ps_subject);
+ 				$this->view->setVar('message', $ps_message);
+ 				$this->view->setVar('errors', $va_errors);
+ 				
+ 				$va_errors["general"] = _t("There were errors in your form");
+ 				$this->ShareForm(); 			
+ 			}else{
+ 				$this->view->setVar("message", _t("Your message was sent"));
+ 				$this->render("Form/reload_html.php");
+ 				return;
+ 			}
+ 		}
+ 		# ------------------------------------------------------
 	}
  ?>

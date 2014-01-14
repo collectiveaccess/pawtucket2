@@ -548,10 +548,11 @@ a, a:active, a:focus {
 	margin-top:20px;
 }
 .bResultItemCol{
-	height:270px;
+	height:290px;
 }
 .bResultItemContent {
-	height:220px;
+	height:240px;
+	overflow:hidden;
 }
 .bResultItem{
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
@@ -563,7 +564,7 @@ a, a:active, a:focus {
 .bResultItem:hover{
 	padding:20px;
 	margin:-10px;
-	height:260px;
+	height:280px;
 	font-size:12px;
 	color:#000;
 }
