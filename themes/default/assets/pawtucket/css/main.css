@@ -1,23 +1,49 @@
+
+/* --------------------------------- */
+/* THIS FONT IMPORT WILL BE REPLACED WITH TYPEKIT WHEN MOVED TO NS SERVERS */
+/* --------------------------------- */
+
+
+@font-face {
+    font-family: 'itc_franklin_gothicmedium';
+    src: url('frankgotmed-webfont.eot');
+    src: url('frankgotmed-webfont.eot?#iefix') format('embedded-opentype'),
+         url('frankgotmed-webfont.woff') format('woff'),
+         url('frankgotmed-webfont.ttf') format('truetype'),
+         url('frankgotmed-webfont.svg#itc_franklin_gothicmedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
 /* --------------------------------- */
 /* GENERAL */
 /* --------------------------------- */
 body {
 	font-family: arial;
 	color:#454545;
+	background-color:#f3f3f3;
 }
 h1, h2{
-	font-family: DIN17SBOP-Regular;
+	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif;
 	font-weight: normal;
 	font-style: normal;
 }
 h3, h4, h5, h6{
-	font-family: DIN17SBOP-Regular;
+	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
 }
-a {
-	color:#19bed1;
+a:link, a:visited, a:active {
+	color:#665E4C;
 }
+
+a:hover {color:#BF0E00;}
+
+
 #pageArea{
 	max-width:1024px;
+	padding-top:30px;
+	background-color:#fff;
 }
 H1{
 	font-size: 20px;
@@ -50,25 +76,60 @@ a, a:active, a:focus {
 /* ----------------------------------------- */
 /* navbar - styles override bootstrap styles */
 /* ----------------------------------------- */
+
+.nslogotype{
+	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
+	padding-top:10px;
+	padding-bottom:20px;
+	}
+
+.nslogotype .newschool {
+	font-size:22px;
+	text-transform:uppercase;
+	color:#BF0E00;
+	}
+
+
+.nslogotype .kellen {
+	font-size:36px;
+	color:#666;
+	font-weight:bold;
+	line-height:34px;
+}
+
+#bs-main-navbar-collapse-1 {
+	background-color:#fff;
+}
+
 .navbar {
   border-radius:0px;
   background-image:none;
-  background-color:#FFFFFF;
+  background-color:transparent;
   border-top:0px;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
+  min-height:0px;
+  border-bottom:0px;
+  
+  /*-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);*/
+          box-shadow: 0 0px 0 rgba(255, 255, 255, 0) inset, 0 0px 0px rgba(0, 0, 0, 0);
 }
 .navbar-collapse{
  max-width:1024px;
 }
 .navbar .navbar-nav > .active > a {
-  background-color: #19bed1;
+  background-color: #BF0E00;
   color:#FFFFFF;
 }
+.navbar-nav > li > a {
+	padding-top:7px;
+	padding-bottom:7px;
+	line-height:100%;}
+
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-	font-family: DIN17SBOP-Regular;
+	font-family: Arial,Gadget,sans-serif;
 	font-size:12px;
 	color:#000;
+	text-transform:uppercase;
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
@@ -87,25 +148,26 @@ a, a:active, a:focus {
 }
 @media (min-width: 768px) {
 	.nav > li.dropdown > a.icon {
-		padding-top:29px;
-		padding-bottom:21px;
+		/*padding-top:29px;
+		padding-bottom:21px;*/
 	}
 }
 @media (min-width: 768px) {
 	.nav > li > a {
-		padding-top:31px;
-		padding-bottom:23px;
+		/*padding-top:31px;
+		padding-bottom:23px;*/
 	}
 }
 @media (min-width: 768px) {
 	.navbar-form {
-	  margin-top:22px;
-	  padding-right:5px;
+	  /*margin-top:22px;
+	  padding-right:5px;*/
 	}
 }
 
 .navbar-brand img {
   		width:100%;
+  		
 }
 .navbar-brand {
 	width:200px;
@@ -113,15 +175,15 @@ a, a:active, a:focus {
 @media (min-width: 768px) {
 	.navbar-brand {
   		width:250px;
-  		padding-top: 17px;
-  		padding-bottom: 10px;
+  		/*padding-top: 17px;
+  		padding-bottom: 10px;*/
   	}
 }
 @media (min-width: 992px) {
 	.navbar-brand {
   		width:300px;
-  		padding-top: 8px;
-  		padding-bottom: 5px;
+  		/*padding-top: 8px;
+  		padding-bottom: 5px;*/
   	}
 }
 
@@ -148,9 +210,16 @@ a, a:active, a:focus {
 }
 .navbar .formOutline{
 	border:1px solid #ccc;
-	border-radius: 10px;
+	/*border-radius: 10px;*/
+	border-radius: 0px;
 	margin-left:20px;
 }
+
+li form {
+	padding:0
+	margin:0;
+	}
+	
 .btn-search{
 	display: inline-block;
 	padding: 6px;
@@ -205,10 +274,12 @@ a, a:active, a:focus {
 	text-decoration:underline;
 	color:#ababab;
 }
-#footer ul a{
-	color: #19bed1;
+#footer ul a:link, #footer ul a:visited, #footer ul a:active{
+	color: #665E4C;
 	text-decoration:none;
 }
+#footer ul a:hover{color:#BF0E00;}
+
 #footer ul li{
 	padding:0px 20px 0px 0px;
 }
@@ -396,12 +467,19 @@ a, a:active, a:focus {
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */
+
+.chosenFacet {
+	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
+	/*color:#BF0E00;*/
+	text-transform:uppercase;
+	font-size:20px;}
+	
 #detail {
 	color:#4d4d4d;
-	font-size:11px;
+	font-size:12px;
 }
 #detail H1 {
-	font-size:15px;
+	font-size:24px;
 	padding-bottom:15px;
 	margin-top:0px;
 	border-bottom: 1px solid #bbbbbb;
@@ -414,14 +492,14 @@ a, a:active, a:focus {
 	color:#262626;
 }
 #detail H3 {
-	font-size:12px;
+	font-size:14px;
 	padding-bottom:0px;
 	margin-top:35px;
 	color:#262626;
 	text-transform:uppercase;
 }
 #detail H4 {
-	font-size:11px;
+	font-size:14px;
 	padding-bottom:0px;
 	margin-top:10px;
 	margin-bottom:0px;
@@ -512,7 +590,7 @@ h4 {
 	box-shadow:none;
 	border-radius:0;
 	border:0px;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: Arial, sans-serif;
 }
 .navbar .container {
 	padding-left:0px;
@@ -682,10 +760,10 @@ hr {
 #pageTitle {
 	float: left;
 	width: 170px;
-	background-color: #000;
-	color: #fff;
+	/*background-color: #666;*/
+	color: #666;
 	height: 245px;
-	font-family: "ProximaNovaRegular";
+	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
 	padding: 15px 10px 20px 15px;
 	font-size: 24px;
 	margin-right:15px;
@@ -876,6 +954,7 @@ h2 span.artist {
 	text-transform:uppercase;
 	font-size:12px;
 	margin-bottom:10px;
+	padding-right:15px;
 }
 #sortMenu.view a{
 	color:#000;
@@ -1021,7 +1100,7 @@ h2 span.artist {
 	height:auto;
 }
 .facetLabel, .facetLabel a{
-	color:#fff;
+	/*color:#fff;*/
 	font-size:12px;
 	text-transform:uppercase;
 	margin-top:15px;
@@ -1032,7 +1111,8 @@ h2 span.artist {
 	line-height:15px;
 }
 .facet a{
-	color:#fff;
+	/*color:#fff;*/
+	color:#BF0E00;
 	font-size:12px;
 	line-height:12px;
 }
@@ -1262,7 +1342,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 td.browseNavFacet a {
 	text-decoration: none;
 	font-style: normal;
-	color: #000;
+	color: #666;
 }
 
 td.browseNavFacet a:hover {
@@ -1282,22 +1362,25 @@ td.browseNavFacetSelected {
 .browseNavFacet {
 	background-color: #f7f7f7;
 	width: 700px;
-	
 	text-align: center;
-	
-	font-family: DIN17SBOP-Regular;
-	font-weight: normal;
+	font-family: Arial,Gadget,sans-serif;
+	font-weight: bold;
 	font-style: normal;
-	font-size: 14px;
-	color: #000;
+	font-size: 12px;
+	color: #666;
+	text-transform:uppercase;
 }
 
 #browseNavFacetContent table tbody tr td {
 	text-align: left;
 }
 
+#browseNavFacetContent table tbody tr td:hover {
+	background-color:#e3e3e3;
+}
+
 #browseNavFacetContent, #browseNavFacetContent table tbody tr td a {
-	font-family: DIN17SBOP-Regular;
+	font-family: Arial,Gadget,sans-serif;
 	font-weight: normal;
 	font-style: normal;
 	font-size: 11px;
@@ -1306,12 +1389,12 @@ td.browseNavFacetSelected {
 
 #browseNavFacetContent, #browseNavFacetContent table tbody tr td a:hover {
 	text-decoration: none;
-	font-family: DIN17SBOP-Regular;
-	font-weight: normal;
-	font-style: italic;
+	font-family: Arial,Gadget,sans-serif;
+	
 	font-size: 11px;
 	color: #000;
 }
+
 
 
 .nav .dropdown .dropdown-menu {
