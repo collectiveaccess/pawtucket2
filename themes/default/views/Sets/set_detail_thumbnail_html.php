@@ -64,7 +64,7 @@
 			$va_comments = array_reverse($this->getVar("comments"));
 ?>
 			<div>
-				<form action="<?php print caNavUrl($this->request, "", "Sets", "saveComment"); ?>" id="addComment">
+				<form action="<?php print caNavUrl($this->request, "", "Sets", "saveComment"); ?>" id="addComment" method="post">
 <?php
 				if($vs_comment_error = $this->getVar("comment_error")){
 					print "<div>".$vs_comment_error."</div>";

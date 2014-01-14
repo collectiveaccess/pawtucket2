@@ -37,6 +37,16 @@
    	
 	# ---------------------------------------
 	/**
+	 * 
+	 *
+	 * @return Configuration 
+	 */
+	function caGetDetailConfig() {
+		$o_config = Configuration::load();
+		return Configuration::load($o_config->get('detail_config'));
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display 
 	 * 
@@ -182,10 +192,65 @@
 			$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 		
 			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
-			return "<div id='cont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>";
+			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey()))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			if ($o_request->isLoggedIn()) {
+				$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+			}
+			if(caObjectsDisplayDownloadLink($o_request)){
+				# -- get version to download configured in media_display.conf
+				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+				$vs_download_version = $va_download_display_info['display_version'];
+				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version));
+			}
+			$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
+			return "<div id='cont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>".$vs_tool_bar;
+			
 		}else{
 			return "representation is not accessible to the public";
 		}
+	}
+	# ---------------------------------------
+	/*
+	 * list of comments and 
+	 * comment form for all detail pages
+	 *
+	 */
+	# ---------------------------------------
+	function caDetailItemComments($o_request, $pn_item_id, $t_item, $va_comments, $va_tags){
+		$vs_tmp = "";
+		if(is_array($va_comments) && (sizeof($va_comments) > 0)){
+			foreach($va_comments as $va_comment){
+				$vs_tmp .= "<blockquote>";
+				if($va_comment["media1"]){
+					$vs_tmp .= '<div class="pull-right" id="commentMedia'.$va_comment["comment_id"].'">';
+					$vs_tmp .= $va_comment["media1"]["tiny"]["TAG"];						
+					$vs_tmp .= "</div><!-- end pullright commentMedia -->\n";
+					TooltipManager::add(
+						"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
+					);
+				}
+				if($va_comment["comment"]){
+					$vs_tmp .= $va_comment["comment"];
+				}				
+				$vs_tmp .= "<small>".$va_comment["author"].", ".$va_comment["date"]."</small></blockquote>";
+			}
+		}
+		if(is_array($va_tags) && sizeof($va_tags) > 0){
+			$va_tag_links = array();
+			foreach($va_tags as $vs_tag){
+				$va_tag_links[] = caNavLink($o_request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => $vs_tag));
+			}
+			$vs_tmp .= "<h2>"._t("Tags")."</h2>\n
+				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
+		}		
+		if($o_request->isLoggedIn()){
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+		}else{
+			if(!$vs_tags && !$this->getVar("ranking")){
+				$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
+			}
+		}
+		return $vs_tmp;
 	}
 	# ---------------------------------------
 	/*

@@ -408,9 +408,13 @@ a, a:active, a:focus {
 	color:#4d4d4d;
 	font-size:11px;
 }
+#detail a {
+	color:#737373;
+	text-decoration:underline;
+}
 #detail H1 {
 	font-size:15px;
-	padding-bottom:15px;
+	padding-bottom:10px;
 	border-bottom: 1px solid #bbbbbb;
 	color:#262626;
 	text-transform:none;
@@ -424,7 +428,8 @@ a, a:active, a:focus {
 #detail H3 {
 	font-size:12px;
 	padding-bottom:0px;
-	margin-top:35px;
+	margin-bottom:0px;
+	margin-top:10px;
 	color:#262626;
 	text-transform:uppercase;
 }
@@ -450,17 +455,63 @@ a, a:active, a:focus {
 	color:#8e8985;
 	line-height:.3em;
 	font-size:18px;
+	text-decoration:none;
 }
 #detail .detailNavBgLeft a .small, #detail .detailNavBgRight a .small{
 	font-size:8px;
 	color:#b1b1b1;
 	padding-bottom:20px;
 }
-#detail .detailNavBgLeft {
-	margin-right:20px;
+#detail #cont img{
+	width:100%;
+	height:auto;
 }
-#detail .detailNavBgRight {
-	margin-left:20px;
+#detail #detailMediaToolbar{
+	background-color:#ebebeb;
+	padding:2px 5px 7px 5px;
+	font-size:12px;
+	float:left;
+}
+#detail #detailMediaToolbar a{
+	color:#929292;
+}
+#detail #detailMediaToolbar span{
+	padding:5px;
+}
+#detail #detailTools{
+	border-bottom: 1px solid #dddddd;
+	clear:left;
+	padding-top:10px;
+}
+#detail .detailTool {
+	border-top: 1px solid #dddddd;
+	padding:10px 0px 10px 3px;
+	color:#858585;
+	text-transform:uppercase;
+	font-size:11px;
+}
+#detail .detailTool span{
+	color:#929292;
+	margin-right:5px;
+}
+#detail .detailTool a{
+	text-decoration:none;
+}
+#detailComments{
+	display:none;
+	border-top: 1px solid #dddddd;
+	padding:10px 0px 10px 0px;
+	color:#929292;
+}
+#detailComments H2{
+	color:#929292;
+	font-size:11px;
+	text-transform:uppercase;
+	padding:0px;
+	margin:0px;
+}
+#detail #tags {
+	margin-bottom:10px;
 }
 /* --------------------------------- */
 /* browse b */
