@@ -51,7 +51,7 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
- 			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 			if (!($va_browse_info = caGetInfoForSearchType($ps_function))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			}
@@ -67,6 +67,9 @@
  				$ps_view = 'images';
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
+ 			
+ 			
+ 			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
  			//if ($ps_view != 'timeline') {
 				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);

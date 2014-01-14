@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/SearchController.php : controller for object search request handling - processes searches from top search bar
+ * app/controllers/SearchController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,113 +25,172 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/ObjectBrowse.php");
-	require_once(__CA_LIB_DIR__."/ca/Search/DidYouMean.php");
-	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
- 	require_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
- 	require_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
- 	require_once(__CA_LIB_DIR__."/ca/Search/PlaceSearch.php");
- 	require_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
- 	require_once(__CA_LIB_DIR__."/ca/Search/CollectionSearch.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/ObjectBrowse.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/EntityBrowse.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/PlaceBrowse.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/CollectionBrowse.php");
- 	require_once(__CA_LIB_DIR__."/ca/Browse/OccurrenceBrowse.php");
- 	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
-	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
+ 	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	
- 	class SearchController extends BaseSearchController {
+ 	class SearchController extends ActionController {
  		# -------------------------------------------------------
  		/**
- 		 * Name of subject table (ex. for an object search this is 'ca_objects')
+ 		 *
  		 */
- 		protected $ops_tablename = null;
+ 		private $ops_find_type = "search";
  		
- 		/** 
- 		 * Number of items per search results page
- 		 */
- 		protected $opa_items_per_page = array(12, 24, 36);
- 		
- 		/** 
- 		 * Default number of items per search results page
- 		 */
- 		protected $opn_items_per_page_default = 12;
- 		 
- 		/** 
- 		 * Number of items per secondary search results page
- 		 */
- 		protected $opa_items_per_secondary_search_page = 8;
- 		 
- 		/**
- 		 * List of search-result views supported for this find
- 		 * Is associative array: keys are view labels, values are view specifier to be incorporated into view name
- 		 */ 
- 		protected $opa_views;
- 		
- 		/**
- 		 * List of search-result view options
- 		 * Is associative array: keys are view labels, arrays for each view contain description and icon graphic name for use in view
- 		 */ 
- 		protected $opa_views_options;
- 		 
- 		 
- 		/**
- 		 * List of available search-result sorting fields
- 		 * Is associative array: values are display names for fields, keys are full fields names (table.field) to be used as sort
- 		 */
- 		protected $opa_sorts;
- 		
- 		protected $ops_find_type = 'basic_search';
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			
- 			
- 			//
- 			// Minimal view list (all targets have a "full" results view)
- 			//
- 			$this->opa_views = array(
-				'full' => _t('List')
-			);
-			$this->opa_views_options = array(
-				'full' => array("description" => _t("View results in a list"), "icon" => "icon_list.gif")
-			);
- 			
- 					$this->ops_tablename = 'ca_objects';
- 					$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
- 					$this->opo_browse = new ObjectBrowse($this->opo_result_context->getParameter('browse_id', true), 'pawtucket2');	
- 					
-						$this->opa_views = array(
-							'thumbnail' => _t('Thumbnails'),
-							'full' => _t('List')
-						 );
-					
-						$this->opa_sorts = array(
-							'ca_object_labels.name' => _t('Title'),
-							'ca_objects.type_id' => _t('Type'),
-							'ca_objects.idno_sort' => _t('Idno')
-						);
  		}
  		# -------------------------------------------------------
  		/**
- 		 * Search handler (returns search form and results, if any)
- 		 * Most logic is contained in the BaseSearchController->Search() method; all you usually
- 		 * need to do here is instantiate a new subject-appropriate subclass of BaseSearch 
- 		 * (eg. ObjectSearch for objects, EntitySearch for entities) and pass it to BaseSearchController->Search() 
+ 		 *
  		 */ 
- 		public function Index($pa_options=null) {
- 			$ps_search = $this->opo_result_context->getSearchExpression();
- 			$va_access_values = caGetUserAccessValues($this->request);
- 			$pa_options['search'] = $this->opo_browse;
- 			return parent::Index($pa_options);
+ 		public function __call($ps_function, $pa_args) {
+ 			$ps_function = strtolower($ps_function);
+ 			$ps_type = $this->request->getActionExtra();
+ 			
+ 			if (!($va_search_info = caGetInfoForSearchType($ps_function))) {
+ 				// invalid search type – throw error
+ 				die("Invalid search type");
+ 			}
+ 			$vs_class = $va_search_info['table'];
+ 			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type);
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			
+ 			$ps_view = $this->request->getParameter('view', pString);
+ 			if(!in_array($ps_view, array('list', 'images', 'timeline', 'timelineData'))) {
+ 				$ps_view = 'images';
+ 			}
+ 			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
+ 			
+ 			
+ 			//if ($ps_view != 'timeline') {
+				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
+				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+				$this->view->setVar('t_instance', $t_instance);
+			
+				$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
+				$this->view->setVar('view', $ps_view);
+			
+				//
+				// Load existing browse if key is specified
+				//
+				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+					$o_browse->reload($ps_cache_key);
+				}
+			
+				if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types); }
+			
+				//
+				// Clear criteria if required
+				//
+				if ((bool)$this->request->getParameter('clear', pInteger)) {
+					$o_browse->removeAllCriteria();
+				}
+				
+					
+				if ($this->request->getParameter('getFacet', pInteger)) {
+					$vs_facet = $this->request->getParameter('facet', pString);
+					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
+					$this->view->setVar('facet_name', $vs_facet);
+					$this->view->setVar('key', $o_browse->getBrowseID());
+					$this->render("Browse/{$vs_class}_facet_html.php");
+					return;
+				}
+			
+				//
+				// Add criteria and execute
+				//
+				if ($vs_facet = $this->request->getParameter('facet', pString)) {
+					$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+				} else { 
+					if ($o_browse->numCriteria() == 0) {
+						$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
+					}
+				}
+	
+				$o_browse->execute();
+			
+				//
+				// Facets
+				//
+				$va_facets = $o_browse->getInfoForAvailableFacets();
+				if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
+					foreach($va_facets as $vs_facet_name => $va_facet_info) {
+						if (!in_array($vs_facet_name, $va_available_facet_list)) {
+							unset($va_facets[$vs_facet_name]);
+						}
+					}
+				} 
+			
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
+				}
+			
+				$this->view->setVar('facets', $va_facets);
+			
+				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+				
+			
+				//
+				// Current criteria
+				//
+				$va_criteria = $o_browse->getCriteriaWithLabels();
+				if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
+					unset($va_criteria['_search']);
+				}
+				$va_criteria_for_display = array();
+				foreach($va_criteria as $vs_facet_name => $va_criterion) {
+					$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+					foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+						$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+					}
+				}
+				$this->view->setVar('criteria', $va_criteria_for_display);
+			
+				// 
+				// Results
+				//
+				$qr_res = $o_browse->getResults();
+				$this->view->setVar('result', $qr_res);
+			
+				$this->view->setVar('hits_per_block', 12);
+				$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+				
+
+				$this->opo_result_context->setParameter('key', $vs_key);
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+				$this->opo_result_context->saveContext();
+			//}
+ 			
+ 			if ($vn_type_id) {
+ 				if ($this->render("Search/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 			} 
+ 			
+ 			$this->render("Search/{$vs_class}_{$ps_view}_{$vs_format}.php");
  		}
  		# -------------------------------------------------------
-		public function searchName($ps_mode='singular') {
- 			return ($ps_mode == 'singular') ? _t('search') : _t('searches');
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Search',
+ 				'action' => $po_request->getAction(),
+ 				'params' => array(
+ 					'key'
+ 				)
+ 			);
+			return $va_ret;
  		}
-		# -------------------------------------------------------
+ 		# -------------------------------------------------------
 	}
  ?>
