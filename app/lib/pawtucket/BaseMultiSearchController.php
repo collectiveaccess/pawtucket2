@@ -90,15 +90,31 @@
  			$this->view->setVar('search', $vs_search);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
- 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values)));
+ 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts)));
  			
+ 			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString))) { 
+ 				if (!isset($va_results[$vs_block]['html'])) {
+ 					// TODO: throw error - no results
+ 					return false;
+ 				}
+ 				$this->response->addContent($va_results[$vs_block]['html']); 
+ 				
+				if (($o_context = $this->opa_result_contexts[$vs_block])) {
+					if (isset($va_results[$vs_block]['sort'])) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
+					$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
+					$o_context->saveContext();
+				}
+ 				return; 
+ 			} 
  			foreach($this->opa_result_contexts as $vs_block => $o_context) {
  				$o_context->setParameter('search', $vs_search);
+ 				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
  				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
+ 				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
  				$o_context->saveContext();
  			}
  			
- 			$this->render('Search/search_results_html.php');
+ 			$this->render('Search/multisearch_results_html.php');
  		}
  		# -------------------------------------------------------
  		abstract public static function getReturnToResultsUrl($po_request);
