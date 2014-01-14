@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/SearchController.php : controller for object search request handling - processes searches from top search bar
+ * app/controllers/DetailController.php : controller for object search request handling - processes searches from top search bar
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -45,7 +45,7 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/detail.conf');
+ 			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  		}
  		# -------------------------------------------------------
@@ -102,6 +102,44 @@
  			} else {
  				$this->view->setVar("representationViewer", "");
  			}
+ 			
+ 			//
+ 			// comments, tags
+ 			//
+ 			#
+ 			# User-generated comments, tags and ratings
+ 			#
+ 			$va_user_comments = $t_table->getComments(null, true);
+ 			$va_comments = array();
+ 			if (is_array($va_user_comments)) {
+				foreach($va_user_comments as $va_user_comment){
+					if($va_user_comment["comment"] || $va_user_comment["media1"] || $va_user_comment["media2"] || $va_user_comment["media3"] || $va_user_comment["media4"]){
+						# TODO: format date based on locale
+						$va_user_comment["date"] = date("n/j/Y", $va_user_comment["created_on"]);
+						
+						# -- get name of commenter
+						$t_user = new ca_users($va_user_comment["user_id"]);
+						$va_user_comment["author"] = $t_user->getName();
+						$va_comments[] = $va_user_comment;
+					}
+				}
+			}
+ 			$this->view->setVar('comments', $va_comments);
+ 			
+ 			$va_user_tags = $t_table->getTags(null, true);
+ 			$va_tags = array();
+ 			
+ 			if (is_array($va_user_tags)) {
+				foreach($va_user_tags as $va_user_tag){
+					if(!in_array($va_user_tag["tag"], $va_tags)){
+						$va_tags[] = $va_user_tag["tag"];
+					}
+				}
+			}
+ 			$this->view->setVar('tags_array', $va_tags);
+ 			$this->view->setVar('tags', implode(", ", $va_tags));
+ 			
+ 			$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_table->getPrimaryKey(), $t_table, $va_comments, $va_tags));
  			
  			// find view
  			//		first look for type-specific view
@@ -209,6 +247,274 @@
  			
  			$this->render('Details/object_representation_within_media_search_results_json.php');
 		}
+ 		# -------------------------------------------------------
+		/**
+		 * Download all media attached to specified object (not necessarily open for editing)
+		 * Includes all representation media attached to the specified object + any media attached to oter
+		 * objects in the same object hierarchy as the specified object. Used by the book viewer interfacce to 
+		 * initiate a download.
+		 */ 
+		public function DownloadMedia() {
+			if (!caObjectsDisplayDownloadLink($this->request)) {
+				$this->postError(1100, _t('Cannot download media'), 'ObjectEditorController->DownloadMedia');
+				return;
+			}
+			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+			$t_object = new ca_objects($pn_object_id);
+			if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
+			
+			$ps_version = $this->request->getParameter('version', pString);
+			
+			if (!$ps_version) { $ps_version = 'original'; }
+			$this->view->setVar('version', $ps_version);
+			
+			$va_ancestor_ids = $t_object->getHierarchyAncestors(null, array('idsOnly' => true, 'includeSelf' => true));
+			if ($vn_parent_id = array_pop($va_ancestor_ids)) {
+				$t_object->load($vn_parent_id);
+				array_unshift($va_ancestor_ids, $vn_parent_id);
+			}
+			
+			$va_child_ids = $t_object->getHierarchyChildren(null, array('idsOnly' => true));
+			
+			foreach($va_ancestor_ids as $vn_id) {
+				array_unshift($va_child_ids, $vn_id);
+			}
+			
+			$vn_c = 1;
+			$va_file_names = array();
+			$va_file_paths = array();
+			
+			foreach($va_child_ids as $vn_object_id) {
+				$t_object = new ca_objects($vn_object_id);
+				if (!$t_object->getPrimaryKey()) { continue; }
+				
+				$va_reps = $t_object->getRepresentations(array($ps_version));
+				$vs_idno = $t_object->get('idno');
+				
+				foreach($va_reps as $vn_representation_id => $va_rep) {
+					$va_rep_info = $va_rep['info'][$ps_version];
+					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
+					switch($this->request->user->getPreference('downloaded_file_naming')) {
+						case 'idno':
+							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_version':
+							$vs_file_name = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_rep_id_and_version':
+							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'original_name':
+						default:
+							if ($va_rep['info']['original_filename']) {
+								$va_tmp = explode('.', $va_rep['info']['original_filename']);
+								if (sizeof($va_tmp) > 1) { 
+									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+										$va_tmp[] = $vs_ext;
+									}
+								}
+								$vs_file_name = join('_', $va_tmp); 					
+							} else {
+								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version;
+							}
+							
+							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
+								$vs_file_name.= "_{$vn_c}";
+							}
+							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+							break;
+					} 
+					
+					$va_file_names[$vs_file_name] = true;
+					$this->view->setVar('version_download_name', $vs_file_name);
+				
+					//
+					// Perform metadata embedding
+					$t_rep = new ca_object_representations($va_rep['representation_id']);
+					if (!($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version))) {
+						$vs_path = $t_rep->getMediaPath('media', $ps_version);
+					}
+					$va_file_paths[$vs_path] = $vs_file_name;
+					
+					$vn_c++;
+				}
+			}
+			
+			if (sizeof($va_file_paths) > 1) {
+				if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
+				set_time_limit($vn_limit * 2);
+				$o_zip = new ZipFile();
+				foreach($va_file_paths as $vs_path => $vs_name) {
+					$o_zip->addFile($vs_path, $vs_name, null, array('compression' => 0));	// don't try to compress
+				}
+				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
+				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
+				
+				$vn_rc = $this->render('object_download_media_binary.php');
+				
+				if ($vs_path) { unlink($vs_path); }
+			} else {
+				foreach($va_file_paths as $vs_path => $vs_name) {
+					$this->view->setVar('archive_path', $vs_path);
+					$this->view->setVar('archive_name', $vs_name);
+				}
+				$vn_rc = $this->render('Details/object_download_media_binary.php');
+			}
+			
+			return $vn_rc;
+		}
+		# -------------------------------------------------------
+		/**
+		 * Download single representation from currently open object
+		 */ 
+		# -------------------------------------------------------
+		public function DownloadRepresentation() {
+			if (!caObjectsDisplayDownloadLink($this->request)) {
+				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
+				return;
+			}
+			$vn_object_id = $this->request->getParameter('object_id', pInteger);
+			$t_object = new ca_objects($vn_object_id);
+			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+			$ps_version = $this->request->getParameter('version', pString);
+			
+			$this->view->setVar('representation_id', $pn_representation_id);
+			$t_rep = new ca_object_representations($pn_representation_id);
+			$this->view->setVar('t_object_representation', $t_rep);
+			
+			$va_versions = $t_rep->getMediaVersions('media');
+			
+			if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
+			$this->view->setVar('version', $ps_version);
+			
+			$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);
+			$this->view->setVar('version_info', $va_rep_info);
+			
+			$va_info = $t_rep->getMediaInfo('media');
+			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_object->get('idno'));
+			switch($this->request->user->getPreference('downloaded_file_naming')) {
+				case 'idno':
+					$this->view->setVar('version_download_name', $vs_idno_proc.'.'.$va_rep_info['EXTENSION']);
+					break;
+				case 'idno_and_version':
+					$this->view->setVar('version_download_name', $vs_idno_proc.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
+					break;
+				case 'idno_and_rep_id_and_version':
+					$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
+					break;
+				case 'original_name':
+				default:
+					if ($va_info['ORIGINAL_FILENAME']) {
+						$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
+						if (sizeof($va_tmp) > 1) { 
+							if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+								$va_tmp[] = $vs_ext;
+							}
+						}
+						$this->view->setVar('version_download_name', join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
+					} else {
+						$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
+					}
+					break;
+			} 
+			
+			//
+			// Perform metadata embedding
+			if ($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version)) {
+				$this->view->setVar('version_path', $vs_path);
+			} else {
+				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
+			}
+			$vn_rc = $this->render('Details/object_representation_download_binary.php');
+			if ($vs_path) { unlink($vs_path); }
+			return $vn_rc;
+		}
+ 		# -------------------------------------------------------
+ 		# Tagging and commenting
+ 		# -------------------------------------------------------
+ 		public function CommentForm(){
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
+ 			$this->view->setVar("tablename", $this->request->getParameter('tablename', pString));
+ 			$this->render('Details/form_comments_html.php');
+ 		}
+ 		# -------------------------------------------------------
+ 		public function saveCommentTagging() {
+ 			$o_dm = Datamodel::load();
+ 			if(!$t_item = $o_dm->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
+ 				die("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
+ 			}
+
+ 			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
+  				$this->view->setVar("message", _t("Invalid ID"));
+ 				$this->render("Form/reload_html.php");
+ 				return;
+ 			}
+ 			if(!$t_item->load($vn_item_id)){
+  				$this->view->setVar("message", _t("ID does not exist"));
+ 				$this->render("Form/reload_html.php");
+ 				return;
+ 			}
+ 			
+ 			# --- get params from form
+ 			$ps_comment = $this->request->getParameter('comment', pString);
+ 			$pn_rank = $this->request->getParameter('rank', pInteger);
+ 			$ps_tags = $this->request->getParameter('tags', pString);
+ 			$ps_email = $this->request->getParameter('email', pString);
+ 			$ps_name = $this->request->getParameter('name', pString);
+ 			$ps_media1 = $_FILES['media1']['tmp_name'];
+ 			$ps_media1_original_name = $_FILES['media1']['name'];
+ 			
+ 			if($ps_comment || $pn_rank || $ps_tags || $ps_media1){
+ 				if(!(($pn_rank > 0) && ($pn_rank <= 5))){
+ 					$pn_rank = null;
+ 				}
+ 				if($ps_comment || $pn_rank || $ps_media1){
+ 					$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1);
+ 				}
+ 				if($ps_tags){
+ 					$va_tags = array();
+ 					$va_tags = explode(",", $ps_tags);
+ 					foreach($va_tags as $vs_tag){
+ 						$t_item->addTag(trim($vs_tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
+ 					}
+ 				}
+ 				if($ps_comment || $ps_tags || $ps_media1){
+ 					if($this->request->config->get("dont_moderate_comments")){
+ 						$this->view->setVar("message", _t("Thank you for contributing."));
+ 						$this->render("Form/reload_html.php");
+ 					}else{
+ 						$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."));
+ 						$this->render("Form/reload_html.php");
+ 					}
+ 					# --- check if email notification should be sent to admin
+ 					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+ 						# --- send email confirmation
+						# -- generate mail subject line
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
+						$vs_subject_line = ob_get_contents();
+						ob_end_clean();
+						# -- generate mail text from template - get both html and text versions
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
+						$vs_mail_message_text = ob_get_contents();
+						ob_end_clean();
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
+						$vs_mail_message_html = ob_get_contents();
+						ob_end_clean();
+						
+						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+ 					}
+ 				}else{
+ 					$this->view->setVar("message", _t("Thank you for your contribution."));
+ 					$this->render("Form/reload_html.php");
+ 				}
+ 			}else{
+ 				$this->render("Form/reload_html.php");
+ 			}
+ 		}
  		# -------------------------------------------------------
 	}
  ?>
