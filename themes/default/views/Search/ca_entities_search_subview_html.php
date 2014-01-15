@@ -38,13 +38,12 @@
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<div class='blockTitle'>
-				<?php print $va_block_info['displayName']; ?>
-				
-				<div class="blockSortControl">{{{sortByControl}}}</div>
-			</div>
-			<div class='blockResults'>
-				<div id='{{{block}}}Results'>
+			<small class="pull-right">
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByControl}}}
+			</small>
+			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
+			<div class='blockResults'><div id="scrollButton"><i class="fa fa-angle-right"></i></div>
+				<div id='{{{block}}}Results' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
 		}
@@ -53,31 +52,24 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true;}
-?>
-			<div class='{{{block}}}Result'>
-				<div>
-					<?php print caNavLink($this->request, $qr_results->get('ca_entities.preferred_labels.displayname'), '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl()); ?>
-				</div>
-			</div>
-<?php
-
+				print caNavLink($this->request, "<div class='{{{block}}}Result'>".$qr_results->get('ca_entities.preferred_labels.displayname')."</div>", '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
-				print "</div>\n";
-				$vn_i = 0;
+				print "</div><!-- end Set -->\n";
 				$vb_div_open = false;
+				$vn_i = 0;
 			}
 			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 		
-		if ($vb_div_open) {print "</div>";}		// closing div if we stop short of a full row
+		if ($vb_div_open) {print "</div><!-- end Set -->";}		// closing div if we stop short of a full row
 		
 		if (!$this->request->isAjax()) {
 ?>
-					</div>
+					</div><!-- end blockResultsScroller -->
 				</div>
-			</div>
+			</div><!-- end blockResults -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
@@ -85,7 +77,7 @@
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
 						itemsPerColumn: <?php print $vn_items_per_column; ?>,
-						itemWidth: 230,
+						itemWidth: jQuery('.{{{block}}}Set').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
