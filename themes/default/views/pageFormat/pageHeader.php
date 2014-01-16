@@ -24,8 +24,11 @@
 <body>
 	<!-- NS design -->
 <div class="container nslogotype"><span class="newschool">The New School</span>
-<br />
-<span class="kellen">The New School Archives & Special Collections</span></div>
+<div class="container breadcrumb">Home > Libraries & Archives > Special Collections</div>
+
+<span class="kellen"><a href="http://kellendevdev.whirl-i-gig.com/">The New School Archives<br />&amp; Special Collections</a></span></div>
+
+
 		<!-- end NS design --></div>
 	<!-- end NS design -->
 	
