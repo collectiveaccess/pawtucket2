@@ -62,6 +62,3 @@
 ?>
 	});
 </script>
-<?php
-print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'overlay' => 1))."\"); return false;' >[+] Full screen</a>";
-?>
