@@ -45,20 +45,22 @@ a:hover {color:#BF0E00;}
 	padding-top:30px;
 	background-color:#fff;
 }
+
+
+	
 H1{
 	font-size: 20px;
-	color:#19bed1;
+	color:#BF0E00;
 	text-transform:uppercase;
 	margin-top:0px;
 }
 H2{
 	font-size: 18px;
-	color:#19bed1;
 }
 
 H3{
 	font-size: 14px;
-	color:#19bed1;
+	color:#BF0E00;
 }
 a, a:active, a:focus {
    outline: 0;
@@ -79,25 +81,48 @@ a, a:active, a:focus {
 /* navbar - styles override bootstrap styles */
 /* ----------------------------------------- */
 
+.form-control {height: 38px;}
 .nslogotype{
 	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
-	padding-top:10px;
+	padding-top:15px;
 	padding-bottom:20px;
+	background-color:#f3f3f3;
 	}
 
 .nslogotype .newschool {
 	font-size:22px;
 	text-transform:uppercase;
 	color:#BF0E00;
+	font-weight:bold;
 	}
 
-
-.nslogotype .kellen {
+.nslogotype .kellen, .nslogotype .kellen a {
 	font-size:36px;
 	color:#666;
 	font-weight:bold;
-	line-height:34px;
+	line-height:38px;
+	text-decoration:none;
 }
+
+@media (min-width: 768px) {
+.nslogotype .kellen, .nslogotype .kellen a {
+	font-size:44px;
+	color:#666;
+	font-weight:bold;
+	line-height:40px;
+	text-decoration:none;
+}
+}
+
+.breadcrumb {
+	padding:0;
+	background-color:transparent;
+	font-weight:normal;
+	font-size:.8em;
+	font-family:arial, san-serif;
+	color:#999;
+	}
+
 
 #bs-main-navbar-collapse-1 {
 	background-color:#fff;
@@ -105,6 +130,7 @@ a, a:active, a:focus {
 
 .navbar {
   border-radius:0px;
+   color:#aba8a8;
   background-image:none;
   background-color:transparent;
   border-top:0px;
@@ -115,17 +141,35 @@ a, a:active, a:focus {
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);*/
           box-shadow: 0 0px 0 rgba(255, 255, 255, 0) inset, 0 0px 0px rgba(0, 0, 0, 0);
 }
+
+
 .navbar-collapse{
  max-width:1024px;
 }
 .navbar .navbar-nav > .active > a {
-  background-color: #BF0E00;
-  color:#FFFFFF;
+  color:#aba8a8;
+  background-color:#fff;
 }
+
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+    background-color: #FFF;
+    color: #aba8a8;
+}
+
+
 .navbar-nav > li > a {
-	padding-top:7px;
+	/*borrowed from newschool site */
+	background-color:#fff;
+	border-left:1px solid #e2e2e0;
+	color:#aba8a8;
+	line-height:22px;
+	padding:8px 18px;
+
+	/*disabled from pawtucket theme */
+	/*padding-top:7px;
 	padding-bottom:7px;
-	line-height:100%;}
+	line-height:100%;*/
+	}
 
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: Arial,Gadget,sans-serif;
@@ -162,6 +206,11 @@ a, a:active, a:focus {
 }
 @media (min-width: 768px) {
 	.navbar-form {
+	  height:16px;
+	  margin-right:15px;
+	  margin-top:0;
+	  padding:0;
+	  width:auto;
 	  /*margin-top:22px;
 	  padding-right:5px;*/
 	}
@@ -211,10 +260,10 @@ a, a:active, a:focus {
           box-shadow: none;
 }
 .navbar .formOutline{
-	border:1px solid #ccc;
+	border-left:1px solid #E2E2E0;
 	/*border-radius: 10px;*/
 	border-radius: 0px;
-	margin-left:20px;
+	/*margin-left:20px;*/
 }
 
 li form {
@@ -240,6 +289,27 @@ li form {
        -o-user-select: none;
           user-select: none;
 }
+
+.nav-pills > li > a {
+    color: #FFFFFF;
+    display: block;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 1em 1.5em 1em 2em;
+    text-decoration: none !important;
+    text-transform: uppercase;
+    background-color:#ccc;
+    border-radius:0;
+}
+
+.nav-pills > li > a:hover {
+	background-color:#333;
+	color:#fff;
+	}
+
+
 /* --------------------------------- */
 /* forms */
 /* --------------------------------- */
@@ -399,9 +469,12 @@ li form {
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
+
+#frontPage {margin-top:-30px;}
+
 #frontPage H1{
 	font-size:20px;
-	color:#7f7f7f;
+	color:#BF0E00;
 	line-height:1.3;
 	text-transform:none;
 	margin-top:15px;
@@ -409,8 +482,9 @@ li form {
 @media (min-width: 768px) {
 	#frontPage H1 {
 		font-size:28px;
-		padding-left:25px;
-		padding-right:25px;
+		/*padding-left:25px;
+		padding-right:25px;*/
+		color:#BF0E00;
 	}
 }
 /*#frontPage .jcarousel-wrapper{
@@ -1357,7 +1431,7 @@ div.blockSortControl select {
 
 /* bookreader */
 #BookReaderContainer{
-	width: 600px;
+	width: 400px;
 	height: 550px;
 }
 /* overlay (for object representations) */
