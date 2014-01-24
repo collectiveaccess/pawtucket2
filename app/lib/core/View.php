@@ -161,7 +161,7 @@ class View extends BaseObject {
 		$vs_buf = $this->_render($ps_filepath);
 		
 		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
-		preg_match_all("!\{\{\{([^\}]+)\}\}\}!", $vs_buf, $va_matches);
+		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_buf, $va_matches);
 		
 		$va_tags = $va_matches[1];
 		if (!is_array($va_tags)) { $va_tags = array(); }
