@@ -1864,13 +1864,18 @@ require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 		$o_units = $o_xpath->query('//unit[not(ancestor::unit)]');	// only find units not nested within other units (allows for units with units...)
 		$va_units = array();
 		
-		$ps_template = preg_replace("![\r\n\t]+!", "", html_entity_decode($ps_template));		//DomDocument kills newlines and tabs so we do the same to the template
+		$ps_template = preg_replace("!//[^\n\r]*!", "", html_entity_decode($ps_template)); // strip // comments
+		$ps_template = preg_replace("![\r\n\t]+!", "", $ps_template);		//DomDocument kills newlines and tabs so we do the same to the template
+	
+		$ps_template = preg_replace("!/\*[^\*]+\*/!", "", $ps_template); // strip /* */ comments
+		$ps_template = preg_replace("!/\*\*[^\*]+\*/!", "", $ps_template); // strip /** */ comments
+		
 		$ps_template = preg_replace("!relativeTo[ ]*\=!i", "relativeto=", $ps_template);		//DomDocument forces attribute names to all lower case so we need to adjust the template to match 
 		$ps_template = preg_replace("!restrictToTypes[ ]*\=!i", "restricttotypes=", $ps_template);
 		$ps_template = preg_replace("!restrictToRelationshipTypes[ ]*\=!i", "restricttorelationshiptypes=", $ps_template);
 		$ps_template = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $ps_template);	//DomDocument converts quotes around attributes from single to double quotes, so we need to normalize the template to match 
 		$ps_template = preg_replace("!\>[ ]+\<!", "><", $ps_template);
-			
+		
 		$vn_unit_id = 1;
 		foreach($o_units as $o_unit) {
 			if (!$o_unit) { continue; }
@@ -2016,8 +2021,8 @@ require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 			// Hack to get around DomDocument trimming leading spaces off of parsed HTML
 			// We try here to detect the trimming and shunt those spaces back where they belong. Seems to work :-)
 			//
-			if (preg_match("!([ ]+){$vs_content}!", $ps_template, $va_match_spaces)) {
-				$vs_html = preg_replace("!{$vs_content}!", $va_match_spaces[1].$vs_content, $vs_html);
+			if (preg_match("!([ ]+)".preg_quote($vs_content)."!", $ps_template, $va_match_spaces)) {
+				$vs_html = preg_replace("!".preg_quote($vs_content)."!", $va_match_spaces[1].$vs_content, $vs_html);
 				$vs_content = $va_match_spaces[1].$vs_content;
 			}
 			$vn_min = (int)$o_ifcount->getAttribute('min');
