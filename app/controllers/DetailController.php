@@ -58,6 +58,7 @@
  		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
+ 			AssetLoadManager::register("carousel");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
