@@ -46,7 +46,7 @@
 				<ul>
 <?php
 					foreach($va_item_media as $vn_object_id => $va_media){
-						print caDetailLink($this->request, $va_media["tags"]["mediumlarge"], '', 'ca_objects', $vn_object_id);
+						print "<li>".caDetailLink($this->request, $va_media["tags"]["mediumlarge"], '', 'ca_objects', $vn_object_id)."</li>";
 					}
 ?>
 				</ul>

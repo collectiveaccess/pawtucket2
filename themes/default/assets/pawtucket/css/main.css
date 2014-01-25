@@ -512,7 +512,7 @@ li form {
 #frontPage .jcarousel-pagination {
     position: relative;
     padding:0px;
-    margin:-5px auto 0px auto;
+    margin:0px auto 0px auto;
     text-align:center;
 }
 
@@ -549,13 +549,11 @@ li form {
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */
-
-.chosenFacet {
-	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
-	/*color:#BF0E00;*/
-	text-transform:uppercase;
-	font-size:20px;}
-	
+#detail HR{
+	color:#dddddd;
+	padding:0px;
+	margin:10px 0px 10px 0px;
+}
 #detail {
 	color:#4d4d4d;
 	font-size:12px;
@@ -565,34 +563,34 @@ li form {
 	text-decoration:underline;
 }
 #detail H1 {
-	font-size:24px;
-	padding-bottom:15px;
-	margin-top:0px;
-	border-bottom: 1px solid #bbbbbb;
+	font-size:16px;
+	padding:0px;
+	margin:0px;
 	color:#262626;
 	text-transform:none;
+	line-height:1.2em;
 }
 #detail H2 {
-	font-size:14px;
-	padding-bottom:15px;
-	margin-top:0px;
-	color:#262626;
+	font-size:11px;
+	padding:0px;
+	margin:0px;
+	text-transform:uppercase;
+	color:#808080;
+	line-height:1.2em;
 }
 #detail H3 {
-	font-size:14px;
+	font-size:11px;
 	padding-bottom:0px;
 	margin-bottom:0px;
 	margin-top:10px;
-	color:#262626;
-	text-transform:uppercase;
-}
-#detail H4 {
-	font-size:14px;
-	padding-bottom:0px;
-	margin-top:10px;
-	margin-bottom:0px;
 	color:#4d4d4d;
 	text-transform:uppercase;
+}
+#detail H3 a{
+	color:#19bed1;
+	font-size:9px;
+	padding:2px 0px 0px 10px;
+	text-decoration:none;
 }
 #detail .detailNavBgLeft, #detail .detailNavBgRight{
 	margin-top:-20px;
@@ -666,6 +664,62 @@ li form {
 #detail #tags {
 	margin-bottom:10px;
 }
+
+
+#detail #detailRelatedObjects{
+	border-bottom: 1px solid #dddddd;
+	padding:10px 0px 10px 0px;
+	margin-bottom:20px;
+}
+#detail #detailScrollButtonNext, #detail #detailScrollButtonPrevious{
+	right:0px;
+}
+#detail #detailScrollButtonPrevious{
+	left:0px;
+}
+#detail #detailScrollButtonNext, #detail #detailScrollButtonPrevious{
+	background-color:#ebebeb;
+	position:absolute;
+	z-index:100;
+	height:145px;
+	opacity:.7;
+	padding:60px 10px 0px 10px;
+	color:#4b4b4b;
+	font-size:15px;
+	margin:10px 0px 10px 0px;
+	width:25px;
+}
+#detail #detailScrollButtonNext:hover, #detail #detailScrollButtonPrevious:hover{
+	background-color:#dedede;
+	cursor:pointer;
+	color:#000;
+}
+#detail #detailScrollButtonNext.inactive, #detail #detailScrollButtonPrevious.inactive{
+	display:none;
+}
+#detail .detailObjectsResult  {
+	float:left;
+	width:150px;
+	height:145px;
+	margin:10px;
+	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	background-color:#FFFFFF;
+	line-height:1em;
+	padding:10px;
+	font-size:11px;
+	overflow:hidden;
+}
+#detail .detailObjectsResult a  {
+	color:#4b4b4b;
+}
+#detail .detailObjectsResult img {
+	width:100%;
+	height:auto;
+	margin-bottom:5px;
+}
+
+
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */

@@ -1859,7 +1859,6 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		// Parse units from template
 		$o_units = $o_doc('unit:not(unit > unit)');	// only process non-nested <unit> tags
 		$va_units = array();
-				
 		$vn_unit_id = 1;
 		foreach($o_units as $o_unit) {
 			if (!$o_unit) { continue; }
