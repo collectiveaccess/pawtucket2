@@ -129,7 +129,7 @@
 <!--start condensed header -->
 
 <!-- NS design -->
-<div class="container nslogotypesub"><span class="newschool">The New School </span><span class="kellen"><a href="http://kellendevdev.whirl-i-gig.com/"> The New School Digital Archives</a></span></div>
+<div class="container nslogotypesub"><span class="newschool">The New School </span><span class="kellen"><a href="/"> The New School Digital Archives</a></span></div>
 
 
 
