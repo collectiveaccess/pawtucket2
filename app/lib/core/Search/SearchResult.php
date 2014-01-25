@@ -427,9 +427,7 @@ class SearchResult extends BaseObject {
  	 * 		returnAsLinkTarget = Optional link target. If any plugin implementing hookGetAsLink() responds to the specified target then the plugin will be used to generate the links rather than CA's default link generator.
  	 *
  	 *		sort = optional array of bundles to sort returned values on. Currently only supported when getting related values via simple related <table_name> and <table_name>.related invokations. Eg. from a ca_objects results you can use the 'sort' option got get('ca_entities'), get('ca_entities.related') or get('ca_objects.related'). The bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You cannot sort on attributes.
-	 *		where = optional array of fields and field values to filter returned values on. The fields must be intrinsic and in the same table as the field being "get()'ed" Can be used to filter returned values from primary and related tables. This option can be useful when you want to fetch certain values from a related table. For example, you want to get the relationship source_info values, but only for relationships going to a specific related record. Note that multiple fields/values are effectively AND'ed together - all must match for a row to be returned - and that only equivalence is supported (eg. field equals value).
-	 *
-	 *		filter = 
+	 *		filter = optional array of elements to filter returned values on. The element must be part off the container being fetched from. For example, if you're get()'ing a value from a container element (Eg. ca_objects.dates.date_value) you can filter on any other subelement in that container by passing the name of the subelement and a value (Eg. "date_type" => "copyright"). Pass only the name of the subelement, not the full path that includes the table and container element. You can filter on multiple subelements by passing each subelement as a key in the array. Only values that match all filters are returned. You can filter on multiple values for a subelement by passing an array of values rather than a scalar (Eg. "date_type" => array("copyright", "patent")). Values that match *any* of the values will be returned. Only simple equivalance is supported. NOTE: Filters are only available when returnAsArray is set. They will be ignored if returnAsArray is not set.
 	 */
 	public function get($ps_field, $pa_options=null) {	
 		$vb_return_as_array = caGetOption('returnAsArray', $pa_options, false, array('castTo' => 'bool'));
@@ -442,23 +440,30 @@ class SearchResult extends BaseObject {
 			
 			if (($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true))) {
 				$va_keepers = array();
-				foreach($va_filters as $vs_filter => $vs_filter_val) {
-					// is value a list attribute?
-					if ((($t_element = $t_instance->_getElementInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
-						$vs_filter_val = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
+				foreach($va_filters as $vs_filter => $va_filter_vals) {
+					if (!is_array($va_filter_vals)) { $va_filter_vals = array($va_filter_vals); }
+					
+					foreach($va_filter_vals as $vn_index => $vs_filter_val) {
+						// is value a list attribute idno?
+						if (!is_numeric($vs_filter_val) && (($t_element = $t_instance->_getElementInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
+							$va_filter_vals[$vn_index] = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
+						}
 					}
 				
 					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true));
 			
 					foreach($va_filter_values as $vn_id => $vm_filtered_val) {
-						if ($vm_filtered_val == $vs_filter_val) {
+						if ((!isset($va_keepers[$vn_id]) || $va_keepers[$vn_id]) && in_array($vm_filtered_val, $va_filter_vals)) {	// any match for the element counts
 							$va_keepers[$vn_id] = true;
+						} else {	// if no match on any criteria kill it
+							$va_keepers[$vn_id] = false;
 						}
 					}
 				}
 			
 				$va_filtered_vals = array();
-				foreach(array_keys($va_keepers) as $vn_id) {
+				foreach($va_keepers as $vn_id => $vb_include) {
+					if (!$vb_include) { continue; }
 					$va_filtered_vals[$vn_id] = $vm_val[$vn_id];
 				}
 				return $va_filtered_vals;
@@ -467,7 +472,10 @@ class SearchResult extends BaseObject {
 		
 		return $vm_val;
 	}
-	
+	# ------------------------------------------------------------------
+	/**
+	 * Implementation of primary get() functionality
+	 */ 
 	private function _get($ps_field, $pa_options=null) {	
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		if(isset($pa_options['restrictToType']) && (!isset($pa_options['restrict_to_type']) || !$pa_options['restrict_to_type'])) { $pa_options['restrict_to_type'] = $pa_options['restrictToType']; }
@@ -485,8 +493,6 @@ class SearchResult extends BaseObject {
 		$vs_return_as_link_target = 	caGetOption('returnAsLinkTarget', $pa_options, '');
 		$vs_return_as_link_attributes = caGetOption('returnAsLinkAttributes', $pa_options, array(), array('castTo' => 'array'));
 		
-		$va_get_where = 				caGetOption('where', $pa_options, array(), array('castTo' => 'array'));
-
 		$va_original_path_components = $va_path_components = $this->getFieldPathComponents($ps_field);
 		
 		if ($va_path_components['table_name'] != $this->ops_table_name) {
@@ -1033,22 +1039,6 @@ class SearchResult extends BaseObject {
 //
 			$t_list = $this->opo_datamodel->getInstanceByTableName('ca_lists', true);
 			$va_value_list = array($vn_row_id => $this->opa_prefetch_cache[$va_path_components['table_name']][$vn_row_id]);
-
-			// Apply "where" criteria if defined
-			if (is_array($va_get_where)) {
-				$va_tmp = array();
-				foreach($va_value_list as $vn_id => $va_by_locale) {
-					foreach($va_by_locale as $vn_locale_id => $va_values) {
-						foreach($va_values as $vn_i => $va_value) {
-							foreach($va_get_where as $vs_fld => $vm_val) {
-								if ($va_value[$vs_fld] != $vm_val) { continue(2); }
-							}
-							$va_tmp[$vn_id][$vn_locale_id][$vn_i] = $va_value;
-						}
-					}
-				}
-				$va_value_list = $va_tmp;
-			}
 
 			// Restrict to relationship types (related)
 			if (isset($pa_options['restrict_to_relationship_types']) && $pa_options['restrict_to_relationship_types']) {
