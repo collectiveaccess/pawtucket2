@@ -58,6 +58,7 @@
  		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
+ 			AssetLoadManager::register("carousel");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
@@ -94,6 +95,8 @@
  			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caNavLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', '*', '*', '*', array($vn_previous_id)) : "");
  			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caNavLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', '*', '*', '*', array($vn_next_id)) : "");
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back'))));
+ 			
+ 			$this->view->setVar('commentsEnabled', (bool)$va_options['enableComments']);
  			
  			//
  			//
