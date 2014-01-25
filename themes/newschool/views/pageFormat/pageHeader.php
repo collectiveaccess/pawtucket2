@@ -30,7 +30,7 @@
 <div class="container nslogotype"><span class="newschool">The New School</span>
 <div class="container breadcrumb">Home > Libraries & Archives > Special Collections</div>
 
-<span class="kellen"><a href="http://kellendevdev.whirl-i-gig.com/">The New School Digital Archives</a></span></div>
+<span class="kellen"><a href="/">The New School Digital Archives</a></span></div>
 
 
 		<!-- end NS design --></div>
