@@ -757,6 +757,10 @@
 							$va_tmp = array_reverse($va_tmp, true);
 						}
 						
+						if (caGetOption('returnAsLink', $pa_options, false)) {
+							$va_tmp = caCreateLinksFromText(array_values($va_tmp), $this->tableName(), array_reverse(array_values($va_ancestor_list)));
+						}
+						
 						if ($vb_return_as_array) {
 							return $va_tmp;
 						} else {
