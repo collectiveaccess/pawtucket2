@@ -694,6 +694,46 @@ a, a:active, a:focus {
 #bRefine div {
 	margin-bottom:5px;
 }
+#bMorePanel{
+	position:fixed;
+	right:0px;
+	top:0px;
+	bottom:0px;
+	background-color:#FFFFFF;
+	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	padding:10px;
+	display:none;
+	z-index:10000;
+}
+#bMorePanel .bFilterCount{
+	color:#454545;
+	font-weight:normal;
+	font-size:.8em;
+	padding-left:10px;
+}
+#bMorePanel #bScrollList{
+	overflow-y:auto;
+	padding-left:10px;
+	height:95%;
+	float:left;
+	margin-top:5px;
+	width:350px;
+}
+#bMorePanel #bScrollList a{
+	color:#454545;
+	padding-bottom:5px;
+	line-height:1.1em;
+	font-size:11px;
+}
+#bMorePanel #bLetterBar{
+	float:right;
+	margin:0px 40px 0px 10px;
+}
+#bMorePanel #bLetterBar a{
+	text-decoration:none;
+	font-weight:bold;
+}
 
 
 /* --------------------------------- */
