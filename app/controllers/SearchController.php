@@ -99,6 +99,7 @@
 					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
 					$this->view->setVar('facet_name', $vs_facet);
 					$this->view->setVar('key', $o_browse->getBrowseID());
+					$this->view->setVar('facet_info', $o_browse->getInfoForFacet($vs_facet));
 					$this->render("Browse/{$vs_class}_facet_html.php");
 					return;
 				}
