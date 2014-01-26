@@ -8,26 +8,50 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
+	
+	<!--NS design-->
+	<script type="text/javascript" src="//use.typekit.net/cvi0qyc.js"></script>
+<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+<!--end NS design-->
+
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('.dropdown-browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 </script>
+
 </head>
 <body>
+	<!-- NS design -->
+<div class="container nslogotype"><span class="newschool">The New School</span>
+<div class="container breadcrumb">Home > Libraries & Archives > Special Collections</div>
+
+<span class="kellen"><a href="http://kellendevdev.whirl-i-gig.com/">The New School Archives<br />&amp; Special Collections</a></span></div>
+
+
+		<!-- end NS design --></div>
+	<!-- end NS design -->
+	
 	<nav class="navbar navbar-default" role="navigation"><div class="container">
 	  <!-- Brand and toggle get grouped for better mobile display -->
 	  <div class="navbar-header">
+	  
+		
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 		  <span class="sr-only">Toggle navigation</span>
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		</button>
-<?php
+	
+		
+			  </div>
+
+		
+<!--<?php
 		print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/ca_nav_logo300.png' border='0'>", "navbar-brand", "", "","");
-?>
-	  </div>
+?>-->
+<!--end NS design-->
 	
 	  <!-- Collect the nav links, forms, and other content for toggling -->
 	  <div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
@@ -61,14 +85,7 @@
 			</ul>
 		  </li>
 		</ul>
-		<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-		  <div class="formOutline">
-			  <div class="form-group">
-				<input type="text" class="form-control" placeholder="Search" name="search">
-			  </div>
-			  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-		  </div>
-		</form>
+	<!--form cut from here-->
 		<ul class="nav navbar-nav navbar-right">
 		  <li class="active"><a href="#">About</a></li>
 		  <li class="dropdown">
@@ -94,9 +111,22 @@
 	}
 ?>
 				</li>
-			</ul>
+			</ul> <!--end dropdown browse menu -->
 		  </li>
-		</ul>
+		  
+		  <!--NS design-->
+		  <li>
+		  	<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+		  <div class="formOutline">
+			  <div class="form-group">
+				<input type="text" class="form-control" placeholder="Search" name="search">
+			  </div>
+			  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+		  </div>
+		</form>
+		 </li> 
+		  <!--end NS design-->
+		</ul><!--end navbar right-->
 	  </div><!-- /.navbar-collapse --></div><!-- end container -->
 	</nav>
 	

@@ -427,9 +427,56 @@ class SearchResult extends BaseObject {
  	 * 		returnAsLinkTarget = Optional link target. If any plugin implementing hookGetAsLink() responds to the specified target then the plugin will be used to generate the links rather than CA's default link generator.
  	 *
  	 *		sort = optional array of bundles to sort returned values on. Currently only supported when getting related values via simple related <table_name> and <table_name>.related invokations. Eg. from a ca_objects results you can use the 'sort' option got get('ca_entities'), get('ca_entities.related') or get('ca_objects.related'). The bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You cannot sort on attributes.
-	 *		where = optional array of fields and field values to filter returned values on. The fields must be intrinsic and in the same table as the field being "get()'ed" Can be used to filter returned values from primary and related tables. This option can be useful when you want to fetch certain values from a related table. For example, you want to get the relationship source_info values, but only for relationships going to a specific related record. Note that multiple fields/values are effectively AND'ed together - all must match for a row to be returned - and that only equivalence is supported (eg. field equals value).
+	 *		filter = optional array of elements to filter returned values on. The element must be part off the container being fetched from. For example, if you're get()'ing a value from a container element (Eg. ca_objects.dates.date_value) you can filter on any other subelement in that container by passing the name of the subelement and a value (Eg. "date_type" => "copyright"). Pass only the name of the subelement, not the full path that includes the table and container element. You can filter on multiple subelements by passing each subelement as a key in the array. Only values that match all filters are returned. You can filter on multiple values for a subelement by passing an array of values rather than a scalar (Eg. "date_type" => array("copyright", "patent")). Values that match *any* of the values will be returned. Only simple equivalance is supported. NOTE: Filters are only available when returnAsArray is set. They will be ignored if returnAsArray is not set.
 	 */
 	public function get($ps_field, $pa_options=null) {	
+		$vb_return_as_array = caGetOption('returnAsArray', $pa_options, false, array('castTo' => 'bool'));
+		$va_filters = caGetOption('filters', $pa_options, array(), array('castTo' => 'array'));
+		$vm_val = self::_get($ps_field, $pa_options);
+		
+		if ($vb_return_as_array && sizeof($va_filters)) {
+			$va_tmp = explode(".", $ps_field);
+			if (sizeof($va_tmp) > 1) { array_pop($va_tmp); }
+			
+			if (($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true))) {
+				$va_keepers = array();
+				foreach($va_filters as $vs_filter => $va_filter_vals) {
+					if (!is_array($va_filter_vals)) { $va_filter_vals = array($va_filter_vals); }
+					
+					foreach($va_filter_vals as $vn_index => $vs_filter_val) {
+						// is value a list attribute idno?
+						if (!is_numeric($vs_filter_val) && (($t_element = $t_instance->_getElementInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
+							$va_filter_vals[$vn_index] = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
+						}
+					}
+				
+					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true));
+			
+					foreach($va_filter_values as $vn_id => $vm_filtered_val) {
+						if ((!isset($va_keepers[$vn_id]) || $va_keepers[$vn_id]) && in_array($vm_filtered_val, $va_filter_vals)) {	// any match for the element counts
+							$va_keepers[$vn_id] = true;
+						} else {	// if no match on any criteria kill it
+							$va_keepers[$vn_id] = false;
+						}
+					}
+				}
+			
+				$va_filtered_vals = array();
+				foreach($va_keepers as $vn_id => $vb_include) {
+					if (!$vb_include) { continue; }
+					$va_filtered_vals[$vn_id] = $vm_val[$vn_id];
+				}
+				return $va_filtered_vals;
+			}
+		}
+		
+		return $vm_val;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Implementation of primary get() functionality
+	 */ 
+	private function _get($ps_field, $pa_options=null) {	
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		if(isset($pa_options['restrictToType']) && (!isset($pa_options['restrict_to_type']) || !$pa_options['restrict_to_type'])) { $pa_options['restrict_to_type'] = $pa_options['restrictToType']; }
 	 	if(isset($pa_options['restrictToTypes']) && (!isset($pa_options['restrict_to_types']) || !$pa_options['restrict_to_types'])) { $pa_options['restrict_to_types'] = $pa_options['restrictToTypes']; }
@@ -438,15 +485,14 @@ class SearchResult extends BaseObject {
 	 	if(isset($pa_options['excludeTypes']) && (!isset($pa_options['exclude_types']) || !$pa_options['exclude_types'])) { $pa_options['exclude_types'] = $pa_options['excludeTypes']; }
 	 	if(isset($pa_options['excludeRelationshipTypes']) && (!isset($pa_options['exclude_relationship_types']) || !$pa_options['exclude_relationship_types'])) { $pa_options['exclude_relationship_types'] = $pa_options['excludeRelationshipTypes']; }
 
-		$vb_return_as_array = 		(isset($pa_options['returnAsArray'])) ? (bool)$pa_options['returnAsArray'] : false;
-		$vb_return_all_locales = 	(isset($pa_options['returnAllLocales'])) ? (bool)$pa_options['returnAllLocales'] : false;
-		$va_get_where = 			(isset($pa_options['where']) && is_array($pa_options['where']) && sizeof($pa_options['where'])) ? $pa_options['where'] : null;
-
-		$vb_return_as_link = 		(isset($pa_options['returnAsLink'])) ? (bool)$pa_options['returnAsLink'] : false;
-		$vs_return_as_link_text = 	(isset($pa_options['returnAsLinkText'])) ? (string)$pa_options['returnAsLinkText'] : '';
-		$vs_return_as_link_target = (isset($pa_options['returnAsLinkTarget'])) ? (string)$pa_options['returnAsLinkTarget'] : '';
-		$vs_return_as_link_attributes = (isset($pa_options['returnAsLinkAttributes']) && is_array($pa_options['returnAsLinkAttributes'])) ? $pa_options['returnAsLinkAttributes'] : array();
-			
+		$vb_return_as_array = 			caGetOption('returnAsArray', $pa_options, false, array('castTo' => 'bool'));
+		$vb_return_all_locales = 		caGetOption('returnAllLocales', $pa_options, false, array('castTo' => 'bool'));
+		
+		$vb_return_as_link = 			caGetOption('returnAsLink', $pa_options, false, array('castTo' => 'bool'));
+		$vs_return_as_link_text = 		caGetOption('returnAsLinkText', $pa_options, '');
+		$vs_return_as_link_target = 	caGetOption('returnAsLinkTarget', $pa_options, '');
+		$vs_return_as_link_attributes = caGetOption('returnAsLinkAttributes', $pa_options, array(), array('castTo' => 'array'));
+		
 		$va_original_path_components = $va_path_components = $this->getFieldPathComponents($ps_field);
 		
 		if ($va_path_components['table_name'] != $this->ops_table_name) {
@@ -459,7 +505,7 @@ class SearchResult extends BaseObject {
 			return null;
 		}
 		
-		$vo_request = $pa_options['request'];
+		$vo_request = caGetOption('request', $pa_options, null);
 		unset($pa_options['request']);
 		
 		// first see if the search engine can provide the field value directly (fastest)
@@ -475,9 +521,9 @@ class SearchResult extends BaseObject {
 			}
 		}
 		
-		$vs_template = 					(isset($pa_options['template'])) ? $pa_options['template'] : null;
-		$vs_delimiter = 				(isset($pa_options['delimiter'])) ? $pa_options['delimiter'] : ' ';
-		$vs_hierarchical_delimiter =	(isset($pa_options['hierarchicalDelimiter'])) ? $pa_options['hierarchicalDelimiter'] : ' ';	
+		$vs_template = 					caGetOption('template', $pa_options, null);
+		$vs_delimiter = 				caGetOption('delimiter', $pa_options, ' ');
+		$vs_hierarchical_delimiter = 	caGetOption('hierarchicalDelimiter', $pa_options, ' ');
 		
 		if ($vb_return_all_locales && !$vb_return_as_array) { $vb_return_as_array = true; }
 		
@@ -993,22 +1039,6 @@ class SearchResult extends BaseObject {
 //
 			$t_list = $this->opo_datamodel->getInstanceByTableName('ca_lists', true);
 			$va_value_list = array($vn_row_id => $this->opa_prefetch_cache[$va_path_components['table_name']][$vn_row_id]);
-
-			// Apply "where" criteria if defined
-			if (is_array($va_get_where)) {
-				$va_tmp = array();
-				foreach($va_value_list as $vn_id => $va_by_locale) {
-					foreach($va_by_locale as $vn_locale_id => $va_values) {
-						foreach($va_values as $vn_i => $va_value) {
-							foreach($va_get_where as $vs_fld => $vm_val) {
-								if ($va_value[$vs_fld] != $vm_val) { continue(2); }
-							}
-							$va_tmp[$vn_id][$vn_locale_id][$vn_i] = $va_value;
-						}
-					}
-				}
-				$va_value_list = $va_tmp;
-			}
 
 			// Restrict to relationship types (related)
 			if (isset($pa_options['restrict_to_relationship_types']) && $pa_options['restrict_to_relationship_types']) {
