@@ -124,5 +124,27 @@
 <?php
 	}
 ?>
-    	<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+
+
+<div class="container">
+	<div class="col-sm-8">
+<H1>The New School Digital Archives presents materials drawn from the collections The New School Archives &amp;
+Special Collections.</H1>    	
+<p>The New School Archives & Special Collections holds primary source materials related to the history of all divisions of The New School, and includes the holdings of the Kellen Design Archives, collections that focus on the history of Parsons and 20th century American design.</p>
+<p>Search or browse our database of 4,000 digital objects. And check back often--we are still building this site!</p>
+	</div><!--end col-sm-8-->
+	
+	<div class="col-sm-4">
+		<h2>Browse by Featured Topic:</h2>
+		<ul class="nav nav-pills nav-stacked">
+		<li><a href="#">Oral Histories Collections</a></li>
+		<li><a href="#">Fashion Design &amp; Illustration</a></li>
+		<li><a href="#">Interior Design Collections</a></li>
+		<li><a href="#">Art &amp; Art Exhibits at The New School</a></li>
+		<li><a href="#">Parsons Paris</a></li>
+		<li><a href="#">Buildings at The New School</a></li>
+		</ul>
+	</div> <!--end col-sm-4-->	
+</div> <!--end container-->
+
 	</div>

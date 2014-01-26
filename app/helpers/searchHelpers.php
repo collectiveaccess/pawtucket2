@@ -364,7 +364,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			
  			
  			$va_options['sort'] = $ps_sort;
+ 			
+ 			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
 		
+			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types); }
 			$qr_res = $o_search->search($ps_search_expression, $va_options);
 			
 			

@@ -1712,10 +1712,14 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Checks if the specified metadata element is relevant for the currently loaded row 
 		 *
+		 * @param string $ps_element_code 
+		 * @param array $pa_options Options are:
+		 *		includeSubElements = if set subelement codes will be checked as well. Default is false.
 		 */
-		public function hasElement($ps_element_code) {
-			$va_codes = $this->getApplicableElementCodes(null, false, false);
+		public function hasElement($ps_element_code, $pa_options=null) {
+			$va_codes = $this->getApplicableElementCodes(null, caGetOption('includeSubElements', $pa_options, false), false);
 			return (in_array($ps_element_code, $va_codes));
 		}
 		# ------------------------------------------------------------------

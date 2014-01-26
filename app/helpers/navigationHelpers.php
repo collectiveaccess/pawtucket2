@@ -72,7 +72,7 @@
 	/**
 	 *
 	 */
-	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null) {
+	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
 
 		if(defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) {
 			$vs_url = $po_request->getBaseUrlPath();
@@ -102,8 +102,7 @@
 					if (is_array($vs_value)) { // is the value is array we need to serialize is... just treat it as a list of values which *should* be what it is.
 						$vs_value = join(";", $vs_value);
 					}
-				
-					$vs_url .= '/'.$vs_name."/".urlencode($vs_value);
+					$vs_url .= '/'.$vs_name."/".(caGetOption('dontURLEncodeParameters', $pa_options, false) ? $vs_value : urlencode($vs_value));
 				
 					$vn_i++;
 				}
@@ -117,8 +116,8 @@
 	/**
 	 *
 	 */
-	function caNavLink($po_request, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null) {
-		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
+	function caNavLink($po_request, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
 			return "<strong>Error: no url for navigation</strong>";
 		}
 		
@@ -846,7 +845,7 @@
 				break;
 			case 'ca_entities':
 			case 20:
-				$vs_action = 'entities';
+				$vs_action = 'people';
 				break;
 			case 'ca_places':
 			case 72:

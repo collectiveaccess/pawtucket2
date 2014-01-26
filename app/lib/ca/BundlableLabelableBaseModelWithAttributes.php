@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -477,25 +477,28 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  	 *		returnAsLinkText = text to use a content of HTML link. If omitted the url itself is used as the link content.
  	 *		returnAsLinkAttributes = array of attributes to include in link <a> tag. Use this to set class, alt and any other link attributes.
 	 *		returnAsLinkTarget = Optional link target. If any plugin implementing hookGetAsLink() responds to the specified target then the plugin will be used to generate the links rather than CA's default link generator.
+	 *		filter = optional array of elements to filter returned values on. The element must be part off the container being fetched from. For example, if you're get()'ing a value from a container element (Eg. ca_objects.dates.date_value) you can filter on any other subelement in that container by passing the name of the subelement and a value (Eg. "date_type" => "copyright"). Pass only the name of the subelement, not the full path that includes the table and container element. You can filter on multiple subelements by passing each subelement as a key in the array. Only values that match all filters are returned. You can filter on multiple values for a subelement by passing an array of values rather than a scalar (Eg. "date_type" => array("copyright", "patent")). Values that match *any* of the values will be returned. Only simple equivalance is supported. NOTE: Filters are only available when returnAsArray is set. They will be ignored if returnAsArray is not set.
 	 */
 	public function get($ps_field, $pa_options=null) {
 		if(!is_array($pa_options)) { $pa_options = array(); }
-		$vs_template = 				(isset($pa_options['template'])) ? $pa_options['template'] : null;
-		$vb_return_as_array = 		(isset($pa_options['returnAsArray'])) ? (bool)$pa_options['returnAsArray'] : false;
 		
-		$vb_return_as_link = 		(isset($pa_options['returnAsLink'])) ? (bool)$pa_options['returnAsLink'] : false;
-		$vs_return_as_link_text = 	(isset($pa_options['returnAsLinkText'])) ? (string)$pa_options['returnAsLinkText'] : '';
-		$vs_return_as_link_target = (isset($pa_options['returnAsLinkTarget'])) ? (string)$pa_options['returnAsLinkTarget'] : '';
-		$vs_return_as_link_attributes = (isset($pa_options['returnAsLinkAttributes']) && is_array($pa_options['returnAsLinkAttributes'])) ? $pa_options['returnAsLinkAttributes'] : array();
+		$vs_template =					caGetOption('template', $pa_options, null);
+		$vb_return_as_array =			caGetOption('returnAsArray', $pa_options, false, array('castTo' => 'bool'));
 		
-		$vb_return_all_locales = 	(isset($pa_options['returnAllLocales'])) ? (bool)$pa_options['returnAllLocales'] : false;
-		$vs_delimiter = 			(isset($pa_options['delimiter'])) ? $pa_options['delimiter'] : ' ';
-		$va_restrict_to_rel_types = (isset($pa_options['restrictToRelationshipTypes']) && is_array($pa_options['restrictToRelationshipTypes'])) ? $pa_options['restrictToRelationshipTypes'] : false;
+		$vb_return_as_link =			caGetOption('returnAsLink', $pa_options, false, array('castTo' => 'bool'));
+		$vs_return_as_link_text =		caGetOption('returnAsLinkText', $pa_options, '');
+		$vs_return_as_link_target =		caGetOption('returnAsLinkTarget', $pa_options, '');
+		$va_return_as_link_attributes =	caGetOption('returnAsLinkAttributes', $pa_options, array(), array('castTo' => 'array'));
+		
+		$vb_return_all_locales =		caGetOption('returnAllLocales', $pa_options, false, array('castTo' => 'bool'));
+		$vs_delimiter =					caGetOption('delimiter', $pa_options, '');
+		$va_restrict_to_rel_types =		caGetOption('restrictToRelationshipTypes', $pa_options, null);
+		
+		$va_filters = 					caGetOption('filters', $pa_options, array(), array('castTo' => 'array'));
 		
 		if ($vb_return_all_locales && !$vb_return_as_array) { $vb_return_as_array = true; }
 		
-		$va_get_where = 			(isset($pa_options['where']) && is_array($pa_options['where']) && sizeof($pa_options['where'])) ? $pa_options['where'] : null;
-		
+		$va_return_values = null;
 		
 		// does get refer to an attribute?
 		$va_tmp = explode('.', $ps_field);
@@ -565,13 +568,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 							} 
 						
 							if ($vb_return_as_array) {
-								return $va_text;
+								$va_return_values =  $va_text;
 							}
 							return join($vs_delimiter, $va_text);
 						}
 					}
 					
-					return $va_related_items;
+					$va_return_values = $va_related_items;
 				}
 				break;
 			# -------------------------------------
@@ -620,7 +623,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						} 
 						
 						if ($vb_return_as_array) {
-							return $va_text;
+							$va_return_values = $va_text;
 						}
 						return join($vs_delimiter, $va_text);
 					}
@@ -723,7 +726,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										if ($vb_return_as_link && !$vb_return_as_array && !$vb_return_all_locales) {
 											$va_items[] = $vm_val;
 										} else {
-											return $vm_val;
+											$va_return_values = $vm_val;
+											break;
 										}
 									}
 								} else {
@@ -740,7 +744,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					}
 					
 					if($vb_return_as_array) {
-						return $va_items;
+						$va_return_values = $va_items;
 					} else {
 						return join($vs_delimiter, $va_items);
 					}
@@ -749,8 +753,49 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			# -------------------------------------
 		}
 		
+		if (!$va_return_values) {
+			$va_return_values = parent::get($ps_field, $pa_options);
+		}
+		
+		//
+		// Perform filtering
+		//
+		if ($vb_return_as_array && sizeof($va_filters)) {
+			$va_tmp = explode(".", $ps_field);
+			if (sizeof($va_tmp) > 1) { array_pop($va_tmp); }
+			if (($t_instance = $this->getAppDataModel()->getInstanceByTableName($va_tmp[0], true))) {
+				$va_keepers = array();
+				foreach($va_filters as $vs_filter => $va_filter_vals) {
+					if (!is_array($va_filter_vals)) { $va_filter_vals = array($va_filter_vals); }
+					
+					foreach($va_filter_vals as $vn_index => $vs_filter_val) {
+						// is value a list attribute idno?
+						if (!is_numeric($vs_filter_val) && (($t_element = $t_instance->_getElementInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
+							$va_filter_vals[$vn_index] = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
+						}
+					}
+				
+					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true));
 			
-		return parent::get($ps_field, $pa_options);
+					foreach($va_filter_values as $vn_id => $vm_filtered_val) {
+						if ((!isset($va_keepers[$vn_id]) || $va_keepers[$vn_id]) && in_array($vm_filtered_val, $va_filter_vals)) {	// any match for the element counts
+							$va_keepers[$vn_id] = true;
+						} else {	// if no match on any criteria kill it
+							$va_keepers[$vn_id] = false;
+						}
+					}
+				}
+			
+				$va_filtered_vals = array();
+				foreach($va_keepers as $vn_id => $vb_include) {
+					if (!$vb_include) { continue; }
+					$va_filtered_vals[$vn_id] = $va_return_values[$vn_id];
+				}
+				return $va_filtered_vals;
+			}
+		}
+		
+		return $va_return_values;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -3650,8 +3695,7 @@ if (!$vb_batch) {
  	 *		sort = optional array of bundles to sort returned values on. Currently only supported when getting related values via simple related <table_name> and <table_name>.related invokations. Eg. from a ca_objects results you can use the 'sort' option got get('ca_entities'), get('ca_entities.related') or get('ca_objects.related'). The bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics, label fields and attributes) are sortable.
  	 *		sortDirection = direction of sort. Valid values as "ASC" (ascending) and "DESC" (descending). Default is ASC.
  	 *		showDeleted = if set to true, related items that have been deleted are returned. Default is false.
-	 *		where = optional array of fields and field values to filter returned values on. The fields must be intrinsic and in the same table as the field being "get()'ed" Can be used to filter returned values from primary and related tables. This option can be useful when you want to fetch certain values from a related table. For example, you want to get the relationship source_info values, but only for relationships going to a specific related record. Note that multiple fields/values are effectively AND'ed together - all must match for a row to be returned - and that only equivalence is supported (eg. field equals value).
- 	 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
+	 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
  	 * @return array - list of related items
  	 */
 	 public function getRelatedItems($pm_rel_table_name_or_num, $pa_options=null) {
@@ -3674,9 +3718,7 @@ if (!$vb_batch) {
 		$o_db = $this->getDb();
 		$o_tep = new TimeExpressionParser();
 		$vb_uses_effective_dates = false;
-		
-		$va_get_where = 			(isset($pa_options['where']) && is_array($pa_options['where']) && sizeof($pa_options['where'])) ? $pa_options['where'] : null;
-		
+	
 		$va_row_ids = (isset($pa_options['row_ids']) && is_array($pa_options['row_ids'])) ? $pa_options['row_ids'] : null;
 		$vn_row_id = (isset($pa_options['row_id']) && $pa_options['row_id']) ? $pa_options['row_id'] : $this->getPrimaryKey();
 		
@@ -3861,14 +3903,6 @@ if (!$vb_batch) {
 				) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
 				".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
 			)";
-		}
-				
-		if (is_array($va_get_where)) {
-			foreach($va_get_where as $vs_fld => $vm_val) {
-				if ($t_rel_item->hasField($vs_fld)) {
-					$va_wheres[] = "({$vs_related_table_name}.{$vs_fld} = ".(!is_numeric($vm_val) ? "'".$this->getDb()->escape($vm_val)."'": $vm_val).")";
-				}
-			}
 		}
 		
 		if ($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) { $va_selects[] = $t_rel_item->tableName().'.'.$vs_idno_fld; }

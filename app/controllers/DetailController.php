@@ -96,6 +96,8 @@
  			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caNavLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', '*', '*', '*', array($vn_next_id)) : "");
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back'))));
  			
+ 			$this->view->setVar('commentsEnabled', (bool)$va_options['enableComments']);
+ 			
  			//
  			//
  			//
