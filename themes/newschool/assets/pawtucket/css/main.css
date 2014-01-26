@@ -1793,70 +1793,88 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 
 /* browse menu */
-.browseNavTable {
-	margin: 0px;
-	padding: 0px 0px -5px 0px;
+.browseMenuContent {
+	width: 100%;
+	overflow: auto;
+}
+.browseMenuFacet {
+	width: 900px;
+	max-height: 400px;
+	overflow: auto;
+}
+ul.browseMenuFacetList {
+	background-color: #ccc;
+}
+a.browseMenuBrowseAll {
+	font-size: 10px;
+}
+div.browseMenuBrowseAll {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
+	background-color: #f0f0f0;
+	opacity: 0.8;
+	padding: 5px;
+}
+div.browseMenuBrowseSearch {
+	position: absolute;
+	bottom: 3px;
+	left: 3px;
+	background-color: #f0f0f0;
+	opacity: 0.8;
+	padding: 5px;
+}
+div.browseMenuBrowseSearch input {
+	font-size: 10px;
+	height: 14px;
 }
 
-td.browseNavFacet a {
-	text-decoration: none;
-	font-style: normal;
-	color: #666;
+div.browseFacetItem {
+	float: left;
+	width: 200px;
+	padding: 10px;
 }
 
-td.browseNavFacet a:hover {
-	text-decoration: none;
-	font-weight: bold;
-	color: #000;
-}
-
-td.browseNavFacetSelected {
-	text-decoration: none;
-	font-weight: bold;
-	font-style: italic;
-	background-color: #c9c9c9;
-	color: #000;
-}
-
-.browseNavFacet {
-	background-color: #f7f7f7;
-	width: 700px;
-	text-align: center;
-	font-family: Arial,Gadget,sans-serif;
-	font-weight: bold;
-	font-style: normal;
+div.browseFacetItem a {
 	font-size: 12px;
-	color: #666;
-	text-transform:uppercase;
 }
-
-#browseNavFacetContent table tbody tr td {
-	text-align: left;
-}
-
-#browseNavFacetContent table tbody tr td:hover {
-	background-color:#e3e3e3;
-}
-
-#browseNavFacetContent, #browseNavFacetContent table tbody tr td a {
-	font-family: Arial,Gadget,sans-serif;
-	font-weight: normal;
-	font-style: normal;
-	font-size: 11px;
-	color: #000;
-}
-
-#browseNavFacetContent, #browseNavFacetContent table tbody tr td a:hover {
-	text-decoration: none;
-	font-family: Arial,Gadget,sans-serif;
-	
-	font-size: 11px;
-	color: #000;
-}
-
 
 
 .nav .dropdown .dropdown-menu {
-    max-height: 400px;
     overflow: auto;
+}
+.dropdown-browse-menu {
+	padding: 0px;
+	min-height: 300px;
+}
+
+
+/*!
+ * Yamm!3
+ * Yet another megamenu for Bootstrap 3
+ * 
+ * http://geedmo.github.com/yamm3
+ */
+.yamm .nav,
+.yamm .collapse,
+.yamm .dropup,
+.yamm .dropdown {
+  position: static;
+}
+.yamm .container {
+  position: relative;
+}
+.yamm .dropdown-menu {
+  left: auto;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+.yamm .yamm-content {
+  padding: 20px 30px;
+}
+.yamm .dropdown.yamm-fw .dropdown-menu {
+  left: 0;
+  right: 0;
 }

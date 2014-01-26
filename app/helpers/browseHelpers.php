@@ -214,16 +214,18 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		if ($vs_key) { $o_browse->reload($vs_key); }
 		$o_browse->execute();
 	
-		//$vs_class = $va_browse_info['table'];
-		//$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
 		$va_facets = $o_browse->getInfoForAvailableFacets();
 		
 		$vs_buf = '';
+		$vs_default_facet = null;
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
-			$vs_buf .= "<td class='browseNavFacet'><a href='#' onclick='jQuery(\"#browseNavFacetContent\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(\".browseNavFacetSelected\").removeClass(\"browseNavFacetSelected\").parent().removeClass(\"browseNavFacetSelected\"); jQuery(this).addClass(\"browseNavFacetSelected\").parent().addClass(\"browseNavFacetSelected\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></td>";
+			if (!$vs_default_facet) { $vs_default_facet = $vs_facet_name; }
+			$vs_buf .= "<li ".(!$vs_buf ? "class='active'" : "")."><a href='#' onclick='jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></li>\n";
 		}
-		$vs_buf .= "<td class='browseNavFacet'>".caNavLink($po_request, _t('Browse all'), '', '', 'Browse', 'Objects', '')."</td>";
 		
+		if ($vs_default_facet) {
+			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_default_facet, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); });</script>\n";
+		}
 		return $vs_buf;
 	}
 	# ---------------------------------------
