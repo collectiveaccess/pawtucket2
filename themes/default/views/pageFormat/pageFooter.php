@@ -13,7 +13,7 @@
 				<li><a href="#">Link 2</a></li>
 				<li><a href="#">Link 3</a></li>
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2013</a></small></div>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
 		</div><!-- end footer -->
 
 	</div><!-- end pageArea --></div><!-- end container -->
