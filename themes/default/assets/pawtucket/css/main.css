@@ -1,66 +1,38 @@
-
-/* --------------------------------- */
-/* THIS FONT IMPORT WILL BE REPLACED WITH TYPEKIT WHEN MOVED TO NS SERVERS */
-/* --------------------------------- */
-
-
-@font-face {
-    font-family: 'itc_franklin_gothicmedium';
-    src: url('frankgotmed-webfont.eot');
-    src: url('frankgotmed-webfont.eot?#iefix') format('embedded-opentype'),
-         url('frankgotmed-webfont.woff') format('woff'),
-         url('frankgotmed-webfont.ttf') format('truetype'),
-         url('frankgotmed-webfont.svg#itc_franklin_gothicmedium') format('svg');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-
 /* --------------------------------- */
 /* GENERAL */
 /* --------------------------------- */
 body {
 	font-family: arial;
 	color:#454545;
-	background-color:#f3f3f3;
 }
 h1, h2{
-	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif;
+	font-family: DIN17SBOP-Regular;
 	font-weight: normal;
 	font-style: normal;
 }
 h3, h4, h5, h6{
-	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
+	font-family: DIN17SBOP-Regular;
 }
-a:link, a:visited, a:active {
-	color:#665E4C;
+a {
+	color:#19bed1;
 }
-
-a:hover {color:#BF0E00;}
-
-
 #pageArea{
 	max-width:1024px;
-	padding-top:30px;
-	background-color:#fff;
 }
-
-
-	
 H1{
 	font-size: 20px;
-	color:#BF0E00;
+	color:#19bed1;
 	text-transform:uppercase;
 	margin-top:0px;
 }
 H2{
 	font-size: 18px;
+	color:#19bed1;
 }
 
 H3{
 	font-size: 14px;
-	color:#BF0E00;
+	color:#19bed1;
 }
 a, a:active, a:focus {
    outline: 0;
@@ -80,102 +52,25 @@ a, a:active, a:focus {
 /* ----------------------------------------- */
 /* navbar - styles override bootstrap styles */
 /* ----------------------------------------- */
-
-.form-control {height: 38px;}
-.nslogotype{
-	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
-	padding-top:15px;
-	padding-bottom:20px;
-	background-color:#f3f3f3;
-	}
-
-.nslogotype .newschool {
-	font-size:22px;
-	text-transform:uppercase;
-	color:#BF0E00;
-	font-weight:bold;
-	}
-
-.nslogotype .kellen, .nslogotype .kellen a {
-	font-size:36px;
-	color:#666;
-	font-weight:bold;
-	line-height:38px;
-	text-decoration:none;
-}
-
-@media (min-width: 768px) {
-.nslogotype .kellen, .nslogotype .kellen a {
-	font-size:44px;
-	color:#666;
-	font-weight:bold;
-	line-height:40px;
-	text-decoration:none;
-}
-}
-
-.breadcrumb {
-	padding:0;
-	background-color:transparent;
-	font-weight:normal;
-	font-size:.8em;
-	font-family:arial, san-serif;
-	color:#999;
-	}
-
-
-#bs-main-navbar-collapse-1 {
-	background-color:#fff;
-}
-
 .navbar {
   border-radius:0px;
-   color:#aba8a8;
   background-image:none;
-  background-color:transparent;
+  background-color:#FFFFFF;
   border-top:0px;
-  min-height:0px;
-  border-bottom:0px;
-  
-  /*-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);*/
-          box-shadow: 0 0px 0 rgba(255, 255, 255, 0) inset, 0 0px 0px rgba(0, 0, 0, 0);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
 }
-
-
 .navbar-collapse{
  max-width:1024px;
 }
 .navbar .navbar-nav > .active > a {
-  color:#aba8a8;
-  background-color:#fff;
+  background-color: #19bed1;
+  color:#FFFFFF;
 }
-
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
-    background-color: #FFF;
-    color: #aba8a8;
-}
-
-
-.navbar-nav > li > a {
-	/*borrowed from newschool site */
-	background-color:#fff;
-	border-left:1px solid #e2e2e0;
-	color:#aba8a8;
-	line-height:22px;
-	padding:8px 18px;
-
-	/*disabled from pawtucket theme */
-	/*padding-top:7px;
-	padding-bottom:7px;
-	line-height:100%;*/
-	}
-
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-	font-family: Arial,Gadget,sans-serif;
+	font-family: DIN17SBOP-Regular;
 	font-size:12px;
 	color:#000;
-	text-transform:uppercase;
 }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
@@ -194,31 +89,25 @@ a, a:active, a:focus {
 }
 @media (min-width: 768px) {
 	.nav > li.dropdown > a.icon {
-		/*padding-top:29px;
-		padding-bottom:21px;*/
+		padding-top:29px;
+		padding-bottom:21px;
 	}
 }
 @media (min-width: 768px) {
 	.nav > li > a {
-		/*padding-top:31px;
-		padding-bottom:23px;*/
+		padding-top:31px;
+		padding-bottom:23px;
 	}
 }
 @media (min-width: 768px) {
 	.navbar-form {
-	  height:16px;
-	  margin-right:15px;
-	  margin-top:0;
-	  padding:0;
-	  width:auto;
-	  /*margin-top:22px;
-	  padding-right:5px;*/
+	  margin-top:22px;
+	  padding-right:5px;
 	}
 }
 
 .navbar-brand img {
   		width:100%;
-  		
 }
 .navbar-brand {
 	width:200px;
@@ -226,15 +115,15 @@ a, a:active, a:focus {
 @media (min-width: 768px) {
 	.navbar-brand {
   		width:250px;
-  		/*padding-top: 17px;
-  		padding-bottom: 10px;*/
+  		padding-top: 17px;
+  		padding-bottom: 10px;
   	}
 }
 @media (min-width: 992px) {
 	.navbar-brand {
   		width:300px;
-  		/*padding-top: 8px;
-  		padding-bottom: 5px;*/
+  		padding-top: 8px;
+  		padding-bottom: 5px;
   	}
 }
 
@@ -260,17 +149,10 @@ a, a:active, a:focus {
           box-shadow: none;
 }
 .navbar .formOutline{
-	border-left:1px solid #E2E2E0;
-	/*border-radius: 10px;*/
-	border-radius: 0px;
-	/*margin-left:20px;*/
+	border:1px solid #ccc;
+	border-radius: 10px;
+	margin-left:20px;
 }
-
-li form {
-	padding:0
-	margin:0;
-	}
-	
 .btn-search{
 	display: inline-block;
 	padding: 6px;
@@ -289,27 +171,6 @@ li form {
        -o-user-select: none;
           user-select: none;
 }
-
-.nav-pills > li > a {
-    color: #FFFFFF;
-    display: block;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    padding: 1em 1.5em 1em 2em;
-    text-decoration: none !important;
-    text-transform: uppercase;
-    background-color:#ccc;
-    border-radius:0;
-}
-
-.nav-pills > li > a:hover {
-	background-color:#333;
-	color:#fff;
-	}
-
-
 /* --------------------------------- */
 /* forms */
 /* --------------------------------- */
@@ -350,12 +211,10 @@ li form {
 	text-decoration:underline;
 	color:#ababab;
 }
-#footer ul a:link, #footer ul a:visited, #footer ul a:active{
-	color: #665E4C;
+#footer ul a{
+	color: #19bed1;
 	text-decoration:none;
 }
-#footer ul a:hover{color:#BF0E00;}
-
 #footer ul li{
 	padding:0px 20px 0px 0px;
 }
@@ -469,12 +328,9 @@ li form {
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
-
-#frontPage {margin-top:-30px;}
-
 #frontPage H1{
 	font-size:20px;
-	color:#BF0E00;
+	color:#7f7f7f;
 	line-height:1.3;
 	text-transform:none;
 	margin-top:15px;
@@ -482,9 +338,8 @@ li form {
 @media (min-width: 768px) {
 	#frontPage H1 {
 		font-size:28px;
-		/*padding-left:25px;
-		padding-right:25px;*/
-		color:#BF0E00;
+		padding-left:25px;
+		padding-right:25px;
 	}
 }
 /*#frontPage .jcarousel-wrapper{
@@ -556,7 +411,7 @@ li form {
 }
 #detail {
 	color:#4d4d4d;
-	font-size:12px;
+	font-size:11px;
 }
 #detail a {
 	color:#737373;
@@ -839,6 +694,46 @@ li form {
 #bRefine div {
 	margin-bottom:5px;
 }
+#bMorePanel{
+	position:fixed;
+	right:0px;
+	top:0px;
+	bottom:0px;
+	background-color:#FFFFFF;
+	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	padding:10px;
+	display:none;
+	z-index:10000;
+}
+#bMorePanel .bFilterCount{
+	color:#454545;
+	font-weight:normal;
+	font-size:.8em;
+	padding-left:10px;
+}
+#bMorePanel #bScrollList{
+	overflow-y:auto;
+	padding-left:10px;
+	height:95%;
+	float:left;
+	margin-top:5px;
+	width:350px;
+}
+#bMorePanel #bScrollList a{
+	color:#454545;
+	padding-bottom:5px;
+	line-height:1.1em;
+	font-size:11px;
+}
+#bMorePanel #bLetterBar{
+	float:right;
+	margin:0px 40px 0px 10px;
+}
+#bMorePanel #bLetterBar a{
+	text-decoration:none;
+	font-weight:bold;
+}
 
 
 /* --------------------------------- */
@@ -995,7 +890,7 @@ h4 {
 	box-shadow:none;
 	border-radius:0;
 	border:0px;
-	font-family: Arial, sans-serif;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .navbar .container {
 	padding-left:0px;
@@ -1165,10 +1060,10 @@ hr {
 #pageTitle {
 	float: left;
 	width: 170px;
-	/*background-color: #666;*/
-	color: #666;
+	background-color: #000;
+	color: #fff;
 	height: 245px;
-	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
+	font-family: DIN17SBOP-Regular;
 	padding: 15px 10px 20px 15px;
 	font-size: 24px;
 	margin-right:15px;
@@ -1360,7 +1255,6 @@ h2 span.artist {
 	text-transform:uppercase;
 	font-size:12px;
 	margin-bottom:10px;
-	padding-right:15px;
 }
 #sortMenu.view a{
 	color:#000;
@@ -1527,7 +1421,7 @@ div.blockSortControl select {
 	height:auto;
 }
 .facetLabel, .facetLabel a{
-	/*color:#fff;*/
+	color:#fff;
 	font-size:12px;
 	text-transform:uppercase;
 	margin-top:15px;
@@ -1538,8 +1432,7 @@ div.blockSortControl select {
 	line-height:15px;
 }
 .facet a{
-	/*color:#fff;*/
-	color:#BF0E00;
+	color:#fff;
 	font-size:12px;
 	line-height:12px;
 }
@@ -1761,70 +1654,108 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 
 /* browse menu */
-.browseNavTable {
-	margin: 0px;
-	padding: 0px 0px -5px 0px;
+.browseMenuContent {
+	width: 100%;
+	overflow: auto;
+}
+.browseMenuFacet {
+	width: 900px;
+	max-height: 400px;
+	overflow: auto;
+}
+ul.browseMenuFacetList {
+	background-color: #ccc;
+}
+a.browseMenuBrowseAll {
+	font-size: 10px;
+}
+div.browseMenuBrowseAll {
+	position: absolute;
+	bottom: 3px;
+	right: 3px;
+	background-color: #f0f0f0;
+	opacity: 0.8;
+	padding: 5px;
+}
+div.browseMenuBrowseSearch {
+	position: absolute;
+	bottom: 3px;
+	left: 3px;
+	background-color: #f0f0f0;
+	opacity: 0.8;
+	padding: 5px;
+}
+div.browseMenuBrowseSearch input {
+	font-size: 10px;
+	height: 14px;
 }
 
-td.browseNavFacet a {
-	text-decoration: none;
-	font-style: normal;
-	color: #666;
+div.browseFacetItem {
+	float: left;
+	width: 200px;
+	padding: 10px;
 }
 
-td.browseNavFacet a:hover {
-	text-decoration: none;
-	font-weight: bold;
-	color: #000;
-}
-
-td.browseNavFacetSelected {
-	text-decoration: none;
-	font-weight: bold;
-	font-style: italic;
-	background-color: #c9c9c9;
-	color: #000;
-}
-
-.browseNavFacet {
-	background-color: #f7f7f7;
-	width: 700px;
-	text-align: center;
-	font-family: Arial,Gadget,sans-serif;
-	font-weight: bold;
-	font-style: normal;
+div.browseFacetItem a {
 	font-size: 12px;
-	color: #666;
-	text-transform:uppercase;
 }
-
-#browseNavFacetContent table tbody tr td {
-	text-align: left;
-}
-
-#browseNavFacetContent table tbody tr td:hover {
-	background-color:#e3e3e3;
-}
-
-#browseNavFacetContent, #browseNavFacetContent table tbody tr td a {
-	font-family: Arial,Gadget,sans-serif;
-	font-weight: normal;
-	font-style: normal;
-	font-size: 11px;
-	color: #000;
-}
-
-#browseNavFacetContent, #browseNavFacetContent table tbody tr td a:hover {
-	text-decoration: none;
-	font-family: Arial,Gadget,sans-serif;
-	
-	font-size: 11px;
-	color: #000;
-}
-
 
 
 .nav .dropdown .dropdown-menu {
-    max-height: 400px;
     overflow: auto;
+}
+.dropdown-browse-menu {
+	padding: 0px;
+	min-height: 300px;
+}
+
+.nav-pills > li > a {
+	color:#fff;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none !important;
+    background-color:#ccc;
+    border-radius:0;
+}
+
+.nav-pills > li > a:hover {
+	background-color:#333;
+	color:#fff;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none !important;
+    border-radius:0;
+}
+
+
+/*!
+ * Yamm!3
+ * Yet another megamenu for Bootstrap 3
+ * 
+ * http://geedmo.github.com/yamm3
+ */
+.yamm .nav,
+.yamm .collapse,
+.yamm .dropup,
+.yamm .dropdown {
+  position: static;
+}
+.yamm .container {
+  position: relative;
+}
+.yamm .dropdown-menu {
+  left: auto;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+.yamm .yamm-content {
+  padding: 20px 30px;
+}
+.yamm .dropdown.yamm-fw .dropdown-menu {
+  left: 0;
+  right: 0;
 }
