@@ -8,50 +8,26 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
-	
-	<!--NS design-->
-	<script type="text/javascript" src="//use.typekit.net/cvi0qyc.js"></script>
-<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
-<!--end NS design-->
-
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('.dropdown-browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
-</script>
-
+	</script>
 </head>
 <body>
-	<!-- NS design -->
-<div class="container nslogotype"><span class="newschool">The New School</span>
-<div class="container breadcrumb">Home > Libraries & Archives > Special Collections</div>
-
-<span class="kellen"><a href="http://kellendevdev.whirl-i-gig.com/">The New School Archives<br />&amp; Special Collections</a></span></div>
-
-
-		<!-- end NS design --></div>
-	<!-- end NS design -->
-	
-	<nav class="navbar navbar-default" role="navigation"><div class="container">
+	<nav class="navbar navbar-default yamm" role="navigation"><div class="container">
 	  <!-- Brand and toggle get grouped for better mobile display -->
 	  <div class="navbar-header">
-	  
-		
 		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 		  <span class="sr-only">Toggle navigation</span>
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		  <span class="icon-bar"></span>
 		</button>
-	
-		
-			  </div>
-
-		
-<!--<?php
+<?php
 		print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/ca_nav_logo300.png' border='0'>", "navbar-brand", "", "","");
-?>-->
-<!--end NS design-->
+?>
+	  </div>
 	
 	  <!-- Collect the nav links, forms, and other content for toggling -->
 	  <div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
@@ -85,38 +61,7 @@
 			</ul>
 		  </li>
 		</ul>
-	<!--form cut from here-->
-		<ul class="nav navbar-nav navbar-right">
-		  <li class="active"><a href="#">About</a></li>
-		  <li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
-			<ul class="dropdown-menu dropdown-browse-menu">
-				<li class="browseNavFacet">
-<?php
-	$vs_facet_list = caGetFacetForMenuBar($this->request);
-	
-	if($vs_facet_list) {
-?>
-	<table class="table browseNavTable">
-		<tbody>
-			<tr><?php print $vs_facet_list; ?></tr>
-		</tbody>
-	</table>
-	<div id='browseNavFacetContent'> </div>
-<?php
-	} else {
-?>
-		No facets available
-<?php
-	}
-?>
-				</li>
-			</ul> <!--end dropdown browse menu -->
-		  </li>
-		  
-		  <!--NS design-->
-		  <li>
-		  	<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+		<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 		  <div class="formOutline">
 			  <div class="form-group">
 				<input type="text" class="form-control" placeholder="Search" name="search">
@@ -124,9 +69,14 @@
 			  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 		  </div>
 		</form>
-		 </li> 
-		  <!--end NS design-->
-		</ul><!--end navbar right-->
+		<ul class="nav navbar-nav navbar-right">
+		  <li class="active"><a href="#">About</a></li>
+<?php
+	print $this->render("pageFormat/browseMenu.php");
+?>	
+			</ul>
+		  </li>
+		</ul>
 	  </div><!-- /.navbar-collapse --></div><!-- end container -->
 	</nav>
 	
