@@ -42,6 +42,7 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
+ 			caSetPageCSSClasses(array("browse"));
  		}
  		# -------------------------------------------------------
  		/**
@@ -68,6 +69,8 @@
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
+ 			
+ 			caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			

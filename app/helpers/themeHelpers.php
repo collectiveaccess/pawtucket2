@@ -76,7 +76,58 @@
 	}
 	# ---------------------------------------
 	/**
-	 * 
+	 * Set CSS classes to add the "pageArea" page content <div>, overwriting any previous setting. 
+	 * Use to set classes specific to each page type and context.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to set
+	 * @return bool Always returns true
+	 */
+	$g_theme_page_css_classes = array();
+	function caSetPageCSSClasses($pa_page_classes) {
+		global $g_theme_page_css_classes;
+		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
+		if (!is_array($pa_page_classes)) { $pa_page_classes = array(); }
+		
+		$g_theme_page_css_classes = $pa_page_classes;
+		
+		return true;
+	}
+	# ---------------------------------------
+	/**
+	 * Adds CSS classes to the "pageArea" page content <div>. Use to set classes specific to each
+	 * page type and context.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to add
+	 * @return bool Returns true if classes were added, false if class list is empty
+	 */
+	function caAddPageCSSClasses($pa_page_classes) {
+		global $g_theme_page_css_classes;
+		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
+		
+		if(!is_array($va_classes = $g_theme_page_css_classes)) {
+			return false;
+		}
+		
+		$g_theme_page_css_classes = array_unique($pa_page_classes + $va_classes);
+		
+		return true;
+	}
+	# ---------------------------------------
+	/**
+	 * Get CSS class attribute ready for including in a <div> tag. Used to add classes to the "pageArea" page content <div>
+	 *
+	 * @param RequestHTTP $po_request
+	 * @return string The "class" attribute with set classes or an empty string if no classes are set
+	 */
+	function caGetPageCSSClasses() {
+		global $g_theme_page_css_classes;
+		return (is_array($g_theme_page_css_classes) && sizeof($g_theme_page_css_classes)) ? "class='".join(' ', $g_theme_page_css_classes)."'" : '';
+	}
+	# ---------------------------------------
+	/**
+	 * Get theme-specific detail configuration
 	 *
 	 * @return Configuration 
 	 */
