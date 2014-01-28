@@ -18,7 +18,7 @@
 		jQuery(document).ready(function() {
     		jQuery('.dropdown-browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
-</script>
+	</script>
 
 </head>
 <body>

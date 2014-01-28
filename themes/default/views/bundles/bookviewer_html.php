@@ -47,12 +47,12 @@
 		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
-		closeButton: '<?php print ((bool)$this->request->getParameter('overlay', pInteger)) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
-		editButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/arrow_grey_right.gif" alt="<?php print _t('View'); ?>"/>',
+		closeButton: '<?php print ((bool)$this->request->getParameter('overlay', pInteger)) ? addslashes(caGetThemeGraphic($this->request, 'buttons/x.png', array('alt' => _t('Close')))) : ''; ?>',
+		editButton: '<?php print addslashes(caGetThemeGraphic($this->request, 'buttons/arrow_grey_right.gif', array('alt' => _t('View')))); ?>',
 <?php
 	if (caObjectsDisplayDownloadLink($this->request)) {
 ?>
-		downloadButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/download.png" alt="<?php print _t('Download'); ?>"/>'
+		downloadButton: '<?php print addslashes(caGetThemeGraphic($this->request, 'buttons/download.png', array('alt' => _t('Download')))); ?>'
 <?php
 	} else {
 ?>
