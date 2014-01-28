@@ -1,4 +1,8 @@
 <?php
+# -----------------------------------------------------------
+# --- facet view for group_mode = alphabetical, none
+# -----------------------------------------------------------
+
 	$va_facet_content = 	$this->getVar('facet_content');
 	$vs_facet_name = 		$this->getVar('facet_name');
 	$vs_view = 				$this->getVar('view');

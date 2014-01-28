@@ -101,8 +101,14 @@
 					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
 					$this->view->setVar('facet_name', $vs_facet);
 					$this->view->setVar('key', $o_browse->getBrowseID());
-					$this->view->setVar('facet_info', $o_browse->getInfoForFacet($vs_facet));
-					$this->render("Browse/{$vs_class}_facet_html.php");
+					$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
+					$this->view->setVar('facet_info', $va_facet_info);
+					# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+					switch($va_facet_info["group_mode"]){
+						default:
+							$this->render("Browse/list_facet_html.php");
+						break;
+					}
 					return;
 				}
 			
@@ -193,6 +199,15 @@
  				)
  			);
 			return $va_ret;
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * return nav bar code for specified browse target
+		 */
+ 		public function getBrowseNavBarByTarget() {
+ 			$ps_target = $this->request->getParameter('target', pString);
+ 			$this->view->setVar("target", $ps_target);
+			$this->render("pageFormat/browseMenuFacets.php");
  		}
  		# -------------------------------------------------------
 	}

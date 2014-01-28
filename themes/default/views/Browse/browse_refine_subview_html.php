@@ -36,9 +36,64 @@
 				print "<div><a href='#' class='more' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
 			} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
 				#print "<div><a href='#' class='more' onclick='caBrowsePanel.showPanel(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
-				print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+				print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
 			}
 		}
 		print "</div><!-- end bRefine -->\n";
+?>
+	<script type="text/javascript">
+		/*function moveRefine(originalRefineOffset){
+			var offset = $("#bRefine").offset();
+			var offsetBrowseResultsContainer = $("h2:first").offset();
+			if($(document).scrollTop() < offsetBrowseResultsContainer.top){
+				jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
+			}else{
+				jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
+			}
+		}*/
+		/*jQuery(document).ready(function() {
+			var originalOffsetTop;
+			var originalOffset = $("#bRefine").offset();
+			originalOffsetTop = originalOffset.top;
+			$(window).scroll(function() {
+				clearTimeout($.data(this, 'scrollTimer'));
+				$.data(this, 'scrollTimer', setTimeout(function() {
+					// do something
+					var offset = $("#bRefine").offset();
+					if(($(document).scrollTop() > (offset.top + ($("#bRefine").height() - ($(window).height()/2)))) || (($(document).scrollTop() > $(window).height()) && ($(document).scrollTop() < offset.top))){
+						//jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
+						jQuery("#bRefine").animate({top: ($(document).scrollTop() - originalOffsetTop)});
+					}
+					if($(document).scrollTop() < $(window).height()){
+						var offsetBrowseResultsContainer = $("h2:first").offset();
+						jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
+					}
+				}, 50));
+			});
+		});*/
+		jQuery(document).ready(function() {
+			var offsetBrowseResultsContainer = $("h2:first").offset();
+			var lastOffset = $("#bRefine").offset();
+			$("body").data("lastOffsetTop", lastOffset.top);
+			$(window).scroll(function() {
+				if(($(document).scrollTop() < $("body").data("lastOffsetTop")) || ($(document).scrollTop() > ($("body").data("lastOffsetTop") + ($("#bRefine").height() - ($(window).height()/3))))){
+					var offset = $("#bRefine").offset();
+					if($(document).scrollTop() < offsetBrowseResultsContainer.top){
+						jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
+					}else{
+						jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
+					}
+				}
+				clearTimeout($.data(this, 'scrollTimer'));
+				$.data(this, 'scrollTimer', setTimeout(function() {
+					// do something
+					var lastOffset = $("#bRefine").offset();
+					$("body").data("lastOffsetTop", lastOffset.top);
+					
+				}, 250));
+			});
+		});
+	</script>
+<?php	
 	}
 ?>

@@ -171,6 +171,141 @@ a, a:active, a:focus {
        -o-user-select: none;
           user-select: none;
 }
+
+.nav-pills > li > a {
+	color:#fff;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none !important;
+    background-color:#ccc;
+    border-radius:0;
+}
+
+.nav-pills > li > a:hover {
+	background-color:#19bed1;
+	color:#fff;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    text-decoration: none !important;
+    border-radius:0;
+}
+.nav-pills > li.active a {
+	background-color:#c9c9c9;
+    font-family: Arial,Helvetica,sans-serif;
+    color:#454545;
+}
+.nav-pills > li.active > a:focus {
+	background-color:#c9c9c9;
+    color:#454545;
+}
+/* ----------------------------------------- */
+/* navbar - browse menu */
+/* ----------------------------------------- */
+.browseMenuContent {
+	width: 100%;
+	overflow: auto;
+}
+.browseMenuFacet {
+	width: 900px;
+	max-height: 400px;
+	overflow: auto;
+	margin-bottom:20px;
+}
+ul.browseMenuFacetList {
+	border-bottom:1px solid #FFF;
+}
+ul.browseMenuFacetList > li > a {
+	padding-top:10px;
+	padding-bottom:10px;
+}
+ul.browseMenuFacetList li a, ul.browseMenuFacetList{
+	background-color: #c9c9c9;
+}
+ul.browseMenuFacetList {
+	background-color:#c9c9c9;
+}
+ul.browseMenuFacetList > li div{
+	padding:10px;
+	font-size:12px;
+	background-color:#c9c9c9;
+	color:#FFF;
+	font-weight:bold;
+}
+div.browseMenuBrowseAll {
+	position: absolute;
+	bottom: 3px;
+	right: 18px;
+}
+div.browseMenuBrowseSearch {
+	position: absolute;
+	bottom: 3px;
+	left: 3px;
+	background-color: #c9c9c9;
+	padding: 5px;
+}
+div.browseMenuBrowseSearch input {
+	font-size: 10px;
+	height: 14px;
+	color:#000;
+	opacity: 1;
+}
+
+div.browseFacetItem {
+	float: left;
+	width: 200px;
+	padding: 10px;
+}
+div.browseFacetItem:hover {
+	background-color:#e7e7e7;
+}
+
+div.browseFacetItem a {
+	font-size: 12px;
+	color:#454545;
+}
+
+
+.nav .dropdown .dropdown-menu {
+    overflow: auto;
+}
+.dropdown-browse-menu {
+	padding: 0px;
+	min-height: 300px;
+}
+
+
+
+/*!
+ * Yamm!3
+ * Yet another megamenu for Bootstrap 3
+ * 
+ * http://geedmo.github.com/yamm3
+ */
+.yamm .nav,
+.yamm .collapse,
+.yamm .dropup,
+.yamm .dropdown {
+  position: static;
+}
+.yamm .container {
+  position: relative;
+}
+.yamm .dropdown-menu {
+  left: auto;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+  left: auto;
+  right: 0;
+}
+.yamm .yamm-content {
+  padding: 20px 30px;
+}
+.yamm .dropdown.yamm-fw .dropdown-menu {
+  left: 0;
+  right: 0;
+}
 /* --------------------------------- */
 /* forms */
 /* --------------------------------- */
@@ -671,6 +806,8 @@ a, a:active, a:focus {
 	padding:20px;
 	line-height:.75em;
 	padding-top:34px;
+	z-index:10;
+	position:relative;
 }
 #bRefine H1 {
 	color:#858585;
@@ -718,7 +855,12 @@ a, a:active, a:focus {
 	height:95%;
 	float:left;
 	margin-top:5px;
-	width:350px;
+	width:250px;
+}
+@media (min-width: 992px) {
+	#bMorePanel #bScrollList{
+		width:350px;
+	}
 }
 #bMorePanel #bScrollList a{
 	color:#454545;
@@ -729,6 +871,7 @@ a, a:active, a:focus {
 #bMorePanel #bLetterBar{
 	float:right;
 	margin:0px 40px 0px 10px;
+	text-align:center;
 }
 #bMorePanel #bLetterBar a{
 	text-decoration:none;
@@ -1416,7 +1559,7 @@ div.blockSortControl select {
 
 */
 /* Browse Page */
-
+/*
 #pageArea.browse #pageTitle {
 	height:auto;
 }
@@ -1458,7 +1601,7 @@ div.blockSortControl select {
 	text-transform:uppercase;
 	color:#999;
 }
-
+*/
 
 
 
@@ -1653,109 +1796,3 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	height: 100%;
 }
 
-/* browse menu */
-.browseMenuContent {
-	width: 100%;
-	overflow: auto;
-}
-.browseMenuFacet {
-	width: 900px;
-	max-height: 400px;
-	overflow: auto;
-}
-ul.browseMenuFacetList {
-	background-color: #ccc;
-}
-a.browseMenuBrowseAll {
-	font-size: 10px;
-}
-div.browseMenuBrowseAll {
-	position: absolute;
-	bottom: 3px;
-	right: 3px;
-	background-color: #f0f0f0;
-	opacity: 0.8;
-	padding: 5px;
-}
-div.browseMenuBrowseSearch {
-	position: absolute;
-	bottom: 3px;
-	left: 3px;
-	background-color: #f0f0f0;
-	opacity: 0.8;
-	padding: 5px;
-}
-div.browseMenuBrowseSearch input {
-	font-size: 10px;
-	height: 14px;
-}
-
-div.browseFacetItem {
-	float: left;
-	width: 200px;
-	padding: 10px;
-}
-
-div.browseFacetItem a {
-	font-size: 12px;
-}
-
-
-.nav .dropdown .dropdown-menu {
-    overflow: auto;
-}
-.dropdown-browse-menu {
-	padding: 0px;
-	min-height: 300px;
-}
-
-.nav-pills > li > a {
-	color:#fff;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    text-decoration: none !important;
-    background-color:#ccc;
-    border-radius:0;
-}
-
-.nav-pills > li > a:hover {
-	background-color:#333;
-	color:#fff;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-    text-decoration: none !important;
-    border-radius:0;
-}
-
-
-/*!
- * Yamm!3
- * Yet another megamenu for Bootstrap 3
- * 
- * http://geedmo.github.com/yamm3
- */
-.yamm .nav,
-.yamm .collapse,
-.yamm .dropup,
-.yamm .dropdown {
-  position: static;
-}
-.yamm .container {
-  position: relative;
-}
-.yamm .dropdown-menu {
-  left: auto;
-}
-.yamm .nav.navbar-right .dropdown-menu {
-  left: auto;
-  right: 0;
-}
-.yamm .yamm-content {
-  padding: 20px 30px;
-}
-.yamm .dropdown.yamm-fw .dropdown-menu {
-  left: 0;
-  right: 0;
-}
