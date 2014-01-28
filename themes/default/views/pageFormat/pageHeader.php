@@ -74,8 +74,6 @@
 <?php
 	print $this->render("pageFormat/browseMenu.php");
 ?>	
-			</ul>
-		  </li>
 		</ul>
 	  </div><!-- /.navbar-collapse --></div><!-- end container -->
 	</nav>
