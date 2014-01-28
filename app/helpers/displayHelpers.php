@@ -1910,26 +1910,34 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		foreach($o_ifdefs as $o_ifdef) {
 			if (!$o_ifdef) { continue; }
 			
+			$vs_code = (string)$o_ifdef->getAttribute('code');
+			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifdef->html()));
 			$vs_content = $o_ifdef->getInnerText();
 			
-			$va_ifdefs[$vs_code = (string)$o_ifdef->getAttribute('code')][] = array('directive' => $vs_html, 'content' => $vs_content);
+			$vs_content = str_replace($vs_code, $vs_code_proc, $vs_content);
+			$vs_html = str_replace($vs_code, $vs_code_proc, $vs_html);
 			
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$va_ifdefs[$vs_code][] = array('directive' => $vs_html, 'content' => $vs_content);
 		}
 		
 		$va_ifnotdefs = array();
 		foreach($o_ifnotdefs as $o_ifnotdef) {
 			if (!$o_ifnotdef) { continue; }
 			
+			$vs_code = (string)$o_ifnotdef->getAttribute('code');
+			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifnotdef->html()));
 			$vs_content = $o_ifnotdef->getInnerText();
 			
-			$va_ifnotdefs[$vs_code = (string)$o_ifnotdef->getAttribute('code')][] = array('directive' => $vs_html, 'content' => $vs_content);
-		
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$vs_content = str_replace($vs_code, $vs_code_proc, $vs_content);
+			$vs_html = str_replace($vs_code, $vs_code_proc, $vs_html);
+			
+			$va_ifnotdefs[$vs_code][] = array('directive' => $vs_html, 'content' => $vs_content);
 		}
 		
 		$va_mores = array();
@@ -1955,18 +1963,17 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		foreach($o_ifcounts as $o_ifcount) {
 			if (!$o_ifcount) { continue; }
 			
+			$vs_code = (string)$o_ifcount->getAttribute('code');
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifcount->html()));
 			$vs_content = $o_ifcount->getInnerText();
+			
 			
 			$vn_min = (int)$o_ifcount->getAttribute('min');
 			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = null; }
 			
-			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => (string)$o_ifcount->getAttribute('code'));
-			
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code);
 		}
-		
 		
 		$va_resolve_links_using_row_ids = array();
 		$x = 0;
@@ -2059,7 +2066,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			if (!strlen(trim($va_proc_templates[$vn_i]))) { $va_proc_templates[$vn_i] = null; }
 			
 			if(!sizeof($va_tags)) { continue; } 	// if there are no tags in the template then we don't need to process further
-			
+		
 			if ($ps_resolve_links_using != $ps_tablename) {
 				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}");
 			}
@@ -2346,7 +2353,13 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					}
 			
 					foreach($va_tag_list as $vs_tag_to_test) {
-						$vb_value_is_set = (bool)(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1) || ((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+						$vs_tag_to_test = preg_replace("!%.*$!", "", $vs_tag_to_test);
+						
+						$vb_value_is_set = (
+							(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1)) 
+							|| 
+							((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+							
 						switch($vs_bool) {
 							case 'OR':
 								if ($vb_value_is_set) { $vb_output = true; break(2); }			// any must be defined; if any is defined output
