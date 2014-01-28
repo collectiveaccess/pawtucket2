@@ -9,6 +9,7 @@
 	$vn_facet_display_length_maximum = 60;
 	
 	if(is_array($va_facets) && sizeof($va_facets)){
+		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<H1>"._t("Filter by")."</H1>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -34,7 +35,8 @@
 				print "</div>\n";
 				print "<div><a href='#' class='more' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
 			} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
-				print "<div><a href='#' class='more' onclick='caBrowsePanel.showPanel(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+				#print "<div><a href='#' class='more' onclick='caBrowsePanel.showPanel(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+				print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
 			}
 		}
 		print "</div><!-- end bRefine -->\n";
