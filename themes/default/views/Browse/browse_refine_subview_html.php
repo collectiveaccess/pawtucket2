@@ -76,7 +76,7 @@
 			var lastOffset = $("#bRefine").offset();
 			$("body").data("lastOffsetTop", lastOffset.top);
 			$(window).scroll(function() {
-				if(($(document).scrollTop() < $("body").data("lastOffsetTop")) || ($(document).scrollTop() > ($("body").data("lastOffsetTop") + ($("#bRefine").height() - ($(window).height()/3))))){
+				if(($(document).scrollTop() < $(document).height() - ($("#bRefine").height() + 250)) && (($(document).scrollTop() < $("body").data("lastOffsetTop")) || ($(document).scrollTop() > ($("body").data("lastOffsetTop") + ($("#bRefine").height() - ($(window).height()/3)))))){
 					var offset = $("#bRefine").offset();
 					if($(document).scrollTop() < offsetBrowseResultsContainer.top){
 						jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
