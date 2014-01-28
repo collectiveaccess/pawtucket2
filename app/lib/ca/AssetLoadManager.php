@@ -209,11 +209,12 @@
 							if ($vs_type == 'THEME') {
 								if (file_exists("{$vs_themeDirectoryPath}/assets/{$vs_lib}")) {
 									$vs_url = "{$vs_themeurlpath}/assets/{$vs_lib}";
-								} else {
+								} elseif (file_exists("{$vs_default_themeDirectoryPath}/assets/{$vs_lib}")) {
 									$vs_url = "{$vs_default_themeurlpath}/assets/{$vs_lib}";
+								} else {
+									continue;
 								}
 							} else {
-								//$vs_url = (($vs_type == 'THEME') ? $vs_themeurlpath : $vs_baseurlpath)."/assets/{$vs_lib}";
 								$vs_url = "{$vs_baseurlpath}/assets/{$vs_lib}";
 							}
 						}
