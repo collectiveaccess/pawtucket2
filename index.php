@@ -31,6 +31,7 @@
 	
 	if (!file_exists('./setup.php')) { print "No setup.php file found!"; exit; }
 	require('./setup.php');
+	
 	define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
 	
 	// connect to database
@@ -57,6 +58,7 @@
 	$resp = $app->getResponse();
 
 	// TODO: move this into a library so $_, $g_ui_locale_id and $g_ui_locale gets set up automatically
+	require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
 	$va_ui_locales = $g_request->config->getList('ui_locales');
 	if ($vs_lang = $g_request->getParameter('lang', pString)) {
 		if (in_array($vs_lang, $va_ui_locales)) {
@@ -77,7 +79,7 @@
 		$_[] = new Zend_Translate('gettext', $vs_theme_specific_locale_path, $g_ui_locale);
 	}
 	$_[] = new Zend_Translate('gettext', __CA_APP_DIR__.'/locale/'.$g_ui_locale.'/messages.mo', $g_ui_locale);
-
+	if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
 	$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
 	
 	//

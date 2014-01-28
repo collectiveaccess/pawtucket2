@@ -1418,12 +1418,12 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				className: '".(($vs_render_as == 'vert_hierbrowser') ? 'hierarchyBrowserLevelVertical' : 'hierarchyBrowserLevel')."',
 				classNameContainer: '".(($vs_render_as == 'vert_hierbrowser') ? 'hierarchyBrowserContainerVertical' : 'hierarchyBrowserContainer')."',
 				
-				editButtonIcon: '<img src=\"".$pa_options['request']->getThemeUrlPath()."/graphics/buttons/arrow_grey_right.gif\" border=\"0\" title=\"Edit\"/>',
+				editButtonIcon: '".addslashes(caGetThemeGraphic($pa_options['request'], 'buttons/arrow_grey_right.gif', array('title' => _t('Edit'))))."',
 				
 				initItemID: '{".$pa_options['element_id']."}',
 				defaultItemID: '".$t_list->getDefaultItemID()."',
 				useAsRootID: '".$t_root_item->getPrimaryKey()."',
-				indicatorUrl: '".$pa_options['request']->getThemeUrlPath()."/graphics/icons/indicator.gif',
+				indicatorUrl: '".addslashes(caGetThemeGraphic($pa_options['request'], 'icons/indicator.gif'))."',
 				
 				currentSelectionDisplayID: '{$ps_name}_browseCurrentSelectionText{n}',
 				onSelection: function(item_id, parent_id, name, display) {
