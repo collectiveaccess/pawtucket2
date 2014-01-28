@@ -14,11 +14,11 @@
 				<div class='footerLink'><a href='#'>SIGN UP</a></div>
 			</div>
 			<div class='footerSocial'>
-				<div class='socialIcon'><a href='http://www.facebook.com/MattressFactory'><img src='<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/facebook.png' border='0'></a></div>
-				<div class='socialIcon'><a href='http://twitter.com/MattressFactory'><img src='<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/twitter.png' border='0'></a></div>
-				<div class='socialIcon'><a href='http://www.flickr.com/photos/mattressfactory/'><img src='<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/flickr.png' border='0'></a></div>
-				<div class='socialIcon'><a href='http://www.youtube.com/user/MattressFactory'><img src='<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/youtube.png' border='0'></a></div>
-				<div class='socialIcon'><a href='http://instagram.com/mattressfactory'><img src='<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/instagram.png' border='0'></a></div>
+				<div class='socialIcon'><a href='http://www.facebook.com/MattressFactory'><?php print caGetThemeGraphic($this->request, 'facebook.png'); ?></a></div>
+				<div class='socialIcon'><a href='http://twitter.com/MattressFactory'><?php print caGetThemeGraphic($this->request, 'twitter.png'); ?></a></div>
+				<div class='socialIcon'><a href='http://www.flickr.com/photos/mattressfactory/'><?php print caGetThemeGraphic($this->request, 'flickr.png'); ?></a></div>
+				<div class='socialIcon'><a href='http://www.youtube.com/user/MattressFactory'><?php print caGetThemeGraphic($this->request, 'youtube.png'); ?></a></div>
+				<div class='socialIcon'><a href='http://instagram.com/mattressfactory'><?php print caGetThemeGraphic($this->request, 'instagram.png'); ?></a></div>
 			</div>
 		
 		</div><!-- end footer -->

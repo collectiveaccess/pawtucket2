@@ -186,6 +186,10 @@
 			
 			$vs_baseurlpath = $po_request->getBaseUrlPath();
 			$vs_themeurlpath = $po_request->getThemeUrlPath();
+			$vs_default_themeurlpath = $po_request->getDefaultThemeUrlPath();
+			
+			$vs_themeDirectoryPath = $po_request->getThemeDirectoryPath();
+			$vs_default_themeDirectoryPath = $po_request->getDefaultThemeDirectoryPath();
 			
 			if (!$g_asset_config) { AssetLoadManager::init(); }
 			$vs_buf = '';
@@ -202,7 +206,17 @@
 						if (preg_match('!(http[s]{0,1}://.*)!', $vs_lib, $va_matches)) { 
 							$vs_url = $va_matches[1];
 						} else {
-							$vs_url = (($vs_type == 'THEME') ? $vs_themeurlpath : $vs_baseurlpath)."/assets/{$vs_lib}";
+							if ($vs_type == 'THEME') {
+								if (file_exists("{$vs_themeDirectoryPath}/assets/{$vs_lib}")) {
+									$vs_url = "{$vs_themeurlpath}/assets/{$vs_lib}";
+								} elseif (file_exists("{$vs_default_themeDirectoryPath}/assets/{$vs_lib}")) {
+									$vs_url = "{$vs_default_themeurlpath}/assets/{$vs_lib}";
+								} else {
+									continue;
+								}
+							} else {
+								$vs_url = "{$vs_baseurlpath}/assets/{$vs_lib}";
+							}
 						}
 					
 						if (preg_match('!\.css$!', $vs_lib)) {
