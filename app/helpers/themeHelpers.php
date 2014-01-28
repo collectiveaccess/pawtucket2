@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,7 +34,46 @@
 	*
 	*/
    
-   	
+   	# ---------------------------------------
+	/**
+	 * Generate HTML <img> tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_file_path
+	 * @param array $pa_attributes
+	 * @param array $pa_options
+	 * @return string 
+	 */
+	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
+		$vs_base_path = $po_request->getThemeUrlPath();
+		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
+		
+		if (!file_exists($vs_base_path.$vs_file_path)) {
+			$vs_base_path = $po_request->getDefaultThemeUrlPath();
+		}
+		
+		$vs_html = caHTMLImage($vs_base_path.$vs_file_path, $pa_attributes, $pa_options);
+		
+		return $vs_html;
+	}
+	# ---------------------------------------
+	/**
+	 * Generate URL tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_file_path
+	 * @param array $pa_options
+	 * @return string 
+	 */
+	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
+		$vs_base_path = $po_request->getThemeUrlPath();
+		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
+		
+		if (!file_exists($vs_base_path.$vs_file_path)) {
+			$vs_base_path = $po_request->getDefaultThemeUrlPath();
+		}
+		return $vs_base_path.$vs_file_path;
+	}
 	# ---------------------------------------
 	/**
 	 * 

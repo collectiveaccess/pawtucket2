@@ -25,7 +25,7 @@
 		  <span class="icon-bar"></span>
 		</button>
 <?php
-		print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/ca_nav_logo300.png' border='0'>", "navbar-brand", "", "","");
+		print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
 ?>
 	  </div>
 	
@@ -49,7 +49,7 @@
 			</ul>
 		  </li>
 		  <li class="dropdown">
-			<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-unchecked"></span><!--<img src='<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/bookmark_mainnav.png' border='0'>--></a>
+			<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-unchecked"></span></a>
 			<ul class="dropdown-menu">
 			  <li><a href="#">Action</a></li>
 			  <li><a href="#">Another action</a></li>

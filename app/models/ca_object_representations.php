@@ -1378,7 +1378,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		
  		$t_object = new ca_objects($vn_object_id);
- 		//if (!$t_object->getPrimaryKey()) { return false; }
  		
  		if(!$this->getPrimaryKey()) {
  			$this->load($t_object->getPrimaryRepresentationID(array('checkAccess' => $va_access_values)));

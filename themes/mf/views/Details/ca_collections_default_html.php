@@ -72,7 +72,7 @@
 <?php
 				print "<div class='title'>"._t('Install Location')."</div>";
 				print "<div class='floor'>Fourth Floor</div>";
-				print "<div class='plan'><img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/floorplan.png' border='0'></div>";
+				print "<div class='plan'>".caGetThemeGraphic($this->request, 'floorplan.png')."</div>";
 ?>		
 			</div>
 		</div><!-- end infoArea-->

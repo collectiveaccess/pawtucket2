@@ -359,10 +359,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		if (!isset($pa_attributes['alt'])) {
 			$pa_attributes['alt'] = $vs_img_name;
 		}
-		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";
-	
-		return $vs_button;
+		return caGetThemeGraphic($po_request, 'graphics/indicator.gif', $pa_attributes);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -3240,7 +3237,7 @@ $ca_relationship_lookup_parse_cache = array();
 	 */
 	function caEditorBundleShowHideControl($po_request, $ps_id_prefix) {
 		$vs_buf = "<span style='float:right; margin-right:7px;'>";
-		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;'><img src=\"".$po_request->getThemeUrlPath()."/graphics/arrows/expand.jpg\" border=\"0\" id=\"{$ps_id_prefix}VisToggleButton\"/></a>";
+		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;'>".caGetThemeGraphic($po_request, 'arrows/expand.jpg', array('id' => "{$ps_id_prefix}VisToggleButton"))."</a>";
 		$vs_buf .= "</span>\n";	
 		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";	
 		
