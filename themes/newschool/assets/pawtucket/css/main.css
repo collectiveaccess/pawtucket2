@@ -571,6 +571,9 @@ li form {
     text-shadow: none;
     text-decoration:none;
 }
+#frontPage .nav-pills > li > a {
+    background-color:#a8a8a8;
+}
 
 /* --------------------------------- */
 /* details */
