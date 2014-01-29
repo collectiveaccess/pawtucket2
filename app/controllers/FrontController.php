@@ -38,7 +38,7 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			caSetPageCSSClasses($po_request, array("front"));
+ 			caSetPageCSSClasses(array("front"));
  		}
  		# -------------------------------------------------------
  		function Index($pa_options=null) {
