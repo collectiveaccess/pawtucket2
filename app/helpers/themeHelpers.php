@@ -45,14 +45,15 @@
 	 * @return string 
 	 */
 	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
-		$vs_base_path = $po_request->getThemeUrlPath();
+		$vs_base_url_path = $po_request->getThemeUrlPath();
+		$vs_base_path = $po_request->getThemeDirectoryPath();
 		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
 		
 		if (!file_exists($vs_base_path.$vs_file_path)) {
-			$vs_base_path = $po_request->getDefaultThemeUrlPath();
+			$vs_base_url_path = $po_request->getDefaultThemeUrlPath();
 		}
 		
-		$vs_html = caHTMLImage($vs_base_path.$vs_file_path, $pa_attributes, $pa_options);
+		$vs_html = caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
 		
 		return $vs_html;
 	}
@@ -124,6 +125,29 @@
 	function caGetPageCSSClasses() {
 		global $g_theme_page_css_classes;
 		return (is_array($g_theme_page_css_classes) && sizeof($g_theme_page_css_classes)) ? "class='".join(' ', $g_theme_page_css_classes)."'" : '';
+	}
+	# ---------------------------------------
+	/**
+	 * Converts, and by default prints, a root-relative static view path to a DefaultController URL to load the appropriate view
+	 * Eg. $ps_path of "/About/this/site" becomes "/index.php/About/this/site"
+	 *
+	 * @param string $ps_path
+	 * @param array $pa_options Options include:
+	 *		dontPrint = Don't print URL to output. Default is false.
+	 *		request = The current request object (RequestHTTP). Default is to use globally set request object.
+	 *
+	 * @return string the URL
+	 */
+	function caStaticPageUrl($ps_path, $pa_options=null) {
+		global $g_request;
+		
+		if (!($po_request = caGetOption('request', $pa_options, null))) { $po_request = $g_request; }
+		$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().$ps_path;
+		
+		if (!caGetOption('dontPrint', $pa_options, false)) {
+			print $vs_url;
+		}
+		return $vs_url;
 	}
 	# ---------------------------------------
 	/**
