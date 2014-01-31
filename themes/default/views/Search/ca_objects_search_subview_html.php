@@ -42,7 +42,7 @@
 				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByControl}}}
 			</small>
 			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
-			<div class='blockResults'><div id="scrollButton"><i class="fa fa-angle-right"></i></div>
+			<div class='blockResults'><div id="scrollButtonPrevious" onclick="scrollPrevious('{{{block}}}'); return false;"><i class="fa fa-angle-left"></i></div><div id="scrollButtonNext" onclick="scrollNext('{{{block}}}'); return false;"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results'>
 					<div class='blockResultsScroller'>
 <?php
