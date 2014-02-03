@@ -4,6 +4,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 
+	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
+		
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -18,7 +20,7 @@
 		jQuery(document).ready(function() {
     		jQuery('.dropdown-browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
-</script>
+	</script>
 
 </head>
 <body>
@@ -130,11 +132,8 @@
 		  </li>
 		</ul>
 	<!--form cut from here-->
-		<ul class="nav navbar-nav navbar-left">
-		  <li class="active"><a href="#">About</a></li>
-		  <li class="active"><a href="#">Contact</a></li>
-		</ul>
 		<ul class="nav navbar-nav navbar-right" id="browse-menu">
+		  <li class="active"><a href="#">About</a></li>
 <?php
 	print $this->render("pageFormat/browseMenu.php");
 ?>		  

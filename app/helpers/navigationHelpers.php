@@ -615,7 +615,8 @@
 	 * @param array $pa_additional_parameters Optional array of parameters to return on the editor url
 	 * @param array $pa_attributes Optional array of attributes to set on the link's <a> tag. You can use this to set the id of the link, as well as any other <a> parameter.
 	 * @param array $pa_options Optional array of options. Supported options are:
-	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
+	 * 		verifyLink = if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
+	 *		type_id = type_id of item to get detail for
 	 */
 	function caDetailLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caDetailUrl($po_request, $ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
@@ -818,8 +819,9 @@
 	 * @param boolean $pb_return_url_as_pieces If true an array is returned with the various components of the editor URL as separate keys. The keys will be 'module', 'controller', 'action' and '_pk' (the name of the primary key for the item); the primary key value itself is returned as both 'id' and whatever the primary key name is (eg. named whatever the value of _pk is). Default is false - return as a string rather than array.
 	 * @param array $pa_additional_parameters Optional array of parameters to return on the editor url
 	 * @param array $pa_options Optional array of options. Supported options are:
-	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
-	 *		action - if set, action of returned link will be set to the supplied value
+	 * 		verifyLink = if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
+	 *		action = if set, action of returned link will be set to the supplied value
+	 *		type_id = type_id of item to get detail for
 	 */
 	function caDetailUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
 		$o_dm = Datamodel::load();
@@ -834,45 +836,7 @@
 		
 		$vs_module = '';
 		$vs_controller = 'Detail';
-		switch($ps_table) {
-			case 'ca_objects':
-			case 57:
-				$vs_action = 'objects';
-				break;
-			case 'ca_object_lots':
-			case 51:
-				$vs_action = 'lots';
-				break;
-			case 'ca_entities':
-			case 20:
-				$vs_action = 'people';
-				break;
-			case 'ca_places':
-			case 72:
-				$vs_action = 'places';
-				break;
-			case 'ca_occurrences':
-			case 67:
-				$vs_action = 'occurrences';
-				break;
-			case 'ca_collections':
-			case 13:
-				$vs_action = 'collections';
-				break;
-			case 'ca_list_items':
-			case 33:
-				$t_table->load($pn_id);
-				$vs_module = '';
-				$vs_action = 'Search';
-				$vs_action = 'Index';
-				$vs_pk = 'search';
-				$pn_id = $t_table->get('ca_list_items.preferred_labels.name_plural');
-				break;
-			default:
-				return null;
-				break;
-		}
-		
+		$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null));
 		$vs_action .= "/{$pn_id}";
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {

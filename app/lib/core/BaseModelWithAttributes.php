@@ -852,8 +852,8 @@
 		 *
 		 * @return string - idno (aka "item code") for current row's type or null if no row is loaded or model does not support types
 		 */
-		public function getTypeCode() {
-			if ($t_list_item = $this->getTypeInstance()) {
+		public function getTypeCode($pn_type_id=null) {
+			if ($t_list_item = $this->getTypeInstance($pn_type_id)) {
 				return $t_list_item->get('idno');
 			}
 			return null;

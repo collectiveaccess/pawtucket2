@@ -1248,8 +1248,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						array_merge(
 							array(	
 								'readonly' 					=> $vb_read_only,						
-								'error_icon' 				=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/warning_small.gif",
-								'progress_indicator'		=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/indicator.gif",
+								'error_icon' 				=> caGetThemeGraphicURL($pa_options['request'], 'icons/warning_small.gif'),
+								'progress_indicator'		=> caGetThemeGraphicURL($pa_options['request'], 'icons/indicator.gif'),
 								'lookup_url' 				=> $va_lookup_url_info['intrinsic']
 							),
 							$pa_options
@@ -4286,8 +4286,8 @@ if (!$vb_batch) {
 										array_merge(
 											$pa_options,
 											array(
-												'error_icon' 				=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/warning_small.gif",
-												'progress_indicator'		=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/indicator.gif",
+												'error_icon' 				=> caGetThemeGraphicURL($pa_options['request'], 'icons/warning_small.gif'),
+												'progress_indicator'		=> caGetThemeGraphicURL($pa_options['request'], 'icons/indicator.gif'),
 												'show_errors'				=> ($this->getPrimaryKey()) ? true : false,
 												'context_id'				=> isset($pa_options['context_id']) ? $pa_options['context_id'] : null,
 												'table' 					=> $this->tableName(),

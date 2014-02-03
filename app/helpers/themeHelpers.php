@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,16 +34,129 @@
 	*
 	*/
    
-   	
+   	# ---------------------------------------
+	/**
+	 * Generate HTML <img> tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_file_path
+	 * @param array $pa_attributes
+	 * @param array $pa_options
+	 * @return string 
+	 */
+	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
+		$vs_base_url_path = $po_request->getThemeUrlPath();
+		$vs_base_path = $po_request->getThemeDirectoryPath();
+		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
+		
+		if (!file_exists($vs_base_path.$vs_file_path)) {
+			$vs_base_url_path = $po_request->getDefaultThemeUrlPath();
+		}
+		
+		$vs_html = caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
+		
+		return $vs_html;
+	}
 	# ---------------------------------------
 	/**
-	 * 
+	 * Generate URL tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_file_path
+	 * @param array $pa_options
+	 * @return string 
+	 */
+	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
+		$vs_base_path = $po_request->getThemeUrlPath();
+		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
+		
+		if (!file_exists($vs_base_path.$vs_file_path)) {
+			$vs_base_path = $po_request->getDefaultThemeUrlPath();
+		}
+		return $vs_base_path.$vs_file_path;
+	}
+	# ---------------------------------------
+	/**
+	 * Set CSS classes to add the "pageArea" page content <div>, overwriting any previous setting. 
+	 * Use to set classes specific to each page type and context.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to set
+	 * @return bool Always returns true
+	 */
+	$g_theme_page_css_classes = array();
+	function caSetPageCSSClasses($pa_page_classes) {
+		global $g_theme_page_css_classes;
+		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
+		if (!is_array($pa_page_classes)) { $pa_page_classes = array(); }
+		
+		$g_theme_page_css_classes = $pa_page_classes;
+		
+		return true;
+	}
+	# ---------------------------------------
+	/**
+	 * Adds CSS classes to the "pageArea" page content <div>. Use to set classes specific to each
+	 * page type and context.
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to add
+	 * @return bool Returns true if classes were added, false if class list is empty
+	 */
+	function caAddPageCSSClasses($pa_page_classes) {
+		global $g_theme_page_css_classes;
+		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
+		
+		if(!is_array($va_classes = $g_theme_page_css_classes)) {
+			return false;
+		}
+		
+		$g_theme_page_css_classes = array_unique($pa_page_classes + $va_classes);
+		
+		return true;
+	}
+	# ---------------------------------------
+	/**
+	 * Get CSS class attribute ready for including in a <div> tag. Used to add classes to the "pageArea" page content <div>
+	 *
+	 * @param RequestHTTP $po_request
+	 * @return string The "class" attribute with set classes or an empty string if no classes are set
+	 */
+	function caGetPageCSSClasses() {
+		global $g_theme_page_css_classes;
+		return (is_array($g_theme_page_css_classes) && sizeof($g_theme_page_css_classes)) ? "class='".join(' ', $g_theme_page_css_classes)."'" : '';
+	}
+	# ---------------------------------------
+	/**
+	 * Converts, and by default prints, a root-relative static view path to a DefaultController URL to load the appropriate view
+	 * Eg. $ps_path of "/About/this/site" becomes "/index.php/About/this/site"
+	 *
+	 * @param string $ps_path
+	 * @param array $pa_options Options include:
+	 *		dontPrint = Don't print URL to output. Default is false.
+	 *		request = The current request object (RequestHTTP). Default is to use globally set request object.
+	 *
+	 * @return string the URL
+	 */
+	function caStaticPageUrl($ps_path, $pa_options=null) {
+		global $g_request;
+		
+		if (!($po_request = caGetOption('request', $pa_options, null))) { $po_request = $g_request; }
+		$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().$ps_path;
+		
+		if (!caGetOption('dontPrint', $pa_options, false)) {
+			print $vs_url;
+		}
+		return $vs_url;
+	}
+	# ---------------------------------------
+	/**
+	 * Get theme-specific detail configuration
 	 *
 	 * @return Configuration 
 	 */
 	function caGetDetailConfig() {
-		$o_config = Configuration::load();
-		return Configuration::load($o_config->get('detail_config'));
+		return Configuration::load(__CA_THEME_DIR__.'/conf/detail.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -325,6 +438,39 @@
 		$vs_set_item_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set_item->get("item_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set_item->get("item_id"), 'tablename' => 'ca_set_items'))."\", function(){jQuery(\"#comment".$t_set_item->get("item_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getNumComments()."</small></a></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 		return $vs_set_item_display;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 * 
+	 */
+	$g_theme_detail_for_type_cache = array();
+	function caGetDetailForType($pm_table, $pm_type=null) {
+		global $g_theme_detail_for_type_cache;
+		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type]; }
+		$o_config = caGetDetailConfig();
+		$o_dm = Datamodel::load();
+		
+		if (!($vs_table = $o_dm->getTableName($pm_table))) { return null; }
+		
+		if ($pm_type) {
+			$t_instance = $o_dm->getInstanceByTableName($vs_table, true);
+			$vs_type = is_numeric($pm_type) ? $t_instance->getTypeCode($pm_type) : $pm_type;
+		} else {
+			$vs_type = null;
+		}	
+		
+		$va_detail_types = $o_config->getAssoc('detailTypes');
+	
+		foreach($va_detail_types as $vs_code => $va_info) {
+			if ($va_info['table'] == $vs_table) {
+				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
+					return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = $vs_code;
+				}
+			}
+		}
+		
+		return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = null;
 	}
 	# ---------------------------------------
 ?>

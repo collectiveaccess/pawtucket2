@@ -359,10 +359,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		if (!isset($pa_attributes['alt'])) {
 			$pa_attributes['alt'] = $vs_img_name;
 		}
-		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";
-	
-		return $vs_button;
+		return caGetThemeGraphic($po_request, 'indicator.gif', $pa_attributes);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -1913,26 +1910,34 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		foreach($o_ifdefs as $o_ifdef) {
 			if (!$o_ifdef) { continue; }
 			
+			$vs_code = (string)$o_ifdef->getAttribute('code');
+			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifdef->html()));
 			$vs_content = $o_ifdef->getInnerText();
 			
-			$va_ifdefs[$vs_code = (string)$o_ifdef->getAttribute('code')][] = array('directive' => $vs_html, 'content' => $vs_content);
+			$vs_content = str_replace($vs_code, $vs_code_proc, $vs_content);
+			$vs_html = str_replace($vs_code, $vs_code_proc, $vs_html);
 			
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$va_ifdefs[$vs_code][] = array('directive' => $vs_html, 'content' => $vs_content);
 		}
 		
 		$va_ifnotdefs = array();
 		foreach($o_ifnotdefs as $o_ifnotdef) {
 			if (!$o_ifnotdef) { continue; }
 			
+			$vs_code = (string)$o_ifnotdef->getAttribute('code');
+			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifnotdef->html()));
 			$vs_content = $o_ifnotdef->getInnerText();
 			
-			$va_ifnotdefs[$vs_code = (string)$o_ifnotdef->getAttribute('code')][] = array('directive' => $vs_html, 'content' => $vs_content);
-		
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$vs_content = str_replace($vs_code, $vs_code_proc, $vs_content);
+			$vs_html = str_replace($vs_code, $vs_code_proc, $vs_html);
+			
+			$va_ifnotdefs[$vs_code][] = array('directive' => $vs_html, 'content' => $vs_content);
 		}
 		
 		$va_mores = array();
@@ -1958,18 +1963,17 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		foreach($o_ifcounts as $o_ifcount) {
 			if (!$o_ifcount) { continue; }
 			
+			$vs_code = (string)$o_ifcount->getAttribute('code');
+			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifcount->html()));
 			$vs_content = $o_ifcount->getInnerText();
+			
 			
 			$vn_min = (int)$o_ifcount->getAttribute('min');
 			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = null; }
 			
-			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => (string)$o_ifcount->getAttribute('code'));
-			
-			$vs_code = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code, $va_tags)) { $va_tags[] = $vs_code; }
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code);
 		}
-		
 		
 		$va_resolve_links_using_row_ids = array();
 		$x = 0;
@@ -2062,7 +2066,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			if (!strlen(trim($va_proc_templates[$vn_i]))) { $va_proc_templates[$vn_i] = null; }
 			
 			if(!sizeof($va_tags)) { continue; } 	// if there are no tags in the template then we don't need to process further
-			
+		
 			if ($ps_resolve_links_using != $ps_tablename) {
 				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}");
 			}
@@ -2349,7 +2353,13 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					}
 			
 					foreach($va_tag_list as $vs_tag_to_test) {
-						$vb_value_is_set = (bool)(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1) || ((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+						$vs_tag_to_test = preg_replace("!%.*$!", "", $vs_tag_to_test);
+						
+						$vb_value_is_set = (
+							(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1)) 
+							|| 
+							((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+							
 						switch($vs_bool) {
 							case 'OR':
 								if ($vb_value_is_set) { $vb_output = true; break(2); }			// any must be defined; if any is defined output
@@ -3099,9 +3109,6 @@ $ca_relationship_lookup_parse_cache = array();
 		if (!in_array(__CA_APP_TYPE__, array('PROVIDENCE', 'PAWTUCKET'))) { return $pa_text; }
 		if (__CA_APP_TYPE__ == 'PAWTUCKET') {
 			$o_config = Configuration::load();
-			
-			// TODO: CHECK detail.conf
-			//if (!$o_config->get("allow_detail_for_{$ps_table_name}")) { return $pa_text; }
 		}
 		
 		$vb_can_handle_target = false;
@@ -3115,14 +3122,15 @@ $ca_relationship_lookup_parse_cache = array();
 		$o_dom->preserveWhiteSpace = true;
 		libxml_use_internal_errors(true);								// don't reported mangled HTML errors
 		
-		if (caUseIdentifiersInUrls()) {
-			$o_dm = Datamodel::load();
-			if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
+		$o_dm = Datamodel::load();
+		
+		$va_links = $va_type_ids = array();
+		if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
+			$va_type_ids = $t_instance->getFieldValuesForIDs($pa_row_ids, array('type_id'));
+			if (caUseIdentifiersInUrls()) {
 				$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
 			}
 		}
-		
-		$va_links = array();
 		
 		global $g_request;
 		if (!$g_request) { return $pa_text; }
@@ -3160,7 +3168,7 @@ $ca_relationship_lookup_parse_cache = array();
 								$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i]);
 								break;
 							case 'PAWTUCKET':
-								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i]);
+								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], array(), array(), array('type_id' => $va_type_ids[$pa_row_ids[$vn_i]]));
 								break;
 						}					
 					}
@@ -3187,7 +3195,7 @@ $ca_relationship_lookup_parse_cache = array();
 							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
-							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
+							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], array(), array(), array('type_id' => $va_type_ids[$pa_row_ids[$vn_i]]))) ? $vs_link : $vs_text;
 							break;
 						default:
 							$va_links[] = $vs_text;
@@ -3240,7 +3248,7 @@ $ca_relationship_lookup_parse_cache = array();
 	 */
 	function caEditorBundleShowHideControl($po_request, $ps_id_prefix) {
 		$vs_buf = "<span style='float:right; margin-right:7px;'>";
-		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;'><img src=\"".$po_request->getThemeUrlPath()."/graphics/arrows/expand.jpg\" border=\"0\" id=\"{$ps_id_prefix}VisToggleButton\"/></a>";
+		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;'>".caGetThemeGraphic($po_request, 'arrows/expand.jpg', array('id' => "{$ps_id_prefix}VisToggleButton"))."</a>";
 		$vs_buf .= "</span>\n";	
 		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";	
 		
