@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/result_images_html.php : 
+ * views/Search/search_results_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,10 +26,10 @@
  * ----------------------------------------------------------------------
  */
  
-	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+	$qr_res 			= $this->getVar('result');				// search results (subclass of SearchResult)
+	$va_facets 			= $this->getVar('facets');				// array of available refine facets
+	$va_criteria 		= $this->getVar('criteria');			// array of refine criteria
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current refine
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
@@ -38,6 +38,9 @@
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
 	$vs_current_sort	= $this->getVar('sort');
+	
+	$vs_table 			= $this->getVar('table');
+	$t_instance			= $this->getVar('t_instance');
 	
 	
 	$va_options			= $this->getVar('options');
@@ -50,18 +53,18 @@ if (!$vb_ajax) {	// !ajax
 <div id='browseResults'>
 	<div id="bViewButtons">
 <?php
-	foreach($va_views as $vs_view) {
+	foreach($va_views as $vs_view => $va_view_info) {
 		if ($vs_current_view === $vs_view) {
-			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view].'"></span></a> ';
+			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 		} else {
-			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view].'"></span>', 'active', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 		}
 	}
 ?>
 	</div>		
 	<H1>
 <?php 
-		print _t('%1 Object %2', $qr_res->numHits(), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+		print _t('%1 %2 %3', $qr_res->numHits(), $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
 ?>		
 		<div class="btn-group">
 			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
@@ -111,52 +114,9 @@ if (!$vb_ajax) {	// !ajax
 				<div id="browseResultsContainer">
 <?php
 } // !ajax
-			
-		$vn_col_span = 3;
-		$vn_col_span_sm = 4;
-		$vn_col_span_sm = 2;
-		$vb_refine = false;
-		if(is_array($va_facets) && sizeof($va_facets)){
-			$vb_refine = true;
-			$vn_col_span = 3;
-			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
-		}
-		if ($vn_start < $qr_res->numHits()) {
-			$vn_c = 0;
-			$qr_res->seek($vn_start);
-			
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
-			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-				$vn_id 					= $qr_res->get("ca_objects.object_id");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get('ca_objects.idno'), '', 'ca_objects', $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', 'ca_objects', $vn_id);
-				$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', 'ca_objects', $vn_id);				
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => $vn_id));
 
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+print $this->render("Search/search_results_{$vs_current_view}_html.php");			
 
-				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
-				</div><!-- end bResultItemText -->
-			</div><!-- end bResultItemContent -->
-			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
-				<hr>
-				{$vs_expanded_info}
-				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><span class='glyphicon glyphicon-folder-open'></span></a>
-			</div><!-- bResultItemExpandedInfo -->
-		</div><!-- end bResultItem -->
-	</div><!-- end col -->";
-				
-				$vn_c++;
-			}
-			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key));
-		}
 if (!$vb_ajax) {	// !ajax
 ?>
 				</div><!-- end browseResultsContainer -->
@@ -164,7 +124,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col-10 -->
 		<div class="col-sm-4 col-md-3 col-lg-2">
 <?php
-			print $this->render("Browse/browse_refine_subview_html.php");
+			print $this->render('Search/search_refine_subview_html.php');
 ?>			
 		</div><!-- end col-2 -->
 	</div><!-- end row -->
@@ -181,6 +141,6 @@ if (!$vb_ajax) {	// !ajax
 	});
 </script>
 <?php
-			print $this->render('Browse/browse_panel_subview_html.php');
+			print $this->render('Search/search_panel_subview_html.php');
 } //!ajax
 ?>

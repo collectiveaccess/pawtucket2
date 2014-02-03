@@ -53,11 +53,11 @@ if (!$vb_ajax) {	// !ajax
 <div id='browseResults'>
 	<div id="bViewButtons">
 <?php
-	foreach($va_views as $vs_view) {
+	foreach($va_views as $vs_view => $va_view_info) {
 		if ($vs_current_view === $vs_view) {
-			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view].'"></span></a> ';
+			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 		} else {
-			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view].'"></span>', 'active', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 		}
 	}
 ?>
