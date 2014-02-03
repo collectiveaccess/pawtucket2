@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/result_images_html.php : 
+ * views/Browse/browse_results_images_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -39,79 +39,16 @@
 	$va_view_icons		= $this->getVar('viewIcons');
 	$vs_current_sort	= $this->getVar('sort');
 	
+	$t_instance			= $this->getVar('t_instance');
+	$vs_table 			= $this->getVar('table');
+	$vs_pk				= $this->getVar('primaryKey');
+	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
-if (!$vb_ajax) {	// !ajax
-?>
-<div id='browseResults'>
-	<div id="bViewButtons">
-<?php
-	foreach($va_views as $vs_view) {
-		if ($vs_current_view === $vs_view) {
-			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view].'"></span></a> ';
-		} else {
-			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view].'"></span>', 'active', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-		}
-	}
-?>
-	</div>		
-	<H1>
-<?php 
-		print _t('%1 Object %2', $qr_res->numHits(), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
-?>		
-		<div class="btn-group">
-			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
-			<ul class="dropdown-menu" role="menu">
-<?php
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-						if ($vs_current_sort === $vs_sort) {
-							print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
-						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
-						}
-					}
-				}
-				
-				if ((sizeof($va_criteria) > 0) && is_array($va_sorts) && sizeof($va_sorts)) {
-?>
-				<li class="divider"></li>
-<?php
-				}
-				
-				if (sizeof($va_criteria) > 0) {
-					print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_view))."</li>";
-				}	
-?>
-			</ul>
-		</div><!-- end btn-group -->
-	</H1>
-	<div class="row" style="clear:both;">
-		<div class='col-sm-8 col-md-9 col-lg-10'>
-			<H2>
-<?php
-			if (sizeof($va_criteria) > 0) {
-				$i = 0;
-				foreach($va_criteria as $va_criterion) {
-					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'].' ';
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/x.png'), 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_view, 'key' => $vs_browse_key));
-					$i++;
-					if($i < sizeof($va_criteria)){
-						print ", ";
-					}
-				}
-			}
-?>		
-			&nbsp;</H2>
-			<div class="row">
-				<div id="browseResultsContainer">
-<?php
-} // !ajax
-			
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
 		$vn_col_span_sm = 2;
@@ -128,11 +65,11 @@ if (!$vb_ajax) {	// !ajax
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-				$vn_id 					= $qr_res->get("ca_objects.object_id");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get('ca_objects.idno'), '', 'ca_objects', $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', 'ca_objects', $vn_id);
-				$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', 'ca_objects', $vn_id);				
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => $vn_id));
+				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get('{$vs_table}.idno'), '', $vs_table, $vn_id);
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get('{$vs_table}.preferred_labels.name'), '', $vs_table, $vn_id);
+				$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', $vs_table, $vn_id);				
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
@@ -157,30 +94,4 @@ if (!$vb_ajax) {	// !ajax
 			
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key));
 		}
-if (!$vb_ajax) {	// !ajax
-?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-		</div><!-- end col-10 -->
-		<div class="col-sm-4 col-md-3 col-lg-2">
-<?php
-			print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-		</div><!-- end col-2 -->
-	</div><!-- end row -->
-</div><!-- end browseResults -->	
-
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 20,
-			nextSelector: 'a.jscroll-next'
-		});
-	});
-</script>
-<?php
-			print $this->render('Browse/browse_panel_subview_html.php');
-} //!ajax
 ?>

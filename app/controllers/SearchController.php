@@ -72,106 +72,109 @@
  			
  			caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			
- 			//if ($ps_view != 'timeline') {
-				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
-				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
-				$this->view->setVar('t_instance', $t_instance);
+			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
+			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+			$this->view->setVar('t_instance', $t_instance);
+		
+			$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
+			$this->view->setVar('view', $ps_view);
+		
+			//
+			// Load existing browse if key is specified
+			//
+			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+				$o_browse->reload($ps_cache_key);
+			}
+		
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types); }
+		
+			//
+			// Clear criteria if required
+			//
 			
-				$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
-				$this->view->setVar('view', $ps_view);
+			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pInteger)));
+			}
+		
+			if ((bool)$this->request->getParameter('clear', pInteger)) {
+				$o_browse->removeAllCriteria();
+			}
 			
-				//
-				// Load existing browse if key is specified
-				//
-				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
-					$o_browse->reload($ps_cache_key);
-				}
-			
-				if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types); }
-			
-				//
-				// Clear criteria if required
-				//
-				if ((bool)$this->request->getParameter('clear', pInteger)) {
-					$o_browse->removeAllCriteria();
-				}
 				
-					
-				if ($this->request->getParameter('getFacet', pInteger)) {
-					$vs_facet = $this->request->getParameter('facet', pString);
-					$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
-					$this->view->setVar('facet_name', $vs_facet);
-					$this->view->setVar('key', $o_browse->getBrowseID());
-					$this->view->setVar('facet_info', $o_browse->getInfoForFacet($vs_facet));
-					$this->render("Browse/{$vs_class}_facet_html.php");
-					return;
+			if ($this->request->getParameter('getFacet', pInteger)) {
+				$vs_facet = $this->request->getParameter('facet', pString);
+				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
+				$this->view->setVar('facet_name', $vs_facet);
+				$this->view->setVar('key', $o_browse->getBrowseID());
+				$this->view->setVar('facet_info', $o_browse->getInfoForFacet($vs_facet));
+				$this->render("Browse/{$vs_class}_facet_html.php");
+				return;
+			}
+		
+			//
+			// Add criteria and execute
+			//
+			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+			} else { 
+				if ($o_browse->numCriteria() == 0) {
+					$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
 				}
-			
-				//
-				// Add criteria and execute
-				//
-				if ($vs_facet = $this->request->getParameter('facet', pString)) {
-					$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
-				} else { 
-					if ($o_browse->numCriteria() == 0) {
-						$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
-					}
-				}
-	
-				$o_browse->execute();
-			
-				//
-				// Facets
-				//
-				$va_facets = $o_browse->getInfoForAvailableFacets();
-				if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
-					foreach($va_facets as $vs_facet_name => $va_facet_info) {
-						if (!in_array($vs_facet_name, $va_available_facet_list)) {
-							unset($va_facets[$vs_facet_name]);
-						}
-					}
-				} 
-			
-				foreach($va_facets as $vs_facet_name => $va_facet_info) {
-					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
-				}
-			
-				$this->view->setVar('facets', $va_facets);
-			
-				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
-				
-			
-				//
-				// Current criteria
-				//
-				$va_criteria = $o_browse->getCriteriaWithLabels();
-				if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-					unset($va_criteria['_search']);
-				}
-				$va_criteria_for_display = array();
-				foreach($va_criteria as $vs_facet_name => $va_criterion) {
-					$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
-					foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
-						$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
-					}
-				}
-				$this->view->setVar('criteria', $va_criteria_for_display);
-			
-				// 
-				// Results
-				//
-				$qr_res = $o_browse->getResults();
-				$this->view->setVar('result', $qr_res);
-			
-				$this->view->setVar('hits_per_block', 12);
-				$this->view->setVar('start', $this->request->getParameter('s', pInteger));
-				
+			}
 
-				$this->opo_result_context->setParameter('key', $vs_key);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
-				$this->opo_result_context->saveContext();
-			//}
+			$o_browse->execute();
+		
+			//
+			// Facets
+			//
+			$va_facets = $o_browse->getInfoForAvailableFacets();
+			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					if (!in_array($vs_facet_name, $va_available_facet_list)) {
+						unset($va_facets[$vs_facet_name]);
+					}
+				}
+			} 
+		
+			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
+			}
+		
+			$this->view->setVar('facets', $va_facets);
+		
+			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			
+		
+			//
+			// Current criteria
+			//
+			$va_criteria = $o_browse->getCriteriaWithLabels();
+			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
+				unset($va_criteria['_search']);
+			}
+			$va_criteria_for_display = array();
+			foreach($va_criteria as $vs_facet_name => $va_criterion) {
+				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+				foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+				}
+			}
+			$this->view->setVar('criteria', $va_criteria_for_display);
+		
+			// 
+			// Results
+			//
+			$qr_res = $o_browse->getResults();
+			$this->view->setVar('result', $qr_res);
+		
+			$this->view->setVar('hits_per_block', 12);
+			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+			
+
+			$this->opo_result_context->setParameter('key', $vs_key);
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {
  				if ($this->render("Search/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
