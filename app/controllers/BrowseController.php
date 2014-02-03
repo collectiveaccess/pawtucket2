@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/ListController.php : 
+ * app/controllers/BrowseController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -89,7 +89,7 @@
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
 			$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
 			$this->view->setVar('view', $ps_view);
-			$this->view->setVar('viewIcons', $o_config->getAssoc("viewIcons"));
+			$this->view->setVar('viewIcons', $o_config->getAssoc("views"));
 		
 			//
 			// Load existing browse if key is specified
@@ -214,8 +214,9 @@
  				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
- 			switch($vs_format) {
- 				case 'json':
+ 			switch($ps_view) {
+ 				case 'timelineData':
+ 					$this->view->setVar('view', 'timeline');
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
