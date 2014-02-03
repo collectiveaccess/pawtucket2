@@ -102,19 +102,19 @@ class Configuration {
 		return $_CONFIG_INSTANCE_CACHE[$ps_file_path];
 	}
 	/* ---------------------------------------- */
-/**
- * Load a configuration file. In addition to the parameters described below two global variables can also affect loading:
- *
- *		$g_ui_locale - if it contains the current locale code, this code will be used when computing the MD5 signature of the current configuration for caching purposes. By setting this to the current locale simultaneous caching of configurations for various locales (eg. config files with gettext-translated strings in them) is enabled.
- *		$g_configuration_cache_suffix - any text it contains is used along with the configuration path and $g_ui_locale to compute the MD5 signature of the current configuration for caching purposes. By setting this to some value you can support simultaneous caching of configurations for several different modes. This is mainly used to support caching of theme-specific configurations. Since the theme can change based upon user agent, we need to potentially keep several computed configurations cached at the same time, one for each theme used.
- *		
- * @param string $ps_file_path Absolute path to configuration file to parse
- * @param bool $pb_die_on_error If true, request processing will halt with call to die() on error in parsing config file
- * @param bool $pb_dont_cache If true, file will be parsed even if it's already cached
- *
- *
- */
-	function Configuration ($ps_file_path="", $pb_die_on_error=true, $pb_dont_cache=false) {
+	/**
+	 * Load a configuration file. In addition to the parameters described below two global variables can also affect loading:
+	 *
+	 *		$g_ui_locale - if it contains the current locale code, this code will be used when computing the MD5 signature of the current configuration for caching purposes. By setting this to the current locale simultaneous caching of configurations for various locales (eg. config files with gettext-translated strings in them) is enabled.
+	 *		$g_configuration_cache_suffix - any text it contains is used along with the configuration path and $g_ui_locale to compute the MD5 signature of the current configuration for caching purposes. By setting this to some value you can support simultaneous caching of configurations for several different modes. This is mainly used to support caching of theme-specific configurations. Since the theme can change based upon user agent, we need to potentially keep several computed configurations cached at the same time, one for each theme used.
+	 *		
+	 * @param string $ps_file_path Absolute path to configuration file to parse
+	 * @param bool $pb_die_on_error If true, request processing will halt with call to die() on error in parsing config file
+	 * @param bool $pb_dont_cache If true, file will be parsed even if it's already cached
+	 *
+	 *
+	 */
+	public function __construct($ps_file_path="", $pb_die_on_error=false, $pb_dont_cache=false) {
 		global $g_ui_locale, $g_configuration_cache_suffix, $_CONFIG_CACHE;
 		
 		$this->ops_config_file_path = $ps_file_path ? $ps_file_path : __CA_APP_CONFIG__;	# path to configuration file
@@ -123,13 +123,15 @@ class Configuration {
 		# Is configuration file already cached?
 		#
 		if (!isset($_CONFIG_CACHE[$this->ops_config_file_path.$g_ui_locale]) || $pb_dont_cache) {
-		
 			$va_config_path_components = explode("/", $this->ops_config_file_path);
 			$vs_config_filename = array_pop($va_config_path_components);
 			
-			$vb_local_conf_file_exists = false;
+			
+			$vs_local_conf_file_path = null;
 			if (defined('__CA_LOCAL_CONFIG_DIRECTORY__') && file_exists(__CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
-				$vb_local_conf_file_exists = true;	
+				$vs_local_conf_file_path = __CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename;	
+			} elseif (defined('__CA_DEFAULT_THEME_CONFIG_DIRECTORY__') && file_exists(__CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
+				$vs_local_conf_file_path = __CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename;	
 			}
 			
 			if(!defined('__CA_DISABLE_CONFIG_CACHING__') || !__CA_DISABLE_CONFIG_CACHING__){
@@ -162,8 +164,6 @@ class Configuration {
 					}
 				}
 				
-				
-
 				if (is_object($vo_cache)) {
 					// check that setup.php and global.conf haven't changed. If they have we're going to want to
 					// regenerate all config file caches so they reflect inherited changes
@@ -182,7 +182,6 @@ class Configuration {
 						$vo_cache->save($va_setup_stat['mtime'],'ca_setup_mtime', array('ca_config_cache'));
 					}
 
-
 					if (is_object($vo_cache)) {
 						$va_cache_data = $vo_cache->load('ca_config_file_'.$vs_path_as_md5);
 						#
@@ -195,9 +194,10 @@ class Configuration {
 							$vo_cache->save($va_configfile_stat['mtime'],'ca_config_file_mtime_'.$vs_path_as_md5, array('ca_config_cache'));
 							$vb_cache_is_invalid = true;
 						}
-						if ($vb_local_conf_file_exists) {
-							$va_local_configfile_stat = @stat(__CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename);
-							if($va_local_configfile_stat['mtime'] != ($x = $vo_cache->load('ca_config_file_local_mtime_'.$vs_path_as_md5))) {	// local config file has changed
+						
+						if ($vs_local_conf_file_path) {
+							$va_local_configfile_stat = @stat($vs_local_conf_file_path);
+							if($va_local_configfile_stat['mtime'] != ($vo_cache->load('ca_config_file_local_mtime_'.$vs_path_as_md5))) {	// local config file has changed
 								$vo_cache->save($va_local_configfile_stat['mtime'],'ca_config_file_local_mtime_'.$vs_path_as_md5, array('ca_config_cache'));
 								$vb_cache_is_invalid = true;
 							}
@@ -219,7 +219,7 @@ class Configuration {
 			$vs_global_path = join("/", $va_config_path_components)."/global.conf";
 			
 			if (!isset($_CONFIG_CACHE[$vs_global_path.$g_ui_locale])) {
-				$this->loadFile($vs_global_path, false);
+				if (file_exists($vs_global_path)) { $this->loadFile($vs_global_path, false); }
 				$_CONFIG_CACHE[$vs_global_path.$g_ui_locale] = $this->ops_config_settings;	// cache global.conf
 			} else {
 				$this->ops_config_settings = $_CONFIG_CACHE[$vs_global_path.$g_ui_locale];
@@ -234,26 +234,28 @@ class Configuration {
 			# load specified config file
 			#
 			$vb_loaded_config = false;
-			if ($this->loadFile($this->ops_config_file_path, $pb_die_on_error)) {
+			if (file_exists($this->ops_config_file_path) && $this->loadFile($this->ops_config_file_path, false)) {
 				$this->ops_config_settings["ops_config_file_path"] = $this->ops_config_file_path;
 				$vb_loaded_config = true;
 			}
 			
-			if ($vb_loaded_config) {
-				#
-				# try to load optional "local" config file (extra, optional, config file that can override values in the specified config file with "local" values)
-				#
-				if ($vb_local_conf_file_exists) {
-					$this->loadFile(__CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename, $pb_die_on_error);
-				}
+			#
+			# try to load optional "local" config file (extra, optional, config file that can override values in the specified config file with "local" values)
+			#
+			if ($vs_local_conf_file_path) {
+				$this->loadFile($vs_local_conf_file_path, false, false);
+				$vb_loaded_config = true;
+			}
 				
+			
+			//if ($vb_loaded_config) {
 				$_CONFIG_CACHE[$this->ops_config_file_path.$g_ui_locale] = $this->ops_config_settings;	
 				if (is_object($vo_cache)) {
 					// Save parsed config file to cache
 					$vo_cache->save($this->ops_config_settings, 'ca_config_file_'.$vs_path_as_md5, array('ca_config_cache'));
 					return;
 				}
-			}
+			//}
 		} else {
 			#
 			# Return cached configuration file
@@ -271,7 +273,7 @@ class Configuration {
 	 * @param $pn_num_lines_to_read - if set to a positive integer, will abort parsing after the first $pn_num_lines_to_read lines of the config file are read. This is useful for reading in headers in config files without having to parse the entire file.
 	 * @return boolean - returns true if parse succeeded, false if parse failed
 	 */
-	function loadFile($ps_filepath, $pb_die_on_error=false, $pn_num_lines_to_read=null) {
+	public function loadFile($ps_filepath, $pb_die_on_error=false, $pn_num_lines_to_read=null) {
 		$this->ops_md5_path = md5($ps_filepath);
 		$this->ops_error = "";
 		$r_file = @fopen($ps_filepath,"r", true);
@@ -763,17 +765,17 @@ class Configuration {
 		return $vs_output;
 	}
 	/* ---------------------------------------- */
-/**
- * Get configuration value
- *
- * @param string $ps_key Name of configuration value to get. get() will look for the
- * configuration value first as a scalar, then as a list and finally as an associative array.
- * The first value found is returned.
- *
- * @return mixed A string, indexed array (list) or associative array, depending upon what
- * kind of configuration value was found.
- */
-	function get($ps_key) {
+	/**
+	 * Get configuration value
+	 *
+	 * @param string $ps_key Name of configuration value to get. get() will look for the
+	 * configuration value first as a scalar, then as a list and finally as an associative array.
+	 * The first value found is returned.
+	 *
+	 * @return mixed A string, indexed array (list) or associative array, depending upon what
+	 * kind of configuration value was found.
+	 */
+	public function get($ps_key) {
 		if (isset(Configuration::$s_get_cache[$this->ops_md5_path][$ps_key]) && Configuration::$s_get_cache[$this->ops_md5_path][$ps_key]) { return Configuration::$s_get_cache[$this->ops_md5_path][$ps_key]; } 
 		$this->ops_error = "";
 
@@ -788,16 +790,16 @@ class Configuration {
 		return $vs_tmp;
 	}
 	/* ---------------------------------------- */
-/**
- * Get boolean configuration value
- *
- * @param string $ps_key Name of configuration value to get. getBoolean() will look for the
- * configuration value only as a scalar, and return boolean 'true' if the scalar value is
- * either 'yes', 'true' or '1'.
- *
- * @return boolean
- */
-	function getBoolean($ps_key) {
+	/**
+	 * Get boolean configuration value
+	 *
+	 * @param string $ps_key Name of configuration value to get. getBoolean() will look for the
+	 * configuration value only as a scalar, and return boolean 'true' if the scalar value is
+	 * either 'yes', 'true' or '1'.
+	 *
+	 * @return boolean
+	 */
+	public function getBoolean($ps_key) {
 		$vs_tmp = strtolower($this->getScalar($ps_key));
 		if(($vs_tmp == "yes") || ($vs_tmp == "true") || ($vs_tmp == "1")) {
 			return true;
@@ -806,16 +808,16 @@ class Configuration {
 		}
 	}
 	/* ---------------------------------------- */
-/**
- * Get scalar configuration value
- *
- * @param string $ps_key Name of scalar configuration value to get. get() will look for the
- * configuration value only as a scalar. Like-named list or associative array values are
- * ignored.
- *
- * @return string
- */
-	function getScalar($ps_key) {
+	/**
+	 * Get scalar configuration value
+	 *
+	 * @param string $ps_key Name of scalar configuration value to get. get() will look for the
+	 * configuration value only as a scalar. Like-named list or associative array values are
+	 * ignored.
+	 *
+	 * @return string
+	 */
+	public function getScalar($ps_key) {
 		$this->ops_error = "";
 		if (isset($this->ops_config_settings["scalars"][$ps_key])) {
 			return $this->ops_config_settings["scalars"][$ps_key];
@@ -824,49 +826,49 @@ class Configuration {
 		}
 	}
 	/* ---------------------------------------- */
-/**
- * Get keys for scalar values
- *
- *
- * @return array List of all possible keys for scalar values
- */
-	function getScalarKeys() {
+	/**
+	 * Get keys for scalar values
+	 *
+	 *
+	 * @return array List of all possible keys for scalar values
+	 */
+	public function getScalarKeys() {
 		$this->ops_error = "";
 		return array_keys($this->ops_config_settings["scalars"]);
 	}
 	/* ---------------------------------------- */
-/**
- * Get keys for list values
- *
- *
- * @return array List of all possible keys for list values
- */
-	function getListKeys() {
+	/**
+	 * Get keys for list values
+	 *
+	 *
+	 * @return array List of all possible keys for list values
+	 */
+	public function getListKeys() {
 		$this->ops_error = "";
 		return array_keys($this->ops_config_settings["lists"]);
 	}
 	/* ---------------------------------------- */
-/**
- * Get keys for associative values
- *
- *
- * @return array List of all possible keys for associative values
- */
-	function getAssocKeys() {
+	/**
+	 * Get keys for associative values
+	 *
+	 *
+	 * @return array List of all possible keys for associative values
+	 */
+	public function getAssocKeys() {
 		$this->ops_error = "";
 		return @array_keys($this->ops_config_settings["assoc"]);
 	}
 	/* ---------------------------------------- */
-/**
- * Get list configuration value
- *
- * @param string $ps_key Name of list configuration value to get. get() will look for the
- * configuration value only as a list. Like-named scalar or associative array values are
- * ignored.
- *
- * @return array An indexed array
- */
-	function getList($ps_key) {
+	/**
+	 * Get list configuration value
+	 *
+	 * @param string $ps_key Name of list configuration value to get. get() will look for the
+	 * configuration value only as a list. Like-named scalar or associative array values are
+	 * ignored.
+	 *
+	 * @return array An indexed array
+	 */
+	public function getList($ps_key) {
 		$this->ops_error = "";
 		if (isset($this->ops_config_settings["lists"][$ps_key])) {
 			if (is_array($this->ops_config_settings["lists"][$ps_key])) {
@@ -879,16 +881,16 @@ class Configuration {
 		}
 	}
 	/* ---------------------------------------- */
-/**
- * Get associative configuration value
- *
- * @param string $ps_key Name of associative configuration value to get. get() will look for the
- * configuration value only as an associative array. Like-named scalar or list values are
- * ignored.
- *
- * @return array An associative array
- */
-	function getAssoc($ps_key) {
+	/**
+	 * Get associative configuration value
+	 *
+	 * @param string $ps_key Name of associative configuration value to get. get() will look for the
+	 * configuration value only as an associative array. Like-named scalar or list values are
+	 * ignored.
+	 *
+	 * @return array An associative array
+	 */
+	public function getAssoc($ps_key) {
 		$this->ops_error = "";
 		if (isset($this->ops_config_settings["assoc"][$ps_key])) {
 			if (is_array($this->ops_config_settings["assoc"][$ps_key])) {
@@ -901,25 +903,25 @@ class Configuration {
 		}
 	}
 	/* ---------------------------------------- */
-/**
- * Find out if there was an error processing the configuration file
- *
- * @return bool Returns true if error occurred, false if not
- */
-	function isError() {
+	/**
+	 * Find out if there was an error processing the configuration file
+	 *
+	 * @return bool Returns true if error occurred, false if not
+	 */
+	public function isError() {
 		return ($this->ops_error) ? true : false;
 	}
 	/* ---------------------------------------- */
-/**
- * Get error message
- *
- * @return string Returns user-displayable error message
- */
-	function getError() {
+	/**
+	 * Get error message
+	 *
+	 * @return string Returns user-displayable error message
+	 */
+	public function getError() {
 		return $this->ops_error;
 	}
 	/* ---------------------------------------- */
-	function _trimScalar($ps_scalar_value) {
+	private function _trimScalar($ps_scalar_value) {
 		if (preg_match("/^[ ]+$/", $ps_scalar_value)) {
 			$ps_scalar_value = " ";
 		} else {
@@ -934,11 +936,11 @@ class Configuration {
 		return $ps_scalar_value;
 	}
 	/* ---------------------------------------- */
-	function _dieOnError() {
+	private function _dieOnError() {
 		die("Error loading configuration file '".$this->ops_config_file_path."': ".$this->ops_error."\n");
 	}
 	/* ---------------------------------------- */
-	function _interpolateScalar($ps_text) {
+	private function _interpolateScalar($ps_text) {
 		if (preg_match_all("/<([A-Za-z0-9_\-\.]+)>/", $ps_text, $va_matches)) {
 			foreach($va_matches[1] as $vs_key) {
 				if (($vs_val = $this->getScalar($vs_key)) !== false) {
@@ -986,9 +988,9 @@ class Configuration {
 		
 	}
 	/* ---------------------------------------- */
-	function __destruct() {
+	//public function __destruct() {
 		//print "DESTRUCT Config\n";
-	}
+	//}
 	# ---------------------------------------------------------------------------
 }
 ?>

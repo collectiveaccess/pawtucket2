@@ -12,7 +12,7 @@
 <body>
 	<div id="hpLogo">
 <?php	
-	print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/MF_logo.jpg' border='0'>", '', '', '','');
+	print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg'), '', '', '','');
 ?>	
 	</div>
 	<div class="navbar navbar-inverse">

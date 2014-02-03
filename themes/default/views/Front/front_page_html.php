@@ -124,13 +124,6 @@
 <?php
 	}
 ?>
+	<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
 
-
-<div class="container">
-	<div class="col-sm-8">
-<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>   	
-</div><!--end col-sm-8-->
-	
-</div> <!--end container-->
-
-	</div>
+</div><!-- end frontPage -->

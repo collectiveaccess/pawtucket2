@@ -77,7 +77,7 @@ if($vs_display_type == 'media_overlay'){
 						# -- get version to download configured in media_display.conf
 						$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 						$vs_download_version = $va_download_display_info['display_version'];
-						print caNavLink($this->request, "<img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/buttons/downloadWhite.png' border='0' title='"._t("Download Media")."'>", '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
+						print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/downloadWhite.png', array('title' => _t("Download Media"))), '', 'Detail', 'Object', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
 ?>				
 				</div>
 <?php

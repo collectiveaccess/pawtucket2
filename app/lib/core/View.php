@@ -47,7 +47,10 @@ class View extends BaseObject {
 	private $ops_character_encoding;
 	
 	# -------------------------------------------------------
-	public function __construct($po_request, $pm_path=null, $ps_character_encoding='UTF8') {
+	/**
+	 *
+	 */
+	public function __construct($po_request, $pm_path=null, $ps_character_encoding='UTF8', $pa_options=null) {
 		parent::__construct();
 		
 		$this->opo_request = $po_request;
@@ -58,7 +61,32 @@ class View extends BaseObject {
 		
 		$this->ops_character_encoding = $ps_character_encoding;
 		
-		if ($pm_path) {
+		if (!$pm_path) { $pm_path = array(); }
+		
+		$vs_suffix = null;
+		if (!is_array($pm_path)) { 
+			// Preserve any path suffix after "views"
+			// Eg. if path is /web/myinstall/themes/mytheme/views/bundles then we want to retain "/bundles" on the default path
+			$va_suffix_bits = array();
+			$va_tmp = array_reverse(explode("/", $pm_path));
+			foreach($va_tmp as $vs_path_element) {
+				if ($vs_path_element == 'views') { break; }
+				array_push($va_suffix_bits, $vs_path_element);
+			}
+			if ($vs_suffix = join("/", $va_suffix_bits)) { $vs_suffix = '/'.$vs_suffix; }
+			
+			
+			$pm_path = array($pm_path); 
+		}
+		
+		if (caGetOption('includeDefaultThemePath', $pa_options, true)) {
+			$vs_default_theme_path = $po_request->getDefaultThemeDirectoryPath().'/views'.$vs_suffix;
+			if (!in_array($vs_default_theme_path, $pm_path) && !in_array($vs_default_theme_path.'/', $pm_path)) {
+				array_unshift($pm_path, $vs_default_theme_path);
+			}
+		}
+		
+		if (sizeof($pm_path) > 0) {
 			$this->setViewPath($pm_path);
 		}
 	}
@@ -158,6 +186,7 @@ class View extends BaseObject {
 		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
 			return json_decode(file_get_contents($vs_compiled_path));
 		}
+		
 		$vs_buf = $this->_render($ps_filepath);
 		
 		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
@@ -238,6 +267,7 @@ class View extends BaseObject {
 	 *
 	 */
 	private function _render($ps_filename) {
+		if (!file_exists($ps_filename)) { return null; }
 		ob_start();
 		
 		require($ps_filename);

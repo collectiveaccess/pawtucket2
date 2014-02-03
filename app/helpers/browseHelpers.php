@@ -201,16 +201,27 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	/**
 	 * 
 	 *
+	 * @return array 
+	 */
+	function caGetBrowseTypes() {
+		$o_browse_config = caGetBrowseConfig();
+		
+		return $o_browse_config->getAssoc('browseTypes');
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
 	 * @return (string)
 	 */
-	function caGetFacetForMenuBar($po_request) {
+	function caGetFacetForMenuBar($po_request, $vs_browse_type) {
 		$vs_key = '';//$po_request->session->getVar('objects_last_browse_id');
 		
-		if (!($va_browse_info = caGetInfoForBrowseType('objects'))) {
+		if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
 			// invalid browse type – throw error
 			return null;
 		}
-		$o_browse = caGetBrowseInstance('ca_objects');
+		$o_browse = caGetBrowseInstance($va_browse_info["table"]);
 		if ($vs_key) { $o_browse->reload($vs_key); }
 		$o_browse->execute();
 	
@@ -220,11 +231,11 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$vs_default_facet = null;
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			if (!$vs_default_facet) { $vs_default_facet = $vs_facet_name; }
-			$vs_buf .= "<li ".(!$vs_buf ? "class='active'" : "")."><a href='#' onclick='jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></li>\n";
+			$vs_buf .= "<li ".(!$vs_buf ? "class='active'" : "")."><a href='#' onclick='jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></li>\n";
 		}
 		
 		if ($vs_default_facet) {
-			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', 'Objects', array('facet' => $vs_default_facet, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); });</script>\n";
+			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_default_facet, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); });</script>\n";
 		}
 		return $vs_buf;
 	}
