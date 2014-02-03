@@ -57,8 +57,8 @@
 		$(document).ready(function() {
 			createStoryJS({
 				type:       'timeline',
-				width:      '800',
-				height:     '600',
+				width:      '700',
+				height:     '500',
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed'
 			});

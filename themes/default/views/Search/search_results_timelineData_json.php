@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_results_images_html.php : 
+ * views/Search/search_results_images_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -28,10 +28,10 @@
  	
 	AssetLoadManager::register('timeline');
 	
-	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+	$qr_res 			= $this->getVar('result');				// search results (subclass of SearchResult)
+	$va_facets 			= $this->getVar('facets');				// array of available search facets
+	$va_criteria 		= $this->getVar('criteria');			// array of refine criteria
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current refine
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
