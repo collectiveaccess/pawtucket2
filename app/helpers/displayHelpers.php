@@ -359,7 +359,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		if (!isset($pa_attributes['alt'])) {
 			$pa_attributes['alt'] = $vs_img_name;
 		}
-		return caGetThemeGraphic($po_request, 'graphics/indicator.gif', $pa_attributes);
+		return caGetThemeGraphic($po_request, 'indicator.gif', $pa_attributes);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**

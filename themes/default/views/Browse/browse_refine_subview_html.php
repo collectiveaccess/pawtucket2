@@ -1,4 +1,31 @@
 <?php
+/* ----------------------------------------------------------------------
+ * views/Browse/browse_refine_subview_html.php : 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2014 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+ 
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
 	$vs_key 			= $this->getVar('key');					// cache key for current browse
@@ -33,7 +60,10 @@
 			}
 			if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
 				print "</div>\n";
-				print "<div><a href='#' class='more' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+				
+				$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
+				$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
+				print "<div><a href='#' class='more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
 			} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
 				#print "<div><a href='#' class='more' onclick='caBrowsePanel.showPanel(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\"); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
 				print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";

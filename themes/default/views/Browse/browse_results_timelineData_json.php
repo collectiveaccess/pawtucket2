@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/ca_objects_timelineData_json.php : 
+ * views/Browse/browse_results_images_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,19 +25,33 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	
+	AssetLoadManager::register('timeline');
+	
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$o_browse			= $this->getVar('browse');
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
 	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-	$vn_hits_per_block 	= 100; //(int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+	
+	$va_views			= $this->getVar('views');
+	$vs_current_view	= $this->getVar('view');
+	$va_view_icons		= $this->getVar('viewIcons');
+	$vs_current_sort	= $this->getVar('sort');
+	
+	$t_instance			= $this->getVar('t_instance');
+	$vs_table 			= $this->getVar('table');
+	$vs_pk				= $this->getVar('primaryKey');
+	
+	
+	$va_options			= $this->getVar('options');
+	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
-	
-	$va_browse_description = array();
+
+$va_browse_description = array();
 	if (sizeof($va_criteria) > 0) {
 		foreach($va_criteria as $va_criterion) {
 			if ($va_criterion['facet_name'] == '_search') { continue; }
