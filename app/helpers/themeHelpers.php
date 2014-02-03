@@ -156,8 +156,7 @@
 	 * @return Configuration 
 	 */
 	function caGetDetailConfig() {
-		$o_config = Configuration::load();
-		return Configuration::load($o_config->get('detail_config'));
+		return Configuration::load(__CA_THEME_DIR__.'/conf/detail.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -439,6 +438,39 @@
 		$vs_set_item_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set_item->get("item_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set_item->get("item_id"), 'tablename' => 'ca_set_items'))."\", function(){jQuery(\"#comment".$t_set_item->get("item_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getNumComments()."</small></a></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 		return $vs_set_item_display;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 * 
+	 */
+	$g_theme_detail_for_type_cache = array();
+	function caGetDetailForType($pm_table, $pm_type=null) {
+		global $g_theme_detail_for_type_cache;
+		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type]; }
+		$o_config = caGetDetailConfig();
+		$o_dm = Datamodel::load();
+		
+		if (!($vs_table = $o_dm->getTableName($pm_table))) { return null; }
+		
+		if ($pm_type) {
+			$t_instance = $o_dm->getInstanceByTableName($vs_table, true);
+			$vs_type = is_numeric($pm_type) ? $t_instance->getTypeCode($pm_type) : $pm_type;
+		} else {
+			$vs_type = null;
+		}	
+		
+		$va_detail_types = $o_config->getAssoc('detailTypes');
+	
+		foreach($va_detail_types as $vs_code => $va_info) {
+			if ($va_info['table'] == $vs_table) {
+				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
+					return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = $vs_code;
+				}
+			}
+		}
+		
+		return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = null;
 	}
 	# ---------------------------------------
 ?>

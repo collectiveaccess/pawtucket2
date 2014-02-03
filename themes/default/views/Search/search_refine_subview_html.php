@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_refine_subview_html.php : 
+ * views/Search/search_refine_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,9 +26,9 @@
  * ----------------------------------------------------------------------
  */
  
-	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_key 			= $this->getVar('key');					// cache key for current browse
+	$va_facets 			= $this->getVar('facets');				// array of available search facets
+	$va_criteria 		= $this->getVar('criteria');			// array of refine criteria
+	$vs_key 			= $this->getVar('key');					// cache key for current refine
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vs_view			= $this->getVar('view');
 	
