@@ -359,7 +359,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		if (!isset($pa_attributes['alt'])) {
 			$pa_attributes['alt'] = $vs_img_name;
 		}
-		return caGetThemeGraphic($po_request, 'graphics/indicator.gif', $pa_attributes);
+		return caGetThemeGraphic($po_request, 'indicator.gif', $pa_attributes);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -3109,9 +3109,6 @@ $ca_relationship_lookup_parse_cache = array();
 		if (!in_array(__CA_APP_TYPE__, array('PROVIDENCE', 'PAWTUCKET'))) { return $pa_text; }
 		if (__CA_APP_TYPE__ == 'PAWTUCKET') {
 			$o_config = Configuration::load();
-			
-			// TODO: CHECK detail.conf
-			//if (!$o_config->get("allow_detail_for_{$ps_table_name}")) { return $pa_text; }
 		}
 		
 		$vb_can_handle_target = false;
@@ -3125,14 +3122,15 @@ $ca_relationship_lookup_parse_cache = array();
 		$o_dom->preserveWhiteSpace = true;
 		libxml_use_internal_errors(true);								// don't reported mangled HTML errors
 		
-		if (caUseIdentifiersInUrls()) {
-			$o_dm = Datamodel::load();
-			if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
+		$o_dm = Datamodel::load();
+		
+		$va_links = $va_type_ids = array();
+		if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
+			$va_type_ids = $t_instance->getFieldValuesForIDs($pa_row_ids, array('type_id'));
+			if (caUseIdentifiersInUrls()) {
 				$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
 			}
 		}
-		
-		$va_links = array();
 		
 		global $g_request;
 		if (!$g_request) { return $pa_text; }
@@ -3170,7 +3168,7 @@ $ca_relationship_lookup_parse_cache = array();
 								$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i]);
 								break;
 							case 'PAWTUCKET':
-								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i]);
+								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], array(), array(), array('type_id' => $va_type_ids[$pa_row_ids[$vn_i]]));
 								break;
 						}					
 					}
@@ -3197,7 +3195,7 @@ $ca_relationship_lookup_parse_cache = array();
 							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
-							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
+							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], array(), array(), array('type_id' => $va_type_ids[$pa_row_ids[$vn_i]]))) ? $vs_link : $vs_text;
 							break;
 						default:
 							$va_links[] = $vs_text;

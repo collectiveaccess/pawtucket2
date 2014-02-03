@@ -82,7 +82,7 @@ if (!$vb_ajax) {	// !ajax
 				print caDetailLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', 'ca_objects', $qr_res->get("ca_objects.object_id"))."\n";
 				print "</div><!-- end bResultItemText -->";
 				print "</div><!-- end bResultItemContent -->\n";
-				print "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo".$qr_res->get("ca_objects.object_id")."'><hr>expanded info here<br/>more info here<br/><br/><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => $qr_res->get("ca_objects.object_id")))."\"); return false;' title='add to lightbox'><span class='glyphicon glyphicon-folder-open'></span></a></div><!-- bResultItemExpandedInfo -->";
+				print "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo".$qr_res->get("ca_objects.object_id")."'><hr><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => $qr_res->get("ca_objects.object_id")))."\"); return false;' title='add to lightbox'><span class='glyphicon glyphicon-folder-open'></span></a></div><!-- bResultItemExpandedInfo -->";
 				print "</div><!-- end bResultItem -->\n";
 				print "</div><!-- end col -->";
 				$vn_c++;

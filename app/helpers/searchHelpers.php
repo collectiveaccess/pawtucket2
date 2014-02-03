@@ -488,8 +488,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return Configuration 
 	 */
 	function caGetSearchConfig() {
-		$o_config = Configuration::load();
-		return Configuration::load($o_config->get('search_config'));
+		return Configuration::load(__CA_THEME_DIR__.'/conf/search.conf');
 	}
 	# ---------------------------------------
 	/**
