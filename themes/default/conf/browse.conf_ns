@@ -26,7 +26,7 @@ browseTypes = {
 		# comment this out or leave empty if you want all available facets presented to the user
 		availableFacets = []
 	},
-	collectionss = {
+	collections = {
 		table = ca_collections,
 		
 		# comment this out or leave empty if you don't want to restrict by type
