@@ -105,7 +105,7 @@
 			//
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
-				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pInteger)));
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
