@@ -473,4 +473,37 @@
 		return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = null;
 	}
 	# ---------------------------------------
+	/**
+	 * 
+	 * 
+	 */
+	function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids) {
+		$o_dm = Datamodel::load();
+		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
+		
+		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
+		$vs_pk = $t_instance->primaryKey();
+		
+		$vs_linking_table = $va_path[1];
+		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
+			FROM {$vs_table}
+			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
+			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
+			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
+			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
+			WHERE
+				ca_objects_x_object_representations.is_primary = 1
+			GROUP BY {$vs_table}.{$vs_pk}
+		";
+		
+		$o_db = $t_instance->getDb();
+		
+		$qr_res = $o_db->query($vs_sql);
+		$va_res = array();
+		while($qr_res->nextRow()) {
+			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", "icon");
+		}
+		return $va_res;
+	}
+	# ---------------------------------------
 ?>
