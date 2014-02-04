@@ -41,7 +41,10 @@
  			caSetPageCSSClasses(array("front"));
  		}
  		# -------------------------------------------------------
- 		function Index($pa_options=null) {
+ 		/**
+ 		 *
+ 		 */ 
+ 		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("carousel");
  			$va_access_values = caGetUserAccessValues($this->request);
  			#
@@ -58,7 +61,17 @@
 					$this->view->setVar('featured_set_item_ids', $va_featured_ids); 
 				}
  			}
- 			$this->render("Front/front_page_html.php");
+ 			
+ 			//
+ 			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
+ 			//
+ 			$ps_function = preg_replace("![^A-Za-z0-9_\-]+!", "", $ps_function);
+ 			$vs_path = "Front/{$ps_function}_html.php";
+ 			if (file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
+ 				$this->render($vs_path);
+ 			} else {
+ 				$this->render("Front/front_page_html.php");
+ 			}
  		}
  		# ------------------------------------------------------
  	}
