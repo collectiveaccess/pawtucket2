@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	
  	class SearchController extends ActionController {
@@ -49,23 +49,23 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			$o_config = caGetSearchConfig();
+ 			$o_config = caGetBrowseConfig();
  			
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
- 			if (!($va_search_info = caGetInfoForSearchType($ps_function))) {
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				die("Invalid search type");
+ 				die("Invalid browse type");
  			}
- 			$vs_class = $va_search_info['table'];
- 			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
+ 			$vs_class = $va_browse_info['table'];
+ 			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type);
+ 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
- 			$this->view->setVar('searchInfo', $va_search_info);
- 			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
+ 			$this->view->setVar('browseInfo', $va_browse_info);
+ 			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
  			
  			$ps_view = $this->request->getParameter('view', pString);
@@ -83,11 +83,11 @@
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
- 			$this->view->setVar('table', $va_search_info['table']);
+ 			$this->view->setVar('table', $va_browse_info['table']);
  			$this->view->setVar('primaryKey', $t_instance->primaryKey());
 		
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
-			$this->view->setVar('views', caGetOption('views', $va_search_info, array(), array('castTo' => 'array')));
+			$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
 			$this->view->setVar('view', $ps_view);
 			$this->view->setVar('viewIcons', $o_config->getAssoc("views"));
 		
@@ -105,7 +105,7 @@
 			//
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
-				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pInteger)));
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -136,7 +136,7 @@
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array("*"));
+					$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
 				}
 			}
 			
@@ -149,7 +149,7 @@
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			
-			$va_sort_by = caGetOption('sortBy', $va_search_info, null);
+			$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
@@ -211,16 +211,16 @@
 			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {
- 				if ($this->render("Search/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
  			switch($ps_view) {
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
- 					$this->render("Search/search_results_timelineData_json.php");
+ 					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->render("Search/search_results_html.php");
+ 					$this->render("Browse/browse_results_html.php");
  					break;
  			}
  		}
