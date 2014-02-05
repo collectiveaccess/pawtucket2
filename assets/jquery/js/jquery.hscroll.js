@@ -86,8 +86,7 @@
         	if (loadedTo >= _options.itemCount) { return; }
         	
         	
-        	if (_needsLoad()) {													
-        		console.log("do load for ", _options.name);
+        	if (_needsLoad()) {									
         		_load(loadedTo + _options.itemsPerLoad);
         	}
         });
@@ -111,6 +110,7 @@
 
 		
 		function _needsLoad() {
+			if (options.itemsPerLoad >= options.itemCount) { return false; }
 			var left = parseInt($e.scrollLeft());
 			var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
         	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
@@ -152,6 +152,7 @@
 			
 			var opts = { s: loadedTo };
 			opts[_options.sortParameter] = data.sort;
+			
 			jQuery.get(_options.itemLoadURL, opts, function(data, textStatus, jqXHR) {
 				$e.find(_options.itemContainerSelector).append(data);
 				loadedTo += _options.itemsPerLoad;
