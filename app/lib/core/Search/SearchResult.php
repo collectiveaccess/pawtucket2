@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1223,15 +1223,22 @@ class SearchResult extends BaseObject {
 												$va_tmp = array_keys($va_versions);
 												$vs_version = array_shift($va_tmp);
 											}
+											
+											// See if an info element was passed, eg. ca_object_representations.media.icon.width should return the width of the media rather than a tag or url to the media
+											$vs_info_element = ($va_path_components['num_components'] == 4) ? $va_path_components['components'][3] : null;
 								
 											if ($vb_return_all_locales) {
-												if (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
+												if ($vs_info_element) {
+													$va_return_values[$vn_row_id][$vn_locale_id][] = $this->getMediaInfo($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $vs_info_element, $pa_options);
+												} elseif (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
 													$va_return_values[$vn_row_id][$vn_locale_id][] = $this->getMediaUrl($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
 												} else {
 													$va_return_values[$vn_row_id][$vn_locale_id][] = $this->getMediaTag($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
 												}
 											} else {
-												if (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
+												if ($vs_info_element) {
+													$va_return_values[] = $this->getMediaInfo($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $vs_info_element, $pa_options);
+												} elseif (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
 													$va_return_values[] = $this->getMediaUrl($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
 												} else {
 													$va_return_values[] = $this->getMediaTag($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
@@ -1415,9 +1422,14 @@ class SearchResult extends BaseObject {
 								$va_value[$va_path_components['field_name']] = $this->opo_tep->getText($pa_options);
 								break;
 							case FT_MEDIA:
+							
 								if(!$vs_version = $va_path_components['subfield_name']) {
 									$vs_version = "largeicon";
 								}
+								
+								// See if an info element was passed, eg. ca_object_representations.media.icon.width should return the width of the media rather than a tag or url to the media
+								$vs_info_element = ($va_path_components['num_components'] == 4) ? $va_path_components['components'][3] : null;
+								
 								if (isset($pa_options['unserialize']) && $pa_options['unserialize']) {
 									return caUnserializeForDatabase($va_value[$va_path_components['field_name']]);
 								} else {
@@ -1429,7 +1441,10 @@ class SearchResult extends BaseObject {
 										$vs_version = array_shift($va_tmp);
 									}
 									
-									if (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
+									if ($vs_info_element) {
+										// Return media info
+										$va_value[$va_path_components['field_name']] = $this->getMediaInfo($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $vs_info_element, $pa_options);
+									} elseif (isset($pa_options['returnURL']) && ($pa_options['returnURL'])) {
 										$va_value[$va_path_components['field_name']] = $this->getMediaUrl($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
 									} else {
 										$va_value[$va_path_components['field_name']] = $this->getMediaTag($va_path_components['table_name'].'.'.$va_path_components['field_name'], $vs_version, $pa_options);
