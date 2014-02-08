@@ -497,9 +497,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return array 
 	 */
 	function caGetInfoForSearchType($ps_search_type) {
-		$o_browse_config = caGetSearchConfig();
+		$o_search_config = caGetSearchConfig();
 		
-		$va_search_types = $o_browse_config->getAssoc('searchTypes');
+		$va_search_types = $o_search_config->getAssoc('searchTypes');
 		$ps_search_type = strtolower($ps_search_type);
 		
 		if (isset($va_search_types[$ps_search_type])) {
