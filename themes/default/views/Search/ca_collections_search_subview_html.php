@@ -42,7 +42,7 @@
 			</small>
 			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
 			<div class='blockResults'>
-				<div id="scrollButtonPrevious" onclick="scrollPrevious('{{{block}}}'); return false;"><i class="fa fa-angle-left"></i></div><div id="scrollButtonNext" onclick="scrollNext('{{{block}}}'); return false;"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results'>
 					<div class='blockResultsScroller'>
 <?php
@@ -84,6 +84,8 @@
 						itemContainerSelector: '.blockResultsScroller',
 						sortParameter: '{{{block}}}Sort',
 						sortControlSelector: '#{{{block}}}_sort',
+						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
+						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});

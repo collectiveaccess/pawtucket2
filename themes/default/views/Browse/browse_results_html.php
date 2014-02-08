@@ -42,6 +42,8 @@
 	$vs_table 			= $this->getVar('table');
 	$t_instance			= $this->getVar('t_instance');
 	
+	$vb_is_search		= ($this->request->getController() == 'Search');
+	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
@@ -75,19 +77,19 @@ if (!$vb_ajax) {	// !ajax
 						if ($vs_current_sort === $vs_sort) {
 							print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
 						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
+							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
 						}
 					}
 				}
 				
-				if ((sizeof($va_criteria) > 0) && is_array($va_sorts) && sizeof($va_sorts)) {
+				if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
 ?>
 				<li class="divider"></li>
 <?php
 				}
 				
-				if (sizeof($va_criteria) > 0) {
-					print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_view))."</li>";
+				if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
+					print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view))."</li>";
 				}	
 ?>
 			</ul>
@@ -101,7 +103,9 @@ if (!$vb_ajax) {	// !ajax
 				$i = 0;
 				foreach($va_criteria as $va_criterion) {
 					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'].' ';
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/x.png'), 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_view, 'key' => $vs_browse_key));
+					if ($va_criterion['facet_name'] != '_search') {
+						print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/x.png'), 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					}
 					$i++;
 					if($i < sizeof($va_criteria)){
 						print ", ";

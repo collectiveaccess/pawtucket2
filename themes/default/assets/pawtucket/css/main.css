@@ -885,6 +885,67 @@ a.browseRemoveFacet img {
 	font-weight:bold;
 }
 
+/* search/browse results: list mode */
+
+.bResultListItemCol{
+	height:122px;
+}
+.bResultListItemContent {
+	height:72px;
+	overflow:hidden;
+}
+.bResultListItem{
+	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	background-color:#FFFFFF;
+	line-height:1em;
+	padding:10px;
+}
+.bResultListItem:hover{
+	padding:20px;
+	margin:-10px;
+	height:112px;
+	font-size:12px;
+	color:#000;
+}
+.bResultListItem .bResultListItemImg{
+	max-height:72px;
+	min-height:10px;
+	overflow:hidden;
+	margin:0 5px 0 0;
+	float:left; 
+}
+.bResultListItem img{
+	width: auto;
+	height:72px;
+}
+.bResultListItem .bResultListItemText a{
+	line-height:1.2em;
+	color:#000;
+}
+.bResultListItem .bResultListItemText{
+	line-height:1.2em;
+	color:#000;
+}
+.bResultListItem .bResultListItemText{
+	font-size:12px;
+}
+.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a{
+	color:#9d9d9d;
+}
+.bResultListItemExpandedInfo{
+	display:none;
+	background-color:#FFFFFF;
+	padding:20px 0px 20px 0px;
+	background-color:#FFF;
+	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	z-index:1000;
+	position:relative;
+	margin:0px -20px -20px -20px;
+	padding:0px 20px 20px 20px;
+}
+
 
 /* --------------------------------- */
 /* multiSearch s */
@@ -924,13 +985,13 @@ a.browseRemoveFacet img {
 	overflow-y:hidden;
 	width:100%;
 }
-#multiSearch #scrollButtonNext, #multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious{
 	right:0px;
 }
-#multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonPrevious{
 	left:0px;
 }
-#multiSearch #scrollButtonNext, #multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious{
 	background-color:#ebebeb;
 	position:absolute;
 	z-index:100;
@@ -942,12 +1003,12 @@ a.browseRemoveFacet img {
 	margin:10px 0px 10px 0px;
 	width:25px;
 }
-#multiSearch #scrollButtonNext:hover, #multiSearch #scrollButtonPrevious:hover{
+#multiSearch .scrollButtonNext:hover, #multiSearch .scrollButtonPrevious:hover{
 	background-color:#dedede;
 	cursor:pointer;
 	color:#000;
 }
-#multiSearch #scrollButtonNext.inactive, #multiSearch #scrollButtonPrevious.inactive{
+#multiSearch .scrollButtonNext.inactive, #multiSearch .scrollButtonPrevious.inactive{
 	display:none;
 }
 #multiSearch .objectsResult, #multiSearch .collectionsResult  {
