@@ -39,15 +39,3 @@
 ?>
 
 </div>
-<script type="text/javascript">
-	function scrollNext(block){
-		var currentPosition = $('#' + block + 'Results').scrollLeft();
-		var scrollAmount = $('#' + block + 'Results').width() - ($('#' + block + 'Results').width()/5);
-		$('#' + block + 'Results').scrollLeft(currentPosition + scrollAmount);
-	}
-	function scrollPrevious(block){
-		var currentPosition = $('#' + block + 'Results').scrollLeft();
-		var scrollAmount = $('#' + block + 'Results').width() - ($('#' + block + 'Results').width()/5);
-		$('#' + block + 'Results').scrollLeft(currentPosition - scrollAmount);
-	}
-</script>

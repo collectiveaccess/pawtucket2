@@ -26,6 +26,7 @@
  *
  * ----------------------------------------------------------------------
  */
+"use strict";
  
 (function($) {
     $.hscroll = {
@@ -42,6 +43,12 @@
             itemLoadURL: '',
             sortParameter: 'sort',
             sortControlSelector: null,
+            
+            scrollPreviousControlSelector: null,
+            scrollNextControlSelector: null,
+            scrollControlDisabledOpacity: 0.25,
+            scrollControlDuration: 350,
+            
             cacheKey: null
         }
     };
@@ -53,6 +60,7 @@
 		
 		var loadedTo = _options.preloadCount;
 		var loading = false;
+		var isScrolling = false;
 		
 		
         var data = $e.data('hscroll');
@@ -78,17 +86,22 @@
         if (_needsLoad()) {
 			_load(loadedTo + _options.itemsPerLoad);
 		}
+		
+		_setScrollControls();
         
         $e.bind("scroll.hscroll", function(e) {
         	var left = parseInt($e.scrollLeft());
         	jar.set('scrollPos', left);
         	
-        	if (loadedTo >= _options.itemCount) { return; }
-        	
-        	
+        	if (loadedTo >= _options.itemCount) { 
+        		_setScrollControls();
+        		return; 
+        	}
         	if (_needsLoad()) {									
         		_load(loadedTo + _options.itemsPerLoad);
         	}
+        	
+        	_setScrollControls();
         });
         
          $e.bind("resort.hscroll", function(e) {
@@ -105,9 +118,40 @@
 				$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
 			});
 		}
+		
+		if (_options.scrollPreviousControlSelector) {
+			jQuery(_options.scrollPreviousControlSelector).bind("click", function(e) {
+				if (isScrolling) { return false; }
+				isScrolling = true;
+				$e.animate({ scrollLeft: $e.scrollLeft() - $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+					_setScrollControls();
+					isScrolling = false;
+				}});
+				return false;
+			});
+		}
+		
+		if (_options.scrollNextControlSelector) {
+			jQuery(_options.scrollNextControlSelector).bind("click", function(e) {
+				if (isScrolling) { return false; }
+				isScrolling = true;
+				$e.animate({ scrollLeft: $e.scrollLeft() + $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+					_setScrollControls();
+					isScrolling = false;
+				}});
+				return false;
+			});
+		}
         
         // Private
 
+		//
+		// Determine visibility of scrolling controls
+		//
+		function _setScrollControls() {
+			jQuery(_options.scrollPreviousControlSelector).css("opacity", ($e.scrollLeft() <= 0) ? _options.scrollControlDisabledOpacity : 1.0);
+			jQuery(_options.scrollNextControlSelector).css("opacity", ($e.scrollLeft() + $e.width() >= $e.find(_options.itemContainerSelector).width()) ? _options.scrollControlDisabledOpacity : 1.0);
+		}
 		
 		function _needsLoad() {
 			if (options.itemsPerLoad >= options.itemCount) { return false; }

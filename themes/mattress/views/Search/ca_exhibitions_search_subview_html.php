@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_occurrences_search_subview_html.php : 
+ * themes/mattress/views/Search/ca_occurrences_search_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -39,11 +39,11 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortMenu">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByControl}}}
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->Sort By {{{sortByControl}}}
 			</small>
 			<div class='blockTitle'><?php print $va_block_info['displayName']; ?></div>
 			<div class='blockResults'>
-				<div id="scrollButtonPrevious" onclick="scrollPrevious('{{{block}}}'); return false;"><i class="fa fa-angle-left"></i></div><div id="scrollButtonNext" onclick="scrollNext('{{{block}}}'); return false;"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results'>
 					<div class='blockResultsScroller'>
 <?php
@@ -92,6 +92,8 @@
 						itemContainerSelector: '.blockResultsScroller',
 						sortParameter: '{{{block}}}Sort',
 						sortControlSelector: '#{{{block}}}_sort',
+						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
+						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});
