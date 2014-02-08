@@ -982,13 +982,13 @@ a.browseRemoveFacet img {
 	overflow-y:hidden;
 	width:100%;
 }
-#multiSearch #scrollButtonNext, #multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious{
 	right:0px;
 }
-#multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonPrevious{
 	left:0px;
 }
-#multiSearch #scrollButtonNext, #multiSearch #scrollButtonPrevious{
+#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious{
 	background-color:#ebebeb;
 	position:absolute;
 	z-index:100;
@@ -1000,12 +1000,12 @@ a.browseRemoveFacet img {
 	margin:10px 0px 10px 0px;
 	width:25px;
 }
-#multiSearch #scrollButtonNext:hover, #multiSearch #scrollButtonPrevious:hover{
+#multiSearch .scrollButtonNext:hover, #multiSearch .scrollButtonPrevious:hover{
 	background-color:#dedede;
 	cursor:pointer;
 	color:#000;
 }
-#multiSearch #scrollButtonNext.inactive, #multiSearch #scrollButtonPrevious.inactive{
+#multiSearch .scrollButtonNext.inactive, #multiSearch .scrollButtonPrevious.inactive{
 	display:none;
 }
 #multiSearch .objectsResult, #multiSearch .collectionsResult  {
