@@ -3213,11 +3213,14 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 							
 							if (!$va_facet_items[$va_fetched_row[$vs_rel_pk]]) {
-							
 								
-								if ($va_fetched_row[$vs_hier_parent_id_fld]) {
-									$va_facet_parents[$va_fetched_row[$vs_hier_parent_id_fld]] = true;
+								//if ($va_fetched_row[$vs_hier_parent_id_fld]) {
+								//	$va_facet_parents[$va_fetched_row[$vs_hier_parent_id_fld]] = true;
+								//}
+								foreach($t_rel_item->getHierarchyAncestors($va_fetched_row[$vs_rel_pk], array('idsOnly' => true)) as $vn_ancestor_id) {
+									$va_facet_parents[$vn_ancestor_id] = true;
 								}
+								
 								if (is_array($va_restrict_to_types) && sizeof($va_restrict_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
 									continue; 
 								}
@@ -3244,12 +3247,13 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						
 						// Expand facet to include ancestors
 						if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
+							
 							while(sizeof($va_ids = array_keys($va_facet_parents))) {
 								$vs_sql = "
 									SELECT p.".$t_rel_item->primaryKey().", p.{$vs_hier_parent_id_fld}".(($vs_hier_id_fld = $t_rel_item->getProperty('HIERARCHY_ID_FLD')) ? ", p.{$vs_hier_id_fld}" : "")."
 									FROM ".$t_rel_item->tableName()." p
 									WHERE
-										(p.".$t_rel_item->primaryKey()." IN (?)) AND (p.{$vs_hier_parent_id_fld} IS NOT NULL)
+										(p.".$t_rel_item->primaryKey()." IN (?))
 								";
 								$qr_res = $this->opo_db->query($vs_sql, array($va_ids));
 								
