@@ -475,7 +475,7 @@ a.browseRemoveFacet img {
 	color:#7f7f7f;
 	line-height:1.3;
 	text-transform:none;
-	margin-top:15px;
+	padding-top:50px;
 }
 @media (min-width: 768px) {
 	#frontPage H1 {
@@ -484,9 +484,9 @@ a.browseRemoveFacet img {
 		padding-right:25px;
 	}
 }
-/*#frontPage .jcarousel-wrapper{
-	margin-top:-20px;
-}*/
+#frontPage .jcarousel-wrapper{
+	margin-bottom:20px;
+}
 #frontPage .jcarousel-control-prev {
     left: 15px !important;
 }
@@ -541,6 +541,10 @@ a.browseRemoveFacet img {
     opacity: 1;
     text-shadow: none;
     text-decoration:none;
+}
+#frontPage .nav-pills > li > a {
+    background-color:#a8a8a8;
+    padding:10px;
 }
 
 /* --------------------------------- */
