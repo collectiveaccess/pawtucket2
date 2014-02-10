@@ -35,6 +35,11 @@
  		 */
  		private $ops_find_type = "browse";
  		
+ 		/**
+ 		 *
+ 		 */
+ 		private $opo_result_context = null;
+ 		
  		# -------------------------------------------------------
  		/**
  		 *
