@@ -124,6 +124,18 @@
 <?php
 	}
 ?>
-	<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8">
+			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+		</div><!--end col-sm-8-->
+	
+		<div class="col-sm-4">
+			<h2>Browse by Featured Topic:</h2>
+<?php
+			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+?>
+		</div> <!--end col-sm-4-->	
+	</div><!-- end row -->
+</div> <!--end container-->
 </div><!-- end frontPage -->

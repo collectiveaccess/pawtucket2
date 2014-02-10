@@ -40,7 +40,6 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			$this->config = caGetGalleryConfig();
- 			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
