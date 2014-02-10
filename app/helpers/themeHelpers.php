@@ -160,6 +160,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific gallery section configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetGalleryConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/gallery.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display 
 	 * 
@@ -504,6 +513,28 @@
 			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", "icon");
 		}
 		return $va_res;
+	}
+	# ---------------------------------------
+	/**
+	 * class -> class name of <ul>
+	 * 
+	 */
+	function caGetGallerySetsAsList($o_request, $vs_class){
+		$o_config = caGetGalleryConfig();
+		$va_access_values = caGetUserAccessValues($o_request);
+ 		$t_list = new ca_lists();
+ 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
+ 		$t_set = new ca_sets();
+ 		$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+		$vs_set_list = "";
+		if(sizeof($va_sets)){
+			$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").">\n";
+			foreach($va_sets as $vn_set_id => $va_set){
+				$vs_set_list .= "<li>".caNavLink($o_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+			}
+			$vs_set_list .= "</ul>\n";
+		}
+		return $vs_set_list;
 	}
 	# ---------------------------------------
 ?>

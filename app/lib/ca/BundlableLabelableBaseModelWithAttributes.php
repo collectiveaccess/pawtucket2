@@ -726,7 +726,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										if ($vb_return_as_link && !$vb_return_as_array && !$vb_return_all_locales) {
 											$va_items[] = $vm_val;
 										} else {
-											$va_return_values = $vm_val;
+											$va_items[] = $vm_val;
 											break;
 										}
 									}

@@ -399,7 +399,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$vn_items_per_column = caGetOption('itemsPerColumn', $va_block_info, $vn_items_per_column_default);
 			
 			$vn_count = $qr_res->numHits();
-			$va_sort_by = ($vn_count > 1) ? caGetOption('sortBy', $va_block_info, null) : null;
+			$va_sort_by = caGetOption('sortBy', $va_block_info, null);
 			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
 			$o_view->setVar('result', $qr_res);
@@ -413,7 +413,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('hasMore', (bool)($vn_count > $vn_start + $vn_items_per_page));
 			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort"), array("value" => $ps_sort)) : ''));
-			$o_view->setVar('sortByControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
+			$o_view->setVar('sortByControl', $vs_sort_by_select);
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('search', $ps_search_expression);
 			$o_view->setVar('cacheKey', md5($ps_search_expression));
@@ -497,9 +497,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return array 
 	 */
 	function caGetInfoForSearchType($ps_search_type) {
-		$o_browse_config = caGetSearchConfig();
+		$o_search_config = caGetSearchConfig();
 		
-		$va_search_types = $o_browse_config->getAssoc('searchTypes');
+		$va_search_types = $o_search_config->getAssoc('searchTypes');
 		$ps_search_type = strtolower($ps_search_type);
 		
 		if (isset($va_search_types[$ps_search_type])) {

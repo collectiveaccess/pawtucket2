@@ -26,6 +26,7 @@
  *
  * ----------------------------------------------------------------------
  */
+"use strict";
  
 (function($) {
     $.hscroll = {
@@ -42,6 +43,12 @@
             itemLoadURL: '',
             sortParameter: 'sort',
             sortControlSelector: null,
+            
+            scrollPreviousControlSelector: null,
+            scrollNextControlSelector: null,
+            scrollControlDisabledOpacity: 0.25,
+            scrollControlDuration: 350,
+            
             cacheKey: null
         }
     };
@@ -53,6 +60,7 @@
 		
 		var loadedTo = _options.preloadCount;
 		var loading = false;
+		var isScrolling = false;
 		
 		
         var data = $e.data('hscroll');
@@ -78,18 +86,22 @@
         if (_needsLoad()) {
 			_load(loadedTo + _options.itemsPerLoad);
 		}
+		
+		_setScrollControls();
         
         $e.bind("scroll.hscroll", function(e) {
         	var left = parseInt($e.scrollLeft());
         	jar.set('scrollPos', left);
         	
-        	if (loadedTo >= _options.itemCount) { return; }
-        	
-        	
-        	if (_needsLoad()) {													
-        		console.log("do load for ", _options.name);
+        	if (loadedTo >= _options.itemCount) { 
+        		_setScrollControls();
+        		return; 
+        	}
+        	if (_needsLoad()) {									
         		_load(loadedTo + _options.itemsPerLoad);
         	}
+        	
+        	_setScrollControls();
         });
         
          $e.bind("resort.hscroll", function(e) {
@@ -106,11 +118,43 @@
 				$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
 			});
 		}
+		
+		if (_options.scrollPreviousControlSelector) {
+			jQuery(_options.scrollPreviousControlSelector).bind("click", function(e) {
+				if (isScrolling) { return false; }
+				isScrolling = true;
+				$e.animate({ scrollLeft: $e.scrollLeft() - $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+					_setScrollControls();
+					isScrolling = false;
+				}});
+				return false;
+			});
+		}
+		
+		if (_options.scrollNextControlSelector) {
+			jQuery(_options.scrollNextControlSelector).bind("click", function(e) {
+				if (isScrolling) { return false; }
+				isScrolling = true;
+				$e.animate({ scrollLeft: $e.scrollLeft() + $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+					_setScrollControls();
+					isScrolling = false;
+				}});
+				return false;
+			});
+		}
         
         // Private
 
+		//
+		// Determine visibility of scrolling controls
+		//
+		function _setScrollControls() {
+			jQuery(_options.scrollPreviousControlSelector).css("opacity", ($e.scrollLeft() <= 0) ? _options.scrollControlDisabledOpacity : 1.0);
+			jQuery(_options.scrollNextControlSelector).css("opacity", ($e.scrollLeft() + $e.width() >= $e.find(_options.itemContainerSelector).width()) ? _options.scrollControlDisabledOpacity : 1.0);
+		}
 		
 		function _needsLoad() {
+			if (options.itemsPerLoad >= options.itemCount) { return false; }
 			var left = parseInt($e.scrollLeft());
 			var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
         	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
@@ -152,6 +196,7 @@
 			
 			var opts = { s: loadedTo };
 			opts[_options.sortParameter] = data.sort;
+			
 			jQuery.get(_options.itemLoadURL, opts, function(data, textStatus, jqXHR) {
 				$e.find(_options.itemContainerSelector).append(data);
 				loadedTo += _options.itemsPerLoad;
