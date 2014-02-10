@@ -212,6 +212,7 @@ a, a:active, a:focus {
 }
 .browseMenuFacet {
 	width: 900px;
+	min-height: 250px;
 	max-height: 400px;
 	overflow: auto;
 	margin-bottom:20px;
@@ -279,7 +280,7 @@ a.browseRemoveFacet img {
 }
 .dropdown-browse-menu {
 	padding: 0px;
-	min-height: 300px;
+	/* min-height: 300px; */
 }
 
 
