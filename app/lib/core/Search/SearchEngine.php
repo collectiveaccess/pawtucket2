@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2013 Whirl-i-Gig
+ * Copyright 2007-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -170,9 +170,11 @@ class SearchEngine extends SearchBase {
 		$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
 		$vs_pk = $t_table->primaryKey();
 		
+		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList(), true));
+		
 		$o_cache = new SearchCache();
 		if (
-			(!$vb_no_cache && ($o_cache->load($ps_search, $this->opn_tablenum, $pa_options)))
+			(!$vb_no_cache && ($o_cache->load($vs_cache_key, $this->opn_tablenum, $pa_options)))
 		) {
 			$va_hits = $o_cache->getResults();
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
@@ -243,7 +245,7 @@ class SearchEngine extends SearchBase {
 			$o_res = new WLPlugSearchEngineCachedResult($va_hit_values = array_keys($va_hits), $this->opn_tablenum);
 			
 			// cache for later use
-			$o_cache->save($ps_search, $this->opn_tablenum, $va_hits, null, null, array_merge($pa_options, array('filters' => $this->getResultFilters())));
+			$o_cache->save($vs_cache_key, $this->opn_tablenum, $va_hits, null, null, array_merge($pa_options, array('filters' => $this->getResultFilters())));
 	
 			// log search
 			$o_log = new Searchlog();
@@ -1024,6 +1026,8 @@ class SearchEngine extends SearchBase {
 	 * @return boolean True on success, false on failure
 	 */
 	public function setTypeRestrictions($pa_type_codes_or_ids) {
+		$this->clearResultFilters();	// type restrictions set filters, so if we change type restrictions we need to clear filters to see any effect
+		
 		$t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
 		
 		if (!$pa_type_codes_or_ids) { return false; }
