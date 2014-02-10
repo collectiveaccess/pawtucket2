@@ -51,7 +51,9 @@
 		
 		$qr_res = caMakeSearchResult('ca_objects', $va_set_object_ids);
 		while ($qr_res->nextHit()) {
-			print "<div class='featuredObject'>";
+			$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
+
+			print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
 			
 			print "<div class='featuredObjectImg'>";
 			print $qr_res->get('ca_object_representations.media.mediumlarge');
