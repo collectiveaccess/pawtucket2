@@ -2630,6 +2630,9 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$va_start = $o_tep->getHistoricDateParts($pa_historic_timestamps[0]);
 		$va_end = $o_tep->getHistoricDateParts($pa_historic_timestamps[1]);
 		
+		if ($va_start['year'] < 0) { $va_start['year'] = 1900; }
+		if ($va_end['year'] >= 2000000) { $va_end['year'] = date("Y"); }
+		
 		return array(
 			'start' => $va_start['year'].','.$va_start['month'].','.$va_start['day'],
 			'end' => $va_end['year'].','.$va_end['month'].','.$va_end['day'],
