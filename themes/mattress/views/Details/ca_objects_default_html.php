@@ -5,14 +5,16 @@
 
 <div id="detail">
 	<div class="blockTitle">{{{<unit>^ca_objects.type_id</unit>}}}
-		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}</div>
-	</div>
-	<div id="mediaArea">
-		{{{representationViewer}}}
+		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
 		<h2>{{{ca_objects.preferred_labels.name}}}</h2>
 		<div class='detailSubtitle'></div>
+		
+		<div id="mediaArea">
+		{{{representationViewer}}}
+		</div>
+		
 		<div id="infoArea">
 			{{{<ifdef code="ca_objects.description"><div class='description'><div class='title'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
 			<div class="clearfix"></div>
@@ -67,7 +69,7 @@
 					if ($vn_i == 0) {print "<div class='collectionsSet'>";}
 					print "<div class='collectionsResult'>";
 						if ($va_artwork_rep = array_shift(array_values($va_artwork_image))){
-							print "<div class='exImage' {$vs_style}>".$va_artwork_rep."</div>";
+							print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_artwork_rep, '', '', 'Detail', 'Collections/'.$va_collection_idno)."</div>";
 
 						}
 					print "<div>".caNavLink($this->request, $va_collection['name'], '', '', 'Detail', 'Collections/'.$va_collection_idno)."</div>";
@@ -108,7 +110,7 @@
 						if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
 						if ($va_primary_rep = array_shift(array_values($va_object_reps))){
-							print "<div class='exImage' {$vs_style}>".$va_primary_rep."</div>";
+							print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['idno'])."</div>";
 							$vn_i++;
 							$vn_ii++;
 						}

@@ -708,7 +708,12 @@ class BaseModel extends BaseObject {
 								$vs_version = array_shift($va_tmp);
 							}
 							
-							if (isset($pa_options['returnURL']) && $pa_options['returnURL']) {
+							// See if an info element was passed, eg. ca_object_representations.media.icon.width should return the width of the media rather than a tag or url to the media
+							$vs_info_element = (sizeof($va_tmp) == 4) ? $va_tmp[3] : null;
+								
+							if ($vs_info_element) {			
+								return $this->getMediaInfo($va_tmp[1], $vs_version, $va_tmp[3]);
+							} elseif (isset($pa_options['returnURL']) && $pa_options['returnURL']) {
 								return $this->getMediaUrl($va_tmp[1], $vs_version);
 							} else {
 								return $this->getMediaTag($va_tmp[1], $vs_version);
@@ -3525,7 +3530,10 @@ class BaseModel extends BaseObject {
 			if (!$ps_property) {
 				return $va_media_info[$ps_version];
 			} else {
-				return $va_media_info[$ps_version][$ps_property];
+				if($vs_v = $va_media_info[$ps_version][$ps_property]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtoupper($ps_property)]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtolower($ps_property)]) { return $vs_v; }
+				return null;
 			}
 		} else {
 			return $va_media_info;

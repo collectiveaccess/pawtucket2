@@ -90,6 +90,11 @@ a:hover {
 	-moz-border-radius:0px;
 	-webkit-border-radius:0px;
 }
+.navbar li.dropdown.open a:hover, .navbar li.dropdown a:hover{
+	font-size: 17px;
+	font-weight: bold;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 .navbar li.dropdown ul li{
 	background-color: #48484a;
 	padding:7px;
@@ -103,13 +108,20 @@ a:hover {
 }
 .navbar li.dropdown ul li a:hover{
 	color:#fff;
+	font-size:14px;
+	font-weight:normal;
 	background-color:transparent;
 	background-image:none;
+}
+.navbar li.dropdown.open ul li a:hover, .navbar li.dropdown ul li a:hover{
+	font-size: 14px;
+	font-weight: normal;
 }
 .navbar li.dropdown ul li a:active{
 	color:#fff;
 	background-color:#000;
-}.navbar ul.dropdown-menu {
+}
+.navbar ul.dropdown-menu {
 	padding:0px;
 	margin:0px;
 	border:0px;
@@ -259,6 +271,9 @@ hr {
 	width:500px;
 	padding:0px 0px 0px 15px;
 }
+.blockAbout {
+	line-height:1.3em;
+}
 .homeLinks {
 	float:right;
 	width:300px
@@ -312,6 +327,7 @@ h2 span.artist {
 .detailSubtitle {
 	font-family: "ProximaNovaBold";
 	padding:5px 0px 5px 0px;
+	font-size:14px;
 }
 #detail .detailNavBgLeft, #detail .detailNavBgRight {
 	background-color: transparent;
@@ -336,6 +352,17 @@ h2 span.artist {
 	background-position: center left;
 	padding-left:15px;
 }
+#detail .detailNavBgLeft .results, #detail .detailNavBgLeft .next {
+	padding:8px 0px 5px 0px;
+	background-image: url('../graphics/fwarrow.png');
+	background-repeat:no-repeat;
+	background-position: center right;
+	padding-right:15px;
+	width: 45px;
+}
+#detail #cont img {
+	width:auto;
+}
 #mediaArea {
 	width:775px;
 }
@@ -348,9 +375,8 @@ h2 span.artist {
 	color:#666;
 }
 .mediaThumbs {
-	float:right;
 	overflow-x:scroll;
-	margin-left:20px;
+	padding-left:10px;
 }
 #mediaArea .views{
 	text-transform:uppercase;
@@ -379,7 +405,7 @@ h2 span.artist {
 	line-height: 1.4em;
 	font-size: 15px;
 }
-#infoArea .description .title{
+#infoArea .description .metatitle{
 	font-size:22px;
 	padding:8px 0px 8px 0px;
 }
@@ -400,21 +426,22 @@ h2 span.artist {
 	clear:both;
 	padding-top:30px;
 }
-#pageArea.entities .detailSubtitle{
+#detail.entities .detailSubtitle{
 	text-transform:uppercase;
 }
-#pageArea.entities .mediaThumbs,  #pageArea.occurrences .mediaThumbs{
+#detail.entities .mediaThumbs,  #detail.occurrences .mediaThumbs{
 	float:left;
 	margin-left:0px;
 	width: 775px;
 	overflow-x: scroll;
+	padding-left:0px;
 }
-#pageArea.entities .mediaThumbs .rep, #pageArea.occurrences .mediaThumbs .rep{
+#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep{
 	width:200px;
 	height:120px;
 	overflow:hidden;
 }
-#pageArea.entities .mediaThumbs .title, #pageArea.occurrences .mediaThumbs .title{
+#detail.entities .mediaThumbs .title, #detail.occurrences .mediaThumbs .title{
 	width:200px;
 	height:120px;
 	background-color:#333;
@@ -427,16 +454,16 @@ h2 span.artist {
 	margin-top:-130px;
 	font-size:12px;
 }
-#pageArea.entities .mediaThumbs a:hover, #pageArea.occurrences .mediaThumbs a:hover{
+#detail.entities .mediaThumbs a:hover, #detail.occurrences .mediaThumbs a:hover{
 	text-decoration:none;
 }
-#pageArea.entities .mediaThumbs .materials, #pageArea.occurrences .mediaThumbs .materials{
+#detail.entities .mediaThumbs .materials, #detail.occurrences .mediaThumbs .materials{
 	padding-top:5px;
 }
-#pageArea.entities .mediaThumbs .imageSet, #pageArea.occurrences .mediaThumbs .imageSet {
+#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet {
 	float:left;
 }
-#pageArea.entities .description, #pageArea.occurrences .description{
+#detail.entities .description, #detail.occurrences .description{
 	width:auto;
 }
 .collectionSet .objImage {
@@ -445,17 +472,17 @@ h2 span.artist {
 	width:220px;
 	height: 120px;
 }
-#pageArea.entities #sortMenu, #pageArea.artwork #sortMenu, #pageArea.occurrences #sortMenu {
+#detail.entities #sortMenu, #detail.artwork #sortMenu, #detail.occurrences #sortMenu {
 	border-bottom: 1px solid #ccc;
 	width: 785px;
 	text-align: right;
 	padding-bottom: 5px;
 }
-#pageArea.entities .collectionResult .rep{
+#detail.entities .collectionResult .rep{
 	float:left;
 }
 
-#relatedInfo #occurrencesBlock .occurrenceResult {
+#relatedInfo #occurrencesBlock .occurrencesResult {
 	width:320px;
 }
 #detail .collectionSet {
@@ -489,7 +516,7 @@ h2 span.artist {
 #multiSearch {
 	padding:0px;
 }
-#multiSearch h2, #detail h2 {
+#multiSearch h2, #detail h2, #browseResults h2{
 	font-size: 24px;
 	color: #EE3E43;
 	margin: 0px;
@@ -497,8 +524,22 @@ h2 span.artist {
 	font-family: "ProximaNovaRegular";
 	text-transform:none;
 }
-#multiSearch #scrollButtonNext, #multiSearch #scrollButtonPrevious {
+#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious {
 	margin-top:-16px;
+	background-position:50% 50%;
+	background-repeat:no-repeat;
+	background-color:#fff;
+	opacity:1;
+}
+#multiSearch .scrollButtonPrevious {
+	left: 170px;
+	background-image: url('../graphics/glyphicons_224_chevron-left.png');
+}
+#multiSearch .scrollButtonNext {
+	background-image: url('../graphics/glyphicons_223_chevron-right.png');
+}
+#multiSearch .scrollButtonNext:hover, #multiSearch .scrollButtonPrevious:hover {
+	background-color:#f7f7f7;
 }
 .searchMessage {
 	font-family: "ProximaNovaBold";
@@ -580,7 +621,7 @@ h2 span.artist {
 	clear:none;
 }
 #detail .blockResults.exhibitions {
-	height:300px;
+	height:auto;
 	padding-bottom:20px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
@@ -591,13 +632,17 @@ h2 span.artist {
 #multiSearch .entitiesSet, #multiSearch .placesSet, #multiSearch .occurrencesSet, #multiSearch .eventsSet {
 	padding-top:0px;
 }
-#multiSearch .entitiesResult, #multiSearch .eventsResult, #detail .entitiesResult {
+#multiSearch .entitiesResult, #multiSearch .eventsResult, 
+#detail .entitiesResult {
 	margin-bottom: 15px;
 	margin-right: 30px;
-	width: 200px;
+	width: 250px;
 	background-color:transparent;
 	padding:0px 0px 0px 10px;
 	height:auto;
+}
+#detail .entitiesResult {
+	padding-left:0px;
 }
 #multiSearch .collectionsResult, #multiSearch .objectsResult, #multiSearch .occurrencesResult {
 	float:left;
@@ -623,7 +668,6 @@ h2 span.artist {
 	margin-bottom: 5px;
 	background-color: #eee;
 }
-
 #multiSearch .eventsSet {
 	float: left;
 	width: 250px;
@@ -639,6 +683,13 @@ h2 span.artist {
 	margin-bottom:10px;
 	background-color:#eee;
 }
+.exImageSingle {
+	background-color:#eee;
+	width:220px;
+	height:120px;
+	margin-bottom:10px;
+	float:left;
+}
 #detail .exTitle a{
 	margin-bottom:5px;
 	font-family: "ProximaNovaBold";
@@ -651,7 +702,7 @@ h2 span.artist {
 	font-size:14px;
 }
 #multiSearch .collectionsResult a, #multiSearch a .entitiesResult, #multiSearch .objectsResult a, #multiSearch a .eventsResult,
-#detail a .entitiesResult {
+#detail a .entitiesResult, #detail .eventsResult a{
 	color:#000;
 	font-family: "ProximaNovaBold";
 	line-height: 16px;
@@ -663,11 +714,12 @@ h2 span.artist {
 	color:#000; 
 	background-color:transparent;
 }
+#detail .entitiesSet {
+	float:left; 
+	width:250px;
+}
 #multiSearch .placesResult:hover, #multiSearch .occurrencesResult:hover, #multiSearch .entitiesResult:hover {
 	background-color: transparent;
-}
-#multiSearch #scrollButtonPrevious {
-	left: 170px;
 }
 
 #multiSearch #eventsBlock {
@@ -684,6 +736,9 @@ h2 span.artist {
 
 /* Browse Page */
 
+#browseResults {
+	padding:0px;
+}
 #pageArea.browseEntities #pageTitle {
 	height:auto;
 }
