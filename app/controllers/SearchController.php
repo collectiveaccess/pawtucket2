@@ -207,7 +207,7 @@
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
 			$this->view->setVar('result', $qr_res);
 		
-			$this->view->setVar('hits_per_block', 12);
+			$this->view->setVar('hits_per_block', 36);
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
 
