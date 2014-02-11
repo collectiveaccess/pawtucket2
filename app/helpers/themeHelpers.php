@@ -169,6 +169,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific contact configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetContactConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/contact.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display 
 	 * 
