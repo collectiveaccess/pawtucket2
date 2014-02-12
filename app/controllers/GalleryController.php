@@ -63,10 +63,12 @@
  			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
- 				$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
- 				$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $this->opa_access_values));
-				$this->view->setVar('sets', $va_sets);
-				$this->view->setVar('first_items_from_sets', $va_set_first_items);
+ 				if($vn_gallery_set_type_id){
+					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
+					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $this->opa_access_values));
+					$this->view->setVar('sets', $va_sets);
+					$this->view->setVar('first_items_from_sets', $va_set_first_items);
+				}
 				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
