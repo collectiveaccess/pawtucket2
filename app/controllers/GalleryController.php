@@ -113,6 +113,8 @@
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
  			$this->view->setVar("rep_width", $va_rep_info["WIDTH"]);
  			$this->view->setVar("rep_height", $va_rep_info["HEIGHT"]);
+ 			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
+ 			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
  			$pn_next_id = 0;
  			$va_set_item_ids = array_keys($va_set_items);
