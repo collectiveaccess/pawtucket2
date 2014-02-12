@@ -69,11 +69,15 @@
 		</ul>
 	<!--form cut from here-->
 		<ul class="nav navbar-nav navbar-right">
-		  <li class="active"><a href="#">About</a></li>
+		  <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+				
 
 <?php
 	print $this->render("pageFormat/browseMenu.php");
 ?>			  
+		  <li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></a></li>
+		  <li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></a></li>
+
 		  <!--NS design-->
 		  <li>
 		  	<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -132,10 +136,12 @@
 		</ul>
 	<!--form cut from here-->
 		<ul class="nav navbar-nav navbar-right" id="browse-menu">
-		  <li class="active"><a href="#">About</a></li>
+		  <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 <?php
 	print $this->render("pageFormat/browseMenu.php");
-?>		  
+?>		  <li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></a></li>
+		  <li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></a></li>
+
 		  <!--NS design-->
 		  <li>
 		  	<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -158,4 +164,4 @@
 <?php
 	}
 ?>
-	<div class="container"><div id="pageArea">
+	<div class="container"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
