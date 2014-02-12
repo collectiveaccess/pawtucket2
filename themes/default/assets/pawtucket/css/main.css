@@ -1198,6 +1198,20 @@ a.browseRemoveFacet img {
     cursor: default;
     display:inline;
 }
+.gallery #galleryDetailMediaToolbar{
+	position:absolute;
+	right:0px;
+	bottom:0px;
+	background-color:#ebebeb;
+	padding:2px 5px 7px 5px;
+	font-size:12px;
+}
+.gallery #galleryDetailMediaToolbar a{
+	color:#929292;
+}
+.gallery #galleryDetailMediaToolbar span{
+	padding:5px;
+}
 
 .gallery #galleryDetailImageGrid{
 	border-left:1px solid #dddddd;
@@ -1211,6 +1225,9 @@ a.browseRemoveFacet img {
 	padding:5px;
 	border:1px solid #dddddd;
 	margin:10px 0px 10px 0px;
+}
+.gallery #galleryDetailImageGrid .galleryIconActive img{
+	border:1px solid #000;
 }
 .gallery H2 {
 	font-size:20px;
