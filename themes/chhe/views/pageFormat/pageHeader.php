@@ -16,10 +16,21 @@
 </head>
 <body>
 
+<?php 
+	if(($this->request->getController() == "Front") && ($this->request->getAction() == "Index")){
+?>
+		<div class="container shadowed homebody roundedbottom">
+<?php
+	}
+else{     ?>
+<div class="container shadowed mainbody roundedbottom">
+<?php }	
+	
+?>
 
 <!--aw-->
 
-<div class="container shadowed mainbody roundedbottom">
+
 
 
 <!--start header-->
@@ -94,9 +105,12 @@
 			
 				<li class="active dropdown"><a href="#" class="dropdown-toggle top" data-toggle="dropdown">Home<b class="caret"></b></a>
       								<ul class="dropdown-menu">
-      								<li><a href="<?php caStaticPageUrl('/About/cjf_home'); ?>">Cincinnati Judaica Fund</a></li>
+      								<li>
+      								<?php print caNavLink($this->request, 'Cincinnati Judaica Fund', '', '*', '*', 'CJF'); ?></li>
       								<li class="divider"></li>
-      								<li><a href="<?php caStaticPageUrl('/About/chhe_home'); ?>">Center for Holocaust &amp; Humanity Education</a></li>
+      								<li><?php print caNavLink($this->request, 'Center for Holocaust &amp; Humanity Education', '', '*', '*', 'CHHE'); ?></li>
+      								
+      					
       								</ul>
       							
       							
