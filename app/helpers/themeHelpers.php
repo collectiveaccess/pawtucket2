@@ -324,8 +324,10 @@
 		
 			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
 			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-			if ($o_request->isLoggedIn()) {
-				$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+			if(!$o_request->config->get("disable_my_collections")){
+				if ($o_request->isLoggedIn()) {
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+				}
 			}
 			if(caObjectsDisplayDownloadLink($o_request)){
 				# -- get version to download configured in media_display.conf
