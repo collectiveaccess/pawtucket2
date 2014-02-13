@@ -53,7 +53,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true; }
-				print caNavLink($this->request, "<div class='{{{block}}}Result'>".$qr_results->get('ca_occurrences.preferred_labels.name')."</div>", '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
+				print "<div class='{{{block}}}Result'>".$qr_results->get('ca_occurrences.preferred_labels.name', array("returnAsLink" => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

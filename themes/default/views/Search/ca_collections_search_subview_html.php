@@ -55,13 +55,13 @@
 <?php
 			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags'));
 			if (sizeof($va_images) > 0){
-				foreach ($va_images as $image_id => $va_image) {
-					print caNavLink($this->request, $va_image, '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
+				foreach ($va_images as $vn_image_id => $vs_image) {
+					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
 					break;
 				} 
 			}
 ?>
-				<br/><?php print caNavLink($this->request, $qr_results->get('ca_collections.preferred_labels.name'), '', '', 'Detail', 'Collections/'.$qr_results->getIdentifierForUrl()); ?>
+				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div>
 <?php
 			$vn_count++;
