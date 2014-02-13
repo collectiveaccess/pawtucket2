@@ -5,6 +5,7 @@
 	$ps_description = $this->getVar("description");
 	
 ?>
+<H1><?php print $this->getVar("section_name"); ?></H1>
 <div id="galleryDetailImageArea">
 	image here
 </div><!-- end galleryDetailImageArea -->
