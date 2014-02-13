@@ -169,6 +169,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific contact configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetContactConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/contact.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display 
 	 * 
@@ -315,8 +324,10 @@
 		
 			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
 			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-			if ($o_request->isLoggedIn()) {
-				$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+			if(!$o_request->config->get("disable_my_collections")){
+				if ($o_request->isLoggedIn()) {
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+				}
 			}
 			if(caObjectsDisplayDownloadLink($o_request)){
 				# -- get version to download configured in media_display.conf
@@ -513,6 +524,28 @@
 			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", "icon");
 		}
 		return $va_res;
+	}
+	# ---------------------------------------
+	/**
+	 * class -> class name of <ul>
+	 * 
+	 */
+	function caGetGallerySetsAsList($o_request, $vs_class){
+		$o_config = caGetGalleryConfig();
+		$va_access_values = caGetUserAccessValues($o_request);
+ 		$t_list = new ca_lists();
+ 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
+ 		$t_set = new ca_sets();
+ 		$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+		$vs_set_list = "";
+		if(sizeof($va_sets)){
+			$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").">\n";
+			foreach($va_sets as $vn_set_id => $va_set){
+				$vs_set_list .= "<li>".caNavLink($o_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+			}
+			$vs_set_list .= "</ul>\n";
+		}
+		return $vs_set_list;
 	}
 	# ---------------------------------------
 ?>

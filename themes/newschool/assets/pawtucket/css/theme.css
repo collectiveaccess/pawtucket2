@@ -31,6 +31,9 @@ h1, h2{
 h3, h4, h5, h6{
 	font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin-gothic-urw-cond-2","Arial ",Helvetica,sans-serif; 
 }
+h2{
+	color:#000;
+}
 a:link, a:visited, a:active {
 	color:#665E4C;
 }
@@ -42,6 +45,10 @@ a:hover {color:#BF0E00;}
 	max-width:1024px;
 	padding-top:30px;
 	background-color:#fff;
+}
+.gallery, .staticPage, .contact{
+	padding-left:20px;
+	padding-right:20px;
 }
 
 H1{
@@ -138,7 +145,7 @@ padding:0 0 0 15px;}
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);*/
           box-shadow: 0 0px 0 rgba(255, 255, 255, 0) inset, 0 0px 0px rgba(0, 0, 0, 0);
 }
-.navbar .navbar-nav > .active > a {
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover {
   color:#aba8a8;
   background-color:#fff;
 }
@@ -189,8 +196,8 @@ padding:0 0 0 15px;}
 
 @media (min-width: 768px) {
 	.nav > li.dropdown > a.icon {
-		padding-top:0px;
-		padding-bottom:0px;
+		padding-top:8px;
+		padding-bottom:8px;
 	}
 }
 @media (min-width: 768px) {
