@@ -38,7 +38,6 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<H1>"._t("Filter by")."</H1>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			
