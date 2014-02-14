@@ -344,6 +344,11 @@ class BaseModel extends BaseObject {
 	static $s_instance_cache = array();
 	
 	/**
+	 *
+	 */
+	static $s_field_value_arrays_for_IDs_cache = array();
+	
+	/**
 	 * Constructor
 	 * In general you should not call this constructor directly. Any table in your database
 	 * should be represented by an extension of this class.
@@ -708,7 +713,12 @@ class BaseModel extends BaseObject {
 								$vs_version = array_shift($va_tmp);
 							}
 							
-							if (isset($pa_options['returnURL']) && $pa_options['returnURL']) {
+							// See if an info element was passed, eg. ca_object_representations.media.icon.width should return the width of the media rather than a tag or url to the media
+							$vs_info_element = (sizeof($va_tmp) == 4) ? $va_tmp[3] : null;
+								
+							if ($vs_info_element) {			
+								return $this->getMediaInfo($va_tmp[1], $vs_version, $va_tmp[3]);
+							} elseif (isset($pa_options['returnURL']) && $pa_options['returnURL']) {
 								return $this->getMediaUrl($va_tmp[1], $vs_version);
 							} else {
 								return $this->getMediaTag($va_tmp[1], $vs_version);
@@ -1055,13 +1065,17 @@ class BaseModel extends BaseObject {
 	public function getFieldValuesForIDs($pa_ids, $pa_fields=null, $pa_options=null) {
 		if ((!is_array($pa_ids) && (int)$pa_ids > 0)) { $pa_ids = array($pa_ids); }
 		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+		$vs_cache_key = md5(join(",", $pa_ids)."/".join(",", $pa_fields));
+		if (isset(BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num = $this->tableNum()][$vs_cache_key])) {
+			return BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num][$vs_cache_key];
+		}
 		
 		$va_ids = array();
 		foreach($pa_ids as $vn_id) {
 			if ((int)$vn_id <= 0) { continue; }
 			$va_ids[] = (int)$vn_id;
 		}
-		if (!sizeof($va_ids)) { return null; }
+		if (!sizeof($va_ids)) { return BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num][$vs_cache_key] = null; }
 		
 		
 		$vs_table_name = $this->tableName();
@@ -1096,7 +1110,7 @@ class BaseModel extends BaseObject {
 				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->getRow();
 			}
 		}
-		return $va_vals;
+		return BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num][$vs_cache_key] = $va_vals;
 	}
 
 	/**
@@ -1639,51 +1653,6 @@ class BaseModel extends BaseObject {
 		}
 		$this->postError(700,_t("Mode:%1 is not supported by this object", $pn_mode),"BaseModel->setMode()");
 		return false;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * Returns array of intrinsic field value arrays for the specified rows
-	 *
-	 * @param array $pa_ids An array of row_ids to get field values for
-	 * @param $ps_table_name string The table to fetch values from. If omitted the name of the subclass through which the method was invoked is uses. This means that, for example, ca_entities::getFieldValueArraysForIDs(array(1,2,3)) and BaseModel::getFieldValueArraysForIDs(array(1,2,3), "ca_entities") are the same thing.
-	 * @return array An array of value arrays indexed by row_id
-	 */
-	static function getFieldValueArraysForIDs($pa_ids, $ps_table_name=null) {
-		if(!is_array($pa_ids) && is_numeric($pa_ids)) {
-			$pa_ids = array($pa_ids);
-		}
-		if (!sizeof($pa_ids)) { return array(); }
-		$va_value_arrays = array();
-		
-		$o_dm = Datamodel::load();
-		
-		$vs_table_name = $ps_table_name ? $ps_table_name : get_called_class();
-		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table_name, true))) { return false; }
-		$vs_pk = $t_instance->primaryKey();
-		
-		// first check cache
-		foreach($pa_ids as $vn_i => $vn_id) {
-			if (isset(BaseModel::$s_instance_cache[$vs_table_name][$vn_id])) {
-				$va_value_arrays[$vn_id] = BaseModel::$s_instance_cache[$vs_table_name][$vn_id];
-				unset($pa_ids[$vn_i]);
-			}
-		}
-		
-		if (!sizeof($pa_ids)) { return $va_value_arrays; }
-		
-		$o_db = $t_instance->getDb();
-		
-		$qr_res = $o_db->query("
-			SELECT * FROM {$vs_table_name} WHERE {$vs_pk} IN (?)
-		", array($pa_ids));
-		
-		// pull values from database
-		while($qr_res->nextRow()) {
-			$va_row = $qr_res->getRow();
-			$va_value_arrays[$va_row[$vs_pk]] = $va_row;
-		}
-		
-		return $va_value_arrays;
 	}
 	# --------------------------------------------------------------------------------
 	# --- Content methods (just your standard Create, Return, Update, Delete methods)
@@ -3525,7 +3494,10 @@ class BaseModel extends BaseObject {
 			if (!$ps_property) {
 				return $va_media_info[$ps_version];
 			} else {
-				return $va_media_info[$ps_version][$ps_property];
+				if($vs_v = $va_media_info[$ps_version][$ps_property]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtoupper($ps_property)]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtolower($ps_property)]) { return $vs_v; }
+				return null;
 			}
 		} else {
 			return $va_media_info;

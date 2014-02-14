@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2013 Whirl-i-Gig
+ * Copyright 2006-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,7 +102,11 @@ class MediaInfoCoder {
 			if (!$ps_key) {
 				return $va_media_info[$ps_version];
 			} else { 
-				return $va_media_info[$ps_version][$ps_key];
+				// Try key as passed, then all UPPER and all lowercase
+				if($vs_v = $va_media_info[$ps_version][$ps_key]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtoupper($ps_key)]) { return $vs_v; }
+				if($vs_v = $va_media_info[$ps_version][strtolower($ps_key)]) { return $vs_v; }
+				return null;
 			}
 		} else {
 			return $va_media_info;

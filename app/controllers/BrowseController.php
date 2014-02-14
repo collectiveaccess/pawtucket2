@@ -35,6 +35,11 @@
  		 */
  		private $ops_find_type = "browse";
  		
+ 		/**
+ 		 *
+ 		 */
+ 		private $opo_result_context = null;
+ 		
  		# -------------------------------------------------------
  		/**
  		 *
@@ -65,6 +70,7 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+ 			$this->view->setVar('name', $va_browse_info['name']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
  			
@@ -105,7 +111,7 @@
 			//
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
-				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pInteger)));
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -202,7 +208,7 @@
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
 			$this->view->setVar('result', $qr_res);
 		
-			$this->view->setVar('hits_per_block', 12);
+			$this->view->setVar('hits_per_block', 36);
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
 
