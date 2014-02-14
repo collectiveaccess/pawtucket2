@@ -12,6 +12,23 @@ a:hover {
 	background: transparent;
 	color:#000;
 }
+a:active {
+	background:transparent;
+}
+h2, #detail h2, #multiSearch h2{
+	font-size: 24px;
+	color: #EE3E43;
+	margin: 0px;
+	padding: 0px;
+	font-family: "ProximaNovaRegular";
+	text-transform:none;
+}
+h3 {
+	font-family: "ProximaNovaBold";
+	font-size: 18px;
+	margin: 5px 0px 5px 0px;
+	color: #000;
+}
 .clearfix {
 	width:100%;
 	clear:both;
@@ -119,7 +136,7 @@ a:hover {
 }
 .navbar li.dropdown ul li a:active{
 	color:#fff;
-	background-color:#000;
+	background-color:transparent;
 }
 .navbar ul.dropdown-menu {
 	padding:0px;
@@ -341,6 +358,9 @@ h2 span.artist {
 	height:auto;
 	width:auto;
 }
+#detail .detailNavBgLeft {
+	margin-top:10px;
+}
 #detail .detailNavBgLeft a, #detail .detailNavBgRight a{
 	color:#fff;
 	font-size:14px;
@@ -352,13 +372,21 @@ h2 span.artist {
 	background-position: center left;
 	padding-left:15px;
 }
-#detail .detailNavBgLeft .results, #detail .detailNavBgLeft .next {
-	padding:8px 0px 5px 0px;
+#detail .detailNavBgLeft .next {
+	padding:10px 0px 8px 0px;
 	background-image: url('../graphics/fwarrow.png');
 	background-repeat:no-repeat;
 	background-position: center right;
 	padding-right:15px;
 	width: 45px;
+}
+#detail .detailNavBgLeft .results {
+	padding:10px 0px 8px 0px;
+	background-image: url('../graphics/backarrow.png');
+	background-repeat:no-repeat;
+	background-position: center left;
+	width:115px;
+	padding-left:15px;
 }
 #detail #cont img {
 	width:auto;
@@ -516,14 +544,7 @@ h2 span.artist {
 #multiSearch {
 	padding:0px;
 }
-#multiSearch h2, #detail h2, #browseResults h2{
-	font-size: 24px;
-	color: #EE3E43;
-	margin: 0px;
-	padding: 0px;
-	font-family: "ProximaNovaRegular";
-	text-transform:none;
-}
+
 #multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious {
 	margin-top:-16px;
 	background-position:50% 50%;
@@ -718,6 +739,9 @@ h2 span.artist {
 	float:left; 
 	width:250px;
 }
+#detail .eventsResult {
+	margin-bottom:10px;
+}
 #multiSearch .placesResult:hover, #multiSearch .occurrencesResult:hover, #multiSearch .entitiesResult:hover {
 	background-color: transparent;
 }
@@ -739,40 +763,192 @@ h2 span.artist {
 #browseResults {
 	padding:0px;
 }
-#pageArea.browseEntities #pageTitle {
+#browseResults .blockTitle {
 	height:auto;
+	min-height: 250px;
 }
-.facetLabel, .facetLabel a{
+#browseHeader {
+	height:20px;
+	width:100%;
+	clear:both;
+}
+#bRefine {
+	background: transparent;
+	padding: 0px 0px 20px 0px;
+	line-height: 1em;
+	z-index: 10;
+	position: relative;
+	color:#fff;
+	text-transform:uppercase;
+}
+#browseResults #bRefine h2{
+	color:#fff;
+}
+#browseResults .resultCount {
+	font-size:14px;
+}
+#bRefine a{
 	color:#fff;
 	font-size:12px;
-	text-transform:uppercase;
+	text-transform:lowercase;
 	margin-top:15px;
 	text-decoration:none;
+	line-height:.5em;
+	background-image: url('../graphics/fwarrow.png');
+	background-repeat:no-repeat;
+	background-position: center left;
+	padding-left:15px;
 }
-.facet {
-	padding:0px;
-	line-height:15px;
+#bRefine a.more {
+	color: red;
+	text-decoration: underline;
+	background-image:none;
 }
-.facet a{
-	color:#fff;
-	font-size:12px;
-	line-height:12px;
+#bRefine div {
+	margin-bottom: 0px;
 }
-.browseResult.artist {
+#browseResultsContainer h2 {
+	color:#000;
+}
+#browseResults H2 {
+	color:#000;
+}
+.bResultItemCol {
 	float:left;
-	height:180px;
-	margin-right:20px;
-	margin-bottom:40px;
-	font-size:12px;
+	height:230px;
 }
-.browseResult.artist .resultImg{
-	height:150px;
-	overflow:hidden;
-	background-color:#eee;
-	min-width:150px;
-	margin-bottom:5px;
+.bResultItem {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	background-color:transparent;
 }
-.browseResult.artist .artistName a{
+.bResultItemContent {
+	height:auto;
+}
+.bResultItem img {
+	width: auto;
+	height: auto;
+}
+.bResultItem .bResultItemImg {
+	height: 180px;
+	min-width: 150px;
+	background-color: #f7f7f7;
+}
+#browseResults .artistName a{
 	text-transform:uppercase;
 	color:#999;
 }
+.bResultItem:hover{
+	padding:10px;
+	margin:0px 0px 5px 0px;
+	height:180px;
+	font-size:12px;
+	color:#000;
+}
+span.criteria {
+	background-color:#000;
+	padding:5px;
+	color:#fff;
+	text-transform:uppercase;
+}
+.browseRemoveFacet {
+	margin-left: 5px;
+	background-color: #000;
+	color: #fff;
+	padding: 0px 3px 0px 3px;
+	text-transform: lowercase;
+	border-radius: 2px;
+	margin-right: 20px;
+}
+.browseRemoveFacet:hover {
+	text-decoration:none;
+	background-color: #EE3E43;
+	color:#fff;
+}
+#browseResults .startOver {
+	background-color:#aaa;
+	color:#fff;
+	padding:5px;
+	text-transform:lowercase;
+}
+#browseResults .startOver a{
+	color:#fff;
+}
+#browseResults .jscroll-next {
+	width:100%;
+	text-align:center;
+	padding:10px;
+	background-color:#f7f7f7;
+	display:block;
+	margin-top:20px;
+}
+#browseResults a .glyphicon {
+	margin-left:10px;
+}
+#bViewButtons {
+	float: right;
+	font-size: 18px;
+	padding-bottom: 0px;
+	clear: both;
+	text-align: right; 
+}
+.btn-group .sortBy {
+	float:left;
+	margin-right:10px;
+	font-size:13px;
+}
+.btn-group .dropdown-menu {
+	display:inline-block;
+	border:0px;
+	background-color:transparent;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	position:relative;
+	padding:0px;
+	margin:0px;
+	line-height:1.1em;
+	min-width:30px;
+}
+.btn-group .dropdown-menu li{
+	display:inline;
+	float:left;
+}
+.btn-group .dropdown-menu li a{
+	padding:0px;
+	font-size:13px;
+	margin-right:10px;
+	text-transform:lowercase;
+	line-height:1.1em;
+}
+/* List View */
+
+
+.bResultListItem {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	background-color: transparent;
+	padding: 0px;
+}
+.bResultListItem:hover{
+	padding:0px;
+	margin:0px;
+	height:auto;
+	color:#000;
+}
+.bResultListItemContent {
+	height:auto;
+}
+.bResultListItemCol {
+	height:auto;
+	width: 260px;
+	float: left;
+	margin-top:20px;
+}
+.bResultListItemText a {
+	font-family: "ProximaNovaRegular";
+	line-height:14px;
+	color:#000;
+	font-size:16px;
+}
+
+

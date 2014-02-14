@@ -133,14 +133,9 @@
 	
 	<div class="col-sm-4">
 		<h2>Browse by Featured Topic:</h2>
-		<ul class="nav nav-pills nav-stacked">
-		<li><a href="#">Oral Histories Collections</a></li>
-		<li><a href="#">Fashion Design &amp; Illustration</a></li>
-		<li><a href="#">Interior Design Collections</a></li>
-		<li><a href="#">Art &amp; Art Exhibits at The New School</a></li>
-		<li><a href="#">Parsons Paris</a></li>
-		<li><a href="#">Buildings at The New School</a></li>
-		</ul>
+<?php
+		print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+?>
 		Or
 		<ul class="nav nav-pills nav-stacked">
 		<li><?php print caNavLink($this->request, _t('BROWSE ALL'), '', '', 'Browse', 'Objects'); ?></a></li>

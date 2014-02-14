@@ -53,7 +53,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='entitiesSet'>\n"; $vb_div_open = true;}
-				print caNavLink($this->request, "<div class='entitiesResult'>".$qr_results->get('ca_entities.preferred_labels.displayname')."</div>", '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
+				print "<div class='entitiesResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {

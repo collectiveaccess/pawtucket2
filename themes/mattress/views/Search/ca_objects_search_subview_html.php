@@ -51,8 +51,8 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-				<?php print "<div class='objImage'>".caNavLink($this->request, $qr_results->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'Objects/'.$qr_results->getIdentifierForUrl())."</div>"; ?>
-				<?php print caNavLink($this->request, $qr_results->get('ca_objects.preferred_labels.name'), '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl()); ?>
+				<?php print "<div class='objImage'>".$qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>')."</div>"; ?>
+				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
