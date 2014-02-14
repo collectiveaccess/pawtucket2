@@ -30,16 +30,27 @@
 	$vs_facet_list = caGetFacetForMenuBar($this->request, $vs_target);
 	
 	if($vs_facet_list) {
-?>
-		<ul class="nav nav-pills browseMenuFacetList">
-			<li><div><?php print _t("Browse by:"); ?></div></li>
+?>			
+<div class="filterMenuFacetList col-sm-2">
+	<div class="filterbylabel"><?php print _t("Browse by:"); ?></div>
+		<ul>
 			<?php print $vs_facet_list; ?>
 		</ul>
+	</div>
 	
-		<div class='browseMenuFacet'> </div>
-		
-		<div class='browseMenuBrowseSearch'><form><input type="text" size="20" id="browseMenuFacetSearchInput" class="browseMenuFacetSearchInput form-control" placeholder="Search facet"/></form></div>
-		<div class='browseMenuBrowseAll'><button class="btn btn-default"><?php print caNavLink($this->request, _t('Browse all'), 'browseMenuBrowseAll', '', 'Browse', $vs_target, ''); ?></button></div>
+	<div class="filterMenureults col-sm-10">
+		<div class='browseMenuFacet'> </div>	
+	</div>	
+	<div class="browsedivider">&nbsp;</div>
+
+	<div class="container">
+		<div class='browseMenuBrowseSearch'>
+			<form><input type="text" size="20" id="browseMenuFacetSearchInput" 			class="browseMenuFacetSearchInput form-control" placeholder="Search facet"/></form>
+		</div> <!--end browseMenuSearch-->
+		<div class='browseMenuBrowseAll'>
+			<button type="button" class="btn btn-default btn-sm"><?php print caNavLink($this->request, _t('Browse all'), 'browseMenuBrowseAll', '', 'Browse', $vs_target, ''); ?>&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></btn>
+		</div> <!--end browseMenuAll-->
+	</div><!--end container-->	
 <?php
 	} else {
 ?>
