@@ -159,21 +159,42 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b34e39', end
 border-bottom:2px solid #FFF;
 }
 .emblem {margin-top:-10px;}
-#tagline {font-family:'colaborate-thinregular', helvetica; color:#E7B461; text-transform:uppercase; font-size:17px;line-height:18px;padding-top:38px;float:left;}
-#titlehead {font-family:'colaborate-thinregular', helvetica; color:#fff; font-size:44px;line-height:40px;padding-top:8px;float:left;}
-
+#tagline {font-family:'colaborate-thinregular', helvetica; color:#E7B461; text-transform:uppercase; font-size:9px;line-height:9px;padding-top:15px;float:left;}
+#titlehead {font-family:'colaborate-thinregular', helvetica; color:#fff; font-size:22px;line-height:20px;padding-top:8px;float:left;}
+@media (min-width: 768px) {
+	#tagline {
+  		font-size:14px;
+  		line-height:15px;
+  		padding-top:15px;
+  	}
+  	#titlehead {
+  		font-size:34px;
+  		line-height:30px;
+  	}
+}
+@media (min-width: 992px) {
+	#tagline {
+  		font-size:17px;
+  		line-height:18px;
+  		padding-top:38px;
+  	}
+  	#titlehead {
+  		font-size:44px;
+  		line-height:40px;
+  	}
+}
 .navbar-brand img {
   		width:100%;
 }
 .navbar-brand {
 	float:left;
-  	width:auto;
+  	width:15%;
 	padding-top: 0px;
   	padding-bottom: 0px;
 }
 @media (min-width: 768px) {
 	.navbar-brand {
-  		width:auto;
+  		width:15%;
   		padding-top: 0px;
   		padding-bottom: 0px;
   	}
@@ -374,8 +395,6 @@ background: #333333;
 	}
 	
 	.titlehead {min-width:450px;}
-	
-	#headbanner{height: 152px;}
 	
 }
 .staticPage{
