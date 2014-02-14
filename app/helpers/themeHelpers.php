@@ -178,6 +178,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific front page configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetFrontConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/front.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display 
 	 * 
