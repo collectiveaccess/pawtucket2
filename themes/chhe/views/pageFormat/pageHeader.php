@@ -39,7 +39,7 @@
 				<div id="tagline">Cincinnati Judaica Fund and<br />the Center for Holocaust & Humanity Education </div>
 				<div id="titlehead">Collections Database</div>
 				<div class="mynav collapse navbar-collapse navbar-right" id="bs-example-navbar-collapse-1">
-					<nav class="navbar navbar-default <!--yamm-->" role="navigation">
+					<nav class="navbar navbar-default yamm" role="navigation">
 						<div class="container">
 							<!-- Brand and toggle get grouped for better mobile display -->
 							<div class="navbar-header">
