@@ -16,7 +16,7 @@
 		</div>
 		
 		<div id="infoArea">
-			{{{<ifdef code="ca_objects.description"><div class='description'><div class='title'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
+			{{{<ifdef code="ca_objects.description"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
 			<div class="clearfix"></div>
 		</div>
 	</div><!-- contentArea -->

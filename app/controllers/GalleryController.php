@@ -58,6 +58,11 @@
  		public function __call($ps_function, $pa_args) {
  			
  			$ps_function = strtolower($ps_function);
+ 			# --- what is the section called - title of page
+ 			if(!$vs_section_name = $this->config->get('gallery_section_name')){
+ 				$vs_section_name = _t("Featured Galleries");
+ 			}
+ 			$this->view->setVar("section_name", $vs_section_name);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
  			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			

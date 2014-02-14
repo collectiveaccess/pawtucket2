@@ -1,5 +1,5 @@
 <div>
-	<H1><?php print _t("Featured Galleries"); ?></H1>
+	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
 	$va_sets = $this->getVar("sets");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");

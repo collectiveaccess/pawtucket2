@@ -1,7 +1,6 @@
 <div id="frontPage" class="subhomeslide">
 
 
-
 <?php
 	$va_item_ids = $this->getVar('featured_set_item_ids');
 	if(is_array($va_item_ids) && sizeof($va_item_ids)){
@@ -95,7 +94,6 @@
 <?php
 	}
 ?>
-
 
 	<div class="container"><div class="container"><div class="row">
 		<div class="col-sm-3"><?php print caGetThemeGraphic($this->request, "chhe_int.png"); ?></div>     

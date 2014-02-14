@@ -63,15 +63,22 @@
  			AssetLoadManager::register("carousel");
  			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
+ 			$ps_id = $this->request->getActionExtra(); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
  			}
  			
  			$t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
- 			if (!$t_table->load(caUseIdentifiersInUrls() ? array('idno' => $ps_id) : (int)$ps_id)) {
+ 			if (($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) && (substr($ps_id, 0, 3) == "id:")) {
+ 				$va_tmp = explode(":", $ps_id);
+ 				$ps_id = (int)$va_tmp[1];
+ 				$vb_use_identifiers_in_urls = false;
+ 			}
+ 			
+ 			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
  				// invalid id - throw error
+ 				die("Invalid id");
  			}
  			
  			$vs_type = $t_table->getTypeCode();
