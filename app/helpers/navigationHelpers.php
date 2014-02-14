@@ -833,15 +833,27 @@
 		$vs_pk = $t_table->primaryKey();
 		$vs_table = $ps_table;
 		
+		$vb_id_exists = null;
 		
 		$vs_module = '';
 		$vs_controller = 'Detail';
 		$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null));
+		if (caUseIdentifiersInUrls()) {
+			$va_ids = $t_table->getFieldValuesForIDs(array($pn_id), array($t_table->getProperty('ID_NUMBERING_ID_FIELD')));
+			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
+				$vb_id_exists = true;
+			}
+			if (strlen($vn_id_for_idno)) {
+				$pn_id = $vn_id_for_idno;
+			} else {
+				$pn_id = "id:{$pn_id}";
+			}
+		}
 		$vs_action .= "/{$pn_id}";
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {
 			// Make sure record link points to exists
-			if (($pn_id > 0) && !$t_table->load($pn_id)) {
+			if (!$vb_id_exists && ($pn_id > 0) && !$t_table->load($pn_id)) {
 				return null;
 			}
 		}

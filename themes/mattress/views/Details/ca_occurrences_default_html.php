@@ -162,9 +162,7 @@
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitySet'>";}
-					print "<div class='entityResult'>";
-					print "<div>".caNavLink($this->request, $va_entity['displayname'], '', '','Detail', 'Entities/'.$va_entity['idno'])."</div>";
-					print "</div>";
+					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['idno']);
 					$vn_i++;
 					if ($vn_i == 5) {
 						print "</div>";

@@ -32,7 +32,7 @@
 	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-	$vn_hits_per_block = 48;
+	$vn_hits_per_block  = 48;
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	
 	$va_views			= $this->getVar('views');
@@ -50,13 +50,13 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
-		$vn_col_span = 4;
+		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
-		$vn_col_span_xs = 4;
+		$vn_col_span_sm = 2;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
+			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -64,41 +64,73 @@
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
-				}
-			
-				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids);
-			} else {
-				$va_images = null;
-			}
-			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+				if($vs_table == "ca_entities") {
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_first_object_id = $va_related_objects[0];
+					$t_object = new ca_objects($va_first_object_id);
+					$va_rep = $t_object->get('ca_object_representations.media.small');
+					if ($t_object->get('ca_object_representations.media.small')) {
+						$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";
+					} else {
+						$va_cell_width = "style='width:180px;'";
+					}
+				} else if ($vs_table == "ca_occurrences") {
+					$va_related_collections = $qr_res->get('ca_collections.collection_id', array('returnAsArray' => true, 'restrictToTypes' => array('installation')));
+					$t_collection = new ca_collections($va_related_collections[0]);
+					
+					$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_first_object_id = $va_related_objects[0];
+					$t_object = new ca_objects($va_first_object_id);
+					$va_rep = $t_object->get('ca_object_representations.media.small');
+					if ($t_object->get('ca_object_representations.media.small')) {
+						$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
+					} else {
+						$va_cell_width = "style='width:180px;'";
+					}				
+				} else {
+					$va_rep = $qr_res->getMediaTag('ca_object_representations.media', 'small');
+				}
 				
-				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small') : $va_images[$vn_id];
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				
-				$vs_rep_detail_link 	= caDetailLink($this->request, '', '', $vs_table, $vn_id);	
-				
+				$vs_rep_detail_link 	= caDetailLink($this->request, $va_rep, '', $vs_table, $vn_id);				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultListItemCol'>
-		<div class='bResultListItem'>
-			<div class='bResultListItemContent'>
-				<div class='bResultListItemText'>
-					{$vs_label_detail_link}
-				</div><!-- end bResultListItemText -->
-			</div><!-- end bResultListItemContent -->
-		</div><!-- end bResultListItem -->
+	<div class='bResultItemCol '>
+		<div class='bResultItem' {$va_cell_width}>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemText'>";
+				if ($vs_table == "ca_entities") {
+					$va_artwork_info = array();
+					$va_collection_id = $t_object->get('ca_collections.collection_id', array('restrictToTypes' => array('installation'), 'returnAsArray' => true));
+					$t_collection = new ca_collections($va_collection_id[0]);
+					if ($t_collection->get('ca_collections.preferred_labels')) {
+						$va_artwork_info[] = $t_collection->get('ca_collections.preferred_labels');
+					}
+					if ($t_collection->get('ca_collections.date.dates_value')) {
+						$va_artwork_info[] = $t_collection->get('ca_collections.date.dates_value');
+					}
+					print "<div class='artworkInfo'>".join(', ', $va_artwork_info)."</div>";	
+					print "<div class='artistName'>".$vs_label_detail_link."</div>";	
+				} else {
+					print $vs_label_detail_link;
+				}
+				print "					
+				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+				<hr>
+				{$vs_expanded_info}
+				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'></a>
+			</div><!-- bResultItemExpandedInfo -->
+		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;
