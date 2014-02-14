@@ -13,7 +13,7 @@
 
 <div class="objcontainer">
 
-<div id="detail" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row objimages">
+<div id="detail" class="row objimages">
 
 <div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 			<div class="detailNavBgLeft">
