@@ -7,29 +7,55 @@
 <!--aw-->
 
 
+		
 <!--this is the slide area body-->
 <!--these ids are stretching the image-->
-<div id="detail" class="container objimages">
-	<div id="cont" class="col-sm-6 col-md-6">
+
+<div class="objcontainer">
+
+<div id="detail" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row objimages">
+
+<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+			<div class="detailNavBgLeft">
+				{{{previousLink}}}{{{resultsLink}}}
+			</div><!-- end detailNavBgLeft -->
+		</div><!-- end col -->
+
+	<div id="cont" class="col-sm-5 col-md-5">
 		{{{representationViewer}}}
 	</div>
 	
-	<div class="col-md-6 col-sm-6 obj_detail_caption">
+	<div class="col-md-5 col-sm-5 obj_detail_caption">
 	
 	<h1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</h1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}		
 		
-		</div>
+		
 	
 	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
 	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
 	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
 	
 	</div>
+<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right nextlink'>
+			<div class="detailNavBgRight">
+				{{{nextLink}}}
+			</div><!-- end detailNavBgLeft -->
+		</div><!-- end col -->	
+	
+	
+	
+	
+	
+
+
+
+
+
 
 </div><!--end container obimages-->
-
+</div><!--end container-->
 
 
 <!--this is the body body-->
@@ -67,20 +93,20 @@
 		<div class="col-sm-3 ">
 			<div class="graybordered">
 		<img src="../graphics/objheader_ornleft.png"><strong>Related Objects</strong><img src="../graphics/objheader_ornright.png"><br/>
-		<img src="http://placehold.it/85x85" alt="Image"  style="max-width:100%;" />
-	<img src="http://placehold.it/85x85" alt="Image" style="max-width:100%;" />
-	<img src="http://placehold.it/85x85" alt="Image"  style="max-width:100%;" />
-		<img src="http://placehold.it/85x85" alt="Image"  style="max-width:100%;" />
+		<img src="http://placehold.it/80x80" alt="Image"  style="max-width:100%;" />
+	<img src="http://placehold.it/80x80" alt="Image" style="max-width:100%;" />
+	<img src="http://placehold.it/80x80" alt="Image"  style="max-width:100%;" />
+		<img src="http://placehold.it/80x80" alt="Image"  style="max-width:100%;" />
 			</div>
 		</div> <!--end col2-->
 		
 		<div class="col-sm-3">
-			{{{<ifcount code="ca_entities" min="1"><div class="graybordered"></ifcount>}}}
-{{{<ifcount code="ca_entities" min="1" max="1"><img src="../graphics/objheader_ornleft.png"><h3>Related person</h3><img src="../graphics/objheader_ornright.png"></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><img src="../graphics/objheader_ornleft.png"><h3>Related people</h3><img src="../graphics/objheader_ornright.png"></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
-		
-			{{{<ifcount code="ca_entities" min="1"></div></ifcount>}}}
+			{{{<ifcount code="ca_entities" min="1"><div class="graybordered">
+<ifcount code="ca_entities" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><h3>xxxRelated person</h3><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?></ifcount>
+<ifcount code="ca_entities" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><h3>Related people</h3><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?></ifcount>
+<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>
+</div>
+</ifcount>}}}
 		</div> <!--end col3-->
 		
 	<div class="row"></div>
@@ -88,7 +114,7 @@
 		<div class="commentsarea">
 			<div class="col-sm-6">
 			
-			<a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+			<a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a><!-- end detailTool -->
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}
 			
@@ -113,10 +139,13 @@
   				</div>
   				 <button type="submit" class="btn btn-default">Submit</button>
 				</form>
+				</div>
+				
 		</div><!--end col-sm-6-->
 		
 		<div class="col-sm-6">
 		<p><strong>Comments</strong></p>
+		
 		<p>Etiam quis erat sit amet nibh tristique sagittis vel eget lorem. Phasellus eget mollis nunc. Nunc pretium, orci quis tincidunt gravida, metus lorem viverra quam, eu malesuada erat magna vitae nulla. Praesent at erat eget dolor tristique convallis.
 <br/ >
 &emdash; Firstname Lastname, New York, NY</p>
@@ -155,54 +184,5 @@
 
 
 
-
 <!--end aw-->
 <!--**********************************-->
-
-<div class="container objimages">
-<div id="detail">
-	<div class="row">
-		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-			<div class="detailNavBgLeft">
-				{{{previousLink}}}{{{resultsLink}}}
-			</div><!-- end detailNavBgLeft -->
-		</div><!-- end col -->
-		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
-			<div class="container"><div class="row">
-				<div class=' col-sm-6 col-md-6 col-lg-6'>
-					{{{representationViewer}}}
-					
-</div><!--end objimages-->					
-					
-					
-					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
-					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
-					<HR>
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					{{{<ifcount code="ca_objects.LcshNames" min="1"><h3>LC Terms</h3></ifcount>}}}
-					{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
-				</div><!-- end col -->
-			</div><!-- end row --></div><!-- end container -->
-		</div><!-- end col -->
-		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-			<div class="detailNavBgRight">
-				{{{nextLink}}}
-			</div><!-- end detailNavBgLeft -->
-		</div><!-- end col -->
-	</div><!-- end row -->
-</div><!-- end detail -->
