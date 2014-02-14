@@ -3130,9 +3130,9 @@ $ca_relationship_lookup_parse_cache = array();
 		$va_links = $va_type_ids = array();
 		if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
 			$va_type_ids = $t_instance->getFieldValuesForIDs($pa_row_ids, array('type_id'));
-			if (caUseIdentifiersInUrls()) {
-				$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
-			}
+			//if (caUseIdentifiersInUrls()) {
+			//	$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
+			//}
 		}
 		
 		global $g_request;
