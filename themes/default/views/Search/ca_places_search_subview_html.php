@@ -43,7 +43,7 @@
 			</small>
 			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
 			<div class='blockResults'>
-				<div id="scrollButtonPrevious" onclick="scrollPrevious('{{{block}}}'); return false;"><i class="fa fa-angle-left"></i></div><div id="scrollButtonNext" onclick="scrollNext('{{{block}}}'); return false;"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results'>
 					<div class='blockResultsScroller'>
 <?php
@@ -53,7 +53,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true;}
-				print caNavLink($this->request, "<div class='{{{block}}}Result'>".$qr_results->get('ca_places.preferred_labels.name')."</div><!-- end Result -->", '', '', 'Detail', '{{{block}}}/'.$qr_results->getIdentifierForUrl());
+				print "<div class='{{{block}}}Result'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsArray' => true))."</div><!-- end Result -->";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {
@@ -84,6 +84,8 @@
 						itemContainerSelector: '.blockResultsScroller',
 						sortParameter: '{{{block}}}Sort',
 						sortControlSelector: '#{{{block}}}_sort',
+						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
+						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});

@@ -1,0 +1,114 @@
+body {
+	margin: 0px auto 10px auto;
+	width: 970px;
+	font-family: "ProximaNovaRegular";
+	line-height:14px;
+	font-weight:12px;
+}
+a {
+	color:#000;
+}
+a:hover {
+	background: transparent;
+	color:#000;
+}
+
+/* Header*/
+
+#hpLogo {
+	float: left;
+	margin-top: 18px;
+}
+.navbar {
+	margin-top:17px;
+	width: 820px;
+	background-color: #000;
+	height: 65px;
+	float:left;
+	box-shadow:none;
+	border-radius:0;
+	border:0px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.navbar .container {
+	padding-left:0px;
+	padding-right:0px;
+}
+.navbar-inverse {
+	background-image:none;
+}
+.navbar-inverse .navbar-nav > li > a {
+	color: #fff;
+}
+.navbar-collapse {
+	padding:0px;
+}
+.navbar-collapse ul li {
+	margin-right: 5px;
+	font-size: 14px;
+	padding: 34px 12px 13px 12px;
+}
+.navbar-collapse ul li a {
+	font-size: 17px;
+	font-weight: bold;
+	background-color: transparent;
+	color:#fff;
+	padding:0px;
+	margin:0px;
+}
+.navbar-form {
+	width:166px;
+	padding:0px;
+	font-size: 1em;
+	height: 1.143em;
+	width: 166px;
+	padding-bottom: 7px;
+	position: relative;
+	float: right;
+	margin-top: 31px;
+	margin-right: 5px;
+}
+.navbar li.dropdown ul li{
+	background-color: #48484a;
+	padding:7px;
+	border-radius: 0px;
+	opacity: .94;
+}
+.navbar li.dropdown ul li a{
+	color: #fff;
+	font-weight: normal;
+	font-size: 14px;
+}
+.navbar li.dropdown ul li a:hover{
+	color:#fff;
+	background-color:transparent;
+	background-image:none;
+}
+.navbar li.dropdown ul li a:active{
+	color:#fff;
+	background-color:#000;
+}.navbar ul.dropdown-menu {
+	padding:0px;
+	margin:0px;
+	border:0px;
+	box-shadow:none;
+	background-clip:content-box;
+	border-radius:0px;
+	top:65px;
+	background-color:transparent;
+}
+.artYou {
+	color: #EE3E43;
+	font-family: "ProximaNovaRegular";
+	font-size: 18px;
+	text-align: right;
+	margin-top: 4px;
+	letter-spacing: 3px;
+	float:right;
+}
+
+/* Front Page*/
+
+#featuredSlideshow {
+	clear:both;
+}

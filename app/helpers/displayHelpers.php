@@ -2630,6 +2630,9 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$va_start = $o_tep->getHistoricDateParts($pa_historic_timestamps[0]);
 		$va_end = $o_tep->getHistoricDateParts($pa_historic_timestamps[1]);
 		
+		if ($va_start['year'] < 0) { $va_start['year'] = 1900; }
+		if ($va_end['year'] >= 2000000) { $va_end['year'] = date("Y"); }
+		
 		return array(
 			'start' => $va_start['year'].','.$va_start['month'].','.$va_start['day'],
 			'end' => $va_end['year'].','.$va_end['month'].','.$va_end['day'],
@@ -3127,9 +3130,9 @@ $ca_relationship_lookup_parse_cache = array();
 		$va_links = $va_type_ids = array();
 		if ($t_instance = $o_dm->getInstanceByTableName($ps_table_name)) {
 			$va_type_ids = $t_instance->getFieldValuesForIDs($pa_row_ids, array('type_id'));
-			if (caUseIdentifiersInUrls()) {
-				$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
-			}
+			//if (caUseIdentifiersInUrls()) {
+			//	$pa_row_ids = array_values($t_instance->getFieldValuesForIDs($pa_row_ids, array($t_instance->getProperty('ID_NUMBERING_ID_FIELD'))));
+			//}
 		}
 		
 		global $g_request;

@@ -2975,9 +2975,9 @@
 					//
 					// Convert related item type_code specs in restrict_to_types and exclude_types lists to numeric type_ids we need for the query
 					//
-					$va_restrict_to_types = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item, 'dontExpandHierarchically' => true));
+					if(!is_array($va_restrict_to_types = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item, 'dontExpandHierarchically' => true)))) { $va_restrict_to_types = array(); }
 
-					$va_exclude_types = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item, 'dontExpandHierarchically' => true));
+					if(!is_array($va_exclude_types = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item, 'dontExpandHierarchically' => true)))) { $va_exclude_types = array(); }
 					
 					$va_restrict_to_types_expanded = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item));
 					$va_exclude_types_expanded = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item));
@@ -3213,14 +3213,18 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 							
 							if (!$va_facet_items[$va_fetched_row[$vs_rel_pk]]) {
-							
 								
-								if ($va_fetched_row[$vs_hier_parent_id_fld]) {
-									$va_facet_parents[$va_fetched_row[$vs_hier_parent_id_fld]] = true;
+								$va_ancestors = $t_rel_item->getHierarchyAncestors($va_fetched_row[$vs_rel_pk]);
+					
+								foreach($va_ancestors as $vn_index => $va_ancestor_info) {
+									if ((sizeof($va_exclude_types) > 0) && in_array($va_ancestor_info['NODE']['type_id'], $va_exclude_types)) { continue; }
+									if ((sizeof($va_restrict_to_types) > 0) && !in_array($va_ancestor_info['NODE']['type_id'], $va_restrict_to_types)) { continue; }
+									$va_facet_parents[$va_ancestor_info['NODE'][$vs_rel_pk]] = true;
 								}
-								if (is_array($va_restrict_to_types) && sizeof($va_restrict_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
+								if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
 									continue; 
 								}
+								
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]] = array(
 									'id' => $va_fetched_row[$vs_rel_pk],
 									'type_id' => array(),
@@ -3244,12 +3248,13 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						
 						// Expand facet to include ancestors
 						if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
+							
 							while(sizeof($va_ids = array_keys($va_facet_parents))) {
 								$vs_sql = "
 									SELECT p.".$t_rel_item->primaryKey().", p.{$vs_hier_parent_id_fld}".(($vs_hier_id_fld = $t_rel_item->getProperty('HIERARCHY_ID_FLD')) ? ", p.{$vs_hier_id_fld}" : "")."
 									FROM ".$t_rel_item->tableName()." p
 									WHERE
-										(p.".$t_rel_item->primaryKey()." IN (?)) AND (p.{$vs_hier_parent_id_fld} IS NOT NULL)
+										(p.".$t_rel_item->primaryKey()." IN (?))
 								";
 								$qr_res = $this->opo_db->query($vs_sql, array($va_ids));
 								
