@@ -58,15 +58,22 @@
  		public function __call($ps_function, $pa_args) {
  			
  			$ps_function = strtolower($ps_function);
+ 			# --- what is the section called - title of page
+ 			if(!$vs_section_name = $this->config->get('gallery_section_name')){
+ 				$vs_section_name = _t("Featured Galleries");
+ 			}
+ 			$this->view->setVar("section_name", $vs_section_name);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
  			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
- 				$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
- 				$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $this->opa_access_values));
-				$this->view->setVar('sets', $va_sets);
-				$this->view->setVar('first_items_from_sets', $va_set_first_items);
+ 				if($vn_gallery_set_type_id){
+					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
+					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $this->opa_access_values));
+					$this->view->setVar('sets', $va_sets);
+					$this->view->setVar('first_items_from_sets', $va_set_first_items);
+				}
 				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
@@ -111,6 +118,8 @@
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
  			$this->view->setVar("rep_width", $va_rep_info["WIDTH"]);
  			$this->view->setVar("rep_height", $va_rep_info["HEIGHT"]);
+ 			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
+ 			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
  			$pn_next_id = 0;
  			$va_set_item_ids = array_keys($va_set_items);

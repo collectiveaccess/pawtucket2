@@ -70,6 +70,7 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+ 			$this->view->setVar('name', $va_browse_info['name']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
  			
