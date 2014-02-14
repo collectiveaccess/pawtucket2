@@ -80,19 +80,17 @@
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_collections.CollectionNote.NoteContent%[NoteType=abstract]"><H3>About</H3>^ca_collections.CollectionNote.NoteContent%[NoteType=abstract]<br/></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.CollectionNote.NoteContent%[NoteType=scopecontent]"><H3>Scope</H3>^ca_collections.CollectionNote.NoteContent%[NoteType=scopecontent]<br/></ifdef>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person</h3></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><h3>Related people</h3></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifcount code="ca_objects" min="1" max="1"><h3>Related object</h3><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 					
-					<p><strong>There’s more!</strong> What you see on this site is only what is viewable online. 
-					Please visit our <a href='http://library.newschool.edu/speccoll'>website</a> to find out more about what’s in the archives.
-					</p>
-
+					<p><strong>There’s more!</strong> What you see here is only what is viewable online; in most cases it is only a small portion of what is available.
+					Please visit the collection guide to find out more.
+					</p>					{{{<ifdef code="ca_collections.findaid"><H3>Collection Guide</H3><a href="^ca_collections.findaid">Guide to the ^ca_collections.preferred_labels.name</a><br/></ifdef>}}}
+					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><h3>Related people</h3></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 					
 					<div id="detailTools">
 <?php if ($this->getVar('commentsEnabled')) { ?>
