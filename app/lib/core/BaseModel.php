@@ -1056,7 +1056,7 @@ class BaseModel extends BaseObject {
 	 * @param array $pa_ids List of primary keys to fetch field values for
 	 * @param array $pa_fields List of fields to return values for. 
 	 * @param array $pa_options options array; can be omitted:
-	 * 		There are no options yet.
+	 * 		noCache = don't use cached values. Default is false (ie. use cached values)
 	 * @return array An array with keys set to primary keys of fetched rows and values set to either (a) a field value when
 	 * only a single field is requested or (b) an array key'ed on field name when more than one field is requested
 	 *
@@ -1065,8 +1065,11 @@ class BaseModel extends BaseObject {
 	public function getFieldValuesForIDs($pa_ids, $pa_fields=null, $pa_options=null) {
 		if ((!is_array($pa_ids) && (int)$pa_ids > 0)) { $pa_ids = array($pa_ids); }
 		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+		
+		$vb_dont_use_cache = caGetOption('noCache', $pa_options, false);
+		
 		$vs_cache_key = md5(join(",", $pa_ids)."/".join(",", $pa_fields));
-		if (isset(BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num = $this->tableNum()][$vs_cache_key])) {
+		if (!$vb_dont_use_cache && isset(BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num = $this->tableNum()][$vs_cache_key])) {
 			return BaseModel::$s_field_value_arrays_for_IDs_cache[$vn_table_num][$vs_cache_key];
 		}
 		
