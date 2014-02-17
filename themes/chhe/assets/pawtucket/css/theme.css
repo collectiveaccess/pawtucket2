@@ -75,20 +75,42 @@ h3 {color:#454545;}
 .navbar-nav li a {padding:7px 10px 8px 10px;}
 .navbar-default .navbar-nav li > .dropdown > a .caret {
 color:#fff; border-bottom-color: #fff; border-top-color:#fff;}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {background-color:#222; color:#fff;}
+
 .navbar-default .navbar-nav li.active > .dropdown > a .caret {
 color:#e7b461; border-bottom-color: #e7b461; border-top-color:#e7b461;}
 
+.nav .caret {
+    border-bottom-color: #fff;
+    border-top-color: #fff;
+}
+.nav a:hover .caret {
+    border-bottom-color: #E7B461;
+    border-top-color: #E7B461;
+}
 
+.navbar-default .navbar-nav > .dropdown > a:hover .caret {
+    border-bottom-color: #E7B461;
+    border-top-color: #E7B461;
+}
 
-.navbar-default .navbar-nav> .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {background:transparent; color:#fff;}
+.navbar-default .navbar-nav > .dropdown > a:focus .caret {
+    border-bottom-color: #fff;
+    border-top-color: #fff;
+
+}
+
 .navbar-default .navbar-nav > .open > a .caret, .navbar-default .navbar-nav > .open > a:hover .caret, .navbar-default .navbar-nav > .open > a:focus .caret {
- border-bottom-color: #E7B461;
- border-top-color: #E7B461; color:#E7B461;
- }
+    border-bottom-color: #fff;
+    border-top-color: #fff;
+}
+.navbar-default .navbar-nav > .dropdown > a .caret {
+    border-bottom-color: #fff;
+    border-top-color: #fff;
+}
 
- 
-/*trying to change caret color below, not working */
-.navbar-default .navbar-nav > .dropdown > li.active a .caret {color:yellow; border-bottom-color: yellow; border-top-color: yellow;}
+
 .mynav {padding:0; float:right;}
 .rightspaced {padding-right:10px;}
 .dropdown-menu {border:0; background-image:url('../graphics/menu_bk.png'); background-color:none; font-size:12px;font-family:'colaborate-mediumregular', helvetica; line-height:14px; }
