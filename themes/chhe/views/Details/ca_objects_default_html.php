@@ -12,50 +12,31 @@
 <!--these ids are stretching the image-->
 
 <div class="objcontainer">
-
-<div id="detail" class="row objimages">
-
-<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+	<div id="detail" class="row objimages">
+		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 			<div class="detailNavBgLeft">
 				{{{previousLink}}}{{{resultsLink}}}
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->
-
-	<div id="cont" class="col-sm-5 col-md-5">
-		{{{representationViewer}}}
-	</div>
+		<div id="cont" class="col-sm-5 col-md-5">
+			{{{representationViewer}}}
+		</div>
+		<div class="col-md-5 col-sm-5 obj_detail_caption">
+			<h1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</h1>
+			<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
+			{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}			
+			<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
+			<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
+			<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
 	
-	<div class="col-md-5 col-sm-5 obj_detail_caption">
-	
-	<h1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</h1>
-					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
-					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}		
-		
-		
-	
-	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
-	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
-	<img src="http://placehold.it/100x100" alt="Image" class="img-thumbnail" style="max-width:100%;" />
-	
-	</div>
-<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right nextlink'>
+		</div>
+		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right nextlink'>
 			<div class="detailNavBgRight">
 				{{{nextLink}}}
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->	
-	
-	
-	
-	
-	
-
-
-
-
-
-
-</div><!--end container obimages-->
-</div><!--end container-->
+	</div><!--end container objimages-->
+</div><!--end objcontainer-->
 
 
 <!--this is the body body-->
