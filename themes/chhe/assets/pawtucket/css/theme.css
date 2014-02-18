@@ -181,7 +181,7 @@ background-image:url('../graphics/homeemb.png'); background-repeat:no-repeat; ba
 .mainbody h1{color:#9f6950;font-family: 'colaborate-regularregular'; font-weight:normal; font-size:24px;}
 .mainbody h4{font-weight:normal; font-family: 'colaborate-mediumregular', helvetica; text-transform:uppercase;}
 .mainbody p{font-family: 'colaborate-thinregular'; font-size:18px; padding-bottom:15px;}
-
+.bGear{color:#9f6950;}
   
 
 /* header styles */
@@ -349,23 +349,58 @@ color:#ccc;}
 
 .objimages {background-color:#404040; padding-top:20px; padding-bottom:20px; margin-bottom:20px;}
 .objimages .img-thumbnail {margin-right:5px;}
+.objimages #cont img{
+	-moz-box-shadow:    4px 4px 6px 0px #000;
+	-webkit-box-shadow: 4px 4px 6px 0px #000;
+	box-shadow:         4px 4px 6px 0px #000;
+	border:5px solid #FFF;
+}
+#detailMediaToolbar{
+	display:none;
+}
 .lightbordered {background-color:#fff; border:4px solid #e8e8e8; padding:10px; height:350px; overflow:auto;}
 .mainbody .lightbordered p{font-size:15px;}
-.graybordered {background-color:#f5f5f5; border:4px solid #e8e8e8; padding:10px; height:350px;}
-.graybordered img {padding:0px 2px 6px 3px;}
-.obj_detail_caption {color:#fff; border-top:1px solid #fff; border-bottom:1px solid #fff; display:block; min-height:100px; padding-top:10px; padding-bottom:10px;margin-bottom:20px;}
-.commentsarea {background-color:#e8e8e8; border:4px solid #d6d6d6; margin-top:30px; padding-top:10px; padding-bottom:10px; margin-bottom:35px;}
-.mainbody .commentsarea p{font-size:15px;}
+.graybordered {background-color:#f5f5f5; border:4px solid #e8e8e8; padding:10px; height:350px; overflow:auto;}
+.graybordered img {margin:0px 2px 6px 3px;}
+.lightbordered a, .graybordered a{
+	color:#454545;
+	text-decoration:underline;
+}
+.relatedObjectIcons img{
+	width:80px;
+	height:80px;
+}
+.obj_detail_caption {
+	color:#fff;
+	border-top:1px solid #fff;
+	border-bottom:1px solid #fff;
+	display:block;
+	min-height:100px;
+	padding-top:10px;
+	padding-bottom:10px;
+	margin-bottom:20px;
+	margin-left:15px;
+}
+.obj_detail_caption a {
+	color:#fff;
+}
+.commentsarea {
+	background-color:#e8e8e8;
+	border:4px solid #d6d6d6;
+	margin-top:30px;
+	padding-top:10px;
+	padding-bottom:10px;
+	margin-bottom:35px;
+}
+.mainbody .commentsarea p{
+	font-size:15px;
+}
 #detail H1 {
     color: #fff;
 }
-#detail a {
-    color: #fff;
-   } 
    
-   
- #detail .detailNavBgLeft{
-     background-color: transparent; 
+#detail .detailNavBgLeft{
+	background-color: transparent; 
     color: #FFFFFF;
     height: 110px;
     margin-top: -20px;
@@ -374,12 +409,11 @@ color:#ccc;}
     text-align: left;
     text-transform: uppercase;
 }  
-   
- #detail .detailNavBgRight {
- background-color: transparent; 
-  color: #FFFFFF;
-    height: 110px;
-    margin-top: -20px;
+#detail .detailNavBgRight {
+	background-color: transparent; 
+	color: #FFFFFF;
+	height: 110px;
+	margin-top: -20px;
     padding-bottom: 20px;
     padding-top: 20px;
     text-align: right;
@@ -392,9 +426,9 @@ color:#ccc;}
 	margin-bottom:5px;
 }
 .objcontainer {
-    padding-right: 0;}
-    
- .nextlink {padding-right:0; margin-right:-15px;}   
+    padding-right: 0;
+}
+.nextlink {padding-right:0; margin-right:-15px;}   
 
 /*footer styles */
 
@@ -527,4 +561,33 @@ background: #333333;
 
 #browseResults {
     padding: 20px 30px 0 25px;
+}
+#browseResults ul.dropdown-menu li a{
+	color:#FFF;
+}
+#browseResults ul.dropdown-menu li a:hover{
+	color:#e7b461;background:none;
+}
+#bMorePanel #bLetterBar a{
+	color:#454545;
+}
+#bRefine H1, #bRefine H2{
+	color:#454545;
+}
+
+/* multisearch */
+.multisearch{
+	padding-top:38px;
+}
+.multisearch a{
+	color:#454545;
+}
+.multisearch H2 {color:#454545;}
+#multiSearch H2 {color:#454545;}
+#multiSearch .placesResult, #multiSearch .occurrencesResult, #multiSearch .entitiesResult, .multisearch .placesResult, .multisearch .occurrencesResult, .multisearch .entitiesResult {
+	background-color:#ffffff;
+}
+#multiSearch .placesResult:hover, #multiSearch .occurrencesResult:hover, #multiSearch .entitiesResult:hover,
+.multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover{
+	background-color:#e8e8e8;
 }
