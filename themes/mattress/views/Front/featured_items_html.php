@@ -35,44 +35,45 @@
 <div id="featuredSlideshow">
 
 	<div class='blockTitle'>Featured Items</div>
-	<div class='blockFeatured'>
-		<div class='scrollingDiv'>
+	<div class='blockFeatured scrollBlock' >
+		<div class='scrollingDiv' > 
 <?php
 		$t_set = new ca_sets();
-		$t_set->load(array('set_code' => $this->request->config->get('featured_set')));
-		$va_set_items = $t_set->getItems();
+		$va_featured_set = $t_set->load(array('set_code' => $this->request->config->get('featured_set')));
 		
-		$va_set_object_ids = array();
-		foreach ($va_set_items as $va_set_key => $va_set_item) {
-			foreach ($va_set_item as $va_set_item_key => $va_set_item_info) {
-				$va_set_object_ids[] = $va_set_item_info['row_id'];
+		if ($va_featured_set) {
+			$va_set_items = $t_set->getItems();
+		
+			$va_set_object_ids = array();
+			foreach ($va_set_items as $va_set_key => $va_set_item) {
+				foreach ($va_set_item as $va_set_item_key => $va_set_item_info) {
+					$va_set_object_ids[] = $va_set_item_info['row_id'];
+				}
+			}
+			$qr_res = caMakeSearchResult('ca_objects', $va_set_object_ids);
+			while ($qr_res->nextHit()) {
+				$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
+
+				print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
+			
+				print "<div class='featuredObjectImg'>";
+				print $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>');
+				print "</div>";
+			
+				print "<div class='artwork'>";
+				print $qr_res->getWithTemplate('<l>^ca_objects.preferred_labels</l>');
+				if ($qr_res->get('ca_objects.date.dates_value')) {
+					print ", ".$qr_res->get('ca_objects.date.dates_value');
+				}
+				print "</div>";
+			
+				print "<div class='artist'>";
+				print $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'));
+				print "</div>";
+			
+				print "</div>";
 			}
 		}
-		
-		$qr_res = caMakeSearchResult('ca_objects', $va_set_object_ids);
-		while ($qr_res->nextHit()) {
-			$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
-
-			print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
-			
-			print "<div class='featuredObjectImg'>";
-			print $qr_res->get('ca_object_representations.media.mediumlarge');
-			print "</div>";
-			
-			print "<div class='artwork'>";
-			print $qr_res->get('ca_objects.preferred_labels');
-			if ($qr_res->get('ca_objects.date.dates_value')) {
-				print ", ".$qr_res->get('ca_objects.date.dates_value');
-			}
-			print "</div>";
-			
-			print "<div class='artist'>";
-			print $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'));
-			print "</div>";
-			
-			print "</div>";
-		}
-
 ?>
 		</div><!-- scrollingdiv -->
 	</div><!-- block Featured -->

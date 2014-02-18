@@ -64,7 +64,7 @@
 		<div id='infoArea'>
 <?php
 		if (($vs_collection = $t_item->get('ca_collections.description', array('convertCodesToDisplayText' => true))) != " ") {
-			print "<div class='description'><div class='title'>"._t('Description')."</div>".$vs_collection."</div>";
+			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
 		}
 ?>	
 			<div class='floorplan'>
@@ -94,31 +94,38 @@
 					
 					print "<div class='occurrencesResult'>";
 					$vn_ii = 0;
-					foreach ($va_artworks as $key => $vn_artwork_id) {
-						$t_collection = new ca_collections($vn_artwork_id);
-						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+					if (sizeof($va_artworks) >= 4) {
+						foreach ($va_artworks as $key => $vn_artwork_id) {
+							$t_collection = new ca_collections($vn_artwork_id);
+							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
 						
-						if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
-
-						if ($va_primary_rep = array_shift(array_values($va_object_reps))){
-							print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['idno'])."</div>";
-							$vn_i++;
-							$vn_ii++;
-						}
-						if($vn_i == 4) {break;}
-
-					}
-					if ($vn_i < 4) {
-						while ($vn_i < 4) {
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
-							print "<div class='exImage' {$vs_style}></div>";
-							$vn_i++;
-							$vn_ii++;
+							if ($va_primary_rep = array_shift(array_values($va_object_reps))){
+								print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
+								$vn_i++;
+								$vn_ii++;
+							}
+							if($vn_i == 4) {break;}
+
 						}
+						if ($vn_i < 4) {
+							while ($vn_i < 4) {
+								if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
+
+								print "<div class='exImage' {$vs_style}></div>";
+								$vn_i++;
+								$vn_ii++;
+							}
+						}
+					} else {
+							$t_collection = new ca_collections($va_artworks[0]);
+							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 					}
-					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['idno'])."</div>";
+					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
@@ -136,7 +143,7 @@
 				print "<div>";
 					$vn_i = 0;
 					foreach ($va_events as $event_id => $va_event) {
-						$vn_event_id = $va_event['idno'];
+						$vn_event_id = $va_event['occurrence_id'];
 						if ($vn_i == 0) {print "<div class='eventSet'>";}
 						print "<div class='eventsResult'>";
 						print "<div>".caNavLink($this->request, $va_event['label'], '', '', 'Detail', 'Occurrences/'.$vn_event_id)."</div>";
@@ -165,7 +172,7 @@
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitiesSet'>";}
-					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['idno']);
+					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['entity_id']);
 					$vn_i++;
 					if ($vn_i == 5) {
 						print "</div>";

@@ -73,7 +73,7 @@ if (!$vb_ajax) {	// !ajax
 			<div id="browseHeader">
 			<div id="bViewButtons">
 <?php		
-			if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+			if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts) > 1) {
 ?>						
 				<div class="btn-group">
 					<span class='sortBy'>sort by:</span>
