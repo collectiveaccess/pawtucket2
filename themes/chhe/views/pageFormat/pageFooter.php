@@ -2,46 +2,34 @@
 	
 
 		
-<div style="clear:both;"></div>
+			<div style="clear:both;"></div>
 
-
-
-	
-	</div> <!--end container-->	
-	
-</div>	
-
-
-<!--end body body -->
-
-</div> <!--end shadow container-->
+		</div><!-- end pageArea -->
+	</div> <!--end shadow container-->
 			<!--<ul class="list-inline pull-right social">
 				<li><i class="fa fa-twitter"></i></li>
 				<li><i class="fa fa-facebook-square"></i></li>
 				<li><i class="fa fa-youtube-play"></i></li>
 			</ul>-->
 			<!--<div class="row">-->
-<div class="container footercontainer"><div class="col-sm-4">
+	<div class="container footercontainer">
+		<div class="col-sm-4">
 			<a href="#" style="float:left;"><?php print caGetThemeGraphic($this->request, 'chhefooter.png') ?></a>
 			<a href="#" style="float:left;"><?php print caGetThemeGraphic($this->request, 'cjffooter.png') ?></a>
-			
-
-
-				
-</div>
-		
+		</div>
+	
 		<div class="col-sm-8 text-right">
 			Cincinnati Judaica Fund| 8401 Montgomery Road | Cincinnati, OH 45236 | 513-241-5748<br />
-Center for Holocaust and Humanity Education | 8401 Montgomery Road | Cincinnati, OH 45236 | 513-487-3055
+			Center for Holocaust and Humanity Education | 8401 Montgomery Road | Cincinnati, OH 45236 | 513-487-3055
 		</div>
-</div><!--end footer container-->	
+	</div><!--end footer container-->	
 	<div class="container"><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
 
-		<div id="caMediaPanel"> 
-			<div id="caMediaPanelContentArea">
-			
-			</div>
+	<div id="caMediaPanel"> 
+		<div id="caMediaPanelContentArea">
+		
 		</div>
+	</div>
 		<script type="text/javascript">
 			/*
 				Set up the "caMediaPanel" panel that will be triggered by links in object detail

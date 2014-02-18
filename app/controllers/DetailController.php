@@ -63,15 +63,22 @@
  			AssetLoadManager::register("carousel");
  			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = $this->request->getActionExtra(); //$this->request->getParameter('id', pString);
+ 			$ps_id = $this->request->getActionExtra(); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
  			}
  			
  			$t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
- 			if (!$t_table->load(caUseIdentifiersInUrls() ? array('idno' => $ps_id) : (int)$ps_id)) {
+ 			if (($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) && (substr($ps_id, 0, 3) == "id:")) {
+ 				$va_tmp = explode(":", $ps_id);
+ 				$ps_id = (int)$va_tmp[1];
+ 				$vb_use_identifiers_in_urls = false;
+ 			}
+ 			
+ 			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
  				// invalid id - throw error
+ 				die("Invalid id");
  			}
  			
  			$vs_type = $t_table->getTypeCode();
@@ -90,14 +97,14 @@
  			$o_context = new ResultContext($this->request, $vs_table, $vs_last_find);
  			$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_table->getPrimaryKey()));
  			$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_table->getPrimaryKey()));
- 			$this->view->setVar('previousURL', caNavUrl($this->request, '*', '*', '*').'/'.$vn_previous_id);
- 			$this->view->setVar('nextURL', caNavUrl($this->request, '*', '*', '*').'/'.$vn_next_id);
+ 			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
+ 			$this->view->setVar('nextURL', caDetailUrl($this->request, $vs_table, $vn_next_id));
  			$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $vs_table));
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
  			
- 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caNavLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', '*', '*', '*', array($vn_previous_id)) : "");
- 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caNavLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', '*', '*', '*', array($vn_next_id)) : "");
+ 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
+ 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back'))));
  			
  			$this->view->setVar('commentsEnabled', (bool)$va_options['enableComments']);
