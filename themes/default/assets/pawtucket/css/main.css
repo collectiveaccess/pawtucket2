@@ -19,6 +19,13 @@ a {
 #pageArea{
 	max-width:1024px;
 }
+
+.container {
+	max-width:1024px;
+}
+
+
+
 H1{
 	font-size: 20px;
 	color:#19bed1;
@@ -52,6 +59,11 @@ a, a:active, a:focus {
 	text-transform:uppercase;
 }
 
+.caps {text-transform:uppercase;}
+
+.smaller {font-size:.7em;}
+
+
 /* ----------------------------------------- */
 /* navbar - styles override bootstrap styles */
 /* ----------------------------------------- */
@@ -64,11 +76,21 @@ a, a:active, a:focus {
           box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 1px 10px rgba(0, 0, 0, 0.2);
 }
 .navbar-collapse{
- max-width:1024px;
+ 	max-width:1024px;
+ 	padding-right:0;
+	padding-left:0;
 }
+
+
+
+.dropdown-menu{
+	font-size:12px;
+	padding:5px 0 5px 0;
+	}
+
 .navbar .navbar-nav > .active > a {
-  background-color: #19bed1;
-  color:#FFFFFF;
+  	background-color: #19bed1;
+  	color:#FFFFFF;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: DIN17SBOP-Regular;
@@ -176,13 +198,12 @@ a, a:active, a:focus {
 }
 
 .nav-pills > li > a {
-	color:#fff;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 12px;
-    font-weight: bold;
+    font-size: 11px;
     text-decoration: none !important;
-    background-color:#ccc;
+    /*background-color:#ccc;*/
+    color:#ccc;
     border-radius:0;
+    text-transform:uppercase;
 }
 
 .nav-pills > li > a:hover {
@@ -203,40 +224,92 @@ a, a:active, a:focus {
 	background-color:#c9c9c9;
     color:#454545;
 }
+
+
 /* ----------------------------------------- */
 /* navbar - browse menu */
 /* ----------------------------------------- */
-.browseMenuContent {
-	width: 100%;
-	overflow: auto;
-}
+
+
 .browseMenuFacet {
-	width: 900px;
-	min-height: 250px;
-	max-height: 400px;
-	overflow: auto;
-	margin-bottom:20px;
+	clear: both;
+    margin-bottom: 20px;
+    padding-bottom: 40px;
 }
+
+.filterMenuFacetList {
+	font-size:11px;
+	padding-bottom:10px;
+	float:left;
+	padding-top:10px;
+}
+
+.filterMenuFacetList ul{
+	list-style-type:none;
+	margin:2px 0 0 0;
+	padding:0;
+	clear:both;
+}
+
+.filterMenuFacetList li{
+	list-style-type:none;
+	margin:0 0 2px 0;
+	padding:0 2px 0 2px;
+	border-radius:2px;
+}
+
+.filterMenuFacetList li.active{
+	background-color:#bff2f8;
+}
+
+.filterMenuFacetList li.active a{
+	color:#000;
+}	
+
+.filterMenuFacetList li a{
+    color: #666;
+    cursor: pointer;
+    font-size: 11px;
+    line-height: 20px;
+    position: relative;
+    text-decoration: none;
+}	
+
+.filterMenuFacetList li a:hover{
+	text-decoration:underline;
+	}
+
+.filterbylabel {
+	font-weight:bold;
+}
+
 ul.browseMenuFacetList {
-	border-bottom:1px solid #FFF;
+	list-style-type:none;
+	margin:0;
+	padding:0 0 5px 0;
 }
+
 ul.browseMenuFacetList > li > a {
 	padding-top:10px;
 	padding-bottom:10px;
+	list-style-type:none;
+	margin:0;
+	padding:0 0 5px 0;
 }
+
 ul.browseMenuFacetList li a, ul.browseMenuFacetList{
-	background-color: #c9c9c9;
+	float:left;
 }
-ul.browseMenuFacetList {
-	background-color:#c9c9c9;
-}
+
+
 ul.browseMenuFacetList > li div{
-	padding:10px;
 	font-size:12px;
 	background-color:#c9c9c9;
 	color:#FFF;
 	font-weight:bold;
 }
+
+
 div.browseMenuBrowseAll {
 	position: absolute;
 	bottom: 3px;
@@ -246,29 +319,115 @@ div.browseMenuBrowseSearch {
 	position: absolute;
 	bottom: 3px;
 	left: 3px;
-	background-color: #c9c9c9;
 	padding: 5px;
 }
+
 div.browseMenuBrowseSearch input {
-	font-size: 10px;
-	height: 14px;
-	color:#000;
-	opacity: 1;
+	font-size: 11px;
 }
 
-div.browseFacetItem {
-	float: left;
-	width: 200px;
-	padding: 10px;
+
+.browseMenuBrowseSearch .form-control{
+background-color: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555555;
+    display: block;
+    font-size: 11px;
+    height: 24px;
+    line-height: 1.42857;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    vertical-align: middle;
+    width: 100%;
 }
-div.browseFacetItem:hover {
+    
+    
+div.browseFacetItem a{
+   background-color:#f5f5f5;
+   border-left:4px solid #fff;
+    border-top:2px solid #fff;
+    border-bottom:2px solid #fff;
+    float: left;
+    height: 60px;
+    padding-top:3px;
+    font-size:12px;
+
+
+}
+
+.browseHeadernav{
+	font-size:11px;
+	}
+	
+.mainfacet	ul{
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+.filterMenureults {
+	float:left; 
+	padding-top:2px;
+	margin-right:-15px; 
+	margin-left:12px;
+	max-height:250px;
+	overflow:auto;
+}
+
+.mainfacet {
+	color:#333;
+	height:30px;
+	line-height:28px;
 	background-color:#e7e7e7;
+	margin-top:-5px;
+	padding-top:2px;
+	margin-right:4px;
+}
+	
+.mainfacet	li{
+	list-style-type:none;
+	margin:0 15px 0 15px;
+	padding:0 5px 0 5px;
+	float:left;
+}	
+
+
+
+.mainfacet	li.active a{
+	color:#333;
+	font-weight:bold;
+}	
+
+.mainfacet	li a:hover{
+	color:#000;
+	text-decoration:none;
+	border-bottom:1px solid #000;
+}	
+
+
+.btn-default {
+	background:transparent; 
+	color:#ccc;}
+	
+.btn-default a{
+	color:#666;
+	font-size:11px}	
+
+.browseHeadernav a{color:#666;}
+
+div.browseFacetItem li{
+	margin:0;
+	padding:0;
 }
 
-div.browseFacetItem a {
-	font-size: 12px;
-	color:#454545;
+div.browseFacetItem a:hover {
+	background-color:#e7e7e7;
+	text-decoration:none;
+	color:#666;
 }
+
 
 a.browseRemoveFacet img {
 	margin-bottom: 3px;	
@@ -278,11 +437,12 @@ a.browseRemoveFacet img {
 .nav .dropdown .dropdown-menu {
     overflow: auto;
 }
-.dropdown-browse-menu {
-	padding: 0px;
-	/* min-height: 300px; */
-}
-
+.browsedivider {
+	clear:both; 
+	margin-top:20px; 
+	padding-bottom:20px; 
+	border-top:1px solid #ccc;
+}	
 
 
 /*!
@@ -291,6 +451,20 @@ a.browseRemoveFacet img {
  * 
  * http://geedmo.github.com/yamm3
  */
+ 
+ .grid-demo [class*="col-"] {
+    background-color: #E5E1EA;
+    border: 1px solid #D1D1D1;
+    font-size: 1em;
+    line-height: 2;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.grid-demo{ padding: 10px 30px;}
+
+
 .yamm .nav,
 .yamm .collapse,
 .yamm .dropup,
@@ -314,6 +488,7 @@ a.browseRemoveFacet img {
   left: 0;
   right: 0;
 }
+
 /* --------------------------------- */
 /* forms */
 /* --------------------------------- */
@@ -2051,4 +2226,3 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	width: 100%; 
 	height: 100%;
 }
-

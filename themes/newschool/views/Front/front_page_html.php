@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+ * themes/default/Front/front_page_html : Front   page of site 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -128,7 +128,7 @@
 
 <div class="container">
 	<div class="col-sm-8">
-<H1>The New School Digital Archives presents materials drawn from the collections of <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>. The New School Archives & Special Collections holds primary source materials related to the history of all divisions of The New School.</H1> 	
+<H1>The New School Digital Archives presents materials drawn from the collections of <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, which holds primary source materials related to the history of all divisions of The New School.</H1> 	
 	</div><!--end col-sm-8-->
 	
 	<div class="col-sm-4">

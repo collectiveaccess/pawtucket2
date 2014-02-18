@@ -30,7 +30,7 @@
 	if(sizeof($va_browse_types)){
 ?>
  <li class="dropdown yamm-fw"> <!-- add class yamm-fw for full width-->
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+	<a href="#" class="dropdown-toggle mainhead" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
 	<ul class="dropdown-menu" id="browse-menu">
 		<li class="browseNavFacet">			
 			<div class="browseMenuContent container">

@@ -37,7 +37,7 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+ 			$this->config = caGetFrontConfig();
  			caSetPageCSSClasses(array("front"));
  		}
  		# -------------------------------------------------------
@@ -50,7 +50,7 @@
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
- 			if($vs_set_code = $this->request->config->get("front_page_set_code")){
+ 			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
 				# Enforce access control on set
