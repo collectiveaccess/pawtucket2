@@ -261,7 +261,6 @@ hr {
 }
 .featuredObject {
 	float:left;
-	display: inline;
 	font-size: 12px;
 	font-family: "ProximaNovaRegular";
 	margin-right:20px;
@@ -281,7 +280,7 @@ hr {
 	text-transform: uppercase;
 }
 .scrollingDiv {
-	width:100000px;
+	width:10000px;
 }
 .aboutText {
 	float:left;
@@ -512,6 +511,7 @@ h2 span.artist {
 
 #relatedInfo #occurrencesBlock .occurrencesResult {
 	width:320px;
+	float:left;
 }
 #detail .collectionSet {
 	float: left;
@@ -543,6 +543,7 @@ h2 span.artist {
 
 #multiSearch {
 	padding:0px;
+	min-height:400px;
 }
 
 #multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious {
@@ -661,11 +662,18 @@ h2 span.artist {
 	background-color:transparent;
 	padding:0px 0px 0px 10px;
 	height:auto;
+	font-family: "ProximaNovaBold";
 }
 #detail .entitiesResult {
 	padding-left:0px;
 }
-#multiSearch .collectionsResult, #multiSearch .objectsResult, #multiSearch .occurrencesResult {
+#multiSearch .entitiesSet a {
+	color: #000;
+	font-family: "ProximaNovaBold";
+	font-size:14px;
+}
+#multiSearch .collectionsResult, #multiSearch .objectsResult, #multiSearch .occurrencesResult,
+#detail .objectsResult {
 	float:left;
 	overflow:hidden;
 	font-family: "ProximaNovaBold";
@@ -682,7 +690,7 @@ h2 span.artist {
 #multiSearch .occurrencesResult {
 	margin:10px;
 }
-#multiSearch .objImage {
+#multiSearch .objImage, #detail .objImage {
 	width: 160px;
 	height: 105px;
 	overflow: hidden;
@@ -706,10 +714,13 @@ h2 span.artist {
 }
 .exImageSingle {
 	background-color:#eee;
-	width:220px;
-	height:120px;
+	width:310px;
+	height:220px;
 	margin-bottom:10px;
-	float:left;
+}
+.exImageSingle img{
+	height:100%;
+	width:100%;
 }
 #detail .exTitle a{
 	margin-bottom:5px;
@@ -723,7 +734,7 @@ h2 span.artist {
 	font-size:14px;
 }
 #multiSearch .collectionsResult a, #multiSearch a .entitiesResult, #multiSearch .objectsResult a, #multiSearch a .eventsResult,
-#detail a .entitiesResult, #detail .eventsResult a{
+#detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
 	color:#000;
 	font-family: "ProximaNovaBold";
 	line-height: 16px;
@@ -815,7 +826,7 @@ h2 span.artist {
 }
 .bResultItemCol {
 	float:left;
-	height:230px;
+	height:255px;
 }
 .bResultItem {
 	-webkit-box-shadow: none;
@@ -850,6 +861,7 @@ span.criteria {
 	padding:5px;
 	color:#fff;
 	text-transform:uppercase;
+	margin-left:10px;
 }
 .browseRemoveFacet {
 	margin-left: 5px;
@@ -858,7 +870,7 @@ span.criteria {
 	padding: 0px 3px 0px 3px;
 	text-transform: lowercase;
 	border-radius: 2px;
-	margin-right: 20px;
+	margin-right: 10px;
 }
 .browseRemoveFacet:hover {
 	text-decoration:none;
@@ -870,6 +882,7 @@ span.criteria {
 	color:#fff;
 	padding:5px;
 	text-transform:lowercase;
+	margin-left:10px;
 }
 #browseResults .startOver a{
 	color:#fff;
@@ -920,6 +933,10 @@ span.criteria {
 	text-transform:lowercase;
 	line-height:1.1em;
 }
+.btn-group .dropdown-menu li a:hover {
+	background:transparent;
+	color:#000;
+}
 /* List View */
 
 
@@ -944,11 +961,90 @@ span.criteria {
 	float: left;
 	margin-top:20px;
 }
-.bResultListItemText a {
+.bResultListItem .bResultListItemText {
+	padding-right: 20px;
+}
+.bResultListItem .bResultListItemText a {
 	font-family: "ProximaNovaRegular";
 	line-height:14px;
 	color:#000;
 	font-size:16px;
 }
+.bResultItemText .date {
+	color: #EE3E43;
+}
+
+/* Lesson Plans*/
+
+#contentArea.rightCol {
+	width: 585px;
+	float: left;
+}
+.lessonInfo {
+	width:100%;
+	background-color:#f7f7f7;
+	margin-bottom:10px;
+	clear:both;
+}
+.lessonImage {
+	float:left;
+	margin-right:10px;
+	clear:left;
+}
+.lessonText {
+	float:right;
+	width:50%;
+	padding:10px 0px 10px 0px;
+}
+.lessonText h3{
+	font-family: "ProximaNovaRegular";
+	font-size: 20px;
+	padding-bottom:5px;
+}
+.lessonText .artist{
+	text-transform:uppercase;
+	font-family: "ProximaNovaBold";
+}
+.tagtitle {
+	text-transform:uppercase;
+	font-family: "ProximaNovaBold";
+	color:#000;
+}
+.tags {
+	color: #EE3E43;
+	margin-top: 20px;
+}
+#listingTags {
+	float:right;
+	width:185px;
+	margin-left:15px;
+}
+.listTitle {
+	background-color:#000;
+	color:#fff;
+	padding:5px;
+	margin-bottom:10px;
+}
+#listingTags p {
+	text-transform:uppercase;
+	padding-left:5px;
+}
+.tagBlock, .themeBlock, .artistBlock {
+	margin-bottom:25px;
+}
+/* Scrollbars */
+
+.jspDrag {
+	background-color:#000;
+	height: 24px !important;
+	margin-top: -3px;
+}
+.jspTrack {
+	background-color:#eee;
+	border-top:3px solid #fff;
+	border-bottom:3px solid #fff;
+}
+
+
 
 
