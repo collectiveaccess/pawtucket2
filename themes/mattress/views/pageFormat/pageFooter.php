@@ -29,6 +29,11 @@
 			
 			</div>
 		</div>
+		<script>
+			jQuery(document).ready(function(){
+				jQuery('.scrollBlock').jScrollPane({autoReinitialise: false});
+			});
+		</script>
 		<script type="text/javascript">
 			/*
 				Set up the "caMediaPanel" panel that will be triggered by links in object detail

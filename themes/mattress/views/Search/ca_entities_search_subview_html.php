@@ -44,7 +44,7 @@
 			<div class='blockTitle'><?php print $va_block_info['displayName']; ?></div>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' style="position:relative;">
+				<div id='{{{block}}}Results' style="position:relative;" class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
 		}
