@@ -47,8 +47,8 @@
 						foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
 							if ($vn_i == 0){print "<div class='imageSet'>";}
 							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
-							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['idno']);
-							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['idno']);
+							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
 							print "</div>";
 							$vn_i++;
 							if ($vn_i == 2) {
@@ -79,8 +79,10 @@
 	$va_occurrences = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('mf_exhibition')));
 	$va_events = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event')));
 	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true));
+	$va_objects = $t_item->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image')));
+	
 
-	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0)) {
+	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_objects) > 0)) {
 ?>		
 	<div id='relatedInfo'>
 
@@ -102,13 +104,13 @@
 						print "<div class='occurrencesResult'>";
 						$vn_i = 0;
 						$vn_ii = 0;
-						foreach ($va_artworks as $key => $vn_artwork_id) {
-							$t_collection = new ca_collections($vn_artwork_id);
-							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
 						
-
-							if (sizeof($va_object_reps) > 1){
+						if (sizeof($va_artworks) >= 4) {
+							foreach ($va_artworks as $key => $vn_artwork_id) {
+								$t_collection = new ca_collections($vn_artwork_id);
+								$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+								$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+						
 								foreach ($va_object_reps as $img_key => $va_object_rep) {
 									if($vn_i < 4) {
 										if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
@@ -117,13 +119,14 @@
 										$vn_ii++;
 									}
 								}
-							} else {
-								foreach ($va_object_reps as $img_key => $va_object_rep) {
-									print "<div class='exImageSingle'>".$va_object_rep."</div>";
-								}
 							}
+						} else {
+							$t_collection = new ca_collections($va_artworks[0]);
+							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							print "<div class='exImageSingle'>".array_shift(array_values($va_object_reps))."</div>";
 						}
-						print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['idno'])."</div>";
+						print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 						print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 						print "</div><!-- end occurrenceResult -->";
 					}
@@ -165,7 +168,7 @@
 								}
 							}
 						}
-						print "<div class='exTitle'>".caNavLink($this->request, $va_event['name'], '', '', 'Detail', 'Occurrences/'.$va_event['idno'])."</div>";
+						print "<div class='exTitle'>".caNavLink($this->request, $va_event['name'], '', '', 'Detail', 'Occurrences/'.$va_event['occurrence_id'])."</div>";
 						print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 						print "</div><!-- end occurrenceResult -->";
 					}
@@ -177,14 +180,14 @@
 		# Related Entities Block
 		if (sizeof($va_entities) > 0) {
 			print "<div id='entitiesBlock'>";
-			print "<div class='blockTitle related'>"._t('Related Entities')."</div>";
+			print "<div class='blockTitle related'>"._t('Related People')."</div>";
 				print "<div class='blockResults'>";
 					print "<div>";
 					$vn_i = 0;
 					foreach ($va_entities as $entity_id => $va_entity) {
 						$vn_entity_id = $va_entity['entity_id'];
 						if ($vn_i == 0) {print "<div class='entitiesSet'>";}
-						print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['idno']);
+						print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['entity_id']);
 						$vn_i++;
 						if ($vn_i == 4) {
 							print "</div>";
@@ -196,7 +199,29 @@
 				print "</div><!-- end blockResults -->";	
 			print "</div><!-- end entitiesBlock -->";
 		}
-	
+		
+		# Related Objects Block
+		if (sizeof($va_objects) > 0) {
+			foreach ($va_objects as $va_object_id => $va_object) {
+				$vn_object_ids[] = $va_object['object_id'];
+			}
+			$qr_res = caMakeSearchResult('ca_objects', $vn_object_ids);
+			
+			print "<div id='occurrencesBlock'>";
+			print "<div class='blockTitle related'>"._t('Related Objects')."</div>";
+				print "<div class='blockResults'>";
+					print "<div style='width:1000000px'>";
+					while ($qr_res->nextHit()) {
+						print "<div class='objectsResult'>";
+						print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+						print $qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
+						print "</div>";
+					}
+					print "</div>";
+				print "</div><!-- blockResults-->";
+			print "</div><!-- blockTitle-->";
+			print "</div><!-- occurrencesBlock-->";
+		}
 ?>		
 	</div><!-- end relatedInfo-->
 <?php
