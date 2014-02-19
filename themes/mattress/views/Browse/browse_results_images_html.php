@@ -92,10 +92,16 @@
 						$va_cell_width = "style='width:180px;'";
 					}				
 				} else {
-					$va_rep = $qr_res->getMediaTag('ca_object_representations.media', 'small');
+					$va_rep = $qr_res->get('ca_object_representations.media.small');
+					if ($qr_res->get('ca_object_representations.media.small')) {
+						$va_cell_width = "style='width:".$qr_res->get('ca_object_representations.media.small.width')."px;'";
+					} else {
+						$va_cell_width = "style='width:180px;'";
+					}	
 				}
-				
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+				$va_label_text = $qr_res->get("{$vs_table}.preferred_labels.name");
+				$va_label_text_str = strlen($va_label_text) > 75 ? substr($va_label_text,0,70)."..." : $va_label_text;
+				$vs_label_detail_link 	= caDetailLink($this->request, $va_label_text_str, '', $vs_table, $vn_id);
 				
 				$vs_rep_detail_link 	= caDetailLink($this->request, $va_rep, '', $vs_table, $vn_id);				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
@@ -105,7 +111,7 @@
 				print "
 	<div class='bResultItemCol '>
 		<div class='bResultItem' {$va_cell_width}>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg' {$va_cell_width}>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>";
 				if ($vs_table == "ca_entities") {
 					$va_artwork_info = array();
@@ -119,6 +125,11 @@
 					}
 					print "<div class='artworkInfo'>".join(', ', $va_artwork_info)."</div>";	
 					print "<div class='artistName'>".$vs_label_detail_link."</div>";	
+				} else if ($vs_table == "ca_occurrences") {
+					print $vs_label_detail_link;
+					if ($qr_res->get('ca_occurrences.event_dates')) {
+						print "<div class='date'>".$qr_res->get('ca_occurrences.event_dates')."</div>";
+					}
 				} else {
 					print $vs_label_detail_link;
 				}
