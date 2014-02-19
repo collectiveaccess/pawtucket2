@@ -9008,8 +9008,9 @@ $pa_options["display_form_field_tips"] = true;
 	 *				media2_original_filename = original file name to set for comment "media2"
 	 *				media3_original_filename = original file name to set for comment "media3"
 	 *				media4_original_filename = original file name to set for comment "media4"
+	 *  @param $ps_location [string] = location of user
 	 */
-	public function addComment($ps_comment, $pn_rating=null, $pn_user_id=null, $pn_locale_id=null, $ps_name=null, $ps_email=null, $pn_access=0, $pn_moderator=null, $pa_options=null, $ps_media1=null, $ps_media2=null, $ps_media3=null, $ps_media4=null) {
+	public function addComment($ps_comment, $pn_rating=null, $pn_user_id=null, $pn_locale_id=null, $ps_name=null, $ps_email=null, $pn_access=0, $pn_moderator=null, $pa_options=null, $ps_media1=null, $ps_media2=null, $ps_media3=null, $ps_media4=null, $ps_location=null) {
 		global $g_ui_locale_id;
 		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
 		if (!$pn_locale_id) { $pn_locale_id = $g_ui_locale_id; }
@@ -9038,6 +9039,7 @@ $pa_options["display_form_field_tips"] = true;
 		$t_comment->set('media2', $ps_media2, array('original_filename' => $pa_options['media2_original_filename']));
 		$t_comment->set('media3', $ps_media3, array('original_filename' => $pa_options['media3_original_filename']));
 		$t_comment->set('media4', $ps_media4, array('original_filename' => $pa_options['media4_original_filename']));
+		$t_comment->set('location', $ps_location);
 		
 		if (!is_null($pn_moderator)) {
 			$t_comment->set('moderated_by_user_id', $pn_moderator);

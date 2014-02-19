@@ -97,14 +97,14 @@
  			$o_context = new ResultContext($this->request, $vs_table, $vs_last_find);
  			$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_table->getPrimaryKey()));
  			$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_table->getPrimaryKey()));
- 			$this->view->setVar('previousURL', caNavUrl($this->request, '*', '*', '*').'/'.$vn_previous_id);
- 			$this->view->setVar('nextURL', caNavUrl($this->request, '*', '*', '*').'/'.$vn_next_id);
+ 			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
+ 			$this->view->setVar('nextURL', caDetailUrl($this->request, $vs_table, $vn_next_id));
  			$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $vs_table));
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
  			
- 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caNavLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', '*', '*', '*', array($vn_previous_id)) : "");
- 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caNavLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', '*', '*', '*', array($vn_next_id)) : "");
+ 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
+ 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back'))));
  			
  			$this->view->setVar('commentsEnabled', (bool)$va_options['enableComments']);
@@ -133,8 +133,12 @@
 						$va_user_comment["date"] = date("n/j/Y", $va_user_comment["created_on"]);
 						
 						# -- get name of commenter
-						$t_user = new ca_users($va_user_comment["user_id"]);
-						$va_user_comment["author"] = $t_user->getName();
+						if($va_user_comment["user_id"]){
+							$t_user = new ca_users($va_user_comment["user_id"]);
+							$va_user_comment["author"] = $t_user->getName();
+						}elseif($va_user_comment["name"]){
+							$va_user_comment["author"] = $va_user_comment["name"];
+						}
 						$va_comments[] = $va_user_comment;
 					}
 				}
@@ -465,18 +469,30 @@
  		}
  		# -------------------------------------------------------
  		public function saveCommentTagging() {
+ 			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
+			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
  				die("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
  			}
-
- 			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
-  				$this->view->setVar("message", _t("Invalid ID"));
- 				$this->render("Form/reload_html.php");
+			$ps_table = $this->request->getParameter("tablename", pString);
+			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
+ 				if($vn_inline_form){
+ 					$this->notification->addNotification(_t("Invalid ID"), __NOTIFICATION_TYPE_ERROR__);
+ 					$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 				}else{
+ 					$this->view->setVar("message", _t("Invalid ID"));
+ 					$this->render("Form/reload_html.php");
+ 				}
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
-  				$this->view->setVar("message", _t("ID does not exist"));
- 				$this->render("Form/reload_html.php");
+  				if($vn_inline_form){
+ 					$this->notification->addNotification(_t("ID does not exist"), __NOTIFICATION_TYPE_ERROR__);
+ 					$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 				}else{
+ 					$this->view->setVar("message", _t("ID does not exist"));
+ 					$this->render("Form/reload_html.php");
+ 				}
  				return;
  			}
  			
@@ -486,15 +502,41 @@
  			$ps_tags = $this->request->getParameter('tags', pString);
  			$ps_email = $this->request->getParameter('email', pString);
  			$ps_name = $this->request->getParameter('name', pString);
+ 			$ps_location = $this->request->getParameter('location', pString);
  			$ps_media1 = $_FILES['media1']['tmp_name'];
  			$ps_media1_original_name = $_FILES['media1']['name'];
+ 			$va_errors = array();
  			
- 			if($ps_comment || $pn_rank || $ps_tags || $ps_media1){
+ 			if(!$this->request->getUserID() && !$ps_name && !$ps_email){
+				$va_errors["general"] = _t("Please enter your name and email");
+			}
+			if(!$ps_comment && !$pn_rank && !$ps_tags && !$ps_media1){
+				$va_errors["general"] = _t("Please enter your contribution");
+			}
+			if(sizeof($va_errors)){
+				$this->view->setVar("form_comment", $ps_comment);
+				$this->view->setVar("form_rank", $pn_rank);
+				$this->view->setVar("form_tags", $ps_tags);
+				$this->view->setVar("form_email", $ps_email);
+				$this->view->setVar("form_name", $ps_name);
+				$this->view->setVar("form_location", $ps_location);
+				$this->view->setVar("item_id", $vn_item_id);
+ 				$this->view->setVar("tablename", $ps_table);
+				if($vn_inline_form){
+					$this->notification->addNotification($va_errors["general"], __NOTIFICATION_TYPE_ERROR__);
+					$this->request->setActionExtra($vn_item_id);
+					$this->__call(caGetDetailForType($ps_table), null);
+					#$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+				}else{
+					$this->view->setVar("errors", $va_errors);
+					$this->render('Details/form_comments_html.php');
+				}
+			}else{
  				if(!(($pn_rank > 0) && ($pn_rank <= 5))){
  					$pn_rank = null;
  				}
  				if($ps_comment || $pn_rank || $ps_media1){
- 					$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1);
+ 					$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1, null, null, null, $ps_location);
  				}
  				if($ps_tags){
  					$va_tags = array();
@@ -505,11 +547,23 @@
  				}
  				if($ps_comment || $ps_tags || $ps_media1){
  					if($this->request->config->get("dont_moderate_comments")){
- 						$this->view->setVar("message", _t("Thank you for contributing."));
- 						$this->render("Form/reload_html.php");
+ 						if($vn_inline_form){
+							$this->notification->addNotification(_t("Thank you for contributing."), __NOTIFICATION_TYPE_INFO__);
+ 							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+							return;
+						}else{
+							$this->view->setVar("message", _t("Thank you for contributing."));
+ 							$this->render("Form/reload_html.php");
+						}
  					}else{
- 						$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."));
- 						$this->render("Form/reload_html.php");
+ 						if($vn_inline_form){
+							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."), __NOTIFICATION_TYPE_INFO__);
+ 							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+							return;
+						}else{
+							$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."));
+ 							$this->render("Form/reload_html.php");
+						}
  					}
  					# --- check if email notification should be sent to admin
  					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
@@ -532,11 +586,15 @@
 						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
  					}
  				}else{
- 					$this->view->setVar("message", _t("Thank you for your contribution."));
- 					$this->render("Form/reload_html.php");
+ 					if($vn_inline_form){
+						$this->notification->addNotification(_t("Thank you for your contribution."), __NOTIFICATION_TYPE_INFO__);
+ 						$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+						return;
+					}else{
+						$this->view->setVar("message", _t("Thank you for your contribution."));
+ 						$this->render("Form/reload_html.php");
+					}
  				}
- 			}else{
- 				$this->render("Form/reload_html.php");
  			}
  		}
  		# -------------------------------------------------------

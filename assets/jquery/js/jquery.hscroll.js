@@ -81,7 +81,7 @@
         $e.find(_options.itemContainerSelector).css("width", _calculateWidth() + "px");
         
     	if (scrollPos > 0) {
-      		$e.scrollLeft(scrollPos);
+      		_getScrollLeft(scrollPos);
         }
         if (_needsLoad()) {
 			_load(loadedTo + _options.itemsPerLoad);
@@ -89,8 +89,8 @@
 		
 		_setScrollControls();
         
-        $e.bind("scroll.hscroll", function(e) {
-        	var left = parseInt($e.scrollLeft());
+        $e.on("scroll.hscroll", function(e) {
+        	var left = parseInt(_getScrollLeft());
         	jar.set('scrollPos', left);
         	
         	if (loadedTo >= _options.itemCount) { 
@@ -103,42 +103,76 @@
         	
         	_setScrollControls();
         });
-        
-         $e.bind("resort.hscroll", function(e) {
+        $e.on("jsp-scroll-x", function(e) {
+        	var left = parseInt(_getScrollLeft());
+        	jar.set('scrollPos', left);
+        	
+        	if (loadedTo >= _options.itemCount) { 
+        		_setScrollControls();
+        		return; 
+        	}
+        	if (_needsLoad()) {									
+        		_load(loadedTo + _options.itemsPerLoad);
+        	}
+        	
+        	_setScrollControls();
+        });
+                
+         $e.on("resort.hscroll", function(e) {
          	loadedTo = 0;
          	$e.find(_options.itemContainerSelector).html('').css("width", _calculateWidth() + "px");
-         	$e.scrollLeft(0);
+         	_getScrollLeft(0);
          	jar.set('scrollPos', 0);
       		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort']));
          	_load(0);
          });
          
+          $e.on("jsp-initialised", function (e, isScrollable) {
+ 	         	_setScrollControls();
+          });
+         
 		if (_options.sortControlSelector) {
-			jQuery(_options.sortControlSelector).bind("change", function(e) {
+			jQuery(_options.sortControlSelector).on("change", function(e) {
 				$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
 			});
 		}
 		
 		if (_options.scrollPreviousControlSelector) {
-			jQuery(_options.scrollPreviousControlSelector).bind("click", function(e) {
+			jQuery(_options.scrollPreviousControlSelector).on("click", function(e) {
 				if (isScrolling) { return false; }
 				isScrolling = true;
-				$e.animate({ scrollLeft: $e.scrollLeft() - $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
-					_setScrollControls();
-					isScrolling = false;
-				}});
+				
+				if (_usingJScrollPane()) {
+					var api = $e.data('jsp');
+					if (!api)  return false;
+        			api.scrollToX(_getScrollLeft() - $e.width(), true);
+        			isScrolling = false;
+				} else {
+					$e.animate({ scrollLeft: _getScrollLeft() - $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+						_setScrollControls();
+						isScrolling = false;
+					}});
+				}
 				return false;
 			});
 		}
 		
 		if (_options.scrollNextControlSelector) {
-			jQuery(_options.scrollNextControlSelector).bind("click", function(e) {
+			jQuery(_options.scrollNextControlSelector).on("click", function(e) {
 				if (isScrolling) { return false; }
 				isScrolling = true;
-				$e.animate({ scrollLeft: $e.scrollLeft() + $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
-					_setScrollControls();
-					isScrolling = false;
-				}});
+				
+				if (_usingJScrollPane()) {
+					var api = $e.data('jsp');
+					if (!api)  return false;
+        			api.scrollToX(_getScrollLeft() + $e.width(), true);
+        			isScrolling = false;
+				} else {
+					$e.animate({ scrollLeft: _getScrollLeft() + $e.width() + "px" }, { duration: _options.scrollControlDuration, easing: "swing", complete: function(e) {
+						_setScrollControls();
+						isScrolling = false;
+					}});
+				}
 				return false;
 			});
 		}
@@ -149,13 +183,15 @@
 		// Determine visibility of scrolling controls
 		//
 		function _setScrollControls() {
-			jQuery(_options.scrollPreviousControlSelector).css("opacity", ($e.scrollLeft() <= 0) ? _options.scrollControlDisabledOpacity : 1.0);
-			jQuery(_options.scrollNextControlSelector).css("opacity", ($e.scrollLeft() + $e.width() >= $e.find(_options.itemContainerSelector).width()) ? _options.scrollControlDisabledOpacity : 1.0);
+			var sl = _getScrollLeft();
+			var sw = _calculateWidth();
+			jQuery(_options.scrollPreviousControlSelector).css("opacity", (sl <= 0) ? _options.scrollControlDisabledOpacity : 1.0);
+			jQuery(_options.scrollNextControlSelector).css("opacity", (sl + $e.width() >= sw) ? _options.scrollControlDisabledOpacity : 1.0);
 		}
 		
 		function _needsLoad() {
 			if (options.itemsPerLoad >= options.itemCount) { return false; }
-			var left = parseInt($e.scrollLeft());
+			var left = parseInt(_getScrollLeft());
 			var loadWidth = _options.itemWidth * Math.ceil(_options.itemsPerLoad/_options.itemsPerColumn);	// width in pixels of an ajax load with the full item count
         	var loads = Math.floor(loadedTo/_options.itemsPerLoad);											// number of loaded completed (or preloaded)
         	
@@ -163,6 +199,30 @@
         		return true;
         	}
         	return false;
+		}
+		
+		function _getScrollLeft(pos) {
+			if (_usingJScrollPane()) {
+				// using jScrollPane
+        		var api = $e.data('jsp');
+        		if (!api)  return 0;
+        		var left = parseInt(api.getContentPositionX());
+        		
+        		if((pos !== null) && (pos !== undefined)) {
+        			api.scrollToX(pos, true);
+        		}
+        		return left;
+        	} else {
+        		if((pos !== null) && (pos !== undefined)) {
+        			$e.scrollLeft(pos);
+        		}
+        		return $e.scrollLeft();
+        	}
+		}
+		
+		
+		function _usingJScrollPane() {
+			return (jQuery($e).find(".jspContainer").length > 0);
 		}
 		
 		//
