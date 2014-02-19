@@ -19,7 +19,15 @@
 		<div class="col-md-5 col-sm-5 obj_detail_caption">
 			<h1>{{{ca_objects.preferred_labels.name}}}</h1>
 			{{{<ifdef code="ca_objects.idno"><p><strong>Identifer:</strong> ^ca_objects.idno</p></ifdef>}}}
-			{{{<ifdef code="ca_objects.date_value%[dc_dates_types=created]"><p><strong>Date:</strong> ^ca_objects.date_value</p></ifdev>}}}	
+			{{{<ifdef code="ca_objects.date.dates_value%[dc_dates_types=created]"><p><strong>Date:</strong> ^ca_objects.date.dates_value%[dc_dates_types=created]</p></ifdev>}}}	
+			{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
+			{{{<ifdef code="ca_objects.dimensions_display"><p><strong>Dimensions</strong><br/>^ca_objects.dimensions_display</p></ifdef>}}}
+			{{{<ifcount min="1" code="ca_collections"><p>
+				<ifcount min="1" max="1" code="ca_collections"><strong>Collection</strong>
+				</ifcount><ifcount min="2" code="ca_collections"><strong>Collections</strong></ifcount>
+				<br/>
+				<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
+			</p></ifcount>}}}
 			{{{<ifdef code="ca_objects.caption"><p><strong>Caption:</strong> ^ca_objects.caption</p></ifdev>}}}
 		</div>
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right nextlink'>
@@ -33,13 +41,7 @@
 <div class="container mainbody roundedbottom">
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="lightbordered">
-				
-				{{{<ifdef code="ca_objects.dimensions_display"><p><strong>Dimensions</strong><br/>^ca_objects.dimensions_display</p></ifdef>}}}
-				{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
-				{{{<ifcount min="1" code="ca_collections"><unit relativeTo="ca_collections" delimiter=", "><p><strong>Collection</strong><br/><l>^ca_collections.preferred_labels.name</l></p></unit></ifcount>}}}
-				{{{<ifdef code="ca_objects.description"><p><strong>Description</strong><br/>^ca_objects.description</p></ifdef>}}}
-				<!--<p><strong>Credit</strong><br/>Cincinnati Judaica Fund</p>-->
+			<div class="lightbordered">				
 <?php
 				if(is_array($va_tags) && sizeof($va_tags)){
 					print "<p><strong>Tags:</strong><br/>";
@@ -53,8 +55,10 @@
 					}
 					print "</p>";
 				}
-?>
-				{{{<ifdef code="tags"><p><strong>Tags:</strong><br/>^tags</p></ifdef>}}}
+?>							
+				{{{<ifdef code="ca_objects.description"><p><strong>Description</strong><br/>^ca_objects.description</p></ifdef>}}}
+				<!--<p><strong>Credit</strong><br/>Cincinnati Judaica Fund</p>-->
+
 			</div><!--end lightbordered-->
 		</div><!--end col 1-->
 		{{{<ifcount code="ca_objects.related" min="1">

@@ -62,6 +62,9 @@
 				}
  			}
  			
+ 			$this->view->setVar('config', $this->config);
+ 			
+ 			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
  			//
