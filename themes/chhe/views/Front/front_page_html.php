@@ -43,7 +43,7 @@
 	</div>
 	
 	<div class="col-sm-5 text-center">
-	<a href="<?php print caNavUrl($this->request, '*', '*', 'CJF'); ?>">
+	<a href="<?php print caNavUrl($this->request, '*', '*', 'CHHE'); ?>">
 	<?php print caGetThemeGraphic($this->request, 'homecfhh_logo@2x.png', array('class' => 'innershadow', 'alt' => 'Center for Holocaust and Humanity', 'width' => '394', 'height' => '394')); ?></a></div>
 
 	<div class="col-sm-1"></div>
