@@ -370,7 +370,9 @@
 				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
 				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 				
-				$vn_rc = $this->render('object_download_media_binary.php');
+				$this->response->sendHeaders();
+				$vn_rc = $this->render('Details/object_download_media_binary.php');
+				$this->response->sendContent();
 				
 				if ($vs_path) { unlink($vs_path); }
 			} else {
@@ -378,7 +380,9 @@
 					$this->view->setVar('archive_path', $vs_path);
 					$this->view->setVar('archive_name', $vs_name);
 				}
+				$this->response->sendHeaders();
 				$vn_rc = $this->render('Details/object_download_media_binary.php');
+				$this->response->sendContent();
 			}
 			
 			return $vn_rc;
@@ -387,7 +391,6 @@
 		/**
 		 * Download single representation from currently open object
 		 */ 
-		# -------------------------------------------------------
 		public function DownloadRepresentation() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
@@ -445,7 +448,9 @@
 			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
 			}
+			$this->response->sendHeaders();
 			$vn_rc = $this->render('Details/object_representation_download_binary.php');
+			$this->response->sendContent();
 			if ($vs_path) { unlink($vs_path); }
 			return $vn_rc;
 		}
