@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortMenu">
-				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | Sort By {{{sortByControl}}}
+				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | Sort By {{{sortByList}}}
 			</small>
 			<div class='blockTitle'><?php print $va_block_info['displayName']; ?></div>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
@@ -51,7 +51,7 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-				<?php print "<div class='objImage'>".$qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>')."</div>"; ?>
+				<?php print "<div class='objImage'>".$qr_results->getWithTemplate('<l>^ca_object_representations.media.resultthumb</l>')."</div>"; ?>
 				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php

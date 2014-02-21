@@ -980,10 +980,31 @@ span.criteria {
 	width: 585px;
 	float: left;
 }
+#contentArea.listing p {
+	line-height:1.5em;
+	font-size:15px;
+}
+#contentArea.listing h3 a:hover {
+	text-decoration:none;
+}
+#pageTitle p, #pageTitle p a {
+	text-transform:uppercase;
+	color:#fff;
+	font-size:12px;
+	padding:0px;
+	margin:0px;
+}
+#pageTitle p.toolkit a {
+	color: #EE3E43;
+}
+#pageTitle .pageTitle {
+	display:inline-block;
+	margin-bottom:10px;
+}
 .lessonInfo {
 	width:100%;
 	background-color:#f7f7f7;
-	margin-bottom:10px;
+	margin-bottom:20px;
 	clear:both;
 }
 .lessonImage {
@@ -1011,13 +1032,18 @@ span.criteria {
 	color:#000;
 }
 .tags {
-	color: #EE3E43;
 	margin-top: 20px;
+}
+.tags a{
+	color: #EE3E43;
+	padding-top:5px;
+	display:inline-block;
 }
 #listingTags {
 	float:right;
 	width:185px;
 	margin-left:15px;
+	margin-top:25px;
 }
 .listTitle {
 	background-color:#000;
@@ -1029,7 +1055,7 @@ span.criteria {
 	text-transform:uppercase;
 	padding-left:5px;
 }
-.tagBlock, .themeBlock, .artistBlock {
+.tags_facetBlock, .theme_facetBlock, .artist_facetBlock {
 	margin-bottom:25px;
 }
 /* Scrollbars */

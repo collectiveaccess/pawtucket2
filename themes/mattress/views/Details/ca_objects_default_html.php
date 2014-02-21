@@ -99,30 +99,37 @@
 					print "<div class='occurrencesResult' style='width:320px'>";
 					$vn_ii = 0;
 					$vn_i = 0;
-					foreach ($va_artworks as $key => $vn_artwork_id) {
-						$t_collection = new ca_collections($vn_artwork_id);
+					if (sizeof($va_artworks) >= 4) {
+						foreach ($va_artworks as $key => $vn_artwork_id) {
+							$t_collection = new ca_collections($vn_artwork_id);
+							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+						
+							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
+
+							if ($va_primary_rep = array_shift(array_values($va_object_reps))){
+								print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
+								$vn_i++;
+								$vn_ii++;
+							}
+						
+							if($vn_i == 4) {break;}
+
+						}
+						if ($vn_i < 4) {
+							while ($vn_i < 4) {
+								if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
+								print "<div class='exImage' {$vs_style}></div>";
+								$vn_i++;
+								$vn_ii++;
+							}
+						}
+					} else {
+						$t_collection = new ca_collections($va_artworks[0]);
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
 						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
-						
-						if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
-
-						if ($va_primary_rep = array_shift(array_values($va_object_reps))){
-							print "<div class='exImage' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
-							$vn_i++;
-							$vn_ii++;
-						}
-						
-						if($vn_i == 4) {break;}
-
-					}
-					if ($vn_i < 4) {
-						while ($vn_i < 4) {
-							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
-							print "<div class='exImage' {$vs_style}></div>";
-							$vn_i++;
-							$vn_ii++;
-						}
-					}
+						print "<div class='exImageSingle'>".array_shift(array_values($va_object_reps))."</div>";
+					}	
 					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
