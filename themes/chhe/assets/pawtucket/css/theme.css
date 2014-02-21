@@ -380,8 +380,12 @@ color:#ccc;}
 	padding-bottom:10px;
 	margin-bottom:20px;
 	margin-left:15px;
+	font-size:13px;
 }
-.obj_detail_caption a {
+.obj_detail_caption p{
+	font-size:13px;
+}
+.obj_detail_caption a, #detail .obj_detail_caption p a {
 	color:#fff;
 }
 .commentsarea {
@@ -397,6 +401,7 @@ color:#ccc;}
 }
 #detail H1 {
     color: #fff;
+    margin-bottom:15px;
 }
    
 #detail .detailNavBgLeft{
@@ -590,4 +595,15 @@ background: #333333;
 #multiSearch .placesResult:hover, #multiSearch .occurrencesResult:hover, #multiSearch .entitiesResult:hover,
 .multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover{
 	background-color:#e8e8e8;
+}
+.notificationMessage{
+	background-color:#e7b461;
+	color:#000;
+	font-size:20px;
+	font-weight:bold;
+	text-align:center;
+	border-radius:10px;
+	border:3px solid #FFF;
+	margin:5px 0px 5px 0px;
+	padding:10px;
 }
