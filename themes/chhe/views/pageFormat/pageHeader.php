@@ -70,9 +70,11 @@
 									</li>
 									<li class="dropdown" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown">About<b class="caret"></b></a>
 										<ul class="dropdown-menu">
-											<li><a href="<?php caStaticPageUrl('/About/cjf'); ?>">About Cincinnati Judaica Fund</a></li>
+											<li><a href="<?php caStaticPageUrl('/About/cjf'); ?>">About the Cincinnati Judaica Fund</a></li>
+											<li><a href="<?php caStaticPageUrl('/About/contactCJF'); ?>">Contact the Cincinnati Judaica Fund</a></li>
 											<li class="divider"></li>
-											<li><a href="<?php caStaticPageUrl('/About/chhe'); ?>">About Center for Holocaust &amp; Humanity Education</a></li>
+											<li><a href="<?php caStaticPageUrl('/About/chhe'); ?>">About the Center for Holocaust &amp; Humanity Education</a></li>
+											<li><a href="<?php caStaticPageUrl('/About/contactCHHE'); ?>">Contact the Center for Holocaust &amp; Humanity Education</a></li>
 										</ul>	
 									</li>								
 <?php
