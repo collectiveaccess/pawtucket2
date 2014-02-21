@@ -39,9 +39,16 @@
  		 */
  		private $opo_result_context = null;
  		
+ 		/**
+ 		 *
+ 		 */
+ 		private $opa_access_values = null;
+ 		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
+ 			$this->opa_access_values = caGetUserAccessValues($po_request);
  			
  			caSetPageCSSClasses(array("listing"));
  		}
@@ -66,6 +73,8 @@
  			$ps_function = strtolower($ps_function);
  			
  			$vs_table = $va_listing_info['table'];
+ 			$vs_search = caGetOption('search', $va_listing_info, '*');
+ 			$vs_segment_by = caGetOption('segmentBy', $va_listing_info, '');
  			
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
@@ -75,8 +84,13 @@
  				die("Invalid table");
  			}
  			
- 			if(!($o_search = caGetSearchInstance($vs_table))) {
- 				die("Invalid search");
+ 			if(!($o_browse = caGetBrowseInstance($vs_table))) {
+ 				die("Invalid listing");
+ 			}
+ 			
+ 			// Set browse facet group
+ 			if ($vs_facet_group = caGetOption('browseFacetGroup', $va_listing_info, null)) {
+ 				$o_browse->setFacetGroup($vs_facet_group);
  			}
  			
  			$va_types = caGetOption('restrictToTypes', $va_listing_info, array(), array('castTo' => 'array'));
@@ -87,6 +101,29 @@
  			} else {
  				$va_types = caMakeTypeIDList($vs_table, $va_types, array('dontIncludeSubtypesInTypeRestriction' => true));
  			}
+ 			
+ 			$o_browse->addCriteria("_search", array($vs_search));
+ 			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
+			//
+			// Facets for search 
+			//
+			$va_facets = $o_browse->getInfoForAvailableFacets();
+			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array('checkAccess' => $this->opa_access_values));
+			}
+		
+			$this->view->setVar('facets', $va_facets);
+			
+			
+			//
+			// Add criteria and execute
+			//
+			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+				$o_browse->addCriteria($vs_facet, array($vn_facet_id = $this->request->getParameter('id', pString)));
+				
+				$this->view->setVar('facet', $vs_facet);
+				$this->view->setVar('facet_id', $vn_facet_id);
+			}
  			
  			//
 			// Sorting
@@ -106,13 +143,18 @@
  			
  			$va_lists = array();
  			$va_res_list = array();
- 			foreach($va_types as $vm_type) {
- 				$o_search->setTypeRestrictions(array($vm_type));
- 				$qr_res = $o_search->search("*", array('sort' => $va_sort_by[$ps_sort]));
- 				
- 				if ($qr_res->numHits() == 0) { continue; }
- 				$va_res_list += $qr_res->getPrimaryKeyValues();
- 				$va_lists[$vm_type] = $qr_res; 
+ 			
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
+			
+			
+			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
+ 			while($qr_res->nextHit()) {
+ 				$vs_key = $qr_res->getWithTemplate($vs_segment_by);
+ 				$va_lists[$vs_key][] = $va_res_list[] = $qr_res->getPrimaryKey();
+ 			}
+ 			
+ 			foreach($va_lists as $vs_key => $va_ids) {
+ 				$va_lists[$vs_key] = caMakeSearchResult($vs_table, $va_ids);
  			}
  			
  			$this->view->setVar('table', $vs_table);
@@ -120,6 +162,23 @@
  			$this->view->setVar('typeInfo', $va_type_list);
  			$this->view->setVar('listingInfo', $va_listing_info);
  			
+ 			//
+			// Current criteria
+			//
+			$va_criteria = $o_browse->getCriteriaWithLabels();
+			unset($va_criteria['_search']);
+		
+			$va_criteria_for_checking = array();
+			foreach($va_criteria as $vs_facet_name => $va_criterion) {
+				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+				foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+					$va_criteria_for_checking[$vs_facet_name] = $vn_criterion_id;
+				}
+			}
+			
+			$this->view->setVar('hasCriteria', sizeof($va_criteria_for_checking) > 0);
+			$this->view->setVar('criteria', $va_criteria_for_checking);
+			
  			
 			$this->opo_result_context->setResultList($va_res_list);
 			$this->opo_result_context->saveContext();
