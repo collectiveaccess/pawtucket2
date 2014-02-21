@@ -31,21 +31,16 @@
  */
  
  	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
 ?> 	
-
 	<div id="pageTitle">Collections</div>
-	<div id="contentArea">
+	<div id="contentArea" class="rightCol">
 <?php 
-	foreach($va_lists as $vn_type_id => $qr_list) {
+	foreach($va_lists as $vs_heading => $qr_list) {
 		if(!$qr_list) { continue; }
-		
-		$vs_type = $va_type_info[$vn_type_id]['name_plural'];
 		
 		print "<div class='collectionUnit'>";
 		
-		print "<h2>{$vs_type}</h2>\n";
+		print "<h2>{$vs_heading}</h2>\n";
 		
 		while($qr_list->nextHit()) {
 			print "<div class='collectionInfo'>";
@@ -54,6 +49,35 @@
 			print "</div>";
 		}
 		print "</div>";
+	}
+?>
+	</div>
+	<div id="listingTags">
+<?php
+	if ($this->getVar('hasCriteria')) {
+		$va_criteria = $this->getVar('criteria');
+?>
+		<?php print caNavLink($this->request, _t('Reset'), '', '*', '*', '*'); ?>
+<?php
+	}
+	
+	foreach($this->getVar('facets') as $vs_facet => $va_facet_info) {
+?>
+		<div class='<?php print $vs_facet;?>Block'>
+			<div class='listTitle'><?php print $va_facet_info['label_plural']; ?></div>
+<?php
+			foreach($va_facet_info['content'] as $vn_item_id => $va_item) {
+				print "<p>";
+				if (isset($va_criteria[$vs_facet]) && ($va_criteria[$vs_facet] == $va_item['id'])) {
+					print "<strong>".$va_item['label']."</strong>";		// Selected facet
+				} else {
+					print caNavLink($this->request, $va_item['label'], '', '*', '*', '*', array('facet' => $vs_facet, 'id' => $va_item['id']));
+				}
+				print "</p>\n";
+			}
+?>
+		</div>
+<?php
 	}
 ?>
 	</div>
