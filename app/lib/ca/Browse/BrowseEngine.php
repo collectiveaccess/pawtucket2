@@ -3256,6 +3256,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 									WHERE
 										(p.".$t_rel_item->primaryKey()." IN (?))
 								";
+								
+								// Apply access checks to expanded
+								if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
+									$vs_sql .= " AND (p.access IN (".join(',', $pa_options['checkAccess'])."))";				// exclude non-accessible authority items
+								}
+								
 								$qr_res = $this->opo_db->query($vs_sql, array($va_ids));
 								
 								$va_facet_parents = array();
