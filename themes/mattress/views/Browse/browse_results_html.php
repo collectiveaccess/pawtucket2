@@ -124,7 +124,7 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			</div><!-- browseHeader-->
 			<div >
-				<div id="browseResultsContainer ">
+				<div id="browseResultsContainer">
 <?php
 
 } // !ajax
