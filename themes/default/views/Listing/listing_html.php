@@ -38,7 +38,7 @@
 
 <div id='listingResults'>
 <?php
-	if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+	if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts) > 1) {
 ?>
 	<H1>	
 		<div class="btn-group">
