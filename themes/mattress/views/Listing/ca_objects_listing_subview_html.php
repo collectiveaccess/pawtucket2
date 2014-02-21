@@ -31,17 +31,25 @@
  */
  
  	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
+	$va_criteria = $this->getVar('criteria');
 ?> 	
 
-	<div id="pageTitle">The Space I'm In</div>
-	<div id="contentArea" class="rightCol">
+	<div id="pageTitle">
+		<span class='pageTitle'>The Space I'm In</span>
+<?php	
+		print "<p>What</p>";
+		print "<p>How</p>";
+		print "<p>Why</p>";
+		print "<p class='toolkit'>".caNavLink($this->request, 'Toolkit', '', '', 'Listing', 'objects')."</p>";
+		print "<p>Share</p>";
+?>		
+	</div>
+	<div id="contentArea" class="rightCol listing">
 <?php 
-	foreach($va_lists as $vn_type_id => $qr_list) {
+	foreach($va_lists as $vs_heading => $qr_list) {
 		if(!$qr_list) { continue; }		
 		
-		print "<h2>Lesson Plans</h2>\n";
+		print "<h2>Toolkit</h2>\n";
 		print "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis mi volutpat, dapibus enim in, sagittis dui. Cras ac tortor tortor. Nullam consequat semper se</p>";
 		
 		while($qr_list->nextHit()) {
@@ -50,9 +58,32 @@
 			print "<div class='lessonText'>";
 			print "<h3>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h3>\n";
 			print "<div class='artist'>".$qr_list->get('ca_entities.preferred_labels.displayname', array('restrictToRelationshipTypes' => array('subject'), 'delimiter' => ', '))."</div>\n";
-			if ($qr_list->get('ca_list_items.preferred_labels')) {
-				print "<div class='tags'><div class='tagtitle'>Tags</div>".$qr_list->get('ca_list_items.preferred_labels', array('delimiter' => ', '))."</div>\n";
+			if ($qr_list->get('ca_objects.lesson_subject', array('convertCodesToDisplayText' => true))) {
+				$va_tags = $qr_list->get('ca_objects.lesson_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+				$va_tag_ids = $qr_list->get('ca_objects.lesson_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => false));
+				print "<div class='tags'><div class='tagtitle'>Subjects</div>";
+				
+				foreach($va_tags as $vn_i => $va_tag) {
+					if ($va_tag['lesson_subject']) {
+						$va_subjects[] = caNavLink($this->request, $va_tag['lesson_subject'], '', '*', '*' , '*', array('facet' => 'tags_facet', 'id' => $va_tag_ids[$vn_i]['lesson_subject']));
+					}
+				}
+				print join(', ',$va_subjects);
+				print "</div>\n";
 			}
+			if ($qr_list->get('ca_objects.lesson_theme', array('convertCodesToDisplayText' => true))) {
+				$va_tags = $qr_list->get('ca_objects.lesson_theme', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+				$va_tag_ids = $qr_list->get('ca_objects.lesson_theme', array('returnAsArray' => true, 'convertCodesToDisplayText' => false));
+				print "<div class='tags'><div class='tagtitle'>Theme</div>";
+
+				foreach($va_tags as $vn_i => $va_tag) {
+					if ($va_tag['lesson_theme']) {
+						$va_theme[] = caNavLink($this->request, $va_tag['lesson_theme'], '', '*', '*' , '*', array('facet' => 'tags_facet', 'id' => $va_tag_ids[$vn_i]['lesson_theme']));
+					}
+				}
+				print join(', ',$va_theme);
+				print "</div>\n";
+			}			
 			print "</div>";
 			print "<div class='clearfix'></div>";
 			print "</div>";
@@ -62,19 +93,32 @@
 ?>
 	</div>
 	<div id="listingTags">
-		<div class='tagBlock'>
-			<div class='listTitle'>Tags</div>
-			<p>painting</p>
-			<p>sculpture</p>
-		</div>
-		<div class='themeBlock'>
-			<div class='listTitle'>Themes</div>
-			<p>environment</p>
-			<p>color</p>
-		</div>
-		<div class='artistBlock'>
-			<div class='listTitle'>Artists</div>
-			<p>James Turrel</p>
-		</div>
+<?php
+
 	
+	foreach($this->getVar('facets') as $vs_facet => $va_facet_info) {
+?>
+		<div class='<?php print $vs_facet;?>Block'>
+			<div class='listTitle'><?php print $va_facet_info['label_plural']; ?></div>
+<?php
+			foreach($va_facet_info['content'] as $vn_item_id => $va_item) {
+				print "<p>";
+				if (isset($va_criteria[$vs_facet]) && ($va_criteria[$vs_facet] == $va_item['id'])) {
+					print "<span style='color:red;'>".$va_item['label']."</span>";		// Selected facet
+				} else {
+					print caNavLink($this->request, $va_item['label'], '', '*', '*', '*', array('facet' => $vs_facet, 'id' => $va_item['id']));
+				}
+				print "</p>\n";
+			}
+?>
+		</div>
+<?php
+	}
+	if ($this->getVar('hasCriteria')) {
+		$va_criteria = $this->getVar('criteria');
+?>
+		<?php print caNavLink($this->request, _t('Clear'), '', '*', '*', '*'); ?>
+<?php
+	}
+?>
 	</div>

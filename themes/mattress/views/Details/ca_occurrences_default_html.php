@@ -31,7 +31,7 @@
 						$t_collection = new ca_collections($va_collection_id);
 						
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
 						if ($t_collection->get('ca_collections.date.dc_dates_types') == 188) {
@@ -102,7 +102,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
@@ -117,7 +117,7 @@
 						$va_artwork_id = $va_artworks[0];
 						$t_collection = new ca_collections($va_artwork_id);
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 					
 						if ($va_primary_rep = array_shift(array_values($va_object_reps))){
 							print "<div class='exImageSingle' {$vs_style}>".caNavLink($this->request, $va_primary_rep, '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";

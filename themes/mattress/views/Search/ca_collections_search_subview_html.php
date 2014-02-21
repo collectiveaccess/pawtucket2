@@ -54,7 +54,7 @@
 			<div class='{{{block}}}Result'>
 <?php
 			print "<div class='objImage'>";
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags'));
+			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags'));
 			if (sizeof($va_images) > 0){
 				foreach ($va_images as $vn_image_id => $vs_image) {
 					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
