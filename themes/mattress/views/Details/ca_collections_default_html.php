@@ -48,7 +48,7 @@
 				$stack = 0;
 				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
 					if ($stack == 0) { print "<div class='thumbResult'>";}
-					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $vn_related_rep_id))."\"); return false;' >".$va_related_rep['tags']['widepreview']."</a></div>";
+					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['widepreview']."</a></div>";
 					//print "<div class='rep'>".$va_related_rep['tags']['widepreview']."</div>";
 					
 					$stack++;

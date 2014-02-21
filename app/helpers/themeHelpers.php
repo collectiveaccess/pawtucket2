@@ -214,7 +214,7 @@
 		$vs_pk = $o_dm->getTablePrimaryKeyName($ps_table);
 	
 		$qr_res = $o_db->query("
-			SELECT oxor.{$vs_pk}, orep.media
+			SELECT oxor.{$vs_pk}, orep.media, orep.representation_id
 			FROM ca_object_representations orep
 			INNER JOIN {$vs_linking_table} AS oxor ON oxor.representation_id = orep.representation_id
 			WHERE
@@ -256,6 +256,8 @@
 					}
 				}
 			}
+			
+			$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
 			
 			if (!$vb_media_set)  { continue; }
 			
