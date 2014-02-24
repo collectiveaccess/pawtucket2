@@ -588,6 +588,9 @@ background: #333333;
 #bRefine H1, #bRefine H2{
 	color:#454545;
 }
+.bResultItem a{
+	color:#000;
+}
 
 /* multisearch */
 .multisearch{
