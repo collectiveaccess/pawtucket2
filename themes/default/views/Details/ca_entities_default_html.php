@@ -80,7 +80,7 @@
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person</h3></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><h3>Related people</h3></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifcount code="ca_objects" min="1" max="1"><h3>Related object</h3><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
