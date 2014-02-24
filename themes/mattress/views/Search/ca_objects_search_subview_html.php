@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortMenu">
-				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | Sort By {{{sortByList}}}
+				<?php print caNavLink($this->request, _t('Full results'), 'fullResults', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> <span class='sortBy'> |&nbsp;&nbsp;Sort By</span> {{{sortByList}}}
 			</small>
 			<div class='blockTitle'><?php print $va_block_info['displayName']; ?></div>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>

@@ -52,32 +52,36 @@
 	}
 ?>
 	</div>
-	<div id="listingTags">
+<?php	
+	if ($this->request->config->get('use_facets_for_collections')) {
+?>	
+		<div id="listingTags">
 <?php
-	if ($this->getVar('hasCriteria')) {
-		$va_criteria = $this->getVar('criteria');
+		if ($this->getVar('hasCriteria')) {
+			$va_criteria = $this->getVar('criteria');
 ?>
-		<?php print caNavLink($this->request, _t('Reset'), '', '*', '*', '*'); ?>
+			<?php print caNavLink($this->request, _t('Reset'), '', '*', '*', '*'); ?>
 <?php
-	}
+		}
 	
-	foreach($this->getVar('facets') as $vs_facet => $va_facet_info) {
+		foreach($this->getVar('facets') as $vs_facet => $va_facet_info) {
 ?>
-		<div class='<?php print $vs_facet;?>Block'>
-			<div class='listTitle'><?php print $va_facet_info['label_plural']; ?></div>
+			<div class='<?php print $vs_facet;?>Block'>
+				<div class='listTitle'><?php print $va_facet_info['label_plural']; ?></div>
 <?php
-			foreach($va_facet_info['content'] as $vn_item_id => $va_item) {
-				print "<p>";
-				if (isset($va_criteria[$vs_facet]) && ($va_criteria[$vs_facet] == $va_item['id'])) {
-					print "<strong>".$va_item['label']."</strong>";		// Selected facet
-				} else {
-					print caNavLink($this->request, $va_item['label'], '', '*', '*', '*', array('facet' => $vs_facet, 'id' => $va_item['id']));
+				foreach($va_facet_info['content'] as $vn_item_id => $va_item) {
+					print "<p>";
+					if (isset($va_criteria[$vs_facet]) && ($va_criteria[$vs_facet] == $va_item['id'])) {
+						print "<strong>".$va_item['label']."</strong>";		// Selected facet
+					} else {
+						print caNavLink($this->request, $va_item['label'], '', '*', '*', '*', array('facet' => $vs_facet, 'id' => $va_item['id']));
+					}
+					print "</p>\n";
 				}
-				print "</p>\n";
-			}
 ?>
-		</div>
+			</div>
 <?php
+		}
 	}
 ?>
 	</div>
