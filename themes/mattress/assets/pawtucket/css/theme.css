@@ -251,6 +251,9 @@ hr {
 	clear:both;
 	margin-bottom:10px;
 }
+#frontPageText {
+	margin-top: 30px;
+}
 .blockFeatured {
 	float: left;
 	width: 785px;
@@ -264,9 +267,10 @@ hr {
 	font-size: 12px;
 	font-family: "ProximaNovaRegular";
 	margin-right:20px;
+	padding-bottom: 30px;
 }
 .featuredObject .featuredObjectImg{
-	height:400px;
+	height: 450px;
 	overflow: hidden;
 }
 .featuredObject .artwork{
@@ -388,7 +392,7 @@ h2 span.artist {
 	padding-left:15px;
 }
 #detail #cont img {
-	width:auto;
+	width: 100%;
 }
 #mediaArea {
 	width:775px;
@@ -547,7 +551,6 @@ h2 span.artist {
 }
 
 #multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious {
-	margin-top:-16px;
 	background-position:50% 50%;
 	background-repeat:no-repeat;
 	background-color:#fff;
@@ -559,6 +562,7 @@ h2 span.artist {
 }
 #multiSearch .scrollButtonNext {
 	background-image: url('../graphics/glyphicons_223_chevron-right.png');
+	background-position: center 50px;
 }
 #multiSearch .scrollButtonNext:hover, #multiSearch .scrollButtonPrevious:hover {
 	background-color:#f7f7f7;
@@ -905,12 +909,12 @@ span.criteria {
 	clear: both;
 	text-align: right; 
 }
-.btn-group .sortBy {
+.btn-group .sortBy, .sortMenu .sortBy{
 	float:left;
 	margin-right:10px;
 	font-size:13px;
 }
-.btn-group .dropdown-menu {
+.btn-group .dropdown-menu, .sortMenu ul{
 	display:inline-block;
 	border:0px;
 	background-color:transparent;
@@ -922,11 +926,11 @@ span.criteria {
 	line-height:1.1em;
 	min-width:30px;
 }
-.btn-group .dropdown-menu li{
+.btn-group .dropdown-menu li, .sortMenu li{
 	display:inline;
 	float:left;
 }
-.btn-group .dropdown-menu li a{
+.btn-group .dropdown-menu li a, .sortMenu li a{
 	padding:0px;
 	font-size:13px;
 	margin-right:10px;
@@ -936,6 +940,11 @@ span.criteria {
 .btn-group .dropdown-menu li a:hover {
 	background:transparent;
 	color:#000;
+}
+.fullResults {
+	float: left;
+	margin-right: 10px;
+	font-size: 13px; 
 }
 /* List View */
 
@@ -980,10 +989,31 @@ span.criteria {
 	width: 585px;
 	float: left;
 }
+#contentArea.listing p {
+	line-height:1.5em;
+	font-size:15px;
+}
+#contentArea.listing h3 a:hover {
+	text-decoration:none;
+}
+#pageTitle p, #pageTitle p a {
+	text-transform:uppercase;
+	color:#fff;
+	font-size:12px;
+	padding:0px;
+	margin:0px;
+}
+#pageTitle p.toolkit a {
+	color: #EE3E43;
+}
+#pageTitle .pageTitle {
+	display:inline-block;
+	margin-bottom:10px;
+}
 .lessonInfo {
 	width:100%;
 	background-color:#f7f7f7;
-	margin-bottom:10px;
+	margin-bottom:20px;
 	clear:both;
 }
 .lessonImage {
@@ -1011,13 +1041,18 @@ span.criteria {
 	color:#000;
 }
 .tags {
-	color: #EE3E43;
 	margin-top: 20px;
+}
+.tags a{
+	color: #EE3E43;
+	padding-top:5px;
+	display:inline-block;
 }
 #listingTags {
 	float:right;
 	width:185px;
 	margin-left:15px;
+	margin-top:25px;
 }
 .listTitle {
 	background-color:#000;
@@ -1029,7 +1064,7 @@ span.criteria {
 	text-transform:uppercase;
 	padding-left:5px;
 }
-.tagBlock, .themeBlock, .artistBlock {
+.tags_facetBlock, .theme_facetBlock, .artist_facetBlock {
 	margin-bottom:25px;
 }
 /* Scrollbars */

@@ -48,6 +48,8 @@
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
+ 			
+ 			caSetPageCSSClasses(array("sets"));
  		}
  		# -------------------------------------------------------
  		function Index() {
@@ -68,9 +70,10 @@
  		# ------------------------------------------------------
  		function setDetail() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			AssetLoadManager::register("mediaViewer");
  			
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("preview"), "checkAccess" => $this->opa_access_values)));
+ 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("medium"), "checkAccess" => $this->opa_access_values)));
 			$this->view->setVar("set", $t_set);
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();

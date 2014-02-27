@@ -2,6 +2,7 @@
 
 
 {{{<unit relativeTo="ca_collections" delimiter="<br/>"><ifdef code="ca_collections.CollectionNote.NoteContent%[NoteType=abstract]"><b>About the Collection</b>: ^ca_collections.CollectionNote.NoteContent%[NoteType=abstract]<br/><br/></ifdef></unit>}}}
+
 <H5>{{{ca_objects.preferred_labels.name}}}</H5>
 
 {{{<ifcount code="ca_entities" min="1" max="1"><b>Related person: </b></ifcount>}}}
