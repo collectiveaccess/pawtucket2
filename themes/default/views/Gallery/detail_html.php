@@ -14,9 +14,7 @@
 		<div class="col-sm-5">
 <?php
 			print "<H2>".$this->getVar("label")."</H2>";
-			print "<p>".$this->getVar("description")." Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed luctus eu dui lobortis feugiat. Pellentesque luctus aliquet urna, et sagittis mauris lacinia eget. Sed sed pretium purus. Vivamus vel hendrerit velit. Aenean urna neque, viverra non tempor nec, hendrerit id risus. Donec aliquet facilisis velit, ut elementum magna placerat sed. Duis vel placerat neque. Pellentesque eu magna lacus. Cras mauris dolor, dignissim a scelerisque eu, mattis ut ligula. Fusce consectetur mattis enim eget tristique. Nulla neque magna, sollicitudin ultrices enim malesuada, consequat dictum lorem. Vivamus tristique lacus eget tincidunt scelerisque. Etiam ornare orci eget ipsum convallis, at hendrerit urna aliquet. Nullam sapien orci, consequat ut faucibus lobortis, fermentum tristique tellus.
-
-Vestibulum id lectus sit amet orci placerat egestas. Duis lacus neque, tincidunt scelerisque massa et, pretium interdum nunc. Sed mollis, sem sit amet pulvinar commodo, risus enim elementum ante, sed auctor justo erat eu diam. Quisque odio lacus, sollicitudin quis quam ac</p>";
+			print "<p>".$this->getVar("description")."</p>";
 ?>
 		</div><!-- end col -->
 		<div id="galleryDetailImageGrid" class="col-sm-3"><div id="row">
