@@ -5,7 +5,7 @@
 <?php
 	}
 ?>
-			<H2><?php print _t("Login"); ?></H2>
+			<H1><?php print _t("Login"); ?></H1>
 <?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
