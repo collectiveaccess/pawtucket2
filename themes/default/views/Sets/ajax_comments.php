@@ -6,30 +6,31 @@
 	$vs_tablename = $this->getVar("tablename");
 	$va_comments = $this->getVar("comments");
 	if($vb_close){
-		print "<div>".$vs_message."</div>";
+		print "<p class='text-center'><br/><br/><span class='alert alert-success'>".$vs_message."</span></p>";
 ?>
 		<script type="text/javascript">
 			$(document).ready(function() {
 				setTimeout(function(){
 					jQuery('#comment<?php print $vn_item_id; ?>').hide();
-				}, 2000);			
+					<?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?>
+				}, 2000);	
 			});
 		</script>
 <?php
 	}else{
 ?>
-	<div class="pull-right"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); return false;'><i class="fa fa-times"></i></a></div>
-	<div class="text-center"><strong><small><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></small></strong></div>
+	<div class="pull-right"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;'><i class="fa fa-times"></i></a></div>
+	<div class="text-center"><strong><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></strong></div>
 <?php
 		if(sizeof($va_comments)){
 			$t_author = new ca_users();
 			print "<div class='lbComments'>";
 			foreach($va_comments as $vn_comment_id => $va_comment){
-				print "<small><blockquote>";
+				print "<blockquote>";
 				$t_author->load($va_comment["user_id"]);
 				print $va_comment["comment"]."<br/>";
 				print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
-				print "</blockquote></small>";
+				print "</blockquote>";
 			}
 			print "</div>";
 		}
@@ -48,6 +49,7 @@
 			<input type="hidden" name="tablename" value="<?php print $vs_tablename; ?>">
 			<input type="hidden" name="item_id" value="<?php print $vn_item_id; ?>">
 		</form>
+		<div style="clear:both;"></div>
 	</div>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {

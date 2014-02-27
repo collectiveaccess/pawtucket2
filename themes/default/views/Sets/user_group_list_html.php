@@ -3,7 +3,7 @@
 	$t_user_group = new ca_user_groups();
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<h2><?php print _t("Your User Groups"); ?></h2>
+<H1><?php print _t("Your User Groups"); ?></H1>
 <?php
 	if(sizeof($va_user_groups)){
 		foreach($va_user_groups as $va_user_group){

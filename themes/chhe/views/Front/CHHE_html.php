@@ -1,3 +1,9 @@
+<?php
+	$this->setVar('list_code', $vs_list_code = $this->getVar('config')->get('front_page_toc_list_code'));
+	
+	print $this->render("Front/toc_functions_html.php"); 
+	if ($this->request->isAjax()) { return; }
+?>
 <div id="frontPage" class="subhomeslide">
 
 
@@ -101,57 +107,9 @@
 	</div><!-- end row --></div><!-- end container --></div><!-- end container -->
 </div><!-- end subhomeslide --> 
 
+<?php 
+	print $this->render("Front/toc_html.php"); 
+?>
 
-<div class="container subhomebody">
-	<div class="row">
-		<div class="col-sm-3 mainmenu">
-			<!--main menu will go here-->
-			<ol>
-				<li class="selected"><a href="#">Jewish Holidays &amp; Festivals</a></li>
-				<li><a href="#">Jewish Life Cycles</a></li>
-				<li><a href="#">Torah &amp; Synagogue</a></li>
-				<li><a href="#">Jewish Community</a></li>
-				<li><a href="#">World War II & The Holocaust</a></li>
-				<li><a href="#">Zionism &amp; State of Israel</a></li>
-				<li><a href="#">Jewish Art</a></li>
-				<li><a href="#">Cincinnati Judaica</a></li>
-				<li><a href="#">Jewish Medals, Tokens, Plaques & Pins</a></li>
-			</ol>
-		</div><!-- end col -->
-		<div class="col-sm-9"> <h1>Jewish Holidays &amp; Festivals</h1>
-			<div class="row">
-				<div class="col-sm-7 sectionpreview">
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis varius iaculis dolor. Proin elementum leo a ipsum consectetur, mattis rutrum lacus eleifend. In viverra fermentum lectus, ut varius mi tempor ut. Suspendisse congue dapibus sapien, sit amet interdum risus aliquet eu. Nullam euismod at erat eget pulvinar. Aenean posuere nec libero eu auctor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris aliquam rutrum cursus. Morbi feugiat condimentum augue, interdum blandit ligula dignissim ac. Sed nec massa sit amet sem convallis congue vel blandit arcu.</p>
-					<p>Vivamus tortor ligula, accumsan ac sapien vitae, sagittis egestas magna. Integer sodales ornare ullamcorper. Vivamus ut lacinia magna. Curabitur rutrum tortor lorem, et elementum nisl fermentum eu. Praesent elementum sed eros quis elementum. Nulla enim sem, suscipit eu sem non, feugiat mollis massa. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nullam in hendrerit ipsum, at faucibus nisl.</p>
-				</div><!-- end row -->
-			
-				<div class="col-sm-5 submenu">
-					<ul>
-						<li><a href="#">Shabbat</a></li>
-						<li><a href="#">Rosh Hashanah (the Jewish New Year)</a></li>
-						<li><a href="#">Yom Kippur (the Day of Atonement)</a></li>
-						<li><a href="#">Sukkot (the Festival of Booths)</a></li>
-						<li><a href="#">Shemini Atzeret & Simchat Torah</a></li>
-						<li><a href="#">Hanukah (the Festival of Lights)</a></li>
-						<li><a href="#">Tu BiShvat (New Year for Trees)</a></li>
-						<li><a href="#">Purim</a></li>
-						<li><a href="#">Passover</a></li>
-						<li><a href="#">Counting of the Omer</a></li>
-						<li><a href="#">Lag B'Omer</a></li>
-						<li><a href="#">Yom HaShoah (Holocaust Memorial Day)</a></li>
-						<li><a href="#">Yom HaZikaron (Israeli Memorial Day)</a></li>
-						<li><a href="#">Yom HaAtzma'ut (Israeli Independence Day)</a></li>
-						<li><a href="#">Yom Yerushalayim (Jerusalem Day)</a></li>
-						<li><a href="#">Shavuot</a></li>
-						<li><a href="#">&quot;The Three Week&quot; &amp; Tish'a B'Av</a></li>
-			(Fast Commemorating the Destruction of the Temple in Jerusalem)</a></li>
-						<li><a href="#">Elul & Selichot</a></li>
-						<li><a href="#">5 Minor Fast Days</a></li>
-						<li><a href="#">Rosh Chodesh (Beginning of the New Month)</a></li>
-						<li><a href="#">Shmita (the Sabbatical Year in the Land of Israel)</a></li>
-					</ul>
-				</div><!-- end col -->
-			</div><!-- end row -->
-		</div><!-- end col -->
-	</div><!-- end row -->	
 </div> <!--end container subhomebody-->
+

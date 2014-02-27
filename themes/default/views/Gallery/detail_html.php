@@ -13,7 +13,7 @@
 	<div id="row">
 		<div class="col-sm-5">
 <?php
-			print "<H2>".$this->getVar("label")."</H2>";
+			print "<H4>".$this->getVar("label")."</H4>";
 			print "<p>".$this->getVar("description")."</p>";
 ?>
 		</div><!-- end col -->

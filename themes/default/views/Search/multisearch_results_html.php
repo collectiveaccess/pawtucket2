@@ -1,17 +1,14 @@
 <?php
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
-?>
-<div id="multiSearch">
-<?php
 	if ($va_result_count > 0) {
 ?>
 		<small class='pull-right'>
 <?php
 		$i = 0;
 		foreach($this->getVar('blockNames') as $vs_block) {
-			$i++;
 			if ($va_results[$vs_block]['count'] == 0) { continue; }
+			$i++;
 			if($i > 1){
 				print " | ";
 			}
@@ -36,4 +33,3 @@
 		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
 	}
 ?>
-</div>
