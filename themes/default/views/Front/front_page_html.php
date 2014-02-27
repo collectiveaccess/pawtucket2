@@ -29,9 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-	<div id="frontPage">
-<?php
 	$va_item_ids = $this->getVar('featured_set_item_ids');
 	if(is_array($va_item_ids) && sizeof($va_item_ids)){
 		$t_object = new ca_objects();
@@ -138,4 +135,3 @@
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
 </div> <!--end container-->
-</div><!-- end frontPage -->

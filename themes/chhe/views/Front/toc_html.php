@@ -1,10 +1,13 @@
 <?php
 	$vs_list_code = $this->getVar("list_code");
-	
-	$t_list = ca_lists::find(array('list_code' => $vs_list_code), array('returnAs' => 'firstmodelinstance'));
-	$va_list_items = $t_list->getItemsForList($vs_list_code, array('directChildrenOnly' => true, 'extractValuesByUserLocale' => true, 'enabledOnly' => true));
-	
-	$vn_selected_top_level_item_id = array_shift(array_keys($va_list_items));
+	$va_list_items = array();
+	if($vs_list_code){
+		$t_list = ca_lists::find(array('list_code' => $vs_list_code), array('returnAs' => 'firstmodelinstance'));
+		if($t_list){
+			$va_list_items = $t_list->getItemsForList($vs_list_code, array('directChildrenOnly' => true, 'extractValuesByUserLocale' => true, 'enabledOnly' => true));
+			$vn_selected_top_level_item_id = array_shift(array_keys($va_list_items));
+		}
+	}
 ?>
 <div class="container subhomebody">
 	<div class="row">

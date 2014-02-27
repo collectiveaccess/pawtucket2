@@ -7,7 +7,7 @@
 <?php
 	}
 ?>
-<H2><?php print _t("Register"); ?></H2>
+<H1><?php print _t("Register"); ?></H1>
 <?php
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
