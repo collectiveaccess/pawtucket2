@@ -67,7 +67,19 @@
         
         if (!data) { data = {}; }
         data['initialized'] = true;
-        data['sort'] = (_options.sortControlSelector) ? jQuery(_options.sortControlSelector).val() : _options.itemSort;
+        data['sort'] = _options.itemSort;
+        if (_options.sortControlSelector) {
+        	if (jQuery(_options.sortControlSelector).find('li').length) {
+        		// is a list
+        		if (jQuery(_options.sortControlSelector).find('li.selectedSort').length) {
+        			data['sort'] = jQuery(_options.sortControlSelector).find('li.selectedSort a').attr('rel');
+        		} else {
+        			data['sort'] = jQuery(_options.sortControlSelector).find('li a').attr('rel');
+        		}
+        	} else {
+        		data['sort'] = jQuery(_options.sortControlSelector).val();
+        	}
+        }
         
         $e.data('hscroll', data);
       	
@@ -111,7 +123,7 @@
         		_setScrollControls();
         		return; 
         	}
-        	if (_needsLoad()) {									
+        	if (_needsLoad()) {								
         		_load(loadedTo + _options.itemsPerLoad);
         	}
         	
@@ -132,9 +144,21 @@
           });
          
 		if (_options.sortControlSelector) {
-			jQuery(_options.sortControlSelector).on("change", function(e) {
-				$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
-			});
+			var li = jQuery(_options.sortControlSelector).find('li');
+			if (li.length) {
+				li.find("a").on('click', function(e) {
+					jQuery(this).parent().parent().find('li').removeClass('selectedSort');
+					jQuery(this).parent().addClass('selectedSort');
+					$e.hscroll({sort: jQuery(this).attr('rel')});
+					e.stopPropagation();
+					return false;
+				});
+				
+			} else {
+				jQuery(_options.sortControlSelector).on("change", function(e) {
+					$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
+				});
+			}
 		}
 		
 		if (_options.scrollPreviousControlSelector) {
@@ -189,6 +213,9 @@
 			jQuery(_options.scrollNextControlSelector).css("opacity", (sl + $e.width() >= sw) ? _options.scrollControlDisabledOpacity : 1.0);
 		}
 		
+		//
+		// Do we need to load more content given the current scroll position?
+		//
 		function _needsLoad() {
 			if (options.itemsPerLoad >= options.itemCount) { return false; }
 			var left = parseInt(_getScrollLeft());
@@ -201,12 +228,15 @@
         	return false;
 		}
 		
+		//
+		// Current scroll position
+		//
 		function _getScrollLeft(pos) {
 			if (_usingJScrollPane()) {
 				// using jScrollPane
         		var api = $e.data('jsp');
         		if (!api)  return 0;
-        		var left = parseInt(api.getContentPositionX());
+        		var left = api.getContentPositionX();
         		
         		if((pos !== null) && (pos !== undefined)) {
         			api.scrollToX(pos, true);
@@ -220,7 +250,9 @@
         	}
 		}
 		
-		
+		//
+		// Is the area we're scrolling a JScrollPane area or a plain-old <div>?
+		//
 		function _usingJScrollPane() {
 			return (jQuery($e).find(".jspContainer").length > 0);
 		}
@@ -268,6 +300,10 @@
 					$e.find(_options.itemContainerSelector).css("width", _calculateWidth() + "px");
 					
 					loading = false;
+				}
+				
+				if (_usingJScrollPane) {
+					$e.jScrollPane();
 				}
 			});
 			

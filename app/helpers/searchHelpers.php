@@ -401,6 +401,17 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$vn_count = $qr_res->numHits();
 			$va_sort_by = caGetOption('sortBy', $va_block_info, null);
 			
+			$vs_sort_list = '';
+			if(is_array($va_sort_by)) {
+				$va_sort_list = array();
+				foreach ($va_sort_by as $vs_sort_label => $vs_sort) {
+					$va_sort_list[] = "<li><a href='#' rel='{$vs_sort}'".(($vs_sort == $ps_sort) ? "class='selectedSort'" : '').">{$vs_sort_label}</a></li>";
+				}
+				
+				$vs_sort_list = "<ul id='{$vs_block}_sort'>".join("\n", $va_sort_list)."</ul>";
+			}
+			
+			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
 			$o_view->setVar('result', $qr_res);
 			$o_view->setVar('count', $vn_count);
@@ -413,7 +424,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('hasMore', (bool)($vn_count > $vn_start + $vn_items_per_page));
 			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort"), array("value" => $ps_sort)) : ''));
-			$o_view->setVar('sortByControl', $vs_sort_by_select);
+			$o_view->setVar('sortByControl', $vs_sort_by_select); // synonym for sortBySelect
+			$o_view->setVar('sortByList', $vs_sort_list);
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('search', $ps_search_expression);
 			$o_view->setVar('cacheKey', md5($ps_search_expression));

@@ -38,7 +38,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortMenu">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->Sort By {{{sortByControl}}}
+				<span class='sortBy'>Sort By</span>{{{sortByList}}}			
 			</small>
 			<div class='blockTitle'><?php print $va_block_info['displayName']; ?></div>
 			<div class='blockResults'>
@@ -54,7 +54,7 @@
 			<div class='{{{block}}}Result'>
 <?php
 			print "<div class='objImage'>";
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags'));
+			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags'));
 			if (sizeof($va_images) > 0){
 				foreach ($va_images as $vn_image_id => $vs_image) {
 					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");

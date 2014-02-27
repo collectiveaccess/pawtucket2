@@ -40,12 +40,18 @@
  		 */
  		private $opo_result_context = null;
  		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $opa_access_values = array();
+ 		
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			$this->opa_access_values = caGetUserAccessValues($po_request);
  			
  			caSetPageCSSClasses(array("browse", "results"));
  		}
@@ -162,20 +168,12 @@
 			$this->view->setVar('sort', $ps_sort);
 			
 
-			$o_browse->execute();
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 		
 			//
 			// Facets
 			//
 			$va_facets = $o_browse->getInfoForAvailableFacets();
-			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
-				foreach($va_facets as $vs_facet_name => $va_facet_info) {
-					if (!in_array($vs_facet_name, $va_available_facet_list)) {
-						unset($va_facets[$vs_facet_name]);
-					}
-				}
-			} 
-		
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
 			}
