@@ -1300,7 +1300,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 			<script type="text/javascript">
 				_V_.players["<?php print $vs_id; ?>"] = undefined;	// make sure VideoJS doesn't think it has already loaded the viewer
 				jQuery("#<?php print $vs_id; ?>").attr('width', jQuery('#<?php print $vs_id; ?>:parent').width()).attr('height', jQuery('#<?php print $vs_id; ?>:parent').height());
-				_V_("<?php print $vs_id; ?>", {}, function() {});
+				_V_("<?php print $vs_id; ?>", {techOrder: ["flash", "html5"] }, function() {});
 			</script>
 			<!-- End VideoJS -->
 <?php

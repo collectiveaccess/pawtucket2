@@ -101,7 +101,8 @@
 						
 					$vs_mail_message_html = ob_get_contents(); 
 					ob_end_clean();
-					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					
+					if(caSendmail(join(",", $this->config->getList("contact_email")), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
 						$this->render("Contact/success_html.php");
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
