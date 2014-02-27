@@ -37,25 +37,27 @@
 ?>
 
 <div id='listingResults'>
+<?php
+	if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts) > 1) {
+?>
 	<H1>	
 		<div class="btn-group">
 			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 			<ul class="dropdown-menu" role="menu">
 <?php
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-						if ($vs_current_sort === $vs_sort) {
-							print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
-						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('sort' => $vs_sort))."</li>\n";
-						}
+				foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+					if ($vs_current_sort === $vs_sort) {
+						print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+					} else {
+						print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('sort' => $vs_sort, 'facet' => $this->getVar('facet'), 'id' => $this->getVar('facet_id')))."</li>\n";
 					}
-				}
+				}			
 ?>
 			</ul>
 		</div><!-- end btn-group -->
 	</H1>
 <?php
+	}
  	print $this->render($va_listing_info['view']);
 ?>
 </div>
