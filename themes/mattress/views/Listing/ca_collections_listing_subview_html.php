@@ -45,7 +45,12 @@
 		while($qr_list->nextHit()) {
 			print "<div class='collectionInfo'>";
 			print "<h3>".$qr_list->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."</h3>\n";
-			print "<p>".$qr_list->get('ca_collections.collection_note', array('template' => '^collection_note_content'))."</p>\n";	
+			$va_collection_notes = $qr_list->get('ca_collections.collection_note', array('returnAsArray' => true));
+			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
+				if ($va_collection_note['collectio_note_type'] == 309) {
+					print "<p>".$va_collection_note['collection_note_content']."</p>\n";	
+				}
+			}
 			print "</div>";
 		}
 		print "</div>";

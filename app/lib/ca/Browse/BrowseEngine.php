@@ -3901,10 +3901,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 * in the restriction. You may pass numeric type_id and alphanumeric type codes interchangeably.
 		 *
 		 * @param array $pa_type_codes_or_ids List of type_id or code values to filter browse by. When set, the browse will only consider items of the specified types. Using a hierarchical parent type will automatically include its children in the restriction. 
+		 * @param array $pa_options Options include
+		 *		dontExpandHierarchically = 
 		 * @return boolean True on success, false on failure
 		 */
-		public function setTypeRestrictions($pa_type_codes_or_ids) {
-			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids);
+		public function setTypeRestrictions($pa_type_codes_or_ids, $pa_options=null) {
+			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids, array('dontExpandHierarchically' => caGetOption('dontExpandHierarchically', $pa_options, false)));
 			$this->opo_ca_browse_cache->setTypeRestrictions($this->opa_browse_type_ids);
 			return true;
 		}
@@ -3950,7 +3952,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 				if (isset($va_type_list[$vn_type_id]) && $va_type_list[$vn_type_id]) {	// is valid type for this subject
 					// See if there are any child types
-					if ((!isset($pa_options['dontExpandHierarchically']) && !$pa_options['dontExpandHierarchically']) && !$this->opb_dont_expand_type_restrictions) {
+					if ((!caGetOption('dontExpandHierarchically', $pa_options, false)) && !$this->opb_dont_expand_type_restrictions) {
 						$t_item = new ca_list_items($vn_type_id);
 						$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
 					}

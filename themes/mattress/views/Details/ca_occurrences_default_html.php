@@ -22,8 +22,8 @@
 
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
 		if (sizeof($va_collections) > 0) {
-			print "<div class='mediaThumbs'>";
-					print "<div style='width:100000px'>";
+			print "<div class='mediaThumbs scrollBlock'>";
+					print "<div style='width:70000px'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 					
@@ -31,7 +31,7 @@
 						$t_collection = new ca_collections($va_collection_id);
 						
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));			
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
 						if ($t_collection->get('ca_collections.date.dc_dates_types') == 188) {
@@ -69,6 +69,9 @@
 		if (($vs_collection = $t_item->get('ca_occurrences.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
 			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
 		}
+		if (($vs_statement = $t_item->get('ca_occurrences.statement.statement_text', array('template' => '^statement_text'))) != "") {
+			print "<div class='description'><div class='metatitle'>"._t('Artist Statement')."</div>".$vs_statement."</div>";
+		}		
 ?>	
 
 		</div><!-- end infoArea-->
@@ -102,7 +105,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
 						
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
