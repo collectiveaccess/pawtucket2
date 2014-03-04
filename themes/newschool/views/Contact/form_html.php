@@ -51,9 +51,7 @@
 				<div class="form-group<?php print (($va_errors["affiliation"]) ? " has-error" : ""); ?>">
 					<label for="affiliation">Affiliation</label>
 					<select class="form-control input-sm" id="affiliation" name="affiliation">
-						<option value="New School Staff">New School Staff</option>
-						<option value="New School Student">New School Student</option>
-						<option value="New School Faculty">New School Faculty</option>
+						<option value="New School Staff">New School</option>
 						<option value="Other">Other</option>
 					</select>
 				</div>

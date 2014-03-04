@@ -14,7 +14,7 @@
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->
 		<div class="col-sm-10 col-md-10">
-			<H1>{{{^ca_collections.preferred_labels.displayname}}}</H1>
+			<H3>{{{^ca_collections.preferred_labels.displayname}}}</H3>
 			
 			{{{<ifcount code="ca_objects" min="2">
 			<div id="detailRelatedObjects">

@@ -1,6 +1,6 @@
-{{{<ifdef code="ca_objects.idno"><H3>^ca_objects.preferred_labels.name</H3></ifdef>}}}
+{{{<ifdef code="ca_objects.idno"><H4>^ca_objects.preferred_labels.name</H4></ifdef>}}}
 
-{{{<ifdef code="ca_objects.idno"><div class="uppercase">Identifer:</div>^ca_objects.idno<br/><br/></ifdef>}}}
+{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/><br/></ifdef>}}}
 
 {{{<ifdef code="ca_objects.idno">^ca_objects.description<br/><br/></ifdef>}}}
 

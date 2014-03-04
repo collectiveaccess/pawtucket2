@@ -3,7 +3,7 @@
 	$va_errors = $this->getVar("errors");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<h2><?php print _t("User Group"); ?></h2>
+<H1><?php print _t("User Group"); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";

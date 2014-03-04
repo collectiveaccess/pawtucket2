@@ -17,7 +17,7 @@
 			{{{representationViewer}}}
 		</div>
 		<div class="col-md-5 col-sm-5 obj_detail_caption">
-			<h1>{{{ca_objects.preferred_labels.name}}}</h1>
+			<H3>{{{ca_objects.preferred_labels.name}}}</H3>
 			{{{<ifdef code="ca_objects.idno"><p><strong>Identifer:</strong> ^ca_objects.idno</p></ifdef>}}}
 			{{{<ifdef code="ca_objects.date.dates_value%[dc_dates_types=created]"><p><strong>Date:</strong> ^ca_objects.date.dates_value%[dc_dates_types=created]</p></ifdev>}}}	
 			{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
@@ -73,7 +73,7 @@
 			{{{<ifcount code="ca_entities" min="1"><div class="graybordered">
 				<ifcount code="ca_entities" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related person</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
 				<ifcount code="ca_entities" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related people</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
-				<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>
+				<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit><br/><br/>
 				</div><!-- graybordered --></ifcount>}}}
 		</div><!--end col3-->
 	</div><!-- end row -->	
