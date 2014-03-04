@@ -344,7 +344,7 @@ hr {
 h2 span.artist {
 	color:#000;
 }
-.detailSubtitle {
+.detailSubtitle, .collectionHeading {
 	font-family: "ProximaNovaBold";
 	padding:5px 0px 5px 0px;
 	font-size:14px;
@@ -436,7 +436,11 @@ h2 span.artist {
 	line-height: 1.4em;
 	font-size: 15px;
 }
-#infoArea .description .metatitle{
+#detail #infoArea p {
+	line-height: 1.4em;
+	font-size: 15px;
+}
+#infoArea .metatitle{
 	font-size:22px;
 	padding:8px 0px 8px 0px;
 }
@@ -493,6 +497,7 @@ h2 span.artist {
 }
 #detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet {
 	float:left;
+	padding-bottom:20px;
 }
 #detail.entities .description, #detail.occurrences .description{
 	width:auto;

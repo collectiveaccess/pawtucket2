@@ -8,7 +8,14 @@
 		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
-		<h2>{{{ca_objects.preferred_labels.name}}}</h2>
+<?php	
+
+		if($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+			print "<h2>".$t_object->get('ca_objects.nonpreferred_labels.name')."</h2>";
+		} else {
+			print "<h2>".$t_object->get('ca_objects.preferred_labels.name')."</h2>";
+		}		
+?>	
 		<div class='detailSubtitle'></div>
 		
 		<div id="mediaArea">

@@ -4,7 +4,13 @@
 
 <div id="detail">
 	<div id='pageTitle'>
-		<?php print "Artwork"; ?>
+<?php 
+	if ($t_item->get('ca_collections.type_id') == 131) {
+		print "Institutional Records Collection";
+	} else {
+		print "Artwork"; 
+	}
+?>
 	</div>
 	<div id="contentArea">
 		<div id='detailHeader'>
@@ -28,7 +34,11 @@
 			$va_media_thumbs_height = $va_primary_rep['info']['medium']['HEIGHT'];
 			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
 			
-			$va_main_image_object = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true));
+			if ($t_item->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name');				
+			} else {
+				$va_main_image_object = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true));
+			}
 			$va_main_image_caption = array_shift(array_values($va_main_image_object));
 			if ($va_primary_rep['tags']['medium']) {
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $vn_rep_id))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
@@ -69,9 +79,11 @@
 		
 		<div id='infoArea'>
 <?php
-		if (($vs_collection = $t_item->get('ca_collections.description', array('convertCodesToDisplayText' => true))) != " ") {
-			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
+		if (($vs_collection = $t_item->get('ca_collections.description.description_text') != " ") && ($t_item->get('ca_collections.type_id') != '131')) {
+			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
+		
+		if ($t_item->get('ca_collections.type_id') != '131') {
 ?>	
 			<div class='floorplan'>
 <?php
@@ -80,6 +92,22 @@
 				print "<div class='plan'><img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/floorplan.png' border='0'></div>";
 ?>		
 			</div>
+<?php
+		}
+		if ($t_item->get('ca_collections.type_id') == '131') {
+			print "<p>".$t_item->get('ca_collections.idno')."</p>";
+		}
+		if ($t_item->get('ca_collections.collection_note')) {
+			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
+				print "<div class='metatitle'>".$va_collection_note['collectio_note_type']."</div><p>".$va_collection_note['collection_note_content']."</p>\n";		
+			}
+		}
+?>	
+		{{{<unit><ifdef code="ca_collections.institutional_date.inclusive_date"><span class="collectionHeading">Inclusive Dates</span><p> ^ca_collections.institutional_date.inclusive_date</p></ifdef></unit>}}}
+		{{{<unit><ifdef code="ca_collections.institutional_date.bulk_dates"><span class="collectionHeading">Bulk Dates</span><p> ^ca_collections.institutional_date.bulk_dates</p></ifdef></unit>}}}
+		{{{<unit><ifdef code="ca_collections.extent.extent_value"><span class="collectionHeading">Extent</span><p> ^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</p></ifdef></unit>}}}
+
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 	<div id='relatedInfo'>
