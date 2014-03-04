@@ -26,6 +26,9 @@
 					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
+					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person or organization:</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><h3>Related people and organizations:</h3></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type:</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
@@ -51,26 +54,26 @@
 					{{{<ifdef code="ca_objects.measurementSet.measurements"><H3>Measurements:</H3>^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
 					
 					
-					{{{<ifdef code="ca_objects.idno"><H3>Identifier:</H3>^ca_objects.idno<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.containerID"><H3>Location:</H3>^ca_objects.containerID<br/></ifdef>}}}
 					
-					{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.descriptionSet.descriptionText"><H3>Description:</H3>^ca_objects.descriptionSet.descriptionText<br/></ifdef>}}}
 					
 					
 					
 					
-					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person or organization:</h3></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><h3>Related people and organizations:</h3></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 					
 					
 					{{{<ifcount code="ca_objects.LcshNames" min="1"><h3>LC Terms</h3></ifcount>}}}
 					{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
-					{{{<h3>MLA Citation:</h3><i>^ca_objects.preferred_labels.name</i>. <ifdef code="ca_objects.dateSet.setDisplayValue"><unit>^ca_objects.dateSet.setDisplayValue</unit>. </ifdef><ifcount code="ca_collections" min="1" max="1"><unit>^ca_collections.hierarchy.preferred_labels.name</unit>. </ifcount><i>New School Archives and Special Collections Digital Archive</i>. Web.
-					<?php
-					print date ("d M Y")
-					?>.
-					}}}
+					
+					{{{<ifcount code="ca_objects.LcshTopical" min="1"><h3>Subjects:</h3></ifcount>}}}
+					{{{<unit delimiter="<br/>">^ca_objects.LcshTopical</unit>}}}
+					
+					{{{<ifcount code="ca_list_items" min="1" max="5"><h3>Occupations, Materials & Techniques:</h3></ifcount>}}}
+					{{{<unit delimiter="<br/>">^ca_list_items.preferred_labels</unit>}}}
+					{{{<ifdef code="ca_objects.idno"><H3>Identifier:</H3>^ca_objects.idno<br/></ifdef>}}}
+					
+					{{{<h3>MLA Citation:</h3><i>^ca_objects.preferred_labels.name</i>. <ifdef code="ca_objects.dateSet.setDisplayValue"><unit>^ca_objects.dateSet.setDisplayValue</unit>. </ifdef><ifcount code="ca_collections" min="1" max="1"><unit>^ca_collections.hierarchy.preferred_labels.name</unit>. </ifcount><i>New School Archives and Special Collections Digital Archive</i>. Web. ^DATE}}}
 					<br><br>
 					<p><strong>There’s more!</strong> What you see on this site is only what is viewable online. 
 					Please visit our <a href='http://library.newschool.edu/speccoll'>website</a> to find out more about what’s in the archives.

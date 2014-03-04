@@ -26,12 +26,12 @@
 	</H1>
 	<div class="row">
 <?php
-	$vn_col_span = 3;
+	$vn_col_span = 6;
 	$vn_col_span_sm = 6;
 	$vb_read_and_write = false;
 	if((sizeof($va_write_sets)) && (sizeof($va_read_sets))){
 		$vb_read_and_write = true;
-		$vn_col_span = 6;
+		$vn_col_span = 12;
 		$vn_col_span_sm = 12;
 	}
 	$vn_items_per_row = 12/$vn_col_span;
@@ -41,58 +41,34 @@
 		print "<div class='col-sm-10 col-md-10 col-lg-10'>\n";
 	}
 	if(sizeof($va_write_sets)){
-		print "<H3>"._t("Write access sets")."</H3>\n";
+		print "<H2>"._t("Lightboxes you can edit")."</H2>\n";
 		$vn_i_set = 0;
+		print "<div class='row'>\n";
 		foreach($va_write_sets as $vn_set_id => $va_set_info){
-			if($vn_i_set == 0){
-				print "<div class='row'>\n";
-			}
 			$vn_i_set++;
 			$t_set->load($vn_set_id);
 			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
 			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => true));
 			print "\n</div><!-- end col -->\n";
-			if($vn_i_set == $vn_items_per_row){
-				print "</div><!-- end row -->\n";
-				$vn_i_set = 0;
-			}
 		}
-		if($vn_i_set && ($vn_i_set < $vn_items_per_row)){
-			while($vn_i_set < $vn_items_per_row){
-				print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'></div>\n";
-				$vn_i_set++;
-			}
-			print "</div><!-- end row -->\n";
-		}
+		print "</div><!-- end row -->\n";
 	}
 	if($vb_read_and_write){
 		print "</div><!-- end col-5 --><div class='col-sm-5 col-md-5 col-lg-5'>\n";
 	}
 	
 	if(sizeof($va_read_sets)){
-		print "<H3>"._t("Read access sets")."</H3>\n";
+		print "<H2>"._t("Lightboxes you can view")."</H2>\n";
 		$vn_i_set = 0;
+		print "<div class='row'>\n";
 		foreach($va_read_sets as $vn_set_id => $va_set_info){
-			if($vn_i_set == 0){
-				print "<div class='row'>\n";
-			}
 			$vn_i_set++;
 			$t_set->load($vn_set_id);
 			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
 			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => false));
 			print "</div><!-- end col -->\n";
-			if($vn_i_set == $vn_items_per_row){
-				print "</div><!-- end row -->\n";
-				$vn_i_set = 0;
-			}
 		}
-		if($vn_i_set && ($vn_i_set < $vn_items_per_row)){
-			while($vn_i_set < $vn_items_per_row){
-				print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'></div>\n";
-				$vn_i_set++;
-			}
-			print "</div><!-- end row -->\n";
-		}
+		print "</div><!-- end row -->\n";
 	}
 ?>
 		</div><!-- end col-md-5 or 10 -->
@@ -100,7 +76,7 @@
 <?php
 		if(is_array($va_activity_stream) && sizeof($va_activity_stream)) {
 ?>
-			<h3><?php print _t("activity stream"); ?></h3>
+			<h2><?php print _t("activity stream"); ?></h2>
 			 <div style="height:700px; overflow-y:auto; line-height:1.1em;">
 <?php
 				$o_dm = new Datamodel();

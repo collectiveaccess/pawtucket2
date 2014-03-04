@@ -43,14 +43,13 @@ a:hover {color:#BF0E00;}
 
 #pageArea{
 	max-width:1024px;
-	padding-top:30px;
 	background-color:#fff;
+	padding:30px 25px 0px 25px;
 }
-.gallery, .staticPage, .contact{
+#pageArea.detail{
 	padding-left:20px;
-	padding-right:20px;
+	padding-right:10px;
 }
-
 H1{
 	font-size: 20px;
 	color:#BF0E00;
@@ -265,9 +264,10 @@ li form {
 }
 
 
-#frontPage {margin-top:-30px;}
-
-#frontPage H1{
+#pageArea.front{
+	padding:0px;
+}
+.front H1{
 	font-size:20px;
 	color:#BF0E00;
 	line-height:1.3;
@@ -275,7 +275,7 @@ li form {
 	margin-top:15px;
 }
 @media (min-width: 768px) {
-	#frontPage H1 {
+	.front H1 {
 		font-size:28px;
 		/*padding-left:25px;
 		padding-right:25px;*/
@@ -285,33 +285,33 @@ li form {
 /*#frontPage .jcarousel-wrapper{
 	margin-top:-20px;
 }*/
-#frontPage .jcarousel-control-prev {
+.front .jcarousel-control-prev {
     left: 15px !important;
 }
-#frontPage .jcarousel-control-next {
+.front .jcarousel-control-next {
     right: 15px !important;
 }
-#frontPage .jcarousel-control-next,
-#frontPage .jcarousel-control-prev {
+.front .jcarousel-control-next,
+.front .jcarousel-control-prev {
     background-color: #000;
     color: #fff;
     border:2px solid #FFF;
     font: 24px/24px Arial, sans-serif;
 }
-#frontPage a.jcarousel-control-prev, #frontPage a.jcarousel-control-next{
+.front a.jcarousel-control-prev, .front a.jcarousel-control-next{
 	text-decoration:none;
 }
-#frontPage a.jcarousel-control-prev:hover, #frontPage a.jcarousel-control-next:hover {
+.front a.jcarousel-control-prev:hover, .front a.jcarousel-control-next:hover {
 	color:#FFF;
 }
-#frontPage .jcarousel-pagination {
+.front .jcarousel-pagination {
     position: relative;
     padding:0px;
     margin:-5px auto 0px auto;
     text-align:center;
 }
 
-#frontPage .jcarousel-pagination a {
+.front .jcarousel-pagination a {
     text-decoration: none;
     display: inline-block;
     
@@ -333,14 +333,14 @@ li form {
     opacity: .75;
 }
 
-#frontPage .jcarousel-pagination a.active {
+.front .jcarousel-pagination a.active {
     background: #fff;
     color: #fff;
     opacity: 1;
     text-shadow: none;
     text-decoration:none;
 }
-#frontPage .nav-pills > li > a {
+.front .nav-pills > li > a {
     background-color:#a8a8a8;
 }
 
@@ -351,25 +351,24 @@ li form {
 	text-transform:uppercase;
 	font-size:20px;}
 	
-#detail {
+.detail {
 	color:#4d4d4d;
 	font-size:12px;
 }
-#detail H1 {
+.detail H1 {
 	font-size:24px;
 	padding-bottom:15px;
 	margin-top:0px;
-	border-bottom: 1px solid #bbbbbb;
 	color:#262626;
 	text-transform:none;
 }
-#detail H2 {
+.detail H2 {
 	font-size:14px;
-	padding-bottom:15px;
+	padding-bottom:0px;
 	margin-top:0px;
 	color:#262626;
 }
-#detail H3 {
+.detail H3 {
 	font-size:14px;
 	padding-bottom:0px;
 	margin-bottom:0px;
@@ -377,7 +376,7 @@ li form {
 	color:#262626;
 	text-transform:uppercase;
 }
-#detail H4 {
+.detail H4 {
 	font-size:14px;
 	padding-bottom:0px;
 	margin-top:10px;
@@ -385,7 +384,9 @@ li form {
 	color:#4d4d4d;
 	text-transform:uppercase;
 }
-
+.detail #detailRelatedObjects a{
+	color:#454545;
+}
 
 .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a{
 	color:#9d9d9d;
@@ -450,4 +451,16 @@ li form {
 #BookReaderContainer{
 	width: 100%;
 	height: 500px;
+}
+
+.gallery #galleryDetailObjectInfo H3{
+	padding-top:20px;
+	text-transform:none;
+}
+.gallery h4 {
+	padding-top:30px;
+	font-size:20px;
+}
+.gallery H5 {
+	color:#454545;
 }

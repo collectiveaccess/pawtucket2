@@ -38,11 +38,11 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<H1>"._t("Filter by")."</H1>";
+		print "<H3>"._t("Filter by")."</H3>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			
-			print "<H2>".$va_facet_info['label_singular']."</H2>"; 
+			print "<H5>".$va_facet_info['label_singular']."</H5>"; 
 			
 			$vn_facet_size = sizeof($va_facet_info['content']);
 			$vn_c = 0;
@@ -72,37 +72,8 @@
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
-		/*function moveRefine(originalRefineOffset){
-			var offset = $("#bRefine").offset();
-			var offsetBrowseResultsContainer = $("h2:first").offset();
-			if($(document).scrollTop() < offsetBrowseResultsContainer.top){
-				jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
-			}else{
-				jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
-			}
-		}*/
-		/*jQuery(document).ready(function() {
-			var originalOffsetTop;
-			var originalOffset = $("#bRefine").offset();
-			originalOffsetTop = originalOffset.top;
-			$(window).scroll(function() {
-				clearTimeout($.data(this, 'scrollTimer'));
-				$.data(this, 'scrollTimer', setTimeout(function() {
-					// do something
-					var offset = $("#bRefine").offset();
-					if(($(document).scrollTop() > (offset.top + ($("#bRefine").height() - ($(window).height()/2)))) || (($(document).scrollTop() > $(window).height()) && ($(document).scrollTop() < offset.top))){
-						//jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
-						jQuery("#bRefine").animate({top: ($(document).scrollTop() - originalOffsetTop)});
-					}
-					if($(document).scrollTop() < $(window).height()){
-						var offsetBrowseResultsContainer = $("h2:first").offset();
-						jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
-					}
-				}, 50));
-			});
-		});*/
 		jQuery(document).ready(function() {
-			var offsetBrowseResultsContainer = $("h2:first").offset();
+			var offsetBrowseResultsContainer = $("H5:first").offset();
 			var lastOffset = $("#bRefine").offset();
 			$("body").data("lastOffsetTop", lastOffset.top);
 			$(window).scroll(function() {

@@ -31,22 +31,15 @@
  */
 ?>
 
-<div class="row">
-	<div class="container homebackground mainhome">
-<div class="col-sm-1"></div>
-	<div class="col-sm-5 text-center">
-	
-
-	
-<a href="<?php print caNavUrl($this->request, '*', '*', 'CJF'); ?>">
-	<?php print caGetThemeGraphic($this->request, 'homecjflogo@2x.png', array('class' => 'innershadow', 'alt' => 'Cincinnati Judaica Fund', 'width' => '394', 'height' => '394')); ?></a>
-	</div>
-	
-	<div class="col-sm-5 text-center">
-	<a href="<?php print caNavUrl($this->request, '*', '*', 'CHHE'); ?>">
-	<?php print caGetThemeGraphic($this->request, 'homecfhh_logo@2x.png', array('class' => 'innershadow', 'alt' => 'Center for Holocaust and Humanity', 'width' => '394', 'height' => '394')); ?></a></div>
-
-	<div class="col-sm-1"></div>
-	</div> 
-	<!--end homebackground-->
+<div class="container homebackground mainhome">
+	<div class="row">	
+		<div class="col-sm-1"></div>
+		<div class="col-sm-5 text-center">
+			<a href="<?php print caNavUrl($this->request, '*', '*', 'CJF'); ?>"><?php print caGetThemeGraphic($this->request, 'homecjflogo@2x.png', array('class' => 'innershadow', 'alt' => 'Cincinnati Judaica Fund', 'width' => '394', 'height' => '394')); ?></a>
+		</div>
+		<div class="col-sm-5 text-center">
+			<a href="<?php print caNavUrl($this->request, '*', '*', 'CHHE'); ?>"><?php print caGetThemeGraphic($this->request, 'homecfhh_logo@2x.png', array('class' => 'innershadow', 'alt' => 'Center for Holocaust and Humanity', 'width' => '394', 'height' => '394')); ?></a>
+		</div>
+		<div class="col-sm-1"></div>
 	</div><!--end row-->
+</div><!--end homebackground-->
