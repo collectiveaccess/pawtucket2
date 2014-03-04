@@ -103,6 +103,7 @@
  			}
  			
  			$o_browse->addCriteria("_search", array($vs_search));
+ 			$o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true));
  			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 			//
 			// Facets for search 
@@ -128,13 +129,15 @@
  			//
 			// Sorting
 			//
+			$va_sort_by = caGetOption('sortBy', $va_listing_info, null);
 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
- 				$ps_sort = $this->opo_result_context->getCurrentSort();
+ 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
+ 					$ps_sort = array_shift(array_keys($va_sort_by));
+ 				}
  			}
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			
-			$va_sort_by = caGetOption('sortBy', $va_listing_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
@@ -145,7 +148,6 @@
  			$va_res_list = array();
  			
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
-			
 			
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
  			while($qr_res->nextHit()) {

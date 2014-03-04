@@ -25,7 +25,7 @@
 <?php		
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
 		if (sizeof($va_collections) > 0) {
-			print "<div class='mediaThumbs'>";
+			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div style='width:100000px'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {

@@ -21,6 +21,16 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter hide.bs.dropdown',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48448438-1', 'newschool.edu');
+  ga('send', 'pageview');
+
+	</script>
 </head>
 <body>
 <?php 
@@ -31,13 +41,13 @@
 			<span class="newschool">The New School</span>
 			<div class="container breadcrumb">Home &gt; Libraries & Archives &gt; Special Collections</div>
 	
-			<span class="kellen"><a href="/">The New School Digital Archives</a></span>
+			<span class="kellen"><a href="/">The New School Archives: Digital Collections</a></span>
 		</div>
 <?php
 	}else{
 		# --- condensed header
 ?>
-		<div class="container nslogotypesub"><span class="newschool">The New School </span><span class="kellen"><a href="/"> The New School Digital Archives</a></span></div>		
+		<div class="container nslogotypesub"><span class="newschool">The New School </span><span class="kellen"><a href="/"> The New School Archives: Digital Collections</a></span></div>		
 <?php
 	}
 ?>
@@ -102,7 +112,7 @@
 	# --- display breadcrumb trail on interior pages
 	if($this->request->getController() != "Front"){
 ?>
-		<div class="container breadcrumb subcrumb">Home > Libraries & Archives > Special Collections</div>		
+		<div class="container breadcrumb subcrumb"><a href="http://www.newschool.edu/">Home</a> > <a href="http://library.newschool.edu/">Libraries & Archives</a> > <a href="http://library.newschool.edu/speccoll/index.php">Archives & Special Collections</a> > <a href="http://digitalarchives.library.newschool.edu/">Digital Collections</a></div>		
 <?php
 	}
 ?>
