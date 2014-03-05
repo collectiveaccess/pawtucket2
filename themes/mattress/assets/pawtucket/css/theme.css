@@ -547,7 +547,9 @@ h2 span.artist {
 .collectionInfo {
 	margin:15px 0px 15px 0px;
 }
-
+.collectionInfo h3{
+	text-transform:capitalize;
+}
 /* Search Results */
 
 #multiSearch {
@@ -647,7 +649,7 @@ h2 span.artist {
 	padding: 15px 20px 0px 0px;
 	overflow-y:scroll;
 	min-height:165px;
-	height:200px;
+	height:240px;
 	/* height:auto; */
 	clear:none;
 }
@@ -662,9 +664,14 @@ h2 span.artist {
 }
 #multiSearch .entitiesSet, #multiSearch .placesSet, #multiSearch .occurrencesSet, #multiSearch .eventsSet {
 	padding-top:0px;
+	padding-bottom:25px;
+}
+#multiSearch .entitiesSet {
+	float:left;
+	padding-bottom:25px;
 }
 #multiSearch .entitiesResult, #multiSearch .eventsResult, 
-#detail .entitiesResult {
+#detail .entitiesResult, #detail .collectionsResult div{
 	margin-bottom: 15px;
 	margin-right: 30px;
 	width: 250px;
@@ -694,7 +701,7 @@ h2 span.artist {
 	background-color:transparent;
 	padding: 0px;
 	width: 160px;
-	height: 160px;
+	height: 190px;
 }
 #multiSearch .occurrencesResult {
 	margin:10px;
@@ -709,7 +716,7 @@ h2 span.artist {
 #multiSearch .eventsSet {
 	float: left;
 	width: 250px;
-	height: 170px;
+	height: 180px;
 	margin-right: 20px;
 	overflow: hidden;
 }
@@ -776,7 +783,16 @@ h2 span.artist {
 	overflow-y:hidden;
 	width:100%;
 }
-
+#detail .artworkResult {
+	float:none;
+	width: 300px;
+	height:auto;
+	overflow: hidden;
+	font-family: "ProximaNovaBold";
+	margin-right: 15px;
+	line-height: 16px;
+	margin-bottom:15px;
+}
 
 /* Browse Page */
 
