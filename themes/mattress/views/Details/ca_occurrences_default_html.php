@@ -11,7 +11,7 @@
 
 			<h2>
 				{{{<unit>^ca_occurrences.preferred_labels.name</unit>}}}
-				{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}
+				<!--{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}-->
 			</h2>
 <?php			
 			print "<div class='detailSubtitle'>".$t_item->get('ca_occurrences.event_dates', array('delimiter' => '<br/>'))."</div>"; 
@@ -79,9 +79,12 @@
 <?php
 	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
 	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor')));
+	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder')));
+	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true));
 
-	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0)) {
+
+	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_collections) > 0) | (sizeof($va_funders) > 0)) {
 ?>	
 	<div id='relatedInfo'>
 <?php
@@ -137,6 +140,8 @@
 		print "</div><!-- end entitiesBlock -->";
 	}
 	
+
+		
 	# Related Events Block
 	if (sizeof($va_events) > 0) {
 		print "<div id='occurrencesBlock'>";
@@ -167,11 +172,37 @@
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end occurrencesBlock-->";
 	}
-		
+	# Related Installation Block
+	if (sizeof($va_collections) > 0) {
+		print "<div id='collectionsBlock'>";
+		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+			print "<div class='blockResults'>";
+				print "<div>";
+					$vn_i = 0;
+					foreach ($va_collections as $collection_id => $va_collection) {
+						$vn_collection_id = $va_collection['collection_id'];
+						$t_collection = new ca_collections($vn_collection_id);
+
+						if ($vn_i == 0) {print "<div class='collectionSet'>";}
+						print "<div class='artworkResult'>";
+						print "<div>".caNavLink($this->request, $va_collection['label'], '', '', 'Detail', 'Occurrences/'.$vn_collection_id)."</div>";
+						print "</div>";
+						$vn_i++;
+						if ($vn_i == 5) {
+							print "</div>";
+							$vn_i = 0;
+						}
+					}
+					if ((end($va_collections) == $va_collection) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
+
+				print "</div>";	
+			print "</div><!-- end blockResults -->";
+		print "</div><!-- end collectionsBlock-->";
+	}	
 	# Related Entities Block
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
-		print "<div class='blockTitle related'>"._t('Related People')."</div>";
+		print "<div class='blockTitle related'>"._t('Related Artists + Curators')."</div>";
 			print "<div class='blockResults'>";
 				print "<div>";
 				$vn_i = 0;
@@ -190,6 +221,28 @@
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
+	# Related Funders Block
+	if (sizeof($va_funders) > 0) {
+		print "<div id='fundersBlock'>";
+		print "<div class='blockTitle related'>"._t('Related Funders')."</div>";
+			print "<div class='blockResults'>";
+				print "<div>";
+				$vn_i = 0;
+				foreach ($va_funders as $funder_id => $va_funder) {
+					$vn_funder_id = $va_funder['entity_id'];
+					if ($vn_i == 0) {print "<div class='entitySet'>";}
+					print caNavLink($this->request, "<div class='entitiesResult'>".$va_funder['displayname']."</div>", '', '','Detail', 'Entities/'.$va_funder['entity_id']);
+					$vn_i++;
+					if ($vn_i == 5) {
+						print "</div>";
+						$vn_i = 0;
+					}
+				}
+				if ((end($va_funders) == $va_funder) && ($vn_i < 5)){print "</div>";}								
+				print "</div>";
+			print "</div><!-- end blockResults -->";	
+		print "</div><!-- end entitiesBlock -->";
+	}	
 
 	
 ?>		
