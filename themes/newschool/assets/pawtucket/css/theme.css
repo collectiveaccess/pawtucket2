@@ -205,6 +205,13 @@ padding:0 0 0 15px;}
     color:#BF0E00;
     font-weight:bold;
 }
+.browseMenuContent{
+	padding-top:40px;
+	padding-bottom:40px;
+}
+.browseMenuContent a{
+	margin:0px 10px 0px 10px;
+}
 
 @media (min-width: 768px) {
 	.nav > li.dropdown > a.icon {
