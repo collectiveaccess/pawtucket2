@@ -35,7 +35,7 @@
 			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
 			
 			if ($t_item->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name');				
+				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name', array('returnAsArray' => true));				
 			} else {
 				$va_main_image_object = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true));
 			}
