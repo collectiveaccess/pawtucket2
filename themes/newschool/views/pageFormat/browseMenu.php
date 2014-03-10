@@ -40,7 +40,7 @@
 			Find: 
 <?php
 			foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-				print caNavLink($this->request, caUcFirstUTF8Safe($vs_browse_name).' &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_browse_name, '');
+				print caNavLink($this->request, caUcFirstUTF8Safe($vs_browse_name).' &nbsp;<i class="fa '.$va_browse_type["icon_class"].'"></i>', 'browseMenuBrowseAll btn btn-default btn', '', 'Browse', $vs_browse_name, '');
 			}
 		}
 ?>
