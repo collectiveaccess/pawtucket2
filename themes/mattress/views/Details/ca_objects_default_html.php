@@ -23,7 +23,12 @@
 		</div>
 		
 		<div id="infoArea">
+			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</ifdef></p>}}}
+			{{{<ifdef code="ca_objects.work_type"><div class='collectionHeading'>Type</div><p>^ca_objects.work_type</ifdef></p>}}}
+			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</ifdef></p>}}}
+
 			{{{<ifdef code="ca_objects.description"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
+		
 			<div class="clearfix"></div>
 		</div>
 	</div><!-- contentArea -->
