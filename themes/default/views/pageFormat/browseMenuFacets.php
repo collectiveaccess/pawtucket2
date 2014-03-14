@@ -45,10 +45,12 @@
 
 	<div class="container">
 		<div class='browseMenuBrowseSearch'>
-			<form><input type="text" size="20" id="browseMenuFacetSearchInput" 			class="browseMenuFacetSearchInput form-control" placeholder="Search facet"/></form>
+			<form><input type="text" size="20" id="browseMenuFacetSearchInput" class="browseMenuFacetSearchInput form-control" placeholder="Search facet"/></form>
 		</div> <!--end browseMenuSearch-->
 		<div class='browseMenuBrowseAll'>
-			<button type="button" class="btn btn-default btn-sm"><?php print caNavLink($this->request, _t('Browse all'), 'browseMenuBrowseAll', '', 'Browse', $vs_target, ''); ?>&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></btn>
+<?php
+		print caNavLink($this->request, _t('Browse all %1 &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', $vs_target), 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_target, '');
+?>
 		</div> <!--end browseMenuAll-->
 	</div><!--end container-->	
 <?php

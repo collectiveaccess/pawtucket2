@@ -34,6 +34,9 @@ h3, h4, h5, h6{
 h2{
 	color:#000;
 }
+
+
+
 a:link, a:visited, a:active {
 	color:#665E4C;
 }
@@ -191,6 +194,23 @@ padding:0 0 0 15px;}
 }
 .nav > li.dropdown > a.icon{
 	font-size:18px;
+}
+
+.filterMenuFacetList li.active {
+    background:transparent;
+    color:#BF0E00;
+}
+
+.filterMenuFacetList li.active a {
+    color:#BF0E00;
+    font-weight:bold;
+}
+.browseMenuContent{
+	padding-top:40px;
+	padding-bottom:40px;
+}
+.browseMenuContent a{
+	margin:0px 10px 0px 10px;
 }
 
 @media (min-width: 768px) {
@@ -407,8 +427,16 @@ li form {
 	/*background-color:#DADADA;
 	padding:20px;*/
 	line-height:.75em;
+	background:transparent;
+	padding: 0 0 0 10px;
+	line-height:110%;
 	/*padding-top:34px;*/
 }
+
+#bRefine H5{
+ 	color:#BF0E00;
+}
+
 #bRefine H1 {
 	color:#858585;
 	font-size:16px;
@@ -433,6 +461,15 @@ li form {
 #bRefine div {
 	margin-bottom:5px;
 }
+
+.bResultItem .bResultItemText {
+    font-size: 11px;
+    line-height:125%;
+}
+
+.results H5 { margin:0;padding:0;}
+
+.results H5 strong {font-weight:normal; text-transform:uppercase;}
 
 #pageTitle {
 	float: left;
