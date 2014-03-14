@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1814,6 +1814,9 @@
 				}
 			}
 			
+			// Values to exclude from list attributes and authorities; can be idnos or ids
+			$va_exclude_values = caGetOption('exclude_values', $va_facet_info, array(), array('castTo' => 'array'));
+			
 			$va_results = $this->opo_ca_browse_cache->getResults();
 			
 			$vb_single_value_is_present = false;
@@ -2265,16 +2268,16 @@
 						if ($va_facet_info['suppress'] && !is_array($va_facet_info['suppress'])) {
 							$va_facet_info['suppress'] = array($va_facet_info['suppress']);
 						}
+						
+						if(!is_array($va_suppress_values = caGetOption('suppress', $va_facet_info, null))) {
+							$va_suppress_values = caGetOption('exclude_values', $va_facet_info, null);
+						}
 						if ($vn_element_type == 3) { // list
 							$t_list = new ca_lists();
 							$va_list_items = caExtractValuesByUserLocale($t_list->getItemsForList($t_element->get('list_id')));
 							
-							if (isset($va_facet_info['suppress']) && is_array($va_facet_info['suppress'])) {
-								$va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_facet_info['suppress']);
-							}
-						} else {
-							if (isset($va_facet_info['suppress']) && is_array($va_facet_info['suppress'])) {
-								$va_suppress_values = $va_facet_info['suppress'];
+							if (is_array($va_suppress_values)) {
+								$va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_suppress_values);
 							}
 						}
 						

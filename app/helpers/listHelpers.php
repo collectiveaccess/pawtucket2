@@ -146,5 +146,34 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 		
 		return $g_default_list_item_id_cache[$ps_list_code] = $t_list->getDefaultItemID($ps_list_code);
 	}
+	# ---------------------------------------------------------------------------------------------
+	/**
+	 * Converts the given list of list idnos or item_ids into a list of numeric item_ids
+	 *
+	 * @param mixed $pm_list List code or list_id
+	 * @param array $pa_list_items List of item idnos and/or item_ids 
+	 * @param array $pa_options Array of options:
+	 *			None yet
+	 *
+	 * @return array List of numeric item_ids
+	 */
+	function caMakeListItemIDList($pm_list, $pa_list_items, $pa_options=null) {
+		if (!($vn_list_id = caGetListID($pm_list))) return array();
+		$t_item = new ca_list_items();
+		
+		$va_ids = array();
+		
+		foreach($pa_list_items as $vm_item) {
+			if (is_numeric($vm_item) && ((int)$vm_item > 0)) {
+				$va_ids[(int)$vm_item] = true;
+			} else {
+				if ($vn_id = caGetListItemID($vn_list_id, $vm_item)) {
+					$va_ids[(int)$vn_id] = true;
+				}
+			}
+		}
+		
+		return array_keys($va_ids);
+	}
 	# ---------------------------------------
 ?>
