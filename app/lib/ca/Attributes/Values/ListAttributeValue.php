@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2012 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -164,26 +164,35 @@
  		 * 			list_id = if set then the numeric item_id value is translated into label text in the current locale. If not set then the numeric item_id is returned.
  		 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label.
  		 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output
+ 		 *			excludeValues = An array of list item idnos or item_ids to exclude when returning the display value.
+ 		 *
  		 *			HIERARCHICAL OPTIONS: 
  		 *				direction - For hierarchy specifications (eg. ca_objects.hierarchy) this determines the order in which the hierarchy is returned. ASC will return the hierarchy root first while DESC will return it with the lowest node first. Default is ASC.
  		 *				top - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the root down. Default is to not limit.
  		 *				bottom - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the lowest node up. Default is to not limit.
  		 * 				hierarchicalDelimiter - Text to place between items in a hierarchy for a hierarchical specification (eg. ca_objects.hierarchy) when returning as a string
  		 *				removeFirstItems - If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted. Default is zero (don't delete anything).
-
+		 *
  		 * @return string The value
  		 */
 		public function getDisplayValue($pa_options=null) {
 			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
 			if ($vn_list_id > 0) {
+				
+				$va_exclude_values = caMakeListItemIDList($vn_list_id, caGetOption('excludeValues', $pa_options, array(), array('castTo' => 'array')));
+			
 				$t_list = new ca_lists();
 				
 				// do we need to get the hierarchy?
 				if ($pa_options['showHierarchy']) {
 					$t_item = new ca_list_items($this->ops_text_value);
-					
+					if (is_array($va_exclude_values) && sizeof($va_exclude_values)) {
+						if (in_array($t_item->getPrimaryKey(), $va_exclude_values)) { return null; }
+					}
 					return $t_item->get('ca_list_items.hierarchy.'.((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'name_singular' : 'name_plural'), $pa_options);
 				}
+				
+				if (in_array($this->ops_text_value, $va_exclude_values)) { return null; }
 				
 				return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->ops_text_value, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true);
 			}
