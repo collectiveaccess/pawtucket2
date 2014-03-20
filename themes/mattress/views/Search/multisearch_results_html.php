@@ -2,7 +2,7 @@
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
 ?>
-<div id="multiSearch">
+<div class="multiSearch">
 
 <?php
 	if ($va_result_count > 0) {
