@@ -79,7 +79,7 @@
 <?php
 	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
 	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor')));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist')));
 	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder')));
 	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true));
 
@@ -177,7 +177,8 @@
 		print "<div id='collectionsBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
 			print "<div class='blockResults'>";
-				print "<div>";
+			print "<div class='scrollBlock'>";
+				print "<div style='width:5000px'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 						$vn_collection_id = $va_collection['collection_id'];
@@ -195,6 +196,7 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
+				print "</div>";	
 				print "</div>";	
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end collectionsBlock-->";
