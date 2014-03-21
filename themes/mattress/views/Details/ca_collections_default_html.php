@@ -18,7 +18,7 @@
 				{{{<unit>^ca_collections.preferred_labels.name</unit>}}}
 				{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}
 			</h2>
-			{{{<ifdef code="ca_collections.date.dates_value"><div class='detailSubtitle'>^ca_collections.date.dates_value</div></ifdef>}}}
+			{{{<ifcount code="ca_collections.date.dates_value" min="1"><div class='detailSubtitle'><unit delimiter="<br/>">^ca_collections.date.dates_value</unit></div></ifcount>}}}
 		</div>
 		
 		<div id='mediaArea'>

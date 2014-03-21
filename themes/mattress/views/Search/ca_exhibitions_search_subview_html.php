@@ -56,15 +56,16 @@
 			$va_related_object_ids = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
 				print "<div class='{{{block}}}Result'>";
 				
-				print "<div class='objImage'>";
+
 				$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags'));
 				if (sizeof($va_images) > 0){
 					foreach ($va_images as $vn_image_id => $vs_image) {
-						print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
+						print "<div class='objImage'>".$qr_results->getWithTemplate("<l>{$vs_image}</l>")."</div>";
 						break;
 					} 
+				} else {
+					print caNavLink($this->request, "<div class='objImage'></div><!-- objImage-->", '', 'Detail', 'occurrences', $qr_results->get('ca_occurrences.occurrence_id'));
 				}
-				print "</div><!-- objImage-->";
 				
 				print "<div class=''>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true))."</div>";
 				print "</div>";
