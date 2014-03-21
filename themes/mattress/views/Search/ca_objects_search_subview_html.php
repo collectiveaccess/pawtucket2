@@ -51,7 +51,7 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-				<?php print "<div class='objImage'>".$qr_results->get('ca_object_representations.media.resultthumb')."</div>"; ?>
+				<?php print caNavLink($this->request, "<div class='objImage'>".$qr_results->get('ca_object_representations.media.resultthumb')."</div>", '', 'Detail', 'objects', $qr_results->get('ca_objects.object_id')); ?>
 				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
