@@ -27,7 +27,8 @@
 			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true));
 			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
 			
-			$vn_rep_id = key($va_related_reps);
+			$va_rep = array_pop($va_related_reps);
+			$vn_rep_id = $va_rep['representation_id'];
 			$va_primary_rep = reset($va_related_reps);
 			
 			$va_media_thumbs_width = (775 - $va_primary_rep['info']['medium']['WIDTH']) - 20;

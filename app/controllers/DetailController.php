@@ -210,15 +210,18 @@
  		 *
  		 */ 
  		public function GetRepresentationInfo() {
- 			$vn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
  			
- 			if(!$vn_object_id) { $vn_object_id = 0; }
+ 			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
- 			
- 			$va_opts = array('display' => $ps_display_type, 'object_id' => $vn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
+ 			if (!$t_rep->getPrimaryKey()) { 
+ 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+ 				return;
+ 			}
+ 			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
  			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
