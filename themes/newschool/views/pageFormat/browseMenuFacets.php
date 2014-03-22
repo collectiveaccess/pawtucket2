@@ -36,7 +36,7 @@
 		<ul>
 			<?php print $vs_facet_list; ?>
 		</ul>
-		<br/><button type="button" class="btn btn-default btn-sm"><?php print caNavLink($this->request, _t('Browse all %1', $vs_target), 'browseMenuBrowseAll', '', 'Browse', $vs_target, ''); ?>&nbsp;<span class="glyphicon glyphicon-arrow-right"></span></btn>
+		<br/><?php print caNavLink($this->request, _t('Browse all %1 &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', $vs_target), 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_target, ''); ?>
 	</div>
 	
 	<div class="filterMenureults col-sm-10">

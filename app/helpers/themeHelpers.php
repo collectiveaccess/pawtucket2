@@ -510,7 +510,7 @@
 	 * 
 	 * 
 	 */
-	function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids) {
+	function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids, $pa_options=null) {
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		
@@ -534,7 +534,7 @@
 		$qr_res = $o_db->query($vs_sql);
 		$va_res = array();
 		while($qr_res->nextRow()) {
-			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", "icon");
+			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
 		}
 		return $va_res;
 	}
