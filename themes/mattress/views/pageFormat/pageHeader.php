@@ -30,43 +30,43 @@
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 				  <ul class="dropdown-menu">
-					<li><a href="#">Visit</a></li>
-					<li><a href="#">Calendar</a></li>
-					<li><a href="#">History</a></li>
-					<li><a href="#">Get Involved</a></li>
-					<li><a href="#">Rentals</a></li>
-					<li><a href="#">Press Room</a></li>
-					<li><a href="#">Staff</a></li>
+					<li><a href="../?q=content/hours-admission">Visit</a></li>
+					<li><a href="../?q=calendar/month">Calendar</a></li>
+					<li><a href="../?q=content/history">History</a></li>
+					<li><a href="../?q=content/get-involved">Get Involved</a></li>
+					<li><a href="../?q=content/rentals">Rentals</a></li>
+					<li><a href="../?q=content/press-room">Press Room</a></li>
+					<li><a href="../?q=content/staff-board-directors">Staff + Board of Directors</a></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Art</a>
 				  <ul class="dropdown-menu">
-					<li><a href="#">Exhibitions</a></li>
-					<li><a href="#">Permanent Installations</a></li>
+				  	<li><a href="../?q=exhibitions">Exhibitions</a></li>
+				  	<li><?php print caNavLink($this->request, _t('Artists'), '', 'Browse', 'Artists', ''); ?></li>
 					<li><a href="#">Artist Limited Editions</a></li>
-					<li><a href="#">Search All Art</a></li>
+					<li><?php print caNavLink($this->request, _t('Search All Art'), '', '', '', ''); ?></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learn</a>
 				  <ul class="dropdown-menu">
-					<li><a href="#">Schools + Teachers</a></li>
-					<li><a href="#">Kids + Families</a></li>
-					<li><a href="#">Community</a></li>
-					<li><a href="#">Public Programs</a></li>
-					<li><a href="#">The Space I'm In</a></li>
+				  	<li><a href="../?q=content/kids-families">Kids + Families</a></li>
+					<li><a href="../?q=content/schools-teachers">Schools + Teachers</a></li>
+					<li><a href="../?q=content/community">Community</a></li>
+					<li><a href="../?q=content/public-programs">Public Programs</a></li>
+					<li><a href="../?q=content/space-im">The Space I'm In</a></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support</a>
 				  <ul class="dropdown-menu">
-					<li><a href="#">Donate</a></li>
-					<li><a href="#">Membership</a></li>
-					<li><a href="#">Sponsorship</a></li>
-					<li><a href="#">Annual Fund</a></li>
-					<li><a href="#">Our Partners</a></li>
-					<li><a href="#">Urban Garden Party</a></li>                
+					<li><a href="../?q=content/donate">Donate</a></li>
+					<li><a href="../?q=node/13">Membership</a></li>
+					<li><a href="../?q=content/sponsorship">Sponsorship</a></li>
+					<li><a href="../?q=content/annual-fund">Annual Fund</a></li>
+					<li><a href="../?q=content/our-partners">Our Partners</a></li>
+					<li><a href="../?q=content/urban-garden-party">Urban Garden Party</a></li>                
 				  </ul>
 				</li>
 				<li class="dropdown">

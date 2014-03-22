@@ -86,6 +86,7 @@
 						sortControlSelector: '#{{{block}}}_sort',
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
+						scrollControlDisabledOpacity: 0,
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});
