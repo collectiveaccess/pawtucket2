@@ -27,8 +27,7 @@
 			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true));
 			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
 			
-			$va_rep = array_pop($va_related_reps);
-			$vn_rep_id = $va_rep['representation_id'];
+			$vn_rep_id = key($va_related_reps);
 			$va_primary_rep = reset($va_related_reps);
 			
 			$va_media_thumbs_width = (775 - $va_primary_rep['info']['medium']['WIDTH']) - 20;
@@ -80,7 +79,7 @@
 		
 		<div id='infoArea'>
 <?php
-		if (($vs_collection = $t_item->get('ca_collections.description.description_text') != " ") && ($t_item->get('ca_collections.type_id') != '131')) {
+		if (($vs_collection = $t_item->get('ca_collections.description.description_text')) && ($t_item->get('ca_collections.type_id') != '131')) {
 			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
 		
