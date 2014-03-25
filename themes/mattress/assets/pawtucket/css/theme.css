@@ -31,6 +31,7 @@ h3 {
 	font-size: 18px;
 	margin: 5px 0px 5px 0px;
 	color: #000;
+	text-transform:none; 
 }
 .clearfix {
 	width:100%;
@@ -786,7 +787,13 @@ h2 span.artist {
 	line-height: 16px;
 	margin-bottom:15px;
 }
-
+#detail.occurrences .artworkResult {
+	width:250px;
+}
+#detail #entitiesBlock .entitySet {
+	width:250px;
+	float:left;
+}
 /* Browse Page */
 
 #browseResults {
@@ -800,6 +807,9 @@ h2 span.artist {
 	height:20px;
 	width:100%;
 	clear:both;
+}
+#browseHeader h2{ 
+	font-size:16px;
 }
 #bRefine {
 	background: transparent;
@@ -1110,7 +1120,7 @@ div.blockResultsScroller:focus, .jspContainer:focus, .jspPane:focus, #collection
 	position:absolute;
 	z-index:100;
 	height:170px;
-	opacity:.7;
+	opacity:0;
 	padding:60px 10px 0px 10px;
 	color:#454545;
 	font-size:15px;
@@ -1126,7 +1136,7 @@ div.blockResultsScroller:focus, .jspContainer:focus, .jspPane:focus, #collection
 	position:absolute;
 	z-index:100;
 	height:170px;
-	opacity:.7;
+	opacity:0;
 	padding:60px 10px 0px 10px;
 	color:#454545;
 	font-size:15px;

@@ -186,7 +186,7 @@
 
 						if ($vn_i == 0) {print "<div class='collectionSet'>";}
 						print "<div class='artworkResult'>";
-						print "<div>".caNavLink($this->request, $va_collection['label'], '', '', 'Detail', 'Occurrences/'.$vn_collection_id)."</div>";
+						print "<div>".caNavLink($this->request, $va_collection['label'], '', '', 'Detail', 'Collections/'.$vn_collection_id)."</div>";
 						print "</div>";
 						$vn_i++;
 						if ($vn_i == 5) {
