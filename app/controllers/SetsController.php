@@ -537,11 +537,16 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { $this->Index(); return;}
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
  			$pn_comment_id = $this->request->getParameter("comment_id", pInteger);
  			$t_comment = new ca_item_comments($pn_comment_id);
  			
  			if($t_comment->get("comment_id")){
+				# --- check if user is owner of comment or has edit access to set comment was made on
+				if(($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
+					$this->Index(); return;
+				}
+				
 				$t_comment->setMode(ACCESS_WRITE);
 				$t_comment->delete(true);
 				if ($t_comment->numErrors()) {
