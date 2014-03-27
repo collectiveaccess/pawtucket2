@@ -18,14 +18,14 @@
 				{{{<unit>^ca_collections.preferred_labels.name</unit>}}}
 				{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}
 			</h2>
-			{{{<ifdef code="ca_collections.date.dates_value"><div class='detailSubtitle'>^ca_collections.date.dates_value</div></ifdef>}}}
+			{{{<ifcount code="ca_collections.date.dates_value" min="1"><div class='detailSubtitle'><unit delimiter="<br/>">^ca_collections.date.dates_value</unit></div></ifcount>}}}
 		</div>
 		
 		<div id='mediaArea'>
 			<div class='mediaLarge'>
 <?php
 			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true));
-			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'widepreview')));
+			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
 			
 			$vn_rep_id = key($va_related_reps);
 			$va_primary_rep = reset($va_related_reps);
@@ -58,7 +58,7 @@
 				$stack = 0;
 				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
 					if ($stack == 0) { print "<div class='thumbResult'>";}
-					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['widepreview']."</a></div>";
+					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
 					//print "<div class='rep'>".$va_related_rep['tags']['widepreview']."</div>";
 					
 					$stack++;
@@ -79,7 +79,7 @@
 		
 		<div id='infoArea'>
 <?php
-		if (($vs_collection = $t_item->get('ca_collections.description.description_text') != " ") && ($t_item->get('ca_collections.type_id') != '131')) {
+		if (($vs_collection = $t_item->get('ca_collections.description.description_text')) && ($t_item->get('ca_collections.type_id') != '131')) {
 			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
 		
@@ -132,7 +132,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
@@ -156,7 +156,7 @@
 					} else {
 							$t_collection = new ca_collections($va_artworks[0]);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 							print "<div class='exImageSingle'>".caNavLink($this->request, array_shift(array_values($va_object_reps)), '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 					}
 					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";

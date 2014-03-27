@@ -1452,7 +1452,7 @@
 					
 					if (get_class($o_value) == 'ListAttributeValue') {
 						$t_element = $this->_getElementInstance($o_value->getElementID());
-						$vn_list_id = (!isset($pa_options['convertCodesToDisplayText']) || !$pa_options['convertCodesToDisplayText']) ? null : $t_element->get('list_id');
+						$vn_list_id = $t_element->get('list_id');
 					} else {
 						$vn_list_id = null;
 					}
@@ -1501,11 +1501,12 @@
 			if (!is_array($va_attributes = $va_attributes[$vn_element_id])) { return null; }
 			
 			$vn_sub_element_id = $pm_sub_element_code_or_id ? $this->_getElementID($pm_sub_element_code_or_id) : null;
+			$t_element = $this->_getElementInstance($vn_element_id);
 			
 			$va_ret_values = array();
 			foreach($va_attributes as $o_attr) {
 				if ($o_attr->getElementID() == $vn_element_id) { 
-					$va_values = $o_attr->getDisplayValues(true, $pa_options);
+					$va_values = $o_attr->getDisplayValues(true, array_merge($pa_options, array('list_id' => $t_element->get('list_id'))));
 					$va_ret_values[0][(int)$o_attr->getLocaleID()] = $va_values[$vn_sub_element_id ? $vn_sub_element_id : $vn_element_id];
 				}
 			}
