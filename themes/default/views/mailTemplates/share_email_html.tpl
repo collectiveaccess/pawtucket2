@@ -1,4 +1,9 @@
 <?php
+	$t_item = $this->getVar("item");
+	$pn_item_id = $this->getVar("item_id");
+	$ps_from_name = $this->getVar("from_name");
+	$ps_message = $this->getVar("message");
+	
 	print "<p>"._t("%1 has shared a record from %2 with you.  To view the record online visit %3.", $ps_from_name, $this->request->config->get("site_host"), $this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $pn_item_id))."</p>";
 	print "<hr/>";
 	if($ps_message){

@@ -568,20 +568,18 @@
  					# --- check if email notification should be sent to admin
  					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
  						# --- send email confirmation
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$o_view->setVar("item", $t_item);
+						$o_view->setVar("item_id", $pn_item_id);
+						$o_view->setVar("from_name", $ps_from_name);
+	 					$o_view->setVar("message", $ps_message);
+
 						# -- generate mail subject line
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
-						$vs_subject_line = ob_get_contents();
-						ob_end_clean();
+						$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
+						
 						# -- generate mail text from template - get both html and text versions
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
-						$vs_mail_message_text = ob_get_contents();
-						ob_end_clean();
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
-						$vs_mail_message_html = ob_get_contents();
-						ob_end_clean();
+						$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
 						
 						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
  					}
@@ -684,23 +682,23 @@
  			$this->view->setVar('tablename', $ps_tablename);
 
  			if(sizeof($va_errors) == 0){
+				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+				$o_view->setVar("item", $t_item);
+				$o_view->setVar("item_id", $pn_item_id);
+				$o_view->setVar("from_name", $ps_from_name);
+				$o_view->setVar("message", $ps_message);
+				$o_view->setVar("detailConfig", $this->config);
 				# -- generate mail text from template - get both html and text versions
-				ob_start();
 				if($ps_tablename == "ca_objects"){
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_text.tpl");
+					$vs_mail_message_text = $o_view->render("mailTemplates/share_object_email_text.tpl");
 				}else{
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_text.tpl");
+					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
-				$vs_mail_message_text = ob_get_contents();
-				ob_end_clean();
-				ob_start();
 				if($ps_tablename == "ca_objects"){
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
 				}else{
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
 				}
-				$vs_mail_message_html = ob_get_contents();
-				ob_end_clean();
 				
 				$va_media = null;
 				if($ps_tablename == "ca_objects"){

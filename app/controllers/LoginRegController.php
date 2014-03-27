@@ -65,6 +65,10 @@
  			$this->render("LoginReg/form_register_html.php");
  		}
  		# ------------------------------------------------------
+ 		function resetForm() {
+			$this->render("LoginReg/form_reset_html.php");
+ 		}
+ 		# ------------------------------------------------------
  		function login() {
 			$t_user = new ca_users();
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
@@ -277,23 +281,15 @@
 					}
 					
 					# --- send email confirmation
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+					
 					# -- generate email subject line from template
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/reg_conf_subject.tpl");
-						
-					$vs_subject_line = ob_get_contents(); 
-					ob_end_clean();
+					$vs_subject_line = $o_view->render("mailTemplates/reg_conf_subject.tpl");
+					
 					# -- generate mail text from template - get both the text and the html versions
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/reg_conf.tpl");
-						
-					$vs_mail_message_text = ob_get_contents(); 
-					ob_end_clean();
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/reg_conf_html.tpl");
-						
-					$vs_mail_message_html = ob_get_contents(); 
-					ob_end_clean();
+					$vs_mail_message_text = $o_view->render("mailTemplates/reg_conf.tpl"); 
+					$vs_mail_message_html = $o_view->render("mailTemplates/reg_conf_html.tpl"); 
+					
 					caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 
 					$t_user = new ca_users();
@@ -355,7 +351,127 @@
 				$this->view->setVar("message", _t("Invalid user group"));
 			}
  		}
+ 		# -------------------------------------------------------
+ 		function resetSend(){
+ 			$t_user = new ca_users();
+
+			$vs_message = "";
+			$va_errors = array();
+			$ps_email = $this->request->getParameter('reset_email', pString);
+			if (!caCheckEmailAddress($ps_email)) {
+				$this->view->setVar("message",_t("E-mail address is not valid"));
+				$this->resetForm();
+			}else{
+				$t_user->setErrorOutput(0);
+				$t_user->load(array("user_name" => $ps_email));
+				# verify user exists with this e-mail address
+				if ($t_user->getPrimaryKey()) {
+					# user with e-mail does exists...
+					
+					if (sizeof($va_errors) == 0) {	
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$vs_reset_key = md5($t_user->get("user_id").'/'.$t_user->get("password"));
+						# --- get the subject of the email from template
+						$vs_subject_line = $o_view->render('mailTemplates/instructions_subject.tpl');
+						
+						# -- generate mail text from template - get both the text and html versions
+						$vs_password_reset_url = $this->request->config->get("site_host").caNavUrl($this->request, '', 'LoginReg', 'resetSave', array('key' => $vs_reset_key));
+						$o_view->setVar("password_reset_url", $vs_password_reset_url);
+						$vs_mail_message_text = $o_view->render('mailTemplates/instructions.tpl');
+						$vs_mail_message_html = $o_view->render('mailTemplates/instructions_html.tpl');
+						
+						caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						
+						$this->view->setVar("email", $this->request->config->get("ca_admin_email"));
+						$this->view->setVar("action", "send");
+						
+						$this->render('LoginReg/form_reset_html.php');
+					}
+				} else {
+					$this->view->setVar("message",_t("There is no registered user with the email address you provided"));
+					$this->resetForm();
+				}
+ 			}
+ 		}
  		# ------------------------------------------------------
+ 		function resetSave(){
+			$ps_action = $this->request->getParameter('action', pString);
+			if(!$ps_action){
+				$ps_action = "reset";
+			}
+			$ps_key = $this->request->getParameter('key', pString);
+			$ps_key = preg_replace("/[^A-Za-z0-9]+/", "", $ps_key);
+			$this->view->setVar("key", $ps_key);
+			
+			$this->view->setVar("email", $this->request->config->get("ca_admin_email"));
+			
+			$o_check_key = new Db();
+			$qr_check_key = $o_check_key->query("
+				SELECT user_id 
+				FROM ca_users 
+				WHERE
+					md5(concat(concat(user_id, '/'), password)) = ?
+			", $ps_key);
+			
+			#
+			# Check reset key
+			# 
+			if ((!$qr_check_key->nextRow()) || (!$vs_user_id = $qr_check_key->get("user_id"))) {
+				$this->view->setVar("action", "reset_failure");
+				$this->view->setVar("message",_t("Your password could not be reset"));
+				$this->render('LoginReg/form_reset_html.php');
+			}else{
+			
+				$ps_password = $this->request->getParameter('password', pString);
+				$ps_password_confirm = $this->request->getParameter('password_confirm', pString);
+				
+				switch($ps_action) {
+					case 'reset_save':
+						if(!$ps_password || !$ps_password_confirm){
+							$this->view->setVar("message", _t("Please enter and re-type your password."));
+							$ps_action = "reset";
+							break;
+						}
+						if ($ps_password != $ps_password_confirm) {
+							$this->view->setVar("message", _t("Passwords do not match. Please try again."));
+							$ps_action = "reset";
+							break;
+						}
+						$t_user = new ca_users();
+						$t_user->load($vs_user_id); 
+						# verify user exists with this e-mail address
+						if ($t_user->getPrimaryKey()) {
+							# user with e-mail already exists...
+							$t_user->setMode(ACCESS_WRITE);
+							$t_user->set("password", $ps_password);
+							$t_user->update();
+							
+							if ($t_user->numErrors()) {
+								$this->notification->addNotification(join("; ", $t_user->getErrors()), __NOTIFICATION_TYPE_INFO__);
+								$ps_action = "reset_failure";
+							} else {
+								$ps_action = "reset_success";
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								# -- generate email subject
+								$vs_subject_line = $o_view->render("mailTemplates/notification_subject.tpl"); 
+								
+								# -- generate mail text from template - get both the html and text versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/notification_html.tpl");
+								
+								caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							}
+							break;
+						} else {
+							$this->notification->addNotification(_t("Invalid user"), __NOTIFICATION_TYPE_INFO__);
+							$ps_action = "reset_failure";
+						}
+				}
+				$this->view->setVar("action", $ps_action);
+				$this->render('LoginReg/form_reset_html.php');
+			} 		
+ 		}
+ 		# -------------------------------------------------------
 
  	}
  ?>
