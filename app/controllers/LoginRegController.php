@@ -300,6 +300,7 @@
 						if($this->request->isAjax()){
 							$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
  							$this->render("Form/reload_html.php");
+ 							return;
 						}else{
 							$vs_action = $vs_controller = $vs_module_path = '';
 							if ($vs_default_action = $this->request->config->get('default_action')) {
@@ -321,9 +322,9 @@
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
+				$this->registerForm($t_user);
 			}
 			
-			$this->registerForm($t_user);
  		}
  		# -------------------------------------------------------
  		function joinGroup() {
