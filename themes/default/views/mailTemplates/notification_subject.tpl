@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/pageFormat/browseMenu.php : 
+ * default/views/mailTemplates/notification_subject.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,29 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$va_browse_types = caGetBrowseTypes();
-	if(sizeof($va_browse_types)){
-?>
- <li class="dropdown yamm-fw"> <!-- add class yamm-fw for full width-->
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
-	<ul class="dropdown-menu" id="browse-menu">
-		<li class="browseNavFacet">			
-			<div class="browseMenuContent container text-center">
-<?php
-		if(sizeof($va_browse_types) > 1){
-?>	
-			Find: 
-<?php
-			foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-				print caNavLink($this->request, caUcFirstUTF8Safe($vs_browse_name).' &nbsp;'.$va_browse_type["icon_class"].'', 'browseMenuBrowseAll btn btn-default btn-lg', '', 'Browse', $vs_browse_name, '');
-			}
-		}
-?>
-			</div><!-- end browseMenuContent container -->		
-		</li><!-- end browseNavFacet -->
-	</ul> <!--end dropdown-browse-menu -->	
- </li><!-- end dropdown -->
-<?php	
-	}
+
+	print "[".$this->request->config->get("app_display_name")."] "._t("Your password has been reset");
 ?>

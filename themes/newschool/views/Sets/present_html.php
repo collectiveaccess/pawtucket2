@@ -35,11 +35,36 @@
 <?php
 
 	foreach($va_items as $vn_i => $va_item) {
+		$t_item = new ca_objects($va_item["row_id"]);
+		$t_set_item = new ca_set_items($va_item["item_id"]);
 ?>
 		<section>
 			<h3><?php print $va_item['name']; ?></h3>
-			<p><?php print $va_item['representation_tag_medium']; ?></p>
-			<h3><?php print $va_item['idno']; ?></h3>
+			<p style="float:left; width:50%"><?php print $va_item['representation_tag_medium']; ?></p>
+			<p style="float:right; width:50%">
+				<div><?php print $t_item->get("ca_objects.dateSet.setDisplayValue"); ?></div>
+				<div><?php print $t_item->get("ca_entities", array("delimiter" => "<br/>")); ?></div>
+<?php
+			# --- comments
+				$va_comments = $t_set_item->getComments();
+				if(sizeof($va_comments)){
+					$t_author = new ca_users();
+?>
+					<div><br/><strong><small><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></small></strong><HR style="padding:0px; margin:0px;"/>
+					<div style="max-height:250px; overflow:auto;">
+<?php
+
+					foreach($va_comments as $va_comment){
+						print "<small style='padding:5px 0px 5px 0px;'>";
+						$t_author->load($va_comment["user_id"]);
+						print $va_comment["comment"]."<br/>";
+						print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
+						print "</small><HR style='padding:0px; margin:0px;'/>";
+					}
+					print "</div></div>";
+				}
+?>
+			</p>
 		</section>
 <?php
 	}

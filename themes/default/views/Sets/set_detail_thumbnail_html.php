@@ -8,11 +8,14 @@
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
+			<li><?php print caNavLink($this->request, _t("All lightboxes"), "", "", "Sets", "Index"); ?></li>
+			<li class="divider"></li>
 <?php
 		if($vb_write_access){
 ?>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share Lightbox"); ?></a></li>
+			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage Lightbox Access"); ?></a></li>
 <?php
 		}
 ?>
@@ -54,9 +57,9 @@
 			if(!$vb_write_access){
 				print _t("You may not edit this set, you have read only access")."<br/><br/>";
 			}
-			if($t_set->get("access")){
-				print _t("This set is public")."<br/><br/>";
-			}
+			#if($t_set->get("access")){
+			#	print _t("This set is public")."<br/><br/>";
+			#}
 			if($t_set->get("description")){
 				print $t_set->get("description");
 				print "<HR>";
@@ -88,8 +91,12 @@
 				if(sizeof($va_comments)){
 					$t_author = new ca_users();
 					print "<div class='lbComments'>";
-					foreach($va_comments as $vn_comment_id => $va_comment){
+					foreach($va_comments as $va_comment){
 						print "<small>";
+						# --- display link to remove comment?
+						if($vb_write_access || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
+							print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Sets", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => "detail"))."</div>";
+						}
 						$t_author->load($va_comment["user_id"]);
 						print $va_comment["comment"]."<br/>";
 						print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
@@ -133,7 +140,7 @@ if($vb_write_access){
 					});
 				}
 			});
-			$("#sortable").disableSelection();
+			//$("#sortable").disableSelection();
 		});
 	</script>
 <?php

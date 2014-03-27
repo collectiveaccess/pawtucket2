@@ -27,6 +27,7 @@
  */
  
 print _t("You have been sent a contact email from \"%1\", %2.", $this->request->config->get("app_display_name"), $this->request->config->get("site_host"));
+$va_fields = $this->getVar("contact_form_elements");
 foreach($va_fields as $vs_element => $va_options){
 	if($this->request->getParameter($vs_element, pString)){
 		print $va_options["label"].": ".$this->request->getParameter($vs_element, pString)."\n\n";

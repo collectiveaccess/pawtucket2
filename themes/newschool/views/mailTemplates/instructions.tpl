@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_subject.tpl
+ * default/views/mailTemplates/instructions.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2010 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,6 +25,21 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+print _t("To reset your password copy and paste the following URL into your web browser:").' ';
 
-	print "[".$this->request->config->get("app_display_name")."] "._t("Thank you for registering!");
+print $this->getVar("password_reset_url");
+
+print _t("
+
+You will be prompted for a new password. If you have further difficulties, 
+or if you did not request your password to be reset, please contact us at %1.
+
+Regards,
+
+The New School Archives & Special Collections
+", $this->request->config->get("ca_admin_email"));
+
+
+	print $this->request->config->get("site_host");
 ?>
