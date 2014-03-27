@@ -3,7 +3,7 @@
 	$va_errors = $this->getVar("errors");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Set Info"); ?></H1>
+<H1><?php print _t("Lightbox Info"); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
@@ -15,10 +15,10 @@
 			print "<div class='alert alert-danger'>".$va_errors["name"]."</div>";
 		}
 		print "<div class='form-group".(($va_errors["name"]) ? " has-error" : "")."'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' value='".$this->getVar("name")."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-		if($va_errors["access"]){
-			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
-		}
-		print $t_set->htmlFormElement("access","<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		#if($va_errors["access"]){
+		#	print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
+		#}
+		#print $t_set->htmlFormElement("access","<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}

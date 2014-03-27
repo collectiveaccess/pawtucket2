@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf.tpl
+ * default/views/mailTemplates/notification.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,14 +26,16 @@
  * ----------------------------------------------------------------------
  */
  
-print _t("Thank you for registering for \"%1\".
+print _t("Your %1 password was reset on %2 at %3. If you did 
+not reset your password, please contact us at %4.
 
-As a member you can rank, comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.
 
 Regards,
-the Staff
 
-", $this->request->config->get("app_display_name"));
+The New School Archives & Special Collections
+
+", $this->request->config->get("app_display_name"), date("F j, Y"), date("G:i"), $this->request->config->get("ca_admin_email"));
+
 
 	print $this->request->config->get("site_host");
 ?>

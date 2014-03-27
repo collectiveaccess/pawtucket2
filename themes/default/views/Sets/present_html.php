@@ -29,7 +29,7 @@
 	</head>
 	<body>
 		<div class="reveal">
-
+			<?php print caNavLink($this->request, _t("Back to Lightbox"), "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")), array("style" => "font-size:14px; padding:20px;")); ?>
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 <?php
