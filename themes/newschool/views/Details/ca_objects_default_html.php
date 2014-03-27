@@ -26,8 +26,8 @@
 					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
-					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person or organization:</h3></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><h3>Related people and organizations:</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person / organization:</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><h3>Related people / organizations:</h3></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
@@ -63,8 +63,6 @@
 					
 					
 					
-					{{{<ifcount code="ca_objects.LcshNames" min="1"><h3>LC Terms</h3></ifcount>}}}
-					{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 					
 					{{{<ifcount code="ca_objects.LcshTopical" min="1"><h3>Subjects:</h3></ifcount>}}}
 					{{{<unit delimiter="<br/>">^ca_objects.LcshTopical</unit>}}}

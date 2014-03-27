@@ -9,7 +9,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print $this->request->config->get('html_page_title'); ?></title>
+	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
 	
 	<!--NS design-->
 	<script type="text/javascript" src="//use.typekit.net/cvi0qyc.js"></script>
@@ -27,10 +27,15 @@
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-48448438-1', 'newschool.edu');
+  ga('create', 'UA-7966352-9', 'newschool.edu');
   ga('send', 'pageview');
 
 	</script>
+
+<meta name="google-site-verification" content="j2ZduLZYPPtHe6G-r_BPBVE7XG97dTZMFfqrDKoUrns" />
+<meta name="description" content="Historical images, text, audio and video from The New School including Parsons, Mannes, The New School for Social Research, and Eugene Lang College."/>
+<meta name="keywords" content="TNS Archives, TNS History, The New School, New School for Social Research, Parsons, Eugene Lang College, Mannes, Parsons history, Mannes history, fashion design history, interior design history, fashion design education, interior design education, Chase School, New York School of Fine and Applied Art"/>
+
 </head>
 <body>
 <?php 
@@ -39,7 +44,7 @@
 ?>
 		<div class="container nslogotype">
 			<span class="newschool">The New School</span>
-			<div class="container breadcrumb">Home &gt; Libraries & Archives &gt; Special Collections</div>
+			<div class="container breadcrumb"><a href="http://www.newschool.edu/">Home</a> &gt; <a href="http://library.newschool.edu/">Libraries & Archives</a> &gt; <a href="http://library.newschool.edu/speccoll/index.php">Archives & Special Collections</a> &gt; <a href="http://digitalarchives.library.newschool.edu/">Digital Collections</a></div>
 	
 			<span class="kellen"><a href="/">The New School Archives: Digital Collections</a></span>
 		</div>

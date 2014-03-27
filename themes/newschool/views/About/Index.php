@@ -1,7 +1,7 @@
 
 	<H1>About</H1>
 	<p>
-		The New School Digital Archives is the online portal for the digital collections of the New School Archives & Special Collections, which is a unit of the New School's Libraries & Archives.<br><br>
+		The New School Archives: Digital Collections is the online portal for the digital collections of the New School Archives & Special Collections, which is a unit of the New School's Libraries & Archives.<br><br>
 
 		The New School Archives & Special Collections has grown out of the Kellen Design Archives, which documents the history of Parsons The New School for Design and twentieth century design history. Currently the expanded New School and Special Collections also contains rapidly growing collections from across all divisions of The New School. To learn more about the New School Archives and Special Collections and its holdings, please visit our <a href=”http://library.newschool.edu/speccoll”>website</a>.<br><br>
 
