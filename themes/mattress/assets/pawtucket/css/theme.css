@@ -5,6 +5,9 @@ body {
 	line-height:14px;
 	color:#000;
 }
+*:focus {
+    outline: 0;
+}
 a {
 	color:#000;
 }
@@ -15,7 +18,7 @@ a:hover {
 a:active {
 	background:transparent;
 }
-h2, #detail h2, #multiSearch h2{
+h2, #detail h2, .multiSearch h2{
 	font-size: 24px;
 	color: #EE3E43;
 	margin: 0px;
@@ -28,6 +31,7 @@ h3 {
 	font-size: 18px;
 	margin: 5px 0px 5px 0px;
 	color: #000;
+	text-transform:none; 
 }
 .clearfix {
 	width:100%;
@@ -341,6 +345,9 @@ hr {
 #detail .blockTitle.related {
 	height:145px;
 }
+#detail .blockTitle .detailNavBgLeft a {
+	line-height:12px;
+}
 h2 span.artist {
 	color:#000;
 }
@@ -369,14 +376,14 @@ h2 span.artist {
 	font-size:14px;
 }
 #detail .detailNavBgLeft .results, #detail .detailNavBgLeft .prev {
-	padding:8px 0px 5px 0px;
+	padding:8px 0px 0px 0px;
 	background-image: url('../graphics/backarrow.png');
 	background-repeat:no-repeat;
 	background-position: center left;
 	padding-left:15px;
 }
 #detail .detailNavBgLeft .next {
-	padding:10px 0px 8px 0px;
+	padding:5px 0px 8px 0px;
 	background-image: url('../graphics/fwarrow.png');
 	background-repeat:no-repeat;
 	background-position: center right;
@@ -524,11 +531,13 @@ h2 span.artist {
 }
 #detail .collectionSet {
 	float: left;
+	width: 250px;
+	margin-bottom:15px;
 }
 #detail .collectionsResult {
 	float: left;
-	width: 150px;
-	height: 160px;
+	width: 250px;
+	height: 220px;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
 	margin-right: 15px;
@@ -550,30 +559,13 @@ h2 span.artist {
 .collectionInfo h3{
 	text-transform:capitalize;
 }
-/* Search Results */
 
-#multiSearch {
+/* Search Results */
+.multiSearch {
 	padding:0px;
 	min-height:400px;
 }
 
-#multiSearch .scrollButtonNext, #multiSearch .scrollButtonPrevious {
-	background-position:50% 50%;
-	background-repeat:no-repeat;
-	background-color:#fff;
-	opacity:1;
-}
-#multiSearch .scrollButtonPrevious {
-	left: 170px;
-	background-image: url('../graphics/glyphicons_224_chevron-left.png');
-}
-#multiSearch .scrollButtonNext {
-	background-image: url('../graphics/glyphicons_223_chevron-right.png');
-	background-position: center 50px;
-}
-#multiSearch .scrollButtonNext:hover, #multiSearch .scrollButtonPrevious:hover {
-	background-color:#f7f7f7;
-}
 .searchMessage {
 	font-family: "ProximaNovaBold";
 	text-align:center;
@@ -635,24 +627,25 @@ h2 span.artist {
 	font-size:24px;
 	line-height:24px;
 }
-#multiSearch .blockTitle {
+.multiSearch .blockTitle {
 	margin-top: 23px;
 }
 #detail .blockTitle {
 	height:245px;
 }
-#multiSearch  .blockResults, #detail  .blockResults {
+.multiSearch  .blockResults, #detail  .blockResults {
 	float:left;
 	width: 770px;
 	border-top:1px solid #ccc;
 	margin-left:25px;
-	padding: 15px 20px 0px 0px;
+	padding: 15px 0px 0px 0px;
 	overflow-y:scroll;
 	min-height:165px;
 	height:240px;
 	/* height:auto; */
 	clear:none;
 }
+
 #detail .blockResults.exhibitions {
 	height:auto;
 	padding-bottom:20px;
@@ -661,16 +654,17 @@ h2 span.artist {
 	width:100%;
 	overflow-y:hidden;
 	position: relative;
+	clear:left;
 }
-#multiSearch .entitiesSet, #multiSearch .placesSet, #multiSearch .occurrencesSet, #multiSearch .eventsSet {
+.multiSearch .entitiesSet, .multiSearch .placesSet, .multiSearch .occurrencesSet, .multiSearch .eventsSet {
 	padding-top:0px;
 	padding-bottom:25px;
 }
-#multiSearch .entitiesSet {
+.multiSearch .entitiesSet {
 	float:left;
 	padding-bottom:25px;
 }
-#multiSearch .entitiesResult, #multiSearch .eventsResult, 
+.multiSearch .entitiesResult, .multiSearch .eventsResult, 
 #detail .entitiesResult, #detail .collectionsResult div{
 	margin-bottom: 15px;
 	margin-right: 30px;
@@ -683,12 +677,12 @@ h2 span.artist {
 #detail .entitiesResult {
 	padding-left:0px;
 }
-#multiSearch .entitiesSet a {
+.multiSearch .entitiesSet a {
 	color: #000;
 	font-family: "ProximaNovaBold";
 	font-size:14px;
 }
-#multiSearch .collectionsResult, #multiSearch .objectsResult, #multiSearch .occurrencesResult,
+.multiSearch .collectionsResult, .multiSearch .objectsResult, .multiSearch .occurrencesResult,
 #detail .objectsResult {
 	float:left;
 	overflow:hidden;
@@ -703,17 +697,17 @@ h2 span.artist {
 	width: 160px;
 	height: 190px;
 }
-#multiSearch .occurrencesResult {
+.multiSearch .occurrencesResult {
 	margin:10px;
 }
-#multiSearch .objImage, #detail .objImage {
+.multiSearch .objImage, #detail .objImage {
 	width: 160px;
 	height: 105px;
 	overflow: hidden;
 	margin-bottom: 5px;
 	background-color: #eee;
 }
-#multiSearch .eventsSet {
+.multiSearch .eventsSet {
 	float: left;
 	width: 250px;
 	height: 180px;
@@ -749,7 +743,7 @@ h2 span.artist {
 	color: #EE3E43;
 	font-size:14px;
 }
-#multiSearch .collectionsResult a, #multiSearch a .entitiesResult, #multiSearch .objectsResult a, #multiSearch a .eventsResult,
+.multiSearch .collectionsResult a, .multiSearch a .entitiesResult, .multiSearch .objectsResult a, .multiSearch a .eventsResult,
 #detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
 	color:#000;
 	font-family: "ProximaNovaBold";
@@ -757,7 +751,7 @@ h2 span.artist {
 	font-size:14px;
 	text-decoration:none;
 }
-#multiSearch .collectionsResult a:hover, #multiSearch a:hover .entitiesResult, #multiSearch .entitiesResult:hover, #multiSearch a:hover .eventsResult, #multiSearch .occurrencesResult:hover,
+.multiSearch .collectionsResult a:hover, .multiSearch a:hover .entitiesResult, .multiSearch .entitiesResult:hover, .multiSearch a:hover .eventsResult, .multiSearch .occurrencesResult:hover,
 #detail a:hover .entitiesResult,  {
 	color:#000; 
 	background-color:transparent;
@@ -769,16 +763,16 @@ h2 span.artist {
 #detail .eventsResult {
 	margin-bottom:10px;
 }
-#multiSearch .placesResult:hover, #multiSearch .occurrencesResult:hover, #multiSearch .entitiesResult:hover {
+.multiSearch .placesResult:hover, .multiSearch .occurrencesResult:hover, .multiSearch .entitiesResult:hover {
 	background-color: transparent;
 }
 
-#multiSearch #eventsBlock {
+.multiSearch #eventsBlock {
 	width:100%;
 	overflow-y:hidden;
 	position:relative;
 }
-#multiSearch #eventsResults {
+.multiSearch #eventsResults {
 	overflow-x:scroll;
 	overflow-y:hidden;
 	width:100%;
@@ -793,7 +787,13 @@ h2 span.artist {
 	line-height: 16px;
 	margin-bottom:15px;
 }
-
+#detail.occurrences .artworkResult {
+	width:250px;
+}
+#detail #entitiesBlock .entitySet {
+	width:250px;
+	float:left;
+}
 /* Browse Page */
 
 #browseResults {
@@ -808,6 +808,9 @@ h2 span.artist {
 	width:100%;
 	clear:both;
 }
+#browseHeader h2{ 
+	font-size:16px;
+}
 #bRefine {
 	background: transparent;
 	padding: 0px 0px 20px 0px;
@@ -819,6 +822,9 @@ h2 span.artist {
 }
 #browseResults #bRefine h2{
 	color:#fff;
+	font-size:17px; 
+	padding-top:20px;
+	text-transform:uppercase;
 }
 #browseResults .resultCount {
 	font-size:14px;
@@ -1102,5 +1108,107 @@ span.criteria {
 }
 
 
+.blockResults .blockResultsScroller {
+	height: 185px;	/* Needs to be some height */
+}
+div.blockResultsScroller:focus, .jspContainer:focus, .jspPane:focus, #collectionsResults:focus{
+	outline:0;
+	border:0;
+}
+.blockResults .scrollButtonNext {
+	background-color:#ebebeb;
+	position:absolute;
+	z-index:100;
+	height:170px;
+	opacity:0;
+	padding:60px 10px 0px 10px;
+	color:#454545;
+	font-size:15px;
+	margin:0px;
+	width:25px;
+	background-image: url('../graphics/glyphicons_223_chevron-right.png');
+	background-position: center 60px;
+	background-repeat: no-repeat;
+	left: 940px;
+}
+.blockResults .scrollButtonPrevious{
+	background-color:#ebebeb;
+	position:absolute;
+	z-index:100;
+	height:170px;
+	opacity:0;
+	padding:60px 10px 0px 10px;
+	color:#454545;
+	font-size:15px;
+	margin: 0px;
+	width:25px;
+	background-image: url('../graphics/glyphicons_224_chevron-left.png');
+	background-position: center 60px;
+	background-repeat: no-repeat;
+	left: 195px;
+}
 
+.blockResults .scrollButtonNext:hover, .blockResults .scrollButtonPrevious:hover{
+	background-color:#f7f7f7;
+	cursor:pointer;
+	color:#000;
+}
+
+.blockResults .scrollButtonNext.inactive, .blockResults .scrollButtonPrevious.inactive{
+	display:none;
+}
+.blockResults .objectsResult, .blockResults .collectionsResult,  .blockResults .occurrencesResult,   {
+	float:left;
+	width:150px;
+	height:145px;
+	margin:10px;
+	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	background-color:#FFFFFF;
+	line-height:1em;
+	padding:10px;
+	font-size:11px;
+	overflow:hidden;
+}
+.blockResults .objectsResult a, .blockResults .collectionsResult a  {
+	color:#000;
+}
+.blockResults .objectsResult img, .blockResults .collectionsResult img {
+	width:100%;
+	height:auto;
+	margin-bottom:5px;
+}
+
+
+
+.blockResults .entitiesSet, .blockResults .placesSet, .blockResults .occurrencesSet {
+	float:left;
+	width:250px;
+	height:170px;
+	margin-right:20px;
+	overflow:hidden;
+	padding-top:10px;
+}
+
+.blockResults .entitiesSet a, .blockResults .placesSet a, .blockResults .occurrencesSet a {
+	font-size:14px;
+	color:#000;
+}
+.blockResults .placesResult,.blockResults .entitiesResult {
+	margin-bottom:5px;
+	height:auto;
+	line-height:1.1em;
+	background-color:#fff;
+	padding:5px 10px 5px 10px;
+	width:250px;
+}
+a.downloadButton{
+	cursor: pointer;
+	background-color: #F13245;
+	border-radius: 3px;
+	border: 0px;
+	color: #fff;
+	width: 60px;
+	padding: 7px;
+}
 
