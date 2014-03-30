@@ -968,7 +968,11 @@ a.browseRemoveFacet img {
 }
 .results H5{
 	margin:0px;
-	padding:0px 0px 0px 20px;
+}
+.bFacetDescription {
+	margin:10px;
+	max-height:150px;
+	overflow:auto;
 }
 #bViewButtons{
 	float:right;
