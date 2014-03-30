@@ -561,23 +561,22 @@
  				if($ps_comment || $ps_tags || $ps_media1){
  					# --- check if email notification should be sent to admin
 					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
-						print "here";
 						# --- send email confirmation
-						# -- generate mail subject line
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
-						$vs_subject_line = ob_get_contents();
-						ob_end_clean();
-						# -- generate mail text from template - get both html and text versions
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
-						$vs_mail_message_text = ob_get_contents();
-						ob_end_clean();
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
-						$vs_mail_message_html = ob_get_contents();
-						ob_end_clean();
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+ 						$o_view->setVar("comment", $ps_comment);
+ 						$o_view->setVar("tags", $ps_tags);
+ 						$o_view->setVar("name", $ps_name);
+ 						$o_view->setVar("email", $ps_email);
+ 						$o_view->setVar("item", $t_item);
+ 					
+ 					
+ 						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
 						
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
+					
 						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 					}
  					if($this->request->config->get("dont_moderate_comments")){
