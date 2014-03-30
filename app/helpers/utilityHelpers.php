@@ -1121,9 +1121,9 @@ function caFileIsIncludable($ps_file) {
 				break;
 			case 'document':
 				if ($vb_return_as_regex) {
-					return 'application/pdf|application/postscript|text/xml|text/html|text/plain|application/msword';
+					return 'application/pdf|application/postscript|text/xml|text/html|text/plain|application/msword|officedocument';
 				} else {
-					return array('application/pdf', 'application/postscript', 'text/xml', 'text/html', 'text/plain', 'application/msword');
+					return array('application/pdf', 'application/postscript', 'text/xml', 'text/html', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
 				}
 				break;
 		}

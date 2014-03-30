@@ -61,9 +61,16 @@
 				print "</div>";
 			
 				print "<div class='artwork'>";
-				print $qr_res->getWithTemplate('<l>^ca_objects.preferred_labels</l>');
-				if ($qr_res->get('ca_objects.date.dates_value')) {
+				if($qr_res->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+					print $qr_res->getWithTemplate('<l>^ca_objects.nonpreferred_labels</l>');
+				} else {
+					print $qr_res->getWithTemplate('<l>^ca_objects.preferred_labels</l>');
+				}
+				if ($qr_res->get('ca_objects.date.dates_value') && ($qr_res->get('ca_objects.type_id') != 28)) {
 					print ", ".$qr_res->get('ca_objects.date.dates_value');
+				}
+				if ($qr_res->get('ca_objects.idno')) {
+					print " (".$qr_res->get('ca_objects.idno').")";
 				}
 				print "</div>";
 			

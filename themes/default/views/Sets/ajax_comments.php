@@ -5,21 +5,24 @@
 	$vn_item_id = $this->getVar("item_id");
 	$vs_tablename = $this->getVar("tablename");
 	$va_comments = $this->getVar("comments");
+	$t_set = $this->getVar("set");
+	
 	if($vb_close){
 		print "<p class='text-center'><br/><br/><span class='alert alert-success'>".$vs_message."</span></p>";
 ?>
 		<script type="text/javascript">
 			$(document).ready(function() {
 				setTimeout(function(){
+					window.location.reload();
 					jQuery('#comment<?php print $vn_item_id; ?>').hide();
 					<?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?>
-				}, 2000);	
+				}, 1000);	
 			});
 		</script>
 <?php
 	}else{
 ?>
-	<div class="pull-right"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;'><i class="fa fa-times"></i></a></div>
+	<div class="pull-right"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
 	<div class="text-center"><strong><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></strong></div>
 <?php
 		if(sizeof($va_comments)){
@@ -27,6 +30,10 @@
 			print "<div class='lbComments'>";
 			foreach($va_comments as $vn_comment_id => $va_comment){
 				print "<blockquote>";
+				# --- display link to remove comment?
+				if(($t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__)) || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
+					print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Sets", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => (($vs_tablename == "ca_sets") ? "index" : "detail")))."</div>";
+				}
 				$t_author->load($va_comment["user_id"]);
 				print $va_comment["comment"]."<br/>";
 				print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
@@ -36,7 +43,7 @@
 		}
 ?>
 	<div>
-		<form action="#" id="addComment">
+		<form action="#" id="addComment<?php print $vn_item_id; ?>">
 <?php
 		if($vs_error){
 			print "<div>".$vs_error."</div>";
@@ -53,10 +60,10 @@
 	</div>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {
-			jQuery('#addComment').submit(function(e){		
+			jQuery('#addComment<?php print $vn_item_id; ?>').submit(function(e){		
 				jQuery('#comment<?php print $vn_item_id; ?>').load(
 					'<?php print caNavUrl($this->request, '', 'Sets', 'AjaxSaveComment', null); ?>',
-					jQuery('#addComment').serialize()
+					jQuery('#addComment<?php print $vn_item_id; ?>').serialize()
 				);
 				e.preventDefault();
 				return false;

@@ -19,7 +19,7 @@
 				
 {{{<ifcount code="ca_objects" min="2">
 				<div id="detailRelatedObjects">
-					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Search', 'Objects', array('search' => 'collection_id:^ca_collections.collection_id'), null, array('dontURLEncodeParameters' => true)); ?></H3>
+					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Search', 'Objects', array('search' => 'collection:^ca_collections.idno'), null, array('dontURLEncodeParameters' => true)); ?></H3>
 					<div class="jcarousel-wrapper">
 						<div id="detailScrollButtonNext"><i class="fa fa-angle-right">&nbsp;</i></div>
 						<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left">&nbsp;</i></div>
@@ -79,7 +79,7 @@
 				
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_collections.CollectionNote.NoteContent%[NoteType=abstract]"><H3>About</H3>^ca_collections.CollectionNote.NoteContent%[NoteType=abstract]<br/></ifdef>}}}
-					
+					{{{<ifdef code="ca_collections.CollectionNote.NoteContent%[NoteType=related_archival_materials]"><H3>Related Archival Materials</H3>^ca_collections.CollectionNote.NoteContent%[NoteType=related_archival_materials]<br/></ifdef>}}}
 
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>

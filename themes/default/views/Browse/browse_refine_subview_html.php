@@ -73,7 +73,7 @@
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			var offsetBrowseResultsContainer = $("h2:first").offset();
+			var offsetBrowseResultsContainer = $("H5:first").offset();
 			var lastOffset = $("#bRefine").offset();
 			$("body").data("lastOffsetTop", lastOffset.top);
 			$(window).scroll(function() {

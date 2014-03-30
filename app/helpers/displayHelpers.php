@@ -2107,6 +2107,14 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					
 					$vs_tag = $vs_tag_proc;
 				}
+				
+				switch($vs_tag) {
+					case 'DATE':
+						$vs_format = urldecode(caGetOption('format', $va_tag_opts, 'm/d/Y'));
+						$va_proc_templates[$vn_i] = str_replace("^{$vs_tag}", date($vs_format), $va_proc_templates[$vn_i]);
+						continue(2);
+						break;
+				}
 			
 				$pa_options = array_merge($pa_options, $va_tag_opts);
 				

@@ -25,7 +25,7 @@
 <?php		
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
 		if (sizeof($va_collections) > 0) {
-			print "<div class='mediaThumbs'>";
+			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div style='width:100000px'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
@@ -109,7 +109,7 @@
 							foreach ($va_artworks as $key => $vn_artwork_id) {
 								$t_collection = new ca_collections($vn_artwork_id);
 								$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-								$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+								$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 								foreach ($va_object_reps as $img_key => $va_object_rep) {
 									if($vn_i < 4) {
@@ -123,7 +123,7 @@
 						} else {
 							$t_collection = new ca_collections($va_artworks[0]);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 							print "<div class='exImageSingle'>".array_shift(array_values($va_object_reps))."</div>";
 						}
 						print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
@@ -154,7 +154,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 
 							if ($va_object_reps){
@@ -213,7 +213,7 @@
 					print "<div style='width:1000000px'>";
 					while ($qr_res->nextHit()) {
 						print "<div class='objectsResult'>";
-						print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+						print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.resultthumb'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
 						print $qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
 						print "</div>";
 					}

@@ -25,7 +25,7 @@
 			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR Create a New Lightbox")."</H3></div></div><!-- end form-group -->\n";
 		}
 		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='Your lightbox' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-		print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='description' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>

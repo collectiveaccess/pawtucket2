@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1814,6 +1814,9 @@
 				}
 			}
 			
+			// Values to exclude from list attributes and authorities; can be idnos or ids
+			$va_exclude_values = caGetOption('exclude_values', $va_facet_info, array(), array('castTo' => 'array'));
+			
 			$va_results = $this->opo_ca_browse_cache->getResults();
 			
 			$vb_single_value_is_present = false;
@@ -2265,16 +2268,16 @@
 						if ($va_facet_info['suppress'] && !is_array($va_facet_info['suppress'])) {
 							$va_facet_info['suppress'] = array($va_facet_info['suppress']);
 						}
+						
+						if(!is_array($va_suppress_values = caGetOption('suppress', $va_facet_info, null))) {
+							$va_suppress_values = caGetOption('exclude_values', $va_facet_info, null);
+						}
 						if ($vn_element_type == 3) { // list
 							$t_list = new ca_lists();
 							$va_list_items = caExtractValuesByUserLocale($t_list->getItemsForList($t_element->get('list_id')));
 							
-							if (isset($va_facet_info['suppress']) && is_array($va_facet_info['suppress'])) {
-								$va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_facet_info['suppress']);
-							}
-						} else {
-							if (isset($va_facet_info['suppress']) && is_array($va_facet_info['suppress'])) {
-								$va_suppress_values = $va_facet_info['suppress'];
+							if (is_array($va_suppress_values)) {
+								$va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_suppress_values);
 							}
 						}
 						
@@ -3901,10 +3904,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 * in the restriction. You may pass numeric type_id and alphanumeric type codes interchangeably.
 		 *
 		 * @param array $pa_type_codes_or_ids List of type_id or code values to filter browse by. When set, the browse will only consider items of the specified types. Using a hierarchical parent type will automatically include its children in the restriction. 
+		 * @param array $pa_options Options include
+		 *		dontExpandHierarchically = 
 		 * @return boolean True on success, false on failure
 		 */
-		public function setTypeRestrictions($pa_type_codes_or_ids) {
-			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids);
+		public function setTypeRestrictions($pa_type_codes_or_ids, $pa_options=null) {
+			$this->opa_browse_type_ids = $this->_convertTypeCodesToIDs($pa_type_codes_or_ids, array('dontExpandHierarchically' => caGetOption('dontExpandHierarchically', $pa_options, false)));
 			$this->opo_ca_browse_cache->setTypeRestrictions($this->opa_browse_type_ids);
 			return true;
 		}
@@ -3950,7 +3955,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 				if (isset($va_type_list[$vn_type_id]) && $va_type_list[$vn_type_id]) {	// is valid type for this subject
 					// See if there are any child types
-					if ((!isset($pa_options['dontExpandHierarchically']) && !$pa_options['dontExpandHierarchically']) && !$this->opb_dont_expand_type_restrictions) {
+					if ((!caGetOption('dontExpandHierarchically', $pa_options, false)) && !$this->opb_dont_expand_type_restrictions) {
 						$t_item = new ca_list_items($vn_type_id);
 						$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
 					}
