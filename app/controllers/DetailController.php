@@ -62,6 +62,7 @@
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
+ 			AssetLoadManager::register("readmore");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); 
@@ -219,15 +220,18 @@
  		 *
  		 */ 
  		public function GetRepresentationInfo() {
- 			$vn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
  			
- 			if(!$vn_object_id) { $vn_object_id = 0; }
+ 			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
- 			
- 			$va_opts = array('display' => $ps_display_type, 'object_id' => $vn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
+ 			if (!$t_rep->getPrimaryKey()) { 
+ 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+ 				return;
+ 			}
+ 			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
  			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
@@ -555,6 +559,27 @@
  					}
  				}
  				if($ps_comment || $ps_tags || $ps_media1){
+ 					# --- check if email notification should be sent to admin
+					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+						print "here";
+						# --- send email confirmation
+						# -- generate mail subject line
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
+						$vs_subject_line = ob_get_contents();
+						ob_end_clean();
+						# -- generate mail text from template - get both html and text versions
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
+						$vs_mail_message_text = ob_get_contents();
+						ob_end_clean();
+						ob_start();
+						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
+						$vs_mail_message_html = ob_get_contents();
+						ob_end_clean();
+						
+						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+					}
  					if($this->request->config->get("dont_moderate_comments")){
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing."), __NOTIFICATION_TYPE_INFO__);
@@ -565,28 +590,6 @@
  							$this->render("Form/reload_html.php");
 						}
  					}else{
- 						# --- check if email notification should be sent to admin
-						if(!$this->request->config->get("dont_email_notification_for_new_comments")){
-							print "here";
-							# --- send email confirmation
-							# -- generate mail subject line
-							ob_start();
-							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
-							$vs_subject_line = ob_get_contents();
-							ob_end_clean();
-							# -- generate mail text from template - get both html and text versions
-							ob_start();
-							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
-							$vs_mail_message_text = ob_get_contents();
-							ob_end_clean();
-							ob_start();
-							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
-							$vs_mail_message_html = ob_get_contents();
-							ob_end_clean();
-							
-							caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
-						}
- 						
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."), __NOTIFICATION_TYPE_INFO__);
  							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
@@ -596,7 +599,6 @@
  							$this->render("Form/reload_html.php");
 						}
  					}
- 					
  				}else{
  					if($vn_inline_form){
 						$this->notification->addNotification(_t("Thank you for your contribution."), __NOTIFICATION_TYPE_INFO__);
@@ -696,23 +698,23 @@
  			$this->view->setVar('tablename', $ps_tablename);
 
  			if(sizeof($va_errors) == 0){
+				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+				$o_view->setVar("item", $t_item);
+				$o_view->setVar("item_id", $pn_item_id);
+				$o_view->setVar("from_name", $ps_from_name);
+				$o_view->setVar("message", $ps_message);
+				$o_view->setVar("detailConfig", $this->config);
 				# -- generate mail text from template - get both html and text versions
-				ob_start();
 				if($ps_tablename == "ca_objects"){
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_text.tpl");
+					$vs_mail_message_text = $o_view->render("mailTemplates/share_object_email_text.tpl");
 				}else{
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_text.tpl");
+					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
-				$vs_mail_message_text = ob_get_contents();
-				ob_end_clean();
-				ob_start();
 				if($ps_tablename == "ca_objects"){
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
 				}else{
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
 				}
-				$vs_mail_message_html = ob_get_contents();
-				ob_end_clean();
 				
 				$va_media = null;
 				if($ps_tablename == "ca_objects"){

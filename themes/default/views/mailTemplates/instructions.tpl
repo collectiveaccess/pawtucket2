@@ -1,6 +1,6 @@
-<?php
+﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/instructions.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,14 +26,20 @@
  * ----------------------------------------------------------------------
  */
  
-print _t("<p>Thank you for registering for \"%1\".</p>
+print _t("To reset your password copy and paste the following URL into your web browser:").' ';
 
-<p>As a member you can comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.</p>
+print $this->getVar("password_reset_url");
 
-<p>Regards,<br/>
-the Staff</p>
+print _t("
 
-", $this->request->config->get("app_display_name"));
+You will be prompted for a new password. If you have further difficulties, 
+or if you did not request your password to be reset, please contact us at %1.
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
+Regards,
+
+The staff
+", $this->request->config->get("ca_admin_email"));
+
+
+	print $this->request->config->get("site_host");
 ?>

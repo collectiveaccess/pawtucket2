@@ -10,7 +10,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-md-6 col-lg-6'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
 				<div id="detailTools">
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
@@ -18,7 +18,7 @@
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
-			<div class='col-md-6 col-lg-6'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
@@ -29,8 +29,10 @@
 				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdef>}}}
 				
+				{{{<ifdef code="ca_objects.description">
+					<span class="trimText">^ca_objects.description</span>
+				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
 				
@@ -50,3 +52,14 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+
+
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 65
+		});
+	});
+</script>

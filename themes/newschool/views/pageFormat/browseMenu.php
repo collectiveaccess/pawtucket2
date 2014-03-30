@@ -33,40 +33,21 @@
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
 	<ul class="dropdown-menu" id="browse-menu">
 		<li class="browseNavFacet">			
-			<div class="browseMenuContent container">
+			<div class="browseMenuContent container text-center">
 <?php
 		if(sizeof($va_browse_types) > 1){
-			# --- only show browse targets if there are more than one
 ?>	
-				<div class="mainfacet">
-						<ul class="nav nav-pills">
-							<div class='browseHeadernav'><li>Browse for:</li></div>
+			Find: 
 <?php
-							foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-								#print "<div class='browseHeadernav'><a href='#'>".$vs_browse_name."</a></div>";
-								print "<div class='browseHeadernav caps'><li ".((!$vs_first_browse_name) ? "class='active'" : "")."><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($vs_browse_name)."</a></li></div>";
-								if(!$vs_first_browse_name){
-									$vs_first_browse_name = $vs_browse_name;
-								}
-							}
-?>
-						</ul>
-				</div><!--end main facet-->
-<?php
+			foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+				print caNavLink($this->request, caUcFirstUTF8Safe($vs_browse_name).' &nbsp;'.$va_browse_type["icon_class"].'', 'browseMenuBrowseAll btn btn-default btn-lg', '', 'Browse', $vs_browse_name, '');
+			}
 		}
 ?>
-				<div id="browseMenuTypeFacet"> </div>
 			</div><!-- end browseMenuContent container -->		
 		</li><!-- end browseNavFacet -->
 	</ul> <!--end dropdown-browse-menu -->	
  </li><!-- end dropdown -->
-	<script type="text/javascript">
-		$('.dropdown-toggle').dropdown()
-	
-		jQuery(document).ready(function() {		
-			jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse_name)); ?>");
-		});
-	</script>
 <?php	
 	}
 ?>

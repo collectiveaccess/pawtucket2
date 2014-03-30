@@ -84,24 +84,16 @@
  			}
  			if(sizeof($va_errors) == 0){
  				# --- send email
+ 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+ 					$o_view->setVar("contact_form_elements", $va_fields);
  					# -- generate email subject line from template
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/contact_subject.tpl");
+					$vs_subject_line = $o_view->render("mailTemplates/contact_subject.tpl");
 						
-					$vs_subject_line = ob_get_contents(); 
-					ob_end_clean();
 					# -- generate mail text from template - get both the text and the html versions
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/contact.tpl");
-						
-					$vs_mail_message_text = ob_get_contents(); 
-					ob_end_clean();
-					ob_start();
-					require($this->request->getViewsDirectoryPath()."/mailTemplates/contact_html.tpl");
-						
-					$vs_mail_message_html = ob_get_contents(); 
-					ob_end_clean();
-					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
+					
+					if(caSendmail(join(",", $this->config->getList("contact_email")), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
 						$this->render("Contact/success_html.php");
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
