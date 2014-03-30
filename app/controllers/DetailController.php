@@ -50,6 +50,7 @@
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
+ 		 	$this->view->setVar("access_values", $this->opa_access_values);
  		 		
  			caSetPageCSSClasses(array("detail"));
  		}
@@ -112,12 +113,20 @@
  			//
  			//
  			//
- 			if ($t_representation = $t_table->getPrimaryRepresentationInstance()) {
- 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
- 			} else {
- 				$this->view->setVar("representationViewer", "");
- 			}
- 			
+ 			if (method_exists($t_table, 'getPrimaryRepresentationInstance')) {
+ 				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+ 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+ 					$t_representation->load($pn_representation_id);
+ 				}else{
+ 					$t_representation = $t_table->getPrimaryRepresentationInstance();
+ 				}
+				if ($t_representation) {
+					$this->view->setVar("t_representation", $t_representation);
+					$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
+				} else {
+					$this->view->setVar("representationViewer", "");
+				}
+			} 			
  			//
  			// comments, tags
  			//
@@ -556,6 +565,28 @@
  							$this->render("Form/reload_html.php");
 						}
  					}else{
+ 						# --- check if email notification should be sent to admin
+						if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+							print "here";
+							# --- send email confirmation
+							# -- generate mail subject line
+							ob_start();
+							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
+							$vs_subject_line = ob_get_contents();
+							ob_end_clean();
+							# -- generate mail text from template - get both html and text versions
+							ob_start();
+							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
+							$vs_mail_message_text = ob_get_contents();
+							ob_end_clean();
+							ob_start();
+							require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
+							$vs_mail_message_html = ob_get_contents();
+							ob_end_clean();
+							
+							caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						}
+ 						
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."), __NOTIFICATION_TYPE_INFO__);
  							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
@@ -565,26 +596,7 @@
  							$this->render("Form/reload_html.php");
 						}
  					}
- 					# --- check if email notification should be sent to admin
- 					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
- 						# --- send email confirmation
-						# -- generate mail subject line
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_subject.tpl");
-						$vs_subject_line = ob_get_contents();
-						ob_end_clean();
-						# -- generate mail text from template - get both html and text versions
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification.tpl");
-						$vs_mail_message_text = ob_get_contents();
-						ob_end_clean();
-						ob_start();
-						require($this->request->getViewsDirectoryPath()."/mailTemplates/admin_comment_notification_html.tpl");
-						$vs_mail_message_html = ob_get_contents();
-						ob_end_clean();
-						
-						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
- 					}
+ 					
  				}else{
  					if($vn_inline_form){
 						$this->notification->addNotification(_t("Thank you for your contribution."), __NOTIFICATION_TYPE_INFO__);

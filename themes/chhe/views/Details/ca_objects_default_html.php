@@ -2,6 +2,8 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_tags = $this->getVar("tags_array");
+	$va_access_values = $this->getVar("access_values");
+	$t_representation = $this->getVar("t_representation");
 ?>
 
 <!--this is the slide area body-->
@@ -16,19 +18,97 @@
 		<div id="cont" class="col-sm-5 col-md-5">
 			{{{representationViewer}}}
 		</div>
-		<div class="col-md-5 col-sm-5 obj_detail_caption">
-			<H3>{{{ca_objects.preferred_labels.name}}}</H3>
-			{{{<ifdef code="ca_objects.idno"><p><strong>Identifer:</strong> ^ca_objects.idno</p></ifdef>}}}
-			{{{<ifdef code="ca_objects.date.dates_value%[dc_dates_types=created]"><p><strong>Date:</strong> ^ca_objects.date.dates_value%[dc_dates_types=created]</p></ifdev>}}}	
-			{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
-			{{{<ifdef code="ca_objects.dimensions_display"><p><strong>Dimensions</strong><br/>^ca_objects.dimensions_display</p></ifdef>}}}
-			{{{<ifcount min="1" code="ca_collections"><p>
-				<ifcount min="1" max="1" code="ca_collections"><strong>Collection</strong>
-				</ifcount><ifcount min="2" code="ca_collections"><strong>Collections</strong></ifcount>
-				<br/>
-				<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
-			</p></ifcount>}}}
-			{{{<ifdef code="ca_objects.caption"><p><strong>Caption:</strong> ^ca_objects.caption</p></ifdev>}}}
+		<div class="col-md-5 col-sm-5">
+			<div class="obj_detail_caption">
+				<H3>{{{ca_objects.preferred_labels.name}}}</H3>
+				{{{<ifdef code="ca_objects.date.dates_value%[dc_dates_types=created]"><p>^ca_objects.date.dates_value%[dc_dates_types=created]</p></ifdev>}}}	
+<?php
+			if($t_representation && $t_representation->get("caption")){
+				print "<p>caption:<br/>".$t_representation->get("caption")."</p>";
+			}
+?>
+			</div>
+<?php
+			$va_reps = $t_object->getRepresentations(array('icon'), null, array("return_with_access" => $va_access_values));			
+			$i = 0;
+			if(sizeof($va_reps) > 1){
+?>
+				<div class='row objectRepIcons' style='height:72px'>
+					<div class="jcarousel-wrapper">
+						<div id="detailRepsScrollButtonNext"><i class="fa fa-angle-right"></i></div>
+						<div id="detailRepsScrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
+						<!-- Carousel -->
+						<div class="jcarousel">
+							<ul>
+<?php
+				$vni = 0;
+				foreach($va_reps as $va_rep){
+					$vni++;
+					$vs_class = "";
+					if($t_representation->get("representation_id") == $va_rep["representation_id"]){
+						$vs_class = "active";
+						$vn_repTarget = $vni;
+					}
+					#print "<div class='col-xs-2 col-sm-3'>".caDetailLink($this->request, $va_rep["tags"]["icon"], $vs_class, 'ca_objects', $t_object->get("object_id"), array("representation_id" => $va_rep["representation_id"]))."</div>";
+					print "<li><div class='objectRepIcons'>".caDetailLink($this->request, $va_rep["tags"]["icon"], $vs_class, 'ca_objects', $t_object->get("object_id"), array("representation_id" => $va_rep["representation_id"], "rep"))."</div></li>";
+				}
+?>
+							</ul>
+						</div><!-- end jcarousel -->
+					</div><!-- end jcarousel-wrapper -->
+				</div><!-- end objectRepIcons -->
+			<script type='text/javascript'>
+				jQuery(document).ready(function() {
+					/*
+					Carousel initialization
+					*/
+					$('.jcarousel').jcarousel({
+							// Options go here
+					});
+<?php
+					if($vn_repTarget){
+?>
+						$('.jcarousel').jcarousel('scroll', <?php print $vn_repTarget - 1; ?>);
+<?php
+					}
+?>
+			
+					/*
+					 Prev control initialization
+					 */
+					$('#detailRepsScrollButtonPrevious')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '-=1'
+						});
+			
+					/*
+					 Next control initialization
+					 */
+					$('#detailRepsScrollButtonNext')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '+=1'
+						});
+				});
+			</script>
+<?php
+			}
+?>
+		
+		
 		</div>
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1 text-right nextlink'>
 			<div class="detailNavBgRight">
@@ -42,6 +122,15 @@
 	<div class="row">
 		<div class="col-sm-6">
 			<div class="lightbordered">				
+			{{{<ifdef code="ca_objects.idno"><p><strong>Identifer:</strong> ^ca_objects.idno</p></ifdef>}}}
+			{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
+			{{{<ifdef code="ca_objects.dimensions_display"><p><strong>Dimensions</strong><br/>^ca_objects.dimensions_display</p></ifdef>}}}
+			{{{<ifcount min="1" code="ca_collections"><p>
+				<ifcount min="1" max="1" code="ca_collections"><strong>Collection</strong>
+				</ifcount><ifcount min="2" code="ca_collections"><strong>Collections</strong></ifcount>
+				<br/>
+				<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
+			</p></ifcount>}}}
 <?php
 				if(is_array($va_tags) && sizeof($va_tags)){
 					print "<p><strong>Tags:</strong><br/>";
