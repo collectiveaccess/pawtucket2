@@ -50,6 +50,7 @@
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
+ 		 	$this->view->setVar("access_values", $va_access_values);
  		 		
  			caSetPageCSSClasses(array("detail"));
  		}
