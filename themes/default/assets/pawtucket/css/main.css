@@ -438,11 +438,11 @@ div.browseFacetItem a{
 	text-decoration:none;
 	border-bottom:1px solid #000;
 }	
-.btn-default {
+.filterMenuFacetList .btn-default {
 	background:transparent; 
 	color:#ccc;
 }	
-.btn-default a{
+.filterMenuFacetList .btn-default a{
 	color:#666;
 	font-size:11px;
 }	
@@ -618,7 +618,7 @@ a.browseRemoveFacet img {
 	margin:0px -10px 0px -10px;
 	padding:0px 10px 10px 10px;
 	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);;
 }
 .lbSetExpandedInfo{
 	margin:0px -15px 0px -15px;
@@ -659,6 +659,8 @@ a.browseRemoveFacet img {
 
 .lbSetImg{
 	margin-bottom:10px;
+	max-height:168px;
+	overflow:hidden;
 }
 .lbSetImg img{
 	width:100%;
@@ -679,6 +681,21 @@ a.browseRemoveFacet img {
 .lbSetThumb img{
 	width:100%;
 	height:auto;
+}
+.lbSetThumbPlaceholder{
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	width:100%;
+	height:80px;
+}
+.lbSetImgPlaceholder{
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	color: #858585;
+	padding:60px 5px 72px 5px;
+	text-align:center;
+	width:100%;
+	margin-bottom:10px;
 }
 .lbSetItemComment{
 	display:none;
@@ -968,7 +985,11 @@ a.browseRemoveFacet img {
 }
 .results H5{
 	margin:0px;
-	padding:0px 0px 0px 20px;
+}
+.bFacetDescription {
+	margin:10px;
+	max-height:150px;
+	overflow:auto;
 }
 #bViewButtons{
 	float:right;
@@ -1169,7 +1190,7 @@ a.browseRemoveFacet img {
 
 
 /* --------------------------------- */
-/* multiSearch s */
+/* multi-search */
 /* --------------------------------- */
 .multisearch {
 	/*padding:0px 30px 0px 25px;*/

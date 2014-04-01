@@ -3,8 +3,11 @@
 	$va_errors = $this->getVar("errors");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Share Set"); ?></H1>
+<H1><?php print _t("Share Lightbox"); ?></H1>
 <?php
+	if($this->getVar("message")){
+		print "<div class='alert alert-info'>".$this->getVar("message")."</div>";
+	}
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
 	}
@@ -15,7 +18,7 @@
 			if($va_errors["group_id"]){
 				print "<div class='alert alert-danger'>".$va_errors["group_id"]."</div>\n";
 			}
-			print "<div class='form-group".(($va_errors["group_id"]) ? " has-error" : "")."'><label for='group_id' class='col-sm-4 control-label'>"._t("Group")."</label><div class='col-sm-7'><select name='group_id' class='form-control'>\n";
+			print "<div class='form-group".(($va_errors["group_id"]) ? " has-error" : "")."'><label for='group_id' class='col-sm-4 control-label'>"._t("Select a group")."</label><div class='col-sm-7'><select name='group_id' class='form-control'>\n";
 			print "<option value='0'>"._t("Select a user group")."</option>\n";
 			foreach($va_user_groups as $va_user_group){
 				print "<option value='".$va_user_group["group_id"]."'>".$va_user_group["name"]."</option>\n";
@@ -26,7 +29,7 @@
 		if($va_errors["user"]){
 			print "<div class='alert alert-danger'>".$va_errors["user"]."</div>\n";
 		}
-		print "<div class='form-group".(($va_errors["user"]) ? " has-error" : "")."'><label for='user' class='col-sm-4 control-label'>"._t("User")."</label><div class='col-sm-7'><input type='text' name='user' class='form-control' placeholder=\"enter user's email address\"></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["user"]) ? " has-error" : "")."'><label for='user' class='col-sm-4 control-label'>"._t("OR enter a user")."</label><div class='col-sm-7'><input type='text' name='user' class='form-control'><small>"._t("email address or multiple addresses separated by comma")."</small></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		if($va_errors["access"]){
 			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>\n";
 		}

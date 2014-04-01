@@ -109,10 +109,21 @@ foreach($va_views as $vs_view => $va_view_info) {
 				if($i < sizeof($va_criteria)){
 					print ", ";
 				}
+				$va_current_facet = $va_facets[$va_criterion['facet_name']];
+				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+					$t_authority_table = new $va_current_facet["table"];
+					$t_authority_table->load($va_criterion['id']);
+					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+				}
 			}
 		}
 ?>		
-		&nbsp;</H5>
+		</H5>
+<?php
+		if($vs_facet_description){
+			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+		}
+?>
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php

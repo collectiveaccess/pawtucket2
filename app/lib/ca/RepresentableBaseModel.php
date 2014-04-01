@@ -695,11 +695,11 @@
 		 *
 		 * @return array An array with information about matching representations, in the same format as that returned by self::getRepresentations()
 		 */
-		public function representationsOfClass($ps_class, $pa_options=null) {
+		public function representationsOfClass($ps_class, $pa_versions=null, $pa_version_sizes=null, $pa_options=null) {
 			if (!($vs_mimetypes_regex = caGetMimetypesForClass($ps_class, array('returnAsRegex' => true)))) { return array(); }
 		
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations($pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations($pa_versions, $pa_version_sizes, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
 					if (preg_match("!{$vs_mimetypes_regex}!", $va_rep['mimetype'])) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;

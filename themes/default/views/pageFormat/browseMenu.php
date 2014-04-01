@@ -43,9 +43,9 @@
 <?php
 							foreach($va_browse_types as $vs_browse_name => $va_browse_type){
 								#print "<div class='browseHeadernav'><a href='#'>".$vs_browse_name."</a></div>";
-								print "<div class='browseHeadernav caps'><li ".((!$vs_first_browse_name) ? "class='active'" : "")."><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($vs_browse_name)."</a></li></div>";
+								print "<div class='browseHeadernav caps'><li ".((!$vs_first_browse_name) ? "class='active'" : "")."><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></li></div>";
 								if(!$vs_first_browse_name){
-									$vs_first_browse_name = $vs_browse_name;
+									$vs_first_browse_name = $va_browse_type['displayName'];
 								}
 							}
 ?>

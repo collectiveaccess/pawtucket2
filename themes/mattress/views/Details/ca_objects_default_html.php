@@ -24,13 +24,22 @@
 		
 		<div id="infoArea">
 			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</ifdef></p>}}}
-			{{{<ifdef code="ca_objects.work_type"><div class='collectionHeading'>Type</div><p>^ca_objects.work_type</ifdef></p>}}}
+			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</unit></p>}}}
 			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</ifdef></p>}}}
 
 			{{{<ifdef code="ca_objects.description"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
 		
 			<div class="clearfix"></div>
 		</div>
+<?php
+		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == 274)) {
+			$va_documents = $t_object->representationsOfClass('document', array('original'));
+			foreach ($va_documents as $doc_id => $va_document) {
+				print "<a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a>";
+			}
+		}
+
+?>				
 	</div><!-- contentArea -->
 <?php
 	$va_occurrences = $t_object->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));

@@ -52,15 +52,40 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 ?>
-	<div id="timeline-embed"></div>
-    <script>
+	<div id="timeline-embed" style="width: 700px; height:500px;">
+
+	</div>
+	
+	<br style="clear: both;"/>
+	
+    <script type="text/javascript">
+    	var tl;
 		$(document).ready(function() {
-			createStoryJS({
+			tl = new VMM.Timeline("#timeline-embed");
+			VMM.debug = false;
+			tl.init({
 				type:       'timeline',
 				width:      '700',
 				height:     '500',
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
-				embed_id:   'timeline-embed'
+				embed_id:   'timeline-embed',
+				debug: false
 			});
+			
+			VMM.bindEvent(jQuery(".vco-slider"), loadTL, "UPDATE");
+			VMM.bindEvent(jQuery(".vco-navigation"), loadTL, "UPDATE");
 		});
+		
+		var c = 36;
+		var s = c;
+		function loadTL(e) {
+			console.log("slide!", e, tl.getCurrentNumber());
+			
+			if (tl.getCurrentNumber() >= (c-2)) {
+				tl.reload(url ='<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key, 's' => '')); ?>' + s);
+				console.log("reload", url);
+				s+= c;
+			}
+		}
+		
 	</script>
