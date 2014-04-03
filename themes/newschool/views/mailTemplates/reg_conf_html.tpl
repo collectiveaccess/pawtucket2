@@ -31,7 +31,7 @@ print _t("<p>Thank you for registering for \"%1\".</p>
 <p>As a member you can comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.</p>
 
 <p>Regards,<br/>
-the Staff</p>
+The New School Archives & Special Collections</p>
 
 ", $this->request->config->get("app_display_name"));
 

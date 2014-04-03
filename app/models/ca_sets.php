@@ -2036,5 +2036,53 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		}
 	}
 	# ---------------------------------------------------------------
+	# --- returns array of users with access to set
+	# ---------------------------------------------------------------
+	public function getSetUsers(){
+		if (!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		$o_db = $this->getDB();
+		$va_users = array();
+		# --- add the owner of the set
+		$q_set_users = $o_db->query("
+						SELECT u.user_id, u.email, u.fname, u.lname, su.access
+						FROM ca_sets_x_users su
+						INNER JOIN ca_users AS u ON su.user_id = u.user_id
+						WHERE su.set_id = ?
+						", $vn_set_id);
+		if($q_set_users->numRows()){
+			while($q_set_users->nextRow()){
+				$va_users[$q_set_users->get("user_id")] = array("user_id" => $q_set_users->get("user_id"), "name" => trim($q_set_users->get("fname")." ".$q_set_users->get("lname")), "email" => $q_set_users->get("email"), "access" => $q_set_users->get("access"));
+			}
+		}
+		$q_set_owner = $o_db->query("
+						SELECT u.user_id, u.email, u.fname, u.lname
+						FROM ca_users u
+						WHERE u.user_id = ?
+						", $this->get("user_id"));
+		if($q_set_owner->numRows()){
+			$q_set_owner->nextRow();
+			$va_users[$this->get("user_id")] = array("owner" => true, "user_id" => $this->get("user_id"), "name" => trim($q_set_owner->get("fname")." ".$q_set_owner->get("lname")), "email" => $q_set_owner->get("email"), "access" => 2);
+		}
+		return $va_users;
+	}
+	# ---------------------------------------------------------------
+	public function getSetGroups(){
+		if (!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		$o_db = $this->getDB();
+		$va_groups = array();
+		$q_set_groups = $o_db->query("
+						SELECT g.group_id, g.name, sg.access
+						FROM ca_sets_x_user_groups sg
+						INNER JOIN ca_user_groups AS g ON sg.group_id = g.group_id
+						WHERE sg.set_id = ?
+						", $vn_set_id);
+		if($q_set_groups->numRows()){
+			while($q_set_groups->nextRow()){
+				$va_groups[$q_set_groups->get("group_id")] = array("group_id" => $q_set_groups->get("group_id"), "name" => $q_set_groups->get("name"), "access" => $q_set_groups->get("access"));
+			}
+		}
+		return $va_groups;
+	}
+	# ---------------------------------------------------------------
 }
 ?>
