@@ -1682,4 +1682,15 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .collectionInfo {
 	margin:15px 0px 15px 0px;
 }
-
+.jspHorizontalBar .jspTrack {
+	margin-top:5px;
+}
+.jspHorizontalBar {
+	background-color: transparent;
+}
+.jspDrag {
+	background-color:#aaa;
+}
+.jspTrack {
+	background-color:#f7f7f7;
+}
