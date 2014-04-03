@@ -31,7 +31,7 @@ print _t("Thank you for registering for \"%1\".
 As a member you can rank, comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.
 
 Regards,
-the Staff
+The New School Archives & Special Collections
 
 ", $this->request->config->get("app_display_name"));
 

@@ -131,7 +131,8 @@
  			$vn_object_table_num = $t_object->tableNum();
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', $this->request->getParameter('access', pInteger));
+				$t_set->set('access', 1);
+				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				if($t_set->get("set_id")){
 					# --- edit/add description
 					$t_set->replaceAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
@@ -173,6 +174,110 @@
 			} 			
  		}
  		# ------------------------------------------------------
+ 		function setAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			# --- list of groups/users with access to set
+ 			$this->view->setVar("users", $t_set->getSetUsers());
+ 			$this->view->setVar("user_groups", $t_set->getSetGroups());
+ 			
+ 			$this->render("Sets/set_access_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function saveGroupAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			# --- list of groups/users with access to set
+ 			$this->view->setVar("users", $t_set->getSetUsers());
+ 			$this->view->setVar("user_groups", $t_set->getSetGroups());
+ 			
+ 			$this->render("Sets/set_access_html.php");
+ 		}
+ 		# ------------------------------------------------------
+ 		function removeGroupAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$pn_group_id = $this->request->getParameter('group_id', pInteger);
+ 			$t_item = new ca_sets_x_user_groups();
+			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
+			if($t_item->get("relation_id")){
+				$t_item->setMode(ACCESS_WRITE);
+				$t_item->delete(true);
+				if ($t_item->numErrors()) {
+					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+				}else{
+					$this->view->setVar('message', _t("Removed group access to lightbox"));
+				}
+			}else{
+				$this->view->setVar('errors', _("invalid group/set id"));
+			}
+			$this->setAccess();
+ 		}
+ 		# ------------------------------------------------------
+ 		function removeUserAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$pn_user_id = $this->request->getParameter('user_id', pInteger);
+ 			$t_item = new ca_sets_x_users();
+			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
+			if($t_item->get("relation_id")){
+				$t_item->setMode(ACCESS_WRITE);
+				$t_item->delete(true);
+				if ($t_item->numErrors()) {
+					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+				}else{
+					$this->view->setVar('message', _t("Removed user access to lightbox"));
+				}
+			}else{
+				$this->view->setVar('errors', _("invalid user/set id"));
+			}
+ 			$this->setAccess();
+ 		}
+ 		# ------------------------------------------------------
+ 		function editGroupAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$pn_group_id = $this->request->getParameter('group_id', pInteger);
+ 			$pn_access = $this->request->getParameter('access', pInteger);
+ 			$t_item = new ca_sets_x_user_groups();
+			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
+			if($t_item->get("relation_id") && $pn_access){
+				$t_item->setMode(ACCESS_WRITE);
+				$t_item->set('access', $pn_access);
+				$t_item->update();
+				if ($t_item->numErrors()) {
+					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+				}else{
+					$this->view->setVar('message', _t("Changed group access to lightbox"));
+				}
+			}else{
+				$this->view->setVar('errors', _("invalid group/set id or access"));
+			}
+			$this->setAccess();
+ 		}
+ 		# ------------------------------------------------------
+ 		function editUserAccess() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			$pn_user_id = $this->request->getParameter('user_id', pInteger);
+ 			$pn_access = $this->request->getParameter('access', pInteger);
+ 			$t_item = new ca_sets_x_users();
+			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
+			if($t_item->get("relation_id") && $pn_access){
+				$t_item->setMode(ACCESS_WRITE);
+				$t_item->set('access', $pn_access);
+				$t_item->update();
+				if ($t_item->numErrors()) {
+					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+				}else{
+					$this->view->setVar('message', _t("Changed user access to lightbox"));
+				}
+			}else{
+				$this->view->setVar('errors', _("invalid user/set id or access"));
+			}
+			$this->setAccess();
+ 		}
+ 		# ------------------------------------------------------
  		function shareSetForm() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
@@ -183,7 +288,10 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
- 			$o_purifier = new HTMLPurifier();$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
+ 			$o_purifier = new HTMLPurifier();
+ 			$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
+ 			# --- ps_user can be list of emails separated by comma
+ 			$va_users = explode(", ", $ps_user);
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			if(!$pn_group_id && !$ps_user){
  				$va_errors["general"] = _t("Please select a user or group");
@@ -209,37 +317,57 @@
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
-							$this->view->setVar("message", _t('Shared lightbox'));
+							$this->view->setVar("message", _t('Shared lightbox with group'));
 							$this->render("Form/reload_html.php");
 						}
 					}
 				}else{
-					# --- lookup the user
-					$t_user = new ca_users(array("email" => $ps_user));
-					if($vn_user_id = $t_user->get("user_id")){
-						$t_sets_x_users = new ca_sets_x_users();
-						if($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id))){
-							$this->view->setVar("message", _t('User already has access to the lightbox'));
-							$this->render("Form/reload_html.php");
-						}else{
-							$t_sets_x_users->setMode(ACCESS_WRITE);
-							$t_sets_x_users->set('access',  $pn_access);
-							$t_sets_x_users->set('user_id',  $vn_user_id);
-							$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
-							$t_sets_x_users->insert();
-							if($t_sets_x_users->numErrors()) {
-								$va_errors["general"] = join("; ", $t_sets_x_users->getErrors());
-								$this->view->setVar('errors', $va_errors);
-								$this->shareSetForm();
+					$va_error_emails = array();
+					$va_success_emails = array();
+					$va_error_emails_has_access = array();
+					$t_user = new ca_users();
+					foreach($va_users as $vs_user){
+						# --- lookup the user/users
+						$t_user->load(array("email" => $vs_user));
+						if($vn_user_id = $t_user->get("user_id")){
+							$t_sets_x_users = new ca_sets_x_users();
+							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
+								$va_error_emails_has_access[] = $vs_user;
 							}else{
-								$this->view->setVar("message", _t('Shared lightbox'));
-								$this->render("Form/reload_html.php");
+								$t_sets_x_users->setMode(ACCESS_WRITE);
+								$t_sets_x_users->set('access',  $pn_access);
+								$t_sets_x_users->set('user_id',  $vn_user_id);
+								$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
+								$t_sets_x_users->insert();
+								if($t_sets_x_users->numErrors()) {
+									$va_errors["general"] = _t("There were errors while sharing this lightbox with %1", $vs_user).join("; ", $t_sets_x_users->getErrors());
+									$this->view->setVar('errors', $va_errors);
+									$this->shareSetForm();
+								}else{
+									$va_success_emails[] = $vs_user;
+								}
 							}
+						}else{
+							$va_error_emails[] = $vs_user;
 						}
-					}else{
-						$va_errors["user"] = _t("The email address you entered does not belong to a registered user");
+					}
+					if((sizeof($va_error_emails)) || (sizeof($va_error_emails_has_access))){
+						$va_user_errors = array();
+						if(sizeof($va_error_emails)){
+							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ".implode(", ", $va_error_emails));
+						}
+						if(sizeof($va_error_emails_has_access)){
+							$va_user_errors[] = _t("The following email(s) you entered already have access to this lightbox: ".implode(", ", $va_error_emails_has_access));
+						}
+						if(sizeof($va_success_emails)){
+							$this->view->setVar('message', _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+						}
+						$va_errors["user"] = implode("<br/>", $va_user_errors);
 						$this->view->setVar('errors', $va_errors);
 						$this->shareSetForm();
+					}else{
+						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+						$this->render("Form/reload_html.php");
 					}
 				}
 			}else{
@@ -331,6 +459,7 @@
  			$t_item->load($pn_item_id);
  			$va_comments = $t_item->getComments();
  			
+ 			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("comments", $va_comments);
@@ -379,8 +508,9 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
  			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
  			$ps_tablename = $this->request->getParameter('tablename', pString);
+ 			if (!$ps_tablename) { $this->Index(); return;}
  			# --- check this is a valid table to have comments in the lightbox
  			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index(); }
  			# --- load table
@@ -400,6 +530,45 @@
  			}
  			if($ps_tablename == "ca_sets"){
  				$this->setDetail();
+ 			}
+ 		}
+ 		# ------------------------------------------------------
+ 		function deleteComment() {
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			
+ 			$o_datamodel = new Datamodel();
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
+ 			$pn_comment_id = $this->request->getParameter("comment_id", pInteger);
+ 			$t_comment = new ca_item_comments($pn_comment_id);
+ 			
+ 			if($t_comment->get("comment_id")){
+				# --- check if user is owner of comment or has edit access to set comment was made on
+				if(($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
+					$this->Index(); return;
+				}
+				
+				$t_comment->setMode(ACCESS_WRITE);
+				$t_comment->delete(true);
+				if ($t_comment->numErrors()) {
+					$this->notification->addNotification(_t("There were errors:".join("; ", $t_comment->getErrors())), __NOTIFICATION_TYPE_ERROR__);
+				}else{
+					$this->notification->addNotification(_t("Removed comment"), __NOTIFICATION_TYPE_INFO__);
+				}
+			}else{
+				$this->notification->addNotification(_t("Invalid comment_id"), __NOTIFICATION_TYPE_ERROR__);
+			}
+			$ps_reload = $this->request->getParameter("reload", pString);
+ 			switch($ps_reload){
+ 				case "detail":
+ 					$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail'));
+ 					return;
+ 				break;
+ 				# -----------------------------
+ 				default:
+ 					$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'Index'));
+ 					return;
+ 				break;
+ 				# -----------------------------
  			}
  		}
  		# -------------------------------------------------------
@@ -490,7 +659,8 @@
 				$t_object = new ca_objects();
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', $this->request->getParameter('access', pInteger));
+				$t_set->set('access', 1);
+				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
