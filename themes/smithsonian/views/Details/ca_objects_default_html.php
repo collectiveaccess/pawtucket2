@@ -21,28 +21,35 @@
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
-				
-				{{{<unit><ifdef code="ca_objects.generation_video"><div><span class='metaTitle'>Generation</span><span class='meta'>^ca_objects.generation_video</span></ifdef></div></unit>}}}
-				{{{<unit><ifdef code="ca_objects.generation_supporting"><div><span class='metaTitle'>Generation</span><span class='meta'>^ca_objects.generation_supporting</span></ifdef></div></unit>}}}
+<?php
+				if ($t_object->get('ca_objects.generation_video', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Generation</span><span class='meta'>".$t_object->get('ca_objects.generation_video', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+				}	
+				if ($t_object->get('ca_objects.generation_supporting', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Generation</span><span class='meta'>".$t_object->get('ca_objects.generation_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+				}					
+?>				
 				{{{<unit><ifdef code="ca_objects.supporting_type"><div><span class='metaTitle'>Type</span><span class='meta'>^ca_objects.supporting_type</span></ifdef></div></unit>}}}
 				{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifer</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'>^ca_storage_locations.preferred_labels</span></div></ifdef></unit>}}}
 <?php
-				if ($t_object->get('ca_objects.video_physical') != "") {
-					print "<div><span class='metaTitle'>a Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical')."</span></div>";
+				if ($t_object->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
-				if ($t_object->get('ca_objects.physical') != "") {
-					print "<div><span class='metaTitle'>b Format</span><span class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true))."</span></div>";
+				if ($t_object->get('ca_objects.physical', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Format</span><span class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
 				if ($t_object->get('ca_objects.digital_moving_image', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>c Format</span><span class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>Format</span><span class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
-				if ($t_object->get('ca_objects.digital_supporting') != "") {
-					print "<div><span class='metaTitle'>d Format</span><span class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true))."</span></div>";
-				}				
+				if ($t_object->get('ca_objects.digital_supporting', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Format</span><span class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+				}
+				if ($t_object->get('ca_objects.carrier', array('excludeValues' => array('not_specified'))) != "") {
+					print "<div><span class='metaTitle'>Carrier</span><span class='meta'>".$t_object->get('ca_objects.carrier', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+				}								
 ?>				
 				
-				{{{<unit><ifdef code="ca_objects.carrier"><div><span class='metaTitle'>Carrier</span><span class='meta'>^ca_objects.carrier</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.date"><div><span class='metaTitle'>Date</span><span class='meta'>^ca_objects.date</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.description"><div><span class='metaTitle'>Description</span><span class='meta'>^ca_objects.description</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.notes"><div><span class='metaTitle'>Notes</span><span class='meta'>^ca_objects.notes</span></div></ifdef></unit>}}}
