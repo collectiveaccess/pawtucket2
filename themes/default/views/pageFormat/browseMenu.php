@@ -28,6 +28,7 @@
  
 	$va_browse_types = caGetBrowseTypes();
 	if(sizeof($va_browse_types)){
+		$vs_first_browse_name = null;
 ?>
  <li class="dropdown yamm-fw"> <!-- add class yamm-fw for full width-->
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
@@ -42,8 +43,7 @@
 						<ul class="nav nav-pills">			
 <?php
 							foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-								#print "<div class='browseHeadernav'><a href='#'>".$vs_browse_name."</a></div>";
-								print "<div class='browseHeadernav caps'><li ".((!$vs_first_browse_name) ? "class='active'" : "")."><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></li></div>";
+								print "<li ".((!$vs_first_browse_name) ? "class='active'" : "")."><div class='browseHeadernav caps'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
 								if(!$vs_first_browse_name){
 									$vs_first_browse_name = $va_browse_type['displayName'];
 								}
@@ -52,6 +52,9 @@
 						</ul>
 				</div><!--end main facet-->
 <?php
+		} else {
+			$va_first_browse = array_pop($va_browse_types);
+			$vs_first_browse_name = $va_first_browse['displayName'];
 		}
 ?>
 				<div id="browseMenuTypeFacet"> </div>
@@ -60,8 +63,7 @@
 	</ul> <!--end dropdown-browse-menu -->	
  </li><!-- end dropdown -->
 	<script type="text/javascript">
-		$('.dropdown-toggle').dropdown()
-	
+		jQuery('.dropdown-toggle').dropdown()
 		jQuery(document).ready(function() {		
 			jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse_name)); ?>");
 		});
