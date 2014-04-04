@@ -34,12 +34,13 @@
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$vs_search 			= $this->getVar('search');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByControl}}}
+				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
@@ -53,7 +54,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true; }
-				print "<div class='{{{block}}}Result'>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true))."</div>";
+				print "<div class='{{{block}}}Result'>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true))." ".$qr_results->get('ca_occurrences.workType', array('template' => '<ifdef code="ca_occurrences.workType">(^workType)</ifdef>'))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {
