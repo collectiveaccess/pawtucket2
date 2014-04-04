@@ -1984,15 +1984,20 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		
 			// Process <ifcount> directives
 			foreach($va_ifcounts as $va_ifcount) {
-				if($t_table = $o_dm->getInstanceByTableName($va_ifcount['code'], true)) {
-					$vn_count = sizeof($qr_res->get($va_ifcount['code'].".".$t_table->primaryKey(), array('returnAsArray' => true)));
-				} else {
-					$vn_count = sizeof($qr_res->get($va_ifcount['code'], array('returnAsArray' => true)));
-				}	
-				if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
-					$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], $va_ifcount['content'], $va_proc_templates[$vn_i] );
-				} else {
-					$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], '', $va_proc_templates[$vn_i] );
+				if (is_array($va_if_codes = preg_split("![\|,;]+!", $va_ifcount['code']))) {
+					$vn_count = 0;
+					foreach($va_if_codes as $vs_if_code) {
+						if($t_table = $o_dm->getInstanceByTableName($vs_if_code, true)) {
+							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('returnAsArray' => true)));
+						} else {
+							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true)));
+						}	
+					}
+					if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
+						$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], $va_ifcount['content'], $va_proc_templates[$vn_i] );
+					} else {
+						$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], '', $va_proc_templates[$vn_i] );
+					}
 				}
 			}
 		
