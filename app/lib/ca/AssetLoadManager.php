@@ -102,6 +102,9 @@
 			global $g_asset_config, $g_asset_load_list;
 			
 			if (!$g_asset_config) { AssetLoadManager::init(); }
+			
+			$va_exclude_packages = $g_asset_config->getAssoc('excludePackages');
+			
 			$va_packages = $g_asset_config->getAssoc('packages');
 			$va_theme_packages = $g_asset_config->getAssoc('themePackages');
 			
@@ -133,6 +136,9 @@
 						$va_list[$ps_library] = $va_tmp[0];
 						$pn_priority = (int)$va_tmp[1];
 					}
+					
+					if (!$vb_is_theme_specific && isset($va_exclude_packages[$ps_package][$ps_library])) { return true; }
+					
 					$g_asset_load_list[$pn_priority][$ps_package.'/'.$va_list[$ps_library]] = $vb_is_theme_specific ? "THEME" : "APP";
 					return true;
 				}
@@ -179,14 +185,18 @@
 		 * Returns HTML to load registered libraries. Typically you'll output this HTML in the <head> of your page.
 		 * 
 		 * @param (RequestHTTP) $po_request - The current request
+		 * @param array $pa_options Options include:
+		 *		dontLoadAppAssets = don't load assets specified in the app asset.conf file [default is false]
 		 * @return string - HTML loading registered libraries
 		 */
-		static function getLoadHTML($po_request) {
+		static function getLoadHTML($po_request, $pa_options=null) {
 			global $g_asset_config, $g_asset_load_list, $g_asset_complementary;
-			
+		
 			$vs_baseurlpath = $po_request->getBaseUrlPath();
 			$vs_themeurlpath = $po_request->getThemeUrlPath();
 			$vs_default_themeurlpath = $po_request->getDefaultThemeUrlPath();
+			
+			$vb_dont_load_app_assets = caGetOption('dontLoadAppAssets', $pa_options, false);
 			
 			$vs_themeDirectoryPath = $po_request->getThemeDirectoryPath();
 			$vs_default_themeDirectoryPath = $po_request->getDefaultThemeDirectoryPath();
@@ -197,6 +207,7 @@
 				ksort($g_asset_load_list);
 				foreach($g_asset_load_list as $vn_priority => $va_libs) { 
 					foreach($va_libs as $vs_lib => $vs_type) { 
+						if ($vb_dont_load_app_assets && ($vs_type == 'APP')) { continue; }
 						if (AssetLoadManager::useMinified()) {
 							$va_tmp = explode(".", $vs_lib);
 							array_splice($va_tmp, -1, 0, array('min'));
