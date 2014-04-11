@@ -156,13 +156,21 @@
  				}
  			}
  			
+ 			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
+ 				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
+ 					$ps_sort_direction = 'asc';
+ 				}
+ 			}
+ 			
  			$this->opo_result_context->setCurrentSort($ps_sort);
+ 			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
  			
 			$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
 			$this->view->setVar('sort', $ps_sort);
+			$this->view->setVar('sort_direction', $ps_sort_direction);
 			
 
 			$o_browse->execute();
@@ -208,7 +216,7 @@
 			// 
 			// Results
 			//
-			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
+			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
 		
 			$this->view->setVar('hits_per_block', 36);
