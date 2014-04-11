@@ -26,9 +26,16 @@
 					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
-					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person / organization:</h3></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><h3>Related people / organizations:</h3></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=";"><H3>Author:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="addressee" delimiter=";"><H3>Addressee:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=";"><H3>Artist:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=";"><H3>Designer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="illustrator" delimiter=";"><H3>Illustrator:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="commissioner" delimiter=";"><H3>Commissioner:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=";"><H3>Photographer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="compiler" delimiter=";"><H3>Compiler:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="subject" delimiter=";"><H3>Subject Name:</H3><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type:</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
@@ -54,7 +61,7 @@
 					{{{<ifdef code="ca_objects.measurementSet.measurements"><H3>Measurements:</H3>^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
 					
 					
-					{{{<ifdef code="ca_objects.containerID"><H3>Location:</H3>^ca_objects.containerID<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.containerID"><H3>Location of original:</H3>^ca_objects.containerID<br/></ifdef>}}}
 					
 					{{{<ifdef code="ca_objects.descriptionSet.descriptionText"><H3>Description:</H3>^ca_objects.descriptionSet.descriptionText<br/></ifdef>}}}
 					
@@ -64,9 +71,8 @@
 					
 					
 					
-					{{{<ifcount code="ca_objects.LcshTopical" min="1"><h3>Subjects:</h3></ifcount>}}}
+					{{{<ifcount code="ca_objects.LcshTopical" min="1"><h3>Subject Heading:</h3></ifcount>}}}
 					{{{<unit delimiter="<br/>">^ca_objects.LcshTopical</unit>}}}
-					
 					{{{<ifcount code="ca_list_items" min="1" max="5"><h3>Occupations, Materials & Techniques:</h3></ifcount>}}}
 					{{{<unit delimiter="<br/>">^ca_list_items.preferred_labels</unit>}}}
 					{{{<ifdef code="ca_objects.idno"><H3>Identifier:</H3>^ca_objects.idno<br/></ifdef>}}}

@@ -43,6 +43,9 @@
             itemLoadURL: '',
             sortParameter: 'sort',
             sortControlSelector: null,
+            sortDirectionParameter: 'sortDirection',
+            sortDirectionSelector: null,
+            sortDirection: 'asc',
             
             scrollPreviousControlSelector: null,
             scrollNextControlSelector: null,
@@ -68,6 +71,7 @@
         if (!data) { data = {}; }
         data['initialized'] = true;
         data['sort'] = _options.itemSort;
+        data['sortDirection'] = _options.itemSortDirection;
         if (_options.sortControlSelector) {
         	if (jQuery(_options.sortControlSelector).find('li').length) {
         		// is a list
@@ -84,9 +88,9 @@
         $e.data('hscroll', data);
       	
       	var jar = jQuery.cookieJar(_options.name+"_hscrollData");
-      	if (jar.get('cacheKey') !== (_options.cacheKey + '_' + data['sort'])) {
+      	if (jar.get('cacheKey') !== (_options.cacheKey + '_' + data['sort'] + '_' + data['sortDirection'])) {
       		jar.set('scrollPos', 0);
-      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort']));
+      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort'] + '_' + data['sortDirection']));
       	}
       	var scrollPos = jar.get('scrollPos');
       	
@@ -135,7 +139,7 @@
          	$e.find(_options.itemContainerSelector).html('').css("width", _calculateWidth() + "px");
          	_getScrollLeft(0);
          	jar.set('scrollPos', 0);
-      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort']));
+      		jar.set('cacheKey', (_options.cacheKey + '_' + data['sort'] + '_' + data['sortDirection']));
          	_load(0);
          });
          
@@ -159,6 +163,21 @@
 					$e.hscroll({sort: jQuery(_options.sortControlSelector).val()});
 				});
 			}
+		}
+		
+		if (_options.sortDirectionSelector) {
+			jQuery(_options.sortDirectionSelector).on('click', function(e) {
+				if (_options.sortDirection == 'asc') {
+					jQuery(this).find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+					_options.sortDirection = 'desc';
+				} else {
+					jQuery(this).find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+					_options.sortDirection = 'asc';
+				}
+				$e.hscroll({sortDirection: _options.sortDirection});
+				e.stopPropagation();
+				return false;
+			});
 		}
 		
 		if (_options.scrollPreviousControlSelector) {
@@ -288,6 +307,7 @@
 			
 			var opts = { s: loadedTo };
 			opts[_options.sortParameter] = data.sort;
+			opts[_options.sortDirectionParameter] = data.sort_direction;
 			
 			jQuery.get(_options.itemLoadURL, opts, function(data, textStatus, jqXHR) {
 				$e.find(_options.itemContainerSelector).append(data);
@@ -330,6 +350,12 @@
                 
             if (data && data.initialized && m.sort) {
             	data.sort = m.sort;
+                $this.data('hscroll', data);
+            	$this.trigger("resort");
+            	return;
+            }
+            if (data && data.initialized && m.sortDirection) {
+            	data.sort_direction = m.sortDirection;
                 $this.data('hscroll', data);
             	$this.trigger("resort");
             	return;

@@ -6,7 +6,7 @@
 				<li><i class="fa fa-youtube-play"></i></li>
 			</ul>-->
 			<div>
-				&copy; 2014 The New School
+				The New School Archives & Special Collections, 66 5th Avenue, Lobby Level, New York, NY 10011 | 212.229.5942 | archivist@newschool.edu
 			</div>
 		</div><!-- end footer -->
 

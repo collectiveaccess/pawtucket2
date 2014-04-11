@@ -523,7 +523,20 @@
 		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
 		$vs_pk = $t_instance->primaryKey();
 		
+		$va_params = array();
+		
 		$vs_linking_table = $va_path[1];
+		
+		
+		$vs_rel_type_where = '';
+		if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
+			$va_rel_types = caMakeRelationshipTypeIDList($vs_linking_table, $va_rel_types);
+			if (is_array($va_rel_types) && sizeof($va_rel_types)) {
+				$vs_rel_type_where = " AND ({$vs_linking_table}.type_id IN (?))";
+				$va_params[] = $va_rel_types;
+			}
+		}
+		
 		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
@@ -531,13 +544,13 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
 		
 		$o_db = $t_instance->getDb();
 		
-		$qr_res = $o_db->query($vs_sql);
+		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
 		while($qr_res->nextRow()) {
 			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
