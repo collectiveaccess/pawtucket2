@@ -355,15 +355,33 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if (!is_array($va_block_info['options'])) { $va_block_info['options'] = array(); }
 			$va_options = array_merge($pa_options, $va_block_info['options']);
 			
-			
+			$va_sorts = caGetOption('sortBy', $va_block_info, null);
+			$ps_sort = null;
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
- 					$ps_sort = $va_contexts[$vs_block]->getCurrentSort();
+ 					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
+						$ps_sort = array_shift(array_values($va_sorts));
+						$va_contexts[$vs_block]->setCurrentSort($vs_sort); 
+						$va_contexts[$vs_block]->saveContext();
+					} else {
+						if (isset($va_sorts[$ps_sort])) { 
+							$ps_sort = $va_sorts[$ps_sort];
+						}
+					}
  				}
  			}
  			
+ 			if (!($ps_sort_direction = $po_request->getParameter("{$vs_block}SortDirection", pString))) {
+ 				if (!($ps_sort_direction = $va_contexts[$vs_block]->getCurrentSortDirection())) {
+ 					$ps_sort_direction = 'asc';
+ 				}
+ 			}
+ 			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
+			$va_contexts[$vs_block]->saveContext();
+ 			
  			
  			$va_options['sort'] = $ps_sort;
+ 			$va_options['sort_direction'] = $ps_sort_direction;
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
 		
@@ -427,6 +445,11 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('sortByControl', $vs_sort_by_select); // synonym for sortBySelect
 			$o_view->setVar('sortByList', $vs_sort_list);
 			$o_view->setVar('sort', $ps_sort);
+			
+			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'"></span></a>');
+			$o_view->setVar('sortDirection', $ps_sort_direction);
+			
+			
 			$o_view->setVar('search', $ps_search_expression);
 			$o_view->setVar('cacheKey', md5($ps_search_expression));
 			
@@ -445,7 +468,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				'html' => $vs_html,
 				'displayName' => $va_block_info['displayName'],
 				'ids' => $qr_res->getPrimaryKeyValues(),
-				'sort' => $ps_sort
+				'sort' => $ps_sort,
+				'sortDirection' => $ps_sort_direction
 			);
 			$vn_total_cnt += $vn_count;
 			$vn_i++;

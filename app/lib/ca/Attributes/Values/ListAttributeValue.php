@@ -172,12 +172,13 @@
  		 *				bottom - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the lowest node up. Default is to not limit.
  		 * 				hierarchicalDelimiter - Text to place between items in a hierarchy for a hierarchical specification (eg. ca_objects.hierarchy) when returning as a string
  		 *				removeFirstItems - If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted. Default is zero (don't delete anything).
+		 *				alwaysReturnItemID - if set item_id is always returned, no matter what other options are passed
 		 *
  		 * @return string The value
  		 */
 		public function getDisplayValue($pa_options=null) {
 			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
-			if ($vn_list_id > 0) {
+			if (($vn_list_id > 0) && !caGetOption('alwaysReturnItemID', $pa_options, false)) {
 				
 				$va_exclude_values = caMakeListItemIDList($vn_list_id, caGetOption('excludeValues', $pa_options, array(), array('castTo' => 'array')));
 			
