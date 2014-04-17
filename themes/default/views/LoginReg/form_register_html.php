@@ -68,10 +68,10 @@
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>
-</div>
 <?php
 	if($this->request->isAjax()){
 ?>
+</div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').submit(function(e){		
