@@ -447,7 +447,7 @@ class SearchResult extends BaseObject {
 						}
 					}
 				
-					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true));
+					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true, 'alwaysReturnItemID' => true));
 			
 					foreach($va_filter_values as $vn_id => $vm_filtered_val) {
 						if ((!isset($va_keepers[$vn_id]) || $va_keepers[$vn_id]) && in_array($vm_filtered_val, $va_filter_vals)) {	// any match for the element counts

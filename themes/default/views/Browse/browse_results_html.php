@@ -37,7 +37,9 @@
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
+	
 	$vs_current_sort	= $this->getVar('sort');
+	$vs_sort_dir		= $this->getVar('sort_direction');
 	
 	$vs_table 			= $this->getVar('table');
 	$t_instance			= $this->getVar('t_instance');
@@ -92,6 +94,9 @@ foreach($va_views as $vs_view => $va_view_info) {
 			}	
 ?>
 		</ul>
+<?php
+	print caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-alphabet'.(($vs_sort_dir == 'desc') ? '-alt' : '').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'desc') ? 'asc' : 'desc')));
+?>
 	</div><!-- end btn-group -->
 </H1>
 <div class="row" style="clear:both;">

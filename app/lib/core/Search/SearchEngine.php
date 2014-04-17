@@ -179,6 +179,10 @@ class SearchEngine extends SearchBase {
 			$va_hits = $o_cache->getResults();
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
+			} else {
+				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
+					$va_hits = array_reverse($va_hits);
+				}
 			}
 			$o_res = new WLPlugSearchEngineCachedResult(array_keys($va_hits), $this->opn_tablenum);
 		} else {
@@ -240,6 +244,10 @@ class SearchEngine extends SearchBase {
 					
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
+			} else {
+				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
+					$va_hits = array_reverse($va_hits);
+				}
 			}
 			
 			$o_res = new WLPlugSearchEngineCachedResult($va_hit_values = array_keys($va_hits), $this->opn_tablenum);

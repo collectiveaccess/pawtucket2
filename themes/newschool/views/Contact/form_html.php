@@ -60,9 +60,9 @@
 				<div class="form-group<?php print (($va_errors["inquiry_type"]) ? " has-error" : ""); ?>">
 					<label for="inquiry_type">Inquiry Type</label>
 					<select class="form-control input-sm" id="inquiry_type" name="inquiry_type">
-						<option value="Schedule appointments">Schedule appointments</option>
+						<option value="Schedule appointment">Schedule appointments</option>
 						<option value="Research request">Research request</option>
-						<option value="General inquiry">General inquiry</option>
+						<option value="Feedback">Feedback</option>
 						<option value="Message">Message</option>
 					</select>
 				</div>
