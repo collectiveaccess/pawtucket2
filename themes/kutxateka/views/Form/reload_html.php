@@ -1,15 +1,20 @@
 <?php
 	$vs_message = $this->getVar("message");
 	if($vs_message){
+		if($this->request->getParameter("overlay", pInteger)){
+			print '<div id="caFormOverlay">';
+		}
 ?>
-	<div id="caFormOverlay"><div class='alert alert-info'>
+	<div class='alert alert-info'>
 <?php
 		print $vs_message;
 ?>
-	</div><!-- end alert --></div><!-- end caFormOverlay -->
+	</div><!-- end alert -->
 <?php
 	}
+if($this->request->getParameter("overlay", pInteger)){
 ?>
+	</div><!-- end caFormOverlay -->
 <script type="text/javascript">
 $(document).ready(function() {
 <?php
@@ -29,3 +34,6 @@ $(document).ready(function() {
 ?>
 });
 </script>
+<?php
+}
+?>
