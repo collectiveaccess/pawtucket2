@@ -34,49 +34,49 @@
                     <div class="colLeft alignLeft">
                         <a href="#"><?php print caGetThemeGraphic($this->request, 'logo2.png'); ?></a>
                         <ul class="social">
-                            <li><a class="facebook items" href="#">facebook</a></li>
-                            <li><a class="twitter items" href="#">twitter</a></li>
-                            <li><a class="googlePlus items" href="#">google plus</a></li>
+                            <li><a class="facebook items" href="#"><?php print _t("facebook"); ?></a></li>
+                            <li><a class="twitter items" href="#"><?php print _t("twitter"); ?></a></li>
+                            <li><a class="googlePlus items" href="#"><?php print _t("google plus"); ?></a></li>
                         </ul>
                     </div>
                     <div class="colCenter alignLeft">
-                        <h4>Nosotros</h4>
+                        <h4><?php print _t("Nosotros"); ?></h4>
                         <ul>
-                            <li><a href="#">Sobre Nosotros</a></li>
-                            <li><a href="#">Contacto</a></li>
-                            <li><a href="#">Condiciones</a></li>
-                            <li><a href="#">Legal</a></li>
+                            <li><a href="#"><?php print _t("Sobre Nosotros"); ?></a></li>
+                            <li><?php print caNavLink($this->request, _t("Contacto"), "", "", "Contact", "form"); ?></li>
+                            <li><a href="#"><?php print _t("Condiciones"); ?></a></li>
+                            <li><a href="#"><?php print _t("Legal"); ?></a></li>
                         </ul>
                     </div>
                     <div class="colCenter alignLeft">
-                        <h4>Colecciones</h4>
+                        <h4><?php print _t("Colecciones"); ?></h4>
                         <ul>
-                            <li><a href="#">Fotografías</a></li>
-                            <li><a href="#">Obras de arte</a></li>
-                            <li><a href="#">Libros</a></li>
+                            <li><a href="#"><?php print _t("Fotografías"); ?></a></li>
+                            <li><a href="#"><?php print _t("Obras de arte"); ?></a></li>
+                            <li><a href="#"><?php print caNavLink($this->request, _t("Libros"), "", "", "libros", "libros_es"); ?></a></li>
                         </ul>
                     </div>
                     <div class="colCenter alignLeft">
-                        <h4>Salas y<br />Servicios públicos</h4>
+                        <h4><?php print _t("Salas y<br />Servicios públicos"); ?></h4>
                         <ul>
-                            <li><a href="#">Kubo-Kutxa</a></li>
-                            <li><a href="#">Sala Boulevard</a></li>
-                            <li><a href="#">Biblioteca Dr. Camino</a></li>
+                            <li><a href="#"><?php print _t("Kubo-Kutxa"); ?></a></li>
+                            <li><a href="#"><?php print _t("Sala Boulevard"); ?></a></li>
+                            <li><a href="#"><?php print _t("Biblioteca Dr. Camino"); ?></a></li>
                         </ul>
                     </div>
                     <div class="colCenter alignLeft">
-                        <h4>Otros</h4>
+                        <h4><?php print _t("Otros"); ?></h4>
                         <ul>
-                            <li><a href="#">Tienda</a></li>
-                            <li><a href="#">Actualidad</a></li>
+                            <li><a href="#"><?php print _t("Tienda"); ?></a></li>
+                            <li><a href="#"><?php print _t("Actualidad"); ?></a></li>
                         </ul>
                     </div>
                     <div class="colRight alignRight">
-                        <h4 class="verde">Enlaces de interés</h4>
+                        <h4 class="verde"><?php print _t("Enlaces de interés"); ?></h4>
                         <ul>
-                            <li><span class="cuadraditoVerde items"></span> <a href="#">Kutxa Social</a></li>
-                            <li><span class="cuadraditoVerde items"></span> <a href="#">Kutxabank</a></li>
-                            <li><span class="cuadraditoVerde items"></span> <a href="#">Blog Kutxateka</a></li>
+                            <li><span class="cuadraditoVerde items"></span> <a href="http://www.kutxasocial.net" target="_blank"><?php print _t("Kutxa Social"); ?></a></li>
+                            <li><span class="cuadraditoVerde items"></span> <a href="http://www.kutxabank.com" target="_blank"><?php print _t("Kutxabank"); ?></a></li>
+                            <li><span class="cuadraditoVerde items"></span> <a href="#"><?php print _t("Blog Kutxateka"); ?></a></li>
                         </ul>
                     </div>
                 </div>
@@ -84,12 +84,14 @@
 
         </div>
 
-        <script>
+       <!-- 
+ <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
             g.src='//www.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+ -->
         
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

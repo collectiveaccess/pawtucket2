@@ -1,58 +1,45 @@
 <?php
-	if($this->request->isAjax()){
+	if($this->request->isAjax() && $this->request->getParameter("overlay", pInteger)){
 ?>
 		<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><i class="fa fa-times-circle"></i></span></div>
 <?php
 	}
 ?>
-			<H1><?php print _t("Login"); ?></H1>
+		<article class="ficha">
+			<header><h3 class="verdeclaro"><?php print ($this->request->getParameter("overlay", pInteger)) ? _t("Ya estás registrado") : _t("Login"); ?></h3></header>
 <?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
 ?>
 			<form id="login" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form">
-				<div class="form-group">
-					<label for="username" class="col-sm-4 control-label"><?php print _t("Username"); ?></label>
-					<div class="col-sm-7">
-						<input type="text" class="form-control" id="username" name="username">
-					</div><!-- end col-sm-7 -->
-				</div><!-- end form-group -->
-				<div class="form-group">
-					<label for="password" class="col-sm-4 control-label"><?php print _t("Password"); ?></label>
-					<div class="col-sm-7">
-						<input type="password" name="password" class="form-control" id="password" />
-					</div><!-- end col-sm-7 -->
-				</div><!-- end form-group -->
-				<div class="form-group">
-					<div class="col-sm-offset-4 col-sm-7">
-						<button type="submit" class="btn btn-default">login</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-4 col-sm-7">
+				<input type="text" class="campoMedium" id="username" name="username" placeholder="<?php print _t("Nombre de usuario"); ?>"/>
+				<input type="password" name="password" class="campoMedium" id="password" placeholder="<?php print _t("Contraseña"); ?>" />
+				<input type="submit" value="<?php print _t("Entrar"); ?>" class="btnVerde" />
 <?php
-				if($this->request->isAjax()){
-?>
-					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
-<?php
-				}else{
-					print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+				if($this->request->isAjax() && $this->request->getParameter("overlay", pInteger)){
+					print '<p class="mini">'._t("¿Has olvidado tu nombre de usuario y/o contraseña?")." ".caNavLink($this->request, _t("Pulsa aquí"), "verdeclaro", "", "LoginReg", "registerForm", array())."</p>";
 				}
-?>
-					</div>
-				</div><!-- end form-group -->
+?>					
+				<input type="hidden" name="overlay" value="<?php print $this->request->getParameter("overlay", pInteger); ?>">
 			</form>
+		</article>
 <?php
 	if($this->request->isAjax()){
+		$vs_ajax_div_id = "loginFormArea";
+		if($this->request->getParameter("overlay", pInteger)){
 ?>
 		</div><!-- end caFormOverlay -->
+<?php
+			$vs_ajax_div_id = "caMediaPanelContentArea";
+		}
+?>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#LoginForm').submit(function(e){		
-			jQuery('#caMediaPanelContentArea').load(
+		jQuery('#login').submit(function(e){		
+			jQuery('#<?php print $vs_ajax_div_id; ?>').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'login', null); ?>',
-				jQuery('#LoginForm').serialize()
+				jQuery('#login').serialize()
 			);
 			e.preventDefault();
 			return false;

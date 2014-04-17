@@ -393,6 +393,7 @@ $vs_tag = "
 								buttonUrlPath: '{$vs_viewer_base_url}/themes/default/assets/pawtucket/graphics/buttons',
 								annotationLoadUrl: '{$vs_annotation_load_url}',
 								annotationSaveUrl: '{$vs_annotation_save_url}',
+								lock_annotations: true,
 								info: {
 									width: '{$vn_width}',
 									height: '{$vn_height}',

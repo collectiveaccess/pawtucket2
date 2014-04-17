@@ -1,6 +1,3 @@
-<?php
-	AssetLoadManager::register("carousel");
-?>
 	<div class="col1">
 		<h1>31 de Agosto</h1>
 		<article id="infoLibro" class="alignLeft">
@@ -21,6 +18,7 @@
 			
 			
 			<h2>El testimonio histórico de la ubicación y su carga simbólica.</h2>
+			<figure class="alignLeft"><?php print caGetThemeGraphic($this->request, "books/31augosto.jpg", array("alt" => "Vista de la calle 31 de Agosto")); ?><p><i>Vista de la calle 31 de Agosto</i><br/><u>Mikel Astigarraga</u>, 2011 Kutxateka</p></figure>
 			<p class="mini">
 			La originalmente calle de la Trinidad fue llamada calle 31 de
 			Agosto al ser la única que sobrevivió al incendio ocasionado
@@ -51,17 +49,17 @@
 				<h3 class="verdeclaro">Instituto Dr. Camino de Historia Donostiarra</h3>
 				<p>El origen del mismo está en el Grupo Dr. Camino de Historia Donostiarra, cuyo nacimiento oficial se produjo en San Sebastián el día 11 de Enero de 1966, y que fue previamente aprobado, el día 2 de Enero de 1964 por la Junta Directiva de la Comisión Guipuzcoana de la Real Sociedad Bascongada de los Amigos del País (R.S.B.A.P.)</p>
 				<?php print caGetThemeGraphic($this->request, "libro1_REL.jpg", array("alt" => "historia donostiarra")); ?>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "dr_camino_inst_es"); ?>
 			</article>
 			<article class="ficha">
 				<h3 class="verdeclaro">Serapio Múgica</h3>
 				<p><?php print caGetThemeGraphic($this->request, "autor1.jpg", array("class" => "alignLeft aireRight", "alt" => "autor1")); ?>Su obra como historiador se apoyó en dos pilares: su gran erudición y los abundantes materiales encontrados en el desarrollo de su labor archivística.</p>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "bio_mugica_es"); ?>
 			</article>
 			<article class="ficha">
 				<h3 class="verdeclaro">José Ignacio Tellechea</h3>
 				<p><?php print caGetThemeGraphic($this->request, "autor2.jpg", array("class" => "alignLeft aireRight", "alt" => "autor2")); ?>Su intensa vida como historiador e investigador se ha ido enriqueciendo con diversas distinciones, siendo miembro numerario de la Real Sociedad Bascongada de los Amigos del País.</p>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "bio_tellechea_es"); ?>
 			</article>
 		</section>
 	</div>

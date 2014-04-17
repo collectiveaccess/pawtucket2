@@ -1,6 +1,3 @@
-<?php
-	AssetLoadManager::register("carousel");
-?>
 	<div class="col1">
 		<h1>Instituto Dr. Camino de Historia Donostiarra</h1>
 		<article id="infoLibro" class="alignLeft">
@@ -13,7 +10,9 @@
 		Real Sociedad Bascongada de los Amigos del País (R.S.B.A.P.)
 		como filial de esta última.
 	  </p>
-
+		
+		<figure class="alignLeft"><?php print caGetThemeGraphic($this->request, "books/caminoInstCoatOfArms.jpg", array("alt" => "Tapiz de la sala Serapio Múgica")); ?><p><i>Tapiz de la sala Serapio Múgica</i><br/><u>Mikel Astigarraga</u>, 2011 Kutxateka</p></figure>
+			
 	  <p class="mini">
 		Este grupo surgió al calor de cierto ambiente y fervor
 		cultural motivado entre otras cosas por las Conmemoraciones
@@ -22,8 +21,7 @@
 		(1813-1913-1963). Sin embargo, detrás de cada actividad está
 		el hombre, el alma mater que, por lo que respecta al grupo
 		Dr. Camino, no fue otro que el
-		historiador <a href="bio_tellechea_es.html">José Ignacio
-		Tellechea Idigoras</a>, a quien como presidente y director de
+		historiador <?php print caNavLink($this->request, "José Ignacio Tellechea Idigoras", "verdeclaro", "", "Libros", "bio_tellechea_es"); ?>, a quien como presidente y director de
 		publicaciones del mismo, así como investigador y redactor de
 		importantes estudios históricos, hay que situar y reconocer
 		como uno de los puntales de nuestra historiografía.
@@ -54,7 +52,7 @@
 
 	  <p class="mini">
 		En 1982 se inaugura la
-		sala <a href="bio_mugica_es.html">Serapio Múgica</a>, en
+		sala <?php print caNavLink($this->request, "Serapio Múgica", "verdeclaro", "", "Libros", "bio_mugica_es"); ?>, en
 		recuerdo a quien fue Cronista e Inspector de los Archivos
 		Municipales de Guipúzcoa. A esta sala se añade el fondo
 		documental de historia vasca, procedente de una donación de la
@@ -77,17 +75,17 @@
 				<h3 class="verdeclaro">Instituto Dr. Camino de Historia Donostiarra</h3>
 				<p>El origen del mismo está en el Grupo Dr. Camino de Historia Donostiarra, cuyo nacimiento oficial se produjo en San Sebastián el día 11 de Enero de 1966, y que fue previamente aprobado, el día 2 de Enero de 1964 por la Junta Directiva de la Comisión Guipuzcoana de la Real Sociedad Bascongada de los Amigos del País (R.S.B.A.P.)</p>
 				<?php print caGetThemeGraphic($this->request, "libro1_REL.jpg", array("alt" => "historia donostiarra")); ?>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "dr_camino_inst_es"); ?>
 			</article>
 			<article class="ficha">
 				<h3 class="verdeclaro">Serapio Múgica</h3>
 				<p><?php print caGetThemeGraphic($this->request, "autor1.jpg", array("class" => "alignLeft aireRight", "alt" => "autor1")); ?>Su obra como historiador se apoyó en dos pilares: su gran erudición y los abundantes materiales encontrados en el desarrollo de su labor archivística.</p>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "bio_mugica_es"); ?>
 			</article>
 			<article class="ficha">
 				<h3 class="verdeclaro">José Ignacio Tellechea</h3>
 				<p><?php print caGetThemeGraphic($this->request, "autor2.jpg", array("class" => "alignLeft aireRight", "alt" => "autor2")); ?>Su intensa vida como historiador e investigador se ha ido enriqueciendo con diversas distinciones, siendo miembro numerario de la Real Sociedad Bascongada de los Amigos del País.</p>
-				<a href="libros.php#" class="btnGris2">Ampliar información</a>
+				<?php print caNavLink($this->request, "Ampliar información", "btnGris2", "", "Libros", "bio_tellechea_es"); ?>
 			</article>
 		</section>
 	</div>

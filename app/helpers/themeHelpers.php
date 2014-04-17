@@ -69,8 +69,8 @@
 	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
 		$vs_base_path = $po_request->getThemeUrlPath();
 		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
-		
-		if (!file_exists($vs_base_path.$vs_file_path)) {
+
+		if (!file_exists($po_request->getThemeDirectoryPath().$vs_file_path)) {
 			$vs_base_path = $po_request->getDefaultThemeUrlPath();
 		}
 		return $vs_base_path.$vs_file_path;

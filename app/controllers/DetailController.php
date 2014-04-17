@@ -129,8 +129,10 @@
 				}
 			} 			
  			//
- 			// comments, tags
+ 			// comments, tags, rank
  			//
+ 			$this->view->setVar('averageRank', $t_table->getAverageRating(true));
+ 			$this->view->setVar('numRank', $t_table->getNumRatings(true));
  			#
  			# User-generated comments, tags and ratings
  			#

@@ -202,15 +202,15 @@ class View extends BaseObject {
 	 *
 	 */
 	public function getTagList($ps_filename) {
-		$vb_output = false;
+		global $g_ui_locale;
 		
-		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
+		$vb_output = false;
 		
 		$va_tags = null;
 		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
 				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				$va_tags = $this->compile($vs_path.'/'.$ps_filename.".".$vs_locale);
+				$va_tags = $this->compile($vs_path.'/'.$ps_filename.".".$g_ui_locale);
 				break;
 			}
 			elseif (file_exists($vs_path.'/'.$ps_filename)) {
@@ -227,15 +227,14 @@ class View extends BaseObject {
 	 *
 	 */
 	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+		global $g_ui_locale;
+		
 		$vb_output = false;
-		
-		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
-		
 		$vs_buf = null;
 		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
 				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$vs_locale);
+				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$g_ui_locale);
 				$vb_output = true;
 				break;
 			}
