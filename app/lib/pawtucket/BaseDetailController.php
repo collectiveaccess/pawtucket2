@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2012 Whirl-i- f
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -346,7 +346,9 @@
  			
  			// Record view
  			$t_item->registerItemView($this->request->getUserID());
- 			
+			
+ 			 MetaTagManager::setWindowTitle("Viewing: ".$t_item->get("preferred_labels"));
+			 
  			//
  			// Render view
  			//
