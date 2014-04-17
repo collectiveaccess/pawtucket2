@@ -83,6 +83,8 @@
  				die("Invalid id");
  			}
  			
+ 			MetaTagManager::setWindowTitle($t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			
  			$vs_type = $t_table->getTypeCode();
  			
  			$this->view->setVar('detailType', $vs_table);
@@ -129,8 +131,10 @@
 				}
 			} 			
  			//
- 			// comments, tags
+ 			// comments, tags, rank
  			//
+ 			$this->view->setVar('averageRank', $t_table->getAverageRating(true));
+ 			$this->view->setVar('numRank', $t_table->getNumRatings(true));
  			#
  			# User-generated comments, tags and ratings
  			#
