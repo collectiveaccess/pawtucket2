@@ -86,11 +86,10 @@
  				$ps_view = 'images';
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
- 			
- 			
+
  			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
- 			
+
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
 			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
@@ -227,7 +226,7 @@
  			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
-			
+
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
 

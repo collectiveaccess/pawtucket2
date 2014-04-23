@@ -34,7 +34,7 @@
  		 *
  		 */
  		private $ops_find_type = "search";
- 		
+
  		/**
  		 *
  		 */
@@ -51,6 +51,7 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
@@ -85,7 +86,6 @@
  				$ps_view = 'images';
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
- 			
  			
  			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
@@ -238,7 +238,6 @@
 			
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
-
 			$this->opo_result_context->setParameter('key', $vs_key);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
 			$this->opo_result_context->saveContext();

@@ -47,7 +47,10 @@
  		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("carousel");
  			$va_access_values = caGetUserAccessValues($this->request);
+<<<<<<< HEAD
  			$this->view->setVar('access_values', $va_access_values);
+=======
+>>>>>>> f3e295a45247d24e2666ec70c9ba20e0cc0f0496
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
