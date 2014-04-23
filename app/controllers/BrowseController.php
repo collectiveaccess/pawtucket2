@@ -52,6 +52,7 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			$this->opa_access_values = caGetUserAccessValues($po_request);
+ 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
  			caSetPageCSSClasses(array("browse", "results"));
  		}
@@ -87,7 +88,8 @@
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
  			
- 			caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
+ 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
+ 			caAddPageCSSClasses(array($vs_class, $ps_function));
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
@@ -217,7 +219,15 @@
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
 		
-			$this->view->setVar('hits_per_block', 36);
+			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
+ 				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+ 					$pn_hits_per_block = $o_config->get("defaultHitsPerBlock");
+ 				}
+ 			}
+ 			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
+			
+			$this->view->setVar('hits_per_block', $pn_hits_per_block);
+			
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
 
