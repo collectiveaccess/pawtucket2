@@ -323,7 +323,7 @@
 					loading = false;
 				}
 				
-				if (_usingJScrollPane) {
+				if (_usingJScrollPane()) {
 					$e.jScrollPane();
 				}
 			});
