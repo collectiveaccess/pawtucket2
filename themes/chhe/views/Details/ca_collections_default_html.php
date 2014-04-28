@@ -30,6 +30,7 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
+			<div class="viewAll"><?php print caNavLink($this->request, _t("View All"), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_object->get("collection_id"))); ?></div>
 			
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
@@ -95,7 +96,7 @@
 						if($i){
 							print ", ";
 						}
-						print caNavLink($this->request, $vs_tag, "", "MultiSearch", "Index", array("search" => $vs_tag));
+						print caNavLink($this->request, $vs_tag, "", "", "MultiSearch", "Index", array("search" => $vs_tag));
 						$i++;
 					}
 					print "</p>";
@@ -112,8 +113,8 @@
 				<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>
 				</ifcount>}}}
 				{{{<ifcount code="ca_collections.related" min="1">
-				<ifcount code="ca_collections.related" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collections</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
-				<ifcount code="ca_collections.related" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collection</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
+				<ifcount code="ca_collections.related" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collection</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
+				<ifcount code="ca_collections.related" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collections</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
 				<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.displayname</l></unit><br/><br/>
 				</ifcount>}}}
 			</div><!-- graybordered -->
