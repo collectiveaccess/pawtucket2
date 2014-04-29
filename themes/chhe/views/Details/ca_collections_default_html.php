@@ -30,7 +30,7 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<div class="viewAll"><?php print caNavLink($this->request, _t("View All"), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_object->get("collection_id"))); ?></div>
+			<div class="viewAll"><?php print caNavLink($this->request, _t("View All"), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => '^ca_collections.collection_id'), array(), array('dontURLEncodeParameters' => true)); ?></div>
 			
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
