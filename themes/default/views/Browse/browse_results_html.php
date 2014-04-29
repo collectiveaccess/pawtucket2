@@ -51,6 +51,7 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	$va_browse_info = $this->getVar("browseInfo");
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -67,7 +68,7 @@ foreach($va_views as $vs_view => $va_view_info) {
 </div>		
 <H1>
 <?php 
-	print _t('%1 %2 %3', $qr_res->numHits(), $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+	print _t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
 ?>		
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>

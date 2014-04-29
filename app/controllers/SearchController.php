@@ -34,11 +34,16 @@
  		 *
  		 */
  		private $ops_find_type = "search";
- 		
+
  		/**
  		 *
  		 */
  		private $opo_result_context = null;
+ 		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $opa_access_values = array();
  		
  		# -------------------------------------------------------
  		/**
@@ -46,6 +51,9 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
+ 			$this->opa_access_values = caGetUserAccessValues($po_request);
+ 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
  			caSetPageCSSClasses(array("search", "results"));
  		}
@@ -79,8 +87,8 @@
  			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
- 			
- 			caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
+ 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
+ 			caAddPageCSSClasses(array($vs_class, $ps_function));
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
@@ -120,7 +128,7 @@
 				
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
-				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
+				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
@@ -173,7 +181,7 @@
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 			
 
-			$o_browse->execute();
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 		
 			//
 			// Facets
@@ -188,7 +196,7 @@
 			} 
 		
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
 			}
 		
 			$this->view->setVar('facets', $va_facets);
@@ -219,10 +227,17 @@
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
 		
-			$this->view->setVar('hits_per_block', 36);
+			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
+ 				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+ 					$pn_hits_per_block = $o_config->get("defaultHitsPerBlock");
+ 				}
+ 			}
+ 			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
+			
+			$this->view->setVar('hits_per_block', $pn_hits_per_block);
+			
 			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
 			
-
 			$this->opo_result_context->setParameter('key', $vs_key);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
 			$this->opo_result_context->saveContext();

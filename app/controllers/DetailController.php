@@ -81,6 +81,15 @@
  			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
  				// invalid id - throw error
  				die("Invalid id");
+ 			} 			
+ 			
+			#
+ 			# Enforce access control
+ 			#
+ 			if(sizeof($this->opa_access_values) && !in_array($t_table->get("access"), $this->opa_access_values)){
+  				$this->notification->addNotification(_t("This item is not available for view"), "message");
+ 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				return;
  			}
  			
  			MetaTagManager::setWindowTitle($t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
@@ -200,9 +209,9 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_table->get($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}

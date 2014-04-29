@@ -484,7 +484,15 @@ color:#ccc;}
 #detailRelatedObjects{
 	border-top:1px solid #fff;
 	border-bottom:1px solid #fff;
-	margin-bottom:5px;
+	margin-bottom:0px;
+}
+div.viewAll{
+	text-align:right;
+	padding:0px;
+	margin:0px;
+}
+.viewAll a{
+	color:#FFF;
 }
 .objcontainer {
     padding-right: 0;
@@ -638,6 +646,9 @@ background: #333333;
 }
 .results ul.dropdown-menu li a:hover{
 	color:#e7b461;background:none;
+}
+.results .btn-group a span{
+	color:#9f6950;
 }
 #bMorePanel #bLetterBar a{
 	color:#454545;

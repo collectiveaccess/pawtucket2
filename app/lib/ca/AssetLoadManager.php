@@ -231,7 +231,7 @@
 						}
 					
 						if (preg_match('!\.css$!', $vs_lib)) {
-							$vs_buf .= "<link rel='stylesheet' href='{$vs_url}' type='text/css' media='screen'/>\n";
+							$vs_buf .= "<link rel='stylesheet' href='{$vs_url}' type='text/css'/>\n";
 						} elseif(preg_match('!\.properties$!', $vs_lib)) {
 							$vs_buf .= "<link rel='resource' href='{$vs_url}' type='application/l10n' />\n";
 						} else {
