@@ -1821,6 +1821,8 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 		$pb_return_as_array = (bool)caGetOption('returnAsArray', $pa_options, false);
 		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
+		
 		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids) || !$ps_template) {
 			return $pb_return_as_array ? array() : "";
 		}
@@ -1972,7 +1974,10 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			$vn_min = (int)$o_ifcount->getAttribute('min');
 			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = null; }
 			
-			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code);
+			$va_restrict_to_types = preg_split("![,; ]+!", $o_ifcount->getAttribute('restrictToTypes')); 
+			$va_restrict_to_relationship_types = preg_split("![,; ]+!", $o_ifcount->getAttribute('restrictToRelationshipTypes')); 
+			
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code, 'restrictToTypes' => $va_restrict_to_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types);
 		}
 		
 		$va_resolve_links_using_row_ids = array();
@@ -1988,11 +1993,12 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					$vn_count = 0;
 					foreach($va_if_codes as $vs_if_code) {
 						if($t_table = $o_dm->getInstanceByTableName($vs_if_code, true)) {
-							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('returnAsArray' => true)));
+							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true, 'checkAccess' => $pa_check_access)));
 						} else {
-							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true)));
+							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'checkAccess' => $pa_check_access)));
 						}	
 					}
+					
 					if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
 						$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], $va_ifcount['content'], $va_proc_templates[$vn_i] );
 					} else {
@@ -2008,15 +2014,15 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 				$vs_unit_delimiter = caGetOption('delimiter', $va_unit, '; ');
 
 				// additional get options for pulling related records
-				$va_get_options = array('returnAsArray' => true);
-
+				$va_get_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
+				
 				if ($va_unit['restrictToTypes'] && strlen($va_unit['restrictToTypes'])>0) {
 					$va_get_options['restrictToTypes'] = explode('|', $va_unit['restrictToTypes']);
 				}
 				if ($va_unit['restrictToRelationshipTypes'] && strlen($va_unit['restrictToRelationshipTypes'])>0) {
 					$va_get_options['restrictToRelationshipTypes'] = explode('|', $va_unit['restrictToRelationshipTypes']);
 				}
-			
+	
 				if (
 					((sizeof($va_relative_to_tmp) == 1) && ($va_relative_to_tmp[0] == $ps_tablename))
 					||
@@ -2073,7 +2079,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			if(!sizeof($va_tags)) { continue; } 	// if there are no tags in the template then we don't need to process further
 		
 			if ($ps_resolve_links_using != $ps_tablename) {
-				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}");
+				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}", array('checkAccess' => $pa_check_access));
 			}
 			
 			$va_tag_val_list[$vn_i] = array();
@@ -2160,7 +2166,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 									$vs_get_spec .= ".preferred_labels";
 								}
 								
-								$va_additional_options = array('returnAsArray' => true);
+								$va_additional_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
 								$vs_hierarchy_name = null;
 								if (in_array($va_spec_bits[1], array('hierarchy', '_hierarchyName'))) {
 									$t_rel = $o_dm->getInstanceByTableName($va_spec_bits[0], true);
@@ -2170,7 +2176,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey()));
+											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2248,7 +2254,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey()));
+											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2273,9 +2279,9 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 								$vs_get_spec = "{$ps_tablename}.".join(".", $va_tmp);
 								
 								if (in_array($va_tmp[0], array('parent'))) {
-									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false)));
+									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false, 'checkAccess' => $pa_check_access)));
 								} else {
-									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters)));
+									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters, 'checkAccess' => $pa_check_access)));
 									
 									$va_val = array();
 								

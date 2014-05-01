@@ -2711,6 +2711,7 @@ var methods = {
                     //mode specific extra info
                     switch(view.mode) {
                     case "pan":
+                    
                         view.pan.xdest = null;//cancel pan
                         view.pan.xhot = x - layer.xpos;
                         view.pan.yhot = y - layer.ypos;
@@ -2820,17 +2821,16 @@ var methods = {
 //
 // End ANNOTATIONS: mousemove handler
 //                    
-
                     if(view.mousedown) {
                         //dragging
                         switch(view.mode) {
-                        case "pan":
-                        	// if (!options.pan_mode) { break; }		// don't allow panning if disabled
-                       	
-                           // layer.xpos = x - view.pan.xhot;
-                           // layer.ypos = y - view.pan.yhot;
-                            view.draw();//TODO - should I call needdraw instead?
-                            break;        
+							case "pan":
+								if (!options.pan_mode) { break; }		// don't allow panning if disabled
+						
+								layer.xpos = x - view.pan.xhot;
+								layer.ypos = y - view.pan.yhot;
+								view.draw();//TODO - should I call needdraw instead?
+								break;        
                         }
                     } else {
                         //just hovering
