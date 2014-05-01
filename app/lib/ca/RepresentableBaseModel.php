@@ -772,7 +772,7 @@
 			$vs_pk = $this->primaryKey();
 		
 			$qr_res = $o_db->query("
-				SELECT oxor.{$vs_pk}, orep.media
+				SELECT oxor.{$vs_pk}, orep.media, orep.representation_id
 				FROM ca_object_representations orep
 				INNER JOIN {$vs_linking_table} AS oxor ON oxor.representation_id = orep.representation_id
 				WHERE
@@ -782,6 +782,7 @@
 			$va_media = array();
 			while($qr_res->nextRow()) {
 				$va_media_tags = array();
+				$va_media_tags["representation_id"] = $qr_res->get("representation_id");
 				foreach($pa_versions as $vs_version) {
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
