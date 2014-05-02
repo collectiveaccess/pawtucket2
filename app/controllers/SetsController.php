@@ -39,6 +39,7 @@
  		# -------------------------------------------------------
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
+ 		 protected $opo_config;
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -48,7 +49,7 @@
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
- 			
+ 			$this->opo_config = caGetSetsConfig();
  			caSetPageCSSClasses(array("sets"));
  		}
  		# -------------------------------------------------------
@@ -71,14 +72,29 @@
  		function setDetail() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			AssetLoadManager::register("mediaViewer");
- 			
+
+ 			$ps_view = $this->request->getParameter('view', pString);
+ 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData'))) {
+ 				$ps_view = 'thumbnail';
+ 			}
+ 			$this->view->setVar('view', $ps_view);
+			$this->view->setVar('views', $this->opo_config->getAssoc("views"));
+
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("medium"), "checkAccess" => $this->opa_access_values)));
 			$this->view->setVar("set", $t_set);
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
-			$this->render("Sets/set_detail_thumbnail_html.php");
+ 			 switch($ps_view) {
+ 				case 'timelineData':
+ 					$this->view->setVar('view', 'timeline');
+ 					$this->render("Sets/set_detail_timelineData_json.php");
+ 					break;
+ 				default:
+ 					$this->render("Sets/set_detail_html.php");
+ 					break;
+ 			}
  		}
  		# ------------------------------------------------------
  		function setForm() {

@@ -570,6 +570,17 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* lightbox lb */
 /* --------------------------------- */
+#lbViewButtons{
+	float:right;
+	font-size:18px;
+	padding-bottom:5px;
+}
+#lbViewButtons a .glyphicon {
+	color:#ababab;
+}
+#lbViewButtons a.active .glyphicon {
+	color:#454545;
+}
 .lbSet{
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
