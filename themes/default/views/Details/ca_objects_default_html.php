@@ -41,6 +41,11 @@
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 				
 				
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+				
+				
 				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 			</div><!-- end col -->

@@ -502,3 +502,13 @@ li form {
 .gallery H5 {
 	color:#454545;
 }
+
+/* Multisearch */
+.multisearch .peopleSet, .multisearch .orgSet {
+	float:left;
+	width:250px;
+	height:170px;
+	margin-right:20px;
+	overflow:hidden;
+	padding-top:10px;
+}

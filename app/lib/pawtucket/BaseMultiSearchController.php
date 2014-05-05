@@ -101,6 +101,7 @@
  				
 				if (($o_context = $this->opa_result_contexts[$vs_block])) {
 					if (isset($va_results[$vs_block]['sort'])) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
+					if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
 					$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
 					$o_context->saveContext();
 				}
@@ -111,6 +112,7 @@
  				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
  				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
  				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
+				if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
  				$o_context->saveContext();
  			}
  			

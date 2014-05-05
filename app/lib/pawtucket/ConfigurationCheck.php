@@ -92,7 +92,11 @@ final class ConfigurationCheck {
 	}
 	# -------------------------------------------------------
 	public static function renderErrorsAsHTMLOutput(){
-		require_once(self::$opo_config->get("views_directory")."/system/configuration_error_html.php");
+		if(file_exists(self::$opo_config->get("views_directory")."/system/configuration_error_html.php")){
+			require_once(self::$opo_config->get("views_directory")."/system/configuration_error_html.php");
+		}else{
+			require_once(self::$opo_config->get("themes_directory")."/default/views/system/configuration_error_html.php");
+		}
 	}
 	# -------------------------------------------------------
 	# Quick configuration check functions

@@ -215,8 +215,9 @@ class SearchResult extends BaseObject {
 		// do join
 		$va_joins = array();
 		
+		$t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name, true);
 		$t_rel_instance = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true);
-		if (!$t_rel_instance) { return; }
+		if (!$t_instance || !$t_rel_instance) { return; }
 		
 		if ($ps_tablename != $this->ops_table_name) {
 			$va_fields = $this->opa_tables[$ps_tablename]['fieldList'];
@@ -280,6 +281,9 @@ class SearchResult extends BaseObject {
 		
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
 			$vs_criteria_sql .= " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
+		}
+		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_instance->hasField('access')) {
+			$vs_criteria_sql .= " AND ({$this->ops_table_name}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
 	
 		$vb_has_locale_id = true;
@@ -447,7 +451,7 @@ class SearchResult extends BaseObject {
 						}
 					}
 				
-					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true));
+					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true, 'alwaysReturnItemID' => true));
 			
 					foreach($va_filter_values as $vn_id => $vm_filtered_val) {
 						if ((!isset($va_keepers[$vn_id]) || $va_keepers[$vn_id]) && in_array($vm_filtered_val, $va_filter_vals)) {	// any match for the element counts

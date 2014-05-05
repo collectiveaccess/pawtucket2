@@ -570,6 +570,17 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* lightbox lb */
 /* --------------------------------- */
+#lbViewButtons{
+	float:right;
+	font-size:18px;
+	padding-bottom:5px;
+}
+#lbViewButtons a .glyphicon {
+	color:#ababab;
+}
+#lbViewButtons a.active .glyphicon {
+	color:#454545;
+}
 .lbSet{
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
@@ -863,6 +874,14 @@ a.browseRemoveFacet img {
 .detail #cont img{
 	width:100%;
 	height:auto;
+}
+.detail .detailMediaPlaceholder{
+	width:100%;
+	text-align:center;
+	padding-top:150px;
+	padding-bottom:150px;
+	color:#ABABAB;
+	border:1px solid #ebebeb;
 }
 .detail #detailMediaToolbar{
 	background-color:#ebebeb;

@@ -39,7 +39,9 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByControl}}}
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
+				{{{sortByControl}}}
+				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
@@ -77,13 +79,20 @@
 						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
+						
 						itemsPerColumn: <?php print $vn_items_per_column; ?>,
 						itemWidth: jQuery('.{{{block}}}Set').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
+						
 						sortParameter: '{{{block}}}Sort',
 						sortControlSelector: '#{{{block}}}_sort',
+						
+						sortDirection: '{{{sortDirection}}}',
+						sortDirectionParameter: '{{{block}}}SortDirection',
+						sortDirectionSelector: '#{{{block}}}_sort_direction',
+						
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
 						cacheKey: '{{{cacheKey}}}'

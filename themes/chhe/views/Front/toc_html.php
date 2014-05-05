@@ -4,7 +4,7 @@
 	if($vs_list_code){
 		$t_list = ca_lists::find(array('list_code' => $vs_list_code), array('returnAs' => 'firstmodelinstance'));
 		if($t_list){
-			$va_list_items = $t_list->getItemsForList($vs_list_code, array('directChildrenOnly' => true, 'extractValuesByUserLocale' => true, 'enabledOnly' => true));
+			$va_list_items = $t_list->getItemsForList($vs_list_code, array('directChildrenOnly' => true, 'extractValuesByUserLocale' => true, 'enabledOnly' => true, 'sort' => __CA_LISTS_SORT_BY_RANK__));
 			$vn_selected_top_level_item_id = array_shift(array_keys($va_list_items));
 		}
 	}
