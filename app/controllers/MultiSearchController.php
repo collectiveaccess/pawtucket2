@@ -40,6 +40,10 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			caSetPageCSSClasses(array("multisearch"));
+ 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
  		}
  		# -------------------------------------------------------
  		/**

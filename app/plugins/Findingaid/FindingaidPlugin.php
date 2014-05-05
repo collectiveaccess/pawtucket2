@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/DefaultController.php
+ * FindingaidPlugin.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,28 +26,33 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php");
- 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
- 
- 	class DefaultController extends ActionController {
- 		# -------------------------------------------------------
- 		 
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
- 			caSetPageCSSClasses(array("staticPage"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
- 		}
- 		# -------------------------------------------------------
- 		function __call($ps_method, $pa_path) {
- 			array_unshift($pa_path[0], $ps_method);
- 			
- 			$this->render(join("/", $pa_path[0]).".php", false);
- 		}
- 		# ------------------------------------------------------
- 	}
- ?>
+	class FindingaidPlugin extends BaseApplicationPlugin {
+		# -------------------------------------------------------
+		public function __construct($ps_plugin_path) {
+			$this->description = _t('Provides a finding-aid view for your Pawtucket installation');
+			
+			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/findingaids.conf');
+			parent::__construct();
+		}
+		# -------------------------------------------------------
+		/**
+		 * Override checkStatus() to return true - the historyMenu plugin always initializes ok
+		 */
+		public function checkStatus() {
+			return array(
+				'description' => $this->getDescription(),
+				'errors' => array(),
+				'warnings' => array(),
+				'available' => ((bool)$this->opo_config->get('enabled'))
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 * Get plugin user actions
+		 */
+		static public function getRoleActionList() {
+			return array();
+		}
+		# -------------------------------------------------------
+	}
+?>

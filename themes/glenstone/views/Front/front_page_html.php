@@ -35,6 +35,15 @@
 		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"), array('checkAccess' => caGetUserAccessValues($this->request)));
 		$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
 	}
+	
+	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+	
+		print "<div id='homepageLogin'>";
+		print $this->render('LoginReg/form_login_html.php');
+		print "</div>";			
+	
+	} else {
+		
 	if(is_array($va_item_media) && sizeof($va_item_media)){
 ?>   
 		<div class="jcarousel-wrapper">
@@ -128,10 +137,11 @@
 		</div><!--end col-sm-8-->
 	
 		<div class="col-sm-4">
-			<h2>Browse by Featured Topic</h2>
-<?php
-			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
-?>
+			
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
 </div> <!--end container-->
+
+<?php	
+	}
+?>
