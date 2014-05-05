@@ -132,7 +132,7 @@
 				
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
-				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet));
+				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
@@ -196,7 +196,7 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
 			}
 		
 			$this->view->setVar('facets', $va_facets);

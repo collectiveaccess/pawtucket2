@@ -1863,6 +1863,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 		$pb_return_as_array = (bool)caGetOption('returnAsArray', $pa_options, false);
 		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
+		
 		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids) || !$ps_template) {
 			return $pb_return_as_array ? array() : "";
 		}
@@ -2060,15 +2062,15 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 				$vs_unit_delimiter = caGetOption('delimiter', $va_unit, '; ');
 
 				// additional get options for pulling related records
-				$va_get_options = array('returnAsArray' => true);
-
+				$va_get_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
+				
 				if ($va_unit['restrictToTypes'] && strlen($va_unit['restrictToTypes'])>0) {
 					$va_get_options['restrictToTypes'] = explode('|', $va_unit['restrictToTypes']);
 				}
 				if ($va_unit['restrictToRelationshipTypes'] && strlen($va_unit['restrictToRelationshipTypes'])>0) {
 					$va_get_options['restrictToRelationshipTypes'] = explode('|', $va_unit['restrictToRelationshipTypes']);
 				}
-			
+	
 				if (
 					((sizeof($va_relative_to_tmp) == 1) && ($va_relative_to_tmp[0] == $ps_tablename))
 					||
@@ -2125,7 +2127,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 			if(!sizeof($va_tags)) { continue; } 	// if there are no tags in the template then we don't need to process further
 		
 			if ($ps_resolve_links_using != $ps_tablename) {
-				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}");
+				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}", array('checkAccess' => $pa_check_access));
 			}
 			
 			$va_tag_val_list[$vn_i] = array();
@@ -2233,7 +2235,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 									$vs_get_spec .= ".preferred_labels";
 								}
 								
-								$va_additional_options = array('returnAsArray' => true);
+								$va_additional_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
 								$vs_hierarchy_name = null;
 								if (in_array($va_spec_bits[1], array('hierarchy', '_hierarchyName'))) {
 									$t_rel = $o_dm->getInstanceByTableName($va_spec_bits[0], true);
@@ -2243,7 +2245,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey()));
+											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2321,7 +2323,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey()));
+											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2346,9 +2348,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 								$vs_get_spec = "{$ps_tablename}.".join(".", $va_tmp);
 								
 								if (in_array($va_tmp[0], array('parent'))) {
-									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false)));
+									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false, 'checkAccess' => $pa_check_access)));
 								} else {
-									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters)));
+									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters, 'checkAccess' => $pa_check_access)));
 									
 									$va_val = array();
 								

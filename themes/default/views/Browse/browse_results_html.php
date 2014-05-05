@@ -51,6 +51,7 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	$va_browse_info = $this->getVar("browseInfo");
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -67,13 +68,14 @@ foreach($va_views as $vs_view => $va_view_info) {
 </div>		
 <H1>
 <?php 
-	print _t('%1 %2 %3', $qr_res->numHits(), $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+	print _t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
 ?>		
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
 <?php
 			if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+				print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
 				foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 					if ($vs_current_sort === $vs_sort) {
 						print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
@@ -81,6 +83,10 @@ foreach($va_views as $vs_view => $va_view_info) {
 						print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
 					}
 				}
+				print "<li class='divider'></li>\n";
+				print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+				print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
+				print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 			}
 			
 			if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
@@ -94,9 +100,6 @@ foreach($va_views as $vs_view => $va_view_info) {
 			}	
 ?>
 		</ul>
-<?php
-	print caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-alphabet'.(($vs_sort_dir == 'desc') ? '-alt' : '').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'desc') ? 'asc' : 'desc')));
-?>
 	</div><!-- end btn-group -->
 </H1>
 <div class="row" style="clear:both;">
