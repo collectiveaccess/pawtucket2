@@ -21,13 +21,13 @@
 ?>			
 			{{{<ifcount min="1" code="ca_occurrences.workDate.dates_value" ><p>Date: <unit delimiter=", ">^ca_occurrences.workDate.dates_value <ifcount min="1" code="ca_occurrences.workDate.work_dates_types">(^ca_occurrences.workDate.work_dates_types)</ifdef></unit></p></ifcount>}}}
 			
-			<hr>
-			<h5>Rights & Permissions</h5>
+			
+			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
 			{{{<unit><ifdef code="ca_occurrences.restrictions"><div><span class='metaTitle'>Restrictions</span><span class='meta'>^ca_occurrences.restrictions</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.rights"><div><span class='metaTitle'>Rights</span><span class='meta'>^ca_occurrences.rights</span></div></ifdef></unit>}}}
 <?php
 			if ($t_occurrence->get('ca_occurrences.sniDepiction', array('excludeValues' => array('not_specified'))) != "") {
-				print "<div><span class='metaTitle'>Depicts SNI</span><span class='meta'>".$t_occurrence->get('ca_occurrences.sniDepiction', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+				print "<div><span class='metaTitle'>Depicts SI</span><span class='meta'>".$t_occurrence->get('ca_occurrences.sniDepiction', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 			}	
 			if ($va_contributors = $t_occurrence->get('ca_entities', array('excludeRelationshipTypes' => array('subject, interviewee'), 'returnAsArray' => true))) {
 				print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
@@ -37,8 +37,8 @@
 				print "</div></div>";
 			}	
 ?>
-			<hr>
-			<h5>Content</h5>
+			
+			{{{<ifcount min="1" code="ca_occurrences.description|ca_places.preferred_labels|ca_entities.preferred_labels|ca_occurrences.lcsh_names|ca_occurrences.lcsh_subjects"><hr><h5>Content</h5></ifcount>}}}
 			
 			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'>^ca_occurrences.description</span></ifcount>}}}
 			
@@ -54,10 +54,9 @@
 			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_names</div></unit></span></ifcount>}}}
 			
 			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='metaTitle'>LCSH Subjects</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_subjects</div></unit></span></ifcount>}}}
+			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_subjects</div></unit></span></ifcount>}}}
 			
-			<hr>
-			<h5>Program Info</h5>
+			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
 <?php
 			if ($t_occurrence->get('ca_occurrences.workDate.work_dates_types') == "First air date") {
 				print "<div><span class='metaTitle'>Air Date</span><span class='meta'>".$t_occurrence->get('ca_occurrences.workDate.dates_value')."</span></div>";

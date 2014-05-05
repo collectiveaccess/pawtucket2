@@ -12,10 +12,6 @@
 		<div class="container"><div class="row">
 			<div class='col-md-6 col-lg-6'>
 				{{{representationViewer}}}
-				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-				</div><!-- end detailTools -->
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6 metadata'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
@@ -31,7 +27,7 @@
 ?>				
 				{{{<unit><ifdef code="ca_objects.supporting_type"><div><span class='metaTitle'>Type</span><span class='meta'>^ca_objects.supporting_type</span></ifdef></div></unit>}}}
 				{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifer</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
-				{{{<unit><ifdef code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'>^ca_storage_locations.preferred_labels</span></div></ifdef></unit>}}}
+				{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'><unit>^ca_storage_locations.preferred_labels<br/></unit></span></div></ifcount>}}}
 <?php
 				if ($t_object->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))) != "") {
 					print "<div><span class='metaTitle'>Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
