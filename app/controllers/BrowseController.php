@@ -55,6 +55,10 @@
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
  			caSetPageCSSClasses(array("browse", "results"));
+ 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
  		}
  		# -------------------------------------------------------
  		/**
@@ -185,6 +189,11 @@
 			//
 			// Facets
 			//
+			if ($vs_facet_group = caGetOption('facetGroup', $va_browse_info, null)) {
+				$o_browse->setFacetGroup($vs_facet_group);
+			}
+			
+			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name);

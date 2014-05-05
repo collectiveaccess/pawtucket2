@@ -51,6 +51,10 @@
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  			
  			caSetPageCSSClasses(array("listing"));
+ 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
  		}
  		# -------------------------------------------------------
  		
