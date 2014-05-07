@@ -39,17 +39,37 @@
  	
 	class BasePluginController extends ActionController {
 		# -------------------------------------------------------
+		/**
+		 * Application datamodel
+		 */
  		protected $datamodel;
+ 		
+ 		/**
+ 		 * Plugin configuration
+ 		 */
 		protected $config;
+		
+ 		/**
+ 		 * Application configuration
+ 		 */
+		protected $appConfig;
  		# -------------------------------------------------------
  		#
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			$this->datamodel = Datamodel::load();
  			
+ 			$this->appConfig = Configuration::load();
+ 			
  			$vs_plugin_name = $po_request->getModulePath();
- 			$this->config = Configuration::load($x=__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_plugin_name}.conf");
+ 			
+ 			// Load plugin config
+ 			$this->config = Configuration::load(__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_plugin_name}.conf");
  		
+ 			// Load plugin view paths
  			if (!is_array($pa_view_paths)) { $pa_view_paths = array(); }
  			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/".__CA_THEME__."/views";
  			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/default/views";
