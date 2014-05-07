@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_objects_search_subview_html.php : 
+ * themes/default/views/Search/ca_occurrences_search_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -31,55 +31,42 @@
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
+	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
-	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sort">
-				sort by {{{sortByList}}} <?php print caNavLink($this->request, _t('Full results >'), 'fullResult', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> 
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
+				{{{sortByList}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
-			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+			<div class='blockResults'>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
+		$vn_i = 0;
+		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-?>
-			<div class='{{{block}}}Result'>
-<?php 			
-				if ($qr_results->get('ca_objects.type_id') == 30) {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
-				} else {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));				
-				}
-				print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>"; 
-				if ($qr_results->get('ca_objects.type_id') == 28) {
-					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
-				}
-				if ($qr_results->get('ca_objects.type_id') == 30) {
-					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author'))."</p>";
-					print "<p class='artist dark'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'publisher'))."</p>";
-				}				
-				if ($qr_results->get('ca_objects.object_dates.object_date')) {
-					print $qr_results->get('ca_objects.object_dates', array('returnAsLink' => true, 'template' => '<p>^object_date</p>')); 
-				}
-				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
-					print $qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'template' => '<p>^dc_dates_value</p>')); 
-				}
-
-?>			
-			</div><!-- end blockResult -->
-<?php
+			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true; }
+				print "<div class='{{{block}}}Result'>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true))."</div>";
 			$vn_count++;
+			$vn_i++;
+			if ($vn_i == $vn_items_per_column) {
+				print "</div><!-- end set -->";
+				$vb_div_open = false;
+				$vn_i = 0;
+			}
 			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
-?>
-<?php	
+		
+		if ($vb_div_open) {print "</div><!-- end set -->";}
+		
 		if (!$this->request->isAjax()) {
 ?>
 					</div><!-- end blockResultsScroller -->
@@ -91,16 +78,23 @@
 						name: '{{{block}}}',
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
-						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
+						
+						itemsPerColumn: <?php print $vn_items_per_column; ?>,
+						itemWidth: jQuery('.{{{block}}}Set').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
+						scrollControlDisabledOpacity: 0,
+						scrollControlEnabledOpacity: .5,												
 						sortParameter: '{{{block}}}Sort',
 						sortControlSelector: '#{{{block}}}_sort',
+						
+						sortDirection: '{{{sortDirection}}}',
+						sortDirectionParameter: '{{{block}}}SortDirection',
+						sortDirectionSelector: '#{{{block}}}_sort_direction',
+						
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
-						scrollControlDisabledOpacity: 0,
-						scrollControlEnabledOpacity: .5,						
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});
@@ -109,3 +103,4 @@
 		}
 	}
 ?>
+

@@ -14,6 +14,13 @@ H2 {
 	color: #414151;
 	font-size: 16px;
 }
+H3 {
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:800;
+	color: #414151;
+	font-size: 13px;
+	text-transform:uppercase;
+}
 H4 {
 	font-family: 'Source Sans Pro', sans-serif;
 	font-size:20px;
@@ -175,19 +182,21 @@ H6 {
 	font-family: 'Source Sans Pro', sans-serif;
 	padding-bottom:5px;
 }
-.multisearch #libraryBlock, .multisearch #archivesBlock  {
+.multisearch .blockResultsScroller {
+	height: auto;
+}
+.multisearch #libraryBlock, .multisearch #archivesBlock, .multisearch #artworksBlock  {
 	width: 100%;
 	overflow-y: hidden;
 	position: relative;
 }
 .multisearch #libraryBlock .scrollButtonNext {
-	margin-top:0px;
-	height:275px;
-	padding-top:120px;
+	margin-top: 80px;
+}
+.multisearch #libraryBlock .scrollButtonPrevious {
+	margin-top: 80px;
 }
 .multisearch #archivesBlock .scrollButtonNext {
-	margin-top:0px;
-	height:155px;
 }
 #artworksBlock {
 	margin-top:25px;
@@ -196,19 +205,23 @@ H6 {
 	float:left;
 	width: 200px;
 	margin-right:5px;
-	height:168px;
+	height:188px;
+	margin-bottom:20px;
 }
 .libraryResult {
-	height:183px;
+	height:295px;
+	margin-bottom:20px;
+	width: 220px;
 }
 .archivesResult .resultImg, .artworksResult .resultImg{
 	border:1px solid #ddd;
 	width:202px;
 	height:122px;
+	overflow:hidden;
 }
 .libraryResult .resultImg {
 	border:1px solid #ddd;
-	width:202px;
+	width:220px;
 	height:222px;
 	text-align:center;
 }
@@ -221,13 +234,16 @@ H6 {
 	line-height: 1.3em;
 }
 #libraryBlock {
-	margin-bottom:30px;
+	margin-bottom:10px;
 }
 #libraryBlock .blockResults {
-	height:295px;
+	height:315px;
+}
+.multisearch #archivesBlock .blockResults, .multisearch #artworksBlock .blockResults {
+	height:210px;
 }
 .multisearch #libraryResults .blockResultsScroller {
-	height:195px;
+	height:auto;
 }
 .libraryResult p {
 	text-transform:none;
@@ -236,12 +252,19 @@ H6 {
 	color: #777;
 	text-transform:uppercase;
 }
+p.artist.dark {
+	color:#333;
+}
+p.artist.lower {
+	text-transform:none;
+}
 .archivesResult a, .artworksResult a, .libraryResult a{
 	color: #777;
 	text-decoration:none;
 }
 .pull-right.sort {
 	color:#797979;
+	margin-bottom:5px;
 }
 .pull-right.sort a.fullResult {
 	background-color: #ccc;
@@ -280,16 +303,89 @@ H6 {
 
 /* Browse Results */
 
-.bResultItemText p {
-	margin: 0px 0px 5px 0px;
+.bResultItem, .bResultListItem {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: 1px solid #ddd;
+}
+.bResultItem:hover, .bResultListItem:hover{
+ 	max-height:none;
+ 	height:auto;
+ 	border: 1px solid #aaa;
+}
+.bResultListItem:hover{ 
+	padding: 15px 15px 10px 15px;
+	margin: -5px;
+}
+.bResultListItemExpandedInfo {
+	margin: 0px -10px -10px -10px;
+}
+.bResultItem hr {
+	margin-top: 5px;
+	margin-bottom: 10px;
+}
+.bResultListItem hr{
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.bResultItemExpandedInfo, .bResultListItemExpandedInfo {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	padding: 0px 10px 7px 10px;
+}
+.bResultItemText p, .bResultListItemText p {
+	margin: 0px 0px 2px 0px;
 	text-transform:uppercase;
 	font-size:12px;
 	font-weight:600;
-	color: #333;
+	color: #777;
 	line-height: 1.3em;
 }
 .bResultItemText a p{
 	color: #777;
+}
+.bResultItemCol:hover, .bResultListItemCol:hover {
+	background-color: #fff;
+	z-index: 200000;
+}
+.bResultItemContent {
+ 	height: 260px;
+}
+.bResultItem:hover .bResultItemContent{
+ 	max-height:none;
+ 	height:auto;
+ 	background-color:#fff;
+}
+.bResultItem:hover .bResultItemImg{
+ 	max-height:none;
+}
+#bRefine {
+	background-color: #fff;
+	padding-top:10px;
+	line-height: 1em;
+}
+#bRefine h3{
+	margin-top:15px;
+	margin-bottom:5px;
+}
+#bRefine .expand {
+	margin-bottom:25px;
+}
+#bRefine h3 a.more{
+	text-decoration:none;
+}
+#bRefine a {
+	color: #666;
+	text-decoration:underline;
+	font-size:12px;
+}
+#bRefine div {
+	margin-bottom:5px;
+}
+@media (max-width: 768px) {
+	.bResultItem .bResultItemImg {
+		max-height:180px;
+	}
 }
 
 /* Details */
@@ -345,6 +441,25 @@ H6 {
 .detail .scrollButtonNext, .detail .scrollButtonPrevious {
 	right: 0px;
 }
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious{
+	height: 60px;
+	margin-top: 30px;
+	padding-top: 10px;
+	width: 30px;
+}
+.multisearch #entitiesBlock .scrollButtonNext, .multisearch #entitiesBlock .scrollButtonPrevious{
+	margin-top:50px;
+}
+.multisearch .scrollButtonNext .fa, .multisearch .scrollButtonPrevious .fa{
+	font-size:40px;
+}
+
+.multisearch #artworksResults, .multisearch #archivesResults, .multisearch #libraryResults {
+	overflow-x:scroll;
+	overflow-y:hidden;
+	width:100%;
+}
+
 .detail .blockResults {
 	height: 170px;
 	margin-bottom: 15px;

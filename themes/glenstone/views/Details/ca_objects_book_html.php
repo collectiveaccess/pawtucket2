@@ -54,24 +54,19 @@
 				{{{<ifcount min="1" code="ca_objects.lcsh_terms"><div class='unit wide'><span class='metaHeader'>Library of Congress Subject Headings </span><span><unit delimiter="<br/>">^ca_objects.lcsh_terms</unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.copy_number"><div class='unit wide'><span class='metaHeader'>Copy Number </span><span>^ca_objects.copy_number</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.purchase_status"><div class='unit wide'><span class='metaHeader'>Status </span><span>^ca_objects.purchase_status</span></div></ifdef>}}}
-
 	
 				<hr>
 				
 				{{{<ifcount min="1" relativeTo="ca_objects.related"  restrictToTypes="book"><div class='unit wide'><span class='metaHeader'>Library </span><span ><unit relativeTo="ca_objects.related" restrictToTypes="book" delimiter="<br/>"><l>^ca_objects.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifcount min="1" code="ca_occurrences.preferred_labels" restrictToTypes="exhibition"><div class='unit wide'><span class='metaHeader'>Exhibition </span><span ><unit delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></span></div></ifcount>}}}
-
-
-				
-				<!--  library -->
-
-
+				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" min="1" ><div class='unit wide'><span class='metaHeader'>Related Entities</span><span ><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.name (^ca_entities.typename)</l></unit></span></div></ifcount>}}}
 				{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div class='unit wide'><span class='metaHeader'>Storage Location </span><span ><unit delimiter="<br/>"><l>^ca_storage_locations.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifcount min="1" relativeTo="ca_loans" code="ca_loans.preferred_labels" restrictToTypes="collection"><div class='unit wide'><span class='metaHeader'>Related Artwork Loans </span><span ><unit relativeTo="ca_loans" restrictToTypes="collection" delimiter="<br/>"><l>^ca_loans.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifcount min="1" relativeTo="ca_loans"  restrictToTypes="archive"><div class='unit wide'><span class='metaHeader'>Related Archival Loans </span><span ><unit relativeTo="ca_loans" restrictToTypes="archive" delimiter="<br/>"><l>^ca_loans.preferred_labels</l></unit></span></div></ifcount>}}}
 
 							
 				{{{<ifcount min="1" code="ca_object_lots.preferred_labels"><div class='unit wide'><span class='metaHeader'>Related Accession </span><span ><unit delimiter="<br/>"><l>^ca_object_lots.preferred_labels</l></unit></span></div></ifcount>}}}
+
 
 			
 			</div><!-- end col -->

@@ -44,7 +44,7 @@
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' style="position:relative;">
+				<div id='{{{block}}}Results' style="position:relative;" class="scrollBlock">
 					<div class='blockResultsScroller'>
 <?php
 		}
@@ -87,6 +87,7 @@
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
 						scrollControlDisabledOpacity: 0,
+						scrollControlEnabledOpacity: .7,
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});

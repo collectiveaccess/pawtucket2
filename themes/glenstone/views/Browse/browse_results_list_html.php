@@ -49,14 +49,14 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
-		$vn_col_span = 3;
+		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
-		$vn_col_span_sm = 2;
+		$vn_col_span_xs = 4;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 4;
-			$vn_col_span_sm = 4;
+			$vn_col_span = 6;
+			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
@@ -66,55 +66,48 @@
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get($vs_pk);
-					$vn_c++;
+					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small'));
 			
-				$vn_c = 0;	
 				$qr_res->seek($vn_start);
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids);
+			} else {
+				$va_images = null;
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
+				$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
+				$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
+				
 				if ($qr_res->get('ca_objects.type_id') == 30) {
 					$vs_label_artist	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'publisher'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.object_dates.object_date")."</p>";
-					$vs_idno_detail_link 	= "";
-
-				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.object_dates.object_date")."</p>";
-					$vs_idno_detail_link 	= "";				
-				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
-					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
-				}
-				if ($vs_table == 'ca_objects') {
-					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', $vs_table, $vn_id);				
 				} else {
-					$vs_rep_detail_link 	= caDetailLink($this->request, $va_images[$vn_id], '', $vs_table, $vn_id);			
+					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 				}
+				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small') : $va_images[$vn_id];
+				
+				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-				
+
 				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultItemText'>
-					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}
-				</div><!-- end bResultItemText -->
-			</div><!-- end bResultItemContent -->
-			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultListItemText'>
+					{$vs_label_detail_link}{$vs_label_artist}{$vs_idno_detail_link}
+				</div><!-- end bResultListItemText -->
+			</div><!-- end bResultListItemContent -->
+			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".(($this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><span class='glyphicon glyphicon-folder-open'></span></a>")."
-			</div><!-- bResultItemExpandedInfo -->
-		</div><!-- end bResultItem -->
+				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><span class='glyphicon glyphicon-folder-open'></span></a>
+			</div><!-- bResultListItemExpandedInfo -->
+		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;

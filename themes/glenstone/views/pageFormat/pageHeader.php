@@ -98,7 +98,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "Reports", "Index"); ?></li>
 
 <?php
-						print $this->render("pageFormat/browseMenu.php");
+						#print $this->render("pageFormat/browseMenu.php");
 ?>	
 				</ul>
 			</div><!-- /.navbar-collapse -->

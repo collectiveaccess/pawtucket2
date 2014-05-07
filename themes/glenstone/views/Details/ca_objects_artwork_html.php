@@ -21,7 +21,7 @@
 	<div class="container">
 			<div class="artworkTitle">
 				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator">^ca_entities.preferred_labels.name</unit>}}}</H4>
-				<H5>{{{ca_objects.preferred_labels.name}}}</H5>
+				<H5><i>{{{ca_objects.preferred_labels.name}}}</i>, {{{ca_objects.object_dates.object_date}}}</H5> 
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
@@ -37,7 +37,6 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 
 				{{{<ifcount min="1" code="ca_objects.idno"><div class="unit">^ca_objects.idno</div></ifcount>}}}				
-				{{{<ifdef code="ca_objects.object_dates.object_date"><div class='unit'>^ca_objects.object_dates.object_date</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class='unit'>^ca_objects.dimensions.display_dimensions ^ca_objects.dimensions.Type</div></ifdef>}}}
 				
