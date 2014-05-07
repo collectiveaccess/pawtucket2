@@ -1972,7 +1972,10 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			$vn_min = (int)$o_ifcount->getAttribute('min');
 			if (!($vn_max = (int)$o_ifcount->getAttribute('max'))) { $vn_max = null; }
 			
-			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code);
+			$va_restrict_to_types = preg_split("![,; ]+!", $o_ifcount->getAttribute('restrictToTypes')); 
+			$va_restrict_to_relationship_types = preg_split("![,; ]+!", $o_ifcount->getAttribute('restrictToRelationshipTypes')); 
+			
+			$va_ifcounts[] = array('directive' => $vs_html, 'content' => $vs_content, 'min' => $vn_min, 'max' => $vn_max, 'code' => $vs_code, 'restrictToTypes' => $va_restrict_to_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types);
 		}
 		
 		$va_resolve_links_using_row_ids = array();
@@ -1988,11 +1991,12 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					$vn_count = 0;
 					foreach($va_if_codes as $vs_if_code) {
 						if($t_table = $o_dm->getInstanceByTableName($vs_if_code, true)) {
-							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('returnAsArray' => true)));
+							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true)));
 						} else {
-							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true)));
+							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'])));
 						}	
 					}
+					
 					if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
 						$va_proc_templates[$vn_i]  = str_replace($va_ifcount['directive'], $va_ifcount['content'], $va_proc_templates[$vn_i] );
 					} else {
