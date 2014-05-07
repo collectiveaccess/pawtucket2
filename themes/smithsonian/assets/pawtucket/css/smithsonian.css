@@ -1301,6 +1301,7 @@ a.browseRemoveFacet img {
 	line-height:1.1em;
 	background-color:#f5f5f5;
 	padding:5px 10px 5px 10px;
+	font-size:12px;
 }
 .multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
 	background-color:#ebebeb;
@@ -1682,4 +1683,22 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .collectionInfo {
 	margin:15px 0px 15px 0px;
 }
+.jspHorizontalBar .jspTrack {
+	margin-top:5px;
+}
+.jspHorizontalBar {
+	background-color: transparent;
+}
+.jspDrag {
+	background-color:#aaa;
+}
+.jspTrack {
+	background-color:#f7f7f7;
+}
 
+
+@media (min-width: 768px) and (max-width: 992px){
+	.col-sm-2 {
+	width: 172px;
+	}
+}

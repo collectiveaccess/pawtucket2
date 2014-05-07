@@ -570,6 +570,17 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* lightbox lb */
 /* --------------------------------- */
+#lbViewButtons{
+	float:right;
+	font-size:18px;
+	padding-bottom:5px;
+}
+#lbViewButtons a .glyphicon {
+	color:#ababab;
+}
+#lbViewButtons a.active .glyphicon {
+	color:#454545;
+}
 .lbSet{
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
@@ -687,6 +698,10 @@ a.browseRemoveFacet img {
 	border:2px solid #EDEDED;
 	width:100%;
 	height:80px;
+	text-align:center;
+}
+.lbSetThumbPlaceholder i{
+	margin-top:25px;
 }
 .lbSetImgPlaceholder{
 	background-color: #F5F5F5;
@@ -864,6 +879,14 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
+.detail .detailMediaPlaceholder{
+	width:100%;
+	text-align:center;
+	padding-top:150px;
+	padding-bottom:150px;
+	color:#ABABAB;
+	border:1px solid #ebebeb;
+}
 .detail #detailMediaToolbar{
 	background-color:#ebebeb;
 	padding:2px 5px 7px 5px;
@@ -985,7 +1008,11 @@ a.browseRemoveFacet img {
 }
 .results H5{
 	margin:0px;
-	padding:0px 0px 0px 20px;
+}
+.bFacetDescription {
+	margin:10px;
+	max-height:150px;
+	overflow:auto;
 }
 #bViewButtons{
 	float:right;

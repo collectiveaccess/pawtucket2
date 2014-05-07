@@ -69,7 +69,7 @@
 				'page' => $vn_c, 
 				'object_id' => $vn_object_id, 'representation_id' => $vn_id, 
 				'editUrl' => null, 
-				'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : ""
+				'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : ""
 			);
 			$vn_c++;
 		}
@@ -131,7 +131,7 @@
 					'object_id' => $vn_object_id, 
 					'representation_id' => $vn_representation_id, 
 					'editUrl' => caNavUrl($this->request, '', 'Detail', 'Objects', array('object_id' => $vn_object_id)), 
-					'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
+					'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
 				if ($o_children->get('ca_objects.object_id') == $vn_page_id) { $vn_open_to_page = $vn_c; }
 				
 				$vn_c++;
@@ -192,7 +192,7 @@
 						'page' => $vn_c, 
 						'object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 
 						'editUrl' => caNavUrl($this->request, '', 'Detail', 'Objects', array('object_id' => $vn_object_id)), 
-						'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, 'Detail', 'Object', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
+						'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
 				
 					$vn_c++;
 				}

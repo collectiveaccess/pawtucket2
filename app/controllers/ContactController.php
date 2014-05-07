@@ -41,6 +41,10 @@
  			}
  			
  			caSetPageCSSClasses(array("contact"));
+ 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
  		}
  		# -------------------------------------------------------
  		function form() {
@@ -92,8 +96,7 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-					
-					if(caSendmail(join(",", $this->config->getList("contact_email")), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
 						$this->render("Contact/success_html.php");
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");

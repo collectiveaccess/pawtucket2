@@ -50,7 +50,12 @@
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
- 		 		
+ 		 	$this->view->setVar("access_values", $va_access_values);
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
+
  			caSetPageCSSClasses(array("detail"));
  		}
  		# -------------------------------------------------------
@@ -80,7 +85,18 @@
  			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
  				// invalid id - throw error
  				die("Invalid id");
+ 			} 			
+ 			
+			#
+ 			# Enforce access control
+ 			#
+ 			if(sizeof($this->opa_access_values) && !in_array($t_table->get("access"), $this->opa_access_values)){
+  				$this->notification->addNotification(_t("This item is not available for view"), "message");
+ 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				return;
  			}
+ 			
+ 			MetaTagManager::setWindowTitle($t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
  			
  			$vs_type = $t_table->getTypeCode();
  			
@@ -113,15 +129,23 @@
  			//
  			//
  			//
- 			if ($t_representation = $t_table->getPrimaryRepresentationInstance()) {
- 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
- 			} else {
- 				$this->view->setVar("representationViewer", "");
- 			}
- 			
+ 			if (method_exists($t_table, 'getPrimaryRepresentationInstance')) {
+ 				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+ 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+ 					$t_representation->load($pn_representation_id);
+ 				}else{
+ 					$t_representation = $t_table->getPrimaryRepresentationInstance();
+ 				}
+				if ($t_representation) {
+					$this->view->setVar("t_representation", $t_representation);
+				}
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
+			} 			
  			//
- 			// comments, tags
+ 			// comments, tags, rank
  			//
+ 			$this->view->setVar('averageRank', $t_table->getAverageRating(true));
+ 			$this->view->setVar('numRank', $t_table->getNumRatings(true));
  			#
  			# User-generated comments, tags and ratings
  			#
@@ -187,9 +211,9 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_table->get($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}
@@ -550,6 +574,26 @@
  					}
  				}
  				if($ps_comment || $ps_tags || $ps_media1){
+ 					# --- check if email notification should be sent to admin
+					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+						# --- send email confirmation
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+ 						$o_view->setVar("comment", $ps_comment);
+ 						$o_view->setVar("tags", $ps_tags);
+ 						$o_view->setVar("name", $ps_name);
+ 						$o_view->setVar("email", $ps_email);
+ 						$o_view->setVar("item", $t_item);
+ 					
+ 					
+ 						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
+						
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
+					
+						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+					}
  					if($this->request->config->get("dont_moderate_comments")){
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing."), __NOTIFICATION_TYPE_INFO__);
@@ -568,24 +612,6 @@
 							$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."));
  							$this->render("Form/reload_html.php");
 						}
- 					}
- 					# --- check if email notification should be sent to admin
- 					if(!$this->request->config->get("dont_email_notification_for_new_comments")){
- 						# --- send email confirmation
-						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
-						$o_view->setVar("item", $t_item);
-						$o_view->setVar("item_id", $pn_item_id);
-						$o_view->setVar("from_name", $ps_from_name);
-	 					$o_view->setVar("message", $ps_message);
-
-						# -- generate mail subject line
-						$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
-						
-						# -- generate mail text from template - get both html and text versions
-						$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
-						$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
-						
-						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
  					}
  				}else{
  					if($vn_inline_form){

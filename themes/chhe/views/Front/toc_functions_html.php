@@ -6,7 +6,7 @@
 	if ($this->request->isAjax()) {
 		$vn_item_id = $this->request->getParameter('item_id', pInteger);
 		$t_list = new ca_lists();
-		$va_list_sub_items = $t_list->getItemsForList($this->getVar('list_code'), array('includeSelf' => true, 'item_id' => $vn_item_id, 'extractValuesByUserLocale' => true, 'enabledOnly' => true));
+		$va_list_sub_items = $t_list->getItemsForList($this->getVar('list_code'), array('includeSelf' => true, 'item_id' => $vn_item_id, 'extractValuesByUserLocale' => true, 'enabledOnly' => true, 'sort' => __CA_LISTS_SORT_BY_RANK__));
 		
 		$va_resp = array();
 		

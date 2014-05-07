@@ -69,8 +69,8 @@
 	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
 		$vs_base_path = $po_request->getThemeUrlPath();
 		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
-		
-		if (!file_exists($vs_base_path.$vs_file_path)) {
+
+		if (!file_exists($po_request->getThemeDirectoryPath().$vs_file_path)) {
 			$vs_base_path = $po_request->getDefaultThemeUrlPath();
 		}
 		return $vs_base_path.$vs_file_path;
@@ -184,6 +184,15 @@
 	 */
 	function caGetFrontConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/front.conf');
+	}
+	# ---------------------------------------
+	/**
+	 * Get theme-specific sets/lightbox configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetSetsConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/sets.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -328,29 +337,46 @@
 	 */
 	function caObjectDetailMedia($o_request, $pn_object_id, $t_representation, $pa_options=null) {
 		$va_access_values = caGetUserAccessValues($o_request);
-		if (!sizeof($va_access_values) || in_array($t_representation->get('access'), $va_access_values)) { 		// check rep access
+		if ($t_representation && (!sizeof($va_access_values) || in_array($t_representation->get('access'), $va_access_values))) { 		// check rep access
 			$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			
 			$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 		
 			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
-			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			$vs_tool_bar = "<div id='detailMediaToolbar'>";
+			if(!$va_rep_display_info["no_overlay"]){
+				$vs_tool_bar .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			}
 			if(!$o_request->config->get("disable_my_collections")){
 				if ($o_request->isLoggedIn()) {
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' ><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+				}else{
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
 				}
 			}
 			if(caObjectsDisplayDownloadLink($o_request)){
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$vs_download_version = $va_download_display_info['display_version'];
-				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version));
+				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 			}
 			$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 			return "<div id='cont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>".$vs_tool_bar;
 			
 		}else{
-			return "representation is not accessible to the public";
+			if(!$o_request->config->get("disable_my_collections")){
+				$vs_tool_bar = "<div id='detailMediaToolbar'>";
+				if ($o_request->isLoggedIn()) {
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+				}else{
+					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
+				}
+				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
+			}
+			$o_config = caGetDetailConfig();
+			if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
+				$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
+			}
+			return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
 		}
 	}
 	# ---------------------------------------
@@ -409,7 +435,10 @@
 		if($va_options["write_access"]){
 			$vb_write_access = true;
 		}
-
+		$o_config = caGetSetsConfig();
+		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+		}
 		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $o_request->user->get("user_id"), "thumbnailVersions" => array("medium", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbSet' onmouseover='jQuery(\"#lbExpandedInfo".$t_set->get("set_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set->get("set_id")."\").hide();'><div class='lbSetContent'>\n";
@@ -420,22 +449,29 @@
 			$vn_i = 1;
 			foreach($va_set_items as $va_set_item){
 				if($vn_i == 1){
-					$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($o_request, $va_set_item["representation_tag_medium"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+					if($va_set_item["representation_tag_medium"]){
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($o_request, $va_set_item["representation_tag_medium"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+					}else{
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($o_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+					}
 				}else{
-					$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($o_request, $va_set_item["representation_tag_icon"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetThumb --></div>\n";
+					if($va_set_item["representation_tag_icon"]){
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols' ".(($vn_i == 4) ? "style='clear:left;'" : "")."><div class='lbSetThumb'>".caNavLink($o_request, $va_set_item["representation_tag_icon"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetThumb --></div>\n";
+					}else{
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols' ".(($vn_i == 4) ? "style='clear:left;'" : "").">".caNavLink($o_request, "<div class='lbSetThumbPlaceholder'>".$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div>\n";
+					}
 				}
 				$vn_i++;
 			}
 			while($vn_i < 6){
-				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder --></div>";
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($o_request, "<div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder -->", "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div>";
 				$vn_i++;
 			}
 		}else{
-			$vs_primary_image_block = "<div class='col-sm-6'><div class='lbSetImgPlaceholder'>"._t("Search/browse to add<br/>items to this lightbox")."</div><!-- end lbSetImg --></div>";
+			$vs_primary_image_block = "<div class='col-sm-6'><div class='lbSetImgPlaceholder'>"._t("Search/browse to add<br/>items to this lightbox")."</div><!-- end lbSetImgPlaceholder --></div>";
 			$vs_secondary_image_block = "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder --></div><div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder --></div><div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder --></div><div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'></div><!-- end lbSetThumbPlaceholder --></div>";
 		}
 		$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment".$t_set->get("set_id")."' class='lbSetComment'><!-- load comments here --></div>\n<div class='row lbSetThumbRow' id='lbSetThumbRow".$t_set->get("set_id")."'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end col --></div><!-- end row -->";
-		$vs_set_display .= "";
 		$vs_set_display .= "</div><!-- end lbSetContent -->\n";
 		$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo".$t_set->get("set_id")."'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
 		$vs_set_display .= "<div>Num items: ".$t_set->getItemCount(array("user_id" => $o_request->user->get("user_id"), "checkAccess" => $va_check_access))."</div>\n";
@@ -462,9 +498,17 @@
 		if($va_options["write_access"]){
 			$vb_write_access = true;
 		}
+		$o_config = caGetSetsConfig();
+		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+		}
 		$vs_set_item_display = "";
 		$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
-		$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_medium"]."</div>", '', 'ca_objects', $va_set_item["row_id"]);
+		if($va_set_item["representation_tag_medium"]){
+			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_medium"]."</div>", '', 'ca_objects', $va_set_item["row_id"]);
+		}else{
+			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $va_set_item["row_id"]);
+		}
 		$vs_set_item_display .= "<div id='comment".$t_set_item->get("item_id")."' class='lbSetItemComment'><!-- load comments here --></div>\n";
 		$vs_set_item_display .= "<div>".$va_set_item["set_item_label"]."</div>\n";
 		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
@@ -473,7 +517,9 @@
 			$vs_set_item_display .= "<div class='pull-right'><a href='#' class='lbItemDeleteButton' id='lbItemDelete".$t_set_item->get("item_id")."' title='"._t("Remove")."'><span class='glyphicon glyphicon-remove'></span></a></div>\n";
 		}
 		$vs_set_item_display .= "<div>".caDetailLink($o_request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $va_set_item["row_id"], "", array("title" => _t("View Item Detail")))."\n";
-		$vs_set_item_display .= "&nbsp;<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_set_item->get("row_id"), 'representation_id' => $va_set_item["representation_id"], 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+		if($va_set_item["representation_id"]){
+			$vs_set_item_display .= "&nbsp;<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_set_item->get("row_id"), 'representation_id' => $va_set_item["representation_id"], 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+		}
 		$vs_set_item_display .= "&nbsp;&nbsp;<a href='#' title='"._t("Comments")."' onclick='jQuery(\"#comment".$t_set_item->get("item_id")."\").load(\"".caNavUrl($o_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set_item->get("item_id"), 'tablename' => 'ca_set_items', 'set_id' => $t_set_item->get("set_id")))."\", function(){jQuery(\"#comment".$t_set_item->get("item_id")."\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getNumComments()."</small></a></div>\n";
 		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 		return $vs_set_item_display;
@@ -523,7 +569,20 @@
 		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
 		$vs_pk = $t_instance->primaryKey();
 		
+		$va_params = array();
+		
 		$vs_linking_table = $va_path[1];
+		
+		
+		$vs_rel_type_where = '';
+		if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
+			$va_rel_types = caMakeRelationshipTypeIDList($vs_linking_table, $va_rel_types);
+			if (is_array($va_rel_types) && sizeof($va_rel_types)) {
+				$vs_rel_type_where = " AND ({$vs_linking_table}.type_id IN (?))";
+				$va_params[] = $va_rel_types;
+			}
+		}
+		
 		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
@@ -531,13 +590,13 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
 		
 		$o_db = $t_instance->getDb();
 		
-		$qr_res = $o_db->query($vs_sql);
+		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
 		while($qr_res->nextRow()) {
 			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
