@@ -2061,6 +2061,7 @@ class TimeExpressionParser {
 	#	beforeQualifier	(string) [default is first indicator in language config file]
 	#	afterQualifier	(string) [default is first indicator in language config file]
 	#	presentDate		(string) [default is first indicator in language config file]
+	#	showUndated		(true|false) [default is false; if true empty dates are output with the first undated specified for the current language]
 	#	isLifespan		(true|false) [default is false; if true, date is output with 'born' and 'died' syntax if appropriate]
 	#   useQuarterCenturySyntaxForDisplay (true|false) [default is false; if true dates ranging over uniform quarter centuries (eg. 1900 - 1925, 1925 - 1950, 1950 - 1975, 1975-2000) will be output in the format "20 Q1" (eg. 1st quarter of 20th century... 1900 - 1925)
 	#   useRomanNumeralsForCenturies (true|false) [default is false; if true century only dates (eg 18th century) will be output in roman numerals like "XVIIIth century"
@@ -2075,7 +2076,8 @@ class TimeExpressionParser {
 			'showADEra', 'timeFormat', 'timeDelimiter', 
 			'circaIndicator', 'beforeQualifier', 'afterQualifier', 
 			'presentDate', 'useQuarterCenturySyntaxForDisplay', 'timeOmit', 'useRomanNumeralsForCenturies', 
-			'rangePreConjunction', 'rangeConjunction', 'timeRangeConjunction', 'dateTimeConjunction'
+			'rangePreConjunction', 'rangeConjunction', 'timeRangeConjunction', 'dateTimeConjunction', 'showUndated',
+			'useConjunctionForAfterDates'
 		) as $vs_opt) {
 			if (!isset($pa_options[$vs_opt]) && ($vs_opt_val = $this->opo_datetime_settings->get($vs_opt))) {
 				$pa_options[$vs_opt] = $vs_opt_val;
@@ -2145,6 +2147,7 @@ class TimeExpressionParser {
 		
 		// is it undated?
 		if (($va_dates['start'] === null) && ($va_dates['end'] === null)) {
+			if ($pa_options['isLifespan']) { return ''; }	// no "undated" for lifedates
 			if (is_array($va_undated = $this->opo_language_settings->getList('undatedDate'))) {
 				return array_shift($va_undated);
 			} 
@@ -2318,26 +2321,32 @@ class TimeExpressionParser {
 		
 		// catch 'after' dates
 		if ($va_dates['end'] >= TEP_END_OF_UNIVERSE) {
-			$va_born_qualifiers = $this->opo_language_settings->getList('bornQualifier');
-			if ($pa_options['isLifespan'] && (sizeof($va_born_qualifiers) > 0)) {
-				$vs_after_qualifier = $va_born_qualifiers[0];
-			} else {
-				$va_after_qualifiers = $this->opo_language_settings->getList('afterQualifier');
-				if ($pa_options['afterQualifier'] && in_array($pa_options['afterQualifier'], $va_after_qualifiers)) {
-					$vs_after_qualifier = $pa_options['afterQualifier'] ;
-				} else {
-					$vs_after_qualifier = $va_after_qualifiers[0];
-				}
-			}
-			
 			if ($va_start_pieces['hours'] == 0 && $va_start_pieces['minutes'] == 0 && $va_start_pieces['seconds'] == 0) {
 				if ($va_start_pieces['day'] == 1 && $va_start_pieces['month'] == 1) {
-					return $vs_after_qualifier.' '. $this->_dateToText(array('year' => $va_start_pieces['year'], 'era' => $va_start_pieces['era'], 'uncertainty' => $va_start_pieces['uncertainty'], 'uncertainty_units' => $va_start_pieces['uncertainty_units']), $pa_options);
+					$vs_date = $this->_dateToText(array('year' => $va_start_pieces['year'], 'era' => $va_start_pieces['era'], 'uncertainty' => $va_start_pieces['uncertainty'], 'uncertainty_units' => $va_start_pieces['uncertainty_units']), $pa_options);
 				} else {
-					return $vs_after_qualifier.' '. $this->_dateToText($va_start_pieces, $pa_options);
+					$vs_date = $this->_dateToText($va_start_pieces, $pa_options);
 				}
 			} else {
-				return $vs_after_qualifier.' '. $this->_dateTimeToText($va_start_pieces, $pa_options);
+				$vs_date = $this->_dateTimeToText($va_start_pieces, $pa_options);	
+			}
+			
+			if (caGetOption('useConjunctionForAfterDates', $pa_options, false)) {
+				$va_range_conjunctions = $this->opo_language_settings->getList('rangeConjunctions');
+				return "{$vs_date} ".$va_range_conjunctions[0]; 
+			} else {
+				$va_born_qualifiers = $this->opo_language_settings->getList('bornQualifier');
+				if ($pa_options['isLifespan'] && (sizeof($va_born_qualifiers) > 0)) {
+					$vs_after_qualifier = $va_born_qualifiers[0];
+				} else {
+					$va_after_qualifiers = $this->opo_language_settings->getList('afterQualifier');
+					if ($pa_options['afterQualifier'] && in_array($pa_options['afterQualifier'], $va_after_qualifiers)) {
+						$vs_after_qualifier = $pa_options['afterQualifier'] ;
+					} else {
+						$vs_after_qualifier = $va_after_qualifiers[0];
+					}
+				}
+				return "{$vs_after_qualifier} {$vs_date}";
 			}
 		}
 		

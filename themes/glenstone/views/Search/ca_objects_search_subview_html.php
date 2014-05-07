@@ -51,23 +51,33 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-<?php 			
+<?php 		
+				if ($qr_results->get('ca_objects.type_id') == 28) {	
+					$vs_style = "style='font-style:italic;'";
+				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {
 					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
 				} else {
 					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));				
 				}
-				print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>"; 
+				if ($qr_results->get('ca_objects.type_id') == 30) {  
+					$va_strlen = 130;
+				} else {
+					$va_strlen = 105;
+				}
 				if ($qr_results->get('ca_objects.type_id') == 28) {
 					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
+				}				
+				if (strlen($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))) > $va_strlen) {
+					print "<p><span $vs_style>".substr($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)), 0, $va_strlen-3)."...</span></p>";  
+				} else {
+					print "<p><span $vs_style>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</span>, ".$qr_results->get('ca_objects.creation_date', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => '^creation_date'))."</p>";
 				}
+
 				if ($qr_results->get('ca_objects.type_id') == 30) {
 					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author'))."</p>";
 					print "<p class='artist dark'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'publisher'))."</p>";
 				}				
-				if ($qr_results->get('ca_objects.object_dates.object_date')) {
-					print $qr_results->get('ca_objects.object_dates', array('returnAsLink' => true, 'template' => '<p>^object_date</p>')); 
-				}
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
 					print $qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'template' => '<p>^dc_dates_value</p>')); 
 				}

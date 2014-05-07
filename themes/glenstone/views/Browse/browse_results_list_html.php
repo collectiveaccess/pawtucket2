@@ -77,14 +77,24 @@
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
-				$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
-				
+			$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.type_id') == 30) {
-					$vs_label_artist	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'publisher'))."</p>";
-				} else {
+					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author'))."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
+					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.publication_description")."</p>";
+					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.call_number")."</p>";
+					$vs_label_status 	= "<p>".$qr_res->get("ca_objects.purchase_status")."</p>";
+					$vs_idno_detail_link 	= "";
+					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
+
+				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.creation_date")."</p>";
+					$vs_idno_detail_link 	= "";				
+				}else {
+					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
+					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 				}
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small') : $va_images[$vn_id];
 				
@@ -99,7 +109,7 @@
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
-					{$vs_label_detail_link}{$vs_label_artist}{$vs_idno_detail_link}
+					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_library_info}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

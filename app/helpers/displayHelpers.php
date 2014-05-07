@@ -41,6 +41,12 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ExpressionParser.php');
 require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
+
+/**
+ * Regex used to parse bundle display template tags (Eg. ^I_am_a_tag)
+ * More about bundle display templates here: http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates
+ */
+define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.:\/]+)!");
 	
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -1765,7 +1771,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$vs_remove_prefix = isset($pa_options['removePrefix']) ? $pa_options['removePrefix'] : null;
 		
 		$va_tags = array();
-		if (preg_match_all("!\^([\/A-Za-z0-9_\.]+)!", $ps_template, $va_matches)) {
+		if (preg_match_all(__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__, $ps_template, $va_matches)) {
 			foreach($va_matches[1] as $vn_i => $vs_possible_tag) {
 				$va_matches[1][$vn_i] = rtrim($vs_possible_tag, "/.");	// remove trailing slashes and periods
 			}
@@ -1778,7 +1784,8 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		}
 		
 		foreach($va_tags as $vs_tag) {
-			$vs_proc_tag = $vs_tag;
+			$va_tmp = explode("~", $vs_tag);
+			$vs_proc_tag = array_shift($va_tmp);
 			if ($vs_remove_prefix) {
 				$vs_proc_tag = str_replace($vs_remove_prefix, '', $vs_proc_tag);
 			}
@@ -1787,12 +1794,47 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			}
 			
 			if ($t_instance && ($vs_gotten_val = $t_instance->get($vs_proc_tag, $pa_options))) {
+				$vs_gotten_val = caProcessTemplateTagDirectives($vs_gotten_val, $va_tmp);
 				$ps_template = str_replace('^'.$vs_tag, $vs_gotten_val, $ps_template);
 			} else {
-				$ps_template = str_replace('^'.$vs_tag, isset($pa_values[$vs_proc_tag]) ? $pa_values[$vs_proc_tag] : '', $ps_template);
+				if (is_array($vs_val = isset($pa_values[$vs_proc_tag]) ? $pa_values[$vs_proc_tag] : '')) {
+					// If value is an array try to make a string of it
+					$vs_val = join(" ", $vs_val);
+				}
+				$vs_val = caProcessTemplateTagDirectives($vs_val, $va_tmp);
+				$ps_template = str_replace('^'.$vs_tag, $vs_val, $ps_template);
 			}
 		}
 		return $ps_template;
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caProcessTemplateTagDirectives($ps_value, $pa_directives) {
+		if (!is_array($pa_directives) || !sizeof($pa_directives)) { return $ps_value; }
+		foreach($pa_directives as $vs_directive) {
+			$va_tmp = explode(":", $vs_directive);
+			switch($va_tmp[0]) {
+				case 'LP':
+					$va_params = explode("/", $va_tmp[1]);
+					$vn_len = (int)$va_params[1];
+					$vs_str = (string)$va_params[0];
+					if (($vn_len > 0) && strlen($vs_str)) {
+						$ps_value = str_pad($ps_value, $vn_len, $vs_str, STR_PAD_LEFT);
+					}
+					break;
+				case 'RP':
+					$va_params = explode("/", $va_tmp[1]);
+					$vn_len = (int)$va_params[1];
+					$vs_str = (string)$va_params[0];
+					if (($vn_len > 0) && strlen($vs_str)) {
+						$ps_value = str_pad($ps_value, $vn_len, $vs_str, STR_PAD_RIGHT);
+					}
+					break;
+			}
+		}
+		return $ps_value;
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -1820,6 +1862,8 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		unset($pa_options['template']);	// we pass through options to get() and don't want templates 
 		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 		$pb_return_as_array = (bool)caGetOption('returnAsArray', $pa_options, false);
+		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 		
 		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids) || !$ps_template) {
 			return $pb_return_as_array ? array() : "";
@@ -1880,7 +1924,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$ps_template = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_doc->html()));	// replace template with parsed version; this allows us to do text find/replace later
 		
 		$va_tags = array();
-		if (preg_match_all("!\^([A-Za-z0-9_\.]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.]+)!", $ps_template, $va_matches)) {
+		if (preg_match_all(__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__, $ps_template, $va_matches)) {
 			$va_tags = $va_matches[1];
 		}
 		
@@ -1889,19 +1933,19 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$va_proc_templates = array();
 		$vn_i = 0;
 		
-		$o_if = $o_doc("if");						// if 
+		$o_ifs = $o_doc("if");						// if 
 		$o_ifdefs = $o_doc("ifdef");				// if defined
 		$o_ifnotdefs = $o_doc("ifnotdef");			// if not defined
-		$o_mores = $o_doc("more");					// more tags – content suppressed if there are no defined values following the tag pair
-		$o_betweens = $o_doc("between");			// between tags – content suppressed if there are not defined values on both sides of the tag pair
+		$o_mores = $o_doc("more");					// more tags - content suppressed if there are no defined values following the tag pair
+		$o_betweens = $o_doc("between");			// between tags - content suppressed if there are not defined values on both sides of the tag pair
 		$o_ifcounts = $o_doc("ifcount");			// if count - conditionally return template if # of items is in-bounds
 		
 		$va_if = array();
-		foreach($o_if as $o_if) {
+		foreach($o_ifs as $o_if) {
 			if (!$o_if) { continue; }
 			
 			$vs_html = $o_if->html();
-			$vs_content = $o_f->getInnerText();
+			$vs_content = $o_if->getInnerText();
 			
 			$va_if[] = array('directive' => $vs_html, 'content' => $vs_content, 'rule' => $vs_rule = (string)$o_if->getAttribute('rule'));
 		}
@@ -1912,7 +1956,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			
 			$vs_code = (string)$o_ifdef->getAttribute('code');
 			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags += preg_split('![,\|]{1}!', $vs_code_proc); }
 			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifdef->html()));
 			$vs_content = $o_ifdef->getInnerText();
@@ -1929,7 +1973,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			
 			$vs_code = (string)$o_ifnotdef->getAttribute('code');
 			$vs_code_proc = preg_replace("!%(.*)$!", '', $vs_code);
-			if (!in_array($vs_code_proc, $va_tags)) { $va_tags[] = $vs_code_proc; }
+			if (!in_array($vs_code_proc, $va_tags)) { $va_tags += preg_split('![,\|]{1}!', $vs_code_proc); }
 			
 			$vs_html = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_ifnotdef->html()));
 			$vs_content = $o_ifnotdef->getInnerText();
@@ -1991,10 +2035,16 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					$vn_count = 0;
 					foreach($va_if_codes as $vs_if_code) {
 						if($t_table = $o_dm->getInstanceByTableName($vs_if_code, true)) {
-							$vn_count += sizeof($qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true)));
+							$va_count_vals = $qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true));
 						} else {
-							$vn_count += sizeof($qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'])));
+							$va_count_vals = $qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes']));
 						}	
+						if (is_array($va_count_vals)) {
+							foreach($va_count_vals as $vs_count_val) {
+								if (!$vs_count_val) { continue; }
+								$vn_count++;
+							}
+						}
 					}
 					
 					if (($va_ifcount['min'] <= $vn_count) && (($va_ifcount['max'] >= $vn_count) || !$va_ifcount['max'])) {
@@ -2012,15 +2062,15 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 				$vs_unit_delimiter = caGetOption('delimiter', $va_unit, '; ');
 
 				// additional get options for pulling related records
-				$va_get_options = array('returnAsArray' => true);
-
+				$va_get_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
+				
 				if ($va_unit['restrictToTypes'] && strlen($va_unit['restrictToTypes'])>0) {
 					$va_get_options['restrictToTypes'] = explode('|', $va_unit['restrictToTypes']);
 				}
 				if ($va_unit['restrictToRelationshipTypes'] && strlen($va_unit['restrictToRelationshipTypes'])>0) {
 					$va_get_options['restrictToRelationshipTypes'] = explode('|', $va_unit['restrictToRelationshipTypes']);
 				}
-			
+	
 				if (
 					((sizeof($va_relative_to_tmp) == 1) && ($va_relative_to_tmp[0] == $ps_tablename))
 					||
@@ -2077,7 +2127,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 			if(!sizeof($va_tags)) { continue; } 	// if there are no tags in the template then we don't need to process further
 		
 			if ($ps_resolve_links_using != $ps_tablename) {
-				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}");
+				$va_resolve_links_using_row_ids[] = $qr_res->get("{$ps_resolve_links_using}.{$vs_resolve_links_using_pk}", array('checkAccess' => $pa_check_access));
 			}
 			
 			$va_tag_val_list[$vn_i] = array();
@@ -2142,6 +2192,8 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					
 					if (isset($va_relationship_value_array[$vs_tag]) && !(isset($pa_options['showHierarchicalLabels']) && $pa_options['showHierarchicalLabels'] && ($vs_tag == 'label'))) {
 						$va_val = array($vs_val = $va_relationship_value_array[$vs_tag]);
+					} elseif (isset($va_relationship_value_array[$vs_tag])) {
+						$va_val = array($vs_val = $va_relationship_value_array[$vs_tag]);
 					} else {
 						if (isset($va_related_values[$vs_pk_val][$vs_tag])) {
 							$va_val = array($vs_val = $va_related_values[$vs_pk_val][$vs_tag]);
@@ -2149,7 +2201,26 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 							//
 							// see if this is a reference to a related table
 							//
-							if (($ps_tablename != $va_tmp[0]) && ($t_tmp = $o_dm->getInstanceByTableName($va_tmp[0], true))) {	// if the part of the tag before a "." (or the tag itself if there are no periods) is a related table then try to fetch it as related to the current record
+							if (in_array($vs_tag, array("relationship_typename", "relationship_type_id", "relationship_typecode", "relationship_type_code"))) {
+								$vb_is_related = true;
+								
+								switch($vs_tag) {
+									case 'relationship_typename':
+										$vs_spec = 'preferred_labels.'.((caGetOption('orientation', $pa_options, 'LTOR') == 'LTOR') ? 'typename' : 'typename_reverse');
+										break;
+									case 'relationship_type_id':
+										$vs_spec = 'type_id';
+										break;
+									case 'relationship_typecode':
+									case 'relationship_type_code':
+									default:
+										$vs_spec = 'type_code';
+										break;
+								}
+								
+								$vs_rel = $qr_res->get("ca_relationship_types.{$vs_spec}", array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false)));
+								$va_val = array($vs_rel);
+							} elseif (($ps_tablename != $va_tmp[0]) && ($t_tmp = $o_dm->getInstanceByTableName($va_tmp[0], true))) {	// if the part of the tag before a "." (or the tag itself if there are no periods) is a related table then try to fetch it as related to the current record
 								if (isset($pa_options['placeholderPrefix']) && $pa_options['placeholderPrefix'] && ($va_tmp[0] != $pa_options['placeholderPrefix']) && (sizeof($va_tmp) == 1)) {
 									$vs_get_spec = array_shift($va_tmp).".".$pa_options['placeholderPrefix'];
 									if(sizeof($va_tmp) > 0) {
@@ -2164,7 +2235,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 									$vs_get_spec .= ".preferred_labels";
 								}
 								
-								$va_additional_options = array('returnAsArray' => true);
+								$va_additional_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
 								$vs_hierarchy_name = null;
 								if (in_array($va_spec_bits[1], array('hierarchy', '_hierarchyName'))) {
 									$t_rel = $o_dm->getInstanceByTableName($va_spec_bits[0], true);
@@ -2174,7 +2245,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey()));
+											$vs_hierarchy_name = $t_rel->getHierarchyName($qr_res->get($t_rel->tableName().".".$t_rel->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2252,7 +2323,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 										case __CA_HIER_TYPE_MULTI_MONO__:
-											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey()));
+											$vs_hierarchy_name = $t_instance->getHierarchyName($qr_res->get($t_instance->tableName().".".$t_instance->primaryKey(), array('checkAccess' => $pa_check_access)));
 											$va_additional_options['removeFirstItems'] = 1;
 											break;
 									}
@@ -2277,9 +2348,9 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 								$vs_get_spec = "{$ps_tablename}.".join(".", $va_tmp);
 								
 								if (in_array($va_tmp[0], array('parent'))) {
-									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false)));
+									$va_val[] = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => false, 'checkAccess' => $pa_check_access)));
 								} else {
-									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters)));
+									$va_val_tmp = $qr_res->get($vs_get_spec, array_merge($pa_options, $va_tag_opts, array('returnAsArray' => true, 'filters' => $va_tag_filters, 'checkAccess' => $pa_check_access)));
 									
 									$va_val = array();
 								
@@ -2375,7 +2446,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 						$vb_value_is_set = (
 							(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1)) 
 							|| 
-							((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+							((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen(trim($va_tags[$vs_tag_to_test][0])) > 0)));
 							
 						switch($vs_bool) {
 							case 'OR':
@@ -2410,7 +2481,9 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 					}
 					$vb_output = true;
 					foreach($va_tag_list as $vs_tag_to_test) {
-						$vb_value_is_set = (bool)(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1) || ((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen($va_tags[$vs_tag_to_test][0]) > 0)));
+						$vb_value_is_set = (bool)(isset($va_tags[$vs_tag_to_test]) && (sizeof($va_tags[$vs_tag_to_test]) > 1) 
+						|| 
+						((sizeof($va_tags[$vs_tag_to_test]) == 1) && (strlen(trim($va_tags[$vs_tag_to_test][0])) > 0)));
 						switch($vs_bool) {
 							case 'OR':
 								if (!$vb_value_is_set) { $vb_output = true; break(2); }		// any must be not defined; if anything is not set output
@@ -2509,9 +2582,11 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 				foreach($va_tags_tmp as $vs_tag) {
 					$vs_pt = str_replace('^'.$vs_tag, is_array($va_tags[$vs_tag]) ? join(" | ", $va_tags[$vs_tag]) : $va_tags[$vs_tag] , $vs_pt);
 				}
-				$va_pt_vals[] = $vs_pt;
+				if ($vs_pt) { $va_pt_vals[] = $vs_pt; } 
 			
-				$va_acc[] = join(isset($pa_options['delimiter']) ? $pa_options['delimiter'] : $vs_delimiter, $va_pt_vals);
+				if ($vs_acc_val = join(isset($pa_options['delimiter']) ? $pa_options['delimiter'] : $vs_delimiter, $va_pt_vals)) {
+					$va_acc[] = $vs_acc_val;
+				}
 			}
 			$va_proc_templates[$vn_i] = join($vs_delimiter, $va_acc);
 		}
@@ -2670,7 +2745,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 		$va_tmp = $po_rep->getMediaInfo('media', $ps_version);
 		$va_dimensions = array();
 			if (isset($va_tmp['WIDTH']) && isset($va_tmp['HEIGHT'])) {
-			if (($vn_w = $va_tmp['WIDTH']) && ($vn_h = $va_tmp['WIDTH'])) {
+			if (($vn_w = $va_tmp['WIDTH']) && ($vn_h = $va_tmp['HEIGHT'])) {
 				$va_dimensions[] = $va_tmp['WIDTH'].'p x '.$va_tmp['HEIGHT'].'p';
 			}
 		}
@@ -2744,6 +2819,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 	 *		limit = maximum number of items to return; if omitted all items are returned
 	 *		inlineCreateMessage = 
 	 *		inlineCreateQuery =
+	 *		inlineCreateMessageDoesNotExist =
 	 *		template = 
 	 *		primaryIDs = row_ids for primary rows in related table, keyed by table name; when resolving ambiguous relationships the row_ids will be excluded from consideration. This option is rarely used and exists primarily to take care of a single
 	 *						edge case: you are processing a template relative to a self-relationship such as ca_entities_x_entities that includes references to the subject table (ca_entities, in the case of ca_entities_x_entities). There are
@@ -2772,17 +2848,19 @@ $ca_relationship_lookup_parse_cache = array();
 			$o_config = $pa_options['config'];
 		}
 		
-		$pn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
-		$ps_inline_create_message = (isset($pa_options['inlineCreateMessage'])) ? (string)$pa_options['inlineCreateMessage'] : null;
-		$ps_inline_create_query = (isset($pa_options['inlineCreateQuery'])) ? (string)$pa_options['inlineCreateQuery'] : null;
+		$pn_limit = 								caGetOption('limit', $pa_options, null);
+		$ps_inline_create_message = 				caGetOption('inlineCreateMessage', $pa_options, null);
+		$ps_inline_create_does_not_exist_message = 	caGetOption('inlineCreateMessageDoesNotExist', $pa_options, null);
+		$ps_inline_create_query = 					caGetOption('inlineCreateQuery', $pa_options, null);
+		$ps_inline_create_query_lc = 				mb_strtolower($ps_inline_create_query);
 		
-		$ps_empty_result_message = (isset($pa_options['emptyResultMessage'])) ? (string)$pa_options['emptyResultMessage'] : null;
-		$ps_empty_result_query = (isset($pa_options['emptyResultQuery'])) ? (string)$pa_options['emptyResultQuery'] : null;
+		$ps_empty_result_message = 					caGetOption('emptyResultMessage', $pa_options, null);
+		$ps_empty_result_query = 					caGetOption('emptyResultQuery', $pa_options, null);
 		
-		$vs_template = (isset($pa_options['template'])) ? (string)$pa_options['template'] : null;
-		$vs_cache_key = md5($vs_display_format);
+		$vs_template =								caGetOption('template', $pa_options, null);
+		$vs_cache_key = 							md5($vs_template);
 		
-		$va_exclude = (isset($pa_options['exclude']) && is_array($pa_options['exclude'])) ? $pa_options['exclude'] : array();
+		$va_exclude = 								caGetOption('exclude', $pa_options, array(), array('castTo' => 'array'));
 		
 		//
 		// Originally the lookup display setting was a string with embedded tokens prefixed with carets. We still have to support this
@@ -2798,7 +2876,7 @@ $ca_relationship_lookup_parse_cache = array();
 			$vs_display_delimiter = $ca_relationship_lookup_parse_cache[$vs_rel_table][$vs_cache_key]['delimiter'];
 			$vb_use_new_display_format = true;
 		} else {
-			if (($vs_display_format = $o_config->get($vs_rel_table.'_lookup_settings')) && !is_array($vs_display_format)) {				
+			if (($vs_display_format = $o_config->get("{$vs_rel_table}_lookup_settings")) && !is_array($vs_display_format)) {				
 				if ($vs_display_format && is_string($vs_display_format) && !preg_match_all('!\^{1}([A-Za-z0-9\._]+)!', $vs_display_format, $va_matches)) {
 					$vs_display_format = '^'.$vs_rel_table.'.preferred_labels';
 					$va_bundles = array($vs_rel_table.'.preferred_labels');
@@ -2806,10 +2884,10 @@ $ca_relationship_lookup_parse_cache = array();
 					$va_bundles = $va_matches[1];
 				}
 			} else {
-				if (is_array($va_display_format = $o_config->getList($vs_rel_table.'_lookup_settings'))) {
+				if (is_array($va_display_format = $o_config->getList("{$vs_rel_table}_lookup_settings"))) {
 					$vb_use_new_display_format = true;
 				
-					if(!($vs_display_delimiter = $o_config->get($vs_rel_table.'_lookup_delimiter'))) {
+					if(!($vs_display_delimiter = $o_config->get("{$vs_rel_table}_lookup_delimiter"))) {
 						$vs_display_delimiter = ' ';
 					} else {
 						$vs_display_delimiter = " {$vs_display_delimiter} ";
@@ -2837,20 +2915,21 @@ $ca_relationship_lookup_parse_cache = array();
 		$vs_type_id_fld = method_exists($t_rel, 'getTypeFieldName') ? $t_rel->getTypeFieldName() : null;
 		
 		$vn_c = 0;
-		$vb_include_inline_add_message = $vb_include_empty_result_message = false;
-	
+		$vb_include_inline_add_does_not_exist_message = $vb_include_empty_result_message = false;
+		$vb_include_inline_add_message = true;
+		
 		if (is_object($qr_rel_items)) {
 			if (!$qr_rel_items->numHits()) {
 				if ($ps_inline_create_message) { 
-					$vb_include_inline_add_message = true;	
+					$vb_include_inline_add_does_not_exist_message = true;	
 				} else {
 					if ($ps_empty_result_message) { 
 						$vb_include_empty_result_message = true;	
 					}
 				}
 			} else {
-				$vs_table = $qr_rel_items->tableName();
-				$vs_pk = $qr_rel_items->primaryKey();
+				$vs_table = 	$qr_rel_items->tableName();
+				$vs_pk = 		$qr_rel_items->primaryKey();
 				
 				$va_primary_ids = (method_exists($pt_rel, "isSelfRelationship") && ($vb_is_self_rel = $pt_rel->isSelfRelationship())) ? caGetOption("primaryIDs", $pa_options, null) : null;
 				while($qr_rel_items->nextHit()) {
@@ -2921,6 +3000,7 @@ $ca_relationship_lookup_parse_cache = array();
 					if ($vs_template) {
 						$va_item['_display'] = caProcessTemplateForIDs($vs_template, $vs_table, array($qr_rel_items->get("{$vs_table}.{$vs_pk}")), array('returnAsArray' => false, 'returnAsLink' => true, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table, 'primaryIDs' => $va_primary_ids));
 					}
+					$va_item['_l'] = mb_strtolower($qr_rel_items->get("{$vs_table}.preferred_labels"));
 					
 					$va_items[$vn_id] = $va_item;
 					
@@ -2934,7 +3014,7 @@ $ca_relationship_lookup_parse_cache = array();
 		
 		$va_hierarchies = (method_exists($t_rel, "getHierarchyList")) ? $t_rel->getHierarchyList() : array();
 		
-		// Get root entries for hierarchies and remove from labels (we don't want to show the root labels – they are not meant for display)
+		// Get root entries for hierarchies and remove from labels (we don't want to show the root labels ��� they are not meant for display)
 		if (is_array($va_hierarchies)) {
 			foreach($va_hierarchies as $vn_root_id => $va_hier_info) {
 				foreach($va_parent_ids as $vn_item_id => $vn_parent_id) {
@@ -2970,12 +3050,12 @@ $ca_relationship_lookup_parse_cache = array();
 				}
 				
 				if (!isset($va_items[$va_relation[$vs_rel_pk]][$vs_rel_pk]) || !$va_items[$va_relation[$vs_rel_pk]][$vs_rel_pk]) {
-					$va_items[$va_relation[$vs_rel_pk]][$vs_rel_pk] = $va_relation[$vs_rel_pk];
+					$va_items[$va_relation[$vs_rel_pk]][$vs_rel_pk] = $va_items[$va_relation[$vs_rel_pk]]['id'] = $va_relation[$vs_rel_pk];
 				}
 				
 				if (!isset($va_items[$va_relation[$vs_rel_pk]]['_display']) || !$va_items[$va_relation[$vs_rel_pk]]['_display']) {
 					if ($vs_template) {
-						$va_items[$va_relation[$vs_rel_pk]]['_display'] = caProcessTemplateForIDs($vs_template, $vs_rel_table, array($va_relation[$vs_rel_pk]), array('returnAsArray' => false, 'returnAsLink' => true, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table));
+						$va_items[$va_relation[$vs_rel_pk]]['_display'] = caProcessTemplateForIDs($vs_template, $pt_rel->tableName(), array($va_relation['relation_id']), array('returnAsArray' => false, 'returnAsLink' => true, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'primaryIDs' => $va_primary_ids, 'resolveLinksUsing' => $vs_rel_table));
 					} else {
 						$va_items[$va_relation[$vs_rel_pk]]['_display'] = $va_items[$va_relation[$vs_rel_pk]]['label'];
 					}
@@ -3031,6 +3111,14 @@ $ca_relationship_lookup_parse_cache = array();
 				$va_item['label'] = trim(strip_tags($vs_label));
 				
 			}
+			
+			$vs_display_lc = mb_strtolower($vs_display);
+			if (($vs_display_lc == $ps_inline_create_query_lc) || (isset($va_item['_l']) && ($va_item['_l'] == $ps_inline_create_query_lc))) {
+				$vb_include_inline_add_message = false;
+			}
+			
+			unset($va_item['_l']);
+			
 			$va_initial_values[$va_item['relation_id'] ? (int)$va_item['relation_id'] : $va_item[$vs_rel_pk]] = array_merge(
 				$va_item,
 				array(
@@ -3039,24 +3127,33 @@ $ca_relationship_lookup_parse_cache = array();
 			);
 		}
 		
-		if($vb_include_inline_add_message) {
-			$va_initial_values[0] = 
-				array(
-					'label' => $ps_inline_create_message,
-					'id' => 0,
-					$vs_rel_pk => 0,
-					'_query' => $ps_inline_create_query
-				);
-		} else {
-			if ($vb_include_empty_result_message) {
-				$va_initial_values[0] = 
+		if($vb_include_inline_add_message && $ps_inline_create_message) {
+			array_push($va_initial_values, 
 					array(
-						'label' => $ps_empty_result_message,
-						'id' => -1,
-						$vs_rel_pk => -1,
-						'_query' => $ps_empty_result_query
-					);
-			}
+						'label' => $ps_inline_create_message,
+						'id' => 0,
+						$vs_rel_pk => 0,
+						'_query' => $ps_inline_create_query
+					)
+			);
+		} elseif ($vb_include_inline_add_does_not_exist_message && $ps_inline_create_does_not_exist_message) {
+			array_push($va_initial_values, 
+					array(
+						'label' => $ps_inline_create_does_not_exist_message,
+						'id' => 0,
+						$vs_rel_pk => 0,
+						'_query' => $ps_inline_create_query
+					)
+			);
+		} elseif ($vb_include_empty_result_message) {
+			array_push($va_initial_values, 
+				array(
+					'label' => $ps_empty_result_message,
+					'id' => -1,
+					$vs_rel_pk => -1,
+					'_query' => $ps_empty_result_query
+				)
+			);
 		}
 		
 		return $va_initial_values;		
@@ -3273,6 +3370,264 @@ $ca_relationship_lookup_parse_cache = array();
 		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";	
 		
 		return $vs_buf;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 */
+	function caProcessBottomLineTemplate($po_request, $pa_placement, $pr_res, $pa_options=null) {
+		global $g_ui_units_pref, $g_ui_locale;
+		
+		if (!isset($pa_placement['settings']['bottom_line']) || !$pa_placement['settings']['bottom_line']) { return null; }
+		if (!$pr_res) { return null; }
+		
+		$vs_template = $pa_placement['settings']['bottom_line'];
+		$vs_bundle_name = $pa_placement['bundle_name'];
+		
+		$pn_page_start = caGetOption('pageStart', $pa_options, 0);
+		$pn_page_end = caGetOption('pageEnd', $pa_options, $pr_res->numHits());
+		
+		if (($vn_current_index = $pr_res->currentIndex()) < 0) { $vn_current_index = 0; }
+		$pr_res->seek(0);
+		
+		$o_dm = Datamodel::load();
+		
+		$va_tmp = explode(".", $vs_bundle_name);
+		if (!($t_instance = $o_dm->getInstanceByTableName($va_tmp[0], true))) {
+			return null;
+		}
+		if (!method_exists($t_instance, "_getElementDatatype") || (is_null($vn_datatype = $t_instance->_getElementDatatype($va_tmp[1])))) {
+			return null;
+		}
+		
+		
+		if (!($vs_user_currency = $po_request->user ? $po_request->user->getPreference('currency') : 'USD')) {
+			$vs_user_currency = 'USD';
+		}
+	
+		// Parse out tags and optional sub-elements from template
+		//		we have to pull each sub-element separately
+		//
+		//		Ex. 	^SUM:valuation = sum of "valuation" sub-element
+		//				^SUM = sum of primary value in non-container element
+		if (!preg_match("!(\^[A-Z]+[\:]{0,1}[A-Za-z0-9\_\-]*)!", $vs_template, $va_tags)) {
+			return $vs_template;
+		}
+
+		$va_tags_to_process = array();
+		$va_subelements_to_process = array();
+		
+		if ($vn_datatype == 0) {	// container
+			foreach($va_tags as $vs_raw_tag) {
+				$va_tmp = explode(":", $vs_raw_tag);
+				$vs_tag = $va_tmp[0];
+				if (sizeof($va_tmp) == 2) {
+					$vs_subelement = $va_tmp[1];
+				} else {
+					continue;
+				}
+			
+				$va_tags_to_process[$vs_raw_tag] = true;
+				$va_subelements_to_process["{$vs_bundle_name}.{$vs_subelement}"] = $t_instance->_getElementDatatype($vs_subelement);
+			}
+		} else {
+			$va_tmp = explode(".", $vs_bundle_name);
+			if (sizeof($va_tmp) == 2) { $vs_bundle_name .= ".".array_pop($va_tmp); }
+			$va_subelements_to_process = array($vs_bundle_name => $vn_datatype);
+		}
+	
+		$vn_c = 0;
+		$vn_page_len = 0;
+		$vb_has_timecode = false;
+		
+		$vn_min = $vn_max = null;
+		$vn_page_min = $vn_page_max = null;
+		
+		$va_tag_values = array();
+		while($pr_res->nextHit()) {
+			foreach($va_subelements_to_process as $vs_subelement => $vn_subelement_datatype) {
+				if (!is_array($va_tag_values[$vs_subelement])) {
+					$va_tag_values[$vs_subelement]['SUM'] = 0;
+					$va_tag_values[$vs_subelement]['PAGESUM'] = 0;
+					$va_tag_values[$vs_subelement]['MIN'] = null;
+					$va_tag_values[$vs_subelement]['PAGEMIN'] = null;
+					$va_tag_values[$vs_subelement]['MAX'] = null;
+					$va_tag_values[$vs_subelement]['PAGEMAX'] = null;
+					$va_tag_values[$vs_subelement]['AVG'] = 0;
+					$va_tag_values[$vs_subelement]['PAGEAVG'] = 0;
+				}
+			
+				switch($vn_subelement_datatype) {
+					case 2:		// date range
+				
+						$vs_value = $pr_res->get($vs_subelement);
+						break;
+					case 6:		// currency
+						$va_values = $pr_res->get($vs_subelement, array('returnAsDecimalWithCurrencySpecifier' => true, 'returnAsArray' => true));
+						
+						if(is_array($va_values)) {
+							foreach($va_values as $vs_value) {
+								$vn_value = (float)caConvertCurrencyValue($vs_value, $vs_user_currency, array('numericValue' => true));
+						
+								$va_tag_values[$vs_subelement]['SUM'] += $vn_value;
+								if (is_null($va_tag_values[$vs_subelement]['MIN']) || ($vn_value < $va_tag_values[$vs_subelement]['MIN'])) { $va_tag_values[$vs_subelement]['MIN'] = $vn_value; }
+								if (is_null($va_tag_values[$vs_subelement]['MAX']) || ($vn_value > $va_tag_values[$vs_subelement]['MAX'])) { $va_tag_values[$vs_subelement]['MAX'] = $vn_value; }
+					
+								if (($vn_c >= $pn_page_start) && ($vn_c <= $pn_page_end)) {
+									$va_tag_values[$vs_subelement]['PAGESUM'] += $vn_value;
+									if (is_null($va_tag_values[$vs_subelement]['PAGEMIN']) || ($vn_value < $va_tag_values[$vs_subelement]['PAGEMIN'])) { $va_tag_values[$vs_subelement]['PAGEMIN'] = $vn_value; }
+									if (is_null($va_tag_values[$vs_subelement]['PAGEMAX']) || ($vn_value > $va_tag_values[$vs_subelement]['PAGEMAX'])) { $va_tag_values[$vs_subelement]['PAGEMAX'] = $vn_value; }
+									$vn_page_len++;
+								}
+							}
+						}
+						break;
+					case 8:		// length
+					case 9:		// weight
+						$va_values = $pr_res->get($vs_subelement, array('returnAsDecimalMetric' => true, 'returnAsArray' => true));
+						
+						if(is_array($va_values)) {
+							foreach($va_values as $vs_value) {
+								$vn_value = (float)$vs_value;
+								$va_tag_values[$vs_subelement]['SUM'] += $vn_value;
+								if (is_null($va_tag_values[$vs_subelement]['MIN']) || ($vn_value < $va_tag_values[$vs_subelement]['MIN'])) { $va_tag_values[$vs_subelement]['MIN'] = $vn_value; }
+								if (is_null($va_tag_values[$vs_subelement]['MAX']) || ($vn_value > $va_tag_values[$vs_subelement]['MAX'])) { $va_tag_values[$vs_subelement]['MAX'] = $vn_value; }
+					
+								if (($vn_c >= $pn_page_start) && ($vn_c <= $pn_page_end)) {
+									$va_tag_values[$vs_subelement]['PAGESUM'] += $vn_value;
+									if (is_null($va_tag_values[$vs_subelement]['PAGEMIN']) || ($vn_value < $va_tag_values[$vs_subelement]['PAGEMIN'])) { $va_tag_values[$vs_subelement]['PAGEMIN'] = $vn_value; }
+									if (is_null($va_tag_values[$vs_subelement]['PAGEMAX']) || ($vn_value > $va_tag_values[$vs_subelement]['PAGEMAX'])) { $va_tag_values[$vs_subelement]['PAGEMAX'] = $vn_value; }
+									$vn_page_len++;
+								}
+							}
+						}
+						break;
+					case 10:	// timecode
+						$va_values = $pr_res->get($vs_subelement, array('returnAsDecimal' => true, 'returnAsArray' => true));
+						
+						if(is_array($va_values)) {
+							foreach($va_values as $vn_value) {
+								$va_tag_values[$vs_subelement]['SUM'] += $vn_value;
+								if (is_null($vn_min) || ($vn_value < $vn_min)) { $vn_min = $vn_value; }
+								if (is_null($vn_max) || ($vn_value > $vn_max)) { $vn_max = $vn_value; }
+					
+								if (($vn_c >= $pn_page_start) && ($vn_c <= $pn_page_end)) {
+									$va_tag_values[$vs_subelement]['PAGESUM'] += $vn_value;
+									if (is_null($vn_page_min) || ($vn_value < $vn_page_min)) { $vn_page_min = $vn_value; }
+									if (is_null($vn_page_max) || ($vn_value > $vn_page_max)) { $vn_page_max = $vn_value; }
+									$vn_page_len++;
+								}
+							}
+						}
+						$vb_has_timecode = true;
+						break;
+					case 11:	// integer
+					case 12:	// numeric (decimal)
+					default:
+						$va_values = $pr_res->get($vs_subelement, array('returnAsArray' => true));
+						
+						if(is_array($va_values)) {
+							foreach($va_values as $vs_value) {
+								$vn_value = (float)$vs_value;
+								$va_tag_values[$vs_subelement]['SUM'] += $vn_value;
+								if (is_null($vn_min) || ($vn_value < $vn_min)) { $vn_min = $vn_value; }
+								if (is_null($vn_max) || ($vn_value > $vn_max)) { $vn_max = $vn_value; }
+					
+								if (($vn_c >= $pn_page_start) && ($vn_c <= $pn_page_end)) {
+									$va_tag_values[$vs_subelement]['PAGESUM'] += $vn_value;
+									if (is_null($vn_page_min) || ($vn_value < $vn_page_min)) { $vn_page_min = $vn_value; }
+									if (is_null($vn_page_max) || ($vn_value > $vn_page_max)) { $vn_page_max = $vn_value; }
+									$vn_page_len++;
+								}
+							}
+						}
+						break;
+					default:
+						break(2);
+				}
+			}			
+			$vn_c++;
+		}
+		
+		if ($vb_has_timecode) {			
+			$o_tcp = new TimecodeParser();
+			$o_config = Configuration::load();
+			if (!($vs_timecode_format = $o_config->get('timecode_output_format'))) { $vs_timecode_format = 'HOURS_MINUTES_SECONDS'; }
+		}
+		
+		// Post processing
+		foreach($va_subelements_to_process as $vs_subelement => $vn_subelement_datatype) {
+			switch($vn_subelement_datatype) {
+				case 6:		// currency
+					$va_tag_values[$vs_subelement]['PAGEAVG'] = ($vn_page_len > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['PAGESUM']/$vn_page_len) : 0;
+					$va_tag_values[$vs_subelement]['AVG'] = ($vn_c > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['SUM']/$vn_c) : "0.00";
+					
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						$va_tag_values[$vs_subelement][$vs_tag] = "{$vs_user_currency} ".$va_tag_values[$vs_subelement][$vs_tag];
+					}
+					
+					break;
+				case 8:		// length
+					$va_tag_values[$vs_subelement]['PAGEAVG'] = ($vn_page_len > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['PAGESUM']/$vn_page_len) : 0;
+					$va_tag_values[$vs_subelement]['AVG'] = ($vn_c > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['SUM']/$vn_c) : "0.00";
+					
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						$vo_measurement = new Zend_Measure_Length((float)$vn_val, 'METER', $g_ui_locale);
+						$va_tag_values[$vs_subelement][$vs_tag] = $vo_measurement->convertTo(($g_ui_units_pref == 'metric') ? Zend_Measure_Length::METER :  Zend_Measure_Length::FEET, 4);
+					}
+					
+					break;
+				case 9:		// weight
+					$va_tag_values[$vs_subelement]['PAGEAVG'] = ($vn_page_len > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['PAGESUM']/$vn_page_len) : 0;
+					$va_tag_values[$vs_subelement]['AVG'] = ($vn_c > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['SUM']/$vn_c) : "0.00";
+					
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						$vo_measurement = new Zend_Measure_Length((float)$vn_val, 'KILOGRAM', $g_ui_locale);
+						$va_tag_values[$vs_subelement][$vs_tag] = $vo_measurement->convertTo(($g_ui_units_pref == 'metric') ? Zend_Measure_Weight::KILOGRAM :  Zend_Measure_Weight::POUND, 4);
+					}
+					
+					break;
+				case 10:	// timecode
+					$va_tag_values[$vs_subelement]['PAGEAVG'] = ($vn_page_len > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['PAGESUM']/$vn_page_len) : 0;
+					$va_tag_values[$vs_subelement]['AVG'] = ($vn_c > 0) ? sprintf("%1.2f", $va_tag_values[$vs_subelement]['SUM']/$vn_c) : 0;
+					
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						if (!$vb_has_timecode) { $va_tag_values[$vs_subelement][$vs_tag] = ''; continue; }
+						$o_tcp->setParsedValueInSeconds($vn_val);
+						$va_tag_values[$vs_subelement][$vs_tag] = $o_tcp->getText($vs_timecode_format); 
+					}
+					
+					break;
+				case 11:	// integer
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						$va_tag_values[$vs_subelement][$vs_tag] = (int)$va_tag_values[$vs_subelement][$vs_tag];
+					}
+					
+					break;
+				case 12:	// numeric (decimal)
+					foreach($va_tag_values[$vs_subelement] as $vs_tag => $vn_val) {
+						$va_tag_values[$vs_subelement][$vs_tag] = (float)$va_tag_values[$vs_subelement][$vs_tag];
+					}
+					
+					break;
+			}
+		}
+		
+		// Restore current position of search result
+		$pr_res->seek($vn_current_index);
+		
+		foreach($va_tag_values as $vs_subelement => $va_tag_data) {
+			foreach($va_tag_data as $vs_tag => $vs_tag_value) {
+				if ($vs_subelement == $vs_bundle_name) {
+					$vs_template = str_replace("^{$vs_tag}", $vs_tag_value, $vs_template);
+				} else {
+					$va_tmp = explode(".", $vs_subelement);
+					$vs_template = str_replace("^{$vs_tag}:".array_pop($va_tmp), $vs_tag_value, $vs_template);
+				}
+			}
+		}
+		
+		return $vs_template;
 	}
 	# ------------------------------------------------------------------
 ?>

@@ -79,13 +79,17 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.type_id') == 30) {
-					$vs_label_artist	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'publisher'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.object_dates.object_date")."</p>";
+					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author'))."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
+					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.publication_description")."</p>";
+					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.call_number")."</p>";
+					$vs_label_status 	= "<p>".$qr_res->get("ca_objects.purchase_status")."</p>";
 					$vs_idno_detail_link 	= "";
+					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 
 				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.object_dates.object_date")."</p>";
+					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.creation_date")."</p>";
 					$vs_idno_detail_link 	= "";				
 				}else {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
@@ -106,7 +110,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}
+					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_library_info}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
