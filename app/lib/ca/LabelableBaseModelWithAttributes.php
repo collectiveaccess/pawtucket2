@@ -359,6 +359,7 @@
 		 *			OR						= find rows that match any criteria in $pa_values['preferred_labels']/$pa_values['nonpreferred_labels']
 		 *
 		 *			The default is AND
+	 	 *		returnDeleted 				= returned deleted rows [Default is false]
 		 *
 		 * @return mixed Depending upon the returnAs option setting, an array, subclass of LabelableBaseModelWithAttributes or integer may be returned.
 		 */
@@ -369,6 +370,8 @@
 	
 			$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 			$ps_label_boolean = caGetOption('labelBoolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
+		
+			$pb_return_deleted = caGetOption('returnDeleted', $pa_options, false);
 		
 			$vs_table = get_called_class();
 			$t_instance = new $vs_table;
@@ -497,7 +500,7 @@
 				}
 			}
 		
-			$vs_deleted_sql = ($t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0) AND " : '';
+			$vs_deleted_sql = (!$pb_return_deleted && $t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0) AND " : '';
 			$vs_sql = "SELECT * FROM {$vs_label_table}";
 			$vs_sql .= " INNER JOIN {$vs_table} ON {$vs_label_table}.{$vs_table_pk} = {$vs_table}.{$vs_table_pk} ";
 			$vs_sql .=" WHERE {$vs_deleted_sql} ".join(" {$ps_boolean} ", $va_label_sql);

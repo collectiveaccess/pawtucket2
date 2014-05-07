@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/DefaultController.php
+ * controllers/CollectionController.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,27 +26,28 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/Error.php"); 
+	require_once(__CA_LIB_DIR__."/ca/BasePluginController.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
+ 	require_once(__CA_LIB_DIR__.'/ca/Search/CollectionSearch.php');
+ 	require_once(__CA_MODELS_DIR__.'/ca_collections.php');
  
- 	class DefaultController extends ActionController {
+ 	class CollectionController extends BasePluginController {
  		# -------------------------------------------------------
  		 
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			caSetPageCSSClasses(array("staticPage"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
+ 			caSetPageCSSClasses(array("findingaid"));
  		}
  		# -------------------------------------------------------
- 		function __call($ps_method, $pa_path) {
- 			array_unshift($pa_path[0], $ps_method);
- 			
- 			$this->render(join("/", $pa_path[0]).".php", false);
+ 		/**
+ 		 *
+ 		 */ 
+ 		public function Index() {
+ 			$this->view->setVar('t_collection', new ca_collections());
+ 			$this->render("index_html.php");
  		}
  		# ------------------------------------------------------
  	}

@@ -36,51 +36,31 @@
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 
-				{{{<ifcount min="1" code="ca_objects.idno"><div class="unit">^ca_objects.idno</div></ifcount>}}}				
+				{{{<ifdef min="1" code="ca_objects.idno"><div class="unit"><span class='metaTitle'>ID: </span><span class='meta'>^ca_objects.idno</span></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.object_dates.object_date"><div class='unit'>^ca_objects.object_dates.object_date</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class='unit'>^ca_objects.dimensions.display_dimensions ^ca_objects.dimensions.Type</div></ifdef>}}}
 				
 				<!-- archives -->
 <?php
-			if ($t_object->get('ca_objects.type_id') == 25) {		
+			if ($t_object->get('ca_objects.type_id') == 25 | $t_object->get('ca_objects.type_id') == 26) {		
 				print '{{{<ifcount min="1" relativeTo="ca_collections" code="ca_collections.preferred_labels"><div class="unit"><span class="metaTitle">Parent Collection: </span><span class="meta"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></span></div></ifcount>}}}';				
 			}
-?>				
+?>				 
 				{{{<ifdef code="ca_objects.image_technique"><div class='unit'><span class='metaTitle'>Technique: </span><span class='meta'>^ca_objects.image_technique</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.photographic_materials"><div class='unit'><span class='metaTitle'>Materials: </span><span class='meta'>^ca_objects.photographic_materials</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.caption_annotation"><div class='unit'><span class='metaTitle'>Caption/Annotation: </span><span class='meta'>^ca_objects.caption_annotation</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.format_moving"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>^ca_objects.format_moving</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.audio_format"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>^ca_objects.audio_format</span></div></ifdef>}}}
+
 				{{{<ifdef code="ca_objects.format_ephemera"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>^ca_objects.format_ephemera</span></div></ifdef>}}}
-				
-				{{{<ifcount min="1" relativeTo="ca_entities" restrictToRelationshipTypes="publisher"><div class='unit'><span class='metaTitle'>Publisher: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher">^ca_entities.preferred_labels</unit></span></div></ifcount>}}}
+
+				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="creator"><div class='unit'><span class='metaTitle'>Creator: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}				
+				{{{<ifcount min="1" code="ca_entities" restrictToRelationshipTypes="publisher"><div class='unit'><span class='metaTitle'>Publisher: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}
 				
 				{{{<ifdef code="ca_objects.dc_date.dc_dates_value"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'>^ca_objects.dc_date.dc_dates_value</span></div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_objects.rights"><div class='unit'><span class='metaTitle'>Rights: </span><span class='meta'><unit delimiter="<br/>">^ca_objects.rights</unit></span></div></ifcount>}}}
-				
-				<!-- library-->
-<?php
-			if ($t_object->get('ca_objects.type_id') == 30) {
-?>				
-				{{{<ifdef code="ca_objects.preferred_labels"><div class='unit wide'><span class='metaHeader'>Title </span><span >^ca_objects.preferred_labels</span></div></ifdef>}}}				
-				{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Variant Title </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.call_number"><div class='unit wide'><span class='metaHeader'>Call Number </span><span>^ca_objects.call_number</span></div></ifdef>}}}
-				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToTypes="ind" min="1" ><div class='unit wide'><span class='metaHeader'>Main Entry - Personal Name </span><span ><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><l>^ca_entities.preferred_labels.name (^ca_entities.typename)</l></unit></span></div></ifcount>}}}
-				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToTypes="org" min="1" ><div class='unit wide'><span class='metaHeader'>Main Entry - Corporate Name </span><span ><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><l>^ca_entities.preferred_labels.name (^ca_entities.typename)</l></unit></span></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.publication_description"><div class='unit wide'><span class='metaHeader'>Publication and Distribution Information </span><span>^ca_objects.publication_description</span></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.ISBN"><div class='unit wide'><span class='metaHeader'>ISBN </span><span>^ca_objects.ISBN</span></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.altISBN"><div class='unit wide'><span class='metaHeader'>Alternate ISBN </span><span>^ca_objects.altISBN</span></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.physical_description"><div class='unit wide'><span class='metaHeader'>Physical Description </span><span>^ca_objects.physical_description</span></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.edition_statment"><div class='unit wide'><span class='metaHeader'>Edition Statement </span><span>^ca_objects.edition_statment</span></div></ifdef>}}}
-				{{{<ifcount min="1" code="ca_objects.language"><div class='unit wide'><span class='metaHeader'>Languages </span><span><unit delimiter="<br/>">^ca_objects.language</unit></span></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.general_notes"><div class='unit wide'><span class='metaHeader'>General Notes </span><span>^ca_objects.general_notes</span></div></ifdef>}}}
-				{{{<ifcount min="1" code="ca_objects.lcsh_terms"><div class='unit wide'><span class='metaHeader'>Library of Congress Subject Headings </span><span><unit delimiter="<br/>">^ca_objects.lcsh_terms</unit></span></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.copy_number"><div class='unit wide'><span class='metaHeader'>Copy Number </span><span>^ca_objects.copy_number</span></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.purchase_status"><div class='unit wide'><span class='metaHeader'>Status </span><span>^ca_objects.purchase_status</span></div></ifdef>}}}
-
-<?php
-			}
-?>		
+						
 				<hr>
 				
 				{{{<ifdef code="ca_objects.acquired"><div class='unit'><span class='metaTitle'>Acquired: </span><span class='meta'>^ca_objects.acquired</span></div></ifdef>}}}
@@ -96,12 +76,12 @@
 				{{{<ifcount min="1" code="ca_occurrences.preferred_labels" restrictToTypes="exhibition"><div class='unit wide'><span class='metaHeader'>Exhibition </span><span ><unit delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span >^ca_objects.literature</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.exhibition_history"><div class='unit wide'><span class='metaHeader'>Exhibition History</span><span >^ca_objects.exhibition_history</span></div></ifdef>}}}
-
-				<!-- archives -->	
+				
+				<!-- archives -->
+				
+				{{{<ifdef code="ca_objects.moving_description"><div class='unit wide'><span class='metaHeader'>Description: </span><span>^ca_objects.moving_description</span></div></ifdef>}}}
+	
 <?php
-				if (($t_object->get('ca_objects.type_id') == 25) && ($t_object->get('ca_objects.description') != "")) {
-					print "<div class='unit wide'><span class='metaHeader'>Description</span><span>".$t_object->get('ca_objects.description')."</span></div>";
-				}
 				
 				/*  library */
 				

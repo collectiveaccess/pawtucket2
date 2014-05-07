@@ -51,6 +51,10 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
  			$this->opo_config = caGetSetsConfig();
  			caSetPageCSSClasses(array("sets"));
+ 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
+            }
  		}
  		# -------------------------------------------------------
  		function Index() {
