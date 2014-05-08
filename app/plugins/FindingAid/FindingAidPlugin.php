@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * FindingaidPlugin.php : 
+ * FindingAidPlugin.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,12 +26,12 @@
  * ----------------------------------------------------------------------
  */
  
-	class FindingaidPlugin extends BaseApplicationPlugin {
+	class FindingAidPlugin extends BaseApplicationPlugin {
 		# -------------------------------------------------------
 		public function __construct($ps_plugin_path) {
 			$this->description = _t('Provides a finding-aid view for your Pawtucket installation');
 			
-			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/findingaids.conf');
+			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
 			parent::__construct();
 		}
 		# -------------------------------------------------------

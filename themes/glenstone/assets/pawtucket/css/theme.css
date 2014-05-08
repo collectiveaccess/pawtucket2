@@ -315,6 +315,12 @@ p.artist.dark {
 p.artist.lower {
 	text-transform:none;
 }
+p.artist.dark {
+	color:#333;
+}
+p.artist.lower {
+	text-transform:none;
+}
 .archivesResult a, .artworksResult a, .libraryResult a{
 	color: #777;
 	text-decoration:none;

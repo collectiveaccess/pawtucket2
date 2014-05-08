@@ -698,6 +698,10 @@ a.browseRemoveFacet img {
 	border:2px solid #EDEDED;
 	width:100%;
 	height:80px;
+	text-align:center;
+}
+.lbSetThumbPlaceholder i{
+	margin-top:25px;
 }
 .lbSetImgPlaceholder{
 	background-color: #F5F5F5;
@@ -743,6 +747,9 @@ a.browseRemoveFacet img {
 .lbSetItemComment textarea, .lbSetComment textarea{
 	height:55px;
 	margin-bottom:5px;
+}
+.lbTimelineContainer{
+	min-height:500px;
 }
 /* --------------------------------- */
 /* front page */
