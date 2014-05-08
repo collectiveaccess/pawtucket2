@@ -850,6 +850,7 @@ a.browseRemoveFacet img {
 	color:#dddddd;
 	padding:0px;
 	margin:10px 0px 10px 0px;
+	clear:both;
 }
 .detail {
 	color:#454545;
@@ -877,6 +878,17 @@ a.browseRemoveFacet img {
 	float:left;
 	text-transform:uppercase;
 	color:#333;
+}
+.detail .detailObjectsResult .metaTitle {
+	width:100%;
+	padding: 5px 0px 5px 0px;
+	display:block;
+	font-weight:bold;
+}
+.detail .detailObjectsResult .meta {
+	width:100%;
+	display:block;
+	padding-bottom:10px;
 }
 .detail H6 a{
 	color:#59b4de;
@@ -992,7 +1004,7 @@ a.browseRemoveFacet img {
 .detail .detailObjectsResult  {
 	float:left;
 	width:150px;
-	height:145px;
+	height:245px;
 	margin:10px;
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
@@ -1003,7 +1015,9 @@ a.browseRemoveFacet img {
 	overflow:hidden;
 }
 .detail .detailObjectsResult a  {
-	color:#454545;
+	color: #59b3cd;
+	font-weight: bold;
+	line-height: 1.5em;
 }
 .detail .detailObjectsResult img {
 	width:100%;
@@ -1238,6 +1252,7 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* multiSearch s */
 /* --------------------------------- */
+
 .multisearch {
 	/*padding:0px 30px 0px 25px;*/
 }
@@ -1245,6 +1260,10 @@ a.browseRemoveFacet img {
 	margin:0px;
 	padding:0px;
 	text-transform:none;
+}
+.multisearch hr {
+	margin-top:5px;
+	margin-bottom:5px;
 }
 .multisearch .pull-right ul {
 	list-style-type:none;
@@ -1257,7 +1276,7 @@ a.browseRemoveFacet img {
 	padding-right:2px;
 }
 .multisearch .blockResults {
-	height:170px;
+	height:192px;
 	margin-bottom:15px;
 	overflow:hidden;
 	clear:both;
@@ -1296,6 +1315,10 @@ a.browseRemoveFacet img {
 	margin:10px 0px 10px 0px;
 	width:25px;
 }
+.multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
+	height:170px;
+	padding-top:70px;
+}
 .multisearch .scrollButtonNext:hover, .multisearch .scrollButtonPrevious:hover{
 	background-color:#dedede;
 	cursor:pointer;
@@ -1307,7 +1330,7 @@ a.browseRemoveFacet img {
 .multisearch .objectsResult, .multisearch .collectionsResult  {
 	float:left;
 	width:150px;
-	height:145px;
+	height:170px;
 	margin:10px;
 	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);

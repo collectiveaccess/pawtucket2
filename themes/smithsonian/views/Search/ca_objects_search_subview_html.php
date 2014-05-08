@@ -54,6 +54,8 @@
 				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>'); ?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 				<br/><?php print $qr_results->get('ca_objects.idno'); ?>
+				<hr>
+				<?php print "Part of: ".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

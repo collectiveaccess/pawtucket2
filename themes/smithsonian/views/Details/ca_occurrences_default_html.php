@@ -89,21 +89,93 @@
 		{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='metaTitle'>Distribution Status</span></ifcount>}}}
 			{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='meta'><unit delimiter="<br/>"><div>^ca_occurrences.distribution_status.distribution_list, Expires ^ca_occurrences.distribution_status.distribution_date</div></unit></span></ifcount>}}}									
 		
-		{{{<ifcount code="ca_objects" min="2">
+<?php
+			$va_object_ids = $t_occurrence->get('ca_objects.object_id', array('returnAsArray' => true));
+			
+			if (sizeof($va_object_ids) > 0){
+			
+			$t_object = new ca_objects();
+			$vo_result = $t_object->makeSearchResult("ca_objects", $va_object_ids);
+?>
+			<hr>
 			<div id="detailRelatedObjects">
-				<H6>Related Objects <a href="#">view all</a></H6>
+				<H6>Related Objects</H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
 					<!-- Carousel -->
 					<div class="jcarousel">
 						<ul>
-							<unit relativeTo="ca_objects" delimiter=" "><li><div class='detailObjectsResult'><l>^ca_object_representations.media.widepreview</l><br/><l>^ca_objects.preferred_labels.name</l></div></li><!-- end detailObjectsBlockResult --></unit>
+<?php
+					while ($vo_result->nextHit()) {
+?>						
+							<li><div class='detailObjectsResult'>
+<?php						
+						print "<p>".$vo_result->get('ca_objects.preferred_labels', array('returnAsLink' => true))."</p>";
+						if ($vo_result->get('ca_objects.generation_video', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Generation</span><span class='meta'>".$vo_result->get('ca_objects.generation_video', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.generation_supporting', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Generation</span><span class='meta'>".$vo_result->get('ca_objects.generation_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.supporting_type')) {
+							print "<div><span class='metaTitle'>Type</span><span class='meta'>".$vo_result->get('ca_objects.supporting_type', array('convertCodesToDisplayText' => true))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.idno')) {
+							print "<div><span class='metaTitle'>Identifier</span><span class='meta'>".$vo_result->get('ca_objects.idno')."</span></div>";
+						}	
+						if ($vo_result->get('ca_storage_locations.preferred_labels')) {
+							print "<div><span class='metaTitle'>Storage Location</span><span class='meta'>".$vo_result->get('ca_storage_locations.preferred_labels', array('delimiter' => ', '))."</span></div>";
+						}											
+						if ($vo_result->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Format</span><span class='meta'>".$vo_result->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.physical', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Format</span><span class='meta'>".$vo_result->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.digital_moving_image', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Format</span><span class='meta'>".$vo_result->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.digital_supporting', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Format</span><span class='meta'>".$vo_result->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.carrier', array('excludeValues' => array('not_specified'))) != "") {
+							print "<div><span class='metaTitle'>Carrier</span><span class='meta'>".$vo_result->get('ca_objects.carrier', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.date')) {
+							print "<div><span class='metaTitle'>Date</span><span class='meta'>".$vo_result->get('ca_objects.date', array('delimiter' => ', '))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.description')) {
+							print "<div><span class='metaTitle'>Description</span><span class='meta'>".$vo_result->get('ca_objects.description', array('delimiter' => ', '))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.notes')) {
+							print "<div><span class='metaTitle'>Notes</span><span class='meta'>".$vo_result->get('ca_objects.notes', array('delimiter' => ', '))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.technicalNotes')) {
+							print "<div><span class='metaTitle'>Technical Notes</span><span class='meta'>".$vo_result->get('ca_objects.technicalNotes', array('delimiter' => ', '))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.rights')) {
+							print "<div><span class='metaTitle'>Rights</span><span class='meta'>".$vo_result->get('ca_objects.rights', array('delimiter' => ', '))."</span></div>";
+						}
+						if ($vo_result->get('ca_objects.alt_modes')) {
+							print "<div><span class='metaTitle'>Alternate Modes</span><span class='meta'>".$vo_result->get('ca_objects.alt_modes', array('delimiter' => ', '))."</span></div>";
+						}	
+						if ($vo_result->get('ca_objects.color')) {
+							print "<div><span class='metaTitle'>Color</span><span class='meta'>".$vo_result->get('ca_objects.color', array('delimiter' => ', '))."</span></div>";
+						}					
+?>						
+							</div></li>
+<?php
+					}
+?>							
 						</ul>
 					</div><!-- end jcarousel -->
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
+<?php			
+				}	
+?>			
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
@@ -144,21 +216,7 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}
-			</div><!-- end col -->
-		</div><!-- end row -->
-		<div class="row">
-			
-			<div class='col-md-6 col-lg-6'>
-				{{{<ifdef code="ca_occurrences.notes"><H6>About</H6>^ca_occurrences.notes<br/></ifdef>}}}
-				
-				
-
-			</div><!-- end col -->
-			<div class='col-md-6 col-lg-6'>
-				{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
-				
-
+			</script>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
