@@ -753,6 +753,9 @@ a.browseRemoveFacet img {
 	height:55px;
 	margin-bottom:5px;
 }
+.lbTimelineContainer{
+	min-height:500px;
+}
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */

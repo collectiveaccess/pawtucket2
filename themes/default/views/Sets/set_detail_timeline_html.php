@@ -31,9 +31,9 @@
 	$t_set = $this->getVar("set");
 	
 ?>
-	<div id="timeline-embed" style="width: 700px; height:500px;">
+	<div class="lbTimelineContainer"><div id="timeline-embed" style="width: 95%; height:500px;">
 
-	</div>
+	</div></div>
 	
 	<br style="clear: both;"/>
 	
