@@ -606,7 +606,7 @@ a.browseRemoveFacet img {
 	position:relative;
 	line-height:1.2em;
 	font-size:12px;
-	z-index:100;
+	z-index:1;
 }
 .lbItem:hover{
 	position:absolute;
@@ -635,6 +635,9 @@ a.browseRemoveFacet img {
 	padding:0px 15px 15px 15px;
 	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);;
+}
+.lbItem:hover .lbExpandedInfo{
+	display:inline;
 }
 .lbSetExpandedInfo{
 	margin:0px -15px 0px -15px;
@@ -752,9 +755,6 @@ a.browseRemoveFacet img {
 .lbSetItemComment textarea, .lbSetComment textarea{
 	height:55px;
 	margin-bottom:5px;
-}
-.lbTimelineContainer{
-	min-height:500px;
 }
 /* --------------------------------- */
 /* front page */

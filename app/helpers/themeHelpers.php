@@ -503,7 +503,8 @@
 			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 		}
 		$vs_set_item_display = "";
-		$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
+		$vs_set_item_display .= "<div class='lbItem'><div class='lbItemContent'>\n";
+		#$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
 		if($va_set_item["representation_tag_medium"]){
 			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_medium"]."</div>", '', 'ca_objects', $va_set_item["row_id"]);
 		}else{
