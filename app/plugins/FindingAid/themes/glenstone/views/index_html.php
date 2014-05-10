@@ -1,21 +1,17 @@
 <?php
 	$t_collection = $this->getVar('t_collection');
+	$ps_template = "<div><l>^ca_collections.preferred_labels.name (^ca_collections.idno</l>)<br/><div style='font-size:9px; width: 500px; margin-left: 25px;'>^ca_collections.abstract  [^ca_collections.collection_id]</div></div><br/>";
 	
-	$o_search = new CollectionSearch();
-	$qr_res = $o_search->search("*", array('sort' =>'ca_collections.preferred_labels.name'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
 	
-	while($qr_res->nextHit()) {
-		print $qr_res->get('ca_collections.preferred_labels.name')."<br>\n";
+	while($qr_top_level_collections->nextHit()) {
+		$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id');
+		//print $qr_top_level_collections->get('ca_collections.preferred_labels.name')."<br>\n";
 		
-		$va_ids = $t_collection->getHierarchyAsList($qr_res->get('ca_collections.collection_id'), array('idsOnly' => false, 'includeSelf' => false));
+		$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id));
 		
-		print_R($va_ids);
-		//$qr_sub_collections = caMakeSearchResult('ca_collections', $va_ids);
-		//while($qr_sub_collections->nextHit()) {
-		//	print str_repeat("--", 2).$qr_sub_collections->get('ca_collections.preferred_labels.name')."<br>";
-		//}
+		foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
+			print "<div style='margin-left: ".($va_hierarchy_item['level'] * 25)."px'>{$va_hierarchy_item['display']}</div>\n";
+		}
 	}
 ?>
-
-
-ca_collections::getDisplayHierarchy($pn_collection, $ps_template, $pa_options);

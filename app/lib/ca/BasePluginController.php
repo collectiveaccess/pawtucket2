@@ -1,6 +1,6 @@
 <?php
-/* ----------------------------------------------------------------------
- * controllers/CollectionController.php
+/** ---------------------------------------------------------------------
+ * app/lib/ca/BasePluginController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -23,32 +23,59 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * @package CollectiveAccess
+ * @subpackage UI
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php"); 
-	require_once(__CA_LIB_DIR__."/ca/BasePluginController.php");
+ /**
+  *
+  */
+  
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
- 	require_once(__CA_LIB_DIR__.'/ca/Search/CollectionSearch.php');
- 	require_once(__CA_MODELS_DIR__.'/ca_collections.php');
- 
- 	class CollectionController extends BasePluginController {
+	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
+ 	
+	class BasePluginController extends ActionController {
+		# -------------------------------------------------------
+		/**
+		 * Application datamodel
+		 */
+ 		protected $datamodel;
+ 		
+ 		/**
+ 		 * Plugin configuration
+ 		 */
+		protected $config;
+		
+ 		/**
+ 		 * Application configuration
+ 		 */
+		protected $appConfig;
  		# -------------------------------------------------------
- 		 
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
- 			caSetPageCSSClasses(array("findingaid"));
- 		}
+ 		#
  		# -------------------------------------------------------
  		/**
  		 *
- 		 */ 
- 		public function Index() {
- 			$this->view->setVar('t_collection', new ca_collections());
- 			$this->render("index_html.php");
+ 		 */
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			$this->datamodel = Datamodel::load();
+ 			
+ 			$this->appConfig = Configuration::load();
+ 			
+ 			$vs_plugin_name = $po_request->getModulePath();
+ 			
+ 			// Load plugin config
+ 			$this->config = Configuration::load(__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_plugin_name}.conf");
+ 		
+ 			// Load plugin view paths
+ 			if (!is_array($pa_view_paths)) { $pa_view_paths = array(); }
+ 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/".__CA_THEME__."/views";
+ 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/default/views";
+ 			
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}
- 		# ------------------------------------------------------
- 	}
- ?>
+ 		# -------------------------------------------------------
+	}
+?>
