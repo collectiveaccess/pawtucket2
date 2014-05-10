@@ -37,10 +37,11 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			if (!is_array($pa_view_paths)) { $pa_view_paths = array(); }
- 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/Findingaid/themes/glenstone/views";
- 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/Findingaid/themes/default/views";
+ 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/FindingAid/themes/glenstone/views";
+ 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/FindingAid/themes/default/views";
+ 			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			$this->config = Configuration::load(__CA_APP_DIR__."/plugins/Findingaids/conf/findingaids.conf");
+ 			$this->config = Configuration::load(__CA_APP_DIR__."/plugins/Findingaids/conf/FindingAid.conf");
  			caSetPageCSSClasses(array("findingaid"));
  		}
  		# -------------------------------------------------------
