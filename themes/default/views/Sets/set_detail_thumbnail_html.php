@@ -38,6 +38,9 @@ if($vb_write_access){
 			$("#sortable").sortable({ 
 				cursor: "move",
 				opacity: 0.8,
+				helper: 'clone',
+  				appendTo: 'body',
+ 				zIndex: 100000,
 				update: function( event, ui ) {
 					var data = $(this).sortable('serialize');
 					// POST to server using $.post or $.ajax
