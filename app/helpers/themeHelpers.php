@@ -502,6 +502,14 @@
 		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 		}
+		$vs_caption = "";
+		$vs_caption_template = $o_config->get("caption_template");
+		if($vs_caption_template){
+			$t_object = new ca_objects($va_set_item["row_id"]);
+			$vs_caption = $t_object->getWithTemplate($vs_caption_template);
+		}else{
+			$vs_caption = $va_set_item["set_item_label"];
+		}
 		$vs_set_item_display = "";
 		$vs_set_item_display .= "<div class='lbItem'><div class='lbItemContent'>\n";
 		#$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
@@ -511,7 +519,7 @@
 			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $va_set_item["row_id"]);
 		}
 		$vs_set_item_display .= "<div id='comment".$t_set_item->get("item_id")."' class='lbSetItemComment'><!-- load comments here --></div>\n";
-		$vs_set_item_display .= "<div>".$va_set_item["set_item_label"]."</div>\n";
+		$vs_set_item_display .= "<div>".$vs_caption."</div>\n";
 		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
 		$vs_set_item_display .= "<div class='lbExpandedInfo' id='lbExpandedInfo".$t_set_item->get("item_id")."'>\n<hr>\n";
 		if($vb_write_access){
