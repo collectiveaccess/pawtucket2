@@ -1704,3 +1704,20 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	margin:15px 0px 15px 0px;
 }
 
+/* ----------------- print specific styles ----------------------*/
+/* --- This overrides boostrap styles --- */
+@media print {
+  a[href]:after {
+    content: "" !important;
+  }
+  abbr[title]:after {
+    content: "" !important;
+  }
+  .navbar {
+    display: block !important;
+    border:0px;
+  }
+  .nav, .navbar form {
+  	display: none;
+  }
+}
