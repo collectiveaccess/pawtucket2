@@ -576,8 +576,10 @@ class SearchIndexer extends SearchBase {
 							$va_labels = $t_item->getPreferredDisplayLabelsForIDs(array((int)$pa_field_data[$vs_field]), array('returnAllLocales' => true));
 							
 							foreach($va_labels as $vn_label_row_id => $va_labels_per_row) {
-								foreach($va_labels_per_row as $vn_locale_id => $vs_label) {
-									$va_content[$vs_label] = true;
+								foreach($va_labels_per_row as $vn_locale_id => $va_label_list) {
+									foreach($va_label_list as $vs_label) {
+										$va_content[$vs_label] = true;
+									}
 								}
 							}
 							$va_content[$t_item->get('idno')] = true;

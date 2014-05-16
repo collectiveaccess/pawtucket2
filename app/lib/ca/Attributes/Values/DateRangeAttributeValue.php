@@ -224,7 +224,7 @@
 			return array(0 => $this->opn_start_date, 1 => $this->opn_end_date, 'start' => $this->opn_start_date, 'end' => $this->opn_end_date);
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$ps_value = trim($ps_value);
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
@@ -259,7 +259,22 @@
 					$this->postError(1970, _t('%1 must not be empty', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
 					return false;
 				} else {
-					return null;
+					
+					$o_config = Configuration::load();
+					$o_date_config = Configuration::load($o_config->get('datetime_config'));
+			
+					// Default to "undated" date for blanks
+					$vs_undated_date = '';
+					if ((bool)$o_date_config->get('showUndated')) {
+						$o_lang_config = $o_tep->getLanguageSettings();
+						$vs_undated_date = array_shift($o_lang_config->getList('undatedDate'));
+					}
+					
+					return array(
+						'value_longtext1' => $vs_undated_date,
+						'value_decimal1' => null,
+						'value_decimal2' => null
+					);
 				}
 			}
 			return array(
@@ -319,7 +334,7 @@
  			return $vs_element;
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			return $_ca_attribute_settings['DateRangeAttributeValue'];
  		}

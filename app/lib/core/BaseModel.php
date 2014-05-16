@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2013 Whirl-i-Gig
+ * Copyright 2000-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -6056,7 +6056,7 @@ class BaseModel extends BaseObject {
 	 * Fetches primary key of the hierarchy root.
 	 * DOES NOT CREATE ROOT - YOU HAVE TO DO THAT YOURSELF (this differs from previous versions of these libraries).
 	 * 
-	 * @param int $pn_hierarchy_id optional, points to record in related table containing hierarchy description
+	 * @param int $pn_hierarchy_id optional, points to record in related table containing hierarchy description for tables implementing hierarchy type __CA_HIER_TYPE_MULTI_MONO__ or __CA_HIER_TYPE_ADHOC_MONO__
 	 * @return int root id
 	 */
 	public function getHierarchyRootID($pn_hierarchy_id=null) {
@@ -6133,7 +6133,7 @@ class BaseModel extends BaseObject {
 	 *		
 	 * @return DbResult
 	 */
-	public function &getHierarchy($pn_id=null, $pa_options=null) {
+	public function getHierarchy($pn_id=null, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$vs_table_name = $this->tableName();
 		
@@ -6152,10 +6152,10 @@ class BaseModel extends BaseObject {
 			
 			$vs_hier_id_sql = "";
 			if ($vs_hier_id_fld) {
-				$vn_hierarchy_id = $this->get($vs_hier_id_fld);
+				$vn_hierarchy_id = (int)$this->get($vs_hier_id_fld);
 				if ($vn_hierarchy_id) {
 					// TODO: verify hierarchy_id exists
-					$vs_hier_id_sql = " AND (".$vs_hier_id_fld." = ".$vn_hierarchy_id.")";
+					$vs_hier_id_sql = " AND ({$vs_hier_id_fld} = {$vn_hierarchy_id})";
 				}
 			}
 			
@@ -6163,7 +6163,7 @@ class BaseModel extends BaseObject {
 			$o_db = $this->getDb();
 			$qr_root = $o_db->query("
 				SELECT $vs_hier_left_fld, $vs_hier_right_fld ".(($this->hasField($vs_hier_id_fld)) ? ", $vs_hier_id_fld" : "")."
-				FROM ".$this->tableName()."
+				FROM {$vs_table_name}
 				WHERE
 					(".$this->primaryKey()." = ?)		
 			", intval($pn_id));
@@ -6172,14 +6172,11 @@ class BaseModel extends BaseObject {
 				return null;
 			} else {
 				if ($qr_root->nextRow()) {
-					
 					$va_count = array();
 					if (($this->hasField($vs_hier_id_fld)) && (!($vn_hierarchy_id = $this->get($vs_hier_id_fld))) && (!($vn_hierarchy_id = $qr_root->get($vs_hier_id_fld)))) {
-						$this->postError(2030, _t("Hierarchy ID must be specified"), "Table->getHierarchy()");
+						$this->postError(2030, _t("Hierarchy ID must be specified"), "BaseModel->getHierarchy()");
 						return false;
 					}
-					
-					$vs_table_name = $this->tableName();
 					
 					$vs_hier_id_sql = "";
 					if ($vn_hierarchy_id) {
@@ -6195,9 +6192,9 @@ class BaseModel extends BaseObject {
 						if (isset($pa_options['additionalTableJoinType']) && ($pa_options['additionalTableJoinType'] === 'LEFT')) {
 							$ps_additional_table_join_type = 'LEFT';
 						}
-						if (is_array($va_rel = $this->getAppDatamodel()->getOneToManyRelations($this->tableName(), $ps_additional_table_to_join))) {
+						if (is_array($va_rel = $this->getAppDatamodel()->getOneToManyRelations($vs_table_name, $ps_additional_table_to_join))) {
 							// one-many rel
-							$va_sql_joins[] = "{$ps_additional_table_join_type} JOIN {$ps_additional_table_to_join} ON ".$this->tableName().'.'.$va_rel['one_table_field']." = {$ps_additional_table_to_join}.".$va_rel['many_table_field'];
+							$va_sql_joins[] = "{$ps_additional_table_join_type} JOIN {$ps_additional_table_to_join} ON {$vs_table_name}".'.'.$va_rel['one_table_field']." = {$ps_additional_table_to_join}.".$va_rel['many_table_field'];
 						} else {
 							// TODO: handle many-many cases
 						}
@@ -6266,7 +6263,7 @@ class BaseModel extends BaseObject {
 	 * 
 	 * @return array
 	 */
-	public function &getHierarchyAsList($pn_id=null, $pa_options=null) {
+	public function getHierarchyAsList($pn_id=null, $pa_options=null) {
 		$pb_ids_only 					= caGetOption('idsOnly', $pa_options, false);
 		$pn_max_levels 					= caGetOption('maxLevels', $pa_options, null, array('cast' => 'int'));
 		$ps_additional_table_to_join 	= caGetOption('additionalTableToJoin', $pa_options, null);
@@ -6333,33 +6330,25 @@ class BaseModel extends BaseObject {
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
-	 * Returns a list of primary keys comprising all child rows
+	 * Return a list of primary keys comprising all child rows
 	 * 
 	 * @param int $pn_id node to start from - default is the hierarchy root
+	 * @param array $pa_options
 	 * @return array id list
 	 */
-	public function &getHierarchyIDs($pn_id=null, $pa_options=null) {
-		if ($qr_hier = $this->getHierarchy($pn_id, $pa_options)) {
-			$va_ids = array();
-			$vs_pk = $this->primaryKey();
-			while($qr_hier->nextRow()) {
-				$va_ids[] = $qr_hier->get($vs_pk);
-			}
-			
-			return $va_ids;
-		} else {
-			return null;
-		}
+	public function getHierarchyIDs($pn_id=null, $pa_options=null) {
+		return $this->getHierarchyAsList($pn_id, array_merge($pa_options, array('idsOnly' => true)));
 	}
-	
 	# --------------------------------------------------------------------------------------------
 	/**
-	 * 
+	 * Count child rows for specified parent rows
+	 *
+	 * @param array list of primary keys for which to fetch child counts
 	 * @param array, optional associative array of options. Valid keys for the array are:
-	 *		returnDeleted = return deleted records in list (def. false)
-	 * @return DbRes
+	 *		returnDeleted = return deleted records in list [Default is false]
+	 * @return array List of counts key'ed on primary key values
 	 */
-	public function &getHierarchyChildCountsForIDs($pa_ids, $pa_options=null) {
+	public function getHierarchyChildCountsForIDs($pa_ids, $pa_options=null) {
 		if (!$this->isHierarchical()) { return null; }
 		$va_additional_table_wheres = array();
 		
@@ -6406,7 +6395,7 @@ class BaseModel extends BaseObject {
 	 * Note that this only returns direct children, *NOT* children of children and further descendents
 	 * If you need to get a chunk of the hierarchy use getHierarchy()
 	 * 
-	 * @access public
+	 * @access private
 	 * @param int optional, primary key value of a record.
 	 * 	Use this if you want to know the children of a record different than $this
 	 * @param array, optional associative array of options. Valid keys for the array are:
@@ -6416,7 +6405,7 @@ class BaseModel extends BaseObject {
 	 *		sort =
 	 * @return DbResult 
 	 */
-	public function &getHierarchyChildrenAsQuery($pn_id=null, $pa_options=null) {
+	private function _getHierarchyChildrenAsQuery($pn_id=null, $pa_options=null) {
 		$o_db = $this->getDb();
 			
 		$vs_table_name = $this->tableName();
@@ -6570,7 +6559,7 @@ class BaseModel extends BaseObject {
 		
 		if (!$pn_id) { $pn_id = $this->getPrimaryKey(); }
 		if (!$pn_id) { return null; }
-		$qr_children = $this->getHierarchyChildrenAsQuery($pn_id, $pa_options);
+		$qr_children = $this->_getHierarchyChildrenAsQuery($pn_id, $pa_options);
 		
 		
 		$va_children = array();
@@ -6604,7 +6593,7 @@ class BaseModel extends BaseObject {
 	 *		returnDeleted = return deleted records in list (def. false)
 	 * @return array 
 	 */
-	public function &getHierarchySiblings($pn_id=null, $pa_options=null) {
+	public function getHierarchySiblings($pn_id=null, $pa_options=null) {
 		$pb_ids_only = (isset($pa_options['idsOnly']) && $pa_options['idsOnly']) ? true : false;
 		
 		if (!$pn_id) { $pn_id = $this->getPrimaryKey(); }
@@ -6633,7 +6622,7 @@ class BaseModel extends BaseObject {
 			return false;
 		}
 		if (!$pn_id) { return array(); }
-		$qr_children = $this->getHierarchyChildrenAsQuery($pn_id, $pa_options);
+		$qr_children = $this->_getHierarchyChildrenAsQuery($pn_id, $pa_options);
 		
 		
 		$va_siblings = array();
@@ -6800,6 +6789,41 @@ class BaseModel extends BaseObject {
 			return null;
 		}
 	}
+	# --------------------------------------------------------------------------------------------
+	# New hierarchy API (2014)
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * 
+	 * @param string $ps_template 
+	 * @param array $pa_options
+	 * @return array
+	 */
+	public function hierarchyWithTemplate($ps_template, $pa_options=null) {
+		$vs_pk = $this->primaryKey();
+		$pn_id = caGetOption($vs_pk, $pa_options, null);
+		$va_hier = $this->getHierarchyAsList($pn_id, array_merge($pa_options, array('idsOnly' => false)));
+		
+		$va_levels = $va_ids = array();
+		foreach($va_hier as $vn_i => $va_item) {
+			$vn_id = $va_item['NODE'][$vs_pk];
+			$va_levels[$vn_i] = $va_item['LEVEL'];
+			$va_ids[] = $vn_id;
+		}
+		
+		$va_vals = caProcessTemplateForIDs($ps_template, $this->tableName(), $va_ids, array('returnAsArray'=> true));
+		
+		$va_hierarchy_data = array();
+		foreach($va_vals as $vn_i => $vs_val) {
+			$va_hierarchy_data[] = array(
+				'level' => $va_levels[$vn_i],
+				'display' => $vs_val
+			);
+		}
+		return $va_hierarchy_data;
+	}
+	# --------------------------------------------------------------------------------------------
+	# Hierarchical indices
 	# --------------------------------------------------------------------------------------------
 	public function rebuildAllHierarchicalIndexes() {
 		$vs_hier_left_fld 		= $this->getProperty("HIERARCHY_LEFT_INDEX_FLD");
@@ -10004,6 +10028,7 @@ $pa_options["display_form_field_tips"] = true;
 	 *			OR						= find rows that match any criteria in $pa_values
 	 *
 	 *			The default is AND
+	 *		returnDeleted 				= returned deleted rows [Default is false]
 	 *
 	 * @return mixed Depending upon the returnAs option setting, an array, subclass of BaseModel or integer may be returned.
 	 */
@@ -10011,7 +10036,8 @@ $pa_options["display_form_field_tips"] = true;
 		if (!is_array($pa_values) || (sizeof($pa_values) == 0)) { return null; }
 		$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
 		$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
-			
+		$pb_return_deleted = caGetOption('returnDeleted', $pa_options, false);
+		
 		$vs_table = get_called_class();
 		$t_instance = new $vs_table;
 		
@@ -10075,7 +10101,7 @@ $pa_options["display_form_field_tips"] = true;
 			}
 		}
 		if(!sizeof($va_sql_wheres)) { return null; }
-		$vs_deleted_sql = ($t_instance->hasField('deleted')) ? '(deleted = 0) AND ' : '';
+		$vs_deleted_sql = (!$pb_return_deleted && $t_instance->hasField('deleted')) ? '(deleted = 0) AND ' : '';
 		$vs_sql = "SELECT * FROM {$vs_table} WHERE {$vs_deleted_sql} (".join(" {$ps_boolean} ", $va_sql_wheres).")";
 		
 		if (isset($pa_options['transaction']) && ($pa_options['transaction'] instanceof Transaction)) {

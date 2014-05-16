@@ -1709,7 +1709,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
 		$vs_access_sql = '';
-		if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_table->hasField('access')) {
+		if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
 			$vs_access_sql = ' AND o.access IN ('.join(',', $pa_options['checkAccess']).') AND caor.access IN ('.join(',', $pa_options['checkAccess']).')';
 		}
 		$o_db = $this->getDb();
