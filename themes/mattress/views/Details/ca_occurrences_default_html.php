@@ -20,7 +20,7 @@
 		<div id='mediaArea'>
 <?php		
 
-		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
+		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true), 'checkAccess' => $va_access_values);
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div style='width:70000px'>";
@@ -77,11 +77,11 @@
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 <?php
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist')));
-	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder')));
-	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true));
+	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true), 'checkAccess' => $va_access_values);
+	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true), 'checkAccess' => $va_access_values);
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values));
+	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder'), 'checkAccess' => $va_access_values));
+	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true), 'checkAccess' => $va_access_values);
 
 
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_collections) > 0) | (sizeof($va_funders) > 0)) {
