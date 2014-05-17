@@ -1,6 +1,8 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = $this->getVar('access_values');
+
 ?>
 
 <div id="detail" class="entities">
@@ -23,7 +25,7 @@
 		
 		<div id='mediaArea'>
 <?php		
-		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
+		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
 					print "<div style='width:100000px'>";
@@ -76,10 +78,10 @@
 	
 	</div><!-- end contentArea-->
 	<?php	
-	$va_occurrences = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('mf_exhibition')));
-	$va_events = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event')));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true));
-	$va_objects = $t_item->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image')));
+	$va_occurrences = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('mf_exhibition'), 'checkAccess' => $va_access_values));
+	$va_events = $t_item->get('ca_occurrences', array('returnAsArray' => true, 'restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'checkAccess' => $va_access_values));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_objects = $t_item->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image'), 'checkAccess' => $va_access_values));
 	
 
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_objects) > 0)) {

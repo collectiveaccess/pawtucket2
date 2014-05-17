@@ -2040,8 +2040,20 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 							$va_count_vals = $qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes']));
 						}	
 						if (is_array($va_count_vals)) {
+							$va_bits = explode(".", $vs_if_code);
+							$vs_fld = array_pop($va_bits);
 							foreach($va_count_vals as $vs_count_val) {
-								if (!$vs_count_val) { continue; }
+								if (is_array($vs_count_val)) {
+									if (isset($vs_count_val[$vs_fld]) && !trim($vs_count_val[$vs_fld])) { continue; }
+									
+									$vb_is_set = false;
+									foreach($vs_count_val as $vs_f => $vs_v) {
+										if (trim($vs_v)) { $vb_is_set = true; break; }
+									}
+									if (!$vb_is_set) { continue; }
+								} else {
+									if (!trim($vs_count_val)) { continue; }
+								}
 								$vn_count++;
 							}
 						}

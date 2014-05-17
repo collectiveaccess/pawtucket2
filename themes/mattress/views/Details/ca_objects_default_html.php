@@ -42,9 +42,9 @@
 ?>				
 	</div><!-- contentArea -->
 <?php
-	$va_occurrences = $t_object->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
-	$va_entities = $t_object->get('ca_entities', array('returnAsArray' => true));
-	$va_collections = $t_object->get('ca_collections', array('returnAsArray' => true, 'restrictToTypes' => array('installation')));
+	$va_occurrences = $t_object->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_entities = $t_object->get('ca_entities', array('returnAsArray' => true), 'checkAccess' => $va_access_values);
+	$va_collections = $t_object->get('ca_collections', array('returnAsArray' => true, 'restrictToTypes' => array('installation'), 'checkAccess' => $va_access_values));
 	
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_collections) > 0)) {
 

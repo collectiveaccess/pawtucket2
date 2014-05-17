@@ -77,13 +77,21 @@
 					{{{<ifcount min='1' relativeTo='ca_entities' code='ca_entities' restrictToRelationshipTypes='source'><div class='unit'><span class='metaTitle'>Seller: </span><span class='meta'><unit relativeTo='ca_entities' delimiter='<br/>' restrictToRelationshipTypes='source'><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
 					{{{<ifcount min='1' relativeTo='ca_entities' code='ca_entities' restrictToRelationshipTypes='advisor'><div class='unit'><span class='metaTitle'>Advisor: </span><span class='meta'><unit relativeTo='ca_entities' delimiter='<br/>' restrictToRelationshipTypes='advisor'><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}";
 
-					} else {
+					} else { 
 						print "access restricted";
 					}
 ?>
 				</div>
 				<div id="Condition" class="infoBlock">
-					Condition information is forthcoming
+					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.general_condition.general_condition_value</u> (^ca_objects.general_condition.general_condition_date) Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
+					{{{<ifcount min="1" code="ca_objects.frame_condition"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.frame_condition.frame_date</u> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
+					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.glazing_condition.glazing_date</u> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
+					{{{<ifcount min="1" code="ca_objects.support_condition"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.support_condition.support_date</u> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
+					{{{<ifcount min="1" code="ca_objects.vitrine_condition"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.vitrine_condition.vitrine_date</u> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.mount_condition"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.mount_condition.mount_date</u> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.surface_condition"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.base_condition"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.base_condition.base_date</u> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
+				
 				</div>
 				<div id="Description" class="infoBlock">
 					{{{<ifcount min="1" code="ca_objects.object_dates.object_date"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'><unit delimiter="<br/>">^ca_objects.object_dates.object_date <ifdef code="ca_objects.object_dates.date_note">(^ca_objects.object_dates.date_note)</ifdef</unit></span></div></ifcount>}}}

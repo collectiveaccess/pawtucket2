@@ -1,5 +1,6 @@
 <?php
 	$t_item = $this->getVar('item');
+	$va_access_values = $this->getVar('access_values');
 ?>
 
 <div id="detail">
@@ -113,7 +114,7 @@
 	<div id='relatedInfo'>
 <?php
 	# Related Exhibitions Block
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
+	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
@@ -169,7 +170,7 @@
 	}
 
 	# Related Events Block
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
+	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_events) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Events')."</div>";
@@ -196,7 +197,7 @@
 	}
 	
 	# Related Entities Block
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related People')."</div>";
