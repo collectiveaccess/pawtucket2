@@ -115,7 +115,7 @@
 				$o_browse->reload($ps_cache_key);
 			}
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true)); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
 			// Clear criteria if required
@@ -225,8 +225,10 @@
 			}
 			
 			// remove base criteria from display list
-			foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
-				unset($va_criteria[$vs_base_facet]);
+			if (is_array($va_base_criteria)) {
+				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+					unset($va_criteria[$vs_base_facet]);
+				}
 			}
 			
 			$va_criteria_for_display = array();
