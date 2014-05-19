@@ -887,6 +887,9 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
+.detail audio{
+	width:100%;
+}
 .detail .detailMediaPlaceholder{
 	width:100%;
 	text-align:center;
@@ -997,6 +1000,43 @@ a.browseRemoveFacet img {
 	margin-bottom:5px;
 }
 
+.detail #detailAnnotations{
+	margin:20px 0px 30px 0px;
+}
+.detail .detailAnnotation{
+	height:80px;
+	width:200px;
+	padding:10px;
+	background-color:#F5F5F5;
+	margin:0px 2px 0px 2px;
+	position:relative;
+}
+.detail .detailAnnotation:hover{
+	background-color:#ABABAB;
+	color:#FFFFFF;
+}
+.detail .detailAnnotation:hover a{
+	background-color:#ABABAB;
+	color:#FFFFFF;
+}
+.detail .detailAnnotation .annotationControls{
+	position:absolute;
+	right:0px;
+	bottom:0px;
+	padding:5px;
+}
+.detail .detailAnnotation .annotationControls a{
+	color:#929292;
+	font-size:14px;
+}
+.detail .detailAnnotation:hover .annotationControls a, .detail .detailAnnotation:hover .annotationControls a:hover{
+	color:#F5F5F5;
+}
+.detail #detailAnnotations #detailScrollButtonNext, .detail #detailAnnotations #detailScrollButtonPrevious{
+	margin: 0px;
+	height:80px;
+	padding-top:30px;
+}
 
 /* --------------------------------- */
 /* browse b */

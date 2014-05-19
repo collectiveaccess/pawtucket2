@@ -575,6 +575,14 @@
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		
+		if(!is_array($pa_options)){
+			$pa_options = array();
+		}
+		$pa_access_values = caGetOption("checkAccess", $pa_options, array());
+		$vs_access_wheres = '';
+		if($pa_options['checkAccess']){
+			$vs_access_wheres = " AND ca_objects.access IN (".join(",", $pa_access_values).") AND ca_object_representations.access IN (".join(",", $pa_access_values).")";
+		}
 		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
 		$vs_pk = $t_instance->primaryKey();
 		
@@ -599,7 +607,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_access_wheres}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
 		

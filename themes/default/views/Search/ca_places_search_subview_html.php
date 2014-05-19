@@ -100,6 +100,21 @@
 				});
 			</script>
 <?php
+		}else{
+			# --- need to change sort direction to catch default setting for direction when sort order has changed
+			if($this->getVar("sortDirection") == "desc"){
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+				</script>
+<?php
+			}else{
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+				</script>
+<?php
+			}
 		}
 	}
 ?>

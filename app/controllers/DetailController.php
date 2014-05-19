@@ -81,8 +81,7 @@
  				$ps_id = (int)$va_tmp[1];
  				$vb_use_identifiers_in_urls = false;
  			}
- 			
- 			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
+ 			if (!$t_table->load($x=($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
  				// invalid id - throw error
  				die("Invalid id");
  			} 			

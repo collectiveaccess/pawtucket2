@@ -34,6 +34,7 @@
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$va_access_values = caGetUserAccessValues($this->request);
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -52,7 +53,7 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>'); ?>
+				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values)); ?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
@@ -92,6 +93,21 @@
 				});
 			</script>
 <?php
+		}else{
+			# --- need to change sort direction to catch default setting for direction when sort order has changed
+			if($this->getVar("sortDirection") == "desc"){
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+				</script>
+<?php
+			}else{
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+				</script>
+<?php
+			}
 		}
 	}
 ?>

@@ -327,7 +327,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		
+		$va_access_values = caGetUserAccessValues($po_request);
+ 		if(is_array($va_access_values) && sizeof($va_access_values)){
+ 			$pa_options["checkAccess"] = $va_access_values;
+ 		}	
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
 		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
 		
@@ -357,20 +360,31 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			
 			$va_sorts = caGetOption('sortBy', $va_block_info, null);
 			$ps_sort = null;
+			$vb_sort_changed = false;
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
  					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
 						$ps_sort = array_shift(array_values($va_sorts));
 						$va_contexts[$vs_block]->setCurrentSort($vs_sort); 
 						$va_contexts[$vs_block]->saveContext();
+						$vb_sort_changed = true;
 					} else {
 						if (isset($va_sorts[$ps_sort])) { 
 							$ps_sort = $va_sorts[$ps_sort];
 						}
 					}
  				}
+ 			}else{
+ 				$vb_sort_changed = true;
  			}
- 			
+ 			if($vb_sort_changed && ($va_sorts) && sizeof($va_sorts)){
+				# --- set the default sortDirection if available
+				$va_sort_directions = caGetOption('sortDirection', $va_block_info, null);
+				$ps_sort_key = array_search($ps_sort, $va_sorts);
+				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort_key])){
+					$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction);
+				}			
+ 			}
  			if (!($ps_sort_direction = $po_request->getParameter("{$vs_block}SortDirection", pString))) {
  				if (!($ps_sort_direction = $va_contexts[$vs_block]->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';
