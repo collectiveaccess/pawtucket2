@@ -149,11 +149,21 @@
 			//
 			// Add criteria and execute
 			//
+			
+			// Get any preset-criteria
+			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
+			
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array("*"));
+					if (is_array($va_base_criteria)) {
+						foreach($va_base_criteria as $vs_facet => $vs_value) {
+							$o_browse->addCriteria($vs_facet, $vs_value);
+						}
+					} else {
+						$o_browse->addCriteria("_search", array("*"));
+					}
 				}
 			}
 			
@@ -206,6 +216,7 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
 			}
 		
@@ -222,6 +233,12 @@
 			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
 				unset($va_criteria['_search']);
 			}
+			
+			// remove base criteria from display list
+			foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+				unset($va_criteria[$vs_base_facet]);
+			}
+			
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
