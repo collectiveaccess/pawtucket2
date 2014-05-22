@@ -441,7 +441,7 @@
 		$vs_formatted_thumbs = "";
 		switch($va_options["returnAs"]){
 			case "list":
-				$vs_formatted_thumbs = "<ul id='#detailRepresentationThumbnails'>";
+				$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
 					$vs_formatted_thumbs .= "<li".(($vn_rep_id == $pn_rep_id) ? " class='".$va_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
 				}
@@ -450,7 +450,7 @@
 			break;
 			# ---------------------------------
 			case "bsCols":
-				$vs_formatted_thumbs = "<div class='row' id='#detailRepresentationThumbnails'>";
+				$vs_formatted_thumbs = "<div class='row' id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
 					$vs_formatted_thumbs .= "<div class='".$va_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$va_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
 				}
