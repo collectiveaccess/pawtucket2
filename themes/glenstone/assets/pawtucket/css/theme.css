@@ -682,3 +682,22 @@ p.artist.lower {
 	padding-left:30px;
 	padding-right:30px;
 }
+
+/* Sets */
+
+.lbSet, .lbItem {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	border: 1px solid #ddd;
+}
+.lbExpandedInfo, .lbSetExpandedInfo {
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	position:relative;
+	padding-right:0px;
+	padding-bottom:0px;
+}
+.lbItem:hover  {
+	margin:-10px;
+	padding:20px;
+}

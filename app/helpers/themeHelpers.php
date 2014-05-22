@@ -502,15 +502,24 @@
 		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 		}
+		$vs_caption = "";
+		$vs_caption_template = $o_config->get("caption_template");
+		if($vs_caption_template){
+			$t_object = new ca_objects($va_set_item["row_id"]);
+			$vs_caption = $t_object->getWithTemplate($vs_caption_template);
+		}else{
+			$vs_caption = $va_set_item["set_item_label"];
+		}
 		$vs_set_item_display = "";
-		$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
+		$vs_set_item_display .= "<div class='lbItem'><div class='lbItemContent'>\n";
+		#$vs_set_item_display .= "<div class='lbItem' onmouseover='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").show();'  onmouseout='jQuery(\"#lbExpandedInfo".$t_set_item->get("item_id")."\").hide();'><div class='lbItemContent'>\n";
 		if($va_set_item["representation_tag_medium"]){
 			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg'>".$va_set_item["representation_tag_medium"]."</div>", '', 'ca_objects', $va_set_item["row_id"]);
 		}else{
 			$vs_set_item_display .= caDetailLink($o_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $va_set_item["row_id"]);
 		}
 		$vs_set_item_display .= "<div id='comment".$t_set_item->get("item_id")."' class='lbSetItemComment'><!-- load comments here --></div>\n";
-		$vs_set_item_display .= "<div>".$va_set_item["set_item_label"]."</div>\n";
+		$vs_set_item_display .= "<div>".$vs_caption."</div>\n";
 		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
 		$vs_set_item_display .= "<div class='lbExpandedInfo' id='lbExpandedInfo".$t_set_item->get("item_id")."'>\n<hr>\n";
 		if($vb_write_access){
@@ -566,6 +575,14 @@
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		
+		if(!is_array($pa_options)){
+			$pa_options = array();
+		}
+		$pa_access_values = caGetOption("checkAccess", $pa_options, array());
+		$vs_access_wheres = '';
+		if($pa_options['checkAccess']){
+			$vs_access_wheres = " AND ca_objects.access IN (".join(",", $pa_access_values).") AND ca_object_representations.access IN (".join(",", $pa_access_values).")";
+		}
 		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
 		$vs_pk = $t_instance->primaryKey();
 		
@@ -590,7 +607,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_access_wheres}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
 		

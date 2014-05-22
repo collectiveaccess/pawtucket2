@@ -60,7 +60,8 @@
 					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 					$this->view->setVar('featured_set', $t_set);
 					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
-					$this->view->setVar('featured_set_item_ids', $va_featured_ids); 
+					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
  			}
  			

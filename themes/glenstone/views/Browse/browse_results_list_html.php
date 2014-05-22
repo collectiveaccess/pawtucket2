@@ -89,7 +89,7 @@
 
 				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name").", ".$qr_res->get("ca_objects.creation_date")."</p>";
+					$vs_label_detail_link 	= "<p><i>".$qr_res->get("{$vs_table}.preferred_labels.name")."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
 					$vs_idno_detail_link 	= "";				
 				}else {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";

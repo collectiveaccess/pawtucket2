@@ -160,14 +160,24 @@
 			//
 			// Sorting
 			//
-			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+			$vb_sort_changed = false;
+ 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
+ 						$vb_sort_changed = true;
  					}
  				}
+ 			}else{
+ 				$vb_sort_changed = true;
  			}
- 			
+ 			if($vb_sort_changed){
+				# --- set the default sortDirection if available
+				$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
+				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
+					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+				} 			
+ 			}
  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
  				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';

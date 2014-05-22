@@ -37,6 +37,16 @@ h3 {
 	width:100%;
 	clear:both;
 }
+.notificationMessage, .notificationInfo {
+	background-color:#f7f7f7;
+	border-color:#eee;
+	color:#333;
+	padding:10px;
+	font-weight:bold;
+}
+.notificationMessage a, .notificationInfo {
+	color:#000; 
+}	
 .container {
 	padding:0px;
 }

@@ -115,7 +115,7 @@
 				$o_browse->reload($ps_cache_key);
 			}
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true)); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
 			// Clear criteria if required
@@ -149,25 +149,46 @@
 			//
 			// Add criteria and execute
 			//
+			
+			// Get any preset-criteria
+			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
+			
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array("*"));
+					if (is_array($va_base_criteria)) {
+						foreach($va_base_criteria as $vs_facet => $vs_value) {
+							$o_browse->addCriteria($vs_facet, $vs_value);
+						}
+					} else {
+						$o_browse->addCriteria("_search", array("*"));
+					}
 				}
 			}
 			
 			//
 			// Sorting
 			//
+			$vb_sort_changed = false;
  			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
+ 						$vb_sort_changed = true;
  					}
  				}
+ 			}else{
+ 				$vb_sort_changed = true;
  			}
- 			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
+ 			if($vb_sort_changed){
+				# --- set the default sortDirection if available
+				$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
+				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
+					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+				} 			
+ 			}
+  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
  				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';
  				}
@@ -175,7 +196,6 @@
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
- 			
  			
 			$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
@@ -196,6 +216,7 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
 			}
 		
@@ -212,6 +233,14 @@
 			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
 				unset($va_criteria['_search']);
 			}
+			
+			// remove base criteria from display list
+			if (is_array($va_base_criteria)) {
+				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+					unset($va_criteria[$vs_base_facet]);
+				}
+			}
+			
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);

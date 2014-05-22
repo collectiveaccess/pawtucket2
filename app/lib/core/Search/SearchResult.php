@@ -243,6 +243,7 @@ class SearchResult extends BaseObject {
 			
 			$vs_left_table = $this->ops_table_name;
 
+			$va_order_bys = array();
 			foreach($va_linking_tables as $vs_right_table) {
 				$vs_join_eq = '';
 				if (($va_rels = $this->opo_datamodel->getOneToManyRelations($vs_left_table)) && is_array($va_rels[$vs_right_table])) {
@@ -256,6 +257,9 @@ class SearchResult extends BaseObject {
 					$t_link = $this->opo_datamodel->getInstanceByTableName($va_rel['many_table'], true);
 					if (is_a($t_link, 'BaseRelationshipModel') && $t_link->hasField('type_id')) {
 						$va_fields[] = $va_rel['many_table'].'.type_id rel_type_id';
+					}
+					if ($t_link->hasField('rank')) { 
+						$va_order_bys[] = $t_link->tableName().'.rank';
 					}
 				} else {
 					if (($va_rels = $this->opo_datamodel->getOneToManyRelations($vs_right_table)) && is_array($va_rels[$vs_left_table])) {
@@ -292,9 +296,8 @@ class SearchResult extends BaseObject {
 			$vb_has_locale_id = true;
 		}
 		
-		$vs_order_by = '';
 		if ($t_rel_instance->hasField('idno_sort')) {
-			$vs_order_by = " ORDER BY ".$t_rel_instance->tableName().".idno_sort";
+			$va_order_bys [] = $t_rel_instance->tableName().".idno_sort";
 		}
 	
 		$vs_deleted_sql = '';
@@ -302,6 +305,8 @@ class SearchResult extends BaseObject {
 		if ($t_rel_instance->hasField('deleted')) {
 			$vs_deleted_sql = " AND (".$t_rel_instance->tableName().".deleted = 0)";
 		}
+		
+		$vs_order_by = sizeof($va_order_bys) ? " ORDER BY ".join(", ", $va_order_bys) : "";
 		$vs_sql = "
 			SELECT ".join(',', $va_fields)."
 			FROM ".$this->ops_table_name."
