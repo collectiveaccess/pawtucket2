@@ -606,12 +606,11 @@ a.browseRemoveFacet img {
 	position:relative;
 	line-height:1.2em;
 	font-size:12px;
-	z-index:1;
 }
 .lbItem:hover{
 	position:absolute;
 	cursor:move;
-	z-index:10000;
+	z-index:1000;
 	padding:15px;
 	width:130%;
 	left:-15%;
@@ -627,14 +626,11 @@ a.browseRemoveFacet img {
 }
 .lbExpandedInfo, .lbSetExpandedInfo{
 	width:100%;
-	position:absolute;
 	z-index:100;
 	display:none;
 	background-color:#FFFFFF;
 	margin:0px -15px 0px -15px;
 	padding:0px 15px 15px 15px;
-	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);;
 }
 .lbItem:hover .lbExpandedInfo{
 	display:inline;
@@ -729,9 +725,10 @@ a.browseRemoveFacet img {
 	position:absolute;
 	left:100%;
 	top:0px;
-	z-index:1000;
+	z-index:20000;
 	-webkit-box-shadow: 5px 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 7px 1px 10px rgba(0, 0, 0, 0.2);
+	height:100%;
 }
 .lbSetComment{
 	display:none;
@@ -745,6 +742,9 @@ a.browseRemoveFacet img {
 	max-height:150px;
 	clear:right;
 	margin-bottom:10px;
+}
+.lbItem:hover .lbSetItemComment .lbComments{
+	max-height:230px;
 }
 .lbSetItemComment .lbComments blockquote, .lbSetComment .lbComments blockquote{
 	padding-top:5px;

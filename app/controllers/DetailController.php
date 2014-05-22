@@ -44,17 +44,17 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
  		 	$this->view->setVar("access_values", $va_access_values);
- 		 	
- 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
 
  			caSetPageCSSClasses(array("detail"));
  		}
@@ -139,6 +139,7 @@
 					$this->view->setVar("t_representation", $t_representation);
 				}
 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
+				$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 			} 			
  			//
  			// comments, tags, rank

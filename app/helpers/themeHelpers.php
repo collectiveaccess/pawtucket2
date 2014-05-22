@@ -381,11 +381,95 @@
 	}
 	# ---------------------------------------
 	/*
+	 * thumbnails for multiple representations
+	 * pn_rep_id = current representation
+	 * t_object = current ca_objects object
+	 * options
+	 *		version = media version for thumbnail (default = icon)
+	 *		linkTo = viewer, detail (default = viewer)
+	 *		returnAs = list, bsCols, array	(defautl = list)
+	 *		bsColClasses = pass the classes to assign to bs col (default = col-lg-3)
+	 *		dontShowCurrentRep = true, false (default = false)
+	 *		currentRepClass = set to class name added to link tag for current rep (default = active)
+	 *		
+	 */
+	function caObjectRepresentationThumbnails($o_request, $pn_rep_id, $t_object, $va_options){
+		if(!$t_object || !$t_object->get("object_id")){
+			return false;
+		}
+		if(!is_array($va_options)){
+			$va_options = array();
+		}
+		# --- set defaults
+		if(!$va_options["version"]){
+			$va_options["version"] = "icon";
+		}
+		if(!$va_options["linkTo"]){
+			$va_options["linkTo"] = "viewer";
+		}
+		if(!$va_options["returnAs"]){
+			$va_options["returnAs"] = "list";
+		}
+		if(!$va_options["bsColClasses"]){
+			$va_options["bsColClasses"] = "col-lg-3";
+		}
+		if(!$va_options["currentRepClass"]){
+			$va_options["currentRepClass"] = "active";
+		}
+		# --- get reps as thumbnails
+		$va_reps = $t_object->getRepresentations(array($va_options["version"]), null, caGetUserAccessValues($o_request));
+		if(sizeof($va_reps) < 2){
+			return;
+		}
+		$va_links = array();
+		foreach($va_reps as $vn_rep_id => $va_rep){
+			$vs_class = "";
+			if($vn_rep_id == $pn_rep_id){
+				if($va_options["dontShowCurrentRep"]){
+					continue;
+				}
+				$vs_class = $va_options["currentRepClass"];
+			}
+			$vs_thumb = $va_rep["tags"][$va_options["version"]];
+			if($va_options["linkTo"] == "viewer"){
+				$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+			}else{
+				$va_links[$vn_rep_id] = caDetailLink($o_request, $vs_thumb, $vs_class, 'ca_objects', $t_object->get("object_id"), array("representation_id" => $vn_rep_id));
+			}
+		}
+		# --- formatting
+		$vs_formatted_thumbs = "";
+		switch($va_options["returnAs"]){
+			case "list":
+				$vs_formatted_thumbs = "<ul>";
+				foreach($va_links as $vn_rep_id => $vs_link){
+					$vs_formatted_thumbs .= "<li".(($vn_rep_id == $pn_rep_id) ? " class='".$va_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+				}
+				$vs_formatted_thumbs .= "</ul>";
+				return $vs_formatted_thumbs;
+			break;
+			# ---------------------------------
+			case "bsCols":
+				$vs_formatted_thumbs = "<div class='row'>";
+				foreach($va_links as $vn_rep_id => $vs_link){
+					$vs_formatted_thumbs .= "<div class='".$va_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$va_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+				}
+				$vs_formatted_thumbs .= "</div>\n";
+				return $vs_formatted_thumbs;
+			break;
+			# ---------------------------------
+			case "array":
+				return $va_links;
+			break;
+			# ---------------------------------
+		}
+	}
+	# ---------------------------------------
+	/*
 	 * list of comments and 
 	 * comment form for all detail pages
 	 *
 	 */
-	# ---------------------------------------
 	function caDetailItemComments($o_request, $pn_item_id, $t_item, $va_comments, $va_tags){
 		$vs_tmp = "";
 		if(is_array($va_comments) && (sizeof($va_comments) > 0)){

@@ -39,6 +39,9 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			$this->config = caGetFrontConfig();
  			caSetPageCSSClasses(array("front"));
+  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
  		}
  		# -------------------------------------------------------
  		/**
