@@ -1037,6 +1037,12 @@ a.browseRemoveFacet img {
 	height:80px;
 	padding-top:30px;
 }
+#detailRepresentationThumbnails a img{
+	border:1px solid #FFFFFF;
+}
+#detailRepresentationThumbnails a.active img{
+	border:1px solid #454545;
+}
 
 /* --------------------------------- */
 /* browse b */
@@ -1277,7 +1283,43 @@ a.browseRemoveFacet img {
 	overflow:hidden;
 	clear:both;
 }
-
+.multisearchSort ul {
+	list-style-type:none;
+	display:inline;
+	padding:0px;
+}
+.multisearchSort ul li{
+	display:inline-block;
+	margin-right:5px;
+}
+.multisearchSort ul li a{
+	text-decoration:underline;
+	color:#858585;
+}
+.multisearchSort ul li.selectedSort a{
+	color:#454545;
+	text-decoration:none;
+}
+.multisearchSort a{
+	display:inline-block;
+	text-transform:lowercase;
+}
+.multisearchSort select{
+	padding:0px;
+	height:17px;
+	font-size:12px;
+    display:inline;
+    width:auto;
+}
+.multisearchSort select:focus{
+	box-shadow: none;
+    outline: none;
+    border: 1px solid #cccccc;
+}
+.multisearchSort select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
 .multisearch .blockResultsScroller {
 	height: 170px;	/* Needs to be some height */
 }

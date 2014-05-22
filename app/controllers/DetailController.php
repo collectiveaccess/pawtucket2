@@ -137,9 +137,9 @@
  				}
 				if ($t_representation) {
 					$this->view->setVar("t_representation", $t_representation);
+					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 				}
 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
-				$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 			} 			
  			//
  			// comments, tags, rank
