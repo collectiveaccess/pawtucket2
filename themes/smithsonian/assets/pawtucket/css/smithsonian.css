@@ -863,6 +863,7 @@ a.browseRemoveFacet img {
 .detail H4 {
 	padding:10px 0px 0px 0px;
 	margin:0px;
+	clear:both;
 }
 .detail .metadata div {
 	margin-bottom:10px;
