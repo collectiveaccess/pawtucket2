@@ -883,9 +883,15 @@ a.browseRemoveFacet img {
 	color:#ababab;
 	padding-bottom:20px;
 }
-.detail #cont img{
+.detail .repViewerCarousel li{
+	text-align:center;
+}
+.detail .repViewerCont img{
 	width:100%;
 	height:auto;
+}
+.detail .repViewerCont {
+	position:relative;
 }
 .detail audio{
 	width:100%;
@@ -898,22 +904,57 @@ a.browseRemoveFacet img {
 	color:#ABABAB;
 	border:1px solid #ebebeb;
 }
-.detail #detailMediaToolbar{
+/*.detail #detailMediaToolbar{
 	background-color:#ebebeb;
 	padding:2px 5px 7px 5px;
 	font-size:12px;
-	float:left;
 }
 .detail #detailMediaToolbar a{
 	color:#929292;
 }
 .detail #detailMediaToolbar span{
 	padding:5px;
+}*/
+.detail .detailMediaToolbar{
+	background-color:#ebebeb;
+	padding:2px 5px 7px 5px;
+	font-size:12px;
+	position:absolute;
+	display:none;
+	bottom:0px;
+}
+.detail .repViewerCont:hover .detailMediaToolbar{
+	display:block;
+}
+.detail .detailMediaToolbar a{
+	color:#929292;
+}
+.detail .detailMediaToolbar span{
+	padding:5px;
+}
+.detail #detailRepNav{
+	padding:2px 0px 7px 0px;
+	font-size:12px;
+}
+.detail #detailRepNavPrev{
+	float:left;
+}
+.detail #detailRepNavNext{
+	float:right;
+}
+.detail #detailRepNav a{
+	color:#929292;
+}
+.detail #detailRepNav a.inactive{
+	color:#DEDEDE;
+}
+.detail #detailRepNav span{
+	padding:5px;
 }
 .detail #detailTools{
 	border-bottom: 1px solid #dddddd;
-	clear:left;
-	padding-top:10px;
+	clear:both;
+	padding-top:25px;
 }
 .detail .detailTool {
 	border-top: 1px solid #dddddd;
