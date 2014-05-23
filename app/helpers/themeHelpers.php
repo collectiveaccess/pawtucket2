@@ -399,9 +399,13 @@
 			$va_options["currentRepClass"] = "active";
 		}
 		$va_access_values = caGetUserAccessValues($o_request);
-		$vn_current_rep_id = $t_representation->get("representation_id");
+		if($t_representation){
+			$vn_current_rep_id = $t_representation->get("representation_id");
+		}
 		if($pa_options["primaryOnly"]){
-			$va_rep_ids = array($t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values)));
+			if($vn_preimary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
+				$va_rep_ids = array($vn_preimary_rep_id);
+			}
 		}else{
 			# --- are there multiple reps?
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
@@ -533,7 +537,7 @@
 	 *		returnAs = list, bsCols, array	(default = list)
 	 *		bsColClasses = pass the classes to assign to bs col (default = col-sm-4 col-md-3 col-lg-3)
 	 *		dontShowCurrentRep = true, false (default = false)
-	 *		currentRepClass = set to class name added to li tag for current rep (default = active)
+	 *		currentRepClass = set to class name added to li and a tag for current rep (default = active)
 	 *
 	 */
 	function caObjectRepresentationThumbnails($o_request, $pn_rep_id, $t_object, $va_options){
@@ -560,7 +564,7 @@
 			$va_options["currentRepClass"] = "active";
 		}
 		# --- get reps as thumbnails
-		$va_reps = $t_object->getRepresentations(array($va_options["version"]), null, caGetUserAccessValues($o_request));
+		$va_reps = $t_object->getRepresentations(array($va_options["version"]), null, array("checkAccess" => caGetUserAccessValues($o_request)));
 		if(sizeof($va_reps) < 2){
 			return;
 		}

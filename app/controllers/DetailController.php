@@ -133,11 +133,13 @@
  					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
  					$t_representation->load($pn_representation_id);
  				}else{
- 					$t_representation = $t_table->getPrimaryRepresentationInstance();
+ 					$t_representation = $t_table->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
  				}
 				if ($t_representation) {
 					$this->view->setVar("t_representation", $t_representation);
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
+				}else{
+					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false))));
 			} 			
