@@ -1091,7 +1091,7 @@ a.browseRemoveFacet img {
 .results {
 	/*padding:0px 30px 0px 25px;*/
 }
-.results a .glyphicon {
+.results a .glyphicon, .results a .fa {
 	color:#ababab;
 }
 .results a.active .glyphicon {
@@ -1131,12 +1131,6 @@ a.browseRemoveFacet img {
 	line-height:1em;
 	padding:10px;
 }
-.bResultItem:hover{
-	padding:20px;
-	margin:-10px;
-	height:280px;
-	font-size:12px;
-}
 .bResultItem .bResultItemImg{
 	max-height:180px;
 	min-height:100px;
@@ -1146,6 +1140,24 @@ a.browseRemoveFacet img {
 .bResultItem img{
 	width:100%;
 	height:auto;
+}
+.bResultItem:hover{
+	padding:20px;
+	margin:-40px;
+	min-height:320px;
+	height:auto;
+	font-size:12px;
+	position:relative;
+	z-index:100;
+}
+.bResultItem:hover .bResultItemContent{
+	height:auto;
+	min-height:240px;
+	max-height:600px;
+}
+.bResultItem:hover .bResultItemImg {
+	height:auto;
+	max-height:500px;
 }
 .bResultItem .bResultItemText a{
 	line-height:1.2em;
