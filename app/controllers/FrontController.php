@@ -70,6 +70,8 @@
  			
  			$this->view->setVar('config', $this->config);
  			
+ 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
+ 			$this->view->setVar('result_context', $o_result_context);
  			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
