@@ -32,7 +32,7 @@
 				{{{<ifdef code="ca_objects.description">
 					<span class="trimText">^ca_objects.description</span>
 				</ifdef>}}}
-				<?php print "<p>".caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols"))."</p>"; ?>
+				<?php print "<p>".caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel"))."</p>"; ?>
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
 				
