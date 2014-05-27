@@ -34,11 +34,11 @@
 						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
-						if ($t_collection->get('ca_collections.date.dc_dates_types') == 188) {
+						if ($t_collection->get('ca_collections.date.dc_dates_types') == "Date created") {
 							$va_artwork_date = ", ".$t_collection->get('ca_collections.date.dates_value');
 						}
-						$va_artwork_materials = '<div class="materials">'.$t_collection->get('ca_collections.mat_tech_display').'</div>';
-						$va_artwork_display = $va_artwork_title.$va_artwork_date."<br/>".$va_artwork_materials;
+						$va_artwork_artist = '<div class="materials">'.$t_collection->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))).'</div>';
+						$va_artwork_display = $va_artwork_artist.$va_artwork_title.$va_artwork_date;
 						
 						
 						foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
@@ -46,6 +46,7 @@
 							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
 							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
 							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							
 							print "</div>";
 							$vn_i++;
 							if ($vn_i == 3) {
