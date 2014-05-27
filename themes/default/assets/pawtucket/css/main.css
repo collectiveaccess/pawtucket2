@@ -1673,6 +1673,9 @@ a.browseRemoveFacet img {
 	width: 100%;
 	height: 550px;
 }
+.DV-views{
+	margin-left:72px;
+}
 /* overlay (for object representations) */
 #caMediaPanel {
 	position: fixed; 
