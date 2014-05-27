@@ -31,6 +31,11 @@
  */
 	$va_access_values = $this->getVar("access_values");
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
+	$o_config = $this->getVar("config");
+	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	}
 	if($qr_res && $qr_res->numHits()){
 ?>   
 		<div class="jcarousel-wrapper">
@@ -40,7 +45,12 @@
 <?php
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
-							print "<li>".$vs_media."</li>";
+							print "<li><div class='frontSlide'>".$vs_media;
+							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+							if($vs_caption){
+								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+							}
+							print "</div></li>";
 							$vb_item_output = true;
 						}
 					}
