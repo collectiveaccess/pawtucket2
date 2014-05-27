@@ -88,6 +88,7 @@
  			$vs_search = $o_first_result_context->getSearchExpression();
  			
  			$this->view->setVar('search', $vs_search);
+ 			$this->view->setVar("config", $this->config);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
  			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts)));

@@ -35,6 +35,11 @@
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$o_config = caGetSearchConfig();
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_placeholder."</div>";
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -53,7 +58,13 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values)); ?>
+<?php 
+				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				if(!$vs_image){
+					$vs_image = $vs_placeholder_tag;
+				}
+				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
+?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php

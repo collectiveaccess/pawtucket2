@@ -65,7 +65,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
- 			
+ 			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
