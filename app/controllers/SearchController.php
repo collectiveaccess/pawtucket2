@@ -151,7 +151,7 @@
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
+					$o_browse->addCriteria("_search", array($this->opo_result_context->getSearchExpression()));
 				}
 			}
 			
@@ -192,8 +192,17 @@
 			$this->view->setVar('sort', $ps_sort);
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 			
-
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
+			$va_options = array('checkAccess' => $this->opa_access_values);
+			if ($va_restrict_to_fields = caGetOption('restrictSearchToFields', $va_browse_info, null)) {
+				$va_options['restrictSearchToFields'] = $va_restrict_to_fields;
+			}
+			
+			
+			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
+				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+			}
+			
+			$o_browse->execute($va_options);
 		
 			//
 			// Facets

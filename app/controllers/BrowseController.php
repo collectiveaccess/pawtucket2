@@ -203,6 +203,10 @@
 			$this->view->setVar('sort', $ps_sort);
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 
+			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
+				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+			}
+
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 		
 			//
