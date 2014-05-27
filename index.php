@@ -74,11 +74,6 @@
 	}
 	$t_locale = new ca_locales();
 	$g_ui_locale_id = $t_locale->localeCodeToID($g_ui_locale);		// get current UI locale as locale_id	  (available as global)
-	$_ = array();
-	if (file_exists($vs_theme_specific_locale_path = $g_request->getThemeDirectoryPath().'/locale/'.$g_ui_locale.'/messages.mo')) {
-		$_[] = new Zend_Translate('gettext', $vs_theme_specific_locale_path, $g_ui_locale);
-	}
-	$_[] = new Zend_Translate('gettext', __CA_APP_DIR__.'/locale/'.$g_ui_locale.'/messages.mo', $g_ui_locale);
 	if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
 	$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
 	

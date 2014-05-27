@@ -38,8 +38,10 @@
    function initializeLocale($g_ui_locale) {
    		global $_, $_locale;
    		
-		if(!file_exists($vs_locale_path = __CA_APP_DIR__.'/locale/user/'.$g_ui_locale.'/messages.mo')) {
-			$vs_locale_path = __CA_APP_DIR__.'/locale/'.$g_ui_locale.'/messages.mo';
+		if(!file_exists($vs_locale_path = __CA_THEME_DIR__.'/locale/'.$g_ui_locale.'/messages.mo')) {
+			if(!file_exists($vs_locale_path = __CA_APP_DIR__.'/locale/user/'.$g_ui_locale.'/messages.mo')) {
+				$vs_locale_path = __CA_APP_DIR__.'/locale/'.$g_ui_locale.'/messages.mo';
+			}
 		}
 		if(file_exists($vs_locale_path)) {
 			// If the locale is valid, locale is set
