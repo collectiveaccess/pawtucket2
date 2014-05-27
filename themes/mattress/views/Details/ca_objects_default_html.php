@@ -16,12 +16,12 @@
 			print "<h2>".$t_object->get('ca_objects.preferred_labels.name')."</h2>";
 		}		
 ?>	
-		<div class='detailSubtitle'></div>
+		
 		
 		<div id="mediaArea">
 		{{{representationViewer}}}
 		</div>
-		
+		<div class='detailSubtitle'></div>
 		<div id="infoArea">
 			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</ifdef></p>}}}
 			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</unit></p>}}}
@@ -124,7 +124,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
@@ -148,7 +148,7 @@
 					} else {
 						$t_collection = new ca_collections($va_artworks[0]);
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 						print "<div class='exImageSingle'>".array_shift(array_values($va_object_reps))."</div>";
 					}	
 					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";

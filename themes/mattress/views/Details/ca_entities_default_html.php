@@ -39,7 +39,7 @@
 						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
-						if ($t_collection->get('ca_collections.date.dc_dates_types') == 188) {
+						if ($t_collection->get('ca_collections.date.dc_dates_types') == "Date created") {
 							$va_artwork_date = ", ".$t_collection->get('ca_collections.date.dates_value');
 						}
 						$va_artwork_materials = '<div class="materials">'.$t_collection->get('ca_collections.mat_tech_display').'</div>';
@@ -56,7 +56,7 @@
 							if ($vn_i == 2) {
 								print "</div><!-- end imageSet-->";
 								$vn_i = 0;
-							}
+							} 
 							
 						}
 					}

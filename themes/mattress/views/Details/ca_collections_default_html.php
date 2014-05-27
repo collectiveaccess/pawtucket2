@@ -51,7 +51,7 @@
 			if (sizeof($va_related_reps) > 1) {
 ?>			
 			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
-			<div class='mediaThumbs' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
+			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
 	
 				<div style='width:10000px;'>
 <?php

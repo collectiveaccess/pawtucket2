@@ -79,10 +79,7 @@
 						$va_cell_width = "style='width:180px;'";
 					}
 				} else if ($vs_table == "ca_occurrences") {
-					$va_related_collections = $qr_res->get('ca_collections.collection_id', array('returnAsArray' => true, 'restrictToTypes' => array('installation')));
-					$t_collection = new ca_collections($va_related_collections[0]);
-					
-					$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.small');

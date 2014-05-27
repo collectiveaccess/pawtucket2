@@ -29,6 +29,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+$qr_res = $this->getVar('featured_set_items_as_search_result');
 
 ?>
 
@@ -38,19 +40,9 @@
 	<div class='blockFeatured scrollBlock' >
 		<div class='scrollingDiv' > 
 <?php
-		$t_set = new ca_sets();
-		$va_featured_set = $t_set->load(array('set_code' => $this->request->config->get('featured_set')));
 		
-		if ($va_featured_set) {
-			$va_set_items = $t_set->getItems();
-		
-			$va_set_object_ids = array();
-			foreach ($va_set_items as $va_set_key => $va_set_item) {
-				foreach ($va_set_item as $va_set_item_key => $va_set_item_info) {
-					$va_set_object_ids[] = $va_set_item_info['row_id'];
-				}
-			}
-			$qr_res = caMakeSearchResult('ca_objects', $va_set_object_ids);
+		if ($qr_res) {
+
 			while ($qr_res->nextHit()) {
 				$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
 

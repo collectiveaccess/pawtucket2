@@ -417,6 +417,9 @@ h2 span.artist {
 #mediaArea {
 	width:775px;
 }
+#mediaArea img{
+	width:100%;
+}
 .mediaLarge {
 	float:left;
 }
@@ -764,6 +767,17 @@ h2 span.artist {
 	color: #EE3E43;
 	font-size:14px;
 }
+#detail .detailMediaToolbar {
+	background-color: #ebebeb;
+	padding: 5px 5px 4px 5px;
+	font-size: 12px;
+	position: absolute;
+	display: none;
+	bottom: 0px;
+}
+#detail .repViewerCont:hover .detailMediaToolbar{
+	display:block;
+}
 .multiSearch .collectionsResult a, .multiSearch a .entitiesResult, .multiSearch .objectsResult a, .multiSearch a .eventsResult,
 #detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
 	color:#000;
@@ -896,6 +910,9 @@ h2 span.artist {
 	height: 180px;
 	min-width: 150px;
 	background-color: #f7f7f7;
+}
+.bResultItem:hover .bResultItemImg {
+	height:180px; 
 }
 #browseResults .artistName a{
 	text-transform:uppercase;
