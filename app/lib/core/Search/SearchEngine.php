@@ -124,6 +124,7 @@ class SearchEngine extends SearchBase {
 	 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
 	 *		dontFilterByACL = if true ACL checking is not performed on results
 	 *		appendToSearch = 
+	 *		restrictSearchToFields = 
 	 *
 	 * @return SearchResult Results packages in a SearchResult object, or sub-class of SearchResult if an instance was passed in $po_result
 	 * @uses TimeExpressionParser::parse
@@ -227,6 +228,11 @@ class SearchEngine extends SearchBase {
 			if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
 				$this->addResultFilter($this->ops_tablename.'.type_id', 'IN', join(",",$va_type_ids));
 			}
+			
+			if (is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && $this->opo_engine->can('restrict_to_fields')) {
+				$this->opo_engine->setOption('restrictSearchToFields', $va_restrict_to_fields);
+			}
+			
 			$o_res =  $this->opo_engine->search($this->opn_tablenum, $vs_search, $this->opa_result_filters, $o_rewritten_query);
 
 			// cache the results
@@ -1004,7 +1010,7 @@ class SearchEngine extends SearchBase {
 	 */
 	public function addResultFilter($ps_field, $ps_operator, $pm_value) {
 		$ps_operator = strtolower($ps_operator);
-		if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', '-', 'in', '<>', 'is', 'is not'))) { return false; }
+		if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', '-', 'in', 'not in', '<>', 'is', 'is not'))) { return false; }
 		
 		$this->opa_result_filters[] = array(
 			'field' => $ps_field,
