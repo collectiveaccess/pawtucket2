@@ -211,12 +211,18 @@
 			
 			print "<div id='occurrencesBlock'>";
 			print "<div class='blockTitle related'>"._t('Related Objects')."</div>";
-				print "<div class='blockResults'>";
-					print "<div style='width:1000000px'>";
+				print "<div class='blockResults scrollBlock'>";
+					print "<div style='width:50000px'>";
 					while ($qr_res->nextHit()) {
 						print "<div class='objectsResult'>";
 						print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.resultthumb'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
-						print $qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
+						
+						if($qr_res->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+							print "<h2>".$qr_res->get('ca_objects.nonpreferred_labels.name', array('returnAsLink' => true))."</h2>";
+						} else {
+							print "<h2>".$qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</h2>";
+						}	
+	
 						print "</div>";
 					}
 					print "</div>";

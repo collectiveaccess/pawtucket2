@@ -36,15 +36,14 @@
 			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
 			
 			if ($t_item->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name', array('returnAsArray' => true));				
+				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name');				
 			} else {
-				$va_main_image_object = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true));
+				$va_main_image_object = $t_item->get('ca_objects.preferred_labels');
 			}
-			$va_main_image_caption = array_shift(array_values($va_main_image_object));
 			if ($va_primary_rep['tags']['medium']) {
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $vn_rep_id))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
-				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_caption."</div>";
+				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
 			}
 ?>			
 			</div><!-- end mediaLarge-->

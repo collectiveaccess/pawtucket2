@@ -52,7 +52,13 @@
 ?>
 			<div class='{{{block}}}Result'>
 				<?php print caNavLink($this->request, "<div class='objImage'>".$qr_results->get('ca_object_representations.media.resultthumb')."</div>", '', 'Detail', 'objects', $qr_results->get('ca_objects.object_id')); ?>
-				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+<?php
+			if ($qr_results->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				print $qr_results->get('ca_objects.nonpreferred_labels.name', array('returnAsLink' => true));				
+			} else {
+				print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
+			}
+?>	
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
