@@ -29,42 +29,30 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_item_ids = $this->getVar('featured_set_item_ids');
-	$o_result_context = $this->getVar('result_context');
-	
-	if(is_array($va_item_ids) && sizeof($va_item_ids)){
-		$t_object = new ca_objects();
-		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("slideshow"), array('checkAccess' => caGetUserAccessValues($this->request)));
-		$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
-	}
-	
-	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-	
-		print "<div id='homepageLogin'>";
-		print $this->render('LoginReg/form_login_html.php');
-		print "</div>";			
-	
-	} else {
-
-	if(is_array($va_item_media) && sizeof($va_item_media)){
+	$va_access_values = $this->getVar("access_values");
+	$qr_res = $this->getVar('featured_set_items_as_search_result');
+	if($qr_res && $qr_res->numHits()){
 ?>   
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel">
 				<ul>
 <?php
-					foreach($va_item_media as $vn_object_id => $va_media){
-						print "<li>".caDetailLink($this->request, $va_media["tags"]["slideshow"], '', 'ca_objects', $vn_object_id)."</li>";
+					while($qr_res->nextHit()){
+						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
+							print "<li>".$vs_media."</li>";
+							$vb_item_output = true;
+						}
 					}
 ?>
 				</ul>
 			</div><!-- end jcarousel -->
 <?php
-			if(sizeof($va_item_media) > 1){
+			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
+			<a href="#" class="jcarousel-control-next">&rsaquo;</a>
 		
 			<!-- Pagination -->
 			<p class="jcarousel-pagination">
@@ -130,36 +118,5 @@
 			});
 		</script>
 <?php
-	}
-?>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-8">
-			<H1>Welcome to Glenstone.  To begin, enter a term into the search bar.</H1>
-		</div><!--end col-sm-8-->
-
-<?php
-	$va_recent_searches = $o_result_context->getSearchHistory();
-	
-	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
-?>	
-		<div class="col-sm-4">
-			<h1>Recent Searches</h1>
-			<ul class='recentSearch'> 
-<?php
-			foreach($va_recent_searches as $vs_search => $va_search_info) {
-				print "<li>".caNavLink($this->request, $vs_search, '', '', 'MultiSearch', 'Index', array('search' => $vs_search))."</li>";
-			}
-?>
-			</ul>
-			
-		</div> <!--end col-sm-4-->	
-<?php
-	}
-?>
-	</div><!-- end row -->
-</div> <!--end container-->
-
-<?php	
 	}
 ?>

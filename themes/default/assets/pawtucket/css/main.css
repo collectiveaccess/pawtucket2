@@ -606,12 +606,11 @@ a.browseRemoveFacet img {
 	position:relative;
 	line-height:1.2em;
 	font-size:12px;
-	z-index:1;
 }
 .lbItem:hover{
 	position:absolute;
 	cursor:move;
-	z-index:10000;
+	z-index:1000;
 	padding:15px;
 	width:130%;
 	left:-15%;
@@ -627,14 +626,11 @@ a.browseRemoveFacet img {
 }
 .lbExpandedInfo, .lbSetExpandedInfo{
 	width:100%;
-	position:absolute;
 	z-index:100;
 	display:none;
 	background-color:#FFFFFF;
 	margin:0px -15px 0px -15px;
 	padding:0px 15px 15px 15px;
-	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);;
 }
 .lbItem:hover .lbExpandedInfo{
 	display:inline;
@@ -729,9 +725,10 @@ a.browseRemoveFacet img {
 	position:absolute;
 	left:100%;
 	top:0px;
-	z-index:1000;
+	z-index:20000;
 	-webkit-box-shadow: 5px 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 7px 1px 10px rgba(0, 0, 0, 0.2);
+	height:100%;
 }
 .lbSetComment{
 	display:none;
@@ -745,6 +742,9 @@ a.browseRemoveFacet img {
 	max-height:150px;
 	clear:right;
 	margin-bottom:10px;
+}
+.lbItem:hover .lbSetItemComment .lbComments{
+	max-height:230px;
 }
 .lbSetItemComment .lbComments blockquote, .lbSetComment .lbComments blockquote{
 	padding-top:5px;
@@ -883,9 +883,15 @@ a.browseRemoveFacet img {
 	color:#ababab;
 	padding-bottom:20px;
 }
-.detail #cont img{
+.detail .repViewerCarousel li{
+	text-align:center;
+}
+.detail .repViewerCont img{
 	width:100%;
 	height:auto;
+}
+.detail .repViewerCont {
+	position:relative;
 }
 .detail audio{
 	width:100%;
@@ -898,22 +904,57 @@ a.browseRemoveFacet img {
 	color:#ABABAB;
 	border:1px solid #ebebeb;
 }
-.detail #detailMediaToolbar{
+/*.detail #detailMediaToolbar{
 	background-color:#ebebeb;
 	padding:2px 5px 7px 5px;
 	font-size:12px;
-	float:left;
 }
 .detail #detailMediaToolbar a{
 	color:#929292;
 }
 .detail #detailMediaToolbar span{
 	padding:5px;
+}*/
+.detail .detailMediaToolbar{
+	background-color:#ebebeb;
+	padding:2px 5px 7px 5px;
+	font-size:12px;
+	position:absolute;
+	display:none;
+	bottom:0px;
+}
+.detail .repViewerCont:hover .detailMediaToolbar{
+	display:block;
+}
+.detail .detailMediaToolbar a{
+	color:#929292;
+}
+.detail .detailMediaToolbar span{
+	padding:5px;
+}
+.detail #detailRepNav{
+	padding:2px 0px 7px 0px;
+	font-size:12px;
+}
+.detail #detailRepNavPrev{
+	float:left;
+}
+.detail #detailRepNavNext{
+	float:right;
+}
+.detail #detailRepNav a{
+	color:#929292;
+}
+.detail #detailRepNav a.inactive{
+	color:#DEDEDE;
+}
+.detail #detailRepNav span{
+	padding:5px;
 }
 .detail #detailTools{
 	border-bottom: 1px solid #dddddd;
-	clear:left;
-	padding-top:10px;
+	clear:both;
+	padding-top:25px;
 }
 .detail .detailTool {
 	border-top: 1px solid #dddddd;
@@ -1037,6 +1078,12 @@ a.browseRemoveFacet img {
 	height:80px;
 	padding-top:30px;
 }
+#detailRepresentationThumbnails a img{
+	border:1px solid #FFFFFF;
+}
+#detailRepresentationThumbnails a.active img{
+	border:1px solid #454545;
+}
 
 /* --------------------------------- */
 /* browse b */
@@ -1044,7 +1091,7 @@ a.browseRemoveFacet img {
 .results {
 	/*padding:0px 30px 0px 25px;*/
 }
-.results a .glyphicon {
+.results a .glyphicon, .results a .fa {
 	color:#ababab;
 }
 .results a.active .glyphicon {
@@ -1084,12 +1131,6 @@ a.browseRemoveFacet img {
 	line-height:1em;
 	padding:10px;
 }
-.bResultItem:hover{
-	padding:20px;
-	margin:-10px;
-	height:280px;
-	font-size:12px;
-}
 .bResultItem .bResultItemImg{
 	max-height:180px;
 	min-height:100px;
@@ -1099,6 +1140,24 @@ a.browseRemoveFacet img {
 .bResultItem img{
 	width:100%;
 	height:auto;
+}
+.bResultItem:hover{
+	padding:20px;
+	margin:-40px;
+	min-height:320px;
+	height:auto;
+	font-size:12px;
+	position:relative;
+	z-index:100;
+}
+.bResultItem:hover .bResultItemContent{
+	height:auto;
+	min-height:240px;
+	max-height:600px;
+}
+.bResultItem:hover .bResultItemImg {
+	height:auto;
+	max-height:500px;
 }
 .bResultItem .bResultItemText a{
 	line-height:1.2em;
@@ -1277,7 +1336,43 @@ a.browseRemoveFacet img {
 	overflow:hidden;
 	clear:both;
 }
-
+.multisearchSort ul {
+	list-style-type:none;
+	display:inline;
+	padding:0px;
+}
+.multisearchSort ul li{
+	display:inline-block;
+	margin-right:5px;
+}
+.multisearchSort ul li a{
+	text-decoration:underline;
+	color:#858585;
+}
+.multisearchSort ul li.selectedSort a{
+	color:#454545;
+	text-decoration:none;
+}
+.multisearchSort a{
+	display:inline-block;
+	text-transform:lowercase;
+}
+.multisearchSort select{
+	padding:0px;
+	height:17px;
+	font-size:12px;
+    display:inline;
+    width:auto;
+}
+.multisearchSort select:focus{
+	box-shadow: none;
+    outline: none;
+    border: 1px solid #cccccc;
+}
+.multisearchSort select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+}
 .multisearch .blockResultsScroller {
 	height: 170px;	/* Needs to be some height */
 }

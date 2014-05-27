@@ -24,15 +24,9 @@
 				<H5>{{{ca_objects.preferred_labels.name}}}</H5>
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-<?php
-	if (sizeof($t_object->get('ca_object_representations.media', array('returnAsArray' => true))) > 0) {
-?>			
+		
 				{{{representationViewer}}}
-<?php
-	} else {
-		print "<div class='mediaPlaceholder'><i class='fa fa-picture-o'></i></div>";
-	}	
-?>				
+				
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 

@@ -111,6 +111,5 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-
 	<div class="container">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
