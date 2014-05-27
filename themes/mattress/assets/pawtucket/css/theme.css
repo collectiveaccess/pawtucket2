@@ -26,6 +26,9 @@ h2, #detail h2, .multiSearch h2{
 	font-family: "ProximaNovaRegular";
 	text-transform:none;
 }
+.objectsResult h2 {
+	line-height:.7em;
+}
 h3 {
 	font-family: "ProximaNovaBold";
 	font-size: 18px;
@@ -446,6 +449,7 @@ h2 span.artist {
 	width:775px;
 	clear:both;
 	padding-top:30px;
+	margin-bottom:20px;
 }
 #infoArea .description {
 	float:left;
@@ -456,6 +460,10 @@ h2 span.artist {
 #detail #infoArea p {
 	line-height: 1.4em;
 	font-size: 15px;
+}
+#detail .lessonLink {
+	clear:both;
+	margin-top:10px;
 }
 #infoArea .metatitle{
 	font-size:22px;
@@ -706,6 +714,9 @@ h2 span.artist {
 	padding: 0px;
 	width: 160px;
 	height: 190px;
+}
+#detail .objectsResult { 
+	height: 230px;
 }
 .multiSearch .occurrencesResult {
 	margin:10px;
