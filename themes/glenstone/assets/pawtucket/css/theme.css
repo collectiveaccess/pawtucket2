@@ -69,7 +69,7 @@ a:hover {
 	border-radius: 4px;
 	background-image:none;
 }
-#pageArea {
+/*#pageArea {
 	max-width:none;
 	padding:0px;
 }
@@ -79,6 +79,7 @@ a:hover {
 .navbar-collapse {
 	max-width:none;
 }
+*/ 
 .clearfix {
 	clear:both;
 	width:100%;
@@ -596,11 +597,26 @@ p.artist.lower {
 	padding-right:15px;
 	padding-left:15px;
 }
-.detail #detailMediaToolbar {
-	margin-bottom:20px;
+.detail .repViewerCont img {
+	
+} 
+.detail .detailMediaToolbar {
+	font-size:14px;
+}
+.detail #detailRepNav {
+	font-size:14px;
 }
 .detail .repIcons {
 	clear:both;
+}
+.detail #detailRepNav span {
+	background-color:#eee;
+	margin-bottom:10px;
+	top: 0px;
+	position: absolute;
+}
+.detail #detailRepNavPrev {
+	margin-left:-24px;
 }
 .detail .repIcons ul{
 	padding:0px;
@@ -940,3 +956,4 @@ div.caMediaOverlayControls .objectInfo {
 div.caMediaOverlayControls .close {
 	opacity:1;
 }
+

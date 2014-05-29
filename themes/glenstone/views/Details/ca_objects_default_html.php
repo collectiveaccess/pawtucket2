@@ -20,8 +20,9 @@
 <div class="row">
 	<div class="container">
 			<div class="artworkTitle">
-				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator">^ca_entities.preferred_labels.name</unit>}}}</H4>
-				<H5>{{{ca_objects.preferred_labels.name}}}</H5>
+				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+				<H5>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator">^ca_entities.preferred_labels.name</unit>}}}</H5>
+
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 		

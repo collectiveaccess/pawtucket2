@@ -89,12 +89,30 @@
 						if ($va_market = $t_object->get('ca_objects.object_retail')) {
 							print "<div class='unit'><span class='metaTitle'>Market Value: </span><span class='meta'>".$va_market."</span></div>";
 						}
-						if ($va_appraisal = $t_object->get('ca_objects.appraisal', array('delimiter' => '<hr>', 'template' => '<b>Value: </b>^appraisal_value <br/><b>Date:</b> ^appraisal_date <br/><b>Appraiser:</b> ^appraiser <br/><b>Notes:</b> ^appraisal_notes'))) {
-							print "<div class='unit'><span class='metaTitle'>Appraisal: </span><span class='meta'>".$va_appraisal."</span></div>";
-						}
-						if ($va_payment = $t_object->get('ca_objects.payment_details', array('delimiter' => '<hr>', 'template' => '<b>Payment Amount: </b>^payment_amount <br/><b>Payment Date:</b> ^payment_date <br/><b>Payment Quarter:</b> ^payment_quarter <br/><b>Installment:</b> ^installment<br/><b>Notes:</b> ^payment_notes'))) {
+						if ($t_object->get('ca_objects.payment_details.payment_amount')) {
+							$va_payment = $t_object->get('ca_objects.payment_details', array('delimiter' => '<hr>', 'template' => '<b>Payment Amount: </b>^payment_amount <br/><b>Payment Date:</b> ^payment_date <br/><b>Payment Quarter:</b> ^payment_quarter <br/><b>Installment:</b> ^installment<br/><b>Notes:</b> ^payment_notes'));
 							print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>".$va_payment."</span></div>";
-						}
+						}						
+						#if ($t_object->get('ca_objects.appraisal.appraisal_value')) {
+						#	$va_appraisal = $t_object->get('ca_objects.appraisal', array('delimiter' => '<hr>', 'template' => '<b>Value: </b>^appraisal_value <br/><b>Date:</b> ^appraisal_date <br/><b>Appraiser:</b> ^appraiser  <ifdef code="appraisal_notes"><br/><b>Notes: </b>^appraisal_notes</ifdef>')); 
+						#	print "<div class='unit'><span class='metaTitle'>Appraisal: </span><span class='meta'>".$va_appraisal."</span></div>";
+						#}
+						if ($t_object->get('ca_objects.appraisal.appraisal_value')) {
+							$va_appraisal = $t_object->get('ca_objects.appraisal', array('returnAsArray' => true)); 
+							print "<div class='unit'><span class='metaTitle'>Appraisal: </span><span class='meta'>";
+							$va_appraisal_rev = array_reverse($va_appraisal);
+							foreach ($va_appraisal_rev as $ar_key => $va_appraisal_r) {
+								print "<b>Value: </b>".$va_appraisal_r['appraisal_value']."<br/>";
+								print "<b>Date: </b>".$va_appraisal_r['appraisal_date']."<br/>";
+								print "<b>Appraiser: </b>".$va_appraisal_r['appraiser']."<br/>";
+								if ($va_appraisal_r['appraisal_notes']) {
+									print "<b>Appraisal Notes: </b>".$va_appraisal_r['appraisal_notes'];
+								}
+								print "<hr>";
+							}
+							print"</span></div>";
+						}						
+
 						if ($va_object_lots = $t_object->get('ca_object_lots.preferred_labels', array('returnAsLink' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Related Accession</span><span class='meta'>".$va_object_lots."</span></div>";
 						}
@@ -107,21 +125,33 @@
 ?>
 				</div>
 				<div id="Condition" class="infoBlock">
-					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.general_condition.general_condition_value</u> (^ca_objects.general_condition.general_condition_date) Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
-					{{{<ifcount min="1" code="ca_objects.frame_condition"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.frame_condition.frame_date</u> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
-					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.glazing_condition.glazing_date</u> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
-					{{{<ifcount min="1" code="ca_objects.support_condition"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.support_condition.support_date</u> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
-					{{{<ifcount min="1" code="ca_objects.vitrine_condition"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.vitrine_condition.vitrine_date</u> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.mount_condition"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.mount_condition.mount_date</u> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.surface_condition"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.base_condition"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>"><u>^ca_objects.base_condition.base_date</u> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.general_condition.general_condition_value</b> (^ca_objects.general_condition.general_condition_date) Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
+					{{{<ifcount min="1" code="ca_objects.frame_condition"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
+					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.glazing_condition.glazing_date</b> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
+					{{{<ifcount min="1" code="ca_objects.support_condition"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
+					{{{<ifcount min="1" code="ca_objects.vitrine_condition"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.mount_condition"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.surface_condition"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.base_condition"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
 <?php
+#					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('delimiter' => '<br/>', 'template' => '<u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes'))) {
+#						print "<div class='unit wide'><span class='metaHeader'>Surface Condition </span><span>";
+#						print $va_surface_condition;
+#						print "</span></div>";
+#					}
+
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
 						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true)); 
 						print '<div class="unit wide"><span class="metaHeader">Condition Images</span><span>';
-						foreach ($va_condition_images as $va_condition_id => $va_condition_image) {
+						
+						$o_db = new Db();
+						$vn_media_element_id = $t_object->_getElementID('condition_images_media');
+						foreach ($va_condition_images as $vn_condition_id => $va_condition_image) {
 							if ($va_condition_image['condition_images_primary'] == "No") {
-								print "<a href='#' onclick='caMediaPanel.showPanel(\"/discovery/index.php/Detail/GetRepresentationInfo/object_id/".$vn_object_id."/attribute_id/".$va_condition_id."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
+								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_condition_id, $vn_media_element_id)) ;
+								if ($qr_res->nextRow()) {
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
+								}
 							}
 						}
 						print "</span></div>";
