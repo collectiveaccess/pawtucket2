@@ -418,7 +418,7 @@ h2 span.artist {
 	width:775px;
 }
 #mediaArea img{
-	width:100%;
+	
 }
 .mediaLarge {
 	float:left;
@@ -430,7 +430,7 @@ h2 span.artist {
 }
 .mediaThumbs {
 	overflow-x:scroll;
-	padding-left:10px;
+	padding-left:10px !important;
 }
 #mediaArea .views{
 	text-transform:uppercase;
@@ -776,7 +776,7 @@ h2 span.artist {
 	bottom: 0px;
 }
 #detail .repViewerCont:hover .detailMediaToolbar{
-	display:block;
+	display:none;
 }
 .multiSearch .collectionsResult a, .multiSearch a .entitiesResult, .multiSearch .objectsResult a, .multiSearch a .eventsResult,
 #detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
