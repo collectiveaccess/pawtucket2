@@ -298,7 +298,11 @@ hr {
 	text-transform: uppercase;
 }
 .scrollingDiv {
-	width:10000px;
+	width:100000px;
+	overflow: hidden;
+}
+.scrollingDivContent{
+	display:inline-block;
 }
 .aboutText {
 	float:left;

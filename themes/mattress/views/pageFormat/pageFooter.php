@@ -31,6 +31,10 @@
 		</div>
 		<script>
 			jQuery(document).ready(function(){
+				$(".scrollingDiv").each(function( index ) {
+					$(this).width($(this).find(".scrollingDivContent").width());
+				});
+				
 				jQuery('.scrollBlock').jScrollPane({autoReinitialise: false});
 			});
 		</script>

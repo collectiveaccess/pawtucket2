@@ -36,7 +36,7 @@
 
 	<div class='blockTitle'>Featured Items</div>
 	<div class='blockFeatured scrollBlock' >
-		<div class='scrollingDiv' > 
+		<div class='scrollingDiv'><div class='scrollingDivContent'>
 <?php
 		$t_set = new ca_sets();
 		$va_featured_set = $t_set->load(array('set_code' => $this->request->config->get('featured_set')));
@@ -82,7 +82,7 @@
 			}
 		}
 ?>
-		</div><!-- scrollingdiv -->
+		</div><!-- scrollingDivContent --></div><!-- scrollingdiv -->
 	</div><!-- block Featured -->
 	
 	<div class='clearfix'></div>
