@@ -33,7 +33,12 @@
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
-	$va_access_values = caGetUserAccessValues($this->request);
+	$va_access_values = caGetUserAccessValues($this->request);	$o_config = $this->getVar("config");
+	$o_config = caGetSearchConfig();
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_placeholder."</div>";
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -57,12 +62,17 @@
 			<div class='{{{block}}}Result'>
 <?php
 			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags', 'checkAccess' => $va_access_values));
+			$vs_image_tag = "";
 			if (sizeof($va_images) > 0){
 				foreach ($va_images as $vn_image_id => $vs_image) {
-					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
+					$vs_image_tag =  $qr_results->getWithTemplate("<l>{$vs_image}</l>");
 					break;
 				} 
 			}
+			if(!$vs_image_tag){
+				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
+			}
+			print $vs_image_tag;
 ?>
 				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div>

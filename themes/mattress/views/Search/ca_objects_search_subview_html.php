@@ -58,7 +58,8 @@
 			} else {
 				print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
 			}
-?>					
+?>	
+
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

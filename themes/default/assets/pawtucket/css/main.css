@@ -835,6 +835,22 @@ a.browseRemoveFacet img {
     padding:10px;
     color:#FFF;
 }
+.frontSlide{
+	position:relative;
+}
+.frontSlideCaption{
+	position:absolute;
+	background-color:rgba(0, 0, 0, 0.5);
+	padding:15px;
+	color:#FFF;
+	bottom:0px;
+	width:100%;
+	z-index:100;
+	font-weight:bold;
+}
+.frontSlideCaption a{
+	color:#FFF;
+}
 
 /* --------------------------------- */
 /* details */
@@ -921,7 +937,8 @@ a.browseRemoveFacet img {
 	font-size:12px;
 	position:absolute;
 	display:none;
-	bottom:0px;
+	top:0px;
+	z-index:200;
 }
 .detail .repViewerCont:hover .detailMediaToolbar{
 	display:block;
@@ -1159,6 +1176,16 @@ a.browseRemoveFacet img {
 	height:auto;
 	max-height:500px;
 }
+.bResultItemImgPlaceholder{
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	color: #858585;
+	padding:60px 5px 72px 5px;
+	text-align:center;
+	width:100%;
+	margin-bottom:10px;
+	text-align:center;
+}
 .bResultItem .bResultItemText a{
 	line-height:1.2em;
 	color:#454545;
@@ -1288,6 +1315,9 @@ a.browseRemoveFacet img {
 	margin:0 5px 0 0;
 	float:left; 
 }
+.bResultListItemImg .bResultItemImgPlaceholder{
+	padding:20px;
+}
 .bResultListItem img{
 	width: auto;
 	height:72px;
@@ -1335,6 +1365,16 @@ a.browseRemoveFacet img {
 	margin-bottom:15px;
 	overflow:hidden;
 	clear:both;
+}
+.multisearchImgPlaceholder{
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	color: #858585;
+	padding:20px;
+	text-align:center;
+	width:100%;
+	margin-bottom:10px;
+	text-align:center;
 }
 .multisearchSort ul {
 	list-style-type:none;
@@ -1630,8 +1670,11 @@ a.browseRemoveFacet img {
 
 /* bookreader */
 #BookReaderContainer{
-	width: 400px;
+	width: 100%;
 	height: 550px;
+}
+.DV-views{
+	margin-left:72px;
 }
 /* overlay (for object representations) */
 #caMediaPanel {
