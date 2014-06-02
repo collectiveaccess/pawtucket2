@@ -28,7 +28,7 @@
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
-					print "<div style='width:100000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 					
@@ -62,7 +62,7 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 2) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div>";
+					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}	
 ?>		
@@ -95,8 +95,8 @@
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
-			print "<div class='blockResults exhibitions'>";
-				print "<div>";
+			print "<div class='blockResults exhibitions scrollBlock'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
@@ -143,7 +143,7 @@
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -223,7 +223,7 @@
 			print "<div id='occurrencesBlock'>";
 			print "<div class='blockTitle related'>"._t('Related Objects')."</div>";
 				print "<div class='blockResults scrollBlock'>";
-					print "<div style='width:50000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					while ($qr_res->nextHit()) {
 						print "<div class='objectsResult'>";
 						print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.resultthumb'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
@@ -236,7 +236,7 @@
 	
 						print "</div>";
 					}
-					print "</div>";
+					print "</div></div>";
 				print "</div><!-- blockResults-->";
 			print "</div><!-- blockTitle-->";
 			print "</div><!-- occurrencesBlock-->";
