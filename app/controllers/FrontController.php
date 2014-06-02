@@ -39,6 +39,9 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			$this->config = caGetFrontConfig();
  			caSetPageCSSClasses(array("front"));
+  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
  		}
  		# -------------------------------------------------------
  		/**
@@ -60,12 +63,15 @@
 					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 					$this->view->setVar('featured_set', $t_set);
 					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
-					$this->view->setVar('featured_set_item_ids', $va_featured_ids); 
+					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
  			}
  			
  			$this->view->setVar('config', $this->config);
  			
+ 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
+ 			$this->view->setVar('result_context', $o_result_context);
  			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php

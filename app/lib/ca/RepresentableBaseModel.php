@@ -712,16 +712,21 @@
 		/**
 		 * Returns information for representations attached to the current item with the specified mimetype. 
 		 *
-		 * @param string $ps_mimetype The mimetype to return representations for. 
+		 * @param array or string $pa_mimetype The mimetypes to return representations for. 
 		 * @param array $pa_options Options for selection of representations to return; same as options for self::getRepresentations()
 		 *
 		 * @return array An array with information about matching representations, in the same format as that returned by self::getRepresentations()
 		 */
-		public function representationsWithMimeType($ps_mimetype, $pa_options=null) {
+		public function representationsWithMimeType($pa_mimetype, $pa_options=null) {
+			if(!is_array($pa_mimetype)){
+				$pa_mimetypes = array($pa_mimetype);
+			}else{
+				$pa_mimetypes = $pa_mimetype;
+			}
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations($pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
-					if ($ps_mimetype == $va_rep['mimetype']) {	
+					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
 					}
 				}

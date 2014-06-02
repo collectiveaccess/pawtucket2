@@ -327,7 +327,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		
+		$va_access_values = caGetUserAccessValues($po_request);
+ 		if(is_array($va_access_values) && sizeof($va_access_values)){
+ 			$pa_options["checkAccess"] = $va_access_values;
+ 		}	
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
 		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
 		
@@ -349,6 +352,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$va_ret = array();
 		$vn_i = 0;
 		$vn_total_cnt = 0;
+		
+		$va_table_counts = array();
 		foreach($pa_blocks as $vs_block => $va_block_info) {
 			if (!($o_search = caGetSearchInstance($va_block_info['table']))) { continue; }
 			
@@ -357,27 +362,36 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			
 			$va_sorts = caGetOption('sortBy', $va_block_info, null);
 			$ps_sort = null;
+			$vb_sort_changed = false;
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
  					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
 						$ps_sort = array_shift(array_values($va_sorts));
 						$va_contexts[$vs_block]->setCurrentSort($vs_sort); 
-						$va_contexts[$vs_block]->saveContext();
+						$vb_sort_changed = true;
 					} else {
 						if (isset($va_sorts[$ps_sort])) { 
 							$ps_sort = $va_sorts[$ps_sort];
 						}
 					}
  				}
+ 			}else{
+ 				$vb_sort_changed = true;
  			}
- 			
+ 			if($vb_sort_changed && ($va_sorts) && sizeof($va_sorts)){
+				# --- set the default sortDirection if available
+				$va_sort_directions = caGetOption('sortDirection', $va_block_info, null);
+				$ps_sort_key = array_search($ps_sort, $va_sorts);
+				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort_key])){
+					$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction);
+				}			
+ 			}
  			if (!($ps_sort_direction = $po_request->getParameter("{$vs_block}SortDirection", pString))) {
  				if (!($ps_sort_direction = $va_contexts[$vs_block]->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';
  				}
  			}
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
-			$va_contexts[$vs_block]->saveContext();
  			
  			
  			$va_options['sort'] = $ps_sort;
@@ -386,8 +400,15 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
 		
 			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types); }
+			$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
+			
+			if (caGetOption('dontShowChildren', $va_block_info, false)) {
+				$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+			}
 			$qr_res = $o_search->search($ps_search_expression, $va_options);
 			
+			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
+			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
 			
 			// In Ajax mode we scroll to an offset
 			$vn_start = 0;
@@ -396,7 +417,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					$qr_res->seek($vn_start);
 					if (isset($va_contexts[$vs_block])) {
 						$va_contexts[$vs_block]->setParameter('start', $vn_start);
-						$va_contexts[$vs_block]->saveContext();
 					}
 				} else {
 					// If the offset is past the end of the result return an empty string to halt the continuous scrolling
@@ -408,9 +428,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				//
 				if ($va_contexts[$vs_block]->getSearchExpression(true) != $ps_search_expression) {
 					$va_contexts[$vs_block]->setParameter('start', 0);
-					$va_contexts[$vs_block]->saveContext();
 				}
 			}
+			$va_contexts[$vs_block]->saveContext();
 			
 			
 			$vn_items_per_page = caGetOption('itemsPerPage', $va_block_info, $vn_items_per_page_default);
@@ -423,7 +443,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if(is_array($va_sort_by)) {
 				$va_sort_list = array();
 				foreach ($va_sort_by as $vs_sort_label => $vs_sort) {
-					$va_sort_list[] = "<li><a href='#' rel='{$vs_sort}'".(($vs_sort == $ps_sort) ? "class='selectedSort'" : '').">{$vs_sort_label}</a></li>";
+					$va_sort_list[] = "<li".(($vs_sort == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort}'>{$vs_sort_label}</a></li>";
 				}
 				
 				$vs_sort_list = "<ul id='{$vs_block}_sort'>".join("\n", $va_sort_list)."</ul>";
@@ -441,8 +461,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('itemsPerColumn', $vn_items_per_column);
 			$o_view->setVar('hasMore', (bool)($vn_count > $vn_start + $vn_items_per_page));
 			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
-			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort"), array("value" => $ps_sort)) : ''));
-			$o_view->setVar('sortByControl', $vs_sort_by_select); // synonym for sortBySelect
+			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort", "class" => "form-control input-sm"), array("value" => $ps_sort)) : ''));
+			$o_view->setVar('sortByControl', ($va_block_info["sortControlType"] && ($va_block_info["sortControlType"] == "list")) ? $vs_sort_list : $vs_sort_by_select); // synonym for sortBySelect
 			$o_view->setVar('sortByList', $vs_sort_list);
 			$o_view->setVar('sort', $ps_sort);
 			
@@ -471,6 +491,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				'sort' => $ps_sort,
 				'sortDirection' => $ps_sort_direction
 			);
+			$va_table_counts[$va_block_info['table']] += $vn_count;
 			$vn_total_cnt += $vn_count;
 			$vn_i++;
 			
@@ -483,6 +504,13 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			'totalCount' => $vn_total_cnt
 		);
 		
+		// Set generic contexts for each table in multisearch (no specific block); 
+		// used to house search history and overall counts when there is more than one block for a given table
+		foreach($va_table_counts as $vs_table => $vn_count) {
+			$va_contexts["_multisearch_{$vs_table}"]->setSearchExpression($ps_search_expression);
+			$va_contexts["_multisearch_{$vs_table}"]->setSearchHistory($vn_count);
+			$va_contexts["_multisearch_{$vs_table}"]->saveContext();
+		}
 		return $va_ret;
 	}
 	# ---------------------------------------

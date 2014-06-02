@@ -77,7 +77,6 @@
 			} else {
  				# --- user is joining a user group from a supplied link
  				if($this->request->session->getVar("join_user_group_id")){
- 					print $this->request->user->get("user_id");
  					if(!$this->request->user->inGroup($this->request->session->getVar("join_user_group_id"))){
  						$this->request->user->addToGroups($this->request->session->getVar("join_user_group_id"));
  						$this->request->session->setVar("join_user_group_id", "");

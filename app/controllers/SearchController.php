@@ -51,15 +51,13 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
-
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
  			caSetPageCSSClasses(array("search", "results"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
  		}
  		# -------------------------------------------------------
  		/**
@@ -67,7 +65,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
- 			
+ 			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
@@ -153,21 +151,31 @@
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($x=$this->opo_result_context->getSearchExpression()));
+					$o_browse->addCriteria("_search", array($this->opo_result_context->getSearchExpression()));
 				}
 			}
 			
 			//
 			// Sorting
 			//
-			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+			$vb_sort_changed = false;
+ 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
+ 						$vb_sort_changed = true;
  					}
  				}
+ 			}else{
+ 				$vb_sort_changed = true;
  			}
- 			
+ 			if($vb_sort_changed){
+				# --- set the default sortDirection if available
+				$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
+				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
+					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+				} 			
+ 			}
  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
  				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';
@@ -184,8 +192,17 @@
 			$this->view->setVar('sort', $ps_sort);
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 			
-
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
+			$va_options = array('checkAccess' => $this->opa_access_values);
+			if ($va_restrict_to_fields = caGetOption('restrictSearchToFields', $va_browse_info, null)) {
+				$va_options['restrictSearchToFields'] = $va_restrict_to_fields;
+			}
+			
+			
+			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
+				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+			}
+			
+			$o_browse->execute($va_options);
 		
 			//
 			// Facets

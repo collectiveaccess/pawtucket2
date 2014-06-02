@@ -19,11 +19,11 @@
 		</div>
 		<div id='mediaArea'>
 <?php		
-
-		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true));
+	if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')) {
+		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
-					print "<div style='width:70000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 					
@@ -34,11 +34,11 @@
 						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
-						if ($t_collection->get('ca_collections.date.dc_dates_types') == 188) {
+						if ($t_collection->get('ca_collections.date.dc_dates_types') == "Date created") {
 							$va_artwork_date = ", ".$t_collection->get('ca_collections.date.dates_value');
 						}
-						$va_artwork_materials = '<div class="materials">'.$t_collection->get('ca_collections.mat_tech_display').'</div>';
-						$va_artwork_display = $va_artwork_title.$va_artwork_date."<br/>".$va_artwork_materials;
+						$va_artwork_artist = '<div class="materials">'.$t_collection->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))).'</div>';
+						$va_artwork_display = $va_artwork_artist.$va_artwork_title.$va_artwork_date;
 						
 						
 						foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
@@ -46,6 +46,7 @@
 							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
 							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
 							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							
 							print "</div>";
 							$vn_i++;
 							if ($vn_i == 3) {
@@ -57,15 +58,46 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div>";
+					print "</div><!-- end scrollingDiv--></div><!-- end scrollingDivContent -->";
 			print "</div><!-- end mediaThumbs -->";
 		}
+	} else {
+		$va_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+		if (sizeof($va_objects) > 0) {
+			print "<div class='mediaThumbs scrollBlock'>";
+					print "<div style='width:70000px'>";
+					$vn_i = 0;
+					$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
+						
+					foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
+						if ($vn_i == 0){print "<div class='imageSet'>";}
+						print "<div class='rep'>";
+						print caNavLink($this->request, "<div class='rep '>".$va_artwork_rep."</div>", '', '', 'Detail', 'Objects/'.$object_key);						
+						print "</div>";
+						$vn_i++;
+						if ($vn_i == 3) {
+							print "</div><!-- end imageSet-->";
+							$vn_i = 0;
+						}
+						
+					}
+					
+					if ((end($va_object_reps) == $va_artwork_rep) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
+
+					print "</div>";
+			print "</div><!-- end mediaThumbs -->";
+		}	
+	}	
 		
 ?>
 			
 		</div><!-- end mediaArea-->
 		<div id='infoArea'>
 <?php
+		if ($t_item->get('ca_occurrences.event_series.series_title')) {
+			$va_series = $t_item->get('ca_occurrences.event_series.series_title', array('convertCodesToDisplayText' => true, 'template' => '^series_title (^series_types)'));
+			print "<div class='description'><div class='metatitle'>"._t('Series')."</div>".$va_series."</div>";
+		}
 		if (($vs_collection = $t_item->get('ca_occurrences.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
 			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
 		}
@@ -77,11 +109,11 @@
 		</div><!-- end infoArea-->
 	</div><!-- end contentArea-->
 <?php
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist')));
-	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder')));
-	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true));
+	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values));
+	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder'), 'checkAccess' => $va_access_values));
+	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 
 
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_events) > 0) | (sizeof($va_collections) > 0) | (sizeof($va_funders) > 0)) {
@@ -94,7 +126,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
 			print "<div class='blockResults exhibitions'>";
-				print "<div>";
+				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
@@ -135,7 +167,7 @@
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
-				print "</div>";
+				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -147,7 +179,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Events')."</div>";
 			print "<div class='blockResults'>";
-				print "<div>";
+				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_events as $event_id => $va_event) {
 						$vn_event_idno = $va_event['idno'];
@@ -168,7 +200,7 @@
 					}
 					if ((end($va_events) == $va_event) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
-				print "</div>";	
+				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end occurrencesBlock-->";
 	}
@@ -178,7 +210,7 @@
 		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
 			print "<div class='blockResults'>";
 			print "<div class='scrollBlock'>";
-				print "<div style='width:5000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 						$vn_collection_id = $va_collection['collection_id'];
@@ -196,8 +228,7 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
-				print "</div>";	
-				print "</div>";	
+				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";	
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end collectionsBlock-->";
 	}	
@@ -206,7 +237,7 @@
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Artists + Curators')."</div>";
 			print "<div class='blockResults'>";
-				print "<div>";
+				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
@@ -219,7 +250,7 @@
 					}
 				}
 				if ((end($va_entities) == $va_entity) && ($vn_i < 5)){print "</div>";}								
-				print "</div>";
+				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -228,7 +259,7 @@
 		print "<div id='fundersBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Funders')."</div>";
 			print "<div class='blockResults'>";
-				print "<div>";
+				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_funders as $funder_id => $va_funder) {
 					$vn_funder_id = $va_funder['entity_id'];
@@ -241,7 +272,7 @@
 					}
 				}
 				if ((end($va_funders) == $va_funder) && ($vn_i < 5)){print "</div>";}								
-				print "</div>";
+				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}	

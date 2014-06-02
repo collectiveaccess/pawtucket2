@@ -42,12 +42,17 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
-	
+	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
@@ -70,7 +75,7 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids);
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -81,8 +86,11 @@
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				
-				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small') : $va_images[$vn_id];
+				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
+				if(!$vs_image){
+					$vs_image = $vs_placeholder_tag;
+				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
@@ -100,7 +108,7 @@
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><span class='glyphicon glyphicon-folder-open'></span></a>
+				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><i class='fa fa-suitcase'></i></a>
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";

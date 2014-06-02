@@ -39,6 +39,7 @@
 		private $opo_request;
 		private $ops_table_name;
 		private $ops_find_type;
+		private $ops_find_subtype;
 		private $opa_context = null;
 		private $opb_is_new_search = false;
 		# ------------------------------------------------------------------
@@ -51,12 +52,13 @@
 		 * @param $ps_find_type - a __CA_FIND_CONTEXT_*__ constant indicating the source of the find; separate contexts are maintained for each find type
 		 * 
 		 */
-		public function __construct($po_request, $pm_table_name_or_num, $ps_find_type) {
+		public function __construct($po_request, $pm_table_name_or_num, $ps_find_type, $ps_find_subtype=null) {
 			$this->opo_request = $po_request;
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			
 			$this->ops_table_name = $vs_table_name;
 			$this->ops_find_type = $ps_find_type;
+			$this->ops_find_subtype = $ps_find_subtype;
 			
 			$this->getContext();
 		}
@@ -582,28 +584,47 @@
 		 * @param string Optional find type string; allows you to load any context regardless of what the current find type is. Don't use this unless you know what you're doing.
 		 * @return array - context data
 		 */
-		protected function getContext($ps_find_type=null) {
+		protected function getContext($ps_find_type=null, $ps_find_subtype=null) {
 			if(!($vs_find_type = $ps_find_type)) {
 				$vs_find_type = $this->ops_find_type;
+			}
+			if(!($vs_find_subtype = $ps_find_subtype)) {
+				$vs_find_subtype = $this->ops_find_subtype;
 			}
 			$o_storage = $this->getPersistentStorageInstance();
 			$o_semi_storage = $this->getSemiPersistentStorageInstance();
 			
 			if ($ps_find_type) {
-				if(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type))) {
+				if(
+					(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type.'_'.$ps_find_subtype)))
+					&&
+					(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type)))
+				) {
 					$va_semi = array();
 				}
-				if (!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type))) { 
+				if (
+					(!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type.'_'.$ps_find_subtype)))
+					&&
+					(!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$ps_find_type)))
+				) { 
 					$va_context = array();
 				}
 				return array_merge($va_context, $va_semi); 
 			}
 			
 			if (!$this->opa_context) { 
-				if(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type))) {
+				if(
+					(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.'_'.$vs_find_subtype)))
+					&&
+					(!is_array($va_semi = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type)))
+				){
 					$va_semi = array();
 				}
-				if(!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type))) { 
+				if(
+					(!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.'_'.$vs_find_subtype)))
+					&&
+					(!is_array($va_context = $o_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type)))
+				) { 
 					$va_context = array();
 				}
 				$this->opa_context = array_merge($va_semi, $va_context); 
@@ -628,12 +649,15 @@
 		 * @param string Optional find type string to save context under; allows you to save to any context regardless of what is currently loaded. Don't use this unless you know what you're doing.
 		 * @return boolean - always returns true
 		 */
-		public function saveContext($ps_find_type=null, $pa_context=null) {
+		public function saveContext($ps_find_type=null, $pa_context=null, $ps_find_subtype=null) {
 			if(!($vs_find_type = $ps_find_type)) {
 				$vs_find_type = $this->ops_find_type;
 				$va_context = $this->opa_context;
 			} else {
 				$va_context = $pa_context;
+			}
+			if (!($vs_find_subtype = $ps_find_subtype)) {
+				$vs_find_subtype = $this->ops_find_subtype;
 			}
 			
 			$va_semi_context = array(
@@ -644,15 +668,15 @@
 			unset($va_context['page']);
 			
 			$o_storage = $this->getPersistentStorageInstance();
-			$o_storage->setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type, $va_context);
+			$o_storage->setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : ""), $va_context);
 			
 			
 			$o_semi_storage = $this->getSemiPersistentStorageInstance();
-			if (!is_array($va_existing_semi_context = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type))) {
+			if (!is_array($va_existing_semi_context = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : "")))) {
 				$va_existing_semi_context = array();
 			}
 			$va_semi_context = array_merge($va_existing_semi_context, $va_semi_context);
-			$o_semi_storage->setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type, $va_semi_context);
+			$o_semi_storage->setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : ""), $va_semi_context);
 			
 			return true;
 		}

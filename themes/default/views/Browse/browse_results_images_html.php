@@ -42,13 +42,19 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
-	
+	$va_access_values = caGetUserAccessValues($this->request);
+	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
+		
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
 		$vn_col_span_sm = 2;
@@ -69,7 +75,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null)));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -80,10 +86,19 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
-					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', $vs_table, $vn_id);				
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
+						$vs_thumbnail = $vs_placeholder_tag;	
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
-					$vs_rep_detail_link 	= caDetailLink($this->request, $va_images[$vn_id], '', $vs_table, $vn_id);			
+					if($va_images[$vn_id]){
+						$vs_thumbnail = $va_images[$vn_id];
+					}else{
+						$vs_thumbnail = $vs_placeholder_tag;
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
@@ -100,7 +115,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".(($this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><span class='glyphicon glyphicon-folder-open'></span></a>")."
+				".(($this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><i class='fa fa-suitcase'></i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";

@@ -1,5 +1,6 @@
 <?php
 	$t_item = $this->getVar('item');
+	$va_access_values = $this->getVar('access_values');
 ?>
 
 <div id="detail">
@@ -35,15 +36,14 @@
 			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
 			
 			if ($t_item->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name', array('returnAsArray' => true));				
+				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name');				
 			} else {
-				$va_main_image_object = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true));
+				$va_main_image_object = $t_item->get('ca_objects.preferred_labels');
 			}
-			$va_main_image_caption = array_shift(array_values($va_main_image_object));
 			if ($va_primary_rep['tags']['medium']) {
-				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $vn_rep_id))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
-				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_caption."</div>";
+				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
 			}
 ?>			
 			</div><!-- end mediaLarge-->
@@ -51,7 +51,7 @@
 			if (sizeof($va_related_reps) > 1) {
 ?>			
 			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
-			<div class='mediaThumbs' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
+			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
 	
 				<div style='width:10000px;'>
 <?php
@@ -113,7 +113,7 @@
 	<div id='relatedInfo'>
 <?php
 	# Related Exhibitions Block
-	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true));
+	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
@@ -169,7 +169,7 @@
 	}
 
 	# Related Events Block
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true));
+	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_events) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Events')."</div>";
@@ -196,7 +196,7 @@
 	}
 	
 	# Related Entities Block
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related People')."</div>";

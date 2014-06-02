@@ -1798,7 +1798,7 @@
 			
 			$vs_browse_type_limit_sql = '';
 			if (($va_browse_type_ids = $this->getTypeRestrictionList()) && sizeof($va_browse_type_ids)) {		// type restrictions
-				$vs_browse_type_limit_sql = '('.$vs_browse_table_name.'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).'))';
+				$vs_browse_type_limit_sql = '('.$t_subject->tableName().'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).'))';
 				
 				if (is_array($va_facet_info['type_restrictions'])) { 		// facet type restrictions bind a facet to specific types; we check them here 
 					$va_restrict_to_types = $this->_convertTypeCodesToIDs($va_facet_info['type_restrictions']);
@@ -3826,8 +3826,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 */
 		public function addResultFilter($ps_field, $ps_operator, $pm_value) {
 			$ps_operator = strtolower($ps_operator);
-			if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', 'in', 'not in'))) { return false; }
+			if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', 'in', 'not in', 'is', 'is not'))) { return false; }
 			$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
+			$va_tmp = explode(".", $ps_field);
+			$ps_field = array_pop($va_tmp);
 			if (!$t_table->hasField($ps_field)) { return false; }
 			
 			$this->opa_result_filters[] = array(
