@@ -53,7 +53,7 @@
 			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
 			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
 	
-				<div style='width:10000px;'>
+				<div class='scrollingDiv'><div class='scrollingDivContent'>
 <?php
 				$stack = 0;
 				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
@@ -69,7 +69,7 @@
 				}
 				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
 ?>
-				</div>
+				</div></div>
 			</div><!-- end mediaThumbs-->	
 <?php
 			}
