@@ -24,7 +24,7 @@
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
-					print "<div style='width:70000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 					
@@ -59,14 +59,14 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div>";
+					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}
 	} else {
 		$va_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_objects) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
-					print "<div style='width:70000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
@@ -85,7 +85,7 @@
 					
 					if ((end($va_object_reps) == $va_artwork_rep) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div>";
+					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}	
 	}	
@@ -211,7 +211,7 @@
 		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
 			print "<div class='blockResults'>";
 			print "<div class='scrollBlock'>";
-				print "<div style='width:5000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					foreach ($va_collections as $collection_id => $va_collection) {
 						$vn_collection_id = $va_collection['collection_id'];
@@ -229,7 +229,7 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
-				print "</div>";	
+				print "</div></div>";	
 				print "</div>";	
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end collectionsBlock-->";
