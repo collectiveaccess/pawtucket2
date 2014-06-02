@@ -38,7 +38,7 @@ $qr_res = $this->getVar('featured_set_items_as_search_result');
 
 	<div class='blockTitle'>Featured Items</div>
 	<div class='blockFeatured scrollBlock' >
-		<div class='scrollingDiv' > 
+		<div class='scrollingDiv'><div class='scrollingDivContent'>
 <?php
 		
 		if ($qr_res) {
@@ -74,7 +74,7 @@ $qr_res = $this->getVar('featured_set_items_as_search_result');
 			}
 		}
 ?>
-		</div><!-- scrollingdiv -->
+		</div><!-- scrollingDivContent --></div><!-- scrollingdiv -->
 	</div><!-- block Featured -->
 	
 	<div class='clearfix'></div>
