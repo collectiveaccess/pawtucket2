@@ -553,6 +553,7 @@ h2 span.artist {
 #relatedInfo #occurrencesBlock .occurrencesResult {
 	width:320px;
 	float:left;
+	margin-bottom:30px;
 }
 #detail .collectionSet {
 	float: left;
@@ -663,7 +664,7 @@ h2 span.artist {
 	width: 770px;
 	border-top:1px solid #ccc;
 	margin-left:25px;
-	padding: 15px 0px 0px 0px;
+	padding: 15px 0px 0px 0px !important;
 	overflow-y:scroll;
 	min-height:165px;
 	height:240px;
@@ -673,7 +674,7 @@ h2 span.artist {
 
 #detail .blockResults.exhibitions {
 	height:auto;
-	padding-bottom:20px;
+	margin-bottom:30px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
 	width:100%;
@@ -832,6 +833,7 @@ h2 span.artist {
 #detail #entitiesBlock .entitySet {
 	width:250px;
 	float:left;
+	margin-bottom:15px;
 }
 /* Browse Page */
 
