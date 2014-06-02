@@ -359,7 +359,10 @@ color:#ccc;}
 	box-shadow:         4px 4px 6px 0px #000;
 	border:5px solid #FFF;
 }
-#detailMediaToolbar{
+#detailMediaToolbar, .detailMediaToolbar{
+	display:none;
+}
+.detail .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
 .detail {font-size:15px;}
