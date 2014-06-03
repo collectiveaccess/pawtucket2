@@ -17,12 +17,6 @@
 			<strong>Fax:</strong> 513.791.4920<br/>
 			<strong>E-mail:</strong> <a href="mailto:info@holocaustandhumanity.org">info@holocaustandhumanity.org</a>
 		</p>
-		<p>
-			Kate Morris<br/>
-			Education and Collections Associate<br/>
-			<strong>Phone:</strong> 513.487.3055<br/>
-			<strong>Email:</strong> <a href="mailto:kmorris@holocaustandhumanity.org">kmorris@holocaustandhumanity.org</a> 
-		</p>
 	</div>
 	<div class="col-sm-4 text-center">
 		<br/><br/><?php print caGetThemeGraphic($this->request, "chhe_int.png"); ?>
