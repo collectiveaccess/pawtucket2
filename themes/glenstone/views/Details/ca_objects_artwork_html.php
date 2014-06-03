@@ -29,7 +29,7 @@
 			
 				{{{representationViewer}}}
 <?php
-		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => true))."</div>";
+		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
 ?>	
 			
 			</div><!-- end col -->

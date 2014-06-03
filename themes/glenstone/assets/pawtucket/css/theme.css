@@ -408,6 +408,16 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	color: #777;
 	line-height: 1.3em;
 }
+.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
+	position: absolute;
+	top: 30px;
+	margin-left: 60px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
+}
 #libraryBlock {
 	margin-bottom:10px;
 }

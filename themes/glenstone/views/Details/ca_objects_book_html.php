@@ -32,6 +32,10 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 			
 				{{{representationViewer}}}
+				
+<?php
+		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
+?>				
 	
 			<div class='requestButton'>Request this item  &nbsp;<i class='fa fa-envelope'></i></div>			
 			</div><!-- end col -->
