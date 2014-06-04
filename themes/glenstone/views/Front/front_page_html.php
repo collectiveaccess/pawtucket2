@@ -139,7 +139,7 @@
 		</div><!--end col-sm-8-->
 
 <?php
-	$va_recent_searches = $o_result_context->getSearchHistory();
+#	$va_recent_searches = $o_result_context->getSearchHistory(); 
 	
 	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
 ?>	
