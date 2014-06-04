@@ -67,6 +67,7 @@
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
  			AssetLoadManager::register("readmore");
+ 			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); 
@@ -142,7 +143,19 @@
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false))));
-			} 			
+			}
+			//
+			// map
+			//
+			$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
+			if($vs_map_attribute && $t_table->get('ca_places.georeference')){
+				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+				$o_map->mapFrom($t_table, $vs_map_attribute);
+				$this->view->setVar("map", $o_map->render('HTML'));
+			}else{
+				$this->view->setVar("map", "");
+			}
+			
  			//
  			// comments, tags, rank
  			//

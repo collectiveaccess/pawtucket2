@@ -403,8 +403,12 @@
 			$vn_current_rep_id = $t_representation->get("representation_id");
 		}
 		if($pa_options["primaryOnly"]){
-			if($vn_preimary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
-				$va_rep_ids = array($vn_preimary_rep_id);
+			if($vn_current_rep_id){
+				$va_rep_ids = array($vn_current_rep_id);
+			}else{
+				if($vn_primary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
+					$va_rep_ids = array($vn_primary_rep_id);
+				}
 			}
 		}else{
 			# --- are there multiple reps?
@@ -444,7 +448,7 @@
 					$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 				}
 				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$vs_tool_bar.$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div></div>";			
+				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
 			}
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';

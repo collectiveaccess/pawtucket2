@@ -34,6 +34,7 @@
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$o_config = $this->getVar("config");
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
