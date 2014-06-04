@@ -79,11 +79,15 @@
 				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+				
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+				
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
 				{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
-				
-				Map could go here, or call out related object like portrait
+				{{{map}}}
 				<div id="detailTools">
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
