@@ -14,7 +14,7 @@
 			foreach($va_list_sub_items as $vn_i => $va_item) {
 				$va_list_sub_sub_items = caExtractValuesByUserLocale($t_list->getChildItemsForList($this->getVar('list_code'), $va_item['item_id'], array('directChildrenOnly' => true)));
 				if(is_array($va_list_sub_sub_items) && sizeof($va_list_sub_sub_items)){
-					$va_resp['subList'] .= "<li><a href='#' onClick='$(\"#tocSubList".$vn_i."\").toggle(); return false;'>".$va_item['name_plural']."</a></li>\n";
+					$va_resp['subList'] .= "<li><a href='#' onClick='$(\"#tocSubList".$vn_i."\").toggle(); return false;'>+ ".$va_item['name_plural']."</a></li>\n";
 					$va_resp['subList'] .= "<ul class='tocSubSubMenu' id='tocSubList".$vn_i."'>";
 					foreach($va_list_sub_sub_items as $vn_sub_i => $va_subitem) {
 						$va_resp['subList'] .= "<li>".caNavLink($this->request, $va_subitem['name_plural'], '', '', 'Browse', 'Objects', array('facet' => 'term_facet', 'id' => $vn_sub_i))."</li>\n";
