@@ -418,6 +418,35 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	border-radius: 30px;
 	opacity: .7;
 }
+.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
+	position: absolute;
+	top: 30px;
+	margin-left: 60px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
+}
+.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+	font-size: 30px;
+	padding: 10px;
+	border-radius: 23px;
+	background-color: #eee;
+	opacity: .7;
+	position: absolute;
+	left: 40%;
+	top: 18%;
+}
+.bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
+	top:27%;
+}
+@media (max-width: 768px) {
+	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+		/*font-size: 30px;
+		top: 70px;*/
+	}
+}
 #libraryBlock {
 	margin-bottom:10px;
 }
