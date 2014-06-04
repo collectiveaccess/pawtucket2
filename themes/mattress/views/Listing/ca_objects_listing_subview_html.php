@@ -53,6 +53,8 @@
 		print "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis mi volutpat, dapibus enim in, sagittis dui. Cras ac tortor tortor. Nullam consequat semper se</p>";
 		
 		while($qr_list->nextHit()) {
+			$va_subjects = array();
+			$va_theme = array();
 			print "<div class='lessonInfo'>";
 			print "<div class='lessonImage'>".$qr_list->get('ca_object_representations.media.small')."</div>";
 			print "<div class='lessonText'>";
