@@ -54,6 +54,12 @@
 	}
 	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
 	
+	$o_set_config = caGetSetsConfig();
+	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	if(!$vs_lightbox_icon){
+		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
+	}
+	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
 		$vn_col_span_xs = 4;
@@ -108,7 +114,7 @@
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><i class='fa fa-suitcase'></i></a>
+				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</a>
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";

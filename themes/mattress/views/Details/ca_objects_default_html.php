@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = $this->getVar('access_values');
 ?>
 
 <div id="detail">
@@ -79,7 +80,7 @@
 		print "<div id='collectionsBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Installations')."</div>";
 			print "<div class='blockResults'>";
-				print "<div style='width:100000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_collections as $collection_id => $va_collection) {
 					$va_collection_idno = $va_collection['idno'];
@@ -99,7 +100,7 @@
 					}
 				}
 				if ((end($va_collections) == $va_collection) && ($vn_i < 5)){print "</div>";}				
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -109,7 +110,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
 			print "<div class='blockResults exhibitions'>";
-				print "<div style='width:100000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
@@ -155,7 +156,7 @@
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end occurrencesBlock -->";
 		}		

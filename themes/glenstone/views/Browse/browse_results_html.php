@@ -37,6 +37,7 @@
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
+	$va_browse_name 	= $this->getVar('name');
 	
 	$vs_current_sort	= $this->getVar('sort');
 	$vs_sort_dir		= $this->getVar('sort_direction');
@@ -51,6 +52,7 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	$va_browse_info 	= $this->getVar("browseInfo");
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -67,7 +69,11 @@ foreach($va_views as $vs_view => $va_view_info) {
 </div>		
 <H1>
 <?php 
-	print _t('%1 %2 %3', $qr_res->numHits(), $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+	if ($t_instance->getProperty('NAME_SINGULAR') == "object") {
+		print _t('%1 %2 %3', $qr_res->numHits(), ucwords($va_browse_info['displayName']), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));
+	} else {
+		print _t('%1 %2 %3', $qr_res->numHits(), ucwords($t_instance->getProperty('NAME_SINGULAR')), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));		
+	}
 ?>		
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>

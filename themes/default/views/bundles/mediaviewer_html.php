@@ -122,7 +122,7 @@ if($vs_display_type == 'media_overlay'){
 	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
 		print $vs_tag;
 	}else{
-		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$vs_tag."</a>";
+		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
 	}
 ?>
 	</div><!-- end caMediaOverlayContent/ caMediaDisplayContent -->

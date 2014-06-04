@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_item_ids = $this->getVar('featured_set_item_ids');
+	#$va_item_ids = $this->getVar('featured_set_item_ids');
 	$o_result_context = $this->getVar('result_context');
 	
 	if(is_array($va_item_ids) && sizeof($va_item_ids)){
@@ -139,6 +139,7 @@
 		</div><!--end col-sm-8-->
 
 <?php
+
 #	$va_recent_searches = $o_result_context->getSearchHistory(); 
 	
 	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
@@ -147,8 +148,13 @@
 			<h1>Recent Searches</h1>
 			<ul class='recentSearch'> 
 <?php
+			$v_i = 0;
 			foreach($va_recent_searches as $vs_search => $va_search_info) {
 				print "<li>".caNavLink($this->request, $vs_search, '', '', 'MultiSearch', 'Index', array('search' => $vs_search))."</li>";
+				$v_i++;
+				if ($v_i == 10) {
+					break;
+				}
 			}
 ?>
 			</ul>

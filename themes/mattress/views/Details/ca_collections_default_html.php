@@ -53,12 +53,13 @@
 			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
 			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
 	
-				<div style='width:10000px;'>
+				<div class='scrollingDiv'><div class='scrollingDivContent'>
 <?php
 				$stack = 0;
 				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
 					if ($stack == 0) { print "<div class='thumbResult'>";}
-					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
+					
+					print "<div class='rep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_related_rep_id, 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
 					//print "<div class='rep'>".$va_related_rep['tags']['widepreview']."</div>";
 					
 					$stack++;
@@ -69,7 +70,7 @@
 				}
 				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
 ?>
-				</div>
+				</div></div>
 			</div><!-- end mediaThumbs-->	
 <?php
 			}

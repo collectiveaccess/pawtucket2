@@ -67,6 +67,7 @@
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
  			AssetLoadManager::register("readmore");
+ 			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); 
@@ -142,7 +143,19 @@
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
 				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false))));
-			} 			
+			}
+			//
+			// map
+			//
+			$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
+			if($vs_map_attribute && $t_table->get('ca_places.georeference')){
+				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+				$o_map->mapFrom($t_table, $vs_map_attribute);
+				$this->view->setVar("map", $o_map->render('HTML'));
+			}else{
+				$this->view->setVar("map", "");
+			}
+			
  			//
  			// comments, tags, rank
  			//
@@ -487,6 +500,64 @@
 			$this->response->sendContent();
 			if ($vs_path) { unlink($vs_path); }
 			return $vn_rc;
+		}
+		# -------------------------------------------------------
+ 		# 
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns content for overlay containing details for media attribute
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		value_id = the id of the attribute value (ca_attribute_values) record to display
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *
+ 		 */ 
+ 		public function GetMediaInfo() {
+ 			$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
+ 			$this->response->addContent($this->getMediaAttributeViewerHTMLBundle($this->request, array('display' => 'media_overlay', 'value_id' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
+ 		}
+		# ------------------------------------------------------
+		/**
+		 * 
+		 */
+		public function getMediaAttributeViewerHTMLBundle($po_request, $pa_options=null) {
+			$va_access_values = (isset($pa_options['access']) && is_array($pa_options['access'])) ? $pa_options['access'] : array();	
+			$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'media_overlay';	
+			$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
+			
+			$pn_value_id = (isset($pa_options['value_id']) && $pa_options['value_id']) ? $pa_options['value_id'] : null;
+			
+			$t_attr_val = new ca_attribute_values();
+			$t_attr_val->load($pn_value_id);
+			$t_attr_val->useBlobAsMediaField(true);
+			
+			$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
+			
+			$o_view->setVar('containerID', $vs_container_dom_id);
+			
+			$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
+			$va_rep_display_info['poster_frame_url'] = $t_attr_val->getMediaUrl('value_blob', $va_rep_display_info['poster_frame_version']);
+			
+			$o_view->setVar('display_options', $va_rep_display_info);
+			$o_view->setVar('representation_id', $pn_representation_id);
+			$o_view->setVar('t_attribute_value', $t_attr_val);
+			$o_view->setVar('versions', $va_versions = $t_attr_val->getMediaVersions('value_blob'));
+			
+			$t_media = new Media();
+	
+			$ps_version 	= $po_request->getParameter('version', pString);
+			if (!in_array($ps_version, $va_versions)) { 
+				if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+			}
+			$o_view->setVar('version', $ps_version);
+			$o_view->setVar('version_info', $t_attr_val->getMediaInfo('value_blob', $ps_version));
+			$o_view->setVar('version_type', $t_media->getMimetypeTypename($t_attr_val->getMediaInfo('value_blob', $ps_version, 'MIMETYPE')));
+			$o_view->setVar('mimetype', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));			
+			
+			
+			return $o_view->render('media_attribute_viewer_html.php');
 		}
  		# -------------------------------------------------------
  		# Tagging and commenting
