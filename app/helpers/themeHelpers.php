@@ -403,8 +403,12 @@
 			$vn_current_rep_id = $t_representation->get("representation_id");
 		}
 		if($pa_options["primaryOnly"]){
-			if($vn_preimary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
-				$va_rep_ids = array($vn_preimary_rep_id);
+			if($vn_current_rep_id){
+				$va_rep_ids = array($vn_current_rep_id);
+			}else{
+				if($vn_primary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
+					$va_rep_ids = array($vn_primary_rep_id);
+				}
 			}
 		}else{
 			# --- are there multiple reps?
