@@ -71,8 +71,8 @@
  		
  			// Load plugin view paths
  			if (!is_array($pa_view_paths)) { $pa_view_paths = array(); }
- 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/".__CA_THEME__."/views";
  			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/default/views";
+ 			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/".__CA_THEME__."/views";
  			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}
