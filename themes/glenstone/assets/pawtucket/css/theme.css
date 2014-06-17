@@ -69,7 +69,7 @@ a:hover {
 	border-radius: 4px;
 	background-image:none;
 }
-#pageArea {
+/*#pageArea {
 	max-width:none;
 	padding:0px;
 }
@@ -79,6 +79,7 @@ a:hover {
 .navbar-collapse {
 	max-width:none;
 }
+*/ 
 .clearfix {
 	clear:both;
 	width:100%;
@@ -327,9 +328,10 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 #pageArea.staticPage .container{
 	min-height:300px; 
 }
-.staticPage H1 {
+.staticPage H1, .findingaid H1 {
 	font-weight:200;
 	margin-bottom:20px;
+	color: #858585;
 }
 .staticPage .jcarousel-control-prev, .staticPage .jcarousel-control-next {
 	top:100px;
@@ -406,6 +408,45 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	font-weight:600;
 	color: #777;
 	line-height: 1.3em;
+}
+.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
+	position: absolute;
+	top: 30px;
+	margin-left: 60px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
+}
+.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
+	position: absolute;
+	top: 30px;
+	margin-left: 60px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
+}
+.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+	font-size: 30px;
+	padding: 10px;
+	border-radius: 23px;
+	background-color: #eee;
+	opacity: .7;
+	position: absolute;
+	left: 40%;
+	top: 18%;
+}
+.bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
+	top:27%;
+}
+@media (max-width: 768px) {
+	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+		/*font-size: 30px;
+		top: 70px;*/
+	}
 }
 #libraryBlock {
 	margin-bottom:10px;
@@ -596,11 +637,26 @@ p.artist.lower {
 	padding-right:15px;
 	padding-left:15px;
 }
-.detail #detailMediaToolbar {
-	margin-bottom:20px;
+.detail .repViewerCont img {
+	
+} 
+.detail .detailMediaToolbar {
+	font-size:14px;
+}
+.detail #detailRepNav {
+	font-size:14px;
 }
 .detail .repIcons {
 	clear:both;
+}
+.detail #detailRepNav span {
+	background-color:#eee;
+	margin-bottom:10px;
+	top: 0px;
+	position: absolute;
+}
+.detail #detailRepNavPrev {
+	margin-left:-24px;
 }
 .detail .repIcons ul{
 	padding:0px;
@@ -940,3 +996,19 @@ div.caMediaOverlayControls .objectInfo {
 div.caMediaOverlayControls .close {
 	opacity:1;
 }
+
+/* Finding Aid */
+
+.findingIntro {
+	font-weight:200;
+}
+#findingAidCont {
+	margin-top:20px;
+}
+.collHeader a{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 400;
+	color: #414151;
+	font-size: 16px;
+}
+
