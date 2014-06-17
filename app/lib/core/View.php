@@ -46,6 +46,8 @@ class View extends BaseObject {
 	
 	private $ops_character_encoding;
 	
+	private $ops_last_render = null;
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -184,7 +186,7 @@ class View extends BaseObject {
 	 */
 	public function compile($ps_filepath, $pb_force_recompile=false) {
 		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
-			return json_decode(file_get_contents($vs_compiled_path));
+			return is_array($va_tags = json_decode(file_get_contents($vs_compiled_path), true)) ? $va_tags : array();
 		}
 		
 		$vs_buf = $this->_render($ps_filepath);
@@ -226,8 +228,12 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+	public function render($ps_filename, $pb_dont_do_var_replacement=false, $pa_options=null) {
 		global $g_ui_locale;
+		
+		if (!($vb_dont_try_to_force_update_cache = caGetOption('dontTryToForceUpdateCache', $pa_options, false))) {
+			$this->ops_last_render = null;
+		}
 		
 		$vb_output = false;
 		$vs_buf = null;
@@ -257,14 +263,16 @@ class View extends BaseObject {
 				$vn_count = 0;
 				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);
 				
-				if ($vn_count == 0) {
+				if (($vn_count == 0) && !$vb_dont_try_to_force_update_cache) {
 					// Force recompile because view is somehow out-of-sync with
 					// the tag cache. This shouldn't really happen since the modification
 					// of the review should trigger a recompile, but there have been instances
 					// of the cache getting stale and the modification date of the view file
 					// not being changed; this code covers that eventuality.
 					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
-					return $this->render($ps_filename, $pb_dont_do_var_replacement);
+					return $this->render($ps_filename, $pb_dont_do_var_replacement, array('dontTryToForceUpdateCache' => true));
+				} elseif($vn_count == 0) {
+					return $vs_buf;
 				}
 				
 			}
@@ -277,12 +285,13 @@ class View extends BaseObject {
 	 *
 	 */
 	private function _render($ps_filename) {
+		if ($this->ops_last_render) { return $this->ops_last_render; }
 		if (!file_exists($ps_filename)) { return null; }
 		ob_start();
 		
 		require($ps_filename);
 		
-		return ob_get_clean();
+		return $this->ops_last_render = ob_get_clean();
 	}
 	# -------------------------------------------------------
 	# Character encodings
