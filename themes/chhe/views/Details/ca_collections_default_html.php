@@ -16,7 +16,7 @@
 		<div class="col-sm-10 col-md-10">
 			<H3>{{{^ca_collections.preferred_labels.displayname}}}</H3>
 			
-			{{{<ifcount code="ca_objects" min="2">
+			{{{<ifcount code="ca_objects" min="1">
 			<div id="detailRelatedObjects">
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>
@@ -115,7 +115,7 @@
 				{{{<ifcount code="ca_collections.related" min="1">
 				<ifcount code="ca_collections.related" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collection</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
 				<ifcount code="ca_collections.related" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collections</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
-				<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.displayname</l></unit><br/><br/>
+				<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.displayname</l></unit><br/><br/>
 				</ifcount>}}}
 			</div><!-- graybordered -->
 		</div><!--end col2-->
@@ -142,7 +142,7 @@
 							<label for="exampleInputPassword1">Enter Your Comment Here</label><textarea class="form-control" rows="5" name="comment"><?php print $this->getVar("form_comment"); ?></textarea>
 						</div>
 						 <button type="submit" class="btn btn-default">Submit</button>
-						<input type="hidden" name="item_id" value="<?php print $t_object->get("object_id"); ?>">
+						<input type="hidden" name="item_id" value="<?php print $t_object->get("collection_id"); ?>">
 						<input type="hidden" name="tablename" value="<?php print $this->getVar("detailType"); ?>">
 						<input type="hidden" name="inline" value="1">
 					</form>

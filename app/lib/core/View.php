@@ -182,8 +182,8 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function compile($ps_filepath) {
-		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
+	public function compile($ps_filepath, $pb_force_recompile=false) {
+		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
 			return json_decode(file_get_contents($vs_compiled_path));
 		}
 		
@@ -254,7 +254,18 @@ class View extends BaseObject {
 			$va_vars = $this->getAllVars();
 			foreach($va_compile as $vs_var) {
 				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
-				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf);
+				$vn_count = 0;
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);
+				
+				if ($vn_count == 0) {
+					// Force recompile because view is somehow out-of-sync with
+					// the tag cache. This shouldn't really happen since the modification
+					// of the review should trigger a recompile, but there have been instances
+					// of the cache getting stale and the modification date of the view file
+					// not being changed; this code covers that eventuality.
+					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
+					return $this->render($ps_filename, $pb_dont_do_var_replacement);
+				}
 				
 			}
 		}
