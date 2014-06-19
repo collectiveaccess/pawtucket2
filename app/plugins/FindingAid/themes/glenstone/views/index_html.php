@@ -18,8 +18,13 @@
 			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id));
 			foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 				print "<div class='collHeader' style='margin-left: ".($va_hierarchy_item['level'] * 35)."px'>";
-				if ($va_hierarchy_item['level'] == 0) {
+				if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
 					print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
+				} elseif ($va_hierarchy_item['level'] == 0) {
+					print "<i class='fa fa-square-o finding-aid' {$va_opacity}></i>";
+				} else {
+					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
+					print "<i class='fa fa-angle-right finding-aid' {$va_opacity}></i>";
 				}
 				print "{$va_hierarchy_item['display']}</div>\n";
 				if ($va_hierarchy_item['level'] == 0) {
