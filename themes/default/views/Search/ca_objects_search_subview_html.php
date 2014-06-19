@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByControl}}}
+				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search), array('id' => 'caObjectsFullResults')); ?> | {{{sortByControl}}}
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
@@ -94,4 +94,6 @@
 <?php
 		}
 	}
+	
+	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
 ?>

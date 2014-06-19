@@ -49,18 +49,26 @@
 					<div class='blockResultsScroller'>
 <?php
 		}
+		
+		$va_collection_ids = array();
+		while($qr_results->nextHit()) {
+			$va_collection_ids[] = $qr_results->get('ca_collections.collection_id');
+		}
+		$qr_results->seek(0);
+		
+		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => array('featured')));
+			
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
-			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true));
 ?>
 			<div class='{{{block}}}Result'>
 <?php
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags'));
 			if (sizeof($va_images) > 0){
-				foreach ($va_images as $vn_image_id => $vs_image) {
+				$vs_image = $va_images[$qr_results->get('ca_collections.collection_id')];
+				//foreach ($va_images as $vn_image_id => $vs_image) {
 					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
-					break;
-				} 
+				//	break;
+				//} 
 			}
 ?>
 				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>

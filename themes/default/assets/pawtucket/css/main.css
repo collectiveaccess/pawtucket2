@@ -1673,3 +1673,10 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	margin:15px 0px 15px 0px;
 }
 
+/* tooltips */
+.ui-tooltip {
+	padding: 10px;
+	min-width: 120px;
+	max-width: 300px;
+	min-height: 50px;
+}
