@@ -85,8 +85,8 @@
 			"tag" => '',
 			"classname" => '',
 			"asset" => array(
-				"media" => $qr_res->getWithTemplate(caGetOption('image', $va_view_info['display'], null), array('returnURL' => true)),
-				"thumbnail" => $qr_res->getWithTemplate(caGetOption('icon', $va_view_info['display'], null), array('returnURL' => true)),
+				"media" => $qr_res->getWithTemplate(caGetOption('image', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
+				"thumbnail" => $qr_res->getWithTemplate(caGetOption('icon', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				"credit" => $qr_res->getWithTemplate(caGetOption('credit_template', $va_view_info['display'], null)),
 				"caption" => $qr_res->getWithTemplate(caGetOption('caption_template', $va_view_info['display'], null))
 			)

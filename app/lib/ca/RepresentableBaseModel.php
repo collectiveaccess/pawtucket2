@@ -712,16 +712,21 @@
 		/**
 		 * Returns information for representations attached to the current item with the specified mimetype. 
 		 *
-		 * @param string $ps_mimetype The mimetype to return representations for. 
+		 * @param array or string $pa_mimetype The mimetypes to return representations for. 
 		 * @param array $pa_options Options for selection of representations to return; same as options for self::getRepresentations()
 		 *
 		 * @return array An array with information about matching representations, in the same format as that returned by self::getRepresentations()
 		 */
-		public function representationsWithMimeType($ps_mimetype, $pa_options=null) {
+		public function representationsWithMimeType($pa_mimetype, $pa_options=null) {
+			if(!is_array($pa_mimetype)){
+				$pa_mimetypes = array($pa_mimetype);
+			}else{
+				$pa_mimetypes = $pa_mimetype;
+			}
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations($pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
-					if ($ps_mimetype == $va_rep['mimetype']) {	
+					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
 					}
 				}
@@ -772,7 +777,7 @@
 			$vs_pk = $this->primaryKey();
 		
 			$qr_res = $o_db->query("
-				SELECT oxor.{$vs_pk}, orep.media
+				SELECT oxor.{$vs_pk}, orep.media, orep.representation_id
 				FROM ca_object_representations orep
 				INNER JOIN {$vs_linking_table} AS oxor ON oxor.representation_id = orep.representation_id
 				WHERE
@@ -782,6 +787,7 @@
 			$va_media = array();
 			while($qr_res->nextRow()) {
 				$va_media_tags = array();
+				$va_media_tags["representation_id"] = $qr_res->get("representation_id");
 				foreach($pa_versions as $vs_version) {
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);

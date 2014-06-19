@@ -34,13 +34,14 @@
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$o_config = $this->getVar("config");
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
 				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
-				{{{sortByControl}}}
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
@@ -100,6 +101,21 @@
 				});
 			</script>
 <?php
+		}else{
+			# --- need to change sort direction to catch default setting for direction when sort order has changed
+			if($this->getVar("sortDirection") == "desc"){
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+				</script>
+<?php
+			}else{
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+				</script>
+<?php
+			}
 		}
 	}
 ?>

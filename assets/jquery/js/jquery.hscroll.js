@@ -50,6 +50,7 @@
             scrollPreviousControlSelector: null,
             scrollNextControlSelector: null,
             scrollControlDisabledOpacity: 0.25,
+            scrollControlEnabledOpacity: 0.7,
             scrollControlDuration: 350,
             
             cacheKey: null
@@ -228,8 +229,8 @@
 		function _setScrollControls() {
 			var sl = _getScrollLeft();
 			var sw = _calculateWidth();
-			jQuery(_options.scrollPreviousControlSelector).css("opacity", (sl <= 0) ? _options.scrollControlDisabledOpacity : 1.0);
-			jQuery(_options.scrollNextControlSelector).css("opacity", (sl + $e.width() >= sw) ? _options.scrollControlDisabledOpacity : 1.0);
+			jQuery(_options.scrollPreviousControlSelector).css("opacity", (sl <= 0) ? _options.scrollControlDisabledOpacity : _options.scrollControlEnabledOpacity);
+			jQuery(_options.scrollNextControlSelector).css("opacity", (sl + $e.width() >= sw) ? _options.scrollControlDisabledOpacity : _options.scrollControlEnabledOpacity);
 		}
 		
 		//
@@ -322,7 +323,7 @@
 					loading = false;
 				}
 				
-				if (_usingJScrollPane) {
+				if (_usingJScrollPane()) {
 					$e.jScrollPane();
 				}
 			});

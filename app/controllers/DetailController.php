@@ -44,7 +44,11 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  			$this->opo_datamodel = Datamodel::load();
@@ -63,6 +67,7 @@
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
  			AssetLoadManager::register("readmore");
+ 			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
  			$ps_id = $this->request->getActionExtra(); 
@@ -77,10 +82,18 @@
  				$ps_id = (int)$va_tmp[1];
  				$vb_use_identifiers_in_urls = false;
  			}
- 			
- 			if (!$t_table->load($x=$vb_use_identifiers_in_urls ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0))) {
+ 			if (!$t_table->load($x=($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
  				// invalid id - throw error
  				die("Invalid id");
+ 			} 			
+ 			
+			#
+ 			# Enforce access control
+ 			#
+ 			if(sizeof($this->opa_access_values) && !in_array($t_table->get("access"), $this->opa_access_values)){
+  				$this->notification->addNotification(_t("This item is not available for view"), "message");
+ 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				return;
  			}
  			
  			MetaTagManager::setWindowTitle($t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
@@ -121,18 +134,33 @@
  					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
  					$t_representation->load($pn_representation_id);
  				}else{
- 					$t_representation = $t_table->getPrimaryRepresentationInstance();
+ 					$t_representation = $t_table->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
  				}
 				if ($t_representation) {
 					$this->view->setVar("t_representation", $t_representation);
-					$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
-				} else {
-					$this->view->setVar("representationViewer", "");
+					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
+				}else{
+					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
-			} 			
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false))));
+			}
+			//
+			// map
+			//
+			$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
+			if($vs_map_attribute && $t_table->get('ca_places.georeference')){
+				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+				$o_map->mapFrom($t_table, $vs_map_attribute);
+				$this->view->setVar("map", $o_map->render('HTML'));
+			}else{
+				$this->view->setVar("map", "");
+			}
+			
  			//
- 			// comments, tags
+ 			// comments, tags, rank
  			//
+ 			$this->view->setVar('averageRank', $t_table->getAverageRating(true));
+ 			$this->view->setVar('numRank', $t_table->getNumRatings(true));
  			#
  			# User-generated comments, tags and ratings
  			#
@@ -198,9 +226,9 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_table->get($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_table->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}
@@ -453,7 +481,7 @@
 								$va_tmp[] = $vs_ext;
 							}
 						}
-						$this->view->setVar('version_download_name', join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
+						$this->view->setVar('version_download_name', str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']));					
 					} else {
 						$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
 					}
@@ -472,6 +500,64 @@
 			$this->response->sendContent();
 			if ($vs_path) { unlink($vs_path); }
 			return $vn_rc;
+		}
+		# -------------------------------------------------------
+ 		# 
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns content for overlay containing details for media attribute
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		value_id = the id of the attribute value (ca_attribute_values) record to display
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *
+ 		 */ 
+ 		public function GetMediaInfo() {
+ 			$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
+ 			$this->response->addContent($this->getMediaAttributeViewerHTMLBundle($this->request, array('display' => 'media_overlay', 'value_id' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
+ 		}
+		# ------------------------------------------------------
+		/**
+		 * 
+		 */
+		public function getMediaAttributeViewerHTMLBundle($po_request, $pa_options=null) {
+			$va_access_values = (isset($pa_options['access']) && is_array($pa_options['access'])) ? $pa_options['access'] : array();	
+			$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'media_overlay';	
+			$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
+			
+			$pn_value_id = (isset($pa_options['value_id']) && $pa_options['value_id']) ? $pa_options['value_id'] : null;
+			
+			$t_attr_val = new ca_attribute_values();
+			$t_attr_val->load($pn_value_id);
+			$t_attr_val->useBlobAsMediaField(true);
+			
+			$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
+			
+			$o_view->setVar('containerID', $vs_container_dom_id);
+			
+			$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
+			$va_rep_display_info['poster_frame_url'] = $t_attr_val->getMediaUrl('value_blob', $va_rep_display_info['poster_frame_version']);
+			
+			$o_view->setVar('display_options', $va_rep_display_info);
+			$o_view->setVar('representation_id', $pn_representation_id);
+			$o_view->setVar('t_attribute_value', $t_attr_val);
+			$o_view->setVar('versions', $va_versions = $t_attr_val->getMediaVersions('value_blob'));
+			
+			$t_media = new Media();
+	
+			$ps_version 	= $po_request->getParameter('version', pString);
+			if (!in_array($ps_version, $va_versions)) { 
+				if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+			}
+			$o_view->setVar('version', $ps_version);
+			$o_view->setVar('version_info', $t_attr_val->getMediaInfo('value_blob', $ps_version));
+			$o_view->setVar('version_type', $t_media->getMimetypeTypename($t_attr_val->getMediaInfo('value_blob', $ps_version, 'MIMETYPE')));
+			$o_view->setVar('mimetype', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));			
+			
+			
+			return $o_view->render('media_attribute_viewer_html.php');
 		}
  		# -------------------------------------------------------
  		# Tagging and commenting

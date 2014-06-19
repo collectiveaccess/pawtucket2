@@ -46,6 +46,8 @@ class View extends BaseObject {
 	
 	private $ops_character_encoding;
 	
+	private $ops_last_render = null;
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -182,9 +184,9 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function compile($ps_filepath) {
-		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
-			return json_decode(file_get_contents($vs_compiled_path));
+	public function compile($ps_filepath, $pb_force_recompile=false) {
+		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
+			return is_array($va_tags = json_decode(file_get_contents($vs_compiled_path), true)) ? $va_tags : array();
 		}
 		
 		$vs_buf = $this->_render($ps_filepath);
@@ -202,15 +204,15 @@ class View extends BaseObject {
 	 *
 	 */
 	public function getTagList($ps_filename) {
-		$vb_output = false;
+		global $g_ui_locale;
 		
-		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
+		$vb_output = false;
 		
 		$va_tags = null;
 		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
 				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				$va_tags = $this->compile($vs_path.'/'.$ps_filename.".".$vs_locale);
+				$va_tags = $this->compile($vs_path.'/'.$ps_filename.".".$g_ui_locale);
 				break;
 			}
 			elseif (file_exists($vs_path.'/'.$ps_filename)) {
@@ -226,16 +228,19 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+	public function render($ps_filename, $pb_dont_do_var_replacement=false, $pa_options=null) {
+		global $g_ui_locale;
+		
+		if (!($vb_dont_try_to_force_update_cache = caGetOption('dontTryToForceUpdateCache', $pa_options, false))) {
+			$this->ops_last_render = null;
+		}
+		
 		$vb_output = false;
-		
-		$vs_locale = $_SESSION['session_vars']['lang'];			// handling the current locale, for example fr_FR
-		
 		$vs_buf = null;
 		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$vs_locale)) {
+			if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
 				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$vs_locale);
+				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$g_ui_locale);
 				$vb_output = true;
 				break;
 			}
@@ -255,7 +260,20 @@ class View extends BaseObject {
 			$va_vars = $this->getAllVars();
 			foreach($va_compile as $vs_var) {
 				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
-				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf);
+				$vn_count = 0;
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);
+				
+				if (($vn_count == 0) && !$vb_dont_try_to_force_update_cache) {
+					// Force recompile because view is somehow out-of-sync with
+					// the tag cache. This shouldn't really happen since the modification
+					// of the review should trigger a recompile, but there have been instances
+					// of the cache getting stale and the modification date of the view file
+					// not being changed; this code covers that eventuality.
+					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
+					return $this->render($ps_filename, $pb_dont_do_var_replacement, array('dontTryToForceUpdateCache' => true));
+				} elseif($vn_count == 0) {
+					return $vs_buf;
+				}
 				
 			}
 		}
@@ -267,12 +285,13 @@ class View extends BaseObject {
 	 *
 	 */
 	private function _render($ps_filename) {
+		if ($this->ops_last_render) { return $this->ops_last_render; }
 		if (!file_exists($ps_filename)) { return null; }
 		ob_start();
 		
 		require($ps_filename);
 		
-		return ob_get_clean();
+		return $this->ops_last_render = ob_get_clean();
 	}
 	# -------------------------------------------------------
 	# Character encodings

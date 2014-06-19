@@ -26,6 +26,9 @@ h2, #detail h2, .multiSearch h2{
 	font-family: "ProximaNovaRegular";
 	text-transform:none;
 }
+.objectsResult h2 {
+	line-height:.7em;
+}
 h3 {
 	font-family: "ProximaNovaBold";
 	font-size: 18px;
@@ -37,6 +40,16 @@ h3 {
 	width:100%;
 	clear:both;
 }
+.notificationMessage, .notificationInfo {
+	background-color:#f7f7f7;
+	border-color:#eee;
+	color:#333;
+	padding:10px;
+	font-weight:bold;
+}
+.notificationMessage a, .notificationInfo {
+	color:#000; 
+}	
 .container {
 	padding:0px;
 }
@@ -288,7 +301,11 @@ hr {
 	text-transform: uppercase;
 }
 .scrollingDiv {
-	width:10000px;
+	width:100000px;
+	overflow: hidden;
+}
+.scrollingDivContent{
+	display:inline-block;
 }
 .aboutText {
 	float:left;
@@ -404,6 +421,9 @@ h2 span.artist {
 #mediaArea {
 	width:775px;
 }
+#mediaArea img{
+	
+}
 .mediaLarge {
 	float:left;
 }
@@ -414,7 +434,7 @@ h2 span.artist {
 }
 .mediaThumbs {
 	overflow-x:scroll;
-	padding-left:10px;
+	padding-left:10px !important;
 }
 #mediaArea .views{
 	text-transform:uppercase;
@@ -436,6 +456,7 @@ h2 span.artist {
 	width:775px;
 	clear:both;
 	padding-top:30px;
+	margin-bottom:20px;
 }
 #infoArea .description {
 	float:left;
@@ -446,6 +467,10 @@ h2 span.artist {
 #detail #infoArea p {
 	line-height: 1.4em;
 	font-size: 15px;
+}
+#detail .lessonLink {
+	clear:both;
+	margin-top:10px;
 }
 #infoArea .metatitle{
 	font-size:22px;
@@ -528,6 +553,7 @@ h2 span.artist {
 #relatedInfo #occurrencesBlock .occurrencesResult {
 	width:320px;
 	float:left;
+	margin-bottom:30px;
 }
 #detail .collectionSet {
 	float: left;
@@ -638,7 +664,7 @@ h2 span.artist {
 	width: 770px;
 	border-top:1px solid #ccc;
 	margin-left:25px;
-	padding: 15px 0px 0px 0px;
+	padding: 15px 0px 0px 0px !important;
 	overflow-y:scroll;
 	min-height:165px;
 	height:240px;
@@ -648,7 +674,7 @@ h2 span.artist {
 
 #detail .blockResults.exhibitions {
 	height:auto;
-	padding-bottom:20px;
+	margin-bottom:30px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
 	width:100%;
@@ -697,6 +723,9 @@ h2 span.artist {
 	width: 160px;
 	height: 190px;
 }
+#detail .objectsResult { 
+	height: 230px;
+}
 .multiSearch .occurrencesResult {
 	margin:10px;
 }
@@ -742,6 +771,17 @@ h2 span.artist {
 .exDate {
 	color: #EE3E43;
 	font-size:14px;
+}
+#detail .detailMediaToolbar {
+	background-color: #ebebeb;
+	padding: 5px 5px 4px 5px;
+	font-size: 12px;
+	position: absolute;
+	display: none;
+	bottom: 0px;
+}
+#detail .repViewerCont:hover .detailMediaToolbar{
+	display:none;
 }
 .multiSearch .collectionsResult a, .multiSearch a .entitiesResult, .multiSearch .objectsResult a, .multiSearch a .eventsResult,
 #detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
@@ -793,6 +833,7 @@ h2 span.artist {
 #detail #entitiesBlock .entitySet {
 	width:250px;
 	float:left;
+	margin-bottom:15px;
 }
 /* Browse Page */
 
@@ -875,6 +916,9 @@ h2 span.artist {
 	height: 180px;
 	min-width: 150px;
 	background-color: #f7f7f7;
+}
+.bResultItem:hover .bResultItemImg {
+	height:180px; 
 }
 #browseResults .artistName a{
 	text-transform:uppercase;

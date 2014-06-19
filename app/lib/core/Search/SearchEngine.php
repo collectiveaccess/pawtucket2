@@ -124,6 +124,7 @@ class SearchEngine extends SearchBase {
 	 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
 	 *		dontFilterByACL = if true ACL checking is not performed on results
 	 *		appendToSearch = 
+	 *		restrictSearchToFields = 
 	 *
 	 * @return SearchResult Results packages in a SearchResult object, or sub-class of SearchResult if an instance was passed in $po_result
 	 * @uses TimeExpressionParser::parse
@@ -181,7 +182,7 @@ class SearchEngine extends SearchBase {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} else {
 				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
-					$va_hits = array_reverse($va_hits);
+					$va_hits = array_flip(array_reverse(array_keys($va_hits)));
 				}
 			}
 			$o_res = new WLPlugSearchEngineCachedResult(array_keys($va_hits), $this->opn_tablenum);
@@ -227,6 +228,11 @@ class SearchEngine extends SearchBase {
 			if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
 				$this->addResultFilter($this->ops_tablename.'.type_id', 'IN', join(",",$va_type_ids));
 			}
+			
+			if (is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && $this->opo_engine->can('restrict_to_fields')) {
+				$this->opo_engine->setOption('restrictSearchToFields', $va_restrict_to_fields);
+			}
+			
 			$o_res =  $this->opo_engine->search($this->opn_tablenum, $vs_search, $this->opa_result_filters, $o_rewritten_query);
 
 			// cache the results
@@ -241,12 +247,12 @@ class SearchEngine extends SearchBase {
 			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL()) {
 				$va_hits = $this->filterHitsByACL($va_hits, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
-					
+			
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} else {
 				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
-					$va_hits = array_reverse($va_hits);
+					$va_hits = array_flip(array_reverse(array_keys($va_hits)));
 				}
 			}
 			
@@ -462,7 +468,9 @@ class SearchEngine extends SearchBase {
 		
 		$vn_num_locales = ca_locales::numberOfCataloguingLocales();
 		
-		foreach($va_fields as $vs_field) {				
+		foreach($va_fields as $vs_field) {		
+			if (!trim($vs_field)) { continue; }		
+						
 			$va_joins = $va_orderbys = array();
 			$vs_locale_where = $vs_is_preferred_sql = '';
 			
@@ -1004,7 +1012,7 @@ class SearchEngine extends SearchBase {
 	 */
 	public function addResultFilter($ps_field, $ps_operator, $pm_value) {
 		$ps_operator = strtolower($ps_operator);
-		if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', '-', 'in', '<>', 'is', 'is not'))) { return false; }
+		if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', '-', 'in', 'not in', '<>', 'is', 'is not'))) { return false; }
 		
 		$this->opa_result_filters[] = array(
 			'field' => $ps_field,
