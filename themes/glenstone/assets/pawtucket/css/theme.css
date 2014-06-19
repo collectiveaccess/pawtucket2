@@ -1011,4 +1011,7 @@ div.caMediaOverlayControls .close {
 	color: #414151;
 	font-size: 16px;
 }
-
+.fa-angle-double-down.finding-aid {
+	float:left;
+	padding:4px 10px 4px 10px;
+}
