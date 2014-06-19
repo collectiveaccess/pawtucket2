@@ -172,6 +172,7 @@ class View extends BaseObject {
 	public function isCompiled($ps_filepath) {
 		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
 		if (!file_exists($vs_compiled_path)) { return false; }
+		if (filesize($vs_compiled_path) === 0) { return false; }
 		
 		// Check if template change date is newer than compiled
 		$va_view_stat = @stat($ps_filepath);
@@ -186,7 +187,8 @@ class View extends BaseObject {
 	 */
 	public function compile($ps_filepath, $pb_force_recompile=false) {
 		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
-			return is_array($va_tags = json_decode(file_get_contents($vs_compiled_path), true)) ? $va_tags : array();
+			$va_tags = json_decode(file_get_contents($vs_compiled_path), true);
+			if (is_array($va_tags)) { return $va_tags; }
 		}
 		
 		$vs_buf = $this->_render($ps_filepath);
@@ -195,8 +197,19 @@ class View extends BaseObject {
 		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_buf, $va_matches);
 		
 		$va_tags = $va_matches[1];
+		
+		$vs_raw_buf = file_get_contents($ps_filepath);
+		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_raw_buf, $va_matches);
+		$va_tags += $va_matches[1];
+		$va_tags = array_unique($va_tags);
+		
 		if (!is_array($va_tags)) { $va_tags = array(); }
-		file_put_contents($vs_compiled_path, json_encode($va_tags));
+		
+		if($vs_tags = json_encode($va_tags)) {
+			file_put_contents($vs_compiled_path, $vs_tags);
+		} else {
+			unlink($vs_compiled_path);
+		}
 		return $va_tags;
 	}
 	# -------------------------------------------------------
@@ -263,17 +276,17 @@ class View extends BaseObject {
 				$vn_count = 0;
 				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);
 				
-				if (($vn_count == 0) && !$vb_dont_try_to_force_update_cache) {
-					// Force recompile because view is somehow out-of-sync with
-					// the tag cache. This shouldn't really happen since the modification
-					// of the review should trigger a recompile, but there have been instances
-					// of the cache getting stale and the modification date of the view file
-					// not being changed; this code covers that eventuality.
-					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
-					return $this->render($ps_filename, $pb_dont_do_var_replacement, array('dontTryToForceUpdateCache' => true));
-				} elseif($vn_count == 0) {
-					return $vs_buf;
-				}
+			// 	if (($vn_count == 0) && !$vb_dont_try_to_force_update_cache) {
+// 					// Force recompile because view is somehow out-of-sync with
+// 					// the tag cache. This shouldn't really happen since the modification
+// 					// of the review should trigger a recompile, but there have been instances
+// 					// of the cache getting stale and the modification date of the view file
+// 					// not being changed; this code covers that eventuality.
+// 					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
+// 					return $this->render($ps_filename, $pb_dont_do_var_replacement, array('dontTryToForceUpdateCache' => true));
+// 				} elseif($vn_count == 0) {
+// 					return $vs_buf;
+// 				}
 				
 			}
 		}
