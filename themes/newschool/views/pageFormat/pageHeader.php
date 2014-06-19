@@ -9,7 +9,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
+	<title><?php print ($vs_page_title = MetaTagManager::getWindowTitle()) ? $vs_page_title : "New School Archives : Digital Collections"; ?></title>
 	
 	<!--NS design-->
 	<script type="text/javascript" src="//use.typekit.net/cvi0qyc.js"></script>
@@ -34,7 +34,6 @@
 
 <meta name="google-site-verification" content="j2ZduLZYPPtHe6G-r_BPBVE7XG97dTZMFfqrDKoUrns" />
 <meta name="description" content="Historical images, text, audio and video from The New School including Parsons, Mannes, The New School for Social Research, and Eugene Lang College."/>
-<meta name="keywords" content="TNS Archives, TNS History, The New School, New School for Social Research, Parsons, Eugene Lang College, Mannes, Parsons history, Mannes history, fashion design history, interior design history, fashion design education, interior design education, Chase School, New York School of Fine and Applied Art"/>
 
 </head>
 <body>

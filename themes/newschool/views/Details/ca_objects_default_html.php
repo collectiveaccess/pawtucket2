@@ -1,8 +1,13 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	
+	
+	TooltipManager::add('#caDetailZoomLink', 'View Fullscreen');
+	TooltipManager::add('#caDetailDownloadLink', 'Download');
+	TooltipManager::add('#caEntity', 'Related person or organization');
+	//TooltipManager::add('#foo', 'This is a tooltip!');
 ?>
-
 <div id="detail">
 	<div class="row">
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -20,23 +25,31 @@
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 <?php } ?>
 						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
+						{{{<ifdef code="ca_objects.pbcoreDescription.pBdescription_text"><H3>Description:</H3>^ca_objects.pbcoreDescription.pBdescription_text<br/></ifdef>}}}
+						{{{<ifcount code="ca_objects.related" min="1" max="1"><h3>Related object</h3><unit relativeTo="ca_objects.related" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
+						</div><!-- end detailTools -->
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
 					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
+					<div id="caEntity">
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=";"><H3>Author:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="addressee" delimiter=";"><H3>Addressee:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=";"><H3>Artist:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=";"><H3>Designer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="illustrator" delimiter=";"><H3>Illustrator:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="speaker" delimiter=";"><H3>Speaker:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="commissioner" delimiter=";"><H3>Commissioner:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=";"><H3>Photographer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="compiler" delimiter=";"><H3>Compiler:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewer" delimiter=";"><H3>Interviewer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee" delimiter=";"><H3>Interviewee:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="subject" delimiter=";"><H3>Subject Name:</H3><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
+					</div>
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.pbcoreDate.pbcoreDates_value"><H3>Date:</H3>^ca_objects.pbcoreDate.pbcoreDates_value<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type:</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtPosters"><H3>Work Type:</H3>^ca_objects.wtPosters<br/></ifdef>}}}
@@ -58,26 +71,33 @@
 					
 					
 					
+					
 					{{{<ifdef code="ca_objects.measurementSet.measurements"><H3>Measurements:</H3>^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
 					
-					
-					{{{<ifdef code="ca_objects.containerID"><H3>Location of original:</H3>^ca_objects.containerID<br/></ifdef>}}}
+
 					
 					{{{<ifdef code="ca_objects.descriptionSet.descriptionText"><H3>Description:</H3>^ca_objects.descriptionSet.descriptionText<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.pbcoreDescription.pBdescription_text%[pbcore_description_types=abstract]"><H3>Abstract:</H3>^ca_objects.pbcoreDescription.pBdescription_text%[pbcore_description_types=abstract]<br/></ifdef>}}}
 					
 					
 					
 					
 					
 					
-					
-					{{{<ifcount code="ca_objects.LcshTopical" min="1"><h3>Subject Heading:</h3></ifcount>}}}
-					{{{<unit delimiter="<br/>">^ca_objects.LcshTopical</unit>}}}
-					{{{<ifcount code="ca_list_items" min="1" max="5"><h3>Occupations, Materials & Techniques:</h3></ifcount>}}}
+					{{{<ifcount code="ca_objects.LcshTopical" min="1" max="1"><h3>Subject Heading:</h3>^ca_objects.LcshTopical</ifcount>}}}
+					{{{<ifcount code="ca_objects.LcshTopical" min="2" max="30" delimiter=";">><h3>Subject Headings:</h3>^ca_objects.LcshTopical</ifcount>}}}
+
+					{{{<ifcount code="ca_list_items" min="1" max="30"><h3>Related Terms:</h3></ifcount>}}}
 					{{{<unit delimiter="<br/>">^ca_list_items.preferred_labels</unit>}}}
+					
+					
+					{{{<ifdef code="ca_objects.containerID"><H3>Location:</H3>^ca_objects.containerID<br/></ifdef>}}}
+					
 					{{{<ifdef code="ca_objects.idno"><H3>Identifier:</H3>^ca_objects.idno<br/></ifdef>}}}
 					
-					{{{<h3>MLA Citation:</h3><i>^ca_objects.preferred_labels.name</i>. <ifdef code="ca_objects.dateSet.setDisplayValue"><unit>^ca_objects.dateSet.setDisplayValue</unit>. </ifdef><ifcount code="ca_collections" min="1" max="1"><unit>^ca_collections.hierarchy.preferred_labels.name</unit>. </ifcount><i>New School Archives and Special Collections Digital Archive</i>. Web. ^DATE}}}
+					{{{<h3>Citation:</h3><i><unit>^ca_objects.preferred_labels.name</unit>. </i><ifdef code="ca_objects.dateSet.setDisplayValue"><unit>^ca_objects.dateSet.setDisplayValue</unit>. </ifdef><ifcount code="ca_collections" min="1" max="1"><unit>^ca_collections.hierarchy.preferred_labels.name</unit>. </ifcount><i>New School Archives and Special Collections Digital Archive</i>. Web. <font>^DATE</font>.}}}
+					<h3>Use Restrictions:</H3>To publish images of material from this collection, permission must be obtained in writing from The New School Archives and Special Collections. Please contact: archivist@newschool.edu.</H3>
+					
 					<br><br>
 					<p><strong>There’s more!</strong> What you see on this site is only what is viewable online. 
 					Please visit our <a href='http://library.newschool.edu/speccoll'>website</a> to find out more about what’s in the archives.

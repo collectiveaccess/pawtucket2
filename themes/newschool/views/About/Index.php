@@ -1,4 +1,4 @@
-
+<title> About :: Digital Collections :: New School Archives</title>
 	<H1>About</H1>
 	<p>
 		The New School Archives: Digital Collections is the online portal for the digital collections of the New School Archives & Special Collections, which is a unit of the New School's Libraries & Archives.<br><br>

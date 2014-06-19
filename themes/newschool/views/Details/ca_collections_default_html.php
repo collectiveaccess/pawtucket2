@@ -15,7 +15,7 @@
 				<H1>{{{<unit>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
 				<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 				
-				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.type_id, ^ca_collections.idno)</unit>}}}</H2>
+				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.CollectionDate.collectionDates_text)</unit>}}}</H2>
 				
 {{{<ifcount code="ca_objects" min="2">
 				<div id="detailRelatedObjects">
