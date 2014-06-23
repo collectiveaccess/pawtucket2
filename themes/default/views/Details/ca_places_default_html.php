@@ -12,13 +12,13 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
-					<H6>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
+					<H4>{{{^ca_places.preferred_labels.name}}}</H4>
+					<H6>{{{^ca_places.type_id}}}{{{<ifdef code="ca_places.idno">, ^ca_places.idno</ifdef>}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.notes"><H6>About</H6>^ca_occurrences.notes<br/></ifdef>}}}
+					{{{<ifdef code="ca_places.description"><H6>About</H6>^ca_places.notes<br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 					<div id="detailTools">
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
@@ -36,13 +36,13 @@
 					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><br/><br/></unit>}}}
 					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l><br/><br/></unit>}}}
+					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l><br/><br/></unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l><br/><br/></unit>}}}					
+					{{{<ifcount code="ca_places.related" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places.related" min="2"><H6>Related places</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.related.preferred_labels.name</l><br/><br/></unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="2">
@@ -53,7 +53,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'place_id:^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

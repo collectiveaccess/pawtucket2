@@ -70,7 +70,7 @@
  			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = $this->request->getActionExtra(); 
+ 			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
