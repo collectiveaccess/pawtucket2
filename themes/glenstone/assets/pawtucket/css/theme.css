@@ -328,9 +328,10 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 #pageArea.staticPage .container{
 	min-height:300px; 
 }
-.staticPage H1 {
+.staticPage H1, .findingaid H1 {
 	font-weight:200;
 	margin-bottom:20px;
+	color: #858585;
 }
 .staticPage .jcarousel-control-prev, .staticPage .jcarousel-control-next {
 	top:100px;
@@ -996,3 +997,31 @@ div.caMediaOverlayControls .close {
 	opacity:1;
 }
 
+/* Finding Aid */
+
+.findingIntro {
+	font-weight:200;
+}
+#findingAidCont {
+	margin-top:20px;
+}
+.collHeader a{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 400;
+	color: #414151;
+	font-size: 16px;
+}
+.fa-angle-double-down.finding-aid, .fa-square-o.finding-aid {
+	float:left;
+	padding:4px 5px 4px 5px;
+	margin:0px 5px 0px 5px;
+	border-radius:4px;
+}
+.fa-angle-double-down.finding-aid:hover {
+	background-color:#eee;
+}
+.fa-angle-right.finding-aid {
+	float:left;
+	padding:4px 10px 4px 10px;
+	font-weight:bold;
+}
