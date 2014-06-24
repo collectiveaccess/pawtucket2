@@ -1,5 +1,6 @@
 <?php
 	$t_item = $this->getVar('item');
+	$va_access_values = $this->getVar('access_values');
 	#$t_item->dump();
 ?>
 <div id='detail' class='occurrences'>
@@ -58,14 +59,14 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div><!-- end scrollingDiv--></div><!-- end scrollingDivContent -->";
+					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}
 	} else {
 		$va_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_objects) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
-					print "<div style='width:70000px'>";
+					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					$vn_i = 0;
 					$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
 						
@@ -84,7 +85,7 @@
 					
 					if ((end($va_object_reps) == $va_artwork_rep) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
 
-					print "</div>";
+					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}	
 	}	
@@ -126,7 +127,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
 			print "<div class='blockResults exhibitions'>";
-				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
+				print "<div>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
@@ -167,7 +168,7 @@
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
-				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
+				print "</div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -179,7 +180,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Events')."</div>";
 			print "<div class='blockResults'>";
-				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
+				print "<div>";
 					$vn_i = 0;
 					foreach ($va_events as $event_id => $va_event) {
 						$vn_event_idno = $va_event['idno'];
@@ -200,7 +201,7 @@
 					}
 					if ((end($va_events) == $va_event) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
-				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
+				print "</div>";	
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end occurrencesBlock-->";
 	}
@@ -228,7 +229,8 @@
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 5) && ($vn_i != 0)){print "</div>";}								
 
-				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";	
+				print "</div></div>";	
+				print "</div>";	
 			print "</div><!-- end blockResults -->";
 		print "</div><!-- end collectionsBlock-->";
 	}	
@@ -237,7 +239,7 @@
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Artists + Curators')."</div>";
 			print "<div class='blockResults'>";
-				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
+				print "<div>";
 				$vn_i = 0;
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
@@ -250,7 +252,7 @@
 					}
 				}
 				if ((end($va_entities) == $va_entity) && ($vn_i < 5)){print "</div>";}								
-				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
+				print "</div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -259,7 +261,7 @@
 		print "<div id='fundersBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Funders')."</div>";
 			print "<div class='blockResults'>";
-				print "<div class='scrollBlock'><div class='scrollingDiv'><div class='scrollingDivContent'>";
+				print "<div>";
 				$vn_i = 0;
 				foreach ($va_funders as $funder_id => $va_funder) {
 					$vn_funder_id = $va_funder['entity_id'];
@@ -272,7 +274,7 @@
 					}
 				}
 				if ((end($va_funders) == $va_funder) && ($vn_i < 5)){print "</div>";}								
-				print "</div><!-- end scrollingDivContent --></div><!-- end scrollingDiv --></div><!-- end scrollBlock -->";
+				print "</div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}	

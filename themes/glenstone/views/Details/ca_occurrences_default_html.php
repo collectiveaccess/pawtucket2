@@ -1,6 +1,7 @@
 <?php
 	$t_occurrence = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = $this->getVar('access_values');
 ?>
 	<div class="row">
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -37,8 +38,9 @@
 <?php
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
+							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
 							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}

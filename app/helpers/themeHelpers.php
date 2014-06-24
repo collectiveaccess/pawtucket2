@@ -403,14 +403,23 @@
 			$vn_current_rep_id = $t_representation->get("representation_id");
 		}
 		if($pa_options["primaryOnly"]){
-			if($vn_preimary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
-				$va_rep_ids = array($vn_preimary_rep_id);
+			if($vn_current_rep_id){
+				$va_rep_ids = array($vn_current_rep_id);
+			}else{
+				if($vn_primary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
+					$va_rep_ids = array($vn_primary_rep_id);
+				}
 			}
 		}else{
 			# --- are there multiple reps?
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
 			arsort($va_rep_ids);	# --- sort so primary comes first
 			$va_rep_ids = array_keys($va_rep_ids);
+		}
+		$o_set_config = caGetSetsConfig();
+		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+		if(!$vs_lightbox_icon){
+			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 		}
 		$va_rep_tags = array();
 		if(sizeof($va_rep_ids)){
@@ -427,9 +436,9 @@
 				}
 				if(!$o_request->config->get("disable_my_collections")){
 					if ($o_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}
 				}
 				if(caObjectsDisplayDownloadLink($o_request)){
@@ -512,9 +521,9 @@
 				if(!$o_request->config->get("disable_my_collections")){
 					$vs_tool_bar = "<div id='detailMediaToolbar'>";
 					if ($o_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}

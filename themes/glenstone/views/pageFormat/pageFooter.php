@@ -41,7 +41,9 @@
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
 			
+			
 			</div>
+			
 		</div>
 		<script>
 			jQuery(document).ready(function(){

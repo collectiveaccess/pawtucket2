@@ -50,11 +50,20 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
+
+	$o_set_config = caGetSetsConfig();
+	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	if(!$vs_lightbox_icon){
+		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
+	}
+	
+
 	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
 		
+
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
 		$vn_col_span_sm = 2;
@@ -88,7 +97,7 @@
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
 						$vs_thumbnail = $vs_placeholder_tag;	
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -115,7 +124,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".(($this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><i class='fa fa-suitcase'></i></a>")."
+				".((($vs_table != "ca_objects") || $this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";

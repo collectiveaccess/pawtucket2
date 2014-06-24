@@ -51,12 +51,16 @@
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
-<?php 		
+<?php 			
 				if ($qr_results->get('ca_objects.type_id') == 28) {	
 					$vs_style = "style='font-style:italic;'";
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {
 					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+				} elseif ($qr_results->get('ca_objects.type_id') == 25) {
+					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-volume-up'></i>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+				} elseif ($qr_results->get('ca_objects.type_id') == 26) {
+					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-film'></i>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
 				} else {
 					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));				
 				}

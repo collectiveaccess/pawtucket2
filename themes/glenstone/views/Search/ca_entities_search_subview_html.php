@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_entities_search_subview_html.php : 
+ * themes/default/views/Search/ca_entities_search_subview_html.php :  
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
