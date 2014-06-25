@@ -108,7 +108,7 @@
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					{$vs_label_detail_link}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

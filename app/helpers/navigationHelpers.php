@@ -849,7 +849,7 @@
 				$pn_id = "id:{$pn_id}";
 			}
 		}
-		$vs_action .= "/{$pn_id}";
+		$vs_action .= "/".rawurlencode($pn_id);
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {
 			// Make sure record link points to exists

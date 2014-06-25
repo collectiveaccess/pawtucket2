@@ -1,6 +1,6 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Listings/listing_html : 
+/* ----------------------------------------------------------------------
+ * views/pageFormat/browseMenu.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -23,24 +23,24 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Core
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
  
- 	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
+	$va_browse_types = caGetBrowseTypes();
+	if(sizeof($va_browse_types)){
+?>
  
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
-		
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";
-		
-		while($qr_list->nextHit()) {
-			print $qr_list->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."<br>\n";	
+<li class="dropdown" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+	<ul class="dropdown-menu">
+<?php
+		if(sizeof($va_browse_types) > 1){
+			foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+				print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($vs_browse_name), '', '', 'Browse', $vs_browse_name, '')."</li>";
+			}
 		}
+?>
+	</ul>	
+</li>
+<?php	
 	}
 ?>

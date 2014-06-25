@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Listings/listing_html : 
+ * themes/default/Front/front_page_html : Front page of site 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,18 +29,21 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- 	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
- 
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
-		
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";
-		
-		while($qr_list->nextHit()) {
-			print $qr_list->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."<br>\n";	
-		}
-	}
+		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8">
+			<H1>Welcome to Hampstead Garden Suburb Heritage. This site is currently under development and you may find that some links are not working and the information shown may change frequently.</H1>
+		</div><!--end col-sm-8-->
+		<div class="col-sm-4">
+			<h2>Browse by Featured Topic:</h2>
+			<ul class="nav nav-pills nav-stacked">
+				<li><?php print caNavLink($this->request, _t("Organisations"), "", "", "Browse", "organisations"); ?></li>
+				<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+				<li><?php print caNavLink($this->request, _t("Places"), "", "", "Browse", "places"); ?></li>
+				<li><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>
+			</ul>
+		</div> <!--end col-sm-4-->	
+	</div><!-- end row -->
+</div> <!--end container-->

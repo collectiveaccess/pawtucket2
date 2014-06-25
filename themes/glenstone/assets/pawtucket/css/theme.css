@@ -1011,4 +1011,17 @@ div.caMediaOverlayControls .close {
 	color: #414151;
 	font-size: 16px;
 }
-
+.fa-angle-double-down.finding-aid, .fa-square-o.finding-aid {
+	float:left;
+	padding:4px 5px 4px 5px;
+	margin:0px 5px 0px 5px;
+	border-radius:4px;
+}
+.fa-angle-double-down.finding-aid:hover {
+	background-color:#eee;
+}
+.fa-angle-right.finding-aid {
+	float:left;
+	padding:4px 10px 4px 10px;
+	font-weight:bold;
+}
