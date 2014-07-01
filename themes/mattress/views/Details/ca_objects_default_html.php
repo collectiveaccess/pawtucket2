@@ -24,9 +24,10 @@
 		</div>
 		<div class='detailSubtitle'></div>
 		<div id="infoArea">
-			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</ifdef></p>}}}
-			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</unit></p>}}}
-			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</ifdef></p>}}}
+			{{{<ifdef code="ca_objects.idno"><div class='collectionHeading'>Identifier</div><p>^ca_objects.idno</p></ifdef>}}}
+			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</p></ifdef>}}}
+			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</p></unit>}}}
+			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</p></ifdef>}}}
 
 			{{{<ifdef code="ca_objects.description.description_text"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
 		
