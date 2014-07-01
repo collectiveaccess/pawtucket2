@@ -9,7 +9,7 @@
 		</p>
 		<p>
 			Cincinnati Judaica Fund<br/>
-			1 East Fourth Street<br/>
+			1 East Fourth Street, Suite 700<br/>
 			Cincinnati, OH 4502
 		</p>
 		<p>

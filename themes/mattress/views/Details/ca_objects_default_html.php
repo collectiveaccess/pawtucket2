@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = $this->getVar('access_values');
 ?>
 
 <div id="detail">
@@ -16,26 +17,27 @@
 			print "<h2>".$t_object->get('ca_objects.preferred_labels.name')."</h2>";
 		}		
 ?>	
-		<div class='detailSubtitle'></div>
+		
 		
 		<div id="mediaArea">
 		{{{representationViewer}}}
 		</div>
-		
+		<div class='detailSubtitle'></div>
 		<div id="infoArea">
-			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</ifdef></p>}}}
-			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</unit></p>}}}
-			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</ifdef></p>}}}
+			{{{<ifdef code="ca_objects.idno"><div class='collectionHeading'>Identifier</div><p>^ca_objects.idno</p></ifdef>}}}
+			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</p></ifdef>}}}
+			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</p></unit>}}}
+			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</p></ifdef>}}}
 
-			{{{<ifdef code="ca_objects.description"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
+			{{{<ifdef code="ca_objects.description.description_text"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
 		
 			<div class="clearfix"></div>
 		</div>
 <?php
-		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == 274)) {
+		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == "Yes")) {
 			$va_documents = $t_object->representationsOfClass('document', array('original'));
 			foreach ($va_documents as $doc_id => $va_document) {
-				print "<a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a>";
+				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a></div>";
 			}
 		}
 
@@ -43,7 +45,7 @@
 	</div><!-- contentArea -->
 <?php
 	$va_occurrences = $t_object->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
-	$va_entities = $t_object->get('ca_entities', array('returnAsArray' => true), 'checkAccess' => $va_access_values);
+	$va_entities = $t_object->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values)); 
 	$va_collections = $t_object->get('ca_collections', array('returnAsArray' => true, 'restrictToTypes' => array('installation'), 'checkAccess' => $va_access_values));
 	
 	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_collections) > 0)) {
@@ -79,7 +81,7 @@
 		print "<div id='collectionsBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Installations')."</div>";
 			print "<div class='blockResults'>";
-				print "<div style='width:100000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_collections as $collection_id => $va_collection) {
 					$va_collection_idno = $va_collection['idno'];
@@ -99,7 +101,7 @@
 					}
 				}
 				if ((end($va_collections) == $va_collection) && ($vn_i < 5)){print "</div>";}				
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
@@ -109,7 +111,7 @@
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
 			print "<div class='blockResults exhibitions'>";
-				print "<div style='width:100000px'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {
 					$vn_occurrence_id = $va_occurrence['occurrence_id'];
@@ -124,7 +126,7 @@
 						foreach ($va_artworks as $key => $vn_artwork_id) {
 							$t_collection = new ca_collections($vn_artwork_id);
 							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 						
 							if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
 
@@ -148,14 +150,14 @@
 					} else {
 						$t_collection = new ca_collections($va_artworks[0]);
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('exsingle'), 'return' => array('tags')));
 						print "<div class='exImageSingle'>".array_shift(array_values($va_object_reps))."</div>";
 					}	
 					print "<div class='exTitle'>".caNavLink($this->request, $va_occurrence['name'], '', '', 'Detail', 'Occurrences/'.$va_occurrence['occurrence_id'])."</div>";
 					print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 					print "</div><!-- end occurrenceResult -->";
 				}
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end occurrencesBlock -->";
 		}		

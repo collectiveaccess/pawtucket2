@@ -51,14 +51,13 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  			
  			caSetPageCSSClasses(array("browse", "results"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
  		}
  		# -------------------------------------------------------
  		/**
@@ -66,7 +65,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
- 			
+ 			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
@@ -81,7 +80,7 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
- 			$this->view->setVar('name', $va_browse_info['name']);
+ 			$this->view->setVar('name', $va_browse_info['displayName']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
  			
@@ -115,7 +114,7 @@
 				$o_browse->reload($ps_cache_key);
 			}
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true)); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
 			// Clear criteria if required
@@ -204,6 +203,10 @@
 			$this->view->setVar('sort', $ps_sort);
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 
+			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
+				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+			}
+
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 		
 			//
@@ -235,8 +238,10 @@
 			}
 			
 			// remove base criteria from display list
-			foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
-				unset($va_criteria[$vs_base_facet]);
+			if (is_array($va_base_criteria)) {
+				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+					unset($va_criteria[$vs_base_facet]);
+				}
 			}
 			
 			$va_criteria_for_display = array();

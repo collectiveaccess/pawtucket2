@@ -1798,7 +1798,7 @@
 			
 			$vs_browse_type_limit_sql = '';
 			if (($va_browse_type_ids = $this->getTypeRestrictionList()) && sizeof($va_browse_type_ids)) {		// type restrictions
-				$vs_browse_type_limit_sql = '('.$vs_browse_table_name.'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).'))';
+				$vs_browse_type_limit_sql = '('.$t_subject->tableName().'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).'))';
 				
 				if (is_array($va_facet_info['type_restrictions'])) { 		// facet type restrictions bind a facet to specific types; we check them here 
 					$va_restrict_to_types = $this->_convertTypeCodesToIDs($va_facet_info['type_restrictions']);
@@ -3209,6 +3209,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						// do it in separate queries, one for the primary ids and another for the labels; a third is done if attributes need to be fetched.
 						// There appears to be a significant [~10%] performance for smaller facets and a larger one [~20-25%] for very large facets)
 						$va_facet_parents = array();
+						
+						$vn_max_level = caGetOption('maximum_levels', $va_facet_info, null);
 						while($qr_res->nextRow()) {
 							$va_fetched_row = $qr_res->getRow();
 							$vn_id = $va_fetched_row[$vs_rel_pk];
@@ -3218,7 +3220,15 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if (!$va_facet_items[$va_fetched_row[$vs_rel_pk]]) {
 								
 								$va_ancestors = $t_rel_item->getHierarchyAncestors($va_fetched_row[$vs_rel_pk]);
-					
+
+								if(!is_null($vn_max_level)) {
+									if (sizeof($va_ancestors) + 1 > $vn_max_level) {
+										if ($va_tmp = $va_ancestors[sizeof($va_ancestors) - $vn_max_level]) {
+											$va_ancestors = array();
+											$va_fetched_row = $va_tmp['NODE'];
+										}
+									}
+								}
 								foreach($va_ancestors as $vn_index => $va_ancestor_info) {
 									if ((sizeof($va_exclude_types) > 0) && in_array($va_ancestor_info['NODE']['type_id'], $va_exclude_types)) { continue; }
 									if ((sizeof($va_restrict_to_types) > 0) && !in_array($va_ancestor_info['NODE']['type_id'], $va_restrict_to_types)) { continue; }
@@ -3411,6 +3421,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			if(sizeof($va_results =  $this->opo_ca_browse_cache->getResults())) {
 				if ($vb_will_sort) {
 					$va_results_flipped = array_flip($va_results);
+					
 					$va_tmp = $this->sortHits($va_results_flipped, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 					$va_results = array_keys($va_tmp);
 
@@ -3471,7 +3482,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			
 			$vn_num_locales = ca_locales::numberOfCataloguingLocales();
 			
-			foreach($va_fields as $vs_field) {				
+			foreach($va_fields as $vs_field) {	
+				if (!trim($vs_field)) { continue; }		
 				$va_joins = $va_orderbys = array();
 				$vs_locale_where = $vs_is_preferred_sql = '';
 				
@@ -3545,9 +3557,9 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								if (!is_array($va_row)) { $va_row = array(); }
 								
 								if ($vn_num_locales > 1) {
-									$va_sorted_hits[$vn_id][1] = $va_row;
+									$va_sorted_hits[$vn_id][1] = 1;
 								} else {
-									$va_sorted_hits[$vn_id] = $va_row;
+									$va_sorted_hits[$vn_id] = 1;
 								}
 							}
 						}
@@ -3826,8 +3838,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		 */
 		public function addResultFilter($ps_field, $ps_operator, $pm_value) {
 			$ps_operator = strtolower($ps_operator);
-			if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', 'in', 'not in'))) { return false; }
+			if (!in_array($ps_operator, array('=', '<', '>', '<=', '>=', 'in', 'not in', 'is', 'is not'))) { return false; }
 			$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
+			$va_tmp = explode(".", $ps_field);
+			$ps_field = array_pop($va_tmp);
 			if (!$t_table->hasField($ps_field)) { return false; }
 			
 			$this->opa_result_filters[] = array(

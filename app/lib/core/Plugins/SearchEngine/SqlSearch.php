@@ -169,13 +169,16 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				'maxWordCacheSize' => 3000,									// maximum number of words to cache while indexing before purging
 				'cacheCleanFactor' => 0.50,									// percentage of words retained when cleaning the cache
 				
-				'omitPrivateIndexing' => false								//
+				'omitPrivateIndexing' => false,								//
+				
+				'restrictSearchToFields' => null
 		);
 		
 		// Defines specific capabilities of this engine and plug-in
 		// The indexer and engine can use this information to optimize how they call the plug-in
 		$this->opa_capabilities = array(
-			'incremental_reindexing' => true		// can update indexing using only changed fields, rather than having to reindex the entire row (and related stuff) every time
+			'incremental_reindexing' => true,		// can update indexing using only changed fields, rather than having to reindex the entire row (and related stuff) every time
+			'restrict_to_fields' => true
 		);
 		
 		if (defined('__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__')) {
@@ -236,6 +239,14 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			die("Invalid subject table");
 		}
 		
+		$va_restrict_to_fields = array();
+		if(is_array($this->getOption('restrictSearchToFields'))) {
+			foreach($this->getOption('restrictSearchToFields') as $vs_f) {
+				$va_restrict_to_fields[] = $this->_getElementIDForAccessPoint($vs_f);
+			}
+		}
+		
+		
 		if (trim($ps_search_expression) === '((*))') {	
 			$vs_table_name = $t_instance->tableName();
 			$vs_pk = $t_instance->primaryKey();
@@ -294,7 +305,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			$qr_res = $this->opo_db->query($vs_sql);
 		} else {
 			$this->_createTempTable('ca_sql_search_search_final');
-			$this->_doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, 'ca_sql_search_search_final', 0);
+			$this->_doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, 'ca_sql_search_search_final', 0, array('restrictSearchToFields' => $va_restrict_to_fields));
 				
 			// do we need to filter?
 			$va_filters = $this->getFilters();
@@ -423,7 +434,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		return null;
 	}
 	# -------------------------------------------------------
-	private function _doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, $ps_dest_table, $pn_level=0) {		// query is always of type Zend_Search_Lucene_Search_Query_Boolean
+	private function _doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, $ps_dest_table, $pn_level=0, $pa_options=null) {		// query is always of type Zend_Search_Lucene_Search_Query_Boolean
 		$vn_i = 0;
 		$va_old_signs = $po_rewritten_query->getSigns();
 		foreach($po_rewritten_query->getSubqueries() as $o_lucene_query_element) {
@@ -448,7 +459,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				case 'Zend_Search_Lucene_Search_Query_Boolean':
 					$this->_createTempTable('ca_sql_search_temp_'.$pn_level);
 					
-					$this->_doQueriesForSqlSearch($o_lucene_query_element, $pn_subject_tablenum, 'ca_sql_search_temp_'.$pn_level, ($pn_level+1));
+					$this->_doQueriesForSqlSearch($o_lucene_query_element, $pn_subject_tablenum, 'ca_sql_search_temp_'.$pn_level, ($pn_level+1), $pa_options);
 					
 					
 					// merge with current destination
@@ -1027,6 +1038,9 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						}
 					}
 					
+					
+					$va_sql_where = array();
+					
 					//
 					// If we're querying on the fulltext index then we need to construct
 					// the query here... if we already have a direct SQL query to run then we can skip this
@@ -1037,7 +1051,6 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						if (!sizeof($va_sql_where)) { continue; }
 						$vs_sql_where = join(' OR ', $va_sql_where);
 					} elseif (!$vs_direct_sql_query) {
-						$va_sql_where = array();
 						if (sizeof($va_ft_terms)) {
 							if (($t_table) && (strlen($vs_fld_num) > 1)) {
 								$va_sql_where[] = "((swi.field_table_num = ".intval($vs_table_num).") AND (swi.field_num = '{$vs_fld_num}') AND (sw.word IN (".join(',', $va_ft_terms).")))";
@@ -1078,6 +1091,14 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						$vs_sql_where = join(' OR ', $va_sql_where);
 					} else {
 						$va_ft_terms = $va_ft_like_terms = $va_ft_like_terms = array();
+					}
+					
+					if (!$vs_fld_num && is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && sizeof($va_restrict_to_fields)) {
+						$va_field_restrict_sql = array();
+						foreach($va_restrict_to_fields as $va_restrict) {
+							$va_field_restrict_sql[] = "((swi.field_table_num = ".intval($va_restrict['table_num']).") AND (swi.field_num = '".$va_restrict['field_num']."'))";
+						}
+						$vs_sql_where .= " AND (".join(" OR ", $va_field_restrict_sql).")";
 					}
 					
 					
@@ -1158,14 +1179,16 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$qr_res = $this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum));
 								$va_ids = $qr_res->getAllFieldValues("row_id");
 								
-								$vs_sql = "
-									DELETE FROM {$ps_dest_table} 
-									WHERE 
-										row_id IN (?)
-								";
-							
-								$qr_res = $this->opo_db->query($vs_sql, array($va_ids));
-								//print "$vs_sql<hr>";
+								if(sizeof($va_ids) > 0) {
+									$vs_sql = "
+										DELETE FROM {$ps_dest_table} 
+										WHERE 
+											row_id IN (?)
+									";
+								
+									$qr_res = $this->opo_db->query($vs_sql, array($va_ids));
+									//print "$vs_sql<hr>";
+								}
 								break;
 							default:
 							case 'OR':

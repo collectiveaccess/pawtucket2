@@ -43,7 +43,9 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar("access_values", $this->opa_access_values);
  			$t_user_groups = new ca_user_groups();
@@ -51,10 +53,6 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
  			$this->opo_config = caGetSetsConfig();
  			caSetPageCSSClasses(array("sets"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
  		}
  		# -------------------------------------------------------
  		function Index() {

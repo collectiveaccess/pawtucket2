@@ -20,30 +20,74 @@
 <div class="row">
 	<div class="container">
 			<div class="artworkTitle">
-				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator">^ca_entities.preferred_labels.name</unit>}}}</H4>
-				<H5>{{{ca_objects.preferred_labels.name}}}</H5>
+				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+<?php
+				if ($t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')))) {
+					print '<h5>'.$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => '<br/>')).'</h5>';
+				} else {
+					print '<h5>'.$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'delimiter' => '<br/>')).'</h5>';				
+				}
+?>				
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-<?php
-	if (sizeof($t_object->get('ca_object_representations.media', array('returnAsArray' => true))) > 0) {
-?>			
+			
 				{{{representationViewer}}}
+				
 <?php
-	} else {
-		print "<div class='mediaPlaceholder'><i class='fa fa-picture-o'></i></div>";
-	}	
+		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
 ?>				
+	
+			<div class='requestButton'>Request this item  &nbsp;<i class='fa fa-envelope'></i></div>			
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 
 
 				<!-- library-->
 				
+				{{{<ifdef code="ca_objects.preferred_labels"><div class='unit'><span >^ca_objects.preferred_labels</span></div></ifdef>}}}				
+<?php
+				if ($va_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => ', '))) {
+					print "<div class='unit'><span >".$va_author."</span></div>";
+				} else {
+					print "<div class='unit'><span >".$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true))."</span></div>";
+				}
+?>
+				{{{<ifdef code="ca_objects.publication_description"><div class='unit'><span>^ca_objects.publication_description</span></div></ifdef>}}}
+
+				<h2>Availability</h2>
+				{{{<ifdef code="ca_objects.call_number"><div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>^ca_objects.call_number</span></div></ifdef>}}}
+				{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div class='unit'><span class='metaTitle'>Storage Location </span><span class='meta'><unit delimiter="<br/>"><l>^ca_storage_locations.preferred_labels</l></unit></span></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.purchase_status"><div class='unit'><span class='metaTitle'>Status </span><span class='meta'>^ca_objects.purchase_status</span></div></ifdef>}}}
+
+				<h2>More Information</h2>
+				{{{<ifdef code="ca_objects.library_formats"><div class='unit'><span class='metaTitle'>Format </span><span class="meta">^ca_objects.library_formats%useSingular=1</span></div></ifdef>}}}
+				{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit '><span class='metaTitle'>Variant Title </span><span class='meta'><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
+				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher" min="1" ><div class='unit '><span class='metaTitle'>Publisher </span><span class='meta'><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter="<br/>"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.ISBN"><div class='unit '><span class='metaTitle'>ISBN </span><span class='meta'>^ca_objects.ISBN</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.altISBN"><div class='unit '><span class='metaTitle'>Alternate ISBN </span><span class='meta'>^ca_objects.altISBN</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.edition_statment"><div class='unit '><span class='metaTitle'>Edition Statement </span><span class='meta'>^ca_objects.edition_statment</span></div></ifdef>}}}
+				{{{<ifcount min="1" code="ca_objects.language"><div class='unit '><span class='metaTitle'>Languages </span><span class='meta'><unit delimiter="<br/>">^ca_objects.language</unit></span></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.copy_number"><div class='unit '><span class='metaTitle'>Copy Number </span><span class='meta'>^ca_objects.copy_number</span></div></ifdef>}}}
+<?php				
+				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+					print "<div class='unit '><span class='metaTitle'>Library of Congress Subject Headings</span><span class='meta'>";
+					foreach ($va_lcsh_terms as $k_lchs => $va_lcsh_term) {
+						$va_lcsh = explode("[", $va_lcsh_term['lcsh_terms']);
+						print caNavLink($this->request, $va_lcsh[0]."<br/>", '', '', 'MultiSearch', 'Index', array('search' => 'ca_objects.lcsh_terms:'.$va_lcsh[0]));
+					}
+					print "</span></div>"; 
+				}				
+?>	
+				{{{<ifdef code="ca_objects.general_notes"><div class='unit '><span class='metaTitle'>General Notes </span><span class='meta'>^ca_objects.general_notes</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.library_summary"><div class='unit '><span class='metaTitle'>Summary </span><span class='meta'>^ca_objects.library_summary</span></div></ifdef>}}}				
+				{{{<ifdef code="ca_objects.physical_description"><div class='unit '><span class='metaTitle'>Physical Description </span><span class='meta'>^ca_objects.physical_description</span></div></ifdef>}}}
+
+<!--				
 				{{{<ifdef code="ca_objects.preferred_labels"><div class='unit wide'><span class='metaHeader'>Title </span><span >^ca_objects.preferred_labels</span></div></ifdef>}}}				
 				{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Variant Title </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.call_number"><div class='unit wide'><span class='metaHeader'>Call Number </span><span>^ca_objects.call_number</span></div></ifdef>}}}
-				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToTypes="ind" min="1" ><div class='unit wide'><span class='metaHeader'>Main Entry - Personal Name </span><span ><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><l>^ca_entities.preferred_labels.name (^ca_entities.typename)</l></unit></span></div></ifcount>}}}
-				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToTypes="org" min="1" ><div class='unit wide'><span class='metaHeader'>Main Entry - Corporate Name </span><span ><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><l>^ca_entities.preferred_labels.name (^ca_entities.typename)</l></unit></span></div></ifcount>}}}
+				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="author" min="1" ><div class='unit wide'><span class='metaHeader'>Author</span><span ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter="<br/>"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
+				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher" min="1" ><div class='unit wide'><span class='metaHeader'>Publisher </span><span ><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter="<br/>"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.publication_description"><div class='unit wide'><span class='metaHeader'>Publication and Distribution Information </span><span>^ca_objects.publication_description</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.ISBN"><div class='unit wide'><span class='metaHeader'>ISBN </span><span>^ca_objects.ISBN</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.altISBN"><div class='unit wide'><span class='metaHeader'>Alternate ISBN </span><span>^ca_objects.altISBN</span></div></ifdef>}}}
@@ -51,7 +95,18 @@
 				{{{<ifdef code="ca_objects.edition_statment"><div class='unit wide'><span class='metaHeader'>Edition Statement </span><span>^ca_objects.edition_statment</span></div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_objects.language"><div class='unit wide'><span class='metaHeader'>Languages </span><span><unit delimiter="<br/>">^ca_objects.language</unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.general_notes"><div class='unit wide'><span class='metaHeader'>General Notes </span><span>^ca_objects.general_notes</span></div></ifdef>}}}
-				{{{<ifcount min="1" code="ca_objects.lcsh_terms"><div class='unit wide'><span class='metaHeader'>Library of Congress Subject Headings </span><span><unit delimiter="<br/>">^ca_objects.lcsh_terms</unit></span></div></ifcount>}}}
+-->
+<?php				
+#				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+#					print "<div class='unit wide'><span class='metaHeader'>Library of Congress Subject Headings</span><span>";
+#					foreach ($va_lcsh_terms as $k_lchs => $va_lcsh_term) {
+#						$va_lcsh = explode("[", $va_lcsh_term['lcsh_terms']);
+#						print caNavLink($this->request, $va_lcsh[0]."<br/>", '', '', 'MultiSearch', 'Index', array('search' => 'ca_objects.lcsh_terms:'.$va_lcsh[0]));
+#					}
+#					print "</span></div>";
+#				}				
+?>	
+<!--			
 				{{{<ifdef code="ca_objects.copy_number"><div class='unit wide'><span class='metaHeader'>Copy Number </span><span>^ca_objects.copy_number</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.purchase_status"><div class='unit wide'><span class='metaHeader'>Status </span><span>^ca_objects.purchase_status</span></div></ifdef>}}}
 	
@@ -66,7 +121,7 @@
 
 							
 				{{{<ifcount min="1" code="ca_object_lots.preferred_labels"><div class='unit wide'><span class='metaHeader'>Related Accession </span><span ><unit delimiter="<br/>"><l>^ca_object_lots.preferred_labels</l></unit></span></div></ifcount>}}}
-
+-->
 
 			
 			</div><!-- end col -->

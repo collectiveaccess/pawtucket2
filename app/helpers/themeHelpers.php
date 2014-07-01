@@ -335,7 +335,7 @@
 	 * Returns the primary representation for display on the object detail page
 	 * uses settings from media_display.conf
 	 */
-	function caObjectDetailMedia($o_request, $pn_object_id, $t_representation, $pa_options=null) {
+	function caObjectDetailMediaOld($o_request, $pn_object_id, $t_representation, $t_object, $pa_options=null) {
 		$va_access_values = caGetUserAccessValues($o_request);
 		if ($t_representation && (!sizeof($va_access_values) || in_array($t_representation->get('access'), $va_access_values))) { 		// check rep access
 			$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
@@ -360,7 +360,7 @@
 				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 			}
 			$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-			return "<div id='cont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>".$vs_tool_bar;
+			return "<div id='cont' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>".$vs_tool_bar;
 			
 		}else{
 			if(!$o_request->config->get("disable_my_collections")){
@@ -380,12 +380,261 @@
 		}
 	}
 	# ---------------------------------------
+	/**
+	 * Returns the primary representation for display on the object detail page
+	 * uses settings from media_display.conf
+	 * options
+	 *		primaryOnly - true/false, show only the primary rep, default false
+	 *		dontShowPlaceholder - true/false, default false
+	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
+	 *
+	 *
+	 * NOTE: references classes in caObjectRepresentationThumbnails to select current thumbnail
+	 */
+	function caObjectDetailMedia($o_request, $pn_object_id, $t_representation, $t_object, $pa_options=null) {
+		if(!is_array($pa_options)){
+			$pa_options = array();
+		}
+		if(!$va_options["currentRepClass"]){
+			$va_options["currentRepClass"] = "active";
+		}
+		$va_access_values = caGetUserAccessValues($o_request);
+		if($t_representation){
+			$vn_current_rep_id = $t_representation->get("representation_id");
+		}
+		if($pa_options["primaryOnly"]){
+			if($vn_current_rep_id){
+				$va_rep_ids = array($vn_current_rep_id);
+			}else{
+				if($vn_primary_rep_id = $t_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
+					$va_rep_ids = array($vn_primary_rep_id);
+				}
+			}
+		}else{
+			# --- are there multiple reps?
+			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
+			arsort($va_rep_ids);	# --- sort so primary comes first
+			$va_rep_ids = array_keys($va_rep_ids);
+		}
+		$o_set_config = caGetSetsConfig();
+		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+		if(!$vs_lightbox_icon){
+			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
+		}
+		$va_rep_tags = array();
+		if(sizeof($va_rep_ids)){
+			$vs_output = "";
+			foreach($va_rep_ids as $vn_rep_id){
+				$t_representation->load($vn_rep_id);
+				$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+				$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
+				
+				$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'.$vn_rep_id);
+				$vs_tool_bar = "<div class='detailMediaToolbar'>";
+				if(!$va_rep_display_info["no_overlay"]){
+					$vs_tool_bar .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+				}
+				if(!$o_request->config->get("disable_my_collections")){
+					if ($o_request->isLoggedIn()) {
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+					}else{
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+					}
+				}
+				if(caObjectsDisplayDownloadLink($o_request)){
+					# -- get version to download configured in media_display.conf
+					$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+					$vs_download_version = $va_download_display_info['display_version'];
+					$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+				}
+				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
+				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
+			}
+			if(sizeof($va_rep_ids) > 1){
+				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
+			}
+			foreach($va_rep_tags as $vn_rep_id => $vs_rep_tag){
+				if(sizeof($va_rep_ids) > 1){
+					$vs_output .= "<li id='slide".$vn_rep_id."' class='".$vn_rep_id."'>";
+				}
+				$vs_output .= $vs_rep_tag;
+				if(sizeof($va_rep_ids) > 1){
+					$vs_output .= "</li>";
+				}
+			}
+			if(sizeof($va_rep_ids) > 1){
+				$vs_output .= "</ul></div><!-- end jcarousel -->
+								<!-- Prev/next controls -->
+								<div id='detailRepNav'><a href='#' id='detailRepNavPrev' title='"._t("Previous")."'><span class='glyphicon glyphicon-arrow-left'></span></a> <a href='#' id='detailRepNavNext' title='"._t("Next")."'><span class='glyphicon glyphicon-arrow-right'></span></a></div>
+							</div><!-- end jcarousel-wrapper -->
+					<script type='text/javascript'>
+						jQuery(document).ready(function() {
+							/* width of li */
+							$('.jcarousel li').width($('.jcarousel').width());
+							$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
+							
+							/* Carousel initialization */
+							$('.jcarousel').jcarousel();
+					
+							/* Prev control initialization */
+							$('#detailRepNavPrev')
+								.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
+								.on('jcarouselcontrol:inactive', function() { $(this).addClass('inactive'); })
+								.jcarouselControl({ 
+									target: '-=1',
+									method: function() {
+											$('.jcarousel').jcarousel('scroll', '-=1', true, function() {
+												var id = $('.jcarousel').jcarousel('target').attr('class');
+												$('#detailRepresentationThumbnails .".$va_options["currentRepClass"]."').removeClass('".$va_options["currentRepClass"]."');
+												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('".$va_options["currentRepClass"]."');
+												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('".$va_options["currentRepClass"]."');
+											});
+										}
+								});
+					
+							/* Next control initialization */
+							$('#detailRepNavNext')
+								.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
+								.on('jcarouselcontrol:inactive', function() { $(this).addClass('inactive'); })
+								.jcarouselControl({
+									target: '+=1',
+									method: function() {
+											$('.jcarousel').jcarousel('scroll', '+=1', true, function() {
+												var id = $('.jcarousel').jcarousel('target').attr('class');
+												$('#detailRepresentationThumbnails .".$va_options["currentRepClass"]."').removeClass('".$va_options["currentRepClass"]."');
+												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('".$va_options["currentRepClass"]."');
+												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('".$va_options["currentRepClass"]."');
+											});
+										}
+								});";
+							if($vn_current_rep_id){	
+								$vs_output .= "$('.jcarousel').jcarousel('scroll', $('#slide".$vn_current_rep_id."'));";
+							}
+				$vs_output .= "
+						});
+					</script>";
+			}
+			return $vs_output;
+
+		}else{
+			if(!$pa_options["dontShowPlaceholder"]){
+				if(!$o_request->config->get("disable_my_collections")){
+					$vs_tool_bar = "<div id='detailMediaToolbar'>";
+					if ($o_request->isLoggedIn()) {
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+					}else{
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+					}
+					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
+				}
+				$o_config = caGetDetailConfig();
+				if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
+					$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
+				}
+				return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
+			}
+		}
+	}
+	# ---------------------------------------
+	/*
+	 * thumbnails for multiple representations
+	 * pn_rep_id = current representation
+	 * t_object = current ca_objects object
+	 * options
+	 *		version = media version for thumbnail (default = icon)
+	 *		linkTo = viewer, detail, carousel (default = carousel)carousel slides the media rep carousel on the default object detail page to the selected rep
+	 *		returnAs = list, bsCols, array	(default = list)
+	 *		bsColClasses = pass the classes to assign to bs col (default = col-sm-4 col-md-3 col-lg-3)
+	 *		dontShowCurrentRep = true, false (default = false)
+	 *		currentRepClass = set to class name added to li and a tag for current rep (default = active)
+	 *
+	 */
+	function caObjectRepresentationThumbnails($o_request, $pn_rep_id, $t_object, $va_options){
+		if(!$t_object || !$t_object->get("object_id")){
+			return false;
+		}
+		if(!is_array($va_options)){
+			$va_options = array();
+		}
+		# --- set defaults
+		if(!$va_options["version"]){
+			$va_options["version"] = "icon";
+		}
+		if(!$va_options["linkTo"]){
+			$va_options["linkTo"] = "carousel";
+		}
+		if(!$va_options["returnAs"]){
+			$va_options["returnAs"] = "list";
+		}
+		if(!$va_options["bsColClasses"]){
+			$va_options["bsColClasses"] = "col-sm-4 col-md-3 col-lg-3";
+		}
+		if(!$va_options["currentRepClass"]){
+			$va_options["currentRepClass"] = "active";
+		}
+		# --- get reps as thumbnails
+		$va_reps = $t_object->getRepresentations(array($va_options["version"]), null, array("checkAccess" => caGetUserAccessValues($o_request)));
+		if(sizeof($va_reps) < 2){
+			return;
+		}
+		$va_links = array();
+		foreach($va_reps as $vn_rep_id => $va_rep){
+			$vs_class = "";
+			if($vn_rep_id == $pn_rep_id){
+				if($va_options["dontShowCurrentRep"]){
+					continue;
+				}
+				$vs_class = $va_options["currentRepClass"];
+			}
+			$vs_thumb = $va_rep["tags"][$va_options["version"]];
+			switch($va_options["linkTo"]){
+				case "viewer":
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+				# -------------------------------
+				case "carousel":
+					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".".$va_options["currentRepClass"]."\").removeClass(\"".$va_options["currentRepClass"]."\"); $(this).parent().addClass(\"".$va_options["currentRepClass"]."\"); $(this).addClass(\"".$va_options["currentRepClass"]."\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"));' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+				break;
+				# -------------------------------
+				default:
+				case "detail":
+					$va_links[$vn_rep_id] = caDetailLink($o_request, $vs_thumb, $vs_class, 'ca_objects', $t_object->get("object_id"), array("representation_id" => $vn_rep_id));
+				break;
+				# -------------------------------
+			}
+		}
+		# --- formatting
+		$vs_formatted_thumbs = "";
+		switch($va_options["returnAs"]){
+			case "list":
+				$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
+				foreach($va_links as $vn_rep_id => $vs_link){
+					$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='".$va_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+				}
+				$vs_formatted_thumbs .= "</ul>";
+				return $vs_formatted_thumbs;
+			break;
+			# ---------------------------------
+			case "bsCols":
+				$vs_formatted_thumbs = "<div class='row' id='detailRepresentationThumbnails'>";
+				foreach($va_links as $vn_rep_id => $vs_link){
+					$vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail".$vn_rep_id."' class='".$va_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$va_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+				}
+				$vs_formatted_thumbs .= "</div>\n";
+				return $vs_formatted_thumbs;
+			break;
+			# ---------------------------------
+			case "array":
+				return $va_links;
+			break;
+			# ---------------------------------
+		}
+	}
+	# ---------------------------------------
 	/*
 	 * list of comments and 
 	 * comment form for all detail pages
 	 *
 	 */
-	# ---------------------------------------
 	function caDetailItemComments($o_request, $pn_item_id, $t_item, $va_comments, $va_tags){
 		$vs_tmp = "";
 		if(is_array($va_comments) && (sizeof($va_comments) > 0)){
