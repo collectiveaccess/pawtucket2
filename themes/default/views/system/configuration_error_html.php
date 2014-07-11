@@ -49,7 +49,7 @@
 	<div id="content">
 		<?php print "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found
-			<a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Providence)' target='_blank'>here</a>.
+			<a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Pawtucket)' target='_blank'>here</a>.
 			For more specific hints on the existing issues please have a look at the messages below."; ?>
 		<br/><br/>
 <?php
