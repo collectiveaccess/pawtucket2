@@ -538,6 +538,8 @@ p.artist.lower {
  	max-height:none;
  	height:auto;
  	border: 1px solid #aaa;
+	padding: 10px;
+	margin: -20px;
 }
 .bResultListItem:hover{ 
 	padding: 15px 15px 10px 15px;
@@ -558,6 +560,7 @@ p.artist.lower {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	padding: 0px 10px 7px 10px;
+	margin: 0px -10px -10px -10px;
 }
 .bResultItemText p, .bResultListItemText p {
 	margin: 0px 0px 2px 0px;
@@ -610,6 +613,7 @@ p.artist.lower {
 	margin-bottom:5px;
 }
 .bResultListItemCol:hover .bResultListItemContent{
+	min-height:72px;
 	height:auto;
 }
 @media (max-width: 768px) {
