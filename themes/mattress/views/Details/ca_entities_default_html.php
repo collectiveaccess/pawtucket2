@@ -150,7 +150,7 @@
 
 		# Related Events Block
 		if (sizeof($va_events) > 0) {
-			print "<div id='occurrencesBlock'>";
+			print "<div id='eventssBlock'>";
 			print "<div class='blockTitle related'>"._t('Related Events')."</div>";
 				print "<div class='blockResults'>";
 					print "<div>";
@@ -220,9 +220,9 @@
 			}
 			$qr_res = caMakeSearchResult('ca_objects', $vn_object_ids);
 			
-			print "<div id='occurrencesBlock'>";
+			print "<div id='objectsBlock'>";
 			print "<div class='blockTitle related'>"._t('Related Objects')."</div>";
-				print "<div class='blockResults scrollBlock'>";
+				print "<div class='blockResults exhibitions scrollBlock'>";
 					print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 					while ($qr_res->nextHit()) {
 						print "<div class='objectsResult'>";
