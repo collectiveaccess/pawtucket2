@@ -182,7 +182,7 @@ class SearchEngine extends SearchBase {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} else {
 				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
-					$va_hits = array_reverse($va_hits);
+					$va_hits = array_flip(array_reverse(array_keys($va_hits)));
 				}
 			}
 			$o_res = new WLPlugSearchEngineCachedResult(array_keys($va_hits), $this->opn_tablenum);
@@ -247,12 +247,12 @@ class SearchEngine extends SearchBase {
 			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL()) {
 				$va_hits = $this->filterHitsByACL($va_hits, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
-					
+			
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} else {
 				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
-					$va_hits = array_reverse($va_hits);
+					$va_hits = array_flip(array_reverse(array_keys($va_hits)));
 				}
 			}
 			
@@ -468,7 +468,9 @@ class SearchEngine extends SearchBase {
 		
 		$vn_num_locales = ca_locales::numberOfCataloguingLocales();
 		
-		foreach($va_fields as $vs_field) {				
+		foreach($va_fields as $vs_field) {		
+			if (!trim($vs_field)) { continue; }		
+						
 			$va_joins = $va_orderbys = array();
 			$vs_locale_where = $vs_is_preferred_sql = '';
 			

@@ -417,6 +417,11 @@
 			unset($va_rep_ids[$vn_primary_id]);
 			$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
 		}
+		$o_set_config = caGetSetsConfig();
+		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+		if(!$vs_lightbox_icon){
+			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
+		}
 		$va_rep_tags = array();
 		if(sizeof($va_rep_ids)){
 			$vs_output = "";
@@ -432,9 +437,9 @@
 				}
 				if(!$o_request->config->get("disable_my_collections")){
 					if ($o_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}
 				}
 				if(caObjectsDisplayDownloadLink($o_request)){
@@ -527,9 +532,9 @@
 				if(!$o_request->config->get("disable_my_collections")){
 					$vs_tool_bar = "<div id='detailMediaToolbar'>";
 					if ($o_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><i class='fa fa-suitcase'></i></a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}

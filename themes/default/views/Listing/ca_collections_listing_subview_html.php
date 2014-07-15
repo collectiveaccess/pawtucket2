@@ -37,9 +37,7 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		
-		$vs_type = $va_type_info[$vn_type_id]['name_plural'];
-		
-		print "<h2>{$vs_type}</h2>\n";
+		print "<h2>{$va_listing_info['displayName']}</h2>\n";
 		
 		while($qr_list->nextHit()) {
 			print $qr_list->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."<br>\n";	

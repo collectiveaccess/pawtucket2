@@ -97,6 +97,13 @@
 					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 				}
 				if ($vs_table == 'ca_objects') {
+					if ($qr_res->get('ca_objects.type_id') == 25) {
+						$va_icon = "<i class='glyphicon glyphicon-volume-up'></i>";
+					} elseif ($qr_res->get('ca_objects.type_id') == 26){
+						$va_icon = "<i class='glyphicon glyphicon-film'></i>";
+					} else {
+						$va_icon = "";
+					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', $vs_table, $vn_id);				
 				} else {
 					$vs_rep_detail_link 	= caDetailLink($this->request, $va_images[$vn_id], '', $vs_table, $vn_id);			
@@ -108,7 +115,7 @@
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$va_icon}{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
 					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_library_info}
 				</div><!-- end bResultItemText -->
