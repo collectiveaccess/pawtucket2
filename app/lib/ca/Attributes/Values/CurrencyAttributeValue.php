@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,11 +34,14 @@
   *
   */
  	
+ 	define("__CA_ATTRIBUTE_VALUE_CURRENCY__", 6);
+ 	 	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/core/BaseModel.php');	// we use the BaseModel field type (FT_*) and display type (DT_*) constants
 
  	require_once(__CA_LIB_DIR__.'/core/Zend/Currency.php');
+ 	require_once(__CA_LIB_DIR__.'/core/Zend/Locale.php');
  	require_once(__CA_LIB_DIR__.'/core/Zend/Locale/Data.php');
  	require_once(__CA_LIB_DIR__.'/core/Zend/Locale/Format.php');
  
@@ -141,6 +144,8 @@
  		# ------------------------------------------------------------------
  		private $ops_currency_specifier;
  		private $opn_value;
+ 		
+ 		private $opb_display_currency_conversion = false;
  		# ------------------------------------------------------------------
  		public function __construct($pa_value_array=null) {
  			parent::__construct($pa_value_array);
@@ -151,25 +156,43 @@
  			$this->opn_value = $pa_value_array['value_decimal1'];
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
 		public function getDisplayValue($pa_options=null) {
-
-			$o_locale = Zend_Registry::get('Zend_Locale');
+			if (caGetOption('returnAsDecimalWithCurrencySpecifier', $pa_options, false)) {
+				return $this->ops_currency_specifier.' '.$this->opn_value;
+			}
+			if(Zend_Registry::isRegistered("Zend_Locale")) {
+				$o_locale = Zend_Registry::get('Zend_Locale');
+			} else {
+				$o_locale = new Zend_Locale('en_US');
+			}
+			
 			$vs_format = Zend_Locale_Data::getContent($o_locale, 'currencynumber');
 
 			// this returns a string like '50,00 ¤' for locale de_DE
- 			$vs_decimal_with_placeholder = Zend_Locale_Format::toNumber($this->opn_value, array('locale' => $locale, 'number_format' => $vs_format, 'precision' => 2));
+ 			$vs_decimal_with_placeholder = Zend_Locale_Format::toNumber($this->opn_value, array('locale' => $o_locale, 'number_format' => $vs_format, 'precision' => 2));
 
  			// if the currency placeholder is the first character, for instance in en_US locale ($10), insert a space.
- 			// this has to be done because we don't print "$10" (which is expected in the locale rules) but "USD 10" ... and that looks nicer with an additional space.
- 			if(substr($vs_decimal_with_placeholder,0,2)=='¤'){ // for whatever reason '¤' has length 2
- 				$vs_decimal_with_placeholder = str_replace('¤', '¤ ', $vs_decimal_with_placeholder);
+ 			// we do this because we don't print "$10" (which is expected in the Zend locale rules) but "USD 10" ... and that looks nicer with an additional space.
+ 			// we also replace the weird multibyte nonsense Zend uses as placeholder with something more reasonable so that
+ 			// whatever we output here isn't rejected if thrown into parseValue() again
+ 			if(substr($vs_decimal_with_placeholder,0,2)=="¤") { // '¤' has length 2
+ 				$vs_decimal_with_placeholder = str_replace("¤", '% ', $vs_decimal_with_placeholder);
+ 			} elseif(substr($vs_decimal_with_placeholder, -2)=="¤") { // placeholder at the end
+ 				$vs_decimal_with_placeholder = preg_replace("![^\d\,\.]!", "", $vs_decimal_with_placeholder)." %";
  			}
 
  			// insert currency which is not locale-dependent in our case
- 			return str_replace('¤', $this->ops_currency_specifier, $vs_decimal_with_placeholder);
+ 			$vs_val = str_replace('%', $this->ops_currency_specifier, $vs_decimal_with_placeholder);
+ 			if (($vs_to_currency = caGetOption('displayCurrencyConversion', $pa_options, false)) && ($this->ops_currency_specifier != $vs_to_currency)) {
+ 				$vs_val .= " ("._t("~%1", caConvertCurrencyValue($this->ops_currency_specifier.' '.$this->opn_value, $vs_to_currency)).")";
+ 			}
+ 			return $vs_val;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$ps_value = trim($ps_value);
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
@@ -212,7 +235,11 @@
 
  			// get UI locale from registry and convert string to actual php float
  			// based on rules for this locale (e.g. most non-US locations use 10.000,00 as notation)
- 			$o_locale = Zend_Registry::get('Zend_Locale');
+ 			if(Zend_Registry::isRegistered("Zend_Locale")) {
+ 				$o_locale = Zend_Registry::get('Zend_Locale');
+ 			} else {
+ 				$o_locale = new Zend_Locale('en_US');
+ 			}
  			try {
  				$vn_value = Zend_Locale_Format::getNumber($vs_decimal_value, array('locale' => $o_locale, 'precision' => 2));
  			} catch (Zend_Locale_Exception $e){
@@ -268,9 +295,6 @@
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
  			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight', 'minValue', 'maxValue'));
  			
- 			// try to get currency conversion
- 			
- 			
  			return caHTMLTextInput(
  				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 
  				array(
@@ -284,7 +308,7 @@
  			);
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['CurrencyAttributeValue'];
@@ -297,6 +321,15 @@
 		 */
 		public function sortField() {
 			return 'value_decimal1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for currency attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_CURRENCY__;
 		}
  		# ------------------------------------------------------------------
 	}

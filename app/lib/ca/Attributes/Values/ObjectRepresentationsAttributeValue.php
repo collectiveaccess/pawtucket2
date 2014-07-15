@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/ca/Attributes/Values/EntitiesAttributeValue.php : 
+ * app/lib/ca/Attributes/Values/ObjectRepresentationsAttributeValue.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -33,21 +33,21 @@
  /**
   *
   */
-  	define("__CA_ATTRIBUTE_VALUE_ENTITIES__", 22);
+  	define("__CA_ATTRIBUTE_VALUE_OBJECTREPRESENTATIONS__", 21);
   	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AuthorityAttributeValue.php');
- 	require_once(__CA_MODELS_DIR__.'/ca_entities.php');
+ 	require_once(__CA_MODELS_DIR__.'/ca_object_representations.php');
  
  	global $_ca_attribute_settings;
  	
- 	$_ca_attribute_settings['EntitiesAttributeValue'] = array(		// global
+ 	$_ca_attribute_settings['ObjectRepresentationsAttributeValue'] = array(		// global
 		'requireValue' => array(
 			'formatType' => FT_NUMBER,
 			'displayType' => DT_CHECKBOXES,
 			'default' => 1,
 			'width' => 1, 'height' => 1,
 			'label' => _t('Require value'),
-			'description' => _t('Check this option if you want to require that an entity be selected.')
+			'description' => _t('Check this option if you want to require that an object representation be selected.')
 		),
 		'fieldWidth' => array(
 			'formatType' => FT_NUMBER,
@@ -109,30 +109,30 @@
 		)
 	);
  
-	class EntitiesAttributeValue extends AuthorityAttributeValue {
+ 	class ObjectRepresentationsAttributeValue extends AuthorityAttributeValue {
  		# ------------------------------------------------------------------
  		/**
  		 * Name of table this attribute references
  		 */
- 		protected $ops_table_name = 'ca_entities';
+ 		protected $ops_table_name = 'ca_object_representations';
  		
  		/**
  		 * Display name, in singular sense, of table this attribute references. The name should be capitalized.
  		 */
- 		protected $ops_name_singular = 'Entity';
+ 		protected $ops_name_singular = 'ObjectRepresentation';
  		
  		/**
  		 * Display name, in plural sense, of table this attribute references. The name should be capitalized.
  		 */
- 		protected $ops_name_plural = 'Entities';
+ 		protected $ops_name_plural = 'ObjectRepresentations';
  		# ------------------------------------------------------------------
 		/**
-		 * Returns constant for entities attribute value
+		 * Returns constant for object representations attribute value
 		 * 
 		 * @return int Attribute value type code
 		 */
 		public function getType() {
-			return __CA_ATTRIBUTE_VALUE_ENTITIES__;
+			return __CA_ATTRIBUTE_VALUE_OBJECTREPRESENTATIONS__;
 		}
  		# ------------------------------------------------------------------
 	}
