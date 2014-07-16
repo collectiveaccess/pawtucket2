@@ -1779,6 +1779,19 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	public function htmlFormElementForSearch($po_request, $ps_field, $pa_options=null) {
 		$va_tmp = explode('.', $ps_field);
 		
+		if ($va_tmp[0] == '_fulltext') {
+			
+			if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+			if (!isset($pa_options['height'])) { $pa_options['height'] = 30; }
+			if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
+			if (!isset($pa_options['values']['_fulltext'])) { $pa_options['values'][$ps_field] = ''; }
+			return caHTMLTextInput("_fulltext", array(
+							'value' => $pa_options['values']['_fulltext'],
+							'id' => "_fulltext",
+							'size' => $pa_options['width']
+						), $pa_options);
+		}
+		
 		if (!in_array($va_tmp[0], array('created', 'modified'))) {
 			switch(sizeof($va_tmp)) {
 				# -------------------------------------

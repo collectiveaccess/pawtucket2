@@ -65,6 +65,12 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
+ 			
+ 			 			
+ 			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
+ 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
@@ -76,8 +82,13 @@
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
+ 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
  			$this->opo_result_context->setAsLastFind();
+ 			
+ 			
+ 			if($vb_is_advanced) { 
+ 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
+ 			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
@@ -281,6 +292,80 @@
  					break;
  			}
  		}
+ 		# -------------------------------------------------------
+ 		# Advanced search
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+		public function advanced() {
+			$o_config = caGetSearchConfig();
+ 			
+ 			$ps_function = strtolower($this->request->getActionExtra());
+ 			
+ 			if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) {
+ 				// invalid advanced search type – throw error
+ 				die("Invalid advanced search type");
+ 			}
+ 			$vs_class = $va_search_info['table'];
+ 			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$this->view->setVar('searchInfo', $va_search_info);
+ 			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
+ 			
+ 			$va_default_form_values = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormContent_{$ps_function}");
+ 			
+ 			$va_tags = $this->view->getTagList($va_search_info['view']);
+ 			
+ 			$t_subject = $this->request->datamodel->getInstanceByTableName($va_search_info['table'], true);
+ 			
+ 			$va_form_elements = array();
+ 			foreach($va_tags as $vs_tag) {
+ 				
+ 				$va_opts = array();
+ 				$vs_tag_proc = $vs_tag;
+ 				$va_parse = caParseTagOptions($vs_tag);
+ 				$vs_tag_proc = $va_parse['tag'];
+ 				$va_opts = $va_parse['options'];
+ 				
+ 				if ((substr($vs_tag_proc, 0, 3) !== 'ca_') && (!in_array($vs_tag_proc, array('_fulltext', 'created', 'modified')))) { continue; }
+ 				
+ 				
+				if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
+					$va_opts['values'][$vs_tag_proc] = $vs_default_value;
+					unset($va_opts['default']);
+				}
+ 			
+ 				if (preg_match("!^(.*)_label$!", $vs_tag_proc, $va_matches)) {
+ 					$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
+ 				} else {
+ 					$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts));
+ 				}
+ 				if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
+ 			}
+ 			
+ 			$this->view->setVar("submit", "<a href='#' class='caAdvancedSearchFormSubmit'>"._t('Submit')."</a>");
+ 			$this->view->setVar("reset", "<a href='#' class='caAdvancedSearchFormReset'>"._t('Reset')."</a>");
+ 			
+ 			$vs_script = "<script type='text/javascript'>
+	jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
+		jQuery('#caAdvancedSearch').submit();
+	});
+	jQuery('.caAdvancedSearchFormReset').bind('click', function() {
+		jQuery('#caAdvancedSearch').find('input,select,textarea').val('');
+	});
+</script>\n";
+ 			
+ 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)));
+ 			$this->view->setVar("endForm", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 			
+ 			$this->render($va_search_info['view']);
+			
+		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
