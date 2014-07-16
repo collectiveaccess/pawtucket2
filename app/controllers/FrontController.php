@@ -55,6 +55,7 @@
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
+ 			$va_featured_ids = array();
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
@@ -66,6 +67,15 @@
 					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
 					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
+ 			}
+ 			#
+ 			# --- no configured set/items in set so grab random objects with media
+ 			#
+ 			if(sizeof($va_featured_ids) == 0){
+ 				$t_object = new ca_objects();
+ 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1)));
+ 				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
  			}
  			
  			$this->view->setVar('config', $this->config);

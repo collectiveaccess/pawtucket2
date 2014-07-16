@@ -1,0 +1,21 @@
+.headerTitle{
+	padding-top:23px;
+}
+.navbar-header .headerTitle a, .navbar-header headerTitle a:focus, .navbar-header headerTitle a:visited{
+	font-size:22px;
+	font-weight:normal;
+	font-family: DIN17SBOP-Regular;
+	color:#19bed1;
+	width:auto;
+	text-transform:uppercase;
+}
+.frontSlide img{
+	height:400px;
+	width:auto;
+}
+.detailTool a{
+	padding-right:80px;
+}
+a.btn-default{
+	text-decoration:none;
+}

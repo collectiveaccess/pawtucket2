@@ -18,6 +18,13 @@ a:hover {
 a:active {
 	background:transparent;
 }
+h1 {
+	color: #000;
+	font-family: "ProximaNovaRegular";
+	padding: 15px 10px 0px 10px;
+	font-size: 24px;
+	line-height: 24px;
+}
 h2, #detail h2, .multiSearch h2{
 	font-size: 24px;
 	color: #EE3E43;
@@ -463,6 +470,19 @@ h2 span.artist {
 	width:500px;
 	line-height: 1.4em;
 	font-size: 15px;
+	margin-bottom:10px;
+}
+.readmore-js-toggle, .readmore-js-section {
+	float:left;
+	width:500px;
+}
+a.readmore-js-toggle {
+	color:#fff;
+	background-color:#000;
+	font-family: "ProximaNovaRegular";
+	padding:5px;
+	width:auto;
+	clear:both;
 }
 #detail #infoArea p {
 	line-height: 1.4em;
@@ -664,10 +684,11 @@ h2 span.artist {
 	width: 770px;
 	border-top:1px solid #ccc;
 	margin-left:25px;
-	padding: 15px 0px 0px 0px !important;
+	padding: 15px 0px 20px 0px !important;
 	overflow-y:scroll;
 	min-height:165px;
-	height:240px;
+	height:260px;
+	margin-bottom:20px;
 	/* height:auto; */
 	clear:none;
 }
@@ -719,7 +740,7 @@ h2 span.artist {
 	-webkit-box-shadow:none;
 	-moz-box-shadow:none;
 	background-color:transparent;
-	padding: 0px;
+	padding: 0px; 
 	width: 160px;
 	height: 190px;
 }
@@ -823,7 +844,8 @@ h2 span.artist {
 	height:auto;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
-	margin-right: 15px;
+	margin-right: 0px;
+	padding-right:10px;
 	line-height: 16px;
 	margin-bottom:15px;
 }
@@ -867,6 +889,26 @@ h2 span.artist {
 	padding-top:20px;
 	text-transform:uppercase;
 }
+#bMorePanel {
+	padding-bottom:20px;
+}
+#bMorePanel #bLetterBar {
+	margin-right:10px;
+}
+#bMorePanel #bScrollList {
+	padding-bottom:50px;
+}
+#bMorePanel #bScrollList a {
+	line-height: 1.2em;
+	color: #454545;
+	font-size:12px;
+	font-family: "ProximaNovaRegular";
+}
+@media (min-width: 992px) {
+	#bMorePanel #bScrollList {
+		width: 250px;
+	}
+}
 #browseResults .resultCount {
 	font-size:14px;
 }
@@ -900,6 +942,13 @@ h2 span.artist {
 	float:left;
 	height:255px;
 }
+#browseResults .bResultItem{
+	padding:0px;
+	margin-right:10px;
+}
+#browseResults .bResultItem:hover{
+	padding:0px;
+}
 .bResultItem {
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -914,16 +963,13 @@ h2 span.artist {
 }
 .bResultItem .bResultItemImg {
 	height: 180px;
-	min-width: 150px;
+	min-width: 120px; 
 	background-color: #f7f7f7;
 }
 .bResultItem:hover .bResultItemImg {
 	height:180px; 
 }
-#browseResults .artistName a{
-	text-transform:uppercase;
-	color:#999;
-}
+
 .bResultItem:hover{
 	padding:10px;
 	margin:0px 0px 5px 0px;
@@ -1255,4 +1301,5 @@ a.downloadButton{
 	width: 60px;
 	padding: 7px;
 }
+
 

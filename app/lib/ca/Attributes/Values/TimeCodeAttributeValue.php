@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
  /**
   *
   */
+  	define("__CA_ATTRIBUTE_VALUE_TIMECODE__", 10);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -131,7 +132,18 @@
  			$this->opn_duration = (float)$pa_value_array['value_decimal1'];
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns value suitable for display
+ 		 *
+ 		 * @param $pa_options array Options are:
+ 		 *		returnAsDecimal = return duration in seconds as decimal number
+ 		 *
+ 		 * @return mixed Values as string or decimal
+ 		 */
 		public function getDisplayValue($pa_options=null) {
+			if (caGetOption('returnAsDecimal', $pa_options, false)) {
+				return (float)$this->opn_duration;
+			}
 			if (!strlen($this->opn_duration)) { return ''; }
 			$o_tcp = new TimecodeParser();
 			$o_tcp->setParsedValueInSeconds($this->opn_duration);
@@ -145,7 +157,7 @@
 			return $this->opn_duration;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$ps_value = trim($ps_value);
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
@@ -189,7 +201,7 @@
 			);
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['TimecodeAttributeValue'];
@@ -202,6 +214,15 @@
 		 */
 		public function sortField() {
 			return 'value_decimal1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for timecode attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_TIMECODE__;
 		}
  		# ------------------------------------------------------------------
 	}

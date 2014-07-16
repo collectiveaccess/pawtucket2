@@ -413,8 +413,9 @@
 		}else{
 			# --- are there multiple reps?
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
-			arsort($va_rep_ids);	# --- sort so primary comes first
-			$va_rep_ids = array_keys($va_rep_ids);
+			$vn_primary_id = array_search("1", $va_rep_ids);
+			unset($va_rep_ids[$vn_primary_id]);
+			$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
 		}
 		$o_set_config = caGetSetsConfig();
 		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
@@ -474,8 +475,18 @@
 							$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 							
 							/* Carousel initialization */
-							$('.jcarousel').jcarousel();
+							$('.jcarousel').jcarousel({
+								animation: {
+									duration: 0 // make changing image immediately
+								},
+								wrap: 'circular'
+							});
 					
+							// make fadeIn effect
+							$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
+								$(carousel._element.context).find('li').hide().fadeIn(1000);
+							});
+
 							/* Prev control initialization */
 							$('#detailRepNavPrev')
 								.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
@@ -578,8 +589,12 @@
 			return;
 		}
 		$va_links = array();
+		$vn_primary_id = "";
 		foreach($va_reps as $vn_rep_id => $va_rep){
 			$vs_class = "";
+			if($va_rep["is_primary"]){
+				$vn_primary_id = $vn_rep_id;
+			}
 			if($vn_rep_id == $pn_rep_id){
 				if($va_options["dontShowCurrentRep"]){
 					continue;
@@ -592,7 +607,7 @@
 					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 				# -------------------------------
 				case "carousel":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".".$va_options["currentRepClass"]."\").removeClass(\"".$va_options["currentRepClass"]."\"); $(this).parent().addClass(\"".$va_options["currentRepClass"]."\"); $(this).addClass(\"".$va_options["currentRepClass"]."\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"));' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".".$va_options["currentRepClass"]."\").removeClass(\"".$va_options["currentRepClass"]."\"); $(this).parent().addClass(\"".$va_options["currentRepClass"]."\"); $(this).addClass(\"".$va_options["currentRepClass"]."\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 				break;
 				# -------------------------------
 				default:
@@ -602,6 +617,10 @@
 				# -------------------------------
 			}
 		}
+		# --- make sure the primary rep shows up first
+		$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
+		unset($va_links[$vn_primary_id]);
+		$va_links = $va_primary_link + $va_links;
 		# --- formatting
 		$vs_formatted_thumbs = "";
 		switch($va_options["returnAs"]){

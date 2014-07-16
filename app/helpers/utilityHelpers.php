@@ -1954,4 +1954,25 @@ function caFileIsIncludable($ps_file) {
 		}
 	}
 	# ----------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caParseTagOptions($ps_tag, $pa_options=null) {
+		$vs_tag_proc = $ps_tag;
+		$va_opts = array();
+		if (sizeof($va_tmp = explode('%', $ps_tag)) > 1) {
+			$vs_tag_proc = array_shift($va_tmp);
+			$va_params_raw = explode("&", join("%", $va_tmp));
+		
+			foreach($va_params_raw as $vs_param_raw) {
+				$va_tmp = explode('=', $vs_param_raw);
+				$va_opts[$va_tmp[0]] = $va_tmp[1];
+			}
+		}
+		
+		return array('tag' => $vs_tag_proc, 'options' => $va_opts);
+	}
+	# ----------------------------------------
 ?>

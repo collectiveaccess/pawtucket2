@@ -2046,9 +2046,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 					$vn_count = 0;
 					foreach($va_if_codes as $vs_if_code) {
 						if($t_table = $o_dm->getInstanceByTableName($vs_if_code, true)) {
-							$va_count_vals = $qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true));
+							$va_count_vals = $qr_res->get($vs_if_code.".".$t_table->primaryKey(), array('restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'returnAsArray' => true, 'checkAccess' => $pa_check_access));
 						} else {
-							$va_count_vals = $qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes']));
+							$va_count_vals = $qr_res->get($vs_if_code, array('returnAsArray' => true, 'restrictToTypes' => $va_ifcount['restrictToTypes'], 'restrictToRelationshipTypes' => $va_ifcount['restrictToRelationshipTypes'], 'checkAccess' => $pa_check_access));
 						}	
 						if (is_array($va_count_vals)) {
 							$va_bits = explode(".", $vs_if_code);
