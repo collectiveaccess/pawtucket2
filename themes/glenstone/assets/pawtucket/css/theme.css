@@ -698,6 +698,7 @@ p.artist.lower {
 	margin-bottom:2px;
 	font-weight:400;
 	text-transform: none;
+	clear:both;
 }
 .detail .unit.wide {
 	margin-bottom:15px;
@@ -949,6 +950,21 @@ p.artist.lower {
 
 /* Sets */
 
+@media (max-width: 768px){
+	#pageArea.sets .col-sm-10 {
+		width: 83.33333333333334%; 
+	}
+	#pageArea.sets .col-sm-4 {
+		width: 33.33333333333333%;
+		float:left;
+	}
+}
+@media (max-width: 640px){
+	#pageArea.sets .col-sm-4 {
+		width: 100%;
+		float:none;
+	}
+}
 .lbSet, .lbItem {
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -963,14 +979,19 @@ p.artist.lower {
 	border-left:1px solid #ddd;
 	border-right:1px solid #ddd;
 	border-bottom:1px solid #ddd;
-	width:100.5%
+	width:100.8%;
+	margin: 0px -10px 0px -11px;
+	padding: 0px 16px 15px 16px;
 }
 .lbSetExpandedInfo {
 	margin-left:-16px;
 }
 .lbItem:hover  {
-	margin:-10px;
-	padding:20px;
+margin: -20px;
+padding: 10px;
+width: auto; 
+left: 0; 
+top: 0; 
 }
 .reveal h3 {
 	text-transform:none;
