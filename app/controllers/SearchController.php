@@ -65,11 +65,9 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
- 			
- 			 			
+ 						
  			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
- 			
  			
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
@@ -296,8 +294,7 @@
  		# Advanced search
  		# -------------------------------------------------------
 		/** 
-		 * Generate the URL for the "back to results" link from a browse result item
-		 * as an array of path components.
+		 * 
 		 */
 		public function advanced() {
 			$o_config = caGetSearchConfig();
@@ -318,50 +315,80 @@
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			
  			$va_default_form_values = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormContent_{$ps_function}");
+ 			$va_default_form_booleans = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormBooleans_{$ps_function}");
  			
  			$va_tags = $this->view->getTagList($va_search_info['view']);
  			
  			$t_subject = $this->request->datamodel->getInstanceByTableName($va_search_info['table'], true);
  			
  			$va_form_elements = array();
+ 			
+ 			$vs_script = null;
  			foreach($va_tags as $vs_tag) {
- 				
- 				$va_opts = array();
- 				$vs_tag_proc = $vs_tag;
  				$va_parse = caParseTagOptions($vs_tag);
  				$vs_tag_proc = $va_parse['tag'];
  				$va_opts = $va_parse['options'];
  				
- 				if ((substr($vs_tag_proc, 0, 3) !== 'ca_') && (!in_array($vs_tag_proc, array('_fulltext', 'created', 'modified')))) { continue; }
- 				
- 				
-				if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
-					$va_opts['values'][$vs_tag_proc] = $vs_default_value;
+ 				if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
+					$va_default_form_values[$vs_tag_proc] = $vs_default_value;
 					unset($va_opts['default']);
-				}
+				} 
  			
- 				if (preg_match("!^(.*)_label$!", $vs_tag_proc, $va_matches)) {
- 					$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
- 				} else {
- 					$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts));
- 				}
- 				if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
- 			}
+				$vs_tag_val = null;
+ 				switch(strtolower($vs_tag_proc)) {
+ 					case 'submit':
+ 						$this->view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
+ 						break;
+ 					case 'reset':
+ 						$this->view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
  			
- 			$this->view->setVar("submit", "<a href='#' class='caAdvancedSearchFormSubmit'>"._t('Submit')."</a>");
- 			$this->view->setVar("reset", "<a href='#' class='caAdvancedSearchFormReset'>"._t('Reset')."</a>");
- 			
- 			$vs_script = "<script type='text/javascript'>
+ 						$vs_script = "<script type='text/javascript'>
 	jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
 		jQuery('#caAdvancedSearch').submit();
+		return false;
 	});
 	jQuery('.caAdvancedSearchFormReset').bind('click', function() {
-		jQuery('#caAdvancedSearch').find('input,select,textarea').val('');
+		jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
+		jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
+		jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
+		return false;
+	});
+	jQuery(document).ready(function() {
+		var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
+		for (f in defaultValues) {
+			var f_proc = f + '[]';
+			jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
+				if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
+			});
+		}
+		for (f in defaultBooleans) {
+			var f_proc = f + '[]';
+			jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
+				if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
+			});
+		}
 	});
 </script>\n";
+ 						break;
+ 					default:
+ 			
+						if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
+							$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
+						} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
+							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR'), array('class' => 'caAdvancedSearchBoolean')));
+						} else {
+							$va_opts['asArrayElement'] = true;
+							if ($vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts)) {
+								$this->view->setVar($vs_tag, $vs_tag_val);
+							}
+						}
+						if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
+						break;
+				}
+ 			}
  			
  			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)));
- 			$this->view->setVar("endForm", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 			$this->view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
  			$this->render($va_search_info['view']);
 			
