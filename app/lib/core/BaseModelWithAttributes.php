@@ -1545,7 +1545,7 @@
 				$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vs_value, $vs_form_element);
 				
 				// ... replace name of form element
-				$vs_fld_name = str_replace('.', '_', $vs_subelement_code);
+				$vs_fld_name = $vs_subelement_code; //str_replace('.', '_', $vs_subelement_code);
 				if (caGetOption('asArrayElement', $pa_options, false)) { $vs_fld_name .= "[]"; } 
 				$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
 				
@@ -1553,7 +1553,8 @@
 				$vs_form_element = str_replace('{'. $va_element['element_id'].'}', '', $vs_form_element);
 				
 				$va_elements_by_container[$va_element['parent_id'] ? $va_element['parent_id'] : $va_element['element_id']][] = $vs_form_element;
-				//if the elements datatype returns true from renderDataType, then force render the element
+				
+				// If the elements datatype returns true from renderDataType, then force render the element
 				if(Attribute::renderDataType($va_element)) {
 					return array_pop($va_elements_by_container[$va_element['element_id']]);
 				}

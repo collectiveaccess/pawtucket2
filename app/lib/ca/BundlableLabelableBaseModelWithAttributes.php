@@ -1968,7 +1968,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
 				if (!isset($pa_options['height'])) { $pa_options['height'] = 30; }
 				if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
-				if (!isset($pa_options['values']['_fulltext'])) { $pa_options['values'][$ps_field] = ''; }
 				
 				
 				$va_filter = $va_alt_names = null;
@@ -1976,9 +1975,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					$va_filter = $va_alt_names = array();
 					$va_alt_names = array();
 					foreach($va_fields as $vs_field_raw) {
-						$va_tmp = explode(":", $vs_field_raw);
-						$va_filter[] = $va_tmp[0];
-						if (isset($va_tmp[1]) && $va_tmp[1]) { $va_alt_names[$va_tmp[0]] = $va_tmp[1]; }
+						$va_tmp = explode(':', $vs_field_raw);
+						$va_tmp2 = explode('/', $va_tmp[0]);
+						$va_filter[] = $va_tmp2[0];
+						if (isset($va_tmp[1]) && $va_tmp[1]) { $va_alt_names[$va_tmp2[0]] = $va_tmp[1]; }
 					}
 				}
 				
@@ -1995,11 +1995,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				ksort($va_options);
 				
 				return caHTMLSelect("_fieldlist_field".($vb_as_array_element ? "[]" : ""), $va_options, array(
-								'value' => $pa_options['values']['_fieldlist'],
 								'size' => $pa_options['fieldListWidth']
-							), $pa_options).
+							), array_merge($pa_options, array('value' => $pa_options['values']['_fieldlist_field'][0]))).
 						caHTMLTextInput("_fieldlist_value".($vb_as_array_element ? "[]" : ""), array(
-								'value' => $pa_options['values']['_fulltext'],
+								'value' => $pa_options['values']['_fieldlist_value'],
 								'size' => $pa_options['width']
 							), $pa_options);
 				break;

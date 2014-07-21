@@ -605,17 +605,19 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
 		
 		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
-	 	$va_values = $va_booleans = array();
+	 	$va_default_values = $va_values = $va_booleans = array();
 	 	
 	 	foreach($va_form_contents as $vn_i => $vs_element) {
 			$vs_dotless_element = str_replace('.', '_', $vs_element);
 			
 			switch($vs_element) {
 				case '_fieldlist':
-					foreach($pa_form_values[$vs_element.'_field'] as $vn_j => $vs_fieldlist_field) {
+					foreach($pa_form_values[$vs_dotless_element.'_field'] as $vn_j => $vs_fieldlist_field) {
 						if(!strlen(trim($vs_fieldlist_field))) { continue; }
-						$va_values[$vs_fieldlist_field][] = trim($pa_form_values[$vs_element.'_value'][$vn_j]);
-						$va_booleans["_fieldlist_boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
+						$va_values[$vs_fieldlist_field][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
+						$va_default_values['_fieldlist_field'][] = $vs_fieldlist_field;
+						$va_default_values['_fieldlist_value'][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
+						$va_booleans["_fieldlist:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
 						
 					}
 					break;
@@ -623,22 +625,23 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					if (is_array($pa_form_values[$vs_dotless_element])) {
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
+							$va_default_values[$vs_element][] = trim($vs_element_value);
 							$va_values[$vs_element][] = trim($vs_element_value);
-							$va_booleans["{$vs_element}_boolean"][] = isset($pa_form_values["{$vs_dotless_element}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}:boolean"][$vn_j] : null;
+							$va_booleans["{$vs_element}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}:boolean"][$vn_j] : null;
 						}
 					}
 					break;
 			}
 		}
 		
-		$po_result_context->setParameter("pawtucketAdvancedSearchFormContent_{$pa_form_values['_advancedFormName']}", $va_values);
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormContent_{$pa_form_values['_advancedFormName']}", $va_default_values);
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormBooleans_{$pa_form_values['_advancedFormName']}", $va_booleans);
 		$po_result_context->saveContext();
-		print_R($pa_form_values);
-	print_R($va_values);
+	
 	 	$va_query_elements = $va_query_booleans = array();
 	 	if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_value_list) {
-				foreach($va_value_list as $vs_value) {
+				foreach($va_value_list as $vn_i => $vs_value) {
 					if (!strlen(trim($vs_value))) { continue; }
 					if ((strpos($vs_value, ' ') !== false) && ($vs_value{0} != '[')) {
 						$vs_query_element = '"'.str_replace('"', '', $vs_value).'"';
@@ -646,19 +649,20 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 						$vs_query_element = $vs_value;
 					}
 					
-					$va_query_booleans[] = (isset($va_booleans["{$vs_element}_boolean"]) && $va_booleans["{$vs_element}:boolean"]) ? $va_booleans["{$vs_element}:boolean"] : 'AND';
+					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){
 						case '_fulltext':		// don't qualify special "fulltext" element
-							$va_query_elements[] = $vs_query_element;
+							$va_query_elements[$vs_element][] = $vs_query_element;
 							break;
 						case '_fieldlist_value':
-						
+							// noop
 							break;
 						case '_fieldlist_field':
-							$va_query_elements[] = "(".$va_values['_fieldlist_field'].":".$pa_form_values['_fieldlist_value'].")";
+							if(!strlen(trim($pa_form_values['_fieldlist_value'][$vn_i]))) { continue; }
+							$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
 							break;
 						default:
-							$va_query_elements[] = "({$vs_element}:{$vs_query_element})";
+							$va_query_elements[$vs_element][] = "({$vs_element}:{$vs_query_element})";
 							break;
 					}
 				}
@@ -666,13 +670,16 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		}
 		
 		$vs_query_string = '';
-		foreach($va_query_elements as $vn_i => $vs_val) {
-			$vs_query_string .= $vs_val;
-			if ($vn_i < (sizeof($va_query_elements) - 1)) {
-				$vs_query_string .= ' '.$va_query_booleans[$vn_i].' ';
+		foreach($va_query_elements as $vs_element => $va_query_elements_by_element) {
+			$vs_query_string .= ($vs_query_string ? ' AND ' : '').'(';
+			foreach($va_query_elements_by_element as $vn_i => $vs_val) {
+				$vs_query_string .= $vs_val;
+				if ($vn_i < (sizeof($va_query_elements_by_element) - 1)) {
+					$vs_query_string .= ' '.$va_query_booleans[$vs_element][$vn_i].' ';
+				}
 			}
+			$vs_query_string = trim($vs_query_string). ')';
 		}
-		print "[$vs_query_string]<br>\n\n";
 		return $vs_query_string;
 	}
 	# ---------------------------------------
@@ -822,6 +829,18 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			);	
 		}
 		
+		// rewrite label filters to use label tables actually used in indexing config
+		if (is_array($pa_filter)) {
+			foreach($pa_filter as $vn_i => $vs_filter) {
+				$va_tmp = explode('.', $vs_filter);
+				if (in_array($va_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) {
+					if ($t_filter_instance = $o_dm->getInstanceByTableName($va_tmp[0], true)) {
+						$pa_filter[] = $t_filter_instance->getLabelTableName().($va_tmp[2] ? '.'.$va_tmp[2] : '');
+					}
+				}
+			}
+		}
+		
 		
 		// get fields 
 		  
@@ -961,5 +980,18 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				}
 			}
 		}
+		
+		// rewrite bundles to used preferred_labels notation
+		if ($pb_for_select) {
+			foreach($va_sorted_bundles as $vs_label => $vs_key) {
+				$va_tmp = explode('.', $vs_key);
+				if (preg_match('!_labels$!', $va_tmp[0])) {
+					if (($t_label_instance = $o_dm->getInstanceByTableName($va_tmp[0], true)) && (is_a($t_label_instance, 'BaseLabel'))) {
+						$va_sorted_bundles[$vs_label] = $t_label_instance->getSubjectTableName().'.preferred_labels'.($va_tmp[1] ? '.'.$va_tmp[1] : '');
+					}
+				}
+			}
+		}
+		
 		return $va_sorted_bundles;
 	}
