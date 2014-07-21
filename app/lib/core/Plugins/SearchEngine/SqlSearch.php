@@ -1168,7 +1168,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						}
 						
 						if ($this->debug) { Debug::msg('FIRST: '.$vs_sql." [$pn_subject_tablenum]"); }
-						//print $vs_sql;
+						print "[$vs_rel_type_id_sql] $vs_sql";
 						$qr_res = $this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum));
 					} else {
 						switch($vs_op) {

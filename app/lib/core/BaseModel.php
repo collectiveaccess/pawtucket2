@@ -342,6 +342,11 @@ class BaseModel extends BaseObject {
 	static $s_instance_cache = array();
 	
 	/**
+	 * 
+	 */
+	static $s_field_value_arrays_for_IDs_cache = array();
+	
+	/**
 	 * Constructor
 	 * In general you should not call this constructor directly. Any table in your database
 	 * should be represented by an extension of this class.
@@ -6042,6 +6047,7 @@ class BaseModel extends BaseObject {
 		if ($va_tmp[0] != $this->tableName()) { return null; }
 		
 		if ($this->hasField($va_tmp[1])) {
+			if (caGetOption('asArrayElement', $pa_options, false)) { $ps_field .= "[]"; } 
 			return $this->htmlFormElement($va_tmp[1], '^ELEMENT', array_merge($pa_options, array(
 					'name' => $ps_field,
 					'id' => str_replace(".", "_", $ps_field),
