@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_search_form_placements.php
+ * app/models/ca_metadata_dictionary_rules.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,44 +36,85 @@
  
 require_once(__CA_LIB_DIR__.'/core/ModelSettings.php');
 
-global $_ca_editor_search_form_placement_settings;
-$_ca_editor_search_form_placement_settings = array(		// global
+global $_ca_metadata_dictionary_rules_settings;
+$_ca_metadata_dictionary_rules_settings = array(		// global
 	'label' => array(
 		'formatType' => FT_TEXT,
 		'displayType' => DT_FIELD,
-		'width' => 25, 'height' => 1,
+		'width' => 30, 'height' => 1,
 		'takesLocale' => true,
-		'default' => '',
-		'label' => _t('Label'),
-		'description' => _t('Text label to be used for displayed information.')
-	)
+		'label' => _t('Alternate label to place on bundle'),
+		'description' => _t('Custom label text to use for this placement of this bundle.')
+	),
+	'add_label' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_FIELD,
+		'width' => 30, 'height' => 1,
+		'takesLocale' => true,
+		'label' => _t('Alternate label to place on bundle add button'),
+		'description' => _t('Custom text to use for the add button for this placement of this bundle.')
+	),
+	'description' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_FIELD,
+		'width' => 30, 'height' => 5,
+		'takesLocale' => true,
+		'label' => _t('Descriptive text for bundle.'),
+		'description' => _t('Descriptive text to use for help for bundle. Will override descriptive text set for underlying metadata element, if set.')
+	),
+	'width' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_FIELD,
+		'width' => 4, 'height' => 1,
+		'takesLocale' => false,
+		'default' => "",
+		'label' => _t('Width'),
+		'description' => _t('Width, in characters or pixels, of search form elements.')
+	),
+	'height' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_FIELD,
+		'width' => 4, 'height' => 1,
+		'takesLocale' => false,
+		'default' => "",
+		'label' => _t('Height'),
+		'description' => _t('Width, in characters or pixels, of search form elements.')
+	),
+	'readonly' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'width' => 30, 'height' => 1,
+		'takesLocale' => false,
+		'default' => '0',
+		'label' => _t('Read only?'),
+		'description' => _t('If checked, field will not be editable.')
+	),
 );
 
-
-BaseModel::$s_ca_models_definitions['ca_search_form_placements'] = array(
- 	'NAME_SINGULAR' 	=> _t('search form placement'),
- 	'NAME_PLURAL' 		=> _t('search form placements'),
+BaseModel::$s_ca_models_definitions['ca_metadata_dictionary_rules'] = array(
+ 	'NAME_SINGULAR' 	=> _t('Metadata dictionary rule'),
+ 	'NAME_PLURAL' 		=> _t('Metadata dictionary rules'),
  	'FIELDS' 			=> array(
-		'placement_id' => array(
+ 		'rule_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Placement id', 'DESCRIPTION' => 'Identifier for placement'
+				'LABEL' => 'Rule id', 'DESCRIPTION' => 'Identifier for rule'
 		),
-		'form_id' => array(
+		'entry_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Form id', 'DESCRIPTION' => 'Identifier for form'
+				'LABEL' => 'Entry id', 'DESCRIPTION' => 'Identifier for entry'
 		),
-		'bundle_name' => array(
+		'rule_name' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('Bundle name'), 'DESCRIPTION' => _t('Name of bundle to display'),
+				'LABEL' => _t('Rule name'), 'DESCRIPTION' => _t('Name of rule to apply'),
 				'BOUNDS_VALUE' => array(1,255)
 		),
 		'settings' => array(
@@ -82,19 +123,13 @@ BaseModel::$s_ca_models_definitions['ca_search_form_placements'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Settings')
-		),
-		'rank' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Sort order'), 'DESCRIPTION' => _t('The relative priority of the search form element when displayed in a list with other elements in a form. Lower numbers indicate higher priority.')
 		)
-	)
+ 	)
 );
 
 
-class ca_search_form_placements extends BaseModel {
+
+class ca_metadata_dictionary_rules extends BaseModel {
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -106,10 +141,10 @@ class ca_search_form_placements extends BaseModel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_search_form_placements';
+	protected $TABLE = 'ca_metadata_dictionary_rules';
 	      
 	# what is the primary key of the table?
-	protected $PRIMARY_KEY = 'placement_id';
+	protected $PRIMARY_KEY = 'rule_id';
 
 	# ------------------------------------------------------
 	# --- Properties used by standard editing scripts
@@ -135,7 +170,7 @@ class ca_search_form_placements extends BaseModel {
 
 	# List of fields to sort listing of records by; you can use 
 	# SQL 'ASC' and 'DESC' here if you like.
-	protected $ORDER_BY = array('placement_id');
+	protected $ORDER_BY = array('rule_id');
 
 	# If you want to order records arbitrarily, add a numeric field to the table and place
 	# its name here. The generic list scripts can then use it to order table records.
@@ -187,7 +222,7 @@ class ca_search_form_placements extends BaseModel {
 		
 		//
 		if (!is_array($pa_additional_settings)) { $pa_additional_settings = array(); }
-		$this->setSettingDefinitionsForPlacement($pa_additional_settings);
+		$this->setSettingDefinitionsForRule($pa_additional_settings);
 		
 		if (is_array($pa_setting_values)) {
 			$this->setSettings($pa_setting_values);
@@ -195,20 +230,20 @@ class ca_search_form_placements extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
-	  * Sets setting definitions for to use for the current search form placement. Note that these definitions persist no matter what row is loaded
-	  * (or even if no row is loaded). You can set the definitions once and reuse the instance for many placements. All will have the set definitions.
+	  * Sets setting definitions for to use for the current rule. Note that these definitions persist no matter what row is loaded
+	  * (or even if no row is loaded). You can set the definitions once and reuse the instance for many rules. All will have the set definitions.
 	  *
 	  * @param $pa_additional_settings array Array of settings definitions
 	  * @return bool Always returns true
 	  */
-	public function setSettingDefinitionsForPlacement($pa_additional_settings) {
+	public function setSettingDefinitionsForRule($pa_additional_settings) {
 		if (!is_array($pa_additional_settings)) { $pa_additional_settings = array(); }
-		global $_ca_editor_search_form_placement_settings;
-		$this->SETTINGS = new ModelSettings($this, 'settings', array_merge($_ca_editor_search_form_placement_settings, $pa_additional_settings));
+		global $_ca_metadata_dictionary_rules_settings;
+		$this->SETTINGS = new ModelSettings($this, 'settings', array_merge($_ca_metadata_dictionary_rules_settings, $pa_additional_settings));
 		
 		return true;
 	}
-	# ------------------------------------------------------
+	# ----------------------------------------
 	public function __destruct() {
 		unset($this->SETTINGS);
 	}
@@ -222,6 +257,6 @@ class ca_search_form_placements extends BaseModel {
 		}
 		die($this->tableName()." does not implement method {$ps_name}");
 	}
-	# ------------------------------------------------------
+	# ----------------------------------------
 }
 ?>
