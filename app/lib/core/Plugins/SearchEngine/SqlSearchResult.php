@@ -97,15 +97,16 @@ class WLPlugSearchEngineSqlSearchResult extends WLPlug implements IWLPlugSearchE
 		return false;	// false=SqlSearch can't get value; signals to SearchResult::get() that it should try to load the field if it can
 	}
 	# -------------------------------------------------------
-	public function getPrimaryKeyValues($pn_limit=null, $pa_options=null) {
-		if($pn_limit <= 0) {$pn_limit = sizeof($this->opa_hits); }
-		$pn_start = caGetOption('start', $pa_options, 0);
-		
+	public function getPrimaryKeyValues($vn_limit=null) {
+		if(!$vn_limit) {$vn_limit = null; }
 		// primary key
 		$va_ids = array();
 		
-		for($vn_i=$pn_start; $vn_i < $pn_limit; $vn_i++) {
-			$va_ids[] = $this->opa_hits[$vn_i]['subject_row_id'];
+		$vn_c = 0;
+		foreach($this->opa_hits as $vn_i => $va_row) {
+			$va_ids[] = $va_row['subject_row_id'];
+			$vn_c++;
+			if (!is_null($vn_limit) && ($vn_c >= $vn_limit)) { break; }
 		}
 		return $va_ids;
 	}
