@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2011 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -32,7 +32,8 @@
  
  /**
   *
-  */
+  */ 	
+ 	define("__CA_ATTRIBUTE_VALUE_CONTAINER__", 0);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -110,7 +111,7 @@
 			return '';
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			return array(
  		
  			);
@@ -120,7 +121,7 @@
  			return '';
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			return $_ca_attribute_settings['ContainerAttributeValue'];
  		}
@@ -132,6 +133,15 @@
 		 */
 		public function sortField() {
 			return null;
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for container attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_CONTAINER__;
 		}
  		# ------------------------------------------------------------------
 	}

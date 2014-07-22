@@ -33,6 +33,7 @@
  /**
   *
   */
+ 	define("__CA_ATTRIBUTE_VALUE_LIST__", 3);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -72,6 +73,14 @@
 			'width' => 1, 'height' => 1,
 			'label' => _t('Require value'),
 			'description' => _t('Check this option if you want to require that a list item be selected.')
+		),
+		'nullOptionText' => array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'default' => 'Not set',
+			'width' => 90, 'height' => 1,
+			'label' => _t('No value text'),
+			'description' => _t('Text to use as label for the "no value" option when a value is not required.')
 		),
 		'canBeUsedInSort' => array(
 			'formatType' => FT_NUMBER,
@@ -162,38 +171,50 @@
  		 *
  		 * @param array Optional array of options. Support options are:
  		 * 			list_id = if set then the numeric item_id value is translated into label text in the current locale. If not set then the numeric item_id is returned.
- 		 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label.
- 		 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output
- 		 *			excludeValues = An array of list item idnos or item_ids to exclude when returning the display value.
- 		 *
+ 		 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label. [Default is false]
+ 		 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output [Default is false]
+ 		 *			returnIdno = If true list item idno is returned rather than preferred label [Default is false]
+ 		 *			idsOnly = Return numeric item_id only [Default is false]
  		 *			HIERARCHICAL OPTIONS: 
  		 *				direction - For hierarchy specifications (eg. ca_objects.hierarchy) this determines the order in which the hierarchy is returned. ASC will return the hierarchy root first while DESC will return it with the lowest node first. Default is ASC.
  		 *				top - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the root down. Default is to not limit.
  		 *				bottom - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the lowest node up. Default is to not limit.
  		 * 				hierarchicalDelimiter - Text to place between items in a hierarchy for a hierarchical specification (eg. ca_objects.hierarchy) when returning as a string
  		 *				removeFirstItems - If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted. Default is zero (don't delete anything).
-		 *				alwaysReturnItemID - if set item_id is always returned, no matter what other options are passed
-		 *
+		 *				transaction = the transaction to execute database actions within. [Default is null]
  		 * @return string The value
  		 */
 		public function getDisplayValue($pa_options=null) {
-			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
-			if (($vn_list_id > 0) && !caGetOption('alwaysReturnItemID', $pa_options, false)) {
-				
-				$va_exclude_values = caMakeListItemIDList($vn_list_id, caGetOption('excludeValues', $pa_options, array(), array('castTo' => 'array')));
+			$vb_ids_only = (bool)caGetOption('idsOnly', $pa_options, false);
+			if ($vb_ids_only) { return (int)$this->ops_text_value; }
 			
+			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
+			if ($vn_list_id > 0) {
 				$t_list = new ca_lists();
 				
-				// do we need to get the hierarchy?
-				if ($pa_options['showHierarchy']) {
-					$t_item = new ca_list_items($this->ops_text_value);
-					if (is_array($va_exclude_values) && sizeof($va_exclude_values)) {
-						if (in_array($t_item->getPrimaryKey(), $va_exclude_values)) { return null; }
-					}
-					return $t_item->get('ca_list_items.hierarchy.'.((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'name_singular' : 'name_plural'), $pa_options);
+				if ($o_trans = caGetOption('transaction', $pa_options, null)) {
+					$t_list->setTransaction($o_trans);
+				}
+				if ($pa_options['showHierarchy'] || $vb_return_idno) { 
+					$t_item = new ca_list_items(); 
+					if ($o_trans) { $t_item->setTransaction($o_trans); }
 				}
 				
-				if (in_array($this->ops_text_value, $va_exclude_values)) { return null; }
+				
+				$vb_return_idno = ((isset($pa_options['returnIdno']) && (bool)$pa_options['returnIdno']));
+				if ($vb_return_idno) {
+					$vs_get_spec = 'idno';
+				} else {
+					$vs_get_spec = ((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'name_singular' : 'name_plural');
+				}
+				// do we need to get the hierarchy?
+				if ($pa_options['showHierarchy']) {
+					$t_item->load($this->ops_text_value);
+					return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, $pa_options);
+				} elseif($vb_return_idno) {
+					$t_item->load($this->ops_text_value);
+					return $t_item->get('ca_list_items.'.$vs_get_spec, $pa_options);
+				}
 				
 				return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->ops_text_value, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true);
 			}
@@ -204,12 +225,23 @@
 			return $this->opn_item_id;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
- 			$vb_require_value = (is_null($pa_element_info['settings']['requireValue'])) ? true : (bool)$pa_element_info['settings']['requireValue'];
+ 		/**
+ 		 * @param mixed $ps_value
+ 		 * @param array $pa_element_info
+ 		 * @param array $pa_options Options are:
+ 		 *		alwaysTreatValueAsIdno = Always try to convert $ps_value to a list idno value, even if it is numeric
+ 		 *
+ 		 * @return array
+ 		 */
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
+ 			$vb_treat_value_as_idno = caGetOption('alwaysTreatValueAsIdno', $pa_options, false);
  			
- 			if (preg_match('![^\d]+!', $ps_value)) {
+ 			$vb_require_value = (is_null($pa_element_info['settings']['requireValue'])) ? true : (bool)$pa_element_info['settings']['requireValue'];
+
+			$ps_orig_value = $ps_value;
+ 			if ($vb_treat_value_as_idno || preg_match('![^\d]+!', $ps_value)) {
  				// try to convert idno to item_id
- 				if ($vn_id = ca_lists::getItemID($pa_element_info['list_id'], $ps_value)) {
+ 				if ($vn_id = ca_lists::getItemID($pa_element_info['list_id'], $ps_value, $pa_options)) {
  					$ps_value = $vn_id;
  				}
  			}
@@ -218,23 +250,35 @@
 					'value_longtext1' => null,
 					'item_id' => null
 				);
- 			} 
+ 			} elseif ($vb_require_value && !(int)$ps_value) {
+ 				$this->postError(1970, _t('Value %1 [%2] cannot be blank', $pa_element_info['displayLabel'], $pa_element_info['element_code']), 'ListAttributeValue->parseValue()');
+ 				return false;
+ 			}
+ 			
  			if (strlen($ps_value) && !is_numeric($ps_value)) { 
  				$this->postError(1970, _t('Item_id %2 is not valid for element %1',$pa_element_info["element_code"], $ps_value), 'ListAttributeValue->parseValue()');
 				return false;
 			}
- 			$t_item = new ca_list_items((int)$ps_value);
- 			if (!$t_item->getPrimaryKey()) {
+ 			$t_item = new ca_list_items();
+ 			
+ 			if($o_trans = caGetOption('transaction', $pa_options, null)) {
+ 				$t_item->setTransaction($o_trans);
+ 			}
+ 			
+ 			if (!$t_item->load((int)$ps_value)) {
  				if ($ps_value) {
  					$this->postError(1970, _t('%1 is not a valid list item_id for %2 [%3]', $ps_value, $pa_element_info['displayLabel'], $pa_element_info['element_code']), 'ListAttributeValue->parseValue()');
  				} else {
- 					//$this->postError(1970, _t('Value %1 [%2] cannot be blank', $pa_element_info['displayLabel'], $pa_element_info['element_code']), 'ListAttributeValue->parseValue()');
+ 					if ($vb_require_value) {
+ 						$this->postError(1970, _t('Value %1 [%2] cannot be blank', $pa_element_info['displayLabel'], $pa_element_info['element_code']), 'ListAttributeValue->parseValue()');
+ 						return false;
+ 					}
  					return null;
  				}
 				return false;
  			}
  			if ((int)$t_item->get('list_id') != (int)$pa_element_info['list_id']) {
- 				$this->postError(1970, _t('Item is not in the correct list'), 'ListAttributeValue->parseValue()');
+ 				$this->postError(1970, _t('Item is not in the correct list for element %1. List id is %2 but should be %3. Value was %4', $pa_element_info["element_code"], $t_item->get('list_id'), $pa_element_info['list_id'], "{$ps_orig_value}/{$ps_value}"), 'ListAttributeValue->parseValue()');
 				return false;
  			}
  			return array(
@@ -249,7 +293,7 @@
  		  * @param $pa_element_info array Array with information about the metadata element with which this value is associated. Keys taken to be ca_metadata_elements field names and the 'settings' field must be deserialized into an array.
  		  * @param $pa_options array Array of options. Supported options are:
  		  *			width - The width of the list drop-down in characters unless suffixed with 'px' in which case width will be set in pixels.
- 		  *			any option supported by ca_lists::getListAsHTMLFormElement with the exception of 'render' and 'maxColumns', which are set out of information in $pa_element_info
+ 		  *			any option supported by ca_lists::getListAsHTMLFormElement with the exception of 'maxColumns', which is set out of information in $pa_element_info
  		  * @return string HTML code for form element
  		  */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
@@ -261,12 +305,18 @@
  			if (isset($pa_options['nullOption']) && strlen($pa_options['nullOption'])) {
  				$vb_null_option = $pa_options['nullOption'];
  			} else {
- 				$vb_null_option = !$vb_require_value ? _t('-NONE-') : null;
+ 				$vb_null_option = !$vb_require_value ? $pa_element_info['settings']['nullOptionText'] : null;
  			}
- 			return ca_lists::getListAsHTMLFormElement($pa_element_info['list_id'], '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', array('id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}'), array_merge($pa_options, array('render' => isset($pa_element_info['settings']['render']) ? $pa_element_info['settings']['render'] : '', 'maxColumns' => $pa_element_info['settings']['maxColumns'], 'element_id' => $pa_element_info['element_id'], 'nullOption' => $vb_null_option)));
+ 			
+ 			$vs_render = caGetOption('render', $pa_options, caGetOption('render', $pa_element_info['settings'], ''));
+ 			
+ 			$vn_max_columns = $pa_element_info['settings']['maxColumns'];
+ 			if (!$vb_require_value) { $vn_max_columns++; }
+ 			
+ 			return ca_lists::getListAsHTMLFormElement($pa_element_info['list_id'], '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', array('id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}'), array_merge($pa_options, array('render' => $vs_render, 'maxColumns' => $vn_max_columns, 'element_id' => $pa_element_info['element_id'], 'nullOption' => $vb_null_option)));
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['ListAttributeValue'];
@@ -317,6 +367,15 @@
 			}
 			
 			return true;
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for list attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_LIST__;
 		}
  		# ------------------------------------------------------------------
 	}

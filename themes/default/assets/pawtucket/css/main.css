@@ -1250,12 +1250,30 @@ a.browseRemoveFacet img {
 	padding:10px;
 	display:none;
 	z-index:10000;
+	min-width:450px;
 }
 #bMorePanel .bFilterCount{
 	color:#454545;
 	font-weight:normal;
 	font-size:.8em;
 	padding-left:10px;
+}
+#bMorePanel #bAncestorList{
+	padding:10px 0px 10px 0px;
+	margin-bottom:10px;
+}
+#bMorePanel #bAncestorList span{
+	font-size:7px;
+	color: #454545;
+}
+#bMorePanel #bAncestorList a{
+	color:#454545;
+	padding:0px 5px 0px 5px;
+	font-weight:bold;
+	font-size:12px;
+}
+#bMorePanel #bAncestorList a span{
+	font-size:12px;
 }
 #bMorePanel #bScrollList{
 	overflow-y:auto;
@@ -1265,16 +1283,24 @@ a.browseRemoveFacet img {
 	margin-top:5px;
 	width:250px;
 }
+#bMorePanel #bScrollList.bScrollListHierarchy{
+	height:85%;
+}
 @media (min-width: 992px) {
 	#bMorePanel #bScrollList{
 		width:350px;
 	}
 }
+#bMorePanel #bScrollList.bScrollListHierarchy{
+	padding-left:25px;
+}
 #bMorePanel #bScrollList a{
 	color:#454545;
-	padding-bottom:5px;
 	line-height:1.1em;
 	font-size:11px;
+}
+#bMorePanel #bScrollList div{
+	padding-bottom:8px;
 }
 #bMorePanel #bLetterBar{
 	float:right;
@@ -1880,6 +1906,14 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 .collectionInfo {
 	margin:15px 0px 15px 0px;
+}
+
+
+/* Advanced Search */
+
+div.advancedSearchField {
+	float: left;
+	width: 250px;
 }
 
 /* ----------------- print specific styles ----------------------*/
