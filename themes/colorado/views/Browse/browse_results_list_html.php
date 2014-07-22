@@ -145,15 +145,12 @@
 					if($qr_res->get('ca_objects.idno')){
 						print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM ".$qr_res->get('ca_objects.idno'), '', 'ca_objects', $qr_res->get('ca_objects.object_id'), array("subsite" => $this->request->session->getVar("coloradoSubSite")))."</div>";
 					}else{
-						print caDetailLink($this->request, "UCM ".$qr_res->get('ca_objects.object_id'), '', 'ca_objects', $qr_res->get('ca_objects.object_id'), array("subsite" => $this->request->session->getVar("coloradoSubSite")));
+						print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM# not available", '', 'ca_objects', $qr_res->get('ca_objects.object_id'), array("subsite" => $this->request->session->getVar("coloradoSubSite")))."</div>";
 					}
-					print "<div class='searchFullText'>";	
-					#print "here: ".$qr_res->get('ca_objects.taxonomic_rank', array('idsOnly' => true));
-					if($vs_taxonomy = $qr_res->get('ca_objects.taxonomic_rank', array('convertCodesToDisplayText' => true))){
+					print "<div class='searchFullText".(($vs_image) ? "Small" : "")."'>";	
+					if($vn_taxonomy = $qr_res->get('ca_objects.taxonomic_rank', array('idsOnly' => true))){
 						$t_list_item = new ca_list_items();
-						$va_list_item = $t_lists->getItemFromListByLabel("taxonomic_rank", $vs_taxonomy);
-						$t_list_item->load($va_list_item["item_id"]);
-						$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($va_list_item["item_id"], array("additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
+						$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($vn_taxonomy, array("includeSelf" => true, "additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
 						$va_hierarchy = array_reverse($va_hierarchy);					
 						foreach($va_hierarchy as $va_hier_taxonomy){
 							if($va_hier_taxonomy["parent_id"]){
@@ -161,14 +158,14 @@
 							}
 						}
 					}else{
-						print "<div><b>"._t('Taxonomy').":</b> ".caReturnDefaultIfBlank($qr_res->get('ca_objects.taxonomic_rank' , array('convertCodesToDisplayText' => true)))."</div>";					
+						print "<div><b>"._t('Taxonomy').":</b> ".caReturnDefaultIfBlank($qr_res->get('ca_objects.taxonomic_rank'))."</div>";					
 					}				
 					if($vs_description = $qr_res->get("ca_objects.description")){
 						print "<div><b>"._t('Description').":</b> {$vs_description}</div>";
 					}
 					print "<div><b>"._t('Photo').":</b> ".(($vs_image) ? "Yes" : "No")."</div>";
 					print "</div><!-- END searchFullText col1 -->\n";
-					print "<div class='searchFullText'>";
+					print "<div class='searchFullText".(($vs_image) ? "Small" : "")."'>";
 					$vs_era = $qr_res->get('ca_places.era', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_period = $qr_res->get('ca_places.period', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_epoch = $qr_res->get('ca_places.epoch', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
@@ -191,7 +188,7 @@
 					}
 					print "<div><b>"._t('Locality').":</b> ".caReturnDefaultIfBlank($vs_locality)."</div>";
 					print "</div><!-- END searchFullText col2 -->\n";
-					print "<div class='searchFullText'>";
+					print "<div class='searchFullText".(($vs_image) ? "Small" : "")."'>";
 										
 					# --- place hierarchy
 					$va_locality_list = $qr_res->get("ca_places", array('returnAsArray' => true, 'checkAccess' => $va_access_values));

@@ -82,21 +82,18 @@
 			#if($va_taxonomy = $t_object->get('ca_objects.taxonomic_rank' , array('convertCodesToDisplayText' => true))){
 			#	print "<div class='unit'><b>"._t('Taxonomy').":</b> ".$va_taxonomy."</div>";
 			#}		
-			if($vs_taxonomy = $t_object->get('ca_objects.taxonomic_rank', array('convertCodesToDisplayText' => true))){
-				$t_list = new ca_lists();
+			if($vn_taxonomy = $t_object->get('ca_objects.taxonomic_rank', array('idsOnly' => true))){
+?>
+				<br><div class="unit"><h2>Taxonomy</h2></div>
+<?php
 				$t_list_item = new ca_list_items();
-				$va_list_item = $t_list->getItemFromListByLabel("taxonomic_rank", $vs_taxonomy);
-				$t_list_item->load($va_list_item["item_id"]);
-				$vs_taxonomy_path = "";
-				$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($va_list_item["item_id"], array("additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
-					$va_hierarchy = array_reverse($va_hierarchy);					
-					foreach($va_hierarchy as $va_hier_taxonomy){
-						if($va_hier_taxonomy["parent_id"]){
-							$vs_taxonomy_path .= $va_hier_taxonomy["name_singular"]." > ";
-						}
+				$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($vn_taxonomy, array("includeSelf" => true, "additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
+				$va_hierarchy = array_reverse($va_hierarchy);					
+				foreach($va_hierarchy as $va_hier_taxonomy){
+					if($va_hier_taxonomy["parent_id"]){
+						print "<div class='unit'><b>".$t_lists->getItemFromListForDisplayByItemID("list_item_types", $va_hier_taxonomy["type_id"]).": </b>".$va_hier_taxonomy["name_singular"]."</div>";
 					}
-					
-				print "<div class='unit'><b>"._t('Taxonomy').":</b> ".$vs_taxonomy_path.$vs_taxonomy."</div>";
+				}
 			}
 			if($vs_description = $t_object->get("ca_objects.description")){
 				print "<div class='unit'><b>"._t('Description').":</b> {$vs_description}</div><!-- end unit -->";
@@ -144,21 +141,15 @@
 			if($vs_other = $t_object->get("ca_objects.other_catalog_number")){
 				print "<div class='unit'><b>"._t('Other Catalog Number').":</b> {$vs_other}</div><!-- end unit -->";
 			}
-			if($vs_taxonomy = $t_object->get('ca_objects.taxonomic_rank', array('convertCodesToDisplayText' => true))){
-				$t_list = new ca_lists();
+			if($vn_taxonomy = $t_object->get('ca_objects.taxonomic_rank', array('idsOnly' => true))){
 				$t_list_item = new ca_list_items();
-				$va_list_item = $t_list->getItemFromListByLabel("taxonomic_rank", $vs_taxonomy);
-				$t_list_item->load($va_list_item["item_id"]);
-				$vs_taxonomy_path = "";
-				$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($va_list_item["item_id"], array("additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
-					$va_hierarchy = array_reverse($va_hierarchy);					
-					foreach($va_hierarchy as $va_hier_taxonomy){
-						if($va_hier_taxonomy["parent_id"]){
-							$vs_taxonomy_path .= $va_hier_taxonomy["name_singular"]." > ";
-						}
+				$va_hierarchy = caExtractValuesByUserLocale($t_list_item->getHierarchyAncestors($vn_taxonomy, array("includeSelf" => true, "additionalTableToJoin" => "ca_list_item_labels", "additionalTableSelectFields" => array("name_singular"))));
+				$va_hierarchy = array_reverse($va_hierarchy);					
+				foreach($va_hierarchy as $va_hier_taxonomy){
+					if($va_hier_taxonomy["parent_id"]){
+						print "<div class='unit'><b>".$t_lists->getItemFromListForDisplayByItemID("list_item_types", $va_hier_taxonomy["type_id"]).": </b>".$va_hier_taxonomy["name_singular"]."</div>";
 					}
-					
-				print "<div class='unit'><b>"._t('Taxonomy').":</b> ".$vs_taxonomy_path.$vs_taxonomy."</div>";
+				}
 			}
 			if($va_ichnogenus = $t_object->get('ca_objects.ichnogenus' , array('convertCodesToDisplayText' => true))){
 				print "<div class='unit'><b>"._t('Ichnogenus').":</b> ".$va_ichnogenus."</div>";
