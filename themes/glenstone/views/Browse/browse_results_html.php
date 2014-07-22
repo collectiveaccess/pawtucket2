@@ -110,9 +110,11 @@ foreach($va_views as $vs_view => $va_view_info) {
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
 				if ($va_criterion['facet_name'] != '_search') {
+					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
 					print ' '.caNavLink($this->request, '<span class="glyphicon glyphicon-remove-circle"></span>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				} else {
+					print "<strong>".$va_criterion['facet'].':</strong> '.SearchEngine::getSearchExpressionForDisplay($va_criterion['value'], $vs_table);
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){

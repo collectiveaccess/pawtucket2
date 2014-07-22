@@ -1365,5 +1365,117 @@ class SearchEngine extends SearchBase {
 		return null;
 	}
 	# ------------------------------------------------------------------
+	/**
+	 * Returns search expression as string for display with field qualifiers translated into display labels
+	 * 
+	 * @param string $ps_search
+	 * @param mixed $ps_table
+	 * @return string
+	 */
+	static public function getSearchExpressionForDisplay($ps_search, $ps_table) {
+		$o_dm = Datamodel::load();
+		$o_config = Configuration::load();
+		
+		if ($t_instance = $o_dm->getInstanceByTableName($ps_table, true)) {
+			$vs_char_set = $o_config->get('character_set');
+			
+			$o_query_parser = new LuceneSyntaxParser();
+			$o_query_parser->setEncoding($vs_char_set);
+			$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
+	
+			$ps_search = preg_replace('![\']+!', '', $ps_search);
+			try {
+				$o_parsed_query = $o_query_parser->parse($ps_search, $vs_char_set);
+			} catch (Exception $e) {
+				// Retry search with all non-alphanumeric characters removed
+				try {
+					$o_parsed_query = $o_query_parser->parse(preg_replace("![^A-Za-z0-9 ]+!", " ", $ps_search), $vs_char_set);
+				} catch (Exception $e) {
+					$o_parsed_query = $o_query_parser->parse("", $vs_char_set);
+				}
+			}
+			
+			$va_field_list = SearchEngine::_getFieldList($o_parsed_query);
+			
+			foreach($va_field_list as $vs_field) {
+				$va_tmp = explode('/', $vs_field);
+				
+				if (sizeof($va_tmp) > 1) {
+					$vs_rel_type = $va_tmp[1];
+					$vs_field_proc = $va_tmp[0];
+				} else {
+					$vs_rel_type = null;
+					$vs_field_proc = $vs_field;
+				}
+				if ($vs_label = $t_instance->getDisplayLabel($vs_field_proc)) {
+					$ps_search = str_replace($vs_field, $vs_rel_type ? _t("%1 [as %2]", $vs_label, $vs_rel_type) : $vs_label, $ps_search);
+				}
+			}
+		}
+		return $ps_search;	
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Returns all field qualifiers in parsed queryString
+	 *
+	 * @param LuceneSyntaxParser $po_query
+	 * @return array 
+	 */
+	static private function _getFieldList($po_query) {
+		$va_fields = array();
+		
+		switch(get_class($po_query)) {
+			case 'Zend_Search_Lucene_Search_Query_Boolean':
+				$va_items = $po_query->getSubqueries();
+				break;
+			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				$va_items = $po_query->getTerms();
+				break;
+			default:
+				$va_items = array();
+				break;
+		}
+		
+		$vn_i = 0;
+		foreach($va_items as $o_term) {
+			switch(get_class($o_term)) {
+				case 'Zend_Search_Lucene_Search_Query_Preprocessing_Term':
+					$va_fields[] = $o_term->getTerm()->field;
+					break;
+				case 'Zend_Search_Lucene_Search_Query_Term':
+					$va_fields[] = $o_term->getTerm()->field;
+					break;
+				case 'Zend_Search_Lucene_Index_Term':
+					$va_fields[] = $o_term->getTerm()->field;
+					break;
+				case 'Zend_Search_Lucene_Search_Query_Wildcard':
+					$va_fields = $o_term->getTerm()->field;
+					break;
+				case 'Zend_Search_Lucene_Search_Query_Phrase':
+					$va_phrase_items = $o_term->getTerms();
+					foreach($va_phrase_items as $o_term) {
+						$va_fields[] = $o_term->getTerm()->field;
+					}
+					break;
+				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+					$va_fields = array_merge($va_fields, SearchEngine::_getFieldList($o_term));
+					break;
+				case 'Zend_Search_Lucene_Search_Query_Boolean':
+					$va_fields = array_merge($va_fields, SearchEngine::_getFieldList($o_term));
+					break;
+				case 'Zend_Search_Lucene_Search_Query_Range':
+					$va_fields[] = $o_term->getTerm()->field;
+					break;
+				default:
+					// NOOP (TODO: do *something*)
+					break;
+			}	
+			
+			$vn_i++;
+		}
+		
+		return $va_fields;
+	}
+	# ------------------------------------------------------------------
 }
 ?>

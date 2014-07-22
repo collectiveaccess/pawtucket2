@@ -603,8 +603,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		
 		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
+		
+		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
 	 	
 	 	foreach($va_form_contents as $vn_i => $vs_element) {
@@ -686,104 +687,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	/**
 	 *
 	 */
-	function caGetDisplayTextFromQueryString($ps_search_expression, $pa_options=null) {
-		$o_config = Configuration::load();
-		$vs_char_set = $o_config->get('character_set');
-		$o_query_parser = new LuceneSyntaxParser();
-		$o_query_parser->setEncoding($vs_char_set);
-		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
-	
-		$ps_search = preg_replace('![\']+!', '', $ps_search_expression);
-		try {
-			$o_parsed_query = $o_query_parser->parse($ps_search, $vs_char_set);
-		} catch (Exception $e) {
-			// Retry search with all non-alphanumeric characters removed
-			try {
-				$o_parsed_query = $o_query_parser->parse(preg_replace("![^A-Za-z0-9 ]+!", " ", $ps_search), $vs_char_set);
-			} catch (Exception $e) {
-				$o_parsed_query = $o_query_parser->parse("", $vs_char_set);
-			}
-		}
+	function caGetDisplayTextFromQueryString($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
 		
-		$vs_query = _queryToString($o_parsed_query);
 		
-		return $vs_query;
 	}
-	# ---------------------------------------
-	/**
-	 *
-	 */
-	function _queryToString($po_parsed_query) {
-		switch(get_class($po_parsed_query)) {
-			case 'Zend_Search_Lucene_Search_Query_Boolean':
-				$va_items = $po_parsed_query->getSubqueries();
-				$va_signs = $po_parsed_query->getSigns();
-				break;
-			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
-				$va_items = $po_parsed_query->getTerms();
-				$va_signs = $po_parsed_query->getSigns();
-				break;
-			case 'Zend_Search_Lucene_Search_Query_Phrase':
-				//$va_items = $po_parsed_query->getTerms();
-				$va_items = $po_parsed_query;
-				$va_signs = null;
-				break;
-			case 'Zend_Search_Lucene_Search_Query_Range':
-				$va_items = $po_parsed_query;
-				$va_signs = null;
-				break;
-			default:
-				$va_items = array();
-				$va_signs = null;
-				break;
-		}
-		$t_instance = new ca_objects();
-		$vs_query = '';
-		foreach ($va_items as $id => $subquery) {
-			if ($id != 0) {
-				$vs_query .= ' ';
-			}
-		
-			if (($va_signs === null || $va_signs[$id] === true) && ($id)) {
-				$vs_query .= ' AND ';
-			} else if (($va_signs[$id] === false) && $id) {
-				$vs_query .= ' NOT ';
-			} else {
-				if ($id) { $vs_query .= ' OR '; }
-			}
-			switch(get_class($subquery)) {
-				case 'Zend_Search_Lucene_Search_Query_Phrase':
-					$va_tmp = explode(":", $subquery->__toString());
-					if (sizeof($va_tmp) > 1) {
-						$vs_qualifier = array_shift($va_tmp);
-						
-						$vs_query .= '(' . $t_instance->getDisplayLabel($vs_qualifier) .":".join(":", $va_tmp). ')';
-					} else {
-						$vs_query .= '(' . $subquery->__toString(). ')';
-					}
-					break;
-				case 'Zend_Search_Lucene_Index_Term':
-					$subquery = new Zend_Search_Lucene_Search_Query_Term($subquery);
-					// intentional fallthrough to next case here
-				case 'Zend_Search_Lucene_Search_Query_Term':
-					$vs_query .= '(' . $subquery->__toString() . ')';
-					break;	
-				case 'Zend_Search_Lucene_Search_Query_Range':
-					$vs_query .= '(' . $subquery->__toString() . ')';
-					break;
-				default:
-					$vs_query .= '(' . _queryToString($subquery) . ')';
-					break;
-			}
-			
-		
-			if ((method_exists($subquery, "getBoost")) && ($subquery->getBoost() != 1)) {
-				$vs_query .= '^' . round($subquery->getBoost(), 4);
-			}
-		}
-		
-		return $vs_query;
-    }
 	# ---------------------------------------
 	/**
 	 * Returns all available search form placements - those data bundles that can be searches for the given content type, in other words.
