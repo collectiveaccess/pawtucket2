@@ -668,10 +668,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				}
 			}
 		}
-		
+	
 		$vs_query_string = '';
 		foreach($va_query_elements as $vs_element => $va_query_elements_by_element) {
-			$vs_query_string .= ($vs_query_string ? ' AND ' : '').'(';
+			$vs_query_string .= ($vs_query_string ? (($vs_b = $va_query_booleans[$vs_element][0]) ? " {$vs_b} " : ' AND ') : '').'(';
 			foreach($va_query_elements_by_element as $vn_i => $vs_val) {
 				$vs_query_string .= $vs_val;
 				if ($vn_i < (sizeof($va_query_elements_by_element) - 1)) {

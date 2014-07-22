@@ -1970,19 +1970,35 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
 				
 				
-				$va_filter = $va_alt_names = null;
+				$va_filter = $va_alt_names = $va_relationship_restricted_searches = null;
 				if(is_array($va_fields = preg_split("![;,]+!", caGetOption('fields', $pa_options, null))) && sizeof($va_fields)) {
-					$va_filter = $va_alt_names = array();
-					$va_alt_names = array();
+					$va_filter = $va_alt_names = $va_relationship_restricted_searches = array();
+					
 					foreach($va_fields as $vs_field_raw) {
 						$va_tmp = explode(':', $vs_field_raw);
 						$va_tmp2 = explode('/', $va_tmp[0]);
-						$va_filter[] = $va_tmp2[0];
-						if (isset($va_tmp[1]) && $va_tmp[1]) { $va_alt_names[$va_tmp2[0]] = $va_tmp[1]; }
+						
+						// If there's a "/" separator then this is a relationship type-restricted search (Eg. ca_entities.preferred_labels.displayname/artist:"Isamu Noguchi")
+						if (sizeof($va_tmp2) > 1) { 
+							$va_relationship_restricted_searches[$va_tmp2[0]][] = $va_tmp[0]; 
+						} else {
+							$va_filter[] = $va_tmp2[0];
+						}
+						
+						if (isset($va_tmp[1]) && $va_tmp[1]) { $va_alt_names[$va_tmp[0]] = $va_tmp[1]; }
 					}
 				}
 				
 				$va_options = caGetBundlesAvailableForSearch($this->tableName(), array('forSelect' => true, 'filter' => $va_filter));
+				
+				// We need to add any relationship-restricted searh qualifiers here since they're not free-standing bundles but
+				// rather variants on an unqualified relationship bundle
+				foreach($va_relationship_restricted_searches as $vs_without_rel_restriction => $va_with_rel_restrictions) {
+					foreach($va_with_rel_restrictions as $vs_with_rel_restriction) {
+						$vs_label = (isset($va_alt_names[$vs_with_rel_restriction])) ? $va_alt_names[$vs_with_rel_restriction] : $vs_with_rel_restriction;
+						$va_options[$vs_label] = $vs_with_rel_restriction;
+					}
+				}
 				
 				if (is_array($va_alt_names)) {
 					foreach($va_options as $vs_l => $vs_fld) {

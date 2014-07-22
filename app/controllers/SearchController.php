@@ -27,6 +27,7 @@
  */
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
+ 	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  	
  	class SearchController extends ActionController {
  		# -------------------------------------------------------
@@ -324,6 +325,7 @@
  			$va_form_elements = array();
  			
  			$vs_script = null;
+ 			
  			foreach($va_tags as $vs_tag) {
  				$va_parse = caParseTagOptions($vs_tag);
  				$vs_tag_proc = $va_parse['tag'];
@@ -375,11 +377,26 @@
 						if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
 							$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
 						} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
-							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR'), array('class' => 'caAdvancedSearchBoolean')));
+							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
 						} else {
 							$va_opts['asArrayElement'] = true;
+							if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
+								$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+							}
 							if ($vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts)) {
 								$this->view->setVar($vs_tag, $vs_tag_val);
+							}
+							
+							$va_tmp = explode('.', $vs_tag_proc);
+ 							if((($t_element = ca_metadata_elements::getInstance($va_tmp[1])) && ($t_element->get('datatype') == 0))) {
+								if (is_array($va_elements = $t_element->getElementsInSet())) {
+									foreach($va_elements as $va_element) {
+										if ($va_element['datatype'] > 0) {
+											$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
+										}
+									}
+								}
+								break;
 							}
 						}
 						if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }

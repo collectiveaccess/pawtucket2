@@ -2333,7 +2333,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 					case 'DATE':
 						$vs_format = urldecode(caGetOption('format', $va_tag_opts, 'd M Y'));
 						$va_proc_templates[$vn_i] = str_replace("^{$vs_tag}", date($vs_format), $va_proc_templates[$vn_i]);
-						continue(2);
+						continue;
 						break;
 				}
 			

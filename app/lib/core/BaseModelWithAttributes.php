@@ -1244,6 +1244,10 @@
 			if(!$pa_options) { $pa_options = array(); }
 			$va_tmp = explode('.', $ps_field);
 			
+			if ($va_tmp[1] == $this->getTypeFieldName()) {
+				return $this->getTypeListAsHTMLFormElement(null, null, array_merge($pa_options, array('nullOption' => '-')));
+			}
+			
 			if (!in_array($va_tmp[0], array('created', 'modified'))) {		// let change log searches filter down to BaseModel
 				if ($va_tmp[0] != $this->tableName()) { return null; }
 				if (!$this->hasField($va_tmp[1])) {
@@ -1503,11 +1507,11 @@
 			}
 			$pa_options['format'] = $vs_format;
 			
-			if ((sizeof($va_element_set) > 1) && isset($pa_options['width']) && ($pa_options['width'] > 0)) {
-				if (($pa_options['width'] = ceil($pa_options['width']/sizeof($va_element_set))) < 20) { 
-					$pa_options['width'] = 20;
-				}
-			}
+			//if ((sizeof($va_element_set) > 1) && isset($pa_options['width']) && ($pa_options['width'] > 0)) {
+			//	if (($pa_options['width'] = ceil($pa_options['width']/sizeof($va_element_set))) < 20) { 
+			//		$pa_options['width'] = 20;
+			//	}
+			//}
 			
 			foreach($va_element_set as $va_element) {
 				$va_override_options = array();

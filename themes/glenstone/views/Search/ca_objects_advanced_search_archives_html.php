@@ -1,25 +1,27 @@
+<h2>Archives</h2>
+
 {{{form}}}
 	
 	<div class="advancedSearchField">
 		Free text:<br/>
-		{{{_fulltext%width=200px&height=100px}}}
+		{{{_fulltext%width=200px&height=40px}}}
 		{{{_fulltext:boolean}}}
 	</div>
 	<div class="advancedSearchField">
 		Free text:<br/>
-		{{{_fulltext%width=200px&height=100px}}}
+		{{{_fulltext%width=200px&height=40px}}}
 		{{{_fulltext:boolean}}}
 	</div>
 	<div class="advancedSearchField">
 		Free text:<br/>
-		{{{_fulltext%width=200px&height=100px}}}
+		{{{_fulltext%width=200px&height=40px}}}
 		{{{_fulltext:boolean}}}
 	</div>
 	
 	
 	<div class="advancedSearchField">
 		Format:<br/>
-		{{{ca_objects.type_id}}}
+		{{{ca_objects.type_id%restrictToTypes=audio;document;ephemera;image;book;moving_image}}}
 	</div>
 	
 	<div class="advancedSearchField">
