@@ -58,9 +58,14 @@ class SearchEngine extends SearchBase {
 	private $opa_result_filters;
 	
 	/**
-	 * @var subject type_id to limit browsing to (eg. only search ca_objects with type_id = 10)
+	 * @var subject type_id to limit search to (eg. only search ca_objects with type_id = 10)
 	 */
-	private $opa_search_type_ids = null;	
+	private $opa_search_type_ids = null;
+	
+	/**
+	 * @var subject source_id to limit search to (eg. only search ca_objects with source_id = 10)
+	 */
+	private $opa_search_source_ids = null;	
 	
 	# ------------------------------------------------------------------
 	public function __construct($opo_db=null, $ps_tablename=null) {
@@ -227,6 +232,11 @@ class SearchEngine extends SearchBase {
 					
 			if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
 				$this->addResultFilter($this->ops_tablename.'.type_id', 'IN', join(",",$va_type_ids));
+			}
+			
+			// Filter on source
+			if (is_array($va_source_ids = $this->getSourceRestrictionList())) {
+				$this->addResultFilter($this->ops_tablename.'.source_id', 'IN', join(",",$va_source_ids));
 			}
 			
 			if (is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && $this->opo_engine->can('restrict_to_fields')) {
@@ -520,7 +530,7 @@ class SearchEngine extends SearchBase {
 								FROM ca_attributes attr
 								INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
 								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = attr_vals.item_id
-								INNER JOIN {$vs_browse_tmp_table} ON {$vs_browse_tmp_table}.row_id = attr.row_id
+								INNER JOIN {$vs_search_tmp_table} ON {$vs_search_tmp_table}.row_id = attr.row_id
 								WHERE
 									(attr_vals.element_id = ?) AND (attr.table_num = ?) AND (lil.{$vs_sort_field} IS NOT NULL)
 								ORDER BY lil.{$vs_sort_field}
@@ -547,9 +557,9 @@ class SearchEngine extends SearchBase {
 							$va_row = $qr_sort->getRow();
 							if (!$va_row['row_id']) { continue; }
 							if ($vn_num_locales > 1) {
-								$va_sorted_hits[$va_row['row_id']][$va_row['locale_id']] .= trim(str_replace(array("'", '"'), array('', ''), $va_row[$vs_sort_field]));
+								$va_sorted_hits[$va_row['row_id']][$va_row['locale_id']] .= trim(str_replace(array("'", '"'), array('', ''), caRemoveAccents($va_row[$vs_sort_field])));
 							} else {
-								$va_sorted_hits[$va_row['row_id']] .= trim(str_replace(array("'", '"'), array('', ''), $va_row[$vs_sort_field]));
+								$va_sorted_hits[$va_row['row_id']] .= trim(str_replace(array("'", '"'), array('', ''), caRemoveAccents($va_row[$vs_sort_field])));
 							}
 							unset($pa_hits[$va_row['row_id']]);
 						}
@@ -649,7 +659,7 @@ class SearchEngine extends SearchBase {
 			
 			while($qr_sort->nextRow()) {
 				$va_row = $qr_sort->getRow();
-				if (!($vs_sortable_value = str_replace(array("'", '"'), array('', ''), $va_row[$vs_sort_field]))) {
+				if (!($vs_sortable_value = str_replace(array("'", '"'), array('', ''), caRemoveAccents($va_row[$vs_sort_field])))) {
 					$vs_sortable_value = '';
 				}
 				if (($vn_num_locales > 1) && $vs_locale_where) {
@@ -711,7 +721,7 @@ class SearchEngine extends SearchBase {
 					} else { 
 						for($vn_j = 0; $vn_j < sizeof($va_rewritten_terms['terms']); $vn_j++) {
 							$va_terms[] = new Zend_Search_Lucene_Search_Query_MultiTerm(array($va_rewritten_terms['terms'][$vn_j]), array($va_rewritten_terms['signs'][$vn_j]));
-							$va_signs[] = $va_rewritten_terms['signs'][$vn_j] ? true : null;
+							$va_signs[] = $va_rewritten_terms['signs'][$vn_j] ? true : is_null($va_rewritten_terms['signs'][$vn_j]) ? null : false;
 						}
 					}
 					break;
@@ -745,15 +755,15 @@ class SearchEngine extends SearchBase {
 				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 					$va_tmp = $this->_rewriteQuery($o_term);
 					$va_terms[] = new Zend_Search_Lucene_Search_Query_MultiTerm($va_tmp['terms'], $va_tmp['signs']);
-					$va_signs[] = $va_old_signs[$vn_i] ? $va_old_signs[$vn_i] : true;
+					$va_signs[] = $va_old_signs[$vn_i];
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Boolean':
 					$va_tmp = $this->_rewriteQuery($o_term);
 					$va_terms[] = new Zend_Search_Lucene_Search_Query_Boolean($va_tmp['terms'], $va_tmp['signs']);
-					$va_signs[] = $va_old_signs[$vn_i] ? $va_old_signs[$vn_i] : true;
+					$va_signs[] = $va_old_signs[$vn_i];
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Range':
-					$va_signs[] = $va_old_signs[$vn_i] ? $va_old_signs[$vn_i] : true;
+					$va_signs[] = $va_old_signs[$vn_i] ;
 					$va_terms = array_merge($va_terms, $this->_rewriteRange($o_term));
 					break;
 				default:
@@ -791,8 +801,24 @@ class SearchEngine extends SearchBase {
 				}
 				
 				$va_terms = array();
+				$vs_term = (string)$po_term->getTerm()->text;
 				foreach($va_fields as $vs_field) {
-					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($po_term->getTerm()->text, $vs_field);
+					$va_tmp = explode(".", $vs_field);
+					
+					// Rewrite FT_BIT fields to accept yes/no values
+					if ($this->opo_datamodel->getFieldInfo($va_tmp[0], $va_tmp[1], 'FIELD_TYPE') == FT_BIT) {
+						switch(mb_strtolower($vs_term)) {
+							case 'yes':
+							case _t('yes'):
+								$vs_term = 1;
+								break;
+							case 'no':
+							case _t('no'):
+								$vs_term = 0;
+								break;
+						}
+					} 
+					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
 				}
 				
@@ -808,13 +834,14 @@ class SearchEngine extends SearchBase {
 			}
 		}
 		
-		// is it preferred labels? Rewrite the field for that.
-		$va_tmp = explode('.', $vs_fld);
-		if ($va_tmp[1] == 'preferred_labels') {
-			if ($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true)) {
+		// is it a label? Rewrite the field for that.
+		$va_tmp = explode('/', $vs_fld);
+		$va_tmp2 = explode('.', $va_tmp[0]);
+		if (in_array($va_tmp2[1], array('preferred_labels', 'nonpreferred_labels'))) {
+			if ($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp2[0], true)) {
 				if (method_exists($t_instance, "getLabelTableName")) {
 					return array(
-						'terms' => array(new Zend_Search_Lucene_Index_Term($po_term->getTerm()->text, $t_instance->getLabelTableName().'.'.$t_instance->getLabelDisplayField())),
+						'terms' => array(new Zend_Search_Lucene_Index_Term($po_term->getTerm()->text, $t_instance->getLabelTableName().'.'.$t_instance->getLabelDisplayField().($va_tmp[1] ? '/'.$va_tmp[1] : ''))),
 						'signs' => array($pb_sign)
 					);
 				}
@@ -866,13 +893,14 @@ class SearchEngine extends SearchBase {
 			}
 		}
 		
-		// is it preferred labels? Rewrite the field for that.
-		$va_tmp = explode('.', $vs_fld);
-		if ($va_tmp[1] == 'preferred_labels') {
-			if ($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true)) {
+		// is it a labels? Rewrite the field for that.
+		$va_tmp = explode('/', $vs_fld);
+		$va_tmp2 = explode('.', $va_tmp[0]);
+		if (in_array($va_tmp2[1], array('preferred_labels', 'nonpreferred_labels'))) {
+			if ($t_instance = $this->opo_datamodel->getInstanceByTableName($va_tmp2[0], true)) {
 				if (method_exists($t_instance, "getLabelTableName")) {
 					return array(
-						'terms' => array(new Zend_Search_Lucene_Search_Query_Phrase($va_index_term_strings, null, $t_instance->getLabelTableName().'.'.$t_instance->getLabelDisplayField())),
+						'terms' => array(new Zend_Search_Lucene_Search_Query_Phrase($va_index_term_strings, null, $t_instance->getLabelTableName().'.'.$t_instance->getLabelDisplayField().($va_tmp[1] ? '/'.$va_tmp[1] : ''))),
 						'signs' => array($pb_sign)
 					);
 				}
@@ -1039,11 +1067,11 @@ class SearchEngine extends SearchBase {
 	 * in the restriction. You may pass numeric type_id and alphanumeric type codes interchangeably.
 	 *
 	 * @param array $pa_type_codes_or_ids List of type_id or code values to filter search by. When set, the search will only consider items of the specified types. Using a hierarchical parent type will automatically include its children in the restriction. 
+	 * @param array $pa_options Options include
+	 *		includeSubtypes = include any child types in the restriction. Default is true.
 	 * @return boolean True on success, false on failure
 	 */
-	public function setTypeRestrictions($pa_type_codes_or_ids) {
-		$this->clearResultFilters();	// type restrictions set filters, so if we change type restrictions we need to clear filters to see any effect
-		
+	public function setTypeRestrictions($pa_type_codes_or_ids, $pa_options=null) {
 		$t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
 		
 		if (!$pa_type_codes_or_ids) { return false; }
@@ -1067,11 +1095,13 @@ class SearchEngine extends SearchBase {
 			if (!$vn_type_id) { return false; }
 			
 			if (isset($va_type_list[$vn_type_id]) && $va_type_list[$vn_type_id]) {	// is valid type for this subject
-				// See if there are any child types
-				$t_item = new ca_list_items($vn_type_id);
-				$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
-				$va_ids[] = $vn_type_id;
-				$this->opa_search_type_ids = array_merge($this->opa_search_type_ids, $va_ids);
+				if (caGetOption('includeSubtypes', $pa_options, true)) {
+					// See if there are any child types
+					$t_item = new ca_list_items($vn_type_id);
+					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
+					$va_ids[] = $vn_type_id;
+					$this->opa_search_type_ids = array_merge($this->opa_search_type_ids, $va_ids);
+				}
 			}
 		}
 		return true;
@@ -1110,6 +1140,90 @@ class SearchEngine extends SearchBase {
 	 */
 	public function clearTypeRestrictionList() {
 		$this->opa_search_type_ids = null;
+		return true;
+	}
+	# ------------------------------------------------------
+	# Source filtering
+	# ------------------------------------------------------
+	/**
+	 * When source restrictions are specified, the search will only consider items of the given sources. 
+	 * If you specify a source that has hierarchical children then the children will automatically be included
+	 * in the restriction. You may pass numeric source_id and alphanumeric source codes interchangeably.
+	 *
+	 * @param array $pa_source_codes_or_ids List of source_id or code values to filter search by. When set, the search will only consider items of the specified sources. Using a hierarchical parent source will automatically include its children in the restriction. 
+	 * @param array $pa_options Options include
+	 *		includeSubsources = include any child sources in the restriction. Default is true.
+	 * @return boolean True on success, false on failure
+	 */
+	public function setSourceRestrictions($pa_source_codes_or_ids, $pa_options=null) {
+		$t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
+		
+		if (!$pa_source_codes_or_ids) { return false; }
+		if (is_array($pa_source_codes_or_ids) && !sizeof($pa_source_codes_or_ids)) { return false; }
+		if (!is_array($pa_source_codes_or_ids)) { $pa_source_codes_or_ids = array($pa_source_codes_or_ids); }
+		
+		$t_list = new ca_lists();
+		if (!method_exists($t_instance, 'getSourceListCode')) { return false; }
+		if (!($vs_list_name = $t_instance->getSourceListCode())) { return false; }
+		$va_source_list = $t_instance->getSourceList();
+		
+		$this->opa_search_source_ids = array();
+		foreach($pa_source_codes_or_ids as $vs_code_or_id) {
+			if (!strlen($vs_code_or_id)) { continue; }
+			if (!is_numeric($vs_code_or_id)) {
+				$vn_source_id = $t_list->getItemIDFromList($vs_list_name, $vs_code_or_id);
+			} else {
+				$vn_source_id = (int)$vs_code_or_id;
+			}
+			
+			if (!$vn_source_id) { return false; }
+			
+			if (isset($va_source_list[$vn_source_id]) && $va_source_list[$vn_source_id]) {	// is valid source for this subject
+				if (caGetOption('includeSubsources', $pa_options, true)) {
+					// See if there are any child sources
+					$t_item = new ca_list_items($vn_source_id);
+					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
+					$va_ids[] = $vn_source_id;
+					$this->opa_search_source_ids = array_merge($this->opa_search_source_ids, $va_ids);
+				}
+			}
+		}
+		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns list of source_id values to restrict search to. Return values are always numeric sources, 
+	 * never codes, and will include all source_ids to filter on, including children of hierarchical sources.
+	 *
+	 * @return array List of source_id values to restrict search to.
+	 */
+	public function getSourceRestrictionList() {
+		if (function_exists("caGetSourceRestrictionsForUser")) {
+			$va_pervasive_sources = caGetSourceRestrictionsForUser($this->ops_tablename);	// restrictions set in app.conf or by associated user role
+			if (!is_array($va_pervasive_sources)) { return $this->opa_search_source_ids; }
+				
+			if (is_array($this->opa_search_source_ids) && sizeof($this->opa_search_source_ids)) {
+				$va_filtered_sources = array();
+				foreach($this->opa_search_source_ids as $vn_id) {
+					if (in_array($vn_id, $va_pervasive_sources)) {
+						$va_filtered_sources[] = $vn_id;
+					}
+				}
+				return $va_filtered_sources;
+			} else {
+				return $va_pervasive_sources;
+			}
+		}
+		return $this->opa_search_source_ids;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Removes any specified source restrictions on the search
+	 *
+	 * @return boolean Always returns true
+	 */
+	public function clearSourceRestrictionList() {
+		$this->opa_search_source_ids = null;
 		return true;
 	}
 	# ------------------------------------------------------------------
@@ -1231,6 +1345,24 @@ class SearchEngine extends SearchBase {
 			);
 		}
 		return $va_hits;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Return list of suggested searches that will find something, based upon the specified search expression
+	 *
+	 * @param string $ps_text The search expression
+	 * @param array $pa_options Options are:
+	 *		returnAsLink = return suggestions as links to full-text searces. [Default is no]
+	 *		request = the current request; required if links are to be generated using returnAsLink. [Default is null]
+	 *		table = the name or number of the table to restrict searches to. If you pass, for example, "ca_objects" search expressions specifically for object searches will be returned. [Default is null]
+	 * @return array List of suggested searches
+	 */
+	public function suggest($ps_text, $pa_options=null) {
+		if ($this->opo_engine && method_exists($this->opo_engine, "suggest")) {
+			$pa_options['table'] = $this->opn_tablenum;
+			return  $this->opo_engine->suggest($ps_text, $pa_options);
+		}
+		return null;
 	}
 	# ------------------------------------------------------------------
 }

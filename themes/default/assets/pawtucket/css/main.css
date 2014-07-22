@@ -1908,6 +1908,14 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	margin:15px 0px 15px 0px;
 }
 
+
+/* Advanced Search */
+
+div.advancedSearchField {
+	float: left;
+	width: 250px;
+}
+
 /* ----------------- print specific styles ----------------------*/
 /* --- This overrides boostrap styles --- */
 @media print {

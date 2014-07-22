@@ -86,9 +86,24 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 	}
 	# ---------------------------------------
 	/**
-	 * Fetch idno for item with specified item_id
+	 * Fetch list_code for list with specified list_id
 	 *
-	 * @param int $pn_item_id item_id of item to get idno for
+	 * @param int $pn_list_id List ID
+	 * @return string The list code for the list, or null if the list_id is not valid
+	 */
+	$g_ca_get_list_code_cache = array();
+	function caGetListCode($pn_list_id) {
+		global $g_ca_get_list_code_cache;
+		if(isset($g_ca_get_list_code_cache[$pn_list_id])) { return $g_ca_get_list_code_cache[$pn_list_id]; }
+		$t_list = new ca_lists($pn_list_id);
+		
+		return $g_ca_get_list_code_cache[$pn_list_id] = $t_list->get('list_code');
+	}
+	# ---------------------------------------
+	/**
+	 * Fetch idno for item with specified item_id in list
+	 *
+	 * @param int $pn_item_id item_id to get idno for
 	 * @return string idno of list item or null if no matching item was found
 	 */
 	$g_list_item_idno_cache = array();
@@ -146,7 +161,7 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 		
 		return $g_default_list_item_id_cache[$ps_list_code] = $t_list->getDefaultItemID($ps_list_code);
 	}
-	# ---------------------------------------------------------------------------------------------
+	# ---------------------------------------
 	/**
 	 * Converts the given list of list idnos or item_ids into a list of numeric item_ids
 	 *
@@ -175,5 +190,4 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 		
 		return array_keys($va_ids);
 	}
-	# ---------------------------------------
-?>
+	# ---------------------------------------å

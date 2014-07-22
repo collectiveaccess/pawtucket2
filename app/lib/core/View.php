@@ -46,6 +46,8 @@ class View extends BaseObject {
 	
 	private $ops_character_encoding;
 	
+	private $ops_last_render = null;
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -120,7 +122,7 @@ class View extends BaseObject {
 	public function addViewPath($pm_path) {
 		if (is_array($pm_path)) {
 			foreach($pm_path as $vs_path) {
-				$this->opa_view_paths[] = $ps_path;
+				$this->opa_view_paths[] = $vs_path;
 			}
 		} else {
 			$this->opa_view_paths[] = $pm_path;
@@ -170,6 +172,7 @@ class View extends BaseObject {
 	public function isCompiled($ps_filepath) {
 		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
 		if (!file_exists($vs_compiled_path)) { return false; }
+		if (filesize($vs_compiled_path) === 0) { return false; }
 		
 		// Check if template change date is newer than compiled
 		$va_view_stat = @stat($ps_filepath);
@@ -182,9 +185,10 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function compile($ps_filepath) {
-		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
-			return json_decode(file_get_contents($vs_compiled_path));
+	public function compile($ps_filepath, $pb_force_recompile=false) {
+		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
+			$va_tags = json_decode(file_get_contents($vs_compiled_path), true);
+			if (is_array($va_tags)) { return $va_tags; }
 		}
 		
 		$vs_buf = $this->_render($ps_filepath);
@@ -193,8 +197,19 @@ class View extends BaseObject {
 		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_buf, $va_matches);
 		
 		$va_tags = $va_matches[1];
+		
+		$vs_raw_buf = file_get_contents($ps_filepath);
+		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_raw_buf, $va_matches);
+		$va_tags += $va_matches[1];
+		$va_tags = array_unique($va_tags);
+		
 		if (!is_array($va_tags)) { $va_tags = array(); }
-		file_put_contents($vs_compiled_path, json_encode($va_tags));
+		
+		if($vs_tags = json_encode($va_tags)) {
+			file_put_contents($vs_compiled_path, $vs_tags);
+		} else {
+			unlink($vs_compiled_path);
+		}
 		return $va_tags;
 	}
 	# -------------------------------------------------------
@@ -226,8 +241,12 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+	public function render($ps_filename, $pb_dont_do_var_replacement=false, $pa_options=null) {
 		global $g_ui_locale;
+		
+		if (!($vb_dont_try_to_force_update_cache = caGetOption('dontTryToForceUpdateCache', $pa_options, false))) {
+			$this->ops_last_render = null;
+		}
 		
 		$vb_output = false;
 		$vs_buf = null;
@@ -254,8 +273,8 @@ class View extends BaseObject {
 			$va_vars = $this->getAllVars();
 			foreach($va_compile as $vs_var) {
 				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
-				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf);
-				
+				$vn_count = 0;
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);				
 			}
 		}
 		
@@ -266,12 +285,13 @@ class View extends BaseObject {
 	 *
 	 */
 	private function _render($ps_filename) {
+		if ($this->ops_last_render) { return $this->ops_last_render; }
 		if (!file_exists($ps_filename)) { return null; }
 		ob_start();
 		
 		require($ps_filename);
 		
-		return ob_get_clean();
+		return $this->ops_last_render = ob_get_clean();
 	}
 	# -------------------------------------------------------
 	# Character encodings
