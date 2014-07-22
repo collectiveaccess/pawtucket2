@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/list_facet_html.php : 
+ * views/Browse/hierarhcy_facet_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -27,15 +27,17 @@
  */
  
 	# -----------------------------------------------------------
-	# --- facet view for group_mode = alphabetical, none
+	# --- facet view for group_mode = hierarchical
 	# -----------------------------------------------------------
-
+	
+	$vs_browse_type = 		$this->getVar('browse_type');
 	$va_facet_content = 	$this->getVar('facet_content');
 	$vs_facet_name = 		$this->getVar('facet_name');
 	$vs_view = 				$this->getVar('view');
 	$vs_key = 				$this->getVar('key');
 	$va_facet_info = 		$this->getVar("facet_info");
 	$vb_is_nav = 			(bool)$this->getVar('isNav');
+	$vn_id = $this->request->getParameter('id', pInteger);
 	
 	$va_letter_bar = array();
 	$vs_order_by = $va_facet_info["order_by_label_fields"][0];
@@ -46,41 +48,19 @@
 			print "<div class='browseFacetItem'>".caNavLink($this->request, $va_item['label'], 'col-sm-4 col-md-3', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
 		}
 	} else {
-		foreach($va_facet_content as $vn_id => $va_item) {
-			if($va_facet_info["group_mode"]== "alphabetical"){
-				$vs_first_letter = mb_strtoupper(mb_substr($va_item[$vs_order_by], 0, 1));
-				if(!$vs_first_letter){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
-				}
-				if(!in_array($vs_first_letter, $va_letter_bar)){
-					$va_letter_bar[$vs_first_letter] = $vs_first_letter;
-					$vs_facet_list .= "<div id='facetList".$vs_first_letter."'><strong>".$vs_first_letter."</strong></div>";
-				}
-			}			
-			$vs_facet_list .= "<div>".caNavLink($this->request, $va_item['label'], '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>\n";
-		}
-		
-		print "<H1 id='bScrollListLabel'>".$va_facet_info["label_plural"]."<span class='bFilterCount'> (".sizeof($va_facet_content)." total)</span></H1>";
-		if($va_facet_info["group_mode"]== "alphabetical"){
-			print "<div id='bLetterBar'>";
-			foreach($va_letter_bar as $vs_letter){
-				print "<a href='#' onclick='jumpToLetter(\"facetList".$vs_letter."\"); return false;'>".$vs_letter."</a><br/>";
-			}
-			print "</div><!-- end bLetterBar -->";
-		}
-		print "<div id='bScrollList'>".$vs_facet_list."</div><!-- end bScrollList -->";
+		print "<H1>".$va_facet_info["label_plural"]."</H1>";
+		print "<div id='bAncestorList'></div>";
+		print "<div id='bScrollList' class='bScrollListHierarchy'>";
+		print "<div id='bHierarchyListMorePanel_".$vs_facet_name."'>".caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))."</div>";
+		print "</div><!-- end bScrollList -->";
 		print "<div style='clear:both;'></div>";
-		if($va_facet_info["group_mode"]== "alphabetical"){
-?>
-		<script type="text/javascript">
-				function jumpToLetter(jumpToItemID){
-					$("#bScrollList").scrollTop(0);
-					var position = $("#" + jumpToItemID).position();
-					var scrollListPosition = $("#bScrollList").position();
-					$("#bScrollList").scrollTop(position.top - scrollListPosition.top - 5);
-				}
-		</script>
-<?php
-		}
 	}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery("#bHierarchyListMorePanel_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id)); ?>");
+	});
+	jQuery(document).ready(function() {
+		jQuery("#bAncestorList").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $this->request->getParameter('id', pInteger))); ?>");
+	});
+</script>

@@ -413,9 +413,11 @@
 		}else{
 			# --- are there multiple reps?
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
-			$vn_primary_id = array_search("1", $va_rep_ids);
-			unset($va_rep_ids[$vn_primary_id]);
-			$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
+			if(sizeof($va_rep_ids)){
+				$vn_primary_id = array_search("1", $va_rep_ids);
+				unset($va_rep_ids[$vn_primary_id]);
+				$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
+			}
 		}
 		$o_set_config = caGetSetsConfig();
 		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");

@@ -148,7 +148,7 @@
 			// map
 			//
 			$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
-			if($vs_map_attribute && $t_table->get('ca_places.georeference')){
+			if($vs_map_attribute && $t_table->get($vs_map_attribute)){
 				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
 				$o_map->mapFrom($t_table, $vs_map_attribute);
 				$this->view->setVar("map", $o_map->render('HTML'));
