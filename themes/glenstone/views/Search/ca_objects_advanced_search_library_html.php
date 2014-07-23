@@ -1,3 +1,5 @@
+<h2>Library</h2>
+
 {{{form}}}
 
 	<div class="advancedSearchField">
@@ -19,7 +21,7 @@
 
 	<div class="advancedSearchField">
 		Format:<br/>
-		{{{ca_objects.type_id}}}
+		{{{ca_objects.type_id%restrictToTypes=book;moving_image}}}
 	</div>
 	
 	<div class="advancedSearchField">

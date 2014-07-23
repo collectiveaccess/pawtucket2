@@ -26,20 +26,20 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
- 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
+ 	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  	
- 	class SearchController extends FindController {
+ 	class SearchController extends ActionController {
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
- 		protected $ops_find_type = "search";
+ 		private $ops_find_type = "search";
 
  		/**
  		 *
  		 */
- 		protected $opo_result_context = null;
+ 		private $opo_result_context = null;
  		
  		/**
  		 *
@@ -57,7 +57,7 @@
             }
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
- 			$this->view->setVar("find_type", $this->ops_find_type);
+ 			
  			caSetPageCSSClasses(array("search", "results"));
  		}
  		# -------------------------------------------------------
@@ -73,7 +73,6 @@
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
- 			$this->view->setVar("browse_type", $ps_function);
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
@@ -93,15 +92,11 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
- 			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
- 			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
- 			}
- 			if(!in_array($ps_view, $va_views)) {
- 				$ps_view = array_shift(array_keys($va_views));
- 			}
  			
+ 			$ps_view = $this->request->getParameter('view', pString);
+ 			if(!in_array($ps_view, array('list', 'images', 'timeline', 'map', 'timelineData'))) {
+ 				$ps_view = 'images';
+ 			}
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
  			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
@@ -145,20 +140,15 @@
 				
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
+				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
 				$this->view->setVar('facet_info', $va_facet_info);
 				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
 				switch($va_facet_info["group_mode"]){
-					case "alphabetical":
-					case "list":
 					default:
-						$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 						$this->render("Browse/list_facet_html.php");
-					break;
-					case "hierarchical":
-						$this->render("Browse/hierarchy_facet_html.php");
 					break;
 				}
 				return;
@@ -335,6 +325,7 @@
  			$va_form_elements = array();
  			
  			$vs_script = null;
+ 			
  			foreach($va_tags as $vs_tag) {
  				$va_parse = caParseTagOptions($vs_tag);
  				$vs_tag_proc = $va_parse['tag'];
@@ -386,11 +377,26 @@
 						if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
 							$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
 						} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
-							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR'), array('class' => 'caAdvancedSearchBoolean')));
+							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
 						} else {
 							$va_opts['asArrayElement'] = true;
+							if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
+								$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+							}
 							if ($vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts)) {
 								$this->view->setVar($vs_tag, $vs_tag_val);
+							}
+							
+							$va_tmp = explode('.', $vs_tag_proc);
+ 							if((($t_element = ca_metadata_elements::getInstance($va_tmp[1])) && ($t_element->get('datatype') == 0))) {
+								if (is_array($va_elements = $t_element->getElementsInSet())) {
+									foreach($va_elements as $va_element) {
+										if ($va_element['datatype'] > 0) {
+											$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
+										}
+									}
+								}
+								break;
 							}
 						}
 						if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
