@@ -168,7 +168,9 @@
 					print "<div class='searchFullText".(($vs_image) ? "Small" : "")."'>";
 					$vs_era = $qr_res->get('ca_places.era', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_period = $qr_res->get('ca_places.period', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					$vs_period = str_replace(array("-, -", "-,", ", -", "-"), "", $vs_period);
 					$vs_epoch = $qr_res->get('ca_places.epoch', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					$vs_epoch = str_replace(array("-, -", "-,", ", -", "-"), "", $vs_epoch);
 					$vs_ageNALMA = $qr_res->get('ca_places.ageNALMA', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_unit = $qr_res->get('ca_places.unit', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_group = $qr_res->get('ca_places.group', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
@@ -232,7 +234,9 @@
 					print "<div class='searchFullTextTitle'>Stratigraphy</div>";
 					$vs_era = $qr_res->get('ca_places.era', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_period = $qr_res->get('ca_places.period', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					$vs_period = str_replace(array("-, -", "-,", ", -", "-"), "", $vs_period);
 					$vs_epoch = $qr_res->get('ca_places.epoch', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					$vs_epoch = str_replace(array("-, -", "-,", ", -", "-"), "", $vs_epoch);
 					$vs_group = $qr_res->get('ca_places.group', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					$vs_formation = $qr_res->get('ca_places.formation', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 					print "<div><b>"._t('Era').": </b>".caReturnDefaultIfBlank($vs_era)."</div>";

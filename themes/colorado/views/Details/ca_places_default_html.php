@@ -40,11 +40,38 @@
 						}
 					}
 					$vs_locality_path = $vs_locality_path.$t_place->get("idno");				
-					print "<div class='unit'><b>"._t("Locality Name")."</b>: ".$vs_locality_path."</div><!-- end unit -->";
+					print "<div class='unit'>".$vs_locality_path."</div><!-- end unit -->";
 				}
 			}
 			# --- attributes
-			$va_attributes = array("era", "period", "epoch", "ageNALMA", "formation", "member");
+			if($vs_value = $t_place->get("ca_places.era", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+				print "<div class='unit'><b>".$t_place->getDisplayLabel("ca_places.era").":</b> ".caReturnDefaultIfBlank($vs_value)."</div><!-- end unit -->";
+			}
+			if(($t_place->get("ca_places.period.period_main", array("convertCodesToDisplayText" => true))) && (($t_place->get("ca_places.period.period_main", array("convertCodesToDisplayText" => true)) != "-") || ($t_place->get("ca_places.period.stage", array("convertCodesToDisplayText" => true)) != "-"))){
+				print "<div class='unit'><b>".$t_place->getDisplayLabel("ca_places.period").":</b> ";
+				$va_tmp = array();
+				if(($t_place->get("ca_places.period.period_main", array("convertCodesToDisplayText" => true)) != "-")){
+					$va_tmp[] = $t_place->get("ca_places.period.period_main", array("convertCodesToDisplayText" => true));
+				}
+				if(($t_place->get("ca_places.period.stage", array("convertCodesToDisplayText" => true)) != "-")){
+					$va_tmp[] = $t_place->get("ca_places.period.stage", array("convertCodesToDisplayText" => true));
+				}
+				print implode("; ", $va_tmp);
+				print "</div><!-- end unit -->";
+			}
+			if(($t_place->get("ca_places.epoch", array("convertCodesToDisplayText" => true))) && (($t_place->get("ca_places.epoch.epoch_main", array("convertCodesToDisplayText" => true)) != "-") || ($t_place->get("ca_places.epoch.stage_epoch", array("convertCodesToDisplayText" => true)) != "-"))){
+				print "<div class='unit'><b>".$t_place->getDisplayLabel("ca_places.epoch").":</b> ";
+				$va_tmp = array();
+				if(($t_place->get("ca_places.epoch.epoch_main", array("convertCodesToDisplayText" => true)) != "-")){
+					$va_tmp[] = $t_place->get("ca_places.epoch.epoch_main", array("convertCodesToDisplayText" => true));
+				}
+				if(($t_place->get("ca_places.epoch.stage_epoch", array("convertCodesToDisplayText" => true)) != "-")){
+					$va_tmp[] = $t_place->get("ca_places.epoch.stage_epoch", array("convertCodesToDisplayText" => true));
+				}
+				print implode("; ", $va_tmp);
+				print "</div><!-- end unit -->";
+			}
+			$va_attributes = array("ageNALMA", "formation", "member");
 			if(is_array($va_attributes) && (sizeof($va_attributes) > 0)){
 				foreach($va_attributes as $vs_attribute_code){
 					if($vs_value = $t_place->get("ca_places.{$vs_attribute_code}", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
@@ -56,24 +83,15 @@
 			
 			# --- objects
 			$va_objects = $t_place->get("ca_objects", array("returnAsArray" => 1, 'checkAccess' => $va_access_values));
-			$va_sorted_objects = array();
 			if(sizeof($va_objects) > 0){
-				$t_obj = new ca_objects();
-				$va_item_types = $t_obj->getTypeList();
-				foreach($va_objects as $va_object) {
-					$t_obj->load($va_object['object_id']);
-					$va_sorted_objects[$va_object['item_type_id']][$va_object['object_id']] = $va_object;
-				}
-				
-				foreach($va_sorted_objects as $vn_object_type_id => $va_object_list) {
 ?>
-						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_object_type_id]['name_singular'].((sizeof($va_object_list) > 1) ? "s" : ""); ?></h2>
+				<div class="unit"><h2><?php print _t("Other UCM Specimens From This Site"); ?></h2>
 <?php
-					foreach($va_object_list as $vn_rel_object_id => $va_info) {
-						print "<div>".caDetailLink($this->request, $va_info["idno"], '', 'ca_objects', $vn_rel_object_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")))." (".$va_info['relationship_typename'].")</div>";
-					}
-					print "</div><!-- end unit -->";
+				foreach($va_objects as $va_object) {
+					print "<div>".caDetailLink($this->request, $va_object["idno"], '', 'ca_objects', $va_object['object_id'], array("subsite" => $this->request->session->getVar("coloradoSubSite")))."</div>";
 				}
+				print "</div><!-- end unit -->";
+
 			}
 			
 ?>
@@ -90,7 +108,7 @@
 			if($vs_map_attribute && $t_place->get($vs_map_attribute)){
 				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
 				$o_map->mapFrom($t_place, $vs_map_attribute);
-				print $o_map->render('HTML', array("obscure" => true, "circle" => true, "radius" => 20000, "fillColor" => "#000000", "pathColor" => "#000000"));
+				print $o_map->render('HTML', array("obscure" => true, "circle" => true, "radius" => 20000, "fillColor" => "#000000", "pathColor" => "#000000", "zoomLevel" => 5));
 			}
 ?>
 	</div><!-- end rightColMap -->
