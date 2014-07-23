@@ -28,18 +28,19 @@
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
+ 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	
- 	class SearchController extends ActionController {
+ 	class SearchController extends FindController {
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
- 		private $ops_find_type = "search";
+ 		protected $ops_find_type = "search";
 
  		/**
  		 *
  		 */
- 		private $opo_result_context = null;
+ 		protected $opo_result_context = null;
  		
  		/**
  		 *
@@ -57,7 +58,7 @@
             }
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
- 			
+ 			$this->view->setVar("find_type", $this->ops_find_type);
  			caSetPageCSSClasses(array("search", "results"));
  		}
  		# -------------------------------------------------------
@@ -73,6 +74,7 @@
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
+ 			$this->view->setVar("browse_type", $ps_function);
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
@@ -92,11 +94,15 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			
  			$ps_view = $this->request->getParameter('view', pString);
- 			if(!in_array($ps_view, array('list', 'images', 'timeline', 'map', 'timelineData'))) {
- 				$ps_view = 'images';
- 			}
+ 			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
+ 			if(!is_array($va_views) || (sizeof($va_views) == 0)){
+				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
+			}
+			if(!in_array($ps_view, $va_views)) {
+				$ps_view = array_shift(array_keys($va_views));
+			}
+
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
  			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
@@ -140,15 +146,20 @@
 				
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
-				$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
 				$this->view->setVar('facet_info', $va_facet_info);
 				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
-				switch($va_facet_info["group_mode"]){
+				 switch($va_facet_info["group_mode"]){
+					case "alphabetical":
+					case "list":
 					default:
+						$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
 						$this->render("Browse/list_facet_html.php");
+					break;
+					case "hierarchical":
+						$this->render("Browse/hierarchy_facet_html.php");
 					break;
 				}
 				return;
