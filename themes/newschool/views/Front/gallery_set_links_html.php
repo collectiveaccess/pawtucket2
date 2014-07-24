@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front   page of site 
+ * themes/default/Front/front_page_html : Front page of site 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -29,18 +29,12 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-7">
-			<H1>The New School Digital Archives presents materials drawn from the collections of <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, which holds primary source materials related to the history of all divisions of The New School.</H1> 	
-		</div><!--end col-sm-7-->
-		<div class="col-sm-1"></div>
-		<div class="col-sm-4">
+		<h2>Browse selections from featured topics:</h2>
 <?php
-		print $this->render("Front/gallery_set_links_html.php");
+		print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
 ?>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
-</div> <!--end container-->
+		<!--Or-->
+		<ul class="nav nav-pills nav-stacked">
+		<li><?php print caNavLink($this->request, _t('BROWSE ALL'), '', '', 'Browse', 'Objects'); ?></a></li>
+		</ul>

@@ -2,28 +2,27 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 ?>
-
-<div id="detail">
-	<div class="row">
-		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-			<div class="detailNavBgLeft">
-				{{{previousLink}}}{{{resultsLink}}}
-			</div><!-- end detailNavBgLeft -->
-		</div><!-- end col -->
-		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
-			<div class="container"><div class="row">
-				<div class='col-md-6 col-lg-6'>
-					{{{representationViewer}}}
-					<div id="detailTools">
-<?php if ($this->getVar('commentsEnabled')) { ?>
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-<?php } ?>
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+<div class="row">
+	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgLeft">
+			{{{previousLink}}}{{{resultsLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
+		<div class="container"><div class="row">
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				{{{representationViewer}}}
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				<div id="detailTools">
+					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+				</div><!-- end detailTools -->
+			</div><!-- end col -->
+			
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
@@ -79,16 +78,50 @@
 					
 					{{{<h3>MLA Citation:</h3><i>^ca_objects.preferred_labels.name</i>. <ifdef code="ca_objects.dateSet.setDisplayValue"><unit>^ca_objects.dateSet.setDisplayValue</unit>. </ifdef><ifcount code="ca_collections" min="1" max="1"><unit>^ca_collections.hierarchy.preferred_labels.name</unit>. </ifcount><i>New School Archives and Special Collections Digital Archive</i>. Web. ^DATE}}}
 					<br><br>
-					<p><strong>There’s more!</strong> What you see on this site is only what is viewable online. 
-					Please visit our <a href='http://library.newschool.edu/speccoll'>website</a> to find out more about what’s in the archives.
-					</p>
-				</div><!-- end col -->
-			</div><!-- end row --></div><!-- end container -->
-		</div><!-- end col -->
-		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-			<div class="detailNavBgRight">
-				{{{nextLink}}}
-			</div><!-- end detailNavBgLeft -->
-		</div><!-- end col -->
-	</div><!-- end row -->
-</div><!-- end detail -->
+					
+				
+				<hr></hr>
+					<div class="row">
+						<div class="col-sm-12">		
+							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
+							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l>^ca_entities.relationship_typename</unit><br/><br/>}}}
+							
+							
+							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+							
+							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
+							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name</unit><br/><br/>}}}
+							
+							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
+							{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
+						</div><!-- end col -->				
+						<div class="col-sm-12">	
+						<p>
+						There’s more! What you see on this site is only what is viewable online. Please visit our website to find out more about what’s in the archives. </p>
+						</div>
+					</div><!-- end row -->
+					
+			</div><!-- end col -->
+		</div><!-- end row --></div><!-- end container -->
+	</div><!-- end col -->
+	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgRight">
+			{{{nextLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+</div><!-- end row -->
+
+
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
+		});
+	});
+</script>

@@ -31,7 +31,7 @@
 	$t_set = $this->getVar("set");
 	
 ?>
-	<div class="lbTimelineContainer"><div id="timeline-embed" style="width: 95%; height:500px;">
+	<div class="lbTimelineContainer"><div id="timeline-embed">
 
 	</div></div>
 	
@@ -44,8 +44,8 @@
 			VMM.debug = false;
 			tl.init({
 				type:       'timeline',
-				width:      '700',
-				height:     '500',
+				width:      '100%',
+				height:     $('#timeline-embed').height(),
 				source:     '<?php print caNavUrl($this->request, '', 'Sets', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed',
 				debug: false

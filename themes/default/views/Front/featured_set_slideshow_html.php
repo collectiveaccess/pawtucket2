@@ -44,7 +44,7 @@
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
+						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
 							print "<li><div class='frontSlide'>".$vs_media;
 							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 							if($vs_caption){
@@ -61,8 +61,8 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-			<a href="#" class="jcarousel-control-next">&rsaquo;</a>
+			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
 			<!-- Pagination -->
 			<p class="jcarousel-pagination">

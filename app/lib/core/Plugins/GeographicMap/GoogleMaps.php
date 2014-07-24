@@ -72,10 +72,6 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 	 */
 	public function render($ps_format, $pa_options=null) {
 		list($vn_width, $vn_height) = $this->getDimensions();
-		$vn_width = intval($vn_width);
-		$vn_height = intval($vn_height);
-		if ($vn_width < 1) { $vn_width = 200; }
-		if ($vn_height < 1) { $vn_height = 200; }
 		
 		$va_map_items = $this->getMapItems();
 		$va_extents = $this->getExtents();
@@ -101,6 +97,11 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 			case 'JPEG':
 			case 'PNG':
 			case 'GIF':
+				$vn_width = intval($vn_width);
+				$vn_height = intval($vn_height);
+				if ($vn_width < 1) { $vn_width = 200; }
+				if ($vn_height < 1) { $vn_height = 200; }
+				
 				$va_markers = array();
 				$va_paths = array();
 				$va_center = null;
@@ -132,6 +133,17 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 			# ---------------------------------
 			case 'HTML':
 			default:
+				if(!strpos($vn_width, "%")){
+					$vn_width = intval($vn_width);
+					if ($vn_width < 1) { $vn_width = 200; }
+					$vn_width = $vn_width."px";
+				}
+				if(!strpos($vn_height, "%")){
+					$vn_height = intval($vn_height);
+					if ($vn_height < 1) { $vn_height = 200; }
+					$vn_height = $vn_height."px";
+				}
+				
 				if (isset($pa_options['showNavigationControls'])) {
 					$vb_show_navigation_control 	= $pa_options['showNavigationControls'] ? 'true' : 'false';
 				} else {
@@ -148,7 +160,7 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 					$vb_show_map_type_control 		= $this->opo_config->get('google_maps_show_map_type_controls') ? 'true' : 'false';
 				}
 				
-				$vs_buf = "<div style='width:{$vn_width}px; height:{$vn_height}px' id='{$vs_id}'> </div>\n
+				$vs_buf = "<div style='width:{$vn_width}; height:{$vn_height}' id='{$vs_id}'> </div>\n
 <script type='text/javascript'>
 jQuery(document).ready(function() {
 	var caMap_{$vs_id} = caUI.initGoogleMap({id: '{$vs_id}', mapType: '{$vs_type}', navigationControl: {$vb_show_navigation_control} , mapTypeControl: {$vb_show_map_type_control}, scaleControl: {$vb_show_scale_control}});

@@ -124,7 +124,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".(($this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
