@@ -3,8 +3,13 @@
 	$ps_template = $this->getVar('display_template');
 	$vs_page_title = $this->getVar('page_title');
 	$vs_intro_text = $this->getVar('intro_text');
+	$va_open_by_default = $this->getVar('open_by_default');
 	
 	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
+	
+	if (!$va_open_by_default) {
+		$vs_hierarchy_style = "style='display:none;'";
+	}
 ?>
 	<h1><?php print $vs_page_title; ?></h1>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
@@ -29,7 +34,7 @@
 				print "{$va_hierarchy_item['display']}</div>\n";
 				if ($va_hierarchy_item['level'] == 0) {
 				
-					print "<div class='collBlock".$vn_top_level_collection_id."'>";
+					print "<div class='collBlock".$vn_top_level_collection_id."' ".$vs_hierarchy_style.">";
 ?>				
 					<script>
 						$(function() {
