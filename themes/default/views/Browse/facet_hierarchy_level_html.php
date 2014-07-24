@@ -38,12 +38,12 @@ foreach($va_facet_list as $vn_key => $va_facet){
 			$vs_tmp .= "<div>";
 			if($vs_link_to == "morePanel"){
 				if($va_children["children"]){
-					$vs_tmp .= "<a href='#' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '', $this->getVar("find_type"), $vs_browse_type, array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'>".$va_children["name"]."</a>";
+					$vs_tmp .= "<a href='#' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', $vs_browse_type, array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'>".$va_children["name"]."</a>";
 				}else{
-					$vs_tmp .= caNavLink($this->request, $va_children["name"], '', '', $this->getVar("find_type"), $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id));
+					$vs_tmp .= caNavLink($this->request, $va_children["name"], '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id));
 				}
 			}else{
-				$vs_tmp .= caNavLink($this->request, $va_children["name"], '', '', $this->getVar("find_type"), $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id));
+				$vs_tmp .= caNavLink($this->request, $va_children["name"], '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id));
 				if($va_children["children"]){
 					$vs_tmp .= ' <a href="#" title="'._t('View Children').'" onClick=\'jQuery("#bHierarchyList'.(($vs_link_to) ? '' : 'MorePanel').'_'.$vs_facet_name.'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id)).'"); jQuery("#bAncestorList").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
 				}
