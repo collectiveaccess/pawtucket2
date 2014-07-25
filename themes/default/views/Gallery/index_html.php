@@ -61,6 +61,9 @@
 					</div><!-- end jcarousel-wrapper -->
 				</div><!-- end col -->
 <?php
+				}else{
+					$va_first_set = array_shift($va_sets);
+					$vn_first_set_id = $va_first_set["set_id"];
 				}
 ?>
 			</div><!-- end row -->
