@@ -68,7 +68,7 @@
 		if ($vb_div_open) {print "</div><!-- end set -->";}
 		
 		if (!$this->request->isAjax()) {
-?>
+?> 
 					</div><!-- end blockResultsScroller -->
 				</div>
 			</div><!-- end blockResults -->

@@ -47,6 +47,15 @@
  		 */ 
  		public function Index() {
  			$this->view->setVar('t_collection', new ca_collections());
+ 			$va_display_template = $this->config->get('display_template');
+ 			$this->view->setVar('display_template', $va_display_template);
+ 			$this->view->setVar('page_title', $this->config->get('page_title'));
+ 			$this->view->setVar('intro_text', $this->config->get('intro_text'));
+ 			
+ 			$va_restrict_to_types = explode(", ", $this->config->get('restrict_to_types'));
+			$vs_restrict_types = '"'.implode('", "', $va_restrict_to_types).'"';	
+			$this->view->setVar('restrict_to_types', $vs_restrict_types);
+					
  			$this->render("index_html.php");
  		}
  		# ------------------------------------------------------

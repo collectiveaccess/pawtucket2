@@ -95,10 +95,10 @@
 		</div><!-- end mediaArea-->
 		<div id='infoArea'>
 <?php
-		if ($t_item->get('ca_occurrences.event_series.series_title')) {
-			$va_series = $t_item->get('ca_occurrences.event_series.series_title', array('convertCodesToDisplayText' => true, 'template' => '^series_title (^series_types)'));
-			print "<div class='description'><div class='metatitle'>"._t('Series')."</div>".$va_series."</div>";
-		}
+		#if ($t_item->get('ca_occurrences.event_series.series_title')) {
+		#	$va_series = $t_item->get('ca_occurrences.event_series.series_title', array('convertCodesToDisplayText' => true, 'template' => '^series_title (^series_types)'));
+		#	print "<div class='description'><div class='metatitle'>"._t('Series')."</div>".$va_series."</div>";
+		#}
 		if (($vs_collection = $t_item->get('ca_occurrences.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
 			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
 		}

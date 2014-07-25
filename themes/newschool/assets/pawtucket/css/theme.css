@@ -429,10 +429,14 @@ font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin
 .navbar-default .navbar-nav > li > a {
   color: #999;
 }
-/*.nav > li.dropdown > a.icon{
-	font-size:18px;
+.nav > li.dropdown > a.icon{
+	font-size:16px !important;
+	padding-top:16px;
+	padding-bottom:9px;
 }
-*/
+.nav > li.dropdown > a.icon:hover{
+	background:none;
+}
 
 .filterMenuFacetList li.active {
     background:transparent;

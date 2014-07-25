@@ -246,7 +246,7 @@ h1 i {
 .nav > li.dropdown > a.icon{
 	font-size:16px;
 	padding-top:17px;
-	padding-bottom:0px;
+	padding-bottom:13px;
 }
 @media (min-width: 992px) {
 	.nav > li.dropdown > a.icon {
@@ -1169,7 +1169,6 @@ a.browseRemoveFacet img {
 .detail .detailNavBgLeft{
 	position:absolute;
 	left:0;
-
 }
 .detail .detailNavBgRight{
 	position:absolute;
@@ -1185,6 +1184,35 @@ a.browseRemoveFacet img {
 	font-size:8px;
 	color:#ababab;
 	padding-bottom:20px;
+	padding-top:3px;
+}
+@media (max-width: 767px) {
+	.detail .navLeftRight{
+		display:none;
+	}
+}
+@media (min-width: 768px) {
+	.detail .navTop{
+		display:none;
+	}
+}
+.detail .navTop{
+	text-align:center;
+	padding-bottom:10px;
+}
+.detail .navTop a{
+	margin-top:-20px;
+	display:inline-block;
+	text-transform:uppercase;
+	text-align:center;
+	background-color:#EBEBEB;
+	padding:5px;
+	border-left:1px solid #FFF;
+	border-right:1px solid #FFF;
+}
+.detail .navTop a .small{
+	font-size:8px;
+	color:#ababab;
 }
 .detail .repViewerCarousel li{
 	text-align:center;
@@ -1568,12 +1596,31 @@ a.readmore-js-toggle{
 	padding:10px;
 	display:none;
 	z-index:10000;
+	min-width:450px;
 }
 #bMorePanel .bFilterCount{
 	color:#454545;
 	font-weight:normal;
 	font-size:.8em;
 	padding-left:10px;
+}
+#bMorePanel #bAncestorList{
+	padding:10px 0px 10px 0px;
+	margin-bottom:10px;
+	max-width:400px;
+}
+#bMorePanel #bAncestorList span{
+	font-size:7px;
+	color: #454545;
+}
+#bMorePanel #bAncestorList a{
+	color:#454545;
+	padding:0px 5px 0px 5px;
+	font-weight:bold;
+	font-size:12px;
+}
+#bMorePanel #bAncestorList a span{
+	font-size:12px;
 }
 #bMorePanel #bScrollList{
 	overflow-y:auto;
@@ -1583,16 +1630,24 @@ a.readmore-js-toggle{
 	margin-top:5px;
 	width:250px;
 }
+#bMorePanel #bScrollList.bScrollListHierarchy{
+	height:85%;
+}
 @media (min-width: 992px) {
 	#bMorePanel #bScrollList{
 		width:350px;
 	}
 }
+#bMorePanel #bScrollList.bScrollListHierarchy{
+	padding-left:25px;
+}
 #bMorePanel #bScrollList a{
 	color:#454545;
-	padding-bottom:5px;
 	line-height:1.1em;
 	font-size:11px;
+}
+#bMorePanel #bScrollList div{
+	padding-bottom:8px;
 }
 #bMorePanel #bLetterBar{
 	float:right;
@@ -2373,6 +2428,14 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .vco-storyjs h3{font-size:16px;line-height:18px}
 
 
+
+
+/* Advanced Search */
+
+div.advancedSearchField {
+	float: left;
+	width: 250px;
+}
 
 /* ----------------- print specific styles ----------------------*/
 /* --- This overrides boostrap styles --- */

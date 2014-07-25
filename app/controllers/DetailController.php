@@ -70,7 +70,7 @@
  			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = $this->request->getActionExtra(); 
+ 			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
@@ -481,7 +481,7 @@
 								$va_tmp[] = $vs_ext;
 							}
 						}
-						$this->view->setVar('version_download_name', join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
+						$this->view->setVar('version_download_name', str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']));					
 					} else {
 						$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
 					}
