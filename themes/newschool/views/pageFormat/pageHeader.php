@@ -138,7 +138,7 @@
 	# --- display breadcrumb trail on interior pages
 	if($this->request->getController() != "Front"){
 ?>		
-		<div class="container breadcrumb subcrumb"><a href="http://www.newschool.edu/">Home</a> > <a href="http://library.newschool.edu/">Libraries & Archives</a> > <a href="http://library.newschool.edu/speccoll/index.php">Archives & Special Collections</a> > <a href="http://digitalarchives.library.newschool.edu/">Digital Collections</a></div>		
+		<div class="container breadcrumb subcrumb"><a href="http://www.newschool.edu/">Home</a> > <a href="http://library.newschool.edu/">Libraries & Archives</a> > <a href="http://library.newschool.edu/speccoll/index.php">Archives & Special Collections</a> > <?php print caNavLink($this->request, _t("Digital Collections"), "", "", "", ""); ?></a></div>		
 <?php
 	}
 ?>

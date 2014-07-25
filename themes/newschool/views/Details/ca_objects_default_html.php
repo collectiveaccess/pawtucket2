@@ -25,16 +25,16 @@
 				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=";"><H3>Author:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="addressee" delimiter=";"><H3>Addressee:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=";"><H3>Artist:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=";"><H3>Designer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="illustrator" delimiter=";"><H3>Illustrator:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="commissioner" delimiter=";"><H3>Commissioner:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=";"><H3>Photographer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="compiler" delimiter=";"><H3>Compiler:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="subject" delimiter=";"><H3>Subject Name:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit><br/>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="author" delimiter=";"><H3>Author:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="addressee" delimiter=";"><H3>Addressee:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="artist" delimiter=";"><H3>Artist:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="designer" delimiter=";"><H3>Designer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="illustrator" delimiter=";"><H3>Illustrator:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="commissioner" delimiter=";"><H3>Commissioner:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="photographer" delimiter=";"><H3>Photographer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="compiler" delimiter=";"><H3>Compiler:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
+					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="subject" delimiter=";"><H3>Subject Name:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit><br/>}}}
 					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type:</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
@@ -85,7 +85,7 @@
 						<div class="col-sm-12">		
 							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l>^ca_entities.relationship_typename</unit><br/><br/>}}}
+							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit><br/><br/>}}}
 							
 							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}

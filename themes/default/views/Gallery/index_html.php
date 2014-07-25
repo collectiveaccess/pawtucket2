@@ -13,6 +13,9 @@
 						set info here
 					</div><!-- end gallerySetInfo -->
 				</div><!-- end col -->
+<?php
+				if(sizeof($va_sets) > 1){
+?>
 				<div class='col-sm-4'>
 					<div class="jcarousel-wrapper">
 						<!-- Carousel -->
@@ -57,6 +60,9 @@
 ?>
 					</div><!-- end jcarousel-wrapper -->
 				</div><!-- end col -->
+<?php
+				}
+?>
 			</div><!-- end row -->
 		</div><!-- end container -->
 
