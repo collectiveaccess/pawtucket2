@@ -59,6 +59,54 @@
 						}
 ?>
 					</div><!-- end jcarousel-wrapper -->
+					<script type='text/javascript'>
+						jQuery(document).ready(function() {		
+							jQuery("#gallerySetInfo").load("<?php print caNavUrl($this->request, '*', 'Gallery', 'getSetInfo', array('set_id' => $vn_first_set_id)); ?>");
+						
+							/* width of li */
+							$('.jcarousel li').width($('.jcarousel').width());
+							$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
+							/*
+							Carousel initialization
+							*/
+							$('.jcarousel')
+								.jcarousel({
+									// Options go here
+								});
+					
+							/*
+							 Prev control initialization
+							 */
+							$('.galleryPrevious')
+								.on('jcarouselcontrol:active', function() {
+									$(this).removeClass('inactive');
+								})
+								.on('jcarouselcontrol:inactive', function() {
+									$(this).addClass('inactive');
+								})
+								.jcarouselControl({
+									// Options go here
+									target: '-=1'
+								});
+					
+							/*
+							 Next control initialization
+							 */
+							$('.galleryNext')
+								.on('jcarouselcontrol:active', function() {
+									$(this).removeClass('inactive');
+								})
+								.on('jcarouselcontrol:inactive', function() {
+									$(this).addClass('inactive');
+								})
+								.jcarouselControl({
+									// Options go here
+									target: '+=1'
+								});
+								
+							
+						});
+					</script>
 				</div><!-- end col -->
 <?php
 				}else{
@@ -68,55 +116,6 @@
 ?>
 			</div><!-- end row -->
 		</div><!-- end container -->
-
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {		
-				jQuery("#gallerySetInfo").load("<?php print caNavUrl($this->request, '*', 'Gallery', 'getSetInfo', array('set_id' => $vn_first_set_id)); ?>");
-			
-				/* width of li */
-				$('.jcarousel li').width($('.jcarousel').width());
-				$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.galleryPrevious')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.galleryNext')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-					
-				
-			});
-		</script>
 <?php
 	}
 ?>
