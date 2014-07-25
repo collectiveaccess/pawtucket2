@@ -31,11 +31,11 @@
 	$t_set = $this->getVar("set");
 	
 ?>
-	<div class="lbTimelineContainer"><div id="timeline-embed">
+	<div id="lbTimelineContainer"><div id="timeline-embed">
 
 	</div></div>
 	
-	<br style="clear: both;"/>
+	<div style="clear:both;"><!-- empty --></div>
 	
     <script type="text/javascript">
     	var tl;
@@ -45,7 +45,7 @@
 			tl.init({
 				type:       'timeline',
 				width:      '100%',
-				height:     $('#timeline-embed').height(),
+				height:     $('#lbTimelineContainer').height(),
 				source:     '<?php print caNavUrl($this->request, '', 'Sets', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed',
 				debug: false
