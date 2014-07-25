@@ -237,8 +237,34 @@ a:hover {
 .front H1 {
 	font-weight:200;
 }
+.front H1 small{
+	font-size:12px;
+	font-style:italic;
+}
 #homepageLogin {
 	width:700px; 
+}
+.featuredItems .item {
+	text-align:center;
+	border-left:1px solid #eee;
+	padding-left:10px;
+}
+.featuredItems .item.first{
+	border-left:0px;
+}
+.featuredItems .item .image {
+	height:240px;
+}
+.featuredItems .item .caption {
+	padding-top:10px;
+}
+.featuredItems .item .caption a{
+	color:#858585;
+	font-weight:200;
+}
+.featuredItems .item h1{
+	text-align:left;
+	padding:0px;
 }
 ul.recentSearch li{
 	list-style-type: square;
@@ -322,6 +348,13 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	margin-right:10px;
 	margin-bottom:10px;
 	text-align:center;
+}
+
+/* Collection */
+
+.collection .exhibitions {
+	border-left:1px solid #eee;
+	padding-left:15px;
 }
 
 /* Static Page */

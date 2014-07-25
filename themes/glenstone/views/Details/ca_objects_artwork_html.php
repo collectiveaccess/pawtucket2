@@ -64,16 +64,14 @@
 				<div id="factSheet" class="infoBlock">	
 					{{{<ifdef code="ca_objects.artwork_provenance"><div class='unit wide'><span class='metaHeader'>Provenance</span><span>^ca_objects.artwork_provenance</span></div></ifdef>}}}
 <?php
-					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true))) {
+					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true))) {
 						print "<div class='unit wide'><span class='metaHeader'>Exhibition History</span>";
-						#print "<pre>";
-						#print_r($va_exhibition_history);
-						#print "</pre>";
 						foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
-						#	if ($va_exhibition['loan']) {
-						#		print caNavLink($this->request, $va_exhibition['exhibition_name'], '', 'Detail', 'loans/'.$va_exhibition['loan'])."<br/><br/>";
-						#	} else {
+							if ($va_exhibition['related_loan']) {
+								print caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."<br/><br/>";
+							} else {
 								print "<span>".$va_exhibition['exhibition_name']."</span><br/><br/>";
+							}
 						}
 						print "</div>";
 					}
@@ -83,7 +81,33 @@
 				</div>
 				
 				<div id="Location" class="infoBlock">
-					{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}
+<?php				
+					if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned')) {
+						// If currently deaccessioned then display deaccession message
+						print "<br/><div class='inspectorDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
+					} else {
+						$t_ui = ca_editor_uis::loadDefaultUI('ca_objects', $this->request);
+						if (($t_ui && method_exists($t_object, "getObjectHistory")) && (is_array($va_placements = $t_ui->getPlacementsForBundle('ca_objects_history')) && (sizeof($va_placements) > 0))) {
+							//
+							// Output current "location" of object in life cycle. Configuration is taken from a ca_objects_history bundle configured for the current editor
+							//
+							$va_placement = array_shift($va_placements);
+							$va_bundle_settings = $va_placement['settings'];
+							if (is_array($va_history = $t_object->getObjectHistory($va_bundle_settings, array('displayLabelOnly' => false, 'limit' => 1, 'currentOnly' => true))) && (sizeof($va_history) > 0)) {
+								$va_current_location = array_shift(array_shift($va_history));
+								if ($va_current_location['display']) { print "<div class='inspectorCurrentLocation'><strong>"._t('Current').'</strong><br/>'.$va_current_location['display']."</div>"; }
+							}
+						} elseif (method_exists($t_object, "getLastLocationForDisplay")) {
+							// If no ca_objects_history bundle is configured then display the last storage location
+							if ($vs_current_location = $t_object->getLastLocationForDisplay("<ifdef code='ca_storage_locations.parent.preferred_labels'>^ca_storage_locations.parent.preferred_labels ➜ </ifdef>^ca_storage_locations.preferred_labels.name")) {
+								print "<br/><div class='inspectorCurrentLocation'>"._t('Location: %1', $vs_current_location)."</div>\n";
+								$vs_full_location_hierarchy = $t_object->getLastLocationForDisplay("^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_");
+								if ($vs_full_location_hierarchy !== $vs_current_location) { TooltipManager::add(".inspectorCurrentLocation", $vs_full_location_hierarchy); }
+							}
+						}
+					}
+?>
+					<!--{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Legacy Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}-->
 				</div>
 				
 				<div id="Financial" class="infoBlock">
@@ -98,6 +122,9 @@
 						if ($va_cost = $t_object->get('ca_objects.object_cost')) {
 							print "<div class='unit'><span class='metaTitle'>Cost: </span><span class='meta'>".$va_cost."</span></div>";
 						}
+						if ($va_insurance = $t_object->get('ca_objects.current_insurance', array('template' => '^insurance_value ^insurance_date'))) {
+							print "<div class='unit'><span class='metaTitle'>Current Insurance Value: </span><span class='meta'>".$va_insurance."</span></div>";
+						}						
 						if ($t_object->get('ca_objects.gift_yn') == "Yes") {
 							print "<div class='unit'><span class='metaTitle'>Gift: </span><span class='meta'>Yes</span></div>";
 						}
@@ -140,14 +167,14 @@
 ?>
 				</div>
 				<div id="Condition" class="infoBlock">
-					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>" sort="ca_objects.general_condition.general_condition_date" sortDirection="DESC"><b>^ca_objects.general_condition.general_condition_value ^ca_objects.general_condition.general_condition_date</b>  Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
-					{{{<ifcount min="1" code="ca_objects.frame_condition"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>" sort="ca_objects.frame_condition.frame_date" sortDirection="DESC"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
+					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>" sort="ca_objects.general_condition.general_condition_date" sortDirection="DESC"><b>^ca_objects.general_condition.general_condition_value <ifdef code="ca_objects.general_condition.general_condition_value">: </ifdef>^ca_objects.general_condition.general_condition_date</b>  Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
+					{{{<ifcount min="1" code="ca_objects.frame_condition.frame_notes"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>" sort="ca_objects.frame_condition.frame_date" sortDirection="DESC"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
 					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>" sort="ca_objects.glazing_condition.glazing_date" sortDirection="DESC"><b>^ca_objects.glazing_condition.glazing_date</b> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
-					{{{<ifcount min="1" code="ca_objects.support_condition"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>" sort="ca_objects.support_condition.support_date" sortDirection="DESC"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
-					{{{<ifcount min="1" code="ca_objects.vitrine_condition"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>" sort="ca_objects.vitrine_condition.vitrine_date" sortDirection="DESC"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.mount_condition"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>" sort="ca_objects.mount_condition.mount_date" sortDirection="DESC"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.surface_condition"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>" sort="ca_objects.surface_condition.surface_date" sortDirection="DESC"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.base_condition"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>" sort="ca_objects.base_condition.base_date" sortDirection="DESC"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.support_condition.support_notes"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>" sort="ca_objects.support_condition.support_date" sortDirection="DESC"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
+					{{{<ifcount min="1" code="ca_objects.vitrine_condition.vitrine_notes"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>" sort="ca_objects.vitrine_condition.vitrine_date" sortDirection="DESC"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.mount_condition.mount_notes"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>" sort="ca_objects.mount_condition.mount_date" sortDirection="DESC"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
+					{{{<ifcount min="1" code="ca_objects.surface_condition.surface_notes"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>" sort="ca_objects.surface_condition.surface_date" sortDirection="DESC"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.base_condition.base_notes"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>" sort="ca_objects.base_condition.base_date" sortDirection="DESC"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
 <?php
 #					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('delimiter' => '<br/>', 'template' => '<u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes'))) {
 #						print "<div class='unit wide'><span class='metaHeader'>Surface Condition </span><span>";
@@ -156,7 +183,7 @@
 #					}
 
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
-						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true)); 
+						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true)); 
 						print '<div class="unit wide"><span class="metaHeader">Condition Images</span><span>';
 						
 						$o_db = new Db();
@@ -173,7 +200,7 @@
 					}
 					
 					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
-						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true)); 
+						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true)); 
 						print '<div class="unit wide"><span class="metaHeader">Legacy Conservation Images</span><span>';
 						
 						$o_db = new Db();
@@ -207,7 +234,7 @@
 					{{{<ifcount min="1" code="ca_objects.sticker_label"><div class='unit'><span class='metaTitle'>Label Details </span><span class='meta'><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifcount>}}}
 <?php
 					if ($t_object->get('ca_objects.inscription_uploads.inscription_uploads_media')){
-						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnAsArray' => true)); 
+						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnAsArray' => true, 'ignoreLocale' => true)); 
 						print '<div class="unit wide"><span class="metaHeader">Inscription Uploads</span><span>';
 						
 						$o_db = new Db();
@@ -238,22 +265,55 @@
 #							}
 #						}
 #					}
+
+					if ($va_cert_auths = $t_object->get('ca_objects.certificate_auth', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_cert_auths as $va_cert_key => $va_cert_auth) {
+							if (($va_cert_auth['certificate_auth_yn'] != "No") && ($va_cert_auth['certificate_auth_yn'] != "N/A")) {
+								print "<div class='unit'><span class='metaTitle'>Certificate of Authenticity: </span><span class='meta'>".$va_cert_auth['certificate_auth_yn']." ".$va_cert_auth['certificate_auth_date']." ".$va_cert_auth['certificate_auth_notes']."</div>";
+							}
+						}
+					}
+					if ($va_art_agrs = $t_object->get('ca_objects.artist_agreement', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_art_agrs as $va_arg_key => $va_art_agr) {
+							if (($va_art_agr['artist_agreement_yn'] != "No") && ($va_art_agr['artist_agreement_yn'] != "N/A")) {
+								print "<div class='unit'><span class='metaTitle'>Artist Agreement: </span><span class='meta'>".$va_art_agr['artist_agreement_yn']." ".$va_art_agr['artist_agreement_date']." ".$va_art_agr['artist_agreement_notes']."</div>";
+							}
+						}
+					}
+					if ($va_non_excl = $t_object->get('ca_objects.non_exclusive', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_non_excl as $va_non_key => $va_non_exc) {
+							if (($va_non_exc['non_exclusive_yn'] != "No") && ($va_non_exc['non_exclusive_yn'] != "N/A")) {
+								print "<div class='unit'><span class='metaTitle'>Non-exclusive License: </span><span class='meta'>".$va_non_exc['non_exclusive_yn']." ".$va_non_exc['non_exclusive_date']." ".$va_non_exc['non_exclusive_notes']."</div>";
+							}
+						}
+					}
+					if ($va_transparencys = $t_object->get('ca_objects.transparency', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_transparencys as $va_tran_key => $va_transparency) {
+							if (($va_transparency['transparency_yn'] != "No") && ($va_transparency['transparency_yn'] != "N/A")) {
+								print "<div class='unit'><span class='metaTitle'>Transparency: </span><span class='meta'>".$va_transparency['transparency_yn']." ".$va_transparency['transparency_date']." ".$va_transparency['transparency_notes']."</div>";
+							}
+						}
+					}
+					if ($va_photo_records = $t_object->get('ca_objects.photo_record', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_photo_records as $va_photo_key => $va_photo_record) {
+							if (($va_photo_record['photo_record_yn'] != "No") && ($va_photo_record['photo_record_yn'] != "N/A")) {
+								print "<div class='unit'><span class='metaTitle'>Photograph Information Record: </span><span class='meta'>".$va_photo_record['photo_record_yn']." ".$va_photo_record['photo_record_date']." ".$va_photo_record['photo_record_notes']."</div>";
+							}
+						}
+					}																				
 ?>
-					{{{<ifdef code="ca_objects.certificate_auth.certificate_auth_yn"><div class='unit'><span class='metaTitle'>Certificate of Authenticity: </span><span class='meta'>^ca_objects.certificate_auth.certificate_auth_yn ^ca_objects.certificate_auth.certificate_auth_date ^ca_objects.certificate_auth.certificate_auth_notes</span></div></ifdef>}}}					
-					{{{<ifdef code="ca_objects.artist_agreement.artist_agreement_yn"><div class='unit'><span class='metaTitle'>Artist Agreement: </span><span class='meta'>^ca_objects.artist_agreement.artist_agreement_yn ^ca_objects.artist_agreement.artist_agreement_date</span></div></ifdef>}}}
- 					{{{<ifdef code="ca_objects.non_exclusive.non_exclusive_yn"><div class='unit'><span class='metaTitle'>Non-exclusive License: </span><span class='meta'>^ca_objects.non_exclusive.non_exclusive_yn ^ca_objects.non_exclusive.non_exclusive_date ^ca_objects.non_exclusive.non_exclusive_notes</span></div></ifdef>}}}
- 					{{{<ifdef code="ca_objects.transparency.transparency_yn"><div class='unit'><span class='metaTitle'>Transparency: </span><span class='meta'>^ca_objects.transparency.transparency_yn ^ca_objects.transparency.transparency_date ^ca_objects.transparency.transparency_notes</span></div></ifdef>}}}
- 					{{{<ifdef code="ca_objects.photo_record.photo_record_yn"><div class='unit'><span class='metaTitle'>Photograph Information Record: </span><span class='meta'>^ca_objects.photo_record.photo_record_yn ^ca_objects.photo_record.photo_record_date ^ca_objects.photo_record.photo_record_notes</span></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.artwork_website"><div class='unit'><span class='metaTitle'>Website: </span><span class='meta'>^ca_objects.artwork_website</span></div></ifdef>}}}
 <?php
-					if ($va_notes = $t_object->get('ca_objects.other_notes', array('returnAsArray' => true))) {
+					if ($va_notes = $t_object->get('ca_objects.other_notes', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_notes as $va_key => $va_note) {
-							print "<div class='unit'><span class='metaTitle'>".$va_note['other_notes_type'].": </span><span class='unit'>".$va_note['other_notes_content']."</span></unit>";
+							if ($va_note['other_notes_content']) {
+								print "<div class='unit'><span class='metaTitle'>".$va_note['other_notes_type'].": </span><span class='meta'>".$va_note['other_notes_content']."</span></unit>";
+							}
 						}
 					}
 
 					if ($t_object->get('ca_objects.artwork_documents.artwork_documents_media')){
-						$va_artwork_docs = $t_object->get('ca_objects.artwork_documents', array('returnAsArray' => true)); 
+						$va_artwork_docs = $t_object->get('ca_objects.artwork_documents', array('returnAsArray' => true, 'ignoreLocale' => true, 'convertCodesToDisplayText' => true)); 
 						print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
 						
 						$o_db = new Db();
