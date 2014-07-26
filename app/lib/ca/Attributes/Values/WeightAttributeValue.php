@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
  /**
   *
   */
+ 	define("__CA_ATTRIBUTE_VALUE_WEIGHT__", 9);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -120,6 +121,7 @@
 	class WeightAttributeValue extends AttributeValue implements IAttributeValue {
  		# ------------------------------------------------------------------
  		private $ops_text_value;
+ 		private $opn_decimal_value;
  		# ------------------------------------------------------------------
  		public function __construct($pa_value_array=null) {
  			parent::__construct($pa_value_array);
@@ -147,13 +149,25 @@
  					$this->ops_text_value = $pa_value_array['value_longtext1'];
  					break;
  			}	
+ 			$this->opn_decimal_value = $pa_value_array['value_decimal1'];
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns value suitable for display
+ 		 *
+ 		 * @param $pa_options array Options are:
+ 		 *		returnAsDecimalMetric = return weight in kilograms as decimal number
+ 		 *
+ 		 * @return mixed Values as string or decimal
+ 		 */
 		public function getDisplayValue($pa_options=null) {
+			if (caGetOption('returnAsDecimalMetric', $pa_options, false)) {
+				return $this->opn_decimal_value;
+			}
 			return $this->ops_text_value;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$ps_value = trim($ps_value);
  			global $g_ui_locale;
  			
@@ -222,7 +236,7 @@
  						$vs_units = Zend_Measure_Weight::STONE;
  						break;
  					default:
- 						$this->postError(1970, _t('%1 is not a valid unit of measurement', $va_matches[2]), 'WeightAttributeValue->parseValue()');
+ 						$this->postError(1970, _t('%1 is not a valid unit of weight [%2]', $va_matches[2], $ps_value), 'WeightAttributeValue->parseValue()');
  						return false;
  						break;
  				}
@@ -267,7 +281,7 @@
  			);
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['WeightAttributeValue'];
@@ -280,6 +294,15 @@
 		 */
 		public function sortField() {
 			return 'value_decimal1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for weight attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_WEIGHT__;
 		}
  		# ------------------------------------------------------------------
 	}

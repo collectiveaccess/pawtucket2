@@ -66,6 +66,7 @@
  			$this->view->setVar("read_sets", $va_read_sets);
  			$this->view->setVar("write_sets", $va_write_sets);
  			$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
+ 			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
  			$this->view->setVar("activity", $va_set_change_log);
  			$this->render("Sets/set_list_html.php");

@@ -62,13 +62,13 @@
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
-		$vn_col_span_xs = 4;
+		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 6;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
+			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -114,7 +114,7 @@
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</a>
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";

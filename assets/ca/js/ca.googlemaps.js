@@ -83,6 +83,31 @@ var caUI = caUI || {};
 			return marker;
 		};
 		// --------------------------------------------------------------------------------
+		that.makeCircle = function(lat, lng, label, content, ajaxContentUrl, options) {
+			var pt = new google.maps.LatLng(lat, lng);
+			var opts = {
+				map: that.map,
+      			center: pt,
+      			radius: 500,
+				title: label + ' ',
+				content: content + ' ',
+				ajaxContentUrl: ajaxContentUrl
+			};
+			if (options) {
+				if (options.strokeColor) {opts['strokeColor'] = options.strokeColor;}
+				if (options.strokeOpacity) {opts['strokeOpacity'] = options.strokeOpacity;}
+				if (options.strokeWeight) {opts['strokeWeight'] = options.strokeWeight;}
+				if (options.fillColor) {opts['fillColor'] = options.fillColor;}
+				if (options.fillOpacity) {opts['fillOpacity'] = options.fillOpacity;}
+				if (options.radius) {opts['radius'] = options.radius;}
+			}
+			var circle = new google.maps.Circle(opts);
+			
+			google.maps.event.addListener(circle, 'click', function(e) { that.openMarkerInfoWindow(marker); });
+			
+			return circle;
+		};
+		// --------------------------------------------------------------------------------
 		that.makePath = function(pathArray, label, content, opts) {
 			var path = new google.maps.Polyline(opts);
 			path.setPath(pathArray);

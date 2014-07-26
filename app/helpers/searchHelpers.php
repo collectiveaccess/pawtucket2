@@ -557,6 +557,15 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	/**
 	 * 
 	 *
+	 * @return Configuration 
+	 */
+	function caGetSearchIndexingConfig() {
+		return Configuration::load(__CA_APP_DIR__.'/conf/search_indexing.conf');
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
 	 * @return array 
 	 */
 	function caGetInfoForSearchType($ps_search_type) {
@@ -571,4 +580,326 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		return null;
 	}
 	# ---------------------------------------
-?>
+	/**
+	 * 
+	 *
+	 * @return array 
+	 */
+	function caGetInfoForAdvancedSearchType($ps_search_type) {
+		$o_search_config = caGetSearchConfig();
+		
+		$va_search_types = $o_search_config->getAssoc('advancedSearchTypes');
+		$ps_search_type = strtolower($ps_search_type);
+		
+		if (isset($va_search_types[$ps_search_type])) {
+			return $va_search_types[$ps_search_type];
+		}
+		return null;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
+		
+		$va_for_display = array();
+	 	$va_default_values = $va_values = $va_booleans = array();
+	 	
+	 	foreach($va_form_contents as $vn_i => $vs_element) {
+			$vs_dotless_element = str_replace('.', '_', $vs_element);
+			
+			switch($vs_element) {
+				case '_fieldlist':
+					foreach($pa_form_values[$vs_dotless_element.'_field'] as $vn_j => $vs_fieldlist_field) {
+						if(!strlen(trim($vs_fieldlist_field))) { continue; }
+						$va_values[$vs_fieldlist_field][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
+						$va_default_values['_fieldlist_field'][] = $vs_fieldlist_field;
+						$va_default_values['_fieldlist_value'][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
+						$va_booleans["_fieldlist:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
+						
+					}
+					break;
+				default:
+					if (is_array($pa_form_values[$vs_dotless_element])) {
+						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
+							if(!strlen(trim($vs_element_value))) { continue; }
+							$va_default_values[$vs_element][] = trim($vs_element_value);
+							$va_values[$vs_element][] = trim($vs_element_value);
+							$va_booleans["{$vs_element}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}:boolean"][$vn_j] : null;
+						}
+					}
+					break;
+			}
+		}
+		
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormContent_{$pa_form_values['_advancedFormName']}", $va_default_values);
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormBooleans_{$pa_form_values['_advancedFormName']}", $va_booleans);
+		$po_result_context->saveContext();
+	
+	 	$va_query_elements = $va_query_booleans = array();
+	 	if (is_array($va_values) && sizeof($va_values)) {
+			foreach($va_values as $vs_element => $va_value_list) {
+				foreach($va_value_list as $vn_i => $vs_value) {
+					if (!strlen(trim($vs_value))) { continue; }
+					if ((strpos($vs_value, ' ') !== false) && ($vs_value{0} != '[')) {
+						$vs_query_element = '"'.str_replace('"', '', $vs_value).'"';
+					} else {
+						$vs_query_element = $vs_value;
+					}
+					
+					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
+					switch($vs_element){
+						case '_fulltext':		// don't qualify special "fulltext" element
+							$va_query_elements[$vs_element][] = $vs_query_element;
+							break;
+						case '_fieldlist_value':
+							// noop
+							break;
+						case '_fieldlist_field':
+							if(!strlen(trim($pa_form_values['_fieldlist_value'][$vn_i]))) { continue; }
+							$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
+							break;
+						default:
+							$va_query_elements[$vs_element][] = "({$vs_element}:{$vs_query_element})";
+							break;
+					}
+				}
+			}
+		}
+	
+		$vs_query_string = '';
+		foreach($va_query_elements as $vs_element => $va_query_elements_by_element) {
+			$vs_query_string .= ($vs_query_string ? (($vs_b = $va_query_booleans[$vs_element][0]) ? " {$vs_b} " : ' AND ') : '').'(';
+			foreach($va_query_elements_by_element as $vn_i => $vs_val) {
+				$vs_query_string .= $vs_val;
+				if ($vn_i < (sizeof($va_query_elements_by_element) - 1)) {
+					$vs_query_string .= ' '.$va_query_booleans[$vs_element][$vn_i].' ';
+				}
+			}
+			$vs_query_string = trim($vs_query_string). ')';
+		}
+		return $vs_query_string;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetDisplayTextFromQueryString($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
+		
+		
+	}
+	# ---------------------------------------
+	/**
+	 * Returns all available search form placements - those data bundles that can be searches for the given content type, in other words.
+	 * The returned value is a list of arrays; each array contains a 'bundle' specifier than can be passed got Model::get() or SearchResult::get() and a display name
+	 *
+	 * @param mixed $pm_table_name_or_num The table name or number specifying the content type to fetch bundles for. If omitted the content table of the currently loaded search form will be used.
+	 * @return array And array of bundles keyed on display label. Each value is an array with these keys:
+	 *		bundle = The bundle name (eg. ca_objects.idno)
+	 *		display = Display label for each available bundle
+	 *		description = Description of bundle
+	 * 
+	 * Will return null if table name or number is invalid.
+	 */
+	function caGetBundlesAvailableForSearch($pm_table_name_or_num, $pa_options=null) {
+		$pb_for_select = caGetOption('forSelect', $pa_options, false);
+		$pa_filter = caGetOption('filter', $pa_options, null);
+		
+		$o_dm = Datamodel::load();
+		$o_config = Configuration::load();
+		$o_indexing_config = caGetSearchIndexingConfig();
+		
+		$pm_table_name_or_num = $o_dm->getTableNum($pm_table_name_or_num);
+		if (!$pm_table_name_or_num) { return null; }
+		
+		$t_instance = $o_dm->getInstanceByTableNum($pm_table_name_or_num, true);
+		$va_search_settings = $o_indexing_config->getAssoc($o_dm->getTableName($pm_table_name_or_num));
+		
+		$vs_primary_table = $t_instance->tableName();
+		$vs_table_display_name = $t_instance->getProperty('NAME_PLURAL');
+		
+		
+		$va_available_bundles = array();
+		
+		// Full-text 
+		$vs_bundle = "_fulltext";
+		
+		if (!((is_array($pa_filter) && sizeof($pa_filter) && !in_array($vs_bundle, $pa_filter)))) { 
+			$vs_label = _t('Full text');
+			$va_available_bundles[$vs_label][$vs_bundle] = array(
+				'bundle' => $vs_bundle,
+				'label' => $vs_label,
+				'description' => $vs_description = _t('Searches on all content that has been indexed')
+			);	
+		}
+		
+		// rewrite label filters to use label tables actually used in indexing config
+		if (is_array($pa_filter)) {
+			foreach($pa_filter as $vn_i => $vs_filter) {
+				$va_tmp = explode('.', $vs_filter);
+				if (in_array($va_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) {
+					if ($t_filter_instance = $o_dm->getInstanceByTableName($va_tmp[0], true)) {
+						$pa_filter[] = $t_filter_instance->getLabelTableName().($va_tmp[2] ? '.'.$va_tmp[2] : '');
+					}
+				}
+			}
+		}
+		
+		
+		// get fields 
+		  
+		foreach($va_search_settings as $vs_table => $va_fields) {
+			if (!is_array($va_fields['fields'])) { continue; }
+				
+			if ($vs_table == $vs_primary_table) {
+				$va_element_codes = (method_exists($t_instance, 'getApplicableElementCodes') ? $t_instance->getApplicableElementCodes(null, false, false) : array());
+
+				$va_field_list = array();
+				foreach($va_fields['fields'] as $vs_field => $va_field_indexing_info) {
+					if ($vs_field === '_metadata') {
+						foreach($va_element_codes as $vs_code) {
+							$va_field_list[$vs_code] = array();	
+						}
+					} else {
+						$va_field_list[$vs_field] = $va_field_indexing_info;
+					}
+				}
+				
+				foreach($va_field_list as $vs_field => $va_field_indexing_info) {
+					if (in_array('DONT_INCLUDE_IN_SEARCH_FORM', $va_field_indexing_info)) { continue; }
+					if (is_array($pa_filter) && sizeof($pa_filter) && !in_array($vs_table.'.'.$vs_field, $pa_filter)) { continue; }
+										
+					if (!($va_field_info = $t_instance->getFieldInfo($vs_field))) {
+						// is it an attribute?
+						if (in_array($vs_field, $va_element_codes)) {
+							$t_element = $t_instance->_getElementInstance($vs_field);
+							if(!$t_element) { continue; }
+							if (in_array($t_element->get('datatype'), array(15, 16))) { continue; } 		// skip file and media attributes - never searchable
+							if (!$t_element->getSetting('canBeUsedInSearchForm')) { continue; }
+				
+							if (caGetBundleAccessLevel($vs_primary_table, $vs_field) == __CA_BUNDLE_ACCESS_NONE__) { continue;}
+							
+							$vs_bundle = $vs_table.'.'.$vs_field;
+							
+							$vs_label = $t_instance->getDisplayLabel($vs_bundle);
+							$va_available_bundles[$vs_label][$vs_bundle] = array(
+								'bundle' => $vs_bundle,
+								'label' => $vs_label,
+								'description' => $vs_description = $t_instance->getDisplayDescription($vs_bundle)
+							);	
+						}
+					} else {
+						if (isset($va_field_info['DONT_USE_AS_BUNDLE']) && $va_field_info['DONT_USE_AS_BUNDLE']) { continue; }
+						if (in_array($va_field_info['FIELD_TYPE'], array(FT_MEDIA, FT_FILE))) { continue; }
+						
+						$vs_bundle = $vs_table.'.'.$vs_field;
+						$vs_label = $t_instance->getDisplayLabel($vs_bundle);
+						$va_available_bundles[$vs_label][$vs_bundle] = array(
+							'bundle' => $vs_bundle,
+							'label' => $vs_label,
+							'description' => $vs_description = $t_instance->getDisplayDescription($vs_bundle)
+						);
+					}
+				}
+			} else {
+				// related table
+					if ($o_config->get($vs_table.'_disable')) { continue; }
+					$t_table = $o_dm->getInstanceByTableName($vs_table, true);
+					if ((method_exists($t_table, "getSubjectTableName") && $vs_subject_table = $t_table->getSubjectTableName())) {
+						if ($o_config->get($vs_subject_table.'_disable')) { continue; }
+					}
+					
+					if (caGetBundleAccessLevel($vs_primary_table, $vs_subject_table) == __CA_BUNDLE_ACCESS_NONE__) { continue;}
+					foreach($va_fields['fields'] as $vs_field => $va_field_indexing_info) {
+						if (in_array('DONT_INCLUDE_IN_SEARCH_FORM', $va_field_indexing_info)) { continue; }
+						if (is_array($pa_filter) && sizeof($pa_filter) && !in_array($vs_table.'.'.$vs_field, $pa_filter)) { continue; }
+							
+						if (($va_field_info = $t_table->getFieldInfo($vs_field))) {
+							if (isset($va_field_info['DONT_USE_AS_BUNDLE']) && $va_field_info['DONT_USE_AS_BUNDLE']) { continue; }
+							
+							
+							$vs_bundle = $vs_table.'.'.$vs_field;
+							
+							$vs_related_table = caUcFirstUTF8Safe($t_table->getProperty('NAME_SINGULAR'));
+							if (method_exists($t_table, 'getSubjectTableInstance')) {
+								$t_subject = $t_table->getSubjectTableInstance();
+								$vs_related_table = caUcFirstUTF8Safe($t_subject->getProperty('NAME_SINGULAR'));
+							}
+							
+							$vs_label = $t_instance->getDisplayLabel($vs_bundle);
+							
+							$va_available_bundles[$vs_label][$vs_bundle] = array(
+								'bundle' => $vs_bundle,
+								'label' => $vs_label,
+								'description' => $vs_description = $t_instance->getDisplayDescription($vs_bundle)
+							);
+						}
+					}
+				
+			}
+		}
+		
+		
+		//
+		// access points
+		//
+		$va_access_points = (isset($va_search_settings['_access_points']) && is_array($va_search_settings['_access_points'])) ? $va_search_settings['_access_points'] : array();
+		
+		foreach($va_access_points as $vs_access_point => $va_access_point_info) {
+			if (isset($va_access_point_info['options']) && is_array($va_access_point_info['options'])) {
+				if (in_array('DONT_INCLUDE_IN_SEARCH_FORM', $va_access_point_info['options'])) { continue; }
+			}
+			
+			if (is_array($pa_filter) && sizeof($pa_filter) && !in_array($vs_access_point, $pa_filter)) { continue; }
+			$vs_label = ((isset($va_access_point_info['name']) && $va_access_point_info['name'])  ? $va_access_point_info['name'] : $vs_access_point);
+			$va_available_bundles[$vs_label][$vs_access_point] = array(
+				'bundle' => $vs_access_point,
+				'label' => $vs_label,
+				'description' =>  $vs_description = ((isset($va_access_point_info['description']) && $va_access_point_info['description'])  ? $va_access_point_info['description'] : '')
+			);
+		}
+		
+		//
+		// created and modified
+		//
+		foreach(array('created', 'modified') as $vs_bundle) {
+			if (is_array($pa_filter) && sizeof($pa_filter) && !in_array($vs_bundle, $pa_filter)) { continue; }
+			$vs_label = $t_instance->getDisplayLabel($vs_bundle);
+			$va_available_bundles[$vs_label][$vs_bundle] = array(
+				'bundle' => $vs_bundle,
+				'label' => $vs_label,
+				'description' => $vs_description = $t_instance->getDisplayDescription($vs_bundle)
+			);
+		}
+		
+		ksort($va_available_bundles);
+	
+		$va_sorted_bundles = array();
+		foreach($va_available_bundles as $vs_k => $va_val) {
+			foreach($va_val as $vs_real_key => $va_info) {
+				if ($pb_for_select) {
+					$va_sorted_bundles[$va_info['label']] = $vs_real_key;
+				} else {
+					$va_sorted_bundles[$vs_real_key] = $va_info;
+				}
+			}
+		}
+		
+		// rewrite bundles to used preferred_labels notation
+		if ($pb_for_select) {
+			foreach($va_sorted_bundles as $vs_label => $vs_key) {
+				$va_tmp = explode('.', $vs_key);
+				if (preg_match('!_labels$!', $va_tmp[0])) {
+					if (($t_label_instance = $o_dm->getInstanceByTableName($va_tmp[0], true)) && (is_a($t_label_instance, 'BaseLabel'))) {
+						$va_sorted_bundles[$vs_label] = $t_label_instance->getSubjectTableName().'.preferred_labels'.($va_tmp[1] ? '.'.$va_tmp[1] : '');
+					}
+				}
+			}
+		}
+		
+		return $va_sorted_bundles;
+	}

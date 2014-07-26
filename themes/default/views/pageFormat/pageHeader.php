@@ -25,6 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
+	# --- collect the user links - they are output twice - once for toggle menu and once for nav
+	$vs_user_links = "";
+	if($this->request->isLoggedIn()){
+		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+		$vs_user_links .= '<li class="divider nav-divider"></li>';
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+	} else {	
+		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
+		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";
+	}
+
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -49,6 +61,10 @@
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
+				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
+					<span class="sr-only">User Options</span>
+					<span class="glyphicon glyphicon-user"></span>
+				</button>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -61,36 +77,24 @@
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
+			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+			<div class="collapse navbar-collapse" id="user-navbar-toggle">
+				<ul class="nav navbar-nav">					
+<?php
+							print $vs_user_links;
+?>
+				</ul>
+			</div>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu">
 <?php
-			if($this->request->isLoggedIn()){
-				print '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-				print '<li class="divider"></li>';
-				print "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
-				print "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-			} else {	
-				print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
-				print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";
-			}
+							print $vs_user_links;
 ?>
 						</ul>
 					</li>
-					<!--<li class="dropdown">
-					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-unchecked"></span></a>
-					<ul class="dropdown-menu">
-					<li><a href="#">Action</a></li>
-					<li><a href="#">Another action</a></li>
-					<li><a href="#">Something else here</a></li>
-					<li class="divider"></li>
-					<li><a href="#">Separated link</a></li>
-					<li class="divider"></li>
-					<li><a href="#">One more separated link</a></li>
-					</ul>
-					</li>-->
 				</ul>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
