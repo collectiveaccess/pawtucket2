@@ -89,7 +89,8 @@
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				$this->render("Gallery/index_html.php");
+				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+ 				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
  				$this->view->setVar("set_id", $ps_set_id);
@@ -98,6 +99,7 @@
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon"), "checkAccess" => $this->opa_access_values))));
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
  				$this->render("Gallery/detail_html.php");
  			}
  		}
@@ -115,7 +117,7 @@
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
- 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "medium", "checkAccess" => $this->opa_access_values)))));
+ 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
  			
  			$this->render("Gallery/set_info_html.php");
  		}

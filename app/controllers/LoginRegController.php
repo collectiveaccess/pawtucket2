@@ -42,10 +42,12 @@
  		}
  		# -------------------------------------------------------
  		function loginForm() {
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Login"));
 			$this->render("LoginReg/form_login_html.php");
  		}
  		# ------------------------------------------------------
  		function registerForm($t_user = "") {
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
  			if(!is_object($t_user)){
  				$t_user = new ca_users();
  			}
@@ -66,6 +68,7 @@
  		}
  		# ------------------------------------------------------
  		function resetForm() {
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
 			$this->render("LoginReg/form_reset_html.php");
  		}
  		# ------------------------------------------------------
@@ -129,6 +132,7 @@
  		}
  		# -------------------------------------------------------
  		function register() {
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
  			# logout user in case is already logged in
 			$this->request->deauthenticate();
 			
@@ -353,6 +357,7 @@
  		}
  		# -------------------------------------------------------
  		function resetSend(){
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
  			$t_user = new ca_users();
 
 			$vs_message = "";
@@ -395,6 +400,7 @@
  		}
  		# ------------------------------------------------------
  		function resetSave(){
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
 			$ps_action = $this->request->getParameter('action', pString);
 			if(!$ps_action){
 				$ps_action = "reset";

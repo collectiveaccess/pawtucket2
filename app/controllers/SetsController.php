@@ -69,6 +69,7 @@
  			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
  			$this->view->setVar("activity", $va_set_change_log);
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox"));
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
@@ -89,7 +90,8 @@
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
- 			 switch($ps_view) {
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
+ 			switch($ps_view) {
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Sets/set_detail_timelineData_json.php");
