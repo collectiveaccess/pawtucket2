@@ -122,7 +122,7 @@ class View extends BaseObject {
 	public function addViewPath($pm_path) {
 		if (is_array($pm_path)) {
 			foreach($pm_path as $vs_path) {
-				$this->opa_view_paths[] = $ps_path;
+				$this->opa_view_paths[] = $vs_path;
 			}
 		} else {
 			$this->opa_view_paths[] = $pm_path;
@@ -274,20 +274,7 @@ class View extends BaseObject {
 			foreach($va_compile as $vs_var) {
 				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
 				$vn_count = 0;
-				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);
-				
-			// 	if (($vn_count == 0) && !$vb_dont_try_to_force_update_cache) {
-// 					// Force recompile because view is somehow out-of-sync with
-// 					// the tag cache. This shouldn't really happen since the modification
-// 					// of the review should trigger a recompile, but there have been instances
-// 					// of the cache getting stale and the modification date of the view file
-// 					// not being changed; this code covers that eventuality.
-// 					$va_compile = $this->compile($vs_path.'/'.$ps_filename, true);
-// 					return $this->render($ps_filename, $pb_dont_do_var_replacement, array('dontTryToForceUpdateCache' => true));
-// 				} elseif($vn_count == 0) {
-// 					return $vs_buf;
-// 				}
-				
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);				
 			}
 		}
 		

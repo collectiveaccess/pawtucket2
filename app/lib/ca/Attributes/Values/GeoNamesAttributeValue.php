@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
   /**
   *
   */
+  define("__CA_ATTRIBUTE_VALUE_GEONAMES__", 14);
   
  require_once(__CA_LIB_DIR__.'/core/Configuration.php');
  require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
@@ -141,7 +142,6 @@
 		'default' => 'name,countryName,continentCode',
 		'width' => 90, 'height' => 4,
 		'label' => _t('GeoNames elements'),
-		'validForRootOnly' => 1,
 		'description' => _t('Comma-separated list of GeoNames attributes to be pulled from the service to build the text representation for the selected location. See http://www.geonames.org/export/geonames-search.html for further reference, including the available element names. Note that latitude and longitude are always added to the text value to enable map display.')
 	),
 	'gnDelimiter' => array(
@@ -150,7 +150,6 @@
 		'default' => ', ',
 		'width' => 10, 'height' => 1,
 		'label' => _t('GeoNames element delimiter'),
-		'validForRootOnly' => 1,
 		'description' => _t('Delimiter to use between multiple values pulled from GeoNames service.')
 	),
 );
@@ -206,7 +205,7 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 	/**
 	 *
 	 */
-	public function parseValue($ps_value, $pa_element_info) {
+	public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  		$ps_value = trim(preg_replace("![\t\n\r]+!", ' ', $ps_value));
 		$vo_conf = Configuration::load();
 		$vs_user = trim($vo_conf->get("geonames_user"));
@@ -302,7 +301,7 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 
 		if(!$va_settings["disableMap"]){
 
-			AssetLoadManager::register('maps');
+			JavascriptLoadManager::register('maps');
 
 			$vs_element .= "
 				<div id='map_".$pa_element_info['element_id']."{n}' style='width:700px; height:160px;'>
@@ -346,7 +345,7 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
  		return $vs_element;
  	}
  	# ------------------------------------------------------------------
- 	public function getAvailableSettings() {
+ 	public function getAvailableSettings($pa_element_info=null) {
  		global $_ca_attribute_settings;
 
  		return $_ca_attribute_settings['GeoNamesAttributeValue'];
@@ -361,4 +360,13 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
 			return 'value_longtext1';
 		}
  	# ------------------------------------------------------------------
+		/**
+		 * Returns constant for geonames attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_GEONAMES__;
+		}
+ 		# ------------------------------------------------------------------
 }
