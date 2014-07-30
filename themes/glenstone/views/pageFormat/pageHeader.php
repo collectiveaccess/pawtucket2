@@ -93,8 +93,8 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Search/advanced", "artworks"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "Search/advanced", "library"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Search/advanced", "archives"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "About", "library"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "About", "reports"); ?></li>
 
 <?php

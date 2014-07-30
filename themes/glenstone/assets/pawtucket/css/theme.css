@@ -69,9 +69,10 @@ a:hover {
 	border-radius: 4px;
 	background-image:none;
 }
-/*#pageArea {
-	max-width:none;
-	padding:0px;
+#pageArea {
+	max-width: 1048px;
+	padding-left: 15px;
+	margin: 0px auto 0px auto;
 }
 .container {
 	max-width:none;
@@ -353,8 +354,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 /* Collection */
 
 .collection .exhibitions {
-	border-left:1px solid #eee;
-	padding-left:15px;
+	padding-left:10px;
 }
 
 /* Static Page */
@@ -723,6 +723,10 @@ p.artist.lower {
 	margin-top:5px;
 	font-size:12px; 
 }
+.detail .toggle a:hover {
+	text-decoration:none;
+	color:#fff; 
+}
 #factSheet, #Location, #Financial, #Condition, #Description {
 	display:none;
 }
@@ -833,12 +837,12 @@ p.artist.lower {
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	display:block;
 }
-.attributeMediaThumbnail {
+/*.attributeMediaThumbnail {
 	height:120px;
 	float:left;
 	margin-right:20px;
 	margin-bottom:10px;
-}
+}*/
 .mediaPlaceholder {
 	width: 100%;
 	height: 300px;
@@ -1014,23 +1018,28 @@ p.artist.lower {
 	border-bottom:1px solid #ddd;
 	width:100.8%;
 	margin: 0px -10px 0px -11px;
-	padding: 0px 16px 15px 16px;
+	padding: 15px 16px 5px 16px;
 }
 .lbSetExpandedInfo {
 	margin-left:-16px;
+	background-color:#fff;
 }
 .lbItem:hover  {
-margin: -20px;
-padding: 10px;
-width: auto; 
-left: 0; 
-top: 0; 
+	margin: -20px;
+	padding: 10px;
+	width: auto; 
+	left: 0; 
+	top: 0; 
 }
 .reveal h3 {
 	text-transform:none;
 	font-family: 'Source Sans Pro';
 	font-size:1em;
 	margin: 0 0 10px 0;
+}
+.lbExpandedInfo HR, .lbSetExpandedInfo HR {
+	margin:0px;
+	border:0px;
 }
 
 /* MediaViewer */
@@ -1055,6 +1064,33 @@ div.caMediaOverlayControls .close {
 	opacity:1;
 }
 
+/* Advanced Search */
+
+div.advancedSearchField {
+	float: left;
+	margin-right: 10px;
+	width:auto;
+}
+.search h1 {
+	color: #858585;
+	line-height: 1.3;
+	text-transform: none;
+	font-weight:200;
+	margin-bottom:20px;
+}
+.advSearch {
+	border-right: 1px solid #eee;
+	padding-right:10px;
+}
+.caAdvancedSearchFormSubmit, .caAdvancedSearchFormReset {
+	background-color: #ddd;
+	padding:6px;
+}
+.results H5 {
+	margin: 0px;
+	font-size: 12px;
+	color: #888;
+}
 /* Finding Aid */
 
 .findingIntro {

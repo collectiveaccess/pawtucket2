@@ -81,7 +81,8 @@
 				</div>
 				
 				<div id="Location" class="infoBlock">
-<?php				
+<?php	
+/*			
 					if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned')) {
 						// If currently deaccessioned then display deaccession message
 						print "<br/><div class='inspectorDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
@@ -106,6 +107,7 @@
 							}
 						}
 					}
+		*/			
 ?>
 					<!--{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Legacy Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}-->
 				</div>
@@ -169,47 +171,64 @@
 				<div id="Condition" class="infoBlock">
 <?php
 					$va_condition_array = array();
-					if ($va_general_condition = $t_object->get('ca_objects.general_condition', array('returnAsArray' => true, 'rawDate' => 1))) {
+					if ($va_general_condition = $t_object->get('ca_objects.general_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_general_condition as $va_gen_key => $va_general) {
-							$va_condition_array[$va_general['general_condition_date']['start']] = $va_general;
+							$va_condition_array[$va_general['general_condition_date']['start']][] = $va_general;
 						}
 					}
-?>				
-					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>" sort="ca_objects.general_condition.general_condition_date" sortDirection="DESC"><b>^ca_objects.general_condition.general_condition_value <ifdef code="ca_objects.general_condition.general_condition_value">: </ifdef>^ca_objects.general_condition.general_condition_date</b>  Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
-					{{{<ifcount min="1" code="ca_objects.frame_condition.frame_notes"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>" sort="ca_objects.frame_condition.frame_date" sortDirection="DESC"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
-					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>" sort="ca_objects.glazing_condition.glazing_date" sortDirection="DESC"><b>^ca_objects.glazing_condition.glazing_date</b> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
-					{{{<ifcount min="1" code="ca_objects.support_condition.support_notes"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>" sort="ca_objects.support_condition.support_date" sortDirection="DESC"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
-					{{{<ifcount min="1" code="ca_objects.vitrine_condition.vitrine_notes"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>" sort="ca_objects.vitrine_condition.vitrine_date" sortDirection="DESC"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.mount_condition.mount_notes"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>" sort="ca_objects.mount_condition.mount_date" sortDirection="DESC"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
-					{{{<ifcount min="1" code="ca_objects.surface_condition.surface_notes"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>" sort="ca_objects.surface_condition.surface_date" sortDirection="DESC"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.base_condition.base_notes"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>" sort="ca_objects.base_condition.base_date" sortDirection="DESC"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
-<?php
-#					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('delimiter' => '<br/>', 'template' => '<u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes'))) {
-#						print "<div class='unit wide'><span class='metaHeader'>Surface Condition </span><span>";
-#						print $va_surface_condition;
-#						print "</span></div>";
-#					}
-
+					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_surface_condition as $va_sur_key => $va_surface) {
+							$va_condition_array[$va_surface['surface_date']['start']][] = $va_surface;
+						}
+					}					
+					if ($va_frame_condition = $t_object->get('ca_objects.frame_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_frame_condition as $va_frame_key => $va_frame) {
+							$va_condition_array[$va_frame['frame_date']['start']][] = $va_frame; 
+						}
+					}
+					if ($va_glazing_condition = $t_object->get('ca_objects.glazing_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_glazing_condition as $va_glaze_key => $va_glazing) {
+							$va_condition_array[$va_glazing['glazing_date']['start']][] = $va_glazing; 
+						}
+					}	
+					if ($va_support_condition = $t_object->get('ca_objects.support_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_support_condition as $va_sup_key => $va_support) {
+							$va_condition_array[$va_support['support_date']['start']][] = $va_support;
+						}
+					}
+					if ($va_vitrine_condition = $t_object->get('ca_objects.vitrine_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_vitrine_condition as $va_vit_key => $va_vitrine) {
+							$va_condition_array[$va_vitrine['vitrine_date']['start']][] = $va_vitrine;
+						}
+					}
+					if ($va_mount_condition = $t_object->get('ca_objects.mount_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_mount_condition as $va_mount_key => $va_mount) {
+							$va_condition_array[$va_mount['mount_date']['start']][] = $va_mount; 
+						}
+					}	
+					if ($va_base_condition = $t_object->get('ca_objects.base_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_base_condition as $va_base_key => $va_base) {
+							$va_condition_array[$va_base['base_date']['start']][] = $va_base; 
+						}
+					}																												
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
-						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true)); 
-						print '<div class="unit wide"><span class="metaHeader">Condition Images</span><span>';
-						
+						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1)); 
+
 						$o_db = new Db();
 						$vn_media_element_id = $t_object->_getElementID('condition_images_media');
 						foreach ($va_condition_images as $vn_condition_id => $va_condition_image) {
 							if ($va_condition_image['condition_images_primary'] == 162) {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_condition_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
+									#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
+									$va_condition_image['value_id'] = $qr_res->get('value_id');
+									$va_condition_array[$va_condition_image['condition_images_date']['start']][] = $va_condition_image;
 								}
 							}
 						}
-						print "</span><div class='clearfix'></div></div>";
-					}
-					
+					}	
 					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
-						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true)); 
-						print '<div class="unit wide"><span class="metaHeader">Legacy Conservation Images</span><span>';
+						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1)); 
 						
 						$o_db = new Db();
 						$vn_media_element_id = $t_object->_getElementID('legacy_conservation_media');
@@ -217,12 +236,136 @@
 							if ($va_conservation_image['legacy_conservation_primary'] == 162) {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_conservation_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_conservation_image['legacy_conservation_media']."</a>";
+									#print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_conservation_image['legacy_conservation_media']."</a>";
+									$va_conservation_image['legacy_value_id'] = $qr_res->get('value_id');
+									$va_condition_array[$va_conservation_image['legacy_conservation_date']['start']][] = $va_conservation_image;
 								}
 							}
 						}
-						print "</span><div class='clearfix'></div></div>";
 					}					
+
+					krsort($va_condition_array);
+					
+					print "<div class='unit wide'><span class='metaHeader'>Condition </span><span>";	
+					foreach ($va_condition_array as $va_condition_key => $va_condition_holder) {
+						if ($va_condition_key != ""){
+							foreach ($va_condition_holder as $va_condition) {
+
+								if ($va_condition['general_condition_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['general_condition_date']['start'], $va_condition['general_condition_date']['end'])."</b>";
+								}
+								if ($va_condition['surface_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['surface_date']['start'], $va_condition['surface_date']['end'])."</b>";
+								}
+								if ($va_condition['frame_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['frame_date']['start'], $va_condition['frame_date']['end'])."</b>";
+								}
+								if ($va_condition['glazing_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['glazing_date']['start'], $va_condition['glazing_date']['end'])."</b>";
+								}
+								if ($va_condition['support_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['support_date']['start'], $va_condition['support_date']['end'])."</b>";
+								}	
+								if ($va_condition['vitrine_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['vitrine_date']['start'], $va_condition['vitrine_date']['end'])."</b>";
+								}
+								if ($va_condition['mount_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['mount_date']['start'], $va_condition['mount_date']['end'])."</b>";
+								}
+								if ($va_condition['base_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['base_date']['start'], $va_condition['base_date']['end'])."</b>";
+								}																																				
+								if (($va_condition['general_condition_value']) || ($va_condition['general_condition_comments'])) {
+									print " General Condition: ".$va_condition['general_condition_value']." ".$va_condition['general_condition_comments'].", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'];
+								}
+								if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
+									print " Frame: ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
+								}
+								if ($va_condition['glazing_value'] || ($va_condition['glazing_notes'])) {
+									print " Glazing: ".$va_condition['glazing_value']." - ".$va_condition['glazing_notes'].", assessed by ".$va_condition['glazing_assessor'];
+								}												
+								if ($va_condition['support_value'] || ($va_condition['support_notes'])) {
+									print " Support: ".$va_condition['support_value']." - ".$va_condition['support_notes'].", assessed by ".$va_condition['support_assessor'];
+								}
+								if ($va_condition['vitrine_value'] || ($va_condition['vitrine_notes'])) {
+									print " Vitrine: ".$va_condition['vitrine_value']." - ".$va_condition['vitrine_notes'].", assessed by ".$va_condition['vitrine_assessor'];
+								}
+								if ($va_condition['mount_value'] || ($va_condition['mount_notes'])) {
+									print " Mount: ".$va_condition['mount_value']." - ".$va_condition['mount_notes'].", assessed by ".$va_condition['mount_assessor'];
+								}
+								if (($va_condition['surface_value']) || ($va_condition['surface_notes'])) {
+									print " Surface: ".$va_condition['surface_value']." - ".$va_condition['surface_notes'].", assessed by ".$va_condition['surface_assessor'];
+								}
+								if (($va_condition['base_value']) || ($va_condition['base_notes'])) {
+									print " Base: ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
+								}																								
+								if ($va_condition['condition_images_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
+									print "<div class='clearfix'></div>";
+								}
+								if ($va_condition['legacy_conservation_date']['start']) {
+									print "<b>".caGetLocalizedHistoricDateRange($va_condition['legacy_conservation_date']['start'], $va_condition['legacy_conservation_date']['end'])."</b>: <br/>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['legacy_value_id']))."\"); return false;'>".$va_condition['legacy_conservation_media']."</a>";
+									print "<div class='clearfix'></div>";
+								}	
+											
+								print "<br/>";
+							}
+						}
+					}	
+					print "</span></div>";			
+						
+				
+#					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>" sort="ca_objects.general_condition.general_condition_date" sortDirection="DESC"><b>^ca_objects.general_condition.general_condition_value <ifdef code="ca_objects.general_condition.general_condition_value">: </ifdef>^ca_objects.general_condition.general_condition_date</b>  Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
+#					{{{<ifcount min="1" code="ca_objects.frame_condition.frame_notes"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>" sort="ca_objects.frame_condition.frame_date" sortDirection="DESC"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
+#					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>" sort="ca_objects.glazing_condition.glazing_date" sortDirection="DESC"><b>^ca_objects.glazing_condition.glazing_date</b> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
+#					{{{<ifcount min="1" code="ca_objects.support_condition.support_notes"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>" sort="ca_objects.support_condition.support_date" sortDirection="DESC"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
+#					{{{<ifcount min="1" code="ca_objects.vitrine_condition.vitrine_notes"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>" sort="ca_objects.vitrine_condition.vitrine_date" sortDirection="DESC"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
+#					{{{<ifcount min="1" code="ca_objects.mount_condition.mount_notes"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>" sort="ca_objects.mount_condition.mount_date" sortDirection="DESC"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
+#					{{{<ifcount min="1" code="ca_objects.surface_condition.surface_notes"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>" sort="ca_objects.surface_condition.surface_date" sortDirection="DESC"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
+#					{{{<ifcount min="1" code="ca_objects.base_condition.base_notes"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>" sort="ca_objects.base_condition.base_date" sortDirection="DESC"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
+
+
+#					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('delimiter' => '<br/>', 'template' => '<u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes'))) {
+#						print "<div class='unit wide'><span class='metaHeader'>Surface Condition </span><span>";
+#						print $va_surface_condition;
+#						print "</span></div>";
+#					}
+
+#					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
+#						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true)); 
+#						print '<div class="unit wide"><span class="metaHeader">Condition Images</span><span>';
+#						
+#						$o_db = new Db();
+#						$vn_media_element_id = $t_object->_getElementID('condition_images_media');
+#						foreach ($va_condition_images as $vn_condition_id => $va_condition_image) {
+#							if ($va_condition_image['condition_images_primary'] == 162) {
+#								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_condition_id, $vn_media_element_id)) ;
+#								if ($qr_res->nextRow()) {
+#									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
+#								}
+#							}
+#						}
+#						print "</span><div class='clearfix'></div></div>";
+#					}
+					
+#					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
+#						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true)); 
+#						print '<div class="unit wide"><span class="metaHeader">Legacy Conservation Images</span><span>';
+#						
+#						$o_db = new Db();
+#						$vn_media_element_id = $t_object->_getElementID('legacy_conservation_media');
+#						foreach ($va_conservation_images as $vn_conservation_id => $va_conservation_image) {
+#							if ($va_conservation_image['legacy_conservation_primary'] == 162) {
+#								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_conservation_id, $vn_media_element_id)) ;
+#								if ($qr_res->nextRow()) {
+#									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_conservation_image['legacy_conservation_media']."</a>";
+#								}
+#							}
+#						}
+#						print "</span><div class='clearfix'></div></div>";
+#					}					
 ?>				
 				</div>
 				<div id="Description" class="infoBlock">
