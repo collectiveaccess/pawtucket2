@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012 Whirl-i-Gig
+ * Copyright 2012-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -68,10 +68,14 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 	}
 	# -------------------------------------------------------
 	public function init(){
+		if(($vn_max_indexing_buffer_size = (int)$this->opo_search_config->get('max_indexing_buffer_size')) < 1) {
+			$vn_max_indexing_buffer_size = 100;
+		}
+		
 		$this->opa_options = array(
 			'start' => 0,
-			'limit' => 10000,					// maximum number of hits to return [default=10000],
-			'maxContentBufferSize' => 100				// maximum number of indexed content items to accumulate before writing to the index
+			'limit' => 100000,												// maximum number of hits to return [default=10000],
+			'maxIndexingBufferSize' => $vn_max_indexing_buffer_size			// maximum number of indexed content items to accumulate before writing to the index
 		);
 
 		$this->opa_capabilities = array(
@@ -112,9 +116,6 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 	}
 	# -------------------------------------------------------
 	public function search($pn_subject_tablenum, $ps_search_expression, $pa_filters=array(), $po_rewritten_query=null){
-		$t = new Timer();
-		$va_solr_search_filters = array();
-		
 		$vn_i = 0;
 		$va_old_signs = $po_rewritten_query->getSigns();
 		
@@ -135,7 +136,7 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 				case 'Zend_Search_Lucene_Search_Query_Term':
 				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
-					
+					$vs_access_point = null;
 					if ($vs_class != 'Zend_Search_Lucene_Search_Query_Term') {
 						$va_raw_terms = array();
 						foreach($o_lucene_query_element->getQueryTerms() as $o_term) {
@@ -302,9 +303,8 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 		$o_rewritten_query = new Zend_Search_Lucene_Search_Query_Boolean($va_terms, $va_signs);	
 		$ps_search_expression = $this->_queryToString($o_rewritten_query);
 		if ($vs_filter_query = $this->_filterValueToQueryValue($pa_filters)) {
-			$ps_search_expression .= ' AND ('.$vs_filter_query.')';
+			$ps_search_expression = "({$ps_search_expression}) AND ({$vs_filter_query})";
 		}
-		
 		
 		$vo_http_client = new Zend_Http_Client();
 		$vo_http_client->setUri(
@@ -314,9 +314,37 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 			"_search"
 		);
 		
+		
+		if (
+			preg_match_all("!([A-Za-z0-9_\-\.]+)[/]{1}([A-Za-z0-9_\-]+):(\"[^\"]*\")!", $ps_search_expression, $va_matches)
+			||
+			preg_match_all("!([A-Za-z0-9_\-\.]+)[/]{1}([A-Za-z0-9_\-]+):([^ ]*)!", $ps_search_expression, $va_matches)
+		) {
+			foreach($va_matches[0] as $vn_i => $vs_element) {
+				$vs_fld = $va_matches[1][$vn_i];
+				if (!($vs_rel_type = trim($va_matches[2][$vn_i]))) { continue; }
+				
+				$va_tmp = explode(".", $vs_fld);
+				
+				$vs_rel_table = caGetRelationshipTableName($pn_subject_tablenum, $va_tmp[0]);
+				$va_rel_type_ids = ($vs_rel_type && $vs_rel_table) ? caMakeRelationshipTypeIDList($vs_rel_table, array($vs_rel_type)) : null;
+				
+				$va_new_elements = array();
+				foreach($va_rel_type_ids as $vn_rel_type_id) {
+					$va_new_elements[] = "(".$va_matches[1][$vn_i]."/".$vn_rel_type_id.":".$va_matches[3][$vn_i].")";
+				}
+				
+				$ps_search_expression = str_replace($vs_element, "(".join(" OR ", $va_new_elements).")", $ps_search_expression);
+			}
+		}
+		
+		$ps_search_expression = str_replace("/", '\\/', $ps_search_expression); // escape forward slashes used to delimit relationship type qualifier
+		
+		Debug::msg("[ElasticSearch] Running query {$ps_search_expression}");
 		$vo_http_client->setParameterGet(array(
 			'size' => intval($this->opa_options["limit"]),
 			'q' => $ps_search_expression,
+			'fields' => ''
 		));
 		
 		$vo_http_response = $vo_http_client->request();
@@ -462,66 +490,74 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 		if (is_array($pm_content)) {
 			$pm_content = serialize($pm_content);
 		}
-		
-		if ($pn_content_tablenum != 4) {
-			$ps_content_tablename = $this->opo_datamodel->getTableName($pn_content_tablenum);
-		} else {
-			$ps_content_tablename = $this->ops_indexing_subject_tablename;
-			if (preg_match('!^__ca_attribute_(.*)$!', $ps_content_fieldname, $va_matches)) {
-				if (!$va_element_info = $this->_getMetadataElement($va_matches[1])) { return null; }
-				switch($va_element_info['datatype']) {
-					case 1: // text
-					case 3:	// list
-					case 5:	// url
-					case 6: // currency
-					case 8: // length
-					case 9: // weight
-					case 13: // LCSH
-					case 14: // geonames
-					case 15: // file
-					case 16: // media
-					case 19: // taxonomy
-					case 20: // information service
-						// noop
-						break;
-					case 2:	// daterange
-						if (!is_array($pa_parsed_content = caGetISODates($pm_content))) { return null; }
-						$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code'].'_text'][] = $pm_content;
-						$ps_rewritten_start = $this->_rewriteDate($pa_parsed_content["start"],true);
-						$ps_rewritten_end = $this->_rewriteDate($pa_parsed_content["end"],false);
-						$pm_content = array($ps_rewritten_start,$ps_rewritten_end);
-						break;
-					case 4:	// geocode
-						if ($va_coords = $this->opo_geocode_parser->parseValue($pm_content, $va_element_info)) {
-							if (isset($va_coords['value_longtext2']) && $va_coords['value_longtext2']) {
-								$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code'].'_text'][] = $pm_content;
-								$va_coords = explode(':', $va_coords['value_longtext2']);
-								foreach($va_coords as $vs_point){
-									$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code']][] = $vs_point;
-								}
-								return;
-							} else {
-								break;
+	
+		$vn_rel_type_id = (isset($pa_options['relationship_type_id']) && ($pa_options['relationship_type_id'] > 0)) ? (int)$pa_options['relationship_type_id'] : null;
+		$ps_content_tablename = $this->opo_datamodel->getTableName($pn_content_tablenum);
+		if ($ps_content_fieldname[0] === 'A') {
+			// Metadata attribute
+			
+			$vn_field_num_proc = (int)substr($ps_content_fieldname, 1);
+			
+			if (!$va_element_info = $this->_getMetadataElement($vn_field_num_proc)) { return null; }
+			switch($va_element_info['datatype']) {
+				case 1: // text
+				case 3:	// list
+				case 5:	// url
+				case 6: // currency
+				case 8: // length
+				case 9: // weight
+				case 13: // LCSH
+				case 14: // geonames
+				case 15: // file
+				case 16: // media
+				case 19: // taxonomy
+				case 20: // information service
+					// noop
+					break;
+				case 2:	// daterange
+					if (!is_array($pa_parsed_content = caGetISODates($pm_content))) { return null; }
+					$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code'].'_text'][] = $pm_content;
+					$ps_rewritten_start = $this->_rewriteDate($pa_parsed_content["start"],true);
+					$ps_rewritten_end = $this->_rewriteDate($pa_parsed_content["end"],false);
+					$pm_content = array($ps_rewritten_start,$ps_rewritten_end);
+					break;
+				case 4:	// geocode
+					if ($va_coords = $this->opo_geocode_parser->parseValue($pm_content, $va_element_info)) {
+						if (isset($va_coords['value_longtext2']) && $va_coords['value_longtext2']) {
+							$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code'].'_text'][] = $pm_content;
+							$va_coords = explode(':', $va_coords['value_longtext2']);
+							foreach($va_coords as $vs_point){
+								$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$va_element_info['element_code']][] = $vs_point;
 							}
+							return;
 						} else {
 							break;
 						}
+					} else {
 						break;
-					case 10:	// timecode
-					case 12:	// numeric/float
-						$pm_content = (float)$pm_content;
-						break;
-					case 11:	// integer
-						$pm_content = (int)$pm_content;
-						break;
-					default:
-						// noop
-						break;
-				}
-				$ps_content_fieldname = $va_element_info['element_code'];
+					}
+					break;
+				case 10:	// timecode
+				case 12:	// numeric/float
+					$pm_content = (float)$pm_content;
+					break;
+				case 11:	// integer
+					$pm_content = (int)$pm_content;
+					break;
+				default:
+					// noop
+					break;
 			}
+			$ps_content_fieldname = $va_element_info['element_code'];
+		} else {
+			// Intrinsic field
+			$vn_field_num_proc = (int)substr($ps_content_fieldname, 1);
+			$ps_content_fieldname = $this->opo_datamodel->getFieldName($ps_content_tablename, $vn_field_num_proc);
 		}
 		$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$ps_content_fieldname][] = $pm_content;
+		if ($vn_rel_type_id) { // add relationship type-specific indexing
+			$this->opa_doc_content_buffer[$ps_content_tablename.'.'.$ps_content_fieldname.'/'.$vn_rel_type_id][] = $pm_content;
+		}
 	}
 	# -------------------------------------------------------
 	/**
@@ -554,7 +590,7 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 		unset($this->opn_indexing_subject_row_id);
 		unset($this->ops_indexing_subject_tablename);
 
-		if (sizeof(WLPlugSearchEngineElasticSearch::$s_doc_content_buffer) > $this->getOption('maxContentBufferSize')) {
+		if (sizeof(WLPlugSearchEngineElasticSearch::$s_doc_content_buffer) > $this->getOption('maxIndexingBufferSize')) {
 			$this->flushContentBuffer();
 		}
 	}

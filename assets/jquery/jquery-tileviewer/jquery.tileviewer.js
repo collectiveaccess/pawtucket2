@@ -251,7 +251,7 @@ var methods = {
                     },
                     
                     load_annotations: function() {     
-                    	if (!options.use_annotations) { return; }
+                    	if (!options.use_annotations || !options.annotationLoadUrl.trim()) { return; }
                     	
                     	jQuery.getJSON(options.annotationLoadUrl, function(data) {
                     		view.annotations = [];
@@ -2711,7 +2711,6 @@ var methods = {
                     //mode specific extra info
                     switch(view.mode) {
                     case "pan":
-                    
                         view.pan.xdest = null;//cancel pan
                         view.pan.xhot = x - layer.xpos;
                         view.pan.yhot = y - layer.ypos;

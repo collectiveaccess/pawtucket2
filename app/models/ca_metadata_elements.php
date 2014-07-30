@@ -203,7 +203,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	# Change logging
 	# ------------------------------------------------------
 	protected $UNIT_ID_FIELD = null;
-	protected $LOG_CHANGES_TO_SELF = false;
+	protected $LOG_CHANGES_TO_SELF = true;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
 		
@@ -227,6 +227,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	
 	static $s_element_list_cache;
 	static $s_element_set_cache;
+	static $s_element_set_id_cache;
 	
 	static $s_settings_cache = array();
 	static $s_setting_value_cache = array();
@@ -287,13 +288,19 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	/**
 		Returns array of elements in set of currently loaded row
 	 */
-	public function getElementsInSet($pn_element_id=null, $pb_use_cache=true) {
+	public function getElementsInSet($pn_element_id=null, $pb_use_cache=true, $pa_options=null) {
 		if (!$pn_element_id) {
 			$pn_element_id = $this->getPrimaryKey();
 		}
 		if (!$pn_element_id) { return null; }
 		
-		if ($pb_use_cache && isset(ca_metadata_elements::$s_element_set_cache[$pn_element_id])) { return ca_metadata_elements::$s_element_set_cache[$pn_element_id]; }
+		if ($pb_use_cache && isset(ca_metadata_elements::$s_element_set_cache[$pn_element_id])) { 
+			if (caGetOption('idsOnly', $pa_options, false)) {
+				return ca_metadata_elements::$s_element_set_id_cache[$pn_element_id];
+			} else {
+				return ca_metadata_elements::$s_element_set_cache[$pn_element_id]; 
+			}
+		}
 		
 		$va_hier = $this->getHierarchyAsList($pn_element_id);
 		$va_element_set = array();
@@ -302,6 +309,9 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		foreach($va_hier as $va_element) {
 			$va_element_ids[] = $va_element['NODE']['element_id'];
 		}
+		ca_metadata_elements::$s_element_set_id_cache[$pn_element_id] = $va_element_ids;
+		
+		if (caGetOption('idsOnly', $pa_options, false)) { return $va_element_ids; }
 		
 		// Get labels
 		$va_labels = $this->getPreferredDisplayLabelsForIDs($va_element_ids);
@@ -348,7 +358,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	 */
 	public function getAvailableSettings() {
 		$t_attr_val = Attribute::getValueInstance((int)$this->get('datatype'));
-		return $t_attr_val ? $t_attr_val->getAvailableSettings() : null;
+		return $t_attr_val ? $t_attr_val->getAvailableSettings($this->getSettings()) : null;
 	}
 	# ------------------------------------------------------
 	/**
@@ -369,6 +379,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		if (!$this->isValidSetting($ps_setting)) { return null; }
 		
 		$o_value_instance = Attribute::getValueInstance($this->get('datatype'), null, true);
+		$vs_error = null;
 		if (!$o_value_instance->validateSetting($this->getFieldValuesArray(), $ps_setting, $pm_value, $vs_error)) {
 			$ps_error = $vs_error;
 			return false;
@@ -423,6 +434,10 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 			return false;
 		}
 		
+		if (((int)$this->get('parent_id') == 0) && isset($va_properties['validForNonRootOnly']) && $va_properties['validForNonRootOnly']) {
+			return false;
+		}
+		
 		$vs_input_name = "setting_$ps_setting";
 		
 		if(isset($pa_options['label_id'])) {
@@ -445,6 +460,10 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 				}
 				break;
 			# --------------------------------------------
+			case DT_PASSWORD:
+				$vs_return .= '<input name="'.$vs_input_name.'" type="password" size="'.$va_properties["width"].'" value="'.$this->getSetting($ps_setting).'" />'."\n";
+				break;
+			# --------------------------------------------
 			case DT_CHECKBOXES:
 				$va_attributes = array('value' => '1');
 				if (trim($this->getSetting($ps_setting))) {
@@ -458,7 +477,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 				$vn_height = (isset($va_properties['height']) && (strlen($va_properties['height']) > 0)) ? $va_properties['height'] : "50px";
 				
 				if ($vn_height > 1) { $va_attr['multiple'] = 1; $vs_input_name .= '[]'; }
-				$va_opts = array('id' => $vs_input_id, 'width' => $vn_width, 'height' => $vn_height);
+				$va_opts = array('id' => $vs_input_name, 'width' => $vn_width, 'height' => $vn_height);
 				
 				$vm_value = $this->getSetting($ps_setting);
 				
@@ -468,7 +487,11 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 					$va_opts['value'] = $vm_value;
 					if(!isset($va_opts['value'])) { $va_opts['value'] = -1; }		// make sure default list item is never selected
 				}
-			
+				
+				// reload settings form when value for this element changes
+				if (isset($va_properties['refreshOnChange']) && (bool)$va_properties['refreshOnChange']) {
+					$va_attr['onchange'] = "caSetElementsSettingsForm({ {$vs_input_name} : jQuery(this).val() }); return false;";
+				}
 				$vs_return .= caHTMLSelect($vs_input_name, $va_properties['options'], $va_attr, $va_opts);
 				break;			
 			# --------------------------------------------
@@ -545,10 +568,10 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public static function getElementsAsList($pb_root_elements_only=false, $pm_table_name_or_num=null, $pm_type_name_or_id=null, $pb_use_cache=true, $pb_return_stats=false, $pb_index_by_element_code=false, $pa_data_types=null){
 		$o_dm = Datamodel::load();
 		$vn_table_num = $o_dm->getTableNum($pm_table_name_or_num);
-		
-		if ($pb_use_cache && ca_metadata_elements::$s_element_list_cache[$pm_table_name_or_num.'/'.$pm_type_name_or_id.'/'.($pb_root_elements_only ? '1' : '0')]) {
-			if (($pb_return_stats && isset(ca_metadata_elements::$s_element_list_cache[$pm_table_name_or_num.'/'.$pm_type_name_or_id.'/'.($pb_root_elements_only ? '1' : '0')]['ui_counts'])) || !$pb_return_stats) {
-				return ca_metadata_elements::$s_element_list_cache[$pm_table_name_or_num.'/'.$pm_type_name_or_id.'/'.($pb_root_elements_only ? '1' : '0')];
+		$vs_cache_key = md5($pm_table_name_or_num.'/'.$pm_type_name_or_id.'/'.($pb_root_elements_only ? '1' : '0').'/'.($pb_index_by_element_code ? '1' : '0').print_R($pa_data_types, true));
+		if ($pb_use_cache && ca_metadata_elements::$s_element_list_cache[$vs_cache_key]) {
+			if (($pb_return_stats && isset(ca_metadata_elements::$s_element_list_cache[$vs_cache_key]['ui_counts'])) || !$pb_return_stats) {
+				return ca_metadata_elements::$s_element_list_cache[$vs_cache_key];
 			}
 		}
 		
@@ -628,8 +651,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 				$va_record['ui_counts'] = $va_counts_by_attribute[$vs_code = $qr_tmp->get('element_code')];
 				$va_record['restrictions'] = $va_restrictions_by_attribute[$vs_code];
 			}
-			
-			$va_return[($pb_index_by_element_code) ? $vs_element_code : $vn_element_id] = $va_record;
+			$va_return[$vn_element_id] = $va_record;
 		}
 		
 		// Get labels
@@ -637,8 +659,15 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		foreach($va_labels as $vn_id => $vs_label) {
 			$va_return[$vn_id]['display_label'] = $vs_label;
 		}
+		if ($pb_index_by_element_code) {
+			$va_return_proc = array();
+			foreach($va_return as $vn_id => $va_element) {
+				$va_return_proc[$va_element['element_code']] = $va_element;
+			}
+			$va_return = $va_return_proc;
+		}
 		
-		return ca_metadata_elements::$s_element_list_cache[$pm_table_name_or_num.'/'.$pm_type_name_or_id.'/'.($pb_root_elements_only ? '1' : '0')] = sizeof($va_return) > 0 ? $va_return : false;
+		return ca_metadata_elements::$s_element_list_cache[$vs_cache_key] = sizeof($va_return) > 0 ? $va_return : false;
 	}
 	# ------------------------------------------------------
 	/**
@@ -713,15 +742,18 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	/*
 	 *
 	 */
-	public static function getSortableElements($pm_table_name_or_num, $pm_type_name_or_id=null){
+	public static function getSortableElements($pm_table_name_or_num, $pm_type_name_or_id=null, $pa_options=null){
 		$va_elements = ca_metadata_elements::getElementsAsList(false, $pm_table_name_or_num, $pm_type_name_or_id);
 		if (!is_array($va_elements) || !sizeof($va_elements)) { return array(); }
 		
 		$va_sortable_elements = array();
+		
+		$vs_key = caGetOption('indexByElementCode', $pa_options, false) ? 'element_code' : 'element_id';
 		foreach($va_elements as $vn_id => $va_element) {
+			if ((int)$va_element['datatype'] === 0) { continue; }
 			if (!isset($va_element['settings']['canBeUsedInSort'])) { $va_element['settings']['canBeUsedInSort'] = true; }
 			if ($va_element['settings']['canBeUsedInSort']) {
-				$va_sortable_elements[$va_element['element_id']] = $va_element;
+				$va_sortable_elements[$va_element[$vs_key]] = $va_element;
 			}
 		}
 		return $va_sortable_elements;
@@ -1107,7 +1139,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public function getPresetsAsHTMLFormElement($pa_options=null) {
 		if (!($vn_element_id = $this->getPrimaryKey())) { return null; }		// element must be loaded
 	
-		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attributePresets.conf");
+		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attribute_presets.conf");
 		
 		if ($va_presets = $o_presets->getAssoc($this->get('element_code'))) {
 			$vs_form_element_name = caGetOption('name', $pa_options, "{fieldNamePrefix}_presets_{n}");
@@ -1136,11 +1168,11 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public function getPresetsJavascript($ps_field_prefix, $pa_options=null) {
 		if (!($vn_element_id = $this->getPrimaryKey())) { return null; }		// element must be loaded
 	
-		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attributePresets.conf");
+		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attribute_presets.conf");
 		
 		if ($va_presets = $o_presets->getAssoc($this->get('element_code'))) {
 			$va_elements = $this->getElementsInSet();
-			//print_R($va_elements);
+		
 			$va_element_code_to_ids = $va_element_info = array();
 			foreach($va_elements as $va_element) {
 				$va_element_code_to_ids[$va_element['element_code']] = $va_element['element_id'];

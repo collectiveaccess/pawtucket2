@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2009 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -88,15 +88,19 @@ class WLPlugSearchEngineSolrResult extends WLPlug implements IWLPlugSearchEngine
 		return isset($this->opa_hits[$this->opn_current_row][$ps_field]) ? $this->opa_hits[$this->opn_current_row][$ps_field] : false;
 	}
 	# -------------------------------------------------------
-	public function getPrimaryKeyValues($pn_limit=null, $pa_options=null) {
-		if($pn_limit <= 0) {$pn_limit = sizeof($this->opa_hits); }
-		$pn_start = caGetOption('start', $pa_options, 0);
-		
+	public function getPrimaryKeyValues($vn_limit=null) {
+		if(!$vn_limit) {$vn_limit = null; }
+		if(!is_array($this->opa_hits)) { return array(); }
 		// primary key
 		$va_ids = array();
 		
-		for($vn_i=$pn_start; $vn_i < $pn_limit; $vn_i++) {
-			$va_ids[] = $this->opa_hits[$vn_i][$this->ops_subject_primary_key];
+		$vn_c = 0;
+		foreach($this->opa_hits as $vn_i => $va_row) {
+			$vs_val = array($va_row[$this->ops_subject_primary_key]);	// handle primary key as array (can happen in some broken configurations)
+			if (is_array($vs_val)) { $vs_val = array_pop($vs_val); }
+			$va_ids[] = $vs_val;
+			$vn_c++;
+			if (!is_null($vn_limit) && ($vn_c >= $vn_limit)) { break; }
 		}
 		return $va_ids;
 	}

@@ -22,18 +22,47 @@
 		<div id="mediaArea">
 		{{{representationViewer}}}
 		</div>
+<?php
+		if ($t_object->get('ca_objects.lesson_plan')  == "Yes") {
+			if ($va_description = $t_object->get('ca_objects.description.description_text')) {
+				print "<div class='description' style='margin:30px 0px 20px 0px;'>".$va_description."</div>";
+			}
+		}
+?>		
+		<div id="detailTools">
+			<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+			<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+			<!--<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div> -->
+		</div><!-- end detailTools -->
+		
 		<div class='detailSubtitle'></div>
-		<div id="infoArea">
-			{{{<ifdef code="ca_objects.idno"><div class='collectionHeading'>Identifier</div><p>^ca_objects.idno</p></ifdef>}}}
-			{{{<ifdef code="ca_objects.date.dates_value"><div class='collectionHeading'>Date</div><p>^ca_objects.date.dates_value</p></ifdef>}}}
+		
+<?php
+		if($t_object->get('ca_objects.lesson_plan')  != "Yes") {
+		print '<div id="infoArea">';
+		
+			if ($t_object->get('ca_objects.idno')) {
+				print "<div class='collectionHeading'>Identifier</div><p>".$t_object->get('ca_objects.idno')."</p>";
+			}
+			if ($t_object->get('ca_objects.date.dates_value')) {
+				print "<div class='collectionHeading'>Date</div><p>".$t_object->get('ca_objects.date.dates_value')."</p>";
+			}			
+		}
+?>				
 			{{{<ifcount code="ca_objects.work_type" min="1"><div class='collectionHeading'>Type</div></ifdef><p><unit delimiter=", ">^ca_objects.work_type</p></unit>}}}
 			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</p></ifdef>}}}
 
-			{{{<ifdef code="ca_objects.description.description_text"><div class='description'><div class='metatitle'>Description</div>^ca_objects.description.description_text</ifdef></div>}}}
+<?php
+			if (($va_description = $t_object->get('ca_objects.description.description_text')) && ($t_object->get('ca_objects.lesson_plan')  != "Yes")) {
+				print "<div class='description'><div class='metatitle'>Description</div>".$va_description."</div>";
+			}
+?>			
 		
 			<div class="clearfix"></div>
-		</div>
 <?php
+		if($t_object->get('ca_objects.lesson_plan')  != "Yes") {			
+			print "</div>";
+		}
 		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == "Yes")) {
 			$va_documents = $t_object->representationsOfClass('document', array('original'));
 			foreach ($va_documents as $doc_id => $va_document) {

@@ -171,9 +171,10 @@
  		 *
  		 * @param array Optional array of options. Support options are:
  		 * 			list_id = if set then the numeric item_id value is translated into label text in the current locale. If not set then the numeric item_id is returned.
- 		 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label.
- 		 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output
- 		 *			returnIdno = If true list item idno is returned rather than preferred label
+ 		 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label. [Default is false]
+ 		 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output [Default is false]
+ 		 *			returnIdno = If true list item idno is returned rather than preferred label [Default is false]
+ 		 *			idsOnly = Return numeric item_id only [Default is false]
  		 *			HIERARCHICAL OPTIONS: 
  		 *				direction - For hierarchy specifications (eg. ca_objects.hierarchy) this determines the order in which the hierarchy is returned. ASC will return the hierarchy root first while DESC will return it with the lowest node first. Default is ASC.
  		 *				top - For hierarchy specifications (eg. ca_objects.hierarchy) this option, if set, will limit the returned hierarchy to the first X nodes from the root down. Default is to not limit.
@@ -184,6 +185,9 @@
  		 * @return string The value
  		 */
 		public function getDisplayValue($pa_options=null) {
+			$vb_ids_only = (bool)caGetOption('idsOnly', $pa_options, false);
+			if ($vb_ids_only) { return (int)$this->ops_text_value; }
+			
 			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
 			if ($vn_list_id > 0) {
 				$t_list = new ca_lists();
