@@ -2455,7 +2455,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 		foreach($va_tag_val_list as $vn_i => $va_tags_list) {
 			// do sorting?
 			if (is_array($pa_sort)) {
-				$va_sorted_values = array();
+				$va_sorted_values = $va_sorted_values_tmp = array();
 				foreach($va_tags_list as $vn_j => $va_values_by_field) {
 					$vs_key = '';
 					foreach($pa_sort as $vn_k => $vs_sort) {
@@ -2480,13 +2480,19 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([A-Za-z0-9_\.:\/]+[%]{1}
 						}
 						$vs_key .= $vs_subkey;
 						
-						$va_sorted_values[$vs_key] = $va_values_by_field;
+						$va_sorted_values_tmp[$vs_key][] = $va_values_by_field;
 					}
-					ksort($va_sorted_values);
-					
-					if ($ps_sort_direction == 'DESC') { $va_sorted_values = array_reverse($va_sorted_values); }
-					
 				}
+				
+				ksort($va_sorted_values_tmp);
+				
+				foreach($va_sorted_values_tmp as $vs_key => $va_value_list) {
+					foreach($va_value_list as $vn_x => $va_val) {
+						$va_sorted_values[$vs_key.$vn_x] = $va_val;
+					}
+				}
+				
+				if ($ps_sort_direction == 'DESC') { $va_sorted_values = array_reverse($va_sorted_values); }
 				
 				if(sizeof($va_sorted_values) > 0) {
 					$va_tag_val_list[$vn_i] =  $va_tags_list = $va_sorted_values;
