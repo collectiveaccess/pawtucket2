@@ -1745,11 +1745,13 @@
 		 *				indexByRowID = if true first index of returned array is $pn_row_id, otherwise it is the element_id of the retrieved metadata element	
 		 *				convertCodesToDisplayText =
 		 *				filter =
+		 *				ignoreLocale = if set all values are returned regardless of locale, but in the flattened structure returned when returnAllLocales is false
 		 * @return array
 		 */
 		public function getAttributeDisplayValues($pm_element_code_or_id, $pn_row_id, $pa_options=null) {
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$ps_filter_expression = caGetOption('filter', $pa_options, null);
+			$pb_ignore_locale = caGetOption('ignoreLocale', $pa_options, null);
 			
 			$va_attribute_list = $this->getAttributesByElement($pm_element_code_or_id, array('row_id' => $pn_row_id));
 			if (!is_array($va_attribute_list)) { return array(); }
@@ -1793,16 +1795,23 @@
 				} else {
 					$vs_index = $o_attribute->getElementID();
 				}
-				$va_attributes[$vs_index][(int)$o_attribute->getLocaleID()][$o_attribute->getAttributeID()] = $va_display_values;
+				
+				if ($pb_ignore_locale) {
+					$va_attributes[$vs_index][$o_attribute->getAttributeID()] = $va_display_values;
+				} else {
+					$va_attributes[$vs_index][(int)$o_attribute->getLocaleID()][$o_attribute->getAttributeID()] = $va_display_values;
+				}
 			}
 				
-			if (!isset($pa_options['returnAllLocales']) || !$pa_options['returnAllLocales']) {
-				// if desired try to return values in a preferred language/locale
-				$va_preferred_locales = null;
-				if (isset($pa_options['locale']) && $pa_options['locale']) {
-					$va_preferred_locales = array($pa_options['locale']);
+			if (!$pb_ignore_locale) { 
+				if (!isset($pa_options['returnAllLocales']) || !$pa_options['returnAllLocales']) {
+					// if desired try to return values in a preferred language/locale
+					$va_preferred_locales = null;
+					if (isset($pa_options['locale']) && $pa_options['locale']) {
+						$va_preferred_locales = array($pa_options['locale']);
+					}
+					return caExtractValuesByUserLocale($va_attributes, null, $va_preferred_locales, array());
 				}
-				return caExtractValuesByUserLocale($va_attributes, null, $va_preferred_locales, array());
 			}
 			return $va_attributes;
 		}
