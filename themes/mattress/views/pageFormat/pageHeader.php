@@ -75,8 +75,8 @@
 					<li><?php print caNavLink($this->request, _t('About'), '', '', '', ''); ?></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Collections</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
-					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
+					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
 					<li><a href="#">p{ART}icipate</a></li>  
 				  </ul>
 				</li>            

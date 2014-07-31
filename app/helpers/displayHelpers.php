@@ -2906,6 +2906,23 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 	/**
 	 * Returns date range as a localized string for display, subject to the settings in the app/conf/datetime.conf configuration 
 	 *
+	 * @param int $pn_start_timestamp Historic start timestamp for date range to localize
+	 * @param int $pn_end_timestamp Historic end timestamp for date range to localize
+	 * @param array $pa_options All options supported by TimeExpressionParser::getText() are supported
+	 *
+	 * @return string Localized date/time expression
+	 */
+	function caGetLocalizedHistoricDateRange($pn_start_timestamp, $pn_end_timestamp, $pa_options=null) {
+		$o_tep = new TimeExpressionParser();
+		
+		$o_tep->setHistoricTimestamps($pn_start_timestamp, $pn_end_timestamp);
+		
+		return $o_tep->getText($pa_options);
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 * Returns date range as a localized string for display, subject to the settings in the app/conf/datetime.conf configuration 
+	 *
 	 * @param int $pn_start_timestamp Start of date range, as Unix timestamp
 	 * @param int $pn_end_timestamp End of date range, as Unix timestamp
 	 * @param array $pa_options All options supported by TimeExpressionParser::getText() are supported
