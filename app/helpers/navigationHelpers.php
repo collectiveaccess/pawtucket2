@@ -936,7 +936,8 @@
 		
 		$vs_module = '';
 		$vs_controller = 'Detail';
-		$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null));
+		if (!($vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null)))) { return null; }
+		
 		if (caUseIdentifiersInUrls() && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) {
 			$va_ids = $t_table->getFieldValuesForIDs(array($pn_id), array($t_table->getProperty('ID_NUMBERING_ID_FIELD')));
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
