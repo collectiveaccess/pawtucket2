@@ -685,16 +685,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	}
 	# ---------------------------------------
 	/**
-	 *
-	 */
-	function caGetDisplayTextFromQueryString($po_result_context, $pa_options=null) {
-		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
-		
-		
-	}
-	# ---------------------------------------
-	/**
 	 * Returns all available search form placements - those data bundles that can be searches for the given content type, in other words.
 	 * The returned value is a list of arrays; each array contains a 'bundle' specifier than can be passed got Model::get() or SearchResult::get() and a display name
 	 *
