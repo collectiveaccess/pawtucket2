@@ -82,7 +82,7 @@
 				
 				<div id="Location" class="infoBlock">
 <?php	
-/*			
+			
 					if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned')) {
 						// If currently deaccessioned then display deaccession message
 						print "<br/><div class='inspectorDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
@@ -107,7 +107,7 @@
 							}
 						}
 					}
-		*/			
+					
 ?>
 					<!--{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Legacy Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}-->
 				</div>
