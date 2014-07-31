@@ -221,8 +221,8 @@ h3 {
   padding-bottom: 15px;
   background-color: #eee;
   border: 1px solid #ddd;
-  background-color: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
+  background-color: transparent;
+  border: 0px;
 }
 
 hr {
@@ -491,6 +491,8 @@ a.readmore-js-toggle {
 #detail .lessonLink {
 	clear:both;
 	margin-top:10px;
+	margin-bottom:10px;
+	float:left;
 }
 #infoArea .metatitle{
 	font-size:22px;
@@ -594,6 +596,10 @@ a.readmore-js-toggle {
 	font-size: 14px;
 	text-decoration: none;
 }
+#detail .entitiesSet .collectionsResult {
+	height:auto;
+	margin-bottom:25px;	
+}
 /* Collection List */
 
 .collectionUnit {
@@ -692,7 +698,9 @@ a.readmore-js-toggle {
 	/* height:auto; */
 	clear:none;
 }
-
+#detail  .blockResults.entities {
+	height:auto;
+}
 #detail .blockResults.exhibitions {
 	height:auto;
 	margin-bottom:30px;
@@ -817,7 +825,7 @@ a.readmore-js-toggle {
 	color:#000; 
 	background-color:transparent;
 }
-#detail .entitiesSet {
+#detail .entitiesSet, #detail .collectionsSet {
 	float:left; 
 	width:250px;
 }
@@ -852,7 +860,7 @@ a.readmore-js-toggle {
 #detail.occurrences .artworkResult {
 	width:250px;
 }
-#detail #entitiesBlock .entitySet {
+#detail #entitiesBlock .entitySet, #detail #collectionsBlock .entitySet {
 	width:250px;
 	float:left;
 	margin-bottom:15px;
@@ -1302,4 +1310,49 @@ a.downloadButton{
 	padding: 7px;
 }
 
+/* Login Form */
+
+.detailTool {
+	padding:5px;
+}
+.detailTool .glyphicon{
+	padding-right:5px;
+}
+#LoginForm h1, #caFormOverlay h1{
+	font-size:20px;
+	padding-bottom:15px;
+}
+#LoginForm .col-sm-7, #caFormOverlay .col-sm-7{
+	padding-top:0px;
+}
+#LoginForm .form-control, #caFormOverlay .form-control{
+	border: 1px solid #ccc;
+	border-radius:4px;
+	height:2.5em;
+	background-color:#fff;
+}
+#LoginForm .btn-default, #caFormOverlay .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#caFormOverlay .form-control[name="comment"] {
+	height:6em;
+}
+#detailComments .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#tags {
+	margin:10px 0px 10px 0px;
+}
 

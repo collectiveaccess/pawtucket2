@@ -86,6 +86,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
@@ -99,7 +100,7 @@
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
 			}
-			if(!in_array($ps_view, $va_views)) {
+			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
 			}
 
@@ -323,6 +324,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
  			$this->view->setVar('searchInfo', $va_search_info);
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			
