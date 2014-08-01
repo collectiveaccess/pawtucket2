@@ -24,6 +24,18 @@
 			<div class="artworkTitle">
 				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels.name</l></unit>}}}</H4>
 				<H5><i>{{{ca_objects.preferred_labels.name}}}</i>, {{{ca_objects.creation_date}}}</H5> 
+<?php
+				if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+					// If currently deaccessioned then display deaccession message
+					print "<div class='artworkDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
+					#if ($vs_deaccession_notes = $t_object->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
+				}
+				if ($t_object->get('confidential') && ($t_object->get('ca_objects.confidential.confidential_until', array('getDirectDate' => true)) >= caDateToHistoricTimestamp(_t('now')))) {
+					// If currently deaccessioned then display deaccession message
+					print "<div class='artworkDeaccessioned'>Confidential until ".$t_object->get('ca_objects.confidential.confidential_until')."</div>\n";
+				}				
+
+?>				
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 			
