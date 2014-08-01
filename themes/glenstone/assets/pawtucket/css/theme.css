@@ -1133,6 +1133,11 @@ div.caMediaOverlayControls .close {
 	margin-top:10px;
 	width:90%;
 }
+@media (max-width: 768px){
+	#rolodex .results .col-sm-4{
+		padding-bottom:10px;
+	}
+}
 
 
 /* Advanced Search */
