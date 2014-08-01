@@ -422,12 +422,18 @@
 		$va_rep_tags = array();
 		if(sizeof($va_rep_ids)){
 			$vs_output = "";
-			foreach($va_rep_ids as $vn_rep_id){
-				$t_representation->load($vn_rep_id);
-				$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'.$t_representation->get("representation_id"));
-				$vs_tool_bar = caRepToolbar($o_request, $t_representation, $pn_object_id);
-				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
-			}
+			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
+			//foreach($va_rep_ids as $vn_rep_id){
+			//while($qr_reps->nextHit()) {
+				//$vn_rep_id = $qr_reps->get('representation_id');
+				//$t_representation->load($vn_rep_id);
+				//$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'.$qr_reps->get("representation_id"));
+				//$vs_tool_bar = caRepToolbar($o_request, $qr_reps, $pn_object_id);
+				//$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$qr_reps->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
+			//}
+			
+			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($o_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
+			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
 			}
