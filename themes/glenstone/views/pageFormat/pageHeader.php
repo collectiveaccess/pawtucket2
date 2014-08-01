@@ -96,6 +96,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "About", "library"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "About", "reports"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Rolodex"), "", "", "Rolodex/Search", "Index"); ?></li> 
 
 <?php
 						#print $this->render("pageFormat/browseMenu.php");

@@ -268,7 +268,8 @@
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Artists + Curators')."</div>";
 			print "<div class='blockResults'>";
-				print "<div>";
+				print "<div class='scrollBlock'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
@@ -281,6 +282,7 @@
 					}
 				}
 				if ((end($va_entities) == $va_entity) && ($vn_i < 5)){print "</div>";}								
+				print "</div>"; 
 				print "</div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";

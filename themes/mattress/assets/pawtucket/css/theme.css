@@ -425,6 +425,9 @@ h2 span.artist {
 #detail #cont img {
 	width: 100%;
 }
+#detail .occurrencesResult {
+	float:left;
+}
 #mediaArea {
 	width:775px;
 }
@@ -525,7 +528,7 @@ a.readmore-js-toggle {
 	overflow-x: scroll;
 	padding-left:0px;
 }
-#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep{
+#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep, #detail.objects .mediaThumbs .rep{
 	width:200px;
 	height:120px;
 	overflow:hidden;
@@ -549,7 +552,7 @@ a.readmore-js-toggle {
 #detail.entities .mediaThumbs .materials, #detail.occurrences .mediaThumbs .materials{
 	padding-top:5px;
 }
-#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet {
+#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet, #detail.objects .mediaThumbs .imageSet {
 	float:left;
 	padding-bottom:20px;
 }
@@ -584,12 +587,16 @@ a.readmore-js-toggle {
 }
 #detail .collectionsResult {
 	float: left;
-	width: 250px;
+	width: 200px;
 	height: 220px;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
 	margin-right: 15px;
 	line-height: 16px;
+}
+#detail .entities .collectionsResult {
+	height: auto;
+	margin-bottom: 10px;
 }
 #detail .collectionsResult a{
 	color: #000;
@@ -599,6 +606,18 @@ a.readmore-js-toggle {
 #detail .entitiesSet .collectionsResult {
 	height:auto;
 	margin-bottom:25px;	
+}
+div.caMediaOverlayControls .close {
+	opacity:1; 
+	margin-right:80px;
+	line-height:.8;
+}
+div.caMediaOverlayControls a {
+	font-size:14px;
+	font-family: "ProximaNovaRegular";
+	font-weight:normal;
+	text-shadow:none;
+	
 }
 /* Collection List */
 
@@ -703,7 +722,6 @@ a.readmore-js-toggle {
 }
 #detail .blockResults.exhibitions {
 	height:auto;
-	margin-bottom:30px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
 	width:100%;
@@ -728,6 +746,10 @@ a.readmore-js-toggle {
 	padding:0px 0px 0px 10px;
 	height:auto;
 	font-family: "ProximaNovaBold";
+}
+#detail .collectionsResult .exImage{
+	height:120px;
+	width:200px;
 }
 #detail .entitiesResult {
 	padding-left:0px;
@@ -754,6 +776,9 @@ a.readmore-js-toggle {
 }
 #detail .objectsResult { 
 	height: 230px;
+}
+#detail.objects .objectsResult {
+	height: 190px;
 }
 .multiSearch .occurrencesResult {
 	margin:10px;
@@ -899,6 +924,7 @@ a.readmore-js-toggle {
 }
 #bMorePanel {
 	padding-bottom:20px;
+	min-width: 250px;
 }
 #bMorePanel #bLetterBar {
 	margin-right:10px;
@@ -1085,6 +1111,7 @@ span.criteria {
 	margin:0px;
 	height:auto;
 	color:#000;
+	box-shadow:none;
 }
 .bResultListItemContent {
 	height:auto;
@@ -1094,6 +1121,7 @@ span.criteria {
 	width: 260px;
 	float: left;
 	margin-top:20px;
+	/*height:25px;*/
 }
 .bResultListItem .bResultListItemText {
 	padding-right: 20px;

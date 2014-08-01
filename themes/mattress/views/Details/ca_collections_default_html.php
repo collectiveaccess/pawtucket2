@@ -25,7 +25,7 @@
 		<div id='mediaArea'>
 			<div class='mediaLarge'>
 <?php
-			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true));
+			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeTypes' => array('document')));
 			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
 			
 			$vn_rep_id = key($va_related_reps);
@@ -37,9 +37,10 @@
 			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
 			
 			if ($t_item->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name');				
+				$va_main_image_object = $t_item->get('ca_objects.nonpreferred_labels.name', array('excludeTypes' => array('document')));				
 			} else {
-				$va_main_image_object = $t_item->get('ca_objects.preferred_labels');
+				$va_main_image_captions = $t_item->get('ca_objects.preferred_labels', array('returnAsArray' => true, 'excludeTypes' => array('document')));
+				$va_main_image_object = $va_main_image_captions[0];
 			}
 			if ($va_primary_rep['tags']['medium']) {
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
@@ -100,7 +101,7 @@
 			print "<div class='description trimText'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
 		if ($t_item->get('ca_collections.type_id') == '131') {
-			print "<p>".$t_item->get('ca_collections.idno')."</p>";
+			print "<div class='metatitle'>Collection Identifier</div><p>".$t_item->get('ca_collections.idno')."</p>";
 		}
 		if ($va_mat_display = $t_item->get('ca_collections.mat_tech_display')) {
 			print "<div class='collectionHeading'>Materials</div><p>".$va_mat_display."<p>";

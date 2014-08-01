@@ -1105,6 +1105,41 @@ div.caMediaOverlayControls .close {
 	opacity:1;
 }
 
+
+/* Rolodex */
+
+#rolodex form {
+	margin-top:20px;
+}
+#rolodex .formLabel {
+	display:block;
+	text-transform:uppercase;
+	color:#888;
+}
+#rolodex .formInput {
+	float:left;
+	margin-right:20px;
+}
+#rolodex input {
+	width:90%;
+}
+#rolodex .searchSubmit {
+	background-color: #ccc;
+	color: #fff;
+	padding:5px;
+}
+#rolodex .submit {
+	text-align:right;
+	margin-top:10px;
+	width:90%;
+}
+@media (max-width: 768px){
+	#rolodex .results .col-sm-4{
+		padding-bottom:10px;
+	}
+}
+
+
 /* Advanced Search */
 
 div.advancedSearchField {
