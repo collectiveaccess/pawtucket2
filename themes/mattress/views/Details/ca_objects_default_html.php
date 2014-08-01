@@ -4,7 +4,7 @@
 	$va_access_values = $this->getVar('access_values');
 ?>
 
-<div id="detail">
+<div id="detail" class='objects'>
 	<div class="blockTitle">{{{<unit>^ca_objects.type_id</unit>}}}
 		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</div>	
@@ -19,11 +19,49 @@
 ?>	
 		
 		
-		<div id="mediaArea">
-		{{{representationViewer}}}
+		<div id="mediaArea" style='margin:10px 0px 0px -10px;'>
+<?php	
+			if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+				$va_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('image')));
+				
+				if (sizeof($va_objects) > 1) {
+					print "<div class='mediaThumbs scrollBlock'>";
+							print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
+							$vn_i = 0;
+							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
+						
+							foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
+								if ($vn_i == 0){print "<div class='imageSet'>";}
+								print "<div >";
+								print caNavLink($this->request, "<div class='rep '>".$va_artwork_rep."</div>", '', '', 'Detail', 'Objects/'.$object_key);						
+								print "</div>";
+								$vn_i++;
+								if ($vn_i == 3) {
+									print "</div><!-- end imageSet-->";
+									$vn_i = 0;
+								}
+						
+							}
+					
+							if ((end($va_object_reps) == $va_artwork_rep) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
+
+							print "</div></div>";
+					print "</div><!-- end mediaThumbs -->";
+				} else {
+					$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('mediumlarge'), 'return' => array('tags')));			
+					foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
+						print "<div >";
+						print caNavLink($this->request, "<div >".$va_artwork_rep."</div>", '', '', 'Detail', 'Objects/'.$object_key);						
+						print "</div>";		
+					}
+				}
+			} else {
+				print $this->getVar('representationViewer');
+			}
+?>		
 		</div>
 <?php
-		if ($t_object->get('ca_objects.lesson_plan')  == "Yes") {
+		if ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
 			if ($va_description = $t_object->get('ca_objects.description.description_text')) {
 				print "<div class='description' style='margin:30px 0px 20px 0px;'>".$va_description."</div>";
 			}
@@ -38,7 +76,7 @@
 		<div class='detailSubtitle'></div>
 		
 <?php
-		if($t_object->get('ca_objects.lesson_plan')  != "Yes") {
+		if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {
 		print '<div id="infoArea">';
 		
 			if ($t_object->get('ca_objects.idno')) {
@@ -53,14 +91,14 @@
 			{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</p></ifdef>}}}
 
 <?php
-			if (($va_description = $t_object->get('ca_objects.description.description_text')) && ($t_object->get('ca_objects.lesson_plan')  != "Yes")) {
+			if (($va_description = $t_object->get('ca_objects.description.description_text')) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes")) {
 				print "<div class='description'><div class='metatitle'>Description</div>".$va_description."</div>";
 			}
 ?>			
 		
 			<div class="clearfix"></div>
 <?php
-		if($t_object->get('ca_objects.lesson_plan')  != "Yes") {			
+		if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {			
 			print "</div>";
 		}
 		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == "Yes")) {
@@ -77,7 +115,13 @@
 	$va_entities = $t_object->get('ca_entities', array('returnAsArray' => true, 'checkAccess' => $va_access_values)); 
 	$va_collections = $t_object->get('ca_collections', array('returnAsArray' => true, 'restrictToTypes' => array('installation'), 'checkAccess' => $va_access_values));
 	
-	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_collections) > 0)) {
+	if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+		$va_objects = $t_object->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote'), 'checkAccess' => $va_access_values));
+	} else {
+		$va_objects = $t_object->get('ca_objects', array('returnAsArray' => true, 'restrictToTypes' => array('limited_edition', 'av', 'document', 'anecdote', 'image'), 'checkAccess' => $va_access_values));
+	}
+	
+	if ((sizeof($va_occurrences) > 0) | (sizeof($va_entities) > 0) | (sizeof($va_collections) > 0) | (sizeof($va_objects) > 0)) {
 
 ?>	
 	<div id='relatedInfo'>
@@ -118,28 +162,55 @@
 					$t_collection = new ca_collections($va_collection_id);
 					$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_artwork_image = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));
-					if ($vn_i == 0) {print "<div class='collectionsSet'>";}
+					#if ($vn_i == 0) {print "<div class='collectionsSet'>";}
 					print "<div class='collectionsResult'>";
 							print caNavLink($this->request, "<div class='exImage' {$vs_style}>".array_shift(array_values($va_artwork_image))."</div>", '', '', 'Detail', 'Collections/'.$va_collection_id);
-					print "<div>".caNavLink($this->request, $va_collection['name'], '', '', 'Detail', 'Collections/'.$va_collection_idno)."</div>";
+					print "<span style='padding-left:10px; display:block;'>".caNavLink($this->request, $va_collection['name'], '', '', 'Detail', 'Collections/'.$va_collection_idno)."</span>";
 					print "</div>";
-					$vn_i++;
-					if ($vn_i == 5) {
-						print "</div>";
-						$vn_i = 0;
-					}
+					#$vn_i++;
+					#if ($vn_i == 5) {
+					#	print "</div>";
+					#	$vn_i = 0;
+					#}
 				}
 				if ((end($va_collections) == $va_collection) && ($vn_i < 5)){print "</div>";}				
 				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}
-	
+	# Related Objects Block
+	if (sizeof($va_objects) > 0) {
+		foreach ($va_objects as $va_object_id => $va_object) {
+			$vn_object_ids[] = $va_object['object_id'];
+		}
+		$qr_res = caMakeSearchResult('ca_objects', $vn_object_ids);
+		
+		print "<div id='objectsBlock'>";
+		print "<div class='blockTitle related'>"._t('Related Objects')."</div>";
+			print "<div class='blockResults scrollBlock'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
+				while ($qr_res->nextHit()) {
+					print "<div class='objectsResult'>";
+					print "<div class='objImage'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.resultthumb'), '', '', 'Detail', 'Objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					
+					if($qr_res->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+						print "<h2>".$qr_res->get('ca_objects.nonpreferred_labels.name', array('returnAsLink' => true))."</h2>";
+					} else {
+						print "<h2>".$qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</h2>";
+					}	
+
+					print "</div>";
+				}
+				print "</div></div>";
+			print "</div><!-- blockResults-->";
+		print "</div><!-- blockTitle-->";
+		print "</div><!-- occurrencesBlock-->";
+	}	
 	# Related Exhibitions Block
 	if (sizeof($va_occurrences) > 0) {
 		print "<div id='occurrencesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related Exhibitions')."</div>";
-			print "<div class='blockResults exhibitions'>";
+			print "<div class='blockResults exhibitions scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 
 				foreach ($va_occurrences as $occurrence_id => $va_occurrence) {

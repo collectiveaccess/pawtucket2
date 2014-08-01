@@ -54,7 +54,7 @@ $qr_res = $this->getVar('featured_set_items_as_search_result');
 			
 				print "<div class='artwork'>";
 				if($qr_res->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-					print $qr_res->getWithTemplate('<l>^ca_objects.nonpreferred_labels</l>');
+					print caNavLink($this->request, $qr_res->getWithTemplate('^ca_objects.nonpreferred_labels'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'));
 				} else {
 					print $qr_res->getWithTemplate('<l>^ca_objects.preferred_labels</l>');
 				}

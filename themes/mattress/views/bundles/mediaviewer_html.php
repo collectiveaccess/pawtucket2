@@ -68,7 +68,7 @@ if($vs_display_type == 'media_overlay'){
 ?>
 	<!-- Controls - only for media overlay -->
 	<div class="caMediaOverlayControls">
-		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;&nbsp;Close</a></div>
 <?php
 			if(caObjectsDisplayDownloadLink($this->request)){
 ?>
