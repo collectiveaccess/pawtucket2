@@ -67,6 +67,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
+			$o_search_config = caGetSearchConfig();
  						
  			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
@@ -86,6 +87,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
@@ -99,7 +101,7 @@
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
 			}
-			if(!in_array($ps_view, $va_views)) {
+			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
 			}
 
@@ -172,7 +174,8 @@
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($this->opo_result_context->getSearchExpression()));
+					$vs_search_expression = $this->opo_result_context->getSearchExpression();
+					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression)) ? '*' : '')));
 				}
 			}
 			
@@ -323,6 +326,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
  			$this->view->setVar('searchInfo', $va_search_info);
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			

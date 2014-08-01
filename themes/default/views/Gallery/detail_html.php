@@ -3,22 +3,31 @@
 	$pn_set_id = $this->getVar("set_id");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
-	
 ?>
-<H1><?php print $this->getVar("section_name"); ?></H1>
-<div id="galleryDetailImageArea">
-	image here
-</div><!-- end galleryDetailImageArea -->
+<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
 <div class="container">
-	<div id="row">
-		<div class="col-sm-5">
+	<div class="row">
+		<div class="col-sm-8"><div id="galleryDetailImageArea">
+			image here
+		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
+		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
+	</div><!-- end row -->
+</div><!-- end container -->
+<div class="galleryDetailBottom"></div>
+
+<div class="container">
+	<div class="row">
 <?php
-			print "<H4>".$this->getVar("label")."</H4>";
-			print "<p>".$this->getVar("description")."</p>";
+	if($ps_description){
 ?>
+		<div class="col-sm-4 setDescription">
+			<?php print "<p>".$ps_description."</p>"; ?>
 		</div><!-- end col -->
-		<div id="galleryDetailImageGrid" class="col-sm-3"><div id="row">
-		
+<?php
+	}
+?>	
+		<div id="galleryDetailImageGrid" class="col-sm-<?php print ($ps_description) ? "8" : "12"; ?>">
+			<div class="row">		
 <?php
 		$vn_i = 0;
 		foreach($pa_set_items as $pa_set_item){
@@ -26,20 +35,21 @@
 				$vn_first_item_id = $pa_set_item["item_id"];
 			}
 			if($pa_set_item["representation_tag_icon"]){
-				print "<div class='col-md-6 col-sm-12 col-xs-3'><a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$pa_set_item["representation_tag_icon"]."</a></div>\n";
-				
 				$vn_i++;
-				if($vn_i == 8){
-					print "<div class='col-md-6 col-sm-12 col-xs-3' id='moreLink'><a href='#' onclick='$(\"#moreSetItems\").toggle(); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 8)." "._t("more")."</a></div><div style='display:none;' id='moreSetItems'>";
+				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-".(($ps_description) ? "2" : "1").(($vn_i > 12) ? " galleryIconHidden" : "")."'>";
+				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$pa_set_item["representation_tag_icon"]."</a>";
+				print "</div>\n";
+				
+				if($vn_i == 12){
+					print "<div class='col-sm-3' id='moreLink'>
+								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
+							</div>";
 				}
 			}
 		}
-		if($vn_i > 8){
-			print "</div>";
-		}
 ?>
-		</div><!-- end row --></div><!-- end col -->
-		<div class="col-sm-4" id="galleryDetailObjectInfo"></div><!-- end col -->
+			</div><!-- end row -->
+		</div><!-- end col -->
 	</div><!-- end row -->
 </div><!-- end container -->
 <script type='text/javascript'>

@@ -66,7 +66,6 @@
 
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
-		$vn_col_span_sm = 2;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
@@ -124,7 +123,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".((($vs_table != "ca_objects") || $this->request->config->get("disable_my_collections")) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
