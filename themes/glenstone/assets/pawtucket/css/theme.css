@@ -987,11 +987,11 @@ p.artist.lower {
 	margin-left:-16px;
 }
 .lbItem:hover  {
-margin: -20px;
-padding: 10px;
-width: auto; 
-left: 0; 
-top: 0; 
+	margin: -20px;
+	padding: 10px;
+	width: auto; 
+	left: 0; 
+	top: 0; 
 }
 .reveal h3 {
 	text-transform:none;
@@ -1020,6 +1020,34 @@ div.caMediaOverlayControls .objectInfo {
 }
 div.caMediaOverlayControls .close {
 	opacity:1;
+}
+
+/* Rolodex */
+
+#rolodex form {
+	margin-top:20px;
+}
+#rolodex .formLabel {
+	display:block;
+	text-transform:uppercase;
+	color:#888;
+}
+#rolodex .formInput {
+	float:left;
+	margin-right:20px;
+}
+#rolodex input {
+	width:90%;
+}
+#rolodex .searchSubmit {
+	background-color: #ccc;
+	color: #fff;
+	padding:5px;
+}
+#rolodex .submit {
+	text-align:right;
+	margin-top:10px;
+	width:90%;
 }
 
 /* Finding Aid */
