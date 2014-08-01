@@ -110,7 +110,7 @@ if($vs_display_type == 'media_overlay'){
 <?php
 }
 ?>
-	<div id="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContent' : 'caMediaDisplayContent'; ?>">
+	<div <?php print ($vs_display_type == 'media_overlay') ? 'id="caMediaOverlayContent"' : ''; ?>>
 <?php
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }
