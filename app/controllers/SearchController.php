@@ -67,6 +67,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
+			$o_search_config = caGetSearchConfig();
  						
  			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
@@ -173,7 +174,8 @@
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($this->opo_result_context->getSearchExpression()));
+					$vs_search_expression = $this->opo_result_context->getSearchExpression();
+					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression)) ? '*' : '')));
 				}
 			}
 			
