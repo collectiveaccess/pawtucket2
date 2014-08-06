@@ -282,10 +282,15 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 			
-			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+			
+			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			$qr_res->seek($vn_key_start);
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			$qr_res->seek($vn_start);
+			
 			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {

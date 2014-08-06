@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010 Whirl-i-Gig
+ * Copyright 2010-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -111,6 +111,15 @@
 		 	$this->ops_cache_key = $this->getCurrentCacheKey();
 			BrowseCache::$s_data[$this->ops_cache_key] = $this->opa_browse;
 			return true;
+		 }
+		 # ------------------------------------------------------
+		/**
+		 *
+		 */
+		 public function refresh() {
+		 	if (!$this->opo_cache) { return false; }
+		 	$this->ops_cache_key = $this->getCurrentCacheKey();
+			return $this->load($this->ops_cache_key);
 		 }
 		 # ------------------------------------------------------
 		/**

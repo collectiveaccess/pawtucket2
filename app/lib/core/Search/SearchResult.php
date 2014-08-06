@@ -392,8 +392,8 @@ class SearchResult extends BaseObject {
 	/**
 	 *
 	 */
-	public function getPrimaryKeyValues($vn_limit=4000000000) {
-		return $this->opo_engine_result->getHits();
+	public function getPrimaryKeyValues($pn_limit=null) {
+		return $this->opo_engine_result->getHits($pn_limit);
 	}
 	# ------------------------------------------------------------------
 	/**

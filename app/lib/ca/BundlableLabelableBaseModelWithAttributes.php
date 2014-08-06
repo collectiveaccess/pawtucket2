@@ -1961,7 +1961,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!isset($pa_options['values']['_fulltext'])) { $pa_options['values'][$ps_field] = ''; }
 				return caHTMLTextInput("_fulltext".($vb_as_array_element ? "[]" : ""), array(
 								'value' => $pa_options['values']['_fulltext'],
-								'size' => $pa_options['width']
+								'size' => $pa_options['width'], 'class' => $pa_options['class']
 							), $pa_options);
 				break;
 			case '_fieldlist':
@@ -2011,11 +2011,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				ksort($va_options);
 				
 				return caHTMLSelect("_fieldlist_field".($vb_as_array_element ? "[]" : ""), $va_options, array(
-								'size' => $pa_options['fieldListWidth']
+								'size' => $pa_options['fieldListWidth'], 'class' => $pa_options['class']
 							), array_merge($pa_options, array('value' => $pa_options['values']['_fieldlist_field'][0]))).
 						caHTMLTextInput("_fieldlist_value".($vb_as_array_element ? "[]" : ""), array(
 								'value' => $pa_options['values']['_fieldlist_value'],
-								'size' => $pa_options['width']
+								'size' => $pa_options['width'], 'class' => $pa_options['class']
 							), $pa_options);
 				break;
 		}
@@ -2030,7 +2030,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
 						if (!isset($pa_options['values'][$ps_field])) { $pa_options['values'][$ps_field] = ''; }
 					
-						return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+						return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 					}
 					break;
 				# -------------------------------------
@@ -2042,17 +2042,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						# --------------------
 						case 'preferred_labels':		
 						case 'nonpreferred_labels':
-							return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+							return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 							break;
 						# --------------------
 						default:
 							if ($va_tmp[0] != $this->tableName()) {
 								switch(sizeof($va_tmp)) {
 									case 1:
-										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 									case 2:
 									case 3:
-										return $t_instance->htmlFormElementForSearch($po_request, $ps_field.($vb_as_array_element ? "[]" : ""), $pa_options);
+										return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
 										break;
 								}
 							}

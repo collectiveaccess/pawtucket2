@@ -218,8 +218,8 @@
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
 
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
-		
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true));
+			
 			//
 			// Facets
 			//
@@ -231,12 +231,12 @@
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
 			}
-		
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+			
 			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
 			
 		
@@ -263,13 +263,14 @@
 				}
 			}
 			$this->view->setVar('criteria', $va_criteria_for_display);
-		
+			
 			// 
 			// Results
 			//
+			
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
-		
+				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
  					$pn_hits_per_block = $o_config->get("defaultHitsPerBlock");
@@ -279,11 +280,18 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
 
 			$this->opo_result_context->setParameter('key', $vs_key);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+			
+			if (!$this->request->isAjax()) {
+				if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+				$qr_res->seek($vn_key_start);
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(500));
+				$qr_res->seek($vn_start);
+			}
+				
 			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {
