@@ -174,7 +174,7 @@ a:hover {
 		text-transform:uppercase;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-weight: 400;
-		font-size: 16px;
+		font-size: 14px;
 		letter-spacing: 2pt;
 	}
 	.navbar-default .navbar-nav > .open > a:hover {
@@ -186,7 +186,7 @@ a:hover {
 		padding-top:20px;
 	}
 	.navbar-nav > li {
-		padding-left:20px;
+		padding-left:10px;
 	}
 	.nav > li.dropdown > a.icon {
 		padding-top: 10px;
@@ -209,7 +209,12 @@ a:hover {
 		margin-bottom:0px;
 	}
 }
-@media (max-width: 880px){
+@media (max-width: 952px) {
+	.nav > li > a {
+		padding:25px 10px 18px 10px;
+	}
+}
+@media (max-width: 893px){
 	.navbar-brand {
 		width: 200px;
 	}
@@ -223,6 +228,17 @@ a:hover {
 		font-size: 14px;
 		letter-spacing: 2pt;
 		padding:25px 10px 10px 10px;
+	}
+}
+@media (max-width: 845px) and (min-width: 768px){
+	.navbar-right {
+		display:none;
+	}
+	.navbar-toggle {
+		display:block;
+	}
+	.navbar-header {
+		width:100%;
 	}
 }
 
@@ -729,10 +745,9 @@ p.artist.lower {
 .detail.artwork .jcarousel li {
 	margin-right:0px;
 	overflow: hidden;
-}	
-.repViewerCont{
 	text-align:center;
-}
+}	
+
 
 #detailRepresentationThumbnails {
 	padding-top:0px;
@@ -896,6 +911,9 @@ p.artist.lower {
 .mediaPlaceholder .fa{
 	font-size:60px;
 }
+.col-lg-7.media, .col-md-7.media, .col-sm-7.media{ 
+	padding: 0px 22px 0px 22px;
+}
 .requestButton {
 	padding:10px;
 	background-color:#eee;
@@ -932,7 +950,12 @@ p.artist.lower {
 	.mediaPlaceholder {
 		display:none;
 	}
+	.col-lg-7.media img, .col-md-7.media img, .col-sm-7.media img{
+		width:100%;
+		height:auto;
+	}
 }
+
 
 /* Entity */
 

@@ -37,7 +37,7 @@
 
 ?>				
 			</div>
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-7 col-md-7 col-lg-7 media'>
 			
 				{{{representationViewer}}}
 <?php
@@ -45,7 +45,7 @@
 ?>	
 			
 			</div><!-- end col -->
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-5 col-md-5 col-lg-5'>
 			
 				<div class='tabdiv'>
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#artworkInfo').fadeIn(100);">Tombstone</a></div>
