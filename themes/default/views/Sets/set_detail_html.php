@@ -53,15 +53,16 @@ if(is_array($va_views) && sizeof($va_views)){
 	</div><!-- end btn-group -->
 </H1>
 	<div class="row">
-		<div class="col-sm-10 col-md-10 col-lg-10">
+		<div class="col-sm-9 col-md-9 col-lg-8">
 <?php
 		print $this->render("Sets/set_detail_{$vs_current_view}_html.php");	
-?>
+		?>
+		
 		</div><!-- end col 10 -->
-		<div class="col-sm-2 col-md-2 col-lg-2">
+		<div class="col-sm-3 col-md-2 col-md-offset-1 col-lg-3 col-lg-offset-1 activitycol">
 <?php
 			if(!$vb_write_access){
-				print _t("You may not edit this set, you have read only access")."<br/><br/>";
+				print _t("<div class='warning'>You may not edit this set, you have read only access.</div>");
 			}
 			#if($t_set->get("access")){
 			#	print _t("This set is public")."<br/><br/>";
@@ -92,7 +93,7 @@ if(is_array($va_views) && sizeof($va_views)){
 <?php
 			if(sizeof($va_comments)){
 ?>
-			<div class="text-center" style="clear:both;"><strong><small><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></small></strong></div>
+			<div class="lbSetCommentHeader"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></div>
 <?php
 				if(sizeof($va_comments)){
 					$t_author = new ca_users();

@@ -74,6 +74,7 @@
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			}
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
@@ -90,7 +91,7 @@
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
  				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
  			}
- 			if(!in_array($ps_view, $va_views)) {
+ 			if(!in_array($ps_view, array_keys($va_views))) {
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			
@@ -331,6 +332,11 @@
  		public function getBrowseNavBarByTarget() {
  			$ps_target = $this->request->getParameter('target', pString);
  			$this->view->setVar("target", $ps_target);
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_target))) {
+ 				// invalid browse type – throw error
+ 				die("Invalid browse type");
+ 			}
+ 			$this->view->setVar("browse_name", $va_browse_info["displayName"]);
 			$this->render("pageFormat/browseMenuFacets.php");
  		}
  		# -------------------------------------------------------

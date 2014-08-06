@@ -221,8 +221,8 @@ h3 {
   padding-bottom: 15px;
   background-color: #eee;
   border: 1px solid #ddd;
-  background-color: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
+  background-color: transparent;
+  border: 0px;
 }
 
 hr {
@@ -425,6 +425,9 @@ h2 span.artist {
 #detail #cont img {
 	width: 100%;
 }
+#detail .occurrencesResult {
+	float:left;
+}
 #mediaArea {
 	width:775px;
 }
@@ -491,6 +494,8 @@ a.readmore-js-toggle {
 #detail .lessonLink {
 	clear:both;
 	margin-top:10px;
+	margin-bottom:10px;
+	float:left;
 }
 #infoArea .metatitle{
 	font-size:22px;
@@ -523,7 +528,7 @@ a.readmore-js-toggle {
 	overflow-x: scroll;
 	padding-left:0px;
 }
-#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep{
+#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep, #detail.objects .mediaThumbs .rep{
 	width:200px;
 	height:120px;
 	overflow:hidden;
@@ -547,7 +552,7 @@ a.readmore-js-toggle {
 #detail.entities .mediaThumbs .materials, #detail.occurrences .mediaThumbs .materials{
 	padding-top:5px;
 }
-#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet {
+#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet, #detail.objects .mediaThumbs .imageSet {
 	float:left;
 	padding-bottom:20px;
 }
@@ -582,17 +587,37 @@ a.readmore-js-toggle {
 }
 #detail .collectionsResult {
 	float: left;
-	width: 250px;
+	width: 200px;
 	height: 220px;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
 	margin-right: 15px;
 	line-height: 16px;
 }
+#detail .entities .collectionsResult {
+	height: auto;
+	margin-bottom: 10px;
+}
 #detail .collectionsResult a{
 	color: #000;
 	font-size: 14px;
 	text-decoration: none;
+}
+#detail .entitiesSet .collectionsResult {
+	height:auto;
+	margin-bottom:25px;	
+}
+div.caMediaOverlayControls .close {
+	opacity:1; 
+	margin-right:80px;
+	line-height:.8;
+}
+div.caMediaOverlayControls a {
+	font-size:14px;
+	font-family: "ProximaNovaRegular";
+	font-weight:normal;
+	text-shadow:none;
+	
 }
 /* Collection List */
 
@@ -692,10 +717,11 @@ a.readmore-js-toggle {
 	/* height:auto; */
 	clear:none;
 }
-
+#detail  .blockResults.entities {
+	height:auto;
+}
 #detail .blockResults.exhibitions {
 	height:auto;
-	margin-bottom:30px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
 	width:100%;
@@ -720,6 +746,10 @@ a.readmore-js-toggle {
 	padding:0px 0px 0px 10px;
 	height:auto;
 	font-family: "ProximaNovaBold";
+}
+#detail .collectionsResult .exImage{
+	height:120px;
+	width:200px;
 }
 #detail .entitiesResult {
 	padding-left:0px;
@@ -746,6 +776,9 @@ a.readmore-js-toggle {
 }
 #detail .objectsResult { 
 	height: 230px;
+}
+#detail.objects .objectsResult {
+	height: 190px;
 }
 .multiSearch .occurrencesResult {
 	margin:10px;
@@ -817,7 +850,7 @@ a.readmore-js-toggle {
 	color:#000; 
 	background-color:transparent;
 }
-#detail .entitiesSet {
+#detail .entitiesSet, #detail .collectionsSet {
 	float:left; 
 	width:250px;
 }
@@ -852,7 +885,7 @@ a.readmore-js-toggle {
 #detail.occurrences .artworkResult {
 	width:250px;
 }
-#detail #entitiesBlock .entitySet {
+#detail #entitiesBlock .entitySet, #detail #collectionsBlock .entitySet {
 	width:250px;
 	float:left;
 	margin-bottom:15px;
@@ -891,6 +924,7 @@ a.readmore-js-toggle {
 }
 #bMorePanel {
 	padding-bottom:20px;
+	min-width: 250px;
 }
 #bMorePanel #bLetterBar {
 	margin-right:10px;
@@ -1077,6 +1111,7 @@ span.criteria {
 	margin:0px;
 	height:auto;
 	color:#000;
+	box-shadow:none;
 }
 .bResultListItemContent {
 	height:auto;
@@ -1086,6 +1121,7 @@ span.criteria {
 	width: 260px;
 	float: left;
 	margin-top:20px;
+	/*height:25px;*/
 }
 .bResultListItem .bResultListItemText {
 	padding-right: 20px;
@@ -1302,4 +1338,49 @@ a.downloadButton{
 	padding: 7px;
 }
 
+/* Login Form */
+
+.detailTool {
+	padding:5px;
+}
+.detailTool .glyphicon{
+	padding-right:5px;
+}
+#LoginForm h1, #caFormOverlay h1{
+	font-size:20px;
+	padding-bottom:15px;
+}
+#LoginForm .col-sm-7, #caFormOverlay .col-sm-7{
+	padding-top:0px;
+}
+#LoginForm .form-control, #caFormOverlay .form-control{
+	border: 1px solid #ccc;
+	border-radius:4px;
+	height:2.5em;
+	background-color:#fff;
+}
+#LoginForm .btn-default, #caFormOverlay .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#caFormOverlay .form-control[name="comment"] {
+	height:6em;
+}
+#detailComments .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#tags {
+	margin:10px 0px 10px 0px;
+}
 

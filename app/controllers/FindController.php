@@ -120,8 +120,12 @@
 								if ($vn_start <= $vn_c) {
 									$va_item['item_id'] = $va_item[$t_item->primaryKey()];
 									if (!isset($va_facet[$va_item['item_id']]) && ($vn_root == $va_item['item_id'])) { continue; }
+									$va_item['name'] = $va_item['label'];
 									unset($va_item['parent_id']);
 									unset($va_item['label']);
+									if(!$va_item["name"]){
+										$va_item["name"] = $va_item["list_code"];
+									}
 									$va_json_data[$va_item['item_id']] = $va_item;
 									$vn_last_id = $va_item['item_id'];
 								}
