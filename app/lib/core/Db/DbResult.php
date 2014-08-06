@@ -271,15 +271,27 @@ class DbResult extends DbBase {
 	/**
 	  * Returns a list of values for the specified field from all rows in the result set. If you need to extract all values from single field in a result set this method provides a convenient means to do so.
 	  *
-	  * @param string $ps_field Name of field to fetch
+	  * @param mixed $ps_field Array of field names or single name of field to fetch
 	  * @return array List of values for the specified fields
 	  */
-	public function getAllFieldValues($ps_field) {
+	public function getAllFieldValues($pm_field, $pa_options=null) {
+		$vn_current_row = $this->opn_current_row;
 		$this->seek(0);
-		$va_values = array();
-		while($this->nextRow()) {
-			$va_values[] = $this->get($ps_field);
+		
+		if(is_array($pm_field)) {
+			$vm_field = array();
+			foreach($pm_field as $vs_field) {
+				$va_field = isset(DbResult::$s_field_info_cache[$vs_field]) ? DbResult::$s_field_info_cache[$vs_field] : $this->getFieldInfo($vs_field);
+				$vm_field[] = $va_field['field'];
+			}
+		} else {
+			$va_field = isset(DbResult::$s_field_info_cache[$pm_field]) ? DbResult::$s_field_info_cache[$pm_field] : $this->getFieldInfo($pm_field);
+			$vm_field = $va_field['field'];
 		}
+		
+		
+		$va_values = $this->opo_db->getAllFieldValues($this, $this->opr_res, $vm_field);
+		$this->seek($vn_current_row - 1);
 		
 		return $va_values;
 	}
