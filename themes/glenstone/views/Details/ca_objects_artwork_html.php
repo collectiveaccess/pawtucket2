@@ -261,8 +261,11 @@
 					print "<div class='unit wide'><span class='metaHeader'>Condition </span><span>";	
 					foreach ($va_condition_array as $va_condition_key => $va_condition_holder) {
 						if ($va_condition_key != ""){
+						$vn_i = 0;
+						print "<div class='clearfix'></div>";
+						print "<b>".caGetLocalizedHistoricDate($va_condition_key)."</b><br/>";
 							foreach ($va_condition_holder as $va_condition) {
-
+								/*
 								if ($va_condition['general_condition_date']['start']) {
 									print "<b>".caGetLocalizedHistoricDateRange($va_condition['general_condition_date']['start'], $va_condition['general_condition_date']['end'])."</b>";
 								}
@@ -286,43 +289,62 @@
 								}
 								if ($va_condition['base_date']['start']) {
 									print "<b>".caGetLocalizedHistoricDateRange($va_condition['base_date']['start'], $va_condition['base_date']['end'])."</b>";
-								}																																				
+								}
+								*/																																				
 								if (($va_condition['general_condition_value']) || ($va_condition['general_condition_comments'])) {
-									print " General Condition: ".$va_condition['general_condition_value']." ".$va_condition['general_condition_comments'].", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'];
+									print " <u>General Condition:</u> ".$va_condition['general_condition_value']." ".$va_condition['general_condition_comments'].", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
-									print " Frame: ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
+									print " <u>Frame:</u> ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['glazing_value'] || ($va_condition['glazing_notes'])) {
-									print " Glazing: ".$va_condition['glazing_value']." - ".$va_condition['glazing_notes'].", assessed by ".$va_condition['glazing_assessor'];
+									print " <u>Glazing:</u> ".$va_condition['glazing_value']." - ".$va_condition['glazing_notes'].", assessed by ".$va_condition['glazing_assessor'];
+									print "<div class='clearfix'></div>";
 								}												
 								if ($va_condition['support_value'] || ($va_condition['support_notes'])) {
-									print " Support: ".$va_condition['support_value']." - ".$va_condition['support_notes'].", assessed by ".$va_condition['support_assessor'];
+									print " <u>Support:</u> ".$va_condition['support_value']." - ".$va_condition['support_notes'].", assessed by ".$va_condition['support_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['vitrine_value'] || ($va_condition['vitrine_notes'])) {
-									print " Vitrine: ".$va_condition['vitrine_value']." - ".$va_condition['vitrine_notes'].", assessed by ".$va_condition['vitrine_assessor'];
+									print " <u>Vitrine:</u> ".$va_condition['vitrine_value']." - ".$va_condition['vitrine_notes'].", assessed by ".$va_condition['vitrine_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['mount_value'] || ($va_condition['mount_notes'])) {
-									print " Mount: ".$va_condition['mount_value']." - ".$va_condition['mount_notes'].", assessed by ".$va_condition['mount_assessor'];
+									print " <u>Mount:</u> ".$va_condition['mount_value']." - ".$va_condition['mount_notes'].", assessed by ".$va_condition['mount_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['surface_value']) || ($va_condition['surface_notes'])) {
-									print " Surface: ".$va_condition['surface_value']." - ".$va_condition['surface_notes'].", assessed by ".$va_condition['surface_assessor'];
+									print " <u>Surface:</u> ".$va_condition['surface_value']." - ".$va_condition['surface_notes'].", assessed by ".$va_condition['surface_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['base_value']) || ($va_condition['base_notes'])) {
-									print " Base: ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
+									print " <u>Base:</u> ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
+									print "<div class='clearfix'></div>";
 								}																								
 								if ($va_condition['condition_images_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
-									print "<div class='clearfix'></div>";
+									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
+									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
+									#print "<div class='clearfix'></div>";
+									$vn_i++;
+									if ($vn_i == 2) {
+										print "<div class='clearfix'></div>";
+										$vn_i = 0;
+									}
 								}
 								if ($va_condition['legacy_conservation_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['legacy_conservation_date']['start'], $va_condition['legacy_conservation_date']['end'])."</b>: <br/>";
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['legacy_value_id']))."\"); return false;'>".$va_condition['legacy_conservation_media']."</a>";
-									print "<div class='clearfix'></div>";
+									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['legacy_conservation_date']['start'], $va_condition['legacy_conservation_date']['end'])."</b>: <br/>";
+									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['legacy_value_id']))."\"); return false;'>".$va_condition['legacy_conservation_media']."</a>";
+									#print "<div class='clearfix'></div>";
+									$vn_i++;
+									if ($vn_i == 2) {
+										print "<div class='clearfix'></div>";
+										$vn_i = 0;
+									}									
 								}	
 											
-								print "<br/>";
+								#print "<br/>";
 							}
 						}
 					}	

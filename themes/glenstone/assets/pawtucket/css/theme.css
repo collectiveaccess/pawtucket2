@@ -75,7 +75,7 @@ a:hover {
 	margin: 0px auto 0px auto;
 }
 .container {
-	max-width:none;
+	max-width:1048px;
 }
 .navbar-collapse {
 	max-width:none;
@@ -836,6 +836,18 @@ p.artist.lower {
 .detail .scrollButtonNext {
 	right: 0px;
 }
+.detail .conditionImage {
+	float:left;
+	margin-right:10px;
+	margin-bottom:10px;
+}
+#Condition .clearfix {
+	margin-bottom:5px;
+}
+#Condition u {
+	border-bottom:1px solid #333;
+	text-decoration:none;
+}
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious{
 	height: 60px;
 	margin-top: 50px;
@@ -869,7 +881,7 @@ p.artist.lower {
 }
 .detail .detailNavBgLeft {
 	margin-top: 0px;
-	margin-left: -45px;
+	margin-left: -25px;
 	margin-bottom: -50px;
 	width: 45px;
 	text-transform: uppercase;
@@ -913,6 +925,15 @@ p.artist.lower {
 }
 .col-lg-7.media, .col-md-7.media, .col-sm-7.media{ 
 	padding: 0px 22px 0px 22px;
+}
+.relatedLoan {
+	height:400px;
+}
+.relatedLot p, .relatedLoan p {
+	margin:0px;
+}
+.relatedLot .lotCaption, .relatedLoan .lotCaption{
+	margin:10px 0px 10px 0px;
 }
 .requestButton {
 	padding:10px;
