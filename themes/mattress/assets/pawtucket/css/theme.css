@@ -453,7 +453,7 @@ h2 span.artist {
 	margin-left:20px;
 	float:right;
 }
-.mediaThumbs .rep{
+.mediaThumbs .rep, .mediaThumbs .lessonrep {
 	height:80px;
 	width: 120px;
 	overflow:hidden;
