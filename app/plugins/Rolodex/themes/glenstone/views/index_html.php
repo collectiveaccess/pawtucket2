@@ -1,6 +1,9 @@
 <div id="rolodex">
 
 	<h1>Rolodex</h1>
+<?php
+	if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection"))){	
+?>	
 	<h5>Find contacts using the search fields below</h5> 
 
 <?php
@@ -53,6 +56,9 @@
 			print "<hr>";
 		}
 	}
+} else {
+	print "Permission Denied";
+}	
 ?>
 
 </div>
