@@ -75,10 +75,15 @@
 			print "<div class='unit'><b>"._t('Nest structure').": </b>".caReturnDefaultIfBlank($vs_nestStructure)."</div>";
 			
 		} elseif ((in_array($t_object->get('ca_objects.type_id'), $va_vertebrate_type_ids))) {
+			print "<br/>";
 			# --- Vertebrates
-			if($vs_other = $t_object->get("ca_objects.other_catalog_number")){
-				print "<div class='unit'><b>"._t('Other Catalog Number').":</b> {$vs_other}</div><!-- end unit -->";
-			}
+			$vs_other = $t_object->get("ca_objects.other_catalog_number");
+			print "<div class='unit'><b>"._t('Alternate Catalog Number').":</b> ".caReturnDefaultIfBlank($vs_other)."</div><!-- end unit -->";
+			$vs_track_type_status = $t_object->get('ca_objects.track_type_status' , array('convertCodesToDisplayText' => true));
+			if (substr($vs_track_type_status, -1) == 's'){ $vs_track_type_status = substr($vs_track_type_status, 0, -1);}
+			print "<div class='unit'><b>"._t('Type Status').":</b> ".caReturnDefaultIfBlank($vs_track_type_status)."</div>";
+			$vs_cast = $t_object->get("ca_objects.cast_model", array("convertCodesToDisplayText" => true));
+			print "<div class='unit'><b>"._t('Cast').":</b> ".(($vs_cast) ? $vs_cast : "No")."</div>";
 			#if($va_taxonomy = $t_object->get('ca_objects.taxonomic_rank' , array('convertCodesToDisplayText' => true))){
 			#	print "<div class='unit'><b>"._t('Taxonomy').":</b> ".$va_taxonomy."</div>";
 			#}		
@@ -98,22 +103,6 @@
 			if($vs_description = $t_object->get("ca_objects.description")){
 				print "<div class='unit'><b>"._t('Description').":</b> {$vs_description}</div><!-- end unit -->";
 			}				
-			
-			if($va_identifier = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('identifier'), 'delimiter' => ','))){
-				print "<div class='unit'><b>"._t('Identifier').":</b> ".$va_identifier."</div>";
-			}			
-			if($vs_idDate = $t_object->get("ca_objects.idDate")){
-				print "<div class='unit'><b>"._t('ID Date').":</b> {$vs_idDate}</div><!-- end unit -->";
-			}	
-			if($va_collector = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('collector'), 'delimiter' => ','))){
-				print "<div class='unit'><b>"._t('Collector').":</b> ".$va_collector."</div>";
-			}				
-			if($vs_collectionDate = $t_object->get("ca_objects.collectionDate")){
-				print "<div class='unit'><b>"._t('Collection Date').":</b> {$vs_collectionDate}</div><!-- end unit -->";
-			}	
-			if($va_track_type_status = $t_object->get('ca_objects.track_type_status' , array('convertCodesToDisplayText' => true))){
-				print "<div class='unit'><b>"._t('Type Status').":</b> ".$va_track_type_status."</div>";
-			}
 			
 			$vs_era = $t_object->get('ca_places.era', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 			$vs_period = $t_object->get('ca_places.period', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
