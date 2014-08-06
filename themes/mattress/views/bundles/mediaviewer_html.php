@@ -85,7 +85,11 @@ if($vs_display_type == 'media_overlay'){
 ?>
 			<div class='objectInfo'>
 <?php
+			if ($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				$vs_label = $t_object->get('ca_objects.nonpreferred_labels.name');
+			} else {
 				$vs_label = $t_object->getLabelForDisplay();
+			}
 				$vn_obj_id = $t_object->get('ca_objects.object_id');
 				print (mb_strlen($vs_label) > 80) ? caNavLink($this->request, mb_substr($vs_label, 0, 80)."...", '', '', 'Detail', 'Objects/'.$vn_obj_id) : caNavLink($this->request, $vs_label, '', '', 'Detail', 'Objects/'.$vn_obj_id);
 				

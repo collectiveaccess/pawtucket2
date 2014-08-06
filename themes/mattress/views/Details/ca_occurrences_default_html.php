@@ -111,10 +111,10 @@
 	</div><!-- end contentArea-->
 <?php
 	$va_occurrences = $t_item->get('ca_occurrences', array('restrictToTypes' => array('mf_exhibition'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
-	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
-	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values));
+	$va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('exhibition_event', 'educational', 'fundraising', 'admin_event', 'community_event'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.preferred_labels'));
+	$va_entities = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('curator', 'contributor', 'artist'), 'checkAccess' => $va_access_values, 'sort' => 'ca_entities.preferred_labels.surname'));
 	$va_funders = $t_item->get('ca_entities', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('funder'), 'checkAccess' => $va_access_values));
-	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+	$va_collections = $t_item->get('ca_collections', array('restrictToTypes' => array('installation'), 'returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels'));
 	$va_objects = $t_item->get('ca_objects', array('excludeTypes' => array('image'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
 
 

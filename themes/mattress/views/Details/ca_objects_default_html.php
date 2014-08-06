@@ -101,7 +101,7 @@
 		if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {			
 			print "</div>";
 		}
-		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == "Yes")) {
+		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes")) {
 			$va_documents = $t_object->representationsOfClass('document', array('original'));
 			foreach ($va_documents as $doc_id => $va_document) {
 				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a></div>";
@@ -203,8 +203,7 @@
 				}
 				print "</div></div>";
 			print "</div><!-- blockResults-->";
-		print "</div><!-- blockTitle-->";
-		print "</div><!-- occurrencesBlock-->";
+		print "</div><!-- objectsBlock-->";
 	}	
 	# Related Exhibitions Block
 	if (sizeof($va_occurrences) > 0) {
