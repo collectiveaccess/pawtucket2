@@ -103,6 +103,16 @@
 			
 			if (!$this->errors) { $this->errors = array(); }
 			array_push($this->errors, $o_error);
+			
+			if (($app = AppController::getInstance()) && ($o_request = $app->getRequest())) {
+				$va_trace = debug_backtrace();
+				array_shift($va_trace);
+				$va_source = array_shift($va_trace);
+				
+				$o_notification = new NotificationManager($o_request);
+				$o_notification->addNotification("[{$pn_num}] {$ps_message} ({$ps_context}".($ps_source ? "; {$ps_source}" : '')." [{$va_source['file']}:{$va_source['line']}]");
+			print caPrintStackTrace();
+			}
 			return true;
 		}
 		# ------------------------------------------------------------------
