@@ -89,7 +89,7 @@
  			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
+ 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array());
  			}
  			if(!in_array($ps_view, array_keys($va_views))) {
  				$ps_view = array_shift(array_keys($va_views));
