@@ -2410,7 +2410,7 @@
 			if ($t_element->load($pm_element_code_or_id)) {
 				return BaseModelWithAttributes::$s_element_instance_cache[$pm_element_code_or_id] = $t_element;
 			} else {
-				$this->postError(1950, _t("Element code or id '%1' is invalid", $pm_element_code_or_id), "BaseModelWithAttributes->_getElementInstance()");
+				//$this->postError(1950, _t("Element code or id '%1' is invalid", $pm_element_code_or_id), "BaseModelWithAttributes->_getElementInstance()");
 				return false;
 			}
 		}

@@ -1834,13 +1834,13 @@ class BaseModel extends BaseObject {
 			return true;
 		} else {
 			if (!is_array($pm_id)) {
-				$this->postError(750,_t("Invalid %1 '%2'", $this->primaryKey(), $pm_id), "BaseModel->load()");
+				//$this->postError(750,_t("Invalid %1 '%2'", $this->primaryKey(), $pm_id), "BaseModel->load()");
 			} else {
 				$va_field_list = array();
 				foreach ($pm_id as $vs_field => $vm_value) {
 					$va_field_list[] = "$vs_field => $vm_value";
 				}
-				$this->postError(750,_t("No record with %1", join(", ", $va_field_list)), "BaseModel->load()");
+				//$this->postError(750,_t("No record with %1", join(", ", $va_field_list)), "BaseModel->load()");
 			}
 			return false;
 		}
