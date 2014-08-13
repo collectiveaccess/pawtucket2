@@ -152,7 +152,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		if (!is_array(WLPlugSearchEngineSqlSearch::$s_metadata_elements)) {
 			WLPlugSearchEngineSqlSearch::$s_metadata_elements = ca_metadata_elements::getRootElementsAsList();
 		}
-		$this->debug = true;
+		$this->debug = false;
 	}
 	# -------------------------------------------------------
 	# Initialization and capabilities
@@ -228,7 +228,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 	# Search
 	# -------------------------------------------------------
 	public function search($pn_subject_tablenum, $ps_search_expression, $pa_filters=array(), $po_rewritten_query=null) {
-			$t = new Timer();
+		$t = new Timer();
 		$this->_setMode('search');
 		$this->opa_filters = $pa_filters;
 		
@@ -296,9 +296,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			$qr_res = $this->opo_db->query($vs_sql);
 		} else {
 			$this->_createTempTable('ca_sql_search_search_final');
-			$tx= new Timer();
 			$this->_doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, 'ca_sql_search_search_final', 0);
-			Debug::msg("doqueries for {$ps_search_expression} took ".$tx->getTime(4).'/'.$t->getTime(4));
+			Debug::msg("doqueries for {$ps_search_expression} took ".$t->getTime(4));
 				
 			// do we need to filter?
 			$va_filters = $this->getFilters();
@@ -401,7 +400,9 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		$vs_rel_table = caGetRelationshipTableName($pn_subject_tablenum, $vs_table);
 		$va_rel_type_ids = ($va_tmp[1] && $vs_rel_table) ? caMakeRelationshipTypeIDList($vs_rel_table, array($va_tmp[1])) : null;
 		
-		if (!($t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { return null; }
+		if (!($t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { 
+			return array('access_point' => $va_tmp[0]);
+		}
 		$vs_table_num = $t_table->tableNum();
 		
 		if (is_numeric($vs_field)) {

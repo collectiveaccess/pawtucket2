@@ -232,6 +232,9 @@ class View extends BaseObject {
 				// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
 				$va_tags = $this->compile($vs_path.'/'.$ps_filename);
 				break;
+			} elseif (file_exists($ps_filename)) {
+				$va_tags = $this->compile($ps_filename);
+				break;
 			}
 		}
 		

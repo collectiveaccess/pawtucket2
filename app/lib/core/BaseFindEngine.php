@@ -41,7 +41,6 @@
 		private $ops_tmp_file_path;
 		private $ops_tmp_table_name;
 		# ------------------------------------------------------------------
-	
 		/**
 		 * Quickly loads list of row_ids in $pa_hits into a temporary database table uniquely identified by $ps_key
 		 * Only one temporary table can exist at a time for a given instance. If you call loadListIntoTemporaryResultTable() 
