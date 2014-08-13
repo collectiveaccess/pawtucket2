@@ -746,9 +746,28 @@ p.artist.lower {
 	margin-right:0px;
 	overflow: hidden;
 	text-align:center;
+}
+.relatedLoan {
+	height:420px;
 }	
-
-
+.loans .loanImg {
+	max-height: 260px;
+	overflow:hidden;
+}
+.loans.detail img {
+	width:100%;
+	height:auto;
+}
+.loans.detail .attributeMediaThumbnail img{
+	width:auto;
+}
+.loans.detail .attributeMediaInfoContainer, object_lots.detail .attributeMediaInfoContainer {
+	float: left;
+	margin-right: 5px;
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	padding: 3px;
+}
 #detailRepresentationThumbnails {
 	padding-top:0px;
 }
@@ -926,8 +945,16 @@ p.artist.lower {
 .col-lg-7.media, .col-md-7.media, .col-sm-7.media{ 
 	padding: 0px 22px 0px 22px;
 }
-.relatedLoan {
-	height:400px;
+.exText {
+	font-weight: 200;
+	font-size: 15px;
+	color: #666;
+}
+
+@media (max-width: 768px){
+	.relatedLoan {
+		height:auto;
+	}
 }
 .relatedLot p, .relatedLoan p {
 	margin:0px;

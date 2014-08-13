@@ -76,13 +76,13 @@
 				<div id="factSheet" class="infoBlock">	
 					{{{<ifdef code="ca_objects.artwork_provenance"><div class='unit wide'><span class='metaHeader'>Provenance</span><span>^ca_objects.artwork_provenance</span></div></ifdef>}}}
 <?php
-					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true))) {
+					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC'))) {
 						print "<div class='unit wide'><span class='metaHeader'>Exhibition History</span>";
 						foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
 							if ($va_exhibition['related_loan']) {
-								print caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."<br/><br/>";
+								print "<p>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</p>";
 							} else {
-								print "<span>".$va_exhibition['exhibition_name']."</span><br/><br/>";
+								print "<p>".$va_exhibition['exhibition_name']."</p>";
 							}
 						}
 						print "</div>";
@@ -126,7 +126,7 @@
 				
 				<div id="Financial" class="infoBlock">
 <?php
-					if ($this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founder")){
 						if ($va_source = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('source', 'advisor'), 'returnAsLink' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Source: </span><span class='meta'>".$va_source."</span></div>";
 						}	
@@ -222,7 +222,12 @@
 						foreach ($va_base_condition as $va_base_key => $va_base) {
 							$va_condition_array[$va_base['base_date']['start']][] = $va_base; 
 						}
-					}																												
+					}
+					if ($va_pedestal_condition = $t_object->get('ca_objects.pedestal_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_pedestal_condition as $va_pedestal_key => $va_pedestal) {
+							$va_condition_array[$va_pedestal['pedestal_date']['start']][] = $va_pedestal; 
+						}
+					}																																	
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
 						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1)); 
 
@@ -322,7 +327,11 @@
 								if (($va_condition['base_value']) || ($va_condition['base_notes'])) {
 									print " <u>Base:</u> ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
 									print "<div class='clearfix'></div>";
-								}																								
+								}
+								if (($va_condition['pedestal_value']) || ($va_condition['pedestal_notes'])) {
+									print " <u>Pedestal:</u> ".$va_condition['pedestal_value']." - ".$va_condition['pedestal_notes'].", assessed by ".$va_condition['pedestal_assessor'];
+									print "<div class='clearfix'></div>";
+								}																																
 								if ($va_condition['condition_images_date']['start']) {
 									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
 									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
