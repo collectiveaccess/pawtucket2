@@ -309,7 +309,7 @@ class SearchResult extends BaseObject {
 		}
 		
 		if ($t_rel_instance->hasField('idno_sort')) {
-			$va_order_bys [] = $t_rel_instance->tableName().".idno_sort";
+			$va_order_bys[] = $t_rel_instance->tableName().".idno_sort";
 		}
 	
 		$vs_deleted_sql = '';
