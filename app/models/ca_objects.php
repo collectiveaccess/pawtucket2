@@ -1084,6 +1084,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		$va_locations = $this->get('ca_objects_x_storage_locations.relation_id', array('returnAsArray' => true));
 	
 		if(is_array($va_location_types = caGetOption('ca_storage_locations_showRelationshipTypes', $pa_bundle_settings, null)) && is_array($va_locations) && sizeof($va_locations)) {	
+			require_once(__CA_MODELS_DIR__.'/ca_storage_locations.php');
 			$t_location = new ca_storage_locations();
 			$va_location_type_info = $t_location->getTypeList(); 
 			

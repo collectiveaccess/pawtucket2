@@ -1269,7 +1269,6 @@
 												$qr_res = $this->opo_db->query($vs_sql, intval($vs_target_browse_table_num), $vn_element_id, $va_dates['start'], $va_dates['end'], $va_dates['start'], $va_dates['end'], $va_dates['start'], $va_dates['end']);
 											} else {
 											
-												$qr_res = $this->opo_db->query("TRUNCATE TABLE ca_browses_tmp");
 												$vs_sql = "
 													SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 													FROM ".$this->ops_browse_table_name."
@@ -1314,7 +1313,6 @@
 												$qr_res = $this->opo_db->query($vs_sql, $va_dates['start'], $va_dates['end'], $va_dates['start'], $va_dates['end'], $va_dates['start'], $va_dates['end']);
 											} else {
 											
-												$qr_res = $this->opo_db->query("TRUNCATE TABLE ca_browses_tmp");
 												$vs_sql = "
 													SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 													FROM ".$this->ops_browse_table_name."
@@ -3730,7 +3728,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 									'id' => $vn_ancestor_id,
 									'type_id' => array(),
 									'parent_id' => $vb_rel_is_hierarchical ? $qr_ancestors->get("{$vs_hier_parent_id_fld}") : null,
-									'hierarchy_id' => $vb_rel_is_hierarchical ? $qr_ancestors->get("{$vs_hier_id_fld}") : null,
+									'hierarchy_id' => ($vb_rel_is_hierarchical && $vs_hier_id_fld) ? $qr_ancestors->get($vs_hier_id_fld) : null,
 									'rel_type_id' => array(),
 									'child_count' => 0
 								);
