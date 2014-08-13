@@ -860,9 +860,10 @@
 	 * 
 	 */
 	$g_theme_detail_for_type_cache = array();
-	function caGetDetailForType($pm_table, $pm_type=null) {
+	function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
 		global $g_theme_detail_for_type_cache;
-		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type]; }
+		$vs_current_action = ($o_request = caGetOption('request', $pa_options, null)) ? $o_request->getAction() : null;
+		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action]; }
 		$o_config = caGetDetailConfig();
 		$o_dm = Datamodel::load();
 		
@@ -877,15 +878,19 @@
 		
 		$va_detail_types = $o_config->getAssoc('detailTypes');
 	
+		$vs_detail_type = null;
 		foreach($va_detail_types as $vs_code => $va_info) {
 			if ($va_info['table'] == $vs_table) {
 				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
-					return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = $vs_code;
+					// If the code matches the current url action use that in preference to anything else
+					if ($vs_current_action && ($vs_code == $vs_current_action)) { return $vs_code; }
+					$vs_detail_type = $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = $vs_code;
 				}
 			}
 		}
 		
-		return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = null;
+		if (!$vs_detail_type) $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = null;
+		return $vs_detail_type;
 	}
 	# ---------------------------------------
 	/**
