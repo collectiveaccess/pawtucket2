@@ -434,6 +434,13 @@
 			
 			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($o_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
 			
+			$qr_reps->seek(0);
+			while($qr_reps->nextHit()) {
+				$vn_rep_id = $qr_reps->get('representation_id');
+				$vs_tool_bar = caRepToolbar($o_request, $qr_reps, $pn_object_id);
+				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
+			}
+			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
 			}
