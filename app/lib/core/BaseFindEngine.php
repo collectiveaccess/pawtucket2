@@ -216,9 +216,8 @@
 						$va_sorted_hits = $qr_sort->getAllFieldValues('row_id');
 			
 						// Add on hits that aren't sorted because they don't have an attribute associated
-						foreach($pa_hits as $vn_id) {
-							$va_sorted_hits[] = $vn_id; 
-						}
+						$va_missing_items = array_diff($pa_hits, $va_sorted_hits);
+						$va_sorted_hits = array_merge($va_sorted_hits, $va_missing_items);
 					}
 					return $va_sorted_hits;
 				} else {	
