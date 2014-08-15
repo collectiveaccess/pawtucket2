@@ -283,7 +283,6 @@
 			//
 			//Debug::msg("sort pre query ".$t->getTime(4));
 			$va_primary_sort_field = explode('.', $vs_sortable_value_fld);
-			$va_primary_sort_field = explode('.', $vs_sortable_value_fld);
 			$vs_join_sql = join("\n", $va_joins);
 			
 			$va_sort_fields = array("{$vs_sortable_value_fld} {$ps_direction}");
