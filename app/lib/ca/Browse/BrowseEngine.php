@@ -1610,7 +1610,7 @@
 						if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_config->get('perform_item_level_access_checking') && method_exists($t_item, "supportsACL") && $t_item->supportsACL()) {
 							$va_results = $this->filterHitsByACL($va_results, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 						}
-					print_R($va_results);
+					
 						$this->opo_ca_browse_cache->setResults($va_results);
 						$vb_need_to_save_in_cache = true;
 					} else {
