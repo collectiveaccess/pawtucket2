@@ -5,7 +5,14 @@
 ?>
 
 <div id="detail" class='objects'>
-	<div class="blockTitle">{{{<unit>^ca_objects.type_id</unit>}}}
+	<div class="blockTitle">
+<?php
+	if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+		print "Toolkit";
+	} else {	
+		print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+	}	
+?>	
 		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
@@ -55,8 +62,13 @@
 			</div><!-- end mediaLarge-->
 <?php		
 			if (sizeof($va_related_reps) > 1) {
+			
+			if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {
 ?>			
-			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
+				<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>
+<?php
+			}
+?>						
 			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
 	
 				<div class='scrollingDiv'><div class='scrollingDivContent'>
@@ -142,7 +154,7 @@
 		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes")) {
 			$va_documents = $t_object->representationsOfClass('document', array('original'));
 			foreach ($va_documents as $doc_id => $va_document) {
-				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a></div>";
+				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Toolkit</a></div>";
 			}
 		}
 

@@ -6,14 +6,15 @@
 
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-
+	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.jpg'); ?>">
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 </head>
 <body>
 	<div id="headerWrapper">
 		<div id="hpLogo">
 	<?php	
-		print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg'), '', '', '','');
+		print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg', array('width' => '150px', 'height' => '112px')), '', '', '','');
+		
 	?>	
 		</div>
 		<div class="navbar navbar-inverse">
@@ -31,7 +32,6 @@
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 				  <ul class="dropdown-menu">
 					<li><a href="../?q=content/hours-admission">Visit</a></li>
-					<li><a href="../?q=calendar/month">Calendar</a></li>
 					<li><a href="../?q=content/history">History</a></li>
 					<li><a href="../?q=content/get-involved">Get Involved</a></li>
 					<li><a href="../?q=content/rentals">Rentals</a></li>
@@ -69,6 +69,9 @@
 					<li><a href="../?q=content/urban-garden-party">Urban Garden Party</a></li>                
 				  </ul>
 				</li>
+				<li class="dropdown">
+				  <a href="/calendar/month" class="dropdown-toggle" >Calendar</a>
+				</li>  				
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
 				  <ul class="dropdown-menu">
