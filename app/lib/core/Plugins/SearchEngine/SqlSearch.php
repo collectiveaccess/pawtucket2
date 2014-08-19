@@ -301,6 +301,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				FROM {$vs_table_name}
 				{$vs_join_sql}
 				{$vs_where_sql}
+				ORDER BY
+					row_id
 			";
 			$qr_res = $this->opo_db->query($vs_sql);
 		} else {
@@ -364,7 +366,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				{$vs_join_sql}
 				{$vs_where_sql}
 				ORDER BY
-					boost DESC
+					boost DESC, row_id
 			";
 			$qr_res = $this->opo_db->query($vs_sql);
 			
@@ -715,6 +717,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							$va_ft_like_term_list = array();
 							
 							foreach($o_lucene_query_element->getTerms() as $o_term) {
+							
+								$va_access_point_info = $this->_getElementIDForAccessPoint($pn_subject_tablenum, $o_term->field);
+								$vs_access_point = $va_access_point_info['access_point'];
+							
 								$va_raw_terms[] = $vs_term = (string)(method_exists($o_term, "getTerm") ? $o_term->getTerm()->text : $o_term->text);
 								if (!$vs_access_point && ($vs_field = method_exists($o_term, "getTerm") ? $o_term->getTerm()->field : $o_term->field)) { $vs_access_point = $vs_field; }
 								
