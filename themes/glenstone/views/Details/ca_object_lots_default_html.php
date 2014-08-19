@@ -21,7 +21,7 @@
 		</div><!-- end col -->
 	</div>
 <?php 
-	if ($this->request->user->hasUserRole("founder")){
+	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
 ?>	
 	<div class="row">
 		<div class='col-md-12 col-lg-12'>

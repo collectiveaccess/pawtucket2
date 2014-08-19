@@ -158,11 +158,11 @@ a:hover {
 	}
 	.nav > li.dropdown > a.icon {
 		padding-top: 24px;
-		padding-bottom: 18px;
+		padding-bottom: 15px;
 	}
 	.nav > li > a {
 		padding-top: 25px;
-		padding-bottom: 18px;
+		padding-bottom: 15px;
 	}
 	.navbar-brand {
 		width: 250px;
@@ -189,7 +189,7 @@ a:hover {
 		padding-left:10px;
 	}
 	.nav > li.dropdown > a.icon {
-		padding-top: 10px;
+		
 		padding-bottom: 3px;
 	}	
 	.navbar .formOutline {
@@ -211,7 +211,12 @@ a:hover {
 }
 @media (max-width: 952px) {
 	.nav > li > a {
-		padding:25px 10px 18px 10px;
+		padding:25px 10px 15px 10px;
+	}
+}
+@media (max-width: 768px) {
+	.nav > li > a {
+		padding:5px 10px 5px 10px;
 	}
 }
 @media (max-width: 893px){
@@ -231,14 +236,15 @@ a:hover {
 	}
 }
 @media (max-width: 845px) and (min-width: 768px){
-	.navbar-right {
-		display:none;
+	.navbar-default .navbar-nav > li > a {
+		font-size:12px;
+		padding: 25px 3px 5px 10px;
+		
 	}
-	.navbar-toggle {
-		display:block;
-	}
-	.navbar-header {
-		width:100%;
+}
+@media (max-width: 768px) and (min-width: 767px){
+	.navbar-default .navbar-nav > li > a {
+		padding: 25px 3px 5px 0px;
 	}
 }
 
@@ -761,8 +767,8 @@ p.artist.lower {
 .loans.detail .attributeMediaThumbnail img{
 	width:auto;
 }
-.loans.detail .attributeMediaInfoContainer, object_lots.detail .attributeMediaInfoContainer {
-	float: left;
+.loans.detail .attributeMediaInfoContainer, .object_lots.detail .attributeMediaInfoContainer, .artwork.detail .attributeMediaInfoContainer {
+	float: left; 
 	margin-right: 5px;
 	margin-top: 5px;
 	border: 1px solid #ccc;

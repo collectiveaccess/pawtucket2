@@ -69,7 +69,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small'));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'medium'));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -104,7 +104,7 @@
 					} else {
 						$va_icon = "";
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'small'), '', $vs_table, $vn_id);				
+					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'medium'), '', $vs_table, $vn_id);				
 				} else {
 					$vs_rep_detail_link 	= caDetailLink($this->request, $va_images[$vn_id], '', $vs_table, $vn_id);			
 				}

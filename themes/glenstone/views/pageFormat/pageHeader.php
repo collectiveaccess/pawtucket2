@@ -97,7 +97,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "About", "reports"); ?></li>
 <?php 
-					if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection"))){				
+					if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection")  || $this->request->user->hasUserRole("supercurator"))){				
 						print "<li>".caNavLink($this->request, _t("Rolodex"), "", "", "Rolodex/Search", "Index")."</li> ";
 					}
 
