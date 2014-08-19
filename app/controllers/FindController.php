@@ -30,6 +30,7 @@
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  	
  	class FindController extends ActionController {
+ 		# ------------------------------------------------------------------
  		/**
  		 * Given a item_id (request parameter 'id') returns a list of direct children for use in the hierarchy browser
  		 * Returned data is JSON format
@@ -37,21 +38,27 @@
  		public function getFacetHierarchyLevel() {
  			$va_access_values = caGetUserAccessValues($this->request);
  			$ps_facet_name = $this->request->getParameter('facet', pString);
- 			$this->view->setVar("facet_name", $ps_facet_name);
- 			$this->view->setVar("key", $this->request->getParameter('key', pString));
- 			$vs_browse_type = $this->request->getParameter('browseType', pString);
- 			if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
+ 			$ps_cache_key = $this->request->getParameter('key', pString);
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			} 			
- 			$this->view->setVar("browse_type", $vs_browse_type);
+ 			
+ 			$this->view->setVar("facet_name", $ps_facet_name);
+ 			$this->view->setVar("key", $ps_cache_key);
+ 			$this->view->setVar("browse_type", $ps_browse_type);
+ 			
  			$vs_class = $va_browse_info['table'];
 			$o_browse = caGetBrowseInstance($vs_class);
+			
  			if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
- 			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+ 			if ($ps_cache_key) {
 				$o_browse->reload($ps_cache_key);
 			}
- 			$va_facet = $o_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
+			
+ 			$va_facet = $o_browse->getFacet($ps_facet_name, array('checkAccess' => $va_access_values));
  			
 			$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString));
 			if (!sizeof($pa_ids)) { $pa_ids = array(null); }
@@ -69,17 +76,17 @@
 				$vn_id = $va_tmp[0];
 				$vn_start = (int)$va_tmp[1];
 				if($vn_start < 0) { $vn_start = 0; }
-				
  				switch($va_facet_info['type']) {
 					case 'attribute':
 						// is it a list attribute?
 						$t_element = new ca_metadata_elements();
 						if ($t_element->load(array('element_code' => $va_facet_info['element_code']))) {
-							if ($t_element->get('datatype') == 3) { // 3=list
+							if ($t_element->get('datatype') == __CA_ATTRIBUTE_VALUE_LIST__) {
 								if (!$vn_id) {
 									$t_list = new ca_lists();
 									$vn_id = $t_list->getRootListItemID($t_element->get('list_id'));
 								}
+								
 								foreach($va_facet as $vn_i => $va_item) {
 									if ($va_item['parent_id'] == $vn_id) {
 										$va_item['item_id'] = $va_item['id'];
@@ -161,18 +168,19 @@
  			$this->view->setVar('facet_list', $va_level_data);
  			
  			switch($this->request->getParameter('returnAs', pString)){
+ 				# ------------------------------------------------
  				case "json":
  					return $this->render('Browse/facet_hierarchy_level_json.php');
- 				break;
+ 					break;
  				# ------------------------------------------------
  				case "html":
  				default:
  					return $this->render('Browse/facet_hierarchy_level_html.php');
- 				break;
+ 					break;
  				# ------------------------------------------------
  			}
  		}
- 		# -------------------------------------------------------
+ 		# ------------------------------------------------------------------
  		/**
  		 * Given a item_id (request parameter 'id') returns a list of ancestors for use in the hierarchy browser
  		 * Returned data is JSON format
@@ -183,12 +191,12 @@
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$this->view->setVar("facet_name", $ps_facet_name);
  			$this->view->setVar("key", $this->request->getParameter('key', pString));
- 			$vs_browse_type = $this->request->getParameter('browseType', pString);
- 			if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			} 			
- 			$this->view->setVar("browse_type", $vs_browse_type);
+ 			$this->view->setVar("browse_type", $ps_browse_type);
  			$vs_class = $va_browse_info['table'];
 			$o_browse = caGetBrowseInstance($vs_class);
  			if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
@@ -283,6 +291,5 @@
  				# ------------------------------------------------
  			}
  		}
- 		# -------------------------------------------------------
+ 		# ------------------------------------------------------------------
  	}
- 	

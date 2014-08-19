@@ -31,6 +31,7 @@
 <?php
 			if(sizeof($va_related_tracks) == 0){
 				# --- hierarchy
+				$va_hierarchy_ids = array();
 				if(is_array($va_hierarchy = caExtractValuesByUserLocale($t_place->getHierarchyAncestors($va_locality["place_id"], array("additionalTableToJoin" => "ca_place_labels", "additionalTableSelectFields" => array("name")))))){
 					$va_hierarchy = array_reverse($va_hierarchy);
 					array_shift($va_hierarchy);
@@ -38,6 +39,7 @@
 						if(!in_array($va_hier_locality["type_id"], $va_place_type_ids_to_exclude)){
 							$vs_locality_path .= $va_hier_locality["name"]." / ";
 						}
+						$va_hierarchy_ids[] = $va_hier_locality["place_id"];
 					}
 					$vs_locality_path = $vs_locality_path.$t_place->get("idno");				
 					print "<div class='unit'>".$vs_locality_path."</div><!-- end unit -->";
@@ -99,17 +101,30 @@
 	<div id="rightColMap">
 <?php
 		# --- map
-			# --- plot circle based on point for tracks and verts
-			$o_config = caGetDetailConfig();
-			$va_types = $o_config->getAssoc('detailTypes');
-			$va_options = $va_types["place"]["options"];
-			
-			$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
-			if($vs_map_attribute && $t_place->get($vs_map_attribute)){
-				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
-				$o_map->mapFrom($t_place, $vs_map_attribute);
-				print $o_map->render('HTML', array("obscure" => true, "circle" => true, "radius" => 20000, "fillColor" => "#000000", "pathColor" => "#000000", "zoomLevel" => 5));
+		# --- plot circle based on point for tracks and verts
+		$o_config = caGetDetailConfig();
+		$va_types = $o_config->getAssoc('detailTypes');
+		$va_options = $va_types["place"]["options"];
+		
+		$vs_map_attribute = caGetOption('map_attribute', $va_options, false);
+		if($vs_map_attribute && $t_place->get($vs_map_attribute)){
+			$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+			$o_map->mapFrom($t_place, $vs_map_attribute);
+			print $o_map->render('HTML', array("obscure" => true, "circle" => true, "radius" => 20000, "fillColor" => "#000000", "pathColor" => "#000000", "zoomLevel" => 5));
+		}else{
+			$qr_hits = ca_places::createResultSet($va_hierarchy_ids);
+			if($qr_hits->numHits()){
+				while($qr_hits->nextHit()){
+					if($qr_hits->get($vs_map_attribute)){
+						$t_place->load($qr_hits->get("place_id"));
+						$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+						$o_map->mapFrom($t_place, $vs_map_attribute);
+						print $o_map->render('HTML', array("obscure" => true, "circle" => true, "radius" => 20000, "fillColor" => "#000000", "pathColor" => "#000000", "zoomLevel" => 5));
+						break;
+					}
+				}
 			}
+		}
 ?>
 	</div><!-- end rightColMap -->
 </div><!-- end detailBody -->

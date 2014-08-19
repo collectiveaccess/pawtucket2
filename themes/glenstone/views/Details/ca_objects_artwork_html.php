@@ -68,21 +68,28 @@
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
 						print "Signed, ".$t_object->get('ca_objects.signed.signature_details');
 					}
+					if ($this->request->user->hasUserRole("collection")){
+						if ($va_idno = $t_object->get('ca_objects.idno')) {
+								print "<div class='unit wide'>".$va_idno."</div>";
+						}
+					}					
 ?>					
-					
-					{{{<ifcount min="1" code="ca_objects.idno"><div class="unit">^ca_objects.idno</div></ifcount>}}}				
 				</div>
 				
-				<div id="factSheet" class="infoBlock">	
-					{{{<ifdef code="ca_objects.artwork_provenance"><div class='unit wide'><span class='metaHeader'>Provenance</span><span>^ca_objects.artwork_provenance</span></div></ifdef>}}}
-<?php
-					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true))) {
+				<div id="factSheet" class="infoBlock">
+<?php					
+					if ($this->request->user->hasUserRole("collection")){
+						if ($va_provenance = $t_object->get('ca_objects.artwork_provenance')) {
+								print "<div class='unit wide'><span class='metaHeader'>Provenance </span><span>".$va_provenance."</span></div>";
+						}
+					}
+					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC'))) {
 						print "<div class='unit wide'><span class='metaHeader'>Exhibition History</span>";
 						foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
 							if ($va_exhibition['related_loan']) {
-								print caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."<br/><br/>";
+								print "<p>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</p>";
 							} else {
-								print "<span>".$va_exhibition['exhibition_name']."</span><br/><br/>";
+								print "<p>".$va_exhibition['exhibition_name']."</p>";
 							}
 						}
 						print "</div>";
@@ -94,6 +101,7 @@
 				
 				<div id="Location" class="infoBlock">
 <?php	
+				if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
 			
 					if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned')) {
 						// If currently deaccessioned then display deaccession message
@@ -119,6 +127,9 @@
 							}
 						}
 					}
+				} else {
+					print "access restricted";
+				}
 					
 ?>
 					<!--{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Legacy Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}-->
@@ -126,7 +137,7 @@
 				
 				<div id="Financial" class="infoBlock">
 <?php
-					if ($this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founder")){
 						if ($va_source = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('source', 'advisor'), 'returnAsLink' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Source: </span><span class='meta'>".$va_source."</span></div>";
 						}	
@@ -182,6 +193,8 @@
 				</div>
 				<div id="Condition" class="infoBlock">
 <?php
+				if ($this->request->user->hasUserRole("collection")){
+
 					$va_condition_array = array();
 					if ($va_general_condition = $t_object->get('ca_objects.general_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_general_condition as $va_gen_key => $va_general) {
@@ -222,9 +235,14 @@
 						foreach ($va_base_condition as $va_base_key => $va_base) {
 							$va_condition_array[$va_base['base_date']['start']][] = $va_base; 
 						}
-					}																												
+					}
+					if ($va_pedestal_condition = $t_object->get('ca_objects.pedestal_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_pedestal_condition as $va_pedestal_key => $va_pedestal) {
+							$va_condition_array[$va_pedestal['pedestal_date']['start']][] = $va_pedestal; 
+						}
+					}																																	
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
-						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1)); 
+						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
 
 						$o_db = new Db();
 						$vn_media_element_id = $t_object->_getElementID('condition_images_media');
@@ -240,7 +258,7 @@
 						}
 					}	
 					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
-						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1)); 
+						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
 						
 						$o_db = new Db();
 						$vn_media_element_id = $t_object->_getElementID('legacy_conservation_media');
@@ -261,8 +279,11 @@
 					print "<div class='unit wide'><span class='metaHeader'>Condition </span><span>";	
 					foreach ($va_condition_array as $va_condition_key => $va_condition_holder) {
 						if ($va_condition_key != ""){
+						$vn_i = 0;
+						print "<div class='clearfix'></div>";
+						print "<b>".caGetLocalizedHistoricDate($va_condition_key)."</b><br/>";
 							foreach ($va_condition_holder as $va_condition) {
-
+								/*
 								if ($va_condition['general_condition_date']['start']) {
 									print "<b>".caGetLocalizedHistoricDateRange($va_condition['general_condition_date']['start'], $va_condition['general_condition_date']['end'])."</b>";
 								}
@@ -286,98 +307,74 @@
 								}
 								if ($va_condition['base_date']['start']) {
 									print "<b>".caGetLocalizedHistoricDateRange($va_condition['base_date']['start'], $va_condition['base_date']['end'])."</b>";
-								}																																				
+								}
+								*/																																				
 								if (($va_condition['general_condition_value']) || ($va_condition['general_condition_comments'])) {
-									print " General Condition: ".$va_condition['general_condition_value']." ".$va_condition['general_condition_comments'].", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'];
+									print " <u>General Condition:</u> ".$va_condition['general_condition_value'].". ".$va_condition['general_condition_comments'].($va_condition['general_condition_specific'] ? ", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'] : "");
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
-									print " Frame: ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
+									print " <u>Frame:</u> ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['glazing_value'] || ($va_condition['glazing_notes'])) {
-									print " Glazing: ".$va_condition['glazing_value']." - ".$va_condition['glazing_notes'].", assessed by ".$va_condition['glazing_assessor'];
+									print " <u>Glazing:</u> ".$va_condition['glazing_value']." - ".$va_condition['glazing_notes'].", assessed by ".$va_condition['glazing_assessor'];
+									print "<div class='clearfix'></div>";
 								}												
 								if ($va_condition['support_value'] || ($va_condition['support_notes'])) {
-									print " Support: ".$va_condition['support_value']." - ".$va_condition['support_notes'].", assessed by ".$va_condition['support_assessor'];
+									print " <u>Support:</u> ".$va_condition['support_value']." - ".$va_condition['support_notes'].", assessed by ".$va_condition['support_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['vitrine_value'] || ($va_condition['vitrine_notes'])) {
-									print " Vitrine: ".$va_condition['vitrine_value']." - ".$va_condition['vitrine_notes'].", assessed by ".$va_condition['vitrine_assessor'];
+									print " <u>Vitrine:</u> ".$va_condition['vitrine_value']." - ".$va_condition['vitrine_notes'].", assessed by ".$va_condition['vitrine_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['mount_value'] || ($va_condition['mount_notes'])) {
-									print " Mount: ".$va_condition['mount_value']." - ".$va_condition['mount_notes'].", assessed by ".$va_condition['mount_assessor'];
+									print " <u>Mount:</u> ".$va_condition['mount_value']." - ".$va_condition['mount_notes'].", assessed by ".$va_condition['mount_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['surface_value']) || ($va_condition['surface_notes'])) {
-									print " Surface: ".$va_condition['surface_value']." - ".$va_condition['surface_notes'].", assessed by ".$va_condition['surface_assessor'];
+									print " <u>Surface:</u> ".$va_condition['surface_value']." - ".$va_condition['surface_notes'].", assessed by ".$va_condition['surface_assessor'];
+									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['base_value']) || ($va_condition['base_notes'])) {
-									print " Base: ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
-								}																								
-								if ($va_condition['condition_images_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
+									print " <u>Base:</u> ".$va_condition['base_value']." - ".$va_condition['base_notes'].", assessed by ".$va_condition['base_assessor'];
 									print "<div class='clearfix'></div>";
 								}
-								if ($va_condition['legacy_conservation_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['legacy_conservation_date']['start'], $va_condition['legacy_conservation_date']['end'])."</b>: <br/>";
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['legacy_value_id']))."\"); return false;'>".$va_condition['legacy_conservation_media']."</a>";
+								if (($va_condition['pedestal_value']) || ($va_condition['pedestal_notes'])) {
+									print " <u>Pedestal:</u> ".$va_condition['pedestal_value']." - ".$va_condition['pedestal_notes'].", assessed by ".$va_condition['pedestal_assessor'];
 									print "<div class='clearfix'></div>";
+								}																																
+								if ($va_condition['condition_images_date']['start']) {
+									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
+									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
+									#print "<div class='clearfix'></div>";
+									$vn_i++;
+									if ($vn_i == 3) {
+										print "<div class='clearfix'></div>";
+										$vn_i = 0;
+									}
+								}
+								if ($va_condition['legacy_conservation_date']['start']) {
+									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['legacy_conservation_date']['start'], $va_condition['legacy_conservation_date']['end'])."</b>: <br/>";
+									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['legacy_value_id']))."\"); return false;'>".$va_condition['legacy_conservation_media']."</a>";
+									#print "<div class='clearfix'></div>";
+									$vn_i++;
+									if ($vn_i == 3) {
+										print "<div class='clearfix'></div>";
+										$vn_i = 0;
+									}									
 								}	
 											
-								print "<br/>";
+								#print "<br/>";
 							}
 						}
 					}	
-					print "</span></div>";			
-						
-				
-#					{{{<ifcount min="1" code="ca_objects.general_condition"><div class="unit wide"><span class='metaHeader'>General Condition </span><span><unit delimiter="<br/>" sort="ca_objects.general_condition.general_condition_date" sortDirection="DESC"><b>^ca_objects.general_condition.general_condition_value <ifdef code="ca_objects.general_condition.general_condition_value">: </ifdef>^ca_objects.general_condition.general_condition_date</b>  Assessed by: ^ca_objects.general_condition.general_condition_person - ^ca_objects.general_condition.general_condition_specific</unit></span></div></ifcount>}}}																				
-#					{{{<ifcount min="1" code="ca_objects.frame_condition.frame_notes"><div class="unit wide"><span class='metaHeader'>Frame Condition </span><span><unit delimiter="<br/>" sort="ca_objects.frame_condition.frame_date" sortDirection="DESC"><b>^ca_objects.frame_condition.frame_date</b> ^ca_objects.frame_condition.frame_value - ^ca_objects.frame_condition.frame_notes</unit></span></div></ifcount>}}}																
-#					{{{<ifcount min="1" code="ca_objects.glazing_condition.glazing_date|ca_objects.glazing_condition.glazing_notes"><div class="unit wide"><span class='metaHeader'>Glazing Condition </span><span><unit delimiter="<br/>" sort="ca_objects.glazing_condition.glazing_date" sortDirection="DESC"><b>^ca_objects.glazing_condition.glazing_date</b> ^ca_objects.glazing_condition.glazing_value - ^ca_objects.glazing_condition.glazing_notes</unit></span></div></ifcount>}}}												
-#					{{{<ifcount min="1" code="ca_objects.support_condition.support_notes"><div class="unit wide"><span class='metaHeader'>Support Condition </span><span><unit delimiter="<br/>" sort="ca_objects.support_condition.support_date" sortDirection="DESC"><b>^ca_objects.support_condition.support_date</b> ^ca_objects.support_condition.support_value - ^ca_objects.support_condition.support_notes</unit></span></div></ifcount>}}}								
-#					{{{<ifcount min="1" code="ca_objects.vitrine_condition.vitrine_notes"><div class="unit wide"><span class='metaHeader'>Vitrine Condition </span><span><unit delimiter="<br/>" sort="ca_objects.vitrine_condition.vitrine_date" sortDirection="DESC"><b>^ca_objects.vitrine_condition.vitrine_date</b> ^ca_objects.vitrine_condition.vitrine_value - ^ca_objects.vitrine_condition.vitrine_notes</unit></span></div></ifcount>}}}				
-#					{{{<ifcount min="1" code="ca_objects.mount_condition.mount_notes"><div class="unit wide"><span class='metaHeader'>Mount Condition </span><span><unit delimiter="<br/>" sort="ca_objects.mount_condition.mount_date" sortDirection="DESC"><b>^ca_objects.mount_condition.mount_date</b> ^ca_objects.mount_condition.mount_value - ^ca_objects.mount_condition.mount_notes</unit></span></div></ifcount>}}}				
-#					{{{<ifcount min="1" code="ca_objects.surface_condition.surface_notes"><div class="unit wide"><span class='metaHeader'>Surface Condition </span><span><unit delimiter="<br/>" sort="ca_objects.surface_condition.surface_date" sortDirection="DESC"><b>^ca_objects.surface_condition.surface_date</b> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes</unit></span></div></ifcount>}}}
-#					{{{<ifcount min="1" code="ca_objects.base_condition.base_notes"><div class="unit wide"><span class='metaHeader'>Base Condition </span><span><unit delimiter="<br/>" sort="ca_objects.base_condition.base_date" sortDirection="DESC"><b>^ca_objects.base_condition.base_date</b> ^ca_objects.base_condition.base_value - ^ca_objects.base_condition.base_notes</unit></span></div></ifcount>}}}
-
-
-#					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('delimiter' => '<br/>', 'template' => '<u>^ca_objects.surface_condition.surface_date</u> ^ca_objects.surface_condition.surface_value - ^ca_objects.surface_condition.surface_notes'))) {
-#						print "<div class='unit wide'><span class='metaHeader'>Surface Condition </span><span>";
-#						print $va_surface_condition;
-#						print "</span></div>";
-#					}
-
-#					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
-#						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true)); 
-#						print '<div class="unit wide"><span class="metaHeader">Condition Images</span><span>';
-#						
-#						$o_db = new Db();
-#						$vn_media_element_id = $t_object->_getElementID('condition_images_media');
-#						foreach ($va_condition_images as $vn_condition_id => $va_condition_image) {
-#							if ($va_condition_image['condition_images_primary'] == 162) {
-#								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_condition_id, $vn_media_element_id)) ;
-#								if ($qr_res->nextRow()) {
-#									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_condition_image['condition_images_media']."</a>";
-#								}
-#							}
-#						}
-#						print "</span><div class='clearfix'></div></div>";
-#					}
-					
-#					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
-#						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnAsArray' => true, 'ignoreLocale' => true)); 
-#						print '<div class="unit wide"><span class="metaHeader">Legacy Conservation Images</span><span>';
-#						
-#						$o_db = new Db();
-#						$vn_media_element_id = $t_object->_getElementID('legacy_conservation_media');
-#						foreach ($va_conservation_images as $vn_conservation_id => $va_conservation_image) {
-#							if ($va_conservation_image['legacy_conservation_primary'] == 162) {
-#								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_conservation_id, $vn_media_element_id)) ;
-#								if ($qr_res->nextRow()) {
-#									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_conservation_image['legacy_conservation_media']."</a>";
-#								}
-#							}
-#						}
-#						print "</span><div class='clearfix'></div></div>";
-#					}					
+					print "</span>";
+					print "</div>";
+				} else {
+					print "access restricted";
+				}							
 ?>				
 				</div>
 				<div id="Description" class="infoBlock">
@@ -397,7 +394,7 @@
 					{{{<ifcount min="1" code="ca_objects.sticker_label"><div class='unit'><span class='metaTitle'>Label Details </span><span class='meta'><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifcount>}}}
 <?php
 					if ($t_object->get('ca_objects.inscription_uploads.inscription_uploads_media')){
-						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnAsArray' => true, 'ignoreLocale' => true)); 
+						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnAsArray' => true, 'ignoreLocale' => true, 'version' => 'icon')); 
 						print '<div class="unit wide"><span class="metaHeader">Inscription Uploads</span><span>';
 						
 						$o_db = new Db();
