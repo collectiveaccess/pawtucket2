@@ -28,8 +28,28 @@
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	
  	class FindController extends ActionController {
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
+ 			// merge default formats with drop-in print templates
+			$va_export_options = caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$this->view->setVar('export_formats', $va_export_options);
+			//$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
+			
+			$va_options = array();
+			foreach($va_export_options as $vn_i => $va_format_info) {
+				$va_options[$va_format_info['name']] = $va_format_info['code'];
+			}
+			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
+ 		}
  		# ------------------------------------------------------------------
  		/**
  		 * Given a item_id (request parameter 'id') returns a list of direct children for use in the hierarchy browser
@@ -291,5 +311,108 @@
  				# ------------------------------------------------
  			}
  		}
+ 		# -------------------------------------------------------
+		# Export
+		# -------------------------------------------------------
+		/**
+		 * Generate  export file of current result
+		 */
+		protected function _genExport($po_result, $ps_output_type, $ps_output_filename, $ps_title=null) {
+			//$this->view->setVar('criteria_summary', $vs_criteria_summary = $this->getCriteriaForDisplay());	// add displayable description of current search/browse parameters
+			//$this->view->setVar('criteria_summary_truncated', mb_substr($vs_criteria_summary, 0, 60).((mb_strlen($vs_criteria_summary) > 60) ? '...' : ''));
+			
+			$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
+			$this->opo_result_context->saveContext();
+			
+			if(substr($ps_output_type, 0, 4) !== '_pdf') {
+				switch($ps_output_type) {
+					case '_xlsx':
+						require_once(__CA_LIB_DIR__."/core/Parsers/PHPExcel/PHPExcel.php");
+						require_once(__CA_LIB_DIR__."/core/Parsers/PHPExcel/PHPExcel/Writer/Excel2007.php");
+						$vs_content = $this->render('Results/xlsx_results.php');
+						return;
+					case '_csv':
+						$vs_delimiter = ",";
+						$vs_output_file_name = mb_substr(preg_replace("/[^A-Za-z0-9\-]+/", '_', $ps_output_filename.'_csv'), 0, 30);
+						$vs_file_extension = 'txt';
+						$vs_mimetype = "text/plain";
+						break;
+					case '_tab':
+						$vs_delimiter = "\t";	
+						$vs_output_file_name = mb_substr(preg_replace("/[^A-Za-z0-9\-]+/", '_', $ps_output_filename.'_tab'), 0, 30);
+						$vs_file_extension = 'txt';
+						$vs_mimetype = "text/plain";
+					default:
+						// TODO add exporter code here
+						break;
+				}
+
+				header("Content-Disposition: attachment; filename=export_".$vs_output_file_name.".".$vs_file_extension);
+				header("Content-type: ".$vs_mimetype);
+							
+				// get display list
+				self::Index(null, null);
+				$va_display_list = $this->view->getVar('display_list');
+			
+				$va_rows = array();
+			
+				// output header
+			
+				$va_row = array();
+				foreach($va_display_list as $va_display_item) {
+					$va_row[] = $va_display_item['display'];
+				}
+				$va_rows[] = join($vs_delimiter, $va_row);
+			
+				$po_result->seek(0);
+			
+				$t_display = $this->view->getVar('t_display');
+				while($po_result->nextHit()) {
+					$va_row = array();
+					foreach($va_display_list as $vn_placement_id => $va_display_item) {
+						$vs_value = html_entity_decode($t_display->getDisplayValue($po_result, $vn_placement_id, array('convert_codes_to_display_text' => true, 'convertLineBreaks' => false)), ENT_QUOTES, 'UTF-8');
+
+						// quote values as required
+						if (preg_match("![^A-Za-z0-9 .;]+!", $vs_value)) {
+							$vs_value = '"'.str_replace('"', '""', $vs_value).'"';
+						}
+						$va_row[] = $vs_value;
+					}
+					$va_rows[] = join($vs_delimiter, $va_row);
+				}
+			
+				$this->opo_response->addContent(join("\n", $va_rows), 'view');	
+			} else {
+				//
+				// PDF output
+				//
+				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_output_type, 5));
+				if (!is_array($va_template_info)) {
+					$this->postError(3110, _t("Could not find view for PDF"),"BaseFindController->PrintSummary()");
+					return;
+				}
+				
+				try {
+					$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
+					$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
+					
+					$vs_content = $this->render($va_template_info['path']);
+					$o_dompdf = new DOMPDF();
+					$o_dompdf->load_html($vs_content);
+					$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
+					$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('results'));
+					$o_dompdf->render();
+					$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+		
+					$vb_printed_properly = true;
+				} catch (Exception $e) {
+					$vb_printed_properly = false;
+					$this->postError(3100, _t("Could not generate PDF"),"BaseFindController->PrintSummary()");
+				}
+				return;			
+			}		
+		}
+ 		# ------------------------------------------------------------------
+ 		
  		# ------------------------------------------------------------------
  	}
