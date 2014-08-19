@@ -1446,8 +1446,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				$va_row['representation_count'] = (int)$va_representation_counts[$qr_res->get('row_id')];
 			}	
 			
-			$va_row = array_merge($va_row, $va_labels[$qr_res->get('item_id')]);
-
+			if (is_array($va_labels[$vn_item_id = $qr_res->get('item_id')])) {
+				$va_row = array_merge($va_row, $va_labels[$vn_item_id]);
+			}
 			if (isset($pa_options['returnItemAttributes']) && is_array($pa_options['returnItemAttributes']) && sizeof($pa_options['returnItemAttributes'])) {
 				// TODO: doing a load for each item is inefficient... must replace with a query
 				$t_item = new ca_set_items($va_row['item_id']);
