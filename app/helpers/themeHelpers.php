@@ -353,7 +353,7 @@
 					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
 				}
 			}
-			if(caObjectsDisplayDownloadLink($o_request)){
+			if(caObjectsDisplayDownloadLink($o_request) && $this->request->user->canDoAction('can_download_media')){
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$vs_download_version = $va_download_display_info['display_version'];
