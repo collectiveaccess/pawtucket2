@@ -1963,7 +1963,7 @@
 				foreach($va_tmp as $vn_id => $va_value_list) {
 					foreach($va_value_list as $va_value) {
 						foreach($va_value as $vs_element_code => $vs_value) {
-							if (strlen($vs_value)) { 
+							if (is_array($vs_value) || strlen($vs_value)) { 
 								$va_attribute_list[] = $vs_value;
 							}
 						}
