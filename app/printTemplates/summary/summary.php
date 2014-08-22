@@ -27,7 +27,7 @@
  * Template configuration:
  *
  * @name Generic summary
- * @type page
+ * @type omit
  * @pageSize letter
  * @pageOrientation portrait
  * @tables *
@@ -51,7 +51,7 @@
 	foreach($va_placements as $vn_placement_id => $va_bundle_info){
 		if (!is_array($va_bundle_info)) break;
 		
-		if (!strlen($vs_display_value = $t_display->getDisplayValue($t_item, $vn_placement_id, array('purify' => true)))) {
+		if (!strlen($vs_display_value = $t_display->getDisplayValue($t_item, $vn_placement_id, array('forReport' => true, 'purify' => true)))) {
 			if (!(bool)$t_display->getSetting('show_empty_values')) { continue; }
 			$vs_display_value = "&lt;"._t('not defined')."&gt;";
 		} 

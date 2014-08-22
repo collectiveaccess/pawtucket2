@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Object tear sheet
+ * @name Summary
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
@@ -40,30 +40,43 @@
 	$va_placements = $this->getVar("placements");
 
 	print $this->render("pdfStart.php");
-	print $this->render("header.php");
-	print $this->render("footer.php");	
+	print $this->render("../header.php");
+	print $this->render("../footer.php");	
 ?>
-	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
-	</div>
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
+	print $t_item->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
 
-	foreach($va_reps as $va_rep) {
-		if(sizeof($va_reps) > 1){
-			# --- more than one rep show thumbnails
-			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
-			print $va_rep['tags']['thumbnail']."\n";
-		}else{
-			# --- one rep - show medium rep
-			print $va_rep['tags']['medium']."\n";
-		}
-	}
+#	foreach($va_reps as $va_rep) {
+#		if(sizeof($va_reps) > 1){
+#			# --- more than one rep show thumbnails
+#			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
+#			print $va_rep['tags']['thumbnail']."\n";
+#		}else{
+#			# --- one rep - show medium rep
+#			print $va_rep['tags']['medium']."\n";
+#		}
+#	}
 ?>
 	</div>
+	<div class='tombstone'>
 		
-	{{{<unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>Artist: ^ca_entities.preferred_labels.displayname</unit>}}}
+	{{{<unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit>}}}
 <?php	
+	print "<div><i>".$t_item->get('ca_objects.preferred_labels')."</i>, ".$t_item->get('ca_objects.creation_date')."</div>";
+	print "<div>".$t_item->get('ca_objects.medium')."</div>"; 	
+	print "<div>".$t_item->get('ca_objects.dimensionsdisplay_dimensions')."</div>"; 				
+	if ($t_item->get('ca_objects.edition.edition_number')) {
+		print "<div>".$t_item->get('ca_objects.edition.edition_number')." / ".$t_item->get('ca_objects.edition.edition_total')."</div>"; 	
+	}
+	if ($t_item->get('ca_objects.edition.ap_number')) {
+		print "<div>".$t_item->get('ca_objects.edition.ap_number')." / ".$t_item->get('ca_objects.edition.ap_total')."</div>"; 	
+	}	
+	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+		print "<div>".$t_item->get('ca_objects.idno')."</div>"; 
+	}
+?>	
+	</div>
+<?php						
 	print $this->render("pdfEnd.php");
