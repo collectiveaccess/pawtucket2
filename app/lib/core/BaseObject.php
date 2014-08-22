@@ -114,7 +114,6 @@
 				
 				$o_notification = new NotificationManager($o_request);
 				$o_notification->addNotification("[{$pn_num}] {$ps_message} ({$ps_context}".($ps_source ? "; {$ps_source}" : '').$vs_stacktrace);
-			print caPrintStackTrace();
 			}
 			return true;
 		}
