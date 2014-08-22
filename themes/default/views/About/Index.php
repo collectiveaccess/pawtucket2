@@ -1,3 +1,6 @@
+<?php
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
+?>
 <H1><?php print _t("About"); ?></H1>
 <div class="row">
 	<div class="col-sm-6 col-md-5">

@@ -326,6 +326,18 @@
 				}
 			);</script>";
 		}
+		if (caGetOption('submitOnReturn', $pa_options, false)) { 
+			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
+				function() {
+					jQuery('#{$ps_id}').keydown(function(e) { 
+					   if(e && e.keyCode == 13)
+					   {
+						  jQuery('#{$ps_id}').submit();
+					   }
+					});
+				}
+			);</script>";
+		}
 		return $vs_buf;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -936,7 +948,12 @@
 		
 		$vs_module = '';
 		$vs_controller = 'Detail';
-		$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null));
+		
+		if(isset($pa_options['action'])){
+			$vs_action = $pa_options['action'];
+		} else {
+			$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null), array('request' => $po_request));
+		}
 		if (caUseIdentifiersInUrls() && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) {
 			$va_ids = $t_table->getFieldValuesForIDs(array($pn_id), array($t_table->getProperty('ID_NUMBERING_ID_FIELD')));
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {

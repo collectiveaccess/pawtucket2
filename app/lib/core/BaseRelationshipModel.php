@@ -666,7 +666,7 @@
 		 * 
 		 */
 		public function getTypeID() {
-			return BaseModel::get('type_id');
+			return (BaseModel::hasField('type_id')) ? BaseModel::get('type_id') : null;
 		}
 		# ------------------------------------------------------
 		/**
@@ -740,4 +740,3 @@
 		}
 		# ------------------------------------------------------
 	}
-?>

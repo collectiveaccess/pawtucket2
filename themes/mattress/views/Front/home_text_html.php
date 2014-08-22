@@ -9,7 +9,8 @@
 <?php
 			print "<div>".caNavLink($this->request, _t('Collections'), '', '', 'Listing', 'collections')."</div>";
 			print "<div>".caNavLink($this->request, _t('Browse Artists'), '', '', 'Browse', 'Artists')."</div>";
-			print "<div>".caNavLink($this->request, _t('Exhibition + Event Chronology'), '', '', 'Browse', 'Exhibitions')."</div>";
+			print "<div>".caNavLink($this->request, _t('Browse Artworks'), '', '', 'Browse', 'Collections')."</div>";
+			print "<div>".caNavLink($this->request, _t('Browse Exhibitions + Events'), '', '', 'Browse', 'Exhibitions')."</div>";
 			print "<div>".caNavLink($this->request, _t('P{art}icipate'), '', '', 'Browse', 'Artists')."</div>";
 ?>			
 		</div>

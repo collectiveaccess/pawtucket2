@@ -67,6 +67,8 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
+			$o_search_config = caGetSearchConfig();
+			$pa_options = array_shift($pa_args);
  						
  			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
@@ -78,7 +80,8 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				print caPrintStackTrace();
+ 				die("Invalid browse type $ps_function");
  			}
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
@@ -86,6 +89,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
@@ -94,10 +98,12 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
+ 			$ps_view = caGetOption('view', $pa_options, $this->request->getParameter('view', pString));
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
-				$va_views = array('list', 'images', 'timeline', 'map', 'timelineData');
+				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
+			} else {
+				$va_views['pdf'] = array();
 			}
 			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
@@ -168,11 +174,12 @@
 			//
 			// Add criteria and execute
 			//
+			$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($this->opo_result_context->getSearchExpression()));
+					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
 				}
 			}
 			
@@ -282,10 +289,15 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 			
-			$this->view->setVar('start', $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues());
+			
+			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			$qr_res->seek($vn_key_start);
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			$qr_res->seek($vn_start);
+			
 			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {
@@ -293,6 +305,9 @@
  			} 
  			
  			switch($ps_view) {
+ 				case 'pdf':
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Browse/browse_results_timelineData_json.php");
@@ -323,6 +338,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
  			$this->opo_result_context->setAsLastFind();
  			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
  			$this->view->setVar('searchInfo', $va_search_info);
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			

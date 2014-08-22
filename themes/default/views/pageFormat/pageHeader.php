@@ -48,13 +48,23 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print $this->request->config->get('html_page_title'); ?></title>
+	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+<?php
+	//
+	// Pull in JS and CSS for debug bar
+	// 
+	if(Debug::isEnabled()) {
+		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
+		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
+		print $o_debugbar_renderer->renderHead();
+	}
+?>
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">

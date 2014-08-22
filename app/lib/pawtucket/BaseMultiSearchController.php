@@ -99,7 +99,7 @@
  			$this->view->setVar("config", $this->config);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
- 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts)));
+ 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts, 'matchOnStem' => (bool)$this->config->get('matchOnStem'))));
  			
  			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString))) { 
  				if (!isset($va_results[$vs_block]['html'])) {

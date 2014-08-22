@@ -69,6 +69,7 @@
  			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
  			$this->view->setVar("activity", $va_set_change_log);
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox"));
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
@@ -89,7 +90,14 @@
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
- 			 switch($ps_view) {
+ 			
+ 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets');
+ 			$o_context->setResultList($t_set->getItems(array('idsOnly' => true)));
+ 			$o_context->saveContext();
+ 			$o_context->setAsLastFind();
+ 			
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
+ 			switch($ps_view) {
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Sets/set_detail_timelineData_json.php");
@@ -869,6 +877,22 @@
 				}
 			}
  			return null;
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Sets',
+ 				'action' => 'setDetail',
+ 				'params' => array(
+ 				
+ 				)
+ 			);
+			return $va_ret;
  		}
  		# -------------------------------------------------------
  	}
