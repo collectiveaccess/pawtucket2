@@ -14,11 +14,16 @@
 				{{{<unit>^ca_occurrences.preferred_labels.name</unit>}}}
 				<!--{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}-->
 			</h2>
-<?php			
-			print "<div class='detailSubtitle'>".$t_item->get('ca_occurrences.event_dates', array('delimiter' => '<br/>'))."</div>"; 
+<?php
+			print "<div class='detailSubtitle'>";
+			if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')) {			
+				print $t_item->get('ca_occurrences.event_dates', array('delimiter' => '<br/>'));
+			}
+			print "</div>"; 
+		
 ?>
 		</div>
-		<div id='mediaArea'>
+		<div id='mediaArea' style="margin-left:-10px;">
 <?php		
 	if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')) {
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
@@ -100,7 +105,11 @@
 		#	print "<div class='description'><div class='metatitle'>"._t('Series')."</div>".$va_series."</div>";
 		#}
 		if (($vs_collection = $t_item->get('ca_occurrences.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
-			print "<div class='description'><div class='metatitle'>"._t('Description')."</div>".$vs_collection."</div>";
+			print "<div class='description'>";
+			if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')){
+				print "<div class='metatitle'>"._t('Description');
+			}
+			print "</div>".$vs_collection."</div>";
 		}
 		if (($vs_statement = $t_item->get('ca_occurrences.statement.statement_text', array('template' => '^statement_text'))) != "") {
 			print "<div class='description'><div class='metatitle'>"._t('Artist Statement')."</div>".$vs_statement."</div>";

@@ -1264,9 +1264,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			thumbnailVersion = Same as 'thumbnailVersions' except it is a single value. (Maintained for compatibility with older code.)
 	 *			limit = Limits the total number of records to be returned
 	 *			checkAccess = An array of row-level access values to check set members for, often produced by the caGetUserAccessValues() helper. Set members with access values not in the list will be omitted. If this option is not set or left null no access checking is done.
-	 *			returnRowIdsOnly = If true a simple array of row_ids (keys of the set members) for members of the set is returned rather than full item-level info for each set member.
+	 *			returnRowIdsOnly = If true a simple array of row_ids (keys of the set members) for members of the set is returned rather than full item-level info for each set member. IDs are keys in the returned array.
 	 *			returnItemIdsOnly = If true a simple array of item_ids (keys for the ca_set_items rows themselves) is returned rather than full item-level info for each set member.
 	 *			returnItemAttributes = A list of attribute element codes for the ca_set_item record to return values for.
+	 *			idsOnly = Return a simple numerically indexed array of row_ids
+	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
 	 *			set_id, item_id, row_id, rank, label_id, locale_id, caption (from the ca_set_items label), all instrinsic field content from the row_id, the display label of the row
@@ -1397,7 +1399,11 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			
 			unset($va_row['media']);
 			
-			if (isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly'])) {
+			if (
+				(isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly']))
+				||
+				(isset($pa_options['idsOnly']) && ($pa_options['idsOnly']))
+			) {
 				$va_items[$qr_res->get('row_id')] = true;
 				continue;
 			}
@@ -1461,6 +1467,10 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		
 			$va_items[$qr_res->get('item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
+		}
+		
+		if (caGetOption('idsOnly', $pa_options, false)) {
+			return array_keys($va_items);
 		}
 		return $va_items;
 	}
