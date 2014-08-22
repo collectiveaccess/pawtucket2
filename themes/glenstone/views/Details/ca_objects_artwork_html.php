@@ -50,9 +50,15 @@
 				<div class='tabdiv'>
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#artworkInfo').fadeIn(100);">Tombstone</a></div>
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#factSheet').fadeIn(100);">Fact Sheet</a></div>
+<?php 			if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){ ?>					
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Location').fadeIn(100);">Location</a></div> 
+<?php 			}  ?>			
+<?php 			if ($this->request->user->hasUserRole("founder")){ ?>					
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Financial').fadeIn(100);">Financials</a></div>
+<?php 			}  ?>	
+<?php 			if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){ ?>										
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Condition').fadeIn(100);">Condition</a></div>
+<?php 			}  ?>						
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Description').fadeIn(100);">Description</a></div>
 				</div>
 				
@@ -114,6 +120,15 @@
 							//
 							$va_placement = array_shift($va_placements);
 							$va_bundle_settings = $va_placement['settings'];
+							
+							// Rewrite back-end display settings to remove link tags
+							// since the referenced details don't exist on the front-end
+							foreach($va_bundle_settings as $vs_key => $vm_val) {
+								if (preg_match("!displayTemplate$!", $vs_key)) {
+									$va_bundle_settings[$vs_key] = str_ireplace("<l>", "", str_ireplace("</l>", "", $vm_val));
+								}
+							} 
+							
 							if (is_array($va_history = $t_object->getObjectHistory($va_bundle_settings, array('displayLabelOnly' => false, 'limit' => 1, 'currentOnly' => true))) && (sizeof($va_history) > 0)) {
 								$va_current_location = array_shift(array_shift($va_history));
 								if ($va_current_location['display']) { print "<div class='inspectorCurrentLocation'><strong>"._t('Current').'</strong><br/>'.$va_current_location['display']."</div>"; }
@@ -150,23 +165,32 @@
 						if ($va_purchased_by = $t_object->get('ca_object_lots.purchased_by', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Purchased by: </span><span class='meta'>".$va_purchased_by."</span></div>";
 						}	
-						if ($t_object->get('ca_objects.payment_details.payment_amount')) {
-							$va_payment = $t_object->get('ca_objects.payment_details', array('delimiter' => '<hr>', 'template' => '<b>Payment Amount: </b>^payment_amount <br/><b>Payment Date:</b> ^payment_date <br/><b>Payment Quarter:</b> ^payment_quarter <br/><b>Installment:</b> ^installment<br/><b>Notes:</b> ^payment_notes'));
-							print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>".$va_payment."</span></div>";
+						if ($va_payment = $t_object->get('ca_objects.payment_details', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+							print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>";
+							foreach ($va_payment as $va_key => $va_payment_details) {
+								if ($va_payment_details['payment_amount']) {print "<b>Payment Amount:</b> ".$va_payment_details['payment_amount']."<br/>";}
+								if ($va_payment_details['payment_date']) {print "<b>Payment Date:</b> ".$va_payment_details['payment_date']."<br/>";}
+								if ($va_payment_details['payment_quarter']) {print "<b>Payment Quarter:</b> ".$va_payment_details['payment_quarter']."<br/>";}
+								if ($va_payment_details['payment_installment']) {print "<b>Installment:</b> ".$va_payment_details['payment_installment']."<br/>";}
+								if ($va_payment_details['payment_notes']) {print "<b>Payment Notes:</b> ".$va_payment_details['payment_notes']."<br/>";}
+							}
+							print "</span></div>";
 						}
+							#$va_payment = $t_object->get('ca_objects.payment_details', array('delimiter' => '<hr>', 'convertCodesToDisplayText' => true, 'template' => '<b>Payment Amount: </b>^payment_amount <br/><ifdef code="ca_objects.payment_details.payment_date"><b>Payment Date:</b> ^payment_date <br/></ifdef><ifdef code="ca_objects.payment_details.payment_quarter"><b>Payment Quarter:</b> ^payment_quarter <br/></ifdef><ifdef code="ca_objects.payment_details.installment"><b>Installment:</b> ^installment<br/></ifdef><ifdef code="ca_objects.payment_details.payment_notes"><b>Notes:</b> ^payment_notes</ifdef>'));
+							#print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>".$va_payment."</span></div>";
+						#}
 						print "<br/>";						
-						if ($va_insurance = $t_object->get('ca_objects.current_insurance', array('template' => '^insurance_value ^insurance_date'))) {
-							print "<div class='unit'><span class='metaTitle'>Current Insurance <br/>Value: </span><span class='meta'><br/>".$va_insurance."</span></div>";
-						}	
+						#if ($va_insurance = $t_object->get('ca_objects.current_insurance', array('template' => '^insurance_value ^insurance_date'))) {
+						#	print "<div class='unit'><span class='metaTitle'>Current Insurance <br/>Value: </span><span class='meta'><br/>".$va_insurance."</span></div>";
+						#}	
 						if ($t_object->get('ca_objects.insurance_valuation.insurance_value_price')) {
 							$va_appraisal = $t_object->get('ca_objects.insurance_valuation', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)); 
-							print "<div class='unit'><span class='metaTitle'>Appraisal: </span><span class='meta'>";
+							print "<div class='unit'><span class='metaTitle'>Current Insurance Value: </span><span class='meta'>";
 							$va_appraisal_rev = array_reverse($va_appraisal);
 							foreach ($va_appraisal_rev as $ar_key => $va_appraisal_r) {
 								print "<b>Value: </b>".$va_appraisal_r['insurance_value_price']."<br/>";
 								print "<b>Date: </b>".$va_appraisal_r['insurance_valuation_date']."<br/>";
 								print "<b>Appraiser: </b>".$va_appraisal_r['insurance_appraiser']."<br/>";
-								print "<b>Type: </b>".$va_appraisal_r['valuation_types']."<br/>";
 								if ($va_appraisal_r['valuation_notes']) {
 									print "<b>Appraisal Notes: </b>".$va_appraisal_r['valuation_notes'];
 								}
@@ -174,6 +198,22 @@
 							}
 							print"</span></div>";
 						}
+						if ($t_object->get('ca_objects.financial_uploads.financial_uploads_media')){
+							$va_financial_images = $t_object->get('ca_objects.financial_uploads', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
+							print '<div class="unit "><span class="metaTitle">&nbsp;</span><span class="meta">';
+
+							$o_db = new Db();
+							$vn_media_element_id = $t_object->_getElementID('financial_uploads_media');
+							foreach ($va_financial_images as $vn_financial_id => $va_financial_image) {
+								if ($va_financial_image['financial_uploads_primary'] == 162) {
+									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_financial_id, $vn_media_element_id)) ;
+									if ($qr_res->nextRow()) {
+										print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_financial_image['financial_uploads_media']."</a>";
+									}
+								}
+							}
+							print "</span><div class='clearfix'></div></div>";
+						}						
 						if ($va_primary_check = $t_object->get('ca_object_lots.invoice_upload.invoice_upload_primary', array('returnAsArray' => true))){
 							$va_primary = false;
 							foreach($va_primary_check as $va_key => $va_check) {
@@ -234,24 +274,7 @@
 								}
 							}
 							print "</span><div class='clearfix'></div></div>";
-						}		
-						#if ($t_object->get('ca_object_lots.bill_upload.bill_upload_media')){
-						#	$va_bill_images = $t_object->get('ca_object_lots.bill_upload', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon', 'convertCodesToDisplayText' => true)); 
-						#	print '<div class="unit "><span class="metaTitle">Bill of Sale:</span><span class="meta">';
-
-						#	$o_db = new Db();
-						#	$vn_media_element_id = $t_object->_getElementID('bill_upload_media');
-						#	foreach ($va_bill_images as $vn_bill_id => $va_bill_image) {
-						#		if ($va_bill_image['bill_upload_primary'] == "Yes") {
-						#			$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_bill_id, $vn_media_element_id)) ;
-						#			if ($qr_res->nextRow()) {
-						#				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_bill_image['bill_upload_media']."</a>";
-
-						#			}
-						#		}
-						#	}
-						#	print "</span><div class='clearfix'></div></div>";
-						#}												
+						}														
 #						if ($t_object->get('ca_objects.appraisal.appraisal_value')) {
 #							$va_appraisal = $t_object->get('ca_objects.appraisal', array('returnAsArray' => true)); 
 #							print "<div class='unit'><span class='metaTitle'>Appraisal: </span><span class='meta'>";
