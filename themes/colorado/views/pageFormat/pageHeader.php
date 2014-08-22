@@ -75,6 +75,40 @@ switch($this->request->getController()){
 		}
 	break;
 	# -----------------------------------
+	case "Search":
+		switch($this->request->getAction()){
+			case "eggshell":
+				$ps_subsite = "eggshell";
+			break;
+			# ------------------
+			case "tracks":
+				$ps_subsite = "tracks";
+			break;
+			# ------------------
+			case "vertebrate":
+				$ps_subsite = "vertebrate";
+			break;
+			# ------------------
+			case "advanced":
+				switch($this->request->getActionExtra()){
+					case "eggshell":
+						$ps_subsite = "eggshell";
+					break;
+					# ------------------
+					case "tracks":
+						$ps_subsite = "tracks";
+					break;
+					# ------------------
+					case "vertebrate":
+						$ps_subsite = "vertebrate";
+					break;
+					# ------------------
+				}
+			break;
+			# ------------------
+		}
+	break;
+	# -----------------------------------
 	case "Detail":
 		$ps_subsite = $this->request->getParameter("subsite", pString);
 	break;
@@ -99,7 +133,16 @@ if(!$ps_subsite){
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
-
+<?php
+	//
+	// Pull in JS and CSS for debug bar
+	// 
+	if(Debug::isEnabled()) {
+		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
+		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
+		print $o_debugbar_renderer->renderHead();
+	}
+?>
 </head>
 <body>
 		<div id="topBar">
@@ -160,7 +203,7 @@ if(!$ps_subsite){
 					if($ps_subsite != "vertebrate"){
 						print caNavLink($this->request, _t("About"), "", "", "About", "Fossil".ucfirst($ps_subsite)."Collection")."<div class='navDivide'></div>";
 					}
-					print caNavLink($this->request, _t("Advanced Search"), "", "", "AdvancedSearch", "Index")."<div class='navDivide'></div>";
+					print caNavLink($this->request, _t("Advanced Search"), "", "", "Search/advanced", $ps_subsite)."<div class='navDivide'></div>";
 					print caNavLink($this->request, _t("Browse"), "", "", "Browse", $ps_subsite)."<div class='navDivide'></div>";
 					
 					print "<p>More collections:</p>";

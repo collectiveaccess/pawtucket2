@@ -90,6 +90,12 @@
 			$this->view->setVar("set_items", $va_set_items);
 			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
+ 			
+ 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets');
+ 			$o_context->setResultList($t_set->getItems(array('idsOnly' => true)));
+ 			$o_context->saveContext();
+ 			$o_context->setAsLastFind();
+ 			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'timelineData':
@@ -871,6 +877,22 @@
 				}
 			}
  			return null;
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Sets',
+ 				'action' => 'setDetail',
+ 				'params' => array(
+ 				
+ 				)
+ 			);
+			return $va_ret;
  		}
  		# -------------------------------------------------------
  	}

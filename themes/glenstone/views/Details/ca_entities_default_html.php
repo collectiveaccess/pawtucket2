@@ -29,9 +29,10 @@
 			<!-- Related Artworks -->
 <?php			
 		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+
 ?>		
 			<div id="detailRelatedObjects">
-				<H6>Related Artworks </H6>
+				<H6><?php print sizeof($va_artwork_ids); ?> Related Artworks </H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
@@ -249,21 +250,50 @@
 #				}
 	
 ?>		
-			<h2>Other Information</h2>
+			<h2>Contact Information</h2>
 			
 				{{{<ifcount min="1" code="ca_entities.locations.location_description"><H6>Location</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>">^ca_entities.locations.location_type<ifdef code="ca_entities.locations.location_type,ca_entities.locations.location_description">: </ifdef>^ca_entities.locations.location_description</unit>}}} 
 					
 				{{{<ifdef code="ca_entities.affiliation|ca_entities.job_title"><H6>Affiliation</H6></ifdef>}}}
 				{{{^ca_entities.affiliation}}}{{{<ifdef code="ca_entities.affiliation,ca_entities.job_title">: </ifdef>}}}{{{^ca_entities.job_title}}} 
+<?php				
+				if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_addresses as $va_add_key => $va_address) {
+							#print_r($va_address);
+							if ($va_address['address1']) {
+								print $va_address['address1']."<br/>";
+							}
+							if ($va_address['address2']) {
+								print $va_address['address2']."<br/>";
+							}
+							if ($va_address['city']) {
+								print $va_address['city'].", ";
+							}
+							print $va_address['stateprovince'];
+							print " ".$va_address['postalcode'];
+							print " ".$va_address['country'];
+							if ($va_address['address1_type']) {
+								print "<br/>(".$va_address['address1_type'].") ";
+							}					
+							print "<br/><br/>";
+						}
+					}
+					print $t_entity->getWithTemplate("^ca_entities.telephone.telephone2 ^ca_entities.telephone.telephone3<br/>", array('delimiter' => ""));
+					print $t_entity->getWithTemplate("^ca_entities.email_address");
+					if ($t_entity->getWithTemplate("^ca_entities.entity_website")) {
+						print $t_entity->get("ca_entities.entity_website", array('template' => '<a href="^entity_website">^entity_website</a>', 'delimiter' => '<br/>'));
+					}
+
+				}				
 				
+?>				
 				
+			</div><!-- end col -->
+			<div class='col-md-6 col-lg-6'>			
 				{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.related.preferred_labels.displayname</unit><br/><br/>}}}
-			</div><!-- end col -->
-			<div class='col-md-6 col-lg-6'>
-				
-
 			</div><!-- end col -->
 		</div><!-- end row -->

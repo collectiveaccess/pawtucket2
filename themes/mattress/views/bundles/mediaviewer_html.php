@@ -68,7 +68,7 @@ if($vs_display_type == 'media_overlay'){
 ?>
 	<!-- Controls - only for media overlay -->
 	<div class="caMediaOverlayControls">
-		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;&nbsp;Close</a></div>
 <?php
 			if(caObjectsDisplayDownloadLink($this->request)){
 ?>
@@ -85,7 +85,11 @@ if($vs_display_type == 'media_overlay'){
 ?>
 			<div class='objectInfo'>
 <?php
+			if ($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				$vs_label = $t_object->get('ca_objects.nonpreferred_labels.name');
+			} else {
 				$vs_label = $t_object->getLabelForDisplay();
+			}
 				$vn_obj_id = $t_object->get('ca_objects.object_id');
 				print (mb_strlen($vs_label) > 80) ? caNavLink($this->request, mb_substr($vs_label, 0, 80)."...", '', '', 'Detail', 'Objects/'.$vn_obj_id) : caNavLink($this->request, $vs_label, '', '', 'Detail', 'Objects/'.$vn_obj_id);
 				

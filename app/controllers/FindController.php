@@ -25,11 +25,39 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	
  	class FindController extends ActionController {
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
+ 			// merge displays with drop-in print templates
+			$va_export_options = caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$this->view->setVar('export_formats', $va_export_options);
+			//$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
+			
+			$va_options = array();
+			foreach($va_export_options as $vn_i => $va_format_info) {
+				$va_options[$va_format_info['name']] = $va_format_info['code'];
+			}
+			// Get current display list
+			$t_display = new ca_bundle_displays();
+ 			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+ 				$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
+ 			}
+ 			ksort($va_options);
+ 			
+			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
+ 		}
+ 		# ------------------------------------------------------------------
  		/**
  		 * Given a item_id (request parameter 'id') returns a list of direct children for use in the hierarchy browser
  		 * Returned data is JSON format
@@ -37,21 +65,27 @@
  		public function getFacetHierarchyLevel() {
  			$va_access_values = caGetUserAccessValues($this->request);
  			$ps_facet_name = $this->request->getParameter('facet', pString);
- 			$this->view->setVar("facet_name", $ps_facet_name);
- 			$this->view->setVar("key", $this->request->getParameter('key', pString));
- 			$vs_browse_type = $this->request->getParameter('browseType', pString);
- 			if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
+ 			$ps_cache_key = $this->request->getParameter('key', pString);
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			} 			
- 			$this->view->setVar("browse_type", $vs_browse_type);
+ 			
+ 			$this->view->setVar("facet_name", $ps_facet_name);
+ 			$this->view->setVar("key", $ps_cache_key);
+ 			$this->view->setVar("browse_type", $ps_browse_type);
+ 			
  			$vs_class = $va_browse_info['table'];
 			$o_browse = caGetBrowseInstance($vs_class);
+			
  			if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
- 			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+ 			if ($ps_cache_key) {
 				$o_browse->reload($ps_cache_key);
 			}
- 			$va_facet = $o_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
+			
+ 			$va_facet = $o_browse->getFacet($ps_facet_name, array('checkAccess' => $va_access_values));
  			
 			$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString));
 			if (!sizeof($pa_ids)) { $pa_ids = array(null); }
@@ -69,17 +103,17 @@
 				$vn_id = $va_tmp[0];
 				$vn_start = (int)$va_tmp[1];
 				if($vn_start < 0) { $vn_start = 0; }
-				
  				switch($va_facet_info['type']) {
 					case 'attribute':
 						// is it a list attribute?
 						$t_element = new ca_metadata_elements();
 						if ($t_element->load(array('element_code' => $va_facet_info['element_code']))) {
-							if ($t_element->get('datatype') == 3) { // 3=list
+							if ($t_element->get('datatype') == __CA_ATTRIBUTE_VALUE_LIST__) {
 								if (!$vn_id) {
 									$t_list = new ca_lists();
 									$vn_id = $t_list->getRootListItemID($t_element->get('list_id'));
 								}
+								
 								foreach($va_facet as $vn_i => $va_item) {
 									if ($va_item['parent_id'] == $vn_id) {
 										$va_item['item_id'] = $va_item['id'];
@@ -161,18 +195,19 @@
  			$this->view->setVar('facet_list', $va_level_data);
  			
  			switch($this->request->getParameter('returnAs', pString)){
+ 				# ------------------------------------------------
  				case "json":
  					return $this->render('Browse/facet_hierarchy_level_json.php');
- 				break;
+ 					break;
  				# ------------------------------------------------
  				case "html":
  				default:
  					return $this->render('Browse/facet_hierarchy_level_html.php');
- 				break;
+ 					break;
  				# ------------------------------------------------
  			}
  		}
- 		# -------------------------------------------------------
+ 		# ------------------------------------------------------------------
  		/**
  		 * Given a item_id (request parameter 'id') returns a list of ancestors for use in the hierarchy browser
  		 * Returned data is JSON format
@@ -183,12 +218,12 @@
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$this->view->setVar("facet_name", $ps_facet_name);
  			$this->view->setVar("key", $this->request->getParameter('key', pString));
- 			$vs_browse_type = $this->request->getParameter('browseType', pString);
- 			if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
  				die("Invalid browse type");
  			} 			
- 			$this->view->setVar("browse_type", $vs_browse_type);
+ 			$this->view->setVar("browse_type", $ps_browse_type);
  			$vs_class = $va_browse_info['table'];
 			$o_browse = caGetBrowseInstance($vs_class);
  			if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
@@ -284,5 +319,82 @@
  			}
  		}
  		# -------------------------------------------------------
+		# Export
+		# -------------------------------------------------------
+		/**
+		 * Generate  export file of current result
+		 */
+		protected function _genExport($po_result, $ps_template, $ps_output_filename, $ps_title=null) {
+			$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
+			$this->opo_result_context->saveContext();
+			
+			if (substr($ps_template, 0, 5) === '_pdf_') {
+				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
+			} elseif (substr($ps_template, 0, 9) === '_display_') {
+				$vn_display_id = substr($ps_template, 9);
+				$t_display = new ca_bundle_displays($vn_display_id);
+				
+				if ($vn_display_id && ($t_display->haveAccessToDisplay($this->request->getUserID(), __CA_BUNDLE_DISPLAY_READ_ACCESS__))) {
+					$this->view->setVar('display', $t_display);
+					
+					$va_placements = $t_display->getPlacements(array('settingsOnly' => true));
+					foreach($va_placements as $vn_placement_id => $va_display_item) {
+						$va_settings = caUnserializeForDatabase($va_display_item['settings']);
+					
+						// get column header text
+						$vs_header = $va_display_item['display'];
+						if (isset($va_settings['label']) && is_array($va_settings['label'])) {
+							$va_tmp = caExtractValuesByUserLocale(array($va_settings['label']));
+							if ($vs_tmp = array_shift($va_tmp)) { $vs_header = $vs_tmp; }
+						}
+					
+						$va_display_list[$vn_placement_id] = array(
+							'placement_id' => $vn_placement_id,
+							'bundle_name' => $va_display_item['bundle_name'],
+							'display' => $vs_header,
+							'settings' => $va_settings
+						);
+					}
+					$this->view->setVar('display_list', $va_display_list);
+				} else {
+					$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
+					return;
+				}
+				$va_template_info = caGetPrintTemplateDetails('results', 'display');
+			} else {
+				$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
+				return;
+			}
+			
+			//
+			// PDF output
+			//
+			if (!is_array($va_template_info)) {
+				$this->postError(3110, _t("Could not find view for PDF"),"FindController->_genExport()");
+				return;
+			}
+			
+			try {
+				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
+				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
+			
+				$vs_content = $this->render($va_template_info['path']);
+				$o_dompdf = new DOMPDF();
+				$o_dompdf->load_html($vs_content);
+				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
+				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('results'));
+				$o_dompdf->render();
+				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+
+				$vb_printed_properly = true;
+			} catch (Exception $e) {
+				$vb_printed_properly = false;
+				$this->postError(3100, _t("Could not generate PDF"),"FindController->_genExport()");
+			}
+				
+			return;
+		}
+ 		# ------------------------------------------------------------------
+ 		
+ 		# ------------------------------------------------------------------
  	}
- 	

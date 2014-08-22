@@ -49,6 +49,31 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
 	public function __construct() {
 		parent::__construct();
 	}
+	
+ 	# ------------------------------------------------------
+ 	/**
+ 	 * 
+ 	 *
+ 	 * @param RequestHTTP $po_request
+ 	 * @param array $pa_options
+ 	 * @param array $pa_additional_display_options
+ 	 * @return string HTML output
+ 	 */
+ 	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
+ 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
+ 	}
+ 	# ------------------------------------------------------
+ 	/**
+ 	 * 
+ 	 *
+ 	 * @param RequestHTTP $po_request
+ 	 * @param array $pa_options
+ 	 * @param array $pa_additional_display_options
+ 	 * @return string HTML output
+ 	 */
+ 	public function getRepresentationViewerHTMLBundles($po_request, $pa_options=null, $pa_additional_display_options=null) {
+ 		return caRepresentationViewerHTMLBundleForSearchResult($this, $po_request, $pa_options, $pa_additional_display_options);
+ 	}
 	# -------------------------------------
 }
 ?>

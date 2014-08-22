@@ -38,8 +38,8 @@
  			
  			$va_nums = explode(';', $this->request->getParameter('n', pString));
  			
- 			$va_error_messages = array();
- 			if (is_array($va_nums)) {
+ 			$va_error_messages = $this->notification->getNotifications();
+ 			if ((!is_array($va_error_messages) || (sizeof($va_error_messages) == 0)) && is_array($va_nums)) {
  				$o_err = new Error(0, '', '', '', false, false);
  				foreach($va_nums as $vn_error_number) {
  					$o_err->setError($vn_error_number, '', '', false, false);

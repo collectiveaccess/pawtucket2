@@ -228,7 +228,7 @@
 					foreach ($va_collections as $collection_id => $va_collection) {
 						$vn_collection_id = $va_collection['collection_id'];
 						
-						if ($vn_i == 0) {print "<div class='entitiesSet'>";}
+						if ($vn_i == 0) {print "<div class='collectionsSet entities'>";}
 						print caNavLink($this->request, "<div class='collectionsResult'>".$va_collection['name']."</div>", '', '','Detail', 'Collections/'.$va_collection['collection_id']);
 						$vn_i++;
 						if ($vn_i == 4) {

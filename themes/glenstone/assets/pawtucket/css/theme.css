@@ -75,7 +75,7 @@ a:hover {
 	margin: 0px auto 0px auto;
 }
 .container {
-	max-width:none;
+	max-width:1048px;
 }
 .navbar-collapse {
 	max-width:none;
@@ -158,11 +158,11 @@ a:hover {
 	}
 	.nav > li.dropdown > a.icon {
 		padding-top: 24px;
-		padding-bottom: 18px;
+		padding-bottom: 15px;
 	}
 	.nav > li > a {
 		padding-top: 25px;
-		padding-bottom: 18px;
+		padding-bottom: 15px;
 	}
 	.navbar-brand {
 		width: 250px;
@@ -174,7 +174,7 @@ a:hover {
 		text-transform:uppercase;
 		font-family: 'Source Sans Pro', sans-serif;
 		font-weight: 400;
-		font-size: 16px;
+		font-size: 14px;
 		letter-spacing: 2pt;
 	}
 	.navbar-default .navbar-nav > .open > a:hover {
@@ -186,10 +186,10 @@ a:hover {
 		padding-top:20px;
 	}
 	.navbar-nav > li {
-		padding-left:20px;
+		padding-left:10px;
 	}
 	.nav > li.dropdown > a.icon {
-		padding-top: 10px;
+		
 		padding-bottom: 3px;
 	}	
 	.navbar .formOutline {
@@ -209,7 +209,17 @@ a:hover {
 		margin-bottom:0px;
 	}
 }
-@media (max-width: 880px){
+@media (max-width: 952px) {
+	.nav > li > a {
+		padding:25px 10px 15px 10px;
+	}
+}
+@media (max-width: 768px) {
+	.nav > li > a {
+		padding:5px 10px 5px 10px;
+	}
+}
+@media (max-width: 893px){
 	.navbar-brand {
 		width: 200px;
 	}
@@ -223,6 +233,18 @@ a:hover {
 		font-size: 14px;
 		letter-spacing: 2pt;
 		padding:25px 10px 10px 10px;
+	}
+}
+@media (max-width: 845px) and (min-width: 768px){
+	.navbar-default .navbar-nav > li > a {
+		font-size:12px;
+		padding: 25px 3px 5px 10px;
+		
+	}
+}
+@media (max-width: 768px) and (min-width: 767px){
+	.navbar-default .navbar-nav > li > a {
+		padding: 25px 3px 5px 0px;
 	}
 }
 
@@ -660,6 +682,30 @@ p.artist.lower {
 	min-height:72px;
 	height:auto;
 }
+.reportTools {
+	float:right;
+	padding-left:10px;
+}
+.reportTools .button{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 800;
+	color: #666;
+	font-size: 12px;
+	text-transform: lowercase;
+}
+.artwork.detail #bViewButtons {
+	float:right;
+	margin-right: 40px;
+}
+#bViewButtons .glyphicon {
+	padding:4px 2px 0px 0px;
+}
+#bViewButtons select {
+	background-color:#ddd;
+	border:1px solid #ddd; 
+	font-size:12px;
+	border-radius:4px;
+}
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg {
 		max-height:180px;
@@ -729,11 +775,29 @@ p.artist.lower {
 .detail.artwork .jcarousel li {
 	margin-right:0px;
 	overflow: hidden;
-}	
-.repViewerCont{
 	text-align:center;
 }
-
+.relatedLoan {
+	height:420px;
+}	
+.loans .loanImg {
+	max-height: 260px;
+	overflow:hidden;
+}
+.loans.detail img {
+	width:100%;
+	height:auto;
+}
+.loans.detail .attributeMediaThumbnail img{
+	width:auto;
+}
+.loans.detail .attributeMediaInfoContainer, .object_lots.detail .attributeMediaInfoContainer, .artwork.detail .attributeMediaInfoContainer {
+	float: left; 
+	margin-right: 5px;
+	margin-top: 5px;
+	border: 1px solid #ccc;
+	padding: 3px;
+}
 #detailRepresentationThumbnails {
 	padding-top:0px;
 }
@@ -821,6 +885,18 @@ p.artist.lower {
 .detail .scrollButtonNext {
 	right: 0px;
 }
+.detail .conditionImage {
+	float:left;
+	margin-right:10px;
+	margin-bottom:10px;
+}
+#Condition .clearfix {
+	margin-bottom:5px;
+}
+#Condition u {
+	border-bottom:1px solid #333;
+	text-decoration:none;
+}
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious{
 	height: 60px;
 	margin-top: 50px;
@@ -854,7 +930,7 @@ p.artist.lower {
 }
 .detail .detailNavBgLeft {
 	margin-top: 0px;
-	margin-left: -45px;
+	margin-left: -25px;
 	margin-bottom: -50px;
 	width: 45px;
 	text-transform: uppercase;
@@ -896,6 +972,26 @@ p.artist.lower {
 .mediaPlaceholder .fa{
 	font-size:60px;
 }
+.col-lg-7.media, .col-md-7.media, .col-sm-7.media{ 
+	padding: 0px 22px 0px 22px;
+}
+.exText {
+	font-weight: 200;
+	font-size: 15px;
+	color: #666;
+}
+
+@media (max-width: 768px){
+	.relatedLoan {
+		height:auto;
+	}
+}
+.relatedLot p, .relatedLoan p {
+	margin:0px;
+}
+.relatedLot .lotCaption, .relatedLoan .lotCaption{
+	margin:10px 0px 10px 0px;
+}
 .requestButton {
 	padding:10px;
 	background-color:#eee;
@@ -932,7 +1028,12 @@ p.artist.lower {
 	.mediaPlaceholder {
 		display:none;
 	}
+	.col-lg-7.media img, .col-md-7.media img, .col-sm-7.media img{
+		width:100%;
+		height:auto;
+	}
 }
+
 
 /* Entity */
 
@@ -1104,6 +1205,41 @@ div.caMediaOverlayControls .objectInfo {
 div.caMediaOverlayControls .close {
 	opacity:1;
 }
+
+
+/* Rolodex */
+
+#rolodex form {
+	margin-top:20px;
+}
+#rolodex .formLabel {
+	display:block;
+	text-transform:uppercase;
+	color:#888;
+}
+#rolodex .formInput {
+	float:left;
+	margin-right:20px;
+}
+#rolodex input {
+	width:90%;
+}
+#rolodex .searchSubmit {
+	background-color: #ccc;
+	color: #fff;
+	padding:5px;
+}
+#rolodex .submit {
+	text-align:right;
+	margin-top:10px;
+	width:90%;
+}
+@media (max-width: 768px){
+	#rolodex .results .col-sm-4{
+		padding-bottom:10px;
+	}
+}
+
 
 /* Advanced Search */
 
