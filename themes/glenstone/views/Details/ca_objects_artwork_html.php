@@ -3,6 +3,11 @@
 	$vn_object_id = $t_object->get('ca_objects.object_id');
 	$va_comments = $this->getVar("comments");
 	$pn_rep_id = $this->getVar("representation_id");
+	
+	
+	$va_export_formats = $this->getVar('export_formats');
+	$vs_export_format_select = $this->getVar('export_format_select');
+	
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -19,8 +24,18 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div>
+
 <div class="row">
 	<div class="container">
+<?php
+	// Export as PDF
+	print "<div id='bViewButtons'>";
+	print "<div class='reportTools'>";
+	print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction().'/'.$this->request->getActionExtra(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+	print "{$vs_export_format_select}".caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
+	print "</div>"; 
+	print "</div>"; 
+?>
 			<div class="artworkTitle">
 				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels.name</l></unit>}}}</H4>
 				<H5><i>{{{ca_objects.preferred_labels.name}}}</i>, {{{ca_objects.creation_date}}}</H5> 

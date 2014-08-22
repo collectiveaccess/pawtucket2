@@ -1,6 +1,6 @@
-<?php	
+<?php
 /* ----------------------------------------------------------------------
- * app/templates/header.php : standard PDF report header
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,22 +26,18 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Header
- * @type fragment
+ * @name PDF start
+ * @type pageStart
  *
  * ----------------------------------------------------------------------
  */
  
-	if($this->request->config->get('report_header_enabled')) {
+ $t_item = $this->getVar('t_subject');
+ 
 ?>
-<div id='header'>
-<?php
-	if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-		print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-	}
-	print "<div class='pagingText'>"._t('Page')." </div>";
-?>
-</div>
-<?php
-	}
-?>
+<html>
+	<head>
+		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
+		<link type="text/css" href="local/pdf.css" rel="stylesheet" />
+	</head>
+	<body>

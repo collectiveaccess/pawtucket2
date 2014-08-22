@@ -68,6 +68,7 @@
  		public function __call($ps_function, $pa_args) {
  			$o_config = caGetBrowseConfig();
 			$o_search_config = caGetSearchConfig();
+			$pa_options = array_shift($pa_args);
  						
  			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
@@ -79,7 +80,8 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				print caPrintStackTrace();
+ 				die("Invalid browse type $ps_function");
  			}
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
@@ -96,10 +98,12 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
+ 			$ps_view = caGetOption('view', $pa_options, $this->request->getParameter('view', pString));
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
-				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array());
+				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
+			} else {
+				$va_views['pdf'] = array();
 			}
 			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
@@ -170,11 +174,11 @@
 			//
 			// Add criteria and execute
 			//
+			$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
-					$vs_search_expression = $this->opo_result_context->getSearchExpression();
 					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression)) ? '*' : '')));
 				}
 			}
@@ -301,6 +305,9 @@
  			} 
  			
  			switch($ps_view) {
+ 				case 'pdf':
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Browse/browse_results_timelineData_json.php");
