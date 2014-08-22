@@ -682,6 +682,30 @@ p.artist.lower {
 	min-height:72px;
 	height:auto;
 }
+.reportTools {
+	float:right;
+	padding-left:10px;
+}
+.reportTools .button{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight: 800;
+	color: #666;
+	font-size: 12px;
+	text-transform: lowercase;
+}
+.artwork.detail #bViewButtons {
+	float:right;
+	margin-right: 40px;
+}
+#bViewButtons .glyphicon {
+	padding:4px 2px 0px 0px;
+}
+#bViewButtons select {
+	background-color:#ddd;
+	border:1px solid #ddd; 
+	font-size:12px;
+	border-radius:4px;
+}
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg {
 		max-height:180px;
