@@ -1719,7 +1719,7 @@
 			$o_results = $this->getResults();
 			$va_criteria = $this->getCriteria();
 			
-			if ($o_results->numHits() > 1) {
+			if (($o_results->numHits() > 1) || !sizeof($va_criteria)) {
 				$va_facets = $this->getFacetList();
 				$va_parent_browse_params = $this->opo_ca_browse_cache->getParameters();
 				
