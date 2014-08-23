@@ -250,16 +250,16 @@ class SearchEngine extends SearchBase {
 			$o_res->seek(0);
 				
 			if (isset($pa_options['sets']) && $pa_options['sets']) {
-			//	$va_hits = $this->filterHitsBySets($va_hits, $pa_options['sets'], array('search' => $vs_search));
+				$va_hits = $this->filterHitsBySets($va_hits, $pa_options['sets'], array('search' => $vs_search));
 			}
 						
 			$vn_user_id = (isset($pa_options['user_id']) && (int)$pa_options['user_id']) ?  (int)$pa_options['user_id'] : (int)$AUTH_CURRENT_USER_ID;
 			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL()) {
-			//	$va_hits = $this->filterHitsByACL($va_hits, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
+				$va_hits = $this->filterHitsByACL($va_hits, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
 			
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
-			//	$va_hits = $this->sortHits($va_hits, $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
+				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $pa_options['sort'], $vs_cache_key, (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} else {
 				if (($pa_options['sort'] == '_natural') && ($pa_options['sort_direction'] == 'desc')) {
 					$va_hits = array_reverse($va_hits);
@@ -1210,7 +1210,7 @@ class SearchEngine extends SearchBase {
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
 					$va_phrase_items = $o_term->getTerms();
 					foreach($va_phrase_items as $o_term) {
-						$va_fields[] = $o_term->getTerm()->field;
+						$va_fields[] = $o_term->field;
 					}
 					break;
 				case 'Zend_Search_Lucene_Search_Query_MultiTerm':

@@ -1055,10 +1055,20 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Fetch the type_id for the currently loaded row or, optionally, the row specified by $pn_id
 		 *
+		 * @param $pn_id Option primary key to fetch type_id for. If omitted the type_id for currently loaded row is returned. [Default=null]
+		 * @return int 
 		 */
-		public function getTypeID() {
+		public function getTypeID($pn_id=null) {
 			if (!isset($this->ATTRIBUTE_TYPE_ID_FLD) || !$this->ATTRIBUTE_TYPE_ID_FLD) { return null; }
+			if ($pn_id) {
+				$qr_res = $this->getDb()->query("SELECT {$this->ATTRIBUTE_TYPE_ID_FLD} FROM ".$this->tableName()." WHERE ".$this->primaryKey()." = ?", array((int)$pn_id));
+				if($qr_res->nextRow()) {
+					return $qr_res->get($this->ATTRIBUTE_TYPE_ID_FLD);
+				}
+				return null;
+			}
 			return $this->get($this->ATTRIBUTE_TYPE_ID_FLD);
 		}
 		# ------------------------------------------------------------------
@@ -1080,7 +1090,7 @@
 		 *
 		 */
 		public function getTypeName($pn_type_id=null) {
-			if (!is_numeric($pn_type_id)) { $pn_type_id = $this->getTypeIDForCode($pn_type_id); }
+			if ($pn_type_id && !is_numeric($pn_type_id)) { $pn_type_id = $this->getTypeIDForCode($pn_type_id); }
 			if ($t_list_item = $this->getTypeInstance($pn_type_id)) {
 				return $t_list_item->getLabelForDisplay(false);
 			}
@@ -1253,7 +1263,8 @@
 				if (!$this->hasField($va_tmp[1])) {
 					$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
 					
-					return $this->htmlFormElementForAttributeSearch($po_request, $va_tmp[1], array_merge($pa_options, array(
+					$vs_fld = array_pop($va_tmp);
+					return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
 								'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
 								'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
 								'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
@@ -1483,15 +1494,21 @@
 				return false;
 			}
 			
-			if ($t_element->get('parent_id')) { 
-				$this->postError(1930, _t('Element is not the root of the element set'), 'BaseModelWithAttributes->htmlFormElementForAttributeSearch()');
-				return false;
-			}
+			$vb_is_sub_element = (bool)($t_element->get('parent_id'));
+			$t_parent = $vb_is_sub_element ? $this->_getElementInstance($t_element->get('parent_id')) : null;
+			
 			
 			$vs_element_code = $t_element->get('element_code');
 			
 			// get all elements of this element set
-			$va_element_set = $t_element->getElementsInSet();
+			$va_element_set = $t_element->getElementsInSet($vb_is_sub_element ? $t_element->get('parent_id') : null);
+			
+			if ($vb_is_sub_element) {
+				foreach($va_element_set as $vn_i => $va_element) {
+					if ($va_element['element_code'] !== $vs_element_code) { unset($va_element_set[$vn_i]); }
+				}
+				
+			}
 			
 			$t_attr = new ca_attributes();
 			$t_attr->purify($this->purify());
@@ -1521,7 +1538,7 @@
 				
 				$va_label = $this->getAttributeLabelAndDescription($va_element['element_id']);
 				
-				$vs_subelement_code = $this->tableName().'.'.(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
+				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
 				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
 				$va_element_opts = array_merge(array(
@@ -1753,12 +1770,16 @@
 		 *				convertCodesToDisplayText =
 		 *				filter =
 		 *				ignoreLocale = if set all values are returned regardless of locale, but in the flattened structure returned when returnAllLocales is false
+		 *				sort = the full bundle specification for the element value or subvalue (if the element is a container) to sort returned values on.
+		 *				sortDirection = determines the direction of the sort. Valid values are ASC (ascending) and DESC (descending). [Default=ASC]
 		 * @return array
 		 */
 		public function getAttributeDisplayValues($pm_element_code_or_id, $pn_row_id, $pa_options=null) {
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$ps_filter_expression = caGetOption('filter', $pa_options, null);
 			$pb_ignore_locale = caGetOption('ignoreLocale', $pa_options, null);
+			$ps_sort = caGetOption('sort', $pa_options, null);
+			$ps_sort_direction = caGetOption('sortDirection', $pa_options, 'asc', array('forceLowercase' => true, 'validValues' => array('asc', 'desc')));
 			
 			$va_attribute_list = $this->getAttributesByElement($pm_element_code_or_id, array('row_id' => $pn_row_id));
 			if (!is_array($va_attribute_list)) { return array(); }
@@ -1767,17 +1788,28 @@
 			$vs_table_name = $this->tableName();
 			$vs_container_element_code = $this->_getElementCode($pm_element_code_or_id);
 			
+			$vs_sort_fld = null;
+			if ($ps_sort) {
+				if(is_array($ps_sort)) { $ps_sort = array_shift($ps_sort); }
+				$va_sort_tmp = explode(".", $ps_sort);
+				if (($va_sort_tmp[0] == $vs_table_name) && ($va_sort_tmp[1] == $vs_container_element_code)) {
+					$vs_sort_fld = array_pop($va_sort_tmp);
+				}
+			}
+			
 			foreach($va_attribute_list as $o_attribute) {
 				$va_values = $o_attribute->getValues();
 				$va_raw_values = array();
 				
 				$va_display_values = array();
+				
+				$vs_sort_key = null;
 				foreach($va_values as $o_value) {
 					$vs_element_code = $this->_getElementCode($o_value->getElementID());
 					
 					if (get_class($o_value) == 'ListAttributeValue') {
 						$t_element = $this->_getElementInstance($o_value->getElementID());
-						$vn_list_id = (!isset($pa_options['convertCodesToDisplayText']) || !$pa_options['convertCodesToDisplayText']) ? null : $t_element->get('list_id');
+						$vn_list_id = (!isset($pa_options['convertCodesToDisplayText']) || !(bool)$pa_options['convertCodesToDisplayText']) ? null : $t_element->get('list_id');
 					} else {
 						$vn_list_id = null;
 					}
@@ -1792,7 +1824,12 @@
 					} else {
 						$va_display_values[$vs_element_code] = $o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id)));
 					}
+					
+					if ($vs_sort_fld && ($vs_sort_fld == $vs_element_code)) {
+						$vs_sort_key = $o_value->getDisplayValue(array_merge($pa_options, array('getDirectDate' => true, 'list_id' => $vn_list_id)));
+					}
 				}
+				if (!$vs_sort_key) { $vs_sort_key = '0'; }
 				
 				// Process filter if defined
 				if ($ps_filter_expression && !ExpressionParser::evaluate($ps_filter_expression, $va_raw_values)) { continue; }
@@ -1803,13 +1840,34 @@
 					$vs_index = $o_attribute->getElementID();
 				}
 				
+				
 				if ($pb_ignore_locale) {
-					$va_attributes[$vs_index][$o_attribute->getAttributeID()] = $va_display_values;
+					$va_attributes[$vs_sort_key][$vs_index][$o_attribute->getAttributeID()] = $va_display_values;
 				} else {
-					$va_attributes[$vs_index][(int)$o_attribute->getLocaleID()][$o_attribute->getAttributeID()] = $va_display_values;
+					$va_attributes[$vs_sort_key][$vs_index][(int)$o_attribute->getLocaleID()][$o_attribute->getAttributeID()] = $va_display_values;
 				}
 			}
-				
+			
+			ksort($va_attributes);
+			if ($ps_sort_direction == 'desc') { $va_attributes = array_reverse($va_attributes); }
+			
+			$va_sorted_attr = array();
+			foreach($va_attributes as $vs_sort_key => $va_attr_by_index) {
+				foreach($va_attr_by_index as $vs_index => $va_attr_by_id) {
+					foreach($va_attr_by_id as $vs_id => $va_attr) {
+						if ($pb_ignore_locale) {
+							$va_sorted_attr[$vs_index][$vs_id] = $va_attr;
+						} else {
+							foreach($va_attr as $vn_attr_id => $va_val) {
+								$va_sorted_attr[$vs_index][$vs_id][$vn_attr_id] = $va_val;
+							}
+						}
+					}
+				}
+			}
+			
+			$va_attributes = $va_sorted_attr;
+			
 			if (!$pb_ignore_locale) { 
 				if (!isset($pa_options['returnAllLocales']) || !$pa_options['returnAllLocales']) {
 					// if desired try to return values in a preferred language/locale
@@ -1817,6 +1875,7 @@
 					if (isset($pa_options['locale']) && $pa_options['locale']) {
 						$va_preferred_locales = array($pa_options['locale']);
 					}
+					
 					return caExtractValuesByUserLocale($va_attributes, null, $va_preferred_locales, array());
 				}
 			}
@@ -1904,7 +1963,7 @@
 				foreach($va_tmp as $vn_id => $va_value_list) {
 					foreach($va_value_list as $va_value) {
 						foreach($va_value as $vs_element_code => $vs_value) {
-							if (strlen($vs_value)) { 
+							if (is_array($vs_value) || strlen($vs_value)) { 
 								$va_attribute_list[] = $vs_value;
 							}
 						}

@@ -977,7 +977,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				}
 			}
 		}
-		
 		return (int)$t_item->getPrimaryKey();
 	}
 	# ------------------------------------------------------
@@ -998,8 +997,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$vn_type_id = $this->get('type_id');
 		
 		$va_item_values = array();
-		$va_rows_ids = array_unique($pa_row_ids);
-		foreach($va_rows_ids as $vn_row_id) {
+		$va_row_ids = array_unique($pa_row_ids);
+		foreach($va_row_ids as $vn_row_id) {
 			$va_item_values[] = "(".(int)$vn_set_id.",".(int)$vn_table_num.",".(int)$vn_row_id.",".(int)$vn_type_id.")";
 		}
 		
@@ -1014,9 +1013,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			
 			// Get the item_ids for the newly created links
 			$qr_res = $this->getDb()->query("SELECT item_id FROM ca_set_items WHERE set_id = ? AND table_num = ? AND type_id = ? AND row_id IN (?)", array(
-				$vn_set_id, $vn_table_num, $vn_type_id, $va_row_ids
+				(int)$vn_set_id, (int)$vn_table_num, (int)$vn_type_id, $va_row_ids
 			));
-			
 			$va_item_ids = $qr_res->getAllFieldValues('item_id');
 			
 			// Set the ranks of the newly created links
@@ -1133,16 +1131,19 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *
 	 * @param array $pa_options An optional array of options. Supported options are:
 	 *			user_id = the user_id of the current user; used to determine which sets the user has access to
+	 *			treatRowIDsAsRIDs = use combination row_id/item_id indices in returned array instead of solely row_ids. Since a set can potentially contain multiple instances of the same row_id, only "rIDs" – a combination of the row_id and the set item_id (row_id + "_" + item_id) – are guaranteed to be unique. [Default=false]
 	 * @return array Array keyed on row_id with values set to ranks for each item. If the set contains duplicate row_ids then the list will only have the largest rank. If you have sets with duplicate rows use getItemRanks() instead
 	 */
 	public function getRowIDRanks($pa_options=null) {
 		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if (!$this->haveAccessToSet($pa_options['user_id'], __CA_SET_READ_ACCESS__)) { return false; }
 		
+		$vb_treat_row_ids_as_rids = caGetOption('treatRowIDsAsRIDs', $pa_options, false);
+		
 		$va_items = caExtractValuesByUserLocale($this->getItems($pa_options));
 		$va_ranks = array();
 		foreach($va_items as $vn_item_id => $va_item) {
-			$va_ranks[$va_item['row_id']] = $va_item['rank'];
+			$va_ranks[$vb_treat_row_ids_as_rids ? $va_item['row_id']."_{$vn_item_id}" : $va_item['row_id']] = $va_item['rank'];
 		}
 		return $va_ranks;
 	}
@@ -1153,6 +1154,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $pa_row_ids A list of row_ids in the set, in the order in which they should be displayed in the set
 	 * @param array $pa_options An optional array of options. Supported options include:
 	 *			user_id = the user_id of the current user; used to determine which sets the user has access to
+	 *			treatRowIDsAsRIDs = assume combination row_id/item_id indices in $pa_row_ids array instead of solely row_ids. Since a set can potentially contain multiple instances of the same row_id, only "rIDs" – a combination of the row_id and the set item_id (row_id + "_" + item_id) – are guaranteed to be unique. [Default=false]
 	 * @return array An array of errors. If the array is empty then no errors occurred
 	 */
 	public function reorderItems($pa_row_ids, $pa_options=null) {
@@ -1161,6 +1163,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 		
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null; 
+		$vb_treat_row_ids_as_rids = caGetOption('treatRowIDsAsRIDs', $pa_options, false);
 		
 		// does user have edit access to set?
 		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_EDIT_ACCESS__)) {
@@ -1168,7 +1171,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		}
 	
 		$va_row_ranks = $this->getRowIDRanks($pa_options);	// get current ranks
-		
 		$vn_i = 0;
 		
 		$vb_web_set_transaction = false;
@@ -1189,8 +1191,16 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$va_to_delete = array();
 		foreach($va_row_ranks as $vn_row_id => $va_rank) {
 			if (!in_array($vn_row_id, $pa_row_ids)) {
-				if ($t_set_item->load(array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
-					$t_set_item->delete(true);
+				
+				if ($vb_treat_row_ids_as_rids) {
+					$va_tmp = explode("_", $vn_row_id);
+					if ($t_set_item->load(array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]))) {
+						$t_set_item->delete(true);
+					}
+				} else {
+					if ($t_set_item->load(array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
+						$t_set_item->delete(true);
+					}
 				}
 			}
 		}
@@ -1198,9 +1208,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		// rewrite ranks
 		foreach($pa_row_ids as $vn_rank => $vn_row_id) {
-			if (isset($va_row_ranks[$vn_row_id]) && $t_set_item->load(array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
-				if ($va_row_ranks[$vn_row_id] != $vn_rank) {
-					$t_set_item->set('rank', $vn_rank);
+			$vn_rank_inc = $vn_rank + 1;
+			if ($vb_treat_row_ids_as_rids) { $va_tmp = explode("_", $vn_row_id); }
+			if (isset($va_row_ranks[$vn_row_id]) && $t_set_item->load($vb_treat_row_ids_as_rids ? array('set_id' => $vn_set_id, 'row_id' => $va_tmp[0], 'item_id' => $va_tmp[1]) : array('set_id' => $vn_set_id, 'row_id' => $vn_row_id))) {
+				if ($va_row_ranks[$vn_row_id] != $vn_rank_inc) {
+					$t_set_item->set('rank', $vn_rank_inc);
 					$t_set_item->update();
 				
 					if ($t_set_item->numErrors()) {
@@ -1209,7 +1221,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				}
 			} else {
 				// add item to set
-				$this->addItem($vn_row_id, null, $vn_user_id, $vn_rank);
+				$this->addItem($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id, null, $vn_user_id, $vn_rank_inc);
 			}
 		}
 		
@@ -1252,9 +1264,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			thumbnailVersion = Same as 'thumbnailVersions' except it is a single value. (Maintained for compatibility with older code.)
 	 *			limit = Limits the total number of records to be returned
 	 *			checkAccess = An array of row-level access values to check set members for, often produced by the caGetUserAccessValues() helper. Set members with access values not in the list will be omitted. If this option is not set or left null no access checking is done.
-	 *			returnRowIdsOnly = If true a simple array of row_ids (keys of the set members) for members of the set is returned rather than full item-level info for each set member.
+	 *			returnRowIdsOnly = If true a simple array of row_ids (keys of the set members) for members of the set is returned rather than full item-level info for each set member. IDs are keys in the returned array.
 	 *			returnItemIdsOnly = If true a simple array of item_ids (keys for the ca_set_items rows themselves) is returned rather than full item-level info for each set member.
 	 *			returnItemAttributes = A list of attribute element codes for the ca_set_item record to return values for.
+	 *			idsOnly = Return a simple numerically indexed array of row_ids
+	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
 	 *			set_id, item_id, row_id, rank, label_id, locale_id, caption (from the ca_set_items label), all instrinsic field content from the row_id, the display label of the row
@@ -1350,7 +1364,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		
 		$va_labels = array();
 		while($qr_res->nextRow()) {
-			$va_labels[$qr_res->get('row_id')][$qr_res->get('locale_id')] = $qr_res->getRow();
+			$va_labels[$qr_res->get('item_id')][$qr_res->get('locale_id')] = $qr_res->getRow();
 		}
 		
 		$va_labels = caExtractValuesByUserLocale($va_labels);
@@ -1385,7 +1399,11 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			
 			unset($va_row['media']);
 			
-			if (isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly'])) {
+			if (
+				(isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly']))
+				||
+				(isset($pa_options['idsOnly']) && ($pa_options['idsOnly']))
+			) {
 				$va_items[$qr_res->get('row_id')] = true;
 				continue;
 			}
@@ -1434,8 +1452,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				$va_row['representation_count'] = (int)$va_representation_counts[$qr_res->get('row_id')];
 			}	
 			
-			$va_row = array_merge($va_row, $va_labels[$qr_res->get('row_id')]);
-
+			if (is_array($va_labels[$vn_item_id = $qr_res->get('item_id')])) {
+				$va_row = array_merge($va_row, $va_labels[$vn_item_id]);
+			}
 			if (isset($pa_options['returnItemAttributes']) && is_array($pa_options['returnItemAttributes']) && sizeof($pa_options['returnItemAttributes'])) {
 				// TODO: doing a load for each item is inefficient... must replace with a query
 				$t_item = new ca_set_items($va_row['item_id']);
@@ -1448,6 +1467,10 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		
 			$va_items[$qr_res->get('item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
+		}
+		
+		if (caGetOption('idsOnly', $pa_options, false)) {
+			return array_keys($va_items);
 		}
 		return $va_items;
 	}
@@ -2123,4 +2146,3 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	}
 	# ---------------------------------------------------------------
 }
-?>

@@ -70,7 +70,7 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						<H3>Geographic Location:</H3>
-						{{{ca_places.preferred_labels.name}}}
+						{{{ca_place_labels.name}}}
 					</div>
 				</div>
 			</div>
@@ -87,13 +87,13 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						<H3>Period:</H3>
-						{{{ca_places.period}}}
+						{{{ca_places.period.period_main}}}
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="form-group">
-						<H3>Formation:</H3>
-						{{{ca_places.formation%width=200px&height=27px}}}
+						<H3>Group/Formation:</H3>
+						{{{groupformation%width=200px&height=27px}}}
 					</div>
 				</div>
 			</div>
@@ -111,3 +111,10 @@
 	</div>		
 	{{{/form}}}
 </div>
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		jQuery('#caAdvancedSearch').find('input[type!="hidden"],textarea').val('');
+		jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
+		jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);	
+	});
+</script>

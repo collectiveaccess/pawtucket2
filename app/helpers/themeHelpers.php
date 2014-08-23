@@ -353,7 +353,7 @@
 					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
 				}
 			}
-			if(caObjectsDisplayDownloadLink($o_request)){
+			if(caObjectsDisplayDownloadLink($o_request) && $this->request->user->canDoAction('can_download_media')){
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$vs_download_version = $va_download_display_info['display_version'];
@@ -433,6 +433,13 @@
 			//}
 			
 			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($o_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
+			
+			$qr_reps->seek(0);
+			while($qr_reps->nextHit()) {
+				$vn_rep_id = $qr_reps->get('representation_id');
+				$vs_tool_bar = caRepToolbar($o_request, $qr_reps, $pn_object_id);
+				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
+			}
 			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';

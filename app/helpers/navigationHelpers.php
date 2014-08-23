@@ -326,6 +326,18 @@
 				}
 			);</script>";
 		}
+		if (caGetOption('submitOnReturn', $pa_options, false)) { 
+			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
+				function() {
+					jQuery('#{$ps_id}').keydown(function(e) { 
+					   if(e && e.keyCode == 13)
+					   {
+						  jQuery('#{$ps_id}').submit();
+					   }
+					});
+				}
+			);</script>";
+		}
 		return $vs_buf;
 	}
 	# ------------------------------------------------------------------------------------------------

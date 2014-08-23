@@ -81,8 +81,9 @@
  			
  			$this->view->setVar('config', $this->config);
  			
- 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
+ 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
  			$this->view->setVar('result_context', $o_result_context);
+ 			$o_result_context->setAsLastFind();
  			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
@@ -94,6 +95,20 @@
  			} else {
  				$this->render("Front/front_page_html.php");
  			}
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Front',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
  		}
  		# ------------------------------------------------------
  	}

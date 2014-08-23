@@ -367,8 +367,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
  					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
-						$ps_sort = array_shift(array_values($va_sorts));
-						$va_contexts[$vs_block]->setCurrentSort($vs_sort); 
+						$ps_sort = array_shift($va_sorts);
+						$va_contexts[$vs_block]->setCurrentSort($ps_sort); 
 						$vb_sort_changed = true;
 					} else {
 						if (isset($va_sorts[$ps_sort])) { 

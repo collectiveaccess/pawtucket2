@@ -248,6 +248,7 @@ class Datamodel {
 	 */
 	public function getFieldInfo($ps_table, $ps_field, $ps_key=null) {
 		if ($t_table = $this->getInstanceByTableName($ps_table, true)) {
+			if (!$t_table->hasField($ps_field)) { return null; }
 			$va_info = $t_table->getFieldInfo($ps_field);
 			if ($ps_key) { return $va_info[$ps_key]; }
 			return $va_info;

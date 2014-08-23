@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,6 +34,7 @@
   *
   */
  
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
  	require_once(__CA_MODELS_DIR__."/ca_editor_uis.php");
  	require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
  	require_once(__CA_MODELS_DIR__."/ca_attributes.php");
@@ -43,6 +44,7 @@
  	require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
  	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
 	require_once(__CA_LIB_DIR__."/core/Logging/Eventlog.php");
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  
  	class BaseEditorController extends ActionController {
  		# -------------------------------------------------------
@@ -76,35 +78,8 @@
  			list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id) = $this->_initView($pa_options);
  			$vs_mode = $this->request->getParameter('mode', pString);
  			
- 			//
- 			// Is record deleted?
- 			//
- 			if ($t_subject->hasField('deleted') && $t_subject->get('deleted')) { 
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2550?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
- 			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => $vn_subject_id ? __CA_BUNDLE_ACCESS_READONLY__ : __CA_BUNDLE_ACCESS_EDIT__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
- 			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking') && $vn_subject_id) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			//
  			// Are we duplicating?
@@ -172,7 +147,6 @@
  				}
  			}
  			
- 			
  			//
  			// get default screen
  			//
@@ -200,7 +174,11 @@
 			
 			# trigger "EditItem" hook 
 			$this->opo_app_plugin_manager->hookEditItem(array('id' => $vn_subject_id, 'table_num' => $t_subject->tableNum(), 'table_name' => $t_subject->tableName(), 'instance' => $t_subject));
-			$this->render('screen_html.php');
+			
+			if (!($vs_view = caGetOption('view', $pa_options, null))) {
+				$vs_view = 'screen_html';
+			} 
+			$this->render("{$vs_view}.php");
  		}
  		# -------------------------------------------------------
  		/**
@@ -211,28 +189,8 @@
  		public function Save($pa_options=null) {
  			list($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id) = $this->_initView($pa_options);
  			if (!is_array($pa_options)) { $pa_options = array(); }
- 			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
- 			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking') && $vn_subject_id) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) < __CA_ACL_EDIT_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+ 			 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  				
  			if($vn_above_id) {
  				// Convert "above" id (the id of the record we're going to make the newly created record parent of
@@ -356,7 +314,7 @@
  				}
  			} else {
 				$this->notification->addNotification($vs_message, __NOTIFICATION_TYPE_INFO__);	
- 				$this->opo_result_context->invalidateCache();
+ 				$this->opo_result_context->invalidateCache();	// force new search in case changes have removed this item from the results
   				$this->opo_result_context->saveContext();
  			}
  			# trigger "SaveItem" hook 
@@ -379,17 +337,9 @@
  			
  			if (!$vn_subject_id) { return; }
  			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
  			
  			if (!$vs_type_name = $t_subject->getTypeName()) {
  				$vs_type_name = $t_subject->getProperty('NAME_SINGULAR');
@@ -424,11 +374,11 @@
  			}
  			
  			if ($vb_confirm = ($this->request->getParameter('confirm', pInteger) == 1) ? true : false) {
- 				$vb_we_set_transation = false;
+ 				$vb_we_set_transaction = false;
  				if (!$t_subject->inTransaction()) {
  					$o_t = new Transaction();
  					$t_subject->setTransaction($o_t);
- 					$vb_we_set_transation = true;
+ 					$vb_we_set_transaction = true;
  				}
  				
  				// Do we need to move relationships?
@@ -441,14 +391,18 @@
  							}
  							break;
  						default:
+ 							// update relationships
 							$va_tables = array(
-								'ca_objects', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_storage_locations', 'ca_list_items', 'ca_loans', 'ca_movements', 'ca_tours', 'ca_tour_stops', 'ca_object_representations'
+								'ca_objects', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_storage_locations', 'ca_list_items', 'ca_loans', 'ca_movements', 'ca_tours', 'ca_tour_stops', 'ca_object_representations', 'ca_list_items'
 							);
 							
 							$vn_c = 0;
 							foreach($va_tables as $vs_table) {
 								$vn_c += $t_subject->moveRelationships($vs_table, $vn_remap_id);
 							}
+							
+							// update existing metadata attributes to use remapped value
+							$t_subject->moveAuthorityElementReferences($vn_remap_id);
 							
 							if ($vn_c > 0) {
 								$t_target = $this->opo_datamodel->getInstanceByTableName($this->ops_table_name);
@@ -457,6 +411,8 @@
 							}
 						break;
 					}
+				} else {
+					$t_subject->deleteAuthorityElementReferences();
 				}
  				
  				$t_subject->setMode(ACCESS_WRITE);
@@ -468,7 +424,7 @@
  					}
  				}
  				
- 				if ($vb_we_set_transation) {
+ 				if ($vb_we_set_transaction) {
  					if (!$vb_rc) {
  						$o_t->rollbackTransaction();	
  					} else {
@@ -521,30 +477,12 @@
  			AssetLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
  			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
  			
  			$t_display = new ca_bundle_displays();
- 			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__));
+ 			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'restrictToTypes' => array($t_subject->getTypeID())));
  			
  			if ((!($vn_display_id = $this->request->getParameter('display_id', pInteger))) || !isset($va_displays[$vn_display_id])) {
  				if ((!($vn_display_id = $this->request->user->getVar($t_subject->tableName().'_summary_display_id')))  || !isset($va_displays[$vn_display_id])) {
@@ -597,36 +535,15 @@
  		 * @param array $pa_options Array of options passed through to _initView 
  		 */
 		public function PrintSummary($pa_options=null) {
-			require_once(__CA_LIB_DIR__."/core/Print/html2pdf/html2pdf.class.php");
-
 			AssetLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
  			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			
  			$t_display = new ca_bundle_displays();
- 			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__));
+ 			$va_displays = $t_display->getBundleDisplays(array('table' => $t_subject->tableNum(), 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'restrictToTypes' => array($t_subject->getTypeID())));
 
  			if ((!($vn_display_id = $this->request->getParameter('display_id', pInteger))) || (!isset($va_displays[$vn_display_id]))) {
  				if ((!($vn_display_id = $this->request->user->getVar($t_subject->tableName().'_summary_display_id'))) || !isset($va_displays[$vn_display_id])) {
@@ -670,18 +587,39 @@
 				$this->view->setVar('placements', array());
 			}
 			
+			//
+			// PDF output
+			//
+			if(!is_array($va_template_info = caGetPrintTemplateDetails('summary', "{$this->ops_table_name}_summary"))) {
+				if(!is_array($va_template_info = caGetPrintTemplateDetails('summary', "summary"))) {
+					$this->postError(3110, _t("Could not find view for PDF"),"BaseEditorController->PrintSummary()");
+					return;
+				}
+			}
+			
+			$va_barcode_files_to_delete = array();
+			
 			try {
-				$vs_content = $this->render('print_summary_html.php');
-				$vo_html2pdf = new HTML2PDF('P',$vs_format,'en');
-				$vo_html2pdf->setDefaultFont("dejavusans");
-				$vo_html2pdf->WriteHTML($vs_content);
-				$vo_html2pdf->Output('summary.pdf');
+				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
+				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
+				
+				$va_barcode_files_to_delete += caDoPrintViewTagSubstitution($this->view, $t_subject, $va_template_info['path'], array('checkAccess' => $this->opa_access_values));
+				
+				$vs_content = $this->render($va_template_info['path']);
+				$o_dompdf = new DOMPDF();
+				$o_dompdf->load_html($vs_content);
+				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
+				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('summary'));
+				$o_dompdf->render();
+				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'print_summary.pdf'));
+	
 				$vb_printed_properly = true;
+				
+				foreach($va_barcode_files_to_delete as $vs_tmp) { @unlink($vs_tmp);}
 			} catch (Exception $e) {
+				foreach($va_barcode_files_to_delete as $vs_tmp) { @unlink($vs_tmp);}
 				$vb_printed_properly = false;
-				$o_event_log = new Eventlog();
-				$o_event_log->log(array('CODE' => 'DEBG', 'MESSAGE' => $vs_msg = _t("Could not generate PDF: %1", preg_replace('![^A-Za-z0-9 \-\?\/\.]+!', ' ', $e->getMessage())), 'SOURCE' => 'BaseEditorController->PrintSummary()'));
-				$this->postError(3100, $vs_msg,"BaseEditorController->PrintSummary()");
+				$this->postError(3100, _t("Could not generate PDF"),"BaseEditorController->PrintSummary()");
 			}
 		}
  		# -------------------------------------------------------
@@ -694,27 +632,9 @@
  			AssetLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
  			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
  			
  			$this->render('log_html.php');
  		}
@@ -728,27 +648,8 @@
  			AssetLoadManager::register('tableList');
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			
- 			//
- 			// Is record of correct type?
- 			// 
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
  			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
- 			}
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			if ((!$this->request->user->canDoAction('can_change_acl_'.$t_subject->tableName()))) { 
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2570?r='.urlencode($this->request->getFullUrlPath()));
@@ -765,6 +666,9 @@
  		 */
  		public function SetAccess($pa_options=null) {
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			if ((!$t_subject->isSaveable($this->request)) || (!$this->request->user->canDoAction('can_change_acl_'.$t_subject->tableName()))) { 
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2570?r='.urlencode($this->request->getFullUrlPath()));
@@ -836,6 +740,10 @@
  		 */
  		public function ChangeType($pa_options=null) {
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			
  			if ($this->request->user->canDoAction("can_change_type_".$t_subject->tableName())) {
 				if (method_exists($t_subject, "changeType")) {
 					$this->opo_app_plugin_manager->hookBeforeSaveItem(array('id' => $vn_subject_id, 'table_num' => $t_subject->tableNum(), 'table_name' => $t_subject->tableName(), 'instance' => $t_subject, 'is_insert' => false));
@@ -853,6 +761,27 @@
 				$this->notification->addNotification(_t('Cannot change type'), __NOTIFICATION_TYPE_ERROR__);
 			}
  			$this->Edit();
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		protected function _getUI($pn_type_id=null, $pa_options=null) {
+ 			$t_ui = new ca_editor_uis();
+ 			if (isset($pa_options['ui']) && $pa_options['ui']) {
+ 				if (is_numeric($pa_options['ui'])) {
+ 					$t_ui->load((int)$pa_options['ui']);
+ 				}
+ 				if (!$t_ui->getPrimaryKey()) {
+ 					$t_ui->load(array('editor_code' => $pa_options['ui']));
+ 				}
+ 			}
+ 			
+ 			if (!$t_ui->getPrimaryKey()) {
+ 				$t_ui = ca_editor_uis::loadDefaultUI($this->ops_table_name, $this->request, $pn_type_id);
+ 			}
+ 			
+ 			return $t_ui;
  		}
  		# -------------------------------------------------------
  		/**
@@ -882,21 +811,11 @@
  				
  				// then reload the definitions (which includes bundle specs)
  				$t_subject->reloadLabelDefinitions();
+ 			} else {
+ 				$vn_type_id = $t_subject->getTypeID();
  			}
  			
- 			$t_ui = new ca_editor_uis();
- 			if (isset($pa_options['ui']) && $pa_options['ui']) {
- 				if (is_numeric($pa_options['ui'])) {
- 					$t_ui->load((int)$pa_options['ui']);
- 				}
- 				if (!$t_ui->getPrimaryKey()) {
- 					$t_ui->load(array('editor_code' => $pa_options['ui']));
- 				}
- 			}
- 			
- 			if (!$t_ui->getPrimaryKey()) {
- 				$t_ui = ca_editor_uis::loadDefaultUI($this->ops_table_name, $this->request, $t_subject->getTypeID());
- 			}
+ 			$t_ui = $this->_getUI($vn_type_id, $pa_options);
  			
  			$this->view->setVar($t_subject->primaryKey(), $vn_subject_id);
  			$this->view->setVar('subject_id', $vn_subject_id);
@@ -933,7 +852,7 @@
  		 *
  		 * @param array $pa_options Array of options passed through to _initView 
  		 */
- 		public function DownloadFile() {
+ 		public function DownloadAttributeFile($pa_options=null) {
  			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
  			$t_attr_val = new ca_attribute_values($pn_value_id);
  			if (!$t_attr_val->getPrimaryKey()) { return; }
@@ -950,34 +869,15 @@
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			$ps_version = $this->request->getParameter('version', pString);
  			
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
  			//
  			// Does user have access to bundle?
  			//
  			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
  				return;
- 			}
- 			
- 			//
- 			// Does user have access to type?
- 			//
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
- 			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
  			}
  			
  			$t_attr_val->useBlobAsFileField(true);
@@ -1006,7 +906,7 @@
  		 *
  		 * @param array $pa_options Array of options passed through to _initView 
  		 */
- 		public function DownloadMedia($pa_options=null) {
+ 		public function DownloadAttributeMedia($pa_options=null) {
  			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
  			$t_attr_val = new ca_attribute_values($pn_value_id);
  			if (!$t_attr_val->getPrimaryKey()) { return; }
@@ -1023,34 +923,16 @@
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			$ps_version = $this->request->getParameter('version', pString);
  			
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			
  			//
  			// Does user have access to bundle?
  			//
  			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
  				return;
- 			}
- 			
- 			//
- 			// Does user have access to type?
- 			//
- 			$va_restrict_to_types = null;
- 			if ($t_subject->getAppConfig()->get('perform_type_access_checking')) {
- 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_EDIT__));
- 			}
- 			if (is_array($va_restrict_to_types) && !in_array($t_subject->get('type_id'), $va_restrict_to_types)) {
- 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
- 				return;
- 			}
- 			
- 			//
- 			// Does user have access to row?
- 			//
- 			if ($t_subject->getAppConfig()->get('perform_item_level_access_checking')) {
- 				if ($t_subject->checkACLAccessForUser($this->request->user) == __CA_ACL_NO_ACCESS__) {
- 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
- 					return;
- 				}
  			}
  			
  			$t_attr_val->useBlobAsMediaField(true);
@@ -1122,7 +1004,6 @@
 			$va_rep_display_info['poster_frame_url'] = $t_attr_val->getMediaUrl('value_blob', $va_rep_display_info['poster_frame_version']);
 			
 			$o_view->setVar('display_options', $va_rep_display_info);
-			$o_view->setVar('representation_id', $pn_representation_id);
 			$o_view->setVar('t_attribute_value', $t_attr_val);
 			$o_view->setVar('versions', $va_versions = $t_attr_val->getMediaVersions('value_blob'));
 			
@@ -1132,9 +1013,11 @@
 			if (!in_array($ps_version, $va_versions)) { 
 				if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
 			}
+			
 			$o_view->setVar('version', $ps_version);
 			$o_view->setVar('version_info', $t_attr_val->getMediaInfo('value_blob', $ps_version));
 			$o_view->setVar('version_type', $t_media->getMimetypeTypename($t_attr_val->getMediaInfo('value_blob', $ps_version, 'MIMETYPE')));
+			$o_view->setVar('version_mimetype', $t_attr_val->getMediaInfo('value_blob', $ps_version, 'MIMETYPE'));
 			$o_view->setVar('mimetype', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));			
 			
 			
@@ -1333,6 +1216,9 @@
 		 */
 		public function exportItem() {
  			list($vn_subject_id, $t_subject) = $this->_initView();
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
 			$pn_mapping_id = $this->request->getParameter('mapping_id', pInteger);
 			
 			//$o_export = new DataExporter();
@@ -1351,6 +1237,9 @@
  		public function toggleWatch() {
  			list($vn_subject_id, $t_subject) = $this->_initView();
  			require_once(__CA_MODELS_DIR__.'/ca_watch_list.php');
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
  			
  			$va_errors = array();
 			$t_watch_list = new ca_watch_list();
@@ -1395,10 +1284,48 @@
  		public function getHierarchyForDisplay($pa_options=null) {
  			list($vn_subject_id, $t_subject) = $this->_initView();
  			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			
  			$vs_hierarchy_display = $t_subject->getHierarchyNavigationHTMLFormBundle($this->request, 'caHierarchyOverviewPanelBrowser', array(), array('open_hierarchy' => true, 'no_close_button' => true, 'hierarchy_browse_tab_class' => 'foo'));
  			$this->view->setVar('hierarchy_display', $vs_hierarchy_display);
  			
  			$this->render("../generic/ajax_hierarchy_overview_html.php");
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns content for a bundle or the inspector. Used to dynamically and selectively
+ 		 * reload an editing form.
+ 		 */
+ 		public function reload() {
+ 			list($vn_subject_id, $t_subject) = $this->_initView();
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			$ps_bundle = $this->request->getParameter("bundle", pString);
+ 			$pn_placement_id = $this->request->getParameter("placement_id", pInteger);
+ 			
+ 			
+ 			switch($ps_bundle) {
+ 				case '__inspector__':
+ 					$this->response->addContent($this->info(array($t_subject->primaryKey() => $vn_subject_id, 'type_id' => $this->request->getParameter("type_id", pInteger))));
+ 					break;
+ 				default:
+ 					$t_placement = new ca_editor_ui_bundle_placements($pn_placement_id);
+ 			
+					if (!$t_placement->getPrimaryKey()) {
+						$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+						return;
+					}
+			
+					if ($t_placement->get('bundle_name') != $ps_bundle) {
+						$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+						return;
+					}
+					
+ 					$this->response->addContent($t_subject->getBundleFormHTML($ps_bundle, $pn_placement_id, $t_placement->get('settings'), array('request' => $this->request, 'contentOnly' => true), $vs_label));
+ 					break;
+ 			}
  		}
 		# ------------------------------------------------------------------
  		# Sidebar info handler
@@ -1418,8 +1345,13 @@
  			
  			$vn_item_id 		= (isset($pa_parameters[$vs_pk])) ? $pa_parameters[$vs_pk] : null;
  			$vn_type_id 		= (isset($pa_parameters['type_id'])) ? $pa_parameters['type_id'] : null;
- 			
+ 		
  			$t_item->load($vn_item_id);
+ 			
+ 			if (!$this->_checkAccess($t_item, array('dontRedirectOnDelete' => true))) { 
+ 				$t_item->clear(); 
+ 				$t_item->clearErrors();
+ 			}
  			
  			if ($t_item->getPrimaryKey()) {
  				if (method_exists($t_item, "getRepresentations")) {
@@ -1472,15 +1404,14 @@
 			$this->view->setVar('screen', $this->request->getActionExtra());						// name of screen
 			$this->view->setVar('result_context', $this->getResultContext());
 			
-//			$t_mappings = new ca_bundle_mappings();
-			$va_mappings = array(); //$t_mappings->getAvailableMappings($t_item->tableNum(), array('E', 'X'));
+			$this->view->setVar('t_ui', $t_ui = $this->_getUI($vn_type_id, $pa_options));
 			
-			$va_export_options = array();
-			foreach($va_mappings as $vn_mapping_id => $va_mapping_info) {
-				$va_export_options[$va_mapping_info['name']] = $va_mapping_info['mapping_id'];
-			}
-			$this->view->setVar('available_mappings', $va_mappings);
-			$this->view->setVar('available_mappings_as_html_select', sizeof($va_export_options) ? caHTMLSelect('mapping_id', $va_export_options, array("style" => "width: 120px;")) : '');
+			//$va_export_options = array();
+			//foreach($va_mappings as $vn_mapping_id => $va_mapping_info) {
+			//	$va_export_options[$va_mapping_info['name']] = $va_mapping_info['mapping_id'];
+			//}
+			//$this->view->setVar('available_mappings', $va_export_options);
+			//$this->view->setVar('available_mappings_as_html_select', sizeof($va_export_options) ? caHTMLSelect('mapping_id', $va_export_options, array("style" => "width: 120px;")) : '');
  		}
  		# ------------------------------------------------------------------
 		/**
@@ -1539,5 +1470,78 @@
 			return true;
 		}
 		# ------------------------------------------------------------------
+		/**
+		 * Called just after record is deleted. Individual editor controllers can override this to implement their
+		 * own post-deletion cleanup logic.
+		 *
+		 * @param BaseModel $pt_subject Model instance of row that was deleted
+		 * @return bool True if post-deletion cleanup was successful, false if not
+		 */
+		protected function _checkAccess($pt_subject, $pa_options=null) {
+			//
+ 			// Is record deleted?
+ 			//
+ 			if ($pt_subject->hasField('deleted') && $pt_subject->get('deleted')) { 
+ 				if (!caGetOption('dontRedirectOnDelete', $pa_options, false)) {
+ 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2550?r='.urlencode($this->request->getFullUrlPath()));
+ 				}
+ 				return false;
+ 			}
+ 			
+			//
+ 			// Is record of correct type?
+ 			// 
+ 			$va_restrict_to_types = null;
+ 			if ($pt_subject->getAppConfig()->get('perform_type_access_checking')) {
+ 				$va_restrict_to_types = caGetTypeRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__));
+ 			}
+ 			if (
+ 				is_array($va_restrict_to_types) 
+ 				&& 
+ 				(
+ 					($pt_subject->get('type_id')) && ($pt_subject->getPrimaryKey() && !in_array($pt_subject->get('type_id'), $va_restrict_to_types))
+ 					//||
+ 					//(!$pt_subject->getPrimaryKey() && !in_array($this->request->getParameter('type_id', pInteger), $va_restrict_to_types))
+ 				)
+ 			) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2560?r='.urlencode($this->request->getFullUrlPath()));
+ 				return false;
+ 			}
+ 			
+ 			//
+ 			// Is record from correct source?
+ 			// 	
+			$va_restrict_to_sources = null;
+ 			if ($pt_subject->getAppConfig()->get('perform_source_access_checking') && $pt_subject->hasField('source_id')) {
+ 				if (is_array($va_restrict_to_sources = caGetSourceRestrictionsForUser($this->ops_table_name, array('access' => __CA_BUNDLE_ACCESS_READONLY__)))) {
+					if (
+						(!$pt_subject->get('source_id'))
+						||
+						($pt_subject->get('source_id') && !in_array($pt_subject->get('source_id'), $va_restrict_to_sources))
+						||
+						((strlen($vn_source_id = $this->request->getParameter('source_id', pInteger))) && !in_array($vn_source_id, $va_restrict_to_sources))
+					) {
+						$pt_subject->set('source_id', $pt_subject->getDefaultSourceID(array('request' => $this->request)));
+					}
+			
+					if (is_array($va_restrict_to_sources) && !in_array($pt_subject->get('source_id'), $va_restrict_to_sources)) {
+						$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2562?r='.urlencode($this->request->getFullUrlPath()));
+						return;
+					}
+				}
+			}
+ 			
+ 			//
+ 			// Does user have access to row?
+ 			//
+ 			if ($pt_subject->getAppConfig()->get('perform_item_level_access_checking') && $vn_subject_id) {
+ 				if ($pt_subject->checkACLAccessForUser($this->request->user) < __CA_BUNDLE_ACCESS_READONLY__) {
+ 					$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 					return false;
+ 				}
+ 			}
+ 			
+ 			return true;
+ 		}
+		# ------------------------------------------------------------------
  	}
- ?>
