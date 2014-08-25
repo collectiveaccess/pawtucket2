@@ -22,8 +22,8 @@
 <?php
 	}else{
 ?>
-	<div class="pull-right"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
-	<div class="text-center"><strong><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></strong></div>
+	<div class="pull-right closecomment"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
+	<div class="lbSetCommentHeader"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></div>
 <?php
 		if(sizeof($va_comments)){
 			$t_author = new ca_users();

@@ -1,0 +1,178 @@
+H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6 {
+	font-family: Helvetica;
+	font-weight: normal;
+	font-style: normal;
+	color: black;
+}
+#body {
+	font-family: 'DINMittelschrift', Helvetica;
+	padding: 0;
+}
+.navbar {
+	box-shadow: none;
+	border: 0;
+	background-color: transparent;
+}
+.navbar .formOutline {
+	border-radius: 0px;
+}
+.input-sm {
+	border-radius: 0px;
+}
+#wrapper {
+	max-width: 1224px;
+	padding: 20px;
+}
+#header {
+	width: 170px;
+	float: left;
+	padding: 0;
+	margin: 0;
+	line-height: 16px;
+	border-bottom: 4px double #e8e4e3;
+	clear: both;
+	position: absolute;
+	top: 20px;
+	border: none;
+}
+
+#header hgroup {
+	float: left;
+	position: relative;
+	margin-bottom: 1.618em;
+}
+a {
+	color: #4a413e;
+	text-decoration: none;
+	font-weight: bold;
+}
+#header #logo{
+	margin-top: 52px;
+	float: left;
+}
+
+img#logo{
+	max-width: 70px;
+	margin-left: -3px;
+}
+img {
+	vertical-align: bottom;
+	height: auto;
+}
+#tagline {
+	position: absolute;
+	width: 250px;
+}
+#header .site-title {
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+	font-family: "DINMittelschrift"
+	text-transform: uppercase;
+	color: black;
+}
+h1, h2 {
+	font-weight: normal;
+}
+#header .site-description {
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+	font-family: "DINMittelschrift"
+	text-transform: uppercase;
+	color: black;
+}
+#navigation {
+	border:0;
+	background:0;
+	box-shadow: none;
+	width: auto;
+	display: block !important;
+	margin-top: .382em;
+	text-transform: uppercase;
+	font-family: "DINMittelschrift"
+	color: #000;
+	font-size: 36px;
+	margin: 0;
+	padding: 0;
+	clear: both;
+}
+#header #navigation
+ul.leftnav {
+	float:none;	
+}
+#navigation ul {
+	list-style:none;	
+}
+ul.leftnav {
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+.leftnav > li > a {
+	padding:0px;
+	margin:0px;
+	font-family: DIN17SBOP-Regular;
+	font-size: 12px;
+	color: #000;
+	position: relative;
+	display: block;
+}
+.leftnav > li > a:hover {
+	background-color:#fff;
+	color:red;
+}
+.leftnav li:first-child {
+	display: none;
+}
+ul.leftnav li {
+	float: none;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	list-style: 0;	
+}	
+#exhibitionBlock, #eventBlock {
+	width: 100%;
+	overflow-y: hidden;
+	position: relative;
+}
+#exhibitionResults, #eventResults {
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: scroll;
+}
+.exhibitionSet, .eventSet {
+	float: left;
+	width: 250px;
+	height: 170px;
+	margin-right: 20px;
+	overflow: hidden;
+	padding-top: 10px;
+	font-size: 12px;
+	color: #454545;
+}
+.exhibitionResult, .eventResult {
+	margin-bottom: 5px;
+	height: 45px;
+	line-height: 1.1em;
+	background-color: #f5f5f5;
+	padding: 5px 10px 5px 10px;
+}
+#BookReaderContainer {
+	width: 350px;
+	height: 550px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: Helvetica;
+	font-size: 12px;
+	color: #000;
+}
+.navbar .navbar-nav > .active > a {
+	background-color: #e7e7e7;
+	color: #FFFFFF;
+}
+#mainContent {
+	margin-left: 170px;
+	padding-left: 0px;
+}

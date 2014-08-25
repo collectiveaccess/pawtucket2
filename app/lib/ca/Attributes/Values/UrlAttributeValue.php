@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
  /**
   *
   */
+ 	define("__CA_ATTRIBUTE_VALUE_URL__", 5);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -200,7 +201,7 @@
 			return $this->ops_text_value;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$ps_value = trim($ps_value);
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
@@ -244,9 +245,24 @@
  				'value_longtext1' => $ps_value
  			);
  		}
- 		# ------------------------------------------------------------------
+ 		# ------------------------------------------------------------------/**
+ 		/**
+ 		 * Return HTML form element for editing.
+ 		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			class = the CSS class to apply to all visible form elements [Default=urlBg]
+ 		 *			width = the width of the form element [Default=field width defined in metadata element definition]
+ 		 *			height = the height of the form element [Default=field height defined in metadata element definition]
+ 		 *			t_subject = an instance of the model to which the attribute belongs; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			request = the RequestHTTP object for the current request; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			suggestExistingValues = suggest values based on existing input for this element as user types [Default is false]		
+ 		 *
+ 		 * @return string
+ 		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
  			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight', 'minChars', 'maxChars', 'suggestExistingValues'));
+ 			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : 'urlBg');
  			
  			$vs_element = caHTMLTextInput(
  				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 
@@ -256,28 +272,30 @@
  					'value' => '{{{'.$pa_element_info['element_id'].'}}}', 
  					'maxlength' => $va_settings['maxChars'],
  					'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}',
- 					'class' => 'urlBg'
+ 					'class' => $vs_class
  				)
  			);
  			
  			$vs_element .= " <a href='#' style='display: none; vertical-align: top;' id='{fieldNamePrefix}".$pa_element_info['element_id']."_link{n}' target='_url_details'>"._t("Open &rsaquo;")."</a>";
 		
- 			$vs_bundle_name = $vs_lookup_url = null;
- 			if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
- 				$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
- 				
- 				if ($pa_options['request']) {
- 					$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('bundle' => $vs_bundle_name, 'max' => 500));
- 				}
- 			}
- 			
- 			if ($va_settings['suggestExistingValues'] && $vs_lookup_url && $vs_bundle_name) { 
- 				$vs_element .= "<script type='text/javascript'>
- 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
-						{ source: '{$vs_lookup_url}', minLength: 3, delay: 800}
-					);
- 				</script>\n";
- 			}
+			if ($vb_do_suggested_values = (caGetOption('suggestExistingValues', $pa_options, false) || caGetOption('suggestExistingValues', $va_settings, false))) {
+				$vs_bundle_name = $vs_lookup_url = null;
+				if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
+					$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
+				
+					if ($pa_options['request']) {
+						$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('bundle' => $vs_bundle_name, 'max' => 500));
+					}
+				}
+			
+				if ($vs_lookup_url && $vs_bundle_name) { 
+					$vs_element .= "<script type='text/javascript'>
+						jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
+							{ source: '{$vs_lookup_url}', minLength: 3, delay: 800}
+						);
+					</script>\n";
+				}
+			}
  			$vs_element .= "
 				<script type='text/javascript'>
 					if ('{{".$pa_element_info['element_id']."}}') {
@@ -289,7 +307,7 @@
  			return $vs_element;
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['UrlAttributeValue'];
@@ -302,6 +320,15 @@
 		 */
 		public function sortField() {
 			return 'value_longtext1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for url attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_URL__;
 		}
  		# ------------------------------------------------------------------
 	}

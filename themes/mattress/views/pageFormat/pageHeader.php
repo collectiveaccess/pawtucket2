@@ -6,14 +6,15 @@
 
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-
+	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.jpg'); ?>">
 	<title><?php print $this->request->config->get('html_page_title'); ?></title>
 </head>
 <body>
 	<div id="headerWrapper">
 		<div id="hpLogo">
 	<?php	
-		print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg'), '', '', '','');
+		print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg', array('width' => '150px', 'height' => '112px')), '', '', '','');
+		
 	?>	
 		</div>
 		<div class="navbar navbar-inverse">
@@ -31,7 +32,6 @@
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 				  <ul class="dropdown-menu">
 					<li><a href="../?q=content/hours-admission">Visit</a></li>
-					<li><a href="../?q=calendar/month">Calendar</a></li>
 					<li><a href="../?q=content/history">History</a></li>
 					<li><a href="../?q=content/get-involved">Get Involved</a></li>
 					<li><a href="../?q=content/rentals">Rentals</a></li>
@@ -70,11 +70,15 @@
 				  </ul>
 				</li>
 				<li class="dropdown">
+				  <a href="/calendar/month" class="dropdown-toggle" >Calendar</a>
+				</li>  				
+				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
 				  <ul class="dropdown-menu">
 					<li><?php print caNavLink($this->request, _t('About'), '', '', '', ''); ?></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Collections</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
+					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
 					<li><a href="#">p{ART}icipate</a></li>  
 				  </ul>

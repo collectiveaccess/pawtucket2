@@ -54,17 +54,28 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$va_browse_info 	= $this->getVar("browseInfo");
 	
+	$va_export_formats = $this->getVar('export_formats');
+	$vs_export_format_select = $this->getVar('export_format_select');
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div id="bViewButtons">
 <?php
-foreach($va_views as $vs_view => $va_view_info) {
-	if ($vs_current_view === $vs_view) {
-		print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
-	} else {
-		print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+
+	foreach($va_views as $vs_view => $va_view_info) {
+		if ($vs_current_view === $vs_view) {
+			print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+		} else {
+			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+		}
 	}
-}
+	
+	// Export as PDF
+	print "<div class='reportTools'>";
+	print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+	print "{$vs_export_format_select}".caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
+	print "</div>"; 
+	  
 ?>
 </div>		
 <H1>
@@ -100,8 +111,8 @@ foreach($va_views as $vs_view => $va_view_info) {
 			}	
 ?>
 		</ul>
-
 	</div><!-- end btn-group -->
+
 </H1>
 <div class="row" style="clear:both;">
 	<div class='col-xs-9 col-sm-9 col-md-9 col-lg-9'>
@@ -110,9 +121,11 @@ foreach($va_views as $vs_view => $va_view_info) {
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
 				if ($va_criterion['facet_name'] != '_search') {
+					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
 					print ' '.caNavLink($this->request, '<span class="glyphicon glyphicon-remove-circle"></span>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				} else {
+					print "<strong>".$va_criterion['facet'].':</strong> '.SearchEngine::getSearchExpressionForDisplay($va_criterion['value'], $vs_table);
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){

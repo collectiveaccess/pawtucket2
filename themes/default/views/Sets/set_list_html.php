@@ -2,6 +2,7 @@
 	$t_set = new ca_sets();
 	$va_write_sets = $this->getVar("write_sets");
 	$va_read_sets = $this->getVar("read_sets");
+	$va_set_ids = $this->getVar("set_ids");
 	$va_access_values = $this->getVar("access_values");
 	$va_activity_stream = $this->getVar("activity");
 ?>
@@ -25,59 +26,39 @@
 		</div><!-- end btn-group -->
 	</H1>
 	<div class="row">
+		<div class="col-sm-10 col-md-9 col-lg-7">
 <?php
-	$vn_col_span = 6;
-	$vn_col_span_sm = 6;
-	$vb_read_and_write = false;
-	if((sizeof($va_write_sets)) && (sizeof($va_read_sets))){
-		$vb_read_and_write = true;
-		$vn_col_span = 12;
-		$vn_col_span_sm = 12;
-	}
-	$vn_items_per_row = 12/$vn_col_span;
-	if($vb_read_and_write){
-		print "<div class='col-sm-5 col-md-5 col-lg-5'>\n";
-	}else{
-		print "<div class='col-sm-10 col-md-10 col-lg-10'>\n";
-	}
-	if(sizeof($va_write_sets)){
-		print "<H2>"._t("Lightboxes you can edit")."</H2>\n";
-		$vn_i_set = 0;
-		print "<div class='row'>\n";
-		foreach($va_write_sets as $vn_set_id => $va_set_info){
-			$vn_i_set++;
+	if(sizeof($va_set_ids)){
+		$i = 0;
+		foreach($va_set_ids as $vn_set_id){
+			if($i == 0){
+				print "<div class='row'>";
+			}
+			$i++;
 			$t_set->load($vn_set_id);
-			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
-			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => true));
+			$vb_write_access = $t_set->haveAccessToSet($this->request->getUserID(), 2);
+			print "<div class='col-xs-6 col-sm-6 col-md-6'>\n";
+			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => $vb_write_access));
 			print "\n</div><!-- end col -->\n";
+			if($i == 2){
+				$i = 0;
+				print "</div><!-- end row -->";
+			}
 		}
-		print "</div><!-- end row -->\n";
-	}
-	if($vb_read_and_write){
-		print "</div><!-- end col-5 --><div class='col-sm-5 col-md-5 col-lg-5'>\n";
-	}
-	
-	if(sizeof($va_read_sets)){
-		print "<H2>"._t("Lightboxes you can view")."</H2>\n";
-		$vn_i_set = 0;
-		print "<div class='row'>\n";
-		foreach($va_read_sets as $vn_set_id => $va_set_info){
-			$vn_i_set++;
-			$t_set->load($vn_set_id);
-			print "<div class='col-sm-".$vn_col_span_sm." col-md-".$vn_col_span."'>\n";
-			print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => false));
-			print "</div><!-- end col -->\n";
+		if($i == 1){
+			print "</div><!-- end row -->";
 		}
-		print "</div><!-- end row -->\n";
+	}else{
+		print "<div class='row'><div class='col-sm-6 col-md-6'>\n".caLightboxSetListItemPlaceholder($this->request)."\n</div><!-- end col --></div><!-- end row -->\n";
 	}
 ?>
 		</div><!-- end col-md-5 or 10 -->
-		<div class="col-sm-2 col-md-2 col-lg-2">
+		<div class="col-sm-2 col-md-3 col-lg-3 col-lg-offset-2">
 <?php
 		if(is_array($va_activity_stream) && sizeof($va_activity_stream)) {
 ?>
 			<h2><?php print _t("activity stream"); ?></h2>
-			 <div style="height:700px; overflow-y:auto; line-height:1.1em;">
+			 <div class="activitystream">
 <?php
 				$o_dm = new Datamodel();
 				$t_activity_set = new ca_sets();

@@ -74,6 +74,7 @@
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.small');
 					if ($t_object->get('ca_object_representations.media.small')) {
+						$va_cell_width = "style='width:auto'";
 						$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";
 					} else {
 						$va_cell_width = "style='width:180px;'";
@@ -84,14 +85,27 @@
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.small');
 					if ($t_object->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
+						$va_cell_width = "style='width:auto'";
+						#$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
+					} else {
+						$va_cell_width = "style='width:180px;'";
+					}				
+				} else if ($vs_table == "ca_collections") {
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_first_object_id = $va_related_objects[0];
+					$t_object = new ca_objects($va_first_object_id);
+					$va_rep = $t_object->get('ca_object_representations.media.small');
+					if ($t_object->get('ca_object_representations.media.small')) {
+						$va_cell_width = "style='width:auto'";
+						#$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
 					} else {
 						$va_cell_width = "style='width:180px;'";
 					}				
 				} else {
 					$va_rep = $qr_res->get('ca_object_representations.media.small');
 					if ($qr_res->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:".$qr_res->get('ca_object_representations.media.small.width')."px;'";
+						$va_cell_width = "style='width:auto'";
+						#$va_cell_width = "style='width:".$qr_res->get('ca_object_representations.media.small.width')."px;'";
 					} else {
 						$va_cell_width = "style='width:180px;'";
 					}	

@@ -92,7 +92,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			} // if sortBy	
 
-			foreach($va_views as $vs_view) {
+			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
 					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 				} else {

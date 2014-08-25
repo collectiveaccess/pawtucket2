@@ -16,3 +16,6 @@
 .detailTool a{
 	padding-right:80px;
 }
+a.btn-default{
+	text-decoration:none;
+}

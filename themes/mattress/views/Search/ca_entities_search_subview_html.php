@@ -22,7 +22,7 @@
  * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
- *
+ * 
  * ----------------------------------------------------------------------
  */
  

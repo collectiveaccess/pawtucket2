@@ -39,6 +39,10 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
+ 			 if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+ 			
  			caSetPageCSSClasses(array("findingaid"));
  		}
  		# -------------------------------------------------------
@@ -51,6 +55,7 @@
  			$this->view->setVar('display_template', $va_display_template);
  			$this->view->setVar('page_title', $this->config->get('page_title'));
  			$this->view->setVar('intro_text', $this->config->get('intro_text'));
+ 			$this->view->setVar('open_by_default', $this->config->get('open_by_default'));
  			
  			$va_restrict_to_types = explode(", ", $this->config->get('restrict_to_types'));
 			$vs_restrict_types = '"'.implode('", "', $va_restrict_to_types).'"';	
