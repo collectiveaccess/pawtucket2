@@ -445,7 +445,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 			}
 		}
-		if ($this->getPrimaryKey() && isset($pa_fields[$this->getTypeFieldName()]) && !(isset($pa_options['allowSettingOfTypeID']) && $pa_options['allowSettingOfTypeID'])) {
+		if ($this->getPrimaryKey() && !$this->isRelationship() && isset($pa_fields[$this->getTypeFieldName()]) && !(isset($pa_options['allowSettingOfTypeID']) && $pa_options['allowSettingOfTypeID'])) {
 			$this->postError(2520, _t("Type id cannot be set after insert"), "BundlableLabelableBaseModelWithAttributes->set()");
 			return false;
 		}
@@ -2052,7 +2052,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 									case 2:
 									case 3:
-										return $t_instance->htmlFormElementForSearch($po_request, $ps_field.($vb_as_array_element ? "[]" : ""), $pa_options);
+										return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
 										break;
 								}
 							}
@@ -5466,6 +5466,7 @@ $pa_options["display_form_field_tips"] = true;
 	/**
 	 * Change type of record, removing any metadata that is invalid for the new type
 	 *
+     * @param mixed $pm_type The type_id or code to change the current type to
 	 * @return bool True if change succeeded, false if error
 	 */
 	public function changeType($pm_type) {

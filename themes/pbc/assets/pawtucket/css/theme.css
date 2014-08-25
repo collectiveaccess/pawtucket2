@@ -1,0 +1,21 @@
+.navbar-brand {
+		width: 75px;
+	}
+
+H1, h1, H2, h2 {
+	color: green;
+}
+
+#footer ul a {
+	color: green;
+}
+.spokenword #caMediaDisplayContent {
+	padding-top:32px;
+}
+
+.filterMenuFacetList li.active {
+	background-color: green;
+}
+a {
+	color: green;
+}

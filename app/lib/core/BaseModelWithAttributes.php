@@ -1055,10 +1055,20 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Fetch the type_id for the currently loaded row or, optionally, the row specified by $pn_id
 		 *
+		 * @param $pn_id Option primary key to fetch type_id for. If omitted the type_id for currently loaded row is returned. [Default=null]
+		 * @return int 
 		 */
-		public function getTypeID() {
+		public function getTypeID($pn_id=null) {
 			if (!isset($this->ATTRIBUTE_TYPE_ID_FLD) || !$this->ATTRIBUTE_TYPE_ID_FLD) { return null; }
+			if ($pn_id) {
+				$qr_res = $this->getDb()->query("SELECT {$this->ATTRIBUTE_TYPE_ID_FLD} FROM ".$this->tableName()." WHERE ".$this->primaryKey()." = ?", array((int)$pn_id));
+				if($qr_res->nextRow()) {
+					return $qr_res->get($this->ATTRIBUTE_TYPE_ID_FLD);
+				}
+				return null;
+			}
 			return $this->get($this->ATTRIBUTE_TYPE_ID_FLD);
 		}
 		# ------------------------------------------------------------------
@@ -1080,7 +1090,7 @@
 		 *
 		 */
 		public function getTypeName($pn_type_id=null) {
-			if (!is_numeric($pn_type_id)) { $pn_type_id = $this->getTypeIDForCode($pn_type_id); }
+			if ($pn_type_id && !is_numeric($pn_type_id)) { $pn_type_id = $this->getTypeIDForCode($pn_type_id); }
 			if ($t_list_item = $this->getTypeInstance($pn_type_id)) {
 				return $t_list_item->getLabelForDisplay(false);
 			}
@@ -1253,7 +1263,8 @@
 				if (!$this->hasField($va_tmp[1])) {
 					$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
 					
-					return $this->htmlFormElementForAttributeSearch($po_request, $va_tmp[1], array_merge($pa_options, array(
+					$vs_fld = array_pop($va_tmp);
+					return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
 								'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
 								'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
 								'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
@@ -1483,15 +1494,21 @@
 				return false;
 			}
 			
-			if ($t_element->get('parent_id')) { 
-				$this->postError(1930, _t('Element is not the root of the element set'), 'BaseModelWithAttributes->htmlFormElementForAttributeSearch()');
-				return false;
-			}
+			$vb_is_sub_element = (bool)($t_element->get('parent_id'));
+			$t_parent = $vb_is_sub_element ? $this->_getElementInstance($t_element->get('parent_id')) : null;
+			
 			
 			$vs_element_code = $t_element->get('element_code');
 			
 			// get all elements of this element set
-			$va_element_set = $t_element->getElementsInSet();
+			$va_element_set = $t_element->getElementsInSet($vb_is_sub_element ? $t_element->get('parent_id') : null);
+			
+			if ($vb_is_sub_element) {
+				foreach($va_element_set as $vn_i => $va_element) {
+					if ($va_element['element_code'] !== $vs_element_code) { unset($va_element_set[$vn_i]); }
+				}
+				
+			}
 			
 			$t_attr = new ca_attributes();
 			$t_attr->purify($this->purify());
@@ -1521,7 +1538,7 @@
 				
 				$va_label = $this->getAttributeLabelAndDescription($va_element['element_id']);
 				
-				$vs_subelement_code = $this->tableName().'.'.(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
+				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
 				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
 				$va_element_opts = array_merge(array(
@@ -1946,7 +1963,7 @@
 				foreach($va_tmp as $vn_id => $va_value_list) {
 					foreach($va_value_list as $va_value) {
 						foreach($va_value as $vs_element_code => $vs_value) {
-							if (strlen($vs_value)) { 
+							if (is_array($vs_value) || strlen($vs_value)) { 
 								$va_attribute_list[] = $vs_value;
 							}
 						}
