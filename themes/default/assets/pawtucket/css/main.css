@@ -1417,13 +1417,13 @@ a.browseRemoveFacet img {
 	height: 170px;	/* Needs to be some height */
 }
 
-.multisearch #objectsBlock, .multisearch #entitiesBlock, .multisearch #placesBlock, .multisearch #occurrencesBlock, .multisearch #collectionsBlock {
+.multisearch .resultBlock {
 	width:100%;
 	overflow-y:hidden;
 	position:relative;
 }
 
-.multisearch #objectsResults, .multisearch #entitiesResults, .multisearch #placesResults, .multisearch #occurrencesResults, .multisearch #collectionsResults {
+.multisearch .multiSearchResults {
 	overflow-x:scroll;
 	overflow-y:hidden;
 	width:100%;
@@ -1454,7 +1454,7 @@ a.browseRemoveFacet img {
 .multisearch .scrollButtonNext.inactive, .multisearch .scrollButtonPrevious.inactive{
 	display:none;
 }
-.multisearch .objectsResult, .multisearch .collectionsResult  {
+.multisearch .multisearchResult {
 	float:left;
 	width:150px;
 	height:145px;
@@ -1467,17 +1467,14 @@ a.browseRemoveFacet img {
 	font-size:11px;
 	overflow:hidden;
 }
-.multisearch .objectsResult a, .multisearch .collectionsResult a  {
+.multisearch .multisearchResult a  {
 	color:#454545;
 }
-.multisearch .objectsResult img, .multisearch .collectionsResult img {
+.multisearch .multisearchResult img {
 	width:100%;
 	height:auto;
 	margin-bottom:5px;
 }
-
-
-
 .multisearch .entitiesSet, .multisearch .placesSet, .multisearch .occurrencesSet {
 	float:left;
 	width:250px;

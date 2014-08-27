@@ -51,7 +51,7 @@
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results'>
+				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
 		}
@@ -59,7 +59,7 @@
 		while($qr_results->nextHit()) {
 			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 ?>
-			<div class='{{{block}}}Result'>
+			<div class='{{{block}}}Result multisearchResult'>
 <?php
 			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags', 'checkAccess' => $va_access_values));
 			$vs_image_tag = "";
