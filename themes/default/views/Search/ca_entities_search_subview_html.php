@@ -55,8 +55,8 @@
 		$vn_i = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true;}
-				print "<div class='entitiesResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
+			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
+				print "<div class='entitiesResult authorityResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
