@@ -46,7 +46,15 @@
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
- 		 		
+ 		 	# --- what is the section called - title of page
+ 			if(!$vs_section_name = $this->config->get('gallery_section_name')){
+ 				$vs_section_name = _t("Featured Galleries");
+ 			}
+ 			$this->view->setVar("section_name", $vs_section_name);
+ 			if(!$vs_section_item_name = $this->config->get('gallery_section_item_name')){
+ 				$vs_section_item_name = _t("gallery");
+ 			}
+ 			$this->view->setVar("section_item_name", $vs_section_item_name);
  			caSetPageCSSClasses(array("gallery"));
  			
  			AssetLoadManager::register("panel");
@@ -61,11 +69,6 @@
  		public function __call($ps_function, $pa_args) {
  			
  			$ps_function = strtolower($ps_function);
- 			# --- what is the section called - title of page
- 			if(!$vs_section_name = $this->config->get('gallery_section_name')){
- 				$vs_section_name = _t("Featured Galleries");
- 			}
- 			$this->view->setVar("section_name", $vs_section_name);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
  			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
@@ -73,7 +76,7 @@
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
 					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
-					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -86,7 +89,8 @@
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				$this->render("Gallery/index_html.php");
+				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+ 				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
  				$this->view->setVar("set_id", $ps_set_id);
@@ -95,6 +99,7 @@
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon"), "checkAccess" => $this->opa_access_values))));
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
  				$this->render("Gallery/detail_html.php");
  			}
  		}
@@ -112,7 +117,7 @@
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
- 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "medium", "checkAccess" => $this->opa_access_values)))));
+ 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
  			
  			$this->render("Gallery/set_info_html.php");
  		}
@@ -128,8 +133,7 @@
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("rep_width", $va_rep_info["WIDTH"]);
- 			$this->view->setVar("rep_height", $va_rep_info["HEIGHT"]);
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
@@ -149,8 +153,13 @@
  		# -------------------------------------------------------
  		public function getSetItemInfo(){
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
  			$t_object = new ca_objects($t_set_item->get("row_id"));
+ 			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
+ 			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
+ 			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
  			$this->view->setVar("object", $t_object);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));
@@ -170,9 +179,9 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_object->getWithTemplate($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_object->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_object->get($vs_tag));
+ 					$this->view->setVar($vs_tag, $t_object->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}

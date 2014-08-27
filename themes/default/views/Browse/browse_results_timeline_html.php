@@ -52,21 +52,19 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 ?>
-	<div id="timeline-embed" style="width: 700px; height:500px;">
+	<div id="bTimelineContainer"><div id="timeline-embed">
 
-	</div>
+	</div></div>
 	
-	<br style="clear: both;"/>
-	
-    <script type="text/javascript">
+	<script type="text/javascript">
     	var tl;
 		$(document).ready(function() {
 			tl = new VMM.Timeline("#timeline-embed");
 			VMM.debug = false;
 			tl.init({
 				type:       'timeline',
-				width:      '700',
-				height:     '500',
+				width:      '100%',
+				height:     $('#timeline-embed').height(),
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed',
 				debug: false

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
  /**
   *
   */
+ 	define("__CA_ATTRIBUTE_VALUE_TEXT__", 1);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -165,6 +166,24 @@
 			'label' => _t('Value delimiter'),
 			'validForRootOnly' => 1,
 			'description' => _t('Delimiter to use between multiple values when used in a display.')
+		),
+		'isDependentValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Is dependent value?'),
+			'validForNonRootOnly' => 1,
+			'description' => _t('If set then this element is set using values in other fields in the same container. This is only relevant when the element is in a container and is ignored otherwise.')
+		),
+		'dependentValueTemplate' => array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'default' => '',
+			'width' => 90, 'height' => 4,
+			'label' => _t('Dependent value template'),
+			'validForNonRootOnly' => 1,
+			'description' => _t('Template to be used to format content for dependent values. Template should reference container values using their bare element code prefixed with a caret (^). Do not include the table or container codes.')
 		)
 	);
  
@@ -184,7 +203,7 @@
 			return $this->ops_text_value;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
  				array('minChars', 'maxChars', 'regex')
@@ -215,19 +234,37 @@
  		}
  		# ------------------------------------------------------------------
  		/**
- 		 * @param array $pa_element_info
- 		 * @param array $pa_options Array of options:
- 		 *		usewysiwygeditor = if set, overrides element level setting for visual text editor
+ 		 * Return HTML form element for editing.
+ 		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			usewysiwygeditor = overrides element level setting for visual text editor [Default=false]
+ 		 *			forSearch = settings and options regarding visual text editor are ignored [Default=false]
+ 		 *			class = the CSS class to apply to all visible form elements [Default=null]
+ 		 *			width = the width of the form element [Default=field width defined in metadata element definition]
+ 		 *			height = the height of the form element [Default=field height defined in metadata element definition]
+ 		 *			t_subject = an instance of the model to which the attribute belongs; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			request = the RequestHTTP object for the current request; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			suggestExistingValues = suggest values based on existing input for this element as user types [Default is false]		
+ 		 *
+ 		 * @return string
  		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
- 			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight', 'minChars', 'maxChars', 'suggestExistingValues', 'usewysiwygeditor'));
+ 			
+ 			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight', 'minChars', 'maxChars', 'suggestExistingValues', 'usewysiwygeditor', 'isDependentValue', 'dependentValueTemplate'));
  			
  			if (isset($pa_options['usewysiwygeditor'])) {
  				$va_settings['usewysiwygeditor'] = $pa_options['usewysiwygeditor'];
  			}
+
+ 			if (isset($pa_options['forSearch']) && $pa_options['forSearch']) {
+ 				unset($va_settings['usewysiwygeditor']);
+ 			}
  			
  			$vs_width = trim((isset($pa_options['width']) && $pa_options['width'] > 0) ? $pa_options['width'] : $va_settings['fieldWidth']);
  			$vs_height = trim((isset($pa_options['height']) && $pa_options['height'] > 0) ? $pa_options['height'] : $va_settings['fieldHeight']);
+ 			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
+ 			
  			
  			if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
  				$vs_width = ((int)$vs_width * 6)."px";
@@ -236,12 +273,10 @@
  				$vs_height = ((int)$vs_height * 16)."px";
  			}
  			
- 			$vs_class = null;
- 			
  			if ($va_settings['usewysiwygeditor']) {
  				$o_config = Configuration::load();
  				if (!is_array($va_toolbar_config = $o_config->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
- 				AssetLoadManager::register("ckeditor");
+ 				JavascriptLoadManager::register("ckeditor");
  				
  				$vs_element = "<script type='text/javascript'>jQuery(document).ready(function() {
 						var ckEditor = CKEDITOR.replace( '{fieldNamePrefix}".$pa_element_info['element_id']."_{n}',
@@ -267,38 +302,65 @@
  					'height' => $vs_height, 
  					'value' => '{{'.$pa_element_info['element_id'].'}}', 
  					'maxlength' => $va_settings['maxChars'],
+ 					'class' => $vs_class,
  					'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".($va_settings['usewysiwygeditor'] ? " ckeditor" : '')
  				)
  			);
  			
- 			$vs_bundle_name = $vs_lookup_url = null;
- 			if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
- 				$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
+ 			if ($va_settings['isDependentValue']) {
+ 				JavascriptLoadManager::register('displayTemplateParser');
  				
- 				if ($pa_options['request']) {
- 					if (isset($pa_options['lookupUrl']) && $pa_options['lookupUrl']) {
- 						$vs_lookup_url = $pa_options['lookupUrl'];
- 					} else {
- 						$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
- 					}
+ 				$t_element = new ca_metadata_elements($pa_element_info['element_id']);
+ 				$va_elements = $t_element->getElementsInSet($t_element->getHierarchyRootID());
+ 				
+ 				$va_element_list = array();
+ 				$va_element_dom_ids = array();
+ 				foreach($va_elements as $vn_i => $va_element) {
+ 					if ($va_element['datatype'] == __CA_ATTRIBUTE_VALUE_CONTAINER__) { continue; }
+ 					$va_element_dom_ids[$va_element['element_code']] = "#{fieldNamePrefix}".$va_element['element_id']."_{n}";
  				}
+ 				
+ 				
+ 				$vs_element .= "<script type='text/javascript'>jQuery(document).ready(function() {
+ 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').html(caDisplayTemplateParser.processTemplate('".addslashes($va_settings['dependentValueTemplate'])."', ".json_encode($va_element_dom_ids, JSON_FORCE_OBJECT)."));
+ 				";
+ 				$vs_element .= "jQuery('".join(", ", $va_element_dom_ids)."').bind('keyup', function(e) { 
+ 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').html(caDisplayTemplateParser.processTemplate('".addslashes($va_settings['dependentValueTemplate'])."', ".json_encode($va_element_dom_ids, JSON_FORCE_OBJECT)."));
+ 				});";
+ 				
+ 				$vs_element .="});</script>";
  			}
  			
- 			if ($va_settings['suggestExistingValues'] && $vs_lookup_url && $vs_bundle_name) { 
- 				$vs_element .= "<script type='text/javascript'>
- 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
-						{ 
-							source: '{$vs_lookup_url}',
-							minLength: 3, delay: 800
+ 			if ($vb_do_suggested_values = (caGetOption('suggestExistingValues', $pa_options, false) || caGetOption('suggestExistingValues', $va_settings, false))) {
+				$vs_bundle_name = $vs_lookup_url = null;
+				if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
+					$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
+				
+					if ($pa_options['request']) {
+						if (isset($pa_options['lookupUrl']) && $pa_options['lookupUrl']) {
+							$vs_lookup_url = $pa_options['lookupUrl'];
+						} else {
+							$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
 						}
-					);
- 				</script>\n";
- 			}
+					}
+				}
+			
+				if ($vs_lookup_url && $vs_bundle_name) { 
+					$vs_element .= "<script type='text/javascript'>
+						jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
+							{ 
+								source: '{$vs_lookup_url}',
+								minLength: 3, delay: 800
+							}
+						);
+					</script>\n";
+				}
+			}
  			
  			return $vs_element;
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['TextAttributeValue'];
@@ -315,6 +377,15 @@
 		 */
 		public function sortField() {
 			return 'value_longtext1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for text attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_TEXT__;
 		}
  		# ------------------------------------------------------------------
 	}

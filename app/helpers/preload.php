@@ -34,28 +34,31 @@
    *
    */
    
-	require(__CA_APP_DIR__."/helpers/utilityHelpers.php");
-	require(__CA_APP_DIR__."/helpers/navigationHelpers.php");
-	require(__CA_APP_DIR__."/helpers/themeHelpers.php");
-	require(__CA_APP_DIR__."/helpers/mailHelpers.php");
-	require(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
+	require_once(__CA_BASE_DIR__.'/vendor/autoload.php');	// composer
+   
+	require_once(__CA_LIB_DIR__."/core/Utils/Debug.php");
+	require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/navigationHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/mailHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
 	
-	require(__CA_LIB_DIR__."/core/BaseModel.php");
-	require(__CA_LIB_DIR__."/core/Controller/AppController.php");
-	require(__CA_LIB_DIR__."/core/Zend/Translate.php");
-	require(__CA_LIB_DIR__."/core/Zend/Registry.php");
-	require(__CA_LIB_DIR__."/ca/Search/DidYouMean.php");
+	require_once(__CA_LIB_DIR__."/core/BaseModel.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/AppController.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Translate.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Registry.php");
+	require_once(__CA_LIB_DIR__."/ca/Search/DidYouMean.php");
 	
-	require(__CA_LIB_DIR__."/ca/MetaTagManager.php");
-	require(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
-	require(__CA_LIB_DIR__."/ca/TooltipManager.php");
+	require_once(__CA_LIB_DIR__."/ca/MetaTagManager.php");
+	require_once(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
+	require_once(__CA_LIB_DIR__."/ca/TooltipManager.php");
 
-	require(__CA_LIB_DIR__."/ca/ResultContext.php");
+	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
 	
-	require(__CA_LIB_DIR__."/core/Controller/ActionController.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/ActionController.php");
 	
-	require(__CA_MODELS_DIR__."/ca_acl.php");
-	require(__CA_APP_DIR__."/helpers/browseHelpers.php");
+	require_once(__CA_MODELS_DIR__."/ca_acl.php");
+	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 	
 	// initialize Tooltip manager
 	TooltipManager::init();

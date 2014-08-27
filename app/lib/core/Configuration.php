@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2013 Whirl-i-Gig
+ * Copyright 2000-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -302,7 +302,7 @@ class Configuration {
 			if (strtolower(substr($vs_buffer,0,9)) == '#!replace') { $vb_merge_mode = false; }
 			if (!$vs_buffer || (substr($vs_buffer,0,1) === "#")) { continue; }
 
-			$va_token_tmp = preg_split("/([={}\[\]\",]){1}/", $vs_buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
+			$va_token_tmp = preg_split("/([={}\[\]\",\\\]){1}/", $vs_buffer, -1, PREG_SPLIT_DELIM_CAPTURE);
 
 			// eliminate blank tokens
 			$va_tokens = array();
@@ -400,7 +400,7 @@ class Configuration {
 							# -------------------
 							case '"':
 								if ($vb_escape_set) {
-									$vs_scalar_value = '"';
+									$vs_scalar_value .= '"';
 									$vb_escape_set = false;
 								} else {
 									if (!$vn_in_quote) {
@@ -543,7 +543,7 @@ class Configuration {
 							# -------------------
 							case '"':
 								if ($vb_escape_set) {
-									$vs_scalar_value = '"';
+									$vs_scalar_value .= '"';
 									$vb_escape_set = false;
 								} else {
 									if (!$vn_in_quote) {
@@ -642,7 +642,7 @@ class Configuration {
 							# -------------------
 							case '"':
 								if ($vb_escape_set) {
-									$vs_scalar_value = '"';
+									$vs_scalar_value .= '"';
 									$vb_escape_set = false;
 								} else {
 									if (!$vn_in_quote) {
@@ -993,4 +993,3 @@ class Configuration {
 	//}
 	# ---------------------------------------------------------------------------
 }
-?>

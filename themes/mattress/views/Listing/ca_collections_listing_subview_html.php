@@ -35,6 +35,7 @@
 	<div id="pageTitle">Collections</div>
 	<div id="contentArea" class="rightCol">
 <?php 
+	$va_lists = array_reverse($va_lists);
 	foreach($va_lists as $vs_heading => $qr_list) {
 		if(!$qr_list) { continue; }
 		

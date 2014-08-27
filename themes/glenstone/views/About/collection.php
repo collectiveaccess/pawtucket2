@@ -1,6 +1,9 @@
 <?php
 
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
+include_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
+include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
+
 $va_access_values = caGetUserAccessValues($this->request);
 
 	if($vs_set_code = $this->request->config->get("featured_art_set")){
@@ -18,104 +21,24 @@ $va_access_values = caGetUserAccessValues($this->request);
 	}	
 ?>
 <div class="container">
-	<div class="row">
-		<div class="col-sm-12">
-<?php
-			if(is_array($va_item_media) && sizeof($va_item_media)){
-?>   
-		<div class="jcarousel-wrapper">
-			<!-- Carousel -->
-			<div class="jcarousel">
-				<ul>
-<?php
-					foreach($va_item_media as $vn_object_id => $va_media){
-						print "<li>".caDetailLink($this->request, $va_media["tags"]["slideshowsmall"], '', 'ca_objects', $vn_object_id)."</li>";
-					}
-?>
-				</ul>
-			</div><!-- end jcarousel -->
-<?php
-			if(sizeof($va_item_media) > 1){
-?>
-			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
-		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
-<?php
-			}
-?>
-		</div><!-- end jcarousel-wrapper -->
-		
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.jcarousel-control-prev')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.jcarousel-control-next')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-		
-				/*
-				 Pagination initialization
-				 */
-				$('.jcarousel-pagination')
-					.on('jcarouselpagination:active', 'a', function() {
-						$(this).addClass('active');
-					})
-					.on('jcarouselpagination:inactive', 'a', function() {
-						$(this).removeClass('active');
-					})
-					.jcarouselPagination({
-						// Options go here
-					});
-			});
-		</script>
-<?php 
-	}
-?>						
-		</div><!--end col-sm-12-->
-	</div><!-- end row -->
-	<div class="row">
-		<div class="col-sm-8">
+	<div class="row collection">
+		<div class="col-sm-6">
 			<h1>Collection Advanced Search coming soon.</h1>
 		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-			
+		<div class="col-sm-6">
+			<div class="exhibitions">
+				<h1>Glenstone Exhibitions</h1>
+<?php
+	$o_exhibition_search = new OccurrenceSearch();
+	$qr_exhibitions = $o_exhibition_search->search("*", array('sort' => 'ca_occurrences.exh_dates', 'sort_direction' => 'desc'));
+
+	if ($qr_exhibitions->numHits()) {
+		while($qr_exhibitions->nextHit()) {
+			print "<div class='exhibition'>".caNavLink($this->request, $qr_exhibitions->get('ca_occurrences.preferred_labels'), '', '', 'Detail', 'occurrences/'.$qr_exhibitions->get('ca_occurrences.occurrence_id'))."</div>";
+		}
+	}
+?>			
+			</div>
 		</div> <!--end col-sm-4-->	
 	</div><!--end row-->
 </div> <!--end container-->

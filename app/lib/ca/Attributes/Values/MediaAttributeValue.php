@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,8 @@
  /**
   *
   */
+  	define("__CA_ATTRIBUTE_VALUE_MEDIA__", 16);
+  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/core/Configuration.php');
@@ -99,6 +101,11 @@
  		}
  		# ------------------------------------------------------------------
  		/**
+ 		 * Return attribute display value. 
+ 		 *
+ 		 * @param array $pa_options
+ 		 * @return string
+ 		 *
  		 * Options:
  		 *	showMediaInfo - if true media info (dimensions, filesize, bit depth) is returns as part of display; default is false
  		 *	version - name of media version to return; default is 'thumbnail'
@@ -114,6 +121,9 @@
 			if(!isset($pa_options['showMediaInfo'])) { $pa_options['showMediaInfo'] = false; }
 			if(!isset($pa_options['version'])) { $pa_options['version'] = 'thumbnail'; }
 			$vs_version = $pa_options['version'];
+			
+			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
+ 			
 			
 			if(!isset($pa_options['return'])) { $pa_options['return'] = null; } else { $pa_options['return'] = strtolower($pa_options['return']); }
 			
@@ -171,7 +181,7 @@
 						$va_dimensions[] = $vn_pages.' '.(($vn_pages == 1) ? _t('page') : _t('pages'));
 					}
 					if (!isset($va_info['original']['PROPERTIES']['filesize']) || !($vn_filesize = $va_info['original']['PROPERTIES']['filesize'])) {
-						$vn_filesize = @filesize($qr_reps->getMediaPath('media', 'original'));
+						$vn_filesize = 0;
 					}
 					if ($vn_filesize) {
 						$va_dimensions[] = sprintf("%4.1f", $vn_filesize/(1024*1024)).'mb';
@@ -198,8 +208,8 @@
 					
 					
 					$vs_val .= "<div class='attributeMediaThumbnail'>";
+					$vs_val .= "<div style='float: left;'>".urlDecode(caNavLink($pa_options['request'], caNavIcon($pa_options['request'], __CA_NAV_BUTTON_DOWNLOAD__, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadAttributeMedia', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton')))."</div>";
 					$vs_val .= "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_view_url}\"); return false;'>{$vs_tag}</a>";
-					$vs_val .= urlDecode(caNavLink($pa_options['request'], caNavIcon($pa_options['request'], __CA_NAV_BUTTON_DOWNLOAD__, null, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadMedia', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton')));
 					$vs_val .= "</div>";
 					
 					if ($pa_options['showMediaInfo']) {
@@ -218,7 +228,7 @@
 			return $vs_val;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			if (
  				(is_array($ps_value) && $ps_value['_uploaded_file'] && file_exists($ps_value['tmp_name']) && (filesize($ps_value['tmp_name']) > 0))
  				||
@@ -257,15 +267,24 @@
 			);
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 * Return HTML form element for editing.
+ 		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			NONE (yet)
+ 		 *
+ 		 * @return string
+ 		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
- 			$vs_element = '<table><tr>';
- 			$vs_element .= '<td><div id="{fieldNamePrefix}upload_control_{n}" class="attributeMediaDownloadControl">'._t("Select a media file").': <input type="file" name="{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}"></div></td>' ;
- 			$vs_element .= '<td>{'.$pa_element_info['element_id'].'}</td>';
- 			$vs_element .= '</tr></table>';
+ 			$vs_element = '<div>';
+ 			$vs_element .= '<div>{'.$pa_element_info['element_id'].'}</div>';
+ 			$vs_element .= '<div id="{fieldNamePrefix}upload_control_{n}" class="attributeMediaDownloadControl">'._t("Upload").': <input type="file" name="{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}"></div>' ;
+ 			$vs_element .= '</div>';
  			return $vs_element;
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['MediaAttributeValue'];
@@ -278,6 +297,15 @@
 		 */
 		public function sortField() {
 			return null;
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for media attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_MEDIA__;
 		}
  		# ------------------------------------------------------------------
 	}
