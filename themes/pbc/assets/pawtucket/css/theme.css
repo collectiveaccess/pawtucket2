@@ -19,3 +19,21 @@ H1, h1, H2, h2 {
 a {
 	color: green;
 }
+
+.ringsResult {
+	float: left;
+	width: 150px;
+	height: 145px;
+	margin: 10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	font-size: 11px;
+}
+.ringsResult img {
+	width: 100%;
+	height: auto;
+	margin-bottom: 5px;
+}
