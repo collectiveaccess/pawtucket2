@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_collections_search_subview_html.php : 
+ * themes/default/views/Search/ca_objects_search_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -32,8 +32,9 @@
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
-	$va_access_values = caGetUserAccessValues($this->request);	$o_config = $this->getVar("config");
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = caGetSearchConfig();
 	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
@@ -44,42 +45,34 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
-				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | <span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
-			<div class='blockResults'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' class='multiSearchResults'>
+			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id='{{{block}}}Results'>
 					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
-			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 ?>
-			<div class='{{{block}}}Result multisearchResult'>
-<?php
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags', 'checkAccess' => $va_access_values));
-			$vs_image_tag = "";
-			if (sizeof($va_images) > 0){
-				foreach ($va_images as $vn_image_id => $vs_image) {
-					$vs_image_tag =  $qr_results->getWithTemplate("<l>{$vs_image}</l>");
-					break;
-				} 
-			}
-			if(!$vs_image_tag){
-				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
-			}
-			print $vs_image_tag;
+			<div class='{{{block}}}Result'>
+<?php 
+				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				if(!$vs_image){
+					$vs_image = $vs_placeholder_tag;
+				}
+				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
-				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
-			</div>
+				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
 			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
+?>
+<?php	
 		if (!$this->request->isAjax()) {
 ?>
 					</div><!-- end blockResultsScroller -->

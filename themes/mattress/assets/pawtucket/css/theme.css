@@ -173,6 +173,10 @@ h3 {
 	top:65px;
 	background-color:transparent;
 }
+.nav > li > a:focus {
+	font-size:17px;
+	font-family: "ProximaNovaRegular";
+}
 .artYou {
 	color: #EE3E43;
 	font-family: "ProximaNovaRegular";
