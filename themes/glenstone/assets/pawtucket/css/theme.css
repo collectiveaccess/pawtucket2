@@ -767,6 +767,11 @@ p.artist.lower {
 	font-size:14px;
 	padding-bottom:10px;
 }
+.searchDeaccessioned {
+	font-size:10px;
+	color:#cc0000;
+	font-style:italic;	
+}
 .detail .repViewerCont img {
 	height:auto;
 	width:auto;
@@ -806,7 +811,7 @@ p.artist.lower {
 	margin:0px;
 }
 #detailRepresentationThumbnails a.active img {
-	background-color:#eee;
+	background-color:#fff;
 	border:2px solid #999;
 }
 .tabdiv {
@@ -953,6 +958,12 @@ p.artist.lower {
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	display:block;
+}
+.detail .detailPrevLink {
+	margin-top:200px;
+}
+.detail .detailNavBgRight {
+	margin-top:250px;
 }
 /*.attributeMediaThumbnail {
 	height:120px;
@@ -1144,6 +1155,18 @@ p.artist.lower {
 		float:none;
 	}
 }
+.sets .dropdown-menu a {
+	display: block;
+	padding: 3px 20px;
+	clear: both;
+	font-weight: normal;
+	line-height: 1.428571429;
+	color: #888;
+	white-space: nowrap;
+	text-transform:none;
+	font-size:12px;
+	font-family: 'Source Sans Pro', sans-serif;
+}
 .lbSet, .lbItem {
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -1179,6 +1202,21 @@ p.artist.lower {
 	font-size:1em;
 	margin: 0 0 10px 0;
 }
+.reveal a:not(.image) {
+	color:#fff;
+}
+.reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled {
+	border-right-color: #fff;
+}
+.reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled {
+	border-left-color: #fff;
+}
+.reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled {
+	border-bottom-color: #fff;
+}
+.reveal a:not(.image):hover {
+	color: #fff;
+}
 .lbExpandedInfo HR, .lbSetExpandedInfo HR {
 	margin:0px;
 	border:0px;
@@ -1205,7 +1243,9 @@ div.caMediaOverlayControls .objectInfo {
 div.caMediaOverlayControls .close {
 	opacity:1;
 }
-
+div.caMediaOverlayControls .objectInfo {
+	width:80%;
+}
 
 /* Rolodex */
 

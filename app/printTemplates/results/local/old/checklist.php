@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/thumbnails.php
+ * app/templates/checklist.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,10 +26,10 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Thumbnails
- * @type omit
+ * @name Checklist
+ * @type page
  * @pageSize letter
- * @pageOrientation landscape
+ * @pageOrientation portrait
  * @tables ca_objects
  *
  * ----------------------------------------------------------------------
@@ -44,7 +44,6 @@
 	$vo_ar					= $this->getVar('access_restrictions');
 	$vo_result_context 		= $this->getVar('result_context');
 	$vn_num_items			= (int)$vo_result->numHits();
-	$vs_color 				= ($this->request->config->get('report_text_color')) ? $this->request->config->get('report_text_color') : "FFFFFF";;
 	
 	$vn_start 				= 0;
 
@@ -57,51 +56,50 @@
 
 		$vo_result->seek(0);
 		
-		$vn_lines_on_page = 0;
-		$vn_items_in_line = 0;
-		
-		$vn_left = $vn_top = 0;
+		$vn_line_count = 0;
 		while($vo_result->nextHit()) {
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
-			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
-				<?php print "<div>".$vo_result->get('ca_object_representations.media.large', array('scaleCSSWidthTo' => '190px', 'scaleCSSHeightTo' => '160px'))."</div>"; ?>
-				
+			<div class="row">
+			<table>
+			<tr>
+				<td>
+<?php 
+					if ($vs_tag = $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '120px', 'scaleCSSHeightTo' => '120px'))) {
+						print "<div class=\"imageTiny\">{$vs_tag}</div>";
+					} else {
+?>
+						<div class="imageTinyPlaceholder">&nbsp;</div>
+<?php					
+					}	
+?>								
+
+				</td>
+				<td>
+					<div class="metaBlock">
 <?php
-				print "<div class='caption'>";
 					print "<div class='title'>".$vo_result->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('artist')))."</div>"; 				
 					print "<div class='title'><i>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</i>, ".$vo_result->getWithTemplate('^ca_objects.creation_date')."</div>"; 
 					print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
-					print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+					print "<div>".$vo_result->get('ca_objects.dimensionsdisplay_dimensions')."</div>"; 				
 					if ($vo_result->get('ca_objects.edition.edition_number')) {
 						print "<div>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
 					}
 					if ($vo_result->get('ca_objects.edition.ap_number')) {
 						print "<div>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
-					}	
-				print "</div>"; 
+					}
+					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+						print "<div>".$vo_result->get('ca_objects.idno')."</div>"; 
+					}													
+								
+						
 ?>
+					</div>				
+				</td>	
+			</tr>
+			</table>	
 			</div>
 <?php
-
-			$vn_items_in_line++;
-			$vn_left += 220;
-			if ($vn_items_in_line >= 3) {
-				$vn_items_in_line = 0;
-				$vn_left = 0;
-				$vn_top += 240;
-				$vn_lines_on_page++;
-				print "<br class=\"clear\"/>\n";
-			}
-			
-			if ($vn_lines_on_page >= 2) { 
-				$vn_lines_on_page = 0;
-				$vn_left = $vn_top = 0;
-				
-				if (!$vo_result->isLastHit()) {
-					print "<div class=\"pageBreak\">&nbsp;</div>\n";
-				}
-			}
 		}
 ?>
 		</div>

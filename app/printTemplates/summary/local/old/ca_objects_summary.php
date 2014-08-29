@@ -66,20 +66,17 @@
 <?php	
 	print "<div><i>".$t_item->get('ca_objects.preferred_labels')."</i>, ".$t_item->get('ca_objects.creation_date')."</div>";
 	print "<div>".$t_item->get('ca_objects.medium')."</div>"; 	
-	print "<div>".$t_item->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+	print "<div>".$t_item->get('ca_objects.dimensionsdisplay_dimensions')."</div>"; 				
 	if ($t_item->get('ca_objects.edition.edition_number')) {
 		print "<div>".$t_item->get('ca_objects.edition.edition_number')." / ".$t_item->get('ca_objects.edition.edition_total')."</div>"; 	
 	}
 	if ($t_item->get('ca_objects.edition.ap_number')) {
 		print "<div>".$t_item->get('ca_objects.edition.ap_number')." / ".$t_item->get('ca_objects.edition.ap_total')."</div>"; 	
 	}	
-	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
 		print "<div>".$t_item->get('ca_objects.idno')."</div>"; 
-		if ($t_item->get('is_deaccessioned') && ($t_item->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
-			print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $t_item->get('deaccession_date'))."</div>\n";
-		}			
 	}
 ?>	
 	</div>
 <?php						
-	print $this->render("../pdfEnd.php");
+	print $this->render("pdfEnd.php");

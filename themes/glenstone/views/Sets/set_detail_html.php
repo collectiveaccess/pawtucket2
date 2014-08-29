@@ -36,7 +36,7 @@ if(is_array($va_views) && sizeof($va_views)){
 		}
 ?>
 			<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
-			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "export", array("output_type" => "_pdf", "download" => true)); ?></li>
+			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "setDetail", array('set_id' => $t_set->getPrimaryKey(), "view" => "pdf", "download" => true)); ?></li>
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
 			<li class="divider"></li>

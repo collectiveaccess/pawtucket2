@@ -431,7 +431,7 @@
 				}
  			}
  			
- 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)));
+ 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
  			$this->view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
  			$this->render($va_search_info['view']);

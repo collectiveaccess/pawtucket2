@@ -6,7 +6,7 @@
 		<div class="row">
 			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 				<div class="detailNavBgLeft">
-					{{{previousLink}}}{{{resultsLink}}}
+					{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 				</div><!-- end detailNavBgLeft -->
 			</div><!-- end col -->
 			<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -28,7 +28,7 @@
 					
 			<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
 
 ?>		
 			<div id="detailRelatedObjects">
@@ -44,8 +44,8 @@
 							$t_object = new ca_objects($va_artwork_id);
 							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -102,7 +102,7 @@
 		
 <!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Materials </H6>
@@ -116,8 +116,8 @@
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
