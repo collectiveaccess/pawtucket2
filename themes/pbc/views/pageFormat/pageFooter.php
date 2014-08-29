@@ -28,19 +28,6 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
-			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
 			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
 		</div><!-- end footer -->
 

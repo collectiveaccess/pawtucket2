@@ -35,9 +35,9 @@
 				$vn_parent_id = $t_object->get('ca_objects.parent_id');
 				print "<div class='unit'>"._t("Part Of Reel").": ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', '', 'Detail', 'objects/'.$vn_parent_id)."</div>";
 			}
-			if($t_object->get('object_id')){
-				$va_children = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true));
-				print "<div class='unit'><h6>"._t("Rings").":</h6>";
+			if($t_object->get('type_id') != 23){
+				$va_children = $t_object->getHierarchyChildren(null, array('idsOnly' => true));
+				print "<div class='unit rings'><h6>"._t("Rings").":</h6>";
 				foreach ($va_children as $va_child_key => $va_child_id) {
 					$t_object = new ca_objects($va_child_id);
 					print caNavLink($this->request, $t_object->get("ca_objects.preferred_labels.name"), '', '', 'Detail', 'objects/'.$va_child_id)."<br/>";
