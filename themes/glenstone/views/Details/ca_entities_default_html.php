@@ -6,7 +6,7 @@
 		<div class="row">
 			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 				<div class="detailNavBgLeft">
-					{{{previousLink}}}{{{resultsLink}}}
+					{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 				</div><!-- end detailNavBgLeft -->
 			</div><!-- end col -->
 			<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -28,10 +28,11 @@
 					
 			<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+
 ?>		
 			<div id="detailRelatedObjects">
-				<H6>Related Artworks </H6>
+				<H6><?php print sizeof($va_artwork_ids); ?> Related Artworks </H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
@@ -43,8 +44,8 @@
 							$t_object = new ca_objects($va_artwork_id);
 							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -101,7 +102,7 @@
 		
 <!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Materials </H6>
@@ -115,8 +116,8 @@
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -249,21 +250,50 @@
 #				}
 	
 ?>		
-			<h2>Other Information</h2>
+			<h2>Contact Information</h2>
 			
 				{{{<ifcount min="1" code="ca_entities.locations.location_description"><H6>Location</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>">^ca_entities.locations.location_type<ifdef code="ca_entities.locations.location_type,ca_entities.locations.location_description">: </ifdef>^ca_entities.locations.location_description</unit>}}} 
 					
 				{{{<ifdef code="ca_entities.affiliation|ca_entities.job_title"><H6>Affiliation</H6></ifdef>}}}
 				{{{^ca_entities.affiliation}}}{{{<ifdef code="ca_entities.affiliation,ca_entities.job_title">: </ifdef>}}}{{{^ca_entities.job_title}}} 
+<?php				
+				if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						foreach ($va_addresses as $va_add_key => $va_address) {
+							#print_r($va_address);
+							if ($va_address['address1']) {
+								print $va_address['address1']."<br/>";
+							}
+							if ($va_address['address2']) {
+								print $va_address['address2']."<br/>";
+							}
+							if ($va_address['city']) {
+								print $va_address['city'].", ";
+							}
+							print $va_address['stateprovince'];
+							print " ".$va_address['postalcode'];
+							print " ".$va_address['country'];
+							if ($va_address['address1_type']) {
+								print "<br/>(".$va_address['address1_type'].") ";
+							}					
+							print "<br/><br/>";
+						}
+					}
+					print $t_entity->getWithTemplate("^ca_entities.telephone.telephone2 ^ca_entities.telephone.telephone3<br/>", array('delimiter' => ""));
+					print $t_entity->getWithTemplate("^ca_entities.email_address");
+					if ($t_entity->getWithTemplate("^ca_entities.entity_website")) {
+						print $t_entity->get("ca_entities.entity_website", array('template' => '<a href="^entity_website">^entity_website</a>', 'delimiter' => '<br/>'));
+					}
+
+				}				
 				
+?>				
 				
+			</div><!-- end col -->
+			<div class='col-md-6 col-lg-6'>			
 				{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.related.preferred_labels.displayname</unit><br/><br/>}}}
-			</div><!-- end col -->
-			<div class='col-md-6 col-lg-6'>
-				
-
 			</div><!-- end col -->
 		</div><!-- end row -->

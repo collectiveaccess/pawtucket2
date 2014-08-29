@@ -5,7 +5,14 @@
 ?>
 
 <div id="detail" class='objects'>
-	<div class="blockTitle">{{{<unit>^ca_objects.type_id</unit>}}}
+	<div class="blockTitle">
+<?php
+	if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+		print "Toolkit";
+	} else {	
+		print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+	}	
+?>	
 		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
@@ -19,34 +26,76 @@
 ?>	
 		
 		
-		<div id="mediaArea" style='margin:10px 0px 0px -10px;'>
+		<div id="mediaArea" style='margin:10px 0px 0px 0px;'>
 <?php	
 			if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
 				$va_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('image')));
 				
 				if (sizeof($va_objects) > 1) {
-					print "<div class='mediaThumbs scrollBlock'>";
-							print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
-							$vn_i = 0;
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
-						
-							foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
-								if ($vn_i == 0){print "<div class='imageSet'>";}
-								print "<div >";
-								print caNavLink($this->request, "<div class='rep '>".$va_artwork_rep."</div>", '', '', 'Detail', 'Objects/'.$object_key);						
-								print "</div>";
-								$vn_i++;
-								if ($vn_i == 3) {
-									print "</div><!-- end imageSet-->";
-									$vn_i = 0;
-								}
-						
-							}
+?>				
+		
+			<div class='mediaLarge'>
+<?php
+			$va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('image')));
+			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
+			
+			$vn_rep_id = key($va_related_reps);
+			$va_primary_rep = reset($va_related_reps);
+			$va_primary_id = reset($va_related_objects);
+			
+			$va_media_thumbs_width = (775 - $va_primary_rep['info']['medium']['WIDTH']) - 20;
+			$va_media_thumbs_height = $va_primary_rep['info']['medium']['HEIGHT'];
+			$va_media_thumb_stack = floor(($va_media_thumbs_height - 20) / 90);
+			
+			if ($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				$va_main_image_object = $t_object->get('ca_objects.nonpreferred_labels.name', array('excludeTypes' => array('document')));				
+			} else {
+				$va_main_image_captions = $t_object->get('ca_objects.preferred_labels', array('returnAsArray' => true, 'excludeTypes' => array('document')));
+				$va_main_image_object = $va_main_image_captions[0];
+			}
+			if ($va_primary_rep['tags']['medium']) {
+				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
+			
+				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
+			}
+?>			
+			</div><!-- end mediaLarge-->
+<?php		
+			if (sizeof($va_related_reps) > 1) {
+			
+			if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {
+?>			
+				<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>
+<?php
+			}
+?>						
+			<div class='mediaThumbs scrollBlock' style='width:<?php print $va_media_thumbs_width;?>px; height:<?php print $va_media_thumbs_height;?>px'>
+	
+				<div class='scrollingDiv'><div class='scrollingDivContent'>
+<?php
+				$stack = 0;
+				foreach(array_slice($va_related_reps, 1, null, true) as $vn_related_rep_id => $va_related_rep) {
+					if ($stack == 0) { print "<div class='thumbResult'>";}
 					
-							if ((end($va_object_reps) == $va_artwork_rep) && ($vn_i < 3) && ($vn_i != 0)){print "</div>";} 
+					print "<div class='lessonrep'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_related_rep_id, 'representation_id' => $va_related_rep['representation_id']))."\"); return false;' >".$va_related_rep['tags']['smallthumb']."</a></div>";
+					//print "<div class='rep'>".$va_related_rep['tags']['widepreview']."</div>";
+					
+					$stack++;
+					if ($stack == $va_media_thumb_stack) {
+						print "</div>";
+						$stack = 0;
+					}
+				}
+				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
+?>
+				</div></div>
+			</div><!-- end mediaThumbs-->	
+<?php
+			}
+?>
 
-							print "</div></div>";
-					print "</div><!-- end mediaThumbs -->";
+		
+<?php		
 				} else {
 					$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('mediumlarge'), 'return' => array('tags')));			
 					foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
@@ -59,7 +108,8 @@
 				print $this->getVar('representationViewer');
 			}
 ?>		
-		</div>
+		<div style='clear:both;width:100%;'></div>	
+		</div><!-- end mediaArea-->
 <?php
 		if ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
 			if ($va_description = $t_object->get('ca_objects.description.description_text')) {
@@ -101,10 +151,10 @@
 		if($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes") {			
 			print "</div>";
 		}
-		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan')  == "Yes")) {
+		if(($t_object->get('ca_objects.type_id') == 30) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes")) {
 			$va_documents = $t_object->representationsOfClass('document', array('original'));
 			foreach ($va_documents as $doc_id => $va_document) {
-				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Lesson Plan</a></div>";
+				print "<div class='lessonLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Toolkit</a></div>";
 			}
 		}
 
@@ -203,8 +253,7 @@
 				}
 				print "</div></div>";
 			print "</div><!-- blockResults-->";
-		print "</div><!-- blockTitle-->";
-		print "</div><!-- occurrencesBlock-->";
+		print "</div><!-- objectsBlock-->";
 	}	
 	# Related Exhibitions Block
 	if (sizeof($va_occurrences) > 0) {

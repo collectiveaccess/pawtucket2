@@ -83,7 +83,7 @@ h3 {
 	box-shadow:none;
 	border-radius:0;
 	border:0px;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular";
 }
 .navbar .container {
 	padding-left:0px;
@@ -96,7 +96,7 @@ h3 {
 	color: #fff;
 }
 .nav > li > a {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 }
 .navbar-collapse {
 	padding:0px;
@@ -104,7 +104,7 @@ h3 {
 .navbar-collapse ul li {
 	margin-right: 5px;
 	font-size: 14px;
-	padding: 34px 12px 13px 12px;
+	padding: 37px 12px 4px 12px;
 }
 .navbar-collapse ul li a {
 	font-size: 17px;
@@ -134,7 +134,8 @@ h3 {
 .navbar li.dropdown.open a:hover, .navbar li.dropdown a:hover{
 	font-size: 17px;
 	font-weight: bold;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #EE3E43;
+	font-family: "ProximaNovaRegular", sans-serif;
 }
 .navbar li.dropdown ul li{
 	background-color: #48484a;
@@ -171,6 +172,10 @@ h3 {
 	border-radius:0px;
 	top:65px;
 	background-color:transparent;
+}
+.nav > li > a:focus {
+	font-size:17px;
+	font-family: "ProximaNovaRegular";
 }
 .artYou {
 	color: #EE3E43;
@@ -453,7 +458,7 @@ h2 span.artist {
 	margin-left:20px;
 	float:right;
 }
-.mediaThumbs .rep{
+.mediaThumbs .rep, .mediaThumbs .lessonrep {
 	height:80px;
 	width: 120px;
 	overflow:hidden;

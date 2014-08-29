@@ -30,6 +30,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta http-equiv="refresh" content="3600; url=http://<?php print __CA_SITE_HOSTNAME__; ?>/index.php/LoginReg/Logout" />
 	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 	
@@ -96,9 +97,11 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "About", "library"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "About", "reports"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Rolodex"), "", "", "Rolodex/Search", "Index"); ?></li> 
+<?php 
+					if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection")  || $this->request->user->hasUserRole("supercurator"))){				
+						print "<li>".caNavLink($this->request, _t("Rolodex"), "", "", "Rolodex/Search", "Index")."</li> ";
+					}
 
-<?php
 						#print $this->render("pageFormat/browseMenu.php");
 ?>	
 				</ul>

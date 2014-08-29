@@ -38,7 +38,11 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+  		 	
+  		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            			
  			caSetPageCSSClasses(array("rolodex"));
  		}
  		# -------------------------------------------------------
@@ -50,7 +54,7 @@
  			$ps_surname = $this->request->getParameter('surname', pString);
  			$ps_org = $this->request->getParameter('organization', pString);
  			
- 			$va_fields = array('ca_entity_labels.forename' => 'forename', 'ca_entity_labels.surname' => 'surname', 'ca_entities.organization' =>'organization');
+ 			$va_fields = array('ca_entity_labels.forename' => 'forename', 'ca_entity_labels.surname' => 'surname', 'ca_entities.affiliation' =>'organization');
  			
  			$va_search_terms = array();
  			foreach($va_fields as $vs_qualifier => $vs_field) {

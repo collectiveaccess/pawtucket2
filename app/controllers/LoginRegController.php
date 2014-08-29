@@ -368,7 +368,9 @@
 				$this->resetForm();
 			}else{
 				$t_user->setErrorOutput(0);
-				$t_user->load(array("user_name" => $ps_email));
+				if (!$t_user->load(array("user_name" => $ps_email))) {
+					$t_user->load(array("email" => $ps_email));
+				}
 				# verify user exists with this e-mail address
 				if ($t_user->getPrimaryKey()) {
 					# user with e-mail does exists...

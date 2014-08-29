@@ -6,7 +6,7 @@
 	<div class="row">
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 			<div class="detailNavBgLeft">
-				{{{previousLink}}}{{{resultsLink}}}
+				{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->
 		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -22,10 +22,11 @@
 		<div class="container">
 			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
 			<H5>{{{^ca_occurrences.exh_dates}}}</H5>
+			<div class='exText'>{{{^ca_occurrences.exh_description.exh_description_text}}}</div>
 
 		<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedObjects">
 				<H6>Related Artworks </H6>
@@ -40,8 +41,8 @@
 							$t_object = new ca_objects($va_artwork_id);
 							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -98,7 +99,9 @@
 					
 		<!-- Related Archival Materials -->
 			
-		{{{<ifcount code="ca_objects" restrictToTypes="audio|moving_image|image|ephemera|document" min="1">
+<?php		
+		if ($va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)))) {	
+?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Material </H6>
 				<div class="jcarousel-wrapper">
@@ -107,7 +110,11 @@
 					<!-- Carousel -->
 					<div class="jcarouselarchive">
 						<ul>
-							<unit relativeTo="ca_objects"  restrictToTypes="audio|moving_image|image|ephemera|document" delimiter=" "><li><div class='detailObjectsResult'><l>^ca_object_representations.media.library</l></div><div class='caption'><i><l>^ca_objects.preferred_labels.name</l></i><ifdef code="ca_objects.dc_date.dc_dates_value"><br/><l>^ca_objects.dc_date.dc_dates_value</l></ifdef></div></li><!-- end detailObjectsBlockResult --></unit>
+<?php
+						foreach ($va_related_objects as $vn_object_id => $va_related_object) {
+							#print '<li><div class="detailObjectsResult"><l>^ca_object_representations.media.library</l></div><div class="caption"><i><l>^ca_objects.preferred_labels.name</l></i><ifdef code="ca_objects.dc_date.dc_dates_value"><br/><l>^ca_objects.dc_date.dc_dates_value</l></ifdef></div></li><!-- end detailObjectsBlockResult -->';
+						}
+?>						
 						</ul>
 					</div><!-- end jcarousel -->
 					
@@ -153,8 +160,10 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->
-			
+			</script><!-- Related Archives -->
+<?php
+		}
+?>			
 		<!-- Related Library Materials -->
 			
 		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
