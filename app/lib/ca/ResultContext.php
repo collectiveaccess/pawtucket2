@@ -447,23 +447,50 @@
 		 */
 		public function setAsLastFind() {
 			$o_storage = $this->getPersistentStorageInstance();
-			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type, array('volatile' => true));	
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type.($this->ops_find_subtype ? '/'.$this->ops_find_subtype : ''), array('volatile' => true));	
 			
 			return true;
 		}
 		# ------------------------------------------------------------------
 		/**
-		 * Return type of last performed find operation for the specified table, as set with setAsLastFind()
+		 * Return type of last performed find operation for the specified table, as set with setAsLastFind(). 
+		 * Type and subtype are returned as a string, joined together with a "/" character, unless the noSubtypes
+		 * option is set, in which case only the type is returned.
 		 *
 		 * @param $po_request - the current request
 		 * @param $pm_table_name_or_num - the name or number of the table to get the last find operation for
+		 * @param array $pa_options Options include:
+		 *		noSubtype = only return type and omit subtype if present. [Default=no]
+		 *
 		 * @return string - the find type of the last find operation for this table
 		 */
-		static public function getLastFind($po_request, $pm_table_name_or_num) {
+		static public function getLastFind($po_request, $pm_table_name_or_num, $pa_options=null) {
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			$o_storage = ResultContext::_persistentStorageInstance($po_request);
 			
+			if (caGetOption('noSubtype', $pa_options, false)) {
+				$vs_find_tag = $o_storage->getVar('result_last_context_'.$vs_table_name);
+				
+				$va_find_tag = explode('/', $vs_find_tag);
+				return $va_find_tag[0];
+			} 
 			return $o_storage->getVar('result_last_context_'.$vs_table_name);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Return the result content for the last performed find operation for the specified table, as set with setAsLastFind()
+		 *
+		 * @param $po_request - the current request
+		 * @param $pm_table_name_or_num - the name or number of the table to get the last find operation for
+		 * @return ResultContext - result context from the last find operation for this table
+		 */
+		static public function getResultContextForLastFind($po_request, $pm_table_name_or_num) {
+			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			
+			$va_tmp = explode('/', $o_storage->getVar('result_last_context_'.$vs_table_name));
+		
+			return new ResultContext($po_request, $vs_table_name, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -478,10 +505,11 @@
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
+			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
-			$va_nav = $va_find_nav[$vs_last_find];
+			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
 			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params);
@@ -502,10 +530,11 @@
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
+			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
-			$va_nav = $va_find_nav[$vs_last_find];
+			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
 			if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
@@ -514,7 +543,7 @@
 			
 			$va_params = array();
 			if (is_array($va_nav['params'])) {
-				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $vs_last_find);
+				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
 				foreach ($va_nav['params'] as $vs_param) {
 					if (!($vs_param = trim($vs_param))) { continue; }
 					if(!trim($va_params[$vs_param] = $po_request->getParameter($vs_param, pString))) {

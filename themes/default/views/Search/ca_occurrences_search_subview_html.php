@@ -40,7 +40,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> | -->
 				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
