@@ -40,9 +40,16 @@
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
+							
+							if (strlen($t_object->get('ca_objects.preferred_labels')) > 200) {
+								$va_artwork_title = substr($t_object->get('ca_objects.preferred_labels'), 0, 197)."...";  
+							} else {
+								$va_artwork_title = $t_object->get('ca_objects.preferred_labels');
+							}
+							
 							print "<li>";
 							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						

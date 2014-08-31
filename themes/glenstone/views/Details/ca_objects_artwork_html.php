@@ -28,6 +28,7 @@
 <div class="row">
 	<div class="container">
 <?php
+if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")) {
 	// Export as PDF
 	print "<div id='bViewButtons'>";
 	print "<div class='reportTools'>";
@@ -35,6 +36,7 @@
 	print "{$vs_export_format_select}".caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
 	print "</div>"; 
 	print "</div>"; 
+}
 ?>
 			<div class="artworkTitle">
 				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels.name</l></unit>}}}</H4>
@@ -84,6 +86,7 @@
 					<div class='unit'><i>{{{ca_objects.preferred_labels.name}}}</i>, &nbsp;{{{ca_objects.creation_date}}}</div>
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions ^ca_objects.dimensions.Type</unit></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.dimensions.dimensions_weight"><div class='unit'><unit delimiter="<br/>">Weight: ^ca_objects.dimensions.dimensions_weight</unit></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.edition.edition_number"><div class='unit'>Edition <ifdef code="ca_objects.edition.edition_number">^ca_objects.edition.edition_number / ^ca_objects.edition.edition_total </ifdef><ifdef code="ca_objects.edition.ap_number"><br/>^ca_objects.edition.ap_number / ^ca_objects.edition.other_info  AP</ifdef></div></ifdef>}}}
 <?php
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
@@ -185,10 +188,11 @@
 							foreach ($va_payment as $va_key => $va_payment_details) {
 								if ($va_payment_details['payment_amount']) {print "<b>Payment Amount:</b> ".$va_payment_details['payment_amount']."<br/>";}
 								if ($va_payment_details['payment_date']) {print "<b>Payment Date:</b> ".$va_payment_details['payment_date']."<br/>";}
-								if ($va_payment_details['payment_quarter']) {print "<b>Payment Quarter:</b> ".$va_payment_details['payment_quarter']."<br/>";}
+								if ($va_payment_details['payment_quarter'] != " ") {print "<b>Payment Quarter:</b> ".$va_payment_details['payment_quarter']."<br/>";}
 								if ($va_payment_details['payment_installment']) {print "<b>Installment:</b> ".$va_payment_details['payment_installment']."<br/>";}
 								if ($va_payment_details['payment_notes']) {print "<b>Payment Notes:</b> ".$va_payment_details['payment_notes']."<br/>";}
 							}
+							
 							print "</span></div>";
 						}
 							#$va_payment = $t_object->get('ca_objects.payment_details', array('delimiter' => '<hr>', 'convertCodesToDisplayText' => true, 'template' => '<b>Payment Amount: </b>^payment_amount <br/><ifdef code="ca_objects.payment_details.payment_date"><b>Payment Date:</b> ^payment_date <br/></ifdef><ifdef code="ca_objects.payment_details.payment_quarter"><b>Payment Quarter:</b> ^payment_quarter <br/></ifdef><ifdef code="ca_objects.payment_details.installment"><b>Installment:</b> ^installment<br/></ifdef><ifdef code="ca_objects.payment_details.payment_notes"><b>Notes:</b> ^payment_notes</ifdef>'));
@@ -205,7 +209,7 @@
 							foreach ($va_appraisal_rev as $ar_key => $va_appraisal_r) {
 								print "<b>Value: </b>".$va_appraisal_r['insurance_value_price']."<br/>";
 								print "<b>Date: </b>".$va_appraisal_r['insurance_valuation_date']."<br/>";
-								print "<b>Appraiser: </b>".$va_appraisal_r['insurance_appraiser']."<br/>";
+								#print "<b>Appraiser: </b>".$va_appraisal_r['insurance_appraiser']."<br/>";
 								if ($va_appraisal_r['valuation_notes']) {
 									print "<b>Appraisal Notes: </b>".$va_appraisal_r['valuation_notes'];
 								}
@@ -213,22 +217,22 @@
 							}
 							print"</span></div>";
 						}
-						if ($t_object->get('ca_objects.financial_uploads.financial_uploads_media')){
-							$va_financial_images = $t_object->get('ca_objects.financial_uploads', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
-							print '<div class="unit "><span class="metaTitle">&nbsp;</span><span class="meta">';
+#						if ($t_object->get('ca_objects.financial_uploads.financial_uploads_media')){
+#							$va_financial_images = $t_object->get('ca_objects.financial_uploads', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
+#							print '<div class="unit "><span class="metaTitle">&nbsp;</span><span class="meta">';
 
-							$o_db = new Db();
-							$vn_media_element_id = $t_object->_getElementID('financial_uploads_media');
-							foreach ($va_financial_images as $vn_financial_id => $va_financial_image) {
-								if ($va_financial_image['financial_uploads_primary'] == 162) {
-									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_financial_id, $vn_media_element_id)) ;
-									if ($qr_res->nextRow()) {
-										print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_financial_image['financial_uploads_media']."</a>";
-									}
-								}
-							}
-							print "</span><div class='clearfix'></div></div>";
-						}						
+#							$o_db = new Db();
+#							$vn_media_element_id = $t_object->_getElementID('financial_uploads_media');
+#							foreach ($va_financial_images as $vn_financial_id => $va_financial_image) {
+#								if ($va_financial_image['financial_uploads_primary'] == 162) {
+#									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_financial_id, $vn_media_element_id)) ;
+#									if ($qr_res->nextRow()) {
+#										print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_financial_image['financial_uploads_media']."</a>";
+#									}
+#								}
+#							}
+#							print "</span><div class='clearfix'></div></div>";
+#						}						
 						if ($va_primary_check = $t_object->get('ca_object_lots.invoice_upload.invoice_upload_primary', array('returnAsArray' => true))){
 							$va_primary = false;
 							foreach($va_primary_check as $va_key => $va_check) {
@@ -455,7 +459,7 @@
 								}
 								*/																																				
 								if (($va_condition['general_condition_value']) || ($va_condition['general_condition_comments'])) {
-									print " <u>General Condition:</u> ".($va_condition['general_condition_value'] ? $va_condition['general_condition_value'].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['general_condition_comments']).($va_condition['general_condition_specific'] ? ", assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'] : "");
+									print " <u>General Condition:</u> ".($va_condition['general_condition_value'] ? $va_condition['general_condition_value'].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['general_condition_comments']).($va_condition['general_condition_comments'] ? ", " : "").($va_condition['general_condition_specific'] ? "assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'] : "");
 									print "<div class='clearfix'></div>";
 								}
 								if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {

@@ -40,7 +40,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sort">
-				sort by {{{sortByList}}} <?php print caNavLink($this->request, _t('Full results >'), 'fullResult', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> 
+				sort by {{{sortByList}}} <?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> 
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
