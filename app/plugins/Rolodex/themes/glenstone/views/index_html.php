@@ -9,9 +9,9 @@
 <?php
 	print "<div class='row'>";
 	print caFormTag($this->request, 'Index', 'caRolodexForm', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true));
-	print "<div class='col-sm-4'><span class='formLabel'>"._t('First name')."</span>".caHTMLTextInput("forename", array())."</div>";
-	print "<div class='col-sm-4'><span class='formLabel'>"._t('Last name/Organization name')."</span>".caHTMLTextInput("surname", array())."</div>";
-	print "<div class='col-sm-4'><span class='formLabel'>"._t('Affiliation')."</span>".caHTMLTextInput("company", array());
+	print "<div class='col-sm-4'><span class='formLabel'>"._t('First name')."</span>".caHTMLTextInput("forename", array('width' => '250px'))."</div>";
+	print "<div class='col-sm-4'><span class='formLabel'>"._t('Last name/Organization name')."</span>".caHTMLTextInput("surname", array('width' => '250px'))."</div>";
+	//print "<div class='col-sm-4'><span class='formLabel'>"._t('Affiliation')."</span>".caHTMLTextInput("company", array());
 	print "<div class='submit'>".caFormSubmitLink($this->request, _t('Search  >'), 'searchSubmit', 'caRolodexForm')."</div></div>";
 ?>
 	
@@ -19,7 +19,7 @@
 	print "</form>\n";
 	print "</div>";	
 	if ($o_results = $this->getVar('results')) {
-		print "<h1>Results</h1>";
+		print "<br/><h1>Results</h1>";
 		print "<hr>";
 		while($o_results->nextHit()) {
 			print "<div class='row results'>";
@@ -56,6 +56,32 @@
 			print $o_results->getWithTemplate("^ca_entities.email_address");
 			print "</div><!-- end col -->";
 			print "</div><!-- end row -->";
+			
+			if ($o_results->get('ca_entities.related_names')) {
+				$va_related_names = $o_results->get('ca_entities.related_names', array('returnAsArray' => true));
+				print "<div class='row'>";
+				print "<div class='col-sm-4'></div>";
+				print "<div class='col-sm-4'><b>Staff</b></div>";
+				print "<div class='col-sm-4'></div>";					
+				print "</div><!-- end row -->";
+				foreach ($va_related_names as $va_related_id => $va_related_name) {
+					print "<hr style='width:66%;margin-left:34%; margin-bottom:10px;margin-top:10px;'>";
+					print "<div class='row' style='padding-bottom:5px;'>";
+					print "<div class='col-sm-4'></div>";
+					print "<div class='col-sm-4'>";
+					print $va_related_name['related_names_value']."<br/>".$va_related_name['related_names_title'];
+					print "</div>";
+					print "<div class='col-sm-4'>";
+					print "<a href='mailto:".$va_related_name['related_names_email']."'>".$va_related_name['related_names_email']."</a>";
+					if ($va_related_name['related_names_email'] && $va_related_name['related_names_phone']) {
+						print "<br/>";
+					}
+					print $va_related_name['related_names_phone'];
+					print "</div>";
+					print "</div><!-- end row -->";
+					
+				}
+			}
 			print "<hr>";
 		}
 	}

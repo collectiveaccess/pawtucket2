@@ -325,8 +325,10 @@
 		 * Generate  export file of current result
 		 */
 		protected function _genExport($po_result, $ps_template, $ps_output_filename, $ps_title=null) {
-			$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
-			$this->opo_result_context->saveContext();
+			if ($this->opo_result_context) {
+				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
+				$this->opo_result_context->saveContext();
+			}
 			
 			if (substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
@@ -378,6 +380,7 @@
 				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
 				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
 			
+				set_time_limit(600);
 				$vs_content = $this->render($va_template_info['path']);
 				$o_dompdf = new DOMPDF();
 				$o_dompdf->load_html($vs_content);

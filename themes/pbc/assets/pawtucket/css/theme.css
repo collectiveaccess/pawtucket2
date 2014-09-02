@@ -5,7 +5,23 @@
 H1, h1, H2, h2 {
 	color: green;
 }
-
+a {
+	color: green;
+}
+.navbar .navbar-nav > .active > a {
+	padding-top:25px;
+}
+.navbar-nav > li > a {
+	line-height: 27px;
+	padding-top: 25px;
+	padding-bottom: 24px;
+}
+.navbar-default .navbar-form {
+	padding-top:10px;
+}
+.nav > li.dropdown > a.icon {
+	padding-top:25px;
+}
 #footer ul a {
 	color: green;
 }
@@ -16,6 +32,38 @@ H1, h1, H2, h2 {
 .filterMenuFacetList li.active {
 	background-color: green;
 }
-a {
-	color: green;
+.multisearch .objectsResult a, .multisearch .collectionsResult a {
+	color:green;
+}
+.filterMenuFacetList li.active a {
+	color:#fff;
+}
+.filterMenuFacetList li.active a:hover {
+	text-decoration:none;
+}
+.multisearch #ringsBlock{
+	width: 100%;
+	overflow-y: hidden;
+	position: relative;
+}
+.ringsResult {
+	float: left;
+	width: 150px;
+	height: 145px;
+	margin: 10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	font-size: 11px;
+}
+.ringsResult img {
+	width: 100%;
+	height: auto;
+	margin-bottom: 5px;
+}
+.unit.rings a{
+	padding-bottom:10px;
+	display:inline-block;
 }

@@ -46,8 +46,9 @@
  		public function __call($ps_method, $pa_path) {
  			array_unshift($pa_path[0], $ps_method);
  			
+ 			$this->view->setVar('response', $this->response);
+ 			
  			$this->render(join("/", $pa_path[0]).".php", false);
  		}
  		# ------------------------------------------------------
  	}
- ?>

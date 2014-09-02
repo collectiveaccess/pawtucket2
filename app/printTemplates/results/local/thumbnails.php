@@ -27,7 +27,7 @@
  * Template configuration:
  *
  * @name Thumbnails
- * @type page
+ * @type omit
  * @pageSize letter
  * @pageOrientation landscape
  * @tables ca_objects
@@ -65,14 +65,14 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
-				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview')."'/></div>"; ?>
+				<?php print "<div>".$vo_result->get('ca_object_representations.media.large', array('scaleCSSWidthTo' => '190px', 'scaleCSSHeightTo' => '160px'))."</div>"; ?>
 				
 <?php
 				print "<div class='caption'>";
 					print "<div class='title'>".$vo_result->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('artist')))."</div>"; 				
 					print "<div class='title'><i>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</i>, ".$vo_result->getWithTemplate('^ca_objects.creation_date')."</div>"; 
 					print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
-					print "<div>".$vo_result->get('ca_objects.dimensionsdisplay_dimensions')."</div>"; 				
+					print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
 					if ($vo_result->get('ca_objects.edition.edition_number')) {
 						print "<div>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
 					}
@@ -97,11 +97,14 @@
 			if ($vn_lines_on_page >= 2) { 
 				$vn_lines_on_page = 0;
 				$vn_left = $vn_top = 0;
-				print "<div class=\"pageBreak\">&nbsp;</div>\n";
+				
+				if (!$vo_result->isLastHit()) {
+					print "<div class=\"pageBreak\">&nbsp;</div>\n";
+				}
 			}
 		}
 ?>
 		</div>
 <?php
-	print $this->render("pdfEnd.php");
+	print $this->render("../pdfEnd.php");
 ?>

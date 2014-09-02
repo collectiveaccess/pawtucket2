@@ -30,7 +30,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 				<h1>Glenstone Exhibitions</h1>
 <?php
 	$o_exhibition_search = new OccurrenceSearch();
-	$qr_exhibitions = $o_exhibition_search->search("*", array('sort' => 'ca_occurrences.exh_dates', 'sort_direction' => 'desc'));
+	$qr_exhibitions = $o_exhibition_search->search("*", array('checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.exh_dates', 'sort_direction' => 'desc'));
 
 	if ($qr_exhibitions->numHits()) {
 		while($qr_exhibitions->nextHit()) {
