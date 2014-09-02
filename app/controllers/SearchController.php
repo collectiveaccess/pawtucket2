@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
