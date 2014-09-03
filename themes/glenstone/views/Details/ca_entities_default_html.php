@@ -6,7 +6,7 @@
 		<div class="row">
 			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 				<div class="detailNavBgLeft">
-					{{{previousLink}}}{{{resultsLink}}}
+					{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 				</div><!-- end detailNavBgLeft -->
 			</div><!-- end col -->
 			<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -22,13 +22,29 @@
 			<div class="container">
 				<div class="artworkTitle">
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H5>{{{ca_entities.entity_dates}}}{{{<ifdef code="ca_entities.nationality,ca_entities.entity_dates" >,</ifdef>}}} {{{<ifcount min="1" code="ca_entities.nationality"><unit delimiter=", ">^ca_entities.nationality</unit></ifcount>}}}</H5> 
+					<H5>
+<?php
+					if ($t_entity->get('ca_entities.entity_dates')) {
+						print $t_entity->get('ca_entities.entity_dates');
+					}
+					if ($va_nationality = $t_entity->get('ca_entities.nationality', array('returnAsArray' => true))) {
+						foreach ($va_nationality as $nat_key => $va_nation) {
+							foreach($va_nation as $va_nations) {
+								$nationality = explode("[", $va_nations);
+								if ($nationality[0] != "") {
+									print ", ".$nationality[0];
+								}
+							}
+						}
+					}
+?>					
+					</H5> 
 				</div>
 				<div class='col-sm-12 col-md-12 col-lg-12'>
 					
 			<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
 
 ?>		
 			<div id="detailRelatedObjects">
@@ -43,9 +59,16 @@
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
+							
+							if (strlen($t_object->get('ca_objects.preferred_labels')) > 200) {
+								$va_artwork_title = substr($t_object->get('ca_objects.preferred_labels'), 0, 197)."...";  
+							} else {
+								$va_artwork_title = $t_object->get('ca_objects.preferred_labels');
+							}
+							
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -102,7 +125,7 @@
 		
 <!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Materials </H6>
@@ -116,8 +139,8 @@
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels')."<br/> ".$t_object->get('ca_objects.dc_date.dc_dates_value'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "</li>";
 						}
 ?>						
@@ -250,16 +273,18 @@
 #				}
 	
 ?>		
-			<h2>Contact Information</h2>
+			
 			
 				{{{<ifcount min="1" code="ca_entities.locations.location_description"><H6>Location</H6></ifcount>}}}
-				{{{<unit delimiter="<br/>">^ca_entities.locations.location_type<ifdef code="ca_entities.locations.location_type,ca_entities.locations.location_description">: </ifdef>^ca_entities.locations.location_description</unit>}}} 
+				{{{<ifcount min="1" code="ca_entities.locations.location_description"><unit delimiter="<br/>">^ca_entities.locations.location_type<ifdef code="ca_entities.locations.location_type,ca_entities.locations.location_description">: </ifdef>^ca_entities.locations.location_description</unit></ifcount>}}} 
 					
 				{{{<ifdef code="ca_entities.affiliation|ca_entities.job_title"><H6>Affiliation</H6></ifdef>}}}
 				{{{^ca_entities.affiliation}}}{{{<ifdef code="ca_entities.affiliation,ca_entities.job_title">: </ifdef>}}}{{{^ca_entities.job_title}}} 
 <?php				
 				if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+					
 					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+						print "<h2>Contact Information</h2>";
 						foreach ($va_addresses as $va_add_key => $va_address) {
 							#print_r($va_address);
 							if ($va_address['address1']) {
@@ -274,14 +299,16 @@
 							print $va_address['stateprovince'];
 							print " ".$va_address['postalcode'];
 							print " ".$va_address['country'];
-							if ($va_address['address1_type']) {
+							if (trim($va_address['address1_type'])) {
 								print "<br/>(".$va_address['address1_type'].") ";
 							}					
 							print "<br/><br/>";
 						}
 					}
 					print $t_entity->getWithTemplate("^ca_entities.telephone.telephone2 ^ca_entities.telephone.telephone3<br/>", array('delimiter' => ""));
-					print $t_entity->getWithTemplate("^ca_entities.email_address");
+					if ($t_entity->getWithTemplate("^ca_entities.email_address")) {
+						print $t_entity->get("ca_entities.email_address", array('template' => '<a href="mailto:^email_address">^email_address</a>', 'delimiter' => '<br/>'));
+					}					
 					if ($t_entity->getWithTemplate("^ca_entities.entity_website")) {
 						print $t_entity->get("ca_entities.entity_website", array('template' => '<a href="^entity_website">^entity_website</a>', 'delimiter' => '<br/>'));
 					}

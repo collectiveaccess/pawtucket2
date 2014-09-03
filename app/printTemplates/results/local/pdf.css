@@ -29,7 +29,8 @@ img.headerImg {width:185px;height:21px;}
 .title {font-weight:bold; }
 .metadata {line-height:1.1em;}
 .metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px;}
-.tombstone {font: "Sans Light"; font-size: 11px; }
+.tombstone {font: "Sans Light"; font-size: 11px; margin-top:15px;}
+.representationList {text-align:center;}
 
 .pageBreak { page-break-before: always; }
 .clear { clear: both; line-height: 5px; }

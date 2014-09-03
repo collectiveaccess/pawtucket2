@@ -382,8 +382,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			if($vb_sort_changed && ($va_sorts) && sizeof($va_sorts)){
 				# --- set the default sortDirection if available
 				$va_sort_directions = caGetOption('sortDirection', $va_block_info, null);
-				$ps_sort_key = array_search($ps_sort, $va_sorts);
-				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort_key])){
+				//$ps_sort_key = array_search($ps_sort, $va_sorts);
+				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort])){
 					$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction);
 				}			
  			}
@@ -395,7 +395,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
  			
- 			$va_options['sort'] = $ps_sort;
+ 			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
@@ -444,7 +444,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if(is_array($va_sort_by)) {
 				$va_sort_list = array();
 				foreach ($va_sort_by as $vs_sort_label => $vs_sort) {
-					$va_sort_list[] = "<li".(($vs_sort == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort}'>{$vs_sort_label}</a></li>";
+					$va_sort_list[] = "<li".(($vs_sort == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort_label}'>{$vs_sort_label}</a></li>";
 				}
 				
 				$vs_sort_list = "<ul id='{$vs_block}_sort'>".join("\n", $va_sort_list)."</ul>";

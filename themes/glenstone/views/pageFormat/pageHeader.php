@@ -30,6 +30,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta http-equiv="refresh" content="3600; url=http://<?php print __CA_SITE_HOSTNAME__; ?>/index.php/LoginReg/Logout" />
 	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 	

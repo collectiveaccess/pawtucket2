@@ -1821,13 +1821,13 @@ a.readmore-js-toggle{
 	height: 170px;	/* Needs to be some height */
 }
 
-.multisearch #objectsBlock, .multisearch #entitiesBlock, .multisearch #placesBlock, .multisearch #occurrencesBlock, .multisearch #collectionsBlock {
+.multisearch .resultBlock {
 	width:100%;
 	overflow-y:hidden;
 	position:relative;
 }
 
-.multisearch #objectsResults, .multisearch #entitiesResults, .multisearch #placesResults, .multisearch #occurrencesResults, .multisearch #collectionsResults {
+.multisearch .multiSearchResults {
 	overflow-x:scroll;
 	overflow-y:hidden;
 	width:100%;
@@ -1858,7 +1858,7 @@ a.readmore-js-toggle{
 .multisearch .scrollButtonNext.inactive, .multisearch .scrollButtonPrevious.inactive{
 	display:none;
 }
-.multisearch .objectsResult, .multisearch .collectionsResult  {
+.multisearch .multisearchResult {
 	float:left;
 	width:150px;
 	height:145px;
@@ -1871,18 +1871,15 @@ a.readmore-js-toggle{
 	font-size:11px;
 	overflow:hidden;
 }
-.multisearch .objectsResult a, .multisearch .collectionsResult a  {
+.multisearch .multisearchResult a  {
 	color:#454545;
 }
-.multisearch .objectsResult img, .multisearch .collectionsResult img {
+.multisearch .multisearchResult img {
 	width:100%;
 	height:auto;
 	margin-bottom:5px;
 }
-
-
-
-.multisearch .entitiesSet, .multisearch .placesSet, .multisearch .occurrencesSet {
+.multisearch .authoritySet {
 	float:left;
 	width:250px;
 	height:170px;
@@ -1891,18 +1888,18 @@ a.readmore-js-toggle{
 	padding-top:10px;
 }
 
-.multisearch .entitiesSet a, .multisearch .placesSet a, .multisearch .occurrencesSet a {
+.multisearch .authoritySet a {
 	font-size:12px;
 	color:#454545;
 }
-.multisearch .placesResult, .multisearch .occurrencesResult, .multisearch .entitiesResult {
+.multisearch .authorityResult{
 	margin-bottom:5px;
 	height:45px;
 	line-height:1.1em;
 	background-color:#f5f5f5;
 	padding:5px 10px 5px 10px;
 }
-.multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
+.multisearch .authorityResult:hover{
 	background-color:#ebebeb;
 }
 

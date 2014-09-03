@@ -923,7 +923,7 @@ class SearchResult extends BaseObject {
 // Return attribute values for primary table 
 //
 			
-			if ($t_element = $t_instance->_getElementInstance($va_path_components['field_name'])) {
+			if ($va_path_components['field_name'] && ($t_element = $t_instance->_getElementInstance($va_path_components['field_name']))) {
 				$vn_element_id = $t_element->getPrimaryKey();
 			} else {
 				$vn_element_id = null;

@@ -34,12 +34,13 @@
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$va_access_values 	= caGetUserAccessValues($this->request);
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sort">
-				sort by {{{sortByList}}} <?php print caNavLink($this->request, _t('Full results >'), 'fullResult', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> 
+				sort by {{{sortByList}}} <?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> 
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
@@ -56,24 +57,24 @@
 					$vs_style = "style='font-style:italic;'";
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library')."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
+					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
 				} elseif ($qr_results->get('ca_objects.type_id') == 25) {
-					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-volume-up'></i>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
+					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-volume-up'></i>".$qr_results->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
 				} elseif ($qr_results->get('ca_objects.type_id') == 26) {
-					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-film'></i>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
+					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-film'></i>".$qr_results->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
 				} else {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview')."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));				
+					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));				
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {  
 					$va_strlen = 130;
 				} else {
-					$va_strlen = 105;
+					$va_strlen = 100;
 				}
 				if ($qr_results->get('ca_objects.type_id') == 28) {
 					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
 				}				
 				if (strlen($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))) > $va_strlen) {
-					print "<p><span $vs_style>".substr($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)), 0, $va_strlen-3)."...</span></p>";  
+					print "<p><span $vs_style>".substr($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)), 0, $va_strlen-3)."... </span>".$qr_results->get('ca_objects.creation_date')."</p>";  
 				} else {
 					print "<p><span $vs_style>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</span>, ".$qr_results->get('ca_objects.creation_date', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => '^creation_date'))."</p>";
 				}
@@ -85,6 +86,11 @@
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
 					print $qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'template' => '<p>^dc_dates_value</p>')); 
 				}
+				if ($qr_results->get('is_deaccessioned') && ($qr_results->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+					// If currently deaccessioned then display deaccession message
+					print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_results->get('deaccession_date'))."</div>\n";
+					#if ($vs_deaccession_notes = $qr_results->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
+				}				
 
 ?>			
 			</div><!-- end blockResult -->
