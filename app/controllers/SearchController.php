@@ -80,7 +80,6 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				print caPrintStackTrace();
  				die("Invalid browse type $ps_function");
  			}
  			$vs_class = $va_browse_info['table'];
@@ -187,8 +186,18 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
+			$o_block_result_context = null;
  			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
- 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
+ 				// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
+ 				if ($this->request->getParameter("source", pString) === 'multisearch') {
+ 					$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $ps_function);
+ 					if ($ps_sort !== $o_block_result_context->getCurrentSort()) {
+ 						$ps_sort = $o_block_result_context->getCurrentSort();
+ 						$vb_sort_changed = true;
+ 					}
+ 				}
+ 				
+ 				if (!$ps_sort && !($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
  						$vb_sort_changed = true;
@@ -296,6 +305,7 @@
 			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();

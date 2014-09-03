@@ -425,6 +425,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	overflow-y: hidden;
 	position: relative;
 }
+
 .multisearch #libraryBlock .scrollButtonNext {
 	margin-top: 80px;
 }
@@ -592,6 +593,66 @@ p.artist.lower {
 .jspTrack {
 	background-color:#f7f7f7;
 }
+
+
+/* Old Stylesheet */
+
+.multisearch #objectsBlock, .multisearch #entitiesBlock, .multisearch #placesBlock, .multisearch #occurrencesBlock, .multisearch #collectionsBlock {
+	width:100%;
+	overflow-y:hidden;
+	position:relative;
+}
+
+.multisearch #objectsResults, .multisearch #entitiesResults, .multisearch #placesResults, .multisearch #occurrencesResults, .multisearch #collectionsResults {
+	overflow-x:scroll;
+	overflow-y:hidden;
+	width:100%;
+}
+.multisearch .objectsResult, .multisearch .collectionsResult  {
+	float:left;
+	width:150px;
+	height:145px;
+	margin:10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color:#FFFFFF;
+	line-height:1em;
+	padding:10px;
+	font-size:11px;
+	overflow:hidden;
+}
+.multisearch .objectsResult a, .multisearch .collectionsResult a  {
+	color:#454545;
+}
+.multisearch .objectsResult img, .multisearch .collectionsResult img {
+	width:100%;
+	height:auto;
+	margin-bottom:5px;
+}
+.multisearch .entitiesSet, .multisearch .placesSet, .multisearch .occurrencesSet {
+	float:left;
+	width:250px;
+	height:170px;
+	margin-right:20px;
+	overflow:hidden;
+	padding-top:10px;
+}
+
+.multisearch .entitiesSet a, .multisearch .placesSet a, .multisearch .occurrencesSet a {
+	font-size:12px;
+	color:#454545;
+}
+.multisearch .placesResult, .multisearch .occurrencesResult, .multisearch .entitiesResult {
+	margin-bottom:5px;
+	height:45px;
+	line-height:1.1em;
+	background-color:#f5f5f5;
+	padding:5px 10px 5px 10px;
+}
+.multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
+	background-color:#ebebeb;
+}
+
 
 /* Browse Results */
 
@@ -771,6 +832,9 @@ p.artist.lower {
 	font-size:10px;
 	color:#cc0000;
 	font-style:italic;	
+}
+.searchDeaccessioned a{
+	color:#cc0000;
 }
 .detail .repViewerCont img {
 	height:auto;
@@ -1335,4 +1399,10 @@ div.advancedSearchField {
 	float:left;
 	padding:4px 10px 4px 10px;
 	font-weight:bold;
+}
+
+/* Reports */
+.caReportLabel {
+	font-size: 18px;
+	font-style: "italic";
 }

@@ -87,7 +87,7 @@
  			if (!$t_table->load(($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
  				// invalid id - throw error
  				die("Invalid id");
- 			} 	
+ 			} 
  			
  			// Printables
  		 	// 	merge displays with drop-in print templates
@@ -129,11 +129,15 @@
  			caAddPageCSSClasses(array($vs_table, $ps_function, $vs_type));
  			
  			
- 			//
- 			//
- 			//
- 			$vs_last_find = ResultContext::getLastFind($this->request, $vs_table);
- 			$o_context = new ResultContext($this->request, $vs_table, $vs_last_find);
+ 			// Do we need to pull in the multisearch result set?
+ 			if ((ResultContext::getLastFind($this->request, $vs_table, array('noSubtype' => true))) === 'multisearch') {
+ 				$o_context = new ResultContext($this->request, $vs_table, 'multisearch', $ps_function);
+ 				$o_context->setAsLastFind();
+ 				$o_context->saveContext();
+ 			} else {
+ 				$o_context = ResultContext::getResultContextForLastFind($this->request, $vs_table);
+ 			}
+ 			
  			$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_table->getPrimaryKey()));
  			$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_table->getPrimaryKey()));
  			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
@@ -299,7 +303,7 @@
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
  			if (!$t_rep->getPrimaryKey()) { 
- 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
  				return;
  			}
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
@@ -330,7 +334,7 @@
  			$va_pages = $va_page_list_cache[$pn_object_id.'/'.$pn_representation_id];
  			if (!isset($va_pages)) {
  				// Page cache not set?
- 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetPage');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetPage');
  				return;
  			}
  			
@@ -364,7 +368,7 @@
 		 */ 
 		public function DownloadMedia() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
-				$this->postError(1100, _t('Cannot download media'), 'ObjectEditorController->DownloadMedia');
+				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
@@ -944,12 +948,12 @@
 					}
 					$this->view->setVar('placements', $va_display_list);
 				} else {
-					$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
+					$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
 					return;
 				}
 				$va_template_info = caGetPrintTemplateDetails('summary', 'summary');
 			} else {
-				$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
+				$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
 				return;
 			}
 			
@@ -957,7 +961,7 @@
 			// PDF output
 			//
 			if (!is_array($va_template_info)) {
-				$this->postError(3110, _t("Could not find view for PDF"),"FindController->_genExport()");
+				$this->postError(3110, _t("Could not find view for PDF"),"DetailController->_genExport()");
 				return;
 			}
 			
@@ -998,11 +1002,10 @@
 				$vb_printed_properly = true;
 			} catch (Exception $e) {
 				$vb_printed_properly = false;
-				$this->postError(3100, _t("Could not generate PDF"),"FindController->_genExport()");
+				$this->postError(3100, _t("Could not generate PDF"),"DetailController->_genExport()");
 			}
 				
 			return;
 		}
  		# -------------------------------------------------------
 	}
- ?>
