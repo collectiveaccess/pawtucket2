@@ -445,7 +445,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 			}
 		}
-		if ($this->getPrimaryKey() && isset($pa_fields[$this->getTypeFieldName()]) && !(isset($pa_options['allowSettingOfTypeID']) && $pa_options['allowSettingOfTypeID'])) {
+		if ($this->getPrimaryKey() && !$this->isRelationship() && isset($pa_fields[$this->getTypeFieldName()]) && !(isset($pa_options['allowSettingOfTypeID']) && $pa_options['allowSettingOfTypeID'])) {
 			$this->postError(2520, _t("Type id cannot be set after insert"), "BundlableLabelableBaseModelWithAttributes->set()");
 			return false;
 		}
@@ -1634,7 +1634,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					# -------------------------------
 					case 'settings':
 						if ($vb_batch) { return null; } // not supported in batch mode
-						$vs_element .= $this->getHTMLSettingFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options);
+						$vs_element .= $this->getHTMLSettingFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $this->tableNum(), $pa_options);
 						break;
 					# -------------------------------
 					// This bundle is only available when editing objects of type ca_object_representations
@@ -1961,7 +1961,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!isset($pa_options['values']['_fulltext'])) { $pa_options['values'][$ps_field] = ''; }
 				return caHTMLTextInput("_fulltext".($vb_as_array_element ? "[]" : ""), array(
 								'value' => $pa_options['values']['_fulltext'],
-								'size' => $pa_options['width']
+								'size' => $pa_options['width'], 'class' => $pa_options['class']
 							), $pa_options);
 				break;
 			case '_fieldlist':
@@ -2011,11 +2011,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				ksort($va_options);
 				
 				return caHTMLSelect("_fieldlist_field".($vb_as_array_element ? "[]" : ""), $va_options, array(
-								'size' => $pa_options['fieldListWidth']
+								'size' => $pa_options['fieldListWidth'], 'class' => $pa_options['class']
 							), array_merge($pa_options, array('value' => $pa_options['values']['_fieldlist_field'][0]))).
 						caHTMLTextInput("_fieldlist_value".($vb_as_array_element ? "[]" : ""), array(
 								'value' => $pa_options['values']['_fieldlist_value'],
-								'size' => $pa_options['width']
+								'size' => $pa_options['width'], 'class' => $pa_options['class']
 							), $pa_options);
 				break;
 		}
@@ -2030,7 +2030,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
 						if (!isset($pa_options['values'][$ps_field])) { $pa_options['values'][$ps_field] = ''; }
 					
-						return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+						return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 					}
 					break;
 				# -------------------------------------
@@ -2042,17 +2042,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						# --------------------
 						case 'preferred_labels':		
 						case 'nonpreferred_labels':
-							return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+							return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 							break;
 						# --------------------
 						default:
 							if ($va_tmp[0] != $this->tableName()) {
 								switch(sizeof($va_tmp)) {
 									case 1:
-										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'id' => str_replace('.', '_', $ps_field)));
+										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 									case 2:
 									case 3:
-										return $t_instance->htmlFormElementForSearch($po_request, $ps_field.($vb_as_array_element ? "[]" : ""), $pa_options);
+										return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
 										break;
 								}
 							}
@@ -2478,12 +2478,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			$t_rel = $this->getAppDatamodel()->getInstanceByTableName($ps_related_table, true);
 			$vs_rel_pk = $t_rel->primaryKey();
 			
-			$va_opts = array('relatedItems' => $va_items, 'stripTags' => true);
+			$va_opts = array('stripTags' => true);
 			if ($vb_is_many_many) {
 				$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'relation_id');
 				$qr_rel_items = $t_item->makeSearchResult($t_item_rel->tableNum(), $va_ids);
 				$va_opts['table'] = $t_rel->tableName();
 				$va_opts['primaryKey'] = $t_rel->primaryKey();
+				$va_opts['relatedItems'] = $va_items;
 			} else {
 				$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, $vs_rel_pk);
 				$qr_rel_items = $t_item->makeSearchResult($t_rel->tableNum(), $va_ids);	
@@ -3565,8 +3566,9 @@ if (!$vb_batch) {
 						require_once(__CA_MODELS_DIR__.'/ca_sets.php');
 						require_once(__CA_MODELS_DIR__.'/ca_set_items.php');
 						
-						$va_row_ids = explode(';', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}setRowIDList", pString));
-						$this->reorderItems($va_row_ids, array('user_id' => $po_request->getUserID()));
+						$va_rids = explode(';', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}setRowIDList", pString));
+						
+						$this->reorderItems($va_rids, array('user_id' => $po_request->getUserID(), 'treatRowIDsAsRIDs' => true));
 						break;
 					# -------------------------------------
 					// This bundle is only available for ca_search_forms 
@@ -3725,7 +3727,7 @@ if (!$vb_batch) {
 					# -------------------------------------
 					case 'settings':
 						if ($vb_batch) { break; } // not supported in batch mode
-						$this->setSettingsFromHTMLForm($po_request, array('id' => $vs_form_prefix, 'placement_code' => $vs_placement_code));
+						$this->setSettingsFromHTMLForm($po_request, array('id' => $vs_form_prefix.'_', 'placement_code' => $vs_placement_code));
 						break;
 					# -------------------------------
 					// This bundle is only available when editing objects of type ca_object_representations
@@ -3969,7 +3971,7 @@ if (!$vb_batch) {
  		// check for new relations to add
  		if ($vb_batch) {
 			$vs_batch_mode = $_REQUEST["{$ps_placement_code}{$ps_form_prefix}_batch_mode"];
- 			if ($vb_batch_mode == '_disabled_') { return true; }
+ 			if ($vs_batch_mode == '_disabled_') { return true; }
 			if ($vs_batch_mode == '_delete_') {				// remove all relationships and return
 				$this->removeRelationships($ps_bundlename);
 				return true;
@@ -5464,6 +5466,7 @@ $pa_options["display_form_field_tips"] = true;
 	/**
 	 * Change type of record, removing any metadata that is invalid for the new type
 	 *
+     * @param mixed $pm_type The type_id or code to change the current type to
 	 * @return bool True if change succeeded, false if error
 	 */
 	public function changeType($pm_type) {
@@ -5574,7 +5577,7 @@ $pa_options["display_form_field_tips"] = true;
 					if ($t_rel->hasField($vs_element)) {
 						$t_rel->set($vs_element, $va_value);
 						continue;
-					}				
+					}
 					if (is_array($va_value)) {
 						if (!isset($va_value['locale_id'])) {
 							$va_value['locale_id'] = $g_ui_locale_id ? $g_ui_locale_id : ca_locales::getDefaultCataloguingLocaleID();
@@ -5585,7 +5588,7 @@ $pa_options["display_form_field_tips"] = true;
 						// scalar value (simple single value attribute)
 						if ($va_value) {
 							$t_rel->addAttribute(array(
-								'locale_id' => $pn_locale_id,
+								'locale_id' => $g_ui_locale_id ? $g_ui_locale_id : ca_locales::getDefaultCataloguingLocaleID(),
 								$vs_element => $va_value
 							), $vs_element);
 						}
@@ -5610,8 +5613,9 @@ $pa_options["display_form_field_tips"] = true;
 	 * @param int $pn_rel_id primary key value of row to creation relationship to.
 	 * @param mixed $pm_type_id Relationship type type_code or type_id, as defined in the ca_relationship_types table. This is required for all relationships that use relationship types. This includes all of the most common types of relationships.
 	 * @param string $ps_effective_date Optional date expression to qualify relation with. Any expression that the TimeExpressionParser can handle is supported here.
-	 * @param string $ps_source_info Text field for storing information about source of relationship. Not currently used.
+	 * @param mixed $pa_source_info Array or text for storing information about source of relationship. Not currently used.
 	 * @param string $ps_direction Optional direction specification for self-relationships (relationships linking two rows in the same table). Valid values are 'ltor' (left-to-right) and  'rtol' (right-to-left); the direction determines which "side" of the relationship the currently loaded row is on: 'ltor' puts the current row on the left side. For many self-relations the direction determines the nature and display text for the relationship.
+	 * @param null|int $pn_rank
 	 * @param array $pa_options Array of additional options:
 	 *		allowDuplicates = if set to true, attempts to edit a relationship to match one that already exists will succeed. Default is false – duplicate relationships will not be created.
 	 *		setErrorOnDuplicate = if set to true, an error will be set if an attempt is made to create a duplicate relationship. Default is false – don't set error. editRelationship() will always return false when editing of a relationship fails, no matter how the setErrorOnDuplicate option is set.
@@ -5620,12 +5624,12 @@ $pa_options["display_form_field_tips"] = true;
 	public function editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $pa_source_info=null, $ps_direction=null, $pn_rank=null, $pa_options=null) {
 		global $g_ui_locale_id;
 		
-		if ($t_rel = parent::editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options)) {
+		if ($t_rel = parent::editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id, $ps_effective_date, $pa_source_info, $ps_direction, $pn_rank, $pa_options)) {
 			// are there interstitials to add?
 			if (isset($pa_options['interstitialValues']) && is_array($pa_options['interstitialValues'])) {
 				$t_rel->setMode(ACCESS_WRITE);
 				
-				foreach($pa_options['interstitialValues'] as $vs_element => $va_value) { 	
+				foreach($pa_options['interstitialValues'] as $vs_element => $va_value) {
 					if ($t_rel->hasField($vs_element)) {
 						$t_rel->set($vs_element, $va_value);
 						continue;
@@ -5640,7 +5644,7 @@ $pa_options["display_form_field_tips"] = true;
 						// scalar value (simple single value attribute)
 						if ($va_value) {
 							$t_rel->replaceAttribute(array(
-								'locale_id' => $pn_locale_id,
+								'locale_id' => $g_ui_locale_id ? $g_ui_locale_id : ca_locales::getDefaultCataloguingLocaleID(),
 								$vs_element => $va_value
 							), $vs_element);
 						}

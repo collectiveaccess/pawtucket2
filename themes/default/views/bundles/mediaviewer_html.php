@@ -70,7 +70,7 @@ if($vs_display_type == 'media_overlay'){
 	<div class="caMediaOverlayControls">
 		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
 <?php
-			if(caObjectsDisplayDownloadLink($this->request)){
+			if(caObjectsDisplayDownloadLink($this->request) && $this->request->user->canDoAction('can_download_media')){
 ?>
 				<div class='download'>
 <?php 
@@ -110,7 +110,7 @@ if($vs_display_type == 'media_overlay'){
 <?php
 }
 ?>
-	<div id="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContent' : 'caMediaDisplayContent'; ?>">
+	<div <?php print ($vs_display_type == 'media_overlay') ? 'id="caMediaOverlayContent"' : ''; ?>>
 <?php
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }

@@ -187,8 +187,20 @@
 			);
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 * Return HTML form element for editing.
+ 		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			class = the CSS class to apply to all visible form elements [Default=timecodeBg]
+ 		 *			width = the width of the form element [Default=field width defined in metadata element definition]
+ 		 *			height = the height of the form element [Default=field height defined in metadata element definition]	
+ 		 *
+ 		 * @return string
+ 		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
  			$vn_width = (isset($pa_options['width']) && $pa_options['width'] > 0) ? $pa_options['width'] : 30;
+ 			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : 'timecodeBg');
  			$vn_max_length = 255;
  			return caHTMLTextInput(
 				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}',
@@ -196,7 +208,7 @@
 					'size' => $vn_width,
 					'value' => '{{'.$pa_element_info['element_id'].'}}',
 					'maxlength' => $vn_max_length,
-					'class' => 'timecodeBg'
+					'class' => $vs_class
 				)
 			);
  		}

@@ -32,11 +32,59 @@
 	#$va_item_ids = $this->getVar('featured_set_item_ids');
 	$o_result_context = $this->getVar('result_context');
 	
-	if(is_array($va_item_ids) && sizeof($va_item_ids)){
-		$t_object = new ca_objects();
-		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("slideshow"), array('checkAccess' => caGetUserAccessValues($this->request)));
-		$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
+	require_once(__CA_MODELS_DIR__."/ca_sets.php");
+	$va_access_values = caGetUserAccessValues($this->request);
+
+	if($vs_set_code = $this->request->config->get("featured_art_set")){
+		$t_set = new ca_sets();
+		$t_set->load(array('set_code' => $vs_set_code));
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+			$va_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
+			$va_art_items = $t_set->getItemIDs();
+			foreach($va_art_items as $va_art_item => $va_art) {$va_art_set_item = $va_art_item; break;}
+			$t_art_item = new ca_set_items($va_art_set_item);
+			$va_artwork_caption = $t_art_item->get('ca_set_items.caption');
+		}
+		if(is_array($va_item_ids) && sizeof($va_item_ids)){
+			$t_object = new ca_objects();
+			$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("small"), array('checkAccess' => caGetUserAccessValues($this->request)));
+		}
 	}
+	if($vs_library_set_code = $this->request->config->get("featured_library_set")){
+		$t_library_set = new ca_sets();
+		$t_library_set->load(array('set_code' => $vs_library_set_code));
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_library_set->get("access"), $va_access_values))){
+			$va_library_item_ids = array_keys(is_array($va_tmp = $t_library_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
+			$va_library_items = $t_library_set->getItemIDs();
+			foreach($va_library_items as $va_library_item => $va_library) {$va_library_set_item = $va_library_item; break;}
+			$t_library_item = new ca_set_items($va_library_set_item);
+			$va_library_caption = $t_library_item->get('ca_set_items.caption');
+		}
+		if(is_array($va_library_item_ids) && sizeof($va_library_item_ids)){
+			$t_object = new ca_objects();
+			$va_library_media = $t_object->getPrimaryMediaForIDs($va_library_item_ids, array("small"), array('checkAccess' => caGetUserAccessValues($this->request)));
+		}
+	}	
+	if($vs_archive_set_code = $this->request->config->get("featured_archive_set")){
+		$t_archive_set = new ca_sets();
+		$t_archive_set->load(array('set_code' => $vs_archive_set_code));
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_archive_set->get("access"), $va_access_values))){
+			$va_archive_item_ids = array_keys(is_array($va_tmp = $t_archive_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
+			$va_archive_items = $t_archive_set->getItemIDs();
+			foreach($va_archive_items as $va_archive_item => $va_archive) {$va_archive_set_item = $va_archive_item; break;}
+			$t_archive_item = new ca_set_items($va_archive_set_item);
+			$va_archive_caption = $t_archive_item->get('ca_set_items.caption');
+		}
+		if(is_array($va_archive_item_ids) && sizeof($va_archive_item_ids)){
+			$t_object = new ca_objects();
+			$va_archive_media = $t_object->getPrimaryMediaForIDs($va_archive_item_ids, array("small"), array('checkAccess' => caGetUserAccessValues($this->request)));
+		}
+	}	
+	
+
 	
 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 	
@@ -45,93 +93,53 @@
 		print "</div>";			
 	
 	} else {
+?>
+<div class='row featuredItems'>
+	<div class="col-sm-4">
+		<div class='item first' >
+<?php 
+		
+			print "<h1>Collection</h1>";
+		if (sizeof($va_item_media)) {	
+			$va_item_media = array_values($va_item_media);
+			print "<div class='image'>".caNavLink($this->request, $va_item_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_item_ids[0])."</div>"; 
+			print "<div class='caption'>".caNavLink($this->request, $va_artwork_caption, '', '', 'Detail', 'artworks/'.$va_item_ids[0])."</div>";
+		}
+?>
+		</div>
+	</div>
+	<div class="col-sm-4">
+		<div class='item'>
+<?php 
+		print "<h1>Library <small>(coming soon)</small></h1>";
+		if (sizeof($va_library_media)) {
+			$va_library_media = array_values($va_library_media);
+			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_library_caption, '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>"; 
+		} else {
+			print "<div class='image'></div>";
+		}
+?>
+		</div>
+	</div>	
+	<div class="col-sm-4">
+		<div class='item'>
+<?php 
+		print "<h1>Archives <small>(coming soon)</small></h1>";
+		if (sizeof($va_archive_media)) {
+			$va_archive_media = array_values($va_archive_media);
+			print "<div class='image'>".caNavLink($this->request, $va_archive_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_archive_caption, '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>"; 
+		} else {
+			print "<div class='image'></div>";
+		}
+?>
+		</div>
+	</div>
+</div>	
 
-	if(is_array($va_item_media) && sizeof($va_item_media)){
-?>   
-		<div class="jcarousel-wrapper">
-			<!-- Carousel -->
-			<div class="jcarousel">
-				<ul>
-<?php
-					foreach($va_item_media as $vn_object_id => $va_media){
-						print "<li>".caDetailLink($this->request, $va_media["tags"]["slideshow"], '', 'ca_objects', $vn_object_id)."</li>";
-					}
-?>
-				</ul>
-			</div><!-- end jcarousel -->
-<?php
-			if(sizeof($va_item_media) > 1){
-?>
-			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
-		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
-<?php
-			}
-?>
-		</div><!-- end jcarousel-wrapper -->
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.jcarousel-control-prev')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.jcarousel-control-next')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-		
-				/*
-				 Pagination initialization
-				 */
-				$('.jcarousel-pagination')
-					.on('jcarouselpagination:active', 'a', function() {
-						$(this).addClass('active');
-					})
-					.on('jcarouselpagination:inactive', 'a', function() {
-						$(this).removeClass('active');
-					})
-					.jcarouselPagination({
-						// Options go here
-					});
-			});
-		</script>
-<?php
-	}
-?>
+	<hr>
+
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">

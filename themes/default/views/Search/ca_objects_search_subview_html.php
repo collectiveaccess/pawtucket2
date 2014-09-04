@@ -45,19 +45,19 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | <span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?></span> | <span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results'>
+				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
 ?>
-			<div class='{{{block}}}Result'>
+			<div class='{{{block}}}Result multisearchResult'>
 <?php 
 				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
 				if(!$vs_image){

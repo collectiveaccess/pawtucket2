@@ -352,7 +352,7 @@
 					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
 				}
 			}
-			if(caObjectsDisplayDownloadLink($o_request)){
+			if(caObjectsDisplayDownloadLink($o_request) && $this->request->user->canDoAction('can_download_media')){
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$vs_download_version = $va_download_display_info['display_version'];
@@ -422,12 +422,25 @@
 		$va_rep_tags = array();
 		if(sizeof($va_rep_ids)){
 			$vs_output = "";
-			foreach($va_rep_ids as $vn_rep_id){
-				$t_representation->load($vn_rep_id);
-				$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'.$t_representation->get("representation_id"));
-				$vs_tool_bar = caRepToolbar($o_request, $t_representation, $pn_object_id);
-				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
+			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
+			//foreach($va_rep_ids as $vn_rep_id){
+			//while($qr_reps->nextHit()) {
+				//$vn_rep_id = $qr_reps->get('representation_id');
+				//$t_representation->load($vn_rep_id);
+				//$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'.$qr_reps->get("representation_id"));
+				//$vs_tool_bar = caRepToolbar($o_request, $qr_reps, $pn_object_id);
+				//$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont".$vn_rep_id."' class='repViewerCont'>".$qr_reps->getRepresentationViewerHTMLBundle($o_request, $va_opts).$vs_tool_bar."</div></div>";			
+			//}
+			
+			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($o_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
+			
+			$qr_reps->seek(0);
+			while($qr_reps->nextHit()) {
+				$vn_rep_id = $qr_reps->get('representation_id');
+				$vs_tool_bar = caRepToolbar($o_request, $qr_reps, $pn_object_id);
+				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
 			}
+			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
 			}
@@ -847,9 +860,10 @@
 	 * 
 	 */
 	$g_theme_detail_for_type_cache = array();
-	function caGetDetailForType($pm_table, $pm_type=null) {
+	function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
 		global $g_theme_detail_for_type_cache;
-		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type]; }
+		$vs_current_action = ($o_request = caGetOption('request', $pa_options, null)) ? $o_request->getAction() : null;
+		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action]; }
 		$o_config = caGetDetailConfig();
 		$o_dm = Datamodel::load();
 		
@@ -864,15 +878,19 @@
 		
 		$va_detail_types = $o_config->getAssoc('detailTypes');
 	
+		$vs_detail_type = null;
 		foreach($va_detail_types as $vs_code => $va_info) {
 			if ($va_info['table'] == $vs_table) {
 				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
-					return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = $vs_code;
+					// If the code matches the current url action use that in preference to anything else
+					if ($vs_current_action && ($vs_code == $vs_current_action)) { return $vs_code; }
+					$vs_detail_type = $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = $vs_code;
 				}
 			}
 		}
 		
-		return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type] = null;
+		if (!$vs_detail_type) $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = null;
+		return $vs_detail_type;
 	}
 	# ---------------------------------------
 	/**

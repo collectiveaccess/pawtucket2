@@ -332,6 +332,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  		}	
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
 		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
+		$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
 		
 		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
 		unset($pa_options['contexts']);
@@ -365,8 +366,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
  					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
-						$ps_sort = array_shift(array_values($va_sorts));
-						$va_contexts[$vs_block]->setCurrentSort($vs_sort); 
+						$ps_sort = array_shift($va_sorts);
+						$va_contexts[$vs_block]->setCurrentSort($ps_sort); 
 						$vb_sort_changed = true;
 					} else {
 						if (isset($va_sorts[$ps_sort])) { 
@@ -380,8 +381,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			if($vb_sort_changed && ($va_sorts) && sizeof($va_sorts)){
 				# --- set the default sortDirection if available
 				$va_sort_directions = caGetOption('sortDirection', $va_block_info, null);
-				$ps_sort_key = array_search($ps_sort, $va_sorts);
-				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort_key])){
+				//$ps_sort_key = array_search($ps_sort, $va_sorts);
+				if(is_array($va_sort_directions) && ($ps_sort_direction = $va_sort_directions[$ps_sort])){
 					$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction);
 				}			
  			}
@@ -393,7 +394,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
  			
- 			$va_options['sort'] = $ps_sort;
+ 			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
@@ -404,7 +405,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {
 				$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
-			$qr_res = $o_search->search($ps_search_expression, $va_options);
+			$qr_res = $o_search->search($ps_search_expression.(($vb_match_on_stem && !preg_match('!\*$!', $ps_search_expression)) ? '*' : ''), $va_options);
 			
 			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
 			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
@@ -442,7 +443,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if(is_array($va_sort_by)) {
 				$va_sort_list = array();
 				foreach ($va_sort_by as $vs_sort_label => $vs_sort) {
-					$va_sort_list[] = "<li".(($vs_sort == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort}'>{$vs_sort_label}</a></li>";
+					$va_sort_list[] = "<li".(($vs_sort == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort_label}'>{$vs_sort_label}</a></li>";
 				}
 				
 				$vs_sort_list = "<ul id='{$vs_block}_sort'>".join("\n", $va_sort_list)."</ul>";
@@ -681,16 +682,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$vs_query_string = trim($vs_query_string). ')';
 		}
 		return $vs_query_string;
-	}
-	# ---------------------------------------
-	/**
-	 *
-	 */
-	function caGetDisplayTextFromQueryString($po_result_context, $pa_options=null) {
-		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
-		
-		
 	}
 	# ---------------------------------------
 	/**

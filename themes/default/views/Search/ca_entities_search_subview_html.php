@@ -40,14 +40,14 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> | -->
 				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' style="position:relative;">
+				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
 		}
@@ -55,8 +55,8 @@
 		$vn_i = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-			if ($vn_i == 0) { print "<div class='{{{block}}}Set'>\n"; $vb_div_open = true;}
-				print "<div class='entitiesResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
+			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
+				print "<div class='entitiesResult authorityResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {

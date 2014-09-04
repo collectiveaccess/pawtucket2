@@ -5,7 +5,7 @@
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -128,7 +128,7 @@
 		</div><!-- end row -->
 	</div><!-- end container -->
 <?php
-	if ($t_object->get('ca_objects.related', array('restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')))) {
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')))) {
 ?>	
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -145,12 +145,12 @@
 					<div id="blockResultsScroller">				
 <?php
 				}
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')));
+			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')));
 			foreach ($va_object_ids as $obj_key => $va_object_id) {
 				$t_object = new ca_objects($va_object_id);
 				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'objects/'.$va_object_id)."</p>";
+				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
+				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";
 				print "<p>".$t_object->get('ca_objects.dc_date.dc_dates_value')."</p>";
 				print "</div><!-- archivesResult -->";
 			}
@@ -168,7 +168,7 @@
 </div>	<!-- end row -->
 <?php
 	}
-	if ($t_object->get('ca_objects.related', array('restrictToTypes' => array('artwork')))) {
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
 ?>	
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -185,12 +185,12 @@
 					<div id="blockResultsScroller">				
 <?php
 				}
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
 			foreach ($va_object_ids as $obj_key => $va_object_id) {
 				$t_object = new ca_objects($va_object_id);
 				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'objects/'.$va_object_id)."</p>";
+				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
+				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";
 				print "<p class='artist'>".$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
 				print "<p>".$t_object->get('ca_objects.object_dates')."</p>";
 				print "</div><!-- archivesResult -->";

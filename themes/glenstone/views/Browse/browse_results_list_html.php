@@ -90,13 +90,17 @@
 				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p><i>".$qr_res->get("{$vs_table}.preferred_labels.name")."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
-					$vs_idno_detail_link 	= "";				
+					if ($qr_res->get('is_deaccessioned') && ($qr_res->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+						$vs_idno_detail_link = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
+					} else {
+						$vs_idno_detail_link = "";
+					}				
 				}else {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 				}
-				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small') : $va_images[$vn_id];
+				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array('checkAccess' => $va_access_values)) : $va_images[$vn_id];
 				
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
