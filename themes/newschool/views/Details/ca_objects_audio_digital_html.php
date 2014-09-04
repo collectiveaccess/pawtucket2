@@ -38,7 +38,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-6 col-lg-6'>
-					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -71,6 +71,8 @@
 				<div class='col-sm-12 col-md-6 col-lg-6'>
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewer" delimiter=";"><H3>Interviewer:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee" delimiter=";"><H3>Interviewee:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="speaker" delimiter=";"><H3>Speaker:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="sponsoring_body" delimiter=";"><H3>Sponsoring Body:</H3><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 					{{{<ifdef code="ca_objects.pbcoreDate.pbcoreDates_value"><H3>Date:</H3>^ca_objects.pbcoreDate.pbcoreDates_value<br/></ifdef>}}}
 					{{{<ifcount code="ca_objects.LcshTopical" min="1" max="1"><H3>Subject Heading:</H3></ifcount>}}}
 					{{{<ifcount code="ca_objects.LcshTopical" min="2"><H3>Subject Headings:</H3></ifcount>}}}

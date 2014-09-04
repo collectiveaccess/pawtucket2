@@ -28,38 +28,32 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter=";"><H3>Publisher:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="author" delimiter=";"><H3>Author:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="addressee" delimiter=";"><H3>Addressee:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="artist" delimiter=";"><H3>Artist:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="designer" delimiter=";"><H3>Designer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="illustrator" delimiter=";"><H3>Illustrator:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="commissioner" delimiter=";"><H3>Commissioner:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="photographer" delimiter=";"><H3>Photographer:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="compiler" delimiter=";"><H3>Compiler:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit>}}}
-					{{{<unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="subject" delimiter=";"><H3>Subject Name:</H3><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></unit><br/>}}}
-					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date:</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.pbcoreDate.pbcoreDates_value"><H3>Date:</H3>^ca_objects.pbcoreDate.pbcoreDates_value<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type:</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type:</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtPosters"><H3>Work Type:</H3>^ca_objects.wtPosters<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtClippings"><H3>Work Type:</H3>^ca_objects.wtClippings<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtPlans"><H3>Work Type:</H3>^ca_objects.wtPlans<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtCourse"><H3>Work Type:</H3>^ca_objects.wtCourse<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtExhibition"><H3>Work Type:</H3>^ca_objects.wtExhibition<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtBooks"><H3>Work Type:</H3>^ca_objects.wtBooks<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtPeriodicals"><H3>Work Type:</H3>^ca_objects.wtPeriodicals<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtScores "><H3>Work Type:</H3>^ca_objects.wtScores<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtScrapbooks"><H3>Work Type:</H3>^ca_objects.wtScrapbooks<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtPhotoAlbums"><H3>Work Type:</H3>^ca_objects.wtPhotoAlbums<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtSketchbooks"><H3>Work Type:</H3>^ca_objects.wtSketchbooks<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtTextual"><H3>Work Type:</H3>^ca_objects.wtTextual<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtProofs"><H3>Work Type:</H3>^ca_objects.wtProofs<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtThree"><H3>Work Type:</H3>^ca_objects.wtThree<br/></ifdef>}}}
-					{{{<ifdef code="ca_objects.wtOther"><H3>Work Type:</H3>^ca_objects.wtOther<br/></ifdef>}}}
+					
+					{{{<ifcount code="ca_entities" min="1" max="1"><H3>Related person/organization</H3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><H3>Related people/organizations</H3></ifcount>}}}
+					{{{<unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit><unit relativeTo="ca_objects_x_entities"  delimiter="<br/>"> (^relationship_typename)</unit><br/>}}}
+					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H3>Date</H3>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.pbcoreDate.pbcoreDates_value"><H3>Date</H3>^ca_objects.pbcoreDate.pbcoreDates_value<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtDrawings"><H3>Work Type</H3>^ca_objects.wtDrawings<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtPhotographic"><H3>Work Type</H3>^ca_objects.wtPhotographic<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtPosters"><H3>Work Type</H3>^ca_objects.wtPosters<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtClippings"><H3>Work Type</H3>^ca_objects.wtClippings<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtPlans"><H3>Work Type</H3>^ca_objects.wtPlans<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtCourse"><H3>Work Type</H3>^ca_objects.wtCourse<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtExhibition"><H3>Work Type</H3>^ca_objects.wtExhibition<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtBooks"><H3>Work Type</H3>^ca_objects.wtBooks<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtPeriodicals"><H3>Work Type</H3>^ca_objects.wtPeriodicals<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtScores "><H3>Work Type</H3>^ca_objects.wtScores<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtScrapbooks"><H3>Work Type</H3>^ca_objects.wtScrapbooks<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtPhotoAlbums"><H3>Work Type</H3>^ca_objects.wtPhotoAlbums<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtSketchbooks"><H3>Work Type</H3>^ca_objects.wtSketchbooks<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtTextual"><H3>Work Type</H3>^ca_objects.wtTextual<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtProofs"><H3>Work Type</H3>^ca_objects.wtProofs<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtThree"><H3>Work Type</H3>^ca_objects.wtThree<br/></ifdef>}}}
+					{{{<ifdef code="ca_objects.wtOther"><H3>Work Type</H3>^ca_objects.wtOther<br/></ifdef>}}}
 					
 					
 					
@@ -96,9 +90,6 @@
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit><br/><br/>}}}
 							
 							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
