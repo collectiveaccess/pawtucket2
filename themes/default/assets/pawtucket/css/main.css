@@ -2464,6 +2464,14 @@ div.advancedSearchField {
 }
 
 
+/* tooltips */
+.ui-tooltip {
+	padding: 10px;
+	min-width: 120px;
+	max-width: 300px;
+	min-height: 50px;
+}
+
 /* ----------------- print specific styles ----------------------*/
 /* --- This overrides boostrap styles --- */
 @media print {

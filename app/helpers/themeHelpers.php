@@ -342,10 +342,9 @@
 			$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 		
 			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
-			$vs_tool_bar = "<div id='detailMediaToolbar'>";
-			if(!$va_rep_display_info["no_overlay"]){
-				$vs_tool_bar .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-			}
+
+			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' id='caDetailZoomLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+
 			if(!$o_request->config->get("disable_my_collections")){
 				if ($o_request->isLoggedIn()) {
 					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($o_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
@@ -357,7 +356,8 @@
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$vs_download_version = $va_download_display_info['display_version'];
-				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+
+				$vs_tool_bar .= caNavLink($o_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array('id' => 'caDetailDownloadLink'));
 			}
 			$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 			return "<div id='cont' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($o_request, $va_opts)."</div>".$vs_tool_bar;
@@ -933,6 +933,11 @@
 			}
 		}
 		
+		if(is_array($pa_ids) && sizeof($pa_ids)) {
+			$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
+			$va_params[] = $pa_ids;
+		}
+		
 		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
@@ -940,7 +945,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_access_wheres}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
 		

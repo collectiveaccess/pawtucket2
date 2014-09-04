@@ -131,4 +131,6 @@
 			}
 		}
 	}
+	
+	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
 ?>
