@@ -49,7 +49,7 @@
 		<div class="nslogotypesub col-sm-10"><span class="newschool">The New School </span><span class="kellen"><a href="/"> The New School Archives: Digital Collections</a></span></div>
 		<div class="col-sm-2 infonav">
 			<ul class="nav navbar-nav navbar-right">
-				<li <?php print ($this->request->getController() == "About") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-info-sign'></span>", "", "", "About", "Index"); ?></li>
+				<li <?php print ($this->request->getController() == "About") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-info-sign'></span>", "", "", "About", "Index", null, array("title" => "For more information")); ?></li>
 				<li <?php print ($this->request->getController() == "Contact") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span>", "", "", "Contact", "Form"); ?></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>

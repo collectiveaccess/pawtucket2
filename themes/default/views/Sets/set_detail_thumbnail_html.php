@@ -12,7 +12,7 @@
 			print "</div></div><!-- end col 3 -->";
 		}
 	}else{
-		print "<div>No items in set</div>";
+		print "<div class='col-sm-12'>"._t("There are no items in this lightbox")."</div>";
 	}
 ?>
 			</div><!-- end row -->

@@ -1223,7 +1223,7 @@ a.browseRemoveFacet img {
 }
 
 #detailRepresentationThumbnails{
-	padding-top:20px;
+	padding-top:0px;
 }	
 
 .detail .repViewerCont {
@@ -1406,7 +1406,7 @@ a.browseRemoveFacet img {
 #detailRepresentationThumbnails a img{
 	border: 1px solid #dddddd;
     height: auto;
-    margin: 10px 0;
+    margin: 0px 0;
     padding: 5px;
     width: 100%;
 }

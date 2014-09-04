@@ -12,14 +12,14 @@
 		</div><!-- end col -->
 		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 			<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-				<H1>{{{<unit>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter=" ➔ "><l>^ca_collections.hierarchy.preferred_labels.name</l></unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
 				<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 				
 				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.type_id, ^ca_collections.idno)</unit>}}}</H2>
 				
 {{{<ifcount code="ca_objects" min="2">
 				<div id="detailRelatedObjects">
-					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Search', 'Objects', array('search' => 'collection:^ca_collections.idno'), null, array('dontURLEncodeParameters' => true)); ?></H3>
+					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => $t_collection->get("collection_id")), null, array('dontURLEncodeParameters' => true)); ?></H3>
 					<div class="jcarousel-wrapper">
 						<div id="detailScrollButtonNext"><i class="fa fa-angle-right">&nbsp;</i></div>
 						<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left">&nbsp;</i></div>
