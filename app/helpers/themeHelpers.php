@@ -456,7 +456,7 @@
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= "</ul></div><!-- end jcarousel -->
 								<!-- Prev/next controls -->
-								<div id='detailRepNav'><a href='#' id='detailRepNavPrev' title='"._t("Previous")."'><span class='glyphicon glyphicon-arrow-left'></span></a> <a href='#' id='detailRepNavNext' title='"._t("Next")."'><span class='glyphicon glyphicon-arrow-right'></span></a></div>
+								<div id='detailRepNav'><a href='#' id='detailRepNavPrev' title='"._t("Previous")."'><span class='glyphicon glyphicon-arrow-left'></span></a> <a href='#' id='detailRepNavNext' title='"._t("Next")."'><span class='glyphicon glyphicon-arrow-right'></span></a><div style='clear:both;'></div></div><!-- end detailRepNav -->
 							</div><!-- end jcarousel-wrapper -->
 					<script type='text/javascript'>
 						jQuery(document).ready(function() {
@@ -768,6 +768,13 @@
 			}
 			while($vn_i < 6){
 				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($o_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($o_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div>";
+				$vn_i++;
+			}
+		}else{
+			$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'><div class='lbSetImgPlaceholder'>"._t("this lightbox contains no items")."</div><!-- end lbSetImgPlaceholder --></div><!-- end lbSetImg --></div>\n";
+			$i = 1;
+			while($vn_i < 4){
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($o_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder --></div>";
 				$vn_i++;
 			}
 		}

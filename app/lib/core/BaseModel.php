@@ -5989,7 +5989,7 @@ class BaseModel extends BaseObject {
 				return $fieldinfo;
 			}
 		} else {
-			$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()");
+			//$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()");
 			return false;
 		}
 	}

@@ -21,14 +21,13 @@
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+					<div style="clear:both;"><!-- empty --></div>
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter="_➔_"><l><l>^ca_collections.hierarchy.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
 					
@@ -65,7 +64,7 @@
 					
 					{{{<ifdef code="ca_objects.descriptionSet.descriptionText"><H3>Description:</H3>^ca_objects.descriptionSet.descriptionText<br/></ifdef>}}}
 					{{{<ifdef code="ca_objects.pbcoreDescription.pBdescription_text%[pbcore_description_types=abstract]"><H3>Abstract:</H3>^ca_objects.pbcoreDescription.pBdescription_text%[pbcore_description_types=abstract]<br/></ifdef>}}}
-					
+					{{{<ifdef code="ca_objects.inscriptionSet.inscriptionText"><H3>Inscription:</H3>^ca_objects.inscriptionSet.inscriptionText<br/></ifdef>}}}
 					
 					
 					

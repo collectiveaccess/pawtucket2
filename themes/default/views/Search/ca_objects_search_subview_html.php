@@ -36,6 +36,8 @@
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = caGetSearchConfig();
+	$o_browse_config = caGetBrowseConfig();
+	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
@@ -45,7 +47,15 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?></span> | <span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+<?php
+				if(in_array($vs_block, $va_browse_types)){
+?>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+<?php
+				}
+?>
+				
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
