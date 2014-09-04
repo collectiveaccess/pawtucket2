@@ -48,7 +48,7 @@
 					if($vn_audio_rep_id){
 						$t_rep->load($vn_audio_rep_id);
 						$va_annotations = $t_rep->getAnnotations(array("checkAccess" => $this->getVar("access_values")));
-						#print_r($va_annotations);
+						print_r($va_annotations);
 						print $t_rep->getMediaTag("media", $va_audio_media_display_info["display_version"], $va_audio_media_display_info, array("id" => "caPlayer"));
 					}
 ?>
@@ -93,6 +93,19 @@
 							print caDetailLink($this->request, '<span class="glyphicon glyphicon-volume-up"></span> '.$va_audio["label"], '', 'ca_objects', $t_object->get("object_id"), array("representation_id" => $va_audio["representation_id"]))."<br/>";
 						}
 					}
+					if(sizeof($va_annotations)){
+						print "<H3>Clips</H3>";
+						foreach($va_annotations as $va_annotation){
+							print "<p><div class='detailAnnotation'><small>".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."</small><br/>";
+							$va_labels = caExtractValuesByUserLocale($va_annotation["labels"]);
+							foreach($va_labels as $vs_label){
+								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";
+							}
+							print "<div class='annotationControls'><a href='#' onclick='$(\"#detailAnnotationMoreInfo\").load(\"".caDetailUrl($this->request, "ca_representation_annotations", $va_annotation["annotation_id"])."\")'><span class='glyphicon glyphicon-info-sign'></span></a> <a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a></div>";
+							print "</div><!-- end detailAnnotation --></p>";
+						}
+
+					}
 ?>
 				
 				</div><!-- end col -->
@@ -133,4 +146,58 @@
 		  maxHeight: 120
 		});
 	});
+	
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 65
+		});
+	});
+		
+	function caAnnoEditorGetPlayer() {
+		if (jQuery('#mp3player') && jQuery('#mp3player')[0] && jQuery('#mp3player')[0].player) {
+			if (jQuery('#mp3player')[0].player.currentTime) {
+				return jQuery('#mp3player')[0].player;
+			} else if (jQuery('#mp3player')[0].player.media) {
+				return jQuery('#mp3player')[0].player.media;
+			}
+		} 
+		return null;
+	}
+	
+	function caAnnoEditorGetMediaType() {
+		if (jQuery('#mp3player') && jQuery('#mp3player')[0] && jQuery('#mp3player')[0].player) {
+			if (jQuery('#mp3player')[0].player.currentTime) {
+				return 'VIDEO'; // videojs
+			} else if (jQuery('#mp3player')[0].player.media) {
+				return 'AUDIO';	// mediaelement
+			}
+		} 
+		return null;
+	}
+
+	function caAnnoEditorPlayerPlay(s) {
+		var p = caAnnoEditorGetPlayer();
+		if (!p) { return false; }
+		
+		var mediaType = caAnnoEditorGetMediaType();
+		if (mediaType == 'AUDIO') {
+			// MediaElement audio player
+			if (!jQuery('#mp3player').data('hasBeenPlayed')) { 
+				p.play(); 
+				jQuery('#mp3player').data('hasBeenPlayed', true); 
+			} 
+			if ((s != null) && (s != undefined)) { jQuery('#mp3player')[0].player.setCurrentTime(s); }
+			p.play(); 
+		} else if (mediaType == 'VIDEO') {
+			// VideoJS video player
+			jQuery('#mp3player').data('hasBeenPlayed', true); 
+			if ((s != null) && (s != undefined)) { p.currentTime(s); }
+			p.play(); 
+		}
+		return false;
+	}
+
+	
+	
 </script>
