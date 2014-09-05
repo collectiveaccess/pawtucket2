@@ -98,13 +98,12 @@
 					if(sizeof($va_annotations)){
 						print "<H3>Clips</H3>";
 						foreach($va_annotations as $va_annotation){
-							print "<p><div class='detailAnnotation'><small>".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."</small><br/>";
+							print "<p><a href='#' onclick='<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a><small>".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."</small><br/>";
 							$va_labels = caExtractValuesByUserLocale($va_annotation["labels"]);
 							foreach($va_labels as $vs_label){
 								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";
 							}
-							print "<div class='annotationControls'><a href='#' onclick='$(\"#detailAnnotationMoreInfo\").load(\"".caDetailUrl($this->request, "ca_representation_annotations", $va_annotation["annotation_id"])."\")'><span class='glyphicon glyphicon-info-sign'></span></a> <a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a></div>";
-							print "</div><!-- end detailAnnotation --></p>";
+							print "</p>";
 						}
 
 					}
