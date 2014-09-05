@@ -345,6 +345,13 @@ font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin
     right: -10px;
     top: 5px;
 }
+.detail .detailRelObject{
+	padding-bottom:5px;
+}
+.detail .detailRelObject img{
+	width:100%;
+	height:auto;
+}
 .detail .transcript a{
 	color:#828282;
 	text-decoration:none;

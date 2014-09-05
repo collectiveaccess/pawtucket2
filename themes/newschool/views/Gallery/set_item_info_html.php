@@ -9,5 +9,3 @@
 {{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 
 <?php print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id"))."</br/><br/>"; ?>
-
-<H7>{{{<l>^ca_objects.preferred_labels.name</l>}}}</H7>

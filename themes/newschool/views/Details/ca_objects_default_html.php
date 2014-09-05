@@ -27,7 +27,7 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H1>{{{<unit delimiter="_➔_"><l><l>^ca_collections.hierarchy.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{<unit delimiter="_➔_" relativeTo="ca_collections"><l>^ca_collections.hierarchy.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 					<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 					<HR>
 					
@@ -85,19 +85,21 @@
 					<h3>Use Restrictions:</H3>To publish images of material from this collection, permission must be obtained in writing from The New School Archives and Special Collections. Please contact: archivist@newschool.edu.</H3>
 					
 					<br><br>
-									
+						{{{<ifcount code="ca_objects.related" min="1">
+							<hr></hr><div class="row"><div class="col-sm-12"><H6>Related Objects</H6><div class="row rowSmallPadding"><unit relativeTo="ca_objects.related" delimiter=" "><div class="col-xs-4 col-md-2 smallpadding"><div class="detailRelObject"><l>^ca_object_representations.media.icon</l></div><!--end detailRelObject--></div><!--end col--></unit></div><!-- end row --></div><!-- end col --></div><!-- end row -->
+						</ifcount>}}}									
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							
-							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+							{{{<ifcount code="ca_places" min="1"><br/><br/></ifcount>}}}
 							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name</unit><br/><br/>}}}
+							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name</unit>}}}
+							{{{<ifcount code="ca_list_items" min="1"><br/><br/></ifcount>}}}
 							
 							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 							{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}

@@ -58,7 +58,17 @@
 				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
-			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			if(in_array($vs_block, $va_browse_types)){
+?>
+				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+<?php
+			}else{
+?>
+				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			}
+?>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>

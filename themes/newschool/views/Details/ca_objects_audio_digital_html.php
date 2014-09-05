@@ -39,7 +39,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-6 col-lg-6'>
-					<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+					<H1>{{{<unit relativeTo="ca_collections" delimiter="_➔_"><l>^ca_collections.hierarchy.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -97,7 +97,7 @@
 					if(sizeof($va_annotations)){
 						print "<H3>Clips</H3>";
 						foreach($va_annotations as $va_annotation){
-							print "<p><a href='#' onclick='<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a> ".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."<br/>";
+							print "<p><a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a> ".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."<br/>";
 							$va_labels = caExtractValuesByUserLocale($va_annotation["labels"]);
 							foreach($va_labels as $vs_label){
 								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";

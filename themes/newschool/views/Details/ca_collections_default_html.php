@@ -19,7 +19,7 @@
 				
 {{{<ifcount code="ca_objects" min="2">
 				<div id="detailRelatedObjects">
-					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => "collection_id:^ca_collections.collection_id"), null, array('dontURLEncodeParameters' => true)); ?></H3>
+					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => "^ca_collections.collection_id"), null, array('dontURLEncodeParameters' => true)); ?></H3>
 					<div class="jcarousel-wrapper">
 						<div id="detailScrollButtonNext"><i class="fa fa-angle-right">&nbsp;</i></div>
 						<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left">&nbsp;</i></div>

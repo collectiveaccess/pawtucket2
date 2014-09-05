@@ -106,6 +106,10 @@ h1 i {
 .smaller {
 	font-size:.7em;
 }
+.rowSmallPadding{
+	margin-right: -6px;
+	margin-left: -6px;
+}
 .smallpadding {
 	padding:6px;
 }
@@ -1756,6 +1760,10 @@ a.readmore-js-toggle{
 	margin:0px;
 	padding:0px;
 	text-transform:none;
+}
+.multisearch H3 a, .multisearch H3 a:hover{
+	text-decoration:none;
+	color:#858585;
 }
 .multisearch .blockResults {
 	height:170px;
