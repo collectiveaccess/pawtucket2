@@ -54,7 +54,6 @@
 ?>
 					<div id="detailTools">						
 						<div class="detailTool detailToolRight"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-						<div id='detailComments' style="float:right; clear:right;">{{{itemComments}}}</div><!-- end itemComments -->
 <?php
 						print "<div class='detailTool'>";
 						if(caObjectsDisplayDownloadLink($this->request) && ($vn_audio_rep_id)){
@@ -63,7 +62,7 @@
 							$vs_download_version = $va_download_display_info['display_version'];
 							print caNavLink($this->request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->get("object_id"), "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")))."&nbsp;&nbsp;&nbsp;&nbsp;";
 						}
-						#print $vs_transcript_link."</div>";
+						print $vs_transcript_link;
 						print "</div>";
 ?>
 					</div>
@@ -98,7 +97,7 @@
 					if(sizeof($va_annotations)){
 						print "<H3>Clips</H3>";
 						foreach($va_annotations as $va_annotation){
-							print "<p><a href='#' onclick='<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a><small>".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."</small><br/>";
+							print "<p><a href='#' onclick='<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a> ".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."<br/>";
 							$va_labels = caExtractValuesByUserLocale($va_annotation["labels"]);
 							foreach($va_labels as $vs_label){
 								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";

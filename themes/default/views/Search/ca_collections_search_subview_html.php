@@ -28,15 +28,15 @@
  
 	$qr_results 		= $this->getVar('result');
 	$va_block_info 		= $this->getVar('blockInfo');
+	$va_options 		= $va_block_info["options"];
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
-	$va_access_values = caGetUserAccessValues($this->request);	$o_config = $this->getVar("config");
-	$o_config = caGetSearchConfig();
-	$o_browse_config = caGetBrowseConfig();
+	$va_access_values = caGetUserAccessValues($this->request);
+	$o_config = caGetSearchConfig();$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
 		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
@@ -69,21 +69,21 @@
 		while($qr_results->nextHit()) {
 			$va_collection_ids[] = $qr_results->get('ca_collections.collection_id');
 		}
-		$qr_results->seek(0);
+		$qr_results->seek($vn_start);
 		
-		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => array('featured')));
+		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php
+			$vs_image_tag = "";
 			if (sizeof($va_images) > 0){
 				$vs_image = $va_images[$qr_results->get('ca_collections.collection_id')];
-				//foreach ($va_images as $vn_image_id => $vs_image) {
-					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
-				//	break;
-				//} 
+				if($vs_image){
+					$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_image}</l>");
+				} 
 			}
 			if(!$vs_image_tag){
 				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
