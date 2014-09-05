@@ -469,9 +469,19 @@
 							});
 					
 							// make fadeIn effect
-							//$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
-								//$(carousel._element.context).find('li').hide().fadeIn(1000);
-							//});
+							$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
+								$(carousel._element.context).find('li').hide().fadeIn(500);
+							}).on('jcarousel:animateend', function(event, carousel) {
+								var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
+								var i = caSlideRepresentationIDs.indexOf(current_rep_id);
+									
+								if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
+									// load media via ajax
+									jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
+									
+									jQuery('#slide' + caSlideRepresentationIDs[i]).load('".caNavUrl($po_request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => ''))."' + caSlideRepresentationIDs[i]);
+								}
+							});
 
 							/* Prev control initialization */
 							$('#detailRepNavPrev')
@@ -501,13 +511,6 @@
 												$('#detailRepresentationThumbnails .".$pa_options["currentRepClass"]."').removeClass('".$pa_options["currentRepClass"]."');
 												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('".$pa_options["currentRepClass"]."');
 												$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('".$pa_options["currentRepClass"]."');
-												
-												if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
-													// load media via ajax
-													var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
-													var i = caSlideRepresentationIDs.indexOf(current_rep_id);
-													jQuery('#slide' + caSlideRepresentationIDs[i]).load('".caNavUrl($po_request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => ''))."' + caSlideRepresentationIDs[i]);
-												}
 											});
 										}
 								});";
