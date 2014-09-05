@@ -439,7 +439,7 @@
 			$va_slide_rep_ids = array();
 			foreach($va_rep_tags as $vn_rep_id => $vs_rep_tag){
 				if(sizeof($va_rep_ids) > 1){
-					$vs_output .= "<li id='slide".$vn_rep_id."' class='".$vn_rep_id."' style='width:400px; height: 400px;'>";
+					$vs_output .= "<li id='slide".$vn_rep_id."' class='".$vn_rep_id."'>";
 				}
 				if ($vn_count == 0) { $vs_output .= $vs_rep_tag; }	// only load first one initially
 				if(sizeof($va_rep_ids) > 1){
@@ -479,7 +479,7 @@
 									// load media via ajax
 									jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
 									
-									jQuery('#slide' + caSlideRepresentationIDs[i]).load('".caNavUrl($po_request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => ''))."' + caSlideRepresentationIDs[i]);
+									jQuery('#slide' + caSlideRepresentationIDs[i]).load('".caNavUrl($po_request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => ''))."' + caSlideRepresentationIDs[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSlideRepresentationIDs[i]);
 								}
 							});
 

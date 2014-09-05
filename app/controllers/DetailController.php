@@ -309,7 +309,12 @@
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
- 			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
+			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+			if ($this->request->getParameter('include_tool_bar', pInteger)) {
+				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id)."</div></div>";
+			}
+
+ 			$this->response->addContent($vs_output);
  		}
 		# -------------------------------------------------------
  		/**
