@@ -48,7 +48,7 @@
 					if($vn_audio_rep_id){
 						$t_rep->load($vn_audio_rep_id);
 						$va_annotations = $t_rep->getAnnotations(array("checkAccess" => $this->getVar("access_values")));
-						print_r($va_annotations);
+						#print_r($va_annotations);
 						print $t_rep->getMediaTag("media", $va_audio_media_display_info["display_version"], $va_audio_media_display_info, array("id" => "caPlayer"));
 					}
 ?>

@@ -135,6 +135,10 @@ class SearchResult extends BaseObject {
 		$this->errors = array();
 	}
 	# ------------------------------------------------------------------
+	public function getDb() {
+		return $this->opo_db;
+	}
+	# ------------------------------------------------------------------
 	public function tableNum() {
 		return $this->opn_table_num;
 	}
@@ -298,7 +302,7 @@ class SearchResult extends BaseObject {
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
 			$vs_criteria_sql .= " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
-		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
+		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $this->opo_subject_instance->hasField('access')) {
 			$vs_criteria_sql .= " AND ({$this->ops_table_name}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
 	
