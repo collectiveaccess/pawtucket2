@@ -1872,12 +1872,13 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 	 *
 	 * @return 
 	 */
-	function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
+	function caGetMediaDisplayInfo($ps_context, $ps_mimetype=null) {
 		$o_config = Configuration::load();
 		$o_media_display_config = Configuration::load(__CA_APP_DIR__.'/conf/media_display.conf');
 		
 		if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
 	
+		if (!$ps_mimetype) { return $va_context; }
 		foreach($va_context as $vs_media_class => $va_media_class_info) {
 			if (!is_array($va_mimetypes = $va_media_class_info['mimetypes'])) { continue; }
 			
@@ -4070,6 +4071,8 @@ $ca_relationship_lookup_parse_cache = array();
  	 * @return string HTML output
  	 */
  	function caRepresentationViewerHTMLBundleForSearchResult($po_data, $po_request, $pa_options=null, $pa_additional_display_options=null) {
+		$ps_version 	= $po_request->getParameter('version', pString);
+		
  		$va_access_values = (isset($pa_options['access']) && is_array($pa_options['access'])) ? $pa_options['access'] : array();	
  		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'media_overlay';	
  		$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
@@ -4080,6 +4083,7 @@ $ca_relationship_lookup_parse_cache = array();
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
  		
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
+ 		
  		
  		$t_object = new ca_objects($vn_object_id);
  		//if (!$t_object->getPrimaryKey()) { return false; }
@@ -4101,16 +4105,11 @@ $ca_relationship_lookup_parse_cache = array();
 		$o_view->setVar('use_media_editor', $vb_media_editor);
 		$o_view->setVar('noControls', $vb_no_controls);
 		
-		if (method_exists($po_data, 'numFiles')) { $o_view->setVar('num_multifiles', $po_data->numFiles()); }
-		
+		$va_rep_display_info = array();
 		if (isset($pa_options['use_book_viewer'])) {
 			$va_rep_display_info['use_book_viewer'] = (bool)$pa_options['use_book_viewer'];
 		}	
-		if (is_array($pa_additional_display_options)) { $va_rep_display_info = array_merge($va_rep_display_info, $pa_additional_display_options); }
-		$o_view->setVar('display_options', $va_rep_display_info);
-		
-		
-		
+			
 		if ($t_object->getPrimaryKey()) { 
 			$o_view->setVar('reps', $va_reps = $t_object->getRepresentations(array('icon'), null, array("return_with_access" => $va_access_values)));
 		}
@@ -4119,14 +4118,21 @@ $ca_relationship_lookup_parse_cache = array();
 				
 		$va_buf = array();
 		while($po_data->nextHit()) {
-		
-			$ps_version 	= $po_request->getParameter('version', pString);
-				
+			if (method_exists($po_data, 'numFiles')) { $o_view->setVar('num_multifiles', $po_data->numFiles()); }
+			
+			
 			$o_view->setVar('t_object_representation', $po_data);
 			if (($vn_representation_id = $po_data->getPrimaryKey()) && ((!sizeof($va_access_values) || in_array($po_data->get('access'), $va_access_values)))) { 		// check rep access
-				$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $po_data->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+				$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $vs_mimetype = $po_data->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 				$va_rep_display_info['poster_frame_url'] = $po_data->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 				
+				
+				$va_additional_display_options = array();
+				if (is_array($pa_additional_display_options) && isset($pa_additional_display_options[$vs_mimetype]) && is_array($pa_additional_display_options[$vs_mimetype])) { 
+					$va_additional_display_options = $pa_additional_display_options[$vs_mimetype];
+				}
+				$o_view->setVar('display_options', caGetMediaDisplayInfo('detail', $vs_mimetype));
+			
 				$o_view->setVar('display_type', $vs_display_type);
 			
 				$o_view->setVar('representation_id', $vn_representation_id);

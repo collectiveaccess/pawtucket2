@@ -42,6 +42,7 @@
     </noscript>
 </div><?php print ($vs_display_type != 'media_overlay') ? '</div>' : ''; ?>
 <script type="text/javascript">
+jQuery(document).ready(function() {
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_object_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',
 		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
@@ -60,5 +61,6 @@
 <?php
 	}
 ?>
-	});
+	}); 
+});
 </script>

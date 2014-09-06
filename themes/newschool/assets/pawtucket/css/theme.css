@@ -345,14 +345,59 @@ font-family: 'itc_franklin_gothicmedium', "franklin-gothic-urw-cond-1","franklin
     right: -10px;
     top: 5px;
 }
+.detail .detailRelObject{
+	padding-bottom:5px;
+}
+.detail .detailRelObject img{
+	width:100%;
+	height:auto;
+}
+.detail .transcript a{
+	color:#828282;
+	text-decoration:none;
+}
+.detail .transcript a i{
+	margin-left:10px;
+}
+.detail .detailMediaToolbar{
+	position:relative;
+	display:block;
+	background-color:#FFFFFF;
+	font-size:15px;
+	padding:0px;
+	margin-bottom:2px;
+}
+.detail #detailRepNav{
+	margin-top:5px;
+	padding:0px;
+	border-top:1px solid #ededed;
+}
+#detailRepresentationThumbnails{
+	padding-top:0px;
+	border-top:1px solid #ededed;
+	clear:both;
+	margin-top:3px;
+}
 .detail #detailTools{
-	padding:0px 5px 0px 5px;
-	margin:10px 0px 0px 0px;
+	padding:5px 0px 10px 0px;
+	margin:0px 0px 0px 0px;
+	border-top:1px solid #ededed;
 }
 .detail .detailToolRight{
 	float:right;
 }
 .detail .detailTool{
+	padding-top:0px;
+	padding-bottom:0px;
+	margin-bottom:0px;
+	margin-top:0px;
+}
+.detail.audio_digital #detailTools{
+	padding:0px 5px 0px 5px;
+	margin:10px 0px 0px 0px;
+	border:0px;
+}
+.detail.audio_digital .detailTool{
 	padding-top:0px;
 	padding-bottom:0px;
 	margin-bottom:0px;

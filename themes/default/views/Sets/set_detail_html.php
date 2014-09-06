@@ -55,9 +55,12 @@ if(is_array($va_views) && sizeof($va_views)){
 	<div class="row">
 		<div class="col-sm-9 col-md-9 col-lg-8">
 <?php
-		print $this->render("Sets/set_detail_{$vs_current_view}_html.php");	
-		?>
-		
+		if(sizeof($va_set_items)){
+			print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
+		}else{
+			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this lightbox")."</div></div>";
+		}
+?>		
 		</div><!-- end col 10 -->
 		<div class="col-sm-3 col-md-2 col-md-offset-1 col-lg-3 col-lg-offset-1 activitycol">
 <?php

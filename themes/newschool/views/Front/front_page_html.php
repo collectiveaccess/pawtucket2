@@ -34,7 +34,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-7">
-			<H1>The New School Digital Archives presents materials drawn from the collections of <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, which holds primary source materials related to the history of all divisions of The New School.</H1> 	
+			<H1>The New School Archives Digital Collections presents images, text, audio and video from <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, home to primary source materials documenting the history of all divisions of The New School.</H1> 	
 		</div><!--end col-sm-7-->
 		<div class="col-sm-1"></div>
 		<div class="col-sm-4">

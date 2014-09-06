@@ -12,14 +12,14 @@
 		</div><!-- end col -->
 		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 			<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-				<H1>{{{<unit>^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1%delimiter=_➔_</unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter=" ➔ "><l>^ca_collections.hierarchy.preferred_labels.name</l></unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
 				<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 				
-				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.type_id, ^ca_collections.idno)</unit>}}}</H2>
+				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.CollectionDate.collectionDates_text)</unit>}}}</H2>
 				
 {{{<ifcount code="ca_objects" min="2">
 				<div id="detailRelatedObjects">
-					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Search', 'Objects', array('search' => 'collection:^ca_collections.idno'), null, array('dontURLEncodeParameters' => true)); ?></H3>
+					<H3>Related Objects <?php print caNavLink($this->request, _t('View all'), '', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => "^ca_collections.collection_id"), null, array('dontURLEncodeParameters' => true)); ?></H3>
 					<div class="jcarousel-wrapper">
 						<div id="detailScrollButtonNext"><i class="fa fa-angle-right">&nbsp;</i></div>
 						<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left">&nbsp;</i></div>
@@ -88,8 +88,8 @@
 					<p><strong>There’s more!</strong> What you see here is only what is viewable online; in most cases it is only a small portion of what is available.
 					Please visit the collection guide to find out more.
 					</p>					{{{<ifdef code="ca_collections.findaid"><H3>Collection Guide</H3><a href="^ca_collections.findaid">Guide to the ^ca_collections.preferred_labels.name</a><br/></ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person</h3></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><h3>Related people</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1" max="1"><h3>Related person/organization</h3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><h3>Related people/organizations</h3></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 					
 					<div id="detailTools">
