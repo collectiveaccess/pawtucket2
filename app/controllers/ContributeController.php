@@ -159,6 +159,9 @@
             // Set content from form
             $va_fields = explode(';', $this->request->getParameter('_formElements', pString));
           	
+          	
+          	$vm_type = $vs_idno = $vn_status = $vn_access = null;
+          	
           	// Assemble content tree
           	$va_content_tree = array();
           	foreach($va_fields as $vs_field) {
@@ -172,75 +175,119 @@
           		if ($vs_subject_table == $vs_table) {	// subject table
           			switch(sizeof($va_fld_bits)) {
           				case 2:
+          				case 3:
           					if ($t_subject->hasField($va_fld_bits[1])) {		// intrinsic
           						$va_content_tree[$vs_subject_table][$va_fld_bits[1]] = $va_vals[0];
+          						
+          						switch($va_fld_bits[1]) {
+          							case 'type_id':
+          								$vm_type = $va_vals[0];
+          								break;
+          							case 'idno':
+          								$vs_idno = $va_vals[0];
+          								break;
+          							case 'status':
+          								$vn_status = (int)$va_vals[0];
+          								break;
+          							case 'access':
+          								$vn_access = (int)$va_vals[0];
+          								break;
+          						}
+          						
           					} elseif ($va_fld_bits[1] == 'preferred_labels') {	// preferred labels
+          						if (!isset($va_fld_bits[2])) { $va_fld_bits[2] = $t_subject->getLabelDisplayField(); }
           						
+          						foreach($va_vals as $vn_i => $vs_val) {
+          							$va_content_tree[$vs_subject_table]['preferred_labels'][$vn_i][$va_fld_bits[2]] = $va_vals[$vn_i]; 
+          						}
           					} elseif ($va_fld_bits[1] == 'nonpreferred_labels') {	// preferred labels
+          						if (!isset($va_fld_bits[2])) { $va_fld_bits[2] = $t_subject->getLabelDisplayField(); }
           						
+          						foreach($va_vals as $vn_i => $vs_val) {
+          							$va_content_tree[$vs_subject_table]['nonpreferred_labels'][$vn_i][$va_fld_bits[2]] = $va_vals[$vn_i]; 
+          						}
           					} elseif ($t_subject->hasElement($va_fld_bits[1])) {
-          						
+          						if (!isset($va_fld_bits[2])) { $va_fld_bits[2] = $va_fld_bits[1]; }
+          						foreach($va_vals as $vn_i => $vs_val) {
+          							$va_content_tree[$vs_subject_table][$va_fld_bits[1]][$vn_i][$va_fld_bits[2]] = $va_vals[$vn_i]; 
+          						}
           					}
           					break;
           			}
           		}
           	}
-          	print_r($va_content_tree); die;
-          	// Insert into record
-          	foreach($va_fields as $vs_field) {
-          		$va_fld_bits = explode(".", $vs_field);
-          		$vs_field_proc = str_replace(".", "_", $vs_field);
-          		if ($va_fld_bits[0] == $vs_table) {
-          			// Field in subject
-          			$va_vals = $this->request->getParameter($vs_field_proc, pArray);
-          			$vs_val = $va_vals[0];
-          			print "val=$vs_val <br>";
-          			switch(sizeof($va_fld_bits)) {
-          				case 2:
-          					if ($t_subject->hasField($va_fld_bits[1])) {		// intrinsic
-          						$t_subject->set($va_fld_bits[1], $vs_val);
-          					} elseif ($va_fld_bits[1] == 'preferred_labels') {	// preferred labels
-          						$t_subject->addLabel(array($t_subject->getLabelDisplayField() => $vs_val), $g_ui_locale_id, null, true);
-          					} elseif ($va_fld_bits[1] == 'nonpreferred_labels') {	// preferred labels
-          						$t_subject->addLabel(array($t_subject->getLabelDisplayField() => $vs_val), $g_ui_locale_id, null, false);
-          					} elseif ($t_subject->hasElement($va_fld_bits[1])) {
-          						$t_subject->addAttribute(array(
-          							$va_fld_bits[1] =>	$this->request->getParameter($va_fld_bits[1], pString),
-          							'locale_id' => $g_ui_locale_id
-          						),	
-          						$va_fld_bits[1]);
-          					}
+          //	print_r($va_content_tree); die;
+          	
+          	// Set type and idno (from config or tree) and insert
+          	// 		Configured values are always used in preference
+            $t_subject->set('type_id', $va_form_info['type'] ? $va_form_info['type'] : $vm_type); 
+            $t_subject->set('idno', $va_form_info['idno'] ? $va_form_info['idno'] : $vs_idno); 
+            $t_subject->set('access', $va_form_info['access'] ? $va_form_info['access'] : $vn_access);
+            $t_subject->set('status', $va_form_info['status'] ? $va_form_info['status'] : $vn_status);
+            
+            // insert
+            $t_subject->insert();
+            
+            if ($t_subject->numErrors()) {
+            	print_R($t_subject->getErrors());
+            }
+          	
+          	// Set other content
+          	foreach($va_content_tree as $vs_table => $va_content_by_table) {
+          		if ($vs_subject_table == $vs_table) {	// subject table
+          			foreach($va_content_by_table as $vs_bundle => $va_data_for_bundle) {
+          				switch($vs_bundle) {
+          					case 'preferred_labels':
+          						foreach($va_data_for_bundle as $va_data) {
+          							$t_subject->addLabel($va_data, $g_ui_locale_id, null, true);
+          							if ($t_subject->numErrors()) {
+										print_R($t_subject->getErrors());
+									}
+          						}
+          						break;
+          					case 'nonpreferred_labels':
+          						foreach($va_data_for_bundle as $va_data) {
+          							$t_subject->addLabel($va_data, $g_ui_locale_id, null, false);
+          							if ($t_subject->numErrors()) {
+										print_R($t_subject->getErrors());
+									}
+          						}
+          						break;
+          					default:
+          						if($t_subject->hasField($vs_bundle) && !in_array($vs_bundle, array('type_id', 'idno', 'access', 'status'))) {
+          							$t_subject->set($vs_bundle, $va_data_for_bundle[0]);
+          						} elseif($t_subject->hasElement($vs_bundle)) {
+          							foreach($va_data_for_bundle as $va_data) {
+										$t_subject->addAttribute(
+											array_merge($va_data, array('locale_id' => $g_ui_locale_id)), 
+											$vs_bundle
+										);
+									}
+          						}
+          						break;
+          				}
+          			}
+          		} else {
+          			// related table
+          			switch($vs_table) {
+          				case 'ca_object_representations':
+          				
           					break;
-          				case 3:
-          					if ($va_fld_bits[1] == 'preferred_labels') {	// preferred labels
-          						$t_subject->addLabel(array($va_fld_bits[2] => $vs_val), $g_ui_locale_id, null, true);
-          					} elseif ($va_fld_bits[1] == 'nonpreferred_labels') {	// preferred labels
-          						$t_subject->addLabel(array($va_fld_bits[2] => $vs_val), $g_ui_locale_id, null, false);
-          					} elseif ($t_subject->hasElement($va_fld_bits[1])) {
-          						//$t_subject->addAttribute(array(
-          						//	$va_fld_bits[2] =>	$this->request->getParameter($va_fld_bits[2], pString),
-          						//	'locale_id' => $g_ui_locale_id
-          						//),	
-          						//$va_fld_bits[1]);	
-          					}
+          				default:
+          					// (noop for now)
           					break;
           			}
           		}
           	}
           	
-          	// Set type from config if specified
-            if ($va_form_info['type']) { $t_subject->set('type_id', $va_form_info['type']); }
-            if ($va_form_info['access']) { $t_subject->set('access', $va_form_info['access']); }
-            if ($va_form_info['status']) { $t_subject->set('status', $va_form_info['status']); }
+          	 $t_subject->update();
             
-            // insert
-            $t_subject->insert();
-            
-            // errors?
-            print_R($t_subject->getErrors());
+            if ($t_subject->numErrors()) {
+            	print_R($t_subject->getErrors());
+            }
             
             // redirect to thank you page
-            
+            print "yay!";
  		}
  		# -------------------------------------------------------
  		/**
