@@ -41,7 +41,9 @@
 					print "<p>".caNavLink($this->request, "<i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
 					print "<p>".$t_object->get('ca_objects.medium')."</p>";
 					print "<p>".$t_object->get('ca_objects.dimensions.display_dimensions')."</p>";
-					print "<p>".$t_object->get('ca_objects.idno')."</p>";				
+					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+						print "<p>".$t_object->get('ca_objects.idno')."</p>";
+					}				
 					print "</div><!-- end lotCaption -->";
 					print "</div>";
 				}

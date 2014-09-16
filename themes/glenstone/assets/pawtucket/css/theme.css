@@ -1260,6 +1260,9 @@ p.artist.lower {
 	left: 0; 
 	top: 0; 
 }
+.lbItem:hover .lbExpandedInfo {
+	background-color:#fff;
+}
 .reveal h3 {
 	text-transform:none;
 	font-family: 'Source Sans Pro';
