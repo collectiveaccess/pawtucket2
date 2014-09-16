@@ -96,13 +96,23 @@
 					}
 					if(sizeof($va_annotations)){
 						print "<H3>Clips</H3>";
+						$t_annotation = new ca_representation_annotations();
 						foreach($va_annotations as $va_annotation){
-							print "<p><a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a> ".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"]."<br/>";
+							$t_annotation->load($va_annotation["annotation_id"]);
 							$va_labels = caExtractValuesByUserLocale($va_annotation["labels"]);
+							print "<p>";
 							foreach($va_labels as $vs_label){
-								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";
+								print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><strong>".$vs_label."</strong></a><br/>";
 							}
-							print "</p>";
+							print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a> ".$va_annotation["startTimecode"]." - ".$va_annotation["endTimecode"];
+							print "<div class='indent'>";
+							if($t_annotation->get("description")){
+								print "<p>".$t_annotation->get("description")."</p>";
+							}
+							if($t_annotation->get("ca_entities.preferred_labels")){
+								print "<strong class='uppercase'>"._t("Related people/organizations")."</strong><br/>".$t_annotation->get("ca_entities.preferred_labels", array("delimiter" => ", ", "returnAsLink" => true));
+							}
+							print "</div></p>";
 						}
 
 					}
