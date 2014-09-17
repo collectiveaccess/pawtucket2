@@ -852,9 +852,10 @@ p.artist.lower {
 .loans .loanImg {
 	max-height: 260px;
 	overflow:hidden;
+	min-width:220px;
 }
 .loans.detail img {
-	width:100%;
+	/*width:100%;*/
 	height:auto;
 }
 .loans.detail .attributeMediaThumbnail img{

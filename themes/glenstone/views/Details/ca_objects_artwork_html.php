@@ -86,7 +86,6 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 					<div class='unit'><i>{{{ca_objects.preferred_labels.name}}}</i>, &nbsp;{{{ca_objects.creation_date}}}</div>
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions ^ca_objects.dimensions.Type</unit></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.dimensions.dimensions_weight"><div class='unit'><unit delimiter="<br/>">Weight: ^ca_objects.dimensions.dimensions_weight</unit></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.edition.edition_number"><div class='unit'>Edition <ifdef code="ca_objects.edition.edition_number">^ca_objects.edition.edition_number / ^ca_objects.edition.edition_total </ifdef><ifdef code="ca_objects.edition.ap_number"><br/>^ca_objects.edition.ap_number / ^ca_objects.edition.other_info  AP</ifdef></div></ifdef>}}}
 <?php
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
@@ -549,7 +548,10 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 					}
 					if ($t_object->get('ca_objects.dated') == "Yes") {
 						print "<div class='unit'><span class='metaTitle'>Dated: </span>Dated</div>";
-					}					
+					}	
+					if ($va_item_weight = $t_object->get('ca_objects.dimensions.dimensions_weight')) {
+						print "<div class='unit'><span class='metaTitle'>Weight: </span>".$va_item_weight."</div>";
+					}									
 ?>
 					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit'><span class='metaTitle'>Inscription: </span><span class='meta'><unit delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
 					{{{<ifcount min="1" code="ca_objects.sticker_label"><div class='unit'><span class='metaTitle'>Label Details </span><span class='meta'><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifcount>}}}
