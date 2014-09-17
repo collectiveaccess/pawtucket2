@@ -191,7 +191,7 @@
  				// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
  				if ($this->request->getParameter("source", pString) === 'multisearch') {
  					$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $ps_function);
- 					if ($ps_sort !== $o_block_result_context->getCurrentSort()) {
+ 					if (($ps_sort !== $o_block_result_context->getCurrentSort()) && $o_block_result_context->getCurrentSort()) {
  						$ps_sort = $o_block_result_context->getCurrentSort();
  						$vb_sort_changed = true;
  					}
