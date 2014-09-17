@@ -51,14 +51,14 @@
 	print $this->render("../header.php");
 	print $this->render("../footer.php");
 ?>
-		<div id='body'>
+		<div id='body fullpage'>
 <?php
 		$vo_result->seek(0);
 		while($vo_result->nextHit()) {
 ?>
 			<div class="representationList">
 <?php		
-			print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '540px', 'scaleCSSHeightTo' => '540px'));
+			print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
 ?>
 			</div>
 			<div class='tombstone'>
@@ -67,11 +67,14 @@
 			print "<div><i>".$vo_result->get('ca_objects.preferred_labels')."</i>, ".$vo_result->get('ca_objects.creation_date')."</div>";
 			print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
 			print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+			if ($vo_result->get('ca_objects.edition.edition_number') || $vo_result->get('ca_objects.edition.ap_number')) {
+				print "<span>Edition </span>";
+			}							
 			if ($vo_result->get('ca_objects.edition.edition_number')) {
-				print "<div>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
+				print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
 			}
 			if ($vo_result->get('ca_objects.edition.ap_number')) {
-				print "<div>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
+				print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
 			}	
 			if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
 				print "<div>".$vo_result->get('ca_objects.idno')."</div>";
