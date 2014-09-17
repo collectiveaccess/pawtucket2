@@ -5989,7 +5989,7 @@ class BaseModel extends BaseObject {
 				return $fieldinfo;
 			}
 		} else {
-			$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()");
+			//$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()");
 			return false;
 		}
 	}
@@ -6090,6 +6090,51 @@ class BaseModel extends BaseObject {
 					'name' => $ps_field,
 					'id' => str_replace(".", "_", $ps_field),
 					'nullOption' => '-',
+					'classname' => (isset($pa_options['class']) ? $pa_options['class'] : ''),
+					'value' => (isset($pa_options['values'][$ps_field]) ? $pa_options['values'][$ps_field] : ''),
+					'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 30, 
+					'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
+					'no_tooltips' => true
+			)));
+		}
+		
+		return null;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	  * Returns HTML form input widget for bundle specified by standard "get" bundle code (eg. <table_name>.<bundle_name> format) suitable
+	  * for use in a simple data entry form, such as the front-end "contribute" user-provided content submission form
+	  *
+	  * This method handles generation of search form widgets for intrinsic fields in the primary table. If this method can't handle 
+	  * the bundle (because it is not an intrinsic field in the primary table...) it will return null.
+	  *
+	  * @param $po_request HTTPRequest
+	  * @param $ps_field string
+	  * @param $pa_options array
+	  * @return string HTML text of form element. Will return null if it is not possible to generate an HTML form widget for the bundle.
+	  * 
+	  */
+	public function htmlFormElementForSimpleForm($po_request, $ps_field, $pa_options=null) {
+		if (!is_array($pa_options)) { $pa_options = array(); }
+		
+		if (isset($pa_options['width'])) {
+			if ($va_dim = caParseFormElementDimension($pa_options['width'])) {
+				if ($va_dim['type'] == 'pixels') {
+					unset($pa_options['width']);
+					$pa_options['maxPixelWidth'] = $va_dim['dimension'];
+				}
+			}
+		}
+		
+		$va_tmp = explode('.', $ps_field);
+		
+		if ($va_tmp[0] != $this->tableName()) { return null; }
+		
+		if ($this->hasField($va_tmp[1])) {
+			if (caGetOption('asArrayElement', $pa_options, false)) { $ps_field .= "[]"; } 
+			return $this->htmlFormElement($va_tmp[1], '^ELEMENT', array_merge($pa_options, array(
+					'name' => $ps_field,
+					'id' => str_replace(".", "_", $ps_field),
 					'classname' => (isset($pa_options['class']) ? $pa_options['class'] : ''),
 					'value' => (isset($pa_options['values'][$ps_field]) ? $pa_options['values'][$ps_field] : ''),
 					'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 30, 

@@ -1276,6 +1276,45 @@
 			}
 			return parent::htmlFormElementForSearch($po_request, $ps_field, $pa_options);
 		}
+		# --------------------------------------------------------------------------------------------
+		/**
+		  * Returns HTML form input widget for bundle specified by standard "get" bundle code (eg. <table_name>.<bundle_name> format) suitable
+		  * for use in a simple data entry form, such as the front-end "contribute" user-provided content submission form
+		  * 
+		  * This method handles generation of form widgets for all metadata elements bound to the primary table. If this method can't handle 
+		  * the bundle (because it is not a metadata element bound to the primary table...) it will pass the request to the superclass implementation of 
+		  * htmlFormElementForSimpleForm()
+		  *
+		  * @param $po_request HTTPRequest
+		  * @param $ps_field string
+		  * @param $pa_options array
+		  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
+		  * 
+		  */
+		public function htmlFormElementForSimpleForm($po_request, $ps_field, $pa_options=null) {
+			if(!$pa_options) { $pa_options = array(); }
+			$va_tmp = explode('.', $ps_field);
+			
+			if ($va_tmp[1] == $this->getTypeFieldName()) {
+				return $this->getTypeListAsHTMLFormElement(null, null, $pa_options);
+			}
+			
+			if ($va_tmp[0] != $this->tableName()) { return null; }
+			if (!$this->hasField($va_tmp[1])) {
+				$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
+				
+				$vs_fld = array_pop($va_tmp);
+				return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
+							'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
+							'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
+							'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
+							'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
+							'format' => '^ELEMENT',
+							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
+						)));
+			}
+			return parent::htmlFormElementForSimpleForm($po_request, $ps_field, array_merge($pa_options, array('view' => caGetOption('view', $pa_options, 'ca_simple_form_attributes.php'))));
+		}
 		# ------------------------------------------------------------------
 		/**
 		  * Get HTML form element bundle for metadata element
@@ -1524,12 +1563,6 @@
 			}
 			$pa_options['format'] = $vs_format;
 			
-			//if ((sizeof($va_element_set) > 1) && isset($pa_options['width']) && ($pa_options['width'] > 0)) {
-			//	if (($pa_options['width'] = ceil($pa_options['width']/sizeof($va_element_set))) < 20) { 
-			//		$pa_options['width'] = 20;
-			//	}
-			//}
-			
 			foreach($va_element_set as $va_element) {
 				$va_override_options = array();
 				if ($va_element['datatype'] == 0) {		// containers are not active form elements
@@ -1568,6 +1601,13 @@
 				// ... replace name of form element
 				$vs_fld_name = $vs_subelement_code; //str_replace('.', '_', $vs_subelement_code);
 				if (caGetOption('asArrayElement', $pa_options, false)) { $vs_fld_name .= "[]"; } 
+				
+				// escape any special characters in jQuery selectors
+				$vs_form_element = str_replace(
+					"jQuery('#{fieldNamePrefix}".$va_element['element_id']."_{n}')", 
+					"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $vs_fld_name)."')", 
+					$vs_form_element
+				);
 				$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
 				
 				$vs_form_element = str_replace('{n}', '', $vs_form_element);
@@ -1590,7 +1630,7 @@
 			$o_view->setVar('element_ids', $va_element_ids);
 			$o_view->setVar('element_set_label', $this->getAttributeLabel($t_element->get('element_id')));
 			
-			return $o_view->render('ca_search_form_attributes.php');
+			return $o_view->render(caGetOption('view', $pa_options, 'ca_search_form_attributes.php'));
 		}
 		# ------------------------------------------------------------------
 		public function getReferencedAttributeValues($pm_element_code_or_id, $pa_reference_limit_ids) {

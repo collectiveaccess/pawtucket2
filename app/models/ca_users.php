@@ -1291,7 +1291,7 @@ class ca_users extends BaseModel {
 		if ($vb_got_group) {
 			$o_db = $this->getDb();
 			$qr_res = $o_db->query("
-				SELECT link_id 
+				SELECT relation_id 
 				FROM ca_users_x_groups
 				WHERE
 					(user_id = ?) AND
