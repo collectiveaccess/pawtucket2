@@ -4,7 +4,7 @@
 monthList = [january, february, march, april, may, june, july, august, september, october, november, december]
 
 # *** the following list of months is for display and *SHOULD* be capitalized where appropriate
-monthListDisplay = [January, February, March, April, May, June, July, August, September, October, November, December]
+monthListDisplay = [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sept, Oct, Nov, Dec]
 
 # Hash table mapping acceptable month names to the display names defined in 'monthList'
 monthTable = {
@@ -90,7 +90,7 @@ ordinalSuffixDefault = th
 
 # in delimited dates (ex. 12/10/2009) is the first number a month or a day?
 # set to "0" for European style dates (day comes first); "1" for American-style dates (month comes first)
-monthComesFirstInDelimitedDate = 1
+monthComesFirstInDelimitedDate = 0
 
 # character(s) to append to day in full (not delimited) date
 # eg. in the date "1. February 2009", "." is the daySuffix

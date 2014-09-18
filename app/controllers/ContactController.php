@@ -46,11 +46,11 @@
  			caSetPageCSSClasses(array("contact"));
  		}
  		# -------------------------------------------------------
- 		function form() {
+ 		public function Form() {
 			$this->render("Contact/form_html.php");
  		}
  		# ------------------------------------------------------
- 		function send() {
+ 		public function Send() {
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){
@@ -109,6 +109,4 @@
  			}
  		}
  		# -------------------------------------------------------
-
  	}
- ?>

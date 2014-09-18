@@ -349,6 +349,32 @@
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
+							$t_group = new ca_user_groups($pn_group_id);
+							$va_group_users = $t_group->getGroupUsers();
+							if(sizeof($va_group_users)){
+								# --- send email to each group user
+								# --- send email confirmation
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								$o_view->setVar("set", $t_set->getLabelForDisplay());
+								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+							
+							
+								# -- generate email subject line from template
+								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+								
+								# -- generate mail text from template - get both the text and the html versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+							
+								foreach($va_group_users as $va_user_info){
+									# --- don't send notification to self
+									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
+										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+									}
+								}
+							}							
+							
+							
 							$this->view->setVar("message", _t('Shared lightbox with group'));
 							$this->render("Form/reload_html.php");
 						}
@@ -377,6 +403,7 @@
 									$this->shareSetForm();
 								}else{
 									$va_success_emails[] = $vs_user;
+									$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
 								}
 							}
 						}else{
@@ -400,6 +427,25 @@
 					}else{
 						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
 						$this->render("Form/reload_html.php");
+					}
+					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
+						# --- send email to user
+						# --- send email confirmation
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$o_view->setVar("set", $t_set->getLabelForDisplay());
+						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+					
+					
+						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+						
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+					
+						foreach($va_success_emails as $vs_email){
+							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						}
 					}
 				}
 			}else{

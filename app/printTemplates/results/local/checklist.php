@@ -65,7 +65,7 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_tag = $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '120px', 'scaleCSSHeightTo' => '120px'))) {
+					if ($vs_tag = $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '80px', 'scaleCSSHeightTo' => '80px'))) {
 						print "<div class=\"imageTiny\">{$vs_tag}</div>";
 					} else {
 ?>
@@ -79,14 +79,17 @@
 					<div class="metaBlock">
 <?php
 					print "<div class='title'>".$vo_result->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('artist')))."</div>"; 				
-					print "<div class='title'><i>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</i>, ".$vo_result->getWithTemplate('^ca_objects.creation_date')."</div>"; 
+					print "<div><i>".$vo_result->get('ca_objects.preferred_labels.name')."</i>, ".$vo_result->getWithTemplate('^ca_objects.creation_date')."</div>"; 
 					print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
 					print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+					if ($vo_result->get('ca_objects.edition.edition_number') || $vo_result->get('ca_objects.edition.ap_number')) {
+						print "<span>Edition </span>";
+					}
 					if ($vo_result->get('ca_objects.edition.edition_number')) {
-						print "<div>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
+						print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
 					}
 					if ($vo_result->get('ca_objects.edition.ap_number')) {
-						print "<div>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
+						print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
 					}
 					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
 						print "<div>".$vo_result->get('ca_objects.idno')."</div>"; 

@@ -29,7 +29,7 @@
 		if($va_errors["user"]){
 			print "<div class='alert alert-danger'>".$va_errors["user"]."</div>\n";
 		}
-		print "<div class='form-group".(($va_errors["user"]) ? " has-error" : "")."'><label for='user' class='col-sm-4 control-label'>"._t("OR enter a user")."</label><div class='col-sm-7'><input type='text' name='user' class='form-control'><small>"._t("email address or multiple addresses separated by comma")."</small></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["user"]) ? " has-error" : "")."'><label for='user' class='col-sm-4 control-label'>".((is_array($va_user_groups) && sizeof($va_user_groups)) ? _t("OR enter a user") : _t("Enter a user"))."</label><div class='col-sm-7'><input type='text' name='user' class='form-control'><small>"._t("email address or multiple addresses separated by comma")."</small></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		if($va_errors["access"]){
 			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>\n";
 		}

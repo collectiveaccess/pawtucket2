@@ -2067,6 +2067,70 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		return parent::htmlFormElementForSearch($po_request, $ps_field, $pa_options);
 	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	  * Returns HTML form input widget for bundle specified by standard "get" bundle code (eg. <table_name>.<bundle_name> format) suitable
+	  * for use in a simple data entry form, such as the front-end "contribute" user-provided content submission form
+	  *
+	  * This method handles generation of search form widgets for (1) related tables (eg. ca_places),  preferred and non-preferred labels for both the 
+	  * primary and related tables, and all other types of elements for related tables. If this method can't handle the bundle it will pass the request to the 
+	  * superclass implementation of htmlFormElementForSearch()
+	  *
+	  * @param $po_request HTTPRequest
+	  * @param $ps_field string
+	  * @param $pa_options array
+	  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
+	  * 
+	  */
+	public function htmlFormElementForSimpleForm($po_request, $ps_field, $pa_options=null) {
+		$vb_as_array_element = (bool)caGetOption('asArrayElement', $pa_options, false);
+		$va_tmp = explode('.', $ps_field);
+		
+		switch(sizeof($va_tmp)) {
+			# -------------------------------------
+			case 1:		// table_name
+				if ($va_tmp[0] != $this->tableName()) {
+					if (!is_array($pa_options)) { $pa_options = array(); }
+					if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+					if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
+					if (!isset($pa_options['values'][$ps_field])) { $pa_options['values'][$ps_field] = ''; }
+				
+					return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
+				}
+				break;
+			# -------------------------------------
+			case 2:		// table_name.field_name
+			case 3:		// table_name.field_name.sub_element	
+				if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
+				
+				switch($va_tmp[1]) {
+					# --------------------
+					case 'preferred_labels':		
+					case 'nonpreferred_labels':
+						return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
+						break;
+					# --------------------
+					default:
+						if ($va_tmp[0] != $this->tableName()) {
+							switch(sizeof($va_tmp)) {
+								case 1:
+									return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
+								case 2:
+								case 3:
+									return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
+									break;
+							}
+						}
+						break;
+					# --------------------
+				}	
+					
+				break;
+			# -------------------------------------
+		}
+		
+		return parent::htmlFormElementForSimpleForm($po_request, $ps_field, $pa_options);
+	}
  	# ------------------------------------------------------
  	/**
  	 * Returns a list of HTML fragments implementing all bundles in an HTML form for the specified screen

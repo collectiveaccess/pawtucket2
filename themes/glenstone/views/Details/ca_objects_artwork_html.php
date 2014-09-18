@@ -261,8 +261,9 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 										}
 									}
 								}
+								print "</span><div class='clearfix'></div></div>";
+
 							}
-							print "</span><div class='clearfix'></div></div>";
 						}
 						if ($va_bill_check = $t_object->get('ca_object_lots.bill_upload.bill_upload_primary', array('returnAsArray' => true))){
 							$va_bill_primary = false;
@@ -291,8 +292,9 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 										}
 									}
 								}
+								print "</span><div class='clearfix'></div></div>";
 							}
-							print "</span><div class='clearfix'></div></div>";
+							
 						}														
 #						if ($t_object->get('ca_objects.appraisal.appraisal_value')) {
 #							$va_appraisal = $t_object->get('ca_objects.appraisal', array('returnAsArray' => true)); 
