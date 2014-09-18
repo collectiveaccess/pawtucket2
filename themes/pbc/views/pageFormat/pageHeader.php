@@ -57,7 +57,7 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pbc_logo.jpg'), "navbar-brand", "", "","");
-				print "<span class='banner'>Pakistan Broadcasting Corporation</span>";  
+				print "<span class='banner'>Radio Pakistan</span>";  
 				print "<hr>";
 ?>
 			</div>
@@ -102,7 +102,7 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right main-nav">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
