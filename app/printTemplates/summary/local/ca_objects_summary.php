@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Summary
+ * @name Full page
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
@@ -67,11 +67,14 @@
 	print "<div><i>".$t_item->get('ca_objects.preferred_labels')."</i>, ".$t_item->get('ca_objects.creation_date')."</div>";
 	print "<div>".$t_item->get('ca_objects.medium')."</div>"; 	
 	print "<div>".$t_item->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+	if ($t_item->get('ca_objects.edition.edition_number') || $t_item->get('ca_objects.edition.ap_number')) {
+		print "<span>Edition </span>";
+	}
 	if ($t_item->get('ca_objects.edition.edition_number')) {
-		print "<div>".$t_item->get('ca_objects.edition.edition_number')." / ".$t_item->get('ca_objects.edition.edition_total')."</div>"; 	
+		print "<div style='display:inline;'>".$t_item->get('ca_objects.edition.edition_number')." / ".$t_item->get('ca_objects.edition.edition_total')."</div>"; 	
 	}
 	if ($t_item->get('ca_objects.edition.ap_number')) {
-		print "<div>".$t_item->get('ca_objects.edition.ap_number')." / ".$t_item->get('ca_objects.edition.ap_total')."</div>"; 	
+		print "<div style='display:inline;'>".$t_item->get('ca_objects.edition.ap_number')." / ".$t_item->get('ca_objects.edition.ap_total')."</div>"; 	
 	}	
 	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
 		print "<div>".$t_item->get('ca_objects.idno')."</div>"; 

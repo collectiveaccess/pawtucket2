@@ -12,7 +12,7 @@
 		</div><!-- end col -->
 		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 			<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter=" ➔ "><l>^ca_collections.hierarchy.preferred_labels.name</l></unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
+				<H1>{{{<unit relativeTo="ca_collections" delimiter=" ➔ ">^ca_collections.hierarchy.preferred_labels.name%returnAsLink=1</unit>}}} {{{<unit>^ca_collections.CollectionDate.collectionDates_text</unit>}}}</H1>
 				<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 				
 				<H2>{{{<unit delimiter='<br/>' relativeTo="ca_collections.children"><l>^ca_collections.preferred_labels.name </l> (^ca_collections.CollectionDate.collectionDates_text)</unit>}}}</H2>

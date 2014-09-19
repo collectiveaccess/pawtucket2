@@ -47,7 +47,9 @@ h2{
 	left:0;}
 .nopaddingRight{position:absolute;
 	right:0;}
-
+.indent{
+	padding-left:10px;
+}
 a:link, a:visited, a:active {
 	color:#665E4C;
 }
