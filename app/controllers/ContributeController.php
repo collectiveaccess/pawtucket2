@@ -40,11 +40,17 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+ 			
+            $this->config = caGetContributeFormConfig();
+            if (!$this->config->get('enabled')) { 
+            	$this->notification->addNotification(_t('Contribute form is not enabled'), __NOTIFICATION_TYPE_ERROR__);
+				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
+				return;
             }
             
-            $this->config = caGetContributeFormConfig();
+            if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
             
  			caSetPageCSSClasses(array("contribute"));
  		}
@@ -531,7 +537,7 @@
 				switch($va_form_info['post_submission_destination']) {
 					case 'url':
 						if (!is_array($va_form_info['post_submission_destination_url']) || !sizeof($va_form_info['post_submission_destination_url']) || !isset($va_form_info['post_submission_destination_url']['controller'])) {
-							$this->notification->addNotification(_t('No destination url configured for form %1', $ps_function));
+							$this->notification->addNotification(_t('No destination url configured for form %1', $ps_function), __NOTIFICATION_TYPE_ERROR__);
 							$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
 							break;
 						}
@@ -540,7 +546,7 @@
 						break;
 					case 'page':
 						if (!isset($va_form_info['post_submission_view']) || !$va_form_info['post_submission_view']) {
-							$this->notification->addNotification(_t('No destination view configured for form %1', $ps_function));
+							$this->notification->addNotification(_t('No destination view configured for form %1', $ps_function), __NOTIFICATION_TYPE_ERROR__);
 							$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
 							break;
 						}
