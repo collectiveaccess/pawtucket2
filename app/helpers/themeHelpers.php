@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/helpers/configurationHelpers.php : utility functions for setting database-stored configuration values
+ * app/helpers/themeHelpers.php : utility functions for setting database-stored configuration values
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -989,4 +989,3 @@
 		return $vs_set_list;
 	}
 	# ---------------------------------------
-?>
