@@ -100,6 +100,8 @@
 			if ($t_element->get('parent_id') > 0) { return false; }
 			$vn_element_id = $t_element->getPrimaryKey();
 			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$t_element->get('element_code'); }
+			
 			// check restriction min/max settings
 			$t_restriction = $t_element->getTypeRestrictionInstanceForElement($this->tableNum(), $this->getTypeID());
 			if (!$t_restriction) { return null; }		// attribute not bound to this type
@@ -132,7 +134,7 @@
 			$this->opa_attributes_to_add[] = array(
 				'values' => $pa_values,
 				'element' => $pm_element_code_or_id,
-				'error_source' => $ps_error_source.'/'.sizeof($this->opa_attributes_to_add),
+				'error_source' => $ps_error_source,
 				'options' => $pa_options
 			);
 			$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_element_id] = true;
@@ -196,6 +198,8 @@
 				}
 			}
 			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$this->_getElementCode($pm_element_code_or_id); }
+			
 			if (isset($this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id]) && $this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id]) {
 				$this->opa_attributes_to_edit[] = array(
 					'values' => $pa_values,
@@ -254,6 +258,8 @@
 			$t_attr->purify($this->purify());
 			if (!$t_attr->getPrimaryKey()) { return false; }
 			$vn_element_id = (int)$t_attr->get('element_id');
+			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$this->_getElementCode($vn_element_id); }
 			
 			$vn_add_cnt = 0;
 			if (isset($pa_extra_info['pending_adds']) && is_array($pa_extra_info['pending_adds'])) {
@@ -1263,8 +1269,7 @@
 				if (!$this->hasField($va_tmp[1])) {
 					$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
 					
-					$vs_fld = array_pop($va_tmp);
-					return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
+					return $this->htmlFormElementForAttributeSearch($po_request, $va_tmp[1], array_merge($pa_options, array(
 								'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
 								'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
 								'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
@@ -1275,6 +1280,46 @@
 				}
 			}
 			return parent::htmlFormElementForSearch($po_request, $ps_field, $pa_options);
+		}
+		# --------------------------------------------------------------------------------------------
+		/**
+		  * Returns HTML form input widget for bundle specified by standard "get" bundle code (eg. <table_name>.<bundle_name> format) suitable
+		  * for use in a simple data entry form, such as the front-end "contribute" user-provided content submission form
+		  * 
+		  * This method handles generation of form widgets for all metadata elements bound to the primary table. If this method can't handle 
+		  * the bundle (because it is not a metadata element bound to the primary table...) it will pass the request to the superclass implementation of 
+		  * htmlFormElementForSimpleForm()
+		  *
+		  * @param $po_request HTTPRequest
+		  * @param $ps_field string
+		  * @param $pa_options array
+		  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
+		  * 
+		  */
+		public function htmlFormElementForSimpleForm($po_request, $ps_field, $pa_options=null) {
+			if(!$pa_options) { $pa_options = array(); }
+			$va_tmp = explode('.', $ps_field);
+			
+			if ($va_tmp[1] == $this->getTypeFieldName()) {
+				return $this->getTypeListAsHTMLFormElement(null, null, $pa_options);
+			}
+			
+			if ($va_tmp[0] != $this->tableName()) { return null; }
+			if (!$this->hasField($va_tmp[1])) {
+				$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
+				
+				$vs_fld = array_pop($va_tmp);
+				return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
+							'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
+							'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
+							'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
+							'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
+							'format' => '^ELEMENT',
+							'forSimpleForm' => true,
+							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
+						)));
+			}
+			return parent::htmlFormElementForSimpleForm($po_request, $ps_field, array_merge($pa_options, array('view' => caGetOption('view', $pa_options, 'ca_simple_form_attributes.php'))));
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1516,19 +1561,12 @@
 			$va_element_codes = array();
 			$va_elements_by_container = array();
 			
-			
 			if (sizeof($va_element_set) > 1) {
 				$vs_format = isset($pa_options['multivalueFormat']) ? $pa_options['multivalueFormat'] : null;
 			} else {
 				$vs_format = isset($pa_options['format']) ? $pa_options['format'] : null;
 			}
 			$pa_options['format'] = $vs_format;
-			
-			//if ((sizeof($va_element_set) > 1) && isset($pa_options['width']) && ($pa_options['width'] > 0)) {
-			//	if (($pa_options['width'] = ceil($pa_options['width']/sizeof($va_element_set))) < 20) { 
-			//		$pa_options['width'] = 20;
-			//	}
-			//}
 			
 			foreach($va_element_set as $va_element) {
 				$va_override_options = array();
@@ -1541,6 +1579,7 @@
 				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
 				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
+
 				$va_element_opts = array_merge(array(
 					'label' => $va_label['name'],
 					'description' => $va_label['description'],
@@ -1552,6 +1591,10 @@
 					'forSearch' => true,
 					'render' => (isset($va_element['settings']['render']) && ($va_element['settings']['render'] == 'lookup')) ? $va_element['settings']['render'] : isset($pa_options['render']) ? $pa_options['render'] : 'select'
 				), array_merge($pa_options, $va_override_options));
+				
+				if (caGetOption('forSimpleForm', $pa_options, false)) { 
+					unset($va_element_opts['nullOption']);
+				}
 				
 				// We don't want to pass the entire set of values to ca_attributes::attributeHtmlFormElement() since it'll treat it as a simple list
 				// of values for an individual element and the 'values' array is actually set to values for *all* elements in the form
@@ -1568,6 +1611,13 @@
 				// ... replace name of form element
 				$vs_fld_name = $vs_subelement_code; //str_replace('.', '_', $vs_subelement_code);
 				if (caGetOption('asArrayElement', $pa_options, false)) { $vs_fld_name .= "[]"; } 
+				
+				// escape any special characters in jQuery selectors
+				$vs_form_element = str_replace(
+					"jQuery('#{fieldNamePrefix}".$va_element['element_id']."_{n}')", 
+					"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $vs_fld_name)."')", 
+					$vs_form_element
+				);
 				$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
 				
 				$vs_form_element = str_replace('{n}', '', $vs_form_element);
@@ -1590,7 +1640,7 @@
 			$o_view->setVar('element_ids', $va_element_ids);
 			$o_view->setVar('element_set_label', $this->getAttributeLabel($t_element->get('element_id')));
 			
-			return $o_view->render('ca_search_form_attributes.php');
+			return $o_view->render(caGetOption('view', $pa_options, 'ca_search_form_attributes.php'));
 		}
 		# ------------------------------------------------------------------
 		public function getReferencedAttributeValues($pm_element_code_or_id, $pa_reference_limit_ids) {
@@ -1939,7 +1989,7 @@
 					return null; 
 				}
 			}
-			if (!($t_element = $this->_getElementInstance($pm_element_code_or_id))) { return null; }
+			if (!$pm_element_code_or_id || !($t_element = $this->_getElementInstance($pm_element_code_or_id))) { return null; }
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 			
@@ -1963,7 +2013,7 @@
 				foreach($va_tmp as $vn_id => $va_value_list) {
 					foreach($va_value_list as $va_value) {
 						foreach($va_value as $vs_element_code => $vs_value) {
-							if (is_array($vs_value) || strlen($vs_value)) { 
+							if (strlen($vs_value)) { 
 								$va_attribute_list[] = $vs_value;
 							}
 						}

@@ -33,8 +33,10 @@
 				$va_related_artworks = $t_item->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true));
 				foreach ($va_related_artworks as $vn_id => $va_related_artwork) {
 					$t_object = new ca_objects($va_related_artwork);
+
 					$va_reps = $t_object->getPrimaryRepresentation(array('versions' => 'medium'), null, array("checkAccess" => $va_access_values, 'scaleCSSHeightTo' => '260px', 'scaleCSSWidthTo' => '220px'));
 					print "<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6 relatedLoan'>"; 
+
 					print "<div class='loanImg'>".caNavLink($this->request, $va_reps['tags']['medium'], '', '', 'Detail', 'artworks/'.$va_related_artwork)."</div>";
 					print "<div class='lotCaption'>";
 					print "<p>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";

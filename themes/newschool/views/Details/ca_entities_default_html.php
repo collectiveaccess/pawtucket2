@@ -76,7 +76,7 @@
 			<div class="row">
 				
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_entities.notes"><H3>About</H3>^ca_entities.notes<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.EntityDescription.description_note"><H3>About</H3>^ca_entities.EntityDescription.description_note<br/></ifdef>}}}
 					
 					
 					{{{<ifcount code="ca_entities.related" min="1" max="1"><h3>Related person</h3></ifcount>}}}

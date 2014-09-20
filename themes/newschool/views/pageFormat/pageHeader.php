@@ -9,7 +9,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
+	<title><?php print ($vs_page_title = MetaTagManager::getWindowTitle()) ? $vs_page_title : "New School Archives : Digital Collections"; ?></title>
 	
 	<!--NS design-->
 	<script type="text/javascript" src="//use.typekit.net/cvi0qyc.js"></script>
@@ -31,10 +31,18 @@
   ga('send', 'pageview');
 
 	</script>
-
+<?php
+	//
+	// Pull in JS and CSS for debug bar
+	// 
+	if(Debug::isEnabled()) {
+		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
+		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
+		print $o_debugbar_renderer->renderHead();
+	}
+?>
 <meta name="google-site-verification" content="j2ZduLZYPPtHe6G-r_BPBVE7XG97dTZMFfqrDKoUrns" />
 <meta name="description" content="Historical images, text, audio and video from The New School including Parsons, Mannes, The New School for Social Research, and Eugene Lang College."/>
-<meta name="keywords" content="TNS Archives, TNS History, The New School, New School for Social Research, Parsons, Eugene Lang College, Mannes, Parsons history, Mannes history, fashion design history, interior design history, fashion design education, interior design education, Chase School, New York School of Fine and Applied Art"/>
 
 </head>
 <body>
@@ -46,10 +54,10 @@
 
 
 	<div class="row">
-		<div class="nslogotypesub col-sm-10"><span class="newschool">The New School </span><span class="kellen"><a href="/"> The New School Archives: Digital Collections</a></span></div>
+		<div class="nslogotypesub col-sm-10"><span class="newschool">The New School Archives</span><span class="kellen"><a href="/"> Digital Collections</a></span></div>
 		<div class="col-sm-2 infonav">
 			<ul class="nav navbar-nav navbar-right">
-				<li <?php print ($this->request->getController() == "About") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-info-sign'></span>", "", "", "About", "Index"); ?></li>
+				<li <?php print ($this->request->getController() == "About") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-info-sign'></span>", "", "", "About", "Index", null, array("title" => "For more information")); ?></li>
 				<li <?php print ($this->request->getController() == "Contact") ? "class='active'" : ""; ?>><?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span>", "", "", "Contact", "Form"); ?></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
@@ -95,7 +103,7 @@
 				<ul class="nav navbar-nav">
 					<li>Browse by:</li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>
-					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Items"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "organizations")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Organizations"), "", "", "Browse", "organizations"); ?></li>			  
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Gallery", "Index"); ?></li>

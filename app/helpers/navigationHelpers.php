@@ -292,6 +292,7 @@
 	 * 	disableUnsavedChangesWarning = if true, unsaved change warnings (when user tries to navigate away from the form before saving) are disabled. [Default is false]
 	 *	noTimestamp = if true no form timestamp (used to determine if other users have made changes while the form is being displayed) is included. [Default is false]
 	 *	disableSubmit = don't allow form to be submitted. [Default is false]
+	 *	submitOnReturn = submit form if user hits return in any form element. [Default is false]
 	 */
 	function caFormTag($po_request, $ps_action, $ps_id, $ps_module_and_controller_path=null, $ps_method='post', $ps_enctype='multipart/form-data', $ps_target='_top', $pa_options=null) {
 		if ($ps_target) {

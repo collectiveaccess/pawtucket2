@@ -2,8 +2,8 @@ Errors occurred when trying to access <code><?php print $this->getVar('referrer'
 
 <ul>
 <?php
-	foreach($this->getVar("error_messages") as $va_notification) {
-		print "<li>{$va_notification['message']}</li>\n";
+	foreach($this->getVar("error_messages") as $vs_error) {
+		print "<li>{$vs_error}</li>\n";
 	}
 ?>
 </ul>
