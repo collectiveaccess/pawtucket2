@@ -969,7 +969,7 @@
 	 * class -> class name of <ul>
 	 * 
 	 */
-	function caGetGallerySetsAsList($po_request, $vs_class){
+	function caGetGallerySetsAsList($po_request, $vs_class, $pa_options=null){
 		$o_config = caGetGalleryConfig();
 		$va_access_values = caGetUserAccessValues($po_request);
  		$t_list = new ca_lists();
@@ -978,10 +978,17 @@
 		if($vn_gallery_set_type_id){
 			$t_set = new ca_sets();
 			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+			
+			$vn_limit = caGetOption('limit', $pa_options, 100);
 			if(sizeof($va_sets)){
 				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").">\n";
+				
+				$vn_c = 0;
 				foreach($va_sets as $vn_set_id => $va_set){
 					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+					$vn_c++;
+					
+					if ($vn_c >= $vn_limit) { break; }
 				}
 				$vs_set_list .= "</ul>\n";
 			}
