@@ -92,6 +92,7 @@
  				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
  			} else {
 				$va_views['pdf'] = array();
+				$va_views['timelineData'] = array();
 			}
 			
  			if(!in_array($ps_view, array_keys($va_views))) {
@@ -298,8 +299,8 @@
 				
 			$this->opo_result_context->saveContext();
  			
- 			if ($vn_type_id) {
- 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 			if ($ps_type) {
+ 				if ($this->render("Browse/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
  			switch($ps_view) {
