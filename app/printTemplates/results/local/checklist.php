@@ -51,6 +51,7 @@
 	print $this->render("../header.php");
 	print $this->render("../footer.php");
 ?>
+		<div class="criteria"><?php print $this->getVar('title'); ?></div>
 		<div id='body'>
 <?php
 
