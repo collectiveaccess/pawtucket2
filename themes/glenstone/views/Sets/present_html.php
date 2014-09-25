@@ -35,10 +35,11 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 <?php
-
 	foreach($va_items as $vn_i => $va_item) {
+	$t_object = new ca_objects($va_item['row_id']);
 ?>
 		<section>
+			<h3><?php print $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))); ?></h3>
 			<h3><?php print "<i>".$va_item['name']."</i>"; ?></h3>
 			<p><?php print $va_item['representation_tag_mediumlarge']; ?></p>
 			<h3><?php print $va_item['idno']; ?></h3>

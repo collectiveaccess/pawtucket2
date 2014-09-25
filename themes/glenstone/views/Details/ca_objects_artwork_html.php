@@ -202,7 +202,7 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 						#	print "<div class='unit'><span class='metaTitle'>Current Insurance <br/>Value: </span><span class='meta'><br/>".$va_insurance."</span></div>";
 						#}	
 						if ($t_object->get('ca_objects.insurance_valuation.insurance_value_price')) {
-							$va_appraisal = $t_object->get('ca_objects.insurance_valuation', array('returnAsArray' => true, 'convertCodesToDisplayText' => true)); 
+							$va_appraisal = $t_object->get('ca_objects.insurance_valuation', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'sort' => 'ca_objects.insurance_valuation.insurance_valuation_date')); 
 							print "<div class='unit'><span class='metaTitle'>Current Insurance Value: </span><span class='meta'>";
 							$va_appraisal_rev = array_reverse($va_appraisal);
 							foreach ($va_appraisal_rev as $ar_key => $va_appraisal_r) {

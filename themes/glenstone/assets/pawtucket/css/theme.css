@@ -1232,6 +1232,10 @@ p.artist.lower {
 	font-size:12px;
 	font-family: 'Source Sans Pro', sans-serif;
 }
+.setCount {
+	font-size:14px;
+	color:#666;
+}
 .lbSet, .lbItem {
 	-webkit-box-shadow: none;
 	box-shadow: none;

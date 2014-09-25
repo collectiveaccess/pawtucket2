@@ -21,6 +21,7 @@ if(is_array($va_views) && sizeof($va_views)){
 </div>	
 <H1>
 	<?php print $t_set->getLabelForDisplay(); ?>
+	<?php print "<span class='setCount'>(".$t_set->getItemCount()." items)</span>"; ?>
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
