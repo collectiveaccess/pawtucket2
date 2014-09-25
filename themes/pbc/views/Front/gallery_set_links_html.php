@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/ca/IDNumbering/IDNumbering.php : wrapper for configured IDNumbering plugins
+ * themes/default/Front/front_page_html : Front page of site 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2014 Whirl-i-Gig
+ * Copyright 2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,32 +24,13 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage BaseModel
+ * @subpackage Core
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
-  
-	require_once(__CA_LIB_DIR__."/core/Configuration.php");
-	
-	class IDNumbering {
-		# -------------------------------------------------------
-		/**
-		 *
-		 */
-		static public function newIDNumberer($ps_format, $pm_type='__default__', $ps_value=null, $po_db=null, $po_config=null) {
-			$o_config = $po_config ? $po_config : Configuration::load();
-			$vs_classname = $o_config->get("{$ps_format}_id_numbering_plugin");
-			if (!file_exists(__CA_LIB_DIR__."/ca/IDNumbering/{$vs_classname}.php")) { return null; }
-			
-			require_once(__CA_LIB_DIR__."/ca/IDNumbering/{$vs_classname}.php");
-			
-			if (!is_array($pm_type)) { $pm_type = array($pm_type); }
-			return new $vs_classname($ps_format, $pm_type, $ps_value, $po_db);
-		}
-		# -------------------------------------------------------
-	}
+?>
+			<div class='featuredLinks'>Featured Items</div>
+<?php
+			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+?>
