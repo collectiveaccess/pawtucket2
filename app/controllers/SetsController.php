@@ -34,8 +34,9 @@
  	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
+ 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  
- 	class SetsController extends ActionController {
+ 	class SetsController extends FindController {
  		# -------------------------------------------------------
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
@@ -78,7 +79,7 @@
  			AssetLoadManager::register("mediaViewer");
 
  			$ps_view = $this->request->getParameter('view', pString);
- 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData'))) {
+ 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData', 'pdf'))) {
  				$ps_view = 'thumbnail';
  			}
  			$this->view->setVar('view', $ps_view);
@@ -92,12 +93,16 @@
  			$this->view->setVar("comments", $va_comments);
  			
  			$o_context = new ResultContext($this->request, 'ca_objects', 'sets');
- 			$o_context->setResultList($t_set->getItems(array('idsOnly' => true)));
+ 			$o_context->setResultList($va_set_ids = $t_set->getItems(array('idsOnly' => true)));
  			$o_context->saveContext();
  			$o_context->setAsLastFind();
  			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
+ 				case 'pdf':
+ 					$qr_res = caMakeSearchResult('ca_objects', $va_set_ids);
+ 					$this->view->setVar('result', $qr_res);
+ 					$this->_genExport($qr_res, '_pdf_checklist', $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Sets/set_detail_timelineData_json.php");
@@ -344,6 +349,32 @@
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
+							$t_group = new ca_user_groups($pn_group_id);
+							$va_group_users = $t_group->getGroupUsers();
+							if(sizeof($va_group_users)){
+								# --- send email to each group user
+								# --- send email confirmation
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								$o_view->setVar("set", $t_set->getLabelForDisplay());
+								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+							
+							
+								# -- generate email subject line from template
+								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+								
+								# -- generate mail text from template - get both the text and the html versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+							
+								foreach($va_group_users as $va_user_info){
+									# --- don't send notification to self
+									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
+										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+									}
+								}
+							}							
+							
+							
 							$this->view->setVar("message", _t('Shared lightbox with group'));
 							$this->render("Form/reload_html.php");
 						}
@@ -372,6 +403,7 @@
 									$this->shareSetForm();
 								}else{
 									$va_success_emails[] = $vs_user;
+									$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
 								}
 							}
 						}else{
@@ -395,6 +427,25 @@
 					}else{
 						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
 						$this->render("Form/reload_html.php");
+					}
+					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
+						# --- send email to user
+						# --- send email confirmation
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$o_view->setVar("set", $t_set->getLabelForDisplay());
+						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+					
+					
+						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+						
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+					
+						foreach($va_success_emails as $vs_email){
+							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						}
 					}
 				}
 			}else{
@@ -755,78 +806,6 @@
 				$this->render("Form/reload_html.php");
  			}
  		}
- 		# ----------------------------------------------------------
-		# --- Export --- Generate  export file of current set items
-		# ----------------------------------------------------------
-		public function export() {
-			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { 
- 				$this->notification->addNotification(_t("You must select a set to export"), __NOTIFICATION_TYPE_INFO__);
-				$this->Index();
- 			}
- 			set_time_limit(7200);
- 			$ps_output_type = $this->request->getParameter('output_type', pString);
- 			$this->view->setVar('t_set', $t_set);
- 			
- 			if($this->request->config->get("dont_enforce_access_settings")){
- 				$va_access_values = array();
- 			}else{
- 				$va_access_values = caGetUserAccessValues($this->request);
- 			}
- 			$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('thumbnail', 'icon'), 'checkAccess' => $va_access_values, 'user_id' => $this->request->getUserID())));
- 			$this->view->setVar('items', $va_items);
-			$vs_output_filename = $t_set->getLabelForDisplay();
-			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
-
-			switch($ps_output_type) {
-				case '_pdf':
-				default:
-					require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
-					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename);
-					header("Content-Disposition: attachment; filename=export_results.pdf");
-					header("Content-type: application/pdf");
-					$vs_content = $this->render('Sets/exportTemplates/ca_objects_sets_pdf_html.php');
-					$o_pdf = new DOMPDF();
-					// Page sizes: 'letter', 'legal', 'A4'
-					// Orientation:  'portrait' or 'landscape'
-					$o_pdf->set_paper("letter", "portrait");
-					$o_pdf->load_html($vs_content, 'utf-8');
-					$o_pdf->render();
-					$o_pdf->stream($vs_output_file_name.".pdf");
-					return;
-					break;
-				case '_csv':
-					$vs_delimiter = ",";
-					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_csv');
-					$vs_file_extension = 'txt';
-					$vs_mimetype = "text/plain";
-					break;
-				case '_tab':
-					$vs_delimiter = "\t";	
-					$vs_output_file_name = preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename.'_tab');
-					$vs_file_extension = 'txt';
-					$vs_mimetype = "text/plain";	
-					break;
-			}
-
-			header("Content-Disposition: attachment; filename=export_".$vs_output_file_name.".".$vs_file_extension);
-			header("Content-type: ".$vs_mimetype);
-			
-			$va_rows = array();
-			# --- headings
-			$va_row[] = _t("Media");
-			$va_row[] = _t("ID");
-			$va_row[] = _t("Label");
-			$va_rows[] = join($vs_delimiter, $va_row);
-			foreach($va_items as $va_item){
-				$va_row = array();
-				$va_row[] = $va_item["representation_url_thumbnail"];
-				$va_row[] = $va_item["idno"];
-				$va_row[] = $va_item["name"];
-				$va_rows[] = join($vs_delimiter, $va_row);
-			}
-			$this->opo_response->addContent(join("\n", $va_rows), 'view');		
-		}
 		# ------------------------------------------------------
 		/**
 		 *

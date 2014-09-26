@@ -51,7 +51,7 @@
 	print $this->render("../header.php");
 	print $this->render("../footer.php");
 ?>
-		<div id='body'>
+		<div id='body fullpage'>
 <?php
 		$vo_result->seek(0);
 		while($vo_result->nextHit()) {
@@ -66,20 +66,30 @@
 			print "<div>".$vo_result->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."</div>";
 			print "<div><i>".$vo_result->get('ca_objects.preferred_labels')."</i>, ".$vo_result->get('ca_objects.creation_date')."</div>";
 			print "<div>".$vo_result->get('ca_objects.medium')."</div>"; 	
-			print "<div>".$vo_result->get('ca_objects.dimensionsdisplay_dimensions')."</div>"; 				
+			print "<div>".$vo_result->get('ca_objects.dimensions.display_dimensions')."</div>"; 				
+			if ($vo_result->get('ca_objects.edition.edition_number') || $vo_result->get('ca_objects.edition.ap_number')) {
+				print "<span>Edition </span>";
+			}							
 			if ($vo_result->get('ca_objects.edition.edition_number')) {
-				print "<div>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
+				print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.edition_number')." / ".$vo_result->get('ca_objects.edition.edition_total')."</div>"; 	
 			}
 			if ($vo_result->get('ca_objects.edition.ap_number')) {
-				print "<div>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
+				print "<div style='display:inline;'>".$vo_result->get('ca_objects.edition.ap_number')." / ".$vo_result->get('ca_objects.edition.ap_total')."</div>"; 	
 			}	
-			if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
-				print "<div>".$vo_result->get('ca_objects.idno')."</div>"; 
+			if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+				print "<div>".$vo_result->get('ca_objects.idno')."</div>";
+				if ($vo_result->get('is_deaccessioned') && ($vo_result->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+					print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $vo_result->get('deaccession_date'))."</div>\n";
+				}	 
 			}
 ?>	
 			</div>
+<?php
+			if (!$vo_result->isLastHit()) {
+?>
 			<div class="pageBreak">&nbsp;</div>
 <?php
+			}
 		}
 ?>			
 		</div>

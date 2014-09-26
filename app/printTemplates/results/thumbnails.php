@@ -50,7 +50,7 @@
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
-	print $this->render("../footer.php");
+	print $this->render("footer.php");
 ?>
 		<div id='body'>
 <?php

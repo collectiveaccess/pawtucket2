@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
@@ -80,7 +79,6 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				print caPrintStackTrace();
  				die("Invalid browse type $ps_function");
  			}
  			$vs_class = $va_browse_info['table'];
@@ -104,6 +102,7 @@
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
 			} else {
 				$va_views['pdf'] = array();
+				$va_views['timelineData'] = array();
 			}
 			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
@@ -111,7 +110,6 @@
 
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
- 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
@@ -187,8 +185,18 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
+			$o_block_result_context = null;
  			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
- 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
+ 				// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
+ 				if ($this->request->getParameter("source", pString) === 'multisearch') {
+ 					$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $ps_function);
+ 					if (($ps_sort !== $o_block_result_context->getCurrentSort()) && $o_block_result_context->getCurrentSort()) {
+ 						$ps_sort = $o_block_result_context->getCurrentSort();
+ 						$vb_sort_changed = true;
+ 					}
+ 				}
+ 				
+ 				if (!$ps_sort && !($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
  						$vb_sort_changed = true;
@@ -272,6 +280,7 @@
 					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
 				}
 			}
+			
 			$this->view->setVar('criteria', $va_criteria_for_display);
 		
 			// 
@@ -296,6 +305,7 @@
 			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();
@@ -304,9 +314,10 @@
  				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
+			//print_R($o_browse->getCriteria());die;
  			switch($ps_view) {
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -431,7 +442,7 @@
 				}
  			}
  			
- 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true)));
+ 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
  			$this->view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
  			$this->render($va_search_info['view']);
@@ -454,5 +465,22 @@
 			return $va_ret;
  		}
  		# -------------------------------------------------------
+ 		/**
+ 		 * Returns summary of current browse parameters suitable for display.
+ 		 *
+ 		 * @return string Summary of current browse criteria ready for display
+ 		 */
+ 		public function getCriteriaForDisplay($po_browse) {
+ 			$va_criteria = $po_browse->getCriteriaWithLabels();
+ 			if (!sizeof($va_criteria)) { return ''; }
+ 			$va_criteria_info = $po_browse->getInfoForFacets();
+ 			
+ 			$va_buf = array();
+ 			foreach($va_criteria as $vs_facet => $va_vals) {
+ 				$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+ 			}
+ 			
+ 			return join(" / ", $va_buf);
+  		}
+ 		# -------------------------------------------------------
 	}
- ?>

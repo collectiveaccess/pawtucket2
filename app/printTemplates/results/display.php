@@ -45,7 +45,7 @@
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
-	print $this->render("../footer.php");
+	print $this->render("footer.php");
 ?>
 		<div id='body'>
 			<table class="listtable" width="100%" border="0" cellpadding="0" cellspacing="0">

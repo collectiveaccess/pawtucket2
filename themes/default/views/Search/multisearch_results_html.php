@@ -24,7 +24,7 @@
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
 			<a name='<?php print $vs_block; ?>'></a>
-			<div id="<?php print $vs_block; ?>Block" >
+			<div id="<?php print $vs_block; ?>Block" class='resultBlock'>
 				<?php print $va_results[$vs_block]['html']; ?>
 			</div>
 <?php
@@ -32,4 +32,10 @@
 	} else {
 		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
 	}
+?>
+<?php
+	
+	
+	
+	TooltipManager::add('#Block', 'Type of record');
 ?>

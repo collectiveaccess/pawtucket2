@@ -106,6 +106,10 @@ h1 i {
 .smaller {
 	font-size:.7em;
 }
+.rowSmallPadding{
+	margin-right: -6px;
+	margin-left: -6px;
+}
 .smallpadding {
 	padding:6px;
 }
@@ -638,7 +642,7 @@ a.browseRemoveFacet img {
 	}
 }
 
-#caFormOverlay .glyphicon{
+#caFormOverlay .glyphicon-remove-circle{
 	position:absolute;
 	top:10px;
 	right:10px;
@@ -1223,7 +1227,7 @@ a.browseRemoveFacet img {
 }
 
 #detailRepresentationThumbnails{
-	padding-top:20px;
+	padding-top:0px;
 }	
 
 .detail .repViewerCont {
@@ -1406,7 +1410,7 @@ a.browseRemoveFacet img {
 #detailRepresentationThumbnails a img{
 	border: 1px solid #dddddd;
     height: auto;
-    margin: 10px 0;
+    margin: 0px 0;
     padding: 5px;
     width: 100%;
 }
@@ -1757,6 +1761,10 @@ a.readmore-js-toggle{
 	padding:0px;
 	text-transform:none;
 }
+.multisearch H3 a, .multisearch H3 a:hover{
+	text-decoration:none;
+	color:#858585;
+}
 .multisearch .blockResults {
 	height:170px;
 	margin-bottom:15px;
@@ -1821,13 +1829,13 @@ a.readmore-js-toggle{
 	height: 170px;	/* Needs to be some height */
 }
 
-.multisearch #objectsBlock, .multisearch #entitiesBlock, .multisearch #placesBlock, .multisearch #occurrencesBlock, .multisearch #collectionsBlock {
+.multisearch .resultBlock {
 	width:100%;
 	overflow-y:hidden;
 	position:relative;
 }
 
-.multisearch #objectsResults, .multisearch #entitiesResults, .multisearch #placesResults, .multisearch #occurrencesResults, .multisearch #collectionsResults {
+.multisearch .multiSearchResults {
 	overflow-x:scroll;
 	overflow-y:hidden;
 	width:100%;
@@ -1858,7 +1866,7 @@ a.readmore-js-toggle{
 .multisearch .scrollButtonNext.inactive, .multisearch .scrollButtonPrevious.inactive{
 	display:none;
 }
-.multisearch .objectsResult, .multisearch .collectionsResult  {
+.multisearch .multisearchResult {
 	float:left;
 	width:150px;
 	height:145px;
@@ -1871,18 +1879,15 @@ a.readmore-js-toggle{
 	font-size:11px;
 	overflow:hidden;
 }
-.multisearch .objectsResult a, .multisearch .collectionsResult a  {
+.multisearch .multisearchResult a  {
 	color:#454545;
 }
-.multisearch .objectsResult img, .multisearch .collectionsResult img {
+.multisearch .multisearchResult img {
 	width:100%;
 	height:auto;
 	margin-bottom:5px;
 }
-
-
-
-.multisearch .entitiesSet, .multisearch .placesSet, .multisearch .occurrencesSet {
+.multisearch .authoritySet {
 	float:left;
 	width:250px;
 	height:170px;
@@ -1891,18 +1896,19 @@ a.readmore-js-toggle{
 	padding-top:10px;
 }
 
-.multisearch .entitiesSet a, .multisearch .placesSet a, .multisearch .occurrencesSet a {
+.multisearch .authoritySet a {
 	font-size:12px;
 	color:#454545;
 }
-.multisearch .placesResult, .multisearch .occurrencesResult, .multisearch .entitiesResult {
+.multisearch .authorityResult{
 	margin-bottom:5px;
 	height:45px;
 	line-height:1.1em;
 	background-color:#f5f5f5;
 	padding:5px 10px 5px 10px;
+	overflow:hidden;
 }
-.multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
+.multisearch .authorityResult:hover{
 	background-color:#ebebeb;
 }
 
@@ -2466,6 +2472,14 @@ div.advancedSearchField {
 	font-weight:bold;
 }
 
+
+/* tooltips */
+.ui-tooltip {
+	padding: 10px;
+	min-width: 120px;
+	max-width: 300px;
+	min-height: 50px;
+}
 
 /* ----------------- print specific styles ----------------------*/
 /* --- This overrides boostrap styles --- */

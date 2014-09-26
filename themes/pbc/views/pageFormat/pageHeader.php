@@ -57,6 +57,8 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pbc_logo.jpg'), "navbar-brand", "", "","");
+				print "<span class='banner'>Radio Pakistan</span>";  
+				print "<hr>";
 ?>
 			</div>
 
@@ -95,12 +97,12 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="" name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right main-nav">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
@@ -111,5 +113,5 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container">
+	<div class="container" style='padding:0px;'>
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

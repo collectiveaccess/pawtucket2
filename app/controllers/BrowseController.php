@@ -92,6 +92,7 @@
  				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
  			} else {
 				$va_views['pdf'] = array();
+				$va_views['timelineData'] = array();
 			}
 			
  			if(!in_array($ps_view, array_keys($va_views))) {
@@ -100,7 +101,6 @@
  			
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
 
- 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
@@ -298,13 +298,13 @@
 				
 			$this->opo_result_context->saveContext();
  			
- 			if ($vn_type_id) {
- 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 			if ($ps_type) {
+ 				if ($this->render("Browse/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
  			switch($ps_view) {
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -345,6 +345,23 @@
  			$this->view->setVar("browse_name", $va_browse_info["displayName"]);
 			$this->render("pageFormat/browseMenuFacets.php");
  		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns summary of current browse parameters suitable for display.
+ 		 *
+ 		 * @return string Summary of current browse criteria ready for display
+ 		 */
+ 		public function getCriteriaForDisplay($po_browse) {
+ 			$va_criteria = $po_browse->getCriteriaWithLabels();
+ 			if (!sizeof($va_criteria)) { return ''; }
+ 			$va_criteria_info = $po_browse->getInfoForFacets();
+ 			
+ 			$va_buf = array();
+ 			foreach($va_criteria as $vs_facet => $va_vals) {
+ 				$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+ 			}
+ 			
+ 			return join(" / ", $va_buf);
+  		}
  		# -------------------------------------------------------
 	}
- ?>

@@ -21,15 +21,19 @@ img.headerImg {width:185px;height:21px;}
 .imgThumb {width:194px; height:170px;}
 .caption {font-size:11px; color:#333; display:block; text-align:left; padding-left:10px;}
 
-.row { font: "Sans Light"; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
+.criteria { font: "Sans Light"; font-size:9px; font-style: italic; color:#333; font-size:11px; color:#333; position: absolute; bottom: 0px; right: 0px; }
+
+.row { font: "Sans Light"; font-size: 10px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
 .imageTinyPlaceholder { width: 120px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .displayHeader {border-bottom:1px solid #666; color:#333; font-weight:bold; font-family: "Sans Light";}
 .displayValue {}
 .title {font-weight:bold; }
+.title.artwork {font-style:italic;}
 .metadata {line-height:1.1em;}
-.metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px;}
-.tombstone {font: "Sans Light"; font-size: 11px; }
+.metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px; font-size:10px;}
+.tombstone {font: "Sans Light"; font-size: 10px; margin-top:20px; margin-left:40px;}
+.representationList {text-align:center; height:530px}
 
 .pageBreak { page-break-before: always; }
 .clear { clear: both; line-height: 5px; }

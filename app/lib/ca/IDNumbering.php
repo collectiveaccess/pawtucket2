@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2012 Whirl-i-Gig
+ * Copyright 2007-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,8 +38,11 @@
 	
 	class IDNumbering {
 		# -------------------------------------------------------
-		static public function newIDNumberer($ps_format, $pm_type='__default__', $ps_value=null, $po_db=null) {
-			$o_config = Configuration::load();
+		/**
+		 *
+		 */
+		static public function newIDNumberer($ps_format, $pm_type='__default__', $ps_value=null, $po_db=null, $po_config=null) {
+			$o_config = $po_config ? $po_config : Configuration::load();
 			$vs_classname = $o_config->get("{$ps_format}_id_numbering_plugin");
 			if (!file_exists(__CA_LIB_DIR__."/ca/IDNumbering/{$vs_classname}.php")) { return null; }
 			
@@ -50,4 +53,3 @@
 		}
 		# -------------------------------------------------------
 	}
-?>

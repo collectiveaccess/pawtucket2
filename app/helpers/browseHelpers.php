@@ -223,7 +223,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		}
 		$o_browse = caGetBrowseInstance($va_browse_info["table"]);
 		if ($vs_key) { $o_browse->reload($vs_key); }
-		$o_browse->execute();
+		$o_browse->execute(array('checkAccess' => caGetUserAccessValues($po_request), 'showAllForNoCriteriaBrowse' => true));
 	
 		$va_facets = $o_browse->getInfoForAvailableFacets();
 		
