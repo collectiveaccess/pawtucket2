@@ -31,42 +31,42 @@
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 				  <ul class="dropdown-menu">
-					<li><a href="../?q=content/hours-admission">Visit</a></li>
-					<li><a href="../?q=content/history">History</a></li>
-					<li><a href="../?q=content/get-involved">Get Involved</a></li>
-					<li><a href="../?q=content/rentals">Rentals</a></li>
-					<li><a href="../?q=content/press-room">Press Room</a></li>
-					<li><a href="../?q=content/staff-board-directors">Staff + Board of Directors</a></li>
+					<li><a href="/content/hours-admission">Visit</a></li>
+					<li><a href="/content/history">History</a></li>
+					<li><a href="/content/get-involved">Get Involved</a></li>
+					<li><a href="/content/rentals">Rentals</a></li>
+					<li><a href="/content/press-room">Press Room</a></li>
+					<li><a href="/content/staff-board-directors">Staff + Board of Directors</a></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Art</a>
 				  <ul class="dropdown-menu">
-				  	<li><a href="../?q=exhibitions">Exhibitions</a></li>
+				  	<li><a href="/exhibitions">Exhibitions</a></li>
 				  	<li><?php print caNavLink($this->request, _t('Artists'), '', 'Browse', 'Artists', ''); ?></li>
 					<li><a href="#">Artist Limited Editions</a></li>
-					<li><?php print caNavLink($this->request, _t('Search All Art'), '', '', '', ''); ?></li>
+					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Search All Art</a></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learn</a>
 				  <ul class="dropdown-menu">
-				  	<li><a href="../?q=content/kids-families">Kids + Families</a></li>
-					<li><a href="../?q=content/schools-teachers">Schools + Teachers</a></li>
-					<li><a href="../?q=content/community">Community</a></li>
-					<li><a href="../?q=content/public-programs">Public Programs</a></li>
-					<li><a href="../?q=content/space-im">The Space I'm In</a></li>
+				  	<li><a href="/content/kids-families">Kids + Families</a></li>
+					<li><a href="/content/schools-teachers">Schools + Teachers</a></li>
+					<li><a href="/content/community">Community</a></li>
+					<li><a href="/content/public-programs">Public Programs</a></li>
+					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'objects', array()); ?>">Toolkit</a></li>
 				  </ul>
 				</li>
 				<li class="dropdown">
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Support</a>
 				  <ul class="dropdown-menu">
-					<li><a href="../?q=content/donate">Donate</a></li>
-					<li><a href="../?q=node/13">Membership</a></li>
-					<li><a href="../?q=content/sponsorship">Sponsorship</a></li>
-					<li><a href="../?q=content/annual-fund">Annual Fund</a></li>
-					<li><a href="../?q=content/our-partners">Our Partners</a></li>
-					<li><a href="../?q=content/urban-garden-party">Urban Garden Party</a></li>                
+					<li><a href="/content/donate">Donate</a></li>
+					<li><a href="/node/13">Membership</a></li>
+					<li><a href="/node/individual-giving">Individual Giving</a></li>
+					<li><a href="/node/government-foundation">Government + Foundation</a></li>
+					<li><a href="/content/sponsorship">Sponsorship</a></li>
+					<li><a href="/content/urban-garden-party">Urban Garden Party</a></li>                
 				  </ul>
 				</li>
 				<li class="dropdown">
@@ -80,7 +80,7 @@
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
-					<li><a href="#">p{ART}icipate</a></li>  
+					<li><?php print caNavLink($this->request, _t('p{ART}icipate'), '', '', 'Contribute', 'artworks'); ?></li>  
 				  </ul>
 				</li>            
 			  </ul>
