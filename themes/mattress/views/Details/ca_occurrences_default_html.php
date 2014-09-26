@@ -107,9 +107,9 @@
 		if (($vs_collection = $t_item->get('ca_occurrences.description', array('convertCodesToDisplayText' => true, 'template' => '^description_text'))) != "") {
 			print "<div class='description'>";
 			if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')){
-				print "<div class='metatitle'>"._t('Description');
+				print "<div class='metatitle'>"._t('Description')."</div>";
 			}
-			print "</div>".$vs_collection."</div>";
+			print $vs_collection."</div>";
 		}
 		if (($vs_statement = $t_item->get('ca_occurrences.statement.statement_text', array('template' => '^statement_text'))) != "") {
 			print "<div class='description'><div class='metatitle'>"._t('Artist Statement')."</div>".$vs_statement."</div>";
