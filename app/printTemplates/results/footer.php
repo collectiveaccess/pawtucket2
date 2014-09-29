@@ -36,12 +36,12 @@
 	$vo_result 				= $this->getVar('result');
 	$vn_num_items			= (int)$vo_result->numHits();
 	
-	if($this->request->config->get('report_header_enabled')) {
+	//if($this->request->config->get('report_footer_enabled')) {
 ?>
 <div id='footer'>
 <?php
 	if($this->request->config->get('report_show_search_term')) {
-		print "<span class='footerText'>".$this->getVar('criteria_summary_truncated')."</span>";
+		print "<span class='footerText'>".$this->getVar('criteria_summary')."</span>";
 	}
 	
 	if($this->request->config->get('report_show_number_results')) {
@@ -54,5 +54,5 @@
 ?>
 </div>
 <?php
-	}
+	//}
 ?>
