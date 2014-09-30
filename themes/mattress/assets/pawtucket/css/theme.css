@@ -142,11 +142,13 @@ h3 {
 	padding:7px;
 	border-radius: 0px;
 	opacity: .94;
+	padding-right:60px;
 }
 .navbar li.dropdown ul li a{
 	color: #fff;
 	font-weight: normal;
 	font-size: 14px;
+	line-height:1em;
 }
 .navbar li.dropdown ul li a:hover{
 	color:#fff;
@@ -173,6 +175,7 @@ h3 {
 	top:65px;
 	background-color:transparent;
 }
+
 .nav > li > a:focus {
 	font-size:17px;
 	font-family: "ProximaNovaRegular";
@@ -458,7 +461,7 @@ h2 span.artist {
 	margin-left:20px;
 	float:right;
 }
-.mediaThumbs .rep, .mediaThumbs .lessonrep {
+.mediaThumbs .rep, .mediaThumbs .lessonrep, .mediaThumbs .smallrep {
 	height:80px;
 	width: 120px;
 	overflow:hidden;
@@ -826,6 +829,16 @@ div.caMediaOverlayControls a {
 	line-height:16px;
 	color:#000;
 	font-size:14px;
+}
+#detail.occurrences .eventSet {
+	width:400px;
+	float:left;
+	padding-right:10px;
+	padding-bottom:0px;
+	height:240px;
+}
+#detail.occurrences #occurrencesBlock .blockResults {
+	height: auto;
 }
 .exDate {
 	color: #EE3E43;
@@ -1389,3 +1402,49 @@ a.downloadButton{
 	margin:10px 0px 10px 0px;
 }
 
+/* Contribute Form */
+
+#contentArea.contribute {
+	margin-left: 10px;
+	background-color: #e6e7e9;
+	border-top: solid #fff 35px;
+	padding-bottom: 40px;
+	min-height: 600px;
+	margin-bottom: 20px;
+	float:none;
+}
+.contributeForm {
+	width: 595px;
+	float: right;
+}
+.contributeForm h1{
+	padding-left:0px;
+	color:#EE3E43;
+	text-transform:none;
+}
+.caContributeFormReset, .caContributeFormSubmit {
+	background-color:#EE3E43;
+	color:#fff;
+	padding:5px;
+	border-radius:4px;
+	text-transform:uppercase;
+}
+.caContributeFormReset {
+	margin-right:100px;
+}
+.contributeForm .searchFormLineModeElementSubLabel {
+	font-weight:bold;
+	font-size:10px;
+}
+.contributeForm .contributeField {
+	padding:10px 0px 10px 0px;
+}
+.contributeForm .contributeField input[type="file"]{
+	padding:5px 0px 10px 0px;
+}
+.contributeForm .contributeField .title{
+	font-weight:bold;
+	font-size:13px;
+	padding-bottom:3px;
+	display:inline-block;
+}

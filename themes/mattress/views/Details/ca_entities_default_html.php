@@ -163,29 +163,12 @@
 					foreach ($va_events as $occurrence_id => $va_event) {
 						$vn_occurrence_id = $va_event['occurrence_id'];
 						$t_occurrence = new ca_occurrences($vn_occurrence_id);
-						$va_artworks = $t_occurrence->get('ca_collections.collection_id', array('returnAsArray' => true));
-					
-					
-						print "<div class='occurrencesResult'>";
-						$vn_i = 0;
-						$vn_ii = 0;
-						foreach ($va_artworks as $key => $vn_artwork_id) {
-							$t_collection = new ca_collections($vn_artwork_id);
-							$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
-							$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
-						
+						$va_objects = $t_occurrence->get('ca_objects.object_id', array('returnAsArray' => true));
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_objects, array('versions' => array('resultthumb'), 'return' => array('tags')));
 
-							if ($va_object_reps){
-								foreach ($va_object_reps as $img_key => $va_object_rep) {
-									if($vn_i < 4) {
-										if ($vn_ii % 2 == 0){$vs_style = "style='margin-right:10px;'";} else {$vs_style = "";}
-										print "<div class='exImage' {$vs_style}>".$va_object_rep."</div>";
-										$vn_i++;
-										$vn_ii++;
-									}
-								}
-							}
-						}
+					
+						print "<div class='occurrencesResult'>";	
+						print "<div class='exImage' {$vs_style}>".$va_object_reps[0]."</div>";
 						print "<div class='exTitle'>".caNavLink($this->request, $va_event['name'], '', '', 'Detail', 'Occurrences/'.$va_event['occurrence_id'])."</div>";
 						print "<div class='exDate'>".$t_occurrence->get('ca_occurrences.event_dates')."</div>";	
 						print "</div><!-- end occurrenceResult -->";

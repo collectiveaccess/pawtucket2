@@ -52,11 +52,14 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$va_browse_info = $this->getVar("browseInfo");
 	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
+	$o_config = $this->getVar("config");
+	$vs_result_col_class = $o_config->get('result_col_class');
+	$vs_refine_col_class = $o_config->get('refine_col_class');
 	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='col-sm-8 col-md-8 col-lg-8'>
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 		<?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -160,7 +163,7 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 	</div><!-- end col-8 -->
-	<div class="col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1">
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
 <?php
 		foreach($va_views as $vs_view => $va_view_info) {

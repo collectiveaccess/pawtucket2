@@ -38,7 +38,7 @@
 		<span class='pageTitle'>Toolkit</span>
 <?php	
 		print "<p class='toolkit'>".caNavLink($this->request, 'Toolkit', '', '', 'Listing', 'objects')."</p>";
-		print "<p>Share</p>";
+		print "<p><a href='https://mattressfactory.wufoo.com/forms/q1tmkojs1kuw0re/' target='_blank'>Share</a></p>"; 
 ?>		
 	</div>
 	<div id="contentArea" class="rightCol listing">
@@ -53,9 +53,11 @@
 			$va_subjects = array();
 			$va_theme = array();
 			print "<div class='lessonInfo'>";
-			print "<div class='lessonImage'>".$qr_list->get('ca_object_representations.media.exsingle')."</div>";
+
+			$va_object_id = $qr_list->get('ca_objects.object_id');
+			print "<div class='lessonImage'>".caNavLink($this->request, $qr_list->get('ca_object_representations.media.exsingle'), '', '', 'Detail','objects/'.$va_object_id)."</div>";
 			print "<div class='lessonText'>";
-			print "<h3>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h3>\n";
+			print "<h3>".$qr_list->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</h3>\n";
 			print "<div class='artist'>".$qr_list->get('ca_entities.preferred_labels.displayname', array('restrictToRelationshipTypes' => array('subject'), 'delimiter' => ', '))."</div>\n";
 			if ($qr_list->get('ca_objects.lesson_subject', array('convertCodesToDisplayText' => true))) {
 				$va_tags = $qr_list->get('ca_objects.lesson_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
