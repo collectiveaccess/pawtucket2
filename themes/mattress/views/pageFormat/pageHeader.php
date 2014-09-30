@@ -13,7 +13,7 @@
 	<div id="headerWrapper">
 		<div id="hpLogo">
 	<?php	
-		print caNavLink($this->request, caGetThemeGraphic($this->request, 'MF_logo.jpg', array('width' => '150px', 'height' => '112px')), '', '', '','');
+		print '<a href="/">'.caGetThemeGraphic($this->request, 'MF_logo.jpg', array('width' => '150px', 'height' => '112px'))."</a>";
 		
 	?>	
 		</div>
@@ -96,6 +96,5 @@
 		  </div>
 		</div>
 	 
-		<div class="artYou">art you can get into</div>
 		<div class="clearfix"></div>
 	</div><!--/headerWrapper -->

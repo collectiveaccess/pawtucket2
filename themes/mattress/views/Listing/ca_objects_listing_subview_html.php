@@ -38,7 +38,7 @@
 		<span class='pageTitle'>Toolkit</span>
 <?php	
 		print "<p class='toolkit'>".caNavLink($this->request, 'Toolkit', '', '', 'Listing', 'objects')."</p>";
-		print "<p>".caNavLink($this->request, _t('Share'), '', '', 'Contribute', 'artworks')."</p>";
+		print "<p><a href='https://mattressfactory.wufoo.com/forms/q1tmkojs1kuw0re/' target='_blank'>Share</a></p>"; 
 ?>		
 	</div>
 	<div id="contentArea" class="rightCol listing">
