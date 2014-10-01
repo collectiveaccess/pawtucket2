@@ -53,6 +53,7 @@
 			$va_subjects = array();
 			$va_theme = array();
 			print "<div class='lessonInfo'>";
+
 			$va_object_id = $qr_list->get('ca_objects.object_id');
 			print "<div class='lessonImage'>".caNavLink($this->request, $qr_list->get('ca_object_representations.media.exsingle'), '', '', 'Detail','objects/'.$va_object_id)."</div>";
 			print "<div class='lessonText'>";
