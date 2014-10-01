@@ -356,6 +356,8 @@
  			$va_default_form_values = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormContent_{$ps_function}");
  			$va_default_form_booleans = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormBooleans_{$ps_function}");
  			
+ 			$this->opo_result_context->saveContext();
+ 			
  			$va_tags = $this->view->getTagList($va_search_info['view']);
  			
  			$t_subject = $this->request->datamodel->getInstanceByTableName($va_search_info['table'], true);
