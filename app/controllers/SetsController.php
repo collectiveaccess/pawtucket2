@@ -793,7 +793,6 @@
 						# --- get object ids from last result
 						$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
 						$va_object_ids = $o_context->getResultList();
-						exit;
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							# --- check for those already in set
 							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
