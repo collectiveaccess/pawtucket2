@@ -383,10 +383,16 @@ hr {
 h2 span.artist {
 	color:#000;
 }
+.curator {
+	font-size:14px;
+	color:#000;
+	font-family: "ProximaNovaBold";
+}
 .detailSubtitle, .collectionHeading {
 	font-family: "ProximaNovaBold";
 	padding:5px 0px 5px 0px;
 	font-size:14px;
+	clear:both;
 }
 #detail .detailNavBgLeft, #detail .detailNavBgRight {
 	background-color: transparent;

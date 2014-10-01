@@ -47,7 +47,6 @@ $qr_res = $this->getVar('featured_set_items_as_search_result');
 				$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
 
 				print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
-			
 				print "<div class='featuredObjectImg'>";
 				print $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>');
 				print "</div>";

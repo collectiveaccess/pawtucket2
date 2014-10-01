@@ -100,6 +100,10 @@
 		if (($vs_collection = $t_item->get('ca_collections.description.description_text')) && ($t_item->get('ca_collections.type_id') != '131')) {
 			print "<div class='description trimText'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
+		#if (($vs_bio = $t_item->get('ca_entities.biography.bio_text'))) {
+		#	print "<div class='description trimText'><div class='metatitle'>"._t('About the Artist')."</div>".$t_item->get('ca_entities.biography.bio_text')."</div>";
+		#	print "<div>".caNavLink($this->request, 'readmore', '', '', 'Detail', 'entities/'.$t_item->get('ca_entities.entity_id'))."</div>";
+		#}		
 		if ($t_item->get('ca_collections.type_id') == '131') {
 			print "<div class='metatitle'>Collection Identifier</div><p>".$t_item->get('ca_collections.idno')."</p>";
 		}
@@ -254,7 +258,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 395
+		  maxHeight: 205
 		});
 	});
 </script>
