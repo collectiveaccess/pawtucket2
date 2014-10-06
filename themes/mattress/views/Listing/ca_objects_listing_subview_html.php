@@ -35,13 +35,10 @@
 ?> 	
 
 	<div id="pageTitle">
-		<span class='pageTitle'>The Space I'm In</span>
+		<span class='pageTitle'>Toolkit</span>
 <?php	
-		print "<p>What</p>";
-		print "<p>How</p>";
-		print "<p>Why</p>";
 		print "<p class='toolkit'>".caNavLink($this->request, 'Toolkit', '', '', 'Listing', 'objects')."</p>";
-		print "<p>Share</p>";
+		print "<p><a href='https://mattressfactory.wufoo.com/forms/q1tmkojs1kuw0re/' target='_blank'>Share</a></p>"; 
 ?>		
 	</div>
 	<div id="contentArea" class="rightCol listing">
@@ -50,15 +47,17 @@
 		if(!$qr_list) { continue; }		
 		
 		print "<h2>Toolkit</h2>\n";
-		print "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis mi volutpat, dapibus enim in, sagittis dui. Cras ac tortor tortor. Nullam consequat semper se</p>";
-		
+		print "<p>Discover, download and explore information about how to engage students and children with interdisciplinary activities related to installation art and Mattress Factory featured artists.</p>";
+		print "<p>Search by artist, theme or subject. Find new ideas, try them out in your classroom and then share your experience, ideas and activities with us. We'll add them to the Toolkit.</p>";
 		while($qr_list->nextHit()) {
 			$va_subjects = array();
 			$va_theme = array();
 			print "<div class='lessonInfo'>";
-			print "<div class='lessonImage'>".$qr_list->get('ca_object_representations.media.small')."</div>";
+
+			$va_object_id = $qr_list->get('ca_objects.object_id');
+			print "<div class='lessonImage'>".caNavLink($this->request, $qr_list->get('ca_object_representations.media.exsingle'), '', '', 'Detail','objects/'.$va_object_id)."</div>";
 			print "<div class='lessonText'>";
-			print "<h3>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h3>\n";
+			print "<h3>".$qr_list->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</h3>\n";
 			print "<div class='artist'>".$qr_list->get('ca_entities.preferred_labels.displayname', array('restrictToRelationshipTypes' => array('subject'), 'delimiter' => ', '))."</div>\n";
 			if ($qr_list->get('ca_objects.lesson_subject', array('convertCodesToDisplayText' => true))) {
 				$va_tags = $qr_list->get('ca_objects.lesson_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));

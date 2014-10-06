@@ -52,11 +52,15 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$va_browse_info = $this->getVar("browseInfo");
 	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
+	$o_config = $this->getVar("config");
+	$vs_result_col_class = $o_config->get('result_col_class');
+	$vs_refine_col_class = $o_config->get('refine_col_class');
+	$va_export_formats = $this->getVar('export_formats');
 	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='col-sm-8 col-md-8 col-lg-8'>
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 		<?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -87,6 +91,12 @@ if (!$vb_ajax) {	// !ajax
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 				<ul class="dropdown-menu" role="menu">
 <?php
+					if($qr_res->numHits()){
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</i></a></li>";
+?>
+						<li class="divider"></li>
+<?php
+					}
 					if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 						print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
 						foreach($va_sorts as $vs_sort => $vs_sort_flds) {
@@ -110,7 +120,15 @@ if (!$vb_ajax) {	// !ajax
 					
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
 						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view))."</li>";
-					}	
+					}
+					if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						// Export as PDF links
+						print "<li class='divider'></li>\n";
+						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
+						foreach($va_export_formats as $va_export_format){
+							print "<li>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						}
+					}
 ?>
 				</ul>
 			</div><!-- end btn-group -->
@@ -160,7 +178,7 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 	</div><!-- end col-8 -->
-	<div class="col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1">
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
 <?php
 		foreach($va_views as $vs_view => $va_view_info) {

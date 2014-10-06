@@ -41,7 +41,10 @@
 	 * @return Configuration 
 	 */
 	function caGetContributeFormConfig() {
-		return Configuration::load(__CA_THEME_DIR__.'/conf/contribute.conf');
+		if (file_exists(__CA_THEME_DIR__.'/conf/contribute.conf')) {
+			return Configuration::load(__CA_THEME_DIR__.'/conf/contribute.conf');
+		}
+		return Configuration::load(__CA_THEMES_DIR__.'/default/conf/contribute.conf');
 	}
 	# ---------------------------------------
 	/**

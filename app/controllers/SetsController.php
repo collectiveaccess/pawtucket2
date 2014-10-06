@@ -102,7 +102,7 @@
  				case 'pdf':
  					$qr_res = caMakeSearchResult('ca_objects', $va_set_ids);
  					$this->view->setVar('result', $qr_res);
- 					$this->_genExport($qr_res, '_pdf_checklist', $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Sets/set_detail_timelineData_json.php");
@@ -789,8 +789,27 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					$this->view->setVar('message', _t("Object ID is not defined"));
-					$this->render("Form/reload_html.php");
+					if($this->request->getParameter('saveLastResults', pString)){
+						# --- get object ids from last result
+						$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+						$va_object_ids = $o_context->getResultList();
+						if(is_array($va_object_ids) && sizeof($va_object_ids)){
+							# --- check for those already in set
+							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
+							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
+							# --- insert items
+							$t_set->addItems($va_object_ids);
+							$this->view->setVar('message', _t("Successfully added results to lightbox."));
+							$this->render("Form/reload_html.php");
+							
+						}else{
+							$this->view->setVar('message', _t("No objects in search result to add to lightbox"));
+							$this->render("Form/reload_html.php");
+						}
+					}else{
+						$this->view->setVar('message', _t("Object ID is not defined"));
+						$this->render("Form/reload_html.php");
+					}
 				}
 			}
  		}
@@ -799,7 +818,8 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
- 			if($this->request->getParameter('object_id', pInteger)){
+ 			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
+ 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger)){
  				$this->render("Sets/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));
