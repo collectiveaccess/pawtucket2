@@ -221,7 +221,7 @@
 	# Related Entities Block
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artists + Curators')."</div>";
+		print "<div class='blockTitle related'>"._t('Participating Artists + Curators')."</div>";
 			print "<div class='blockResults'>";
 				print "<div class='scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
@@ -229,7 +229,12 @@
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
 					if ($vn_i == 0) {print "<div class='entitySet'>";}
-					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']."</div>", '', '','Detail', 'Entities/'.$va_entity['entity_id']);
+					if ($va_entity['relationship_type_code'] == "curator") {
+						$vs_curator = " (curator)";
+					} else {
+						$vs_curator = "";
+					}
+					print caNavLink($this->request, "<div class='entitiesResult'>".$va_entity['displayname']." {$vs_curator}</div>", '', '','Detail', 'Entities/'.$va_entity['entity_id']);
 					$vn_i++;
 					if ($vn_i == 5) {
 						print "</div>";
