@@ -44,7 +44,7 @@
 				  <ul class="dropdown-menu">
 				  	<li><a href="/exhibitions">Exhibitions</a></li>
 				  	<li><?php print caNavLink($this->request, _t('Artists'), '', 'Browse', 'Artists', ''); ?></li>
-					<li><a href="#">Artist Limited Editions</a></li>
+					<li><?php print caNavLink($this->request, _t('Artist Limited Editions'), '', 'Listing', 'editions', array()); ?></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Search All Art</a></li>
 				  </ul>
 				</li>
@@ -76,7 +76,7 @@
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
 				  <ul class="dropdown-menu">
 					<li><?php print caNavLink($this->request, _t('About'), '', '', '', ''); ?></li>
-					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Collections</a></li>
+					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Research</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                

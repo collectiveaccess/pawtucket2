@@ -50,12 +50,16 @@
 				<div class="contributeField">
 					{{{ca_objects.date:error}}}
 					<span class='title'>Date</span><br/>
-					{{{ca_objects.date%width=400px}}}   
+					{{{ca_objects.date.dates_value%width=400px}}}   
+					{{{ca_objects.date.dc_dates_types%force=created}}} 
+					{{{ca_objects.date.dates_comment%force="dated via online contribution"}}}
 				</div>
 				<div class="contributeField">
 					{{{ca_objects.description:error}}}
 					<span class='title'>Description</span><br/>
-					{{{ca_objects.description%width=400px&height=120px}}}   
+					{{{ca_objects.description.description_text%width=400px&height=120px}}} 
+					
+					{{{ca_objects.description.description_source%force=non_MF_source}}}   
 				</div>
 				
 				<div class="contributeField">

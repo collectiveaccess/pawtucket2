@@ -489,6 +489,20 @@ h2 span.artist {
 	font-size: 15px;
 	margin-bottom:10px;
 }
+#infoArea .artist.description {
+	clear:left;
+	margin-top:20px;
+}
+#infoArea .readArtist a{
+	clear:left;
+	color: #fff;
+	background-color: #000;
+	font-family: "ProximaNovaRegular";
+	padding: 5px;
+	width: auto;
+	display:inline-block;
+	float:left;
+}
 .readmore-js-toggle, .readmore-js-section {
 	float:left;
 	width:500px;
@@ -534,6 +548,10 @@ a.readmore-js-toggle {
 }
 #detail.entities .detailSubtitle{
 	text-transform:uppercase;
+}
+#detail.entities #eventsBlock .occurrencesResult{
+	width: 150px;
+	margin-right: 20px;
 }
 #detail.entities .mediaThumbs,  #detail.occurrences .mediaThumbs{
 	float:left;
@@ -730,6 +748,9 @@ div.caMediaOverlayControls a {
 	margin-bottom:20px;
 	/* height:auto; */
 	clear:none;
+}
+#detail  .blockResults {
+	height:auto;
 }
 #detail  .blockResults.entities {
 	height:auto;
@@ -952,9 +973,14 @@ div.caMediaOverlayControls a {
 }
 #bMorePanel #bLetterBar {
 	margin-right:10px;
+	display:none;
 }
 #bMorePanel #bScrollList {
 	padding-bottom:50px;
+	color:#000;
+}
+#bMorePanel #bScrollList strong {
+	display:none;
 }
 #bMorePanel #bScrollList a {
 	line-height: 1.2em;
@@ -1149,6 +1175,7 @@ span.criteria {
 }
 .bResultListItem .bResultListItemText {
 	padding-right: 20px;
+	height:45px;
 }
 .bResultListItem .bResultListItemText a {
 	font-family: "ProximaNovaRegular";
@@ -1422,6 +1449,23 @@ a.downloadButton{
 .contributeForm {
 	width: 595px;
 	float: right;
+}
+.contributeForm input, .contributeForm textarea {
+	font-size:14px;
+}
+.contributeForm textarea {
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
+	border: 2px inset #f;
+	border-image-source: initial;
+	border-image-slice: initial;
+	border-image-width: initial;
+	border-image-outset: initial;
+	border-image-repeat: initial;
+	-webkit-rtl-ordering: logical;
+	-webkit-user-select: text;
+	cursor: auto;
 }
 .contributeForm h1{
 	padding-left:0px;

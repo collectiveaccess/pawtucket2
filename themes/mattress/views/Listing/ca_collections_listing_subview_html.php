@@ -32,7 +32,7 @@
  
  	$va_lists = $this->getVar('lists');
 ?> 	
-	<div id="pageTitle">Collections</div>
+	<div id="pageTitle">Research</div>
 	<div id="contentArea" class="rightCol">
 <?php 
 	$va_lists = array_reverse($va_lists);
