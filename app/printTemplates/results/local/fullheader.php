@@ -1,6 +1,6 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * app/templates/pdfStart.php : top-matter prepended to PDF templates
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,16 +26,20 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name PDF start
- * @type pageStart
+ * @name Header
+ * @type fragment
  *
  * ----------------------------------------------------------------------
  */
+ 
+	if($this->request->config->get('report_header_enabled')) {
 ?>
-<html>
-	<head>
-		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
-		<link type="text/css" href="local/pdf.css" rel="stylesheet" />
+<div id='header'>
+<?php
 
-	</head>
-	<body>
+	#print "<div class='pagingText'>"._t('Page')." </div>";
+?>
+</div>
+<?php
+	}
+?>

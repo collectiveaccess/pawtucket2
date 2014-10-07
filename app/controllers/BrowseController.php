@@ -80,7 +80,13 @@
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
- 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			// Don't set last find when loading facet, as some other controllers use this action and setting
+ 			// last find will disrupt ResultContext navigation by setting it to "browse" when in fact a search (or some other
+ 			// context) is still in effect.
+ 			if (!$this->request->getParameter('getFacet', pInteger)) {
+ 				$this->opo_result_context->setAsLastFind();
+ 			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('name', $va_browse_info['displayName']);
