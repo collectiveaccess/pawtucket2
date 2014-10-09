@@ -448,7 +448,7 @@
 		public function setAsLastFind() {
 			$o_storage = $this->getPersistentStorageInstance();
 			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type.($this->ops_find_subtype ? '/'.$this->ops_find_subtype : ''), array('volatile' => true));	
-			
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name.'_action', $this->opo_request->getAction());
 			return true;
 		}
 		# ------------------------------------------------------------------
@@ -512,7 +512,12 @@
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params);
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
+				$vs_action = $va_nav['action'];
+			}
+			
+			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
 		}
 		# ------------------------------------------------------------------
 		/**

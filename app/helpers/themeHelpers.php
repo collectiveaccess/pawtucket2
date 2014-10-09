@@ -880,6 +880,8 @@
 		$o_config = caGetDetailConfig();
 		$o_dm = Datamodel::load();
 		
+		$vs_preferred_detail = caGetOption('preferredDetail', $pa_options, null);
+		
 		if (!($vs_table = $o_dm->getTableName($pm_table))) { return null; }
 		
 		if ($pm_type) {
@@ -894,9 +896,17 @@
 		$vs_detail_type = null;
 		foreach($va_detail_types as $vs_code => $va_info) {
 			if ($va_info['table'] == $vs_table) {
+				$va_detail_aliases = caGetOption('aliases', $va_info, array(), array('castTo' => 'array'));
+				
 				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
 					// If the code matches the current url action use that in preference to anything else
+					
+					// does it have an alias?
+					if ($vs_preferred_detail && ($vs_code == $vs_preferred_detail)) { return $vs_preferred_detail; }
+					if ($vs_preferred_detail && in_array($vs_preferred_detail, $va_detail_aliases)) { return $vs_preferred_detail; }
 					if ($vs_current_action && ($vs_code == $vs_current_action)) { return $vs_code; }
+					if ($vs_current_action && in_array($vs_current_action, $va_detail_aliases)) { return $vs_current_action; }
+					
 					$vs_detail_type = $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = $vs_code;
 				}
 			}
