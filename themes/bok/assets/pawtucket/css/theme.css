@@ -151,9 +151,6 @@ H2, h2{
 	margin-right:0px !important;
 	background-color:#00749F;
 }
-.navbar-bok:hover{
-	background-color: #1393C2;
-}
 .navbar-bok .navbar-right{
 	background-color:#005675 !important;
 	border-left:2px solid #FFF;
@@ -192,11 +189,8 @@ H2, h2{
 	margin:13px 10px 0px 5px;
 	float:right;
 }
- .dropdown > a:focus{
+ .dropdown > a:focus, .dropdown.open > a, .dropdown > a:hover{
  	background-color:#00749F !important;
- }
-.dropdown.open > a{
-	background-color: #1393C2 !important;
  }
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,
@@ -472,7 +466,7 @@ H2, h2{
 	
 .contentbox {
 	background-color:#c0504c;
-	}
+}
 	
 	
 .commbox {
@@ -492,6 +486,9 @@ H2, h2{
 	color:#000;
 	font-size:12px;
 	padding:10px 20px 10px 10px;
+	border-radius: 10px 10px 10px 10px;
+	-moz-border-radius: 10px 10px 10px 10px;
+	-webkit-border-radius: 10px 10px 10px 10px;
 }
 
 #comp_content .table .compsec_info a, #comp_content .table .compsec_info a:link{
