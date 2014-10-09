@@ -54,7 +54,6 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div id='browseResults'>	
-
 	<div  style="clear:both;">
 	
 		<div class="blockTitle">
@@ -66,11 +65,27 @@ if (!$vb_ajax) {	// !ajax
 		
 ?>			
 		</div><!-- end blockTitle -->
-			
+	
 
 			
 		<div id="contentArea">
+		
 			<div id="browseHeader">
+			
+			<div class='alpha'>Skip To: 	
+<?php
+			$vs_current_letter = $this->request->getParameter("l", pString);
+			if (is_array($va_letters = $this->getVar('letterBar'))) {
+				foreach($va_letters as $vs_letter => $vn_count) {
+					if ($vs_letter == $vs_current_letter) { 
+						print "<strong>{$vs_letter}</strong> ";
+					} else {
+						print caNavLink($this->request, $vs_letter, '', '*', '*', '*', array('l' => $vs_letter, 'key' => $vs_browse_key, 'view' => $vs_current_view)).' ';
+					}
+				}
+			}
+?>
+			</div>			
 			<div id="bViewButtons">
 <?php		
 			if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts) > 1) {

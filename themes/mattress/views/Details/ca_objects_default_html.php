@@ -13,7 +13,17 @@
 		print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
 	}	
 ?>	
-		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
+		<div class="detailNavBgLeft">{{{previousLink}}}
+<?php
+		if ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+			print caNavLink($this->request, 'Back to Toolkits', 'results', '', 'Listing', 'objects');
+		} elseif ($t_object->get('type_id') == 23) {
+			print caNavLink($this->request, 'Back to Editions', 'results', '', 'Listing', 'editions');
+		} else {
+			print $this->getVar('resultsLink');
+		}
+?>			
+		{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
 <?php	
@@ -213,7 +223,7 @@
 	# Related Artworks Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+		print "<div class='blockTitle related'>"._t('Artworks Exhibited at the MF')."</div>";
 			print "<div class='blockResults'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;

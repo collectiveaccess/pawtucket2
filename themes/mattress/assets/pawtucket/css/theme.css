@@ -653,6 +653,11 @@ div.caMediaOverlayControls a {
 }
 /* Collection List */
 
+.researchInfo {
+	font-size:18px;
+	line-height:1.2em;
+	padding-bottom:20px;
+}
 .collectionUnit {
 	margin-bottom:35px;
 }
@@ -1107,8 +1112,16 @@ span.criteria {
 	float: right;
 	font-size: 18px;
 	padding-bottom: 0px;
-	clear: both;
+	clear: right;
 	text-align: right; 
+}
+#browseHeader .alpha {
+	float:left;
+	font-size:15px;
+	font-family: "ProximaNovaBold";	
+}
+#browseHeader .alpha a{
+	color:red;
 }
 .btn-group .sortBy, .sortMenu .sortBy{
 	float:left;

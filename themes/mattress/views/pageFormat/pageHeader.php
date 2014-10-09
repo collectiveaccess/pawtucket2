@@ -76,10 +76,10 @@
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
 				  <ul class="dropdown-menu">
 					<li><?php print caNavLink($this->request, _t('About'), '', '', '', ''); ?></li>
-					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Research</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Artists', array()); ?>">Browse Artists</a></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
+					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Research</a></li>					
 					<li><?php print caNavLink($this->request, _t('p{ART}icipate'), '', '', 'Contribute', 'artworks'); ?></li>  
 				  </ul>
 				</li>            

@@ -329,7 +329,7 @@
 	# Related Installation Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+		print "<div class='blockTitle related'>"._t('Artworks Exhibited at the MF')."</div>";
 			print "<div class='blockResults'>";
 			print "<div class='scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";

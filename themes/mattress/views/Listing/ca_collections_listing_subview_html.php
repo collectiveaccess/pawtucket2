@@ -34,6 +34,7 @@
 ?> 	
 	<div id="pageTitle">Research</div>
 	<div id="contentArea" class="rightCol">
+	<p class='researchInfo'>The Mattress Factory Archives is happy to accommodate researchers for on-site or virtual appointments.  Please contact <a href='mailto:mfarchives@mattress.org'>mfarchives@mattress.org for assistance. </p>
 <?php 
 	$va_lists = array_reverse($va_lists);
 	foreach($va_lists as $vs_heading => $qr_list) {
