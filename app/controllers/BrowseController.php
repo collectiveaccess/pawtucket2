@@ -283,7 +283,7 @@
 			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
 				$va_letters = array();
 				while($qr_res->nextHit()) {
-					$va_letters[mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)]++;
+					$va_letters[caRemoveAccents(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1))]++;
 				}
 				$this->view->setVar('letterBar', $va_letters);
 				$qr_res->seek(0);
@@ -294,7 +294,7 @@
 			if ($vs_letter_bar_field && ($vs_l = $this->request->getParameter('l', pString))) {
 				$va_filtered_ids = array();
 				while($qr_res->nextHit()) {
-					if (mb_substr($qr_res->get($vs_letter_bar_field), 0, 1) == $vs_l) {
+					if (caRemoveAccents(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)) == $vs_l) {
 						$va_filtered_ids[] = $qr_res->getPrimaryKey();
 					}
 				}
@@ -302,6 +302,7 @@
 					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
 				}
 			}
+			$this->view->setVar('letter', $vs_l);
 			
 			
 			$this->view->setVar('result', $qr_res);
