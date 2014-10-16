@@ -41,7 +41,7 @@
 						$t_collection = new ca_collections($va_collection_id);
 						
 						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('secondary'), 'restrictToTypes' => array('image')));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags', 'ids')));			
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
 						if ($t_collection->get('ca_collections.date.dc_dates_types') == "Date created") {
@@ -51,12 +51,15 @@
 						$va_artwork_display = $va_artwork_artist.$va_artwork_title.$va_artwork_date;
 						
 						
-						foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
+						foreach ($va_object_reps as $object_key => $va_artwork_rep) {
 							if ($vn_i == 0){print "<div class='imageSet'>";}
 							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
-							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
-							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							#print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							#print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
 							
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $object_key, 'representation_id' => $va_artwork_rep['representation_id']))."\"); return false;' ><div class='rep rep{$object_key}'>".$va_artwork_rep['tags']."</div></a>";
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $object_key, 'representation_id' => $va_artwork_rep['representation_id']))."\"); return false;' ><div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div></a>";
+					
 							print "</div>";
 							$vn_i++;
 							if ($vn_i == 3) {

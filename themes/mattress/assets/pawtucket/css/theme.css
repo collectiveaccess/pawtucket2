@@ -14,6 +14,7 @@ a {
 a:hover {
 	background: transparent;
 	color:#000;
+	text-decoration:underline;
 }
 a:active {
 	background:transparent;
@@ -368,9 +369,7 @@ hr {
 #detail {
 	color:#000;
 }
-#detail a {
-	text-decoration:none;
-}
+
 #detailHeader {
 	width:775px;
 }
@@ -426,7 +425,7 @@ h2 span.artist {
 	background-repeat:no-repeat;
 	background-position: center right;
 	padding-right:15px;
-	width: 45px;
+	width: 85px;
 }
 #detail .detailNavBgLeft .results {
 	padding:10px 0px 8px 0px;
@@ -639,17 +638,47 @@ a.readmore-js-toggle {
 	height:auto;
 	margin-bottom:25px;	
 }
-div.caMediaOverlayControls .close {
-	opacity:1; 
-	margin-right:80px;
-	line-height:.8;
+.close.viewer {
+	opacity: 1;
+	margin-right: 40px;
+	line-height: .8;
+	float:none;
+	width: auto;
+	height: auto;
+	padding:10px;
+	border-radius:4px;
+	background-image: none;
+	margin: 0px;
+	color: #fff;
+	background-color: #000;
+	position: absolute;
+	right: 40px;
+	top: 10px;
+	text-shadow:none;
+	z-index:3200;
+}
+.close.viewer a {
+	color:#fff;
+	padding:10px;
+}
+div.caMediaOverlayControls .objectInfo {
+	width:95%;
+	font-size:14px;
+}
+div.caMediaOverlayControls {
+	opacity:1;
 }
 div.caMediaOverlayControls a {
 	font-size:14px;
 	font-family: "ProximaNovaRegular";
 	font-weight:normal;
-	text-shadow:none;
-	
+	text-shadow:none;	
+}
+div.caMediaOverlayControls a {
+	font-size:16px;
+}
+div.caMediaOverlayControls:hover {
+	background-color:#000;
 }
 /* Collection List */
 
@@ -949,8 +978,11 @@ div.caMediaOverlayControls a {
 	height:auto;
 	min-height: 250px;
 }
+#browseResults .blockTitle a{
+	color:#fff;
+}
 #browseHeader {
-	height:20px;
+	height:40px;
 	width:100%;
 	clear:both;
 }
@@ -1018,6 +1050,9 @@ div.caMediaOverlayControls a {
 	text-decoration: underline;
 	background-image:none;
 }
+#bRefine a:hover {
+	text-decoration:underline;
+}
 #bRefine div {
 	margin-bottom: 0px;
 }
@@ -1052,7 +1087,8 @@ div.caMediaOverlayControls a {
 }
 .bResultItem .bResultItemImg {
 	height: 180px;
-	min-width: 120px; 
+	width:180px;
+	overflow:hidden;
 	background-color: #f7f7f7;
 }
 .bResultItem:hover .bResultItemImg {
@@ -1066,12 +1102,15 @@ div.caMediaOverlayControls a {
 	font-size:12px;
 	color:#000;
 }
+.bResultItem .bResultItemText {
+	width:180px;
+}
 span.criteria {
 	background-color:#000;
 	padding:5px;
 	color:#fff;
 	text-transform:uppercase;
-	margin-left:10px;
+	margin-left:0px;
 }
 .browseRemoveFacet {
 	margin-left: 5px;
@@ -1119,6 +1158,7 @@ span.criteria {
 	float:left;
 	font-size:15px;
 	font-family: "ProximaNovaBold";	
+	padding-bottom:15px;
 }
 #browseHeader .alpha a{
 	color:red;
@@ -1159,6 +1199,22 @@ span.criteria {
 	float: left;
 	margin-right: 10px;
 	font-size: 13px; 
+}
+.toTop {
+	position: fixed;
+	bottom:0;
+	right:0;
+	width:200px;
+	height:35px;
+	text-align:center;
+	padding:8px;
+	background-color:#000;
+	color:#fff;
+	z-index:10000;
+	display:none;
+}
+.toTop a {
+	color:#fff;
 }
 /* List View */
 
@@ -1511,3 +1567,5 @@ a.downloadButton{
 	padding-bottom:3px;
 	display:inline-block;
 }
+
+

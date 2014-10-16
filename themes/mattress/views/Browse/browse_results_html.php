@@ -58,7 +58,14 @@ if (!$vb_ajax) {	// !ajax
 	
 		<div class="blockTitle">
 <?php
-			print "Browse ".ucfirst($va_browse_name);
+			if (ucfirst($va_browse_name) == "Artists") {
+				print caNavLink($this->request, "Browse ".ucfirst($va_browse_name), '', '', 'Browse', 'Artists');
+			} elseif (ucfirst($va_browse_name) == "Artworks") {
+				print caNavLink($this->request, "Browse ".ucfirst($va_browse_name), '', '', 'Browse', 'Collections');
+			} else {
+				print caNavLink($this->request, "Browse ".ucfirst($va_browse_name), '', '', 'Browse', 'Exhibitions');
+			}	
+		
 			print "<div class='resultCount'>"._t('%1 %3', $qr_res->numHits(), $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"))."</div>";	
 
 			print $this->render("Browse/browse_refine_subview_html.php");
@@ -72,10 +79,11 @@ if (!$vb_ajax) {	// !ajax
 		
 			<div id="browseHeader">
 			
-			<div class='alpha'>Skip To: 	
+			<div class='alpha'> 	
 <?php
 			$vs_current_letter = $this->request->getParameter("l", pString);
 			if (is_array($va_letters = $this->getVar('letterBar'))) {
+				print "Skip To: ";
 				foreach($va_letters as $vs_letter => $vn_count) {
 					if ($vs_letter == $vs_current_letter) { 
 						print "<strong>{$vs_letter}</strong> ";
@@ -119,7 +127,7 @@ if (!$vb_ajax) {	// !ajax
 			
 <?php
 			if (sizeof($va_criteria) > 0) {
-				print "<H2>";
+				print "<H2 style='clear:both;margin-top:10px;'>";
 				$i = 0;
 				foreach($va_criteria as $va_criterion) {
 					print "<span class='criteria'>".$va_criterion['facet'].'</span><span class="facet"> '.$va_criterion['value'].'</span>';
@@ -144,7 +152,10 @@ if (!$vb_ajax) {	// !ajax
 
 } // !ajax
 
-print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+print $this->render("Browse/browse_results_{$vs_current_view}_html.php");
+?>
+	<div id="toTop" class='toTop'><a href='#'>Return to Top</a></div>
+<?php			
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -162,6 +173,15 @@ if (!$vb_ajax) {	// !ajax
 			padding: 20,
 			nextSelector: 'a.jscroll-next'
 		});
+	});
+</script>
+<script>
+	$(window).scroll(function() {
+		if ($(this).scrollTop() > 400) {
+			$('#toTop:hidden').stop(true, true).fadeIn();
+		} else {
+			$('#toTop').stop(true, true).fadeOut();
+		}
 	});
 </script>
 <?php
