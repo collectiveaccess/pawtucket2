@@ -40,7 +40,7 @@
 		
 		print "<div class='row'>";
 		while($qr_list->nextHit()) {
-			print "<div class='col-sm-3 pubListing'>".caDetailLink($this->request, $qr_list->get("ca_object_representations.media.small", array("checkAccess" => $va_access_values)), '', 'ca_objects', $qr_list->get("object_id"), null, null, array("type_id" => $qr_list->get("type_id")))."<h2>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h2></div>\n";	
+			print "<div class='col-sm-3 pubListing'><div class='pubListingImg'>".caDetailLink($this->request, $qr_list->get("ca_object_representations.media.small", array("checkAccess" => $va_access_values)), '', 'ca_objects', $qr_list->get("object_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div><h2>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h2></div>\n";	
 		}
 		print "</div><!-- end row -->\n";
 	}

@@ -62,4 +62,23 @@
 	
 	// initialize Tooltip manager
 	TooltipManager::init();
+	
+	# --- include theme specific helpers
+	$vs_theme_helpers_dir = __CA_THEME_DIR__."/helpers";
+	if(file_exists($vs_theme_helpers_dir)){
+		$va_dir_content = scandir($vs_theme_helpers_dir);
+		if(is_array($va_dir_content) && sizeof($va_dir_content)){
+			foreach($va_dir_content as $vs_file){
+				if(in_array($vs_file, array(".", ".."))){
+					continue;
+				}
+				$vs_file_path = $vs_theme_helpers_dir."/".$vs_file; 
+				if(file_exists($vs_file_path) && !is_dir($vs_file_path)){
+					require_once($vs_file_path);
+				}
+			}
+		}
+	}
+
+
 ?>

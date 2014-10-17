@@ -8,11 +8,12 @@
 	# --- rep id of related image to cue slideshow to
 	$pn_representation_id = $this->request->getParameter("id", pInteger);
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
 			$va_object_ids[] = $va_object["object_id"];
+			#print $va_object["object_id"]." - ";
 		}
 	}
 ?>	
@@ -40,13 +41,17 @@
 					<?php print $t_item->get("display_bio"); ?>
 				</div><!-- end col -->
 				<div class="col-sm-4 col-sm-offset-1">
-					{{{<ifcount code="ca_objects" min="1">
-						<unit relativeTo="ca_objects" delimiter=" " restrictToRelationshipTypes="creator_website">
-							<div class="thumbnail">^ca_object_representations.media.medium
-							<div class="caption">^ca_objects.caption</div>
-							</div>
-						</unit>
-					</ifcount>}}}
+<?php
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				foreach($va_objects as $va_object){
+					$t_featured_object = new ca_objects($va_object["object_id"]);
+?>
+					<div class="thumbnail"><?php print $t_featured_object->get("ca_object_representations.media.medium"); ?>
+						<div class="caption"><?php print sefaFormatCaption($this->request, $t_featured_object); ?></div>
+					</div>
+<?php
+				}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
@@ -73,13 +78,17 @@
 ?>
 				</div><!-- end col -->
 				<div class="col-sm-4 col-sm-offset-1">
-					{{{<ifcount code="ca_objects" min="1">
-						<unit relativeTo="ca_objects" delimiter=" " restrictToRelationshipTypes="creator_website">
-							<div class="thumbnail">^ca_object_representations.media.medium
-							<div class="caption">^ca_objects.caption</div>
-							</div>
-						</unit>
-					</ifcount>}}}
+<?php
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				foreach($va_objects as $va_object){
+					$t_featured_object = new ca_objects($va_object["object_id"]);
+?>
+					<div class="thumbnail"><?php print $t_featured_object->get("ca_object_representations.media.medium"); ?>
+						<div class="caption"><?php print sefaFormatCaption($this->request, $t_featured_object); ?></div>
+					</div>
+<?php
+				}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
@@ -89,19 +98,27 @@
 			default:
 				$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 				if($q_objects->numHits()){
-					$vn_i = 1;
+					$va_images = array();
+					while($q_objects->nextHit()){
+						$vs_image = "";
+						$vs_image = $q_objects->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values));
+						if($vs_image){
+							$va_images[] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
+						}
+					}
 ?>
 					<div class="jcarousel-wrapper">
 						<!-- Carousel -->
 						<div class="jcarousel">
 							<ul>
 <?php
-							while($q_objects->nextHit()){
+							$vn_i = 1;
+							foreach($va_images as $va_image){
 ?>
 								<li id="slide<?php print $q_objects->get("object_id"); ?>">
 									<div class="thumbnail">
-										<?php print $q_objects->get("ca_object_representations.media.mediumlarge"); ?>
-										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".$q_objects->numHits(); ?>)<br/><?php print $q_objects->get("ca_objects.caption"); ?></div>
+										<?php print $va_image["image"]; ?>
+										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?></div>
 									</div><!-- end thumbnail -->
 								</li>
 <?php
@@ -226,5 +243,4 @@
 				</ul>			
 			</div><!-- end col -->
 		</div><!-- end row -->				
-	</div><!--end row contentbody-->
-	
+	</div><!--end row contentbody-->	
