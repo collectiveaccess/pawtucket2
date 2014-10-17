@@ -740,6 +740,38 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	}
 	# ------------------------------------------------------
 	/**
+	 * Checks if array of row ids of a table are in a set.
+	 *
+	 * @param mixed $pm_table_name_or_num Name or number of table
+	 * @param int $ps_row_ids array of row ids in table specified by $pm_table_name_or_num to check for
+	 * @param mixed $pm_set_code_or_id Set code or set_id of set to check for item
+	 * @return array of row_ids found in set. If the table or set are invalid null will be returned.
+	 */
+	public function areInSet($pm_table_name_or_num, $pa_row_ids, $pm_set_code_or_id) {
+		if (!($vn_table_num = $this->_getTableNum($pm_table_name_or_num))) { return null; }
+		if (!($vn_set_id = $this->_getSetID($pm_set_code_or_id))) { return null; }
+		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids)) { return null; }
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			SELECT csi.row_id
+			FROM ca_sets cs
+			INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
+			WHERE
+				(cs.deleted = 0) AND (cs.set_id = ?) AND (csi.row_id IN (".join(", ", $pa_row_ids).")) AND (cs.table_num = ?)
+		", (int)$vn_set_id, (int)$vn_table_num);
+		
+		$va_found_row_ids = array();
+		if ($qr_res->numRows() > 0) {
+			while($qr_res->nextRow()){
+				$va_found_row_ids[] = $qr_res->get("row_id");
+			}
+		}
+		
+		return $va_found_row_ids;
+	}
+	# ------------------------------------------------------
+	/**
 	 * Returns a random set_id from a group defined by specified options. These options are the same as those for ca_sets::getSets()
 	 *
 	 * @param array $pa_options Array of options. Supported options are:

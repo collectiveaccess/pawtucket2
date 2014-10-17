@@ -102,7 +102,7 @@
  				case 'pdf':
  					$qr_res = caMakeSearchResult('ca_objects', $va_set_ids);
  					$this->view->setVar('result', $qr_res);
- 					$this->_genExport($qr_res, '_pdf_checklist', $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Sets/set_detail_timelineData_json.php");
@@ -349,6 +349,32 @@
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
+							$t_group = new ca_user_groups($pn_group_id);
+							$va_group_users = $t_group->getGroupUsers();
+							if(sizeof($va_group_users)){
+								# --- send email to each group user
+								# --- send email confirmation
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								$o_view->setVar("set", $t_set->getLabelForDisplay());
+								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+							
+							
+								# -- generate email subject line from template
+								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+								
+								# -- generate mail text from template - get both the text and the html versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+							
+								foreach($va_group_users as $va_user_info){
+									# --- don't send notification to self
+									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
+										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+									}
+								}
+							}							
+							
+							
 							$this->view->setVar("message", _t('Shared lightbox with group'));
 							$this->render("Form/reload_html.php");
 						}
@@ -377,6 +403,7 @@
 									$this->shareSetForm();
 								}else{
 									$va_success_emails[] = $vs_user;
+									$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
 								}
 							}
 						}else{
@@ -400,6 +427,25 @@
 					}else{
 						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
 						$this->render("Form/reload_html.php");
+					}
+					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
+						# --- send email to user
+						# --- send email confirmation
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$o_view->setVar("set", $t_set->getLabelForDisplay());
+						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+					
+					
+						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+						
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+					
+						foreach($va_success_emails as $vs_email){
+							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						}
 					}
 				}
 			}else{
@@ -743,8 +789,27 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					$this->view->setVar('message', _t("Object ID is not defined"));
-					$this->render("Form/reload_html.php");
+					if($this->request->getParameter('saveLastResults', pString)){
+						# --- get object ids from last result
+						$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+						$va_object_ids = $o_context->getResultList();
+						if(is_array($va_object_ids) && sizeof($va_object_ids)){
+							# --- check for those already in set
+							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
+							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
+							# --- insert items
+							$t_set->addItems($va_object_ids);
+							$this->view->setVar('message', _t("Successfully added results to lightbox."));
+							$this->render("Form/reload_html.php");
+							
+						}else{
+							$this->view->setVar('message', _t("No objects in search result to add to lightbox"));
+							$this->render("Form/reload_html.php");
+						}
+					}else{
+						$this->view->setVar('message', _t("Object ID is not defined"));
+						$this->render("Form/reload_html.php");
+					}
 				}
 			}
  		}
@@ -753,7 +818,8 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
- 			if($this->request->getParameter('object_id', pInteger)){
+ 			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
+ 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger)){
  				$this->render("Sets/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

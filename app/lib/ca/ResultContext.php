@@ -448,7 +448,7 @@
 		public function setAsLastFind() {
 			$o_storage = $this->getPersistentStorageInstance();
 			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type.($this->ops_find_subtype ? '/'.$this->ops_find_subtype : ''), array('volatile' => true));	
-			
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name.'_action', $this->opo_request->getAction());
 			return true;
 		}
 		# ------------------------------------------------------------------
@@ -512,7 +512,12 @@
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params);
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
+				$vs_action = $va_nav['action'];
+			}
+			
+			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -541,6 +546,10 @@
 			$vs_controller_class = $va_nav['controller']."Controller";
 			$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
 			
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
+				$vs_action = $va_nav['action'];
+			}
 			$va_params = array();
 			if (is_array($va_nav['params'])) {
 				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
@@ -556,7 +565,7 @@
 			}
 			
 			
-			return caNavLink($po_request, $ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params, $pa_attributes);
+			return caNavLink($po_request, $ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params, $pa_attributes);
 		}
 		# ------------------------------------------------------------------
 		# Find history

@@ -33,9 +33,42 @@
 			</div>
 <?php
 		} 	
+?>
+	<a name='Site'></a>
+	<small class="pull-right sortMenu">
+		<a href="http://<?php print $_SERVER['HTTP_HOST']; ?>/search/content/<?php print rawurlencode($this->getVar('search')); ?>" class="fullResults">Full results</a>
+	</small>
+	<div class='blockTitle'>Site</div>
+	<div class='blockResults'>
+		<div id="SiteBlock">
+	
+		</div>
+	</div>
+	
+<?php
 	} else {
 		print "<H2>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H2>";
 	}
 ?>
 
 </div>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		// grab search results
+		jQuery.getJSON("http://<?php print $_SERVER['HTTP_HOST']; ?>/services/search/search_node/retrieve.json", <?php print json_encode(array('keys' => $this->getVar('search'))); ?>, function(d) {
+			
+			var hits = [];
+			
+			if (d && (d.length > 0)) {
+				jQuery(d).each(function(k, v) {
+					hits.push("<a href='" + v['link'] + "'>" + v['title'] + "</a>");
+				});
+			} else {
+				hits.push("No results found");
+			}
+			
+			jQuery("#SiteBlock").html(hits.join("<br/>"));
+		});
+	});
+</script>

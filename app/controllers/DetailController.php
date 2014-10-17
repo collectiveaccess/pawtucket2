@@ -53,6 +53,16 @@
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
+ 			
+ 			// expand to aliases
+ 			foreach($this->opa_detail_types as $vs_code => $va_info) {
+ 				if(is_array($va_aliases = caGetOption('aliases', $va_info, null))) {
+ 					foreach($va_aliases as $vs_alias) {
+ 						$this->opa_detail_types[$vs_alias] =& $this->opa_detail_types[$vs_code];
+ 					}
+ 				}
+ 			}
+ 			
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
@@ -309,7 +319,12 @@
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
- 			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
+			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+			if ($this->request->getParameter('include_tool_bar', pInteger)) {
+				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id)."</div></div>";
+			}
+
+ 			$this->response->addContent($vs_output);
  		}
 		# -------------------------------------------------------
  		/**

@@ -9,7 +9,14 @@
 				The New School Archives & Special Collections, 66 5th Avenue, Lobby Level, New York, NY 10011 | 212.229.5942 | archivist@newschool.edu
 			</div>
 		</div><!-- end footer -->
-
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
 	</div><!-- end pageArea --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

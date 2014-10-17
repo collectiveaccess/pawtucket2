@@ -106,6 +106,10 @@ h1 i {
 .smaller {
 	font-size:.7em;
 }
+.rowSmallPadding{
+	margin-right: -6px;
+	margin-left: -6px;
+}
 .smallpadding {
 	padding:6px;
 }
@@ -638,7 +642,7 @@ a.browseRemoveFacet img {
 	}
 }
 
-#caFormOverlay .glyphicon{
+#caFormOverlay .glyphicon-remove-circle{
 	position:absolute;
 	top:10px;
 	right:10px;
@@ -959,7 +963,8 @@ a.browseRemoveFacet img {
 	padding:12px;
 	margin-bottom:10px;
 	border-radius:10px;
-}	
+}
+/*
 .sets .dropdown-menu a{
 	font-size:11px;
 	text-transform:uppercase;
@@ -971,7 +976,7 @@ a.browseRemoveFacet img {
 	background-color:#fff;
 	color:#000;
 
-}
+}*/
 .activitycol .lbSetCommentHeader {
 	font-weight:bold;
 	padding-top:10px;
@@ -1223,7 +1228,7 @@ a.browseRemoveFacet img {
 }
 
 #detailRepresentationThumbnails{
-	padding-top:20px;
+	padding-top:0px;
 }	
 
 .detail .repViewerCont {
@@ -1406,7 +1411,7 @@ a.browseRemoveFacet img {
 #detailRepresentationThumbnails a img{
 	border: 1px solid #dddddd;
     height: auto;
-    margin: 10px 0;
+    margin: 0px 0;
     padding: 5px;
     width: 100%;
 }
@@ -1757,6 +1762,10 @@ a.readmore-js-toggle{
 	padding:0px;
 	text-transform:none;
 }
+.multisearch H3 a, .multisearch H3 a:hover{
+	text-decoration:none;
+	color:#858585;
+}
 .multisearch .blockResults {
 	height:170px;
 	margin-bottom:15px;
@@ -1898,6 +1907,7 @@ a.readmore-js-toggle{
 	line-height:1.1em;
 	background-color:#f5f5f5;
 	padding:5px 10px 5px 10px;
+	overflow:hidden;
 }
 .multisearch .authorityResult:hover{
 	background-color:#ebebeb;
@@ -2463,6 +2473,14 @@ div.advancedSearchField {
 	font-weight:bold;
 }
 
+
+/* tooltips */
+.ui-tooltip {
+	padding: 10px;
+	min-width: 120px;
+	max-width: 300px;
+	min-height: 50px;
+}
 
 /* ----------------- print specific styles ----------------------*/
 /* --- This overrides boostrap styles --- */

@@ -324,11 +324,13 @@
 		/**
 		 * Generate  export file of current result
 		 */
-		protected function _genExport($po_result, $ps_template, $ps_output_filename, $ps_title=null) {
+		protected function _genExport($po_result, $ps_template, $ps_output_filename, $ps_criteria_summary=null) {
 			if ($this->opo_result_context) {
 				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 				$this->opo_result_context->saveContext();
 			}
+			
+			$this->view->setVar('criteria_summary', $ps_criteria_summary);
 			
 			if (substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
@@ -397,7 +399,16 @@
 				
 			return;
 		}
- 		# ------------------------------------------------------------------
- 		
+		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns summary of search or browse parameters suitable for display.
+ 		 * This is a base implementation and should be overridden to provide more 
+ 		 * detailed and appropriate output where necessary.
+ 		 *
+ 		 * @return string Summary of current search expression or browse criteria ready for display
+ 		 */
+ 		public function getCriteriaForDisplay() {
+ 			return $this->opo_result_context ? $this->opo_result_context->getSearchExpression() : '';		// just give back the search expression verbatim; works ok for simple searches	
+ 		}
  		# ------------------------------------------------------------------
  	}

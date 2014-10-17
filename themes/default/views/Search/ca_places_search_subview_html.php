@@ -33,18 +33,37 @@
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$o_config = $this->getVar("config");
+	$o_browse_config = caGetBrowseConfig();
+	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> | -->
+<?php
+				if(in_array($vs_block, $va_browse_types)){
+?>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+<?php
+				}
+?>
 				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
-			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			if(in_array($vs_block, $va_browse_types)){
+?>
+				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+<?php
+			}else{
+?>
+				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			}
+?>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
@@ -56,7 +75,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsArray' => true))."</div><!-- end Result -->";
+				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsLink' => true))."</div><!-- end Result -->";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

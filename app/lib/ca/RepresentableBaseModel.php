@@ -48,13 +48,19 @@
 		 *		return_primary_only - If true then only the primary representation will be returned
 		 *		return_with_access - Set to an array of access values to filter representation through; only representations with an access value in the list will be returned
 		 *		checkAccess - synonym for return_with_access
+		 *		start = 
+		 *		limit = 
 		 *		.. and options supported by getMediaTag() .. [they are passed through]
 		 *	
 		 * @return array An array of information about the linked representations
 		 */
 		public function getRepresentations($pa_versions=null, $pa_version_sizes=null, $pa_options=null) {
+			global $AUTH_CURRENT_USER_ID;
 			if (!($vn_id = $this->getPrimaryKey())) { return null; }
 			if (!is_array($pa_options)) { $pa_options = array(); }
+			
+			$pn_start = caGetOption('start', $pa_options, 0);
+			$pn_limit = caGetOption('limit', $pa_options, null);
 		
 			if (caGetBundleAccessLevel($this->tableName(), 'ca_object_representations') == __CA_BUNDLE_ACCESS_NONE__) {
 				return null;
@@ -81,6 +87,14 @@
 			
 			if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName()))) { return null; }
 			$vs_pk = $this->primaryKey();
+			$vs_limit_sql = '';
+			if ($pn_limit > 0) {
+				if ($pn_start > 0) {
+					$vs_limit_sql = "LIMIT {$pn_start}, {$pn_limit}";
+				} else {
+					$vs_limit_sql = "LIMIT {$pn_limit}";
+				}
+			}
 		
 			$qr_reps = $o_db->query("
 				SELECT caor.representation_id, caor.media, caoor.is_primary, caor.access, caor.status, l.name, caor.locale_id, caor.media_metadata, caor.type_id, caor.idno, caor.idno_sort, caor.md5, caor.mimetype, caor.original_filename, caoor.rank
@@ -93,12 +107,23 @@
 					{$vs_access_sql}
 				ORDER BY
 					caoor.rank, caoor.is_primary DESC
+				{$vs_limit_sql}
 			", (int)$vn_id);
 			
 			$va_reps = array();
 			$t_rep = new ca_object_representations();
+			
+			if($AUTH_CURRENT_USER_ID) {
+				$va_can_read = caCanRead($AUTH_CURRENT_USER_ID, 'ca_object_representations', $qr_reps->getAllFieldValues('representation_id'), null, array('returnAsArray' => true));
+			} else {
+				$va_can_read = $qr_reps->getAllFieldValues('representation_id');
+			}
+			
+			$qr_reps->seek(0);
 			while($qr_reps->nextRow()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
+				
+				if (!in_array($vn_rep_id, $va_can_read)) { continue; }
 			
 				$va_tmp = $qr_reps->getRow();
 				$va_tmp['tags'] = array();
@@ -133,6 +158,12 @@
 				}
 			
 				$va_tmp['num_multifiles'] = $t_rep->numFiles($vn_rep_id);
+
+				$va_captions = $t_rep->getCaptionFileList($vn_rep_id);
+				if(is_array($va_captions) && (sizeof($va_captions)>0)){
+					$va_tmp['captions'] = $va_captions;	
+				}
+
 				$va_reps[$vn_rep_id] = $va_tmp;
 			}
 		
@@ -140,6 +171,7 @@
 			foreach($va_labels as $vn_rep_id => $vs_label) {
 				$va_reps[$vn_rep_id]['label'] = $vs_label;
 			}
+			
 			return $va_reps;
 		}
 		# ------------------------------------------------------
@@ -402,6 +434,9 @@
 		 *		original_filename - the name of the file being uploaded; will be recorded in the database and used as the filename when the file is subsequently downloaded
 		 *		rank - a numeric rank used to order the representations when listed
 		 *		returnRepresentation = if set the newly created ca_object_representations instance is returned rather than the link_id of the newly created relationship record
+		 *		matchOn = 
+		 *		centerX = Horizontal position of image center used when cropping as a percentage expressed as a decimal between 0 and 1. If omitted existing value is maintained. Note that both centerX and centerY must be specified for the center to be changed.
+		 *		centerY = Vertical position of image center used when cropping as a percentage expressed as a decimal between 0 and 1. If omitted existing value is maintained. Note that both centerX and centerY must be specified for the center to be changed.
 		 *
 		 * @return mixed Returns primary key (link_id) of the relatipnship row linking the newly created representation to the item; if the 'returnRepresentation' is set then an instance for the newly created ca_object_representations is returned instead; boolean false is returned on error
 		 */
@@ -409,55 +444,127 @@
 			if (!($vn_id = $this->getPrimaryKey())) { return null; }
 			if (!$pn_locale_id) { $pn_locale_id = ca_locales::getDefaultCataloguingLocaleID(); }
 		
+		
 			$t_rep = new ca_object_representations();
 		
 			if ($this->inTransaction()) {
-				$o_trans = $this->getTransaction();
-				$t_rep->setTransaction($o_trans);
+				$t_rep->setTransaction($this->getTransaction());
 			}
-		
-			$t_rep->setMode(ACCESS_WRITE);
-			$t_rep->set('type_id', $pn_type_id);
-			$t_rep->set('locale_id', $pn_locale_id);
-			$t_rep->set('status', $pn_status);
-			$t_rep->set('access', $pn_access);
-			$t_rep->set('media', $ps_media_path, $pa_options);
-		
-		
-			if (is_array($pa_values)) {
-				if (isset($pa_values['idno'])) {
-					$t_rep->set('idno', $pa_values['idno']);
+				
+			$vn_rep_id = null;
+			if(is_array($va_match_on = caGetOption('matchOn', $pa_options, null))) {
+				$va_ids = null;
+				foreach($va_match_on as $vs_match_on) {
+					switch($vs_match_on) {
+						case 'idno':
+							if (!trim($pa_values['idno'])) { break; }
+							$va_ids = ca_object_representations::find(array('idno' => trim($pa_values['idno'])), array('returnAs' => 'ids'));
+							break;
+						case 'label':
+							if (!trim($pa_values['preferred_labels']['name'])) { break; }
+							$va_ids = ca_object_representations::find(array('preferred_labels' => array('name' => trim($pa_values['preferred_labels']['name']))), array('returnAs' => 'ids'));
+							break;
+					}
+					if(is_array($va_ids) && sizeof($va_ids)) { 
+						$vn_rep_id = array_shift($va_ids);
+						break; 
+					}
+					
 				}
-				foreach($pa_values as $vs_element => $va_value) { 					
-					if (is_array($va_value)) {
-						// array of values (complex multi-valued attribute)
-						$t_rep->addAttribute(
-							array_merge($va_value, array(
-								'locale_id' => $pn_locale_id
-							)), $vs_element);
-					} else {
-						// scalar value (simple single value attribute)
-						if ($va_value) {
-							$t_rep->addAttribute(array(
-								'locale_id' => $pn_locale_id,
-								$vs_element => $va_value
-							), $vs_element);
+			}
+			
+			if (!$vn_rep_id) {
+				$t_rep->setMode(ACCESS_WRITE);
+				$t_rep->set('type_id', $pn_type_id);
+				$t_rep->set('locale_id', $pn_locale_id);
+				$t_rep->set('status', $pn_status);
+				$t_rep->set('access', $pn_access);
+				$t_rep->set('media', $ps_media_path, $pa_options);
+		
+				if (is_array($pa_values)) {
+					if (isset($pa_values['idno'])) {
+						$t_rep->set('idno', $pa_values['idno']);
+						unset($pa_values['idno']);
+					}
+					foreach($pa_values as $vs_element => $va_value) { 					
+						if (is_array($va_value)) {
+							// array of values (complex multi-valued attribute)
+							$t_rep->addAttribute(
+								array_merge($va_value, array(
+									'locale_id' => $pn_locale_id
+								)), $vs_element);
+						} else {
+							// scalar value (simple single value attribute)
+							if ($va_value) {
+								$t_rep->addAttribute(array(
+									'locale_id' => $pn_locale_id,
+									$vs_element => $va_value
+								), $vs_element);
+							}
 						}
 					}
 				}
-			}
 		
-			$t_rep->insert();
+				$t_rep->insert();
 		
-			if ($t_rep->numErrors()) {
-				$this->errors = array_merge($this->errors, $t_rep->errors());
-				return false;
+				if ($t_rep->numErrors()) {
+					$this->errors = array_merge($this->errors, $t_rep->errors());
+					return false;
+				}
+			
+				if ($t_rep->getPreferredLabelCount() == 0) {
+					$vs_label = (isset($pa_values['name']) && $pa_values['name']) ? $pa_values['name'] : '['._t('BLANK').']';
+			
+					$t_rep->addLabel(array('name' => $vs_label), $pn_locale_id, null, true);
+					if ($t_rep->numErrors()) {
+						$this->errors = array_merge($this->errors, $t_rep->errors());
+						return false;
+					}
+				}
+			} else {
+				$t_rep->load($vn_rep_id);
+				$t_rep->setMode(ACCESS_WRITE);
+				
+				$t_rep->set('status', $pn_status);
+				$t_rep->set('access', $pn_access);
+				if ($ps_media_path) { $t_rep->set('media', $ps_media_path, $pa_options); }
+		
+				if (is_array($pa_values)) {
+					if (isset($pa_values['idno'])) {
+						$t_rep->set('idno', $pa_values['idno']);
+						unset($pa_values['idno']);
+					}
+					foreach($pa_values as $vs_element => $va_value) { 					
+						if (is_array($va_value)) {
+							// array of values (complex multi-valued attribute)
+							$t_rep->replaceAttribute(
+								array_merge($va_value, array(
+									'locale_id' => $pn_locale_id
+								)), $vs_element);
+						} else {
+							// scalar value (simple single value attribute)
+							if ($va_value) {
+								$t_rep->replaceAttribute(array(
+									'locale_id' => $pn_locale_id,
+									$vs_element => $va_value
+								), $vs_element);
+							}
+						}
+					}
+				}
+				$t_rep->update();
+				if ($t_rep->numErrors()) {
+					$this->errors = array_merge($this->errors, $t_rep->errors());
+					return false;
+				}
 			}
 			
-			if ($t_rep->getPreferredLabelCount() == 0) {
-				$vs_label = (isset($pa_values['name']) && $pa_values['name']) ? $pa_values['name'] : '['._t('BLANK').']';
-			
-				$t_rep->addLabel(array('name' => $vs_label), $pn_locale_id, null, true);
+			// Set image center if specified
+			$vn_center_x = caGetOption('centerX', $pa_options, null);
+			$vn_center_y = caGetOption('centerY', $pa_options, null);
+			if (strlen($vn_center_x) && (strlen($vn_center_y)) && ($vn_center_x >= 0) && ($vn_center_y >= 0) && ($vn_center_x <= 1) && ($vn_center_y <= 1)) {
+				$t_rep->setMediaCenter('media', (float)$vn_center_x, (float)$vn_center_y);
+				$t_rep->update();
 				if ($t_rep->numErrors()) {
 					$this->errors = array_merge($this->errors, $t_rep->errors());
 					return false;
@@ -468,24 +575,23 @@
 			$vs_pk = $this->primaryKey();
 			
 			if ($this->inTransaction()) {
-				$o_trans = $this->getTransaction();
-				$t_oxor->setTransaction($o_trans);
+				$t_oxor->setTransaction($this->getTransaction());
 			}
 			$t_oxor->setMode(ACCESS_WRITE);
 			$t_oxor->set($vs_pk, $vn_id);
 			$t_oxor->set('representation_id', $t_rep->getPrimaryKey());
 			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
-			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : null);
+			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $t_rep->getPrimaryKey());
 			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
 			$t_oxor->insert();
 		
 		
 			if ($t_oxor->numErrors()) {
 				$this->errors = array_merge($this->errors, $t_oxor->errors());
-				$t_rep->delete();
-				if ($t_rep->numErrors()) {
-					$this->errors = array_merge($this->errors, $t_rep->errors());
-				}
+				//$t_rep->delete();
+				//if ($t_rep->numErrors()) {
+				//	$this->errors = array_merge($this->errors, $t_rep->errors());
+				//}
 				return false;
 			}
 			
@@ -496,6 +602,15 @@
 			$va_metadata = $t_rep->get('media_metadata', array('binary' => true));
 			if (caExtractEmbeddedMetadata($this, $va_metadata, $pn_locale_id)) {
 				$this->update();
+			}
+			
+			
+			// Trigger automatic replication
+			$va_auto_targets = $t_rep->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $t_rep->get('access')));
+			if(is_array($va_auto_targets)) {
+				foreach($va_auto_targets as $vs_target => $va_target_info) {
+					$t_rep->replicateMedia('media', $vs_target);
+				}
 			}
 		
 			if (isset($pa_options['returnRepresentation']) && (bool)$pa_options['returnRepresentation']) {
@@ -515,16 +630,18 @@
 		 * @param bool $pb_is_primary Sets 'primaryness' of representation. If you wish to leave the primary setting to its current value set this null or omit the parameter.
 		 * @param array $pa_values
 		 * @param array $pa_options
+		 *		centerX = Horizontal position of image center used when cropping as a percentage expressed as a decimal between 0 and 1. If omitted existing value is maintained. Note that both centerX and centerY must be specified for the center to be changed.
+		 *		centerY = Vertical position of image center used when cropping as a percentage expressed as a decimal between 0 and 1. If omitted existing value is maintained. Note that both centerX and centerY must be specified for the center to be changed.
 		 *
 		 * @return bool True on success, false on failure, null if no row has been loaded into the object model 
 		 */
 		public function editRepresentation($pn_representation_id, $ps_media_path, $pn_locale_id, $pn_status, $pn_access, $pb_is_primary=null, $pa_values=null, $pa_options=null) {
 			if (!($vn_id = $this->getPrimaryKey())) { return null; }
-		
+			$va_old_replication_keys = array();
+			
 			$t_rep = new ca_object_representations();
 			if ($this->inTransaction()) {
-				$o_trans = $this->getTransaction();
-				$t_rep->setTransaction($o_trans);
+				$t_rep->setTransaction($this->getTransaction());
 			}
 			if (!$t_rep->load(array('representation_id' => $pn_representation_id))) {
 				$this->postError(750, _t("Representation id=%1 does not exist", $pn_representation_id), "RepresentableBaseModel->editRepresentation()");
@@ -536,6 +653,11 @@
 				$t_rep->set('access', $pn_access);
 			
 				if ($ps_media_path) {
+					if(is_array($va_replication_targets = $t_rep->getUsedMediaReplicationTargets('media'))) {
+						foreach($va_replication_targets as $vs_target => $va_target_info) {
+							$va_old_replication_keys[$vs_target] = $t_rep->getMediaReplicationKey('media', $vs_target);
+						}
+					}
 					$t_rep->set('media', $ps_media_path, $pa_options);
 				}
 			
@@ -567,6 +689,28 @@
 				if ($t_rep->numErrors()) {
 					$this->errors = array_merge($this->errors, $t_rep->errors());
 					return false;
+				}
+				
+				// Set image center if specified
+				$vn_center_x = caGetOption('centerX', $pa_options, null);
+				$vn_center_y = caGetOption('centerY', $pa_options, null);
+				if (strlen($vn_center_x) && (strlen($vn_center_y)) && ($vn_center_x >= 0) && ($vn_center_y >= 0) && ($vn_center_x <= 1) && ($vn_center_y <= 1)) {
+					$t_rep->setMediaCenter('media', (float)$vn_center_x, (float)$vn_center_y);
+				}
+					
+				if ($ps_media_path) {
+					// remove any replicated media
+					foreach($va_old_replication_keys as $vs_target => $vs_old_replication_key) {
+						$t_rep->removeMediaReplication('media', $vs_target, $vs_old_replication_key, array('force' => true));
+					}
+					
+					// Trigger automatic replication
+					$va_auto_targets = $t_rep->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $t_rep->get('access')));
+					if(is_array($va_auto_targets)) {
+						foreach($va_auto_targets as $vs_target => $va_target_info) {
+							$t_rep->replicateMedia('media', $vs_target);
+						}
+					}
 				}
 			
 				if (!($t_oxor = $this->_getRepresentationRelationshipTableInstance())) { return null; }
@@ -623,20 +767,38 @@
 				}
 			}
 			$t_rep = new ca_object_representations();
+			if ($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction()); }
 			if (!$t_rep->load($pn_representation_id)) {
 				$this->postError(750, _t("Representation id=%1 does not exist", $pn_representation_id), "RepresentableBaseModel->removeRepresentation()");
 				return false;
 			} else {
-				if (!($va_rels = $t_rep->hasRelationships()) || !is_array($va_rels) || !sizeof($va_rels)) {
-					//
-					// Only delete the related representation if nothing else is related to it
-					//
+				//
+				// Only delete the related representation if nothing else is related to it
+				//
+
+				$va_rels = $t_rep->hasRelationships();
+
+				if(is_array($va_rels) && isset($va_rels['ca_object_representation_labels'])){ // labels don't count as relationships in this case
+					unset($va_rels['ca_object_representation_labels']);
+				}
+				if(is_array($va_rels) && isset($va_rels['ca_objects_x_object_representations']) && ($va_rels['ca_objects_x_object_representations'] <= 1)){
+					unset($va_rels['ca_objects_x_object_representations']);
+				}
+
+				if (!is_array($va_rels) || (sizeof($va_rels) == 0)) {
 					$t_rep->setMode(ACCESS_WRITE);
-					$t_rep->delete(false, $pa_options);
+					$t_rep->delete(true, $pa_options);
 				
 					if ($t_rep->numErrors()) {
 						$this->errors = array_merge($this->errors, $t_rep->errors());
 						return false;
+					}
+				}
+						
+				// remove any replicated media
+				if(is_array($va_replication_targets = $t_rep->getUsedMediaReplicationTargets('media'))) {
+					foreach($va_replication_targets as $vs_target => $va_target_info) {
+						$t_rep->removeMediaReplication('media', $vs_target, $t_rep->getMediaReplicationKey('media', $vs_target));
 					}
 				}
 			
@@ -661,6 +823,43 @@
 				}
 			}
 			return false;
+		}
+		# ------------------------------------------------------
+		/** 
+		 * Link existing media represention to currently loaded item
+		 *
+		 * @param $pn_representation_id - 
+		 * @param $pb_is_primary - if set to true, representation is designated "primary." Primary representation are used in cases where only one representation is required (such as search results). If a primary representation is already attached to this item, then it will be changed to non-primary as only one representation can be primary at any given time. If no primary representations exist, then the new representation will always be marked primary no matter what the setting of this parameter (there must always be a primary representation, if representations are defined).
+		 * @param $pa_options - an array of options passed through to BaseModel::set() when creating the new representation. Currently supported options:
+		 *		rank - a numeric rank used to order the representations when listed
+		 *
+		 * @return mixed Returns primary key (link_id) of the relatipnship row linking the  representation to the item; boolean false is returned on error
+		 */
+		public function linkRepresentation($pn_representation_id, $pb_is_primary, $pa_options=null) {
+			if (!($vn_id = $this->getPrimaryKey())) { return null; }
+			if (!$pn_locale_id) { $pn_locale_id = ca_locales::getDefaultCataloguingLocaleID(); }
+		
+			if (!ca_object_representations::find(array('representation_id' => $pn_representation_id), array('transaction' => $this->getTransaction()))) { return null; }
+			if (!($t_oxor = $this->_getRepresentationRelationshipTableInstance())) { return null; }
+			$vs_pk = $this->primaryKey();
+			
+			if ($this->inTransaction()) {
+				$t_oxor->setTransaction($this->getTransaction());
+			}
+			$t_oxor->setMode(ACCESS_WRITE);
+			$t_oxor->set($vs_pk, $vn_id);
+			$t_oxor->set('representation_id', $pn_representation_id);
+			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
+			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $pn_representation_id);
+			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
+			$t_oxor->insert();
+		
+		
+			if ($t_oxor->numErrors()) {
+				$this->errors = array_merge($this->errors, $t_oxor->errors());
+				return false;
+			}
+			return $t_oxor->getPrimaryKey();
 		}
 		# ------------------------------------------------------
 		/**
@@ -695,11 +894,11 @@
 		 *
 		 * @return array An array with information about matching representations, in the same format as that returned by self::getRepresentations()
 		 */
-		public function representationsOfClass($ps_class, $pa_versions=null, $pa_version_sizes=null, $pa_options=null) {
+		public function representationsOfClass($ps_class, $pa_options=null) {
 			if (!($vs_mimetypes_regex = caGetMimetypesForClass($ps_class, array('returnAsRegex' => true)))) { return array(); }
 		
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations($pa_versions, $pa_version_sizes, $pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations($pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
 					if (preg_match("!{$vs_mimetypes_regex}!", $va_rep['mimetype'])) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
@@ -712,21 +911,16 @@
 		/**
 		 * Returns information for representations attached to the current item with the specified mimetype. 
 		 *
-		 * @param array or string $pa_mimetype The mimetypes to return representations for. 
+		 * @param string $ps_mimetype The mimetype to return representations for. 
 		 * @param array $pa_options Options for selection of representations to return; same as options for self::getRepresentations()
 		 *
 		 * @return array An array with information about matching representations, in the same format as that returned by self::getRepresentations()
 		 */
-		public function representationsWithMimeType($pa_mimetype, $pa_options=null) {
-			if(!is_array($pa_mimetype)){
-				$pa_mimetypes = array($pa_mimetype);
-			}else{
-				$pa_mimetypes = $pa_mimetype;
-			}
+		public function representationsWithMimeType($ps_mimetype, $pa_options=null) {
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations($pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
-					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
+					if ($ps_mimetype == $va_rep['mimetype']) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
 					}
 				}
@@ -777,7 +971,7 @@
 			$vs_pk = $this->primaryKey();
 		
 			$qr_res = $o_db->query("
-				SELECT oxor.{$vs_pk}, orep.media, orep.representation_id
+				SELECT oxor.{$vs_pk}, orep.media
 				FROM ca_object_representations orep
 				INNER JOIN {$vs_linking_table} AS oxor ON oxor.representation_id = orep.representation_id
 				WHERE
@@ -787,7 +981,6 @@
 			$va_media = array();
 			while($qr_res->nextRow()) {
 				$va_media_tags = array();
-				$va_media_tags["representation_id"] = $qr_res->get("representation_id");
 				foreach($pa_versions as $vs_version) {
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
@@ -843,9 +1036,9 @@
 		/**
 		 *
 		 */
-		static function getRepresentationRelationshipTableName($ps_table) {
+		static public function getRepresentationRelationshipTableName($ps_table_name) {
 			$o_dm = Datamodel::load();
-			$va_path = $o_dm->getPath($ps_table, 'ca_object_representations');
+			$va_path = $o_dm->getPath($ps_table_name, 'ca_object_representations');
 			if (!is_array($va_path) || (sizeof($va_path) != 3)) { return null; }
 			$va_path = array_keys($va_path);
 			return $va_path[1];
@@ -863,4 +1056,3 @@
 		}
 		# ------------------------------------------------------
 	}
-?>

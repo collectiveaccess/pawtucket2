@@ -80,7 +80,13 @@
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
- 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			// Don't set last find when loading facet, as some other controllers use this action and setting
+ 			// last find will disrupt ResultContext navigation by setting it to "browse" when in fact a search (or some other
+ 			// context) is still in effect.
+ 			if (!$this->request->getParameter('getFacet', pInteger)) {
+ 				$this->opo_result_context->setAsLastFind();
+ 			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('name', $va_browse_info['displayName']);
@@ -92,6 +98,7 @@
  				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
  			} else {
 				$va_views['pdf'] = array();
+				$va_views['timelineData'] = array();
 			}
 			
  			if(!in_array($ps_view, array_keys($va_views))) {
@@ -100,7 +107,6 @@
  			
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
 
- 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
@@ -221,6 +227,14 @@
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
+		
+			//
+			// Current criteria
+			//
+			$va_criteria = $o_browse->getCriteriaWithLabels();
+			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
+				unset($va_criteria['_search']);
+			} 
 
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true));
 			
@@ -243,14 +257,6 @@
 			
 			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
 			
-		
-			//
-			// Current criteria
-			//
-			$va_criteria = $o_browse->getCriteriaWithLabels();
-			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-				unset($va_criteria['_search']);
-			}
 			
 			// remove base criteria from display list
 			if (is_array($va_base_criteria)) {
@@ -273,6 +279,32 @@
 			//
 			
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
+			
+			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
+				$va_letters = array();
+				while($qr_res->nextHit()) {
+					$va_letters[caRemoveAccents(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1))]++;
+				}
+				$this->view->setVar('letterBar', $va_letters);
+				$qr_res->seek(0);
+			}
+			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
+			
+						
+			if ($vs_letter_bar_field && ($vs_l = $this->request->getParameter('l', pString))) {
+				$va_filtered_ids = array();
+				while($qr_res->nextHit()) {
+					if (caRemoveAccents(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)) == $vs_l) {
+						$va_filtered_ids[] = $qr_res->getPrimaryKey();
+					}
+				}
+				if (sizeof($va_filtered_ids) > 0) {
+					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
+				}
+			}
+			$this->view->setVar('letter', $vs_l);
+			
+			
 			$this->view->setVar('result', $qr_res);
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
@@ -298,13 +330,13 @@
 				
 			$this->opo_result_context->saveContext();
  			
- 			if ($vn_type_id) {
- 				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 			if ($ps_type) {
+ 				if ($this->render("Browse/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
  			switch($ps_view) {
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -345,6 +377,23 @@
  			$this->view->setVar("browse_name", $va_browse_info["displayName"]);
 			$this->render("pageFormat/browseMenuFacets.php");
  		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * Returns summary of current browse parameters suitable for display.
+ 		 *
+ 		 * @return string Summary of current browse criteria ready for display
+ 		 */
+ 		public function getCriteriaForDisplay($po_browse) {
+ 			$va_criteria = $po_browse->getCriteriaWithLabels();
+ 			if (!sizeof($va_criteria)) { return ''; }
+ 			$va_criteria_info = $po_browse->getInfoForFacets();
+ 			
+ 			$va_buf = array();
+ 			foreach($va_criteria as $vs_facet => $va_vals) {
+ 				$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+ 			}
+ 			
+ 			return join(" / ", $va_buf);
+  		}
  		# -------------------------------------------------------
 	}
- ?>
