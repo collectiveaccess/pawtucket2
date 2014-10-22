@@ -104,13 +104,15 @@ $va_access_values = caGetUserAccessValues($this->request);
 		#print_r($va_artists);
 		#print "<pre>";
 		foreach ($va_artists as $va_letter_key => $va_artist_name) { 
-			print "<div class='letterMenu'><a href='#".$va_letter_key."'>".$va_letter_key."</a></div>";
+			print "<div class='letterMenu'><a href='#' onclick='$(\".letter\").hide();$(\"#section{$va_letter_key}\").fadeIn();return false;'>".$va_letter_key."</a></div>";
 		}
 		foreach ($va_artists as $va_letter_key => $va_artist_name) {
+			print "<div id='section".$va_letter_key."' style='display:none;' class='letter'>";
 			print "<div class='letterHeader'><a name='".$va_letter_key."'>".$va_letter_key."</a></div>";
 			foreach ($va_artist_name as $va_artist) {
 				print "<div class='artistName'>".$va_artist."</div>";
 			}
+			print "</div>";
 		}
 		
 ?>			

@@ -63,7 +63,7 @@
 				{{{<ifdef code="ca_objects.library_formats"><div class='unit'><span class='metaTitle'>Format </span><span class="meta">^ca_objects.library_formats%useSingular=1</span></div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit '><span class='metaTitle'>Variant Title </span><span class='meta'><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
 				{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher" min="1" ><div class='unit '><span class='metaTitle'>Publisher </span><span class='meta'><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter="<br/>"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.ISBN"><div class='unit '><span class='metaTitle'>ISBN </span><span class='meta'>^ca_objects.ISBN</span></div></ifdef>}}}
+				{{{<ifcount min="1" code="ca_objects.ISBN"><div class='unit '><span class='metaTitle'>ISBN </span><span class='meta'><unit delimiter="<br/>">^ca_objects.ISBN</unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.altISBN"><div class='unit '><span class='metaTitle'>Alternate ISBN </span><span class='meta'>^ca_objects.altISBN</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.edition_statment"><div class='unit '><span class='metaTitle'>Edition Statement </span><span class='meta'>^ca_objects.edition_statment</span></div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_objects.language"><div class='unit '><span class='metaTitle'>Languages </span><span class='meta'><unit delimiter="<br/>">^ca_objects.language</unit></span></div></ifcount>}}}
@@ -73,7 +73,8 @@
 					print "<div class='unit '><span class='metaTitle'>Library of Congress Subject Headings</span><span class='meta'>";
 					foreach ($va_lcsh_terms as $k_lchs => $va_lcsh_term) {
 						$va_lcsh = explode("[", $va_lcsh_term['lcsh_terms']);
-						print caNavLink($this->request, $va_lcsh[0]."<br/>", '', '', 'MultiSearch', 'Index', array('search' => 'ca_objects.lcsh_terms:'.$va_lcsh[0]));
+						
+						print caNavLink($this->request, $va_lcsh[0]."<br/>", '', '', 'MultiSearch', 'Index', array('search' => 'ca_objects.lcsh_terms:"'.preg_replace('/[^A-Za-z0-9]/', ' ', $va_lcsh[0]).'"'));
 					}
 					print "</span></div>"; 
 				}				

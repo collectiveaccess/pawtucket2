@@ -57,7 +57,7 @@
 					$vs_style = "style='font-style:italic;'";
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
+					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.library', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'books/'.$qr_results->get('ca_objects.object_id'));
 				} elseif ($qr_results->get('ca_objects.type_id') == 25) {
 					print caNavLink($this->request, "<div class='resultImg'><i class='glyphicon glyphicon-volume-up'></i>".$qr_results->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', 'artworks/'.$qr_results->get('ca_objects.object_id'));
 				} elseif ($qr_results->get('ca_objects.type_id') == 26) {
@@ -80,7 +80,7 @@
 				}
 
 				if ($qr_results->get('ca_objects.type_id') == 30) {
-					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author'))."</p>";
+					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '))."</p>"; 
 					print "<p class='artist dark'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'publisher'))."</p>";
 				}				
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
