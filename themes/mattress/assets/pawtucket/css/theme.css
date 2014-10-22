@@ -14,6 +14,7 @@ a {
 a:hover {
 	background: transparent;
 	color:#000;
+	text-decoration:underline;
 }
 a:active {
 	background:transparent;
@@ -368,9 +369,7 @@ hr {
 #detail {
 	color:#000;
 }
-#detail a {
-	text-decoration:none;
-}
+
 #detailHeader {
 	width:775px;
 }
@@ -426,7 +425,7 @@ h2 span.artist {
 	background-repeat:no-repeat;
 	background-position: center right;
 	padding-right:15px;
-	width: 45px;
+	width: 85px;
 }
 #detail .detailNavBgLeft .results {
 	padding:10px 0px 8px 0px;
@@ -489,6 +488,20 @@ h2 span.artist {
 	font-size: 15px;
 	margin-bottom:10px;
 }
+#infoArea .artist.description {
+	clear:left;
+	margin-top:20px;
+}
+#infoArea .readArtist a{
+	clear:left;
+	color: #fff;
+	background-color: #000;
+	font-family: "ProximaNovaRegular";
+	padding: 5px;
+	width: auto;
+	display:inline-block;
+	float:left;
+}
 .readmore-js-toggle, .readmore-js-section {
 	float:left;
 	width:500px;
@@ -534,6 +547,10 @@ a.readmore-js-toggle {
 }
 #detail.entities .detailSubtitle{
 	text-transform:uppercase;
+}
+#detail.entities #eventsBlock .occurrencesResult{
+	width: 150px;
+	margin-right: 20px;
 }
 #detail.entities .mediaThumbs,  #detail.occurrences .mediaThumbs{
 	float:left;
@@ -621,20 +638,55 @@ a.readmore-js-toggle {
 	height:auto;
 	margin-bottom:25px;	
 }
-div.caMediaOverlayControls .close {
-	opacity:1; 
-	margin-right:80px;
-	line-height:.8;
+.close.viewer {
+	opacity: 1;
+	margin-right: 40px;
+	line-height: .8;
+	float:none;
+	width: auto;
+	height: auto;
+	padding:10px;
+	border-radius:4px;
+	background-image: none;
+	margin: 0px;
+	color: #fff;
+	background-color: #000;
+	position: absolute;
+	right: 40px;
+	top: 10px;
+	text-shadow:none;
+	z-index:3200;
+}
+.close.viewer a {
+	color:#fff;
+	padding:10px;
+}
+div.caMediaOverlayControls .objectInfo {
+	width:95%;
+	font-size:14px;
+}
+div.caMediaOverlayControls {
+	opacity:1;
 }
 div.caMediaOverlayControls a {
 	font-size:14px;
 	font-family: "ProximaNovaRegular";
 	font-weight:normal;
-	text-shadow:none;
-	
+	text-shadow:none;	
+}
+div.caMediaOverlayControls a {
+	font-size:16px;
+}
+div.caMediaOverlayControls:hover {
+	background-color:#000;
 }
 /* Collection List */
 
+.researchInfo {
+	font-size:18px;
+	line-height:1.2em;
+	padding-bottom:20px;
+}
 .collectionUnit {
 	margin-bottom:35px;
 }
@@ -730,6 +782,9 @@ div.caMediaOverlayControls a {
 	margin-bottom:20px;
 	/* height:auto; */
 	clear:none;
+}
+#detail  .blockResults {
+	height:auto;
 }
 #detail  .blockResults.entities {
 	height:auto;
@@ -923,8 +978,11 @@ div.caMediaOverlayControls a {
 	height:auto;
 	min-height: 250px;
 }
+#browseResults .blockTitle a{
+	color:#fff;
+}
 #browseHeader {
-	height:20px;
+	height:40px;
 	width:100%;
 	clear:both;
 }
@@ -952,9 +1010,14 @@ div.caMediaOverlayControls a {
 }
 #bMorePanel #bLetterBar {
 	margin-right:10px;
+	display:none;
 }
 #bMorePanel #bScrollList {
 	padding-bottom:50px;
+	color:#000;
+}
+#bMorePanel #bScrollList strong {
+	display:none;
 }
 #bMorePanel #bScrollList a {
 	line-height: 1.2em;
@@ -986,6 +1049,9 @@ div.caMediaOverlayControls a {
 	color: red;
 	text-decoration: underline;
 	background-image:none;
+}
+#bRefine a:hover {
+	text-decoration:underline;
 }
 #bRefine div {
 	margin-bottom: 0px;
@@ -1021,7 +1087,8 @@ div.caMediaOverlayControls a {
 }
 .bResultItem .bResultItemImg {
 	height: 180px;
-	min-width: 120px; 
+	width:180px;
+	overflow:hidden;
 	background-color: #f7f7f7;
 }
 .bResultItem:hover .bResultItemImg {
@@ -1035,12 +1102,15 @@ div.caMediaOverlayControls a {
 	font-size:12px;
 	color:#000;
 }
+.bResultItem .bResultItemText {
+	width:180px;
+}
 span.criteria {
 	background-color:#000;
 	padding:5px;
 	color:#fff;
 	text-transform:uppercase;
-	margin-left:10px;
+	margin-left:0px;
 }
 .browseRemoveFacet {
 	margin-left: 5px;
@@ -1081,8 +1151,17 @@ span.criteria {
 	float: right;
 	font-size: 18px;
 	padding-bottom: 0px;
-	clear: both;
+	clear: right;
 	text-align: right; 
+}
+#browseHeader .alpha {
+	float:left;
+	font-size:15px;
+	font-family: "ProximaNovaBold";	
+	padding-bottom:15px;
+}
+#browseHeader .alpha a{
+	color:red;
 }
 .btn-group .sortBy, .sortMenu .sortBy{
 	float:left;
@@ -1121,6 +1200,22 @@ span.criteria {
 	margin-right: 10px;
 	font-size: 13px; 
 }
+.toTop {
+	position: fixed;
+	bottom:0;
+	right:0;
+	width:200px;
+	height:35px;
+	text-align:center;
+	padding:8px;
+	background-color:#000;
+	color:#fff;
+	z-index:10000;
+	display:none;
+}
+.toTop a {
+	color:#fff;
+}
 /* List View */
 
 
@@ -1149,6 +1244,7 @@ span.criteria {
 }
 .bResultListItem .bResultListItemText {
 	padding-right: 20px;
+	height:45px;
 }
 .bResultListItem .bResultListItemText a {
 	font-family: "ProximaNovaRegular";
@@ -1423,6 +1519,23 @@ a.downloadButton{
 	width: 595px;
 	float: right;
 }
+.contributeForm input, .contributeForm textarea {
+	font-size:14px;
+}
+.contributeForm textarea {
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
+	border: 2px inset #f;
+	border-image-source: initial;
+	border-image-slice: initial;
+	border-image-width: initial;
+	border-image-outset: initial;
+	border-image-repeat: initial;
+	-webkit-rtl-ordering: logical;
+	-webkit-user-select: text;
+	cursor: auto;
+}
 .contributeForm h1{
 	padding-left:0px;
 	color:#EE3E43;
@@ -1454,3 +1567,5 @@ a.downloadButton{
 	padding-bottom:3px;
 	display:inline-block;
 }
+
+

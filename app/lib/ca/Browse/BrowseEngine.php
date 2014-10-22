@@ -2656,7 +2656,7 @@
 										}
 									}
 								}
-								return $va_values_sorted_by_list_order;
+								return caSortArrayByKeyInValue($va_values_sorted_by_list_order, array('label'));
 								break;
 							case __CA_ATTRIBUTE_VALUE_OBJECTS__:
 							case __CA_ATTRIBUTE_VALUE_ENTITIES__:
@@ -2687,19 +2687,6 @@
 							if ($va_criteria[$vs_val]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 							
 							switch($vn_element_type) {
-								case __CA_ATTRIBUTE_VALUE_LIST__:
-									$vn_child_count = 0;
-																
-									if ($va_list_parent_ids[$vs_val]) {
-										 $vn_child_count++;
-									}
-									$va_values[$vs_val] = array(
-										'id' => $vs_val,
-										'label' => $va_list_items[$vs_val]['name_plural'] ? $va_list_items[$vs_val]['name_plural'] : $va_list_items[$vs_val]['item_value'],
-										'parent_id' => $va_list_items[$vs_val]['parent_id'],
-										'child_count' => $vn_child_count
-									);
-									break;
 								case __CA_ATTRIBUTE_VALUE_OBJECTS__:
 								case __CA_ATTRIBUTE_VALUE_ENTITIES__:
 								case __CA_ATTRIBUTE_VALUE_PLACES__:

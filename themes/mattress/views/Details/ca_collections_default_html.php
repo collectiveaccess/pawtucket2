@@ -17,7 +17,11 @@
 		<div id='detailHeader'>
 			<h2>
 				{{{<unit>^ca_collections.preferred_labels.name</unit>}}}
-				{{{<unit delimiter=""><ifdef code="ca_entities.preferred_labels"><span class='artist'> / ^ca_entities.preferred_labels</span></ifdef></unit>}}}
+<?php
+				if ($va_artist_title = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ' / '))) {
+					print "<span class='artist'> / ".$va_artist_title."</span>";
+				}
+?>				
 			</h2>
 			{{{<ifcount code="ca_collections.date.dates_value" min="1"><div class='detailSubtitle'><unit delimiter="<br/>">^ca_collections.date.dates_value</unit></div></ifcount>}}}
 		</div>
@@ -87,9 +91,9 @@
 ?>	
 			<div class='floorplan'>
 <?php
-				print "<div class='title'>"._t('Install Location')."</div>";
-				print "<div class='floor'>Fourth Floor</div>";
-				print "<div class='plan'><img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/floorplan.png' border='0'></div>";
+			#	print "<div class='title'>"._t('Install Location')."</div>";
+			#	print "<div class='floor'>Fourth Floor</div>";
+			#	print "<div class='plan'><img src='".$this->request->getThemeUrlPath()."/assets/pawtucket/graphics/floorplan.png' border='0'></div>";
 ?>		
 			</div>
 <?php
@@ -97,19 +101,20 @@
 		if ($t_item->get('ca_collections.type_id') != '131') { 
 			print "<div class='collectionHeading'>Identifier</div><p>".$t_item->get('ca_collections.idno')."</p>";
 		}
+		if ($va_mat_display = $t_item->get('ca_collections.mat_tech_display')) {
+			print "<div class='collectionHeading'>Materials</div><p>".$va_mat_display."<p>";
+		}		
 		if (($vs_collection = $t_item->get('ca_collections.description.description_text')) && ($t_item->get('ca_collections.type_id') != '131')) {
 			print "<div class='description trimText'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
-		#if (($vs_bio = $t_item->get('ca_entities.biography.bio_text'))) {
-		#	print "<div class='description trimText'><div class='metatitle'>"._t('About the Artist')."</div>".$t_item->get('ca_entities.biography.bio_text')."</div>";
-		#	print "<div>".caNavLink($this->request, 'readmore', '', '', 'Detail', 'entities/'.$t_item->get('ca_entities.entity_id'))."</div>";
-		#}		
+		if (($vs_bio = $t_item->get('ca_entities.biography.bio_text', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => '<br/><br/>')))) {
+			print "<div class='artist description' style='max-height:205px;overflow:hidden;'><div class='metatitle'>"._t('About the Artist')."</div>".$vs_bio."</div>";
+			print "<div class='readArtist'>".caNavLink($this->request, 'Read More', '', '', 'Detail', 'entities/'.$t_item->get('ca_entities.entity_id'))."</div>";
+		}		
 		if ($t_item->get('ca_collections.type_id') == '131') {
 			print "<div class='metatitle'>Collection Identifier</div><p>".$t_item->get('ca_collections.idno')."</p>";
 		}
-		if ($va_mat_display = $t_item->get('ca_collections.mat_tech_display')) {
-			print "<div class='collectionHeading'>Materials</div><p>".$va_mat_display."<p>";
-		}
+
 		if ($t_item->get('ca_collections.collection_note')) {
 			$va_collection_notes = $t_item->get('ca_collections.collection_note', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
 			foreach ($va_collection_notes as $key_collection => $va_collection_note) {
@@ -232,8 +237,8 @@
 	if (sizeof($va_entities) > 0) {
 		print "<div id='entitiesBlock'>";
 		print "<div class='blockTitle related'>"._t('Related People')."</div>";
-			print "<div class='blockResults'>";
-				print "<div>";
+			print "<div class='blockResults scrollBlock'>";
+				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
 				foreach ($va_entities as $entity_id => $va_entity) {
 					$vn_entity_id = $va_entity['entity_id'];
@@ -246,7 +251,7 @@
 					}
 				}
 				if ((end($va_entities) == $va_entity) && ($vn_i < 5)){print "</div>";}								
-				print "</div>";
+				print "</div></div>";
 			print "</div><!-- end blockResults -->";	
 		print "</div><!-- end entitiesBlock -->";
 	}	

@@ -35,12 +35,20 @@
 					<div class="col-sm-offset-<?php print $vn_label_col; ?> col-sm-7">
 <?php
 				if($this->request->isAjax()){
+				
+					if (!$this->request->config->get('dont_allow_registration_and_login')) {
 ?>
 					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
-					<br/><a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
+					<br/>
+<?php
+					}
+?>
+					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
 <?php
 				}else{
-					print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+					if (!$this->request->config->get('dont_allow_registration_and_login')) {
+						print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+					}
 					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>

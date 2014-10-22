@@ -13,16 +13,31 @@
 		print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
 	}	
 ?>	
-		<div class="detailNavBgLeft">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
+		<div class="detailNavBgLeft">{{{previousLink}}}
+<?php
+		if ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  == "Yes") {
+			print caNavLink($this->request, 'Back to Toolkits', 'results', '', 'Listing', 'objects');
+		} elseif ($t_object->get('type_id') == 23) {
+			print caNavLink($this->request, 'Back to Editions', 'results', '', 'Listing', 'editions');
+		} else {
+			print $this->getVar('resultsLink');
+		}
+?>			
+		{{{nextLink}}}</div>
 	</div>	
 	<div id="contentArea">
 <?php	
-
-		if($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-			print "<h2>".$t_object->get('ca_objects.nonpreferred_labels.name')."</h2>";
+		if ($t_object->get('type_id') == 23) {
+			$va_artist_name = "<span class='artist'> / ".$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator')))."</span>";
 		} else {
-			print "<h2>".$t_object->get('ca_objects.preferred_labels.name')."</h2>";
-		}		
+			$va_artist_name = "";
+		}
+			if($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+				print "<h2>".$t_object->get('ca_objects.nonpreferred_labels.name')." {$va_artist_name}</h2>";
+			} else {
+				print "<h2>".$t_object->get('ca_objects.preferred_labels.name')." {$va_artist_name}</h2>";
+			}
+				
 ?>	
 		
 		
@@ -141,12 +156,16 @@
 		{{{<ifdef code="ca_objects.dimensions.dimension_note"><div class='collectionHeading'>Dimensions</div><p>^ca_objects.dimensions.dimension_note</p></ifdef>}}}
 
 <?php
-		if (($va_description = $t_object->get('ca_objects.description.description_text')) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes")) {
-			print "<div class='description'><div class='metatitle'>Description</div>".$va_description."</div>";
+		if ($va_materials = $t_object->get('ca_objects.materials', array('delimiter' => ', '))) {
+			print "<div class='collectionHeading'>Materials</div><p>".$va_materials."</p>";
 		}
 		if ($va_photographer = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'restrictToRelationshipTypes' => array('photographer')))) {
 			print "<div class='collectionHeading'>Photographer</div><p>".$va_photographer."</p>";
 		}
+		if (($va_description = $t_object->get('ca_objects.description.description_text')) && ($t_object->get('ca_objects.lesson_plan', array('convertCodesToDisplayText' => true))  != "Yes")) {
+			print "<div class='description'><div class='metatitle'>Description</div>".$va_description."</div>";
+		}
+
 ?>					
 		<div class="clearfix"></div>
 <?php
@@ -204,7 +223,7 @@
 	# Related Artworks Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+		print "<div class='blockTitle related'>"._t('Artworks Exhibited at the MF')."</div>";
 			print "<div class='blockResults'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;
