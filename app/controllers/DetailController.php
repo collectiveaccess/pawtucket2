@@ -53,6 +53,16 @@
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
+ 			
+ 			// expand to aliases
+ 			foreach($this->opa_detail_types as $vs_code => $va_info) {
+ 				if(is_array($va_aliases = caGetOption('aliases', $va_info, null))) {
+ 					foreach($va_aliases as $vs_alias) {
+ 						$this->opa_detail_types[$vs_alias] =& $this->opa_detail_types[$vs_code];
+ 					}
+ 				}
+ 			}
+ 			
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;

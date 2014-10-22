@@ -873,9 +873,10 @@ p.artist.lower {
 .loans .loanImg {
 	max-height: 260px;
 	overflow:hidden;
+	min-width:220px;
 }
 .loans.detail img {
-	width:100%;
+	/*width:100%;*/
 	height:auto;
 }
 .loans.detail .attributeMediaThumbnail img{
@@ -1284,6 +1285,9 @@ p.artist.lower {
 	width: auto; 
 	left: 0; 
 	top: 0; 
+}
+.lbItem:hover .lbExpandedInfo {
+	background-color:#fff;
 }
 .reveal h3 {
 	text-transform:none;

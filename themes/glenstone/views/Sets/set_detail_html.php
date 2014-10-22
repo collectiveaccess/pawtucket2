@@ -5,6 +5,9 @@
 	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
+	
+	$va_export_formats = $this->getVar('export_formats');
+
 ?>
 <div id="lbViewButtons">
 <?php
@@ -37,7 +40,16 @@ if(is_array($va_views) && sizeof($va_views)){
 		}
 ?>
 			<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
-			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "setDetail", array('set_id' => $t_set->getPrimaryKey(), "view" => "pdf", "download" => true)); ?></li>
+<?php
+			if(is_array($va_export_formats) && sizeof($va_export_formats)){
+				// Export as PDF links
+				print "<li class='divider'></li>\n";
+				print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
+				foreach($va_export_formats as $va_export_format){
+					print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+				}
+			}
+?>		
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
 			<li class="divider"></li>

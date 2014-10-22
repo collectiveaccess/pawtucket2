@@ -38,7 +38,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 					</div>
 					<div class="advancedSearchField">
 						Artist:<br/>
-						{{{ca_entities.preferred_labels.displayname%width=220px&height=40px}}}
+						{{{ca_entities.preferred_labels.displayname/artist%width=220px&height=40px}}}
 					</div>
 					<div class="advancedSearchField">
 						Date:<br/>

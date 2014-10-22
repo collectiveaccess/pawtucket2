@@ -47,6 +47,11 @@
  		}
  		# ------------------------------------------------------
  		function registerForm($t_user = "") {
+ 			if ($this->request->config->get('dont_allow_registration_and_login')) {
+ 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+ 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+ 				return;
+ 			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
  			if(!is_object($t_user)){
  				$t_user = new ca_users();
@@ -132,6 +137,11 @@
  		}
  		# -------------------------------------------------------
  		function register() {
+ 			if ($this->request->config->get('dont_allow_registration_and_login')) {
+ 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+ 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+ 				return;
+ 			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
  			# logout user in case is already logged in
 			$this->request->deauthenticate();
