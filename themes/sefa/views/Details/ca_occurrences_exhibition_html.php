@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website", "used")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -34,6 +34,9 @@
 			}
 		}
 	}
+	# --- get related object_id of catalog
+	$vn_catalog_id = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("related"), "restrictToTypes" => array("catalog"), "limit" => 1));
+
 ?>	
 	<div class="row contentbody_sub">
 
@@ -59,6 +62,9 @@
 ?>
 							<li><a href="<?php print $vs_pr_link; ?>">press release</a></li>	
 <?php
+						}
+						if($vn_catalog_id){
+							print "<li>".caDetailLink($this->request, _t("catalog"), '', 'ca_objects', $vn_catalog_id, null, null)."</li>";
 						}
 ?>
 					</ul>
