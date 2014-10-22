@@ -399,7 +399,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $va_block_info); }
 			$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
 			
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {

@@ -857,8 +857,10 @@ class SearchEngine extends SearchBase {
 					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
 					$va_ids[] = $vn_type_id;
 					$this->opa_search_type_ids = array_merge($this->opa_search_type_ids, $va_ids);
+					continue;
 				}
 			}
+			$this->opa_search_type_ids[] = $vn_type_id;
 		}
 		return true;
 	}
