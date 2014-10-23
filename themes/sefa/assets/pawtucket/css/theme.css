@@ -422,7 +422,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 #pageArea.catalog h4{
 	font-size:14px;
 }
-/* ------ Artist list/ fair list ---------- */
+/* ------ Artist, fair, pub list ---------- */
 @media (min-width: 992px) {
 	.artistList .row, .fairList .row, .pubList .row {
 	  margin-right: -30px;
@@ -438,7 +438,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	font-size:20px;
 }
 .pubListing h2, .pubListing h2 a:link, .pubListing h2 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
-	color:#000000;
+	color:#4d4d4d;
 	font-size:13px;
 	line-height:1.2em;
 	margin-top:5px;
@@ -467,9 +467,6 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	.pubListing .pubListingImg, .fairListing .fairListingImg{
 		height:250px;
 	}
-	.pubListing h2, .pubListing h2 a:link, .pubListing h2 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
-		font-size:16px;
-	}
 }
 .artistListing img{
 	width:100%;
@@ -478,6 +475,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 .artistListing, .fairListing, .pubListing{
 	margin:10px 0px 40px 0px;
+}
+.fairListing {
+	margin:10px 0px 0px 0px;
 }
 
 /* -------Exhibition Styles --------*/

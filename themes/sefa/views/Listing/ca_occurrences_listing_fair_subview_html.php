@@ -51,7 +51,7 @@
 			}
 			$vs_image = $qr_list->get("ca_object_representations.media.medium", array("retrictToRelationshipTypes" => "logo"));
 			#print "<div class='col-sm-4 fairListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."<h2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</h2>".$qr_list->get('ca_occurrences.opening_closing')."</div>\n";	
-			print "<div class='col-sm-3 fairListing'><div class='fairListingImg'>".caDetailLink($this->request, ($vs_image) ? $vs_image : "<h2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</h2>", '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div><H2>".$qr_list->get('ca_occurrences.opening_closing')."</H2></div>\n";	
+			print "<div class='col-sm-3 fairListing'><div class='fairListingImg'>".caDetailLink($this->request, ($vs_image) ? $vs_image : "<h2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</h2>", '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div></div>\n";	
 			if($vn_col == 4){
 				print "</div>";
 				$vn_col = 1;

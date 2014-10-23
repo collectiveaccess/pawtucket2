@@ -76,7 +76,6 @@
 		if($t_exhibition->get("ca_occurrences.exhibition_subtitle")){
 			print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
 		}
-		$va_exhibition_dates = $t_exhibition->get("ca_occurrences.opening_closing", array("rawDate" => true));
 		print "<h4>".$t_exhibition->get("ca_occurrences.opening_closing").(($t_exhibition->get("ca_occurrences.opening_reception")) ? " | Opening Reception: ".$t_exhibition->get("ca_occurrences.opening_reception") : "")."</h4>";
 	}
 ?>
