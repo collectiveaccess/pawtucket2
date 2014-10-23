@@ -4,7 +4,7 @@
 monthList = [january, february, march, april, may, june, july, august, september, october, november, december]
 
 # *** the following list of months is for display and *SHOULD* be capitalized where appropriate
-monthListDisplay = [Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sept, Oct, Nov, Dec]
+monthListDisplay = [January, February, March, April, May, June, July, August, September, October, November, December]
 
 # Hash table mapping acceptable month names to the display names defined in 'monthList'
 monthTable = {

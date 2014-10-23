@@ -56,7 +56,9 @@
 				$va_years = array();
 				while($qr_list->nextHit()) {
 					$va_ids[] = $qr_list->get("occurrence_id");	
-					$va_years[$qr_list->get("exhibition_year")] = $qr_list->get("exhibition_year");		
+					if($qr_list->get("exhibition_year")){
+						$va_years[$qr_list->get("exhibition_year")] = $qr_list->get("exhibition_year");
+					}
 				}
 				$qr_list->seek(0);
 				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), 'checkAccess' => $va_access_values));
@@ -81,23 +83,27 @@
 		
 		
 <?php
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
-		$vs_year = null;
-		while($qr_list->nextHit()) {
-			if($vs_year != $qr_list->get("exhibition_year")){
-				if($vs_year){
-					print "</div><!-- end yearTab -->";
+	if(is_array($va_lists) && sizeof($va_lists)){
+		foreach($va_lists as $vn_type_id => $qr_list) {
+			if(!$qr_list) { continue; }
+			$vs_year = null;
+			while($qr_list->nextHit()) {
+				if($vs_year != $qr_list->get("exhibition_year")){
+					if($vs_year){
+						print "</div><!-- end yearTab -->";
+					}
+					$vs_year = $qr_list->get("exhibition_year");
+					print "<div id='yearTab".$vs_year."' class='yearTab'>";
 				}
-				$vs_year = $qr_list->get("exhibition_year");
-				print "<div id='yearTab".$vs_year."' class='yearTab'>";
+				print "<div class='row'>";
+				print "<div class='col-sm-4 exhibitionListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>\n";
+				print "<div class='col-sm-8 exhibitionListing'><h2><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h2>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
+				print "</div><!-- end row -->\n";
 			}
-			print "<div class='row'>";
-			print "<div class='col-sm-4 exhibitionListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>\n";
-			print "<div class='col-sm-8 exhibitionListing'><h2><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h2>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
-			print "</div><!-- end row -->\n";
+			print "</div><!-- end last yearTab -->";
 		}
-		print "</div><!-- end last yearTab -->";
+	}else{
+		print "<H2>There are no upcoming exhibitions scheduled</H2>";
 	}
 ?>
 		</div><!--end col-sm-9-->
