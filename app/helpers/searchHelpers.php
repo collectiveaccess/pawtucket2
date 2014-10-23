@@ -394,7 +394,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			}
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
- 			$va_options['sort'] = $ps_sort;
+ 			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
