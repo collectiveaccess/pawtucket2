@@ -408,6 +408,26 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .jcarousel-control-next {
 	right:0px;
 }
+.letterMenu {
+	display:inline-block;
+	font-weight:bold;
+	text-transform: uppercase;
+	color:#333;
+	padding:0px 10px 5px 0px;
+	font-size:16px;
+}
+.letterHeader {
+	font-weight:bold;
+	text-transform: uppercase;
+	color:#333;
+	font-size:16px;
+	padding:10px 10px 10px 0px;
+}
+.artistName {
+	display:inline-block;
+	width:30%;
+	padding-right:10px;
+}
 
 /* Search Results */
 
@@ -454,6 +474,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	height:295px;
 	margin-bottom:20px;
 	width: 220px;
+	overflow:hidden;
 }
 .archivesResult .resultImg, .artworksResult .resultImg{
 	border:1px solid #ddd;
@@ -766,6 +787,10 @@ p.artist.lower {
 	border:1px solid #ddd; 
 	font-size:12px;
 	border-radius:4px;
+}
+p.bookTitle {
+	text-decoration:underline;
+	padding-bottom:2px;
 }
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg {
