@@ -96,8 +96,19 @@
 
 				print "
 	<div class='col-xs-12'>
-		<div class='bResultListRow ".(($vn_bg == 1) ? "bResultListRowBg" : "")."'>{$vs_label_detail_link}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+		<div class='bResultListRow ".(($vn_bg == 1) ? "bResultListRowBg" : "")."'>{$vs_label_detail_link}";
+				print "<small>";
+				if($qr_res->get("ca_objects.description")){
+					print "<p>".$qr_res->get("ca_objects.description")."</p>";
+				}
+				if($qr_res->get("ca_objects.regions")){
+					print "<div><b>"._t("Applicable region(s):")." </b>".$qr_res->get("ca_objects.regions", array("delimiter" => ", ", "convertCodesToDisplayText" => true))."&nbsp;&nbsp;&nbsp;</div>";
+				}
+				if($qr_res->get("ca_objects.language")){
+					print "<div><b>"._t("Language:")." </b>".$qr_res->get("ca_objects.language", array("convertCodesToDisplayText" => true))."</div>";
+				}
+				print "</small>";
+				print ((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 		</div><!-- end bResultListItemContent -->
 	</div><!-- end col -->";
 				$vn_bg++;
