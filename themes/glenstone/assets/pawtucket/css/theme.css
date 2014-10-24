@@ -479,22 +479,23 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
 	position: absolute;
 	top: 30px;
-	margin-left: 60px;
+	margin-left: 65px;
 	font-size: 48px;
 	background-color: #eee;
 	padding: 10px;
 	border-radius: 30px;
 	opacity: .7;
 }
-.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
-	position: absolute;
-	top: 30px;
-	margin-left: 60px;
-	font-size: 48px;
+.resultImg.noimage .glyphicon.glyphicon-film {
+	margin-left:-30px;
+}
+.resultImg.noimage .glyphicon.glyphicon-book {
+	font-size:48px;
 	background-color: #eee;
-	padding: 10px;
+	padding: 10px 12px 10px 8px;
 	border-radius: 30px;
 	opacity: .7;
+	top:70px;
 }
 .bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
 	font-size: 30px;
@@ -504,10 +505,18 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	opacity: .7;
 	position: absolute;
 	left: 40%;
-	top: 18%;
+	top: 50px;
 }
 .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
-	top:27%;
+	top:50px;
+}
+.bResultItemImg .glyphicon.glyphicon-book{
+	font-size:48px;
+	background-color: #eee;
+	padding: 10px 12px 10px 8px;
+	border-radius: 30px;
+	opacity: .7;
+	top:20px;
 }
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
