@@ -403,23 +403,23 @@ H2, h2{
 	height:50px;
 }
 	
-#comp_nav .col1 > li > a:link, #comp_nav .col1:active > li > a {
-	background-color:#77B072;
+#comp_nav .col1 > li > a:link, #comp_nav .col1 > li > a:focus {
+	background-color:#77B072 !important;
 }
 
 #comp_nav .col1 > li > a:hover{
 	background-color:#80bd7a;
 }
 	
-#comp_nav .col2 > li > a:link, #comp_nav .col2 > li:active > a {
-	background-color:#65A19E;
+#comp_nav .col2 > li > a:link, #comp_nav .col2 > li > a:focus {
+	background-color:#65A19E !important;
 }
 
 #comp_nav .col2 > li > a:hover {
 	background-color:#73b8b4;
 }
 
-#comp_nav .col3 > li > a:link, #comp_nav col3 > li:active > a {
+#comp_nav .col3 > li > a:link, #comp_nav .col3 > li > a:focus {
 	background-color:#60bd93 !important;
 }
 
