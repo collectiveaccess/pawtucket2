@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website", "used")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -20,7 +20,7 @@
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => $q_objects->get("ca_objects.caption"));
+					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
 				}
 			}
 		}
@@ -34,6 +34,9 @@
 			}
 		}
 	}
+	# --- get related object_id of catalog
+	$vn_catalog_id = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("related"), "restrictToTypes" => array("catalog"), "limit" => 1));
+
 ?>	
 	<div class="row contentbody_sub">
 
@@ -60,6 +63,9 @@
 							<li><a href="<?php print $vs_pr_link; ?>">press release</a></li>	
 <?php
 						}
+						if($vn_catalog_id){
+							print "<li>".caDetailLink($this->request, _t("catalog"), '', 'ca_objects', $vn_catalog_id, null, null)."</li>";
+						}
 ?>
 					</ul>
 			
@@ -74,12 +80,16 @@
 ?>		
 			
 			<div class="thumbnail thumbnailImgLeft">
-				{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="related">
-					<unit relativeTo="ca_objects" delimiter=" " restrictToRelationshipTypes="used_website">
-						^ca_object_representations.media.mediumlarge
-						<span class="caption">^ca_objects.caption</span>
-					</unit>
-				</ifcount>}}}
+<?php
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				foreach($va_objects as $va_object){
+					$t_object = new ca_objects($va_object["object_id"]);
+					print $t_object->get("ca_object_representations.media.mediumlarge");
+?>
+					<div class="caption"><?php print sefaFormatCaption($this->request, $t_object); ?></div>
+<?php
+				}
+?>
 			</div> <!--end thumbnail-->
 				<p>
 					<h1>{{{ca_occurrences.preferred_labels.name}}}</h1>
@@ -90,13 +100,13 @@
 					{{{^ca_occurrences.description}}}
 				</p>
 				<br/><strong>
-				{{{<ifcount code="ca_entities" min="2">
+				{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="exhibited">
 					Artists: 
 				</ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" max="1">
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="exhibited">
 					Artist: 
 				</ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1">
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
 					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entity_labels.displayname</l></unit>
 				</ifcount>}}}
 				</strong>

@@ -92,6 +92,7 @@
 				}
 
 				if ($qr_results->get('ca_objects.type_id') == 30) {
+
 					if ($qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '))) {
 						$va_authors = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '));
 					} else {
@@ -99,6 +100,7 @@
 					}
 					print "<p class='artist'>".(strlen($va_authors) > 40 ? substr($va_authors, 0, 37)."..." : $va_authors)."</p>";
 					print "<p class='artist dark'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'publisher', 'delimiter' => '; '))."</p>";
+
 				}				
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
 					print $qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'template' => '<p>^dc_dates_value</p>')); 
