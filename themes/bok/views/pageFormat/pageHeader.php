@@ -134,6 +134,7 @@
 					break;
 					# ----------------------------------------------------
 					case "Front":
+					case "About":
 						$vn_show_header_hr = true;
 						$vs_subtitle = _t("Capacity Development Tools");
 						print caNavLink($this->request, caGetThemeGraphic($this->request, 'header_home.jpg'), "", "", "","");

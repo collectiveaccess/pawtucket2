@@ -41,6 +41,9 @@ a {
 .uppercase{
 	text-transform:uppercase;
 }
+.indent{
+	padding: 0px 0px 0px 20px;
+}
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6, H7, h7{
 	font-family: 'FuturaLTPro-Medium';
 	color:#005675;
@@ -263,8 +266,12 @@ H2, h2{
 }
 /* footer */
 .footer{
-	padding:40px 20px 30px 20px;
+	padding:20px 20px 10px 20px;
 	margin-bottom:0px;
+	text-align:center;
+}
+.footer a{
+	font-size:13px;
 }
 /* front */
 .hrFrontPage{
@@ -352,6 +359,11 @@ H2, h2{
 /* BoK */
 .btn-default {background:none;}
 
+.disabledCat{
+	opacity:.6;
+	cursor:default;
+}
+
 .nav-pills .comp_code, .comp_code {
 	font-family: 'FuturaLTPro-Medium';
 	text-align:center;
@@ -391,7 +403,7 @@ H2, h2{
 	height:50px;
 }
 	
-#comp_nav .col1 > li > a:link {
+#comp_nav .col1 > li > a:link, #comp_nav .col1:active > li > a {
 	background-color:#77B072;
 }
 
@@ -399,7 +411,7 @@ H2, h2{
 	background-color:#80bd7a;
 }
 	
-#comp_nav .col2 > li > a:link {
+#comp_nav .col2 > li > a:link, #comp_nav .col2 > li:active > a {
 	background-color:#65A19E;
 }
 
@@ -407,8 +419,8 @@ H2, h2{
 	background-color:#73b8b4;
 }
 
-#comp_nav .col3 > li > a:link {
-	background-color:#60bd93;
+#comp_nav .col3 > li > a:link, #comp_nav col3 > li:active > a {
+	background-color:#60bd93 !important;
 }
 
 #comp_nav .col3 > li > a:hover {
@@ -513,6 +525,10 @@ H2, h2{
 #pageArea.results{
 	padding:20px 30px 30px 30px;
 }
+.bResultListRow a{
+	font-size:15px;
+	text-decoration:underline;
+}
 .bResultListRow{
 	padding:10px;
 }
@@ -548,4 +564,8 @@ H2, h2{
 	height:1px;
 	background-color:#999;
 	border:0px;
+}
+/* --- Partners and Support ---*/
+.partnersSupportLogoRow{
+	margin:20px 0px 50px 0px;
 }
