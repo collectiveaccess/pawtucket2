@@ -22,7 +22,7 @@
 <?php
 				if($this->request->config->get("onlyLinkTrpCategory")){
 ?>
-				<div class="indent"><strong><i>* Content currently under development.  Please use the competence category TRP (Tourism, Recreation, and Public Use) to explore how the Body of Knowledge works.</i></strong></div>
+				<H5 class="indent red"><i>* Content currently under development.  Please use the competence category TRP (Tourism, Recreation, and Public Use) to explore how the Body of Knowledge works.</i></H5>
 <?php
 				}
 ?>			

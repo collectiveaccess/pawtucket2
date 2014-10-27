@@ -38,11 +38,17 @@ a {
 	color:#005675;
 	/*text-decoration:underline;*/
 }
+.underline, a.underline, a.underline:visited, a.underline:active {
+	text-decoration:underline;
+}
 .uppercase{
 	text-transform:uppercase;
 }
 .indent{
 	padding: 0px 0px 0px 20px;
+}
+.red{
+	color:#DD6003 !important;
 }
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6, H7, h7{
 	font-family: 'FuturaLTPro-Medium';
@@ -269,9 +275,12 @@ H2, h2{
 	padding:20px 20px 10px 20px;
 	margin-bottom:0px;
 	text-align:center;
+	font-family: 'FuturaLTPro-Medium';
 }
 .footer a{
-	font-size:13px;
+	font-size:14px;
+	text-transform:uppercase;
+	font-family: 'FuturaLTPro-Medium';
 }
 /* front */
 .hrFrontPage{
