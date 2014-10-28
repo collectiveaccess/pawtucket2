@@ -963,7 +963,8 @@ a.browseRemoveFacet img {
 	padding:12px;
 	margin-bottom:10px;
 	border-radius:10px;
-}	
+}
+/*
 .sets .dropdown-menu a{
 	font-size:11px;
 	text-transform:uppercase;
@@ -975,7 +976,7 @@ a.browseRemoveFacet img {
 	background-color:#fff;
 	color:#000;
 
-}
+}*/
 .activitycol .lbSetCommentHeader {
 	font-weight:bold;
 	padding-top:10px;

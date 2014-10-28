@@ -35,7 +35,6 @@
 <html>
 	<head>
 		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
-		<link type="text/css" href="local/pdf.css" rel="stylesheet" />
-
+		<link type="text/css" href="pdf.css" rel="stylesheet" />
 	</head>
 	<body>

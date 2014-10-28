@@ -59,6 +59,7 @@ class ActionController extends BaseObject {
 		
 		$this->opa_view_paths = is_array($pa_view_paths) ? $pa_view_paths : ($pa_view_paths ? array($pa_view_paths) : array());
 		$this->opo_notification_manager = new NotificationManager($this->request);
+		
 	}
 	# -------------------------------------------------------
 	public function setViewPath($pa_view_paths) {

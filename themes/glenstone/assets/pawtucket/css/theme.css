@@ -408,6 +408,26 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .jcarousel-control-next {
 	right:0px;
 }
+.letterMenu {
+	display:inline-block;
+	font-weight:bold;
+	text-transform: uppercase;
+	color:#333;
+	padding:0px 10px 5px 0px;
+	font-size:16px;
+}
+.letterHeader {
+	font-weight:bold;
+	text-transform: uppercase;
+	color:#333;
+	font-size:16px;
+	padding:10px 10px 10px 0px;
+}
+.artistName {
+	display:inline-block;
+	width:30%;
+	padding-right:10px;
+}
 
 /* Search Results */
 
@@ -454,6 +474,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	height:295px;
 	margin-bottom:20px;
 	width: 220px;
+	overflow:hidden;
 }
 .archivesResult .resultImg, .artworksResult .resultImg{
 	border:1px solid #ddd;
@@ -479,22 +500,23 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
 	position: absolute;
 	top: 30px;
-	margin-left: 60px;
+	margin-left: 65px;
 	font-size: 48px;
 	background-color: #eee;
 	padding: 10px;
 	border-radius: 30px;
 	opacity: .7;
 }
-.resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
-	position: absolute;
-	top: 30px;
-	margin-left: 60px;
-	font-size: 48px;
+.resultImg.noimage .glyphicon.glyphicon-film {
+	margin-left:-30px;
+}
+.resultImg.noimage .glyphicon.glyphicon-book {
+	font-size:48px;
 	background-color: #eee;
-	padding: 10px;
+	padding: 10px 12px 10px 8px;
 	border-radius: 30px;
 	opacity: .7;
+	top:70px;
 }
 .bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
 	font-size: 30px;
@@ -504,10 +526,18 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	opacity: .7;
 	position: absolute;
 	left: 40%;
-	top: 18%;
+	top: 50px;
 }
 .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
-	top:27%;
+	top:50px;
+}
+.bResultItemImg .glyphicon.glyphicon-book{
+	font-size:48px;
+	background-color: #eee;
+	padding: 10px 12px 10px 8px;
+	border-radius: 30px;
+	opacity: .7;
+	top:20px;
 }
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
@@ -767,6 +797,10 @@ p.artist.lower {
 	font-size:12px;
 	border-radius:4px;
 }
+p.bookTitle {
+	text-decoration:underline;
+	padding-bottom:2px;
+}
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg {
 		max-height:180px;
@@ -852,9 +886,10 @@ p.artist.lower {
 .loans .loanImg {
 	max-height: 260px;
 	overflow:hidden;
+	min-width:220px;
 }
 .loans.detail img {
-	width:100%;
+	/*width:100%;*/
 	height:auto;
 }
 .loans.detail .attributeMediaThumbnail img{
@@ -1231,6 +1266,10 @@ p.artist.lower {
 	font-size:12px;
 	font-family: 'Source Sans Pro', sans-serif;
 }
+.setCount {
+	font-size:14px;
+	color:#666;
+}
 .lbSet, .lbItem {
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -1259,6 +1298,9 @@ p.artist.lower {
 	width: auto; 
 	left: 0; 
 	top: 0; 
+}
+.lbItem:hover .lbExpandedInfo {
+	background-color:#fff;
 }
 .reveal h3 {
 	text-transform:none;

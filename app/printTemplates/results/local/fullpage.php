@@ -48,7 +48,7 @@
 	$vn_start 				= 0;
 
 	print $this->render("pdfStart.php");
-	print $this->render("../header.php");
+	print $this->render("fullheader.php");
 	print $this->render("../footer.php");
 ?>
 		<div id='body fullpage'>

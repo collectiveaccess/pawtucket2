@@ -97,7 +97,7 @@
 						}
 			
 						if (!is_dir($vs_path.'/'.$vs_template) && preg_match("/^[A-Za-z_]+[A-Za-z0-9_]*$/", $vs_template_tag)) {
-							$va_templates[] = array(
+							$va_templates[$vs_template_tag] = array(
 								'name' => $va_template_info['name'],
 								'code' => '_pdf_'.$vs_template_tag
 							);
@@ -105,14 +105,14 @@
 					}
 				}
 			}
+		}
 
-			sort($va_templates);
-			
-			if ($o_cache) {
-				$o_cache->save($va_templates, $vs_cache_key);
-				$o_cache->save(filemtime($vs_template_path), "{$vs_cache_key}_mtime");
-				$o_cache->save(filemtime("{$vs_template_path}/local"), "{$vs_cache_key}_local_mtime");
-			}
+		sort($va_templates);
+		
+		if ($o_cache) {
+			$o_cache->save($va_templates, $vs_cache_key);
+			$o_cache->save(filemtime($vs_template_path), "{$vs_cache_key}_mtime");
+			$o_cache->save(filemtime("{$vs_template_path}/local"), "{$vs_cache_key}_local_mtime");
 		}
 
 		return $va_templates;

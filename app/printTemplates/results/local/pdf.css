@@ -12,14 +12,16 @@ a {color:#333; text-decoration:none;}
 .conservation .td {width:170px;}
 .conservation .td.header {width:80px;}
 
-img.headerImg {width:185px;height:21px;}
+img.headerImg {width:185px;height:21px; margin-top:-20px;}
 .headerText { font: "Sans Light"; font-size: 11px; margin: 0px 0px 10px 25px; }
-.pagingText { position: absolute; top: 0px; right: 10px; font: "Sans Light"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px; }
+.pagingText { position: absolute; top: 0px; right: 10px; font: "Sans Light"; font-size: 9px; text-align: right;  margin: 0px 0px 10px 25px; }
 .footerText { font: "Sans Light"; font-size: 11px;  margin: -5px 0px 0px 45px;  }  
 
 .thumbnail { font: "Sans Light"; font-size: 11px; border: 1px solid #ccc; width: 200px; height: 235px; float: left; text-align: center; margin-left: 10px; padding: 3px; overflow: none; line-height:11px;}	
 .imgThumb {width:194px; height:170px;}
 .caption {font-size:11px; color:#333; display:block; text-align:left; padding-left:10px;}
+
+.criteria { font: "Sans Light"; font-size:9px; font-style: italic; color:#333; font-size:11px; color:#333; position: absolute; bottom: 0px; right: 0px; }
 
 .row { font: "Sans Light"; font-size: 10px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
