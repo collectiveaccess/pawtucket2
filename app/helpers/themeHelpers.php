@@ -565,7 +565,7 @@
 		
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";
 		if(!$va_rep_display_info["no_overlay"]){
-			$vs_tool_bar .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 		if(!$po_request->config->get("disable_my_collections")){
 			if ($po_request->isLoggedIn()) {
