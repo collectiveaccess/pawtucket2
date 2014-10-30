@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -29,7 +30,7 @@
 				}
 ?>				
 			</div>
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-4 col-md-4 col-lg-4'>
 			
 				{{{representationViewer}}}
 				
@@ -39,7 +40,7 @@
 	
 			<div class='requestButton'>Request this item  &nbsp;<i class='fa fa-envelope'></i></div>			
 			</div><!-- end col -->
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-8 col-md-8 col-lg-8'>
 
 
 				<!-- library-->
@@ -69,9 +70,6 @@
 						}
 						if ($va_status = $t_copy->get('ca_objects.purchase_status', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Status </span><span class='meta'>".$va_status."</span></div>";
-						}
-						if ($va_notes = $t_copy->get('ca_objects.general_notes', array('convertCodesToDisplayText' => true))) {
-							print "<div class='unit'><span class='metaTitle'>Notes </span><span class='meta'>".$va_notes."</span></div>";
 						}						
 						print "<hr>";														
 					}
@@ -92,7 +90,11 @@
 				{{{<ifcount min="1" code="ca_objects.language"><div class='unit '><span class='metaTitle'>Languages </span><span class='meta'><unit delimiter="<br/>">^ca_objects.language</unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.copy_number"><div class='unit '><span class='metaTitle'>Copy Number </span><span class='meta'>^ca_objects.copy_number</span></div></ifdef>}}}
 
-<?php				
+<?php	
+
+				if ($va_notes = $t_object->get('ca_objects.general_notes', array('convertCodesToDisplayText' => true))) {
+					print "<div class='unit'><span class='metaTitle'>Notes </span><span class='meta'>".$va_notes."</span></div>";
+				}			
 				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
 					print "<div class='unit '><span class='metaTitle'>Library of Congress Subject Headings</span><span class='meta'>";
 					foreach ($va_lcsh_terms as $k_lchs => $va_lcsh_term) {
@@ -103,7 +105,6 @@
 					print "</span></div>"; 
 				}				
 ?>	
-				{{{<ifdef code="ca_objects.general_notes"><div class='unit '><span class='metaTitle'>General Notes </span><span class='meta'>^ca_objects.general_notes</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.library_summary"><div class='unit '><span class='metaTitle'>Summary </span><span class='meta'>^ca_objects.library_summary</span></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.physical_description"><div class='unit '><span class='metaTitle'>Physical Description </span><span class='meta'>^ca_objects.physical_description</span></div></ifdef>}}}
 

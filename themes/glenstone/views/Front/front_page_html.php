@@ -111,7 +111,7 @@
 	<div class="col-sm-4">
 		<div class='item'>
 <?php 
-		print "<h1>Library <small>(coming soon)</small></h1>";
+		print "<h1>Library</h1>";
 		if (sizeof($va_library_media)) {
 			$va_library_media = array_values($va_library_media);
 			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>";

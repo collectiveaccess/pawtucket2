@@ -113,6 +113,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class="row">
 		<div class="col-sm-8">
 			<h1>Archives Advanced Search coming soon.</h1>
+<?php			
+				print "<span ><i class='fa fa-archive' style='padding-right:5px;'></i>".caNavLink($this->request, 'View finding aid', '', '', 'FindingAid', 'Collection/Index')."</span>";
+?>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 			
