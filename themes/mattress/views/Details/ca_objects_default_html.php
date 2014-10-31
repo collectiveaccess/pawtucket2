@@ -2,6 +2,8 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar('access_values');
+	$this->request->session->setVar("repViewerResults", "");
+	$va_object_results = array();
 ?>
 
 <div id="detail" class='objects'>
@@ -32,11 +34,11 @@
 		} else {
 			$va_artist_name = "";
 		}
-			if($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-				print "<h2>".$t_object->get('ca_objects.nonpreferred_labels.name')." {$va_artist_name}</h2>";
-			} else {
-				print "<h2>".$t_object->get('ca_objects.preferred_labels.name')." {$va_artist_name}</h2>";
-			}
+		if($t_object->get('ca_objects.nonpreferred_labels.type_id') == '515') {
+			print "<h2>".$t_object->get('ca_objects.nonpreferred_labels.name')." {$va_artist_name}</h2>";
+		} else {
+			print "<h2>".$t_object->get('ca_objects.preferred_labels.name')." {$va_artist_name}</h2>";
+		}
 				
 ?>	
 		
@@ -72,6 +74,7 @@
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
 				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
+				$va_object_results[] = array("object_id" => $vn_related_rep_id, "representation_id" => $va_related_rep['representation_id']);
 			}
 ?>			
 			</div><!-- end mediaLarge-->
@@ -100,6 +103,7 @@
 						print "</div>";
 						$stack = 0;
 					}
+					$va_object_results[] = array("object_id" => $vn_related_rep_id, "representation_id" => $va_related_rep['representation_id']);
 				}
 				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
 ?>
@@ -107,6 +111,7 @@
 			</div><!-- end mediaThumbs-->	
 <?php
 			}
+			$this->request->session->setVar("repViewerResults", $va_object_results);
 ?>
 
 		

@@ -469,10 +469,10 @@
 		 *
 		 * @return boolean - always return true
 		 */
-		public function setAsLastFind() {
+		public function setAsLastFind($pb_set_action=true) {
 			$o_storage = $this->getPersistentStorageInstance();
 			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type.($this->ops_find_subtype ? '/'.$this->ops_find_subtype : ''), array('volatile' => true));	
-			$o_storage->setVar('result_last_context_'.$this->ops_table_name.'_action', $this->opo_request->getAction());
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name.'_action', $pb_set_action ? $this->opo_request->getAction() : null);
 			return true;
 		}
 		# ------------------------------------------------------------------

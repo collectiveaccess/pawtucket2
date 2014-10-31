@@ -72,19 +72,19 @@
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');
+					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_occurrences") {
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');
+					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_collections") {
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');				
+					$va_rep = $t_object->get('ca_object_representations.media.browse');				
 				} else {
-					$va_rep = $qr_res->get('ca_object_representations.media.small');	
+					$va_rep = $qr_res->get('ca_object_representations.media.browse');	
 				}
 				$va_label_text = $qr_res->get("{$vs_table}.preferred_labels.name");
 				$va_label_text_str = strlen($va_label_text) > 75 ? substr($va_label_text,0,70)."..." : $va_label_text;
