@@ -5,7 +5,7 @@
 	$vn_sum = $vn_num1 + $vn_num2;
 ?>
 <div class="row contentbody_sub aboutPages">
-	<div class="col-sm-12">
+	<div class="col-sm-8">
 		<h5><?php print _t("Contact"); ?></h5>
 		<p>
 			The gallery is located at 46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue.
@@ -68,5 +68,11 @@
 				</div>
 			</div>
 		</form>
+	</div>	
+	<div class="col-sm-4 col-md-3 col-md-offset-1">
+	 	<H5>&nbsp;</H5>
+	 	<div class="thumbnail">
+	 		<?php print caGetThemeGraphic($this->request, 'contact.jpg'); ?>
+	 	</div>
 	</div>
 </div>

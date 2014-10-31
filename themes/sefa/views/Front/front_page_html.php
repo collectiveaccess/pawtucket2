@@ -43,14 +43,17 @@
 		$t_exhibition->load($va_exhibition_ids[0]);
 	}
 	# --- check to see if there is an image set configured
-	if($this->getVar("featured_set_id")){
+	$t_set->load(array('set_code' => $o_config->get("front_page_set_code")));
+	if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+		$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+		$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
+	}
+	if($qr_res && $qr_res->numHits()){
 		$qr_res = $this->getVar('featured_set_items_as_search_result');
-		if($qr_res && $qr_res->numHits()){
-			while($qr_res->nextHit()){
-				if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.front', array("checkAccess" => $va_access_values))){
-					print "<div class='col-sm-12'><div class='frontSlide'>".$vs_media."</div></div>";
-					break;
-				}
+		while($qr_res->nextHit()){
+			if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.front', array("checkAccess" => $va_access_values))){
+				print "<div class='col-sm-12'><div class='frontSlide'>".$vs_media."</div></div>";
+				break;
 			}
 		}
 	}else{
@@ -70,9 +73,9 @@
 <?php
 	if($t_exhibition->get("occurrence_id")){
 		print "<h1>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h1>";
-		print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
-		$va_exhibition_dates = $t_exhibition->get("ca_occurrences.opening_closing", array("rawDate" => true));
-		print date("r", $va_exhibition_dates["start"]);
+		if($t_exhibition->get("ca_occurrences.exhibition_subtitle")){
+			print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
+		}
 		print "<h4>".$t_exhibition->get("ca_occurrences.opening_closing").(($t_exhibition->get("ca_occurrences.opening_reception")) ? " | Opening Reception: ".$t_exhibition->get("ca_occurrences.opening_reception") : "")."</h4>";
 	}
 ?>

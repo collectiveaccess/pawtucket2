@@ -250,7 +250,7 @@
 						} else {
 							$va_criteria['type_code'] = $vs_type_code;
 						}
-						if ($t_rel_type->load(array($va_criteria))) {
+						if ($t_rel_type->load($va_criteria)) {
 							$va_restrict_to_type_list[] = "(crt.hier_left >= ".$t_rel_type->get('hier_left')." AND crt.hier_right <= ".$t_rel_type->get('hier_right').")";
 						}
 					}
@@ -300,7 +300,7 @@
 			$vs_right_table_name = $this->getRightTableName();
 			if (!in_array($ps_orientation, array($vs_left_table_name, $vs_right_table_name))) { $ps_orientation = $vs_left_table_name; }
 			
-			$va_types = $this->getRelationshipTypes($pn_sub_type_left_id, $pn_sub_type_right_id);
+			$va_types = $this->getRelationshipTypes($pn_sub_type_left_id, $pn_sub_type_right_id, $pa_options);
 			$va_options = array();
 			
 			$va_parent_ids = array();

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2013 Whirl-i-Gig
+ * Copyright 2010-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,6 +42,7 @@
 		private $ops_find_subtype;
 		private $opa_context = null;
 		private $opb_is_new_search = false;
+		private $opb_search_expression_has_changed = null;
 		# ------------------------------------------------------------------
 		/**
 		 * To create a result context you pass the table and type of the current find; the ResultContext will be loaded
@@ -84,17 +85,40 @@
 		public function getSearchExpression($pb_from_context_only=false) {
 			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
 				// search specified by request parameter
-				$this->setContextValue('expression', $ps_search);
-				$this->opb_is_new_search = true;
+				if ($ps_search != $this->getContextValue('expression')) {
+					$this->setContextValue('expression', $ps_search);
+					$this->opb_is_new_search = true;
+					$this->opb_search_expression_has_changed = true;
+				} else {
+					if (is_null($this->opb_search_expression_has_changed)) { $this->opb_search_expression_has_changed = false; }
+				}
 				return $ps_search;
 			} else {
 				// get search expression from context
 				if ($va_context = $this->getContext()) {
+					$this->opb_search_expression_has_changed = false;
 					return $va_context['expression'];
 				}
 			}
-			
 			return null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Determines if the search expression is changing during this request
+		 *
+		 * @param $pb_from_context_only boolean Optional; if true then search expression is returned from context only and any search expression request parameter is ignored. Default is false.
+		 * @return bool True if expression is changing
+		 */
+		public function searchExpressionHasChanged($pb_from_context_only=false) {
+			if (!is_null($this->opb_search_expression_has_changed)) { return $this->opb_search_expression_has_changed; }
+			 
+			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
+				// search specified by request parameter
+				if ($ps_search != $this->getContextValue('expression')) {
+					return $this->opb_search_expression_has_changed = true;
+				}
+			}
+			return $this->opb_search_expression_has_changed = false;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -542,10 +566,12 @@
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
-			$vs_controller_class = $va_nav['controller']."Controller";
-			$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
-			
+			if (__CA_APP_TYPE__ == 'PAWTUCKET') {
+				// Pawtucket-specific navigation rewriting
+				if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
+				$vs_controller_class = $va_nav['controller']."Controller";
+				$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
+			}
 			$o_storage = ResultContext::_persistentStorageInstance($po_request);
 			if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
 				$vs_action = $va_nav['action'];
@@ -679,6 +705,16 @@
 		 */
 		protected function setContextValue($ps_key, $pm_value) {
 			return $this->opa_context[$ps_key] = $pm_value;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Gets value in the context named $ps_key. This method is used 
+		 * to fetch context data. It is not meant to be invoked by outside callers.
+		 *
+		 * @param $ps_key - string identifier for context value
+		 */
+		protected function getContextValue($ps_key) {
+			return $this->opa_context[$ps_key];
 		}
 		# ------------------------------------------------------------------
 		/**

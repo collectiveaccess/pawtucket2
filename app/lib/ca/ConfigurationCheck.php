@@ -177,7 +177,7 @@ final class ConfigurationCheck {
 		}
 
 		// check web root for write-ability
-		if (!$vb_perm_media_error && !$vb_at_least_one_part_of_the_media_path_exists && !is_writeable($vs_web_root)) {
+		if (!$vb_perm_media_error && !$vb_at_least_one_part_of_the_media_path_exists && !is_writeable($vs_base_dir)) {
 			$vb_perm_media_error = true;
 			$vs_perm_media_path = $vs_base_dir;
 		}
@@ -278,6 +278,15 @@ final class ConfigurationCheck {
 		if(!file_exists(__CA_APP_DIR__."/tmp") || !is_writable(__CA_APP_DIR__."/tmp")){
 			self::addError(_t("It looks like the directory for temporary files is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write this directory.",__CA_APP_DIR__."/tmp"));
 		}
+
+		if(defined('__CA_CACHE_BACKEND__') && __CA_CACHE_BACKEND__ == 'file' && defined('__CA_CACHE_FILEPATH__')) {
+			if(
+				file_exists(__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache') && // if it doesn't exist, it can be probably be created or the above check would fail
+				!is_writable(__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache')
+			) {
+				self::addError(_t("It looks like the cache directory is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write this directory.",__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache'));
+			}
+		}
 		return true;
 	}
 	# -------------------------------------------------------
@@ -356,6 +365,15 @@ final class ConfigurationCheck {
 		}
 		if (!class_exists("DOMDocument")){
 			self::addError(_t("PHP Document Object Model (DOM) module is required for CollectiveAccess to run. Please install it."));
+		}
+		if (!function_exists('mcrypt_create_iv') && !function_exists('openssl_random_pseudo_bytes')){
+			self::addError(_t("Either the mcrypt or openssl module are required for CollectiveAccess to run. Please install one of them (or both)."));
+		}
+		if (!function_exists('hash_hmac')){
+			self::addError(_t("The PHP Message Digest (hash) engine is required for CollectiveAccess to run. Please install it."));
+		}
+		if (!in_array('sha256', hash_algos())){
+			self::addError(_t("Your PHP installation doesn't seem to have support for the sha256 hashing algorithm. Please install a newer version of either PHP or the hash module."));
 		}
 		
 		if (@preg_match('/\p{L}/u', 'a') != 1) {
@@ -442,7 +460,7 @@ final class ConfigurationCheck {
 			,ini_get("upload_max_filesize"),ini_get("post_max_size")));
 		}
 
-		if($vn_post_max_size < 5242880 || $vn_upload_max_filesize < 5242880){
+		if(($vn_post_max_size > 0 && $vn_post_max_size < 5242880) || ($vn_upload_max_filesize > 0 && $vn_upload_max_filesize < 5242880)){
 			self::addError(_t(
 				'It looks like at least one of the PHP configuration variables "post_max_size" and "upload_max_filesize" '.
 				'is set to a very low value. Note that the lowest of both values limits the size of the '.
