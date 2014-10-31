@@ -20,7 +20,7 @@
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => $q_objects->get("ca_objects.caption"));
+					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
 				}
 			}
 		}
@@ -91,7 +91,7 @@
 				</p>
 <?php
 				if($t_item->get("ca_occurrences.external_link")){
-					print "<p><a href='".$t_item->get("ca_occurrences.external_link.url_entry")."'>".(($t_item->get("ca_occurrences.external_link.url_source")) ? $t_item->get("ca_occurrences.external_link.url_source") : "More Information")."</a></p>";
+					print "<p><a href='".$t_item->get("ca_occurrences.external_link.url_entry")."' target='_blank'>".(($t_item->get("ca_occurrences.external_link.url_source")) ? $t_item->get("ca_occurrences.external_link.url_source") : "More Information")."</a></p>";
 				}
 ?>
 				<br/><strong>

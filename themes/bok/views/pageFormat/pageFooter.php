@@ -29,11 +29,8 @@
 			<div style="clear:both;"><!-- empty --></div>
 		</div><!-- end pageArea -->
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div class="row footer">
-			<div class="col-sm-3 text-center"><?php print caGetThemeGraphic($this->request, 'logo_AMNH_CBC.jpg'); ?></div>
-			<div class="col-sm-3 text-center"><?php print caGetThemeGraphic($this->request, 'logo_iucn.gif'); ?></div>
-			<div class="col-sm-3 text-center"><?php print caGetThemeGraphic($this->request, 'logo_WCPA.jpg'); ?></div>
-			<div class="col-sm-3 text-center"><?php print caGetThemeGraphic($this->request, 'logo_uri_crc.jpg'); ?></div>
+		<div class="footer">
+			<?php print caNavLink($this->request, _t("Partners & Support"), "", "", "About", "PartnersSupport"); ?>
 		</div>
 
 <?php

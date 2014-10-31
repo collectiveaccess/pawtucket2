@@ -19,6 +19,13 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<H2>Choose a competence category to explore:</H2>
+<?php
+				if($this->request->config->get("onlyLinkTrpCategory")){
+?>
+				<H5 class="indent red"><i>* Content currently under development.  Please use the competence category TRP (Tourism, Recreation, and Public Use) to explore how the Body of Knowledge works.</i></H5>
+<?php
+				}
+?>			
 			</div>
 <?php
 		$vn_col = 1;
@@ -32,7 +39,11 @@
 ?>
 					<li>
 <?php
-						print caNavLink($this->request, "<span class='comp_code'>".$va_category["idno"]."</span><span class='comp_title'>".$va_category["label"]."</span>", "", "", "BodyOfKnowledge", "Content", array("user_category" => $vn_category_id));
+						if($this->request->config->get("onlyLinkTrpCategory") && ($va_category["idno"] != "TRP")){
+							print "<a href='#' onClick='return false;' class='disabledCat'><span class='comp_code'>".$va_category["idno"]."</span><span class='comp_title'>".$va_category["label"]."</span></a>";
+						}else{
+							print caNavLink($this->request, "<span class='comp_code'>".$va_category["idno"]."</span><span class='comp_title'>".$va_category["label"]."</span>", "", "", "BodyOfKnowledge", "Content", array("user_category" => $vn_category_id));
+						}
 ?>	
 					</li>
 <?php

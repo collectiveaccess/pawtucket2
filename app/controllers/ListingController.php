@@ -78,8 +78,7 @@
  			$vs_search = caGetOption('search', $va_listing_info, '*');
  			$vs_segment_by = caGetOption('segmentBy', $va_listing_info, '');
  			
- 			
- 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
+ 			$this->opo_result_context = new ResultContext($this->request, $vs_table, $this->ops_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
  			if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) {
@@ -127,23 +126,50 @@
 				$this->view->setVar('facet', $vs_facet);
 				$this->view->setVar('facet_id', $vn_facet_id);
 			}
- 			
- 			//
+
+
+			//
 			// Sorting
 			//
-			$va_sort_by = caGetOption('sortBy', $va_listing_info, null);
-			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+			$vb_sort_changed = false;
+ 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					$ps_sort = array_shift(array_keys($va_sort_by));
+ 					if(is_array(($va_sorts = caGetOption('sortBy', $va_listing_info, null)))) {
+ 						$ps_sort = array_shift(array_keys($va_sorts));
+ 						$vb_sort_changed = true;
+ 					}
+ 				}
+ 			}else{
+ 				$vb_sort_changed = true;
+ 			}
+ 			if($vb_sort_changed){
+				# --- set the default sortDirection if available
+				$va_sort_direction = caGetOption('sortDirection', $va_listing_info, null);
+				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
+					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
+				} 			
+ 			}
+  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
+ 				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
+ 					$ps_sort_direction = 'asc';
  				}
  			}
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
+ 			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
  			
+			$va_sort_by = caGetOption('sortBy', $va_listing_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
 			$this->view->setVar('sort', $ps_sort);
+			$this->view->setVar('sort_direction', $ps_sort_direction);
+
+
+
+
+
+
 			
  			
  			$va_lists = array();
@@ -151,7 +177,7 @@
  			
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
 			
-			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort]));
+			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
  			while($qr_res->nextHit()) {
  				$vs_key = $qr_res->getWithTemplate($vs_segment_by);
  				$va_lists[$vs_key][] = $va_res_list[] = $qr_res->getPrimaryKey();
