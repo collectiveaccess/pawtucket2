@@ -57,7 +57,7 @@
 		'resources' => array(
 			'page' => $va_page_info,
 			'pageList' => $va_pages,
-			'downloadUrl' => caNavUrl($this->request, '*', 'Detail', 'DownloadMedia', array($t_subject->primaryKey() => $vn_subject_id, 'representation_id' => $vn_representation_id, 'value_id' => $vn_value_id, 'download' => 1, 'version' => 'original')),
+			'downloadUrl' => caObjectsDisplayDownloadLink($this->request) ? caNavUrl($this->request, '*', 'Detail', 'DownloadMedia', array($t_subject->primaryKey() => $vn_subject_id, 'representation_id' => $vn_representation_id, 'value_id' => $vn_value_id, 'download' => 1, 'version' => 'original')) : '',
 			'search' => $vb_is_searchable ? caNavUrl($this->request,  '*', '*', 'SearchWithinMedia', array($t_subject->primaryKey() => $vn_subject_id, 'representation_id' => $vn_representation_id))."/q/{query}" : null
 		)
 	));

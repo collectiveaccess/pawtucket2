@@ -384,8 +384,8 @@
 		 */ 
 		public function DownloadMedia() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
-				//$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
-				//return;
+				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
+				return;
 			}
 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
 			$pn_value_id = $this->request->getParameter('value_id', pInteger);
