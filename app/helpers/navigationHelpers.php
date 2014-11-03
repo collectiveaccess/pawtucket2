@@ -63,6 +63,7 @@
  	define('__CA_NAV_BUTTON_INTERSTITIAL_EDIT_BUNDLE__', 24);
  	define('__CA_NAV_BUTTON_MAKE_PRIMARY__', 25);
  	define('__CA_NAV_BUTTON_UPDATE__', 26);
+ 	define('__CA_NAV_BUTTON_PDF_SMALL__', 27);
  		
  	define('__CA_NAV_BUTTON_ICON_POS_LEFT__', 0);
  	define('__CA_NAV_BUTTON_ICON_POS_RIGHT__', 1);
@@ -313,9 +314,11 @@
 			$vs_buf .= caHTMLHiddenInput('form_timestamp', array('value' => time()));
 		}
 		if (!caGetOption('disableUnsavedChangesWarning', $pa_options, false)) { 
+			// tagging form elements with the CSS 'dontTriggerUnsavedChangeWarning' class lets us skip over selected form elements
+			// when applying unsaved change warning event handlers
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').change(function() { caUI.utils.showUnsavedChangesWarning(true); });
+					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').not('.dontTriggerUnsavedChangeWarning').change(function() { caUI.utils.showUnsavedChangesWarning(true); });
 					jQuery('#{$ps_id}').submit(function() { caUI.utils.disableUnsavedChangesWarning(true); });
 				}
 			);</script>";
@@ -677,6 +680,9 @@
 				break;	
 			case __CA_NAV_BUTTON_SET_CENTER__:
 				$vs_img_name = 'glyphicons_185_screenshot';
+				break;	
+			case __CA_NAV_BUTTON_PDF_SMALL__:
+				$vs_img_name = 'glyphicons_359_file_export_small';
 				break;																																							
 			default:
 				return null;
@@ -731,6 +737,7 @@
 	 * @param array $pa_attributes Optional array of attributes to set on the link's <a> tag. You can use this to set the id of the link, as well as any other <a> parameter.
 	 * @param array $pa_options Optional array of options. Supported options are:
 	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
+	 *		preferredDetail = 
 	 */
 	function caDetailLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caDetailUrl($po_request, $ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
@@ -935,6 +942,7 @@
 	 * @param array $pa_options Optional array of options. Supported options are:
 	 * 		verifyLink = if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
 	 *		action = if set, action of returned link will be set to the supplied value
+	 *		preferredDetail = 
 	 *		type_id = type_id of item to get detail for
 	 */
 	function caDetailUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
@@ -953,7 +961,7 @@
 		if(isset($pa_options['action'])){
 			$vs_action = $pa_options['action'];
 		} else {
-			$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null), array('request' => $po_request));
+			$vs_action = caGetDetailForType($ps_table, caGetOption('type_id', $pa_options, null), array('request' => $po_request, 'preferredDetail' => caGetOption('preferredDetail', $pa_options, null)));
 		}
 		if (caUseIdentifiersInUrls() && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) {
 			$va_ids = $t_table->getFieldValuesForIDs(array($pn_id), array($t_table->getProperty('ID_NUMBERING_ID_FIELD')));

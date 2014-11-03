@@ -394,12 +394,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  			}
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
- 			$va_options['sort'] = $ps_sort;
+ 			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
  			$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $va_block_info); }
 			$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
 			
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {
@@ -465,6 +465,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_view->setVar('sortByControl', ($va_block_info["sortControlType"] && ($va_block_info["sortControlType"] == "list")) ? $vs_sort_list : $vs_sort_by_select); // synonym for sortBySelect
 			$o_view->setVar('sortByList', $vs_sort_list);
 			$o_view->setVar('sort', $ps_sort);
+			$o_view->setVar('accessValues', $va_access_values);
 			
 			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'"></span></a>');
 			$o_view->setVar('sortDirection', $ps_sort_direction);

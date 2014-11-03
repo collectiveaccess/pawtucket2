@@ -72,43 +72,19 @@
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');
-					if ($t_object->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:auto'";
-						$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";
-					} else {
-						$va_cell_width = "style='width:180px;'";
-					}
+					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_occurrences") {
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');
-					if ($t_object->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:auto'";
-						#$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
-					} else {
-						$va_cell_width = "style='width:180px;'";
-					}				
+					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_collections") {
 					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
-					$va_rep = $t_object->get('ca_object_representations.media.small');
-					if ($t_object->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:auto'";
-						#$va_cell_width = "style='width:".$t_object->get('ca_object_representations.media.small.width')."px;'";	
-					} else {
-						$va_cell_width = "style='width:180px;'";
-					}				
+					$va_rep = $t_object->get('ca_object_representations.media.browse');				
 				} else {
-					$va_rep = $qr_res->get('ca_object_representations.media.small');
-					if ($qr_res->get('ca_object_representations.media.small')) {
-						$va_cell_width = "style='width:auto'";
-						#$va_cell_width = "style='width:".$qr_res->get('ca_object_representations.media.small.width')."px;'";
-					} else {
-						$va_cell_width = "style='width:180px;'";
-					}	
+					$va_rep = $qr_res->get('ca_object_representations.media.browse');	
 				}
 				$va_label_text = $qr_res->get("{$vs_table}.preferred_labels.name");
 				$va_label_text_str = strlen($va_label_text) > 75 ? substr($va_label_text,0,70)."..." : $va_label_text;
@@ -122,7 +98,7 @@
 				print "
 	<div class='bResultItemCol '>
 		<div class='bResultItem' {$va_cell_width}>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg' {$va_cell_width}>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg' >{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>";
 				if ($vs_table == "ca_entities") {	
 					print "<div class='artistName'>".$vs_label_detail_link."</div>";	
@@ -148,6 +124,6 @@
 				$vn_c++;
 			}
 			print "<div class='clearfix'></div>";
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'l' => $this->getVar('letter')));
 		}
 ?>

@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar('access_values');
-
+	$this->request->session->setVar("repViewerResults", "");
+	$va_object_results = array();
 ?>
 
 <div id="detail" class="entities">
@@ -30,7 +31,7 @@
 		</div>
 		
 		<div id='mediaArea'>
-<?php		
+<?php
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('artist')));
 		if (sizeof($va_collections) > 0) {
 			print "<div class='mediaThumbs scrollBlock'>";
@@ -41,7 +42,7 @@
 						$va_collection_id = $va_collection['collection_id'];
 						$t_collection = new ca_collections($va_collection_id);
 						
-						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeTypes' => array('document')));
+						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('secondary'), 'excludeTypes' => array('document'), 'checkAccess' => $va_access_values));
 						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags', 'ids')));			
 					
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
@@ -65,14 +66,15 @@
 								print "</div><!-- end imageSet-->";
 								$vn_i = 0;
 							} 
-							
+							$va_object_results[] = array("object_id" => $object_key, "representation_id" => $va_artwork_rep['representation_id']);
 						}
 					}
 					if ((end($va_collections) == $va_collection) && ($vn_i < 2) && ($vn_i != 0)){print "</div>";} 
 
 					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
-		}	
+		}
+		$this->request->session->setVar("repViewerResults", $va_object_results);
 ?>		
 		</div><!-- end mediaArea-->	
 		
@@ -101,7 +103,7 @@
 	# Related Installations Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+		print "<div class='blockTitle related'>"._t('Artworks Exhibited at the MF')."</div>";
 			print "<div class='blockResults scrollBlock entities'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";
 				$vn_i = 0;

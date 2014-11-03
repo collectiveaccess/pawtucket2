@@ -1,6 +1,8 @@
 <?php
 	$t_item = $this->getVar('item');
 	$va_access_values = $this->getVar('access_values');
+	$this->request->session->setVar("repViewerResults", "");
+	$va_object_results = array();
 ?>
 
 <div id="detail">
@@ -29,7 +31,7 @@
 		<div id='mediaArea'>
 			<div class='mediaLarge'>
 <?php
-			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeTypes' => array('document')));
+			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeTypes' => array('document'), 'checkAccess' => $va_access_values));
 			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
 			
 			$vn_rep_id = key($va_related_reps);
@@ -50,10 +52,11 @@
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
 				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
+				$va_object_results[] = array("object_id" => $va_primary_id, "representation_id" => $va_primary_rep['representation_id']);
 			}
 ?>			
 			</div><!-- end mediaLarge-->
-<?php		
+<?php
 			if (sizeof($va_related_reps) > 1) {
 ?>			
 			<div class='views' style='width:<?php print $va_media_thumbs_width;?>px;'>Views</div>			
@@ -73,6 +76,7 @@
 						print "</div>";
 						$stack = 0;
 					}
+					$va_object_results[] = array("object_id" => $vn_related_rep_id, "representation_id" => $va_related_rep['representation_id']);
 				}
 				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
 ?>
@@ -80,6 +84,7 @@
 			</div><!-- end mediaThumbs-->	
 <?php
 			}
+			$this->request->session->setVar("repViewerResults", $va_object_results);
 ?>
 			
 		</div><!-- end mediaArea-->

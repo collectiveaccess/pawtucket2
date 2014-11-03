@@ -2,6 +2,8 @@
 	$t_item = $this->getVar('item');
 	$va_access_values = $this->getVar('access_values');
 	#$t_item->dump();
+	$this->request->session->setVar("repViewerResults", "");
+	$va_object_results = array();
 ?>
 <div id='detail' class='occurrences'>
 	<div id='pageTitle'>
@@ -28,7 +30,7 @@
 ?>
 		</div>
 		<div id='mediaArea' style="margin-left:-10px;">
-<?php		
+<?php
 	if (($t_item->getTypeCode() == 'mf_exhibition') | ($t_item->getTypeCode() == 'external_exhibition')) {
 		$va_collections = $t_item->get('ca_collections', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 		if (sizeof($va_collections) > 0) {
@@ -40,8 +42,12 @@
 						$va_collection_id = $va_collection['collection_id'];
 						$t_collection = new ca_collections($va_collection_id);
 						
-						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('secondary'), 'restrictToTypes' => array('image')));
-						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags')));			
+						$va_related_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('secondary', 'installation_view'), 'restrictToTypes' => array('image'), 'checkAccess' => $va_access_values));
+						$va_installation_objects = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('installation_view'), 'restrictToTypes' => array('image'), 'checkAccess' => $va_access_values));
+
+						$va_object_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('widepreview'), 'return' => array('tags', 'ids')));			
+						$va_installation_reps = caGetPrimaryRepresentationsForIDs($va_installation_objects, array('versions' => array('widepreview'), 'return' => array('tags', 'ids')));			
+
 						
 						$va_artwork_title = $t_collection->get('ca_collections.preferred_labels');
 						if ($t_collection->get('ca_collections.date.dc_dates_types') == "Date created") {
@@ -50,19 +56,39 @@
 						$va_artwork_artist = '<div class="materials">'.$t_collection->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))).'</div>';
 						$va_artwork_display = $va_artwork_artist.$va_artwork_title.$va_artwork_date;
 						
-						
-						foreach ($va_object_reps as $object_key => $va_artwork_rep) {	
+						foreach ($va_installation_reps as $install_key => $va_installation_rep) {
 							if ($vn_i == 0){print "<div class='imageSet'>";}
-							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
-							print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
-							print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							print "<div class='rep' onmouseover='$(\".title{$install_key}\").show();' onmouseout='$(\".title{$install_key}\").hide();'>";
 							
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $install_key, 'representation_id' => $va_installation_rep['representation_id']))."\"); return false;' ><div class='rep rep{$install_key}'>".$va_installation_rep['tags']."</div></a>";
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $install_key, 'representation_id' => $va_installation_rep['representation_id']))."\"); return false;' ><div style='display:none' class='title title{$install_key}'>Installation View</div></a>";
+					
 							print "</div>";
 							$vn_i++;
 							if ($vn_i == 3) {
 								print "</div><!-- end imageSet-->";
 								$vn_i = 0;
 							}
+							$va_object_results[] = array("object_id" => $object_key, "representation_id" => $va_artwork_rep['representation_id']);
+							
+						}						
+						
+						foreach ($va_object_reps as $object_key => $va_artwork_rep) {
+							if ($vn_i == 0){print "<div class='imageSet'>";}
+							print "<div class='rep' onmouseover='$(\".title{$object_key}\").show();' onmouseout='$(\".title{$object_key}\").hide();'>";
+							#print caNavLink($this->request, "<div class='rep rep{$object_key}'>".$va_artwork_rep."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							#print caNavLink($this->request, "<div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div>", '', '', 'Detail', 'Collections/'.$va_collection['collection_id']);
+							
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $object_key, 'representation_id' => $va_artwork_rep['representation_id']))."\"); return false;' ><div class='rep rep{$object_key}'>".$va_artwork_rep['tags']."</div></a>";
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $object_key, 'representation_id' => $va_artwork_rep['representation_id']))."\"); return false;' ><div style='display:none' class='title title{$object_key}'>".$va_artwork_display."</div></a>";
+					
+							print "</div>";
+							$vn_i++;
+							if ($vn_i == 3) {
+								print "</div><!-- end imageSet-->";
+								$vn_i = 0;
+							}
+							$va_object_results[] = array("object_id" => $object_key, "representation_id" => $va_artwork_rep['representation_id']);
 							
 						}
 					}
@@ -97,6 +123,7 @@
 				print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $va_primary_id, 'representation_id' => $va_primary_rep['representation_id']))."\"); return false;' >".$va_primary_rep['tags']['medium']."</a>";
 			
 				print "<div class='caption' style='width:".$va_primary_rep['info']['medium']['WIDTH']."px;'>".$va_main_image_object."</div>";
+				$va_object_results[] = array("object_id" => $va_primary_id, "representation_id" => $va_primary_rep['representation_id']);
 			}
 ?>			
 			</div><!-- end mediaLarge-->
@@ -120,6 +147,7 @@
 						print "</div>";
 						$stack = 0;
 					}
+					$va_object_results[] = array("object_id" => $vn_related_rep_id, "representation_id" => $va_related_rep['representation_id']);
 				}
 				if ((end($va_related_reps) == $va_related_rep) && ($stack < $va_media_thumb_stack) && ($stack != 0)){print "</div>";} 
 ?>
@@ -128,7 +156,7 @@
 <?php
 			}
 	}	
-		
+	$this->request->session->setVar("repViewerResults", $va_object_results);	
 ?>
 			
 		</div><!-- end mediaArea-->
@@ -329,7 +357,7 @@
 	# Related Installation Block
 	if (sizeof($va_collections) > 0) {
 		print "<div id='collectionsBlock'>";
-		print "<div class='blockTitle related'>"._t('Related Artworks')."</div>";
+		print "<div class='blockTitle related'>"._t('Artworks Exhibited at the MF')."</div>";
 			print "<div class='blockResults'>";
 			print "<div class='scrollBlock'>";
 				print "<div class='scrollingDiv'><div class='scrollingDivContent'>";

@@ -227,6 +227,14 @@
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
+		
+			//
+			// Current criteria
+			//
+			$va_criteria = $o_browse->getCriteriaWithLabels();
+			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
+				unset($va_criteria['_search']);
+			} 
 
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true));
 			
@@ -249,14 +257,6 @@
 			
 			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
 			
-		
-			//
-			// Current criteria
-			//
-			$va_criteria = $o_browse->getCriteriaWithLabels();
-			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-				unset($va_criteria['_search']);
-			}
 			
 			// remove base criteria from display list
 			if (is_array($va_base_criteria)) {
@@ -279,6 +279,32 @@
 			//
 			
 			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
+			
+			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
+				$va_letters = array();
+				while($qr_res->nextHit()) {
+					$va_letters[caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)))]++;
+				}
+				$this->view->setVar('letterBar', $va_letters);
+				$qr_res->seek(0);
+			}
+			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
+			
+						
+			if ($vs_letter_bar_field && ($vs_l = mb_strtolower($this->request->getParameter('l', pString)))) {
+				$va_filtered_ids = array();
+				while($qr_res->nextHit()) {
+					if (caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1))) == $vs_l) {
+						$va_filtered_ids[] = $qr_res->getPrimaryKey();
+					}
+				}
+				if (sizeof($va_filtered_ids) > 0) {
+					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
+				}
+			}
+			$this->view->setVar('letter', $vs_l);
+			
+			
 			$this->view->setVar('result', $qr_res);
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {

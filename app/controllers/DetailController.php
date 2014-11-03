@@ -53,6 +53,16 @@
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
+ 			
+ 			// expand to aliases
+ 			foreach($this->opa_detail_types as $vs_code => $va_info) {
+ 				if(is_array($va_aliases = caGetOption('aliases', $va_info, null))) {
+ 					foreach($va_aliases as $vs_alias) {
+ 						$this->opa_detail_types[$vs_alias] =& $this->opa_detail_types[$vs_code];
+ 					}
+ 				}
+ 			}
+ 			
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
@@ -132,7 +142,7 @@
  			// Do we need to pull in the multisearch result set?
  			if ((ResultContext::getLastFind($this->request, $vs_table, array('noSubtype' => true))) === 'multisearch') {
  				$o_context = new ResultContext($this->request, $vs_table, 'multisearch', $ps_function);
- 				$o_context->setAsLastFind();
+ 				$o_context->setAsLastFind(false);
  				$o_context->saveContext();
  			} else {
  				$o_context = ResultContext::getResultContextForLastFind($this->request, $vs_table);
