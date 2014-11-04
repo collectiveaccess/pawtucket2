@@ -1192,6 +1192,16 @@ p.bookTitle {
 .detail #detailRelatedObjects, .detail #detailRelatedArchives, .detail #detailRelatedLibrary {
 	margin-bottom:0px;
 }
+.availability, .hideAvailability {
+	font-size:11px;
+	padding-left:2px;
+}
+.copies {
+	font-size:13px;
+}
+#availability {
+	padding-top:5px;
+}
 .jcarouselarchive, .jcarouselLibrary {
 	position: relative;
 	overflow: hidden;
@@ -1420,6 +1430,21 @@ div.advancedSearchField {
 	float: left;
 	margin-right: 10px;
 	width:auto;
+}
+.advancedContainer {
+	float:left;
+	width:50%;
+}
+.advancedContainer .advancedSearchField{
+	clear:both;
+}
+.faLink {
+	float:right;
+}
+.advancedSearchField textarea {
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
 }
 .library div.advancedSearchField {
 	clear:both;

@@ -79,7 +79,7 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 			$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.type_id') == 30) {
-					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author'))."</p>";
+					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
 					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.call_number")."</p>";
