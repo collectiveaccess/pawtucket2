@@ -97,17 +97,31 @@
 				print "
 	<div class='col-xs-12'>
 		<div class='bResultListRow ".(($vn_bg == 1) ? "bResultListRowBg" : "")."'>{$vs_label_detail_link}";
-				switch($ps_table){
+				switch($vs_table){
 					case "ca_objects":
 						print "<small>";
 						if($qr_res->get("ca_objects.description")){
-							print "<p>".$qr_res->get("ca_objects.description")."</p>";
+							print "<p>".((mb_strlen($qr_res->get("ca_objects.description")) > 250) ? mb_substr($qr_res->get("ca_objects.description"), 0, 250)."..." : $qr_res->get("ca_objects.description"))."</p>";
 						}
 						if($qr_res->get("ca_objects.regions")){
 							print "<div><b>"._t("Applicable region(s):")." </b>".$qr_res->get("ca_objects.regions", array("delimiter" => ", ", "convertCodesToDisplayText" => true))."&nbsp;&nbsp;&nbsp;</div>";
 						}
 						if($qr_res->get("ca_objects.language")){
 							print "<div><b>"._t("Language:")." </b>".$qr_res->get("ca_objects.language", array("convertCodesToDisplayText" => true))."</div>";
+						}
+						print "</small>";
+					break;
+					# -----------------
+					case "ca_entities":
+						print "<small>";
+						if($qr_res->get("ca_entities.biography")){
+							print "<p>".((mb_strlen($qr_res->get("ca_entities.biography")) > 250) ? mb_substr($qr_res->get("ca_entities.biography"), 0, 250)."..." : $qr_res->get("ca_entities.biography"))."</p>";
+						}
+						if($qr_res->get("ca_entities.regions")){
+							print "<div><b>"._t("Applicable region(s):")." </b>".$qr_res->get("ca_entities.regions", array("delimiter" => ", ", "convertCodesToDisplayText" => true))."&nbsp;&nbsp;&nbsp;</div>";
+						}
+						if($qr_res->get("ca_entities.language")){
+							print "<div><b>"._t("Language:")." </b>".$qr_res->get("ca_entities.language", array("convertCodesToDisplayText" => true))."</div>";
 						}
 						print "</small>";
 					break;

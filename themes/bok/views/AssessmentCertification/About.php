@@ -26,13 +26,13 @@
 		</div><!--end col-sm-6-->
 		<div class="col-sm-6">
 			<p>
-				2.	A <strong>model certification program</strong>, based on one or two competences, providing an example of what a full certification program could look like and how the competences should be organized into a certification program with assessment instruments. 
+				2.	A <strong>model certification program</strong> providing an example of what a full certification program could look like and how the competences should be organized into a certification program with assessment instruments. 
 			</p>
 			<p>
 				Regional or national bodies can opt to build their certification program using the model or they can design their own. If their program meets the IUCN standards, they will be able to apply for IUCN endorsement.    
 			</p>
 			<p>
-				For further information on the status and development of the IUCN WPCA Protected Area Professional Certification Guidelines, please <go to link> <contact name>.
+				For further information on the status and development of the IUCN WPCA Protected Area Professional Certification Guidelines, please check for updates.
 			</p>
 		</div><!--end col-sm-6-->
 	</div><!-- end row -->

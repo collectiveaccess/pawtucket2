@@ -10,7 +10,7 @@
 	if($qr_res->numHits()){
 		while($qr_res->nextHit()){
 			$va_all_competences[$qr_res->get("ca_occurrences.occurrence_id")] = array("idno" => $qr_res->get("ca_occurrences.idno"), "label" => strtolower($qr_res->get("ca_occurrences.preferred_labels.name")));
-			$va_competences_by_area[strtolower($qr_res->get("ca_occurrences.area", array("convertCodesToDisplayText" => true)))][$qr_res->get("ca_occurrences.occurrence_id")] = array("idno" => $qr_res->get("ca_occurrences.idno"), "label" => strtolower($qr_res->get("ca_occurrences.preferred_labels.name")));
+			$va_competences_by_area[str_replace(" Pa ", " PA ", ucwords(strtolower($qr_res->get("ca_occurrences.area", array("convertCodesToDisplayText" => true)))))][$qr_res->get("ca_occurrences.occurrence_id")] = array("idno" => $qr_res->get("ca_occurrences.idno"), "label" => strtolower($qr_res->get("ca_occurrences.preferred_labels.name")));
 		}
 	}
 	if(sizeof($va_competences_by_area)){
@@ -31,9 +31,9 @@
 		$vn_col = 1;
 		foreach($va_competences_by_area as $vs_area => $va_categories){
 ?>
-			<div class="col-sm-4 capital">
+			<div class="col-sm-4">
 				<div class="catArea"><?php print $vs_area; ?></div></H3>
-				<ul class="nav nav-pills nav-stacked col<?php print $vn_col; ?>">
+				<ul class="nav nav-pills nav-stacked col<?php print $vn_col; ?> capital">
 <?php
 					foreach($va_categories as $vn_category_id => $va_category){
 ?>
