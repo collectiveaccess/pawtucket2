@@ -50,6 +50,7 @@ a:hover {
 .detail #navigation a {
 	color:inherit;
 	font-size:10px;
+	border-bottom:0px;
 }	
 p {
 	margin: 25px 50px 0 140px;
@@ -244,6 +245,9 @@ div.asearch {
 	font-size:22px;
 	font-family: 'Bodoni W01 Roman';
 	color:red;
+}
+.findingaid {
+	background-image:none;
 }
 .findingaid .content {
 	clear:both;
