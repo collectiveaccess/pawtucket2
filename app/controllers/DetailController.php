@@ -331,35 +331,36 @@
  		 * 
  		 */ 
  		public function GetPageListAsJSON() {
- 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+ 			$pn_subject_id = $this->request->getParameter('object_id', pInteger);
  			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$pn_value_id = $this->request->getParameter('value_id', pInteger);
  			$ps_content_mode = $this->request->getParameter('content_mode', pString);
  			
- 			$this->view->setVar('object_id', $pn_object_id);
- 			$this->view->setVar('representation_id', $pn_representation_id);
- 			$this->view->setVar('content_mode', $ps_content_mode);
  			
- 			$t_rep = new ca_object_representations($pn_representation_id);
- 			$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$vs_download_version = $va_download_display_info['display_version'];
- 			$this->view->setVar('download_version', $vs_download_version);
+ 			$vs_page_cache_key = md5($pn_subject_id.'/'.$pn_representation_id.'/'.$pn_value_id);
+ 			
+ 			$this->view->setVar('page_cache_key', $vs_page_cache_key);
+ 			$this->view->setVar('t_subject', new ca_objects($pn_subject_id));
+ 			$this->view->setVar('t_representation', new ca_object_representations($pn_representation_id));
+ 			$this->view->setVar('t_attribute_value', new ca_attribute_values($pn_value_id));
+ 			$this->view->setVar('content_mode', $ps_content_mode);
  			
  			$va_page_list_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
  			
- 			$va_pages = $va_page_list_cache[$pn_object_id.'/'.$pn_representation_id];
+ 			$va_pages = $va_page_list_cache[$vs_page_cache_key];
  			if (!isset($va_pages)) {
  				// Page cache not set?
- 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetPage');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetPage');
  				return;
  			}
  			
  			$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
  			$this->view->setVar('pages', $va_pages);
- 			$this->view->setVar('sections', $va_section_cache[$pn_object_id.'/'.$pn_representation_id]);
+ 			$this->view->setVar('sections', $va_section_cache[$vs_page_cache_key]);
  			
  			$this->view->setVar('is_searchable', MediaContentLocationIndexer::hasIndexing('ca_object_representations', $pn_representation_id));
  			
- 			$this->render('Details/object_representation_page_list_json.php');
+ 			$this->render('bundles/media_page_list_json.php');
  		}
  		# -------------------------------------------------------
  		/**
@@ -387,6 +388,10 @@
 				return;
 			}
 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+			$pn_value_id = $this->request->getParameter('value_id', pInteger);
+			if ($pn_value_id) {
+ 				return $this->DownloadAttributeMedia();
+ 			}
 			$t_object = new ca_objects($pn_object_id);
 			if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
 			
@@ -575,8 +580,44 @@
  		 *
  		 */ 
  		public function GetMediaInfo() {
+ 			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
  			$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
- 			$this->response->addContent($this->getMediaAttributeViewerHTMLBundle($this->request, array('display' => 'media_overlay', 'value_id' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
+ 			if ($pn_value_id) {
+ 				$t_rep = new ca_object_representations();
+ 				
+ 				$t_attr_val = new ca_attribute_values($pn_value_id);
+ 				$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 				$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+ 				$t_subject->load($t_attr->get('row_id'));
+ 				
+				$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
+ 			
+				// check subject_id here
+ 				$va_opts = array('t_attribute_value' => $t_attr_val, 'display' => 'media_overlay', 't_subject' => $t_subject, 'containerID' => 'caMediaPanelContentArea');
+ 				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
+
+ 				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
+ 			} elseif ($pn_representation_id) { 
+ 				$t_rep = new ca_object_representations($pn_representation_id);
+ 			
+ 				$t_subject = new ca_objects($vn_subject_id = $this->request->getParameter('object_id', pInteger));
+				if(!$vn_subject_id) { 
+					if (is_array($va_subject_ids = $t_rep->get($t_subject->tableName().'.'.$t_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
+						$vn_subject_id = array_shift($va_subject_ids);
+					} else {
+						$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+						return;
+					}
+				}
+ 				$va_opts = array('display' => 'media_overlay', 't_subject' => $t_subject, 't_representation' => $t_rep, 'containerID' => 'caMediaPanelContentArea');
+ 				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
+ 
+ 				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
+ 			} else {
+ 				//
+ 			}
+ 			//$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
+ 			//$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, array('display' => 'media_overlay', 't_attribute_value' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
  		}
 		# ------------------------------------------------------
 		/**
@@ -1022,5 +1063,121 @@
 				
 			return;
 		}
+		# -------------------------------------------------------
+ 		# File attribute bundle download
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Initiates user download of file stored in a file attribute, returning file in response to request.
+ 		 * Adds download output to response directly. No view is used.
+ 		 *
+ 		 * @param array $pa_options Array of options passed through to _initView 
+ 		 */
+ 		public function DownloadAttributeFile($pa_options=null) {
+ 			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
+ 			$t_attr_val = new ca_attribute_values($pn_value_id);
+ 			if (!$t_attr_val->getPrimaryKey()) { return; }
+ 			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 		
+ 			$vn_table_num = $this->opo_datamodel->getTableNum($this->ops_table_name);
+ 			if ($t_attr->get('table_num') !=  $vn_table_num) { 
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+ 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			
+ 			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			$ps_version = $this->request->getParameter('version', pString);
+ 			
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			//
+ 			// Does user have access to bundle?
+ 			//
+ 			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			$t_attr_val->useBlobAsFileField(true);
+ 			
+ 			$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+ 			
+ 			// get value
+ 			$t_element = new ca_metadata_elements($t_attr_val->get('element_id'));
+ 			// check that value is a file attribute
+ 			if ($t_element->get('datatype') != 15) { 	// 15=file
+ 				return;
+ 			}
+ 			
+ 			$o_view->setVar('file_path', $t_attr_val->getFilePath('value_blob'));
+ 			$o_view->setVar('file_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
+ 			
+ 			// send download
+ 			$this->response->addContent($o_view->render('ca_attributes_download_file.php'));
+ 		}
+ 		# -------------------------------------------------------
+ 		# Media attribute bundle download
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Initiates user download of media stored in a media attribute, returning file in response to request.
+ 		 * Adds download output to response directly. No view is used.
+ 		 *
+ 		 * @param array $pa_options Array of options passed through to _initView 
+ 		 */
+ 		public function DownloadAttributeMedia($pa_options=null) {
+ 			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
+ 			$t_attr_val = new ca_attribute_values($pn_value_id);
+ 			if (!$t_attr_val->getPrimaryKey()) { return; }
+ 			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 		
+ 			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+ 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			
+ 			$vn_subject_id = $this->request->getParameter("subject_id", pInteger);
+ 			//list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			$ps_version = $this->request->getParameter('version', pString);
+ 			
+ 			
+ 			//if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			
+ 			//
+ 			// Does user have access to bundle?
+ 			//
+ 			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			$t_attr_val->useBlobAsMediaField(true);
+ 			if (!in_array($ps_version, $t_attr_val->getMediaVersions('value_blob'))) { $ps_version = 'original'; }
+ 			
+ 			$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+ 			
+ 			// get value
+ 			$t_element = new ca_metadata_elements($t_attr_val->get('element_id'));
+ 			
+ 			// check that value is a media attribute
+ 			if ($t_element->get('datatype') != 16) { 	// 16=media
+ 				return;
+ 			}
+ 			
+ 			$vs_path = $t_attr_val->getMediaPath('value_blob', $ps_version);
+ 			$vs_path_ext = pathinfo($vs_path, PATHINFO_EXTENSION);
+ 			if ($vs_name = trim($t_attr_val->get('value_longtext2'))) {
+ 				$vs_file_name = pathinfo($vs_name, PATHINFO_FILENAME);
+ 				$vs_name = "{$vs_file_name}.{$vs_path_ext}";
+ 			} else {
+ 				$vs_name = _t("downloaded_file.%1", $vs_path_ext);
+ 			}
+ 			
+ 			$o_view->setVar('file_path', $vs_path);
+ 			$o_view->setVar('file_name', $vs_name);
+ 			
+ 			// send download
+ 			$this->response->addContent($o_view->render('ca_attributes_download_media.php'));
+ 		}
  		# -------------------------------------------------------
 	}

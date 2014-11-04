@@ -84,8 +84,8 @@
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
- 			$this->opo_result_context->setAsLastFind();
+ 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
+ 			$this->opo_result_context->setAsLastFind(true);
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
@@ -346,7 +346,7 @@
  			$vs_class = $va_search_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
+ 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced', $ps_function);
  			$this->opo_result_context->setAsLastFind();
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
