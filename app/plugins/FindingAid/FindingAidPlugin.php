@@ -30,7 +30,11 @@
 		# -------------------------------------------------------
 		public function __construct($ps_plugin_path) {
 			$this->description = _t('Provides a finding-aid view for your Pawtucket installation');
-			
+			if (__CA_THEME_DIR__.'/conf/FindingAid.conf') {
+				$this->opo_config = Configuration::load(__CA_THEME_DIR__.'/conf/FindingAid.conf');
+			} else {
+				$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
+			}
 			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
 			parent::__construct();
 		}

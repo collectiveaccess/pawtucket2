@@ -42,24 +42,37 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
-
-	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
 	
+
 	$o_set_config = caGetSetsConfig();
 	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
 	
+
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
+		
+
+		$vn_col_span = 4;
+		$vn_col_span_sm = 4;
+		$vb_refine = false;
+		if(is_array($va_facets) && sizeof($va_facets)){
+			$vb_refine = true;
+			$vn_col_span = 4;
+			$vn_col_span_sm = 4;
+			$vn_col_span_xs = 4;
+		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
@@ -67,73 +80,54 @@
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
+					$va_ids[] = $qr_res->get($vs_pk);
+					$vn_c++;
 				}
-			
-				$qr_res->seek($vn_start);
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
+			
+				$vn_c = 0;	
+				$qr_res->seek($vn_start);
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
-			$vn_bg = 1;
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
-				
-				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
-				if(!$vs_image){
-					$vs_image = $vs_placeholder_tag;
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+				$vs_thumbnail = "";
+				if ($vs_table == 'ca_objects') {
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
+						$vs_thumbnail = $vs_placeholder_tag;	
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+				} else {
+					if($va_images[$vn_id]){
+						$vs_thumbnail = $va_images[$vn_id];
+					}else{
+						$vs_thumbnail = $vs_placeholder_tag;
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='col-xs-12'>
-		<div class='bResultListRow ".(($vn_bg == 1) ? "bResultListRowBg" : "")."'>{$vs_label_detail_link}";
-				switch($vs_table){
-					case "ca_objects":
-						print "<small>";
-						if($qr_res->get("ca_objects.description")){
-							print "<p>".((mb_strlen($qr_res->get("ca_objects.description")) > 250) ? mb_substr($qr_res->get("ca_objects.description"), 0, 250)."..." : $qr_res->get("ca_objects.description"))."</p>";
-						}
-						if($qr_res->get("ca_objects.regions")){
-							print "<div><b>"._t("Applicable region(s):")." </b>".$qr_res->get("ca_objects.regions", array("delimiter" => ", ", "convertCodesToDisplayText" => true))."&nbsp;&nbsp;&nbsp;</div>";
-						}
-						if($qr_res->get("ca_objects.language")){
-							print "<div><b>"._t("Language:")." </b>".$qr_res->get("ca_objects.language", array("convertCodesToDisplayText" => true))."</div>";
-						}
-						print "</small>";
-					break;
-					# -----------------
-					case "ca_entities":
-						print "<small>";
-						if($qr_res->get("ca_entities.biography")){
-							print "<p>".((mb_strlen($qr_res->get("ca_entities.biography")) > 250) ? mb_substr($qr_res->get("ca_entities.biography"), 0, 250)."..." : $qr_res->get("ca_entities.biography"))."</p>";
-						}
-						if($qr_res->get("ca_entities.regions")){
-							print "<div><b>"._t("Applicable region(s):")." </b>".$qr_res->get("ca_entities.regions", array("delimiter" => ", ", "convertCodesToDisplayText" => true))."&nbsp;&nbsp;&nbsp;</div>";
-						}
-						if($qr_res->get("ca_entities.language")){
-							print "<div><b>"._t("Language:")." </b>".$qr_res->get("ca_entities.language", array("convertCodesToDisplayText" => true))."</div>";
-						}
-						print "</small>";
-					break;
-					# -----------------
-				}
-				print ((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
-		</div><!-- end bResultListItemContent -->
+	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemText'>
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+				<hr>
+				{$vs_expanded_info}
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+			</div><!-- bResultItemExpandedInfo -->
+		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
-				$vn_bg++;
-				if($vn_bg > 2){
-					$vn_bg = 1;
-				}
+				
 				$vn_c++;
 			}
 			

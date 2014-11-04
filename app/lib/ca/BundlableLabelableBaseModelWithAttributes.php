@@ -5983,20 +5983,11 @@ side. For many self-relations the direction determines the nature and display te
 			$vs_label = $this->getLabelForDisplay(false);
 			$vn_hier_id = $this->get($vs_hier_fld);
 			
-			if ($this->get($vs_parent_fld)) { 
-				// currently loaded row is not the root so get the root
-				$va_ancestors = $this->getHierarchyAncestors();
-				if (!is_array($va_ancestors) || sizeof($va_ancestors) == 0) { return null; }
-				$t_instance = $o_dm->getInstanceByTableName($va_ancestors[0], true);
-			} else {
-				$t_instance =& $this;
-			}
-			
-			$va_children = $t_instance->getHierarchyChildren(null, array('idsOnly' => true));
+			$va_children = $this->getHierarchyChildren(null, array('idsOnly' => true));
 			$va_hierarchy_root = array(
-				$t_instance->get($vs_hier_fld) => array(
+				$this->get($vs_hier_fld) => array(
 					'item_id' => $vn_id,
-					'collection_id' => $vn_id,
+					$vs_pk => $vn_id,
 					'name' => caProcessTemplateForIDs($vs_template, $vs_table, array($vn_id)),
 					'hierarchy_id' => $vn_hier_id,
 					'children' => sizeof($va_children)

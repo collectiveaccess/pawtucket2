@@ -66,8 +66,8 @@
 				</ifdef>}}}
 
 				
-				{{{<ifdef code="ca_objects.regions"><H6>Applicable regions:</H6>^ca_objects.regions</ifdef>}}}
-				{{{<ifdef code="ca_objects.language"><H6>Language:</H6>^ca_objects.language</ifdef>}}}
+				{{{<ifcount code="ca_objects.regions" min="1"><H6>Applicable region(s):</H6><unit delimiter=", ">^ca_objects.regions</unit></ifcount>}}}
+				{{{<ifcount code="ca_objects.language" min="1"><H6>Language(s):</H6><unit delimiter=", ">^ca_objects.language</unit></ifcount>}}}
 				{{{<ifdef code="ca_objects.source_reference"><H6>Source/Reference:</H6>^ca_objects.source_reference</ifdef>}}}
 				
 

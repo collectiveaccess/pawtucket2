@@ -10,7 +10,7 @@
 		</div>
 		<div class="col-sm-6 col-md-5">
 			<p>
-				This site provides access to an IUCN WCPA sponsored program provided by Global Parks which match mentors with those requesting mentorship.
+				This site provides access to an IUCN WCPA sponsored program provided by <a href="http://www.globalparks.org" target="_blank" class="underline">Global Parks</a> which matches mentors with those requesting mentorship.
 			</p>
 			<p>
 				<ul>
