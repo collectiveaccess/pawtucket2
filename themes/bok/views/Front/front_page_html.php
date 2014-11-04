@@ -80,9 +80,9 @@
 					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'icon_bok.png')."<br/>"._t("Body of Knowledge")."<br/><br/>", "", "", "BodyOfKnowledge", "About"); ?>
 				</div><!-- end -->
 				<div class="frontSectionBoxCaption">
-					Competence-based collection of key resources for learning and assessment, including:
+					Competence-based curated collection of key resources for learning and assessment, including:
 					<ul>
-						<li>Open-source e-Learning tools</li>
+						<li>Open-source e-Learning portal</li>
 						<li>Links to courses and <br/>curricular guides</li>
 					</ul>
 				</div><!-- end -->
