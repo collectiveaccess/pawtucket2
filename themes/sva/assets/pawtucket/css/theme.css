@@ -213,8 +213,14 @@ div.asearch {
 	color: black;
 
 }
+.detail .zoomButton {
+	display:none;
+}
 .detail .content li {
 	margin:0px;
+	padding:0px;
+}
+.detail .detailMediaToolbar {
 	padding:0px;
 }
 .jcarousel-wrapper li {
