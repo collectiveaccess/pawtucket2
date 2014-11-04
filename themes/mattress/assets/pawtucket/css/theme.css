@@ -969,6 +969,11 @@ div.caMediaOverlayControls:hover {
 	float:left;
 	margin-bottom:15px;
 }
+.siteResult {
+	font-family: "ProximaNovaBold";
+	display:block;
+	color:#000;
+}
 /* Browse Page */
 
 #browseResults {
@@ -1159,6 +1164,7 @@ span.criteria {
 	font-size:15px;
 	font-family: "ProximaNovaBold";	
 	padding-bottom:15px;
+	text-transform:uppercase;
 }
 #browseHeader .alpha a{
 	color:red;
@@ -1568,4 +1574,8 @@ a.downloadButton{
 	display:inline-block;
 }
 
-
+div.caMediaOverlayControls .repNav {
+	float:right;
+	text-align:right;
+	width:auto;
+}

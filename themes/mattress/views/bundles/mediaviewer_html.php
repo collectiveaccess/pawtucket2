@@ -34,6 +34,9 @@ $vs_display_type		 	= $this->getVar('display_type');
 $vs_show_version 			= $this->getVar('version');
 $vs_container_id 			= $this->getVar('containerID');
 $va_reps 					= $this->getVar('reps');
+
+# --- when linked to from authority detail pages, use session var to make next and previous nav between reps
+$va_authority_objects_results = $this->request->session->getVar("repViewerResults");
 	
 if($vs_display_type == 'media_overlay'){
 	if(sizeof($va_reps) > 1){
@@ -101,14 +104,44 @@ if($vs_display_type == 'media_overlay'){
 			</div>
 			<div class='repNav'>
 <?php
-				if ($vn_id = $this->getVar('previous_representation_id')) {
-					print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>←</a>";
-				}
-				if (sizeof($va_reps) > 1) {
-					print ' '._t("%1 of %2", $this->getVar('representation_index'), sizeof($va_reps)).' ';
-				}
-				if ($vn_id = $this->getVar('next_representation_id')) {
-					print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>→</a>";
+				if(is_array($va_authority_objects_results) && (sizeof($va_authority_objects_results) > 1)){
+					$vn_previous_auth_result_object_id = "";
+					$vn_previous_auth_result_representation_id = "";
+					$vn_next_auth_result_object_id = "";
+					$vn_next_auth_result_representation_id = "";
+					foreach($va_authority_objects_results as $vn_key => $va_authority_objects_result){
+						if($va_authority_objects_result["object_id"] == $t_object->get("object_id")){
+							$vn_current_object_key = $vn_key;
+							break;
+						}
+					}
+					if($va_previous_auth = $va_authority_objects_results[$vn_current_object_key-1]){
+						$vn_previous_auth_result_object_id = $va_previous_auth["object_id"];
+						$vn_previous_auth_result_representation_id = $va_previous_auth["representation_id"];
+					}
+					if($va_next_auth = $va_authority_objects_results[$vn_current_object_key+1]){
+						$vn_next_auth_result_object_id = $va_next_auth["object_id"];
+						$vn_next_auth_result_representation_id = $va_next_auth["representation_id"];
+					}
+					if ($vn_previous_auth_result_object_id) {
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_previous_auth_result_representation_id, 'object_id' => (int)$vn_previous_auth_result_object_id))."\");'>←</a>";
+					}
+					if (sizeof($va_authority_objects_results) > 1) {
+						print ' '._t("%1 of %2", ($vn_current_object_key + 1), sizeof($va_authority_objects_results)).' ';
+					}
+					if ($vn_next_auth_result_object_id) {
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_next_auth_result_representation_id, 'object_id' => (int)$vn_next_auth_result_object_id))."\");'>→</a>";
+					}
+				}else{
+					if ($vn_id = $this->getVar('previous_representation_id')) {
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>←</a>";
+					}
+					if (sizeof($va_reps) > 1) {
+						print ' '._t("%1 of %2", $this->getVar('representation_index'), sizeof($va_reps)).' ';
+					}
+					if ($vn_id = $this->getVar('next_representation_id')) {
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>→</a>";
+					}
 				}
 ?>
 			</div>

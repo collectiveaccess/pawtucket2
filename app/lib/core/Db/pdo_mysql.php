@@ -433,19 +433,24 @@ class Db_pdo_mysql extends DbDriverBase {
 	 */
 	function getAllFieldValues($po_caller, $pr_res, $pm_field) {
 		$va_vals = array();
-		$va_row = $pr_res->fetch(PDO::FETCH_ASSOC);
-		if (!isset($va_row[$ps_field])) { return array(); }
-		$this->seek($po_caller, $pr_res, 0);
 		
 		if (is_array($pa_fields)) {
+			$va_row = $pr_res->fetch(PDO::FETCH_ASSOC);
+			foreach($pa_fields as $vs_field) {
+				if (!is_array($va_row) || !array_key_exists($vs_field, $va_row)) { return array(); }
+			}
+			$this->seek($po_caller, $pr_res, 0);
 			while(is_array($va_row = $pr_res->fetch(PDO::FETCH_ASSOC))) {
 				foreach($pa_fields as $vs_field) {
 					$va_vals[$vs_field][] = $va_row[$vs_field];
 				}
 			}
 		} else {
+			$va_row = $pr_res->fetch(PDO::FETCH_ASSOC);
+			if (!is_array($va_row) || !array_key_exists($pa_fields, $va_row)) { return array(); }
+			$this->seek($po_caller, $pr_res, 0);
 			while(is_array($va_row = $pr_res->fetch(PDO::FETCH_ASSOC))) {
-				$va_vals[] = $va_row[$ps_field];
+				$va_vals[] = $va_row[$pa_fields];
 			}
 		}
 		return $va_vals;

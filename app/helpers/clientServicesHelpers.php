@@ -81,7 +81,7 @@
 			".caClientCommunicationsViewMessageIcon", _t("View entire message and associated media")
 		);
 		$vs_buf .= "<div class='caClientCommunicationsMessageSummaryFrom {$vs_unread_class}'><span class='caClientCommunicationsMessageSummaryHeading'>"._t("From").":</span> ".caClientServicesGetSenderName($pa_data);
-		$vs_buf .= ($vb_is_unread) ? ' '.caGetThemeGraphic($po_request, 'icons/envelope.gif') : "";
+		$vs_buf .= ($vb_is_unread) ? " <img src='".$po_request->getThemeUrlPath()."/graphics/icons/envelope.gif' border='0'>" : "";
 		$vs_buf .= "</div>";
 		$vs_buf .= "<div class='caClientCommunicationsMessageSummaryDate {$vs_unread_class}'><span class='caClientCommunicationsMessageSummaryHeading'>"._t("Date").":</span> ".caGetLocalizedDate($pa_data['created_on'], array('dateFormat' => 'delimited'))."</div>";
 		$vs_buf .= "<div class='caClientCommunicationsMessageSummarySubject {$vs_unread_class}'><span class='caClientCommunicationsMessageSummaryHeading'>"._t("Subject").":</span> ".$pa_data['subject']."</div>";
