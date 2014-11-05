@@ -36,12 +36,14 @@
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues($this->request);
-	$o_config = caGetSearchConfig();$o_browse_config = caGetBrowseConfig();
+	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
-	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	$o_config = caGetSearchConfig();
+	$o_icons_conf = caGetIconsConfig();
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {

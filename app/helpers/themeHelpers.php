@@ -187,6 +187,19 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific icon configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetIconsConfig() {
+		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
+			return Configuration::load(__CA_THEME_DIR__.'/conf/icons.conf');
+		}else{
+			return Configuration::load(__CA_THEMES_DIR__.'/default/conf/icons.conf');
+		}
+	}
+	# ---------------------------------------
+	/**
 	 * Get theme-specific sets/lightbox configuration
 	 *
 	 * @return Configuration 
@@ -372,10 +385,7 @@
 				}
 				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 			}
-			$o_config = caGetDetailConfig();
-			if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
-				$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
-			}
+			$vs_placeholder = getPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon");
 			return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
 		}
 	}
@@ -539,10 +549,7 @@
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}
-				$o_config = caGetDetailConfig();
-				if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
-					$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
-				}
+				$vs_placeholder = getPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon");
 				return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
 			}
 		}
@@ -740,10 +747,6 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$o_config = caGetSetsConfig();
-		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-		}
 		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("medium", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbSetContainer'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
@@ -756,7 +759,10 @@
 			$vs_primary_image_block = "";
 			$vs_secondary_image_block = "";
 			$vn_i = 1;
+			$t_list_items = new ca_list_items();
 			foreach($va_set_items as $va_set_item){
+				$t_list_items->load($va_set_item["type_id"]);
+				$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 				if($vn_i == 1){
 					if($va_set_item["representation_tag_medium"]){
 						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
@@ -832,11 +838,11 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$o_config = caGetSetsConfig();
-		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-		}
+		
+		$t_list_items = new ca_list_items($va_set_item["type_id"]);
+		$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 		$vs_caption = "";
+		$o_config = caGetSetsConfig();
 		$vs_caption_template = $o_config->get("caption_template");
 		if($vs_caption_template){
 			$t_object = new ca_objects($va_set_item["row_id"]);
@@ -1004,5 +1010,22 @@
 			}
 		}
 		return $vs_set_list;
+	}
+	# ---------------------------------------
+	function getPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_media_icon"){
+		$o_config = caGetIconsConfig();
+		$va_placeholders_by_type = $o_config->getAssoc("placeholders");
+		$vs_placeholder = $o_config->get($vs_placeholder_type);
+		if(is_array($va_placeholders_by_type[$vs_type_code])){
+			$vs_placeholder = $va_placeholders_by_type[$vs_type_code][$vs_placeholder_type];
+		}
+		if(!$vs_placeholder){
+			if($vs_placeholder_type == "placeholder_media_icon"){
+				$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+			}else{
+				$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
+			}
+		}
+		return $vs_placeholder;
 	}
 	# ---------------------------------------
