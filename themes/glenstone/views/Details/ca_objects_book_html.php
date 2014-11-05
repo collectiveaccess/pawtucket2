@@ -67,7 +67,7 @@
 					print "<div id='availability' style='display:none;'>";
 					foreach ($va_copies as $vn_id => $va_copy) {
 						$t_copy = new ca_objects($va_copy);
-						print "<div class='unit'><span class='metaTitle'>Copy: </span><span class='meta'>".$t_copy->get('ca_objects.copy_name')."</span></div>";
+						print "<div class='unit'><span class='metaTitle'>Item: </span><span class='meta'>".$t_copy->get('ca_objects.copy_name')."</span></div>";
 						if ($va_call_number = $t_copy->get('ca_objects.call_number')) {
 							print "<div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>".$va_call_number."</span></div>";
 						}
