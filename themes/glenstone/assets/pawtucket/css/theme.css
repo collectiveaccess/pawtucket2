@@ -1007,6 +1007,10 @@ p.bookTitle {
 .book.detail .zoomButton {
 	display:none;
 }
+.book.detail .detailMediaPlaceholder {
+	padding-top:75px;
+	padding-bottom:75px;
+}
 #Condition .clearfix {
 	margin-bottom:5px;
 }

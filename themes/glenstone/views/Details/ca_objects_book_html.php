@@ -67,7 +67,7 @@
 					print "<div id='availability' style='display:none;'>";
 					foreach ($va_copies as $vn_id => $va_copy) {
 						$t_copy = new ca_objects($va_copy);
-						print "<div class='unit'><span class='metaTitle'>Copy: </span><span class='meta'>".$t_copy->get('ca_objects.preferred_labels')."</span></div>";
+						print "<div class='unit'><span class='metaTitle'>Copy: </span><span class='meta'>".$t_copy->get('ca_objects.copy_name')."</span></div>";
 						if ($va_call_number = $t_copy->get('ca_objects.call_number')) {
 							print "<div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>".$va_call_number."</span></div>";
 						}
@@ -94,7 +94,7 @@
 				if ($va_ISBN = $t_object->get('ca_objects.ISBN', array('returnAsArray' => true))) {
 					print "<div class='unit '><span class='metaTitle'>ISBN </span><span class='meta'>";
 					foreach ($va_ISBN as $va_isbn_no) {
-						if(strlen($va_isbn_no['ISBN']) == 9) {
+						if(strlen($va_isbn_no['ISBN']) != 13) {
 							print $va_isbn_no['ISBN'];
 						}
 					}
@@ -122,8 +122,8 @@
 #					print "</span></div>"; 
 #				}				
 ?>	
-				{{{<ifdef code="ca_objects.library_summary"><div class='unit '><span class='metaTitle'>Summary </span><span class='meta'>^ca_objects.library_summary</span></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.physical_description"><div class='unit '><span class='metaTitle'>Physical Description </span><span class='meta'>^ca_objects.physical_description</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.library_summary"><div class='unit '><span class='metaTitle'>Summary </span><span class='meta'>^ca_objects.library_summary</span></div></ifdef>}}}				
 
 			</div><!-- end col -->
 		</div><!-- end row -->

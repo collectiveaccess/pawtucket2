@@ -32,7 +32,7 @@
 	
 		<div class="advancedSearchField">
 			Date range:<br/>
-			{{{ca_objects.dc_date.dates_value%width=200px&height=40px}}}
+			{{{ca_objects.dc_date.dc_dates_value%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>	
 	
