@@ -1,13 +1,17 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+ 	$va_object_browse_info = caGetInfoForBrowseType("objects");
+ 	$va_views = $va_object_browse_info["views"];
+ 	$o_config = caGetBrowseConfig();
+ 	$va_view_icons = $o_config->getAssoc("views")	
 ?>
 	<div class="container">
 		<div class="row">
 			<div class='col-md-12 col-lg-12'>
 				<div class='objTitle'>{{{^ca_entities.preferred_labels.displayname}}}</div>
-			</div><!-- end col -->
-		</div><!-- end row -->
+			</div><!-- end col1 -->
+		</div><!-- end row1 -->
 		<div class="row">			
 			<div class='col-md-12 col-lg-12 content'>
 <?php			
@@ -51,27 +55,54 @@
 <?php
 		}
 ?>					
-			</div><!-- end col -->
-		</div><!-- end row -->
+			</div><!-- end col2 -->
+		</div><!-- end row2 -->
 {{{<ifcount code="ca_objects" min="2">
-		<div class="row">
-			<div id="browseResultsContainer">
-				<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-			</div><!-- end browseResultsContainer -->
-		</div><!-- end row -->
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-					jQuery('#browseResultsContainer').jscroll({
-						autoTrigger: true,
-						loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-						padding: 20,
-						nextSelector: 'a.jscroll-next'
+			<div class="row">
+				<div id="bViewButtons">
+<?php
+					if(is_array($va_views) && (sizeof($va_views) > 1)){
+						foreach($va_views as $vs_view => $va_view_info) {
+?>
+							<a href="#" onClick="loadResults('<?php print $vs_view; ?>'); return false;"><span class="glyphicon <?php print $va_view_icons[$vs_view]['icon']; ?>"></span></a>
+<?php
+						}
+					}
+?>
+				</div>
+				<div id="browseResultsContainer">
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
 					});
+					
+					
 				});
-				
-				
+			</script>
+</ifcount>}}}		
+
+</div><!-- end container -->
+
+<script type="text/javascript">
+		
+		function loadResults(view) {
+			jQuery("#browseResultsContainer").data('jscroll', null);
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:{{{^ca_entities.entity_id}}}'), array('dontURLEncodeParameters' => true)); ?>/view/" + view, function() {
+				jQuery("#browseResultsContainer").jscroll({
+					autoTrigger: true,
+					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+					padding: 20,
+					nextSelector: "a.jscroll-next"
+				});
 			});
-		</script>
-</ifcount>}}}
-	</div><!-- end container -->
+		}
+</script>

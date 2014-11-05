@@ -84,7 +84,7 @@
 				<!-- search links for all: publications, courses, events, exhibitions -->
 				<li class="svaa collection">
 <?php
-				print caNavLink($this->request, _t('Publications'), '', 'Detail', 'Collection', 'Show', array('collection_id' => '341'));
+				print caNavLink($this->request, _t('Publications'), '', '', 'Detail', 'collections/341');
 ?>				
 				</li>
 <!--				<li class="svaa collection">
@@ -94,12 +94,12 @@
 				</li> -->
 				<li class="svaa collection">
 <?php
-				print caNavLink($this->request, _t('Events'), '', '', 'Search', 'Index', array('search' => 'ca_occurrences.type_id:96'));
+				print caNavLink($this->request, _t('Events'), '', '', 'Search', 'occurrences/facet/type_facet/id/96');
 ?>					
 				</li>	
 				<li class="svaa collection">
 <?php
-				print caNavLink($this->request, _t('Exhibitions'), '', '', 'Search', 'Index', array('search' => 'ca_occurrences.type_id:95'));
+				print caNavLink($this->request, _t('Exhibitions'), '', '', 'Search', 'occurrences/facet/type_facet/id/95');
 ?>					
 				</li>						
 			</ul>	
