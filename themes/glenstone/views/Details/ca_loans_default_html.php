@@ -78,7 +78,7 @@
 					if ($va_loan_image['loan_documents_primary'] == 162) {
 						$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_loan_id, $vn_media_element_id)) ;
 						if ($qr_res->nextRow()) {
-							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_loan_image['loan_documents_media']."</a>";
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/ca_loans', array('loan_id' => $vn_loan_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_loan_image['loan_documents_media']."</a>";
 
 						}
 					}

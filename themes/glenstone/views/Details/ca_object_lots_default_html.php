@@ -130,7 +130,7 @@
 							if ($va_lot_image['invoice_upload_primary'] == "Yes") {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vs_lot_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_lot_image['invoice_upload_media']."</a>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/'.$t_item->tableName(), array('lot_id' => $t_item->getPrimaryKey(), 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_lot_image['invoice_upload_media']."</a>";
 
 								}
 							}
@@ -157,7 +157,7 @@
 							if ($va_bill_image['bill_upload_primary'] == "Yes") {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vs_bill_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_bill_image['bill_upload_media']."</a>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/'.$t_item->tableName(), array('lot_id' => $t_item->getPrimaryKey(), 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_bill_image['bill_upload_media']."</a>";
 
 								}
 							}

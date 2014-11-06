@@ -255,6 +255,7 @@ a:hover {
 }
 #footer ul a {
 	color:#474747;
+	font-size:11px;
 }
 
 @media (min-width: 768px) {
@@ -332,6 +333,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	-moz-box-shadow: none;
 	box-shadow: none;
 	font-size:40px;
+}
+.library a.jcarousel-control-prev, .library a.jcarousel-control-next {
+	top:110px;
 }
 .front .jcarousel-pagination a, .jcarousel-pagination a {
 	text-decoration: none;
@@ -994,6 +998,19 @@ p.bookTitle {
 	margin-right:10px;
 	margin-bottom:10px;
 }
+.book.detail .repViewerContCont img {
+	width:100%;
+	max-width: 305px;
+	pointer-events: none;
+	cursor: default;
+}
+.book.detail .zoomButton {
+	display:none;
+}
+.book.detail .detailMediaPlaceholder {
+	padding-top:75px;
+	padding-bottom:75px;
+}
 #Condition .clearfix {
 	margin-bottom:5px;
 }
@@ -1179,6 +1196,16 @@ p.bookTitle {
 .detail #detailRelatedObjects, .detail #detailRelatedArchives, .detail #detailRelatedLibrary {
 	margin-bottom:0px;
 }
+.availability, .hideAvailability {
+	font-size:11px;
+	padding-left:2px;
+}
+.copies {
+	font-size:13px;
+}
+#availability {
+	padding-top:5px;
+}
 .jcarouselarchive, .jcarouselLibrary {
 	position: relative;
 	overflow: hidden;
@@ -1235,6 +1262,20 @@ p.bookTitle {
 #pageArea.entities .col-md-6, #pageArea.entities .col-lg-6 {
 	padding-left:30px;
 	padding-right:30px;
+}
+
+/* Collections */
+
+.detail H6 a {
+	color:#999;
+	font-size:12px;
+}
+.collections.detail .detailPrevLink,  .collections.detail .detailNavBgRight,
+.entities.detail .detailPrevLink, .entities.detail .detailNavBgRight{
+	margin-top:0px;
+}
+.findingAid {
+	float:right;
 }
 
 /* Sets */
@@ -1394,6 +1435,24 @@ div.advancedSearchField {
 	margin-right: 10px;
 	width:auto;
 }
+.advancedContainer {
+	float:left;
+	width:50%;
+}
+.advancedContainer .advancedSearchField{
+	clear:both;
+}
+.faLink {
+	float:right;
+}
+.advancedSearchField textarea {
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
+}
+.library div.advancedSearchField {
+	clear:both;
+}
 .search h1 {
 	color: #858585;
 	line-height: 1.3;
@@ -1413,6 +1472,14 @@ div.advancedSearchField {
 	margin: 0px;
 	font-size: 12px;
 	color: #888;
+}
+.advancedSearchField select{
+	background-color: #eee;
+	border-radius: 4px;
+	border: 1px solid #ccc;
+	padding: 1px;
+	font-size: 12px;
+	margin-bottom: 4px;
 }
 /* Finding Aid */
 

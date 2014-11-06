@@ -38,10 +38,13 @@
 	$o_config = caGetSearchConfig();
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
-	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -75,13 +78,20 @@
 <?php
 		}
 		$vn_count = 0;
+		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php 
 				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
 				if(!$vs_image){
-					$vs_image = $vs_placeholder_tag;
+					$t_list_item->load($qr_results->get("type_id"));
+					$vs_typecode = $t_list_item->get("idno");
+					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
+					}else{
+						$vs_image = $vs_default_placeholder_tag;
+					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>

@@ -94,7 +94,7 @@
 				if ($qr_results->get('ca_objects.type_id') == 30) {
 
 					if ($qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '))) {
-						$va_authors = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '));
+						$va_authors = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'));
 					} else {
 						$va_authors = "";
 					}

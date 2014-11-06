@@ -619,7 +619,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 						$va_values[$vs_fieldlist_field][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
 						$va_default_values['_fieldlist_field'][] = $vs_fieldlist_field;
 						$va_default_values['_fieldlist_value'][] = trim($pa_form_values[$vs_dotless_element.'_value'][$vn_j]);
-						$va_booleans["_fieldlist:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
+						$va_booleans["_fieldlist:boolean"][] = $va_booleans["{$vs_fieldlist_field}:boolean"][] = isset($pa_form_values["_fieldlist:boolean"][$vn_j]) ? $pa_form_values["_fieldlist:boolean"][$vn_j] : null;
 						
 					}
 					break;
@@ -641,6 +641,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$po_result_context->saveContext();
 	
 	 	$va_query_elements = $va_query_booleans = array();
+	 	
+	 	$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
+	 	
 	 	if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_value_list) {
 				foreach($va_value_list as $vn_i => $vs_value) {
@@ -650,6 +653,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					} else {
 						$vs_query_element = $vs_value;
 					}
+					
+					$vs_query_element .= ($vb_match_on_stem && !preg_match('!\*$!', $vs_query_element) && preg_match('![\w]+$!', $vs_query_element)) ? '*' : '';
 					
 					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){
@@ -690,6 +695,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * The returned value is a list of arrays; each array contains a 'bundle' specifier than can be passed got Model::get() or SearchResult::get() and a display name
 	 *
 	 * @param mixed $pm_table_name_or_num The table name or number specifying the content type to fetch bundles for. If omitted the content table of the currently loaded search form will be used.
+	 * @param array $pa_options
+	 *
 	 * @return array And array of bundles keyed on display label. Each value is an array with these keys:
 	 *		bundle = The bundle name (eg. ca_objects.idno)
 	 *		display = Display label for each available bundle

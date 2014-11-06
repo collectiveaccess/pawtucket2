@@ -90,7 +90,7 @@
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			if($vb_is_advanced) { 
- 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
+ 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))); 
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
@@ -479,6 +479,11 @@
  			
  			$va_buf = array();
  			foreach($va_criteria as $vs_facet => $va_vals) {
+ 				foreach($va_vals as $vn_i => $vs_val) {
+ 					$va_vals[$vn_i] = preg_replace("![A-Za-z_\./]+[:]{1}!", "", $vs_val);
+ 					$va_vals[$vn_i] = trim(preg_replace("![\*].!", "", $va_vals[$vn_i]));
+ 					$va_vals[$vn_i] = trim(preg_replace("![\(\)]+!", " ", $va_vals[$vn_i]));
+ 				}
  				$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
  			}
  			
