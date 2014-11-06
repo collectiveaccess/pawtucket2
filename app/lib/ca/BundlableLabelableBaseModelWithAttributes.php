@@ -1981,6 +1981,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						// If there's a "/" separator then this is a relationship type-restricted search (Eg. ca_entities.preferred_labels.displayname/artist:"Isamu Noguchi")
 						if (sizeof($va_tmp2) > 1) { 
 							$va_relationship_restricted_searches[$va_tmp2[0]][] = $va_tmp[0]; 
+							$va_filter[] = $va_tmp[0];
 						} else {
 							$va_filter[] = $va_tmp2[0];
 						}
@@ -2008,7 +2009,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						}
 					}
 				}
-				ksort($va_options);
+				
+				if(is_array($va_filter) && sizeof($va_filter)) {
+					// reorder options to keep field list order (sigh)
+					$va_options_tmp = array();
+					foreach($va_filter as $vs_filter) {
+						if (($vs_k = array_search($vs_filter, $va_options)) !== false) {
+							$va_options_tmp[$vs_k] = $va_options[$vs_k];
+						}
+					}
+					$va_options = $va_options_tmp;
+				}
 				
 				return caHTMLSelect("_fieldlist_field".($vb_as_array_element ? "[]" : ""), $va_options, array(
 								'size' => $pa_options['fieldListWidth'], 'class' => $pa_options['class']
