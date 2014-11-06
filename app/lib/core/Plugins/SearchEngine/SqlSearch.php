@@ -737,7 +737,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$vs_access_point = $va_access_point_info['access_point'];
 							
 								$vs_term = $o_term->text;
-								
+					
 								if ($vs_access_point && (mb_strtoupper($vs_term) == _t('[BLANK]'))) {
 									$vb_is_blank_search = true; 
 									break;

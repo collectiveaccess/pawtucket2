@@ -1084,6 +1084,17 @@
 		public function getTypeFieldName() {
 			return $this->ATTRIBUTE_TYPE_ID_FLD;
 		}
+		
+		# ------------------------------------------------------------------
+		/**
+		 * Determine if type for this model is mandatory 
+		 *
+		 * @return bool Returns true if type is optional (may be null in the database), false if it is mandatory or null if the model does not support types.
+		 */
+		public function typeIDIsOptional() {
+			if (!property_exists($this->tableName(), 'ATTRIBUTE_TYPE_ID_FLD')) { return null; }
+			return $this->getFieldInfo($this->ATTRIBUTE_TYPE_ID_FLD, 'IS_NULL');
+		}
 		# ------------------------------------------------------------------
 		/**
 		 * List code (from ca_lists.list_code) of list defining types for this table
@@ -1261,7 +1272,7 @@
 			$va_tmp = explode('.', $ps_field);
 			
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
-				return $this->getTypeListAsHTMLFormElement(null, null, array_merge($pa_options, array('nullOption' => '-')));
+				return $this->getTypeListAsHTMLFormElement($ps_field, null, array_merge($pa_options, array('nullOption' => '-')));
 			}
 			
 			if (!in_array($va_tmp[0], array('created', 'modified'))) {		// let change log searches filter down to BaseModel
@@ -1455,6 +1466,9 @@
 
 				if (isset($pa_bundle_settings['usewysiwygeditor']) && strlen($pa_bundle_settings['usewysiwygeditor']) == 0) {
 					unset($pa_bundle_settings['usewysiwygeditor']);	// let null usewysiwygeditor bundle option fall back to metadata element setting
+				}
+				if(!is_array($va_label)) { 
+					$va_label = array('name' => '???', 'description' => '');
 				}
 				$va_elements_by_container[$va_element['parent_id']][] = $vs_br.ca_attributes::attributeHtmlFormElement($va_element, array_merge($pa_bundle_settings, array_merge($pa_options, array(
 					'label' => (sizeof($va_element_set) > 1) ? $va_label['name'] : '',
@@ -1805,11 +1819,22 @@
 			return null;
 		}
 		# ------------------------------------------------------------------
-		// returns the specific attribute with the specified attribute_id
-		// ** assuming it's attached to the current row **
-		public function getAttributeByID($pn_attribute_id) {
-			// TODO: Implement
-			return false;
+		/**
+		 * Return the specific attribute with the specified attribute_id (assuming it's attached to the current row)
+		 */
+		public function getAttributeByID($pn_attribute_id, $pa_options=null) {
+			if (isset($pa_options['row_id']) && $pa_options['row_id']) {
+				$vn_row_id = $pa_options['row_id'];
+			} else {
+				$vn_row_id = $this->getPrimaryKey();
+			}
+			if (!$vn_row_id) { return null; }
+			
+			$t_attr = new ca_attributes($pn_attribute_id);
+			if (!$t_attr->getPrimaryKey()) { return false; }
+			if ((int)$t_attr->get('row_id') !== (int)$vn_row_id) { return false; }
+			
+			return $t_attr->getAttributeValues(array('returnAs' => 'attributeInstance'));
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1824,6 +1849,9 @@
 		 *				locale = if set to a valid locale_id or locale code, values will be returned in locale *if available*, otherwise will fallback to values in languages that are available using the standard fallback mechanism. Default is to use user's current locale.
 		 *				returnAllLocales = if set to true, values for all locales are returned, locale option is ignored and the returned array is indexed first by attribute_id and then by locale_id. Default is false.
 		 *				indexByRowID = if true first index of returned array is $pn_row_id, otherwise it is the element_id of the retrieved metadata element	
+		 *				indexValuesByValueID = index value array by value_id [default=false]
+		 *				indexValuesByElementCode = index value array by element code [default=true]
+		 *				indexValuesByElementCodeAndValueID = index value array by element codes, each of which has a sub-array indexed by value_id. Implies indexValuesByElementCode. [default=false]
 		 *				convertCodesToDisplayText =
 		 *				filter =
 		 *				ignoreLocale = if set all values are returned regardless of locale, but in the flattened structure returned when returnAllLocales is false
@@ -1837,6 +1865,11 @@
 			$pb_ignore_locale = caGetOption('ignoreLocale', $pa_options, null);
 			$ps_sort = caGetOption('sort', $pa_options, null);
 			$ps_sort_direction = caGetOption('sortDirection', $pa_options, 'asc', array('forceLowercase' => true, 'validValues' => array('asc', 'desc')));
+			
+			$pb_index_by_element_code = caGetOption('indexValuesByElementCode', $pa_options, true);
+			$pb_index_by_value_id = caGetOption('indexValuesByValueID', $pa_options, false);
+			$pb_index_by_element_code_and_value_id = caGetOption('indexValuesByElementCodeAndValueID', $pa_options, false);
+			if ($pb_index_by_element_code_and_value_id) { $pb_index_by_element_code = true; }
 			
 			$va_attribute_list = $this->getAttributesByElement($pm_element_code_or_id, array('row_id' => $pn_row_id));
 			if (!is_array($va_attribute_list)) { return array(); }
@@ -1877,10 +1910,19 @@
 					
 					if (isset($pa_options['convertLineBreaks']) && $pa_options['convertLineBreaks']) {
 						$vs_converted_value = preg_replace("!(\n|\r\n){2}!","<p/>",$o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id))));
-						$va_display_values[$vs_element_code] = preg_replace("![\n]{1}!","<br/>",$vs_converted_value);
+						$vs_display_value = preg_replace("![\n]{1}!","<br/>",$vs_converted_value);
 					} else {
-						$va_display_values[$vs_element_code] = $o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id)));
+						$vs_display_value = $o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id)));
 					}
+					
+					if ($pb_index_by_element_code) { 
+						if ($pb_index_by_element_code_and_value_id) {
+							$va_display_values[$vs_element_code][$o_value->getValueID()] = $vs_display_value; 
+						} else {
+							$va_display_values[$vs_element_code] = $vs_display_value; 
+						}
+					}
+					if ($pb_index_by_value_id) { $va_display_values[$o_value->getValueID()] = $vs_display_value; }
 					
 					if ($vs_sort_fld && ($vs_sort_fld == $vs_element_code)) {
 						$vs_sort_key = $o_value->getDisplayValue(array_merge($pa_options, array('getDirectDate' => true, 'list_id' => $vn_list_id)));
@@ -2257,7 +2299,7 @@
 					$vs_pk = $t_instance->primaryKey();
 					$qr_del = $o_db->query("SELECT {$vs_pk} FROM ".$t_instance->tableName()." WHERE {$vs_pk} IN (?) AND deleted = 1", array($va_row_ids));
 					
-					while($qr_del->nextRow()) {
+					while($qr_del && $qr_del->nextRow()) {
 						unset($va_references[$vn_table_num][$qr_del->get($vs_pk)]);
 					}
 				}

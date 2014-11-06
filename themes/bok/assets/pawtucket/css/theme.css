@@ -38,11 +38,17 @@ a {
 	color:#005675;
 	/*text-decoration:underline;*/
 }
+.underline, a.underline, a.underline:visited, a.underline:active {
+	text-decoration:underline;
+}
 .uppercase{
 	text-transform:uppercase;
 }
 .indent{
 	padding: 0px 0px 0px 20px;
+}
+.red{
+	color:#DD6003 !important;
 }
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6, H7, h7{
 	font-family: 'FuturaLTPro-Medium';
@@ -269,9 +275,12 @@ H2, h2{
 	padding:20px 20px 10px 20px;
 	margin-bottom:0px;
 	text-align:center;
+	font-family: 'FuturaLTPro-Medium';
 }
 .footer a{
-	font-size:13px;
+	font-size:14px;
+	text-transform:uppercase;
+	font-family: 'FuturaLTPro-Medium';
 }
 /* front */
 .hrFrontPage{
@@ -403,23 +412,23 @@ H2, h2{
 	height:50px;
 }
 	
-#comp_nav .col1 > li > a:link, #comp_nav .col1:active > li > a {
-	background-color:#77B072;
+#comp_nav .col1 > li > a:link, #comp_nav .col1 > li > a:focus {
+	background-color:#77B072 !important;
 }
 
 #comp_nav .col1 > li > a:hover{
 	background-color:#80bd7a;
 }
 	
-#comp_nav .col2 > li > a:link, #comp_nav .col2 > li:active > a {
-	background-color:#65A19E;
+#comp_nav .col2 > li > a:link, #comp_nav .col2 > li > a:focus {
+	background-color:#65A19E !important;
 }
 
 #comp_nav .col2 > li > a:hover {
 	background-color:#73b8b4;
 }
 
-#comp_nav .col3 > li > a:link, #comp_nav col3 > li:active > a {
+#comp_nav .col3 > li > a:link, #comp_nav .col3 > li > a:focus {
 	background-color:#60bd93 !important;
 }
 
@@ -515,7 +524,6 @@ H2, h2{
 
 .catArea{
 	font-family: 'FuturaLTPro-Medium';
-	text-transform:capitalize;
 	min-height:35px;
 	line-height:1.1em;
 	margin:10px 0px 0px 0px;
@@ -539,6 +547,14 @@ H2, h2{
 }
 .bResultListRow:hover{
 	background-color:#dedede;
+}
+
+#bAncestorList, #bAncestorList a, #bMorePanel #bAncestorList a{
+	font-family: 'FuturaLTPro-Medium';
+	font-weight:normal;
+}
+#bMorePanel{
+	background-color: #EFEFEF;
 }
 /* --- detail --- */
 .detail{
@@ -564,6 +580,13 @@ H2, h2{
 	height:1px;
 	background-color:#999;
 	border:0px;
+}
+.detail.ca_entities #detailTools{
+	margin-top:0px;
+}
+.detail a {
+	text-decoration:underline;
+	color: #454545;
 }
 /* --- Partners and Support ---*/
 .partnersSupportLogoRow{

@@ -1761,10 +1761,6 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			$pa_options['template'] = caGetOption('format', $va_settings, null);
 		}
 		
-		if ($pa_options['forReport']) {
-			$pa_options['template'] = str_ireplace("</l>", "", str_ireplace("<l>", "", $pa_options['template']));
-		}
-		
 		$vs_val = '';
 		if($pa_options['template']) {
 			if ($t_instance = $this->getAppDatamodel()->getInstanceByTableName($va_bundle_bits[0], true)) {

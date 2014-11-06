@@ -34,6 +34,7 @@
 	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$va_access_values = $this->getVar('accessValues');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -51,13 +52,13 @@
 		$vn_count = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-			$va_related_col_ids = $qr_results->get('ca_collections.collection_id', array('returnAsArray' => true));
+			$va_related_col_ids = $qr_results->get('ca_collections.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 			$t_collection = new ca_collections($va_related_col_ids[0]);
-			$va_related_object_ids = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true));
+			$va_related_object_ids = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 				print "<div class='{{{block}}}Result'>";
 				
 
-				$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags'));
+				$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags', 'checkAccess' => $va_access_values));
 				if (sizeof($va_images) > 0){
 					foreach ($va_images as $vn_image_id => $vs_image) {
 						print "<div class='objImage'>".$qr_results->getWithTemplate("<l>{$vs_image}</l>")."</div>";
