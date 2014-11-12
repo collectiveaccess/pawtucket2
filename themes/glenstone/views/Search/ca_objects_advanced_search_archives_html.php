@@ -26,7 +26,7 @@
 	</div>
 	<div class='advancedContainer'>
 		<div class="advancedSearchField">
-			Format:<br/>
+			Type:<br/>
 			{{{ca_objects.type_id%restrictToTypes=audio;document;ephemera;image;moving_image}}}
 		</div>
 	

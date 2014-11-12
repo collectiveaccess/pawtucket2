@@ -535,13 +535,18 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
 	top:50px;
 }
-.bResultItemImg .glyphicon.glyphicon-book{
+.bResultItemImg .glyphicon.glyphicon-book, .bResultItemImg .fa-archive {
 	font-size:48px;
 	background-color: #eee;
 	padding: 10px 12px 10px 8px;
 	border-radius: 30px;
 	opacity: .7;
 	top:20px;
+}
+.bResultItemImg .fa-archive {
+	margin-top:20px;
+	margin-bottom:10px;
+	padding:10px;
 }
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
@@ -777,6 +782,7 @@ p.artist.lower {
 	min-height:72px;
 	height:auto;
 }
+
 .reportTools {
 	float:right;
 	padding-left:10px;
@@ -879,6 +885,9 @@ p.bookTitle {
 	width:auto;
 	
 } 
+.detail.archives .repViewerCont img {
+	width:100%;
+}
 .detail.artwork .jcarousel li {
 	margin-right:0px;
 	overflow: hidden;
@@ -1010,6 +1019,29 @@ p.bookTitle {
 .book.detail .detailMediaPlaceholder {
 	padding-top:75px;
 	padding-bottom:75px;
+}
+.book.detail .detailMediaPlaceholder .glyphicon-book, .detail.archives .detailMediaPlaceholder .glyphicon-film{
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px 12px 10px 8px;
+	border-radius: 30px;
+	opacity: .7;
+}
+.detail.archives .detailMediaPlaceholder .glyphicon-film{
+	padding:10px;
+}
+.archivesResult .multisearchImgPlaceholder{
+	background-color:#fff;
+	border:0px;
+}
+.archivesResult .multisearchImgPlaceholder .fa-archive{
+	margin-top: 10px;
+	margin-left: 0px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
 }
 #Condition .clearfix {
 	margin-bottom:5px;
@@ -1316,7 +1348,7 @@ p.bookTitle {
 	box-shadow: none;
 	border: 1px solid #ddd;
 }
-.lbExpandedInfo, .lbSetExpandedInfo {
+/*.lbExpandedInfo, .lbSetExpandedInfo {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	position:absolute;
@@ -1329,19 +1361,23 @@ p.bookTitle {
 	margin: 0px -10px 0px -11px;
 	padding: 15px 16px 5px 16px;
 }
+*/
 .lbSetExpandedInfo {
 	margin-left:-16px;
 	background-color:#fff;
 }
-.lbItem:hover  {
+/*.lbItem:hover  {
 	margin: -20px;
 	padding: 10px;
 	width: auto; 
 	left: 0; 
 	top: 0; 
-}
+}*/
 .lbItem:hover .lbExpandedInfo {
 	background-color:#fff;
+}
+.activitystream {
+	overflow:hidden;
 }
 .reveal h3 {
 	text-transform:none;
