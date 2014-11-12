@@ -48,7 +48,7 @@
 						if($va_external_link["url_source"]){
 							$vs_link_text = $va_external_link["url_source"];
 						}else{
-							$vs_link_text = $va_external_link["url_entry"];
+							$vs_link_text = (mb_strlen($va_external_link["url_entry"]) > 50) ? mb_substr($va_external_link["url_entry"], 0, 50)."..." : $va_external_link["url_entry"];
 						}
 						print "<a href='".$va_external_link["url_entry"]."' target='_blank'>".$vs_link_text."</a>";
 						$i++;
@@ -66,8 +66,8 @@
 				</ifdef>}}}
 
 				
-				{{{<ifdef code="ca_objects.regions"><H6>Applicable regions:</H6>^ca_objects.regions</ifdef>}}}
-				{{{<ifdef code="ca_objects.language"><H6>Language:</H6>^ca_objects.language</ifdef>}}}
+				{{{<ifcount code="ca_objects.regions" min="1"><H6>Applicable region(s):</H6><unit delimiter=", ">^ca_objects.regions</unit></ifcount>}}}
+				{{{<ifcount code="ca_objects.language" min="1"><H6>Language(s):</H6><unit delimiter=", ">^ca_objects.language</unit></ifcount>}}}
 				{{{<ifdef code="ca_objects.source_reference"><H6>Source/Reference:</H6>^ca_objects.source_reference</ifdef>}}}
 				
 
@@ -85,9 +85,12 @@
 				{{{<ifcount code="ca_objects.related" min="2"><H6>Related resources</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related.preferred_labels.name</l></unit>}}}
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="curated" min="1"><H6>Curated by</H6>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="curated"><l>^ca_entities.preferred_labels</l></unit>
+				</ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="contribute" min="1"><H6>Contributed by</H6>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="contribute"><l>^ca_entities.preferred_labels</l></unit>
+				</ifcount>}}}
 <?php
 				if(!$vs_rep_viewer){
 ?>

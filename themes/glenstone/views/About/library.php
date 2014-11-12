@@ -119,7 +119,8 @@ $va_access_values = caGetUserAccessValues($this->request);
 		</script>
 <?php
 	}
-?>						
+?>		
+		<hr>				
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
 	<div class="row">

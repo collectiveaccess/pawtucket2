@@ -39,7 +39,7 @@
 	<div class="row">
 		<div class="col-sm-6">
 			<p>
-				The IUCN WCPA is addressing the global need to professionalize protected area management and build the competence of protected area staff by developing a comprehensive set of PA Capacity Development Tools. These tools include Competence Standards, Body of Knowledge (BoK), and Assessment & Certification Guidelines.
+				The IUCN WCPA is addressing the global need to professionalize protected area management and build the competence of protected area staff by developing a comprehensive set of PA Capacity Development Tools. These tools, part of the <a href="<?php print caGetThemeGraphicUrl($this->request, 'CDChartRoad_Map.pdf'); ?>" target="_blank" class="underline">IUCN WCPA Protected Area Capacity Development Road Map</a>, include Competence Standards, Body of Knowledge (BoK), and Assessment & Certification Guidelines.
 			</p>
 		</div><!--end col-sm-6-->
 		<div class="col-sm-6">
@@ -80,9 +80,9 @@
 					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'icon_bok.png')."<br/>"._t("Body of Knowledge")."<br/><br/>", "", "", "BodyOfKnowledge", "About"); ?>
 				</div><!-- end -->
 				<div class="frontSectionBoxCaption">
-					Competence-based collection of key resources for learning and assessment, including:
+					Competence-based curated collection of key resources for learning and assessment, including:
 					<ul>
-						<li>Open-source e-Learning tools</li>
+						<li>Open-source e-Learning portal</li>
 						<li>Links to courses and <br/>curricular guides</li>
 					</ul>
 				</div><!-- end -->
@@ -103,7 +103,7 @@
 				<?php print caGetThemeGraphic($this->request, 'linePath.png'); ?><br/>
 				<div class="frontSectionBoxBottom">
 					<div class="frontSectionBoxIcon">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'icon_suport.png')."<br/>"._t("Supporting Initiatives"), "", "", "SupportingInitiatives", "About"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'icon_suport.png')."<br/>"._t("Supporting Initiatives<br/>Including Mentoring"), "", "", "SupportingInitiatives", "About"); ?>
 					</div><!-- end -->
 					<div class="frontSectionBoxCaption">
 						Supporting initiatives include mentoring, coaching and exchanges, scholarships, and accreditation, among others. Along with evaluation and monitoring, these are intended to support the use of the CD tools and their adaptation to local and regional contexts.

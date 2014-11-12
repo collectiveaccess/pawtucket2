@@ -10,13 +10,12 @@
 		</div>
 		<div class="col-sm-6 col-md-5">
 			<p>
-				This site provides access to an IUCN WCPA program match mentors with those requesting mentorship.
+				This site provides access to an IUCN WCPA sponsored program provided by <a href="http://www.globalparks.org" target="_blank" class="underline">Global Parks</a> which matches mentors with those requesting mentorship.
 			</p>
 			<p>
 				<ul>
-					<li>If you are interested in being a mentor, please review the qualifications and submit your application here.</li>
-					<li>If you are interested in requesting a mentor, please submit your application here. </li>
-					<li>If you are interested in volunteering to help match mentors with those requesting mentors, please review the information found here.</li>
+					<li>If you are interested in being a mentor, please review the qualifications and submit your application <a href="https://docs.google.com/forms/d/1iOKVn_uVkQ0MHMnrc549TEvuFzT9yO3b2r3TH6C0xbM/viewform?usp=send_form" target="_blank">here</a>.</li>
+					<li>If you are interested in obtaining a mentor, please submit your application <a href="https://docs.google.com/forms/d/1xv-ly3eFTgzuYnyLCmkZYK2yONLwiyfTlJCQlsxWPIM/viewform?usp=send_form" target="_blank">here</a>. </li>
 				</ul>
 			</p>
 			</div>

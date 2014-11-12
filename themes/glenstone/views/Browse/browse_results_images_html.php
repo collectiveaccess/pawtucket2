@@ -79,12 +79,15 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.type_id') == 30) {
-					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author'))."</p>";
+
+					$vs_label_author	 	= "<p class='artist'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
+
 					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.call_number")."</p>";
-					$vs_label_status 	= "<p>".$qr_res->get("ca_objects.purchase_status")."</p>";
+					$vs_label_status 	= "<p>".$qr_res->get("ca_objects.purchase_status", array('convertCodesToDisplayText' => true))."</p>";
 					$vs_idno_detail_link 	= "";
+					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 
 				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
@@ -105,21 +108,23 @@
 						$va_icon = "<i class='glyphicon glyphicon-volume-up'></i>";
 					} elseif ($qr_res->get('ca_objects.type_id') == 26){
 						$va_icon = "<i class='glyphicon glyphicon-film'></i>";
+					} elseif (($qr_res->get('ca_objects.type_id') == 30 && !($qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))))){
+						$va_icon = "<i class='glyphicon glyphicon-book'></i>";	
 					} else {
 						$va_icon = "";
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
+					$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
 				} else {
-					$vs_rep_detail_link 	= caDetailLink($this->request, $va_images[$vn_id], '', $vs_table, $vn_id);			
+				
+					$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$va_images[$vn_id], '', $vs_table, $vn_id);			
 				}
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-				
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$va_icon}{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
 					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_library_info}
 				</div><!-- end bResultItemText -->

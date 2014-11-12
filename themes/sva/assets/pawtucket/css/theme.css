@@ -1,0 +1,267 @@
+html {
+	font-size:100%;
+}
+body {
+	font-size:100%;
+	font-family: Helvetica, Lucida Sans, sans-serif;
+	font-size:16px;
+}
+#tabs {
+	padding-right:0px;
+}	
+#tabs img{
+	vertical-align:bottom;
+}
+#navigation {
+	padding:8px 0 30px 0;
+}
+#header {
+	height:179px;
+}
+#main {
+	width:900px;
+	padding-right:25px;
+}
+H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6 {
+	font-family: 'Bodoni W01 Roman';
+}
+h1, .front h1 {
+	float: left;
+	width: 115px;
+	font-size: 16px;
+	margin: 26px 20px 0 0;
+	line-height: 20px;
+	font-family: 'Bodoni W01 Roman';
+	color: red;
+	font-weight: normal;
+	padding:0px;
+}
+h1 {
+	width:auto;
+}
+a:hover {
+	color:#000;
+	text-decoration:none;
+	border-bottom:1px solid #000;
+}
+.detail a:hover {
+	text-decoration:none;
+}
+.detail #navigation a {
+	color:inherit;
+	font-size:10px;
+	border-bottom:0px;
+}	
+p {
+	margin: 25px 50px 0 140px;
+	padding: 0;
+}
+.row {
+	clear:both;
+}
+#content {
+	display: block;
+	float: left;
+	width: 100%;
+}
+.darchive #search input {
+	width: 40%;
+	float: none;
+	margin: 0 0 0 25px;
+	padding: 0 0 0 0;
+	color: #000;
+	border: 1px solid #000;
+	font-size:12px;
+}
+div.asearch {
+	margin: -15px 50px 0 325px;
+	font-size: 11px;
+	letter-spacing: 1px;
+	line-height: 1.42857em;
+	color: red;
+	text-transform: uppercase;
+	text-align:right;
+	margin-right:335px;
+}
+#search input {
+	width: 200px;
+	border: 1px solid #000;
+	float: right;
+	margin: 20px 0px 20px 0px;
+	padding: 2px 5px 2px 5px;
+	color: #ccc;
+	font-size: 12px;
+}
+.multisearch H3 a, .multisearch H3 a:hover {
+	color: #333;
+	text-transform: uppercase;
+	font-family: helvetica;
+	font-size: 12px;
+	font-weight: bold;
+}
+.multisearchFullResults .glyphicon-list {
+	display:none;
+}
+.multisearchFullResults, .multisearchSort {
+	font-size:11px;
+}
+.multisearchFullResults a, .multisearchSort ul li a{
+	color: red;
+	text-decoration:none;
+	border-bottom:1px solid red;
+}
+.multisearchSort ul li.selectedSort a {
+	border-bottom:1px solid #000;
+	font-style:italic;
+}
+.multisearchSort ul {
+	font-size:13px;
+}
+.multisearchFullResults a {
+	text-transform:lowercase;
+}
+.multisearch .multisearchResult, .bResultItem  {
+	border:1px solid #000;
+	box-shadow:none;
+	-webkit-box-shadow:none;
+}
+.multisearchImgPlaceholder {
+	border:2px solid #fff;
+	padding:27px;
+}
+.bResultItemImgPlaceholder {
+	border:2px solid #fff;
+	padding: 20px 5px 20px 5px;
+}
+.bResultItemImgPlaceholder .fa{
+	font-size:24px; 
+}
+#bRefine H3, #bRefine H5  {
+	color:#000;
+	text-transform:uppercase;
+	font-family:helvetica;
+}
+#bRefine H5  {
+	font-size:12px;
+	font-weight:bold;
+}
+#bRefine a {
+	color:#000;
+	text-decoration:none;
+}
+#bRefine a:hover {
+	border-bottom:1px solid #000;
+}
+.results H1 {
+	margin-top:-50px;
+}
+.advancedSearchField {
+	float:left;
+	clear:both;
+	padding-bottom:15px;
+}
+.advTitle, .searchFormLineModeElementSubLabel span {
+	text-transform:uppercase;
+	font-size:11px;
+	font-weight:bold;
+}
+.searchFormLineModeElementSubLabel span { 
+	text-transform:none;
+}
+.advreset a, .advsubmit a{
+	float:right;
+	border-bottom:1px solid red;
+	display:block;
+}
+.advsubmit a{
+	margin-left:20px;
+}
+.advreset a:hover, .advsubmit a:hover {
+	border-bottom:1px solid #000;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	background-color:#fff;
+	color:#000;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
+	color:#000;
+}
+.objTitle {
+	font-family: Helvetica, Lucida Sans, sans-serif;
+	color: black;
+	text-align: left;
+	font-size:16px;
+	font-weight:bold;
+	margin-left:140px;
+}
+.detail h1 {
+	width: 115px;
+	text-transform:none;
+}
+.detail a {
+	color:black;
+	border-bottom:1px solid red;
+}
+.detail a:hover {
+	color:red;
+}
+.detail p, .detail li {
+	margin: 25px 50px 0 140px;
+	padding: 0;
+	font-size: 14px;
+	line-height: 1.42857em;
+	color: black;
+
+}
+.detail .zoomButton {
+	display:none;
+}
+.detail .content li {
+	margin:0px;
+	padding:0px;
+}
+.detail .detailMediaToolbar {
+	padding:0px;
+}
+.jcarousel-wrapper li {
+	margin:0px;
+}
+#detailRepresentationThumbnails a {
+	border-bottom:0px;
+}
+.content ul {
+	display: block;
+	margin: 25px 50px 0 140px;
+	list-style: none;
+}
+.detail .detailMediaToolbar {
+	display:none;
+}
+.detail .caption {
+	color:#000; 
+}
+
+/* Browse */
+
+.bResultItemText a, .bResultListItem .bResultListItemText a {
+	border-bottom:0px;
+}
+
+.faTitle {
+	font-size:22px;
+	font-family: 'Bodoni W01 Roman';
+	color:red;
+}
+.findingaid {
+	background-image:none;
+}
+.findingaid .content {
+	clear:both;
+}
+.findingIntro {
+	font-size:14px;
+}
+.collHeader a {
+	font-family:helvetica;
+}
+

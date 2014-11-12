@@ -141,6 +141,22 @@
 			'label' => _t('Can be used in display'),
 			'description' => _t('Check this option if this attribute value can be used for display in search results. (The default is to be.)')
 		),
+		'canMakePDF' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output?'),
+			'description' => _t('Check this option if this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
+		'canMakePDFForValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output for individual values?'),
+			'description' => _t('Check this option if individual values for this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
 		'displayTemplate' => array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -278,24 +294,22 @@
  			
  			$vs_element .= " <a href='#' style='display: none; vertical-align: top;' id='{fieldNamePrefix}".$pa_element_info['element_id']."_link{n}' target='_url_details'>"._t("Open &rsaquo;")."</a>";
 		
-			if ($vb_do_suggested_values = (caGetOption('suggestExistingValues', $pa_options, false) || caGetOption('suggestExistingValues', $va_settings, false))) {
-				$vs_bundle_name = $vs_lookup_url = null;
-				if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
-					$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
-				
-					if ($pa_options['request']) {
-						$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('bundle' => $vs_bundle_name, 'max' => 500));
-					}
-				}
-			
-				if ($vs_lookup_url && $vs_bundle_name) { 
-					$vs_element .= "<script type='text/javascript'>
-						jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
-							{ source: '{$vs_lookup_url}', minLength: 3, delay: 800}
-						);
-					</script>\n";
-				}
-			}
+ 			$vs_bundle_name = $vs_lookup_url = null;
+ 			if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
+ 				$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
+ 				
+ 				if ($pa_options['request']) {
+ 					$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('bundle' => $vs_bundle_name, 'max' => 500));
+ 				}
+ 			}
+ 			
+ 			if ($va_settings['suggestExistingValues'] && $vs_lookup_url && $vs_bundle_name) { 
+ 				$vs_element .= "<script type='text/javascript'>
+ 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
+						{ source: '{$vs_lookup_url}', minLength: 3, delay: 800}
+					);
+ 				</script>\n";
+ 			}
  			$vs_element .= "
 				<script type='text/javascript'>
 					if ('{{".$pa_element_info['element_id']."}}') {

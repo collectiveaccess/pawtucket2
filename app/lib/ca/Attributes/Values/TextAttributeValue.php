@@ -149,6 +149,22 @@
 			'label' => _t('Can be used in display'),
 			'description' => _t('Check this option if this attribute value can be used for display in search results. (The default is to be.)')
 		),
+		'canMakePDF' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output?'),
+			'description' => _t('Check this option if this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
+		'canMakePDFForValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output for individual values?'),
+			'description' => _t('Check this option if individual values for this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
 		'displayTemplate' => array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -276,7 +292,7 @@
  			if ($va_settings['usewysiwygeditor']) {
  				$o_config = Configuration::load();
  				if (!is_array($va_toolbar_config = $o_config->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
- 				JavascriptLoadManager::register("ckeditor");
+ 				AssetLoadManager::register("ckeditor");
  				
  				$vs_element = "<script type='text/javascript'>jQuery(document).ready(function() {
 						var ckEditor = CKEDITOR.replace( '{fieldNamePrefix}".$pa_element_info['element_id']."_{n}',
@@ -295,20 +311,24 @@
 </script>";
 			}
  			
- 			$vs_element .= caHTMLTextInput(
- 				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 
- 				array(
+ 			$va_opts = array(
  					'size' => $vs_width, 
  					'height' => $vs_height, 
  					'value' => '{{'.$pa_element_info['element_id'].'}}', 
  					'maxlength' => $va_settings['maxChars'],
  					'class' => $vs_class,
  					'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".($va_settings['usewysiwygeditor'] ? " ckeditor" : '')
- 				)
+ 				);
+ 			if (caGetOption('readonly', $pa_options, false)) { 
+ 				$va_opts['disabled'] = 1;
+ 			}
+ 			$vs_element .= caHTMLTextInput(
+ 				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 
+ 				$va_opts
  			);
  			
  			if ($va_settings['isDependentValue']) {
- 				JavascriptLoadManager::register('displayTemplateParser');
+ 				AssetLoadManager::register('displayTemplateParser');
  				
  				$t_element = new ca_metadata_elements($pa_element_info['element_id']);
  				$va_elements = $t_element->getElementsInSet($t_element->getHierarchyRootID());
@@ -317,6 +337,7 @@
  				$va_element_dom_ids = array();
  				foreach($va_elements as $vn_i => $va_element) {
  					if ($va_element['datatype'] == __CA_ATTRIBUTE_VALUE_CONTAINER__) { continue; }
+ 					//$va_element_list[$va_element['element_id']] = $va_element_list[$va_element['element_code']] = '{{{'.$va_element['element_id'].'}}}';
  					$va_element_dom_ids[$va_element['element_code']] = "#{fieldNamePrefix}".$va_element['element_id']."_{n}";
  				}
  				
@@ -331,31 +352,29 @@
  				$vs_element .="});</script>";
  			}
  			
- 			if ($vb_do_suggested_values = (caGetOption('suggestExistingValues', $pa_options, false) || caGetOption('suggestExistingValues', $va_settings, false))) {
-				$vs_bundle_name = $vs_lookup_url = null;
-				if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
-					$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
-				
-					if ($pa_options['request']) {
-						if (isset($pa_options['lookupUrl']) && $pa_options['lookupUrl']) {
-							$vs_lookup_url = $pa_options['lookupUrl'];
-						} else {
-							$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
+ 			$vs_bundle_name = $vs_lookup_url = null;
+ 			if (isset($pa_options['t_subject']) && is_object($pa_options['t_subject'])) {
+ 				$vs_bundle_name = $pa_options['t_subject']->tableName().'.'.$pa_element_info['element_code'];
+ 				
+ 				if ($pa_options['request']) {
+ 					if (isset($pa_options['lookupUrl']) && $pa_options['lookupUrl']) {
+ 						$vs_lookup_url = $pa_options['lookupUrl'];
+ 					} else {
+ 						$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
+ 					}
+ 				}
+ 			}
+ 			
+ 			if ($va_settings['suggestExistingValues'] && $vs_lookup_url && $vs_bundle_name) { 
+ 				$vs_element .= "<script type='text/javascript'>
+ 					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
+						{ 
+							source: '{$vs_lookup_url}',
+							minLength: 3, delay: 800
 						}
-					}
-				}
-			
-				if ($vs_lookup_url && $vs_bundle_name) { 
-					$vs_element .= "<script type='text/javascript'>
-						jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').autocomplete( 
-							{ 
-								source: '{$vs_lookup_url}',
-								minLength: 3, delay: 800
-							}
-						);
-					</script>\n";
-				}
-			}
+					);
+ 				</script>\n";
+ 			}
  			
  			return $vs_element;
  		}
