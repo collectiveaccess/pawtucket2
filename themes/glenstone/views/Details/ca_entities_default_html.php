@@ -125,9 +125,8 @@
 		<!-- Related Artworks -->
 		
 <!-- Related Artworks -->
-<?php	
-		#$va_archive_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true));		
-		if ($va_archive_ids) {	
+<?php			
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Materials </H6>
@@ -201,7 +200,7 @@
 			
 		<!-- Related Library Materials -->
 			
-		{{{<ifcount code="ca_objects" restrictToTypes="book" min="10000">
+		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
 			<div id="detailRelatedLibrary">
 				<H6>Related Library Material </H6>
 				<div class="jcarousel-wrapper">

@@ -673,8 +673,7 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 		</div><!-- end row -->
 	</div><!-- end container -->
 <?php
-#	$va_archives = $t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')));
-	if ($va_archives) {
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')))) {
 ?>	
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -714,8 +713,8 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 </div>	<!-- end row -->
 <?php
 	}
-	$va_library = $t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('book')));
-	if ($va_library) {
+	
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('book')))) {
 ?>	
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
