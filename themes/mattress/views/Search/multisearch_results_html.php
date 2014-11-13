@@ -35,11 +35,9 @@
 		} 	
 ?>
 	<a name='Site'></a>
-	<small class="pull-right sortMenu">
-		<a href="http://<?php print $_SERVER['HTTP_HOST']; ?>/search/content/<?php print rawurlencode($this->getVar('search')); ?>" class="fullResults">Full results</a>
-	</small>
+
 	<div class='blockTitle'>Site</div>
-	<div class='blockResults'>
+	<div class='blockResults' style='height:auto;'>
 		<div id="SiteBlock">
 	
 		</div>
@@ -62,7 +60,7 @@
 			
 			if (d && (d.length > 0)) {
 				jQuery(d).each(function(k, v) {
-					hits.push("<a href='" + v['link'] + "'>" + v['title'] + "</a>");
+					hits.push("<a href='" + v['link'] + "' class='siteResult'>" + v['title'] + "</a>");
 				});
 			} else {
 				hits.push("No results found");

@@ -35,6 +35,16 @@
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values 	= caGetUserAccessValues($this->request);
+	$o_config = caGetSearchConfig();
+	$o_browse_config = caGetBrowseConfig();
+	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+	
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -49,6 +59,7 @@
 <?php
 		}
 		$vn_count = 0;
+		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result'>
@@ -71,7 +82,17 @@
 						print caNavLink($this->request, "<div class='resultImg noimage'><i class='glyphicon glyphicon-film'></i></div>", '', '', 'Detail', 'archives/'.$qr_results->get('ca_objects.object_id'));
 					}
 				} else {
-					print caNavLink($this->request, "<div class='resultImg'>".$qr_results->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."</div>", '', '', 'Detail', $vs_block.'/'.$qr_results->get('ca_objects.object_id'));				
+					$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+					if(!$vs_image){
+						$t_list_item->load($qr_results->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
+						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_image = $vs_default_placeholder_tag;
+						}
+					}				
+					print caNavLink($this->request, "<div class='resultImg'>".$vs_image."</div>", '', '', 'Detail', $vs_block.'/'.$qr_results->get('ca_objects.object_id'));				
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {  
 					$va_strlen = 120;
@@ -94,7 +115,7 @@
 				if ($qr_results->get('ca_objects.type_id') == 30) {
 
 					if ($qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '))) {
-						$va_authors = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; '));
+						$va_authors = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'));
 					} else {
 						$va_authors = "";
 					}
@@ -109,7 +130,12 @@
 					// If currently deaccessioned then display deaccession message
 					print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_results->get('deaccession_date'))."</div>\n";
 					#if ($vs_deaccession_notes = $qr_results->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
-				}				
+				}	
+				if ($qr_results->get('ca_objects.type_id') == 28) {
+					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+						print "<p class='idno'>".$qr_results->get("ca_objects.idno")."</p>";
+					}
+				}			
 
 ?>			
 			</div><!-- end blockResult -->

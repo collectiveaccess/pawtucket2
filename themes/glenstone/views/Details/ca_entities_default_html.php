@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar('access_values');
 ?>
+	<div class="container">
 		<div class="row">
 			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 				<div class="detailNavBgLeft">
@@ -19,7 +20,7 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
-			<div class="container">
+			
 				<div class="artworkTitle">
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
 					<H5>
@@ -258,8 +259,8 @@
 			</script></ifcount>}}}<!-- Related Archives -->		
 			
 				</div><!-- end col -->
-			</div><!-- end container -->
-		</div><!-- end row -->	
+		</div><!-- end row -->
+	
 		<div class="row">
 			
 			<div class='col-md-6 col-lg-6'> 
@@ -325,3 +326,5 @@
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.related.preferred_labels.displayname</unit><br/><br/>}}}
 			</div><!-- end col -->
 		</div><!-- end row -->
+	</div><!-- end container -->
+	

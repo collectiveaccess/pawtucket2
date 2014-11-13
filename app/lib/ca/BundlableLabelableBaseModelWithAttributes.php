@@ -2164,6 +2164,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						// If there's a "/" separator then this is a relationship type-restricted search (Eg. ca_entities.preferred_labels.displayname/artist:"Isamu Noguchi")
 						if (sizeof($va_tmp2) > 1) { 
 							$va_relationship_restricted_searches[$va_tmp2[0]][] = $va_tmp[0]; 
+							$va_filter[] = $va_tmp[0];
 						} else {
 							$va_filter[] = $va_tmp2[0];
 						}
@@ -2191,7 +2192,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						}
 					}
 				}
-				ksort($va_options);
+				
+				if(is_array($va_filter) && sizeof($va_filter)) {
+					// reorder options to keep field list order (sigh)
+					$va_options_tmp = array();
+					foreach($va_filter as $vs_filter) {
+						if (($vs_k = array_search($vs_filter, $va_options)) !== false) {
+							$va_options_tmp[$vs_k] = $va_options[$vs_k];
+						}
+					}
+					$va_options = $va_options_tmp;
+				}
 				
 				return caHTMLSelect("_fieldlist_field".($vb_as_array_element ? "[]" : ""), $va_options, array(
 								'size' => $pa_options['fieldListWidth'], 'class' => $pa_options['class']
@@ -5983,20 +5994,11 @@ side. For many self-relations the direction determines the nature and display te
 			$vs_label = $this->getLabelForDisplay(false);
 			$vn_hier_id = $this->get($vs_hier_fld);
 			
-			if ($this->get($vs_parent_fld)) { 
-				// currently loaded row is not the root so get the root
-				$va_ancestors = $this->getHierarchyAncestors();
-				if (!is_array($va_ancestors) || sizeof($va_ancestors) == 0) { return null; }
-				$t_instance = $o_dm->getInstanceByTableName($va_ancestors[0], true);
-			} else {
-				$t_instance =& $this;
-			}
-			
-			$va_children = $t_instance->getHierarchyChildren(null, array('idsOnly' => true));
+			$va_children = $this->getHierarchyChildren(null, array('idsOnly' => true));
 			$va_hierarchy_root = array(
-				$t_instance->get($vs_hier_fld) => array(
+				$this->get($vs_hier_fld) => array(
 					'item_id' => $vn_id,
-					'collection_id' => $vn_id,
+					$vs_pk => $vn_id,
 					'name' => caProcessTemplateForIDs($vs_template, $vs_table, array($vn_id)),
 					'hierarchy_id' => $vn_hier_id,
 					'children' => sizeof($va_children)

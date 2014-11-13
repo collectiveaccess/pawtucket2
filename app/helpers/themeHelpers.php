@@ -187,6 +187,19 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific icon configuration
+	 *
+	 * @return Configuration 
+	 */
+	function caGetIconsConfig() {
+		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
+			return Configuration::load(__CA_THEME_DIR__.'/conf/icons.conf');
+		}else{
+			return Configuration::load(__CA_THEMES_DIR__.'/default/conf/icons.conf');
+		}
+	}
+	# ---------------------------------------
+	/**
 	 * Get theme-specific sets/lightbox configuration
 	 *
 	 * @return Configuration 
@@ -329,55 +342,6 @@
 		$pa_options['return'] = array('urls');
 		
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
-	}
-	# ---------------------------------------
-	/**
-	 * Returns the primary representation for display on the object detail page
-	 * uses settings from media_display.conf
-	 */
-	function caObjectDetailMediaOld($po_request, $pn_object_id, $t_representation, $t_object, $pa_options=null) {
-		$va_access_values = caGetUserAccessValues($po_request);
-		if ($t_representation && (!sizeof($va_access_values) || in_array($t_representation->get('access'), $va_access_values))) { 		// check rep access
-			$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-		
-			$va_opts = array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont');
-
-			$vs_tool_bar = "<div id='detailMediaToolbar'><a href='#' id='caDetailZoomLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-
-			if(!$po_request->config->get("disable_my_collections")){
-				if ($po_request->isLoggedIn()) {
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
-				}else{
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
-				}
-			}
-			if(caObjectsDisplayDownloadLink($po_request) && $this->request->user->canDoAction('can_download_media')){
-				# -- get version to download configured in media_display.conf
-				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-				$vs_download_version = $va_download_display_info['display_version'];
-
-				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array('id' => 'caDetailDownloadLink'));
-			}
-			$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-			return "<div id='cont' class='repViewerCont'>".$t_representation->getRepresentationViewerHTMLBundle($po_request, $va_opts)."</div>".$vs_tool_bar;
-			
-		}else{
-			if(!$po_request->config->get("disable_my_collections")){
-				$vs_tool_bar = "<div id='detailMediaToolbar'>";
-				if ($po_request->isLoggedIn()) {
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
-				}else{
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'><span class='glyphicon glyphicon-folder-open'></span></a>\n";
-				}
-				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-			}
-			$o_config = caGetDetailConfig();
-			if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
-				$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
-			}
-			return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
-		}
 	}
 	# ---------------------------------------
 	/**
@@ -539,10 +503,7 @@
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}
-				$o_config = caGetDetailConfig();
-				if(!($vs_placeholder = $o_config->get("placeholder_large_media_icon"))){
-					$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
-				}
+				$vs_placeholder = getPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon");
 				return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
 			}
 		}
@@ -565,20 +526,20 @@
 		
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";
 		if(!$va_rep_display_info["no_overlay"]){
-			$vs_tool_bar .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 		if(!$po_request->config->get("disable_my_collections")){
 			if ($po_request->isLoggedIn()) {
-				$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 			}else{
-				$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
+				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to lightbox")."'>".$vs_lightbox_icon."</a>\n";
 			}
 		}
 		if(caObjectsDisplayDownloadLink($po_request)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = $va_download_display_info['display_version'];
-			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", '', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 		}
 		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 		return $vs_tool_bar;
@@ -740,10 +701,6 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$o_config = caGetSetsConfig();
-		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-		}
 		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("medium", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbSetContainer'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
@@ -756,7 +713,10 @@
 			$vs_primary_image_block = "";
 			$vs_secondary_image_block = "";
 			$vn_i = 1;
+			$t_list_items = new ca_list_items();
 			foreach($va_set_items as $va_set_item){
+				$t_list_items->load($va_set_item["type_id"]);
+				$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 				if($vn_i == 1){
 					if($va_set_item["representation_tag_medium"]){
 						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
@@ -832,11 +792,11 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$o_config = caGetSetsConfig();
-		if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-			$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-		}
+		
+		$t_list_items = new ca_list_items($va_set_item["type_id"]);
+		$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 		$vs_caption = "";
+		$o_config = caGetSetsConfig();
 		$vs_caption_template = $o_config->get("caption_template");
 		if($vs_caption_template){
 			$t_object = new ca_objects($va_set_item["row_id"]);
@@ -1004,5 +964,22 @@
 			}
 		}
 		return $vs_set_list;
+	}
+	# ---------------------------------------
+	function getPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_media_icon"){
+		$o_config = caGetIconsConfig();
+		$va_placeholders_by_type = $o_config->getAssoc("placeholders");
+		$vs_placeholder = $o_config->get($vs_placeholder_type);
+		if(is_array($va_placeholders_by_type[$vs_type_code])){
+			$vs_placeholder = $va_placeholders_by_type[$vs_type_code][$vs_placeholder_type];
+		}
+		if(!$vs_placeholder){
+			if($vs_placeholder_type == "placeholder_media_icon"){
+				$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+			}else{
+				$vs_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
+			}
+		}
+		return $vs_placeholder;
 	}
 	# ---------------------------------------

@@ -9,10 +9,10 @@
 			</p><br/>
 		</div><!-- end col -->
 		<div class="col-sm-6 text-right">
-			<a href="<?php print caGetThemeGraphicUrl($this->request, 'CompetenceUserGuideV1_23August.docx'); ?>"><button type="button" class="btn btn-blue"><span class="glyphicon glyphicon-download-alt"></span> Competence Standards Handbook</button></a>
+			<a href="<?php print caGetThemeGraphicUrl($this->request, 'CompetenceUserGuide_V2_WPC_Nov2014.pdf'); ?>"><button type="button" class="btn btn-blue"><span class="glyphicon glyphicon-download-alt"></span> Competence Standards Handbook</button></a>
 		</div>
 		<div class="col-sm-6 text-left">
-			<a href="<?php print caGetThemeGraphicUrl($this->request, 'DraftCompetenceRegister23August.xlsx'); ?>"><button type="button" class="btn btn-blue"><span class="glyphicon glyphicon-download-alt"></span> Competence Standards Registry</button></a>
+			<a href="<?php print caGetThemeGraphicUrl($this->request, 'DraftPACompetenceRegisterNov2014forWPC_LOCKED.xlsx'); ?>"><button type="button" class="btn btn-blue"><span class="glyphicon glyphicon-download-alt"></span> Competence Standards Registry</button></a>
 		</div>
 	</div><!-- end row -->
 </div><!-- end bluebox -->

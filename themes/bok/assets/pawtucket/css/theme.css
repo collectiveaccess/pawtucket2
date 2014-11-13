@@ -524,7 +524,6 @@ H2, h2{
 
 .catArea{
 	font-family: 'FuturaLTPro-Medium';
-	text-transform:capitalize;
 	min-height:35px;
 	line-height:1.1em;
 	margin:10px 0px 0px 0px;
@@ -548,6 +547,14 @@ H2, h2{
 }
 .bResultListRow:hover{
 	background-color:#dedede;
+}
+
+#bAncestorList, #bAncestorList a, #bMorePanel #bAncestorList a{
+	font-family: 'FuturaLTPro-Medium';
+	font-weight:normal;
+}
+#bMorePanel{
+	background-color: #EFEFEF;
 }
 /* --- detail --- */
 .detail{
@@ -573,6 +580,13 @@ H2, h2{
 	height:1px;
 	background-color:#999;
 	border:0px;
+}
+.detail.ca_entities #detailTools{
+	margin-top:0px;
+}
+.detail a {
+	text-decoration:underline;
+	color: #454545;
 }
 /* --- Partners and Support ---*/
 .partnersSupportLogoRow{
