@@ -884,6 +884,18 @@
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		
+		if (method_exists($t_instance, "getPrimaryMediaForIDs")) {
+			// Use directly related media if defined
+			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
+			$va_media_by_id = array();
+			foreach($va_media as $vn_id => $va_media_info) {
+				if(!is_array($va_media_info)) { continue; }
+				$va_media_by_id[$vn_id] = $va_media_info['tags'][$vs_version];
+			}
+			
+			return $va_media_by_id;
+		}
+		
 		if(!is_array($pa_options)){
 			$pa_options = array();
 		}
