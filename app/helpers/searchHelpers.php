@@ -604,7 +604,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
+		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, ''));
 		
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
@@ -654,7 +654,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 						$vs_query_element = $vs_value;
 					}
 					
-					$vs_query_element .= ($vb_match_on_stem && !preg_match('!\*$!', $vs_query_element) && preg_match('![\w]+$!', $vs_query_element)) ? '*' : '';
+					$vs_query_element .= ($vb_match_on_stem && !preg_match('!\*$!', $vs_query_element) && preg_match('!^[\w]+$!', $vs_query_element) && !preg_match('!^[0-9]+$!', $vs_query_element)) ? '*' : '';
 					
 					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){

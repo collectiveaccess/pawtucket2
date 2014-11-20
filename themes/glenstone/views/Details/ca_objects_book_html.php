@@ -40,7 +40,7 @@
 	
 			<!--<div class='requestButton'>Request this item  &nbsp;<i class='fa fa-envelope'></i></div>	-->		
 			</div><!-- end col -->
-			<div class='col-sm-8 col-md-8 col-lg-8'>
+			<div class='col-sm-7 col-md-7 col-lg-7'>
 
 
 				<!-- library-->
@@ -72,7 +72,7 @@
 							print "<div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>".$va_call_number."</span></div>";
 						}
 						if ($va_copy_location = $t_copy->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
-							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".substr($va_copy_location, 4)."</span></div>";
+							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".caNavLink($this->request, substr($va_copy_location, 4), '', '', 'Search', 'copy/facet/storage_location/id/'.$t_copy->get('ca_storage_locations.location_id'))."</span></div>";
 						}
 						if ($va_status = $t_copy->get('ca_objects.purchase_status', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Status </span><span class='meta'>".$va_status."</span></div>";
@@ -108,9 +108,9 @@
 
 <?php	
 
-				if ($va_notes = $t_object->get('ca_objects.general_notes', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><span class='metaTitle'>Notes </span><span class='meta'>".$va_notes."</span></div>";
-				}	
+#				if ($va_notes = $t_object->get('ca_objects.general_notes', array('convertCodesToDisplayText' => true))) {
+#					print "<div class='unit'><span class='metaTitle'>Notes </span><span class='meta'>".$va_notes."</span></div>";
+#				}	
 # Reimplement after cleanup						
 #				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
 #					print "<div class='unit '><span class='metaTitle'>Subjects</span><span class='meta'>";

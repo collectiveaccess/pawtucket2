@@ -108,8 +108,8 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 			}
 			
 			if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-				print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view))."</li>";
-			}	
+				print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1))."</li>";
+			}
 ?>
 		</ul>
 	</div><!-- end btn-group -->

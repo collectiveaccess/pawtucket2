@@ -106,8 +106,9 @@
 					
 		<!-- Related Archival Materials -->
 			
-<?php		
-		if ($va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)))) {	
+<?php	
+		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)));	
+		if ($va_related_objects) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Material </H6>
@@ -173,7 +174,7 @@
 ?>			
 		<!-- Related Library Materials -->
 			
-		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
+		{{{<ifcount code="ca_objects" restrictToTypes="book" min="100000">
 			<div id="detailRelatedLibrary">
 				<H6>Related Library Material </H6>
 				<div class="jcarousel-wrapper">
