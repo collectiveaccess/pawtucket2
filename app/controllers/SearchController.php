@@ -69,8 +69,6 @@
 			$o_search_config = caGetSearchConfig();
 			$pa_options = array_shift($pa_args);
  						
- 			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
- 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
  			
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
@@ -84,6 +82,9 @@
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			$this->opo_result_context->setAsLastFind(true);
  			
@@ -96,7 +97,10 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = caGetOption('view', $pa_options, $this->request->getParameter('view', pString));
+ 			if (!trim($ps_view = $this->request->getParameter('view', pString))) {
+ 				$ps_view = caGetOption('view', $pa_options, $this->opo_result_context->getCurrentView());
+ 			}
+ 			
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
@@ -144,7 +148,12 @@
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
-				$o_browse->removeAllCriteria();
+				// Clear all refine critera but *not* underlying _search criterion
+				$va_criteria = $o_browse->getCriteria();
+				foreach($va_criteria as $vs_criterion => $va_criterion_info) {
+					if ($vs_criterion == '_search') { continue; }
+					$o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
+				}
 			}
 			
 				
@@ -173,12 +182,11 @@
 			// Add criteria and execute
 			//
 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
+			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
+			}
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
-			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
-				}
 			}
 			
 			//
@@ -238,7 +246,8 @@
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
 			
-			$o_browse->execute($va_options);
+			
+			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => !$vb_is_advanced)));
 		
 			//
 			// Facets
@@ -314,9 +323,9 @@
  				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
-			//print_R($o_browse->getCriteria());die;
  			switch($ps_view) {
  				case 'pdf':
+ 					print $qr_res->numHits();
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
@@ -324,6 +333,7 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
+ 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

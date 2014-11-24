@@ -44,10 +44,8 @@
  	if (($vn_initial_page = $this->getVar('initial_page')) <= 0) {
  		$vn_initial_page = 1;
  	}
- 	
- 	$vs_action_extra = $this->request->getActionExtra();
 ?>
-<div id="BookReader_<?php print $vn_subject_id.'_'.($vn_representation_id ? $vn_representation_id : $vn_value_id).'_'.$vs_display_type; ?>">
+<div class="BookReaderContainer" id="BookReader_<?php print $vn_subject_id.'_'.($vn_representation_id ? $vn_representation_id : $vn_value_id).'_'.$vs_display_type; ?>">
     <noscript>
     	<p><?php print _t('The BookReader requires JavaScript to be enabled. Please check that your browser supports JavaScript and that it is enabled in the browser settings.'); ?></p>
     </noscript>
@@ -60,7 +58,7 @@
 ?>
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_subject_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',	
-		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON'.($vs_action_extra ? "/{$vs_action_extra}" : ""), array($va_url['_pk'] => $vn_subject_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
+		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON/'.$t_subject->tableName(), array($va_url['_pk'] => $vn_subject_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
 		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
@@ -76,7 +74,7 @@
 ?>
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_subject_id.'_'.$vn_value_id.'_'.$vs_display_type; ?>',	
-		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON'.($vs_action_extra ? "/{$vs_action_extra}" : ""), array($va_url['_pk'] => $vn_subject_id, 'value_id' => $vn_value_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
+		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON/'.$t_subject->tableName(), array($va_url['_pk'] => $vn_subject_id, 'value_id' => $vn_value_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
 		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
