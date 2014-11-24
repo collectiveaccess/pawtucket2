@@ -441,8 +441,18 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 	# -------------------------------------------------------
 	private function _doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, $ps_dest_table, $pn_level=0, $pa_options=null) {		// query is always of type Zend_Search_Lucene_Search_Query_Boolean
 		$vn_i = 0;
+		
+		switch(get_class($po_rewritten_query)){
+			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				$va_elements = $po_rewritten_query->getTerms();
+				break;
+			default:
+				$va_elements = $po_rewritten_query->getSubqueries();
+				break;
+		}
+		
 		$va_old_signs = $po_rewritten_query->getSigns();
-		foreach($po_rewritten_query->getSubqueries() as $o_lucene_query_element) {
+		foreach($va_elements as $o_lucene_query_element) {
 			$vb_is_blank_search = false;
 			
 			if (is_null($va_old_signs)) {	// if array is null then according to Zend Lucene all subqueries should be "are required"... so we AND them
@@ -461,6 +471,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			
 			switch($vs_class = get_class($o_lucene_query_element)) {
 				case 'Zend_Search_Lucene_Search_Query_Boolean':
+				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 					$this->_createTempTable('ca_sql_search_temp_'.$pn_level);
 					
 					if (($vs_op == 'AND') && ($vn_i == 0)) {
@@ -516,7 +527,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					$this->_dropTempTable('ca_sql_search_temp_'.$pn_level);
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Term':
-				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				case 'Zend_Search_Lucene_Index_Term':
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
 				case 'Zend_Search_Lucene_Search_Query_Range':
 					$va_ft_terms = array();
@@ -721,8 +732,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								case 'Zend_Search_Lucene_Search_Query_Phrase':
 									$va_term_objs = $o_lucene_query_element->getQueryTerms();
 									break;
-								case 'Zend_Search_Lucene_Search_Query_MultiTerm':
-									$va_term_objs = $o_lucene_query_element->getTerms();
+								case 'Zend_Search_Lucene_Index_Term':
+									$va_term_objs = array($o_lucene_query_element);
 									break;
 								default:
 									$va_term_objs = array($o_lucene_query_element->getTerm());
