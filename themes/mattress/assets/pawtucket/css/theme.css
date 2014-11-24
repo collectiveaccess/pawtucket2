@@ -328,6 +328,9 @@ hr {
 	width:500px;
 	padding:0px 0px 0px 15px;
 }
+.aboutText b{
+	font-family: "ProximaNovaBold";
+}
 .blockAbout {
 	line-height:1.3em;
 }
@@ -667,6 +670,7 @@ div.caMediaOverlayControls .objectInfo {
 }
 div.caMediaOverlayControls {
 	opacity:1;
+	padding-bottom:20px;
 }
 div.caMediaOverlayControls a {
 	font-size:14px;
@@ -1578,4 +1582,39 @@ div.caMediaOverlayControls .repNav {
 	float:right;
 	text-align:right;
 	width:auto;
+	font-size:16px;
+	top:10px;
+	position:absolute;
+	right:10px;
 }
+
+#welcomeMessage {
+	background-color:black;
+	color:#fff;
+	font-size:18px;
+	position:absolute;
+	top:200px;
+	left:40%;
+	width:400px;
+	padding:20px;
+	line-height:1.4em;
+	height: 152px;
+	display:none;
+}
+#welcomeMessage a{
+	color:red;
+}
+#welcomeMessage .ok a{
+	cursor: pointer;
+	border-radius:4px;
+	padding:4px 10px 3px 10px;
+	background-color:red;
+	color:white;
+	display:inline-block;
+	margin-top:5px;
+	margin-left:310px;
+}
+
+
+
+

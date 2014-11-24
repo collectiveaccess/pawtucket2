@@ -241,7 +241,7 @@
 					#if ($vn_i == 0) {print "<div class='collectionsSet'>";}
 					print "<div class='collectionsResult'>";
 							print caNavLink($this->request, "<div class='exImage' {$vs_style}>".array_shift(array_values($va_artwork_image))."</div>", '', '', 'Detail', 'Collections/'.$va_collection_id);
-					print "<span style='padding-left:10px; display:block;'>".caNavLink($this->request, $va_collection['name'], '', '', 'Detail', 'Collections/'.$va_collection_idno)."</span>";
+					print "<span style='padding-left:10px; display:block;'>".caNavLink($this->request, $va_collection['name'], '', '', 'Detail', 'Collections/'.$va_collection_id)."</span>";
 					print "</div>";
 					#$vn_i++;
 					#if ($vn_i == 5) {
