@@ -174,7 +174,7 @@
 ?>			
 		<!-- Related Library Materials -->
 			
-		{{{<ifcount code="ca_objects" restrictToTypes="book" min="100000">
+		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
 			<div id="detailRelatedLibrary">
 				<H6>Related Library Material </H6>
 				<div class="jcarousel-wrapper">
@@ -189,7 +189,8 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<script type='text/javascript'>
+			</ifcount>}}}<!-- Related Books -->			
+<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
 					Carousel initialization
@@ -229,8 +230,7 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->			
-			
+			</script>			
 			
 		</div><!-- end container -->
 	</div><!-- end row -->

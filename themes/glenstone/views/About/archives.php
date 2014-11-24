@@ -3,6 +3,7 @@
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
 $va_access_values = caGetUserAccessValues($this->request);
 
+if (false) {
 	if($vs_set_code = $this->request->config->get("featured_archive_set")){
 	 	AssetLoadManager::register("carousel");
 		$t_set = new ca_sets();
@@ -107,14 +108,18 @@ $va_access_values = caGetUserAccessValues($this->request);
 		</script>
 <?php 
 	}
+	
 ?>						
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
+<?php
+}
+?>
 	<div class="row">
 		<div class="col-sm-8">
 			<h1>Archives Advanced Search coming soon.</h1>
 <?php			
-				print "<span ><i class='fa fa-archive' style='padding-right:5px;'></i>".caNavLink($this->request, 'View finding aid', '', '', 'FindingAid', 'Collection/Index')."</span>";
+			//	print "<span ><i class='fa fa-archive' style='padding-right:5px;'></i>".caNavLink($this->request, 'View finding aid', '', '', 'FindingAid', 'Collection/Index')."</span>";
 ?>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
