@@ -35,6 +35,9 @@ $vs_show_version 			= $this->getVar('version');
 $vs_container_id 			= $this->getVar('containerID');
 $va_reps 					= $this->getVar('reps');
 
+if (!$t_object) { print caPrintStackTrace(); }
+$vn_object_id = $t_object->getPrimaryKey();
+
 # --- when linked to from authority detail pages, use session var to make next and previous nav between reps
 $va_authority_objects_results = $this->request->session->getVar("repViewerResults");
 	
@@ -57,7 +60,7 @@ if($vs_display_type == 'media_overlay'){
 <?php
 			$i = 0;
 			foreach($va_reps as $vn_rep_id => $va_rep_info){
-				print "<a href='#' ".(($vn_rep_id == $vn_representation_id) ? "class='selectedRep' " : "")."onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_rep_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>".$va_rep_info['tags'][$vs_version]."</a>";
+				print "<a href='#' ".(($vn_rep_id == $vn_representation_id) ? "class='selectedRep' " : "")."onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_rep_id, 'object_id' => (int)$vn_object_id))."\");'>".$va_rep_info['tags'][$vs_version]."</a>";
 				$i++;
 				if($i == $vn_num_cols){
 					$i = 0;
@@ -81,7 +84,7 @@ if($vs_display_type == 'media_overlay'){
 						# -- get version to download configured in media_display.conf
 						$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 						$vs_download_version = $va_download_display_info['display_version'];
-						print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/downloadWhite.png', array('title' => _t("Download Media"))), '', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
+						print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/downloadWhite.png', array('title' => _t("Download Media"))), '', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $vn_object_id, "download" => 1, "version" => $vs_download_version));
 ?>				
 				</div>
 <?php
@@ -134,13 +137,13 @@ if($vs_display_type == 'media_overlay'){
 					}
 				}else{
 					if ($vn_id = $this->getVar('previous_representation_id')) {
-						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>←</a>";
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$vn_object_id))."\");'>←</a>";
 					}
 					if (sizeof($va_reps) > 1) {
 						print ' '._t("%1 of %2", $this->getVar('representation_index'), sizeof($va_reps)).' ';
 					}
 					if ($vn_id = $this->getVar('next_representation_id')) {
-						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$t_object->getPrimaryKey()))."\");'>→</a>";
+						print "<a href='#' onClick='jQuery(\"#{$vs_container_id}\").load(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('representation_id' => (int)$vn_id, 'object_id' => (int)$vn_object_id))."\");'>→</a>";
 					}
 				}
 ?>
@@ -161,7 +164,7 @@ if($vs_display_type == 'media_overlay'){
 	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
 		print $vs_tag;
 	}else{
-		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
+		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
 	}
 ?>
 	</div><!-- end caMediaOverlayContent/ caMediaDisplayContent -->

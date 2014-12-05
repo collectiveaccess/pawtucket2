@@ -58,7 +58,7 @@
 ?>
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_subject_id.'_'.$vn_representation_id.'_'.$vs_display_type; ?>',	
-		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON', array($va_url['_pk'] => $vn_subject_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
+		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON/'.$t_subject->tableName(), array($va_url['_pk'] => $vn_subject_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
 		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
@@ -74,7 +74,7 @@
 ?>
 	var caBookReader = caUI.initBookReader({
 		containerID: 'BookReader_<?php print $vn_subject_id.'_'.$vn_value_id.'_'.$vs_display_type; ?>',	
-		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON', array($va_url['_pk'] => $vn_subject_id, 'value_id' => $vn_value_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
+		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON/'.$t_subject->tableName(), array($va_url['_pk'] => $vn_subject_id, 'value_id' => $vn_value_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
 		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',

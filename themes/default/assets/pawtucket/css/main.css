@@ -2095,7 +2095,7 @@ a.readmore-js-toggle{
 /* bookreader */
 .BookReaderContainer{
 	width: 100%;
-	height: 550px !important;
+	height: 100% !important;
 }
 .DV-views{
 	margin-left:72px;

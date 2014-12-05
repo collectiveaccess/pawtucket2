@@ -106,8 +106,9 @@
 					
 		<!-- Related Archival Materials -->
 			
-<?php		
-		if ($va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)))) {	
+<?php	
+		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)));	
+		if ($va_related_objects) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Material </H6>
@@ -188,7 +189,8 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<script type='text/javascript'>
+			</ifcount>}}}<!-- Related Books -->			
+<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
 					Carousel initialization
@@ -228,8 +230,7 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->			
-			
+			</script>			
 			
 		</div><!-- end container -->
 	</div><!-- end row -->

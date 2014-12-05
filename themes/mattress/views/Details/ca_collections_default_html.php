@@ -32,7 +32,7 @@
 			<div class='mediaLarge'>
 <?php
 			$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'excludeTypes' => array('document'), 'checkAccess' => $va_access_values));
-			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('versions' => array('medium', 'smallthumb')));
+			$va_related_reps = caGetPrimaryRepresentationsForIDs($va_related_objects, array('checkAccess'=> $va_access_values, 'versions' => array('medium', 'smallthumb')));
 			
 			$vn_rep_id = key($va_related_reps);
 			$va_primary_rep = reset($va_related_reps);
@@ -112,6 +112,10 @@
 		if (($vs_collection = $t_item->get('ca_collections.description.description_text')) && ($t_item->get('ca_collections.type_id') != '131')) {
 			print "<div class='description trimText'><div class='metatitle'>"._t('Description')."</div>".$t_item->get('ca_collections.description.description_text')."</div>";
 		}
+		if (($t_item->get('ca_collections.statement.statement_source', array('convertCodesToDisplayText' => true))) == "Artist") {
+			$va_statement = $t_item->get('ca_collections.statement.statement_text');
+			print "<div class='artist description' style='max-height:205px;overflow:hidden;'><div class='metatitle'>"._t('Artist Statement')."</div>".$va_statement."</div>";
+		}		
 		if (($vs_bio = $t_item->get('ca_entities.biography.bio_text', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => '<br/><br/>')))) {
 			print "<div class='artist description' style='max-height:205px;overflow:hidden;'><div class='metatitle'>"._t('About the Artist')."</div>".$vs_bio."</div>";
 			print "<div class='readArtist'>".caNavLink($this->request, 'Read More', '', '', 'Detail', 'entities/'.$t_item->get('ca_entities.entity_id'))."</div>";

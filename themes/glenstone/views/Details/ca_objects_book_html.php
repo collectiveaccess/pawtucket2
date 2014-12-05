@@ -129,7 +129,8 @@
 		</div><!-- end row -->
 	</div><!-- end container -->
 <?php
-	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')))) {
+	#$va_archives = $t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')));
+	if (sizeof($va_archives) > 0) {
 ?>	
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>

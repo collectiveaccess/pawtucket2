@@ -30,18 +30,33 @@
 ?>
 
 	<div id="pageTitle">
-		<span class='pageTitle'>p{ART}icipate</span>
+		<span class='pageTitle'>Contribute</span>
 	
 	</div>
 	<div id="contentArea" class="contribute">	
 		<div class="contributeForm">
-			<h1>Contribute to the Archive</h1>
+			<h1>Submit Materials to P[art]icipate: An Active Archive</h1>
 			<p>
-				Use the form below to contribute your media to the Mattress Factory Archive.
+				Your information + images will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.
 			</p>
+			<p>Please contact <a href='mailto:mfarchives@mattress.org'>mfarchives@mattress.org</a> for assistance with questions.</p>
 			
 			{{{form}}}
-				
+				<div class="contributeField">
+					{{{ca_objects.username:error}}}
+					<span class='title'>Your Name</span><br/>
+					{{{ca_objects.username%width=200px&height=20px}}} 
+				</div>	
+				<div class="contributeField">
+					{{{ca_objects.zip:error}}}
+					<span class='title'>Your Zip Code</span><br/>
+					{{{ca_objects.zip%width=200px&height=20px}}} 
+				</div>	
+				<div class="contributeField">
+					{{{ca_objects.email:error}}}
+					<span class='title'>Your Email Address</span><br/>
+					{{{ca_objects.email%width=400px&height=20px}}} 
+				</div>										
 				<div class="contributeField">
 					{{{ca_objects.preferred_labels:error}}}
 					<span class='title'>Title</span><br/>
@@ -57,28 +72,27 @@
 				<div class="contributeField">
 					{{{ca_objects.description:error}}}
 					<span class='title'>Description</span><br/>
-					{{{ca_objects.description.description_text%width=400px&height=120px}}} 
+					{{{ca_objects.internal_notes%width=400px&height=120px}}} 
 					
-					{{{ca_objects.description.description_source%force=non_MF_source}}}   
 				</div>
 				
 				<div class="contributeField">
 					{{{ca_object_representations.media:error}}}
 					<span class='title'>Media (1)</span>{{{ca_object_representations.media}}} 
 					
-					Caption {{{ca_object_representations.preferred_labels.name%width=350px}}} 
+					Caption {{{ca_object_representations.caption_private%width=350px&height=20px}}} 
 					<br/><br/>
 					
 					{{{ca_object_representations.media:error}}}
 					<span class='title'>Media (2)</span>{{{ca_object_representations.media}}}
 					
-					Caption {{{ca_object_representations.preferred_labels.name%width=350px}}} 
+					Caption {{{ca_object_representations.caption_private%width=350px&height=20px}}} 
 					 <br/><br/>
 					
 					{{{ca_object_representations.media:error}}}
 					<span class='title'>Media (3)</span>{{{ca_object_representations.media}}}
 					
-					Caption {{{ca_object_representations.preferred_labels.name%width=350px}}} 
+					Caption {{{ca_object_representations.caption_private%width=350px&height=20px}}} 
 					 <br/><br/>
 				</div>
 
