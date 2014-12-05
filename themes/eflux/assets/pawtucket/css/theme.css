@@ -8,6 +8,12 @@ font-style: normal;
 body {
 	font-family: arial;
 }
+a {
+	color:#999;
+}
+a:hover {
+	color:#000;
+}
 h1 {
 	font-family: 'efluxRegular';
 	text-transform:capitalize;
@@ -23,10 +29,12 @@ h4 {
 	color:#000;
 	font-weight:bold;
 	font-family: 'efluxRegular';
+	font-size:20px;
 }
 h5 {
 	font-family:arial, helvetica, sans serif;
 	text-transform:capitalize;
+	color:#000;
 }
 h6 {
 	font-family:georgia;
@@ -34,6 +42,7 @@ h6 {
 	text-transform:capitalize;
 	padding-bottom:5px;
 	font-weight:bold;
+	font-size:14px;
 }
 .navbar {
 	box-shadow: none;
@@ -213,6 +222,15 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 .dropdown-menu > li > a {
 	font-weight:bold;
 }
+.results h5 {
+	font-size:12px;
+}
+.results a .fa.fa-suitcase {
+	color:#000;
+}
+.filterMenureults {
+	margin-left:0px;
+}
 
 /* Detail */
 
@@ -222,6 +240,21 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small{
 	color:#000;
+}
+.detail #detailTools a{
+	color: #000;
+	font-family: arial;
+	text-transform: capitalize;
+	font-size: 13px;
+}
+.detail .detailTool span {
+	color:#000;
+}
+.detail .map {
+	margin-top:20px;
+}
+.collections.detail .image img {
+	width:100%;
 }
 
 /* Footer */
