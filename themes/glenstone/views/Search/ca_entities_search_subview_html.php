@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_entities_search_subview_html.php : 
+ * themes/default/views/Search/ca_entities_search_subview_html.php :  
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -35,11 +35,12 @@
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
+if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sort">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->sort by {{{sortByList}}}
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'source' => 'multisearch')); ?> | -->sort by {{{sortByList}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
@@ -95,4 +96,5 @@
 <?php
 		}
 	}
+}
 ?>

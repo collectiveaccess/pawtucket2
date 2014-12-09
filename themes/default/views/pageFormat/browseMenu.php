@@ -27,47 +27,72 @@
  */
  
 	$va_browse_types = caGetBrowseTypes();
+	$o_config = caGetBrowseConfig();
 	if(sizeof($va_browse_types)){
-		$vs_first_browse_name = null;
+		switch($o_config->get("browse_menu_format")){
+			case "list":
+				if(sizeof($va_browse_types) > 1){
 ?>
- <li class="dropdown yamm-fw"> <!-- add class yamm-fw for full width-->
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
-	<ul class="dropdown-menu" id="browse-menu">
-		<li class="browseNavFacet">			
-			<div class="browseMenuContent container">
+				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+					<ul class="dropdown-menu">
 <?php
-		if(sizeof($va_browse_types) > 1){
-			# --- only show browse targets if there are more than one
+						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+							print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
+						}
+?>
+					</ul>	
+				</li>
+<?php				
+				}else{
+?>
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", key($va_browse_types)); ?></li>
+<?php
+				}
+			break;
+			# ------------------------------------------------
+			default:
+				$vs_first_browse = null;
+?>
+				 <li class="dropdown yamm-fw<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"> <!-- add class yamm-fw for full width-->
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+					<ul class="dropdown-menu" id="browse-menu">
+						<li class="browseNavFacet">			
+							<div class="browseMenuContent container">
+<?php
+						if(sizeof($va_browse_types) > 1){
+							# --- only show browse targets if there are more than one
 ?>	
-				<div class="mainfacet">
-						<ul class="nav nav-pills">			
+								<div class="mainfacet">
+										<ul class="nav nav-pills">			
 <?php
-							foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-								print "<li ".((!$vs_first_browse_name) ? "class='active'" : "")."><div class='browseHeadernav caps'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
-								if(!$vs_first_browse_name){
-									$vs_first_browse_name = $va_browse_type['displayName'];
-								}
-							}
+											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
+												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
+												if(!$vs_first_browse){
+													$vs_first_browse = $vs_browse_name;
+												}
+											}
 ?>
-						</ul>
-				</div><!--end main facet-->
+										</ul>
+								</div><!--end main facet-->
 <?php
-		} else {
-			$va_first_browse = array_pop($va_browse_types);
-			$vs_first_browse_name = $va_first_browse['displayName'];
+						} else {
+							$vs_first_browse = key($va_browse_types);
+							$va_first_browse = array_pop($va_browse_types);
+						}
+?>
+								<div id="browseMenuTypeFacet" class='row'> </div>
+							</div><!-- end browseMenuContent container -->		
+						</li><!-- end browseNavFacet -->
+					</ul> <!--end dropdown-browse-menu -->	
+				 </li><!-- end dropdown -->
+					<script type="text/javascript">
+						jQuery('.dropdown-toggle').dropdown()
+						jQuery(document).ready(function() {		
+							jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse)); ?>");
+						});
+					</script>
+<?php
+			break;
 		}
-?>
-				<div id="browseMenuTypeFacet"> </div>
-			</div><!-- end browseMenuContent container -->		
-		</li><!-- end browseNavFacet -->
-	</ul> <!--end dropdown-browse-menu -->	
- </li><!-- end dropdown -->
-	<script type="text/javascript">
-		jQuery('.dropdown-toggle').dropdown()
-		jQuery(document).ready(function() {		
-			jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse_name)); ?>");
-		});
-	</script>
-<?php	
 	}
 ?>

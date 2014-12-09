@@ -7,12 +7,12 @@
 <?php
 	if(sizeof($va_set_items)){
 		foreach($va_set_items as $va_set_item){
-			print "<div class='col-sm-4 col-md-3 col-lg-3 lbItem".$va_set_item["item_id"]."' id='row-".$va_set_item["row_id"]."'><div class='lbItemContainer'>";
+			print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem".$va_set_item["item_id"]."' id='row-".$va_set_item["row_id"]."'><div class='lbItemContainer'>";
 			print caLightboxSetDetailItem($this->request, $va_set_item, array("write_access" => $vb_write_access));
 			print "</div></div><!-- end col 3 -->";
 		}
 	}else{
-		print "<div>No items in set</div>";
+		print "<div class='col-sm-12'>"._t("There are no items in this lightbox")."</div>";
 	}
 ?>
 			</div><!-- end row -->
@@ -40,7 +40,7 @@ if($vb_write_access){
 				opacity: 0.8,
 				helper: 'clone',
   				appendTo: 'body',
- 				zIndex: 100000,
+ 				zIndex: 10000,
 				update: function( event, ui ) {
 					var data = $(this).sortable('serialize');
 					// POST to server using $.post or $.ajax

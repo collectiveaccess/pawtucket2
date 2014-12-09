@@ -161,7 +161,6 @@ class RequestDispatcher extends BaseObject {
 	# -------------------------------------------------------
 	public function dispatch($pa_plugins) {
 		$this->setPlugins($pa_plugins);
-		$va_params = null;
 		if ($this->isDispatchable()) {
 			do {
 				$vs_classname = ucfirst($this->ops_controller).'Controller';
@@ -183,7 +182,7 @@ class RequestDispatcher extends BaseObject {
 								
 								// Take rest of path and pass as params to DefaultController __call()
 								$va_params = array($this->ops_action);
-								if ($this->ops_action_extra) { $va_params[] = $this->ops_action_extra; } 
+  								if ($this->ops_action_extra) { $va_params[] = $this->ops_action_extra; } 
 								
 								$va_path_params = $this->opo_request->getParameters(array('PATH'));
 								foreach($va_path_params as $vs_param => $vs_value) {
@@ -192,6 +191,7 @@ class RequestDispatcher extends BaseObject {
 								}
 								$this->ops_action = $vs_default_method;
 							} else {
+								die("!!!");
 								// Invalid controller path
 								$this->postError(2300, _t("Invalid controller path"), "RequestDispatcher->dispatch()");
 								return false;
@@ -203,8 +203,12 @@ class RequestDispatcher extends BaseObject {
 				if(!$this->opo_request->user->canAccess($this->opa_module_path, $this->ops_controller, $this->ops_action)){
 					switch($this->opo_request->getScriptName()){
 						case "service.php":
+							// service auth requests for deprecated service API are allowed to go through to
+							// dispatch because in that case logging in requires running actual controller code. 
+							// this is bad practice and should be removed once the old API is no longer supported.
 							if(!$this->opo_request->isServiceAuthRequest()) {
 								$this->opo_response->setHTTPResponseCode(401,_t("Access denied"));
+								$this->opo_response->addHeader('WWW-Authenticate','Basic realm="CollectiveAccess Service API"');
 								return true; // this is kinda stupid but otherwise the "error redirect" code of AppController kicks in, which is not what we want here!
 							}
 							break;
@@ -263,4 +267,3 @@ class RequestDispatcher extends BaseObject {
 	}
 	# -------------------------------------------------------
 }
- ?>

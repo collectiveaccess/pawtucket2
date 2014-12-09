@@ -22,7 +22,7 @@
  * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
- *
+ * 
  * ----------------------------------------------------------------------
  */
  
@@ -33,6 +33,7 @@
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
+	$va_access_values = $this->getVar('accessValues');
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -49,12 +50,12 @@
 		}
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
-			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true));
+			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 ?>
 			<div class='{{{block}}}Result'>
 <?php
 			print "<div class='objImage'>";
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags'));
+			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('resultthumb'), 'return' => 'tags', 'checkAccess' => $va_access_values));
 			if (sizeof($va_images) > 0){
 				foreach ($va_images as $vn_image_id => $vs_image) {
 					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");

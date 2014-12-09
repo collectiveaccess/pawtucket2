@@ -29,6 +29,13 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+$qr_res = $this->getVar('featured_set_items_as_search_result');
+
+$t_featured = new ca_sets();
+$t_featured->load(array('set_code' => 'featuredSet'));
+
+$va_set_items = $t_featured->getItems();
 
 ?>
 
@@ -36,53 +43,31 @@
 
 	<div class='blockTitle'>Featured Items</div>
 	<div class='blockFeatured scrollBlock' >
-		<div class='scrollingDiv' > 
+		<div class='scrollingDiv'><div class='scrollingDivContent'>
 <?php
-		$t_set = new ca_sets();
-		$va_featured_set = $t_set->load(array('set_code' => $this->request->config->get('featured_set')));
 		
-		if ($va_featured_set) {
-			$va_set_items = $t_set->getItems();
-		
-			$va_set_object_ids = array();
-			foreach ($va_set_items as $va_set_key => $va_set_item) {
-				foreach ($va_set_item as $va_set_item_key => $va_set_item_info) {
-					$va_set_object_ids[] = $va_set_item_info['row_id'];
-				}
-			}
-			$qr_res = caMakeSearchResult('ca_objects', $va_set_object_ids);
-			while ($qr_res->nextHit()) {
-				$va_image_width = $qr_res->get('ca_object_representations.media.mediumlarge.width');
+		foreach ($va_set_items as $va_set_id => $va_set_item_a) {
+			foreach ($va_set_item_a as $va_set_item_id => $va_set_item) {
+			$va_object_id = $va_set_item['row_id'];
 
-				print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
+			$t_object = new ca_objects($va_object_id);
 			
-				print "<div class='featuredObjectImg'>";
-				print $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>');
-				print "</div>";
-			
-				print "<div class='artwork'>";
-				if($qr_res->get('ca_objects.nonpreferred_labels.type_id') == '515') {
-					print $qr_res->getWithTemplate('<l>^ca_objects.nonpreferred_labels</l>');
-				} else {
-					print $qr_res->getWithTemplate('<l>^ca_objects.preferred_labels</l>');
-				}
-				if ($qr_res->get('ca_objects.date.dates_value') && ($qr_res->get('ca_objects.type_id') != 28)) {
-					print ", ".$qr_res->get('ca_objects.date.dates_value');
-				}
-				if ($qr_res->get('ca_objects.idno')) {
-					print " (".$qr_res->get('ca_objects.idno').")";
-				}
-				print "</div>";
-			
-				print "<div class='artist'>";
-				print $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'));
-				print "</div>";
-			
-				print "</div>";
+			$va_image_width = $t_object->get('ca_object_representations.media.mediumlarge.width');
+
+			print "<div class='featuredObject' style='width:{$va_image_width}px;'>";
+			print "<div class='featuredObjectImg'>";
+			print caNavLink($this->request, $t_object->get('ca_object_representations.media.mediumlarge'), '', '', 'Detail', 'objects/'.$va_object_id);
+			print "</div>";
+		
+			print "<div class='artwork'>";
+			print $va_set_item['caption'];
+			print "</div>";
+		
+			print "</div>";
 			}
 		}
 ?>
-		</div><!-- scrollingdiv -->
+		</div><!-- scrollingDivContent --></div><!-- scrollingdiv -->
 	</div><!-- block Featured -->
 	
 	<div class='clearfix'></div>

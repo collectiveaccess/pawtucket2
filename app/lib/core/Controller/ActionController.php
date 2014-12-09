@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2013 Whirl-i-Gig
+ * Copyright 2007-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -132,6 +132,11 @@ class ActionController extends BaseObject {
 		return $vs_content;
 	}
 	# -------------------------------------------------------
+	/**
+	 * Get request object (by reference)
+	 *
+	 * @return RequestHTTP
+	 */
 	public function &getRequest() {
 		return $this->opo_request;
 	}
@@ -156,4 +161,3 @@ class ActionController extends BaseObject {
 	}
 	# -------------------------------------------------------
 }
-?>

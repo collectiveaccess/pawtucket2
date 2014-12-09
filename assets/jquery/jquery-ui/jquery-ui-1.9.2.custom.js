@@ -14877,3 +14877,5 @@ $.widget( "ui.tooltip", {
 });
 
 }( jQuery ) );
+
+$.widget.bridge('uitooltip', $.ui.tooltip);

@@ -39,6 +39,10 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			$this->config = caGetFrontConfig();
  			caSetPageCSSClasses(array("front"));
+  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
  		}
  		# -------------------------------------------------------
  		/**
@@ -52,6 +56,7 @@
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
+ 			$va_featured_ids = array();
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
@@ -64,9 +69,21 @@
 					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
  			}
+ 			#
+ 			# --- no configured set/items in set so grab random objects with media
+ 			#
+ 			if(sizeof($va_featured_ids) == 0){
+ 				$t_object = new ca_objects();
+ 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1)));
+ 				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
+ 			}
  			
  			$this->view->setVar('config', $this->config);
  			
+ 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
+ 			$this->view->setVar('result_context', $o_result_context);
+ 			$o_result_context->setAsLastFind();
  			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
@@ -78,6 +95,20 @@
  			} else {
  				$this->render("Front/front_page_html.php");
  			}
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Front',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
  		}
  		# ------------------------------------------------------
  	}

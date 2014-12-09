@@ -5,6 +5,9 @@
 	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
+	
+	$va_export_formats = $this->getVar('export_formats');
+
 ?>
 <div id="lbViewButtons">
 <?php
@@ -36,7 +39,16 @@ if(is_array($va_views) && sizeof($va_views)){
 		}
 ?>
 			<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
-			<li><?php print caNavLink($this->request, _t("Download PDF"), "", "", "Sets", "export", array("output_type" => "_pdf", "download" => true)); ?></li>
+<?php
+			if(is_array($va_export_formats) && sizeof($va_export_formats)){
+				// Export as PDF links
+				print "<li class='divider'></li>\n";
+				print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
+				foreach($va_export_formats as $va_export_format){
+					print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+				}
+			}
+?>		
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
 			<li class="divider"></li>
@@ -48,20 +60,23 @@ if(is_array($va_views) && sizeof($va_views)){
 <?php
 			}
 ?>
-			<!--<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("object_id" => 52)); ?>"); return false;' ><?php print _t("Add Item to Lightbox"); ?></a></li>-->
 		</ul>
 	</div><!-- end btn-group -->
 </H1>
 	<div class="row">
-		<div class="col-sm-10 col-md-10 col-lg-10">
+		<div class="col-sm-9 col-md-9 col-lg-8">
 <?php
-		print $this->render("Sets/set_detail_{$vs_current_view}_html.php");	
-?>
+		if(sizeof($va_set_items)){
+			print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
+		}else{
+			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this lightbox")."</div></div>";
+		}
+?>		
 		</div><!-- end col 10 -->
-		<div class="col-sm-2 col-md-2 col-lg-2">
+		<div class="col-sm-3 col-md-2 col-md-offset-1 col-lg-3 col-lg-offset-1 activitycol">
 <?php
 			if(!$vb_write_access){
-				print _t("You may not edit this set, you have read only access")."<br/><br/>";
+				print _t("<div class='warning'>You may not edit this set, you have read only access.</div>");
 			}
 			#if($t_set->get("access")){
 			#	print _t("This set is public")."<br/><br/>";
@@ -92,7 +107,7 @@ if(is_array($va_views) && sizeof($va_views)){
 <?php
 			if(sizeof($va_comments)){
 ?>
-			<div class="text-center" style="clear:both;"><strong><small><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></small></strong></div>
+			<div class="lbSetCommentHeader"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></div>
 <?php
 				if(sizeof($va_comments)){
 					$t_author = new ca_users();

@@ -208,6 +208,9 @@
 					// Create book viewer from single representation with multifiles
 					$vb_use_book_reader = true;
 			
+					$vn_object_id = $t_object->getPrimaryKey();
+					$vn_representation_id = $t_rep->getPrimaryKey();
+					
 					foreach($t_rep->getFileList(null, 0, null, array('preview', 'large_preview', 'page_preview')) as $vn_id => $va_file) {
 						$va_pages[] = array(
 							'object_id' => $vn_object_id, 'representation_id' => $t_rep->getPrimaryKey(),
@@ -218,8 +221,6 @@
 					}
 					
 					
-					$vn_object_id = $t_object->getPrimaryKey();
-					$vn_representation_id = $t_rep->getPrimaryKey();
 					$vs_book_viewer_content_mode = 'multifiles';
 				}
 			}
@@ -238,13 +239,15 @@
 		$o_view->setVar('initial_page', $vn_open_to_page);
 		$o_view->setVar('display_type', $vs_display_type);
 		$o_view->setVar('display_options', $va_display_options);
+		$o_view->setVar('t_subject', $t_object);
+		$o_view->setVar('t_representation', $t_rep);
 		
 		$va_page_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
-		$va_page_cache[$vn_object_id.'/'.$vn_representation_id] = $va_pages;
+		$va_page_cache[md5($c=$vn_object_id.'/'.$vn_representation_id.'/'.null)] = $va_pages;
 		$this->request->session->setVar('caDocumentViewerPageListCache', $va_page_cache);
-		
+	
 		$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
-		$va_section_cache[$vn_object_id.'/'.$vn_representation_id] = $va_sections;
+		$va_section_cache[md5($vn_object_id.'/'.$vn_representation_id.'/'.null)] = $va_sections;
 		$this->request->session->setVar('caDocumentViewerSectionCache', $va_section_cache);
 		
 		print $o_view->render('bookviewer_html.php');

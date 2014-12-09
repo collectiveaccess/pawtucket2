@@ -28,6 +28,8 @@
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	
  	class DetailController extends ActionController {
  		# -------------------------------------------------------
@@ -44,18 +46,28 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
+ 			
+ 			// expand to aliases
+ 			foreach($this->opa_detail_types as $vs_code => $va_info) {
+ 				if(is_array($va_aliases = caGetOption('aliases', $va_info, null))) {
+ 					foreach($va_aliases as $vs_alias) {
+ 						$this->opa_detail_types[$vs_alias] =& $this->opa_detail_types[$vs_code];
+ 					}
+ 				}
+ 			}
+ 			
  			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
  		 	$this->view->setVar("access_values", $va_access_values);
  		 	
- 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
-
  			caSetPageCSSClasses(array("detail"));
  		}
  		# -------------------------------------------------------
@@ -67,9 +79,10 @@
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
  			AssetLoadManager::register("readmore");
+ 			AssetLoadManager::register("maps");
  			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = $this->request->getActionExtra(); 
+ 			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				die("Invalid detail type");
@@ -81,21 +94,41 @@
  				$ps_id = (int)$va_tmp[1];
  				$vb_use_identifiers_in_urls = false;
  			}
- 			if (!$t_table->load($x=($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
+ 			if (!$t_table->load(($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
  				// invalid id - throw error
  				die("Invalid id");
- 			} 			
+ 			} 
+ 			
+ 			// Printables
+ 		 	// 	merge displays with drop-in print templates
+ 		 	//
+			$va_export_options = caGetAvailablePrintTemplates('summary', array('table' => $t_table->tableName())); 
+			$this->view->setVar('export_formats', $va_export_options);
+			
+			$va_options = array();
+			foreach($va_export_options as $vn_i => $va_format_info) {
+				$va_options[$va_format_info['name']] = $va_format_info['code'];
+			}
+			// Get current display list
+			$t_display = new ca_bundle_displays();
+ 			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+ 				$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
+ 			}
+ 			ksort($va_options);
+ 			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
+ 		
+		
  			
 			#
  			# Enforce access control
  			#
- 			if(sizeof($this->opa_access_values) && !in_array($t_table->get("access"), $this->opa_access_values)){
+ 			if(sizeof($this->opa_access_values) && ($t_table->hasField('access')) && (!in_array($t_table->get("access"), $this->opa_access_values))){
   				$this->notification->addNotification(_t("This item is not available for view"), "message");
  				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
  				return;
  			}
  			
- 			MetaTagManager::setWindowTitle($t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$t_table->getTypeName().": ".$t_table->get('preferred_labels').(($vs_idno = $t_table->get($t_table->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
  			
  			$vs_type = $t_table->getTypeCode();
  			
@@ -106,11 +139,15 @@
  			caAddPageCSSClasses(array($vs_table, $ps_function, $vs_type));
  			
  			
- 			//
- 			//
- 			//
- 			$vs_last_find = ResultContext::getLastFind($this->request, $vs_table);
- 			$o_context = new ResultContext($this->request, $vs_table, $vs_last_find);
+ 			// Do we need to pull in the multisearch result set?
+ 			if ((ResultContext::getLastFind($this->request, $vs_table, array('noSubtype' => true))) === 'multisearch') {
+ 				$o_context = new ResultContext($this->request, $vs_table, 'multisearch', $ps_function);
+ 				$o_context->setAsLastFind(false);
+ 				$o_context->saveContext();
+ 			} else {
+ 				$o_context = ResultContext::getResultContextForLastFind($this->request, $vs_table);
+ 			}
+ 			
  			$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_table->getPrimaryKey()));
  			$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_table->getPrimaryKey()));
  			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
@@ -133,13 +170,40 @@
  					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
  					$t_representation->load($pn_representation_id);
  				}else{
- 					$t_representation = $t_table->getPrimaryRepresentationInstance();
+ 					$t_representation = $t_table->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
  				}
 				if ($t_representation) {
 					$this->view->setVar("t_representation", $t_representation);
+					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
+				}else{
+					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
-				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, array()));
-			} 			
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array_merge(caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')), array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false)))));
+			}
+			//
+			// map
+			//
+			if (!is_array($va_map_attributes = caGetOption('map_attributes', $va_options, array())) || !sizeof($va_map_attributes)) {
+				if ($vs_map_attribute = caGetOption('map_attribute', $va_options, false)) { $va_map_attributes = array($vs_map_attribute); }
+			}
+			
+			$this->view->setVar("map", "");
+			if(is_array($va_map_attributes) && sizeof($va_map_attributes)) {
+				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+					
+				$vn_mapped_count = 0;	
+				foreach($va_map_attributes as $vs_map_attribute) {
+					if ($t_table->get($vs_map_attribute)){
+						$o_map->mapFrom($t_table, $vs_map_attribute);
+						$vn_mapped_count++;
+					}
+				}
+				
+				if ($vn_mapped_count > 0) { 
+					$this->view->setVar("map", $o_map->render('HTML'));
+				}
+			}
+			
  			//
  			// comments, tags, rank
  			//
@@ -196,29 +260,36 @@
  				$vs_path = "Details/{$vs_table}_default_html.php";
  			}
  			
- 			//
- 			// Tag substitution
- 			//
- 			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
- 			// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
- 			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
- 			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
- 			// context of the item being detailed.
- 			//
- 			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
- 			$va_tag_list = $this->getTagListForView($vs_path);				// get list of tags in view
- 			foreach($va_tag_list as $vs_tag) {
- 				if (in_array($vs_tag, $va_defined_vars)) { continue; }
- 				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
- 				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_table->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
- 				} else {
- 					$this->view->setVar($vs_tag, "?{$vs_tag}");
- 				}
+ 	
+			switch($ps_view = $this->request->getParameter('view', pString)) {
+ 				case 'pdf':
+ 					$this->_genExport($t_table, $this->request->getParameter("export_format", pString), 'Detail', 'Detail');
+ 					break;
+ 				default:
+ 					//
+					// Tag substitution
+					//
+					// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
+					// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+					// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+					// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+					// context of the item being detailed.
+					//
+					$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
+					$va_tag_list = $this->getTagListForView($vs_path);				// get list of tags in view
+					foreach($va_tag_list as $vs_tag) {
+						if (in_array($vs_tag, $va_defined_vars)) { continue; }
+						if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
+							$this->view->setVar($vs_tag, $t_table->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+						} elseif (strpos($vs_tag, ".") !== false) {
+							$this->view->setVar($vs_tag, $t_table->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
+						} else {
+							$this->view->setVar($vs_tag, "?{$vs_tag}");
+						}
+					}
+ 					$this->render($vs_path);
+ 					break;
  			}
-
- 			$this->render($vs_path);
  		}
  		# -------------------------------------------------------
  		/**
@@ -242,48 +313,60 @@
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
  			if (!$t_rep->getPrimaryKey()) { 
- 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
  				return;
  			}
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
- 			$this->response->addContent($t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts));
+			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+			if ($this->request->getParameter('include_tool_bar', pInteger)) {
+				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id)."</div></div>";
+			}
+
+ 			$this->response->addContent($vs_output);
  		}
 		# -------------------------------------------------------
  		/**
  		 * 
  		 */ 
  		public function GetPageListAsJSON() {
- 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+ 			if (!($vs_table = $this->request->getActionExtra())) { $vs_table = 'ca_objects'; }
+ 			if (!($t_subject = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { 
+ 				$this->postError(1100, _t('Invalid table'), 'DetailController->GetPage');
+ 				return;
+ 			}
+ 			$pn_subject_id = $this->request->getParameter($t_subject->primaryKey(), pInteger);
  			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$pn_value_id = $this->request->getParameter('value_id', pInteger);
  			$ps_content_mode = $this->request->getParameter('content_mode', pString);
  			
- 			$this->view->setVar('object_id', $pn_object_id);
- 			$this->view->setVar('representation_id', $pn_representation_id);
- 			$this->view->setVar('content_mode', $ps_content_mode);
+ 			$t_subject->load($pn_subject_id);
  			
- 			$t_rep = new ca_object_representations($pn_representation_id);
- 			$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$vs_download_version = $va_download_display_info['display_version'];
- 			$this->view->setVar('download_version', $vs_download_version);
+ 			$vs_page_cache_key = md5($pn_subject_id.'/'.$pn_representation_id.'/'.$pn_value_id);
+ 			
+ 			$this->view->setVar('page_cache_key', $vs_page_cache_key);
+ 			$this->view->setVar('t_subject', $t_subject);
+ 			$this->view->setVar('t_representation', new ca_object_representations($pn_representation_id));
+ 			$this->view->setVar('t_attribute_value', new ca_attribute_values($pn_value_id));
+ 			$this->view->setVar('content_mode', $ps_content_mode);
  			
  			$va_page_list_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
  			
- 			$va_pages = $va_page_list_cache[$pn_object_id.'/'.$pn_representation_id];
+ 			$va_pages = $va_page_list_cache[$vs_page_cache_key];
  			if (!isset($va_pages)) {
  				// Page cache not set?
- 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetPage');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetPage');
  				return;
  			}
  			
  			$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
  			$this->view->setVar('pages', $va_pages);
- 			$this->view->setVar('sections', $va_section_cache[$pn_object_id.'/'.$pn_representation_id]);
+ 			$this->view->setVar('sections', $va_section_cache[$vs_page_cache_key]);
  			
  			$this->view->setVar('is_searchable', MediaContentLocationIndexer::hasIndexing('ca_object_representations', $pn_representation_id));
  			
- 			$this->render('Details/object_representation_page_list_json.php');
+ 			$this->render('bundles/media_page_list_json.php');
  		}
  		# -------------------------------------------------------
  		/**
@@ -307,10 +390,14 @@
 		 */ 
 		public function DownloadMedia() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
-				$this->postError(1100, _t('Cannot download media'), 'ObjectEditorController->DownloadMedia');
+				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+			$pn_value_id = $this->request->getParameter('value_id', pInteger);
+			if ($pn_value_id) {
+ 				return $this->DownloadAttributeMedia();
+ 			}
 			$t_object = new ca_objects($pn_object_id);
 			if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
 			
@@ -465,7 +552,7 @@
 								$va_tmp[] = $vs_ext;
 							}
 						}
-						$this->view->setVar('version_download_name', join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
+						$this->view->setVar('version_download_name', str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']));					
 					} else {
 						$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
 					}
@@ -485,9 +572,106 @@
 			if ($vs_path) { unlink($vs_path); }
 			return $vn_rc;
 		}
+		# -------------------------------------------------------
+ 		# 
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns content for overlay containing details for media attribute
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		value_id = the id of the attribute value (ca_attribute_values) record to display
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *
+ 		 */ 
+ 		public function GetMediaInfo() {
+ 			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
+ 			$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
+ 			if ($pn_value_id) {
+ 				$t_rep = new ca_object_representations();
+ 				
+ 				$t_attr_val = new ca_attribute_values($pn_value_id);
+ 				$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 				$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+ 				$t_subject->load($t_attr->get('row_id'));
+ 				
+				$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
+ 			
+				// check subject_id here
+ 				$va_opts = array('t_attribute_value' => $t_attr_val, 'display' => 'media_overlay', 't_subject' => $t_subject, 'containerID' => 'caMediaPanelContentArea');
+ 				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
+
+ 				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
+ 			} elseif ($pn_representation_id) { 
+ 				$t_rep = new ca_object_representations($pn_representation_id);
+ 			
+ 				$t_subject = new ca_objects($vn_subject_id = $this->request->getParameter('object_id', pInteger));
+				if(!$vn_subject_id) { 
+					if (is_array($va_subject_ids = $t_rep->get($t_subject->tableName().'.'.$t_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
+						$vn_subject_id = array_shift($va_subject_ids);
+					} else {
+						$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+						return;
+					}
+				}
+ 				$va_opts = array('display' => 'media_overlay', 't_subject' => $t_subject, 't_representation' => $t_rep, 'containerID' => 'caMediaPanelContentArea');
+ 				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
+ 
+ 				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
+ 			} else {
+ 				//
+ 			}
+ 			//$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
+ 			//$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, array('display' => 'media_overlay', 't_attribute_value' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
+ 		}
+		# ------------------------------------------------------
+		/**
+		 * 
+		 */
+		public function GetMediaAttributeViewerHTMLBundle($po_request, $pa_options=null) {
+			$va_access_values = (isset($pa_options['access']) && is_array($pa_options['access'])) ? $pa_options['access'] : array();	
+			$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'media_overlay';	
+			$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
+			
+			$pn_value_id = (isset($pa_options['value_id']) && $pa_options['value_id']) ? $pa_options['value_id'] : null;
+			
+			$t_attr_val = new ca_attribute_values();
+			$t_attr_val->load($pn_value_id);
+			$t_attr_val->useBlobAsMediaField(true);
+			
+			$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
+			
+			$o_view->setVar('containerID', $vs_container_dom_id);
+			
+			$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
+			$va_rep_display_info['poster_frame_url'] = $t_attr_val->getMediaUrl('value_blob', $va_rep_display_info['poster_frame_version']);
+			
+			$o_view->setVar('display_options', $va_rep_display_info);
+			$o_view->setVar('representation_id', $pn_representation_id);
+			$o_view->setVar('t_attribute_value', $t_attr_val);
+			$o_view->setVar('versions', $va_versions = $t_attr_val->getMediaVersions('value_blob'));
+			
+			$t_media = new Media();
+	
+			$ps_version 	= $po_request->getParameter('version', pString);
+			if (!in_array($ps_version, $va_versions)) { 
+				if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+			}
+			$o_view->setVar('version', $ps_version);
+			$o_view->setVar('version_info', $t_attr_val->getMediaInfo('value_blob', $ps_version));
+			$o_view->setVar('version_type', $t_media->getMimetypeTypename($t_attr_val->getMediaInfo('value_blob', $ps_version, 'MIMETYPE')));
+			$o_view->setVar('mimetype', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));			
+			
+			
+			return $o_view->render('media_attribute_viewer_html.php');
+		}
  		# -------------------------------------------------------
  		# Tagging and commenting
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		public function CommentForm(){
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
@@ -495,7 +679,10 @@
  			$this->render('Details/form_comments_html.php');
  		}
  		# -------------------------------------------------------
- 		public function saveCommentTagging() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function SaveCommentTagging() {
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
@@ -627,6 +814,9 @@
  		# -------------------------------------------------------
  		# share - email item
  		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
  		function ShareForm() {
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
@@ -643,7 +833,10 @@
  			$this->render("Details/form_share_html.php");
  		}
  		# ------------------------------------------------------
- 		 public function sendShare() {
+ 		/**
+ 		 *
+ 		 */
+ 		public function SendShare() {
  			$va_errors = array();
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
@@ -779,6 +972,218 @@
  				return;
  			}
  		}
- 		# ------------------------------------------------------
+ 		# -------------------------------------------------------
+ 		/**
+		 * Generate  export file of current result
+		 */
+		protected function _genExport($pt_subject, $ps_template, $ps_output_filename, $ps_title=null) {
+			$this->view->setVar('t_subject', $pt_subject);
+			
+			if (substr($ps_template, 0, 5) === '_pdf_') {
+				$va_template_info = caGetPrintTemplateDetails('summary', substr($ps_template, 5));
+			} elseif (substr($ps_template, 0, 9) === '_display_') {
+				$vn_display_id = substr($ps_template, 9);
+				$t_display = new ca_bundle_displays($vn_display_id);
+				
+				if ($vn_display_id && ($t_display->haveAccessToDisplay($this->request->getUserID(), __CA_BUNDLE_DISPLAY_READ_ACCESS__))) {
+					$this->view->setVar('t_display', $t_display);
+					$this->view->setVar('display_id', $vn_display_id);
+				
+					$va_display_list = array();
+					$va_placements = $t_display->getPlacements(array('settingsOnly' => true));
+					foreach($va_placements as $vn_placement_id => $va_display_item) {
+						$va_settings = caUnserializeForDatabase($va_display_item['settings']);
+					
+						// get column header text
+						$vs_header = $va_display_item['display'];
+						if (isset($va_settings['label']) && is_array($va_settings['label'])) {
+							$va_tmp = caExtractValuesByUserLocale(array($va_settings['label']));
+							if ($vs_tmp = array_shift($va_tmp)) { $vs_header = $vs_tmp; }
+						}
+					
+						$va_display_list[$vn_placement_id] = array(
+							'placement_id' => $vn_placement_id,
+							'bundle_name' => $va_display_item['bundle_name'],
+							'display' => $vs_header,
+							'settings' => $va_settings
+						);
+					}
+					$this->view->setVar('placements', $va_display_list);
+				} else {
+					$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
+					return;
+				}
+				$va_template_info = caGetPrintTemplateDetails('summary', 'summary');
+			} else {
+				$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
+				return;
+			}
+			
+			//
+			// PDF output
+			//
+			if (!is_array($va_template_info)) {
+				$this->postError(3110, _t("Could not find view for PDF"),"DetailController->_genExport()");
+				return;
+			}
+			
+			//
+			// Tag substitution
+			//
+			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
+			// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+			// context of the item being detailed.
+			//
+			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
+			$va_tag_list = $this->getTagListForView($va_template_info['path']);				// get list of tags in view
+			foreach($va_tag_list as $vs_tag) {
+				if (in_array($vs_tag, $va_defined_vars)) { continue; }
+				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
+					$this->view->setVar($vs_tag, $pt_subject->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+				} elseif (strpos($vs_tag, ".") !== false) {
+					$this->view->setVar($vs_tag, $pt_subject->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
+				} else {
+					$this->view->setVar($vs_tag, "?{$vs_tag}");
+				}
+			}
+			
+			try {
+				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
+				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
+			
+				$vs_content = $this->render($va_template_info['path']);
+				$o_dompdf = new DOMPDF();
+				$o_dompdf->load_html($vs_content);
+				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
+				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('summary'));
+				$o_dompdf->render();
+				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+
+				$vb_printed_properly = true;
+			} catch (Exception $e) {
+				$vb_printed_properly = false;
+				$this->postError(3100, _t("Could not generate PDF"),"DetailController->_genExport()");
+			}
+				
+			return;
+		}
+		# -------------------------------------------------------
+ 		# File attribute bundle download
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Initiates user download of file stored in a file attribute, returning file in response to request.
+ 		 * Adds download output to response directly. No view is used.
+ 		 *
+ 		 * @param array $pa_options Array of options passed through to _initView 
+ 		 */
+ 		public function DownloadAttributeFile($pa_options=null) {
+ 			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
+ 			$t_attr_val = new ca_attribute_values($pn_value_id);
+ 			if (!$t_attr_val->getPrimaryKey()) { return; }
+ 			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 		
+ 			$vn_table_num = $this->opo_datamodel->getTableNum($this->ops_table_name);
+ 			if ($t_attr->get('table_num') !=  $vn_table_num) { 
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+ 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			
+ 			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			$ps_version = $this->request->getParameter('version', pString);
+ 			
+ 			
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			//
+ 			// Does user have access to bundle?
+ 			//
+ 			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			$t_attr_val->useBlobAsFileField(true);
+ 			
+ 			$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+ 			
+ 			// get value
+ 			$t_element = new ca_metadata_elements($t_attr_val->get('element_id'));
+ 			// check that value is a file attribute
+ 			if ($t_element->get('datatype') != 15) { 	// 15=file
+ 				return;
+ 			}
+ 			
+ 			$o_view->setVar('file_path', $t_attr_val->getFilePath('value_blob'));
+ 			$o_view->setVar('file_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
+ 			
+ 			// send download
+ 			$this->response->addContent($o_view->render('ca_attributes_download_file.php'));
+ 		}
+ 		# -------------------------------------------------------
+ 		# Media attribute bundle download
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Initiates user download of media stored in a media attribute, returning file in response to request.
+ 		 * Adds download output to response directly. No view is used.
+ 		 *
+ 		 * @param array $pa_options Array of options passed through to _initView 
+ 		 */
+ 		public function DownloadAttributeMedia($pa_options=null) {
+ 			if (!($pn_value_id = $this->request->getParameter('value_id', pInteger))) { return; }
+ 			$t_attr_val = new ca_attribute_values($pn_value_id);
+ 			if (!$t_attr_val->getPrimaryKey()) { return; }
+ 			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
+ 		
+ 			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
+ 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			
+ 			$vn_subject_id = $this->request->getParameter("subject_id", pInteger);
+ 			//list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
+ 			$ps_version = $this->request->getParameter('version', pString);
+ 			
+ 			
+ 			//if (!$this->_checkAccess($t_subject)) { return false; }
+ 			
+ 			
+ 			//
+ 			// Does user have access to bundle?
+ 			//
+ 			if (($this->request->user->getBundleAccessLevel($this->ops_table_name, $t_element->get('element_code'))) < __CA_BUNDLE_ACCESS_READONLY__) {
+ 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
+ 				return;
+ 			}
+ 			
+ 			$t_attr_val->useBlobAsMediaField(true);
+ 			if (!in_array($ps_version, $t_attr_val->getMediaVersions('value_blob'))) { $ps_version = 'original'; }
+ 			
+ 			$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+ 			
+ 			// get value
+ 			$t_element = new ca_metadata_elements($t_attr_val->get('element_id'));
+ 			
+ 			// check that value is a media attribute
+ 			if ($t_element->get('datatype') != 16) { 	// 16=media
+ 				return;
+ 			}
+ 			
+ 			$vs_path = $t_attr_val->getMediaPath('value_blob', $ps_version);
+ 			$vs_path_ext = pathinfo($vs_path, PATHINFO_EXTENSION);
+ 			if ($vs_name = trim($t_attr_val->get('value_longtext2'))) {
+ 				$vs_file_name = pathinfo($vs_name, PATHINFO_FILENAME);
+ 				$vs_name = "{$vs_file_name}.{$vs_path_ext}";
+ 			} else {
+ 				$vs_name = _t("downloaded_file.%1", $vs_path_ext);
+ 			}
+ 			
+ 			$o_view->setVar('file_path', $vs_path);
+ 			$o_view->setVar('file_name', $vs_name);
+ 			
+ 			// send download
+ 			$this->response->addContent($o_view->render('ca_attributes_download_media.php'));
+ 		}
+ 		# -------------------------------------------------------
 	}
- ?>

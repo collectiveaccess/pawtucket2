@@ -36,18 +36,19 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
- 			caSetPageCSSClasses(array("staticPage"));
- 			
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            } 			
+ 			
+ 			caSetPageCSSClasses(array("staticPage"));
  		}
  		# -------------------------------------------------------
- 		function __call($ps_method, $pa_path) {
+ 		public function __call($ps_method, $pa_path) {
  			array_unshift($pa_path[0], $ps_method);
+ 			
+ 			$this->view->setVar('response', $this->response);
  			
  			$this->render(join("/", $pa_path[0]).".php", false);
  		}
  		# ------------------------------------------------------
  	}
- ?>

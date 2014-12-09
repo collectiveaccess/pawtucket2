@@ -30,6 +30,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta http-equiv="refresh" content="3600; url=http://<?php print __CA_SITE_HOSTNAME__; ?>/index.php/LoginReg/Logout" />
 	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 	
@@ -38,7 +39,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print $this->request->config->get('html_page_title'); ?></title>
+	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -92,12 +93,17 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "About", "collection"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "About", "library"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Search/advanced", "artworks"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "Search/advanced", "library"); ?></li>
+					<!--<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Search/advanced", "archives"); ?></li>-->
+					
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reports"), "", "", "About", "reports"); ?></li>
+<?php 
+					if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection")  || $this->request->user->hasUserRole("supercurator"))){				
+						print "<li>".caNavLink($this->request, _t("Rolodex"), "", "", "Rolodex/Search", "Index")."</li> ";
+					}
 
-<?php
 						#print $this->render("pageFormat/browseMenu.php");
 ?>	
 				</ul>

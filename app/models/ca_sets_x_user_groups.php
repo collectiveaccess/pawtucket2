@@ -149,7 +149,7 @@ class ca_sets_x_user_groups extends BaseRelationshipModel {
 	protected $LOG_CHANGES_TO_SELF = true;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
-			"set_id"
+		
 		),
 		"RELATED_TABLES" => array(
 		

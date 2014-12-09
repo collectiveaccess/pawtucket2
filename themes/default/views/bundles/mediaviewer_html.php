@@ -70,7 +70,7 @@ if($vs_display_type == 'media_overlay'){
 	<div class="caMediaOverlayControls">
 		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
 <?php
-			if(caObjectsDisplayDownloadLink($this->request)){
+			if(caObjectsDisplayDownloadLink($this->request) && $this->request->user->canDoAction('can_download_media')){
 ?>
 				<div class='download'>
 <?php 
@@ -110,7 +110,7 @@ if($vs_display_type == 'media_overlay'){
 <?php
 }
 ?>
-	<div id="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContent' : 'caMediaDisplayContent'; ?>">
+	<div <?php print ($vs_display_type == 'media_overlay') ? 'id="caMediaOverlayContent"' : ''; ?>>
 <?php
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }
@@ -122,7 +122,9 @@ if($vs_display_type == 'media_overlay'){
 	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
 		print $vs_tag;
 	}else{
-		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$vs_tag."</a>";
+		if ($t_object && $t_rep) {
+			print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
+		}
 	}
 ?>
 	</div><!-- end caMediaOverlayContent/ caMediaDisplayContent -->

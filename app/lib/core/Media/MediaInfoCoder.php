@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2014 Whirl-i-Gig
+ * Copyright 2006-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,11 +102,7 @@ class MediaInfoCoder {
 			if (!$ps_key) {
 				return $va_media_info[$ps_version];
 			} else { 
-				// Try key as passed, then all UPPER and all lowercase
-				if($vs_v = $va_media_info[$ps_version][$ps_key]) { return $vs_v; }
-				if($vs_v = $va_media_info[$ps_version][strtoupper($ps_key)]) { return $vs_v; }
-				if($vs_v = $va_media_info[$ps_version][strtolower($ps_key)]) { return $vs_v; }
-				return null;
+				return $va_media_info[$ps_version][$ps_key];
 			}
 		} else {
 			return $va_media_info;
@@ -293,10 +289,8 @@ class MediaInfoCoder {
 	}
 	# ---------------------------------------------------------------------------
 	public function getMediaVersions($ps_data) {
-		if (!is_array($va_media_info)) {
-			if (!($va_media_info = $this->getMediaArray($ps_data))) {
-				return false;
-			}
+		if (!($va_media_info = $this->getMediaArray($ps_data))) {
+			return false;
 		}
 		
 		unset($va_media_info["ORIGINAL_FILENAME"]);
@@ -304,6 +298,7 @@ class MediaInfoCoder {
 		unset($va_media_info["VOLUME"]);
 		unset($va_media_info["_undo_"]);
 		unset($va_media_info["TRANSFORMATION_HISTORY"]);
+		unset($va_media_info["_CENTER"]);
 		
 		return array_keys($va_media_info);		
 	}

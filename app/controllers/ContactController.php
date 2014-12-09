@@ -34,24 +34,23 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			$this->config = caGetContactConfig();
+ 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            $this->config = caGetContactConfig();
  			if(!$this->config->get("contact_email") && !$this->config->get("contact_form_elements")){
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
  				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
  			}
- 			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Contact"));
  			caSetPageCSSClasses(array("contact"));
- 			
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "", ""));
-            }
  		}
  		# -------------------------------------------------------
- 		function form() {
+ 		public function Form() {
 			$this->render("Contact/form_html.php");
  		}
  		# ------------------------------------------------------
- 		function send() {
+ 		public function Send() {
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){
@@ -110,6 +109,4 @@
  			}
  		}
  		# -------------------------------------------------------
-
  	}
- ?>

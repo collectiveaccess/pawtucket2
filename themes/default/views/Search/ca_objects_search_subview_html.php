@@ -35,25 +35,66 @@
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$o_config = caGetSearchConfig();
+	$o_browse_config = caGetBrowseConfig();
+	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByControl}}}
+<?php
+				if(in_array($vs_block, $va_browse_types)){
+?>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+<?php
+				}
+?>
+				
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
-			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			if(in_array($vs_block, $va_browse_types)){
+?>
+				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+<?php
+			}else{
+?>
+				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			}
+?>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results'>
+				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
+		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 ?>
-			<div class='{{{block}}}Result'>
-				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values)); ?>
+			<div class='{{{block}}}Result multisearchResult'>
+<?php 
+				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				if(!$vs_image){
+					$t_list_item->load($qr_results->get("type_id"));
+					$vs_typecode = $t_list_item->get("idno");
+					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
+					}else{
+						$vs_image = $vs_default_placeholder_tag;
+					}
+				}
+				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
+?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
@@ -110,4 +151,6 @@
 			}
 		}
 	}
+	
+	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
 ?>

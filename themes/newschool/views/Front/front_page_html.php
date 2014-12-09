@@ -29,118 +29,18 @@
  *
  * ----------------------------------------------------------------------
  */
+		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-	<div id="frontPage">
-<?php
-	$va_item_ids = $this->getVar('featured_set_item_ids');
-	if(is_array($va_item_ids) && sizeof($va_item_ids)){
-		$t_object = new ca_objects();
-		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("mediumlarge"), array('checkAccess' => caGetUserAccessValues($this->request)));
-		$va_item_labels = $t_object->getPreferredDisplayLabelsForIDs($va_item_ids);
-	}
-	if(is_array($va_item_media) && sizeof($va_item_media)){
-?>   
-		<div class="jcarousel-wrapper">
-			<!-- Carousel -->
-			<div class="jcarousel">
-				<ul>
-<?php
-					foreach($va_item_media as $vn_object_id => $va_media){
-						print caDetailLink($this->request, $va_media["tags"]["mediumlarge"], '', 'ca_objects', $vn_object_id);
-					}
-?>
-				</ul>
-			</div><!-- end jcarousel -->
-<?php
-			if(sizeof($va_item_media) > 1){
-?>
-			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev">&lsaquo;</a>
-			<a href="#" class="jcarousel-control-next">&rsaquo;</a>
-		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
-<?php
-			}
-?>
-		</div><!-- end jcarousel-wrapper -->
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.jcarousel-control-prev')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.jcarousel-control-next')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-		
-				/*
-				 Pagination initialization
-				 */
-				$('.jcarousel-pagination')
-					.on('jcarouselpagination:active', 'a', function() {
-						$(this).addClass('active');
-					})
-					.on('jcarouselpagination:inactive', 'a', function() {
-						$(this).removeClass('active');
-					})
-					.jcarouselPagination({
-						// Options go here
-					});
-			});
-		</script>
-<?php
-	}
-?>
-
-
 <div class="container">
-	<div class="col-sm-8">
-<H1>The New School Digital Archives presents materials drawn from the collections of <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, which holds primary source materials related to the history of all divisions of The New School.</H1> 	
-	</div><!--end col-sm-8-->
-	
-	<div class="col-sm-4">
-		<h2>Browse by Featured Topic:</h2>
+	<div class="row">
+		<div class="col-sm-7">
+			<H1>The New School Archives Digital Collections presents images, text, audio and video from <a href=http://library.newschool.edu/speccoll/index.php>The New School Archives & Special Collections</a>, home to primary source materials documenting the history of all divisions of The New School.</H1> 	
+		</div><!--end col-sm-7-->
+		<div class="col-sm-1"></div>
+		<div class="col-sm-4">
 <?php
-		print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+		print $this->render("Front/gallery_set_links_html.php");
 ?>
-		Or
-		<ul class="nav nav-pills nav-stacked">
-		<li><?php print caNavLink($this->request, _t('BROWSE ALL'), '', '', 'Browse', 'Objects'); ?></a></li>
-		</ul>
-	</div> <!--end col-sm-4-->	
+		</div> <!--end col-sm-4-->	
+	</div><!-- end row -->
 </div> <!--end container-->
-
-</div>

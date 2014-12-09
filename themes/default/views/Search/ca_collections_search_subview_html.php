@@ -28,41 +28,79 @@
  
 	$qr_results 		= $this->getVar('result');
 	$va_block_info 		= $this->getVar('blockInfo');
+	$va_options 		= $va_block_info["options"];
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
+	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$o_browse_config = caGetBrowseConfig();
+	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$o_config = caGetSearchConfig();
+	$o_icons_conf = caGetIconsConfig();
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->
-				{{{sortByControl}}}
+<?php
+				if(in_array($vs_block, $va_browse_types)){
+?>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+<?php
+				}
+?>
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>
-			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			if(in_array($vs_block, $va_browse_types)){
+?>
+				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+<?php
+			}else{
+?>
+				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			}
+?>
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results'>
+				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
 		}
+		
+		$va_collection_ids = array();
+		while($qr_results->nextHit()) {
+			$va_collection_ids[] = $qr_results->get('ca_collections.collection_id');
+		}
+		$qr_results->seek($vn_start);
+		
+		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+			
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
-			$va_related_object_ids = $qr_results->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 ?>
-			<div class='{{{block}}}Result'>
+			<div class='{{{block}}}Result multisearchResult'>
 <?php
-			$va_images = caGetPrimaryRepresentationsForIDs($va_related_object_ids, array('versions' => array('widepreview'), 'return' => 'tags', 'checkAccess' => $va_access_values));
+			$vs_image_tag = "";
 			if (sizeof($va_images) > 0){
-				foreach ($va_images as $vn_image_id => $vs_image) {
-					print $qr_results->getWithTemplate("<l>{$vs_image}</l>");
-					break;
+				$vs_image = $va_images[$qr_results->get('ca_collections.collection_id')];
+				if($vs_image){
+					$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_image}</l>");
 				} 
 			}
+			if(!$vs_image_tag){
+				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
+			}
+			print $vs_image_tag;
 ?>
 				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div>
