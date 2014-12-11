@@ -111,7 +111,7 @@
 	</div><!-- end row -->
 	<div class="row">
 		
-		<div class='col-md-6 col-lg-6'>
+		<div class='col-md-12 col-lg-12'>
 			{{{<ifdef code="ca_collections.notes"><H6>About</H6>^ca_collections.notes<br/></ifdef>}}}
 			
 			
@@ -119,9 +119,6 @@
 			{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 			{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 		</div><!-- end col -->
-		<div class='col-md-6 col-lg-6'>
-			{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
-			
-		</div><!-- end col -->
+
 	</div><!-- end row -->
 </div>	<!-- end container -->
