@@ -229,8 +229,6 @@
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
  			
- 			$this->opo_result_context->setCurrentView($ps_view);
- 			
 			$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
@@ -325,7 +323,6 @@
  				if ($this->render("Browse/{$vs_class}_{$vs_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
-			//print_R($o_browse->getCriteria());die;
  			switch($ps_view) {
  				case 'pdf':
  					print $qr_res->numHits();
@@ -336,6 +333,7 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
+ 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

@@ -78,9 +78,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class='row'>
 		<div class="col-sm-12">
 			<hr>
-			<h1>Artists</h1>
+<!--			<h1>Artists</h1> -->
 <?php
-		//$o_artist_search = new ObjectSearch();
+/*		//$o_artist_search = new ObjectSearch();
 		//$qr_artists = $o_artist_search->search("ca_entities.preferred_labels.displayname/artist:*");
 		$o_db = new Db();
 		$qr_res = $o_db->query("
@@ -112,7 +112,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 				print "<div class='artistName'>".$va_artist."</div>";
 			}
 		}
-		
+*/		
 ?>			
 			
 		</div><!--end col-->

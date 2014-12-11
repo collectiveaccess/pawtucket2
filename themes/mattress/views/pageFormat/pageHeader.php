@@ -32,6 +32,7 @@
 				  <a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 				  <ul class="dropdown-menu">
 					<li><a href="/content/hours-admission">Visit</a></li>
+					<li><a href="/content/calendar">Calendar</a></li>					
 					<li><a href="/content/history">History</a></li>
 					<li><a href="/content/get-involved">Get Involved</a></li>
 					<li><a href="/content/rentals">Rentals</a></li>
@@ -44,6 +45,7 @@
 				  <ul class="dropdown-menu">
 				  	<li><a href="/exhibitions">Exhibitions</a></li>
 				  	<li><?php print caNavLink($this->request, _t('Artists'), '', 'Browse', 'Artists', ''); ?></li>
+				  	<li><a href="/content/residency-program">Residency Program</a></li>					
 					<li><?php print caNavLink($this->request, _t('Artist Limited Editions'), '', 'Listing', 'editions', array()); ?></li>
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Search All Art</a></li>
 				  </ul>
@@ -63,9 +65,8 @@
 				  <ul class="dropdown-menu">
 					<li><a href="/content/donate">Donate</a></li>
 					<li><a href="/node/13">Membership</a></li>
-					<li><a href="/node/individual-giving">Individual Giving</a></li>
-					<li><a href="/node/government-foundation">Government + Foundation</a></li>
-					<li><a href="/content/sponsorship">Sponsorship</a></li>
+					<li><a href="/node/annual-fund">Annual Fund</a></li>
+					<li><a href="/content/institutional-giving">Institutional Giving</a></li>
 					<li><a href="/content/urban-garden-party">Urban Garden Party</a></li>                
 				  </ul>
 				</li>
@@ -80,9 +81,12 @@
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Collections', array()); ?>">Browse Artworks</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Browse', 'Exhibitions', array()); ?>">Browse Exhibitions & Events</a></li>                
 					<li><a href="<?php print caNavUrl($this->request, '', 'Listing', 'collections', array()); ?>">Research</a></li>					
-					<li><?php print caNavLink($this->request, _t('p{ART}icipate'), '', '', 'Contribute', 'artworks'); ?></li>  
+					<li><?php print caNavLink($this->request, _t('Contribute'), '', '', 'Contribute', 'artworks'); ?></li>  
 				  </ul>
-				</li>            
+				</li> 
+				<li class="dropdown">
+				  <a href="http://mfshop.org" class="dropdown-toggle" >Shop</a>
+				</li> 				           
 			  </ul>
 			  <form class="navbar-form pull-right" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="input-group">

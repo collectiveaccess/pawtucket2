@@ -3974,6 +3974,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);
 		}
+ 		$o_view->setVar('t_object', $t_object);
 		return $o_view->render('representation_viewer_html.php');
  	}
 	# ------------------------------------------------------------------
