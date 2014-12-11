@@ -604,7 +604,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, array()));
+		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, ''));
 		
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
@@ -624,6 +624,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					}
 					break;
 				default:
+					if (!is_array($pa_form_values[$vs_dotless_element]) && $pa_form_values[$vs_dotless_element]) {
+						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
+					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
