@@ -196,7 +196,9 @@ class SearchResult extends BaseObject {
 		
 		$vn_i=0;
 		while(self::nextHit() && ($vn_i < $pn_num_rows)) {
-			$va_row_ids[] = $this->opo_engine_result->get($this->ops_table_pk);
+			if ($vn_row_id = (int)$this->opo_engine_result->get($this->ops_table_pk)) {
+				$va_row_ids[] = $vn_row_id;
+			}
 			$vn_i++;
 		}
 		self::seek($vn_cur_row_index + 1);
