@@ -89,7 +89,7 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 		$va_extents = $this->getExtents();
 		
 		$vs_delimiter = isset($pa_options['delimiter']) ? $pa_options['delimiter'] : "<br/>";
-		$vn_zoom_level = (isset($pa_options['zoomLevel']) && ((int)$pa_options['zoomLevel'] > 0)) ? (int)$pa_options['zoomLevel'] : null;
+		$vn_zoom_level = (isset($pa_options['zoomLevel']) && ((int)$pa_options['zoomLevel'] > 0)) ? (int)$pa_options['zoomLevel'] : 10;
 		$vn_min_zoom_level = (isset($pa_options['minZoomLevel']) && ((int)$pa_options['minZoomLevel'] > 0)) ? (int)$pa_options['minZoomLevel'] : null;
 		$vn_max_zoom_level = (isset($pa_options['maxZoomLevel']) && ((int)$pa_options['maxZoomLevel'] > 0)) ? (int)$pa_options['maxZoomLevel'] : null;
 		
@@ -295,7 +295,7 @@ jQuery(document).ready(function() {
 					$vn_lon_offset = $vn_radius/111302.61697430261;
 					$va_extents = array("north" => number_format(($va_extents['north'] + $vn_lat_offset), 7, ".", ""), "south" => number_format(($va_extents['south'] - $vn_lat_offset), 7, ".", ""), "east" => number_format(($va_extents['east'] + $vn_lon_offset), 7, ".", ""), "west" => number_format(($va_extents['west'] - $vn_lon_offset), 7, ".", ""));
 				}else{
-					$vs_buf .= "	caMap_{$vs_id}_markers.push(caMap_{$vs_id}.makeMarker(".$vn_latitude.", ".$vn_longitude.", '".preg_replace("![\n\r]+!", " ", addslashes($vs_label))."', '".preg_replace("![\n\r]+!", " ", addslashes($vs_balloon_content))."', '".preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? addslashes($vs_ajax_content_url."/_ajax/1/id/".join(';', $va_ajax_ids)) : ''))."', {icon: '".$o_config->get("themes_url")."/".(defined("__CA_THEME__") ? __CA_THEME__ : $o_config->get('theme'))."/graphics/icons/blu-pointer.png'} ));\n";
+					$vs_buf .= "	caMap_{$vs_id}_markers.push(caMap_{$vs_id}.makeMarker(".$vn_latitude.", ".$vn_longitude.", '".preg_replace("![\n\r]+!", " ", addslashes($vs_label))."', '".preg_replace("![\n\r]+!", " ", addslashes($vs_balloon_content))."', '".preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? addslashes($vs_ajax_content_url."/_ajax/1/id/".join(';', $va_ajax_ids)) : ''))."' ));\n";
 				}
 			}
 		}
