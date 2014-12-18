@@ -176,7 +176,7 @@
 							if(is_array($va_date)){
 								if(($vn_now > $va_date["storage_daterange"]["start"]) && ($vn_now < $va_date["storage_daterange"]["end"])){
 									# --- only display the top level from the hierarchy
-									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
 									foreach($va_hierarchy_ancestors as $va_ancestor){
 										$va_location_display[] = $va_ancestor["name"];
 										break;
@@ -185,7 +185,7 @@
 							}
 						}else{
 							# --- only display the top level from the hierarchy
-							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
 							foreach($va_hierarchy_ancestors as $va_ancestor){
 								$va_location_display[] = $va_ancestor["name"];
 								break;

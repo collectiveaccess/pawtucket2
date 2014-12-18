@@ -39,7 +39,7 @@
 <?php 
 			if($this->request->user->getLastLogout()){
 				$vs_last_logout_date = "after ".date("F j, Y", $this->request->user->getLastLogout());
-				print "<H2>".caNavLink($this->request, _t("See what changed since your last login")." <i class='fa fa-caret-right'></i>", "", "", "Search", "objects", array("search" => "created:\"".$vs_last_logout_date."\""))."</H2>";
+				print "<H2>".caNavLink($this->request, _t("See what changed since your last login")." <i class='fa fa-caret-right'></i>", "", "", "Search", "objects", array("search" => "modified:\"".$vs_last_logout_date."\""))."</H2>";
 			}
 ?>
 		</div><!--end col-sm-8-->

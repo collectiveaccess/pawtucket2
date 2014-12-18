@@ -44,7 +44,7 @@
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {	
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			$vn_facet_size = sizeof($va_facet_info['content']);
-			if(($vn_facet_size < $vn_facet_display_length_maximum) && ($va_facet_info["group_mode"] != 'hierarchical')){
+			if(($vs_facet_name == "storage_location_facet") || (($vn_facet_size < $vn_facet_display_length_maximum) && ($va_facet_info["group_mode"] != 'hierarchical'))){
 				print "<H5><a href='#' onClick='$(\"#facetList".$vs_facet_name."\").toggle(); return false;'>".$va_facet_info['label_singular']."</a></H5>"; 
 				print "<div id='facetList".$vs_facet_name."' style='display:none; padding-left:10px;'>";
 				switch($va_facet_info["group_mode"]){
@@ -52,6 +52,9 @@
 					case "list":
 					default:
 						foreach($va_facet_info['content'] as $va_item) {
+							if(($vs_facet_name == "storage_location_facet") && ($va_item["parent_id"] != 1)){
+								continue;
+							}
 							print "<div>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 						}
 					break;
