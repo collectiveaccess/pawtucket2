@@ -1,9 +1,12 @@
 <?php
 	$t_set = $this->getVar("set");
 	$va_errors = $this->getVar("errors");
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Lightbox Info"); ?></H1>
+<H1><?php print _t("%1 Info", ucfirst($vs_lightbox_display_name)); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";

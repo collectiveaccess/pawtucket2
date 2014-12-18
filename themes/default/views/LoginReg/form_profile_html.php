@@ -12,13 +12,14 @@
 	caUI.initUtils();
 
 </script>
-<div class="row"><div class="col-sm-4"><H1<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Register"); ?></H1></div></div>
+<div class="row"><div class="col-sm-4"><H1<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Profile"); ?></H1></div></div>
+
 <?php
-	if($va_errors["register"]){
-		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
+	if($va_errors["general"]){
+		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
 	}
 ?>
-	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
+	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" role="form" method="POST">
 <?php
 		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
@@ -37,38 +38,18 @@
 				print "</div><!-- end form-group -->";
 			}
 		}
-		if($va_errors["security"]){
-			print "<div class='alert alert-danger'>".$va_errors["security"]."</div>";
-		}
-		$vn_num1 = rand(1,10);
-		$vn_num2 = rand(1,10);
-		$vn_sum = $vn_num1 + $vn_num2;
 ?>
-		<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
-			<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
-			<div class='col-sm-7'>
-				<div class='col-sm-5'>
-					<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-				</div>
-				<div class='col-sm-5'>
-					<input name="security" value="" id="security" type="text" class="form-control" />
-				</div>
-			</div><!-- end col-sm-7 -->
+		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
+			<label for='password' class='col-sm-4 control-label'><?php print _t('Reset Password'); ?></label>
+			<div class="col-sm-7"><p class="help-block"><?php print _t("Only enter if you would like to change your current password"); ?></p><input type="password" name="password" size="40" class="form-control" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
-<?php
-		if($va_errors["password"]){
-			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
-		}
-		print $t_user->htmlFormElement("password","<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		
-?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
 			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Register</button>
+				<button type="submit" class="btn btn-default">Save</button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
@@ -79,10 +60,10 @@
 </div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#RegForm').submit(function(e){		
+		jQuery('#ProfileForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'LoginReg', 'register', null); ?>',
-				jQuery('#RegForm').serialize()
+				'<?php print caNavUrl($this->request, '', 'LoginReg', 'profileSave', null); ?>',
+				jQuery('#ProfileForm').serialize()
 			);
 			e.preventDefault();
 			return false;

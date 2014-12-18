@@ -39,15 +39,12 @@
 					<li><i class="fa fa-caret-right"></i><?php print caNavLink($this->request, _t("Privacy")."<div class='bottomBorder'></div>", "", "", "FAQ", "Index"); ?></li>
 					<li><i class="fa fa-caret-right"></i><?php print caNavLink($this->request, _t("Terms of Use")."<div class='bottomBorder'></div>", "", "", "FAQ", "Index"); ?></li>
 					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com" target="_blank">www.steelcase.com</a></li>
+					<li><i class="fa fa-caret-right"></i><a href="mailto:art@steelcase.com">art@steelcase.com</a></li>
 				</ul>
 			</div>
 			<div>
 				&copy; Steelcase 2014
 			</div>
-<?php
-				print "Logged in as ".trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").", ".caNavLink($this->request, _t('LOGOUT'), '', '', 'LoginReg', 'Logout', array());
-?>
-
 		</div><!-- end footer -->
 <?php
 	}

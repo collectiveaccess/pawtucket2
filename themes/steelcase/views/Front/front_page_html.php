@@ -29,12 +29,19 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+	print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>It was the early 1980s and construction for the Steelcase Global Headquarters in Grand Rapids, Michigan was underway. In tandem with this new development, Robert Pew, then Chairman and CEO, launched an art program to expand the company’s existing collection... <?php print caNavLink($this->request, _t("Read more"), "", "", "About", "Index"); ?></H1>
+			<H1>It was the early 1980s and construction for the Steelcase Global Headquarters in Grand Rapids, Michigan was underway. During this expansion Chairman and CEO Bob Pew embraced the opportunity to grow the company’s art collection displayed in Steelcase facilities and plants around the country... <?php print caNavLink($this->request, _t("Read more"), "", "", "About", "Index"); ?></H1>
+			<br/><br/>
+<?php 
+			if($this->request->user->getLastLogout()){
+				$vs_last_logout_date = "after ".date("F j, Y", $this->request->user->getLastLogout());
+				print "<H2>".caNavLink($this->request, _t("See what changed since your last login")." <i class='fa fa-caret-right'></i>", "", "", "Search", "objects", array("search" => "created:\"".$vs_last_logout_date."\""))."</H2>";
+			}
+?>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 <?php

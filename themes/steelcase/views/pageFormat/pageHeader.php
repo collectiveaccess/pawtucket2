@@ -31,6 +31,7 @@
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
 	#	$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
@@ -143,15 +144,17 @@ if($this->request->isLoggedIn()){
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li class="brown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>"><div class='bottomBorder'></div><?php print caNavLink($this->request, _t("About")."<div class='bottomBorder'></div>", "", "", "About", "Index"); ?></li>
+					<li class="green<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"><div class='bottomBorder'></div><?php print caNavLink($this->request, _t("Explore")."<div class='bottomBorder'></div>", "", "", "Browse", "Objects"); ?></li>
 <?php
-						print $this->render("pageFormat/browseMenu.php");
+						#print $this->render("pageFormat/browseMenu.php");
 				if($this->request->isLoggedIn()){
 ?>	
-					<li class="red<?php print ($this->request->getController() == "Sets") ? ' active' : ''; ?>"><div class='bottomBorder'></div><?php print caNavLink($this->request, _t("My Favorites")."<div class='bottomBorder'></div>", "", "", "Sets", "Index"); ?></li>
+					<li class="red<?php print ($this->request->getController() == "Sets") ? ' active' : ''; ?>"><div class='bottomBorder'></div><?php print caNavLink($this->request, _t("My Sets")."<div class='bottomBorder'></div>", "", "", "Sets", "Index"); ?></li>
 <?php
 				}
 ?>
 					<li class="purple<?php print ($this->request->getController() == "Gallery") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Gallery")."<div class='bottomBorder'></div>", "", "", "Gallery", "Index"); ?></li>
+					<li class="blue<?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "Advanced")) ? ' active' : ''; ?>"><div class='bottomBorder'></div><?php print caNavLink($this->request, _t("Search")."<div class='bottomBorder'></div>", "", "Search", "Advanced", "objects"); ?></li>
 					<li class="blue<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>" id="navContact"><?php print caNavLink($this->request, _t("Contact")."<div class='bottomBorder'></div>", "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
@@ -161,7 +164,7 @@ if($this->request->isLoggedIn()){
 }else{
 ?>
 	<div class="navbar">
-		<div class='loginLogo'><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'steelcase-logo.gif'), "", "", "",""); ?></div>
+		<div class='loginLogo'><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'steelcase_logo_black.png'), "", "", "",""); ?></div>
 	</div>
 <?php
 }

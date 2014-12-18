@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf.tpl
+ * default/views/mailTemplates/reg_admin_notification_subject.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,18 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("Your account will be activated after review.");
-}
-print _t("Thank you for registering for \"%1\". ".$vs_active_message."
 
-As a member you can rank, comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.
-
-Regards,
-the Staff
-
-", $this->request->config->get("app_display_name"));
-
-	print $this->request->config->get("site_host");
+	print "[".$this->request->config->get("app_display_name")."] "._t("New registration");
 ?>

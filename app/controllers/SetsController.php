@@ -41,6 +41,8 @@
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
  		 protected $opo_config;
+ 		 protected $ops_lightbox_display_name;
+ 		 protected $ops_lightbox_display_name_plural;
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -54,6 +56,10 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
  			$this->opo_config = caGetSetsConfig();
  			caSetPageCSSClasses(array("sets"));
+ 			
+ 			$va_lightbox_display_name = caGetSetDisplayName($this->opo_config);
+			$this->ops_lightbox_display_name = $va_lightbox_display_name["singular"];
+			$this->ops_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
  		}
  		# -------------------------------------------------------
  		function Index() {
@@ -70,7 +76,7 @@
  			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
  			$this->view->setVar("activity", $va_set_change_log);
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox"));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
@@ -97,7 +103,7 @@
  			$o_context->saveContext();
  			$o_context->setAsLastFind();
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'pdf':
  					$qr_res = caMakeSearchResult('ca_objects', $va_set_ids);
@@ -149,7 +155,7 @@
  			# --- set name - required
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors["name"] = _t("Please enter the name of your lightbox");
+ 				$va_errors["name"] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
@@ -197,7 +203,7 @@
 					# --- select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
-					$this->view->setVar("message", _t('Saved lightbox.'));
+					$this->view->setVar("message", _t('Saved %1.', $this->ops_lightbox_display_name));
  					$this->render("Form/reload_html.php");
 				}
 			}else{
@@ -238,7 +244,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Removed group access to lightbox"));
+					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid group/set id"));
@@ -258,7 +264,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Removed user access to lightbox"));
+					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid user/set id"));
@@ -280,7 +286,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Changed group access to lightbox"));
+					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid group/set id or access"));
@@ -302,7 +308,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Changed user access to lightbox"));
+					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid user/set id or access"));
@@ -336,7 +342,7 @@
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
-						$this->view->setVar("message", _t('Group already has access to the lightbox'));
+						$this->view->setVar("message", _t('Group already has access to the %1', $this->ops_lightbox_display_name));
 						$this->render("Form/reload_html.php");
 					}else{
 						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
@@ -375,7 +381,7 @@
 							}							
 							
 							
-							$this->view->setVar("message", _t('Shared lightbox with group'));
+							$this->view->setVar("message", _t('Shared %1 with group', $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}
@@ -398,7 +404,7 @@
 								$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
 								$t_sets_x_users->insert();
 								if($t_sets_x_users->numErrors()) {
-									$va_errors["general"] = _t("There were errors while sharing this lightbox with %1", $vs_user).join("; ", $t_sets_x_users->getErrors());
+									$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $this->ops_lightbox_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
 									$this->view->setVar('errors', $va_errors);
 									$this->shareSetForm();
 								}else{
@@ -413,19 +419,19 @@
 					if((sizeof($va_error_emails)) || (sizeof($va_error_emails_has_access))){
 						$va_user_errors = array();
 						if(sizeof($va_error_emails)){
-							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ".implode(", ", $va_error_emails));
+							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ").implode(", ", $va_error_emails);
 						}
 						if(sizeof($va_error_emails_has_access)){
-							$va_user_errors[] = _t("The following email(s) you entered already have access to this lightbox: ".implode(", ", $va_error_emails_has_access));
+							$va_user_errors[] = _t("The following email(s) you entered already have access to this %1: ", $this->ops_lightbox_display_name).implode(", ", $va_error_emails_has_access);
 						}
 						if(sizeof($va_success_emails)){
-							$this->view->setVar('message', _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+							$this->view->setVar('message', _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
 						}
 						$va_errors["user"] = implode("<br/>", $va_user_errors);
 						$this->view->setVar('errors', $va_errors);
 						$this->shareSetForm();
 					}else{
-						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+						$this->view->setVar("message", _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
 						$this->render("Form/reload_html.php");
 					}
 					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
@@ -680,7 +686,7 @@
 				}
 				$va_errors = $t_set->reorderItems($va_row_ids);
 			}else{
-				$va_errors[] = _t("lightbox is not defined or you don't have access to the lightbox");
+				$va_errors[] = _t("%1 is not defined or you don't have access to the lightbox", $this->ops_lightbox_display_name);
 			}
 			$this->view->setVar('errors', $va_errors);
 			$this->render('Sets/ajax_reorder_items_json.php');
@@ -694,12 +700,12 @@
 				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
 					$va_errors = array();
 				} else {
-					$va_errors[] = _t('Could not remove item from lightbox');
+					$va_errors[] = _t('Could not remove item from %1', $this->ops_lightbox_display_name);
 				}
 				$this->view->setVar('set_id', $pn_set_id);
 				$this->view->setVar('item_id', $pn_item_id);
 			} else {
-				$va_errors['general'] = _t('You do not have access to the lightbox');	
+				$va_errors['general'] = _t('You do not have access to the %1', $this->ops_lightbox_display_name);	
 			}
  			
  			$this->view->setVar('errors', $va_errors);
@@ -717,7 +723,7 @@
  			if($this->request->getParameter('set_id', pInteger)){
  				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
- 					$va_errors["general"] = _t("You can not add items to this lightbox.  You have read only access.");
+ 					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $this->ops_lightbox_display_name);
  					$this->view->setVar('errors', $va_errors);
  					$this->addItemForm();
  					return;
@@ -727,7 +733,7 @@
 				# --- set name - if not sent, make a decent default
 				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
-					$ps_name = _t("Your lightbox");
+					$ps_name = _t("Your %1", $this->ops_lightbox_display_name);
 				}
 				# --- set description - optional
 				$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
@@ -781,11 +787,11 @@
 							$this->view->setVar('message', _t("Successfully added item."));
 							$this->render("Form/reload_html.php");
 						} else {
-							$va_errors["message"] = _t('Could not add item to lightbox');
+							$va_errors["message"] = _t('Could not add item to %1', $this->ops_lightbox_display_name);
 							$this->render("Form/reload_html.php");
 						}
 					}else{
-						$this->view->setVar('message', _t("Item already in lightbox."));
+						$this->view->setVar('message', _t("Item already in %1.", $this->ops_lightbox_display_name));
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
@@ -799,11 +805,11 @@
 							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
 							# --- insert items
 							$t_set->addItems($va_object_ids);
-							$this->view->setVar('message', _t("Successfully added results to lightbox."));
+							$this->view->setVar('message', _t("Successfully added results to %1.", $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 							
 						}else{
-							$this->view->setVar('message', _t("No objects in search result to add to lightbox"));
+							$this->view->setVar('message', _t("No objects in search result to add to %1", $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}else{
