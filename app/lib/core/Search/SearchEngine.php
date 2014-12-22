@@ -243,6 +243,9 @@ class SearchEngine extends SearchBase {
 			} 
 					
 			if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
+				if ($t_table->getFieldInfo('type_id', 'IS_NULL')) {
+					$va_type_ids[] = 'NULL';
+				}
 				$this->addResultFilter($this->ops_tablename.'.type_id', 'IN', join(",",$va_type_ids));
 			}
 			
@@ -271,7 +274,7 @@ class SearchEngine extends SearchBase {
 						
 			$vn_user_id = (isset($pa_options['user_id']) && (int)$pa_options['user_id']) ?  (int)$pa_options['user_id'] : (int)$AUTH_CURRENT_USER_ID;
 			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL()) {
-				$va_hits = $this->filterHitsByACL($va_hits, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
+				$va_hits = $this->filterHitsByACL($va_hits, $this->opn_tablenum, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
 			
 			if (isset($pa_options['sort']) && $pa_options['sort'] && ($pa_options['sort'] != '_natural')) {
@@ -343,95 +346,7 @@ class SearchEngine extends SearchBase {
 		$this->cleanupTemporaryResultTable();
 		return $qr_sort->getAllFieldValues('row_id');
 	}
-	# ------------------------------------------------------------------
-	/**
-	 * @param $pa_hits Array of row_ids to filter. 
-	 */
-	public function filterHitsByACL($pa_hits, $pn_user_id, $pn_access=__CA_ACL_READONLY_ACCESS__, $pa_options=null) {
-		if (!sizeof($pa_hits)) { return $pa_hits; }
-		if (!(int)$pn_user_id) { $pn_user_id = 0; }
-		if (!($t_table = $this->opo_datamodel->getInstanceByTableNum($this->opn_tablenum, true))) { return $pa_hits; }
-		
-		$vs_search_tmp_table = $this->loadListIntoTemporaryResultTable($pa_hits, md5(isset($pa_options['search']) ? $pa_options['search'] : rand(0, 1000000)));
-		
-		$vs_table_name = $t_table->tableName();
-		$vs_table_pk = $t_table->primaryKey();
-		
-		$t_user = new ca_users($pn_user_id);
-		if (is_array($va_groups = $t_user->getUserGroups()) && sizeof($va_groups)) {
-			$va_group_ids = array_keys($va_groups);
-			$vs_group_sql = '
-					OR
-					(ca_acl.group_id IN (?))';
-			$va_params = array((int)$this->opn_tablenum, (int)$pn_user_id, $va_group_ids, (int)$pn_access);
-		} else {
-			$va_group_ids = null;
-			$vs_group_sql = '';
-			$va_params = array((int)$this->opn_tablenum, (int)$pn_user_id, (int)$pn_access);
-		}
-		
-		$va_hits = array();
-		if ($pn_access <= $this->opo_app_config->get('default_item_access_level')) {
-			// Requested access is more restrictive than default access (so return items with default ACL)
-			
-				// Find records that have ACL that matches
-				$qr_sort = $this->opo_db->query("
-					SELECT ca_acl.row_id
-					FROM ca_acl
-					INNER JOIN {$vs_search_tmp_table} ON {$vs_search_tmp_table}.row_id = ca_acl.row_id
-					WHERE
-						(ca_acl.table_num = ?)
-						AND
-						(
-							(ca_acl.user_id = ?)
-							{$vs_group_sql}
-							OR 
-							(ca_acl.user_id IS NULL AND ca_acl.group_id IS NULL)
-						)
-						AND
-						(ca_acl.access >= ?)
-				", $va_params);
-				
-				$va_hits = array_unique($qr_sort->getAllFieldValues('row_id'));
-				
-				// Find records with default ACL
-				$qr_sort = $this->opo_db->query("
-					SELECT {$vs_search_tmp_table}.row_id
-					FROM {$vs_search_tmp_table}
-					LEFT OUTER JOIN ca_acl ON {$vs_search_tmp_table}.row_id = ca_acl.row_id AND ca_acl.table_num = ?
-					WHERE
-						ca_acl.row_id IS NULL;
-				", array((int)$this->opn_tablenum));
 
-				$va_hits = array_merge($va_hits, $qr_sort->getAllFieldValues('row_id'));
-		} else {
-			// Default access is more restrictive than requested access (so *don't* return items with default ACL)
-			
-			// Find records that have ACL that matches
-			$qr_sort = $this->opo_db->query("
-				SELECT ca_acl.row_id
-				FROM ca_acl
-				INNER JOIN {$vs_search_tmp_table} ON {$vs_search_tmp_table}.row_id = ca_acl.row_id
-				WHERE
-					(ca_acl.table_num = ?)
-					AND
-					(
-						(ca_acl.user_id = ?)
-						{$vs_group_sql}
-						OR 
-						(ca_acl.user_id IS NULL AND ca_acl.group_id IS NULL)
-					)
-					AND
-					(ca_acl.access >= ?)
-			", $va_params);
-			
-			$va_hits = $qr_sort->getAllFieldValues('row_id');
-		}
-		
-		$this->cleanupTemporaryResultTable();
-		return $va_hits;
-	}
-	# ------------------------------------------------------------------
 	/**
 	 *
 	 */
@@ -593,14 +508,20 @@ class SearchEngine extends SearchBase {
 								break;
 						}
 					} 
+					
+					if(isset($va_ap_info['options']) && ($va_ap_info['options']['DONT_STEM'] || in_array('DONT_STEM', $va_ap_info['options']))) {
+						$vs_term .= '|';
+					}
 					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
+					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}
 				
 				if (is_array($va_additional_criteria = $va_ap_info['additional_criteria'])) {
 					foreach($va_additional_criteria as $vs_criterion) {
 						$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_criterion);
 						$va_terms['signs'][] = $vs_bool;
+						$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 					}
 				}
 				
@@ -617,13 +538,14 @@ class SearchEngine extends SearchBase {
 				if (method_exists($t_instance, "getLabelTableName")) {
 					return array(
 						'terms' => array(new Zend_Search_Lucene_Index_Term($po_term->getTerm()->text, $t_instance->getLabelTableName().'.'.((isset($va_tmp2[2]) && $va_tmp2[2]) ? $va_tmp2[2] : $t_instance->getLabelDisplayField()).($va_tmp[1] ? '/'.$va_tmp[1] : ''))),
-						'signs' => array($pb_sign)
+						'signs' => array($pb_sign),
+						'options' => array()
 					);
 				}
 			}
 		}
 		
-		return array('terms' => array($po_term->getTerm()), 'signs' => array($pb_sign));
+		return array('terms' => array($po_term->getTerm()), 'signs' => array($pb_sign), 'options' => array());
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -655,12 +577,14 @@ class SearchEngine extends SearchBase {
 				foreach($va_fields as $vs_field) {
 					$va_terms['terms'][] = new Zend_Search_Lucene_Search_Query_Phrase($va_index_term_strings, null, $vs_field);
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
+					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}
 				
 				if (is_array($va_additional_criteria = $va_ap_info['additional_criteria'])) {
 					foreach($va_additional_criteria as $vs_criterion) {
 						$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_criterion);
 						$va_terms['signs'][] = $vs_bool;
+						$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 					}
 				}
 				
@@ -676,13 +600,14 @@ class SearchEngine extends SearchBase {
 				if (method_exists($t_instance, "getLabelTableName")) {
 					return array(
 						'terms' => array(new Zend_Search_Lucene_Search_Query_Phrase($va_index_term_strings, null, $t_instance->getLabelTableName().'.'.$t_instance->getLabelDisplayField().($va_tmp[1] ? '/'.$va_tmp[1] : ''))),
-						'signs' => array($pb_sign)
+						'signs' => array($pb_sign),
+						'options' => array()
 					);
 				}
 			}
 		}
 		
-		return array('terms' => array($po_term), 'signs' => array($pb_sign));
+		return array('terms' => array($po_term), 'signs' => array($pb_sign), 'options' => array());
 	}
 	# ------------------------------------------------------------------
 	/**
