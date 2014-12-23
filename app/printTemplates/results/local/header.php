@@ -31,15 +31,10 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	if($this->request->config->get('report_header_enabled')) {
-?>
+ ?>
 <div id='header'>
 <?php
-
-	print "<div class='pagingText'>"._t('Page')." </div>";
+	print "<div><img src='".$this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/steelcase_logo_black.png' width='90px'></div>";
+	print "<div class='pagingText' style='font-family: Helvetica;'>"._t('Page')." </div>";
 ?>
 </div>
-<?php
-	}
-?>

@@ -64,6 +64,20 @@
 				}
 ?>
 				<HR/>
+<?php
+				if(trim($t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)))){
+					print "<H6>Type</H6>";
+					print caNavLink($this->request, $t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
+				}
+				if(trim($t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)))){
+					print "<H6>Type</H6>";
+					print caNavLink($this->request, $t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
+				}
+				if(trim($t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)))){
+					print "<H6>Type</H6>";
+					print caNavLink($this->request, $t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
+				}
+?>
 				{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
 <?php
 				if(!$t_object->get("ca_objects.dimensions_frame.display_dimensions_frame") && ($t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_width") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_depth") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_length"))){
@@ -81,11 +95,11 @@
 					if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_length")){
 						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions_frame.dimensions_frame_length");
 					}
-					if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight")){
-						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight");
-					}
 					if(sizeof($va_dimension_pieces)){
 						print join(" x ", $va_dimension_pieces);
+					}
+					if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight")){
+						print " ".$t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight");
 					}
 				}
 ?>				
@@ -106,11 +120,11 @@
 					if($t_object->get("ca_objects.dimensions.dimensions_length")){
 						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions.dimensions_length");
 					}
-					if($t_object->get("ca_objects.dimensions.dimensions_weight")){
-						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions.dimensions_weight");
-					}
 					if(sizeof($va_dimension_pieces)){
 						print join(" x ", $va_dimension_pieces);
+					}
+					if($t_object->get("ca_objects.dimensions.dimensions_weight")){
+						print " ".$t_object->get("ca_objects.dimensions.dimensions_weight");
 					}
 				}
 				

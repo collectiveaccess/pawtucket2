@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Full page
+ * @name Checklist
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
@@ -46,23 +46,38 @@
 	$vn_num_items			= (int)$vo_result->numHits();
 	
 	$vn_start 				= 0;
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");
 ?>
-		<div id='body fullpage'>
+		<div id='body'>
 <?php
+
 		$vo_result->seek(0);
+		
+		$vn_line_count = 0;
 		while($vo_result->nextHit()) {
+			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
-			<div class="representationList">
-<?php		
-			print "<img src='".$vo_result->getMediaPath('ca_object_representations.media', 'page')."' style='max-width:400px;'/>";
-			#print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
+			<div class="row">
+			<table>
+			<tr>
+				<td width="120px">
+<?php 
+					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'small')) {
+						print "<div class=\"imageTiny\"><img src='{$vs_path}' style='max-width:120px;'/></div>";
+					} else {
 ?>
-			</div>
-			<div class='tombstone' style='font-family:Helvetica; margin-top:20px;'>
+						<div class="imageTinyPlaceholder">&nbsp;</div>
+<?php					
+					}	
+?>								
+
+				</td><td>
+					<div class="metaBlock" style='font-family: Helvetica;'>
 <?php				
 					print "<div>".$vo_result->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))."</div>";
 					print "<div class='title'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; 
@@ -158,19 +173,19 @@
 						if(sizeof($va_location_display)){
 							print "<div><b>Location: </b>".join(", ", $va_location_display)."</div>";
 						}
-					}				
-?>	
+					}
+
+					
+?>
+					</div>				
+				</td>	
+			</tr>
+			</table>	
 			</div>
 <?php
-			if (!$vo_result->isLastHit()) {
-?>
-			<div class="pageBreak">&nbsp;</div>
-<?php
-			}
 		}
-?>			
+?>
 		</div>
 <?php
-		
-	print $this->render("../pdfEnd.php");
+	print $this->render("pdfEnd.php");
 ?>

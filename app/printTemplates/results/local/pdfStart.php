@@ -37,4 +37,4 @@
 		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
 		<link type="text/css" href="pdf.css" rel="stylesheet" />
 	</head>
-	<body>
+	<body style="margin-top:30px; font-family: ">

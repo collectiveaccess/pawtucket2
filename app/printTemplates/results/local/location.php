@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Title
+ * @name Location
  * @type page
  * @pageSize letter
  * @pageOrientation landscape
@@ -65,9 +65,50 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px; text-align:center;">
-				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'small')."' style='max-width:160px; max-height:180px;'/></div>"; ?>
+				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'small')."' style='max-height:180px; max-width:160px;'/></div>"; ?>
 				<br/>
-				<?php print "<div class='caption'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; ?>
+<?php 
+				print "<div class='caption'>".$vo_result->get("ca_objects.idno");
+				$va_storage_locations = $vo_result->get("ca_storage_locations", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+				if(sizeof($va_storage_locations)){
+					$t_location = new ca_storage_locations();
+					$t_relationship = new ca_objects_x_storage_locations();
+					$vn_now = date("Y.md");
+					$va_location_display = array();
+					foreach($va_storage_locations as $va_storage_location){
+						$t_relationship->load($va_storage_location["relation_id"]);
+						$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnAsArray" => true));
+						if(is_array($va_daterange) && sizeof($va_daterange)){
+							foreach($va_daterange as $va_date){
+								break;
+							}
+							#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
+							if(is_array($va_date)){
+								if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
+									# --- only display the top level from the hierarchy
+									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+									foreach($va_hierarchy_ancestors as $va_ancestor){
+										$va_location_display[] = $va_ancestor["name"];
+										break;
+									}
+								}
+							}
+						}else{
+							# --- only display the top level from the hierarchy
+							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+							foreach($va_hierarchy_ancestors as $va_ancestor){
+								$va_location_display[] = $va_ancestor["name"];
+								break;
+							}
+							#$vs_location_display .= $va_storage_location["name"]."<br/>";
+						}
+					}
+					if(sizeof($va_location_display)){
+						print "<br/><b>Location: </b>".join(", ", $va_location_display);
+					}
+				}
+				print "</div>";
+?>
 			</div>
 <?php
 
