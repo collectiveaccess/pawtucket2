@@ -21,6 +21,9 @@
 <?php
 						$vs_nationality = trim($t_item->get("nationality", array("delimiter" => "; ", "convertCodesToDisplayText" => true)));
 						$vs_dob = $t_item->get("dob_dod");
+						if(strtolower($vs_dob) == "unknown"){
+							$vs_dob = "";
+						}
 						if($vs_nationality || $vs_dob){
 							print "<H5>(".$vs_nationality;
 							if($vs_nationality && $vs_dob){

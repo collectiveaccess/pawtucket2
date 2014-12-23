@@ -27,7 +27,17 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.creation_date">, ^ca_objects.creation_date</ifdef>}}}</H4>
+				<H4>{{{^ca_objects.preferred_labels.name}}}<?php
+				if($t_object->get("ca_objects.creation_date")){
+					print ", ";
+					if(strtolower($t_object->get("ca_objects.creation_date")) == "unknown"){
+						print "Date ".$t_object->get("ca_objects.creation_date");
+					}else{
+						print $t_object->get("ca_objects.creation_date");
+					}
+				}
+?>
+				</H4>
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
 				if(sizeof($va_entities)){
@@ -38,6 +48,9 @@
 						print caDetailLink($this->request, $t_entity->getLabelForDisplay(), "", "ca_entities", $t_entity->get("entity_id"));
 						$vs_nationality = trim($t_entity->get("nationality", array("delimiter" => "; ", "convertCodesToDisplayText" => true)));
 						$vs_dob = $t_entity->get("dob_dod");
+						if(strtolower($vs_dob) == "unknown"){
+							$vs_dob = "";
+						}
 						if($vs_nationality || $vs_dob){
 							print " (".$vs_nationality;
 							if($vs_nationality && $vs_dob){
@@ -68,6 +81,9 @@
 					if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_length")){
 						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions_frame.dimensions_frame_length");
 					}
+					if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight")){
+						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight");
+					}
 					if(sizeof($va_dimension_pieces)){
 						print join(" x ", $va_dimension_pieces);
 					}
@@ -89,6 +105,9 @@
 					}
 					if($t_object->get("ca_objects.dimensions.dimensions_length")){
 						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions.dimensions_length");
+					}
+					if($t_object->get("ca_objects.dimensions.dimensions_weight")){
+						$va_dimension_pieces[] = $t_object->get("ca_objects.dimensions.dimensions_weight");
 					}
 					if(sizeof($va_dimension_pieces)){
 						print join(" x ", $va_dimension_pieces);
@@ -167,14 +186,14 @@
 					$va_location_display = array();
 					foreach($va_storage_locations as $va_storage_location){
 						$t_relationship->load($va_storage_location["relation_id"]);
-						$va_daterange = $t_relationship->get("storage_daterange", array("rawDate" => true, "returnAsArray" => true));
+						$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnAsArray" => true));
 						if(is_array($va_daterange) && sizeof($va_daterange)){
 							foreach($va_daterange as $va_date){
 								break;
 							}
-							#print $vn_now." - ".$va_date["storage_daterange"]["start"]." - ".$va_date["storage_daterange"]["end"];
+							#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
 							if(is_array($va_date)){
-								if(($vn_now > $va_date["storage_daterange"]["start"]) && ($vn_now < $va_date["storage_daterange"]["end"])){
+								if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
 									# --- only display the top level from the hierarchy
 									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
 									foreach($va_hierarchy_ancestors as $va_ancestor){

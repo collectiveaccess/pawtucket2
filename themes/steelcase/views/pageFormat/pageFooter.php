@@ -36,8 +36,8 @@
 					<li><a href="http://www.linkedin.com/company/steelcase" target="_blank" class="socialIcon"><i class="fa fa-linkedin-square"></i> LinkedIn</a></li>
 				
 					<li><i class="fa fa-caret-right"></i><?php print caNavLink($this->request, _t("FAQ")."<div class='bottomBorder'></div>", "", "", "FAQ", "Index"); ?></li>
-					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/privacy.aspx"><?php print _t("Privacy"); ?><div class='bottomBorder'></div></a></li>
-					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/termsofuse.aspx "><?php print _t("Terms of Use"); ?><div class='bottomBorder'></div></a></li>
+					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/privacy.aspx" target="_blank"><?php print _t("Privacy"); ?><div class='bottomBorder'></div></a></li>
+					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/termsofuse.aspx" target="_blank"><?php print _t("Terms of Use"); ?><div class='bottomBorder'></div></a></li>
 					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com" target="_blank">www.steelcase.com</a></li>
 					<li><i class="fa fa-caret-right"></i><a href="mailto:art@steelcase.com">art@steelcase.com</a></li>
 				</ul>
