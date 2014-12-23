@@ -591,7 +591,7 @@
 					break;
 				# -----------------------------------------------------
 				case 'normalizedDates':
-					return ($pn_row_id === 'null') ? _t('Unknown') : urldecode($pn_row_id);
+					return ($pn_row_id === 'null') ? _t('Date unknown') : urldecode($pn_row_id);
 					break;
 				# -----------------------------------------------------
 				case 'fieldList':
@@ -3737,23 +3737,26 @@
 							$vn_current_year = (int)date("Y");
 							$va_values = array();
 							
-							if (caGetOption('include_unknown', $va_facet_info, false)) {
-								$va_values[''][_t('Unknown')] = array(
-									'id' => 'null',
-									'label' => _t('Unknown')
-								);
-							}
-							
+							$vb_include_unknown = (bool)caGetOption('include_unknown', $va_facet_info, false);
+							$vb_unknown_is_set = false;
+							 
 							while($qr_res->nextRow()) {
 								$vn_start = $qr_res->get('value_decimal1');
 								$vn_end = $qr_res->get('value_decimal2');
 							
-								if (!($vn_start && $vn_end)) { continue; }
+								if (!($vn_start && $vn_end)) { 
+									
+									if ($vb_include_unknown && !(int)$vs_normalized_value) {
+										$vb_unknown_is_set = true;
+									}
+									continue; 
+								}
 								if ($vn_end > $vn_current_year + 50) { continue; } // bad years can make for large facets that cause timeouts so cut it off 50 years into the future
 								$va_normalized_values = $o_tep->normalizeDateRange($vn_start, $vn_end, $vs_normalization);
 								foreach($va_normalized_values as $vn_sort_value => $vs_normalized_value) {
 									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 									
+						
 									if (is_numeric($vs_normalized_value) && (int)$vs_normalized_value === 0) { continue; }		// don't include year=0
 									$va_values[$vn_sort_value][$vs_normalized_value] = array(
 										'id' => $vs_normalized_value,
@@ -3763,6 +3766,31 @@
 										$vb_single_value_is_present = true;
 									}
 								}
+							}
+							
+							if ($vb_include_unknown && !$vb_unknown_is_set) {
+								// Check for rows where no data is set at all as opposed to null dates
+								$vs_sql = "
+									SELECT DISTINCT ca_attributes.row_id
+									FROM ca_attributes
+									{$vs_join_sql}
+									WHERE
+										ca_attribute_values.element_id = ? 
+										{$vs_min_sql}
+										{$vs_max_sql}
+										{$vs_where_sql}
+								";
+								//print $vs_sql;
+								$qr_res = $this->opo_db->query($vs_sql, $vn_element_id);
+								if ($qr_res->numRows() < sizeof($va_results)) { 
+									$vb_unknown_is_set = true;
+								}
+							}
+							if ($vb_unknown_is_set && (sizeof($va_values) > 0)) {
+								$va_values['999999999'][_t('Date unknown')] = array(
+									'id' => 'null',
+									'label' => _t('Date unknown')
+								);
 							}
 						
 							if (!is_null($vs_single_value) && !$vb_single_value_is_present) {
