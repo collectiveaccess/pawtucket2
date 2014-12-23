@@ -3745,8 +3745,7 @@
 								$vn_end = $qr_res->get('value_decimal2');
 							
 								if (!($vn_start && $vn_end)) { 
-									
-									if ($vb_include_unknown && !(int)$vs_normalized_value) {
+									if ($vb_include_unknown) {
 										$vb_unknown_is_set = true;
 									}
 									continue; 
