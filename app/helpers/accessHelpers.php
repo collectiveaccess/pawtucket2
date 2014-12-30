@@ -69,7 +69,6 @@
 					$va_access = array_unique(array_merge($va_access, $va_user_access));
 				}
 			}
-			print_R($va_access);
 			return $va_access;
 		}
 		return array();
