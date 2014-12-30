@@ -3342,7 +3342,6 @@ class ca_users extends BaseModel {
 		
 		foreach($va_roles as $vn_role_id => $va_role_info) {
 			if(is_array($va_access_status_settings = $va_role_info['vars']['access_status_settings'])) {
-				//print_R($va_access_status_settings);	
 				foreach($va_access_status_settings as $vn_item_id => $vn_access) {
 					if (!isset($va_access_by_item_id[$vn_item_id])) { $va_access_by_item_id[$vn_item_id] = $vn_access; continue; }
 					if (is_null($vn_access)) { continue; }
