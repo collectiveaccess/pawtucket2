@@ -129,15 +129,17 @@
 				}
 				
 				if($va_materials = $t_object->get("ca_objects.material", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
-					print "<H6>"._t("Material")."</H6>";
 					$i = 0;
+					$va_materials_display = array();
 					foreach($va_materials as $vn_material_id => $va_material){
-						$i++;
 						$vs_material = $t_lists->getItemFromListForDisplayByItemID("material", $va_material["material"]);
-						print caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
-						if($i < sizeof($va_materials)){
-							print ", ";
+						if(trim($vs_materials)){
+							$va_materials_display[] = caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
 						}
+					}
+					if(sizeof($va_materials_display)){
+						print "<H6>"._t("Material")."</H6>";
+						print join(", ", $va_materials_display);
 					}
 				}
 ?>
@@ -165,9 +167,21 @@
 						print $vs_style_display;
 					}
 				}
-?>				
-				{{{<ifcount code='ca_collections' min='1' max='1'><H6>Collection</H6></ifcount>}}}{{{<ifcount code='ca_collections' min='2'><H6>Collections</H6></ifcount>}}}{{{<unit relativeTo='ca_collections' delimiter='<br/>'><l>^ca_collections.preferred_labels.name</l></unit>}}}
-<?php				
+				$va_collections = $t_object->get("ca_collections", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.preferred_labels.name"));
+				if(sizeof($va_collections)){
+					print "<H6>Collection".((sizeof($va_collections) > 1) ? "s" : "")."</H6>";
+					foreach($va_collections as $va_collection){
+						print caDetailLink($this->request, $va_collection["name"], "", "ca_collections", $va_collection["collection_id"])."<br/>";
+					}
+				}
+				$t_set = new ca_sets();
+				$va_galleries = caExtractValuesByUserLocale($t_set->getSetsForItem("ca_objects", $t_object->get("object_id"), array("checkAccess" => $va_access_values, "setType" => "public_presentation")));
+				if(sizeof($va_galleries)){
+					print "<H6>Galler".((sizeof($va_galleries) > 1) ? "ies" : "y")."</H6>";
+					foreach($va_galleries as $va_gallery){
+						print caNavLink($this->request, $va_gallery["name"], "", "", "Gallery", $va_gallery["set_id"])."<br/>";
+					}
+				}
 				if($va_themes = $t_object->get("ca_objects.steelcase_themes", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
 					$i = 0;
 					$vs_theme_display = "";
@@ -186,7 +200,7 @@
 						print $vs_theme_display;
 					}
 				}
-				if($vs_style_display || $vs_theme_display || $t_object->get("ca_collections")){
+				if($vs_style_display || $vs_theme_display || sizeof($va_collections)){
 					print "<HR/>";
 				}
 ?>

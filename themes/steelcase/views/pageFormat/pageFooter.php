@@ -43,7 +43,7 @@
 				</ul>
 			</div>
 			<div>
-				&copy; Steelcase 2014
+				&copy; Steelcase <?php print date("Y"); ?>
 			</div>
 		</div><!-- end footer -->
 <?php

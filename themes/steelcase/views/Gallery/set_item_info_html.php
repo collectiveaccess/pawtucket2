@@ -2,10 +2,20 @@
 		$va_access_values = caGetUserAccessValues($this->request);
 		$t_lists = new ca_lists();
 		print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>";
-?>
-		<H4>{{{<l>^ca_objects.preferred_labels.name</l><ifdef code="ca_objects.creation_date">, ^ca_objects.creation_date</ifdef>}}}</H4>
-<?php
 		$t_object = $this->getVar("object");
+?>
+		<H4>{{{^ca_objects.preferred_labels.name}}}<?php
+		if($t_object->get("ca_objects.creation_date")){
+			print ", ";
+			if(strtolower($t_object->get("ca_objects.creation_date")) == "unknown"){
+				print "Date ".$t_object->get("ca_objects.creation_date");
+			}else{
+				print $t_object->get("ca_objects.creation_date");
+			}
+		}
+?>
+		</H4>
+<?php
 		$va_entities = $t_object->get("ca_entities", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
 		if(sizeof($va_entities)){
 			$t_entity = new ca_entities();
@@ -15,6 +25,9 @@
 				print caDetailLink($this->request, $t_entity->getLabelForDisplay(), "", "ca_entities", $t_entity->get("entity_id"));
 				$vs_nationality = trim($t_entity->get("nationality", array("delimiter" => "; ", "convertCodesToDisplayText" => true)));
 				$vs_dob = $t_entity->get("dob_dod");
+				if(strtolower($vs_dob) == "unknown"){
+					$vs_dob = "";
+				}
 				if($vs_nationality || $vs_dob){
 					print " (".$vs_nationality;
 					if($vs_nationality && $vs_dob){
@@ -28,6 +41,20 @@
 		}
 ?>
 		<HR/>
+<?php
+		if(trim($t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)))){
+			print "<H6>Type</H6>";
+			print caNavLink($this->request, $t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
+		}
+		if(trim($t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)))){
+			print "<H6>Type</H6>";
+			print caNavLink($this->request, $t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
+		}
+		if(trim($t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)))){
+			print "<H6>Type</H6>";
+			print caNavLink($this->request, $t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
+		}
+?>
 		{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
 <?php
 		if(!$t_object->get("ca_objects.dimensions_frame.display_dimensions_frame") && ($t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_width") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_depth") || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_length"))){
@@ -47,6 +74,9 @@
 			}
 			if(sizeof($va_dimension_pieces)){
 				print join(" x ", $va_dimension_pieces);
+			}
+			if($t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight")){
+				print " ".$t_object->get("ca_objects.dimensions_frame.dimensions_frame_weight");
 			}
 		}
 ?>				
@@ -70,22 +100,27 @@
 			if(sizeof($va_dimension_pieces)){
 				print join(" x ", $va_dimension_pieces);
 			}
+			if($t_object->get("ca_objects.dimensions.dimensions_weight")){
+				print " ".$t_object->get("ca_objects.dimensions.dimensions_weight");
+			}
 		}
 		
 		if($va_materials = $t_object->get("ca_objects.material", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
-			print "<H6>"._t("Material")."</H6>";
 			$i = 0;
+			$va_materials_display = array();
 			foreach($va_materials as $vn_material_id => $va_material){
-				$i++;
 				$vs_material = $t_lists->getItemFromListForDisplayByItemID("material", $va_material["material"]);
-				print caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
-				if($i < sizeof($va_materials)){
-					print ", ";
+				if(trim($vs_materials)){
+					$va_materials_display[] = caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
 				}
+			}
+			if(sizeof($va_materials_display)){
+				print "<H6>"._t("Material")."</H6>";
+				print join(", ", $va_materials_display);
 			}
 		}
 ?>
-		{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>^ca_objects.credit_line</ifdef>}}}
+		{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>&copy; ^ca_objects.credit_line</ifdef>}}}
 		{{{<ifdef code="ca_objects.description"><H6>Description</H6>^ca_objects.description</ifdef>}}}
 <?php				
 		if(trim($t_object->get("ca_objects.dimensions_frame.display_dimensions_frame")) || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions.dimensions_height") || trim($t_object->get("ca_objects.dimensions.display_dimensions")) || trim($t_object->get("ca_objects.material")) || trim($t_object->get("description")) || trim($t_object->get("credit_line"))){
@@ -109,9 +144,13 @@
 				print $vs_style_display;
 			}
 		}
-?>				
-		{{{<ifcount code='ca_collections' min='1' max='1'><H6>Collection</H6></ifcount>}}}{{{<ifcount code='ca_collections' min='2'><H6>Collections</H6></ifcount>}}}{{{<unit relativeTo='ca_collections' delimiter='<br/>'><l>^ca_collections.preferred_labels.name</l></unit>}}}
-<?php				
+		$va_collections = $t_object->get("ca_collections", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.preferred_labels.name"));
+		if(sizeof($va_collections)){
+			print "<H6>Collection".((sizeof($va_collections) > 1) ? "s" : "")."</H6>";
+			foreach($va_collections as $va_collection){
+				print caDetailLink($this->request, $va_collection["name"], "", "ca_collections", $va_collection["collection_id"])."<br/>";
+			}
+		}
 		if($va_themes = $t_object->get("ca_objects.steelcase_themes", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
 			$i = 0;
 			$vs_theme_display = "";
@@ -130,7 +169,7 @@
 				print $vs_theme_display;
 			}
 		}
-		if($vs_style_display || $vs_theme_display || $t_object->get("ca_collections")){
+		if($vs_style_display || $vs_theme_display || sizeof($va_collections)){
 			print "<HR/>";
 		}
 ?>
@@ -138,32 +177,45 @@
 <?php
 		$va_storage_locations = $t_object->get("ca_storage_locations", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 		if(sizeof($va_storage_locations)){
+			$t_location = new ca_storage_locations();
 			$t_relationship = new ca_objects_x_storage_locations();
 			$vn_now = date("Y.md");
-			$vs_location_display = "";
+			$va_location_display = array();
 			foreach($va_storage_locations as $va_storage_location){
 				$t_relationship->load($va_storage_location["relation_id"]);
-				$va_daterange = $t_relationship->get("storage_daterange", array("rawDate" => true, "returnAsArray" => true));
+				$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnAsArray" => true));
 				if(is_array($va_daterange) && sizeof($va_daterange)){
 					foreach($va_daterange as $va_date){
 						break;
 					}
-					#print $vn_now." - ".$va_date["storage_daterange"]["start"]." - ".$va_date["storage_daterange"]["end"];
+					#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
 					if(is_array($va_date)){
-						if(($vn_now > $va_date["storage_daterange"]["start"]) && ($vn_now < $va_date["storage_daterange"]["end"])){
-							$vs_location_display .= $va_storage_location["name"]."<br/>";
+						if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
+							# --- only display the top level from the hierarchy
+							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+							foreach($va_hierarchy_ancestors as $va_ancestor){
+								$va_location_display[] = $va_ancestor["name"];
+								break;
+							}
 						}
 					}
 				}else{
-					$vs_location_display .= $va_storage_location["name"]."<br/>";
+					# --- only display the top level from the hierarchy
+					$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+					foreach($va_hierarchy_ancestors as $va_ancestor){
+						$va_location_display[] = $va_ancestor["name"];
+						break;
+					}
+					#$vs_location_display .= $va_storage_location["name"]."<br/>";
 				}
 			}
-			if($vs_location_display){
-				print "<H6>Location</H6>".$vs_location_display;
+			if(sizeof($va_location_display)){
+				print "<H6>Location</H6>".join(", ", $va_location_display);
 			}
 		}
 		if($vs_location_display || $t_object->get("ca_objects.idno")){
 			print "<HR/>";
 		}
+
 ?>
 <?php print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); ?>
