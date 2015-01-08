@@ -75,6 +75,9 @@
  			$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
  			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
+ 			if(is_array($va_set_change_log) && sizeof($va_set_change_log)){
+ 				$va_set_change_log = array_slice($va_set_change_log, 0, 50);
+ 			}
  			$this->view->setVar("activity", $va_set_change_log);
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			$this->render("Sets/set_list_html.php");

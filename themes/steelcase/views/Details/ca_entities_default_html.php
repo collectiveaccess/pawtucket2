@@ -35,15 +35,16 @@
 						<HR/>
 <?php
 						if($va_styles = $t_item->get("ca_entities.styles_movement", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
-							print "<H6>"._t("Style/Movement")."</H6>";
-							$i = 0;
+							$va_style_display = array();
 							foreach($va_styles as $vn_style_id => $va_style){
-								$i++;
 								$vs_style_movement = $t_lists->getItemFromListForDisplayByItemID("styles_movement", $va_style["styles_movement"]);
-								print caNavLink($this->request, $vs_style_movement, "", "", "Browse", "Objects", array("facet" => "styles_movement_facet", "id" => $va_style["styles_movement"]));
-								if($i < sizeof($va_styles)){
-									print ", ";
+								if(trim($vs_style_movement)){
+									$va_style_display[] = caNavLink($this->request, $vs_style_movement, "", "", "Browse", "Objects", array("facet" => "styles_movement_facet", "id" => $va_style["styles_movement"]));
 								}
+							}
+							if(sizeof($va_style_display)){
+								print "<H6>"._t("Style/Movement")."</H6>";
+								print join(", ", $va_style_display);
 							}
 						}
 ?>									

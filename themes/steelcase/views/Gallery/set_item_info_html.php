@@ -42,17 +42,21 @@
 ?>
 		<HR/>
 <?php
+		$t_list_item = new ca_list_items();
 		if(trim($t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Type</H6>";
-			print caNavLink($this->request, $t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
+			print "<H6>Classification</H6>";
+			$t_list_item->load($t_object->get("ca_objects.decorative_types"));
+			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
 		}
 		if(trim($t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Type</H6>";
-			print caNavLink($this->request, $t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
+			print "<H6>Classification</H6>";
+			$t_list_item->load($t_object->get("ca_objects.documentation_types"));
+			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
 		}
 		if(trim($t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Type</H6>";
-			print caNavLink($this->request, $t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
+			print "<H6>Classification</H6>";
+			$t_list_item->load($t_object->get("ca_objects.fine_art_types"));
+			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
 		}
 ?>
 		{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
@@ -120,10 +124,9 @@
 			}
 		}
 ?>
-		{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>&copy; ^ca_objects.credit_line</ifdef>}}}
 		{{{<ifdef code="ca_objects.description"><H6>Description</H6>^ca_objects.description</ifdef>}}}
 <?php				
-		if(trim($t_object->get("ca_objects.dimensions_frame.display_dimensions_frame")) || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions.dimensions_height") || trim($t_object->get("ca_objects.dimensions.display_dimensions")) || trim($t_object->get("ca_objects.material")) || trim($t_object->get("description")) || trim($t_object->get("credit_line"))){
+		if(trim($t_object->get("ca_objects.dimensions_frame.display_dimensions_frame")) || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions.dimensions_height") || trim($t_object->get("ca_objects.dimensions.display_dimensions")) || trim($t_object->get("ca_objects.material")) || trim($t_object->get("description"))){
 			print "<HR/>";
 		}
 		if($va_styles = $t_object->get("ca_objects.styles_movement", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
@@ -194,7 +197,7 @@
 							# --- only display the top level from the hierarchy
 							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
 							foreach($va_hierarchy_ancestors as $va_ancestor){
-								$va_location_display[] = $va_ancestor["name"];
+								$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
 								break;
 							}
 						}
@@ -203,7 +206,7 @@
 					# --- only display the top level from the hierarchy
 					$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
 					foreach($va_hierarchy_ancestors as $va_ancestor){
-						$va_location_display[] = $va_ancestor["name"];
+						$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
 						break;
 					}
 					#$vs_location_display .= $va_storage_location["name"]."<br/>";
@@ -213,7 +216,10 @@
 				print "<H6>Location</H6>".join(", ", $va_location_display);
 			}
 		}
-		if($vs_location_display || $t_object->get("ca_objects.idno")){
+?>
+		{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>&copy; ^ca_objects.credit_line</ifdef>}}}
+<?php				
+		if($vs_location_display || $t_object->get("ca_objects.idno") || trim($t_object->get("ca_objects.credit_line"))){
 			print "<HR/>";
 		}
 
