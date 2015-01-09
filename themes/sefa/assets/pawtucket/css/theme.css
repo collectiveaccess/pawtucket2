@@ -422,39 +422,67 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 #pageArea.catalog h4{
 	font-size:14px;
 }
-/* ------ Artist list/ fair list ---------- */
+/* ------ Artist, fair, pub list ---------- */
 @media (min-width: 992px) {
 	.artistList .row, .fairList .row, .pubList .row {
 	  margin-right: -30px;
 	  margin-left: -30px;
 	}
-	.artistList .col-sm-4, .fairList .col-sm-4, .pubList .col-sm-4 {
+	.artistList .col-sm-4, .fairList .col-sm-3, .pubList .col-sm-3 {
 	  padding-right: 30px;
 	  padding-left: 30px;
 	}
 }
-.artistListing h2 a:link, .artistListing h2 a:visited, .fairListing h2 a:link, .fairListing h2 a:visited{
+.artistListing h2 a:link, .artistListing h2 a:visited{
 	color:#000;
 	font-size:20px;
 }
-.pubListing h2 a:link, .pubListing h2 a:visited{
-	color:#808080;
-	font-size:16px;
+.pubListing h2, .pubListing h2 a:link, .pubListing h2 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
+	color:#4d4d4d;
+	font-size:13px;
+	line-height:1.2em;
+	margin-top:5px;
 }
-.artistListing img, .fairListing img{
+.pubListing .pubListingImg img{
+	border:1px solid #ededed;
+	padding:3px;
 	width:100%;
-	max-width:300px;
 	height:auto;
 }
-.pubListing img{
-	max-width:100%;
+.fairListing .fairListingImg img{
+	padding:3px;
+	width:100%;
+	height:auto;
+}
+.pubListing .pubListingImg, .fairListing .fairListingImg{
+	display:table-cell;
+	vertical-align:middle;
+}
+@media (min-width: 768px) {
+	.pubListing .pubListingImg, .fairListing .fairListingImg{
+		height:205px;
+	}
+}
+@media (min-width: 992px) {
+	.pubListing .pubListingImg, .fairListing .fairListingImg{
+		height:250px;
+	}
+}
+.artistListing img{
+	width:100%;
+	max-width:300px;
 	height:auto;
 }
 .artistListing, .fairListing, .pubListing{
 	margin:10px 0px 40px 0px;
 }
-.fairListing{
-	line-height:1em;
+.fairListing {
+	margin:10px 0px 40px 0px;
+}
+@media (min-width: 768px) {
+	.fairListing {
+	margin:10px 0px 0px 0px;
+}
 }
 
 /* -------Exhibition Styles --------*/

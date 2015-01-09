@@ -499,7 +499,7 @@ class BaseModel extends BaseObject {
 	/**
 	 * Remove transaction property.
 	 *
-	 * @param bool $ps_commit If true, the transaction is committed, if false, the transaction is rollback.
+	 * @param bool $ps_commit If true, the transaction is committed, if false, the transaction is rolledback.
 	 * Defaults to true.
 	 * @return bool success state
 	 */
@@ -703,22 +703,26 @@ class BaseModel extends BaseObject {
 				//
 				// Generalized get
 				//
+				$va_field_info = $this->getFieldInfo($va_tmp[1]);
 				switch(sizeof($va_tmp)) {
 					case 2:
 						// support <table_name>.<field_name> syntax
-						$ps_field = $va_tmp[1];
-						break;
+						if ($va_field_info['FIELD_TYPE'] === FT_MEDIA) {
+							$va_tmp[2] = '';
+						} else {
+							$ps_field = $va_tmp[1];
+							break;
+						}
 					default: // > 2 elements
 						// media field?
-						$va_field_info = $this->getFieldInfo($va_tmp[1]);
 						if (($va_field_info['FIELD_TYPE'] === FT_MEDIA) && (!isset($pa_options['returnAsArray'])) && !$pa_options['returnAsArray']) {
 							$o_media_settings = new MediaProcessingSettings($va_tmp[0], $va_tmp[1]);
 							$va_versions = $o_media_settings->getMediaTypeVersions('*');
 							
 							$vs_version = $va_tmp[2];
 							if (!isset($va_versions[$vs_version])) {
-								$va_tmp = array_keys($va_versions);
-								$vs_version = array_shift($va_tmp);
+								$va_available_versions = array_keys($va_versions);
+								$vs_version = $va_tmp[2] = array_shift($va_available_versions);
 							}
 							
 							if (isset($va_tmp[3])) {
@@ -876,6 +880,7 @@ class BaseModel extends BaseObject {
 				if (isset($pa_options["FILTER_HTML_SPECIAL_CHARS"]) && ($pa_options["FILTER_HTML_SPECIAL_CHARS"])) {
 					$vs_prop = htmlentities(html_entity_decode($vs_prop));
 				}
+				
 				//
 				// Convert foreign keys and choice list values to display text is needed
 				//
@@ -1184,12 +1189,15 @@ class BaseModel extends BaseObject {
 								if (($vs_list_code = $this->getFieldInfo($vs_field, "LIST_CODE")) && (!is_numeric($vm_value))) {	// translate ca_list_item idno's into item_ids if necessary
 									if ($vn_id = ca_lists::getItemID($vs_list_code, $vm_value)) {
 										$vm_value = $vn_id;
+									} else {
+										$this->postError(1103, _t('Value %1 is not in list %2', $vm_value, $vs_list_code), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
+										return false;
 									}
 								} else {
 									$vm_orig_value = $vm_value;
 									$vm_value = preg_replace("/[^\d-.]+/", "", $vm_value); # strip non-numeric characters
 									if (!preg_match("/^[\-]{0,1}[\d.]+$/", $vm_value)) {
-										$this->postError(1100,_t("'%1' for %2 is not numeric", $vm_orig_value, $vs_field),"BaseModel->set()");
+										$this->postError(1100,_t("'%1' for %2 is not numeric", $vm_orig_value, $vs_field),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 										return "";
 									}
 								}
@@ -1226,7 +1234,7 @@ class BaseModel extends BaseObject {
 								}
 								
 								if (!$va_timestamps) {
-									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 									return false;
 								}
 
@@ -1238,7 +1246,7 @@ class BaseModel extends BaseObject {
 								} else {
 									$va_timestamps = $o_tep->getUnixTimestamps();
 									if ($va_timestamps[0] == -1) {
-										$this->postError(1830, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+										$this->postError(1830, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 										return false;
 									}
 									if ($vs_cur_value != $va_timestamps["start"]) {
@@ -1263,7 +1271,7 @@ class BaseModel extends BaseObject {
 							} else {
 								$o_tep= new TimeExpressionParser();
 								if (!$o_tep->parseTime($vm_value)) {
-									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 									return false;
 								}
 
@@ -1298,7 +1306,7 @@ class BaseModel extends BaseObject {
 									$this->_FIELD_VALUES[$vs_end_field_name] = $vm_value[1];
 								}
 							} else {
-								$this->postError(1100,_t("Invalid direct date values"),"BaseModel->set()");
+								$this->postError(1100,_t("Invalid direct date values"),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 							}
 						} else {
 							if (!$vm_value && $this->FIELDS[$vs_field]["IS_NULL"]) {
@@ -1310,7 +1318,7 @@ class BaseModel extends BaseObject {
 							} else {
 								$o_tep = new TimeExpressionParser();
 								if (!$o_tep->parseDatetime($vm_value)) {
-									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 									return false;
 								}
 
@@ -1319,7 +1327,7 @@ class BaseModel extends BaseObject {
 								} else {
 									$va_timestamps = $o_tep->getUnixTimestamps();
 									if ($va_timestamps[0] == -1) {
-										$this->postError(1830, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+										$this->postError(1830, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 										return false;
 									}
 								}
@@ -1350,7 +1358,7 @@ class BaseModel extends BaseObject {
 									$this->_FIELD_VALUES[$vs_end_field_name] = $vm_value[1];
 								}
 							} else {
-								$this->postError(1100,_t("Invalid direct time values"),"BaseModel->set()");
+								$this->postError(1100,_t("Invalid direct time values"),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 							}
 						} else {
 							if (!$vm_value && $this->FIELDS[$vs_field]["IS_NULL"]) {
@@ -1362,7 +1370,7 @@ class BaseModel extends BaseObject {
 							} else {
 								$o_tep = new TimeExpressionParser();
 								if (!$o_tep->parseTime($vm_value)) {
-									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()');
+									$this->postError(1805, $o_tep->getParseErrorMessage(), 'BaseModel->set()', $this->tableName().'.'.$vs_field);
 									return false;
 								}
 
@@ -1435,18 +1443,12 @@ class BaseModel extends BaseObject {
 						}
 						break;
 					case (FT_PASSWORD):
-						if (!$vm_value) {		// store blank passwords as blank, not MD5 of blank
-							$this->_FIELD_VALUES[$vs_field] = $vs_crypt_pw = "";
-						} else {
-							if ($this->_CONFIG->get("use_old_style_passwords")) {
-								$vs_crypt_pw = crypt($vm_value,substr($vm_value,0,2));
-							} else {
-								$vs_crypt_pw = md5($vm_value);
-							}
-							if (($vs_cur_value != $vm_value) && ($vs_cur_value != $vs_crypt_pw)) {
-								$this->_FIELD_VALUES[$vs_field] = $vs_crypt_pw;
-							}
-							if ($vs_cur_value != $vs_crypt_pw) {
+						if (!$vm_value) { // store blank passwords as blank,
+							$this->_FIELD_VALUES[$vs_field] = "";
+							$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
+						} else { // leave the treatment of the password to the AuthAdapter, i.e. don't do hashing here
+							if ($vs_cur_value != $vm_value) {
+								$this->_FIELD_VALUES[$vs_field] = $vm_value;
 								$this->_FIELD_VALUE_CHANGED[$vs_field] = true;
 							}
 						}
@@ -1480,7 +1482,7 @@ class BaseModel extends BaseObject {
 							# 'none' is PHP's stupid way of telling you there
 							# isn't a file...
 							if (($vm_value != "none") && ($vm_value)) {
-								//$this->postError(1500,_t("%1 does not exist", $vm_value),"BaseModel->set()");
+								//$this->postError(1500,_t("%1 does not exist", $vm_value),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 							}
 							return false;
 						}
@@ -1490,7 +1492,7 @@ class BaseModel extends BaseObject {
 						break;
 				}
 			} else {
-				$this->postError(710,_t("'%1' does not exist in this object", $vs_field),"BaseModel->set()");
+				$this->postError(710,_t("'%1' does not exist in this object", $vs_field),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 				return false;
 			}
 		}
@@ -1792,7 +1794,7 @@ class BaseModel extends BaseObject {
 
 		$qr_res = $o_db->query($vs_sql);
 		if ($o_db->numErrors()) {
-			$this->postError(250, _t('Basemodel::load SQL had an error: %1; SQL was %2', join("; ", $o_db->getErrors()), $vs_sql), 'BaseModel->load');
+			$this->postError(250, _t('Basemodel::load SQL had an error: %1; SQL was %2', join("; ", $o_db->getErrors()), $vs_sql), 'BaseModel->load()');
 			return false;
 		}
 		if ($qr_res->nextRow()) {
@@ -2113,7 +2115,7 @@ class BaseModel extends BaseObject {
 
 
 						if ($t_many_table->numErrors()) {
-							$this->postError(750,_t("%1 record with $vs_field = %2 does not exist", $t_many_table->tableName(), $this->get($vs_field)),"BaseModel->insert()");
+							$this->postError(750,_t("%1 record with $vs_field = %2 does not exist", $t_many_table->tableName(), $this->get($vs_field)),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 						}
 					}
 				}
@@ -2144,12 +2146,12 @@ class BaseModel extends BaseObject {
 							$vs_fields .= "$vs_field,";
 							$v = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 							if ((($v == '') || is_null($v)) && !$va_attr["IS_NULL"]) {
-								$this->postError(1805, _t("Date is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()");
+								$this->postError(1805, _t("Date is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($v) && !(is_null($v) && $va_attr["IS_NULL"])) {
-								$this->postError(1100, _t("Date is invalid for %1", $vs_field),"BaseModel->insert()");
+								$this->postError(1100, _t("Date is invalid for %1", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2161,12 +2163,12 @@ class BaseModel extends BaseObject {
 							$vs_fields .= $vs_field.",";
 							$v = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 							if ((($v == '') || is_null($v)) && !$va_attr["IS_NULL"]) {
-								$this->postError(1805, _t("Time is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()");
+								$this->postError(1805, _t("Time is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($v) && !(is_null($v) && $va_attr["IS_NULL"])) {
-								$this->postError(1100, _t("Time is invalid for ", $vs_field),"BaseModel->insert()");
+								$this->postError(1100, _t("Time is invalid for ", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2193,19 +2195,19 @@ class BaseModel extends BaseObject {
 								||
 								(($$this->_FIELD_VALUES[$end_field_name] == '') || is_null($this->_FIELD_VALUES[$end_field_name])))
 							) {
-								$this->postError(1805, _t("Daterange is undefined but field does not support NULL values"),"BaseModel->insert()");
+								$this->postError(1805, _t("Daterange is undefined but field does not support NULL values"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
-								$this->postError(1100, _t("Starting date is invalid"),"BaseModel->insert()");
+								$this->postError(1100, _t("Starting date is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
 							
 							if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
-								$this->postError(1100,_t("Ending date is invalid"),"BaseModel->insert()");
+								$this->postError(1100,_t("Ending date is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2227,19 +2229,19 @@ class BaseModel extends BaseObject {
 								||
 								(($$this->_FIELD_VALUES[$end_field_name] == '') || is_null($this->_FIELD_VALUES[$end_field_name])))
 							) {
-								$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->insert()");
+								$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($this->_FIELD_VALUES[$start_field_name])&& !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
-								$this->postError(1100,_t("Starting time is invalid"),"BaseModel->insert()");
+								$this->postError(1100,_t("Starting time is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
 							
 							if (!is_numeric($this->_FIELD_VALUES[$end_field_name])&& !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
-								$this->postError(1100,_t("Ending time is invalid"),"BaseModel->insert()");
+								$this->postError(1100,_t("Ending time is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2265,7 +2267,7 @@ class BaseModel extends BaseObject {
 							$v = $vs_field_value;
 							if (!trim($v)) { $v = 0; }
 							if (!is_numeric($v)) {
-								$this->postError(1100,_t("Number is invalid for %1 [%2]", $vs_field, $v),"BaseModel->insert()");
+								$this->postError(1100,_t("Number is invalid for %1 [%2]", $vs_field, $v),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2277,7 +2279,7 @@ class BaseModel extends BaseObject {
 							$v = $vs_field_value;
 							if (!trim($v)) { $v = 0; }
 							if (!is_numeric($v)) {
-								$this->postError(1100, _t("Timecode is invalid"),"BaseModel->insert()");
+								$this->postError(1100, _t("Timecode is invalid"),"BaseModel->insert()", $vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2403,7 +2405,7 @@ class BaseModel extends BaseObject {
 					return $vn_id;
 				} else {
 					foreach($o_db->errors() as $o_e) {
-						$this->postError($o_e->getErrorNumber(), $o_e->getErrorDescription().' ['.$o_e->getErrorNumber().']', "BaseModel->insert()");
+						$this->postError($o_e->getErrorNumber(), $o_e->getErrorDescription().' ['.$o_e->getErrorNumber().']', "BaseModel->insert()", $this->tableName().'.'.$vs_field);
 					}
 					if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 					return false;
@@ -2430,10 +2432,10 @@ class BaseModel extends BaseObject {
 							} else {
 								$vs_err_desc = $o_e->getErrorDescription();
 							}
-							$this->postError($vn_err_num, $vs_err_desc, "BaseModel->insert()");
+							$this->postError($vn_err_num, $vs_err_desc, "BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							break;
 						default:
-							$this->postError($vn_err_num, $o_e->getErrorDescription().' ['.$vn_err_num.']', "BaseModel->insert()");
+							$this->postError($vn_err_num, $o_e->getErrorDescription().' ['.$vn_err_num.']', "BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							break;
 					}
 
@@ -2442,7 +2444,7 @@ class BaseModel extends BaseObject {
 				return false;
 			}
 		} else {
-			$this->postError(400, _t("Mode was %1; must be write", $this->getMode(true)),"BaseModel->insert()");
+			$this->postError(400, _t("Mode was %1; must be write", $this->getMode(true)),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 			return false;
 		}
 	}
@@ -2530,21 +2532,14 @@ class BaseModel extends BaseObject {
 				$vn_orig_hier_right 	= $this->get($vs_hier_right_fld);
 				
 				$vn_parent_id 			= $this->get($vs_parent_id_fld);
-				
-	if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing']) {		
-				if (($vn_orig_hier_right - $vn_orig_hier_left) == 0) {
-					$this->_calcHierarchicalIndexing($this->_getHierarchyParent($vn_parent_id));
-					$vn_orig_hier_left 		= $this->get($vs_hier_left_fld);
-					$vn_orig_hier_right 	= $this->get($vs_hier_right_fld);
-				}
-	}			
+					
 				if ($vb_parent_id_changed = $this->changed($vs_parent_id_fld)) {
 					$va_parent_info = $this->_getHierarchyParent($vn_parent_id);
 					
 					if (!$pa_options['dontCheckCircularReferences']) {
 						$va_ids = $this->getHierarchyIDs($this->getPrimaryKey());
 						if (in_array($this->get($vs_parent_id_fld), $va_ids)) {
-							$this->postError(2010,_t("Cannot move %1 under its sub-record", $this->getProperty('NAME_SINGULAR')),"BaseModel->update()");
+							$this->postError(2010,_t("Cannot move %1 under its sub-record", $this->getProperty('NAME_SINGULAR')),"BaseModel->update()", $this->tableName().'.'.$vs_parent_id_fld);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 							return false;
 						}
@@ -2560,7 +2555,7 @@ class BaseModel extends BaseObject {
 							}
 							
 							if (!($vn_hierarchy_id = $this->get($vs_hier_id_fld))) {
-								$this->postError(2030, _t("Hierarchy ID must be specified for this update"), "BaseModel->update()");
+								$this->postError(2030, _t("Hierarchy ID must be specified for this update"), "BaseModel->update()", $this->tableName().'.'.$vs_hier_id_fld);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								
 								return false;
@@ -2607,14 +2602,15 @@ class BaseModel extends BaseObject {
 							break;
 					}
 					
+					
 	if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing']) {							
 						if ($va_parent_info) {
 							$va_hier_indexing = $this->_calcHierarchicalIndexing($va_parent_info);
 						} else {
 							$va_hier_indexing = array('left' => 1, 'right' => pow(2,32));
 						}
-						$this->set($this->getProperty('HIERARCHY_LEFT_INDEX_FLD'), $va_hier_indexing['left']);
-						$this->set($this->getProperty('HIERARCHY_RIGHT_INDEX_FLD'), $va_hier_indexing['right']);
+						$this->set($this->getProperty('HIERARCHY_LEFT_INDEX_FLD'), $vn_orig_hier_left = $va_hier_indexing['left']);
+						$this->set($this->getProperty('HIERARCHY_RIGHT_INDEX_FLD'), $vn_orig_hier_right = $va_hier_indexing['right']);
 	}
 				}
 			}
@@ -2668,7 +2664,7 @@ class BaseModel extends BaseObject {
 
 
 						if ($t_many_table->numErrors()) {
-							$this->postError(750,_t("%1 record with $vs_field = %2  does not exist", $t_many_table->tableName(), $this->get($vs_field)),"BaseModel->update()");
+							$this->postError(750,_t("%1 record with $vs_field = %2  does not exist", $t_many_table->tableName(), $this->get($vs_field)),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 						}
 					}
 				}
@@ -2692,7 +2688,7 @@ class BaseModel extends BaseObject {
 							if (!trim($vm_val)) { $vm_val = 0; }
 
 							if (!is_numeric($vm_val)) {
-								$this->postError(1100,_t("Number is invalid for %1", $vs_field),"BaseModel->update()");
+								$this->postError(1100,_t("Number is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2719,12 +2715,12 @@ class BaseModel extends BaseObject {
 						case (FT_HISTORIC_DATE):
 							$vm_val = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 							if ((($vm_val == '') || is_null($vm_val)) && !$va_attr["IS_NULL"]) {
-								$this->postError(1805,_t("Date is undefined but field does not support NULL values"),"BaseModel->update()");
+								$this->postError(1805,_t("Date is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($vm_val) && !(is_null($vm_val) && $va_attr["IS_NULL"])) {
-								$this->postError(1100,_t("Date is invalid for %1", $vs_field),"BaseModel->update()");
+								$this->postError(1100,_t("Date is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2737,12 +2733,12 @@ class BaseModel extends BaseObject {
 						case (FT_TIME):
 							$vm_val = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 							if ((($vm_val == '') || is_null($vm_val)) && !$va_attr["IS_NULL"]) {
-								$this->postError(1805, _t("Time is undefined but field does not support NULL values"),"BaseModel->update()");
+								$this->postError(1805, _t("Time is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($vm_val) && !(is_null($vm_val) && $va_attr["IS_NULL"])) {
-								$this->postError(1100, _t("Time is invalid for %1", $vs_field),"BaseModel->update()");
+								$this->postError(1100, _t("Time is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2771,19 +2767,19 @@ class BaseModel extends BaseObject {
 								||
 								(($$this->_FIELD_VALUES[$end_field_name] == '') || is_null($this->_FIELD_VALUES[$end_field_name])))
 							) {
-								$this->postError(1805,_t("Daterange is undefined but field does not support NULL values"),"BaseModel->update()");
+								$this->postError(1805,_t("Daterange is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
-								$this->postError(1100,_t("Starting date is invalid"),"BaseModel->update()");
+								$this->postError(1100,_t("Starting date is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
 							
 							if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
-								$this->postError(1100,_t("Ending date is invalid"),"BaseModel->update()");
+								$this->postError(1100,_t("Ending date is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2804,19 +2800,19 @@ class BaseModel extends BaseObject {
 								||
 								(($$this->_FIELD_VALUES[$end_field_name] == '') || is_null($this->_FIELD_VALUES[$end_field_name])))
 							) {
-								$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->update()");
+								$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
-								$this->postError(1100,_t("Starting time is invalid"),"BaseModel->update()");
+								$this->postError(1100,_t("Starting time is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
 							if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
 							
 							if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
-								$this->postError(1100,_t("Ending time is invalid"),"BaseModel->update()");
+								$this->postError(1100,_t("Ending time is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2830,7 +2826,7 @@ class BaseModel extends BaseObject {
 							$vm_val = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 							if (!trim($vm_val)) { $vm_val = 0; }
 							if (!is_numeric($vm_val)) {
-								$this->postError(1100,_t("Timecode is invalid"),"BaseModel->update()");
+								$this->postError(1100,_t("Timecode is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 								return false;
 							}
@@ -2887,6 +2883,7 @@ class BaseModel extends BaseObject {
 										foreach($va_indices[$va_matches[1]]['fields'] as $vs_col_name) {
 											$va_tmp = $this->getFieldInfo($vs_col_name);
 											$va_field_labels[] = $va_tmp['LABEL'];
+											$this->postError($vn_err_num, $vs_err_desc, "BaseModel->insert()", $this->tableName().'.'.$vs_col_name);
 										}
 	
 										$vs_last_name = array_pop($va_field_labels);
@@ -2898,7 +2895,6 @@ class BaseModel extends BaseObject {
 									} else {
 										$vs_err_desc = $o_e->getErrorDescription();
 									}
-									$this->postError($vn_err_num, $vs_err_desc, "BaseModel->insert()");
 									break;
 								default:
 									$this->postError($vn_err_num, $o_e->getErrorDescription().' ['.$vn_err_num.']', "BaseModel->update()");
@@ -2925,14 +2921,14 @@ class BaseModel extends BaseObject {
 								$vs_sql = "
 									UPDATE ".$this->tableName()."
 									SET
-										$vs_hier_left_fld = ($vn_interval_start + (($vs_hier_left_fld - $vn_orig_hier_left) * $vn_ratio)),
-										$vs_hier_right_fld = ($vn_interval_end + (($vs_hier_right_fld - $vn_orig_hier_right) * $vn_ratio))
+										$vs_hier_left_fld = ($vn_interval_start + (({$vs_hier_left_fld} - ?) * ?)),
+										$vs_hier_right_fld = ($vn_interval_end + (({$vs_hier_right_fld} - ?) * ?))
 									WHERE
-										(".$vs_hier_left_fld." BETWEEN ".$vn_orig_hier_left." AND ".$vn_orig_hier_right.")
+										({$vs_hier_left_fld} BETWEEN ? AND ?)
 										$vs_hier_sql
 								";
 								//print "<hr>$vs_sql<hr>";
-								$o_db->query($vs_sql);
+								$o_db->query($vs_sql, array($vn_orig_hier_left, $vn_ratio, $vn_orig_hier_right, $vn_ratio, $vn_orig_hier_left, $vn_orig_hier_right));
 								if ($vn_err = $o_db->numErrors()) {
 									$this->postError(2030, _t("Could not update sub records in hierarchy: [%1] %2", $vs_sql, join(';', $o_db->getErrors())),"BaseModel->update()");
 									if ($vb_we_set_transaction) { $this->removeTransaction(false); }
@@ -2953,6 +2949,7 @@ class BaseModel extends BaseObject {
 					if (is_array($va_rebuild_hierarchical_index)) {
 						//$this->rebuildHierarchicalIndex($this->get($vs_hier_id_fld));
 						$t_instance = $this->_DATAMODEL->getInstanceByTableName($this->tableName());
+						if ($this->inTransaction()) { $t_instance->setTransaction($this->getTransaction()); }
 						foreach($va_rebuild_hierarchical_index as $vn_child_id) {
 							if ($vn_child_id == $this->getPrimaryKey()) { continue; }
 							if ($t_instance->load($vn_child_id)) {
@@ -3966,14 +3963,14 @@ class BaseModel extends BaseObject {
 				$r_incoming_fp = @fopen($this->_SET_FILES[$ps_field]['tmp_name'], 'r');
 				
 				if (!$r_incoming_fp) {
-					$this->postError(1600, _t('Cannot open remote URL [%1] to fetch media', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()");
+					$this->postError(1600, _t('Cannot open remote URL [%1] to fetch media', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 					set_time_limit($vn_max_execution_time);
 					return false;
 				}
 				
 				$r_outgoing_fp = fopen($vs_tmp_file, 'w');
 				if (!$r_outgoing_fp) {
-					$this->postError(1600, _t('Cannot open file for media fetched from URL [%1]', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()");
+					$this->postError(1600, _t('Cannot open file for media fetched from URL [%1]', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 					set_time_limit($vn_max_execution_time);
 					return false;
 				}
@@ -4000,7 +3997,7 @@ class BaseModel extends BaseObject {
 						", (string)md5_file($this->_SET_FILES[$ps_field]['tmp_name']));
 						
 						if ($qr_dupe_chk->nextRow()) {
-							$this->postError(1600, _t("Media already exists in database"),"BaseModel->_processMedia()");
+							$this->postError(1600, _t("Media already exists in database"),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							return false;
 						}
 					}
@@ -4039,7 +4036,7 @@ class BaseModel extends BaseObject {
 							$vs_primary_file_tmp = $vs_primary_file_tmp.".".$va_tmp[1];
 
 							if(!@copy($va_archive_files[0], $vs_primary_file_tmp)){
-								$this->postError(1600, _t("Couldn't extract first file from archive. There is probably a invalid character in a directory or file name inside the archive"),"BaseModel->_processMedia()");
+								$this->postError(1600, _t("Couldn't extract first file from archive. There is probably a invalid character in a directory or file name inside the archive"),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								set_time_limit($vn_max_execution_time);
 								if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
 								if ($vb_is_archive) { @unlink($vs_archive); @unlink($vs_primary_file_tmp); }
@@ -4090,7 +4087,7 @@ class BaseModel extends BaseObject {
 				$input_mimetype = $m->divineFileFormat($this->_SET_FILES[$ps_field]['tmp_name']);
 				if (!$input_type = $o_media_proc_settings->canAccept($input_mimetype)) {
 					# error - filetype not accepted by this field
-					$this->postError(1600, ($input_mimetype) ? _t("File type %1 not accepted by %2", $input_mimetype, $ps_field) : _t("Unknown file type not accepted by %1", $ps_field),"BaseModel->_processMedia()");
+					$this->postError(1600, ($input_mimetype) ? _t("File type %1 not accepted by %2", $input_mimetype, $ps_field) : _t("Unknown file type not accepted by %1", $ps_field),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 					set_time_limit($vn_max_execution_time);
 					if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
 					if ($vb_is_archive) { @unlink($vs_archive); @unlink($vs_primary_file_tmp); }
@@ -4292,7 +4289,7 @@ class BaseModel extends BaseObject {
 						$ext = $m->mimetype2extension($output_mimetype);
 
 						if (!$ext) {
-							$this->postError(1600, _t("File could not be copied for %1; can't convert mimetype '%2' to extension", $ps_field, $output_mimetype),"BaseModel->_processMedia()");
+							$this->postError(1600, _t("File could not be copied for %1; can't convert mimetype '%2' to extension", $ps_field, $output_mimetype),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							$m->cleanup();
 							set_time_limit($vn_max_execution_time);
 							if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -4301,7 +4298,7 @@ class BaseModel extends BaseObject {
 						}
 
 						if (($dirhash = $this->_getDirectoryHash($vi["absolutePath"], $this->getPrimaryKey())) === false) {
-							$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processMedia()");
+							$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							set_time_limit($vn_max_execution_time);
 							if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
 							if ($vb_is_archive) { @unlink($vs_archive); @unlink($vs_primary_file_tmp); @unlink($vs_archive_original); }
@@ -4336,7 +4333,7 @@ class BaseModel extends BaseObject {
 							$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v.".".$ext;
 							
 							if (!copy($this->_SET_FILES[$ps_field]['tmp_name'], $filepath)) {
-								$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()");
+								$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								$m->cleanup();
 								set_time_limit($vn_max_execution_time);
 								if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -4446,7 +4443,7 @@ class BaseModel extends BaseObject {
 						if (!$output_mimetype) { $output_mimetype = $input_mimetype; }
 
 						if (!($ext = $m->mimetype2extension($output_mimetype))) {
-							$this->postError(1600, _t("File could not be processed for %1; can't convert mimetype '%2' to extension", $ps_field, $output_mimetype),"BaseModel->_processMedia()");
+							$this->postError(1600, _t("File could not be processed for %1; can't convert mimetype '%2' to extension", $ps_field, $output_mimetype),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							$m->cleanup();
 							set_time_limit($vn_max_execution_time);
 							if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -4455,7 +4452,7 @@ class BaseModel extends BaseObject {
 						}
 
 						if (($dirhash = $this->_getDirectoryHash($vi["absolutePath"], $this->getPrimaryKey())) === false) {
-							$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processMedia()");
+							$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							set_time_limit($vn_max_execution_time);
 							if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
 							if ($vb_is_archive) { @unlink($vs_archive); @unlink($vs_primary_file_tmp); @unlink($vs_archive_original); }
@@ -4465,7 +4462,7 @@ class BaseModel extends BaseObject {
 						$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v;
 
 						if (!($vs_output_file = $m->write($filepath, $output_mimetype, $va_media_write_options))) {
-							$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()");
+							$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 							$m->cleanup();
 							set_time_limit($vn_max_execution_time);
 							if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -5122,7 +5119,7 @@ class BaseModel extends BaseObject {
 					$this->setMediaInfo($ps_field, $va_media_info);
 					$this->update(array('processingMediaForReplication' => true));
 					
-					$this->postError(3300, _t('Media replication for %1 failed', $va_target_info['name']), 'BaseModel->replicateMedia');
+					$this->postError(3300, _t('Media replication for %1 failed', $va_target_info['name']), 'BaseModel->replicateMedia', $this->tableName().'.'.$ps_field);
 					
 					return null;
 				}
@@ -5133,7 +5130,7 @@ class BaseModel extends BaseObject {
 				$this->setMediaInfo($ps_field, $va_media_info);
 				$this->update(array('processingMediaForReplication' => true));
 				
-				$this->postError(3300, _t('Media replication for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->replicateMedia');
+				$this->postError(3300, _t('Media replication for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->replicateMedia', $this->tableName().'.'.$ps_field);
 					
 				return null;
 			}
@@ -5188,7 +5185,7 @@ class BaseModel extends BaseObject {
 			$this->setMediaInfo($ps_field, $va_media_info);
 			$this->update(array('processingMediaForReplication' => true));
 			
-			$this->postError(3310, _t('Deletion of replicated media for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->removeMediaReplication');
+			$this->postError(3310, _t('Deletion of replicated media for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->removeMediaReplication', $this->tableName().'.'.$ps_field);
 				
 			return false;
 		}
@@ -5482,7 +5479,7 @@ class BaseModel extends BaseObject {
 
 				if (is_array($va_field_info["FILE_FORMATS"]) && sizeof($va_field_info["FILE_FORMATS"]) > 0) {
 					if (!in_array($mimetype, $va_field_info["FILE_FORMATS"])) {
-						$this->postError(1605, _t("File is not a valid format"),"BaseModel->_processFiles()");
+						$this->postError(1605, _t("File is not a valid format"),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 						return false;
 					}
 				}
@@ -5505,7 +5502,7 @@ class BaseModel extends BaseObject {
 				if ($properties['dangerous'] > 0) { $vn_dangerous = 1; }
 
 				if (($dirhash = $this->_getDirectoryHash($vi["absolutePath"], $this->getPrimaryKey())) === false) {
-					$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processFiles()");
+					$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
 				$magic = rand(0,99999);
@@ -5539,7 +5536,7 @@ class BaseModel extends BaseObject {
 				);
 
 				if (!copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
-					$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()");
+					$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
 
@@ -5776,7 +5773,7 @@ class BaseModel extends BaseObject {
 		$pb_need_reload = false;
 		$va_attr = $this->FIELDS[$field];
 		if (!$va_attr) {
-			$this->postError(716,_t("%1 does not exist", $field),"BaseModel->verifyFieldValue()");
+			$this->postError(716,_t("%1 does not exist", $field),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 			return false;
 		}
 
@@ -5785,7 +5782,7 @@ class BaseModel extends BaseObject {
 
 		if ((isset($va_attr["FILTER"]) && ($filter = $va_attr["FILTER"]))) {
 			if (!preg_match($filter, $value)) {
-				$this->postError(1102,_t("%1 is invalid", $va_attr["LABEL"]),"BaseModel->verifyFieldValue()");
+				$this->postError(1102,_t("%1 is invalid", $va_attr["LABEL"]),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 				return false;
 			}
 		}
@@ -5796,11 +5793,11 @@ class BaseModel extends BaseObject {
 			}
 			if (!($va_attr["IS_NULL"] && (!$value))) {
 				if ((isset($min_value)) && ($value < $min_value)) {
-					$this->postError(1101,_t("%1 must not be less than %2", $va_attr["LABEL"], $min_value),"BaseModel->verifyFieldValue()");
+					$this->postError(1101,_t("%1 must not be less than %2", $va_attr["LABEL"], $min_value),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 					return false;
 				}
 				if ((isset($max_value)) && ($value > $max_value)) {
-					$this->postError(1101,_t("%1 must not be greater than %2", $va_attr["LABEL"], $max_value),"BaseModel->verifyFieldValue()");
+					$this->postError(1101,_t("%1 must not be greater than %2", $va_attr["LABEL"], $max_value),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 					return false;
 				}
 			}
@@ -5815,13 +5812,13 @@ class BaseModel extends BaseObject {
 			}
 
 			if ((isset($min_length)) && (strlen($value) < $min_length)) {
-				$this->postError(1102, _t("%1 must be at least %2 characters", $va_attr["LABEL"], $min_length),"BaseModel->verifyFieldValue()");
+				$this->postError(1102, _t("%1 must be at least %2 characters", $va_attr["LABEL"], $min_length),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 				return false;
 			}
 
 
 			if ((isset($max_length)) && (strlen($value) > $max_length)) {
-				$this->postError(1102,_t("%1 must not be more than %2 characters long", $va_attr["LABEL"], $max_length),"BaseModel->verifyFieldValue()");
+				$this->postError(1102,_t("%1 must not be more than %2 characters long", $va_attr["LABEL"], $max_length),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 				return false;
 			}
 
@@ -5857,13 +5854,13 @@ class BaseModel extends BaseObject {
 						$va_tmp = explode($vs_list_multiple_delimiter, $v);
 						foreach($va_tmp as $vs_mult_item) {
 							if (!in_array($vs_mult_item,$va_list)) {
-								$this->postError(1103,_t("'%1' is not valid choice for %2", $v, $va_attr["LABEL"]),"BaseModel->verifyFieldValue()");
+								$this->postError(1103,_t("'%1' is not valid choice for %2", $v, $va_attr["LABEL"]),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 								return false;
 							}
 						}
 					} else {
 						if (!in_array($v,$va_list)) {
-							$this->postError(1103, _t("'%1' is not valid choice for %2", $v, $va_attr["LABEL"]),"BaseModel->verifyFieldValue()");
+							$this->postError(1103, _t("'%1' is not valid choice for %2", $v, $va_attr["LABEL"]),"BaseModel->verifyFieldValue()", $this->tableName().'.'.$field);
 							return false;
 						}
 					}
@@ -5989,7 +5986,7 @@ class BaseModel extends BaseObject {
 				return $fieldinfo;
 			}
 		} else {
-			//$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()");
+			//$this->postError(710,_t("'%1' does not exist in this object", $field),"BaseModel->getFieldInfo()", $this->tableName().'.'.$field);
 			return false;
 		}
 	}
@@ -6132,6 +6129,26 @@ class BaseModel extends BaseObject {
 		
 		if ($this->hasField($va_tmp[1])) {
 			if (caGetOption('asArrayElement', $pa_options, false)) { $ps_field .= "[]"; } 
+			
+			if ($this->getProperty('ID_NUMBERING_ID_FIELD') == $va_tmp[1]) {
+				
+				$va_lookup_url_info = caJSONLookupServiceUrl($po_request, $this->tableName());
+				return $this->htmlFormElement($va_tmp[1], $this->getAppConfig()->get('idno_element_display_format_without_label'), array_merge($pa_options, array(
+						'name' => $ps_field,
+						'error_icon' 				=> $po_request->getThemeUrlPath()."/graphics/icons/warning_small.gif",
+						'progress_indicator'		=> $po_request->getThemeUrlPath()."/graphics/icons/indicator.gif",
+						'id' => str_replace(".", "_", $ps_field),
+						'classname' => (isset($pa_options['class']) ? $pa_options['class'] : ''),
+						'value' => (isset($pa_options['values'][$ps_field]) ? $pa_options['values'][$ps_field] : ''),
+						'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 30, 
+						'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
+						'no_tooltips' => true,
+						'lookup_url' => $va_lookup_url_info['intrinsic'],
+						'request' => $po_request
+						
+				)));
+			}
+		
 			return $this->htmlFormElement($va_tmp[1], '^ELEMENT', array_merge($pa_options, array(
 					'name' => $ps_field,
 					'id' => str_replace(".", "_", $ps_field),
@@ -6678,6 +6695,7 @@ class BaseModel extends BaseObject {
 	 * @return int root id
 	 */
 	public function getHierarchyRootID($pn_hierarchy_id=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$vn_root_id = null;
 		
 		$o_db = $this->getDb();
@@ -6753,6 +6771,7 @@ class BaseModel extends BaseObject {
 	 * @return Mixed DbResult or array
 	 */
 	public function &getHierarchy($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$vs_table_name = $this->tableName();
 		
@@ -6889,6 +6908,7 @@ class BaseModel extends BaseObject {
 	 * @return array
 	 */
 	public function &getHierarchyAsList($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$pb_ids_only 					= caGetOption('idsOnly', $pa_options, false);
 		$pn_max_levels 					= caGetOption('maxLevels', $pa_options, null, array('cast' => 'int'));
 		$ps_additional_table_to_join 	= caGetOption('additionalTableToJoin', $pa_options, null);
@@ -6963,6 +6983,7 @@ class BaseModel extends BaseObject {
 	 * @return array id list
 	 */
 	public function getHierarchyIDs($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		return $this->getHierarchyAsList($pn_id, array_merge($pa_options, array('idsOnly' => true)));
 	}
@@ -7033,6 +7054,7 @@ class BaseModel extends BaseObject {
 	 * @return DbResult 
 	 */
 	public function &getHierarchyChildrenAsQuery($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$o_db = $this->getDb();
 			
 		$vs_table_name = $this->tableName();
@@ -7178,19 +7200,28 @@ class BaseModel extends BaseObject {
 	 *		additionalTableToJoin: name of table to join to hierarchical table (and return fields from); only fields related many-to-one are currently supported
 	 *		returnChildCounts: if true, the number of children under each returned child is calculated and returned in the result set under the column name 'child_count'. Note that this count is always at least 1, even if there are no children. The 'has_children' column will be null if the row has, in fact no children, or non-null if it does have children. You should check 'has_children' before using 'child_count' and disregard 'child_count' if 'has_children' is null.
 	 *		idsOnly: if true, only the primary key id values of the children records are returned
-	 *		returnDeleted = return deleted records in list (def. false)
+	 *		returnDeleted = return deleted records in list [default=false]
+	 *		start = Offset to start returning records from [default=0; no offset]
+	 *		limit = Maximum number of records to return [default=null; no limit]
+	 *
 	 * @return array 
 	 */
 	public function getHierarchyChildren($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$pb_ids_only = (isset($pa_options['idsOnly']) && $pa_options['idsOnly']) ? true : false;
+		$pn_start = caGetOption('start', $pa_options, 0);
+		$pn_limit = caGetOption('limit', $pa_options, null);
 		
 		if (!$pn_id) { $pn_id = $this->getPrimaryKey(); }
 		if (!$pn_id) { return null; }
 		$qr_children = $this->getHierarchyChildrenAsQuery($pn_id, $pa_options);
 		
+		if ($pn_start > 0) { $qr_children->seek($pn_start); }
 		
 		$va_children = array();
 		$vs_pk = $this->primaryKey();
+		
+		$vn_c = 0;
 		while($qr_children->nextRow()) {
 			if ($pb_ids_only) {
 				$va_row = $qr_children->getRow();
@@ -7198,6 +7229,8 @@ class BaseModel extends BaseObject {
 			} else {
 				$va_children[] = $qr_children->getRow();
 			}
+			$vn_c++;
+			if (($vn_limit > 0) && ($vn_c >= $vn_limit)) { break;}
 		}
 		
 		return $va_children;
@@ -7221,6 +7254,7 @@ class BaseModel extends BaseObject {
 	 * @return array 
 	 */
 	public function getHierarchySiblings($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$pb_ids_only = (isset($pa_options['idsOnly']) && $pa_options['idsOnly']) ? true : false;
 		
 		if (!$pn_id) { $pn_id = $this->getPrimaryKey(); }
@@ -7280,6 +7314,7 @@ class BaseModel extends BaseObject {
 	 * @return array 
 	 */
 	public function &getHierarchyAncestors($pn_id=null, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$pb_include_self = (isset($pa_options['includeSelf']) && $pa_options['includeSelf']) ? true : false;
 		$pb_ids_only = (isset($pa_options['idsOnly']) && $pa_options['idsOnly']) ? true : false;
 		
@@ -7427,6 +7462,7 @@ class BaseModel extends BaseObject {
 	 * @return array
 	 */
 	public function hierarchyWithTemplate($ps_template, $pa_options=null) {
+		if (!$this->isHierarchical()) { return null; }
 		$vs_pk = $this->primaryKey();
 		$pn_id = caGetOption($vs_pk, $pa_options, null);
 		$va_hier = $this->getHierarchyAsList($pn_id, array_merge($pa_options, array('idsOnly' => false)));
@@ -7444,6 +7480,7 @@ class BaseModel extends BaseObject {
 		foreach($va_vals as $vn_i => $vs_val) {
 			$va_hierarchy_data[] = array(
 				'level' => $va_levels[$vn_i],
+				'id' => $va_ids[$vn_i],
 				'display' => $vs_val
 			);
 		}
@@ -7451,10 +7488,23 @@ class BaseModel extends BaseObject {
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
-	 * 
+	 * Return all ancestors for a list of row_ids. The list is an aggregation of ancestors for all of the row_ids. It will not possible
+	 * to determine which row_ids have which ancestors from the returned value.
 	 * 
 	 * @param array $pa_row_ids 
-	 * @param array $pa_options
+	 * @param array $pa_options Options include:
+	 *		transaction = optional Transaction instance. If set then all database access is done within the context of the transaction
+	 *		returnAs = what to return; possible values are:
+	 *			searchResult			= a search result instance (aka. a subclass of BaseSearchResult), when the calling subclass is searchable (ie. <classname>Search and <classname>SearchResult classes are defined) 
+	 *			ids						= an array of ids (aka. primary keys)
+	 *			modelInstances			= an array of instances, one for each ancestor. Each instance is the same class as the caller, a subclass of BaseModel 
+	 *			firstId					= the id (primary key) of the first ancestor. This is the same as the first item in the array returned by 'ids'
+	 *			firstModelInstance		= the instance of the first ancestor. This is the same as the first instance in the array returned by 'modelInstances'
+	 *			count					= the number of ancestors
+	 *			[Default is ids]
+	 *	
+	 *		limit = if searchResult, ids or modelInstances is set, limits number of returned ancestoes. [Default is no limit]
+	 *		
 	 * @return mixed
 	 */
 	static public function getHierarchyAncestorsForIDs($pa_row_ids, $pa_options=null) {
@@ -7483,10 +7533,11 @@ class BaseModel extends BaseObject {
 					{$vs_table_pk} IN (?)
 			", array($va_level_row_ids));
 			$va_level_row_ids = $qr_level->getAllFieldValues($vs_parent_id_fld);
+			
 			$va_ancestor_row_ids = array_merge($va_ancestor_row_ids, $va_level_row_ids);
 		} while(($qr_level->numRows() > 0) && (sizeof($va_level_row_ids))) ;
-		
-		$va_ancestor_row_ids = array_unique($va_ancestor_row_ids);
+	
+		$va_ancestor_row_ids = array_values(array_unique($va_ancestor_row_ids));
 		if (!sizeof($va_ancestor_row_ids)) { return null; }
 		
 		$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
@@ -7529,6 +7580,104 @@ class BaseModel extends BaseObject {
 					return $t_instance->makeSearchResult($t_instance->tableName(), $va_ancestor_row_ids);
 				} else {
 					return $va_ancestor_row_ids;
+				}
+				break;
+		}
+		return null;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
+	 * Return all children for a list of row_ids. The list is an aggregation of children for all of the row_ids. It will not possible
+	 * to determine which row_ids have which children from the returned value.
+	 * 
+	 * @param array $pa_row_ids 
+	 * @param array $pa_options Options include:
+	 *		transaction = optional Transaction instance. If set then all database access is done within the context of the transaction
+	 *		returnAs = what to return; possible values are:
+	 *			searchResult			= a search result instance (aka. a subclass of BaseSearchResult), when the calling subclass is searchable (ie. <classname>Search and <classname>SearchResult classes are defined) 
+	 *			ids						= an array of ids (aka. primary keys)
+	 *			modelInstances			= an array of instances, one for each children. Each instance is the same class as the caller, a subclass of BaseModel 
+	 *			firstId					= the id (primary key) of the first children. This is the same as the first item in the array returned by 'ids'
+	 *			firstModelInstance		= the instance of the first children. This is the same as the first instance in the array returned by 'modelInstances'
+	 *			count					= the number of children
+	 *			[Default is ids]
+	 *	
+	 *		limit = if searchResult, ids or modelInstances is set, limits number of returned children. [Default is no limit]
+	 *		
+	 * @return mixed
+	 */
+	static public function getHierarchyChildrenForIDs($pa_row_ids, $pa_options=null) {
+		if(!is_array($pa_row_ids) || (sizeof($pa_row_ids) == 0)) { return null; }
+		
+		$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
+		$o_trans = caGetOption('transaction', $pa_options, null);
+		$vs_table = get_called_class();
+		$t_instance = new $vs_table;
+		
+	 	if (!($vs_parent_id_fld = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { return null; }
+		if ($o_trans) { $t_instance->setTransaction($o_trans); }
+		
+		$vs_table_name = $t_instance->tableName();
+		$vs_table_pk = $t_instance->primaryKey();
+		
+		$o_db = $t_instance->getDb();
+		
+		$va_child_row_ids = array();
+		$va_level_row_ids = $pa_row_ids;
+		do {
+			$qr_level = $o_db->query("
+				SELECT {$vs_table_pk}
+				FROM {$vs_table_name}
+				WHERE
+					{$vs_parent_id_fld} IN (?)
+			", array($va_level_row_ids));
+			$va_level_row_ids = $qr_level->getAllFieldValues($vs_table_pk);
+			$va_child_row_ids = array_merge($va_child_row_ids, $va_level_row_ids);
+		} while(($qr_level->numRows() > 0) && (sizeof($va_level_row_ids))) ;
+		
+		$va_child_row_ids = array_values(array_unique($va_child_row_ids));
+		if (!sizeof($va_child_row_ids)) { return null; }
+		
+		$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
+		
+		
+		switch($ps_return_as) {
+			case 'firstmodelinstance':
+				$vn_child_id = array_shift($va_child_row_ids);
+				if ($t_instance->load((int)$vn_child_id)) {
+					return $t_instance;
+				}
+				return null;
+				break;
+			case 'modelinstances':
+				$va_instances = array();
+				foreach($va_child_row_ids as $vn_child_id) {
+					$t_instance = new $vs_table;
+					if ($o_trans) { $t_instance->setTransaction($o_trans); }
+					if ($t_instance->load((int)$vn_child_id)) {
+						$va_instances[] = $t_instance;
+						$vn_c++;
+						if ($vn_limit && ($vn_c >= $vn_limit)) { break; }
+					}
+				}
+				return $va_instances;
+				break;
+			case 'firstid':
+				return array_shift($va_child_row_ids);
+				break;
+			case 'count':
+				return sizeof($va_child_row_ids);
+				break;
+			default:
+			case 'ids':
+			case 'searchresult':
+				if ($vn_limit && (sizeof($va_child_row_ids) >= $vn_limit)) { 
+					$va_child_row_ids = array_slice($va_child_row_ids, 0, $vn_limit);
+				}
+				if ($ps_return_as == 'searchresult') {
+					return $t_instance->makeSearchResult($t_instance->tableName(), $va_child_row_ids);
+				} else {
+					return $va_child_row_ids;
 				}
 				break;
 		}
@@ -7927,7 +8076,7 @@ $pa_options["display_form_field_tips"] = true;
 									# Hierarchical <select>
 									#
 									$va_hier = $o_one_table->getHierarchyAsList(0, $vs_display_use_count, $va_display_use_count_filters, $vb_display_omit_items__with_zero_count);
-	
+									if (!is_array($va_hier)) { return ''; }
 									$va_display_fields = $va_attr["DISPLAY_FIELD"];
 									if (!in_array($vs_one_table_primary_key, $va_display_fields)) {
 										$va_display_fields[] = $o_one_table->tableName().".".$vs_one_table_primary_key;
@@ -8209,7 +8358,7 @@ $pa_options["display_form_field_tips"] = true;
 							# radio-button controls for foreign key and choice lists, but we don't bother because it's never
 							# really necessary.
 							if ($vn_display_height > 1) {
-								$vs_element = '<'.$vs_text_area_tag_name.' name="'.$pa_options["name"].'" rows="'.$vn_display_height.'" cols="'.$vn_display_width.'"'.($pa_options['readonly'] ? ' readonly="readonly" ' : '').' wrap="soft" '.$vs_js.' id=\''.$pa_options["id"]."' style='{$vs_dim_style}' ".$vs_css_class_attr.">".$this->escapeHTML($vm_field_value).'</'.$vs_text_area_tag_name.'>'."\n";
+								$vs_element = '<'.$vs_text_area_tag_name.' name="'.$pa_options["name"].'" rows="'.$vn_display_height.'" cols="'.$vn_display_width.'"'.($pa_options['readonly'] ? ' readonly="readonly" disabled="disabled"' : '').' wrap="soft" '.$vs_js.' id=\''.$pa_options["id"]."' style='{$vs_dim_style}' ".$vs_css_class_attr.">".$this->escapeHTML($vm_field_value).'</'.$vs_text_area_tag_name.'>'."\n";
 							} else {
 								$vs_element = '<input name="'.$pa_options["name"].'" type="text" size="'.($pa_options['size'] ? $pa_options['size'] : $vn_display_width).'"'.($pa_options['readonly'] ? ' readonly="readonly" ' : '').' value="'.$this->escapeHTML($vm_field_value).'" '.$vs_js.' id=\''.$pa_options["id"]."' {$vs_css_class_attr} style='{$vs_dim_style}'/>\n";
 							}
@@ -8636,6 +8785,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if (!is_numeric($pn_rel_id)) {
 			if ($t_rel_item = $this->_DATAMODEL->getInstanceByTableName($va_rel_info['related_table_name'], true)) {
+				if ($this->inTransaction()) { $t_rel_item->setTransaction($this->getTransaction()); }
 				if (($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) && $t_rel_item->load(array($vs_idno_fld => $pn_rel_id))) {
 					$pn_rel_id = $t_rel_item->getPrimaryKey();
 				}
@@ -8644,7 +8794,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if ((!isset($pa_options['allowDuplicates']) || !$pa_options['allowDuplicates']) && !$this->getAppConfig()->get('allow_duplicate_relationships') && $this->relationshipExists($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_direction)) {
 			if (isset($pa_options['setErrorOnDuplicate']) && $pa_options['setErrorOnDuplicate']) {
-				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship');
+				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship', $t_rel_item->tableName());
 			}
 			return false;
 		}
@@ -8779,6 +8929,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if (!is_numeric($pn_rel_id)) {
 			if ($t_rel_item = $this->_DATAMODEL->getInstanceByTableName($va_rel_info['related_table_name'], true)) {
+				if ($this->inTransaction()) { $t_rel_item->setTransaction($this->getTransaction()); }
 				if (($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) && $t_rel_item->load(array($vs_idno_fld => $pn_rel_id))) {
 					$pn_rel_id = $t_rel_item->getPrimaryKey();
 				}
@@ -8787,7 +8938,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if ((!isset($pa_options['allowDuplicates']) || !$pa_options['allowDuplicates']) && !$this->getAppConfig()->get('allow_duplicate_relationships') && $this->relationshipExists($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_direction, array('relation_id' => $pn_relation_id))) {
 			if (isset($pa_options['setErrorOnDuplicate']) && $pa_options['setErrorOnDuplicate']) {
-				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship');
+				$this->postError(1100, _t('Relationship already exists'), 'BaseModel->addRelationship', $t_rel_item->tableName());
 			}
 			return false;
 		}
@@ -9328,6 +9479,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if (!is_numeric($pn_rel_id)) {
 			if ($t_rel_item = $this->_DATAMODEL->getInstanceByTableName($va_rel_info['related_table_name'], true)) {
+				if ($this->inTransaction()) { $t_rel_item->setTransaction($this->getTransaction()); }
 				if (($vs_idno_fld = $t_rel_item->getProperty('ID_NUMBERING_ID_FIELD')) && $t_rel_item->load(array($vs_idno_fld => $pn_rel_id))) {
 					$pn_rel_id = $t_rel_item->getPrimaryKey();
 				}
@@ -9466,7 +9618,7 @@ $pa_options["display_form_field_tips"] = true;
 				foreach($va_info as $va_relationship) {
 					# do any records exist?
 					$t_related = $this->_DATAMODEL->getInstanceByTableName($vs_many_table, true);
-					$t_related->setTransaction($o_trans);
+					if ($this->inTransaction()) { $t_related->setTransaction($o_trans); }
 					$vs_rel_pk = $t_related->primaryKey();
 					
 					$qr_record_check = $o_db->query($x="
@@ -9558,7 +9710,7 @@ $pa_options["display_form_field_tips"] = true;
 		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
 		if (!$pn_locale_id) { $pn_locale_id = $g_ui_locale_id; }
 		if (!$pn_locale_id) { 
-			$this->postErrors(2830, _t('No locale was set for tag'), 'BaseModel->addTag()');
+			$this->postError(2830, _t('No locale was set for tag'), 'BaseModel->addTag()','ca_item_tags');
 			return false;
 		}
 		
@@ -9635,20 +9787,20 @@ $pa_options["display_form_field_tips"] = true;
 		$t_ixt = new ca_items_x_tags($pn_relation_id);
 		
 		if (!$t_ixt->getPrimaryKey()) {
-			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->changeTagAccess()');
+			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 			return false;
 		}
 		if (
 			($t_ixt->get('table_num') != $this->tableNum()) ||
 			($t_ixt->get('row_id') != $vn_row_id)
 		) {
-			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->changeTagAccess()');
+			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 			return false;
 		}
 		
 		if ($pn_user_id) {
 			if ($t_ixt->get('user_id') != $pn_user_id) {
-				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()');
+				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 				return false;
 			}
 		}
@@ -9686,20 +9838,20 @@ $pa_options["display_form_field_tips"] = true;
 		$t_ixt = new ca_items_x_tags($pn_relation_id);
 		
 		if (!$t_ixt->getPrimaryKey()) {
-			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->removeTag()');
+			$this->postError(2800, _t('Tag relation id is invalid'), 'BaseModel->removeTag()', 'ca_item_tags');
 			return false;
 		}
 		if (
 			($t_ixt->get('table_num') != $this->tableNum()) ||
 			($t_ixt->get('row_id') != $vn_row_id)
 		) {
-			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->removeTag()');
+			$this->postError(2810, _t('Tag is not part of the current row'), 'BaseModel->removeTag()', 'ca_item_tags');
 			return false;
 		}
 		
 		if ($pn_user_id) {
 			if ($t_ixt->get('user_id') != $pn_user_id) {
-				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->removeTag()');
+				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->removeTag()', 'ca_item_tags');
 				return false;
 			}
 		}
@@ -9875,14 +10027,14 @@ $pa_options["display_form_field_tips"] = true;
 		
 		$t_comment = new ca_item_comments($pn_comment_id);
 		if (!$t_comment->getPrimaryKey()) {
-			$this->postError(2800, _t('Comment id is invalid'), 'BaseModel->editComment()');
+			$this->postError(2800, _t('Comment id is invalid'), 'BaseModel->editComment()', 'ca_item_comments');
 			return false;
 		}
 		if (
 			($t_comment->get('table_num') != $this->tableNum()) ||
 			($t_comment->get('row_id') != $vn_row_id)
 		) {
-			$this->postError(2810, _t('Comment is not part of the current row'), 'BaseModel->editComment()');
+			$this->postError(2810, _t('Comment is not part of the current row'), 'BaseModel->editComment()', 'ca_item_comments');
 			return false;
 		}
 		
@@ -9939,20 +10091,20 @@ $pa_options["display_form_field_tips"] = true;
 		
 		$t_comment = new ca_item_comments($pn_comment_id);
 		if (!$t_comment->getPrimaryKey()) {
-			$this->postError(2800, _t('Comment id is invalid'), 'BaseModel->removeComment()');
+			$this->postError(2800, _t('Comment id is invalid'), 'BaseModel->removeComment()', 'ca_item_comments');
 			return false;
 		}
 		if (
 			($t_comment->get('table_num') != $this->tableNum()) ||
 			($t_comment->get('row_id') != $vn_row_id)
 		) {
-			$this->postError(2810, _t('Comment is not part of the current row'), 'BaseModel->removeComment()');
+			$this->postError(2810, _t('Comment is not part of the current row'), 'BaseModel->removeComment()', 'ca_item_comments');
 			return false;
 		}
 		
 		if ($pn_user_id) {
 			if ($t_comment->get('user_id') != $pn_user_id) {
-				$this->postError(2820, _t('Comment was not created by specified user'), 'BaseModel->removeComment()');
+				$this->postError(2820, _t('Comment was not created by specified user'), 'BaseModel->removeComment()', 'ca_item_comments');
 				return false;
 			}
 		}
@@ -10245,8 +10397,8 @@ $pa_options["display_form_field_tips"] = true;
 				(?, ?, 1)
 			", $vn_table_num, $vn_row_id);
 		}
-		$o_cache = caGetCacheObject("caRecentlyViewedCache");
-		if (!is_array($va_recently_viewed_list = $o_cache->load('recentlyViewed'))) {
+		$va_recently_viewed_list = CompositeCache::fetch('caRecentlyViewed');
+		if (!is_array($va_recently_viewed_list)) {
 			$va_recently_viewed_list = array();
 		}
 		if (!is_array($va_recently_viewed_list[$vn_table_num])) {
@@ -10258,7 +10410,7 @@ $pa_options["display_form_field_tips"] = true;
 		if (!in_array($vn_row_id, $va_recently_viewed_list[$vn_table_num])) {
 			array_unshift($va_recently_viewed_list[$vn_table_num], $vn_row_id);
 		}
-		$o_cache->save($va_recently_viewed_list, 'recentlyViewed');
+		CompositeCache::save('caRecentlyViewed', $va_recently_viewed_list);
 		return true;
 	}
 	# --------------------------------------------------------------------------------------------
@@ -10455,8 +10607,7 @@ $pa_options["display_form_field_tips"] = true;
 	 */
 	public function getRecentlyViewedItems($pn_limit=10, $pa_options=null) {
 		if (!isset($pa_options['dontUseCache']) || !$pa_options['dontUseCache']) {
-			$o_cache = caGetCacheObject("caRecentlyViewedCache");
-			$va_recently_viewed_items = $o_cache->load('recentlyViewed');
+			$va_recently_viewed_items = CompositeCache::fetch('caRecentlyViewed');
 			$vn_table_num = $this->tableNum();
 			
 			if(is_array($va_recently_viewed_items) && is_array($va_recently_viewed_items[$vn_table_num])) { 

@@ -67,7 +67,7 @@
  			foreach($this->opa_search_blocks as $vs_block => $va_block_info) {
  				$va_tables[$va_block_info['table']] = 1;
  				$this->opa_result_contexts[$vs_block] = new ResultContext($po_request, $va_block_info['table'], $this->ops_find_type, $vs_block);
- 				$this->opa_result_contexts[$vs_block]->setAsLastFind();
+ 				$this->opa_result_contexts[$vs_block]->setAsLastFind(false);
  			}
  			
  			// Create generic contexts for each table in multisearch (no specific block); used to house search history and overall counts

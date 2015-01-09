@@ -2,6 +2,7 @@
 
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
 include_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
+include_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
 include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 
 $va_access_values = caGetUserAccessValues($this->request);
@@ -33,11 +34,11 @@ $va_access_values = caGetUserAccessValues($this->request);
 					</div>
 					<div class="advancedSearchField">
 						Accession number:<br/>
-						{{{ca_objects.idno%width=200px}}}
+						{{{ca_objects.idno%width=210px}}}
 					</div>
 					<div class="advancedSearchField">
 						Artist:<br/>
-						{{{ca_entities.preferred_labels.displayname%width=220px&height=40px}}}
+						{{{ca_entities.preferred_labels.displayname/artist%width=220px&height=40px}}}
 					</div>
 					<div class="advancedSearchField">
 						Date:<br/>
@@ -73,6 +74,48 @@ $va_access_values = caGetUserAccessValues($this->request);
 ?>			
 			</div>
 		</div> <!--end col-sm-4-->	
+	</div><!--end row-->
+	<div class='row'>
+		<div class="col-sm-12">
+			<hr>
+<!--			<h1>Artists</h1> -->
+<?php
+/*		//$o_artist_search = new ObjectSearch();
+		//$qr_artists = $o_artist_search->search("ca_entities.preferred_labels.displayname/artist:*");
+		$o_db = new Db();
+		$qr_res = $o_db->query("
+			SELECT DISTINCT e.entity_id FROM ca_entities e
+			INNER JOIN ca_entity_labels AS el ON el.entity_id = e.entity_id
+			INNER JOIN ca_objects_x_entities AS oxe ON e.entity_id = oxe.entity_id
+			WHERE
+				oxe.type_id = 103 AND e.deleted = 0 AND el.is_preferred = 1
+			ORDER BY
+				el.surname, el.forename
+		");
+		
+		$qr_artists = caMakeSearchResult('ca_entities', $qr_res->getAllFieldValues('entity_id'));
+		
+		$va_artists = array();
+		while ($qr_artists->nextHit()) {
+			$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
+			$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+		} 
+		#print "<pre>";
+		#print_r($va_artists);
+		#print "<pre>";
+		foreach ($va_artists as $va_letter_key => $va_artist_name) { 
+			print "<div class='letterMenu'><a href='#".$va_letter_key."'>".$va_letter_key."</a></div>";
+		}
+		foreach ($va_artists as $va_letter_key => $va_artist_name) {
+			print "<div class='letterHeader'><a name='".$va_letter_key."'>".$va_letter_key."</a></div>";
+			foreach ($va_artist_name as $va_artist) {
+				print "<div class='artistName'>".$va_artist."</div>";
+			}
+		}
+*/		
+?>			
+			
+		</div><!--end col-->
 	</div><!--end row-->
 </div> <!--end container-->
 

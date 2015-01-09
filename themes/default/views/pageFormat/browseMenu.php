@@ -80,7 +80,7 @@
 							$va_first_browse = array_pop($va_browse_types);
 						}
 ?>
-								<div id="browseMenuTypeFacet"> </div>
+								<div id="browseMenuTypeFacet" class='row'> </div>
 							</div><!-- end browseMenuContent container -->		
 						</li><!-- end browseNavFacet -->
 					</ul> <!--end dropdown-browse-menu -->	

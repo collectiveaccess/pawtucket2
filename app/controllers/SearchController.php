@@ -69,8 +69,6 @@
 			$o_search_config = caGetSearchConfig();
 			$pa_options = array_shift($pa_args);
  						
- 			$vb_is_advanced = (bool)$this->request->getParameter('_advanced', pInteger);
- 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
  			
  			$this->view->setVar("config", $o_config);
  			$ps_function = strtolower($ps_function);
@@ -84,24 +82,31 @@
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type);
- 			$this->opo_result_context->setAsLastFind();
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
+ 			$this->opo_result_context->setAsLastFind(true);
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			if($vb_is_advanced) { 
- 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context)); 
+ 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))); 
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = caGetOption('view', $pa_options, $this->request->getParameter('view', pString));
+ 			if (!trim($ps_view = $this->request->getParameter('view', pString))) {
+ 				$ps_view = caGetOption('view', $pa_options, $this->opo_result_context->getCurrentView());
+ 			}
+ 			
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
 			} else {
 				$va_views['pdf'] = array();
+				$va_views['timelineData'] = array();
 			}
 			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
@@ -109,7 +114,6 @@
 
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
  			
- 			#caAddPageCSSClasses(array($vs_class, $ps_function, $ps_view));
  			caAddPageCSSClasses(array($vs_class, $ps_function));
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
@@ -144,7 +148,12 @@
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
-				$o_browse->removeAllCriteria();
+				// Clear all refine critera but *not* underlying _search criterion
+				$va_criteria = $o_browse->getCriteria();
+				foreach($va_criteria as $vs_criterion => $va_criterion_info) {
+					if ($vs_criterion == '_search') { continue; }
+					$o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
+				}
 			}
 			
 				
@@ -173,12 +182,11 @@
 			// Add criteria and execute
 			//
 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
+			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
+			}
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
-			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
-				}
 			}
 			
 			//
@@ -238,7 +246,8 @@
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
 			
-			$o_browse->execute($va_options);
+			
+			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => !$vb_is_advanced)));
 		
 			//
 			// Facets
@@ -280,6 +289,7 @@
 					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
 				}
 			}
+			
 			$this->view->setVar('criteria', $va_criteria_for_display);
 		
 			// 
@@ -315,13 +325,15 @@
  			
  			switch($ps_view) {
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $vs_search_expression);
+ 					print $qr_res->numHits();
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
+ 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}
@@ -344,7 +356,7 @@
  			$vs_class = $va_search_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
  			
- 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced');
+ 			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced', $ps_function);
  			$this->opo_result_context->setAsLastFind();
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
@@ -353,6 +365,8 @@
  			
  			$va_default_form_values = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormContent_{$ps_function}");
  			$va_default_form_booleans = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormBooleans_{$ps_function}");
+ 			
+ 			$this->opo_result_context->saveContext();
  			
  			$va_tags = $this->view->getTagList($va_search_info['view']);
  			
@@ -463,5 +477,27 @@
 			return $va_ret;
  		}
  		# -------------------------------------------------------
+ 		/**
+ 		 * Returns summary of current browse parameters suitable for display.
+ 		 *
+ 		 * @return string Summary of current browse criteria ready for display
+ 		 */
+ 		public function getCriteriaForDisplay($po_browse) {
+ 			$va_criteria = $po_browse->getCriteriaWithLabels();
+ 			if (!sizeof($va_criteria)) { return ''; }
+ 			$va_criteria_info = $po_browse->getInfoForFacets();
+ 			
+ 			$va_buf = array();
+ 			foreach($va_criteria as $vs_facet => $va_vals) {
+ 				foreach($va_vals as $vn_i => $vs_val) {
+ 					$va_vals[$vn_i] = preg_replace("![A-Za-z_\./]+[:]{1}!", "", $vs_val);
+ 					$va_vals[$vn_i] = trim(preg_replace("![\*].!", "", $va_vals[$vn_i]));
+ 					$va_vals[$vn_i] = trim(preg_replace("![\(\)]+!", " ", $va_vals[$vn_i]));
+ 				}
+ 				$va_buf[] = caUcFirstUTF8Safe($va_criteria_info[$vs_facet]['label_singular']).': '.join(", ", $va_vals);
+ 			}
+ 			
+ 			return join(" / ", $va_buf);
+  		}
+ 		# -------------------------------------------------------
 	}
- ?>

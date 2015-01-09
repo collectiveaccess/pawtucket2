@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar('access_values');
 ?>
+	<div class="container">
 		<div class="row">
 			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 				<div class="detailNavBgLeft">
@@ -19,7 +20,7 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
-			<div class="container">
+			
 				<div class="artworkTitle">
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
 					<H5>
@@ -123,9 +124,10 @@
 ?>			
 		<!-- Related Artworks -->
 		
-<!-- Related Artworks -->
-<?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
+<!-- Related Archives -->
+<?php	
+		#$va_archive_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true));		
+		if (sizeof($va_archive_ids) > 0) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Materials </H6>
@@ -136,7 +138,7 @@
 					<div class="jcarouselarchive">
 						<ul>
 <?php
-						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
+						foreach ($va_archive_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
 							print "<li>";
 							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
@@ -214,7 +216,9 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<script type='text/javascript'>
+}}}<!-- Related Archives -->		
+
+<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
 					Carousel initialization
@@ -254,11 +258,10 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->		
-			
+			</script></ifcount>			
 				</div><!-- end col -->
-			</div><!-- end container -->
-		</div><!-- end row -->	
+		</div><!-- end row -->
+	
 		<div class="row">
 			
 			<div class='col-md-6 col-lg-6'> 
@@ -324,3 +327,5 @@
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.related.preferred_labels.displayname</unit><br/><br/>}}}
 			</div><!-- end col -->
 		</div><!-- end row -->
+	</div><!-- end container -->
+	

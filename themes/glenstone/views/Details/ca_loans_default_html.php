@@ -27,14 +27,16 @@
 		</div><!-- end col 12-->
 	</div><!-- end row -->
 	<div class="row">
-		<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
+		<div class='col-xs-12 col-sm-7 col-md-6 col-lg-6'>
 			<div class="row">
 <?php
 				$va_related_artworks = $t_item->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true));
 				foreach ($va_related_artworks as $vn_id => $va_related_artwork) {
 					$t_object = new ca_objects($va_related_artwork);
-					$va_reps = $t_object->getPrimaryRepresentation(array('versions' => 'medium'), null, array("checkAccess" => $va_access_values, 'scaleCSSHeightTo' => '260px'));
-					print "<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6 relatedLoan'>";
+
+					$va_reps = $t_object->getPrimaryRepresentation(array('versions' => 'medium'), null, array("checkAccess" => $va_access_values, 'scaleCSSHeightTo' => '260px', 'scaleCSSWidthTo' => '220px'));
+					print "<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6 relatedLoan'>"; 
+
 					print "<div class='loanImg'>".caNavLink($this->request, $va_reps['tags']['medium'], '', '', 'Detail', 'artworks/'.$va_related_artwork)."</div>";
 					print "<div class='lotCaption'>";
 					print "<p>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
@@ -50,7 +52,7 @@
 ?>				
 			</div><!-- end row -->	
 		</div><!-- end col 6-->		
-		<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>				
+		<div class='col-xs-12 col-sm-5 col-md-6 col-lg-6'>				
 			{{{<ifcount code="ca_entities" min="1" relativeTo="ca_entities" restrictToRelationshipTypes="borrower" ><div class="unit"><span class='metaTitle'>Borrower: </span><span class="meta"><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="borrower"><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
 			{{{<ifdef code="ca_loans.exhibition_title"><div class="unit"><span class='metaTitle'>Exhibition Title: </span><span class="meta"><i>^ca_loans.exhibition_title</i></span></ifdef>}}}			
 			{{{<ifdef code="ca_loans.exhibition_dates"><div class="unit"><span class='metaTitle'>Exhibition Dates: </span><span class="meta">^ca_loans.exhibition_dates</span></ifdef>}}}			
@@ -76,7 +78,7 @@
 					if ($va_loan_image['loan_documents_primary'] == 162) {
 						$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_loan_id, $vn_media_element_id)) ;
 						if ($qr_res->nextRow()) {
-							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_loan_image['loan_documents_media']."</a>";
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/ca_loans', array('loan_id' => $vn_loan_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_loan_image['loan_documents_media']."</a>";
 
 						}
 					}

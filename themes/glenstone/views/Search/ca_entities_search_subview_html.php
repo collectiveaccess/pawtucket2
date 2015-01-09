@@ -35,6 +35,7 @@
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 
+if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
@@ -95,4 +96,5 @@
 <?php
 		}
 	}
+}
 ?>

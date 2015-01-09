@@ -75,7 +75,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsArray' => true))."</div><!-- end Result -->";
+				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsLink' => true))."</div><!-- end Result -->";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

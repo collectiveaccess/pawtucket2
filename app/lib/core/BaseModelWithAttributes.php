@@ -100,6 +100,8 @@
 			if ($t_element->get('parent_id') > 0) { return false; }
 			$vn_element_id = $t_element->getPrimaryKey();
 			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$t_element->get('element_code'); }
+			
 			// check restriction min/max settings
 			$t_restriction = $t_element->getTypeRestrictionInstanceForElement($this->tableNum(), $this->getTypeID());
 			if (!$t_restriction) { return null; }		// attribute not bound to this type
@@ -132,7 +134,7 @@
 			$this->opa_attributes_to_add[] = array(
 				'values' => $pa_values,
 				'element' => $pm_element_code_or_id,
-				'error_source' => $ps_error_source.'/'.sizeof($this->opa_attributes_to_add),
+				'error_source' => $ps_error_source,
 				'options' => $pa_options
 			);
 			$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_element_id] = true;
@@ -196,6 +198,8 @@
 				}
 			}
 			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$this->_getElementCode($pm_element_code_or_id); }
+			
 			if (isset($this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id]) && $this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id]) {
 				$this->opa_attributes_to_edit[] = array(
 					'values' => $pa_values,
@@ -254,6 +258,8 @@
 			$t_attr->purify($this->purify());
 			if (!$t_attr->getPrimaryKey()) { return false; }
 			$vn_element_id = (int)$t_attr->get('element_id');
+			
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.$this->_getElementCode($vn_element_id); }
 			
 			$vn_add_cnt = 0;
 			if (isset($pa_extra_info['pending_adds']) && is_array($pa_extra_info['pending_adds'])) {
@@ -1078,6 +1084,17 @@
 		public function getTypeFieldName() {
 			return $this->ATTRIBUTE_TYPE_ID_FLD;
 		}
+		
+		# ------------------------------------------------------------------
+		/**
+		 * Determine if type for this model is mandatory 
+		 *
+		 * @return bool Returns true if type is optional (may be null in the database), false if it is mandatory or null if the model does not support types.
+		 */
+		public function typeIDIsOptional() {
+			if (!property_exists($this->tableName(), 'ATTRIBUTE_TYPE_ID_FLD')) { return null; }
+			return $this->getFieldInfo($this->ATTRIBUTE_TYPE_ID_FLD, 'IS_NULL');
+		}
 		# ------------------------------------------------------------------
 		/**
 		 * List code (from ca_lists.list_code) of list defining types for this table
@@ -1255,15 +1272,15 @@
 			$va_tmp = explode('.', $ps_field);
 			
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
-				return $this->getTypeListAsHTMLFormElement(null, null, array_merge($pa_options, array('nullOption' => '-')));
+				return $this->getTypeListAsHTMLFormElement($ps_field, null, array_merge($pa_options, array('nullOption' => '-')));
 			}
 			
 			if (!in_array($va_tmp[0], array('created', 'modified'))) {		// let change log searches filter down to BaseModel
 				if ($va_tmp[0] != $this->tableName()) { return null; }
-				if (!$this->hasField($va_tmp[1])) {
-					$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
+				$vs_fld = array_pop($va_tmp);
+				if (!$this->hasField($vs_fld)) {
+					$vs_fld = preg_replace('!^ca_attribute_!', '', $vs_fld);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
 					
-					$vs_fld = array_pop($va_tmp);
 					return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
 								'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
 								'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
@@ -1310,6 +1327,7 @@
 							'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
 							'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
 							'format' => '^ELEMENT',
+							'forSimpleForm' => true,
 							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
 						)));
 			}
@@ -1449,6 +1467,9 @@
 				if (isset($pa_bundle_settings['usewysiwygeditor']) && strlen($pa_bundle_settings['usewysiwygeditor']) == 0) {
 					unset($pa_bundle_settings['usewysiwygeditor']);	// let null usewysiwygeditor bundle option fall back to metadata element setting
 				}
+				if(!is_array($va_label)) { 
+					$va_label = array('name' => '???', 'description' => '');
+				}
 				$va_elements_by_container[$va_element['parent_id']][] = $vs_br.ca_attributes::attributeHtmlFormElement($va_element, array_merge($pa_bundle_settings, array_merge($pa_options, array(
 					'label' => (sizeof($va_element_set) > 1) ? $va_label['name'] : '',
 					'description' => $va_label['description'],
@@ -1535,18 +1556,19 @@
 			
 			$vb_is_sub_element = (bool)($t_element->get('parent_id'));
 			$t_parent = $vb_is_sub_element ? $this->_getElementInstance($t_element->get('parent_id')) : null;
-			
+			while($vb_is_sub_element && ($t_parent->get('datatype') == 0) && ($t_parent->get('parent_id') > 0)) {
+				$t_parent = $this->_getElementInstance($t_parent->get('parent_id'));
+			}
 			
 			$vs_element_code = $t_element->get('element_code');
 			
 			// get all elements of this element set
-			$va_element_set = $t_element->getElementsInSet($vb_is_sub_element ? $t_element->get('parent_id') : null);
+			$va_element_set = $vb_is_sub_element ? $t_parent->getElementsInSet() : $t_element->getElementsInSet();
 			
 			if ($vb_is_sub_element) {
 				foreach($va_element_set as $vn_i => $va_element) {
 					if ($va_element['element_code'] !== $vs_element_code) { unset($va_element_set[$vn_i]); }
 				}
-				
 			}
 			
 			$t_attr = new ca_attributes();
@@ -1554,7 +1576,6 @@
 			
 			$va_element_codes = array();
 			$va_elements_by_container = array();
-			
 			
 			if (sizeof($va_element_set) > 1) {
 				$vs_format = isset($pa_options['multivalueFormat']) ? $pa_options['multivalueFormat'] : null;
@@ -1574,6 +1595,7 @@
 				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
 				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
+
 				$va_element_opts = array_merge(array(
 					'label' => $va_label['name'],
 					'description' => $va_label['description'],
@@ -1586,32 +1608,41 @@
 					'render' => (isset($va_element['settings']['render']) && ($va_element['settings']['render'] == 'lookup')) ? $va_element['settings']['render'] : isset($pa_options['render']) ? $pa_options['render'] : 'select'
 				), array_merge($pa_options, $va_override_options));
 				
+				if (caGetOption('forSimpleForm', $pa_options, false)) { 
+					unset($va_element_opts['nullOption']);
+				}
+				
 				// We don't want to pass the entire set of values to ca_attributes::attributeHtmlFormElement() since it'll treat it as a simple list
 				// of values for an individual element and the 'values' array is actually set to values for *all* elements in the form
 				unset($va_element_opts['values']);
 				$va_element_opts['values'] = '';
 				
-				$vs_form_element = ca_attributes::attributeHtmlFormElement($va_element, $va_element_opts);
-				//
-				// prep element for use as search element
-				//
-				// ... replace value
-				$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vs_value, $vs_form_element);
-				
 				// ... replace name of form element
 				$vs_fld_name = $vs_subelement_code; //str_replace('.', '_', $vs_subelement_code);
 				if (caGetOption('asArrayElement', $pa_options, false)) { $vs_fld_name .= "[]"; } 
 				
-				// escape any special characters in jQuery selectors
-				$vs_form_element = str_replace(
-					"jQuery('#{fieldNamePrefix}".$va_element['element_id']."_{n}')", 
-					"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $vs_fld_name)."')", 
-					$vs_form_element
-				);
-				$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
+				if ($vs_force_value = caGetOption('force', $pa_options, false)) {
+					$vs_form_element = caHTMLHiddenInput($vs_fld_name, array('value' =>$vs_force_value));
+				} else {
+					$vs_form_element = ca_attributes::attributeHtmlFormElement($va_element, $va_element_opts);
+					//
+					// prep element for use as search element
+					//
+					// ... replace value
+					$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vs_value, $vs_form_element);
 				
-				$vs_form_element = str_replace('{n}', '', $vs_form_element);
-				$vs_form_element = str_replace('{'. $va_element['element_id'].'}', '', $vs_form_element);
+				
+					// escape any special characters in jQuery selectors
+					$vs_form_element = str_replace(
+						"jQuery('#{fieldNamePrefix}".$va_element['element_id']."_{n}')", 
+						"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $vs_fld_name)."')", 
+						$vs_form_element
+					);
+					$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
+				
+					$vs_form_element = str_replace('{n}', '', $vs_form_element);
+					$vs_form_element = str_replace('{'. $va_element['element_id'].'}', '', $vs_form_element);
+				}
 				
 				$va_elements_by_container[$va_element['parent_id'] ? $va_element['parent_id'] : $va_element['element_id']][] = $vs_form_element;
 				
@@ -1788,11 +1819,22 @@
 			return null;
 		}
 		# ------------------------------------------------------------------
-		// returns the specific attribute with the specified attribute_id
-		// ** assuming it's attached to the current row **
-		public function getAttributeByID($pn_attribute_id) {
-			// TODO: Implement
-			return false;
+		/**
+		 * Return the specific attribute with the specified attribute_id (assuming it's attached to the current row)
+		 */
+		public function getAttributeByID($pn_attribute_id, $pa_options=null) {
+			if (isset($pa_options['row_id']) && $pa_options['row_id']) {
+				$vn_row_id = $pa_options['row_id'];
+			} else {
+				$vn_row_id = $this->getPrimaryKey();
+			}
+			if (!$vn_row_id) { return null; }
+			
+			$t_attr = new ca_attributes($pn_attribute_id);
+			if (!$t_attr->getPrimaryKey()) { return false; }
+			if ((int)$t_attr->get('row_id') !== (int)$vn_row_id) { return false; }
+			
+			return $t_attr->getAttributeValues(array('returnAs' => 'attributeInstance'));
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1807,6 +1849,9 @@
 		 *				locale = if set to a valid locale_id or locale code, values will be returned in locale *if available*, otherwise will fallback to values in languages that are available using the standard fallback mechanism. Default is to use user's current locale.
 		 *				returnAllLocales = if set to true, values for all locales are returned, locale option is ignored and the returned array is indexed first by attribute_id and then by locale_id. Default is false.
 		 *				indexByRowID = if true first index of returned array is $pn_row_id, otherwise it is the element_id of the retrieved metadata element	
+		 *				indexValuesByValueID = index value array by value_id [default=false]
+		 *				indexValuesByElementCode = index value array by element code [default=true]
+		 *				indexValuesByElementCodeAndValueID = index value array by element codes, each of which has a sub-array indexed by value_id. Implies indexValuesByElementCode. [default=false]
 		 *				convertCodesToDisplayText =
 		 *				filter =
 		 *				ignoreLocale = if set all values are returned regardless of locale, but in the flattened structure returned when returnAllLocales is false
@@ -1820,6 +1865,11 @@
 			$pb_ignore_locale = caGetOption('ignoreLocale', $pa_options, null);
 			$ps_sort = caGetOption('sort', $pa_options, null);
 			$ps_sort_direction = caGetOption('sortDirection', $pa_options, 'asc', array('forceLowercase' => true, 'validValues' => array('asc', 'desc')));
+			
+			$pb_index_by_element_code = caGetOption('indexValuesByElementCode', $pa_options, true);
+			$pb_index_by_value_id = caGetOption('indexValuesByValueID', $pa_options, false);
+			$pb_index_by_element_code_and_value_id = caGetOption('indexValuesByElementCodeAndValueID', $pa_options, false);
+			if ($pb_index_by_element_code_and_value_id) { $pb_index_by_element_code = true; }
 			
 			$va_attribute_list = $this->getAttributesByElement($pm_element_code_or_id, array('row_id' => $pn_row_id));
 			if (!is_array($va_attribute_list)) { return array(); }
@@ -1860,10 +1910,19 @@
 					
 					if (isset($pa_options['convertLineBreaks']) && $pa_options['convertLineBreaks']) {
 						$vs_converted_value = preg_replace("!(\n|\r\n){2}!","<p/>",$o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id))));
-						$va_display_values[$vs_element_code] = preg_replace("![\n]{1}!","<br/>",$vs_converted_value);
+						$vs_display_value = preg_replace("![\n]{1}!","<br/>",$vs_converted_value);
 					} else {
-						$va_display_values[$vs_element_code] = $o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id)));
+						$vs_display_value = $o_value->getDisplayValue(array_merge($pa_options, array('list_id' => $vn_list_id)));
 					}
+					
+					if ($pb_index_by_element_code) { 
+						if ($pb_index_by_element_code_and_value_id) {
+							$va_display_values[$vs_element_code][$o_value->getValueID()] = $vs_display_value; 
+						} else {
+							$va_display_values[$vs_element_code] = $vs_display_value; 
+						}
+					}
+					if ($pb_index_by_value_id) { $va_display_values[$o_value->getValueID()] = $vs_display_value; }
 					
 					if ($vs_sort_fld && ($vs_sort_fld == $vs_element_code)) {
 						$vs_sort_key = $o_value->getDisplayValue(array_merge($pa_options, array('getDirectDate' => true, 'list_id' => $vn_list_id)));
@@ -1979,7 +2038,7 @@
 					return null; 
 				}
 			}
-			if (!($t_element = $this->_getElementInstance($pm_element_code_or_id))) { return null; }
+			if (!$pm_element_code_or_id || !($t_element = $this->_getElementInstance($pm_element_code_or_id))) { return null; }
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 			
@@ -2003,7 +2062,7 @@
 				foreach($va_tmp as $vn_id => $va_value_list) {
 					foreach($va_value_list as $va_value) {
 						foreach($va_value as $vs_element_code => $vs_value) {
-							if (is_array($vs_value) || strlen($vs_value)) { 
+							if (strlen($vs_value)) { 
 								$va_attribute_list[] = $vs_value;
 							}
 						}
@@ -2240,7 +2299,7 @@
 					$vs_pk = $t_instance->primaryKey();
 					$qr_del = $o_db->query("SELECT {$vs_pk} FROM ".$t_instance->tableName()." WHERE {$vs_pk} IN (?) AND deleted = 1", array($va_row_ids));
 					
-					while($qr_del->nextRow()) {
+					while($qr_del && $qr_del->nextRow()) {
 						unset($va_references[$vn_table_num][$qr_del->get($vs_pk)]);
 					}
 				}

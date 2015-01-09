@@ -610,6 +610,13 @@
 							}
 						}
 					}
+					
+					if($va_facet_info['table'] && ($t_browse_table = $this->opo_datamodel->getInstanceByTableName($vs_facet_table = $va_facet_info['table'], true))) {
+						if (!($app = AppController::getInstance())) { return '???'; }
+						if ($t_browse_table->load($pn_row_id) && $t_browse_table->isReadable($app->getRequest(), 'preferred_labels')) {
+							return $t_browse_table->get("{$vs_facet_table}.preferred_labels");
+						}
+					}
 					return '???';
 					break;
 				# -----------------------------------------------------
@@ -873,6 +880,8 @@
 				$va_criteria = $this->getCriteria();
 				if (!$vb_no_cache && (intval(time() - $vn_created_on) < $this->opo_ca_browse_config->get('cache_timeout'))) {
 					$vb_results_cached = true;
+					$this->opo_ca_browse_cache->setParameter('created_on', time() + $this->opo_ca_browse_config->get('cache_timeout'));
+					$vb_need_to_save_in_cache = true;
 					
 					Debug::msg("Cache hit for {$vs_cache_key}");
 				} else {
@@ -987,10 +996,10 @@
 										
 										
 											$va_wheres = array();
-											if ((sizeof($va_restrict_to_relationship_types) > 0) && is_object($t_item_rel)) {
+											if ((sizeof($va_restrict_to_relationship_types) > 0) && is_object($t_item_rel) && (bool)$vn_state) {
 												$va_wheres[] = "(".$t_item_rel->tableName().".type_id IN (".join(',', $va_restrict_to_relationship_types)."))";
 											}
-											if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel)) {
+											if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel) && (bool)$vn_state) {
 												$va_wheres[] = "(".$t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types)."))";
 											}
 										
@@ -1568,6 +1577,7 @@
 									unset($va_options['sort']);					// browse engine takes care of sort so there is no reason to waste time having the search engine do so
 									$va_options['filterNonPrimaryRepresentations'] = true;	// filter out non-primary representations in ca_objects results to save (a bit) of time
 									
+									$o_search->setOption('strictPhraseSearching', caGetOption('strictPhraseSearching', $va_options, true));
 									$qr_res = $o_search->search($va_row_ids[0], $va_options);
 
 									if ($qr_res->numHits() > 0) {
@@ -1924,7 +1934,7 @@
 											break;
 									}
 								} else {
-									$va_groups[] = mb_substr($va_item[$va_label_order_by_fields[0]], 0, 1);	
+									if (is_array($va_item)) { $va_groups[] = mb_substr($va_item[$va_label_order_by_fields[0]], 0, 1);}
 								}
 								break;
 						}
@@ -2656,7 +2666,7 @@
 										}
 									}
 								}
-								return $va_values_sorted_by_list_order;
+								return caSortArrayByKeyInValue($va_values_sorted_by_list_order, array('label'));
 								break;
 							case __CA_ATTRIBUTE_VALUE_OBJECTS__:
 							case __CA_ATTRIBUTE_VALUE_ENTITIES__:
@@ -3481,12 +3491,14 @@
 							//print $vs_sql;
 							$qr_res = $this->opo_db->query($vs_sql, $vn_element_id);
 					
+							$vn_current_year = (int)date("Y");
 							$va_values = array();
 							while($qr_res->nextRow()) {
 								$vn_start = $qr_res->get('value_decimal1');
 								$vn_end = $qr_res->get('value_decimal2');
 							
 								if (!($vn_start && $vn_end)) { continue; }
+								if ($vn_end > $vn_current_year + 50) { continue; } // bad years can make for large facets that cause timeouts so cut it off 50 years into the future
 								$va_normalized_values = $o_tep->normalizeDateRange($vn_start, $vn_end, $vs_normalization);
 								foreach($va_normalized_values as $vn_sort_value => $vs_normalized_value) {
 									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
@@ -4162,8 +4174,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							AND
 							(ca_acl.access >= ?)
 					", $va_params);
-					
-					$va_hits = $qr_sort->getAllFieldValues('row_id');
+
+                    $va_hits = array_unique($qr_sort->getAllFieldValues('row_id'));
 					
 					// Find records with default ACL
 					$qr_sort = $this->opo_db->query("
@@ -4586,22 +4598,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 		# ------------------------------------------------------------------
 		#
 		# ------------------------------------------------------------------
-		/**
-		 * 
-		 */
-		public function getCountsByFieldForSearch($ps_search, $pa_options=null) {
-			require_once(__CA_LIB_DIR__.'/core/Search/SearchCache.php');
-			
-			$vn_tablenum = $this->opo_datamodel->getTableNum($this->ops_tablename);
-			
-			$o_cache = new SearchCache();
-			
-			if ($o_cache->load($ps_search, $vn_tablenum, $pa_options)) {
-				return $o_cache->getCounts();
-			}
-			return array();
-		}
-		# ------------------------------------------------------
 		/**
 		 * Converts list of relationships type codes and/or numeric ids to an id-only list
 		 */

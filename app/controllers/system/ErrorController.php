@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,10 +46,10 @@
  					$va_error_messages[] = $o_err->getErrorMessage();
  				}
  			}
+ 			
  			$this->view->setVar('error_messages', $va_error_messages);
  			$this->view->setVar('referrer', $o_purify->purify($this->request->getParameter('r', pString)));
  			$this->render('error_html.php');
  		}
  		# -------------------------------------------------------
  	}
- ?>

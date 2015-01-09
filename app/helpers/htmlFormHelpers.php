@@ -415,6 +415,7 @@ $vs_tag = "
 								width: '{$vn_viewer_width}',
 								height: '{$vn_viewer_height}',
 								magnifier: false,
+								show_annotation_tools: false,
 								buttonUrlPath: '{$vs_viewer_base_url}/themes/default/assets/pawtucket/graphics/buttons',
 								annotationLoadUrl: '{$vs_annotation_load_url}',
 								annotationSaveUrl: '{$vs_annotation_save_url}',

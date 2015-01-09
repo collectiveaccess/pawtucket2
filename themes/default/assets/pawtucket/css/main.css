@@ -963,7 +963,8 @@ a.browseRemoveFacet img {
 	padding:12px;
 	margin-bottom:10px;
 	border-radius:10px;
-}	
+}
+/*
 .sets .dropdown-menu a{
 	font-size:11px;
 	text-transform:uppercase;
@@ -975,7 +976,7 @@ a.browseRemoveFacet img {
 	background-color:#fff;
 	color:#000;
 
-}
+}*/
 .activitycol .lbSetCommentHeader {
 	font-weight:bold;
 	padding-top:10px;
@@ -1231,6 +1232,8 @@ a.browseRemoveFacet img {
 }	
 
 .detail .repViewerCont {
+	width:100%;
+	height:100%;
 	position:relative;
 }
 .detail audio{
@@ -2090,9 +2093,9 @@ a.readmore-js-toggle{
    
 
 /* bookreader */
-#BookReaderContainer{
+.BookReaderContainer{
 	width: 100%;
-	height: 550px;
+	height: 100% !important;
 }
 .DV-views{
 	margin-left:72px;
