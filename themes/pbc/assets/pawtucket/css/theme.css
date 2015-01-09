@@ -27,6 +27,15 @@ a {
 .navbar {
 	margin-bottom:0px;
 }
+@media (max-width: 767px) {
+	.navbar {
+		height: 70px;
+	}	
+	.container > .navbar-header hr {
+		margin-left:20px;
+		margin-right:100px;
+	}
+}
 .navbar-default .navbar-nav > li > a {
 	color:#666;
 }
@@ -258,4 +267,8 @@ a {
 }
 #footer ul a {
 	color: green;
+}
+
+.caAudioPlayer {
+	padding-left: 22px !important;
 }
