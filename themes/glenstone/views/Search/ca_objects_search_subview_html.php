@@ -122,9 +122,12 @@
 					print "<p class='artist'>".(strlen($va_authors) > 40 ? substr($va_authors, 0, 37)."..." : $va_authors)."</p>";
 					print "<p class='artist dark'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'publisher', 'delimiter' => '; '))."</p>";
 
-				}				
+				}
+				if ($qr_results->get('ca_objects.type_id') == 23 || $qr_results->get('ca_objects.type_id') == 26 || $qr_results->get('ca_objects.type_id') == 25 || $qr_results->get('ca_objects.type_id') == 24 || $qr_results->get('ca_objects.type_id') == 27){
+					print "<p>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+				}			
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {
-					print $qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'template' => '<p>^dc_dates_value</p>')); 
+					print "<p>".$qr_results->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>"; 
 				}
 				if ($qr_results->get('is_deaccessioned') && ($qr_results->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 					// If currently deaccessioned then display deaccession message
@@ -132,7 +135,7 @@
 					#if ($vs_deaccession_notes = $qr_results->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
 				}	
 				if ($qr_results->get('ca_objects.type_id') == 28) {
-					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						print "<p class='idno'>".$qr_results->get("ca_objects.idno")."</p>";
 					}
 				}			

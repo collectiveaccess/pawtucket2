@@ -81,7 +81,11 @@
 					}
 					print "</div>";
 				}
-				
+			if ($va_documents = $t_object->representationsOfClass('document', array('original'))){
+				foreach ($va_documents as $doc_id => $va_document) {
+					print "<div class='bookLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Ebook</a></div>";
+				}
+			}				
 ?>				
 
 
@@ -147,8 +151,8 @@
 					<div id="blockResultsScroller">				
 <?php
 				}
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
-			foreach ($va_object_ids as $obj_key => $va_object_id) {
+			$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
+			foreach ($va_archive_ids as $obj_key => $va_object_id) {
 				$t_object = new ca_objects($va_object_id);
 				print "<div class='archivesResult'>";
 				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$va_object_id)."</div>";
@@ -187,8 +191,8 @@
 					<div id="blockResultsScroller">				
 <?php
 				}
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
-			foreach ($va_object_ids as $obj_key => $va_object_id) {
+			$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+			foreach ($va_artwork_ids as $obj_key => $va_object_id) {
 				$t_object = new ca_objects($va_object_id);
 				print "<div class='archivesResult'>";
 				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";

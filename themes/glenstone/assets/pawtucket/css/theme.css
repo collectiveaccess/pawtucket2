@@ -393,6 +393,36 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 .collection .exhibitions {
 	padding-left:10px;
 }
+.collName a {
+	font-size:13px;
+	line-height:1.5em;
+	color:#333;
+	border-bottom:1px solid #ccc;
+}
+.collName .text {
+	font-size:13px;
+	line-height:1.5em;
+	color:#333;
+}
+.collName a:hover {
+	text-decoration:none;
+	border-bottom:1px solid #333;
+	color:#333;
+}
+#collectionContents {
+	border-radius:4px;
+	background-color:#f7f7f7;
+	padding:10px;
+}
+#collectionContents h2{
+	margin-top:10px;
+}
+#collectionContents p{
+	margin-bottom:5px;
+}
+#collectionContents a {
+	color:#333;
+}
 
 /* Static Page */
 #pageArea.staticPage .container{
@@ -501,6 +531,16 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	color: #777;
 	line-height: 1.3em;
 }
+.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+	font-size: 30px;
+	padding: 10px;
+	border-radius: 23px;
+	background-color: #eee;
+	opacity: .7;
+	position: absolute;
+	left: 40%;
+	top: 50px;
+}
 .resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
 	position: absolute;
 	top: 30px;
@@ -511,8 +551,20 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	border-radius: 30px;
 	opacity: .7;
 }
+/*.resultImg .glyphicon.glyphicon-volume-up {
+	margin-top: 0px;
+	margin-left: -30px;
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px;
+	border-radius: 30px;
+	opacity: .7;
+}*/
 .resultImg.noimage .glyphicon.glyphicon-film {
 	margin-left:-30px;
+}
+.resultImg .glyphicon.glyphicon-volume-up {
+	
 }
 .resultImg.noimage .glyphicon.glyphicon-book {
 	font-size:48px;
@@ -842,6 +894,9 @@ p.bookTitle {
 .detail .detailMediaToolbar {
 	font-size:14px;
 }
+.detailMediaToolbar .dlButton{
+	display:none;
+}
 .detail #detailRepNav {
 	font-size:14px;
 }
@@ -886,9 +941,12 @@ p.bookTitle {
 	
 } 
 .detail.archives .repViewerCont img {
-	width:100%;
+
 }
-.detail.artwork .jcarousel li {
+.detail.archives .col-sm-7.archives {
+	overflow:hidden;
+} 
+.detail.artwork .jcarousel li, .detail.archives .jcarousel li {
 	margin-right:0px;
 	overflow: hidden;
 	text-align:center;
@@ -1020,7 +1078,7 @@ p.bookTitle {
 	padding-top:75px;
 	padding-bottom:75px;
 }
-.book.detail .detailMediaPlaceholder .glyphicon-book, .detail.archives .detailMediaPlaceholder .glyphicon-film{
+.book.detail .detailMediaPlaceholder .glyphicon-book, .detail.archives .detailMediaPlaceholder .glyphicon-film, .detail.archives .detailMediaPlaceholder .glyphicon-volume-up{
 	font-size: 48px;
 	background-color: #eee;
 	padding: 10px 12px 10px 8px;
@@ -1042,6 +1100,26 @@ p.bookTitle {
 	padding: 10px;
 	border-radius: 30px;
 	opacity: .7;
+}
+.bIcon {
+	font-size: 22px;
+	background-color: #eee;
+	padding: 12px;
+	border-radius: 10px;
+	opacity: .7;
+	float:left;
+	margin-right:10px;
+	margin-bottom:20px;
+}
+.audio.detail .caAudioPlayer {
+	padding-top:13px;
+}
+a.readmore-js-toggle {
+	color:#999;
+}
+.findingaid a.readmore-js-toggle {
+	margin-left:30px;
+	font-size:11px;
 }
 #Condition .clearfix {
 	margin-bottom:5px;
@@ -1139,7 +1217,12 @@ p.bookTitle {
 	font-size: 15px;
 	color: #666;
 }
-
+.DV-closeLabel {
+	padding-right:25px;
+}
+#caMediaDisplayContentMedia.video-js {
+	width:100% !important;
+}
 @media (max-width: 768px){
 	.relatedLoan {
 		height:auto;

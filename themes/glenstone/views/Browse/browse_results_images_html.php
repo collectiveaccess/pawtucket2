@@ -113,7 +113,7 @@
 					} else {
 						$vs_idno_detail_link = "";
 					}
-					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatoral_all_new") || $this->request->user->hasUserRole("curatoral_basic_new")  || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 						$vs_art_idno_link = "<p class='idno'>".$qr_res->get("ca_objects.idno")."</p>";
 					} else {
 						$vs_art_idno_link = "";
@@ -122,6 +122,11 @@
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
+					if ($qr_res->get('ca_objects.dc_date.dc_dates_value')) {
+						$vs_date_link = $qr_res->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'));
+					}else {
+						$vs_date_link = "";
+					}
 				}
 				if ($vs_table == 'ca_objects') {
 					if ($qr_res->get('ca_objects.type_id') == 25) {
@@ -130,6 +135,8 @@
 						$va_icon = "<i class='glyphicon glyphicon-film'></i>";
 					} elseif (($qr_res->get('ca_objects.type_id') == 30 && !($qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values))))){
 						$va_icon = "<i class='glyphicon glyphicon-book'></i>";	
+					} elseif ($qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27){
+						$va_icon = "<i class='fa fa-archive'></i>";
 					} elseif ($qr_res->get('ca_objects.type_id') == 1903){
 						$vn_parent_id = $qr_res->get('ca_objects.parent_id');
 						$t_copy = new ca_objects($vn_parent_id);
@@ -146,7 +153,7 @@
 					if ($qr_res->get('ca_objects.type_id') == 1903){
 						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$t_copy->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_parent_id);				
 					} elseif ($qr_res->get('ca_objects.type_id') == 25) {
-						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_parent_id);										
+						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_id);										
 					} else {
 						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
 					}
@@ -162,7 +169,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_art_idno_link}{$vs_library_info}
+					{$vs_label_artist}{$vs_label_detail_link}{$vs_date_link}{$vs_art_idno_link}{$vs_library_info}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
