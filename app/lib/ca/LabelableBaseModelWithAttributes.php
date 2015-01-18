@@ -416,6 +416,7 @@
 	
 			$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 			$ps_label_boolean = caGetOption('labelBoolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
+			$ps_sort = caGetOption('sort', $pa_options, null);
 		
 			$vs_table = get_called_class();
 			$t_instance = new $vs_table;
@@ -435,6 +436,12 @@
 			$vb_has_label_fields = false;
 			foreach ($pa_values as $vs_field => $vm_value) {
 				if (in_array($vs_field, array('preferred_labels', 'nonpreferred_labels')) && is_array($vm_value) && sizeof($vm_value)) { $vb_has_label_fields = true; break; }
+			}
+			
+			if (!$vb_has_label_fields && $ps_sort) {
+				$va_sort_tmp = explode('.', $ps_sort);
+				if ($va_sort_tmp[0] == $t_instance->getLabelTableName()) { $vb_has_label_fields = true; }
+				if (in_array($va_sort_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) { $vb_has_label_fields = true; }
 			}
 			
 			$vb_has_attributes = false;
@@ -644,19 +651,19 @@
 			$vs_sql .=" WHERE {$vs_deleted_sql} ".join(" {$ps_boolean} ", $va_label_sql);
 			
 			$vs_orderby = '';
-			if ($vs_sort = caGetOption('sort', $pa_options, null)) {
-				$vs_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
-				$va_tmp = explode(".", $vs_sort);
+			if ($ps_sort) {
+				$ps_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
+				$va_tmp = explode(".", $ps_sort);
 				if (sizeof($va_tmp) == 2) {
 					switch($va_tmp[0]) {
 						case $vs_table:
 							if ($t_instance->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY {$ps_sort} {$ps_sort_direction}";
 							}
 							break;
 						case $vs_label_table:
 							if ($t_label->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY {$ps_sort} {$ps_sort_direction}";
 							}
 							break;
 					}
