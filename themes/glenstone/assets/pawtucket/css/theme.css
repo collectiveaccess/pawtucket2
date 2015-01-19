@@ -504,6 +504,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	height:178px;
 	margin-bottom:20px;
 }
+.archivesResult {
+	height:198px;
+}
 .libraryResult {
 	height:295px;
 	margin-bottom:20px;
@@ -612,8 +615,11 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 #libraryBlock .blockResults {
 	height:316px;
 }
-.multisearch #archivesBlock .blockResults, .multisearch #artworksBlock .blockResults {
+.multisearch #artworksBlock .blockResults {
 	height:200px; 
+}
+.multisearch #archivesBlock .blockResults {
+	height:220px;
 }
 .multisearch #libraryResults .blockResultsScroller {
 	height:auto;

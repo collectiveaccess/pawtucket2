@@ -124,6 +124,14 @@
 
 				}
 				if ($qr_results->get('ca_objects.type_id') == 23 || $qr_results->get('ca_objects.type_id') == 26 || $qr_results->get('ca_objects.type_id') == 25 || $qr_results->get('ca_objects.type_id') == 24 || $qr_results->get('ca_objects.type_id') == 27){
+					$va_collection_id = $qr_results->get('ca_collections.collection_id');
+					$t_collection = new ca_collections($va_collection_id);
+					$vn_parent_ids = $t_collection->getHierarchyAncestors($va_collection_id, array('idsOnly' => true));
+					$vn_highest_level = end($vn_parent_ids);
+					$t_top_level = new ca_collections($vn_highest_level);
+					print "<p>".caNavLink($this->request, $t_top_level->get('ca_collections.preferred_labels'), '', 'Detail', 'collections', $vn_highest_level)."</p>";					
+				}
+				if ($qr_results->get('ca_objects.type_id') == 23 || $qr_results->get('ca_objects.type_id') == 26 || $qr_results->get('ca_objects.type_id') == 25 || $qr_results->get('ca_objects.type_id') == 24 || $qr_results->get('ca_objects.type_id') == 27){
 					print "<p>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
 				}			
 				if ($qr_results->get('ca_objects.dc_date.dc_dates_value')) {

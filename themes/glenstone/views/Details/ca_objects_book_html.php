@@ -83,7 +83,7 @@
 				}
 			if ($va_documents = $t_object->representationsOfClass('document', array('original'))){
 				foreach ($va_documents as $doc_id => $va_document) {
-					print "<div class='bookLink'><a href='".$va_document['urls']['original']."' class='downloadButton'>Download Ebook</a></div>";
+					print "<div class='bookLink'><a href='".$va_document['urls']['original']."' class='downloadButton' target='_blank'>Download Ebook</a></div>";
 				}
 			}				
 ?>				
