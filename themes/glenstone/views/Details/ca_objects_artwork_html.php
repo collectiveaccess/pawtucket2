@@ -105,6 +105,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 								print "<div class='unit wide'><span class='metaHeader'>Provenance </span><span>".$va_provenance."</span></div>";
 						}
 					}
+					
 					if ($va_exhibition_history = $t_object->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC'))) {
 						print "<div class='unit wide'><span class='metaHeader'>Exhibition History</span>";
 						foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
@@ -116,6 +117,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						}
 						print "</div>";
 					}
+					
 
 ?>										
 					{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span >^ca_objects.literature</span></div></ifdef>}}}
