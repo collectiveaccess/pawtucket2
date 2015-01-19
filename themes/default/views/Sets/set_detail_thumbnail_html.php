@@ -2,6 +2,9 @@
 	$va_set_items = $this->getVar("set_items");
 	$t_set = $this->getVar("set");
 	$vb_write_access = $this->getVar("write_access");
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 ?>
 			<div class="row" id="sortable">
 <?php
@@ -12,7 +15,7 @@
 			print "</div></div><!-- end col 3 -->";
 		}
 	}else{
-		print "<div class='col-sm-12'>"._t("There are no items in this lightbox")."</div>";
+		print "<div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div>";
 	}
 ?>
 			</div><!-- end row -->

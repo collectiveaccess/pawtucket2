@@ -7,7 +7,12 @@
 <?php
 	}
 ?>
-<H1><?php print _t("Register"); ?></H1>
+<script type="text/javascript">
+	// initialize CA Utils
+	caUI.initUtils();
+
+</script>
+<div class="row"><div class="col-sm-4"><H1<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Register"); ?></H1></div></div>
 <?php
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";

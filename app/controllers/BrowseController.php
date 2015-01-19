@@ -342,6 +342,7 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
+ 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}
