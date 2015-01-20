@@ -4080,7 +4080,8 @@
 					if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { 
 						$va_restrict_to_types = caGetTypeRestrictionsForUser($vs_rel_table_name); 
 					} else {
-						$va_restrict_to_types = array_merge($va_restrict_to_types, caGetTypeRestrictionsForUser($vs_rel_table_name));
+						$va_user_type_restrictions = caGetTypeRestrictionsForUser($vs_rel_table_name);
+						$va_restrict_to_types = is_array($va_user_type_restrictions) ? array_merge($va_restrict_to_types, $va_user_type_restrictions) : $va_restrict_to_types;
 					}
 					
 					if (!is_array($va_exclude_types = $va_facet_info['exclude_types'])) { $va_exclude_types = array(); }

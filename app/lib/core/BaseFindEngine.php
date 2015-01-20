@@ -333,9 +333,9 @@
 								$va_rels = $this->opo_datamodel->getOneToManyRelations($vs_table, $vs_last_table);
 							}
 							if ($vs_table == $va_rels['one_table']) {
-								$va_joins[$vs_table] = "INNER JOIN ".$va_rels['one_table']." ON ".$va_rels['one_table'].".".$va_rels['one_table_field']." = ".$va_rels['many_table'].".".$va_rels['many_table_field'].$vs_rel_type_sql;
+								$va_joins[$vs_table] = "LEFT JOIN ".$va_rels['one_table']." ON ".$va_rels['one_table'].".".$va_rels['one_table_field']." = ".$va_rels['many_table'].".".$va_rels['many_table_field'].$vs_rel_type_sql;
 							} else {
-								$va_joins[$vs_table] = "INNER JOIN ".$va_rels['many_table']." ON ".$va_rels['many_table'].".".$va_rels['many_table_field']." = ".$va_rels['one_table'].".".$va_rels['one_table_field'].$vs_rel_type_sql;
+								$va_joins[$vs_table] = "LEFT JOIN ".$va_rels['many_table']." ON ".$va_rels['many_table'].".".$va_rels['many_table_field']." = ".$va_rels['one_table'].".".$va_rels['one_table_field'].$vs_rel_type_sql;
 							}
 						}
 						$vs_last_table = $vs_table;
@@ -361,7 +361,6 @@
 			//
 			// Grab values and index for sorting later
 			//
-			//Debug::msg("sort pre query ".$t->getTime(4));
 			$va_primary_sort_field = explode('.', $vs_sortable_value_fld);
 			$vs_join_sql = join("\n", $va_joins);
 			
