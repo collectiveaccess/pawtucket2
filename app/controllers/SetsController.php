@@ -213,7 +213,7 @@
 			if ($vs_facet_group = $this->opo_config->get("set_facet_group")) {
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
-			$va_available_facet_list = $this->opo_config->getAssoc("availableFacets");
+			$va_available_facet_list = $this->opo_config->get("availableFacets");
 			$va_facets = $o_browse->getInfoForAvailableFacets();
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -965,10 +965,14 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					if($this->request->getParameter('saveLastResults', pString)){
-						# --- get object ids from last result
-						$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
-						$va_object_ids = $o_context->getResultList();
+					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
+						if($pb_saveLastResults){
+							# --- get object ids from last result
+							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+							$va_object_ids = $o_context->getResultList();
+						}else{
+							$va_object_ids = explode(";", $ps_object_ids);
+						}
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							# --- check for those already in set
 							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
@@ -994,8 +998,9 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
+ 			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
- 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger)){
+ 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
  				$this->render("Sets/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

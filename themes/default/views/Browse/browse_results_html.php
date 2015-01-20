@@ -138,7 +138,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
 ?>
 		</H1>
 		<H5>
@@ -171,7 +171,7 @@ if (!$vb_ajax) {	// !ajax
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
 ?>
-		<form id="setsSelectmultiple">
+		<form id="setsSelectMultiple">
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
@@ -215,7 +215,19 @@ if (!$vb_ajax) {	// !ajax
 			padding: 20,
 			nextSelector: 'a.jscroll-next'
 		});
+		
+		jQuery('#setsSelectMultiple').submit(function(e){		
+			objIDs = [];
+			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+			   objIDs.push($(this).val());
+			});
+			objIDsAsString = objIDs.join(';');
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			e.preventDefault();
+			return false;
+		});
 	});
+
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');
