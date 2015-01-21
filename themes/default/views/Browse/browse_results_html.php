@@ -65,7 +65,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
-		<?php 
+<?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -89,7 +89,6 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
-			if($vs_sort_control_type == 'dropdown'){
 ?>		
 			<div class="btn-group">
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
@@ -97,31 +96,33 @@ if (!$vb_ajax) {	// !ajax
 <?php
 					if($qr_res->numHits()){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
+						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
+					}
+					if($vs_sort_control_type == 'dropdown'){
 ?>
 						<li class="divider"></li>
 <?php
-					}
-					if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-						print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
-						foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-							if ($vs_current_sort === $vs_sort) {
-								print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
-							} else {
-								print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
+						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
+							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+								if ($vs_current_sort === $vs_sort) {
+									print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+								} else {
+									print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
+								}
 							}
+							print "<li class='divider'></li>\n";
+							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 						}
-						print "<li class='divider'></li>\n";
-						print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-						print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
-						print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
-					}
-					
-					if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
+						
+						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
 ?>
-					<li class="divider"></li>
+						<li class="divider"></li>
 <?php
+						}
 					}
-					
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
 						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1))."</li>";
 					}
@@ -137,7 +138,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			}
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
 ?>
 		</H1>
 		<H5>
@@ -170,6 +171,7 @@ if (!$vb_ajax) {	// !ajax
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
 ?>
+		<form id="setsSelectMultiple">
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
@@ -181,6 +183,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
+		</form>
 	</div><!-- end col-8 -->
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
@@ -212,7 +215,19 @@ if (!$vb_ajax) {	// !ajax
 			padding: 20,
 			nextSelector: 'a.jscroll-next'
 		});
+		
+		jQuery('#setsSelectMultiple').submit(function(e){		
+			objIDs = [];
+			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+			   objIDs.push($(this).val());
+			});
+			objIDsAsString = objIDs.join(';');
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			e.preventDefault();
+			return false;
+		});
 	});
+
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');

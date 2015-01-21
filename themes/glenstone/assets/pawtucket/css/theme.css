@@ -609,6 +609,13 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 		top: 70px;*/
 	}
 }
+.bResultItem:hover .bSetsSelectMultiple{
+	right:24px;
+	top:19px;
+}
+#bSetsSelectMultipleButton{
+	margin-left:20px;
+}
 #libraryBlock {
 	margin-bottom:10px;
 }
@@ -1431,7 +1438,7 @@ a.readmore-js-toggle {
 	font-size:12px;
 	font-family: 'Source Sans Pro', sans-serif;
 }
-.setCount {
+.lbSetCount {
 	font-size:14px;
 	color:#666;
 }
@@ -1468,6 +1475,11 @@ a.readmore-js-toggle {
 .lbItem:hover .lbExpandedInfo {
 	background-color:#fff;
 }
+.lbItemContainerList .lbExpandedInfo, .lbItemContainerList .lbItem:hover .lbExpandedInfo{
+	margin:0px;
+	padding:5px 0px 0px 0px;
+	display:inline;
+}
 .activitystream {
 	overflow:hidden;
 }
@@ -1495,6 +1507,9 @@ a.readmore-js-toggle {
 .lbExpandedInfo HR, .lbSetExpandedInfo HR {
 	margin:0px;
 	border:0px;
+}
+.lbItemContainerList .lbExpandedInfo HR{
+	margin:5px 0px 0px 0px;
 }
 
 /* MediaViewer */
