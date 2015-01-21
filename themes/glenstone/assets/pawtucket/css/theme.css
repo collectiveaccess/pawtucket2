@@ -840,7 +840,10 @@ p.artist.lower {
 	min-height:72px;
 	height:auto;
 }
-
+.bResultListItem:hover {
+	box-shadow:none;
+	-webkit-box-shadow: none;
+}
 .reportTools {
 	float:right;
 	padding-left:10px;

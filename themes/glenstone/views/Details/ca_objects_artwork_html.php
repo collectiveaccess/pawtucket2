@@ -197,6 +197,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 									print "<b>Appraisal Notes: </b>".$va_appraisal_r['valuation_notes'];
 								}
 								print "<hr>";
+								break;
 							}
 							print"</span></div>";
 						}
@@ -204,7 +205,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						if ($va_acquisition = $t_object->get('ca_object_lots.preferred_labels', array('returnAsLink' => true))) {
 							print "<div class='unit'><span class='metaTitle'>Acquisition Details: </span><span class='meta'>".$va_acquisition."</span></div>";
 						}											
-					} elseif ($this->request->user->hasUserRole("art_insurance_loan")) {	
+					} elseif ($this->request->user->hasUserRole("art_insurance_loan")) {
 						if ($t_object->get('ca_objects.insurance_valuation.insurance_value_price')) {
 							$va_appraisal = $t_object->get('ca_objects.insurance_valuation', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'sort' => 'ca_objects.insurance_valuation.insurance_valuation_date')); 
 							print "<div class='unit'><span class='metaTitle'>Current Insurance Value: </span><span class='meta'>";
@@ -235,46 +236,51 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 							$va_condition_array[$va_general['general_condition_date']['start']][] = $va_general;
 						}
 					}
-					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_surface_condition as $va_sur_key => $va_surface) {
-							$va_condition_array[$va_surface['surface_date']['start']][] = $va_surface;
+					if ($va_detailed_condition = $t_object->get('ca_objects.detailed_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true, 'showHierarchy' => true))) {
+						foreach ($va_detailed_condition as $va_det_key => $va_detailed) {
+							$va_condition_array[$va_detailed['detailed_date']['start']][] = $va_detailed;
 						}
 					}					
-					if ($va_frame_condition = $t_object->get('ca_objects.frame_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_frame_condition as $va_frame_key => $va_frame) {
-							$va_condition_array[$va_frame['frame_date']['start']][] = $va_frame; 
-						}
-					}
-					if ($va_glazing_condition = $t_object->get('ca_objects.glazing_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_glazing_condition as $va_glaze_key => $va_glazing) {
-							$va_condition_array[$va_glazing['glazing_date']['start']][] = $va_glazing; 
-						}
-					}	
-					if ($va_support_condition = $t_object->get('ca_objects.support_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_support_condition as $va_sup_key => $va_support) {
-							$va_condition_array[$va_support['support_date']['start']][] = $va_support;
-						}
-					}
-					if ($va_vitrine_condition = $t_object->get('ca_objects.vitrine_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_vitrine_condition as $va_vit_key => $va_vitrine) {
-							$va_condition_array[$va_vitrine['vitrine_date']['start']][] = $va_vitrine;
-						}
-					}
-					if ($va_mount_condition = $t_object->get('ca_objects.mount_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_mount_condition as $va_mount_key => $va_mount) {
-							$va_condition_array[$va_mount['mount_date']['start']][] = $va_mount; 
-						}
-					}	
-					if ($va_base_condition = $t_object->get('ca_objects.base_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_base_condition as $va_base_key => $va_base) {
-							$va_condition_array[$va_base['base_date']['start']][] = $va_base; 
-						}
-					}
-					if ($va_pedestal_condition = $t_object->get('ca_objects.pedestal_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
-						foreach ($va_pedestal_condition as $va_pedestal_key => $va_pedestal) {
-							$va_condition_array[$va_pedestal['pedestal_date']['start']][] = $va_pedestal; 
-						}
-					}																																	
+#					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_surface_condition as $va_sur_key => $va_surface) {
+#							$va_condition_array[$va_surface['surface_date']['start']][] = $va_surface;
+#						}
+#					}					
+#					if ($va_frame_condition = $t_object->get('ca_objects.frame_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_frame_condition as $va_frame_key => $va_frame) {
+#							$va_condition_array[$va_frame['frame_date']['start']][] = $va_frame; 
+#						}
+#					}
+#					if ($va_glazing_condition = $t_object->get('ca_objects.glazing_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_glazing_condition as $va_glaze_key => $va_glazing) {
+#							$va_condition_array[$va_glazing['glazing_date']['start']][] = $va_glazing; 
+#						}
+#					}	
+#					if ($va_support_condition = $t_object->get('ca_objects.support_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_support_condition as $va_sup_key => $va_support) {
+#							$va_condition_array[$va_support['support_date']['start']][] = $va_support;
+#						}
+#					}
+#					if ($va_vitrine_condition = $t_object->get('ca_objects.vitrine_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_vitrine_condition as $va_vit_key => $va_vitrine) {
+#							$va_condition_array[$va_vitrine['vitrine_date']['start']][] = $va_vitrine;
+#						}
+#					}
+#					if ($va_mount_condition = $t_object->get('ca_objects.mount_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_mount_condition as $va_mount_key => $va_mount) {
+#							$va_condition_array[$va_mount['mount_date']['start']][] = $va_mount; 
+#						}
+#					}	
+#					if ($va_base_condition = $t_object->get('ca_objects.base_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_base_condition as $va_base_key => $va_base) {
+#							$va_condition_array[$va_base['base_date']['start']][] = $va_base; 
+#						}
+#					}
+#					if ($va_pedestal_condition = $t_object->get('ca_objects.pedestal_condition', array('returnAsArray' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
+#						foreach ($va_pedestal_condition as $va_pedestal_key => $va_pedestal) {
+#							$va_condition_array[$va_pedestal['pedestal_date']['start']][] = $va_pedestal; 
+#						}
+#					}																																	
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
 						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnAsArray' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
 
@@ -332,39 +338,17 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						if ($va_condition_key != ""){
 						$vn_i = 0;
 						print "<div class='clearfix'></div>";
-						print "<b>".caGetLocalizedHistoricDate($va_condition_key)."</b><br/>";
-							foreach ($va_condition_holder as $va_condition) {
-								/*
-								if ($va_condition['general_condition_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['general_condition_date']['start'], $va_condition['general_condition_date']['end'])."</b>";
-								}
-								if ($va_condition['surface_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['surface_date']['start'], $va_condition['surface_date']['end'])."</b>";
-								}
-								if ($va_condition['frame_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['frame_date']['start'], $va_condition['frame_date']['end'])."</b>";
-								}
-								if ($va_condition['glazing_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['glazing_date']['start'], $va_condition['glazing_date']['end'])."</b>";
-								}
-								if ($va_condition['support_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['support_date']['start'], $va_condition['support_date']['end'])."</b>";
-								}	
-								if ($va_condition['vitrine_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['vitrine_date']['start'], $va_condition['vitrine_date']['end'])."</b>";
-								}
-								if ($va_condition['mount_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['mount_date']['start'], $va_condition['mount_date']['end'])."</b>";
-								}
-								if ($va_condition['base_date']['start']) {
-									print "<b>".caGetLocalizedHistoricDateRange($va_condition['base_date']['start'], $va_condition['base_date']['end'])."</b>";
-								}
-								*/																																				
+						print "<b>".caGetLocalizedHistoricDate($va_condition_key, array('timeOmit' => true))."</b><br/>";
+							foreach ($va_condition_holder as $va_condition) {																																				
 								if (($va_condition['general_condition_value']) || ($va_condition['general_condition_comments'])) {
 									print " <u>General Condition:</u> ".($va_condition['general_condition_value'] ? $va_condition['general_condition_value'].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['general_condition_comments']).($va_condition['general_condition_comments'] ? ", " : "").($va_condition['general_condition_specific'] ? "assessed by ".$va_condition['general_condition_person']." ".$va_condition['general_condition_specific'] : "");
 									print "<div class='clearfix'></div>";
 								}
-								if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
+								if (($va_condition['detailed_value']) || ($va_condition['detailed_notes'])) {
+									print " <u>Detailed Condition:</u> ".($va_condition['detailed_value'] ? $va_condition['detailed_value'][1].": ".$va_condition['detailed_value'][0].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['detailed_notes']).($va_condition['detailed_notes'] ? ", " : "").($va_condition['detailed_assessor'] ? "assessed by ".$va_condition['detailed_assessor'] : "");
+									print "<div class='clearfix'></div>";
+								}								
+								/*if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
 									print " <u>Frame:</u> ".$va_condition['frame_value']." - ".$va_condition['frame_notes'].", assessed by ".$va_condition['frame_assessor'];
 									print "<div class='clearfix'></div>";
 								}
@@ -395,7 +379,8 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 								if (($va_condition['pedestal_value']) || ($va_condition['pedestal_notes'])) {
 									print " <u>Pedestal:</u> ".$va_condition['pedestal_value']." - ".$va_condition['pedestal_notes'].", assessed by ".$va_condition['pedestal_assessor'];
 									print "<div class='clearfix'></div>";
-								}																																
+								}	
+								*/																															
 								if ($va_condition['condition_images_date']['start']) {
 									#print "<b>".caGetLocalizedHistoricDateRange($va_condition['condition_images_date']['start'], $va_condition['condition_images_date']['end'])."</b>: <br/>";
 									print "<a href='#' class='conditionImage' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/ca_objects', array('object_id' => $vn_object_id, 'value_id' =>  $va_condition['value_id']))."\"); return false;'>".$va_condition['condition_images_media']."</a>";
