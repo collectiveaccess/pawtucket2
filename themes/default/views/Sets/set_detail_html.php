@@ -1,26 +1,56 @@
 <?php
-	$o_set_config = $this->getVar("set_config");
-	$q_set_items = $this->getVar("result");
-	$t_set = $this->getVar("set");
-	$vb_write_access = $this->getVar("write_access");
+/** ---------------------------------------------------------------------
+ * themes/default/Sets/set_detail_html.php : 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2015 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * @package CollectiveAccess
+ * @subpackage theme/default
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
+ * ----------------------------------------------------------------------
+ */
+	$o_set_config 					= $this->getVar("set_config");
+	$q_set_items 					= $this->getVar("result");
+	$t_set 							= $this->getVar("set");
+	$vb_write_access 				= $this->getVar("write_access");
 	
-	$va_views			= $this->getVar('views');
-	$vs_current_view	= $this->getVar('view');
-	$va_criteria	= $this->getVar('criteria');
+	$va_views						= $this->getVar('views');
+	$vs_current_view				= $this->getVar('view');
+	$va_criteria					= $this->getVar('criteria');
 	
-	$vs_current_sort	= $this->getVar('sort');
-	$vs_current_secondary_sort	= $this->getVar('secondarySort');
-	$vs_sort_dir		= $this->getVar('sort_direction');
-	$vs_sort_control_type = $o_set_config->get("sortControlType");
+	$vs_current_sort				= $this->getVar('sort');
+	$vs_current_secondary_sort		= $this->getVar('secondarySort');
+	$vs_sort_dir					= $this->getVar('sortDirection');
+	$vs_sort_control_type 			= $o_set_config->get("sortControlType");
 	if(!$vs_sort_control_type){
 		$vs_sort_control_type = "dropdown";
 	}
 	
-	$va_export_formats = $this->getVar('export_formats');
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$va_export_formats 				= $this->getVar('export_formats');
+	$va_lightbox_display_name 		= caGetSetDisplayName();
+	$vs_lightbox_display_name 		= $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
-	$vs_browse_key 		= $this->getVar('key');
+	$vs_browse_key 					= $this->getVar('key');
 ?>	
 	<div class="row">
 		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			

@@ -88,9 +88,7 @@
  		function setDetail() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			AssetLoadManager::register("mediaViewer");
-
-			#$o_config = caGetBrowseConfig();
-			#$o_search_config = caGetSearchConfig();
+ 		
 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
 			$this->view->setVar("browse_type", "caLightbox");	# --- this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
@@ -102,6 +100,9 @@
 			$this->view->setVar('views', $this->opo_config->getAssoc("views"));
 
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			
+ 			$vn_set_id = $t_set->get("set_id");
+ 			
  			$this->view->setVar("set", $t_set);
  			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
@@ -134,6 +135,7 @@
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
 				$this->view->setVar('facet_info', $va_facet_info);
+				
 				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
 				 switch($va_facet_info["group_mode"]){
 					case "alphabetical":
@@ -151,7 +153,7 @@
 			//
 			// Add criteria and execute
 			//
-			$vs_search_expression = "ca_sets.set_id:".$t_set->get("set_id");
+			$vs_search_expression = "ca_sets.set_id:{$vn_set_id}";
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 				$o_browse->addCriteria("_search", array($vs_search_expression));
 			}
@@ -166,7 +168,7 @@
 			if(!$ps_secondary_sort = $this->request->getParameter("secondary_sort", pString)){
  				$ps_secondary_sort = $o_context->getCurrentSecondarySort();
  			}
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				if (!$ps_sort && !($ps_sort = $o_context->getCurrentSort())) {
  					if(is_array(($va_sorts = $this->opo_config->getAssoc("sortBy")))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
@@ -195,6 +197,8 @@
  			$o_context->setCurrentSortDirection($ps_sort_direction);
  			
 			$va_sort_by = $this->opo_config->getAssoc("sortBy");
+			$va_sort_by[_t('Set order')] = "ca_set_items.rank/{$vn_set_id}";
+		
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sort', $ps_sort);
@@ -202,7 +206,7 @@
 			$this->view->setVar('secondarySortBy', is_array($va_secondary_sort_by) ? $va_secondary_sort_by : null);
 			$this->view->setVar('secondarySortBySelect', $vs_secondary_sort_by_select = (is_array($va_secondary_sort_by) ? caHTMLSelect("secondary_sort", $va_secondary_sort_by, array('id' => "secondary_sort"), array("value" => $ps_secondary_sort)) : ''));
 			$this->view->setVar('secondarySort', $ps_secondary_sort);
-			$this->view->setVar('sort_direction', $ps_sort_direction);
+			$this->view->setVar('sortDirection', $ps_sort_direction);
 			
 			$va_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
@@ -253,6 +257,7 @@
 			// Results
 			//
 			$vs_combined_sort = $va_sort_by[$ps_sort];
+			
 			if($ps_secondary_sort){
 				$vs_combined_sort .= ", ".$va_secondary_sort_by[$ps_secondary_sort];
 			}
@@ -265,15 +270,6 @@
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 			$o_context->saveContext();
  			$o_context->setAsLastFind();
-
- 			
-# 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("medium"), "checkAccess" => $this->opa_access_values)));
-#			$this->view->setVar("set", $t_set);
-#			$this->view->setVar("set_items", $va_set_items);
-#			$o_context = new ResultContext($this->request, 'ca_objects', 'sets');
- #			$o_context->setResultList($va_set_ids = $t_set->getItems(array('idsOnly' => true)));
- #			$o_context->saveContext();
- #			$o_context->setAsLastFind();
  			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {

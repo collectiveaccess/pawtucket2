@@ -118,6 +118,9 @@
 						if(!($vs_sort_key_1 = $va_sortable_values[0][$vn_hit])) { $vs_sort_key_1 = ''; }
 						if(!($vs_sort_key_2 = $va_sortable_values[1][$vn_hit])) { $vs_sort_key_2 = ''; }
 						if(!($vs_sort_key_3 = $va_sortable_values[2][$vn_hit])) { $vs_sort_key_3 = ''; }
+						if (is_numeric($vs_sort_key_1)) { $vs_sort_key_1 = str_pad($vs_sort_key_1, 12, '0', STR_PAD_LEFT); }
+						if (is_numeric($vs_sort_key_2)) { $vs_sort_key_2 = str_pad($vs_sort_key_2, 12, '0', STR_PAD_LEFT); }
+						if (is_numeric($vs_sort_key_3)) { $vs_sort_key_3 = str_pad($vs_sort_key_3, 12, '0', STR_PAD_LEFT); }
 						$vs_data .= $vn_hit.','.$vs_sort_key_1.','.$vs_sort_key_2.','.$vs_sort_key_3."\n";
 					}
 				} else {
@@ -141,7 +144,10 @@
 						if(!($vs_sort_key_1 = $va_sortable_values[0][$vn_hit])) { $vs_sort_key_1 = ''; } else { $vs_sort_key_1 = preg_replace("/[^[:alnum:][:space:]]/ui", '', $vs_sort_key_1); }
 						if(!($vs_sort_key_2 = $va_sortable_values[1][$vn_hit])) { $vs_sort_key_2 = ''; } else { $vs_sort_key_2 = preg_replace("/[^[:alnum:][:space:]]/ui", '', $vs_sort_key_2); }
 						if(!($vs_sort_key_3 = $va_sortable_values[2][$vn_hit])) { $vs_sort_key_3 = ''; } else { $vs_sort_key_3 = preg_replace("/[^[:alnum:][:space:]]/ui", '', $vs_sort_key_3); }
-									
+						if (is_numeric($vs_sort_key_1)) { $vs_sort_key_1 = str_pad($vs_sort_key_1, 12, '0', STR_PAD_LEFT); }
+						if (is_numeric($vs_sort_key_2)) { $vs_sort_key_2 = str_pad($vs_sort_key_2, 12, '0', STR_PAD_LEFT); }
+						if (is_numeric($vs_sort_key_3)) { $vs_sort_key_3 = str_pad($vs_sort_key_3, 12, '0', STR_PAD_LEFT); }
+						
 						$vs_sql .= "(".(int)$vn_hit.",'".$vs_sort_key_1."','".$vs_sort_key_2."','".$vs_sort_key_1."'),";
 					}
 				} else {
@@ -408,65 +414,82 @@
 					}
 				} else {
 					// sort in related table
-					$va_path = $this->opo_datamodel->getPath($ps_table, $vs_field_table);
-				
-					$vs_is_preferred_sql = null;
-					$va_joins = array();
-					if (sizeof($va_path) > 2) {
-						// many-many
-						$vs_last_table = null;
-						// generate related joins
-						foreach($va_path as $vs_table => $va_info) {
-							$t_instance = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
-				
-							$vs_rel_type_sql = null;
-							if($t_instance->isRelationship() && $vs_rel_type) {
-								if(is_array($va_rel_types = caMakeRelationshipTypeIDList($vs_table, array($vs_rel_type))) && sizeof($va_rel_types)) {
-									$vs_rel_type_sql = " AND {$vs_table}.type_id IN (".join(",", $va_rel_types).")";
-								}
-							}
-							if ($vs_last_table) {
-								$va_rels = $this->opo_datamodel->getOneToManyRelations($vs_last_table, $vs_table);
-								if (!sizeof($va_rels)) {
-									$va_rels = $this->opo_datamodel->getOneToManyRelations($vs_table, $vs_last_table);
-								}
-								if ($vs_table == $va_rels['one_table']) {
-									$va_joins[$vs_table] = "INNER JOIN ".$va_rels['one_table']." ON ".$va_rels['one_table'].".".$va_rels['one_table_field']." = ".$va_rels['many_table'].".".$va_rels['many_table_field'].$vs_rel_type_sql;
-								} else {
-									$va_joins[$vs_table] = "INNER JOIN ".$va_rels['many_table']." ON ".$va_rels['many_table'].".".$va_rels['many_table_field']." = ".$va_rels['one_table'].".".$va_rels['one_table_field'].$vs_rel_type_sql;
-								}
-							}
-							$vs_last_table = $vs_table;
-						}
-			
-						$vs_sortable_value_fld = $vs_primary_sort_field;
-					} else {
-						$va_rels = $this->opo_datamodel->getRelationships($ps_table, $vs_field_table);
-						if (!$va_rels) { break; }		// field is not valid
-											
-						$t_rel = $this->opo_datamodel->getInstanceByTableName($vs_field_table, true);
-						
-						// TODO: allow sorting on related record attributes
-						
-						if (!$t_rel->hasField($vs_field)) { break; }
-						$va_joins[$vs_field_table] = 'INNER JOIN '.$vs_field_table.' ON '.$ps_table.'.'.$va_rels[$ps_table][$vs_field_table][0][0].' = '.$vs_field_table.'.'.$va_rels[$ps_table][$vs_field_table][0][1]."\n";
-			
-						// if the related supports preferred values (eg. *_labels tables) then only consider those in the sort
-						if ($t_rel->hasField('is_preferred')) {
-							$vs_is_preferred_sql = " {$vs_field_table}.is_preferred = 1";
-						}
-					}
-				
-					$vs_join_sql = join("\n", $va_joins);
-					$vs_sql = "
-						SELECT {$ps_table}.{$vs_table_pk}, {$vs_field_table}.{$vs_field}
-						FROM {$ps_table}
-						{$vs_join_sql}
-						WHERE
-							{$vs_is_preferred_sql} ".($vs_is_preferred_sql ? ' AND ' : '')." {$ps_table}.{$vs_table_pk} IN (?)
-					";
+					if (($vs_field_table == 'ca_set_items') && ($vs_field == 'rank') && ((int)$vs_rel_type > 0)) {
+						// sort by ranks in specific set
+						$vs_sql = "
+							SELECT {$ps_table}.{$vs_table_pk}, ca_set_items.rank
+							FROM ca_sets
+							INNER JOIN ca_set_items ON ca_set_items.set_id = ca_sets.set_id
+							INNER JOIN {$ps_table} ON {$ps_table}.{$vs_table_pk} = ca_set_items.row_id
+							WHERE
+								(ca_set_items.table_num = ?) AND
+								(ca_set_items.set_id = ?) AND
+								{$ps_table}.{$vs_table_pk} IN (?)
+						";
 					
-					$qr_sort = $this->opo_db->query($vs_sql, array($pa_hits));
+						$qr_sort = $this->opo_db->query($vs_sql, array($vn_table_num, (int)$vs_rel_type, $pa_hits));
+						
+					} else {
+						$va_path = $this->opo_datamodel->getPath($ps_table, $vs_field_table);
+				
+						$vs_is_preferred_sql = null;
+						$va_joins = array();
+						if (sizeof($va_path) > 2) {
+							// many-many
+							$vs_last_table = null;
+							// generate related joins
+							foreach($va_path as $vs_table => $va_info) {
+								$t_instance = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
+				
+								$vs_rel_type_sql = null;
+								if($t_instance->isRelationship() && $vs_rel_type) {
+									if(is_array($va_rel_types = caMakeRelationshipTypeIDList($vs_table, array($vs_rel_type))) && sizeof($va_rel_types)) {
+										$vs_rel_type_sql = " AND {$vs_table}.type_id IN (".join(",", $va_rel_types).")";
+									}
+								}
+								if ($vs_last_table) {
+									$va_rels = $this->opo_datamodel->getOneToManyRelations($vs_last_table, $vs_table);
+									if (!sizeof($va_rels)) {
+										$va_rels = $this->opo_datamodel->getOneToManyRelations($vs_table, $vs_last_table);
+									}
+									if ($vs_table == $va_rels['one_table']) {
+										$va_joins[$vs_table] = "INNER JOIN ".$va_rels['one_table']." ON ".$va_rels['one_table'].".".$va_rels['one_table_field']." = ".$va_rels['many_table'].".".$va_rels['many_table_field'].$vs_rel_type_sql;
+									} else {
+										$va_joins[$vs_table] = "INNER JOIN ".$va_rels['many_table']." ON ".$va_rels['many_table'].".".$va_rels['many_table_field']." = ".$va_rels['one_table'].".".$va_rels['one_table_field'].$vs_rel_type_sql;
+									}
+								}
+								$vs_last_table = $vs_table;
+							}
+			
+							$vs_sortable_value_fld = $vs_primary_sort_field;
+						} else {
+							$va_rels = $this->opo_datamodel->getRelationships($ps_table, $vs_field_table);
+							if (!$va_rels) { break; }		// field is not valid
+											
+							$t_rel = $this->opo_datamodel->getInstanceByTableName($vs_field_table, true);
+						
+							// TODO: allow sorting on related record attributes
+						
+							if (!$t_rel->hasField($vs_field)) { break; }
+							$va_joins[$vs_field_table] = 'INNER JOIN '.$vs_field_table.' ON '.$ps_table.'.'.$va_rels[$ps_table][$vs_field_table][0][0].' = '.$vs_field_table.'.'.$va_rels[$ps_table][$vs_field_table][0][1]."\n";
+			
+							// if the related supports preferred values (eg. *_labels tables) then only consider those in the sort
+							if ($t_rel->hasField('is_preferred')) {
+								$vs_is_preferred_sql = " {$vs_field_table}.is_preferred = 1";
+							}
+						}
+				
+						$vs_join_sql = join("\n", $va_joins);
+						$vs_sql = "
+							SELECT {$ps_table}.{$vs_table_pk}, {$vs_field_table}.{$vs_field}
+							FROM {$ps_table}
+							{$vs_join_sql}
+							WHERE
+								{$vs_is_preferred_sql} ".($vs_is_preferred_sql ? ' AND ' : '')." {$ps_table}.{$vs_table_pk} IN (?)
+						";
+					
+						$qr_sort = $this->opo_db->query($vs_sql, array($pa_hits));
+					}
 					
 					$va_sort_keys = array();
 					while($qr_sort->nextRow()) {
@@ -502,7 +525,7 @@
 				foreach($pa_hits as $vn_hit) {
 					$vs_key = '';
 					foreach($pa_sortable_values as $vn_i => $va_sortable_values) {
-						$vs_key .= str_pad(substr($va_sortable_values[$vn_hit],0,50), 50, ' ', STR_PAD_RIGHT);
+						$vs_key .= str_pad(substr($va_sortable_values[$vn_hit],0,50), 50, ' ', is_numeric($va_sortable_values[$vn_hit]) ? STR_PAD_LEFT : STR_PAD_RIGHT);
 					}
 					$va_sort_buffer[$vs_key.str_pad($vn_hit, 12, ' ', STR_PAD_LEFT)] = $vn_hit;
 				}
