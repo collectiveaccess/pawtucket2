@@ -68,6 +68,7 @@
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="object_id" value="<?php print $this->getVar("object_id"); ?>">
+		<input type="hidden" name="object_ids" value="<?php print $this->getVar("object_ids"); ?>">
 		<input type="hidden" name="saveLastResults" value="<?php print $this->getVar("saveLastResults"); ?>">
 	</form>
 </div>

@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name = ucFirst($va_lightbox_display_name["singular"]);
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$vs_user_links = "";

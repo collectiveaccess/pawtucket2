@@ -1578,7 +1578,8 @@ a.readmore-js-toggle{
 	z-index:100;
 }
 .bResultItem:hover .bSetsSelectMultiple{
-	right:5px;
+	right:13px;
+	top:20px;
 }
 .bResultItem .bResultItemImg {
     margin-bottom: 5px;
