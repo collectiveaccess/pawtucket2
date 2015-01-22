@@ -196,7 +196,9 @@ class SearchResult extends BaseObject {
 		
 		$vn_i=0;
 		while(self::nextHit() && ($vn_i < $pn_num_rows)) {
-			$va_row_ids[] = $this->opo_engine_result->get($this->ops_table_pk);
+			if ($vn_row_id = (int)$this->opo_engine_result->get($this->ops_table_pk)) {
+				$va_row_ids[] = $vn_row_id;
+			}
 			$vn_i++;
 		}
 		self::seek($vn_cur_row_index + 1);
@@ -521,13 +523,9 @@ class SearchResult extends BaseObject {
 		
 		$va_original_path_components = $va_path_components = $this->getFieldPathComponents($ps_field);
 		
-		if ($va_path_components['table_name'] != $this->ops_table_name) {
-			$vs_access_chk_key  = $va_path_components['table_name'].($va_path_components['field_name'] ? '.'.$va_path_components['field_name'] : '');
-		} else {
-			$vs_access_chk_key  = $va_path_components['field_name'];
-		}
+		$vs_access_chk_key  = $va_path_components['field_name'];
 		
-		if (caGetBundleAccessLevel($this->ops_table_name, $vs_access_chk_key) == __CA_BUNDLE_ACCESS_NONE__) {
+		if (($va_path_components['field_name'] !== 'access') && (caGetBundleAccessLevel($va_path_components['table_name'], $vs_access_chk_key) == __CA_BUNDLE_ACCESS_NONE__)) {
 			return null;
 		}
 		

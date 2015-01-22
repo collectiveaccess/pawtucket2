@@ -5,13 +5,18 @@
 	$va_set_ids = $this->getVar("set_ids");
 	$va_access_values = $this->getVar("access_values");
 	$va_activity_stream = $this->getVar("activity");
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$vs_lightbox_section_heading = $va_lightbox_display_name["section_heading"];
+	
 ?>
 	<H1>
-		Lightboxes
+		<?php print ucfirst($vs_lightbox_section_heading); ?>
 		<div class="btn-group">
 			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
+				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
 				<li class="divider"></li>
 				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php

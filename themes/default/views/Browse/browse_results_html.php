@@ -57,6 +57,10 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
@@ -92,7 +96,7 @@ if (!$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($qr_res->numHits()){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
 ?>
 						<li class="divider"></li>
 <?php
