@@ -739,7 +739,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											$va_items[] = $vm_val;
 										} else {
 											$va_items[] = $vm_val;
-											break;
+											//break;
 										}
 									}
 								} else {
