@@ -57,6 +57,11 @@
 	$va_export_formats = $this->getVar('export_formats');
 	$vs_export_format_select = $this->getVar('export_format_select');
 	
+		
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div id="bViewButtons">
@@ -69,7 +74,7 @@ if (!$vb_ajax) {	// !ajax
 			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 		}
 	}
-if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")) {	
+if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
 	// Export as PDF
 	print "<div class='reportTools'>";
 	print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
@@ -91,6 +96,11 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
 <?php
+			if($qr_res->numHits()){
+				print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
+				print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
+				print "<li class='divider'></li>";
+			}
 			if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 				foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 					if ($vs_current_sort === $vs_sort) {
@@ -113,7 +123,9 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 ?>
 		</ul>
 	</div><!-- end btn-group -->
-
+<?php
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+?>
 </H1>
 <div class="row" style="clear:both;">
 	<div class='col-xs-9 col-sm-9 col-md-9 col-lg-9'>
@@ -147,6 +159,7 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
 ?>
+		<form id="setsSelectMultiple">
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
@@ -158,6 +171,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
+		</form>
 	</div><!-- end col-10 -->
 	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
 <?php
@@ -173,6 +187,17 @@ if (!$vb_ajax) {	// !ajax
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
 			padding: 20,
 			nextSelector: 'a.jscroll-next'
+		});
+		
+		jQuery('#setsSelectMultiple').submit(function(e){		
+			objIDs = [];
+			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+			   objIDs.push($(this).val());
+			});
+			objIDsAsString = objIDs.join(';');
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			e.preventDefault();
+			return false;
 		});
 	});
 </script>

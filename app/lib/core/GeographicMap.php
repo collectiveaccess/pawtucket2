@@ -142,7 +142,9 @@
  			
  			$vn_id = $po_data_object->getPrimaryKey();
  			if (is_array($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnAsArray' => true)))) {
+				
 				foreach($va_coordinates as $vn_i => $va_geoname) {
+					$va_geoname = array_shift($va_geoname); // get rid of attribute_id level
 					$va_coordinate = isset($va_geoname[$vs_field_name]) ? $va_geoname[$vs_field_name] : $va_geoname;
 					
 					$vs_label = $vs_content = $vs_ajax_content = null;

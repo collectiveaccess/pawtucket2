@@ -42,7 +42,9 @@
 		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 			$va_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
 			$va_art_items = $t_set->getItemIDs();
-			foreach($va_art_items as $va_art_item => $va_art) {$va_art_set_item = $va_art_item; break;}
+			if ($va_art_items) {
+				foreach($va_art_items as $va_art_item => $va_art) {$va_art_set_item = $va_art_item; break;}
+			}
 			$t_art_item = new ca_set_items($va_art_set_item);
 			$va_artwork_caption = $t_art_item->get('ca_set_items.caption');
 		}
@@ -114,8 +116,8 @@
 		print "<h1>Library</h1>";
 		if (sizeof($va_library_media)) {
 			$va_library_media = array_values($va_library_media);
-			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>";
-			print "<div class='caption'>".caNavLink($this->request, $va_library_caption, '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>"; 
+			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'library/'.$va_library_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_library_caption, '', '', 'Detail', 'library/'.$va_library_item_ids[0])."</div>"; 
 		} else {
 			print "<div class='image'></div>";
 		}
@@ -125,11 +127,11 @@
 	<div class="col-sm-4">
 		<div class='item'>
 <?php 
-		print "<h1>Archives <small>(coming soon)</small></h1>";
+		print "<h1>Archives</h1>";
 		if (sizeof($va_archive_media)) {
 			$va_archive_media = array_values($va_archive_media);
-			print "<div class='image'>".caNavLink($this->request, $va_archive_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>";
-			print "<div class='caption'>".caNavLink($this->request, $va_archive_caption, '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>"; 
+			print "<div class='image'>".caNavLink($this->request, $va_archive_media[0]['tags']['small'], '', '', 'Detail', 'archives/'.$va_archive_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_archive_caption, '', '', 'Detail', 'archives/'.$va_archive_item_ids[0])."</div>"; 
 		} else {
 			print "<div class='image'></div>";
 		}

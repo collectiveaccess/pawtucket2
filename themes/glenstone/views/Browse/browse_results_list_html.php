@@ -104,15 +104,15 @@
 					} else {
 						$vs_idno_detail_link = "";
 					}
-					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 						$vs_art_idno_link = "<p class='idno'>".$qr_res->get("ca_objects.idno")."</p>";
 					} else {
 						$vs_art_idno_link = "";
 					}				
 				}else {
 					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".$qr_res->get("{$vs_table}.preferred_labels.name")."</p>";
-					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
+					$vs_label_detail_link 	= "<p>".caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</p><p>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p><p>".$qr_res->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+					#$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 				}
 				if ($qr_res->get('ca_objects.type_id') == 1903){
 					$vn_parent_id = $qr_res->get('ca_objects.parent_id');
@@ -134,9 +134,16 @@
 				print "
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultListItemContent'>";
 			if ($vs_rep_detail_link) {
 				print "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>";
+			} elseif ($qr_res->get('ca_objects.type_id') == 25) {
+				print "<div class='bIcon'><i class='glyphicon glyphicon-volume-up'></i></div>";
+			} elseif ($qr_res->get('ca_objects.type_id') == 26){
+				print "<div class='bIcon'><i class='glyphicon glyphicon-film'></i></div>";
+			} elseif ($qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27 || $qr_res->get('ca_objects.type_id') == 23){
+				print "<div class='bIcon'><i class='fa fa-archive'></i></div>";
 			}
 			print 	"<div class='bResultListItemText'>
 					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_art_idno_link}{$vs_library_info}
@@ -156,3 +163,10 @@
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		if($("#bSetsSelectMultipleButton").is(":visible")){
+			$(".bSetsSelectMultiple").show();
+		}
+	});
+</script>
