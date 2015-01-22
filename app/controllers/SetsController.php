@@ -259,7 +259,7 @@
 			$vs_combined_sort = $va_sort_by[$ps_sort];
 			
 			if($ps_secondary_sort){
-				$vs_combined_sort .= ", ".$va_secondary_sort_by[$ps_secondary_sort];
+				$vs_combined_sort .= ";".$va_secondary_sort_by[$ps_secondary_sort];
 			}
 			
 			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));

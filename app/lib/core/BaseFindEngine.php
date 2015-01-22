@@ -278,16 +278,20 @@
 			if (!is_array($pa_hits) || !sizeof($pa_hits)) { return $pa_hits; }
 			
 			// Get field list
-			$va_sort_tmp = explode('/', $ps_field);		// strip any relationship type
-			$ps_field = $va_sort_tmp[0];
-			$vs_rel_type = (sizeof($va_sort_tmp) > 1) ? $va_sort_tmp[1] : null;
-			$va_bundles = explode(';', $va_sort_tmp[0]);
+			//$va_sort_tmp = explode('/', $ps_field);		// strip any relationship type
+			//$ps_field = $va_sort_tmp[0];
+			//$vs_rel_type = (sizeof($va_sort_tmp) > 1) ? $va_sort_tmp[1] : null;
+			$va_bundles = explode(';', $ps_field); // $va_sort_tmp[0]);
 			
 			$va_sorted_hits = array();
 			
 			$vs_sort_tmp_table = null;
-			
+			$va_sort_key_values = array();
 			foreach($va_bundles as $vs_bundle) {
+				$va_sort_tmp = explode('/', $vs_bundle);		// strip any relationship type
+				$vs_rel_type = (sizeof($va_sort_tmp) > 1) ? $va_sort_tmp[1] : null;	
+				$vs_bundle = $va_sort_tmp[0];
+				
 				list($vs_field_table, $vs_field, $vs_subfield) = explode(".", $vs_bundle);
 				if (!($t_instance = $this->opo_datamodel->getInstanceByTableName($vs_field_table, true))) { break; }
 					
@@ -297,8 +301,6 @@
 					$vs_field = $vs_subfield ? $vs_subfield : $t_instance->getLabelDisplayField();
 					$vs_subfield = null;
 				}
-				
-				$va_sort_key_values = array();
 			
 				if ($vs_field_table === $ps_table) {
 					// sort in primary table
@@ -430,6 +432,9 @@
 						$qr_sort = $this->opo_db->query($vs_sql, array($vn_table_num, (int)$vs_rel_type, $pa_hits));
 						
 					} else {
+						$t_rel = $this->opo_datamodel->getInstanceByTableName($vs_field_table, true);
+						if (!$t_rel->hasField($vs_field)) { break; }
+						
 						$va_path = $this->opo_datamodel->getPath($ps_table, $vs_field_table);
 				
 						$vs_is_preferred_sql = null;
@@ -460,17 +465,13 @@
 								}
 								$vs_last_table = $vs_table;
 							}
-			
-							$vs_sortable_value_fld = $vs_primary_sort_field;
 						} else {
 							$va_rels = $this->opo_datamodel->getRelationships($ps_table, $vs_field_table);
 							if (!$va_rels) { break; }		// field is not valid
 											
-							$t_rel = $this->opo_datamodel->getInstanceByTableName($vs_field_table, true);
 						
 							// TODO: allow sorting on related record attributes
 						
-							if (!$t_rel->hasField($vs_field)) { break; }
 							$va_joins[$vs_field_table] = 'INNER JOIN '.$vs_field_table.' ON '.$ps_table.'.'.$va_rels[$ps_table][$vs_field_table][0][0].' = '.$vs_field_table.'.'.$va_rels[$ps_table][$vs_field_table][0][1]."\n";
 			
 							// if the related supports preferred values (eg. *_labels tables) then only consider those in the sort
@@ -478,7 +479,7 @@
 								$vs_is_preferred_sql = " {$vs_field_table}.is_preferred = 1";
 							}
 						}
-				
+						
 						$vs_join_sql = join("\n", $va_joins);
 						$vs_sql = "
 							SELECT {$ps_table}.{$vs_table_pk}, {$vs_field_table}.{$vs_field}
@@ -499,6 +500,7 @@
 					$va_sort_key_values[] = $va_sort_keys;
 				}
 			}
+			
 			return $this->_doSort($pa_hits, $va_sort_key_values, $ps_direction);
 		}
 		# ------------------------------------------------------------------
