@@ -102,7 +102,7 @@
 				while($qr_grants->nextRow()) {
 					$va_grants = array_values($qr_grants->getRow());
 					$vs_grant = array_shift($va_grants);
-					if (preg_match('!^GRANT FILE!', $vs_grant) || preg_match('!^GRANT ALL!', $vs_grant)) {
+					if (preg_match('!^GRANT FILE!', $vs_grant)) {
 						$g_mysql_has_file_priv = true;
 						break;
 					}
