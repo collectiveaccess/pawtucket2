@@ -377,8 +377,12 @@
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
 			if(sizeof($va_rep_ids)){
 				$vn_primary_id = array_search("1", $va_rep_ids);
-				unset($va_rep_ids[$vn_primary_id]);
-				$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
+				if($vn_primary){
+					unset($va_rep_ids[$vn_primary_id]);
+					$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
+				}else{
+					$va_rep_ids = array_keys($va_rep_ids);
+				}
 			}
 		}
 		$va_rep_tags = array();

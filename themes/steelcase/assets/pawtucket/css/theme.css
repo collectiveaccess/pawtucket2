@@ -296,6 +296,22 @@ a.socialIcon i{
   margin:0px;
 }
 /*
+	Front
+*/
+.front H2{
+	color:#858585;
+	line-height:1.2;
+	text-transform:none;
+	font-size:15px;
+}
+@media (min-width: 768px) {
+	.front H2 {
+		font-size:20px;
+		padding-left:25px;
+		padding-right:25px;
+	}
+}
+/*
 	Gallery
 */
 .gallery .galleryNext, .gallery .galleryPrevious{

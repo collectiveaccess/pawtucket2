@@ -34,7 +34,11 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>It was the early 1980s and construction for the Steelcase Global Headquarters in Grand Rapids, Michigan was underway. During this expansion Chairman and CEO Bob Pew embraced the opportunity to grow the company’s art collection displayed in Steelcase facilities and plants around the country... <?php print caNavLink($this->request, _t("Read more"), "", "", "About", "Index"); ?></H1>
+			<H1>Welcome to the beta site for the Steelcase digital art collection!</H1>
+
+			<H2>Only works that have been lightly inventoried are viewable in this phase of the project. Please note that some records may be incomplete or inaccurate.<br/><br/>
+			If you can provide information for records such as title, creation date, artist, medium or anything else, please contact us at <a href="mailto:art@steelcase.com">art@steelcase.com</a>.<br/><br/>
+			Explore and have fun. Your feedback is important for making this site a useful resource!</H2>
 			<br/><br/>
 <?php 
 			if($this->request->user->getLastLogout()){
