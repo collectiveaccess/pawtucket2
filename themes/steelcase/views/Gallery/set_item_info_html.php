@@ -46,33 +46,45 @@
 		$t_list_item = new ca_list_items();
 		$va_decorative_types = $t_object->get("ca_objects.decorative_types", array("returnAsArray" => true));
 		if(sizeof($va_decorative_types)){
-			print "<H6>Classification</H6>";
 			foreach($va_decorative_types as $va_decorative_type){
 				$vn_decorative_type = $va_decorative_type["decorative_types"];
 				$t_list_item->load($vn_decorative_type);
-				$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $vn_decorative_type));
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $vn_decorative_type));
+				}
 			}
-			print join(", ", $va_classification_links);
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
 		$va_documentation_types = $t_object->get("ca_objects.documentation_types", array("returnAsArray" => true));
 		if(sizeof($va_documentation_types)){
-			print "<H6>Classification</H6>";
 			foreach($va_documentation_types as $va_documentation_type){
 				$vn_documentation_type = $va_documentation_type["documentation_types"];
 				$t_list_item->load($vn_documentation_type);
-				$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $vn_documentation_type));
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $vn_documentation_type));
+				}
 			}
-			print join(", ", $va_classification_links);
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
 		$va_fine_art_types = $t_object->get("ca_objects.fine_art_types", array("returnAsArray" => true));
 		if(sizeof($va_fine_art_types)){
-			print "<H6>Classification</H6>";
 			foreach($va_fine_art_types as $va_fine_art_type){
 				$vn_fine_art_type = $va_fine_art_type["fine_art_types"];
 				$t_list_item->load($vn_fine_art_type);
-				$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $vn_fine_art_type));
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $vn_fine_art_type));
+				}
 			}
-			print join(", ", $va_classification_links);
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
 ?>
 		{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
