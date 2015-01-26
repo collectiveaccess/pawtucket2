@@ -624,6 +624,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					}
 					break;
 				default:
+					if (!is_array($pa_form_values[$vs_dotless_element]) && $pa_form_values[$vs_dotless_element]) {
+						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
+					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
