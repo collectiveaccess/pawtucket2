@@ -131,6 +131,9 @@ h6 {
 	padding:20px 15px 15px 15px;
 	background-color:#fff;
 }
+#pageArea.front {
+	background-color:#eee;
+}
 .caAudioPlayer {
 	padding-top:26px;
 }
@@ -142,8 +145,40 @@ h6 {
 	color:#333;
 	font-size:20px;
 	padding-right:10px;
-	padding-left:10px;
+	padding-left:0px;
 	padding-top:0px;
+	padding-bottom:0px;
+	margin-bottom:0px;
+}
+.front hr {
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.featuredArtists, .featuredWorks {
+	margin-top:40px;
+}
+.featuredArtists ul, .featuredWorks ul{
+	list-style-type: none;
+	padding:0px;
+}
+.featuredArtists li, .featuredWorks li {
+	clear:both;
+	margin-bottom:10px;
+	height:72px;
+}
+.featuredArtists .media, .featuredWorks .media{
+	background-color:#eee;
+	height:72px;
+	width:72px;
+	float:left;
+	margin-right:10px;
+}
+.featuredArtists .title, .featuredWorks .title{
+	float:left;
+	width:165px;
+}
+.featuredArtists .title a, .featuredWorks .title a{
+	color:#333;
 }
 .homesection {
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -158,6 +193,33 @@ h6 {
 .multisearch H3 a, .multisearch H3 a:hover {
 	font-size:14px;
 	color:#555;
+}
+.multisearchImgPlaceholder {
+	font-size:20px;
+	padding:10px;
+}
+.detail .detailMediaPlaceholder {
+	font-size:40px;
+	padding-top:80px;
+	padding-bottom:80px;
+}
+.listing h1, listing h2 {
+	float:left;
+}
+.listing h2 {
+	font-size:22px;
+}
+.listing h1 {
+	padding-right:10px;
+	margin-top:-1px;
+}
+.listName {
+	width:30%;
+	float:left;
+	padding:5px;
+}
+.listName a {
+	color:#333;
 }
 #Footer {
 	background-color: #646464;
