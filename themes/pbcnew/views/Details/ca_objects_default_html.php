@@ -33,7 +33,7 @@
 				{{{<ifdef code="ca_objects.music_category"><div class='unit'><h6>Category</h6><span class='metaFloat'>^ca_objects.music_category</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.spoken_word_category"><div class='unit'><h6>Category</h6><span class='metaFloat'>^ca_objects.spoken_word_category</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.religious_category"><div class='unit'><h6>Category</h6><span class='metaFloat'>^ca_objects.religious_category</span></div></ifdef>}}}	
-				{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><span class='metaFloat'>^ca_objects.language</span></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit><span class='metaFloat'>^ca_objects.language</span></unit></div></ifdef>}}}
 
 
 				{{{<ifdef code="ca_objects.topic"><div class='unit'><h6>Topic</h6><span class='metaFloat'>^ca_objects.topic</span></div></ifdef>}}}

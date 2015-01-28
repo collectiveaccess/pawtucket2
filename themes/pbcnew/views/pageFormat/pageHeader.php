@@ -104,7 +104,7 @@
 				<div class="kp-headline-wrapper clearfix">
 				  <h6 class="kp-headline-title"><?php print caNavLink($this->request, 'Home', '', '', '', '');?><span></span></h6>
 				  <div class="kp-headline clearfix">
-						<span>Browse</span>
+						<span><?php print caNavLink($this->request, 'Browse', '', '', 'Browse', 'Rings');?></span>
 						<span><?php print caNavLink($this->request, 'About', '', '', 'About', 'Index');?></span>
 				  
 	
