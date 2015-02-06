@@ -103,14 +103,14 @@
 			<div class="homesection right">
 				<div class='container'>
 					<div class='row'>
-						<div class="col-sm-6 homegraphic">
+						<div class="col-sm-8 homegraphic">
 <?php
 							print caGetThemeGraphic($this->request, 'jinnah.jpg');
 ?>	
 						</div>
-						<div class="col-sm-6">
-							<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-
+						<div class="col-sm-4">
+							<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</H1>
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</p> 
 <?php
 							#print $this->render("Front/gallery_set_links_html.php");
 ?>
