@@ -553,8 +553,10 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 		<div class="container">
 <?php	
 			if (!$this->request->isAjax()) {
+				$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
+			
 ?>		<hr>
-		<H6>Related Archive Items <small><?php print caNavLink($this->request, 'view all', '', 'Search/archives/search', '"'.$t_object->get('ca_objects.preferred_labels.name').'"');?></small></H6>
+		<H6>Related Archive Items <small><?php if (sizeof($va_object_ids) > 1) { print caNavLink($this->request, 'view all', '', '', 'Search', 'archives', array('search' => 'object_id:'.$t_object->getPrimaryKey())); } ?></small></H6>
 		<div class="archivesBlock">
 			<div class="blockResults">
 				<div id="archivesscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
@@ -563,14 +565,18 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					<div id="blockResultsScroller">				
 <?php
 				}
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
-			foreach ($va_object_ids as $obj_key => $va_object_id) {
-				$t_archive = new ca_objects($va_object_id);
-				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_archive->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_archive->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$va_object_id)."</p>";
-				print "<p>".$t_archive->get('ca_objects.dc_date.dc_dates_value')."</p>";
-				print "</div><!-- archivesResult -->";
+			
+			if (is_array($va_object_ids) && sizeof($va_object_ids)) {
+				$qr_res = caMakeSearchResult('ca_objects', $va_object_ids);
+				//foreach ($va_object_ids as $obj_key => $vn_object_id) {
+				while($qr_res->nextHit()) {
+					//$t_archive = new ca_objects($vn_object_id);
+					print "<div class='archivesResult'>";
+					print "<div class='resultImg'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</p>";
+					print "<p>".$qr_res->get('ca_objects.dc_date.dc_dates_value')."</p>";
+					print "</div><!-- archivesResult -->";
+				}
 			}
 			if (!$this->request->isAjax()) {		
 ?>	
@@ -605,14 +611,19 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 <?php
 				}
 			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('book')));
-			foreach ($va_object_ids as $obj_key => $va_object_id) {
-				$t_library = new ca_objects($va_object_id);
-				print "<div class='libraryResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_library->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_library->get('ca_objects.preferred_labels'), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";				
-				print "<p>".caNavLink($this->request, $t_library->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('author'))), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";
-				print "<p>".$t_library->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('publisher')))."</p>";
-				print "</div><!-- libraryResult -->";
+			
+			if (is_array($va_object_ids) && sizeof($va_object_ids)) {
+				$qr_res = caMakeSearchResult('ca_objects', $va_object_ids);
+				//foreach ($va_object_ids as $obj_key => $vn_object_id) {
+				while($qr_res->nextHit()) {
+					//$t_library = new ca_objects($vn_object_id);
+					print "<div class='libraryResult'>";
+					print "<div class='resultImg'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.library'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</div>";
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'artworks/'.$qr_res->get('ca_objects.object_id'))."</p>";				
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('author'))), '', '', 'Detail', 'artworks/'.$vn_object_id)."</p>";
+					print "<p>".$qr_res->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('publisher')))."</p>";
+					print "</div><!-- libraryResult -->";
+				}
 			}
 			if (!$this->request->isAjax()) {		
 ?>	
@@ -647,14 +658,19 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 <?php
 				}
 			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
-			foreach ($va_object_ids as $obj_key => $va_object_id) {
-				$t_object = new ca_objects($va_object_id);
-				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";
-				print "<p class='artist'>".$t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
-				print "<p>".$t_object->get('ca_objects.object_dates')."</p>";
-				print "</div><!-- archivesResult -->";
+			
+			if (is_array($va_object_ids) && sizeof($va_object_ids)) {
+				$qr_res = caMakeSearchResult('ca_objects', $va_object_ids);
+				//foreach ($va_object_ids as $obj_key => $vn_object_id) {
+				while($qr_res->nextHit()) {
+					//$t_object = new ca_objects($vn_object_id);
+					print "<div class='archivesResult'>";
+					print "<div class='resultImg'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</div>";
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$qr_res->get('ca_objects.object_id'))."</p>";
+					print "<p class='artist'>".$qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					print "<p>".$qr_res->get('ca_objects.object_dates')."</p>";
+					print "</div><!-- archivesResult -->";
+				}
 			}
 			if (!$this->request->isAjax()) {		
 ?>	

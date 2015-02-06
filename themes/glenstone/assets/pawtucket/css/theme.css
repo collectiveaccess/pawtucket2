@@ -544,6 +544,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	left: 40%;
 	top: 50px;
 }
+.bResultItem .bResultItemImg {
+	max-height:170px;
+}
 .resultImg .glyphicon.glyphicon-volume-up, .resultImg .glyphicon.glyphicon-film {
 	position: absolute;
 	top: 30px;
@@ -819,6 +822,15 @@ p.artist.lower {
 }
 .bResultItem:hover .bResultItemImg{
  	max-height:none;
+}
+.bResultListItemContent {
+	height:102px;
+}
+.bResultListItemCol {
+	height:152px;
+}
+.bResultListItem .bResultListItemImg {
+	margin-bottom:30px;
 }
 #bRefine {
 	background-color: #fff;
@@ -1480,6 +1492,24 @@ a.readmore-js-toggle {
 	padding:5px 0px 0px 0px;
 	display:inline;
 }
+.lbSetImgPlaceholder {
+	background-color:#fff;
+	border:0px;
+}
+.lbSetImgPlaceholder .glyphicon-book{
+	font-size: 48px;
+	background-color: #eee;
+	padding: 10px 12px 10px 8px;
+	border-radius: 30px;
+	opacity: .8;
+}
+.lbSetThumbPlaceholder i {
+	font-size: 26px;
+	top:33%;
+}
+a:hover .lbSetThumbPlaceholder i {
+	color: #666;
+}
 .activitystream {
 	overflow:hidden;
 }
@@ -1581,6 +1611,7 @@ div.advancedSearchField {
 .advancedContainer {
 	float:left;
 	width:50%;
+	padding-bottom:20px;
 }
 .advancedContainer .advancedSearchField{
 	clear:both;

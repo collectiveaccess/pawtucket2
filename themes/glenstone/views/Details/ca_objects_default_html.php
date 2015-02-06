@@ -48,11 +48,23 @@
 				{{{<ifdef code="ca_objects.arch_inscription.arch_inscriptionText"><div class='unit'><span class='metaTitle'>Inscription: </span><span class='meta'>^ca_objects.arch_inscription.arch_inscriptionText <ifdef code="ca_objects.arch_inscription.arch_inscriptionText,ca_objects.arch_inscription.arch_position">-</ifdef> ^ca_objects.arch_inscription.arch_position</span></div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.moving_description"><div class='unit'><span class='metaTitle'>Description: </span><span class='meta'>^ca_objects.moving_description</span></div></ifdef>}}}
-				{{{<ifcount min="1" code="ca_objects.format_moving"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'><unit delimiter='; '>^ca_objects.format_moving</unit></span></div></ifcount>}}}
-				{{{<ifcount min="1" code="ca_objects.format_image"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'><unit delimiter='; '>^ca_objects.format_image</unit></span></div></ifcount>}}}				
-				{{{<ifcount min="1" code="ca_objects.audio_format"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'><unit delimiter='; '>^ca_objects.audio_format</unit></span></div></ifcount>}}}
-				{{{<ifcount min="1" code="ca_objects.format_ephemera"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'><unit delimiter='; '>^ca_objects.format_ephemera</unit></span></div></ifcount>}}}				
-				{{{<ifcount min="1" code="ca_objects.format_textual"><div class='unit'><span class='metaTitle'>Format: </span><span class='meta'><unit delimiter='; '>^ca_objects.format_textual</unit></span></div></ifcount>}}}				
+<?php
+				if (($t_object->get('ca_objects.format_moving')) && ($t_object->get('ca_objects.format_moving') != 340)) {
+					print "<div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>".$t_object->get('ca_objects.format_moving', array('delimiter' => '; ', 'convertCodesToDisplayText' => true))."</span></div>";
+				}
+				if (($t_object->get('ca_objects.format_image')) && ($t_object->get('ca_objects.format_image') != 973)) {
+					print "<div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>".$t_object->get('ca_objects.format_image', array('delimiter' => '; ', 'convertCodesToDisplayText' => true))."</span></div>";
+				}
+				if (($t_object->get('ca_objects.audio_format')) && ($t_object->get('ca_objects.audio_format') != 1221)) {
+					print "<div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>".$t_object->get('ca_objects.audio_format', array('delimiter' => '; ', 'convertCodesToDisplayText' => true))."</span></div>";
+				}	
+				if (($t_object->get('ca_objects.format_ephemera')) && ($t_object->get('ca_objects.format_ephemera') != 334)) {
+					print "<div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>".$t_object->get('ca_objects.format_ephemera', array('delimiter' => '; ', 'convertCodesToDisplayText' => true))."</span></div>";
+				}
+				if (($t_object->get('ca_objects.format_textual')) && ($t_object->get('ca_objects.format_textual') != 316)) {
+					print "<div class='unit'><span class='metaTitle'>Format: </span><span class='meta'>".$t_object->get('ca_objects.format_textual', array('delimiter' => '; ', 'convertCodesToDisplayText' => true))."</span></div>";
+				}															
+?>				
 				{{{<ifdef code="ca_objects.copyright_statement"><div class='unit'><span class='metaTitle'>Copyright Statement: </span><span class='meta'>^ca_objects.copyright_statement</span></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.language"><div class='unit'><span class='metaTitle'>Language: </span><span class='meta'>^ca_objects.language</span></div></ifdef>}}}				
 				{{{<ifdef code="ca_objects.use_restrictions"><div class='unit'><span class='metaTitle'>Use Restrictions: </span><span class='meta'>^ca_objects.use_restrictions</span></div></ifdef>}}}				
@@ -108,11 +120,11 @@
 <?php
 				}
 			$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
-			foreach ($va_archive_ids as $obj_key => $va_object_id) { 
-				$t_archive = new ca_objects($va_object_id); 
+			foreach ($va_archive_ids as $obj_key => $vn_object_id) { 
+				$t_archive = new ca_objects($vn_object_id); 
 				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_archive->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_archive->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$va_object_id)."</p>";
+				print "<div class='resultImg'>".caNavLink($this->request, $t_archive->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$vn_object_id)."</div>";
+				print "<p>".caNavLink($this->request, $t_archive->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$vn_object_id)."</p>";
 				print "<p>".$t_archive->get('ca_objects.dc_date.dc_dates_value')."</p>";
 				print "</div><!-- archivesResult -->";
 			}
@@ -173,11 +185,11 @@
 <?php
 				}
 			$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
-			foreach ($va_artwork_ids as $obj_key => $va_object_id) {
-				$t_artwork = new ca_objects($va_object_id);
+			foreach ($va_artwork_ids as $obj_key => $vn_object_id) {
+				$t_artwork = new ca_objects($vn_object_id);
 				print "<div class='artworksResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_artwork->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$va_object_id)."</p>";
+				print "<div class='resultImg'>".caNavLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</div>";
+				print "<p>".caNavLink($this->request, $t_artwork->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</p>";
 				print "<p class='artist'>".$t_artwork->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
 				print "<p>".$t_artwork->get('ca_objects.object_dates')."</p>";
 				print "</div><!-- artworksResult -->";
