@@ -739,6 +739,13 @@ a.browseRemoveFacet img {
 }
 .lbSet h5{
 	text-transform:uppercase;
+	font-size:13px;
+	margin-top:0px;
+	height:1em;
+	overflow:hidden;
+}
+.lbSet:hover H5{
+	height:auto;
 }
 @media (max-width: 767px) {
 	.lbSet h5{
@@ -814,9 +821,6 @@ a.browseRemoveFacet img {
 .lbExpandedInfo HR, .lbSetExpandedInfo HR{
 	margin-bottom:5px;
 	margin-top:5px;
-}
-.lbSet H5{
-	margin-top:0px;
 }
 .lbItem a, .lbSet a{
 	color:#666;
