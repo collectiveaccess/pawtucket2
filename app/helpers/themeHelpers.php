@@ -763,7 +763,11 @@
 		if($vb_write_access){
 			$vs_set_display .= "<div class='pull-right'>".caNavLink($po_request, '<span class="glyphicon glyphicon-trash"></span>', '', '', 'Sets', 'DeleteSet', array('set_id' => $t_set->get("set_id")), array("title" => _t("Delete")))."</div>\n";
 		}
-		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($po_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'tablename' => 'ca_sets', 'set_id' => $t_set->get("set_id")))."\", function(){jQuery(\"#lbSetThumbRow".$t_set->get("set_id")."\").hide(); jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a></div>\n";
+		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($po_request, '', 'Sets', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'tablename' => 'ca_sets', 'set_id' => $t_set->get("set_id")))."\", function(){jQuery(\"#lbSetThumbRow".$t_set->get("set_id")."\").hide(); jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
+		if($vb_write_access){
+			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id")))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
+		}	
+		$vs_set_display .= "</div>\n";
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
 		return $vs_set_display;
 	}
@@ -796,7 +800,7 @@
 	 * Returns the info for each set item
 	 * 
 	 * q_result -> object search loaded with object record for this set_id
-	 * options: "write_access" = false, view = list, thumbnail
+	 * options: "write_access" = false, view = list, thumbnail, caption = caption to override the configured setting
 	 * 
 	 */
 	function caLightboxSetDetailItem($po_request, $q_result, $t_set_item, $pa_options = array()) {
@@ -815,12 +819,16 @@
 		$t_list_items = new ca_list_items($q_result->get("ca_objects.type_id"));
 		$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 		$vs_caption = "";
-		$o_config = caGetSetsConfig();
-		$vs_caption_template = $o_config->get("caption_template");
-		if($vs_caption_template){
-			$vs_caption = $q_result->getWithTemplate($vs_caption_template);
+		if($pa_options["caption"]){
+			$vs_caption = $pa_options["caption"];
 		}else{
-			$vs_caption = $q_result->get("ca_objects.preferred_labels.name");
+			$o_config = caGetSetsConfig();
+			$vs_caption_template = $o_config->get("caption_template");
+			if($vs_caption_template){
+				$vs_caption = $q_result->getWithTemplate($vs_caption_template);
+			}else{
+				$vs_caption = $q_result->get("ca_objects.preferred_labels.name");
+			}
 		}
 		$vs_set_item_display = "";
 		$vs_set_item_display .= "<div class='lbItem'><div class='lbItemContent'>\n";

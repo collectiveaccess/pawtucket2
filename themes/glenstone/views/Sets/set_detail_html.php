@@ -57,7 +57,7 @@
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
+		<div class="col-sm-7 col-md-7 col-lg-7">			
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -115,10 +115,6 @@ if (!$vb_ajax) {	// !ajax
 							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 							print "<li class='divider'></li>";
 						}
-?>				
-						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_display_name_plural), "", "", "Sets", "Index"); ?></li>
-						<li class="divider"></li>
-<?php
 					if($vb_write_access){
 ?>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
@@ -134,14 +130,11 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divider'></li>\n";
 							print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
 							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+								print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 							}
 						}
 ?>		
 						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php
 						if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
 ?>
@@ -167,7 +160,7 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			</H5>
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="col-sm-5 col-md-5 col-lg-5">
 			<div id="lbViewButtons">
 <?php
 			if(is_array($va_views) && sizeof($va_views)){
@@ -179,6 +172,21 @@ if (!$vb_ajax) {	// !ajax
 					}
 				}
 			}
+			#if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
+				// Export as PDF
+				print "<div class='reportTools'>";
+				print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+				print "<select name='export_format'>";
+				foreach($va_export_formats as $va_export_format){
+					print "<option value='".$va_export_format["code"]."'>".$va_export_format["name"]."</option>";
+				}
+				print "</select> ";
+				print caHTMLHiddenInput('key', array('value' => $vs_browse_key));
+				print caHTMLHiddenInput('view', array('value' => 'pdf'));
+				print caHTMLHiddenInput('download', array('value' => 1));
+				print caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
+				print "</div>"; 
+			#}
 ?>
 			</div>			
 		</div><!-- end col -->

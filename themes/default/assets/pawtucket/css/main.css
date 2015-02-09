@@ -692,6 +692,26 @@ a.browseRemoveFacet img {
 	padding:0px;
 	margin:0px;
 }
+.sets .setsBack{
+	margin:0px 5px 0px 0px;
+	background-color:#EBEBEB;
+	text-transform:uppercase;
+	padding:0px 5px 3px 5px;
+	text-align:center;
+	float:left;
+}
+.sets .setsBack a{
+	color:#8e8985;
+	line-height:.3em;
+	font-size:14px;
+	text-decoration:none;
+}
+.sets .setsBack a .small{
+	font-size:7px;
+	color:#ababab;
+	padding-top:0px;
+	padding-bottom:5px;
+}
 .sets H5{
 	margin-top:0px;
 	padding-top:0px;

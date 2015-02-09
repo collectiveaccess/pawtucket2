@@ -35,17 +35,20 @@
 	$va_lightbox_display_name = caGetSetDisplayName();
 	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
-	$vn_object_table_num = $this->request->datamodel->getTableNum("ca_objects")
+	$vn_object_table_num = $this->request->datamodel->getTableNum("ca_objects");
+	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 ?>
 			<div class="row" id="sortable">
 <?php
 	if($q_set_items->numHits()){
-		while($q_set_items->nextHit()){
+		$vn_c = 0;
+		while($q_set_items->nextHit() && ($vn_c < $vn_hits_per_block)){
 			$t_set_item = new ca_set_items(array("row_id" => $q_set_items->get("object_id"), "set_id" => $t_set->get("set_id"), "table_num" => $vn_object_table_num));
 			if($t_set_item->get("item_id")){
 				print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem".$t_set_item->get("item_id")."' id='row-".$q_set_items->get("object_id")."'><div class='lbItemContainer'>";
 				print caLightboxSetDetailItem($this->request, $q_set_items, $t_set_item, array("write_access" => $vb_write_access));
 				print "</div></div><!-- end col 3 -->";
+				$vn_c++;
 			}
 		}
 	}else{
