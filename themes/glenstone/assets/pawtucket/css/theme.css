@@ -796,13 +796,16 @@ p.artist.lower {
 	padding: 0px 10px 7px 10px;
 	margin: 0px -10px -10px -10px;
 }
-.bResultItemText p, .bResultListItemText p {
+.bResultItemText p, .bResultListItemText p, .sets .caption p {
 	margin: 0px 0px 2px 0px;
 	text-transform:none;
 	font-size:12px;
 	font-weight:600;
 	color: #777;
 	line-height: 1.3em;
+}
+.sets .caption p {
+	padding:0px;
 }
 .bResultItemText a p{
 	color: #777;
@@ -867,6 +870,16 @@ p.artist.lower {
 	float:right;
 	padding-left:10px;
 }
+.sets .reportTools {
+	padding-left:10px;
+	float:none;
+	display:inline;
+	position:relative;
+	top:-3px;
+}
+.sets .reportTools form{
+	display:inline;
+}
 .reportTools .button{
 	font-family: 'Source Sans Pro', sans-serif;
 	font-weight: 800;
@@ -881,7 +894,7 @@ p.artist.lower {
 #bViewButtons .glyphicon {
 	padding:4px 2px 0px 0px;
 }
-#bViewButtons select {
+#bViewButtons select, #lbViewButtons select {
 	background-color:#ddd;
 	border:1px solid #ddd; 
 	font-size:12px;
@@ -898,7 +911,14 @@ p.bookTitle {
 }
 
 /* Details */
-
+.detailLightboxCrumb{
+	float:right;
+	color:#888;
+}
+.detailLightboxCrumb a{
+	text-decoration:none;
+	font-style:italic;
+}
 
 .detail .unit a {
 	color:#888;
@@ -1438,6 +1458,21 @@ a.readmore-js-toggle {
 		float:none;
 	}
 }
+.sets .setsBack{
+	background-color:transparent;
+	margin-left:-40px;
+}
+@media (max-width: 1060px){
+	.sets .setsBack{
+		margin-left:0px;
+	}
+}
+.sets .setsBack a{
+	font-size:18px;
+}
+.sets .setsBack a .small{
+	font-size:8px;
+}
 .sets .dropdown-menu a {
 	display: block;
 	padding: 3px 20px;
@@ -1449,6 +1484,10 @@ a.readmore-js-toggle {
 	text-transform:none;
 	font-size:12px;
 	font-family: 'Source Sans Pro', sans-serif;
+}
+.lbViewButtonsWrapper{
+	display:inline-block;
+	margin-top:3px;
 }
 .lbSetCount {
 	font-size:14px;
