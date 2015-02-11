@@ -15,7 +15,7 @@
 		$vn_last_set_id = $this->request->user->getVar('current_set_id');
 		$t_last_set = new ca_sets($vn_last_set_id);
 		$vs_last_set = $t_last_set->getLabelForDisplay();
-		$vs_lightbox_crumbs = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $vs_last_set, "", "", "Sets", "Detail", array("set_id" => $vn_last_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
+		$vs_lightbox_crumbs = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $vs_last_set, "", "", "Sets", "SetDetail", array("set_id" => $vn_last_set_id))." &#8594; ".(($vs_creator = $t_object->getWithTemplate("^ca_entities.preferred_labels.name", array("restrictToRelationshipTypes" => array("artist", "creator"), "delimiter" => "; "))) ? $vs_creator.", " : "")."<i>".$t_object->get("ca_objects.preferred_labels.name")."</i>".(($t_object->get("ca_objects.creation_date")) ? ", ".$t_object->get("ca_objects.creation_date") : "");
 	}
 
 ?>
@@ -47,8 +47,6 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 	print "</div>"; 
 	print "</div>"; 
 }
-?>
-<?php
 			if($vs_lightbox_crumbs){
 ?>
 			<div class="detailLightboxCrumb"><?php print $vs_lightbox_crumbs; ?></div>
@@ -75,9 +73,45 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 			
 				{{{representationViewer}}}
 <?php
-		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
-?>	
-			
+		#print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
+		# --- get reps as thumbnails
+		$va_reps = $t_object->getRepresentations(array("icon"), null, array("checkAccess" => caGetUserAccessValues($this->request)));
+		if(sizeof($va_reps) > 1){		
+			$va_links = array();
+			$vn_primary_id = "";
+			foreach($va_reps as $vn_rep_id => $va_rep){
+				$vs_class = "";
+				if($va_rep["is_primary"]){
+					$vn_primary_id = $vn_rep_id;
+				}
+				if($vn_rep_id == $pn_rep_id){
+					$vs_class = "active";
+				}
+				$vs_thumb = $va_rep["tags"]["icon"];
+				$vs_icon = "";
+				if(in_array($va_rep["mimetype"], array("video/mp4", "video/x-flv", "video/mpeg", "audio/x-realaudio", "video/quicktime", "video/x-ms-asf", "video/x-ms-wmv", "application/x-shockwave-flash", "video/x-matroska"))){
+					$vs_icon = "<i class='glyphicon glyphicon-film'></i>";
+				}
+				if(in_array($va_rep["mimetype"], array("audio/mpeg", "audio/x-aiff", "audio/x-wav", "audio/mp4"))){
+					$vs_icon = "<i class='glyphicon volume-up'></i>";
+				}
+				$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".active\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(this).addClass(\"active\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_icon.$vs_thumb."</a>\n";
+			}
+			# --- make sure the primary rep shows up first
+			$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
+			unset($va_links[$vn_primary_id]);
+			$va_links = $va_primary_link + $va_links;
+			# --- formatting
+			$vs_formatted_thumbs = "";
+	
+			$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
+			foreach($va_links as $vn_rep_id => $vs_link){
+				$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='active'" : "").">".$vs_link."</li>\n";
+			}
+			$vs_formatted_thumbs .= "</ul>";
+			print "<div class='repIcons'>".$vs_formatted_thumbs."</div>";
+		}
+?>				
 			</div><!-- end col -->
 			<div class='col-sm-5 col-md-5 col-lg-5'>
 			
@@ -103,8 +137,17 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					<div class='unit'><i>{{{ca_objects.preferred_labels.name}}}</i>, &nbsp;{{{ca_objects.creation_date}}}</div>
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions ^ca_objects.dimensions.Type</unit></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.edition.edition_number"><div class='unit'>Edition <ifdef code="ca_objects.edition.edition_number">^ca_objects.edition.edition_number / ^ca_objects.edition.edition_total </ifdef><ifdef code="ca_objects.edition.ap_number"><br/>^ca_objects.edition.ap_number / ^ca_objects.edition.other_info  AP</ifdef></div></ifdef>}}}
 <?php
+					if ($t_object->get('ca_objects.edition.edition_number')) {
+						print "<div class='unit'>Edition ".$t_object->get('ca_objects.edition.edition_number')." / ".$t_object->get('ca_objects.edition.edition_total');
+						if ($t_object->get('ca_objects.edition.ap_number')) {
+							print "+ ".$t_object->get('ca_objects.edition.ap_number')." AP";
+						}
+						print "</div>";
+					} elseif ($t_object->get('ca_objects.edition.ap_number')) {
+						print "<div class='unit'>AP ".(count($t_object->get('ca_objects.edition.ap_total')) >= 2 ? $t_object->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_object->get('ca_objects.edition.edition_total')." + ".$t_object->get('ca_objects.edition.ap_total')." AP";
+						print "</div>";					
+					}
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
 						print "Signed, ".$t_object->get('ca_objects.signed.signature_details');
 					}
@@ -442,23 +485,23 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 ?>				
 				</div>
 				<div id="Description" class="infoBlock">
-					{{{<ifcount min="1" code="ca_objects.object_dates.object_date"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'><unit delimiter="<br/>">^ca_objects.object_dates.object_date <ifdef code="ca_objects.object_dates.date_note">(^ca_objects.object_dates.date_note)</ifdef></unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.object_dates.object_date"><div class='unit wide'><span class='metaHeader'>Date: </span><span ><unit delimiter="<br/>">^ca_objects.object_dates.object_date <ifdef code="ca_objects.object_dates.date_note">(^ca_objects.object_dates.date_note)</ifdef></unit></span></div></ifcount>}}}
 					{{{<ifcount min="1" code="ca_objects.child.preferred_labels"><div class='unit wide'><span class='metaHeader'>Elements </span><span ><unit delimiter="<br/>"><l>^ca_objects.child.preferred_labels</l></unit></span></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.element_notes"><div class='unit'><span class='metaTitle'>Element Notes: </span><span class='meta'>^ca_objects.element_notes</span></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.category"><div class='unit'><span class='metaTitle'>Category: </span><span class='meta'>^ca_objects.category</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.element_notes"><div class='unit wide'><span class='metaHeader'>Element Notes: </span><span >^ca_objects.element_notes</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.category"><div class='unit wide'><span class='metaHeader'>Category: </span><span >^ca_objects.category</span></div></ifdef>}}}
 <?php
 					if ($t_object->get('ca_objects.signed.signed_yn') == "Yes") {
-						print "<div class='unit'><span class='metaTitle'>Signed: </span>".ucfirst($t_object->get('ca_objects.signed.signature_details'))."</div>";
+						print "<div class='unit wide'><span class='metaHeader'>Signed: </span><span>".ucfirst($t_object->get('ca_objects.signed.signature_details'))."</span></div>";
 					}
 					if ($t_object->get('ca_objects.dated') == "Yes") {
-						print "<div class='unit'><span class='metaTitle'>Dated: </span>Dated</div>";
+						print "<div class='unit wide'><span class='metaHeader'>Dated: </span><span>Dated</span></div>";
 					}	
 					if ($va_item_weight = $t_object->get('ca_objects.dimensions.dimensions_weight')) {
-						print "<div class='unit'><span class='metaTitle'>Weight: </span>".$va_item_weight."</div>";
+						print "<div class='unit wide'><span class='metaHeader'>Weight: </span><span>".$va_item_weight."</span></div>";
 					}									
 ?>
-					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit'><span class='metaTitle'>Inscription: </span><span class='meta'><unit delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.sticker_label"><div class='unit'><span class='metaTitle'>Label Details </span><span class='meta'><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit wide'><span class='metaHeader'>Inscription: </span><span><unit delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.sticker_label"><div class='unit wide'><span class='metaHeader'>Label Details </span><span><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifcount>}}}
 <?php
 					if ($t_object->get('ca_objects.inscription_uploads.inscription_uploads_media')){
 						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnAsArray' => true, 'ignoreLocale' => true, 'version' => 'icon')); 
@@ -477,43 +520,54 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						print "</span><div class='clearfix'></div></div>";
 					}
 ?>
-					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit'><span class='metaTitle'>Other Titles </span><span class='meta'><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.legacy_description"><div class='unit'><span class='metaTitle'>Description (Legacy): </span><span class='meta'>^ca_objects.legacy_description</span></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.legacy_comments"><div class='unit'><span class='metaTitle'>Comments (Legacy): </span><span class='meta'>^ca_objects.legacy_comments</span></div></ifdef>}}}
+					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Other Titles </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
+					{{{<ifdef code="ca_objects.legacy_description"><div class='unit wide'><span class='metaHeader'>Description (Legacy): </span><span>^ca_objects.legacy_description</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.legacy_comments"><div class='unit wide'><span class='metaHeader'>Comments (Legacy): </span><span>^ca_objects.legacy_comments</span></div></ifdef>}}}
 <?php
+#					if ($va_certificate = $t_object->get('ca_objects.certificate_auth', array('returnAsArray' => true))) {
+#						foreach ($va_certificate as $cert_key => $va_cert){
+#							if ($va_cert['certificate_auth_yn'] == "Yes") {
+#								print "<div class='unit'><span class='metaTitle'>Certificate of Authenticity: </span><span class='unit'>";
+#								if ($va_cert['certificate_auth_date']){
+#									print $va_cert['certificate_auth_date'].", ";
+#								}	
+#								print $va_cert['certificate_auth_notes']."</span></div>";
+#							}
+#						}
+#					}
 
 					if ($va_cert_auths = $t_object->get('ca_objects.certificate_auth', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_cert_auths as $va_cert_key => $va_cert_auth) {
 							if (($va_cert_auth['certificate_auth_yn'] != "No") && ($va_cert_auth['certificate_auth_yn'] != "N/A") && ($va_cert_auth['certificate_auth_yn'] != "")) {
-								print "<div class='unit'><span class='metaTitle'>Certificate of Authenticity: </span><span class='meta'>".$va_cert_auth['certificate_auth_yn']." ".$va_cert_auth['certificate_auth_date']." ".$va_cert_auth['certificate_auth_notes']."</div>";
+								print "<div class='unit wide'><span class='metaHeader'>Certificate of Authenticity: </span><span>".$va_cert_auth['certificate_auth_yn']." ".$va_cert_auth['certificate_auth_date']." ".$va_cert_auth['certificate_auth_notes']."</div>";
 							}
 						}
 					}
 					if ($va_art_agrs = $t_object->get('ca_objects.artist_agreement', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_art_agrs as $va_arg_key => $va_art_agr) {
 							if (($va_art_agr['artist_agreement_yn'] != "No") && ($va_art_agr['artist_agreement_yn'] != "N/A") && ($va_art_agr['artist_agreement_yn'] != "")) {
-								print "<div class='unit'><span class='metaTitle'>Artist Agreement: </span><span class='meta'>".$va_art_agr['artist_agreement_yn']." ".$va_art_agr['artist_agreement_date']." ".$va_art_agr['artist_agreement_notes']."</div>";
+								print "<div class='unit wide'><span class='metaHeader'>Artist Agreement: </span><span >".$va_art_agr['artist_agreement_yn']." ".$va_art_agr['artist_agreement_date']." ".$va_art_agr['artist_agreement_notes']."</div>";
 							}
 						}
 					}
 					if ($va_non_excl = $t_object->get('ca_objects.non_exclusive', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_non_excl as $va_non_key => $va_non_exc) {
 							if (($va_non_exc['non_exclusive_yn'] != "No") && ($va_non_exc['non_exclusive_yn'] != "N/A") && ($va_non_exc['non_exclusive_yn'] != "")) {
-								print "<div class='unit'><span class='metaTitle'>Non-exclusive License: </span><span class='meta'>".$va_non_exc['non_exclusive_yn']." ".$va_non_exc['non_exclusive_date']." ".$va_non_exc['non_exclusive_notes']."</div>";
+								print "<div class='unit wide'><span class='metaHeader'>Non-exclusive License: </span><span >".$va_non_exc['non_exclusive_yn']." ".$va_non_exc['non_exclusive_date']." ".$va_non_exc['non_exclusive_notes']."</div>";
 							}
 						}
 					}
 					if ($va_transparencys = $t_object->get('ca_objects.transparency', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_transparencys as $va_tran_key => $va_transparency) {
 							if (($va_transparency['transparency_yn'] != "No") && ($va_transparency['transparency_yn'] != "N/A") && ($va_transparency['transparency_yn'] != "")) {
-								print "<div class='unit'><span class='metaTitle'>Transparency: </span><span class='meta'>".$va_transparency['transparency_yn']." ".$va_transparency['transparency_date']." ".$va_transparency['transparency_notes']."</div>";
+								print "<div class='unit wide'><span class='metaHeader'>Transparency: </span><span >".$va_transparency['transparency_yn']." ".$va_transparency['transparency_date']." ".$va_transparency['transparency_notes']."</div>";
 							}
 						}
 					}
 					if ($va_photo_records = $t_object->get('ca_objects.photo_record', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_photo_records as $va_photo_key => $va_photo_record) {
 							if (($va_photo_record['photo_record_yn'] != "No") && ($va_photo_record['photo_record_yn'] != "N/A") && ($va_photo_record['photo_record_yn'] != "")) {
-								print "<div class='unit'><span class='metaTitle'>Photograph Information Record: </span><span class='meta'>".$va_photo_record['photo_record_yn']." ".$va_photo_record['photo_record_date']." ".$va_photo_record['photo_record_notes']."</div>";
+								print "<div class='unit wide'><span class='metaHeader'>Photograph Information Record: </span><span >".$va_photo_record['photo_record_yn']." ".$va_photo_record['photo_record_date']." ".$va_photo_record['photo_record_notes']."</div>";
 							}
 						}
 					}																				
@@ -524,7 +578,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						foreach ($va_notes as $va_key => $va_note) {
 						
 							if ($va_note['other_notes_content']) {
-								print "<div class='unit'><span class='metaTitle'>".$va_note['other_notes_type'].": </span><span class='meta'>".$va_note['other_notes_content']."</span></unit>";
+								print "<div class='unit wide'><span class='metaHeader'>".$va_note['other_notes_type'].": </span><span >".$va_note['other_notes_content']."</span></unit>";
 							}
 						}
 					}
@@ -589,8 +643,18 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 				//foreach ($va_object_ids as $obj_key => $vn_object_id) {
 				while($qr_res->nextHit()) {
 					//$t_archive = new ca_objects($vn_object_id);
+					$vs_icon = "";
+					if($qr_res->get("ca_objects.type_id") == 26){
+						# --- moving image
+						$vs_icon = "<i class='glyphicon glyphicon-film'></i>";	
+					}
+					if($qr_res->get("ca_objects.type_id") == 25){
+						# --- audio
+						$vs_icon = "<i class='glyphicon glyphicon-volume-up'></i>";	
+					}
+					
 					print "<div class='archivesResult'>";
-					print "<div class='resultImg'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<div class='resultImg'>".caNavLink($this->request, $vs_icon.$qr_res->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</div>";
 					print "<p>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</p>";
 					print "<p>".$qr_res->get('ca_objects.dc_date.dc_dates_value')."</p>";
 					print "</div><!-- archivesResult -->";

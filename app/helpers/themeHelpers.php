@@ -800,7 +800,7 @@
 	 * Returns the info for each set item
 	 * 
 	 * q_result -> object search loaded with object record for this set_id
-	 * options: "write_access" = false, view = list, thumbnail, caption = caption to override the configured setting
+	 * options: "write_access" = false, view = list, thumbnail, caption = caption to override the configured setting, representation = rep tag to use
 	 * 
 	 */
 	function caLightboxSetDetailItem($po_request, $q_result, $t_set_item, $pa_options = array()) {
@@ -832,14 +832,18 @@
 		}
 		$vs_set_item_display = "";
 		$vs_set_item_display .= "<div class='lbItem'><div class='lbItemContent'>\n";
-		$vs_media_version = "medium";
-		if($vs_view == "list"){
-			$vs_media_version = "icon";
-		}
-		if($vs_tag = $q_result->getMediaTag('ca_object_representations.media', $vs_media_version, array("checkAccess" => $va_access_values))){
-			$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg'>".$vs_tag."</div>", '', 'ca_objects', $q_result->get("object_id"));
+		if($pa_options["representation"]){
+			$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg'>".$pa_options["representation"]."</div>", '', 'ca_objects', $q_result->get("object_id"));
 		}else{
-			$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $q_result->get("object_id"));
+			$vs_media_version = "medium";
+			if($vs_view == "list"){
+				$vs_media_version = "icon";
+			}
+			if($vs_tag = $q_result->getMediaTag('ca_object_representations.media', $vs_media_version, array("checkAccess" => $va_access_values))){
+				$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg'>".$vs_tag."</div>", '', 'ca_objects', $q_result->get("object_id"));
+			}else{
+				$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $q_result->get("object_id"));
+			}
 		}
 		$vs_set_item_display .= "<div id='comment".$t_set_item->get("item_id")."' class='lbSetItemComment'><!-- load comments here --></div>\n";
 		$vs_set_item_display .= "<div class='caption'>".$vs_caption."</div>\n";

@@ -534,7 +534,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	color: #777;
 	line-height: 1.3em;
 }
-.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film, .lbItemImg .glyphicon.glyphicon-volume-up, .lbItemImg .glyphicon.glyphicon-film {
 	font-size: 30px;
 	padding: 10px;
 	border-radius: 23px;
@@ -580,7 +580,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	opacity: .7;
 	top:70px;
 }
-.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
+.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film, .lbItemImg .glyphicon.glyphicon-volume-up, .lbItemImg .glyphicon.glyphicon-film {
 	font-size: 30px;
 	padding: 10px;
 	border-radius: 23px;
@@ -589,6 +589,15 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	position: absolute;
 	left: 40%;
 	top: 50px;
+}
+.lbItemImg .glyphicon.glyphicon-volume-up, .lbItemImg .glyphicon.glyphicon-film {
+	left: 37%;
+	top: 40px;
+}
+.lbItemContainerList .lbItemImg .glyphicon.glyphicon-volume-up, .lbItemContainerList .lbItemImg .glyphicon.glyphicon-film {
+	font-size: 25px;
+	top: 23px;
+	left:23px;
 }
 .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem:hover .bResultItemImg .glyphicon.glyphicon-film {
 	top:50px;
@@ -806,7 +815,12 @@ p.artist.lower {
 }
 .sets .caption p {
 	padding:0px;
+	line-height:1.1em;
 }
+.sets .caption p a{
+	color:#333;
+}
+
 .bResultItemText a p{
 	color: #777;
 }
@@ -911,9 +925,22 @@ p.bookTitle {
 }
 
 /* Details */
+.detail .archivesResult .resultImg{
+	position: relative;
+}
 .detailLightboxCrumb{
+	clear:right;
 	float:right;
 	color:#888;
+	margin-right: 40px;
+	max-width:50%;
+	text-align:right;
+}
+@media (max-width: 768px) {
+	.detailLightboxCrumb{
+		float:none;
+		max-width:100%;
+	}
 }
 .detailLightboxCrumb a{
 	text-decoration:none;
@@ -1031,6 +1058,20 @@ p.bookTitle {
 #detailRepresentationThumbnails a.active img {
 	background-color:#fff;
 	border:2px solid #999;
+}
+#detailRepresentationThumbnails li {
+	position:relative;
+}
+#detailRepresentationThumbnails .glyphicon.glyphicon-film, #detailRepresentationThumbnails .glyphicon.glyphicon-volume-up{
+	font-size: 20px;
+	padding: 10px;
+	border-radius: 23px;
+	background-color: #eee;
+	opacity: .7;
+	position: absolute;
+	left: 25px;
+	top: 25px;
+	color:#777;
 }
 .tabdiv {
 	clear:both;
@@ -1548,6 +1589,16 @@ a.readmore-js-toggle {
 }
 a:hover .lbSetThumbPlaceholder i {
 	color: #666;
+}
+.lbSetImgPlaceholder{
+	margin-bottom:5px;
+}
+.lbItemContainerList .lbSetImgPlaceholder{
+	padding:10px;
+	min-height:50px;
+}
+.lbItemContainerList .lbSetImgPlaceholder .glyphicon-book{
+	font-size: 30px;
 }
 .activitystream {
 	overflow:hidden;

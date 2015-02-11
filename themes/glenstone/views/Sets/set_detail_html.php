@@ -125,14 +125,14 @@ if (!$vb_ajax) {	// !ajax
 ?>
 						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
 <?php
-						if(is_array($va_export_formats) && sizeof($va_export_formats)){
-							// Export as PDF links
-							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
-							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
-							}
-						}
+						#if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						#	// Export as PDF links
+						#	print "<li class='divider'></li>\n";
+						#	print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
+						#	foreach($va_export_formats as $va_export_format){
+						#		print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						#	}
+						#}
 ?>		
 						<li class="divider"></li>
 <?php
@@ -172,7 +172,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 				}
 			}
-			#if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
+			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
 				// Export as PDF
 				print "<div class='reportTools'>";
 				print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
@@ -186,7 +186,7 @@ if (!$vb_ajax) {	// !ajax
 				print caHTMLHiddenInput('download', array('value' => 1));
 				print caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
 				print "</div>"; 
-			#}
+			}
 ?>
 			</div>			
 		</div><!-- end col -->

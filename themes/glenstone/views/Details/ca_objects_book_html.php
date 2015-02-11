@@ -8,7 +8,7 @@
 		$vn_last_set_id = $this->request->user->getVar('current_set_id');
 		$t_last_set = new ca_sets($vn_last_set_id);
 		$vs_last_set = $t_last_set->getLabelForDisplay();
-		$vs_lightbox_crumbs = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $vs_last_set, "", "", "Sets", "Detail", array("set_id" => $vn_last_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
+		$vs_lightbox_crumbs = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $vs_last_set, "", "", "Sets", "SetDetail", array("set_id" => $vn_last_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
 	}
 ?>
 <div class="row">
@@ -50,7 +50,44 @@
 				{{{representationViewer}}}
 				
 <?php
-		print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
+		#print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
+		# --- get reps as thumbnails
+		$va_reps = $t_object->getRepresentations(array("icon"), null, array("checkAccess" => caGetUserAccessValues($this->request)));
+		if(sizeof($va_reps) > 1){		
+			$va_links = array();
+			$vn_primary_id = "";
+			foreach($va_reps as $vn_rep_id => $va_rep){
+				$vs_class = "";
+				if($va_rep["is_primary"]){
+					$vn_primary_id = $vn_rep_id;
+				}
+				if($vn_rep_id == $pn_rep_id){
+					$vs_class = "active";
+				}
+				$vs_thumb = $va_rep["tags"]["icon"];
+				$vs_icon = "";
+				if(in_array($va_rep["mimetype"], array("video/mp4", "video/x-flv", "video/mpeg", "audio/x-realaudio", "video/quicktime", "video/x-ms-asf", "video/x-ms-wmv", "application/x-shockwave-flash", "video/x-matroska"))){
+					$vs_icon = "<i class='glyphicon glyphicon-film'></i>";
+				}
+				if(in_array($va_rep["mimetype"], array("audio/mpeg", "audio/x-aiff", "audio/x-wav", "audio/mp4"))){
+					$vs_icon = "<i class='glyphicon volume-up'></i>";
+				}
+				$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".active\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(this).addClass(\"active\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_icon.$vs_thumb."</a>\n";
+			}
+			# --- make sure the primary rep shows up first
+			$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
+			unset($va_links[$vn_primary_id]);
+			$va_links = $va_primary_link + $va_links;
+			# --- formatting
+			$vs_formatted_thumbs = "";
+	
+			$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
+			foreach($va_links as $vn_rep_id => $vs_link){
+				$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='active'" : "").">".$vs_link."</li>\n";
+			}
+			$vs_formatted_thumbs .= "</ul>";
+			print "<div class='repIcons'>".$vs_formatted_thumbs."</div>";
+		}
 ?>				
 	
 			<!--<div class='requestButton'>Request this item  &nbsp;<i class='fa fa-envelope'></i></div>	-->		
@@ -169,8 +206,17 @@
 			$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
 			foreach ($va_archive_ids as $obj_key => $va_object_id) {
 				$t_object = new ca_objects($va_object_id);
+				$vs_icon = "";
+				if($t_object->get("ca_objects.type_id") == 26){
+					# --- moving image
+					$vs_icon = "<i class='glyphicon glyphicon-film'></i>";	
+				}
+				if($t_object->get("ca_objects.type_id") == 25){
+					# --- audio
+					$vs_icon = "<i class='glyphicon glyphicon-volume-up'></i>";	
+				}
 				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$va_object_id)."</div>";
+				print "<div class='resultImg'>".caNavLink($this->request, $vs_icon.$t_object->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$va_object_id)."</div>";
 				print "<p>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$va_object_id)."</p>";
 				print "<p>".$t_object->get('ca_objects.dc_date.dc_dates_value')."</p>";
 				print "</div><!-- archivesResult -->";

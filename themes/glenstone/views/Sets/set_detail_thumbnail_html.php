@@ -47,7 +47,7 @@
 			if($t_set_item->get("item_id")){
 				# --- Glenstone specific caption
 				$vn_id = $q_set_items->get('ca_objects.object_id');
-				$vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_date_link = $vs_art_idno_link = $vs_library_info = "";
+				$vs_rep = $vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_date_link = $vs_art_idno_link = $vs_library_info = $vs_collection_link = $vs_type_link = "";
 				if ($q_set_items->get('ca_objects.type_id') == 30) {
 					$vs_label_author	 	= "<p class='artist'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caDetailLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</p>";
@@ -86,14 +86,57 @@
 					$vs_label_detail_link 	= "<p>".caDetailLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$q_set_items->get("ca_objects.idno")."</p>";
 					if ($q_set_items->get('ca_objects.dc_date.dc_dates_value')) {
-						$vs_date_link = $q_set_items->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'));
+						$vs_date_link = "<p>".$q_set_items->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
 					}else {
 						$vs_date_link = "";
 					}
-				}				
-				$vs_caption = $vs_label_artist.$vs_label_detail_link.$vs_date_link.$vs_art_idno_link.$vs_library_info;
+					if ($q_set_items->get('ca_objects.type_id') == 23 || $q_set_items->get('ca_objects.type_id') == 26 || $q_set_items->get('ca_objects.type_id') == 25 || $q_set_items->get('ca_objects.type_id') == 24 || $q_set_items->get('ca_objects.type_id') == 27){
+						$vs_type_link = "<p>".$q_set_items->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+					} else {
+						$vs_type_link = "";
+					}
+					if ($q_set_items->get('ca_objects.type_id') == 23 || $q_set_items->get('ca_objects.type_id') == 26 || $q_set_items->get('ca_objects.type_id') == 25 || $q_set_items->get('ca_objects.type_id') == 24 || $q_set_items->get('ca_objects.type_id') == 27){
+						$va_collection_id = $q_set_items->get('ca_collections.collection_id');
+						$t_collection = new ca_collections($va_collection_id);
+						$vn_parent_ids = $t_collection->getHierarchyAncestors($va_collection_id, array('idsOnly' => true));
+						$vn_highest_level = end($vn_parent_ids);
+						$t_top_level = new ca_collections($vn_highest_level);
+						$vs_collection_link = "<p>".caNavLink($this->request, $t_top_level->get('ca_collections.preferred_labels'), '', 'Detail', 'collections', $vn_highest_level)."</p>";					
+					}					
+				}
+				$vs_caption = $vs_label_artist.$vs_label_detail_link.$vs_collection_link.$vs_type_link.$vs_date_link.$vs_art_idno_link.$vs_library_info;
+				
+				
+				
+				if ($q_set_items->get('ca_objects.type_id') == 25) {
+					$va_icon = "<i class='glyphicon glyphicon-volume-up'></i>";
+				} elseif ($q_set_items->get('ca_objects.type_id') == 26){
+					$va_icon = "<i class='glyphicon glyphicon-film'></i>";
+				} elseif ($q_set_items->get('ca_objects.type_id') == 1903){
+					$vn_parent_id = $q_set_items->get('ca_objects.parent_id');
+					$t_copy = new ca_objects($vn_parent_id);
+				} else {
+					$va_icon = "";
+				}
+				if($va_icon && ($q_set_items->get('ca_objects.type_id') == 25 || !$q_set_items->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)))){
+					$va_icon = "<div class='lbSetImgPlaceholder'>".$va_icon."</div>";
+				}
+				if ($q_set_items->get('ca_objects.type_id') == 1903){
+					$vs_rep 	= $va_icon.$t_copy->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values));				
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$t_copy->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_parent_id);				
+				} elseif ($q_set_items->get('ca_objects.type_id') == 25) {
+					$vs_rep 	= $va_icon;										
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_id);										
+				} else {
+					$vs_rep 	= $va_icon.$q_set_items->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values));				
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$q_set_items->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
+				}
+
+				
+				
+				
 				print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem".$t_set_item->get("item_id")."' id='row-".$q_set_items->get("object_id")."'><div class='lbItemContainer'>";
-				print caLightboxSetDetailItem($this->request, $q_set_items, $t_set_item, array("write_access" => $vb_write_access, "caption" => $vs_caption));
+				print caLightboxSetDetailItem($this->request, (($q_set_items->get('ca_objects.type_id') == 1903) ? $t_copy : $q_set_items), $t_set_item, array("write_access" => $vb_write_access, "caption" => $vs_caption, "representation" => $vs_rep));
 				print "</div></div><!-- end col 3 -->";
 				$vn_c++;
 			}

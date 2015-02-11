@@ -944,6 +944,12 @@ a.browseRemoveFacet img {
 	width:100%;
 	margin-bottom:10px;
 }
+.lbItemContainerList .lbSetImgPlaceholder{
+	padding:10px;
+}
+.lbItemContainerList .lbSetImgPlaceholder{
+	font-size: 30px;
+}
 .lbSetItemComment{
 	display:none;
 	width:100%;

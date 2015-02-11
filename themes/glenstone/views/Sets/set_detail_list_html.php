@@ -45,11 +45,11 @@
 		while($q_set_items->nextHit() && ($vn_c < $vn_hits_per_block)){
 			$t_set_item = new ca_set_items(array("row_id" => $q_set_items->get("object_id"), "set_id" => $t_set->get("set_id"), "table_num" => $vn_object_table_num));
 			if($t_set_item->get("item_id")){
-				$vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_date_link = $vs_art_idno_link = $vs_library_info = "";
+				$vs_rep = $vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_idno_detail_link = $vs_art_idno_link = $vs_library_info = "";
 				$vn_id = $q_set_items->get("ca_objects.object_id");
 				if ($q_set_items->get('ca_objects.type_id') == 30) {
 					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname')), '', '', 'Detail', 'library/'.$vn_id)."</p>";
-					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("{$vs_table}.preferred_labels.name"), '', '', 'Detail', 'library/'.$vn_id)."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', '', 'Detail', 'library/'.$vn_id)."</p>";
 					$vs_label_pub 	= "<p>".$q_set_items->get("ca_objects.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$q_set_items->get("ca_objects.call_number")."</p>";
 					$vs_label_status 	= "<p>".$q_set_items->get("ca_objects.purchase_status")."</p>";
@@ -57,7 +57,7 @@
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($q_set_items->get('ca_objects.type_id') == 1903) {
 					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $q_set_items->get("ca_entities.parent.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.parent.preferred_labels.forename ^ca_entities.parent.preferred_labels.middlename ^ca_entities.parent.preferred_labels.surname')), '', '', 'Detail', 'library/'.$q_set_items->get('ca_objects.parent_id'))."</p>";
-					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("{$vs_table}.parent.preferred_labels.name"), '', '', 'Detail', 'library/'.$q_set_items->get('ca_objects.parent_id'))."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("ca_objects.parent.preferred_labels.name"), '', '', 'Detail', 'library/'.$q_set_items->get('ca_objects.parent_id'))."</p>";
 
 					$vs_label_pub 	= "<p>".$q_set_items->get("ca_objects.parent.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$q_set_items->get("ca_objects.parent.call_number")."</p>";
@@ -67,7 +67,7 @@
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($q_set_items->get('ca_objects.type_id') == 28) {
 					$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p><i>".$q_set_items->get("{$vs_table}.preferred_labels.name")."</i>, ".$q_set_items->get("ca_objects.creation_date")."</p>";
+					$vs_label_detail_link 	= "<p><i>".$q_set_items->get("ca_objects.preferred_labels.name")."</i>, ".$q_set_items->get("ca_objects.creation_date")."</p>";
 					if ($q_set_items->get('is_deaccessioned') && ($q_set_items->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 						$vs_idno_detail_link = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $q_set_items->get('deaccession_date'))."</div>\n";
 					} else {
@@ -80,11 +80,45 @@
 					}				
 				}else {
 					$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p>".caNavLink($this->request, $q_set_items->get("{$vs_table}.preferred_labels.name"), '', '', 'Detail', 'archives/'.$q_set_items->get('ca_objects.object_id'))."</p><p>".$q_set_items->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p><p>".$q_set_items->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+					if ($q_set_items->get('ca_objects.type_id') == 23 || $q_set_items->get('ca_objects.type_id') == 26 || $q_set_items->get('ca_objects.type_id') == 25 || $q_set_items->get('ca_objects.type_id') == 24 || $q_set_items->get('ca_objects.type_id') == 27){
+						$va_collection_id = $q_set_items->get('ca_collections.collection_id');
+						$t_collection = new ca_collections($va_collection_id);
+						$vn_parent_ids = $t_collection->getHierarchyAncestors($va_collection_id, array('idsOnly' => true));
+						$vn_highest_level = end($vn_parent_ids);
+						$t_top_level = new ca_collections($vn_highest_level);
+						$vs_collection_link = "<p>".caNavLink($this->request, $t_top_level->get('ca_collections.preferred_labels'), '', 'Detail', 'collections', $vn_highest_level)."</p>";					
+					}					
+					$vs_label_detail_link 	= "<p>".caNavLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', '', 'Detail', 'archives/'.$q_set_items->get('ca_objects.object_id'))."</p>{$vs_collection_link}<p>".$q_set_items->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p><p>".$q_set_items->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+
+					#$vs_idno_detail_link 	= "<p class='idno'>".$q_set_items->get("ca_objects.idno")."</p>";
+				}				
+				$vs_caption = $vs_label_artist.$vs_label_detail_link.$vs_idno_detail_link.$vs_art_idno_link.$vs_library_info;
+				
+				if ($q_set_items->get('ca_objects.type_id') == 25) {
+					$va_icon = "<i class='glyphicon glyphicon-volume-up'></i>";
+				} elseif ($q_set_items->get('ca_objects.type_id') == 26){
+					$va_icon = "<i class='glyphicon glyphicon-film'></i>";
+				} elseif ($q_set_items->get('ca_objects.type_id') == 1903){
+					$vn_parent_id = $q_set_items->get('ca_objects.parent_id');
+					$t_copy = new ca_objects($vn_parent_id);
+				} else {
+					$va_icon = "";
 				}
-				$vs_caption = $vs_label_artist.$vs_label_detail_link.$vs_date_link.$vs_art_idno_link.$vs_library_info;
+				if($va_icon && ($q_set_items->get('ca_objects.type_id') == 25 || !$q_set_items->getMediaTag('ca_object_representations.media', 'icon', array('checkAccess' => $va_access_values)))){
+					$va_icon = "<div class='lbSetImgPlaceholder'>".$va_icon."</div>";
+				}
+				if ($q_set_items->get('ca_objects.type_id') == 1903){
+					$vs_rep 	= $va_icon.$t_copy->get('ca_object_representations.media.icon', array('checkAccess' => $va_access_values));				
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$t_copy->get('ca_object_representations.media.icon', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_parent_id);				
+				} elseif ($q_set_items->get('ca_objects.type_id') == 25) {
+					$vs_rep 	= $va_icon;										
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_id);										
+				} else {
+					$vs_rep 	= $va_icon.$q_set_items->getMediaTag('ca_object_representations.media', 'icon', array('checkAccess' => $va_access_values));				
+					#$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$q_set_items->getMediaTag('ca_object_representations.media', 'icon', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
+				}
 				print "<div class='col-xs-12 col-sm-4 lbItem".$t_set_item->get("item_id")."' id='row-".$q_set_items->get("object_id")."'><div class='lbItemContainerList'>";
-				print caLightboxSetDetailItem($this->request, $q_set_items, $t_set_item, array("write_access" => $vb_write_access, "view" => "list", "caption" => $vs_caption));
+				print caLightboxSetDetailItem($this->request, (($q_set_items->get('ca_objects.type_id') == 1903) ? $t_copy : $q_set_items), $t_set_item, array("write_access" => $vb_write_access, "view" => "list", "caption" => $vs_caption, "representation" => $vs_rep));
 				print "</div></div><!-- end col 3 -->";
 			}
 			$vn_c++;
