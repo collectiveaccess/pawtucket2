@@ -711,7 +711,7 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("medium", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
+		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbSetContainer'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
 		if(!$vb_write_access){
@@ -730,8 +730,13 @@
 				$t_list_items->load($va_set_item["type_id"]);
 				$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 				if($vn_i == 1){
-					if($va_set_item["representation_tag_medium"]){
-						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+					# --- is the iconlarge version available?
+					$vs_large_icon = "icon";
+					if($va_set_item["representation_url_iconlarge"]){
+						$vs_large_icon = "iconlarge";
+					}
+					if($va_set_item["representation_tag_".$vs_large_icon]){
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
 					}else{
 						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
 					}
