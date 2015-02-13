@@ -97,10 +97,7 @@
  			$this->view->setVar('browseInfo', $va_browse_info);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			if (!trim($ps_view = $this->request->getParameter('view', pString))) {
- 				$ps_view = caGetOption('view', $pa_options, $this->opo_result_context->getCurrentView());
- 			}
- 			
+ 			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());

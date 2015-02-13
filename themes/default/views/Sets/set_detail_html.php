@@ -7,7 +7,9 @@
 	$vs_current_view	= $this->getVar('view');
 	
 	$va_export_formats = $this->getVar('export_formats');
-
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 ?>
 <div id="lbViewButtons">
 <?php
@@ -27,14 +29,14 @@ if(is_array($va_views) && sizeof($va_views)){
 	<div class="btn-group">
 		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
-			<li><?php print caNavLink($this->request, _t("All lightboxes"), "", "", "Sets", "Index"); ?></li>
+			<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_display_name_plural), "", "", "Sets", "Index"); ?></li>
 			<li class="divider"></li>
 <?php
 		if($vb_write_access){
 ?>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share Lightbox"); ?></a></li>
-			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage Lightbox Access"); ?></a></li>
+			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
+			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_display_name)); ?></a></li>
 <?php
 		}
 ?>
@@ -50,7 +52,7 @@ if(is_array($va_views) && sizeof($va_views)){
 			}
 ?>		
 			<li class="divider"></li>
-			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New Lightbox"); ?></a></li>
+			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
 			<li class="divider"></li>
 			<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php
@@ -69,7 +71,7 @@ if(is_array($va_views) && sizeof($va_views)){
 		if(sizeof($va_set_items)){
 			print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
 		}else{
-			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this lightbox")."</div></div>";
+			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
 		}
 ?>		
 		</div><!-- end col 10 -->

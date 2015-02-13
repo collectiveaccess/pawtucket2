@@ -524,7 +524,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		}
 		
 		
-		if (!$this->hasField($va_tmp[sizeof($va_tmp)-1]) || $this->getFieldInfo($va_tmp[sizeof($va_tmp)-1], 'ALLOW_BUNDLE_ACCESS_CHECK')) {
+		if (($va_tmp[sizeof($va_tmp)-1] != 'access') && (!$this->hasField($va_tmp[sizeof($va_tmp)-1]) || $this->getFieldInfo($va_tmp[sizeof($va_tmp)-1], 'ALLOW_BUNDLE_ACCESS_CHECK'))) {
+			// Always allow "access" value to be gotten otherwise none of the Pawtucket access checks will work.
 			if (caGetBundleAccessLevel($this->tableName(), $vs_access_chk_key) == __CA_BUNDLE_ACCESS_NONE__) {
 				return null;
 			}
@@ -739,7 +740,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											$va_items[] = $vm_val;
 										} else {
 											$va_items[] = $vm_val;
-											break;
+											//break;
 										}
 									}
 								} else {
@@ -2246,7 +2247,22 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 									case 2:
 									case 3:
-										return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
+										if (caGetOption('select', $pa_options, false)) {
+											if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
+											
+											$vs_label_display_field = $t_instance->getLabelDisplayField();
+											$qr_res = call_user_func_array($va_tmp[0].'::find', array(array('deleted' => 0, 'parent_id' => null), array('sort' => $t_instance->getLabelTableName().'.'.$vs_label_display_field, 'returnAs' => 'searchResult')));
+						
+											$vs_pk = $t_instance->primaryKey();
+											$va_opts = array('-' => '');
+											while($qr_res->nextHit()) {
+												$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
+											}
+						
+											return caHTMLSelect($ps_field.($vb_as_array_element ? "[]" : ""), $va_opts, array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
+										} else {
+											return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
+										}
 										break;
 								}
 							}

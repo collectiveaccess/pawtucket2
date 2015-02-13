@@ -50,6 +50,11 @@
 							print "<li>";
 							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+								// If currently deaccessioned then display deaccession message
+								print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
+								#if ($vs_deaccession_notes = $t_object->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
+							}
 							print "</li>";
 						}
 ?>						
