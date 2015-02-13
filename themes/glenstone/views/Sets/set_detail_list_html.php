@@ -48,6 +48,7 @@
 				$vs_rep = $vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_idno_detail_link = $vs_art_idno_link = $vs_library_info = "";
 				$vn_id = $q_set_items->get("ca_objects.object_id");
 				if ($q_set_items->get('ca_objects.type_id') == 30) {
+					# --- library - book
 					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname')), '', '', 'Detail', 'library/'.$vn_id)."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', '', 'Detail', 'library/'.$vn_id)."</p>";
 					$vs_label_pub 	= "<p>".$q_set_items->get("ca_objects.publication_description")."</p>";
@@ -56,6 +57,7 @@
 					$vs_idno_detail_link 	= "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($q_set_items->get('ca_objects.type_id') == 1903) {
+					# --- library - copy
 					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $q_set_items->get("ca_entities.parent.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.parent.preferred_labels.forename ^ca_entities.parent.preferred_labels.middlename ^ca_entities.parent.preferred_labels.surname')), '', '', 'Detail', 'library/'.$q_set_items->get('ca_objects.parent_id'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $q_set_items->get("ca_objects.parent.preferred_labels.name"), '', '', 'Detail', 'library/'.$q_set_items->get('ca_objects.parent_id'))."</p>";
 
@@ -66,6 +68,7 @@
 					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($q_set_items->get('ca_objects.type_id') == 28) {
+					# --- artwork
 					$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p><i>".$q_set_items->get("ca_objects.preferred_labels.name")."</i>, ".$q_set_items->get("ca_objects.creation_date")."</p>";
 					if ($q_set_items->get('is_deaccessioned') && ($q_set_items->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
@@ -79,7 +82,18 @@
 						$vs_art_idno_link = "";
 					}				
 				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					# --- archive
+					#$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					if ($q_set_items->get('ca_objects.dc_date.dc_dates_value')) {
+						$vs_date_link = "<p>".$q_set_items->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+					}else {
+						$vs_date_link = "";
+					}
+					if ($q_set_items->get('ca_objects.type_id') == 23 || $q_set_items->get('ca_objects.type_id') == 26 || $q_set_items->get('ca_objects.type_id') == 25 || $q_set_items->get('ca_objects.type_id') == 24 || $q_set_items->get('ca_objects.type_id') == 27){
+						$vs_type_link = "<p>".$q_set_items->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+					} else {
+						$vs_type_link = "";
+					}
 					if ($q_set_items->get('ca_objects.type_id') == 23 || $q_set_items->get('ca_objects.type_id') == 26 || $q_set_items->get('ca_objects.type_id') == 25 || $q_set_items->get('ca_objects.type_id') == 24 || $q_set_items->get('ca_objects.type_id') == 27){
 						$va_collection_id = $q_set_items->get('ca_collections.collection_id');
 						$t_collection = new ca_collections($va_collection_id);

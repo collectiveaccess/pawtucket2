@@ -49,6 +49,7 @@
 				$vn_id = $q_set_items->get('ca_objects.object_id');
 				$vs_rep = $vs_caption = $vs_label_artist = $vs_label_detail_link = $vs_date_link = $vs_art_idno_link = $vs_library_info = $vs_collection_link = $vs_type_link = "";
 				if ($q_set_items->get('ca_objects.type_id') == 30) {
+					# --- library --- book
 					$vs_label_author	 	= "<p class='artist'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caDetailLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</p>";
 
@@ -59,6 +60,7 @@
 					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($q_set_items->get('ca_objects.type_id') == 1903) {
+					# --- library - copy
 					$vs_label_author	 	= "<p class='artist'>".$q_set_items->get("ca_entities.parent.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.parent.preferred_labels.forename ^ca_entities.parent.preferred_labels.middlename ^ca_entities.parent.preferred_labels.surname'))."</p>";
 					$vs_label_detail 	= "<p style='text-decoration:underline;'>".$q_set_items->get("ca_objects.parent.preferred_labels.name")."</p>";
 
@@ -69,6 +71,7 @@
 					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;				
 				} elseif ($q_set_items->get('ca_objects.type_id') == 28) {
+					# --- artwork
 					$vs_label_artist	 	= "<p class='artist lower'>".caDetailLink($this->request, $q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist')), '', 'ca_objects', $vn_id)."</p>";
 					$vs_label_detail_link 	= "<p><i>".caDetailLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</i>, ".$q_set_items->get("ca_objects.creation_date")."</p>";
 					if ($q_set_items->get('is_deaccessioned') && ($q_set_items->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
@@ -76,13 +79,13 @@
 					} else {
 						$vs_idno_detail_link = "";
 					}
-					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatoral_all_new") || $this->request->user->hasUserRole("curatoral_basic_new")  || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 						$vs_art_idno_link = "<p class='idno'>".$q_set_items->get("ca_objects.idno")."</p>";
 					} else {
 						$vs_art_idno_link = "";
 					}
 				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					#$vs_label_artist	 	= "<p class='artist lower'>".$q_set_items->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p>".caDetailLink($this->request, $q_set_items->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$q_set_items->get("ca_objects.idno")."</p>";
 					if ($q_set_items->get('ca_objects.dc_date.dc_dates_value')) {

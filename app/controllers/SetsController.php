@@ -798,7 +798,8 @@
  				}
  			}
  			if($ps_tablename == "ca_sets"){
- 				$this->setDetail();
+ 				$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
+ 				#$this->setDetail();
  			}
  		}
  		# ------------------------------------------------------

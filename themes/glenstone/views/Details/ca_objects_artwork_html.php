@@ -8,16 +8,16 @@
 	$va_export_formats = $this->getVar('export_formats');
 	$vs_export_format_select = $this->getVar('export_format_select');
 	
-	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
-	$vs_last_find = ResultContext::getLastFind($this->request, "ca_objects");
-	$vs_lightbox_crumbs = "";
-	if($vs_last_find == "sets/lightbox"){
-		$vn_last_set_id = $this->request->user->getVar('current_set_id');
-		$t_last_set = new ca_sets($vn_last_set_id);
-		$vs_last_set = $t_last_set->getLabelForDisplay();
-		$vs_lightbox_crumbs = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $vs_last_set, "", "", "Sets", "SetDetail", array("set_id" => $vn_last_set_id))." &#8594; ".(($vs_creator = $t_object->getWithTemplate("^ca_entities.preferred_labels.name", array("restrictToRelationshipTypes" => array("artist", "creator"), "delimiter" => "; "))) ? $vs_creator.", " : "")."<i>".$t_object->get("ca_objects.preferred_labels.name")."</i>".(($t_object->get("ca_objects.creation_date")) ? ", ".$t_object->get("ca_objects.creation_date") : "");
+	$t_set = new ca_sets();
+	$va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem("ca_objects", $t_object->get("object_id"), array("user_id" => $this->request->user->get("user_id"))));
+	$va_lightbox_crumbs = array();
+	foreach($va_sets as $vn_set_id => $va_set){
+		$va_lightbox_crumbs[] = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $va_set["name"], "", "", "Sets", "SetDetail", array("set_id" => $vn_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
 	}
-
+	$vs_lightbox_crumbs = "";
+	if(sizeof($va_lightbox_crumbs)){
+		$vs_lightbox_crumbs = join("<br/>", $va_lightbox_crumbs);
+	}
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
