@@ -41,6 +41,8 @@
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
  		 protected $opo_config;
+ 		 protected $ops_lightbox_display_name;
+ 		 protected $ops_lightbox_display_name_plural;
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -54,6 +56,12 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
  			$this->opo_config = caGetSetsConfig();
  			caSetPageCSSClasses(array("sets"));
+ 			
+ 			$va_lightbox_display_name = caGetSetDisplayName($this->opo_config);
+ 			$this->view->setVar('set_config', $this->opo_config);
+ 			
+			$this->ops_lightbox_display_name = $va_lightbox_display_name["singular"];
+			$this->ops_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
  		}
  		# -------------------------------------------------------
  		function Index() {
@@ -69,39 +77,222 @@
  			$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
  			$this->view->setVar("set_ids", $va_set_ids);
  			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
+ 			if(is_array($va_set_change_log) && sizeof($va_set_change_log)){
+ 				$va_set_change_log = array_slice($va_set_change_log, 0, 50);
+ 			}
  			$this->view->setVar("activity", $va_set_change_log);
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox"));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			$this->render("Sets/set_list_html.php");
  		}
  		# ------------------------------------------------------
  		function setDetail() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			AssetLoadManager::register("mediaViewer");
-
+ 		
+			$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
+ 			$o_context->setAsLastFind();
+			$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
+			$this->view->setVar("browse_type", "caLightbox");	# --- this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
  			$ps_view = $this->request->getParameter('view', pString);
- 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData', 'pdf'))) {
+ 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData', 'pdf', 'list'))) {
  				$ps_view = 'thumbnail';
  			}
  			$this->view->setVar('view', $ps_view);
 			$this->view->setVar('views', $this->opo_config->getAssoc("views"));
 
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $this->request->getUserID(), "thumbnailVersions" => array("medium"), "checkAccess" => $this->opa_access_values)));
-			$this->view->setVar("set", $t_set);
-			$this->view->setVar("set_items", $va_set_items);
-			$va_comments = $t_set->getComments();
+ 			
+ 			$vn_set_id = $t_set->get("set_id");
+ 			
+ 			$this->view->setVar("set", $t_set);
+ 			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
+
+			//
+			// Load existing browse if key is specified
+			//
+			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+				$o_browse->reload($ps_cache_key);
+			}
+			//
+			// Clear criteria if required
+			//
+			
+			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
+			}
+			
+			if ((bool)$this->request->getParameter('clear', pInteger)) {
+				// Clear all refine critera but *not* underlying _search criterion
+				$va_criteria = $o_browse->getCriteria();
+				foreach($va_criteria as $vs_criterion => $va_criterion_info) {
+					if ($vs_criterion == '_search') { continue; }
+					$o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
+				}
+			}
+			if ($this->request->getParameter('getFacet', pInteger)) {
+				$vs_facet = $this->request->getParameter('facet', pString);
+				$this->view->setVar('facet_name', $vs_facet);
+				$this->view->setVar('key', $o_browse->getBrowseID());
+				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
+				$this->view->setVar('facet_info', $va_facet_info);
+				
+				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+				 switch($va_facet_info["group_mode"]){
+					case "alphabetical":
+					case "list":
+					default:
+						$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
+						$this->render("Browse/list_facet_html.php");
+					break;
+					case "hierarchical":
+						$this->render("Browse/hierarchy_facet_html.php");
+					break;
+				}
+				return;
+			}
+			//
+			// Add criteria and execute
+			//
+			$vs_search_expression = "ca_sets.set_id:{$vn_set_id}";
+			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+				$o_browse->addCriteria("_search", array($vs_search_expression));
+			}
+			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+			}
+			
+			//
+			// Sorting
+			//
+			$vb_sort_changed = false;
+			if(!$ps_secondary_sort = $this->request->getParameter("secondary_sort", pString)){
+ 				$ps_secondary_sort = $o_context->getCurrentSecondarySort();
+ 			}
+ 			$va_config_sort = $this->opo_config->getAssoc("sortBy");
+			if(!is_array($va_config_sort)){
+				$va_config_sort = array();
+			}
+			$va_sort_by = array_merge(array(_t('Set order') => "ca_set_items.rank/{$vn_set_id}"), $va_config_sort);
+		
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
+ 				if (!$ps_sort && !($ps_sort = $o_context->getCurrentSort())) {
+ 					if(is_array($va_sort_by)) {
+ 						$ps_sort = array_shift(array_keys($va_sort_by));
+ 						$vb_sort_changed = true;
+ 					}
+ 				}
+ 			}else{
+ 				$vb_sort_changed = true;
+ 			}
+ 			if($vb_sort_changed){
+				# --- set the default sortDirection if available
+				$va_sort_direction = $this->opo_config->getAssoc("sortDirection");
+				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
+					$o_context->setCurrentSortDirection($ps_sort_direction);
+				}
+ 				$ps_secondary_sort = "";			
+ 			}
+ 			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
+ 				if (!($ps_sort_direction = $o_context->getCurrentSortDirection())) {
+ 					$ps_sort_direction = 'asc';
+ 				}
+ 			}
  			
- 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets');
- 			$o_context->setResultList($va_set_ids = $t_set->getItems(array('idsOnly' => true)));
- 			$o_context->saveContext();
- 			$o_context->setAsLastFind();
+ 			$o_context->setCurrentSort($ps_sort);
+ 			$o_context->setCurrentSecondarySort($ps_secondary_sort);
+ 			$o_context->setCurrentSortDirection($ps_sort_direction);
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Lightbox").": ".$t_set->getLabelForDisplay());
+			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
+			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
+			$this->view->setVar('sort', $ps_sort);
+			$va_secondary_sort_by = $this->opo_config->getAssoc("secondarySortBy");
+			$this->view->setVar('secondarySortBy', is_array($va_secondary_sort_by) ? $va_secondary_sort_by : null);
+			$this->view->setVar('secondarySortBySelect', $vs_secondary_sort_by_select = (is_array($va_secondary_sort_by) ? caHTMLSelect("secondary_sort", $va_secondary_sort_by, array('id' => "secondary_sort"), array("value" => $ps_secondary_sort)) : ''));
+			$this->view->setVar('secondarySort', $ps_secondary_sort);
+			$this->view->setVar('sortDirection', $ps_sort_direction);
+			
+			$va_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
+			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
+
+			//
+			// Facets
+			//
+			if ($vs_facet_group = $this->opo_config->get("set_facet_group")) {
+				$o_browse->setFacetGroup($vs_facet_group);
+			}
+			$va_available_facet_list = $this->opo_config->get("availableFacets");
+			$va_facets = $o_browse->getInfoForAvailableFacets();
+			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					if (!in_array($vs_facet_name, $va_available_facet_list)) {
+						unset($va_facets[$vs_facet_name]);
+					}
+				}
+			} 
+		
+			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+			}
+		
+			$this->view->setVar('facets', $va_facets);
+		
+			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+			$this->request->session->setVar('lightbox_last_browse_id', $vs_key);
+			
+			//
+			// Current criteria
+			//
+			$va_criteria = $o_browse->getCriteriaWithLabels();
+			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
+				unset($va_criteria['_search']);
+			}
+			$va_criteria_for_display = array();
+			foreach($va_criteria as $vs_facet_name => $va_criterion) {
+				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+				foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+				}
+			}
+			
+			$this->view->setVar('criteria', $va_criteria_for_display);
+			
+			// 
+			// Results
+			//
+			$vs_combined_sort = $va_sort_by[$ps_sort];
+			
+			if($ps_secondary_sort){
+				$vs_combined_sort .= ";".$va_secondary_sort_by[$ps_secondary_sort];
+			}
+			
+			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));
+			$this->view->setVar('result', $qr_res);
+			
+			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
+ 				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
+ 					$pn_hits_per_block = ($this->opo_config->get("defaultHitsPerBlock")) ? $this->opo_config->get("defaultHitsPerBlock") : 36;
+ 				}
+ 			}
+ 			$o_context->getItemsPerPage($pn_hits_per_block);
+			
+			$this->view->setVar('hits_per_block', $pn_hits_per_block);
+			
+			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			
+			$o_context->setParameter('key', $vs_key);
+			
+			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			$qr_res->seek($vn_key_start);
+			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+			$qr_res->seek($vn_start);
+			
+			$o_context->saveContext();
+ 			
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'pdf':
- 					$qr_res = caMakeSearchResult('ca_objects', $va_set_ids);
- 					$this->view->setVar('result', $qr_res);
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -149,7 +340,7 @@
  			# --- set name - required
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors["name"] = _t("Please enter the name of your lightbox");
+ 				$va_errors["name"] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
@@ -197,7 +388,7 @@
 					# --- select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
-					$this->view->setVar("message", _t('Saved lightbox.'));
+					$this->view->setVar("message", _t('Saved %1.', $this->ops_lightbox_display_name));
  					$this->render("Form/reload_html.php");
 				}
 			}else{
@@ -238,7 +429,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Removed group access to lightbox"));
+					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid group/set id"));
@@ -258,7 +449,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Removed user access to lightbox"));
+					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid user/set id"));
@@ -280,7 +471,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Changed group access to lightbox"));
+					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid group/set id or access"));
@@ -302,7 +493,7 @@
 				if ($t_item->numErrors()) {
 					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
 				}else{
-					$this->view->setVar('message', _t("Changed user access to lightbox"));
+					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
 				$this->view->setVar('errors', _("invalid user/set id or access"));
@@ -336,7 +527,7 @@
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
-						$this->view->setVar("message", _t('Group already has access to the lightbox'));
+						$this->view->setVar("message", _t('Group already has access to the %1', $this->ops_lightbox_display_name));
 						$this->render("Form/reload_html.php");
 					}else{
 						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
@@ -375,7 +566,7 @@
 							}							
 							
 							
-							$this->view->setVar("message", _t('Shared lightbox with group'));
+							$this->view->setVar("message", _t('Shared %1 with group', $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}
@@ -398,7 +589,7 @@
 								$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
 								$t_sets_x_users->insert();
 								if($t_sets_x_users->numErrors()) {
-									$va_errors["general"] = _t("There were errors while sharing this lightbox with %1", $vs_user).join("; ", $t_sets_x_users->getErrors());
+									$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $this->ops_lightbox_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
 									$this->view->setVar('errors', $va_errors);
 									$this->shareSetForm();
 								}else{
@@ -413,19 +604,19 @@
 					if((sizeof($va_error_emails)) || (sizeof($va_error_emails_has_access))){
 						$va_user_errors = array();
 						if(sizeof($va_error_emails)){
-							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ".implode(", ", $va_error_emails));
+							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ").implode(", ", $va_error_emails);
 						}
 						if(sizeof($va_error_emails_has_access)){
-							$va_user_errors[] = _t("The following email(s) you entered already have access to this lightbox: ".implode(", ", $va_error_emails_has_access));
+							$va_user_errors[] = _t("The following email(s) you entered already have access to this %1: ", $this->ops_lightbox_display_name).implode(", ", $va_error_emails_has_access);
 						}
 						if(sizeof($va_success_emails)){
-							$this->view->setVar('message', _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+							$this->view->setVar('message', _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
 						}
 						$va_errors["user"] = implode("<br/>", $va_user_errors);
 						$this->view->setVar('errors', $va_errors);
 						$this->shareSetForm();
 					}else{
-						$this->view->setVar("message", _t('Shared lightbox with: '.implode(", ", $va_success_emails)));
+						$this->view->setVar("message", _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
 						$this->render("Form/reload_html.php");
 					}
 					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
@@ -607,7 +798,8 @@
  				}
  			}
  			if($ps_tablename == "ca_sets"){
- 				$this->setDetail();
+ 				$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
+ 				#$this->setDetail();
  			}
  		}
  		# ------------------------------------------------------
@@ -680,7 +872,7 @@
 				}
 				$va_errors = $t_set->reorderItems($va_row_ids);
 			}else{
-				$va_errors[] = _t("lightbox is not defined or you don't have access to the lightbox");
+				$va_errors[] = _t("%1 is not defined or you don't have access to the lightbox", $this->ops_lightbox_display_name);
 			}
 			$this->view->setVar('errors', $va_errors);
 			$this->render('Sets/ajax_reorder_items_json.php');
@@ -694,12 +886,12 @@
 				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
 					$va_errors = array();
 				} else {
-					$va_errors[] = _t('Could not remove item from lightbox');
+					$va_errors[] = _t('Could not remove item from %1', $this->ops_lightbox_display_name);
 				}
 				$this->view->setVar('set_id', $pn_set_id);
 				$this->view->setVar('item_id', $pn_item_id);
 			} else {
-				$va_errors['general'] = _t('You do not have access to the lightbox');	
+				$va_errors['general'] = _t('You do not have access to the %1', $this->ops_lightbox_display_name);	
 			}
  			
  			$this->view->setVar('errors', $va_errors);
@@ -717,7 +909,7 @@
  			if($this->request->getParameter('set_id', pInteger)){
  				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
- 					$va_errors["general"] = _t("You can not add items to this lightbox.  You have read only access.");
+ 					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $this->ops_lightbox_display_name);
  					$this->view->setVar('errors', $va_errors);
  					$this->addItemForm();
  					return;
@@ -727,7 +919,7 @@
 				# --- set name - if not sent, make a decent default
 				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
-					$ps_name = _t("Your lightbox");
+					$ps_name = _t("Your %1", $this->ops_lightbox_display_name);
 				}
 				# --- set description - optional
 				$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
@@ -781,29 +973,33 @@
 							$this->view->setVar('message', _t("Successfully added item."));
 							$this->render("Form/reload_html.php");
 						} else {
-							$va_errors["message"] = _t('Could not add item to lightbox');
+							$va_errors["message"] = _t('Could not add item to %1', $this->ops_lightbox_display_name);
 							$this->render("Form/reload_html.php");
 						}
 					}else{
-						$this->view->setVar('message', _t("Item already in lightbox."));
+						$this->view->setVar('message', _t("Item already in %1.", $this->ops_lightbox_display_name));
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					if($this->request->getParameter('saveLastResults', pString)){
-						# --- get object ids from last result
-						$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
-						$va_object_ids = $o_context->getResultList();
+					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
+						if($pb_saveLastResults){
+							# --- get object ids from last result
+							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+							$va_object_ids = $o_context->getResultList();
+						}else{
+							$va_object_ids = explode(";", $ps_object_ids);
+						}
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							# --- check for those already in set
 							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
 							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
 							# --- insert items
 							$t_set->addItems($va_object_ids);
-							$this->view->setVar('message', _t("Successfully added results to lightbox."));
+							$this->view->setVar('message', _t("Successfully added results to %1.", $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 							
 						}else{
-							$this->view->setVar('message', _t("No objects in search result to add to lightbox"));
+							$this->view->setVar('message', _t("No objects in search result to add to %1", $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}else{
@@ -818,8 +1014,9 @@
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			$this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
+ 			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
- 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger)){
+ 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
  				$this->render("Sets/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

@@ -50,6 +50,11 @@
 							print "<li>";
 							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+								// If currently deaccessioned then display deaccession message
+								print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
+								#if ($vs_deaccession_notes = $t_object->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
+							}
 							print "</li>";
 						}
 ?>						
@@ -106,8 +111,9 @@
 					
 		<!-- Related Archival Materials -->
 			
-<?php		
-		if ($va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)))) {	
+<?php	
+		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)));	
+		if ($va_related_objects) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Material </H6>
@@ -188,7 +194,8 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<script type='text/javascript'>
+			</ifcount>}}}<!-- Related Books -->			
+<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
 					Carousel initialization
@@ -228,8 +235,7 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->			
-			
+			</script>			
 			
 		</div><!-- end container -->
 	</div><!-- end row -->

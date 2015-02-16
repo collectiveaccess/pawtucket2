@@ -33,6 +33,7 @@
  		# -------------------------------------------------------
  		/**
  		 *
+ 		 *
  		 */
  		
  		# -------------------------------------------------------
@@ -67,7 +68,6 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			
  			$ps_function = strtolower($ps_function);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
@@ -98,7 +98,7 @@
  				$this->view->setVar("set", $t_set);
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
- 				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon"), "checkAccess" => $this->opa_access_values))));
+ 				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
  				$this->render("Gallery/detail_html.php");
  			}
@@ -126,7 +126,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon"), "checkAccess" => $this->opa_access_values)));
+ 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);

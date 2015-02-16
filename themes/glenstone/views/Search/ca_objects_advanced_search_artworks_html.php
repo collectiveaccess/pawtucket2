@@ -25,7 +25,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class="row collection">
 		<div class="col-sm-6">	
 			<div class="advSearch">
-				<h1>Search Collection</h1>
+				<h1>Art Advanced Search</h1>
 				{{{form}}}
 
 					<div class="advancedSearchField">
@@ -78,7 +78,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class='row'>
 		<div class="col-sm-12">
 			<hr>
-			<h1>Artists</h1>
+			<h1>Artists by Last Name</h1>  
 <?php
 		//$o_artist_search = new ObjectSearch();
 		//$qr_artists = $o_artist_search->search("ca_entities.preferred_labels.displayname/artist:*");
@@ -97,8 +97,10 @@ $va_access_values = caGetUserAccessValues($this->request);
 		
 		$va_artists = array();
 		while ($qr_artists->nextHit()) {
-			$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
-			$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+			if ($qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values))) {
+				$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
+				$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+			}
 		} 
 		#print "<pre>";
 		#print_r($va_artists);

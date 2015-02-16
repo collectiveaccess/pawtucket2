@@ -416,6 +416,7 @@
 	
 			$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 			$ps_label_boolean = caGetOption('labelBoolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
+			$ps_sort = caGetOption('sort', $pa_options, null);
 		
 			$vs_table = get_called_class();
 			$t_instance = new $vs_table;
@@ -801,7 +802,10 @@
 								$t_instance = $this->getAppDatamodel()->getInstanceByTableNum($this->tableNum());
 								
 								$vb_check_access = is_array($pa_options['checkAccess']) && $t_instance->hasField('access');
-								$vs_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								$va_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								if (!is_array($va_sort) && $va_sort) { $va_sort = array($va_sort); }
+								if (!is_array($va_sort)) { $va_sort = array(); }
+								
 								$vs_sort_direction = (isset($pa_options['sort_direction']) && in_array(strtolower($pa_options['sort_direction']), array('asc', 'desc'))) ? strtolower($pa_options['sort_direction']) : 'asc';
 								
 								$qr_children = $this->makeSearchResult($this->tableName(), $va_children_ids);
@@ -810,7 +814,10 @@
 								while($qr_children->nextHit()) {
 									if ($vb_check_access && !in_array($qr_children->get("{$vs_table}.access"), $pa_options['checkAccess'])) { continue; }
 									
-									$vs_sort_key = ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+									$vs_sort_key = '';
+									foreach($va_sort as $vs_sort){ 
+										$vs_sort_key .= ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+									}
 									if(!is_array($va_data[$vs_sort_key])) { $va_data[$vs_sort_key] = array(); }
 									$va_data[$vs_sort_key] = array_merge($va_data[$vs_sort_key], $qr_children->get($vs_childless_path, array_merge($pa_options, array('returnAsArray' => true))));
 								}

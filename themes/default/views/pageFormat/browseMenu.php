@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -80,7 +80,7 @@
 							$va_first_browse = array_pop($va_browse_types);
 						}
 ?>
-								<div id="browseMenuTypeFacet"> </div>
+								<div id="browseMenuTypeFacet" class='row'> </div>
 							</div><!-- end browseMenuContent container -->		
 						</li><!-- end browseNavFacet -->
 					</ul> <!--end dropdown-browse-menu -->	

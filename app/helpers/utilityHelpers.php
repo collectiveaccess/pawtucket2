@@ -304,9 +304,11 @@ function caFileIsIncludable($ps_file) {
 	 * @param bool $pb_include_hidden_files Optional. By default caGetDirectoryContentsAsList() does not consider hidden files (files starting with a '.') when calculating file counts. Set this to true to include hidden files in counts. Note that the special UNIX '.' and '..' directory entries are *never* counted as files.
 	 * @param bool $pb_sort Optional. If set paths are returns sorted alphabetically. Default is false.
 	 * @param bool $pb_include_directories. If set paths to directories are included. Default is false (only files are returned).
+	 * @param array $pa_options Additional options, including:
+	 *		modifiedSince = Only return files and directories modified after a Unix timestamp [Default=null]
 	 * @return array An array of file paths.
 	 */
-	function &caGetDirectoryContentsAsList($dir, $pb_recursive=true, $pb_include_hidden_files=false, $pb_sort=false, $pb_include_directories=false) {
+	function &caGetDirectoryContentsAsList($dir, $pb_recursive=true, $pb_include_hidden_files=false, $pb_sort=false, $pb_include_directories=false, $pa_options=null) {
 		$va_file_list = array();
 		if(substr($dir, -1, 1) == "/"){
 			$dir = substr($dir, 0, strlen($dir) - 1);
@@ -315,6 +317,14 @@ function caFileIsIncludable($ps_file) {
 		if($va_paths = scandir($dir, 0)) {
 			foreach($va_paths as $item) {
 				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
+					if (
+						(isset($pa_option['modifiedSince']) && ($pa_option['modifiedSince'] > 0))
+						&&
+						(is_array($va_stat = @stat("{$dir}/{$item}")))
+						&&
+						($va_stat['mtime'] < $pa_option['modifiedSince'])	
+					) { continue; }
+				
 					$vb_is_dir = is_dir("{$dir}/{$item}");
 					if ($pb_include_directories && $vb_is_dir) {
 						$va_file_list["{$dir}/{$item}"] = true;
@@ -417,17 +427,17 @@ function caFileIsIncludable($ps_file) {
 	# ----------------------------------------
 	function caZipDirectory($ps_directory, $ps_name, $ps_output_file) {
 		$va_files_to_zip = caGetDirectoryContentsAsList($ps_directory);
-		
-		$o_zip = new ZipFile();
+
+		$vs_tmp_name = caGetTempFileName('caZipDirectory', 'zip');
+		$o_phar = new PharData($vs_tmp_name, null, null, Phar::ZIP);
 		foreach($va_files_to_zip as $vs_file) {
 			$vs_name = str_replace($ps_directory, $ps_name, $vs_file);
-			$o_zip->addFile($vs_file, $vs_name);
+			$o_phar->addFile($vs_file, $vs_name);
 		}
-		
-		$vs_new_file = $o_zip->output(ZIPFILE_FILEPATH);
-		copy($vs_new_file, $ps_output_file);
-		unlink ($vs_new_file);
-		
+
+		copy($vs_tmp_name, $ps_output_file);
+		unlink($vs_tmp_name);
+
 		return true;
 	}
 	# ----------------------------------------
@@ -438,6 +448,17 @@ function caFileIsIncludable($ps_file) {
 		$list = @scandir('phar://'.$ps_filename);
 	
 		return (bool)$list;
+	}
+	# ----------------------------------------
+	/**
+	 * Detemines if a given path is valid by validating it against a regular expression and running it through file_exists
+	 * @param $ps_path
+	 * @return bool
+	 */
+	function caIsValidFilePath($ps_path) {
+		if (!$ps_path || (preg_match("/[^\/A-Za-z0-9\.:\ _\\\-]+/", $ps_path)) || !file_exists($ps_path)) { return false; }
+
+		return true;
 	}
 	# ----------------------------------------
 	function caGetOSFamily() {
@@ -530,6 +551,17 @@ function caFileIsIncludable($ps_file) {
 				}
 			}
 		}
+	}
+	# ----------------------------------------
+	function caGetTempFileName($ps_prefix, $ps_extension = null) {
+		$vs_tmp = tempnam(caGetTempDirPath(), $ps_prefix);
+		@unlink($vs_tmp);
+
+		if($ps_extension && strlen($ps_extension)>0) {
+			$vs_tmp = $vs_tmp.'.'.$ps_extension;
+		}
+
+		return $vs_tmp;
 	}
 	# ----------------------------------------
 	function caQuoteList($pa_list) {
@@ -966,6 +998,7 @@ function caFileIsIncludable($ps_file) {
 		}
 		$va_sorted_by_key = array();
 		foreach($pa_values as $vn_id => $va_data) {
+			if (!is_array($va_data)) { continue; }
 			$va_key = array();
 			foreach($va_sort_keys as $vs_sort_key) {
 				$va_key[] = $va_data[$vs_sort_key];
@@ -2143,4 +2176,417 @@ function caFileIsIncludable($ps_file) {
 		return false;
 	}
 	# ----------------------------------------
-?>
+	function caHumanFilesize($bytes, $decimals = 2) {
+		$size = array('B','KiB','MiB','GiB','TiB');
+		$factor = floor((strlen($bytes) - 1) / 3);
+
+		return sprintf("%,{$decimals}f", $bytes/pow(1024, $factor)).@$size[$factor];
+	}
+	# ----------------------------------------
+	/**
+	 * Upload a local file to a GitHub repository
+	 * @param string $ps_user GitHub username
+	 * @param string $ps_token access token. Global account password can be used here but it's recommended to create a personal access token instead.
+	 * @param string $ps_owner The repository owner
+	 * @param string $ps_repo repository name
+	 * @param string $ps_git_path path for the file destination inside the repository, e.g. "/exports/from_collectiveaccess/export.xml."
+	 * @param string $ps_local_filepath file to upload as absolute local path. Note that the file must be loaded in memory to be committed to GitHub.
+	 * @param string $ps_branch branch to commit to. defaults to 'master'
+	 * @param bool $pb_update_on_conflict Determines what happens if file already exists in GitHub repository.
+	 * 		true means the file is updated in place for. false means we abort. default is true
+	 * @param string $ps_commit_msg commit message
+	 * @return bool success state
+	 */
+	function caUploadFileToGitHub($ps_user, $ps_token, $ps_owner, $ps_repo, $ps_git_path, $ps_local_filepath, $ps_branch = 'master', $pb_update_on_conflict=true, $ps_commit_msg = null) {
+		// check mandatory params
+		if(!$ps_user || !$ps_token || !$ps_owner || !$ps_repo || !$ps_git_path || !$ps_local_filepath) {
+			caLogEvent('DEBG', "Invalid parameters for GitHub file upload. Check your configuration!", 'caUploadFileToGitHub');
+			return false;
+		}
+
+		if(!$ps_commit_msg) {
+			$ps_commit_msg = 'Commit created by CollectiveAccess on '.date('c');
+		}
+
+
+		$o_client = new \Github\Client();
+		$o_client->authenticate($ps_user, $ps_token);
+
+		$vs_content = @file_get_contents($ps_local_filepath);
+
+		try {
+			$o_client->repositories()->contents()->create($ps_owner, $ps_repo, $ps_git_path, $vs_content, $ps_commit_msg, $ps_branch);
+		} catch (Github\Exception\RuntimeException $e) {
+			switch($e->getCode()) {
+				case 401:
+					caLogEvent('DEBG', "Could not authenticate with GitHub. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+					break;
+				case 422:
+					if($pb_update_on_conflict) {
+						try {
+							$va_content = $o_client->repositories()->contents()->show($ps_owner, $ps_repo, $ps_git_path);
+							if(isset($va_content['sha'])) {
+								$o_client->repositories()->contents()->update($ps_owner, $ps_repo, $ps_git_path, $vs_content, $ps_commit_msg, $va_content['sha'], $ps_branch);
+							}
+							return true; // overwrite was successful if there was no exception in above statement
+						} catch (Github\Exception\RuntimeException $ex) {
+							caLogEvent('DEBG', "Could not update exiting file in GitHub. Error message was: ".$ex->getMessage()." - Code was: ".$ex->getCode(), 'caUploadFileToGitHub');
+							break;
+						}
+					} else {
+						caLogEvent('DEBG', "Could not upload file to GitHub. It looks like a file already exists at {$ps_git_path}.", 'caUploadFileToGitHub');
+					}
+					break;
+				default:
+					caLogEvent('DEBG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+					break;
+			}
+			return false;
+		} catch (Github\Exception\ValidationFailedException $e) {
+			caLogEvent('DEBG', "Could not upload file to GitHub. The parameter validation failed. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+			return false;
+		} catch (Exception $e) {
+			caLogEvent('DEBG', "Could not upload file to GitHub. A generic error occurred. Error message was: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caUploadFileToGitHub');
+			return false;
+		}
+
+		return true;
+	}
+	# ----------------------------------------
+	/**
+ 	 * Query external web service and return whatever body it returns as string
+ 	 * @param string $ps_url URL of the web service to query
+	 * @return string
+ 	 */
+	function caQueryExternalWebservice($ps_url) {
+		if(!isURL($ps_url)) { return false; }
+
+		$o_conf = Configuration::load();
+
+		if($vs_proxy = $o_conf->get('web_services_proxy_url')){ /* proxy server is configured */
+
+			$vs_proxy_auth = null;
+			if(($vs_proxy_user = $o_conf->get('web_services_proxy_auth_user')) && ($vs_proxy_pass = $o_conf->get('web_services_proxy_auth_pw'))){
+				$vs_proxy_auth = base64_encode("{$vs_proxy_user}:{$vs_proxy_pass}");
+			}
+
+			// non-authed proxy requests go through curl to properly support https queries
+			// everything else is still handled via file_get_contents and stream contexts
+			if(is_null($vs_proxy_auth) && function_exists('curl_exec')) {
+				$vo_curl = curl_init();
+				curl_setopt($vo_curl, CURLOPT_URL, $ps_url);
+				curl_setopt($vo_curl, CURLOPT_PROXY, $vs_proxy);
+				curl_setopt($vo_curl, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_setopt($vo_curl, CURLOPT_SSL_VERIFYPEER, false);
+				curl_setopt($vo_curl, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($vo_curl, CURLOPT_RETURNTRANSFER, 1);
+				curl_setopt($vo_curl, CURLOPT_AUTOREFERER, true);
+				curl_setopt($vo_curl, CURLOPT_CONNECTTIMEOUT, 120);
+				curl_setopt($vo_curl, CURLOPT_TIMEOUT, 120);
+				curl_setopt($vo_curl, CURLOPT_MAXREDIRS, 10);
+				curl_setopt($vo_curl, CURLOPT_USERAGENT, 'CollectiveAccess web service lookup');
+
+				$vs_content = curl_exec($vo_curl);
+				curl_close($vo_curl);
+				return $vs_content;
+			} else {
+				$va_context_options = array( 'http' => array(
+					'proxy' => $vs_proxy,
+					'request_fulluri' => true,
+					'header' => 'User-agent: CollectiveAccess web service lookup',
+				));
+
+				if($vs_proxy_auth){
+					$va_context_options['http']['header'] = "Proxy-Authorization: Basic {$vs_proxy_auth}";
+				}
+
+				$vo_context = stream_context_create($va_context_options);
+				return @file_get_contents($ps_url, false, $vo_context);
+			}
+		} else {
+			return @file_get_contents($ps_url);
+		}
+	}
+	# ----------------------------------------
+	/**
+	 * Convert <br> tags to newlines
+	 * 
+	 * @param string $ps_text
+	 * @return string
+	 */
+	function br2nl($ps_text) {
+		return preg_replace('#<br\s*/?>#i', "\n", $ps_text);
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 */
+	function caParseDimension($ps_value, $pa_options=null) {
+		global $g_ui_locale;
+		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
+		
+		try {
+			if ($vo_length = caParseLengthDimension($ps_value, $pa_options)) {
+				return $vo_length;
+			}
+		} catch (Exception $e) {
+			// noop
+		}
+		
+		try {
+			if ($vo_weight = caParseWeightDimension($ps_value, $pa_options)) {
+				return $vo_weight;
+			}
+		} catch (Exception $e) {
+			return null;
+		}
+		
+		return null;
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 */
+	function caGetLengthUnitType($ps_unit) {
+		switch($ps_unit) {
+			case "'":
+			case "’":
+			case 'ft':
+			case 'ft.':
+			case 'feet':
+			case 'foot':
+				return Zend_Measure_Length::FEET;
+				break;
+			case '"':
+			case "”":
+			case 'in':
+			case 'in.':
+			case 'inch':
+			case 'inches':
+				return Zend_Measure_Length::INCH;
+				break;
+			case 'm':
+			case 'm.':
+			case 'meter':
+			case 'meters':
+			case 'metre':
+			case 'metres':
+			case 'mt':
+				return Zend_Measure_Length::METER;
+				break;
+			case 'cm':
+			case 'cm.':
+			case 'centimeter':
+			case 'centimeters':
+			case 'centimetre':
+			case 'centimetres':
+				return Zend_Measure_Length::CENTIMETER;
+				break;
+			case 'mm':
+			case 'mm.':
+			case 'millimeter':
+			case 'millimeters':
+			case 'millimetre':
+			case 'millimetres':
+				return Zend_Measure_Length::MILLIMETER;
+				break;
+			case 'point':
+			case 'pt':
+			case 'pt.':
+				return Zend_Measure_Length::POINT;
+				break;
+			case 'mile':
+			case 'miles':
+				return Zend_Measure_Length::MILE;
+				break;
+			case 'km':
+			case 'k':
+			case 'kilometer':
+			case 'kilometers':
+			case 'kilometre':
+			case 'kilometres':
+				return Zend_Measure_Length::KILOMETER;
+				break;
+			default:	
+				return null;
+				break;
+		}
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 */
+	function caParseLengthDimension($ps_value, $pa_options=null) {
+		global $g_ui_locale;
+		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
+	
+		$pa_values = array(caConvertFractionalNumberToDecimal(trim($ps_value), $vs_locale));
+		
+		$vo_parsed_measurement = null;
+		while($vs_expression = array_shift($pa_values)) {
+			// parse units of measurement
+			if (preg_match("!^([\d\.\,/ ]+)[ ]*([^\d ]+)!", $vs_expression, $va_matches)) {
+				$vs_value = trim($va_matches[1]);
+				$va_values = explode(" ", $vs_value);
+				$vs_unit_expression = strtolower(trim($va_matches[2]));
+				if ($vs_expression = trim(str_replace($va_matches[0], '', $vs_expression))) {
+					array_unshift($pa_values, $vs_expression);
+				}
+				
+				$vs_value  = 0;
+				foreach($va_values as $vs_v) {
+					$vs_value += caConvertLocaleSpecificFloat(trim($vs_v), $vs_locale);
+				}
+
+				if (!($vs_units = caGetLengthUnitType($vs_unit_expression))) {
+					throw new Exception(_t('%1 is not a valid unit of length [%2]', $va_matches[2], $ps_value));
+				}
+			
+				try {
+					$o_tmp = new Zend_Measure_Length($vs_value, $vs_units, $vs_locale);
+				} catch (Exception $e) {
+					throw new Exception(_t('Not a valid measurement'));
+				}
+				if ($o_tmp->getValue() < 0) {
+					// length can't be negative in our universe
+					throw new Exception(_t('Must not be less than zero'));
+					return false;
+				}
+				
+				if ($vo_parsed_measurement) {
+					$vo_parsed_measurement = $vo_parsed_measurement->add($o_tmp);
+				} else {
+					$vo_parsed_measurement = $o_tmp;
+				}
+			}
+		}
+		
+		if (!$vo_parsed_measurement) { 
+			throw new Exception(_t('Not a valid measurement [%1]', $ps_value));
+		}
+		
+		return $vo_parsed_measurement;
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 */
+	function caParseWeightDimension($ps_value, $pa_options=null) {
+		global $g_ui_locale;
+		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
+	
+		$pa_values = array(caConvertFractionalNumberToDecimal(trim($ps_value), $vs_locale));
+		
+		$vo_parsed_measurement = null;
+		while($vs_expression = array_shift($pa_values)) {
+			// parse units of measurement
+			if (preg_match("!^([\d\.\,/ ]+)[ ]*([^\d ]+)!", $vs_expression, $va_matches)) {
+				$vs_value = trim($va_matches[1]);
+				$va_values = explode(" ", $vs_value);
+				$vs_unit_expression = strtolower(trim($va_matches[2]));
+				if ($vs_expression = trim(str_replace($va_matches[0], '', $vs_expression))) {
+					array_unshift($pa_values, $vs_expression);
+				}
+				
+				$vs_value  = 0;
+				foreach($va_values as $vs_v) {
+					$vs_value += caConvertLocaleSpecificFloat(trim($vs_v), $vs_locale);
+				}
+
+				switch(strtolower($va_matches[2])) {
+ 					case "lbs":
+ 					case 'lbs.':
+ 					case 'lb':
+ 					case 'lb.':
+ 					case 'pound':
+ 					case 'pounds':
+ 						$vs_units = Zend_Measure_Weight::POUND;
+ 						break;
+ 					case 'kg':
+ 					case 'kg.':
+ 					case 'kilo':
+ 					case 'kilos':
+ 					case 'kilogram':
+ 					case 'kilograms':
+ 						$vs_units = Zend_Measure_Weight::KILOGRAM;
+ 						break;
+ 					case 'g':
+ 					case 'g.':
+ 					case 'gr':
+ 					case 'gr.':
+ 					case 'gram':
+ 					case 'grams':
+ 						$vs_units = Zend_Measure_Weight::GRAM;
+ 						break;
+ 					case 'mg':
+ 					case 'mg.':
+ 					case 'milligram':
+ 					case 'milligrams':
+ 						$vs_units = Zend_Measure_Weight::MILLIGRAM;
+ 						break;
+ 					case 'oz':
+ 					case 'oz.':
+ 					case 'ounce':
+ 					case 'ounces':
+ 						$vs_units = Zend_Measure_Weight::OUNCE;
+ 						break;
+ 					case 'ton':
+ 					case 'tons':
+ 					case 'tonne':
+ 					case 'tonnes':
+ 					case 't':
+ 					case 't.':
+ 						$vs_units = Zend_Measure_Weight::TON;
+ 						break;
+ 					case 'stone':
+ 						$vs_units = Zend_Measure_Weight::STONE;
+ 						break;
+ 					default:
+ 						throw new Exception(_t('Not a valid unit of weight [%2]', $ps_value));
+ 						break;
+ 				}
+			
+				try {
+					$o_tmp = new Zend_Measure_Weight($vs_value, $vs_units, $vs_locale);
+				} catch (Exception $e) {
+					throw new Exception(_t('Not a valid measurement'));
+				}
+				if ($o_tmp->getValue() < 0) {
+					// length can't be negative in our universe
+					throw new Exception(_t('Must not be less than zero'));
+					return false;
+				}
+				
+				if ($vo_parsed_measurement) {
+					$vo_parsed_measurement = $vo_parsed_measurement->add($o_tmp);
+				} else {
+					$vo_parsed_measurement = $o_tmp;
+				}
+			}
+		}
+		
+		if (!$vo_parsed_measurement) { 
+			throw new Exception(_t('Not a valid measurement [%1]', $ps_value));
+		}
+		
+		return $vo_parsed_measurement;
+	}
+	# ----------------------------------------
+	/**
+	 * Generate a GUID 
+	 */
+	function caGenerateGUIDV4(){
+		if (function_exists("openssl_random_pseudo_bytes")) {
+			$vs_data = openssl_random_pseudo_bytes(16);
+		} else {
+			$vs_data = '';
+			for($i=0; $i < 16; $i++) {
+				$vs_data .= chr(mt_rand(0, 255));
+			}
+		}
+		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
+		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
+	}
+	# ----------------------------------------

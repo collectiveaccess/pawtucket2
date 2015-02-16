@@ -666,7 +666,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 					if (($vn_return < 0) || ($vn_return > 1) || (!@filesize($filepath.".".$ext))) {
 						@unlink($filepath.".".$ext);
-						// don't throw error as ffmpeg cannot generate frame still from all file
+						// don't throw error as ffmpeg cannot generate frame still from all files
 					}
 				}
 
