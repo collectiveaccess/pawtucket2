@@ -12,6 +12,10 @@
 ?>
 <script type="text/javascript">
 $(document).ready(function() {
+	// Kill "last checked" list used in search/browse results to select item for addition to lightbox
+	var c = jQuery.cookieJar('lastChecked');
+	c.remove();
+	
 <?php
 	if($vs_message){
 ?>

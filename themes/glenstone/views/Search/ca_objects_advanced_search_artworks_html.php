@@ -25,7 +25,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class="row collection">
 		<div class="col-sm-6">	
 			<div class="advSearch">
-				<h1>Search Collection</h1>
+				<h1>Art Advanced Search</h1>
 				{{{form}}}
 
 					<div class="advancedSearchField">

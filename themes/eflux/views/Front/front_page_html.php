@@ -34,11 +34,12 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>The reading room is a collection of several thousand books on contemporary art exhibitions.  The books have been donated by numerous art institutions and individuals from all parts of the world and reflect some of the more interesting developments in art of the past decade.  The reading room is a collection of several thousand books on contemporary art exhibitions.  The books have been donated by numerous art institutions and individuals from all parts of the world and reflect some of the more interesting developments in art of the past decade.</H1>
+			<H1>The e-flux reading room is a continuously growing collection of publications related to contemporary art donated by institutions and individuals from around the world. Browse selections from the library above and access digital publications in PDF format via the link to the right. For more information about the project click <?php print caNavLink($this->request, 'HERE', '', '', 'About', 'Index');?></H1>
 		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
+		<div class="col-sm-4 borderleft">
 <?php
-		#print $this->render("Front/gallery_set_links_html.php");
+		print caNavLink($this->request, caGetThemeGraphic($this->request, 'browsedigi.png'), '', 'Browse', 'objects', '/facet/category_facet/id/317');
+		print "<div class='browsedigi'>".caNavLink($this->request, 'Browse Digital Publications', '', 'Browse', 'objects', '/facet/category_facet/id/317')."</div>";
 ?>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->

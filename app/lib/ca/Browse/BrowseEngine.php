@@ -2064,16 +2064,30 @@
 		 */
 		public function getFacet($ps_facet_name, $pa_options=null) {
 			if (!is_array($this->opa_browse_settings)) { return null; }
+			
+			$pn_start = caGetOption('start', $pa_options, 0);
+			$pn_limit = caGetOption('limit', $pa_options, null);
+			
 			$va_facet_cache = $this->opo_ca_browse_cache->getFacet($ps_facet_name);
 			
 			// is facet cached?
-			if (isset($va_facet_cache) && is_array($va_facet_cache)) { 
-				return $va_facet_cache; 
+			$va_facet_content = null;
+			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) { 			
+				$va_facet_content = $va_facet_cache = $this->getFacetContent($ps_facet_name, $pa_options);
+				$vb_needs_caching = true;
 			}
 			
-			$this->opo_ca_browse_cache->setFacet($ps_facet_name, $vs_facet_content = $this->getFacetContent($ps_facet_name, $pa_options));
-			$this->opo_ca_browse_cache->save();
-			return $vs_facet_content;
+			if ($pn_limit > 0) {
+				$va_facet_cache = array_slice($va_facet_cache, (int)$pn_start, $pn_limit);
+			} elseif ($pn_start > 0) {
+				$va_facet_cache = array_slice($va_facet_cache, (int)$pn_start);
+			}
+			
+			if ($va_facet_content && is_array($va_facet_content)) {
+				$this->opo_ca_browse_cache->setFacet($ps_facet_name, $va_facet_content);
+				$this->opo_ca_browse_cache->save();
+			}
+			return $va_facet_cache;
 		}
 		# ------------------------------------------------------
 		/**
@@ -2868,7 +2882,7 @@
 								if (is_array($va_list_item_cache)) {
 									foreach($va_list_item_cache as $vn_id => $va_item) {
 										if (!($vn_parent_id = $va_item['parent_id'])) { continue; }
-										if (!in_array($va_item['access'], $pa_options['checkAccess'])) { continue; }
+										if (is_array($pa_options['checkAccess']) && !in_array($va_item['access'], $pa_options['checkAccess'])) { continue; }
 										$va_list_child_count_cache[$vn_parent_id]++;
 									}
 								}
@@ -2881,7 +2895,7 @@
 								foreach($va_values as $vn_val) {
 									if (!$vn_val) { continue; }
 									if (is_array($va_suppress_values) && (in_array($vn_val, $va_suppress_values))) { continue; }
-									if (!in_array($va_list_item_cache[$vn_val]['access'], $pa_options['checkAccess'])) { continue; }
+									if (is_array($pa_options['checkAccess']) && !in_array($va_list_item_cache[$vn_val]['access'], $pa_options['checkAccess'])) { continue; }
 									
 									if ($va_criteria[$vn_val]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 									$vn_child_count = isset($va_list_child_count_cache[$vn_val]) ? $va_list_child_count_cache[$vn_val] : 0;
@@ -4395,14 +4409,10 @@
 					$va_params = $this->opo_ca_browse_cache->getParameters();
 					
 					// Make sure we honor type restrictions for the related authority
-					$va_user_type_restrictions = caGetTypeRestrictionsForUser($vs_rel_table_name);
-					if(is_array($va_user_type_restrictions)) {
-						if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) {
-							$va_restrict_to_types = $va_user_type_restrictions;
-						} else {
-							$va_restrict_to_types = array_merge($va_restrict_to_types, $va_user_type_restrictions);
-						}
-					}
+					if (!is_array($va_user_type_restrictions = caGetTypeRestrictionsForUser($vs_rel_table_name))) { $va_user_type_restrictions = array(); }
+					if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
+					
+					$va_restrict_to_types = array_merge($va_user_type_restrictions, $va_restrict_to_types);
 					
 					if (!is_array($va_exclude_types = $va_facet_info['exclude_types'])) { $va_exclude_types = array(); }
 					if (!is_array($va_restrict_to_relationship_types = $va_facet_info['restrict_to_relationship_types'])) { $va_restrict_to_relationship_types = array(); }
@@ -4443,7 +4453,7 @@
 					
 					$va_restrict_to_types_expanded = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item));
 					$va_exclude_types_expanded = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item));
-					
+			
 					// look up relationship type restrictions
 					$va_restrict_to_relationship_types = $this->_getRelationshipTypeIDs($va_restrict_to_relationship_types, $va_facet_info['relationship_table']);
 					$va_exclude_relationship_types = $this->_getRelationshipTypeIDs($va_exclude_relationship_types, $va_facet_info['relationship_table']);

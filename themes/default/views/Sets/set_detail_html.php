@@ -51,12 +51,16 @@
 	$vs_lightbox_display_name 		= $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	$vs_browse_key 					= $this->getVar('key');
+	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+	$vb_ajax			= (bool)$this->request->isAjax();
+if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
 		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
 <?php 
 			if($vs_sort_control_type == 'list'){
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
 					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
@@ -75,6 +79,7 @@
 				}
 			}
 ?>
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Sets", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
 				<?php print "<span class='lbSetCount'>(".$q_set_items->numHits()." items)</span>"; ?>
@@ -82,7 +87,7 @@
 					<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 					<ul class="dropdown-menu" role="menu">
 <?php
-						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
 							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
 							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 								if ($vs_current_sort === $vs_sort) {
@@ -106,8 +111,8 @@
 								print "<li class='divider'></li>\n";
 							}
 							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<strong><em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 							print "<li class='divider'></li>";
 						}
 ?>				
@@ -180,13 +185,21 @@
 	</div><!-- end row -->
 	<div class="row">
 		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+			<div id="lbSetResultLoadContainer">
 <?php
+} // !ajax
 		if($q_set_items->numHits()){
-			print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
+			if ($vn_start < $q_set_items->numHits()) {
+				$q_set_items->seek($vn_start);
+				print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
+				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			}
 		}else{
 			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
 		}
-?>		
+if (!$vb_ajax) {	// !ajax
+?>
+			</div><!-- end lbSetResultLoadContainer -->		
 		</div><!-- end col -->
 		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
@@ -240,6 +253,21 @@
 		
 			}
 			print $this->render("Browse/browse_refine_subview_html.php");
+			
 ?>
 		</div><!-- end col -->
 	</div><!-- end row -->
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('#lbSetResultLoadContainer').jscroll({
+			autoTrigger: true,
+			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+			padding: 20,
+			nextSelector: 'a.jscroll-next'
+		});
+	});
+
+</script>
+<?php
+} //!ajax
+?>

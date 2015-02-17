@@ -46,7 +46,7 @@
 
 	<div class="container">
 		<div class='browseMenuBrowseSearch'>
-			<form><input type="text" size="20" id="browseMenuFacetSearchInput" class="browseMenuFacetSearchInput form-control" placeholder="Search facet"/></form>
+			<form><input type="text" size="20" id="browseMenuFacetSearchInput" class="browseMenuFacetSearchInput form-control" placeholder="<?php print addslashes(_t('Filter facet')); ?>"/></form>
 		</div> <!--end browseMenuSearch-->
 		<div class='browseMenuBrowseAll'>
 <?php

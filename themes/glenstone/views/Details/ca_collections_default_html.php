@@ -104,7 +104,7 @@
 				print "<h6 id='contents'>Collection Contents</h6>";
 				$va_table_contents[] = "<a href='#contents'>Collection Contents</a>";
 
-				$va_hierarchy = $t_collection->hierarchyWithTemplate("<l>^ca_collections.preferred_labels.name</l>", array('collection_id' => $va_collection_id));
+				$va_hierarchy = $t_collection->hierarchyWithTemplate("<l>^ca_collections.preferred_labels.name</l>", array('collection_id' => $va_collection_id, 'sort' => 'ca_collections.preferred_labels.name'));
 				foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 					$t_collection_item = new ca_collections($va_hierarchy_item['id']);
 					

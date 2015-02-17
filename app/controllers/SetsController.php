@@ -90,6 +90,7 @@
  			AssetLoadManager::register("mediaViewer");
  		
 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
+ 			$o_context->setAsLastFind();
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
 			$this->view->setVar("browse_type", "caLightbox");	# --- this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
  			$ps_view = $this->request->getParameter('view', pString);
@@ -168,10 +169,16 @@
 			if(!$ps_secondary_sort = $this->request->getParameter("secondary_sort", pString)){
  				$ps_secondary_sort = $o_context->getCurrentSecondarySort();
  			}
+ 			$va_config_sort = $this->opo_config->getAssoc("sortBy");
+			if(!is_array($va_config_sort)){
+				$va_config_sort = array();
+			}
+			$va_sort_by = array_merge(array(_t('Set order') => "ca_set_items.rank/{$vn_set_id}"), $va_config_sort);
+		
  			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				if (!$ps_sort && !($ps_sort = $o_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = $this->opo_config->getAssoc("sortBy")))) {
- 						$ps_sort = array_shift(array_keys($va_sorts));
+ 					if(is_array($va_sort_by)) {
+ 						$ps_sort = array_shift(array_keys($va_sort_by));
  						$vb_sort_changed = true;
  					}
  				}
@@ -196,9 +203,6 @@
  			$o_context->setCurrentSecondarySort($ps_secondary_sort);
  			$o_context->setCurrentSortDirection($ps_sort_direction);
  			
-			$va_sort_by = $this->opo_config->getAssoc("sortBy");
-			$va_sort_by[_t('Set order')] = "ca_set_items.rank/{$vn_set_id}";
-		
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sort', $ps_sort);
@@ -264,12 +268,27 @@
 			
 			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
-		
+			
+			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
+ 				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
+ 					$pn_hits_per_block = ($this->opo_config->get("defaultHitsPerBlock")) ? $this->opo_config->get("defaultHitsPerBlock") : 36;
+ 				}
+ 			}
+ 			$o_context->getItemsPerPage($pn_hits_per_block);
+			
+			$this->view->setVar('hits_per_block', $pn_hits_per_block);
+			
+			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			
 			$o_context->setParameter('key', $vs_key);
 			
+			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+			$qr_res->seek($vn_start);
+			
 			$o_context->saveContext();
- 			$o_context->setAsLastFind();
  			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
@@ -779,7 +798,8 @@
  				}
  			}
  			if($ps_tablename == "ca_sets"){
- 				$this->setDetail();
+ 				$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
+ 				#$this->setDetail();
  			}
  		}
  		# ------------------------------------------------------
