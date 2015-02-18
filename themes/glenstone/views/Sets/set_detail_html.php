@@ -172,7 +172,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 				}
 			}
-			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
+			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 				// Export as PDF
 				print "<div class='reportTools'>";
 				print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
@@ -200,7 +200,7 @@ if (!$vb_ajax) {	// !ajax
 			if ($vn_start < $q_set_items->numHits()) {
 				$q_set_items->seek($vn_start);
 				print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
-				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '', 'Sets', 'setDetail', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 			}
 		}else{
 			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
@@ -235,16 +235,18 @@ if (!$vb_ajax) {	// !ajax
 					</div><!-- end form-group -->
 					<input type="hidden" name="tablename" value="ca_sets">
 					<input type="hidden" name="item_id" value="<?php print $t_set->get("set_id"); ?>">
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 				</form>
 			</div>
 <?php
 			if(sizeof($va_comments)){
 ?>
-			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?> <i class="fa fa-arrows-v"></i></a><HR/></div>
+			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); jQuery('#lbFilterList').toggle(); moveFilters(); return false;"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?> <i class="fa fa-arrows-v"></i></a><HR/></div>
 <?php
 				if(sizeof($va_comments)){
 					$t_author = new ca_users();
 					print "<div class='lbComments' style='display:none;'>";
+					$i = 0;
 					foreach($va_comments as $va_comment){
 						print "<small>";
 						# --- display link to remove comment?
@@ -254,13 +256,23 @@ if (!$vb_ajax) {	// !ajax
 						$t_author->load($va_comment["user_id"]);
 						print $va_comment["comment"]."<br/>";
 						print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
-						print "</small><HR/>";
+						print "</small>";
+						$i++;
+						if($i < sizeof($va_comments)){
+							print "<HR/>";
+						}
 					}
+?>
+					<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); jQuery('#lbFilterList').toggle(); moveFilters(); return false;"><?php print ((sizeof($va_comments) == 1) ? _t("Hide comment") : _t("Hide comments")); ?> <i class="fa fa-arrows-v"></i></a></div>
+<?php
+
 					print "</div>";
 				}
 		
 			}
+			print "<div id='lbFilterList'>";
 			print $this->render("Browse/browse_refine_subview_html.php");
+			print "</div>";
 			
 ?>
 		</div><!-- end col -->
@@ -274,6 +286,12 @@ if (!$vb_ajax) {	// !ajax
 			nextSelector: 'a.jscroll-next'
 		});
 	});
+	
+	function moveFilters() {
+		var offset = $("#bRefine").offset();
+		var initialFilterOffset = $("#lbFilterList").offset();
+		jQuery("#bRefine").offset({top: initialFilterOffset.top, left: offset.left});
+	}
 
 </script>
 <?php

@@ -7,7 +7,7 @@
 	#AssetLoadMananger::register('readmore');
 	AssetLoadManager::register("readmore");
 	
-	$qr_top_level_collections = ca_collections::find(array('type_id' => 119), array('returnAs' => 'searchResult', 'sort' => 'ca_collection_labels.name'));
+	$qr_top_level_collections = ca_collections::find(array('type_id' => 119), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.preferred_labels.name'));
  
 ?>
 <div class="container">
@@ -18,26 +18,19 @@
 		<div id='findingAidCont'>
 	<?php	
 		if ($qr_top_level_collections) {
-			while($qr_top_level_collections->nextHit()) { 
+			while($qr_top_level_collections->nextHit()) {
 				$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id', array('checkAccess' => caGetUserAccessValues($this->request)));
 				$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id));
 				foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 					$t_collection_item = new ca_collections($va_hierarchy_item['id']);
 					if (($t_collection_item->get('ca_collections.fa_access') != 261) && ($va_hierarchy_item['level'] == 0)) {
 						print "<div class='collHeader' >";
-						#if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
-						#	print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
-						#} elseif ($va_hierarchy_item['level'] == 0) {
 							print "<i class='fa fa-square-o finding-aid' {$va_opacity}></i>";
-						#} else {
-						#	$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
-						#	print "<i class='fa fa-angle-right finding-aid' {$va_opacity}></i>";
-						#}
-						if ($t_collection_item->get('ca_collections.fa_access') == 262) {
-							print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])."</div><br/>";
-						} else {
-							print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels.name')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])." <br/><div style='font-weight:200; width: 500px; margin-left: 30px;' class='trimText'>".$t_collection_item->get('ca_collections.abstract')."</div></div><br/>";
-						}
+							if ($t_collection_item->get('ca_collections.fa_access') == 262) {
+								print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])."</div><br/>";
+							} else {
+								print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels.name')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])." <br/><div style='font-weight:200; width: 500px; margin-left: 30px;' class='trimText'>".$t_collection_item->get('ca_collections.abstract')."</div></div><br/>";
+							}
 						print "</div><!-- end collHeader-->";
 					}		
 				}
