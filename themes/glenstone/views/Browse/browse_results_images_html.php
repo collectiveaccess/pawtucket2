@@ -109,9 +109,9 @@
 					$vs_label_artist	 	= "<p class='artist lower'>".caDetailLink($this->request, $qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist')), '', $vs_table, $vn_id)."</p>";
 					$vs_label_detail_link 	= "<p><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
 					if ($qr_res->get('is_deaccessioned') && ($qr_res->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
-						$vs_idno_detail_link = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
+						$vs_deaccessioned = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
 					} else {
-						$vs_idno_detail_link = "";
+						$vs_deaccessioned = "";
 					}
 					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatoral_all_new") || $this->request->user->hasUserRole("curatoral_basic_new")  || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 						$vs_art_idno_link = "<p class='idno'>".$qr_res->get("ca_objects.idno")."</p>";
@@ -119,7 +119,7 @@
 						$vs_art_idno_link = "";
 					}
 				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					#$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 					if ($qr_res->get('ca_objects.dc_date.dc_dates_value')) {
@@ -185,7 +185,7 @@
 			<div class='bSetsSelectMultiple'><input type='checkbox' id='cResultSelected_{$vn_id}' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_artist}{$vs_label_detail_link}{$vs_collection_link}{$vs_type_link}{$vs_date_link}{$vs_art_idno_link}{$vs_library_info}
+					{$vs_label_artist}{$vs_label_detail_link}{$vs_collection_link}{$vs_type_link}{$vs_date_link}{$vs_art_idno_link}{$vs_library_info}{$vs_deaccessioned}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

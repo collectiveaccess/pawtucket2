@@ -154,6 +154,9 @@
 			} elseif ($qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27 || $qr_res->get('ca_objects.type_id') == 23){
 				print "<div class='bIcon'><i class='fa fa-archive'></i></div>";
 			}
+			if (($qr_res->get('ca_objects.type_id') == 25) && $vs_rep_detail_link) {
+				print "<div class='bIcon absolute'><i class='glyphicon glyphicon-volume-up'></i></div>";
+			}
 			print 	"<div class='bResultListItemText'>
 					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_art_idno_link}{$vs_library_info}
 				</div><!-- end bResultListItemText -->

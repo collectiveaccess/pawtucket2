@@ -167,12 +167,12 @@
 			if (!$this->request->isAjax()) {
 ?>		<hr>
 		<H6>Related Archive Items </H6>
-		<div class="archivesBlock">
-			<div class="blockResults">
-				<div id="archivesscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
-				<div id="archivesscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id="archiveResults">
-					<div id="blockResultsScroller">				
+		<div class="archivesBlock ">
+			<div class="blockResults scrollBlock">
+				<!--<div id="archivesscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
+				<div id="archivesscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>-->
+					<div class="scrollingDiv">
+					<div class="scrollingDivContent">				
 <?php
 				}
 			$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
@@ -195,8 +195,8 @@
 			}
 			if (!$this->request->isAjax()) {		
 ?>	
-					</div> <!-- blockResultsScroller -->
-				</div> <!-- archivesResults -->
+					</div> <!-- scrollingDivContent -->
+					</div> <!-- scrollingDiv -->
 			</div> <!-- blockResults -->
 		</div> <!-- archivesBlock -->
 <?php
@@ -241,7 +241,7 @@
 			if (!$this->request->isAjax()) {
 ?>		<hr>
 		<H6>Related Artworks</H6>
-		<div class="artworksBlock">
+		<div class="artworksBlock scrollBlock">
 			<div class="blockResults">
 				<div id="artworksscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
 				<div id="artworksscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
