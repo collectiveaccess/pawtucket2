@@ -29,7 +29,7 @@
 							if ($t_collection_item->get('ca_collections.fa_access') == 262) {
 								print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])."</div><br/>";
 							} else {
-								print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels.name')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])." <br/><div style='font-weight:200; width: 500px; margin-left: 30px;' class='trimText'>".$t_collection_item->get('ca_collections.abstract')."</div></div><br/>";
+								print "<div class='text'>".caNavLink($this->request, $t_collection_item->get('ca_collections.preferred_labels.name')." (".$t_collection_item->get('ca_collections.idno').")", '', '', 'Detail', 'collections/'.$va_hierarchy_item['id'])." <br/><div style='font-weight:200; width: auto; margin-left: 30px;' class='trimText'>".$t_collection_item->get('ca_collections.abstract')."</div></div><br/>";
 							}
 						print "</div><!-- end collHeader-->";
 					}		
