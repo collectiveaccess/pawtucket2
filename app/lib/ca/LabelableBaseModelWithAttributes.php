@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -438,6 +438,12 @@
 				if (in_array($vs_field, array('preferred_labels', 'nonpreferred_labels')) && is_array($vm_value) && sizeof($vm_value)) { $vb_has_label_fields = true; break; }
 			}
 			
+			$vs_sort_proc = $ps_sort;
+			if ((preg_match("!^{$vs_table}.preferred_labels[\.]{0,1}(.*)!", $ps_sort, $va_matches)) || (preg_match("!^{$vs_table}.nonpreferred_labels[\.]{0,1}(.*)!", $ps_sort, $va_matches))) { 
+				$vs_sort_proc = ($va_matches[1] && ($t_label->hasField($va_matches[1]))) ? "{$vs_label_table}.".$va_matches[1] : "{$vs_label_table}.".$t_label->getDisplayField();
+				$vb_has_label_fields = true; 
+			}
+			
 			$vb_has_attributes = false;
 			$va_element_codes = $t_instance->getApplicableElementCodes(null, true, false);
 			foreach ($pa_values as $vs_field => $vm_value) {
@@ -645,19 +651,19 @@
 			$vs_sql .=" WHERE {$vs_deleted_sql} ".join(" {$ps_boolean} ", $va_label_sql);
 			
 			$vs_orderby = '';
-			if ($vs_sort = caGetOption('sort', $pa_options, null)) {
+			if ($vs_sort_proc) {
 				$vs_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
-				$va_tmp = explode(".", $vs_sort);
+				$va_tmp = explode(".", $vs_sort_proc);
 				if (sizeof($va_tmp) == 2) {
 					switch($va_tmp[0]) {
 						case $vs_table:
 							if ($t_instance->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY {$vs_sort_proc} {$vs_sort_direction}";
 							}
 							break;
 						case $vs_label_table:
 							if ($t_label->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY {$vs_sort_proc} {$vs_sort_direction}";
 							}
 							break;
 					}
