@@ -644,6 +644,7 @@
 				if ($va_v = $this->get($this->tableName().'.'.$vs_code, array('returnAllLocales' => true, 'returnAsArray' => true, 'return' => 'url', 'version' => 'original'))) {
 					foreach($va_v as $vn_id => $va_v_by_locale) {
 						foreach($va_v_by_locale as $vn_locale_id => $va_v_list) {
+							if (!$vn_locale_id) { $vs_locale = 'NONE'; continue; }
 							if (!($vs_locale = $t_locale->localeIDToCode($vn_locale_id))) {
 								$vs_locale = 'NONE';
 							}
@@ -651,6 +652,7 @@
 							foreach($va_v_list as $vn_index => $va_values) {	
 								if (is_array($va_values)) {
 									foreach($va_values as $vs_sub_code => $vs_value) {
+										if(!$vs_sub_code) { continue; }
 										if (!$t_element = $this->_getElementInstance($vs_sub_code)) { continue; }
 										
 										switch((int)$t_element->get('datatype')) {
@@ -1142,6 +1144,17 @@
 			}
 			
 			return null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns ca_list_items.idno (aka "type code") for $pn_type_id
+		 *
+		 * @param int $pn_type_id Number id for the type
+		 * @return string idno (aka "type code") for specified list item id (aka "type id")
+		 */
+		public function getTypeCodeForID($pn_type_id) {
+			$va_types = $this->getTypeList();
+			return isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -2383,12 +2396,40 @@
 			
 			return true;
 		}
+		# --------------------------------------------------------------------------------
+		/**
+		 * Returns true if bundle is valid for this model
+		 * 
+		 * @access public
+		 * @param string $ps_bundle bundle name
+		 * @param int $pn_type_id Optional record type
+		 * @return bool
+		 */ 
+		public function hasBundle ($ps_bundle, $pn_type_id=null) {
+			$va_bundle_bits = explode(".", $ps_bundle);
+			$vn_num_bits = sizeof($va_bundle_bits);
+			
+			if ($vn_num_bits == 1) {
+				return ($this->hasElement($va_bundle_bits[0])) ? true : parent::hasBundle($ps_bundle, $pn_type_id);
+			} elseif ($vn_num_bits > 1) {
+				if ($va_bundle_bits[0] == $this->tableName()) {
+					return ($this->hasElement($va_bundle_bits[1])) ? true : parent::hasBundle($ps_bundle, $pn_type_id);
+				} elseif (($va_bundle_bits[0] != $this->tableName()) && ($t_rel = $this->getAppDatamodel()->getInstanceByTableName($va_bundle_bits[0], true))) {
+					return $t_rel->hasBundle($ps_bundle, $pn_type_id);
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
 		# ------------------------------------------------------------------
 		/**
 		 *
 		 */
-		public function hasElement($ps_element_code) {
-			$va_codes = $this->getApplicableElementCodes(null, false, false);
+		public function hasElement($ps_element_code, $pn_type_id=null) {
+			if (is_null($pn_type_id)) { $pn_type_id = $this->getTypeID(); }
+			$va_codes = $this->getApplicableElementCodes($pn_type_id, false, false);
 			return (in_array($ps_element_code, $va_codes));
 		}
 		# ------------------------------------------------------------------
