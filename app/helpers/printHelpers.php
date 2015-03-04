@@ -115,7 +115,7 @@
 							if ($vb_for_html_select) {
 								$va_templates[$va_template_info['name']] = '_pdf_'.$vs_template_tag;
 							} else {
-								$va_templates[] = array(
+								$va_templates[$va_template_info['name']] = array(
 									'name' => $va_template_info['name'],
 									'code' => '_pdf_'.$vs_template_tag
 								);

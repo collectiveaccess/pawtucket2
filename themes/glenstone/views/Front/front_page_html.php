@@ -114,8 +114,8 @@
 		print "<h1>Library</h1>";
 		if (sizeof($va_library_media)) {
 			$va_library_media = array_values($va_library_media);
-			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>";
-			print "<div class='caption'>".caNavLink($this->request, $va_library_caption, '', '', 'Detail', 'artworks/'.$va_library_item_ids[0])."</div>"; 
+			print "<div class='image'>".caNavLink($this->request, $va_library_media[0]['tags']['small'], '', '', 'Detail', 'library/'.$va_library_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_library_caption, '', '', 'Detail', 'library/'.$va_library_item_ids[0])."</div>"; 
 		} else {
 			print "<div class='image'></div>";
 		}
@@ -125,11 +125,11 @@
 	<div class="col-sm-4">
 		<div class='item'>
 <?php 
-		print "<h1>Archives <small>(coming soon)</small></h1>";
+		print "<h1>Archives</h1>";
 		if (sizeof($va_archive_media)) {
 			$va_archive_media = array_values($va_archive_media);
-			print "<div class='image'>".caNavLink($this->request, $va_archive_media[0]['tags']['small'], '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>";
-			print "<div class='caption'>".caNavLink($this->request, $va_archive_caption, '', '', 'Detail', 'artworks/'.$va_archive_item_ids[0])."</div>"; 
+			print "<div class='image'>".caNavLink($this->request, $va_archive_media[0]['tags']['small'], '', '', 'Detail', 'archives/'.$va_archive_item_ids[0])."</div>";
+			print "<div class='caption'>".caNavLink($this->request, $va_archive_caption, '', '', 'Detail', 'archives/'.$va_archive_item_ids[0])."</div>"; 
 		} else {
 			print "<div class='image'></div>";
 		}

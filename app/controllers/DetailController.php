@@ -200,7 +200,7 @@
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML'));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('map_zoom', $va_options, null))));
 				}
 			}
 			

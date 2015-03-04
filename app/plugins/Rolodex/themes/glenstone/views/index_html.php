@@ -2,7 +2,7 @@
 
 	<h1>Rolodex</h1>
 <?php
-	if ($this->request->user && ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("collection")  || $this->request->user->hasUserRole("supercurator"))){	
+	if ($this->request->user && ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin")  || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new"))){				
 ?>	
 	<h5>Find contacts using the search fields below</h5> 
 
