@@ -761,7 +761,11 @@ class BaseModel extends BaseObject {
 						} else {
 							if (($va_tmp[1] == 'children') && ($this->isHierarchical())) {
 								$vb_check_access = is_array($pa_options['checkAccess']) && $this->hasField('access');
-								$vs_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								
+								$va_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								if (!is_array($va_sort) && $va_sort) { $va_sort = array($va_sort); }
+								if (!is_array($va_sort)) { $va_sort = array(); }
+							
 								$vs_sort_direction = (isset($pa_options['sort_direction']) && in_array(strtolower($pa_options['sort_direction']), array('asc', 'desc'))) ? strtolower($pa_options['sort_direction']) : 'asc';
 							
 								unset($va_tmp[1]);					// remove 'children' from field path
@@ -781,6 +785,7 @@ class BaseModel extends BaseObject {
 									} else {
 										if (method_exists($this, "makeSearchResult")) {
 											// Use SearchResult lazy loading when available
+											
 											$vs_table = $this->tableName();
 											$vs_pk = $vs_table.'.'.$this->primaryKey();
 											$qr_children = $this->makeSearchResult($this->tableName(), $va_children_ids);
@@ -788,7 +793,12 @@ class BaseModel extends BaseObject {
 												if ($vb_check_access && !in_array($qr_children->get("{$vs_table}.access"), $pa_options['checkAccess'])) { continue; }
 									
 												$vn_child_id = $qr_children->get($vs_pk);
-												$vs_sort_key = ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+												
+												$vs_sort_key = '';
+												foreach($va_sort as $vs_sort){ 
+													$vs_sort_key .= ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+												}
+									
 												if(!is_array($va_data[$vs_sort_key])) { $va_data[$vs_sort_key] = array(); }
 												if ($vb_return_as_array) {
 													$va_data[$vs_sort_key][$vn_child_id]  = array_shift($qr_children->get($vs_childless_path, array_merge($pa_options, array('returnAsArray' => $vb_return_as_array, 'returnAllLocales' => $vb_return_all_locales))));

@@ -1,0 +1,82 @@
+body {
+	font-size:12px;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Gudea', sans-serif;
+}
+h1 {
+	color: #d6742a;
+}
+h6 {
+	padding-bottom:5px;
+}
+a {
+	color:#333;
+}
+
+/* Search Results */
+
+.blockResultsScroller.publication {
+	height:250px;
+}
+.blockResults.publication {
+	height:250px;
+}
+.multisearch .pubSet {
+	height:250px;
+}
+.multisearch  .pubResult {
+	height: 70px; 
+	font-style:italic
+}
+.multisearch  .pubResult p{
+	padding-top:3px;
+	font-style:normal;
+}
+.multisearch .authorityResult {
+	background-color:#fff;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); 
+	border-right: 1px solid #eee;
+	border-left: 1px solid #eee;
+}
+
+/* Detail pages */ 
+.metaTitle {
+	font-family: 'Gudea', sans-serif;	
+}
+.detail .unit {
+	padding: 2px 0px 2px 0px;
+}
+.detail #detailTools {
+	margin-top:0px;
+}
+.detail #detailTools a, .detail .detailTool span{ 
+	color:#000;
+}
+.readerRow {
+	border-bottom:1px solid #ccc;
+	padding-bottom:10px;
+	padding-top:10px;
+}
+.titleBar {
+	font-family: 'Gudea', sans-serif;	
+	color: #d6742a;
+	font-weight:bold;
+}
+.entityThumb img{
+	width:100%;
+	height:auto;
+}
+.ledgerRow {
+	padding-bottom:5px;
+	border-top: 1px solid #ccc;
+	padding-top:5px;
+}
+.ledgerImage img {
+	width:100%;
+	height:auto;
+}
+.ledgerImage {
+	margin-bottom:20px;
+}
