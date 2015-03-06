@@ -40,7 +40,7 @@
 		
 		<div class="advancedSearchField">
 			Collection <br/>
-			{{{ca_collections.collection_id%restrictToTypes=collection%width=200px&height=40px&select=1}}}
+			{{{ca_collections.collection_id%restrictToTypes=collection%width=200px&height=40px&select=1&sort=ca_collections.preferred_labels.name}}}
 		</div>
 	</div>	
 	

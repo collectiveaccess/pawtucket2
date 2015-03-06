@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -2248,14 +2248,16 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 									case 2:
 									case 3:
 										if (caGetOption('select', $pa_options, false)) {
+											$va_access = caGetOption('checkAccess', $pa_options, null);
 											if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 											
 											$vs_label_display_field = $t_instance->getLabelDisplayField();
-											$qr_res = call_user_func_array($va_tmp[0].'::find', array(array('deleted' => 0, 'parent_id' => null), array('sort' => $t_instance->getLabelTableName().'.'.$vs_label_display_field, 'returnAs' => 'searchResult')));
+											$qr_res = call_user_func_array($va_tmp[0].'::find', array(array('deleted' => 0, 'parent_id' => null), array('sort' => caGetOption('sort', $pa_options, $t_instance->getLabelTableName().'.'.$vs_label_display_field), 'returnAs' => 'searchResult')));
 						
 											$vs_pk = $t_instance->primaryKey();
 											$va_opts = array('-' => '');
 											while($qr_res->nextHit()) {
+												if (is_array($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
 												$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
 											}
 						

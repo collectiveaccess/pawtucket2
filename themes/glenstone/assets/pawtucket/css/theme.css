@@ -1194,11 +1194,18 @@ p.bookTitle {
 	font-size: 22px;
 	background-color: #eee;
 	padding: 12px;
-	border-radius: 10px;
+	border-radius: 20px;
 	opacity: .7;
 	float:left;
-	margin-right:10px;
-	margin-bottom:20px;
+	margin-right: 20px;
+	margin-left: 20px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.ca_objects.archives.results .bIcon.absolute{
+	top:15px;
+	left:25px;
+	position:absolute;
 }
 .audio.detail .caAudioPlayer {
 	padding-top:13px;
@@ -1237,7 +1244,7 @@ a.readmore-js-toggle {
 }
 
 .detail .blockResults {
-	height: 170px;
+	height: auto;
 	margin-bottom: 15px;
 	overflow: hidden;
 	clear: both;
@@ -1778,4 +1785,12 @@ div.advancedSearchField {
 .caReportLabel {
 	font-size: 18px;
 	font-style: "italic";
+}
+
+.scrollingDiv {
+	width: 10000px;
+	overflow: hidden;
+}
+.scrollingDivContent {
+	display: inline-block;
 }
