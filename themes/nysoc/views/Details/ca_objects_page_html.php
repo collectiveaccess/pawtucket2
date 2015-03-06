@@ -13,53 +13,24 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-				</div><!-- end detailTools -->
+			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
+				{{{representationViewer}}}				
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
-				<HR>
-<?php
-				if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
-					print "<div class='unit'>Author: ".$va_authors."</div>";
-				}
-				if ($vs_date = $t_object->get('ca_objects.publication_date')) {
-					print "<div class='unit'>Publication Date: ".$vs_date."</div>";
-				}
-				if ($vs_place = $t_object->get('ca_objects.publication_place.publication_place_text')) {
-					print "<div class='unit'>Publication Place: ".$vs_place."</div>";
-				}	
-				if ($vs_subjects_1850 = $t_object->get('ca_objects.subjects_1850', array('delimiter' => ', '))) {
-					print "<div class='unit'>1850 Subjects: ".$vs_subjects_1850."</div>";
-				}
-				if ($vs_subjects_1838 = $t_object->get('ca_objects.subjects_1838', array('delimiter' => ', '))) {
-					print "<div class='unit'>1838 Subjects: ".$vs_subjects_1850."</div>";
-				}
-				if ($vs_subjects_1813 = $t_object->get('ca_objects.subjects_1813', array('delimiter' => ', '))) {
-					print "<div class='unit'>1813 Subjects: ".$vs_subjects_1813."</div>";
-				}	
-				if ($vs_subjects_lcsh = $t_object->get('ca_objects.LCSH', array('delimiter' => ', '))) {
-					print "<div class='unit'>LCSH Subjects: ".$vs_subjects_lcsh."</div>";
-				}																			
-?>				
+				<HR>				
 				
+				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
 			
-				
-				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
-				
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
+							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
+							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}				
+							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
@@ -77,25 +48,36 @@
 					</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row -->
+		
+			
 <?php
+	$va_references = $t_object->getAuthorityElementReferences();
+	if (is_array($va_object_entity_rels = $va_references[$t_object->getAppDatamodel()->getTableNum('ca_objects_x_entities')])) {
+		$va_rel_ids = array_keys($va_object_entity_rels);
+		if(sizeof($va_rel_ids) > 0) {
 ?>
-			<h6>Circulation</h6>
+			<h6>References on this page</h6>
 			<div class='row ledgerRow' style='background-color:#f7f7f7;'>
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Borrower Name</div>
+				<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Book Title</div>
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date Out</div>
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date In</div>
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Representative</div>
-				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Fine</div>
-				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Ledger</div>
-
+				<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Fine</div>
 			</div>
 <?php
-			$vn_obj_id = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
-			$qr_rels = caMakeSearchResult('ca_objects_x_entities', $vn_obj_id);
+			$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids);
 			while($qr_rels->nextHit()) {
 				print "<div class='row ledgerRow'>";
 					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
 					print $qr_rels->getWithTemplate("^ca_entities.preferred_labels.displayname");
+					print "</div>";
+
+					print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>";
+					print caNavLink($this->request, $qr_rels->getWithTemplate("<ifdef code='ca_objects.parent.preferred_labels.name'>^ca_objects.parent.preferred_labels.name </ifdef>^ca_objects.preferred_labels.name"), '', '', 'Detail', 'objects/'.$qr_rels->getWithTemplate('^ca_objects.object_id'));
+					if ($qr_rels->getWithTemplate("^ca_objects_x_entities.book_title")) {
+						print "<br/>transcribed: ".$qr_rels->getWithTemplate("^ca_objects_x_entities.book_title");
+					}
 					print "</div>";
 			
 					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
@@ -110,18 +92,15 @@
 					print $qr_rels->getWithTemplate("^ca_objects_x_entities.representative");
 					print "</div>";
 											
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+					print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
 					print $qr_rels->getWithTemplate("^ca_objects_x_entities.fine");
-					print "</div>";
-					
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->getWithTemplate("<unit relativeTo='ca_objects'>^ca_objects.parent.preferred_labels</unit>^ca_objects_x_entities.see_original_link");
 					print "</div>";													
 				print "</div>";
 			}
-		
+		}
+	}
+?>				
 	
-?>		
 	</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
