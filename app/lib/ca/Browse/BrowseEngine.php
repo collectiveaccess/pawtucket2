@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -945,8 +945,8 @@
 					Debug::msg("Cache hit for {$vs_cache_key}");
 				} else {
 					$va_criteria = $this->getCriteria();
-					$this->opo_ca_browse_cache->remove();
-					$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
+					//$this->opo_ca_browse_cache->remove();
+					//$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
 					
 					$vb_need_to_save_in_cache = true;
 					$vb_need_to_cache_facets = true;
@@ -1916,7 +1916,8 @@
 						$vb_need_to_save_in_cache = true;
 					} else {
 						// No results for some reason - we're here because we don't want to throw a SQL error
-						$va_results = array();
+						$this->opo_ca_browse_cache->setResults($va_results = array());
+						$vb_need_to_save_in_cache = true;
 					}
 				}
 			} else {
@@ -3487,7 +3488,7 @@
 					
 					$vs_sort_field = null;
 					if (($t_item->getProperty('ID_NUMBERING_ID_FIELD') == $vs_field_name)) {
-						$vs_sort_field = $t_item->getProperty('ID_NUMBERING_SORT_FIELD');
+						$vs_sort_field = $vs_browse_table_name . '.' . $t_item->getProperty('ID_NUMBERING_SORT_FIELD');
 					}
 					
 					$t_list = new ca_lists();
@@ -4409,10 +4410,15 @@
 					$va_params = $this->opo_ca_browse_cache->getParameters();
 					
 					// Make sure we honor type restrictions for the related authority
-					if (!is_array($va_user_type_restrictions = caGetTypeRestrictionsForUser($vs_rel_table_name))) { $va_user_type_restrictions = array(); }
-					if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
-					
-					$va_restrict_to_types = array_merge($va_user_type_restrictions, $va_restrict_to_types);
+					$va_user_type_restrictions = caGetTypeRestrictionsForUser($vs_rel_table_name);
+					$va_restrict_to_types = $va_facet_info['restrict_to_types'];
+					if(is_array($va_user_type_restrictions)){
+						if (!is_array($va_restrict_to_types)) {
+							$va_restrict_to_types = $va_user_type_restrictions;
+						} else {
+							$va_restrict_to_types = array_intersect($va_restrict_to_types, $va_user_type_restrictions);
+						}
+					}
 					
 					if (!is_array($va_exclude_types = $va_facet_info['exclude_types'])) { $va_exclude_types = array(); }
 					if (!is_array($va_restrict_to_relationship_types = $va_facet_info['restrict_to_relationship_types'])) { $va_restrict_to_relationship_types = array(); }
@@ -4453,7 +4459,7 @@
 					
 					$va_restrict_to_types_expanded = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item));
 					$va_exclude_types_expanded = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item));
-			
+					
 					// look up relationship type restrictions
 					$va_restrict_to_relationship_types = $this->_getRelationshipTypeIDs($va_restrict_to_relationship_types, $va_facet_info['relationship_table']);
 					$va_exclude_relationship_types = $this->_getRelationshipTypeIDs($va_exclude_relationship_types, $va_facet_info['relationship_table']);
