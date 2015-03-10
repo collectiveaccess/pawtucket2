@@ -651,6 +651,7 @@
 			$vs_sql .=" WHERE {$vs_deleted_sql} ".join(" {$ps_boolean} ", $va_label_sql);
 			
 			$vs_orderby = '';
+
 			if ($vs_sort_proc) {
 				$vs_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
 				$va_tmp = explode(".", $vs_sort_proc);
