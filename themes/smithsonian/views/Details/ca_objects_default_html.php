@@ -42,8 +42,8 @@
 			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="2"><span class='metaTitle'>Related places</span></ifcount></unit>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></div>}}}
 
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</span></ifcount></div></unit>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</span></ifcount></div></unit>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</span></ifcount></unit>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</span></ifcount></unit>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div>}}}
 
 			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
@@ -69,10 +69,10 @@
 
 <?php
 			if (($vs_genre = $t_object->get('ca_occurrences.genre')) != "") {
-				print "<div><span class='metaTitle'>Genre</span><span class='meta'>{$vs_genre}</span></div>";
+				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
 			}	
 			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes')) != "") {
-				print "<div><span class='metaTitle'>Production type</span><span class='meta'>{$vs_prod_type}</span></div>";
+				print "<div><span class='metaTitle'>Production type</span><div class='meta'>{$vs_prod_type}</div></div>";
 			}
 			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical')) == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: {$vs_mission_crit}</div>";
@@ -82,7 +82,7 @@
 			
 			$va_awards = $t_object->get('ca_occurrences.awards', array('returnAsArray' => true));
 			if (sizeof($va_awards) > 0) {
-				print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
+				print "<div><span class='metaTitle'>Awards</span><div class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
 					print "<div>Award: ".$va_award['award_event']."</div>";
 					print "<div>Year: ".$va_award['award_year']."</div>";
@@ -90,23 +90,23 @@
 					print "<div>Notes: ".$va_award['award_notes']."</div>";
 					print "<div style='height:10px;'></div>";
 				}
-				print "</span></div>";
+				print "</div></div>";
 			}
 ?>
 
 		<!--	{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'><unit>^ca_storage_locations.preferred_labels<br/></unit></span></div></ifcount>}}}-->
 <?php
 				if ($t_object->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>1Master Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>1Master Format</span><div class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</div></div>";
 				}
 				if ($t_object->get('ca_objects.physical', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>2Master Format</span><span class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>2Master Format</span><div class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</div></div>";
 				}
 				if ($t_object->get('ca_objects.digital_moving_image', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>3Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>3Master Format</span><div class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</div></div>";
 				}
 				if ($t_object->get('ca_objects.digital_supporting', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>4Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>4Master Format</span><div class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</div></div>";
 				}
 				//if ($t_object->get('ca_objects.carrier', array('excludeValues' => array('not_specified'))) != "") {
 				//	print "<div><span class='metaTitle'>Carrier</span><span class='meta'>".$t_object->get('ca_objects.carrier', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
@@ -118,7 +118,7 @@
 				{{{<unit><ifdef code="ca_objects.notes"><div><span class='metaTitle'>Notes</span><span class='meta'>^ca_objects.notes</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.technicalNotes"><div><span class='metaTitle'>Technical Notes</span><span class='meta'>^ca_objects.technicalNotes</span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.rights"><div><span class='metaTitle'>Rights</span><span class='meta'>^ca_objects.rights</span></div></ifdef></unit>}}}
-			-->	{{{<ifdef code="ca_objects.essenceTrack"><div><span class='metaTitle'>Master Format</span><div class='meta'><unit>
+			-->	{{{<ifdef code="ca_objects.essenceTrack"><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit>
 						<p>Type: ^ca_objects.essenceTrack.essenceTrackType</p>
 						<p>Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</p>
 						<p>Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</p>
