@@ -40,11 +40,11 @@
 
 			<div>
 				<span class='metaTitle'>Related places</span>
-				<div class='meta'>{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><}}}/div>
+				<span class='meta'>{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}</span>
 			</div>
 			<div>
 				<span class='metaTitle'>Related people</span>
-				<div class='meta'>{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</div>
+				<span class='meta'>{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</span>
 			</div>
 			
 			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
