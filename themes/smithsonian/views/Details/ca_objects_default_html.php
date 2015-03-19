@@ -37,7 +37,7 @@
 			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'>^ca_occurrences.description</span></ifcount>}}}
 			{{{<ifcount code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'>^ca_occurrences.locationText</span></ifcount>}}}
 
-
+<?php
 			<div>
 				<span class='metaTitle'>Related places</span>
 				<span class='meta'>{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}</span>
@@ -97,16 +97,16 @@
 
 		<!--	{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'><unit>^ca_storage_locations.preferred_labels<br/></unit></span></div></ifcount>}}}-->
 <?php
-				if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))))) != "") {
+				if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 					print "<div class='meta'><span class='metaTitle'>Master Format</span><div class='meta'>{$vs_val}</div></div>";
 				}
-				if (($vs_val = trim($t_object->get('ca_objects.physical', array('excludeValues' => array('not_specified'))))) != "") {
+				if (($vs_val = trim($t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 					print "<div class='meta'><span class='metaTitle'>Master Format</span><div class='meta'>{$vs_val}</div></div>";
 				}
-				if (($vs_val = trim($t_object->get('ca_objects.digital_moving_image', array('excludeValues' => array('not_specified'))))) != "") {
+				if (($vs_val = trim($t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 					print "<div class='meta'><span class='metaTitle'>Master Format</span><div class='meta'>{$vs_val}</div></div>";
 				}
-				if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('excludeValues' => array('not_specified'))))) != "") {
+				if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 					print "<div class='meta'><span class='metaTitle'>Master Format</span><div class='meta'>{$vs_val}</div></div>";
 				}
 				//if ($t_object->get('ca_objects.carrier', array('excludeValues' => array('not_specified'))) != "") {
