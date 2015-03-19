@@ -42,8 +42,8 @@
 			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="2"><span class='metaTitle'>Related places</span></ifcount></unit>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></div>}}}
 
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</span></ifcount></div>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</span></ifcount></div>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</span></ifcount></div></unit>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</span></ifcount></div></unit>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div>}}}
 
 			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
@@ -97,16 +97,16 @@
 		<!--	{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div><span class='metaTitle'>Storage Location</span><span class='meta'><unit>^ca_storage_locations.preferred_labels<br/></unit></span></div></ifcount>}}}-->
 <?php
 				if ($t_object->get('ca_objects.video_physical', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>Master Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>1Master Format</span><span class='meta'>".$t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
 				if ($t_object->get('ca_objects.physical', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>Master Format</span><span class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>2Master Format</span><span class='meta'>".$t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
 				if ($t_object->get('ca_objects.digital_moving_image', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>3Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
 				if ($t_object->get('ca_objects.digital_supporting', array('excludeValues' => array('not_specified'))) != "") {
-					print "<div><span class='metaTitle'>Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
+					print "<div><span class='metaTitle'>4Master Format</span><span class='meta'>".$t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 				}
 				//if ($t_object->get('ca_objects.carrier', array('excludeValues' => array('not_specified'))) != "") {
 				//	print "<div><span class='metaTitle'>Carrier</span><span class='meta'>".$t_object->get('ca_objects.carrier', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
