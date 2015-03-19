@@ -38,12 +38,12 @@
 			{{{<ifcount code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'>^ca_occurrences.locationText</span></ifcount>}}}
 
 
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="1" max="1"><span class='metaTitle'>Related place</H6></span></unit>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="2"><span class='metaTitle'>Related places</H6></span></unit>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="1" max="1"><span class='metaTitle'>Related place</span></ifcount></unit>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places" min="2"><span class='metaTitle'>Related places</span></ifcount></unit>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></div>}}}
 
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</H6></span></div>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</H6></span></div>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related person</span></ifcount></div>}}}
+			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="2"><span class='metaTitle'>Related people</span></ifcount></div>}}}
 			{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div>}}}
 
 			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
