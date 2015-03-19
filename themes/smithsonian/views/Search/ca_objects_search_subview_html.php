@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByControl}}}
+				<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | {{{sortByList}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
@@ -53,6 +53,9 @@
 			<div class='{{{block}}}Result'>
 				<?php print $qr_results->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>'); ?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<br/><?php print $qr_results->get('ca_objects.idno'); ?>
+				<hr>
+				<?php print "Part of: ".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
@@ -79,6 +82,7 @@
 						sortControlSelector: '#{{{block}}}_sort',
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
+						scrollControlDisabledOpacity: 0,
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});
