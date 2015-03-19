@@ -64,19 +64,19 @@
 			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
 
 <?php
-			if (($vs_genre = $t_object->get('ca_occurrences.genre')) != "") {
+			if (($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))) != "") {
 				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
 			}	
-			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes')) != "") {
+			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))) != "") {
 				print "<div><span class='metaTitle'>Production type</span><div class='meta'>{$vs_prod_type}</div></div>";
 			}
-			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical')) == "Yes") {
+			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical', array('convertCodesToDisplayText' => true))) == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: {$vs_mission_crit}</div>";
 				print "<div>Year: ".$t_object->get('ca_occurrences.mission.missionYear')." (".$t_object->get('ca_occurrences.mission.mission_dates_types').")</div>";
 				print "</span></div>";
 			}
 			
-			$va_awards = $t_object->get('ca_occurrences.awards', array('returnAsArray' => true));
+			$va_awards = $t_object->get('ca_occurrences.awards', array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
 			if (sizeof($va_awards) > 0) {
 				print "<div><span class='metaTitle'>Awards</span><div class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
