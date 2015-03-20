@@ -48,7 +48,7 @@
 
 			{{{<ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related Entity</span></ifcount>}}}
 			{{{<ifcount code="ca_entities" min="2"><span class='metaTitle'>Related Entities</span></ifcount>}}}
-			{{{<ifcount code="ca_entities.preferred_labels" min="1"><unit relativeTo="ca_entities" delimiter="<br/>"><l><div class='meta'>^ca_entities.preferred_labels</div></l></unit></ifcount>}}}
+			{{{<ifcount code="ca_entities.related" min="1"><unit relativeTo="ca_entities" delimiter="<br/>"><l><div class='meta'>^ca_entities.preferred_labels</div></l></unit></ifcount>}}}
 			
 			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='metaTitle'>LCSH Names</span></ifcount>}}}
 			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_names</div></unit></span></ifcount>}}}
