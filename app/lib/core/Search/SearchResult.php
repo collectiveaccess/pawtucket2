@@ -891,14 +891,14 @@ class SearchResult extends BaseObject {
 										$va_vals = $t_instance->get($vs_field_spec, array_merge($pa_options, array('returnAsArray' => true)));
 										
 										// Add/replace hierarchy name
-										if (($t_instance->getProperty('HIERARCHY_TYPE') == __CA_HIER_TYPE_MULTI_MONO__) &&  $t_instance->getHierarchyName()) {
-											$vn_first_key = array_shift(array_keys($va_vals));
-											if ($vb_return_all_locales) {
-												$va_vals[$vn_first_key] = array(0 => array($t_instance->getHierarchyName()));
-											} else {
-												$va_vals[$vn_first_key] = $t_instance->getHierarchyName();
-											}
-										}
+										//if (($t_instance->getProperty('HIERARCHY_TYPE') == __CA_HIER_TYPE_MULTI_MONO__) &&  $t_instance->getHierarchyName()) {
+										//	$vn_first_key = array_shift(array_keys($va_vals));
+										//	if ($vb_return_all_locales) {
+												//$va_vals[$vn_first_key] = array(0 => array($t_instance->getHierarchyName()));
+										//	} else {
+												//$va_vals[$vn_first_key] = $t_instance->getHierarchyName();
+										//	}
+										//}
 										
 										if ($vn_max_levels_from_bottom > 0) {
 											if (($vn_start = sizeof($va_vals) - $vn_max_levels_from_bottom) < 0) { $vn_start = 0; }
@@ -1000,7 +1000,7 @@ class SearchResult extends BaseObject {
 					return $t_instance->getAttributesForDisplay($va_path_components['field_name'], $vs_template, array_merge($pa_options, array('row_id' => $vn_row_id)));
 				} else {
 					if(!$vs_template) {
-						return $t_instance->getRawValue($vn_row_id, $va_path_components['field_name'], $va_path_components['subfield_name'], ',', $pa_options);
+						return $t_instance->getRawValue($vn_row_id, $va_path_components['field_name'], $va_path_components['subfield_name'], caGetOption('delimiter', $pa_options, ','), $pa_options);
 					} else {
 						return caProcessTemplateForIDs($vs_template, $va_path_components['table_name'], array($vn_row_id), array());
 					}
