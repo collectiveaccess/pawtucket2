@@ -62,10 +62,10 @@
 				print "<div><span class='metaTitle'>Air Date</span><span class='meta'>".$t_occurrence->get('ca_occurrences.workDate.dates_value')."</span></div>";
 			}
 			if ($t_occurrence->get('ca_occurrences.genre') != "") {
-				print "<div><span class='metaTitle'>Genre</span><span class='meta'>".$t_occurrence->get('ca_occurrences.genre')."</span></div>";
+				print "<div><span class='metaTitle'>Genre</span><span class='meta'>".$t_occurrence->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))."</span></div>";
 			}	
 			if ($t_occurrence->get('ca_occurrences.productionTypes') != "") {
-				print "<div><span class='metaTitle'>Production type</span><span class='meta'>".$t_occurrence->get('ca_occurrences.productionTypes')."</span></div>";
+				print "<div><span class='metaTitle'>Production type</span><span class='meta'>".$t_occurrence->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))."</span></div>";
 			}
 			if ($t_occurrence->get('ca_occurrences.mission.missionCritical') == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: ".$t_occurrence->get('ca_occurrences.mission.missionCritical')."</div>";
@@ -76,10 +76,10 @@
 			if (sizeof($va_awards) > 0) {
 				print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
-					print "<div>Award: ".$va_award['award_event']."</div>";
-					print "<div>Year: ".$va_award['award_year']."</div>";
-					print "<div>Type: ".$va_award['award_types']."</div>";
-					print "<div>Notes: ".$va_award['award_notes']."</div>";
+					print "<div>Award: ".$t_occurrence->get('ca_occurrences.awards.award_event', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Year: ".$t_occurrence->get('ca_occurrences.awards.award_year', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Type: ".$t_occurrence->get('ca_occurrences.awards.award_types', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Notes: ".$t_occurrence->get('ca_occurrences.awards.award_notes', array('convertCodesToDisplayText' => true))."</div>";
 					print "<div style='height:10px;'></div>";
 				}
 				print "</span></div>";

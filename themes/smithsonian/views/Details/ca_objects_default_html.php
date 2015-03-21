@@ -95,14 +95,18 @@
 				print "</span></div>";
 			}
 			
-			$va_awards = $t_object->get('ca_occurrences.awards', array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-			if (sizeof($va_awards) > 0) {
+			$va_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true));
+	
+			if (sizeof($va_ids) > 0) {
+				$qr_res = caMakeSearchResult('ca_occurrences', $va_ids);
+			
 				print "<div><span class='metaTitle'>Awards</span><div class='meta'>";
-				foreach ($va_awards as $award => $va_award) {
-					print "<div>Award: ".$va_award['award_event']."</div>";
-					print "<div>Year: ".$va_award['award_year']."</div>";
-					print "<div>Type: ".$va_award['award_types']."</div>";
-					print "<div>Notes: ".$va_award['award_notes']."</div>";
+				//foreach ($va_awards as $award => $va_award) {
+				while($qr_res->nextHit()) {
+					print "<div>Award: ".$qr_res->get('ca_occurrences.awards.award_event', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Year: ".$qr_res->get('ca_occurrences.awards.award_year', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Type: ".$qr_res->get('ca_occurrences.awards.award_types', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Notes: ".$qr_res->get('ca_occurrences.awards.award_notes', array('convertCodesToDisplayText' => true))."</div>";
 					print "<div style='height:10px;'></div>";
 				}
 				print "</div></div>";
