@@ -14,6 +14,12 @@ a {
 	color:#333;
 }
 
+/* Front Page */
+
+.front H1 {
+	padding-left:0px;
+}
+
 /* Search Results */
 
 .blockResultsScroller.publication {
@@ -54,6 +60,109 @@ a {
 .detail #detailTools a, .detail .detailTool span{ 
 	color:#000;
 }
+.visualize {
+	font-size:16px;
+	font-family: 'Gudea', sans-serif;
+	background-color:#f7f7f7;
+	border-radius:4px;
+	padding:5px;
+	width:100px;
+	margin-top:10px;
+	float:right;
+}
+.time {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#5e9eaa;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+	margin-bottom:10px;
+}
+.checkouts {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#d77421;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+	margin-bottom:10px;
+}
+.readers {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#666;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+}
+.partial {
+	display:inline-block;
+}
+.full {
+	display:inline-block;
+	margin-left:20px;
+}
+.checkouts .count, .readers .count, .time .count {
+	font-size:20px;
+}
+.closeBut {
+	text-align:right;
+}
+.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
+	font-size:1em !important;
+	color:#333 !important;
+	fill:#333 !important;
+}
+.ct-chart {
+	overflow:visible !important;
+	margin-top:-45px;
+}
+svg:not(:root) {
+	overflow:visible !important;
+}
+.color1 {
+	fill: #666;
+}
+.color2 {
+	fill: #d77421;
+}
+.color3 {
+	fill: #5e9eaa;
+}
+.color4 {
+	fill: #cccccc;
+}
+.color5 {
+	fill: #FAEE68;
+}
+.color6 {
+	fill: #a3a547;
+}
+.color7 {
+	fill: #679282;
+}
+.color8 {
+	fill: #f5f5f5;
+}
+.color9 {
+	fill: #b2a87f;
+}
+.color10 {
+	fill: #774969;
+}
+.color11 {
+	fill: #566d9d;
+}
+.color12 {
+	fill: #000000;
+}
 .readerRow {
 	border-bottom:1px solid #ccc;
 	padding-bottom:10px;
@@ -63,6 +172,7 @@ a {
 	font-family: 'Gudea', sans-serif;	
 	color: #d6742a;
 	font-weight:bold;
+	padding-bottom:10px;
 }
 .entityThumb img{
 	width:100%;
@@ -79,4 +189,22 @@ a {
 }
 .ledgerImage {
 	margin-bottom:20px;
+}
+
+.tooltip {
+	position: absolute;
+	z-index: 3000;
+	border: 1px solid #cccccc;
+	background-color: #FFFFFF;
+	padding: 5px 10px 10px 10px;
+	opacity: 1 !important; 
+	text-align: left;
+	margin-left:250px;
+	margin-top:27px;
+	font-size:12px;
+	width:400px;
+}
+.tooltipImage {
+	float:left;
+	margin-right:10px;
 }

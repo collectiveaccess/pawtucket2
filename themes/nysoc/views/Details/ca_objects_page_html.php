@@ -56,8 +56,7 @@
 		$va_rel_ids = array_keys($va_object_entity_rels);
 		if(sizeof($va_rel_ids) > 0) {
 ?>
-			<h6>References on this page</h6>
-			<div class='row ledgerRow' style='background-color:#f7f7f7;'>
+			<div class='row titleBar' >
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Borrower Name</div>
 				<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Book Title</div>
 				<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date Out</div>
@@ -66,36 +65,70 @@
 				<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Fine</div>
 			</div>
 <?php
+			$vn_i = 0;
 			$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids);
 			while($qr_rels->nextHit()) {
 				print "<div class='row ledgerRow'>";
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->getWithTemplate("^ca_entities.preferred_labels.displayname");
+					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='entity".$vn_i."'>";
+					print $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
+					$vs_entity_info = "";
+					if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
+						$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
+					}
+					if ($qr_rels->get("ca_entities.country_origin")) {
+						$vs_entity_info.= $qr_rels->get("ca_entities.country_origin")."<br/>";
+					}
+					if ($qr_rels->getWithTemplate("^ca_entities.industry_occupations")) {
+						$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
+					}					
+					TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info.$qr_rels->getWithTemplate("^ca_entities.biography.biography_text")); 
+ 
 					print "</div>";
 
-					print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>";
-					print caNavLink($this->request, $qr_rels->getWithTemplate("<ifdef code='ca_objects.parent.preferred_labels.name'>^ca_objects.parent.preferred_labels.name </ifdef>^ca_objects.preferred_labels.name"), '', '', 'Detail', 'objects/'.$qr_rels->getWithTemplate('^ca_objects.object_id'));
-					if ($qr_rels->getWithTemplate("^ca_objects_x_entities.book_title")) {
-						print "<br/>transcribed: ".$qr_rels->getWithTemplate("^ca_objects_x_entities.book_title");
+					print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+					
+					if ($qr_rels->get('ca_objects.parent.object_id')) {
+						$vs_book_title = explode(':',$qr_rels->get('ca_objects.parent.preferred_labels.name'));
+						$vs_book_title = $vs_book_title[0]." ".$qr_rels->get('ca_objects.preferred_labels.name');
+					} else {
+						$vs_book_title = explode(':',$qr_rels->get('ca_objects.preferred_labels.name'));
+						$vs_book_title = $vs_book_title[0];
 					}
+					
+					print caNavLink($this->request, trim("{$vs_book_title}"), '', '', 'Detail', 'objects/'.$qr_rels->get('ca_objects.object_id'));
+					if ($vs_title = $qr_rels->get("ca_objects_x_entities.book_title")) {
+						print "<br/>transcribed: {$vs_title}";
+					}
+					$va_book_info = array();
+					if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
+						$va_book_info[] = $va_author;
+					} else {$va_author = null;}
+					if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
+						$va_book_info[] = $va_publication_date;
+					} else { $va_publication_date = null; }
+					if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
+						$va_book_info[] = $va_publisher;
+					} else { $va_publisher = null; }
+					TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 
 					print "</div>";
 			
 					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->getWithTemplate("^ca_objects_x_entities.date_out");
+					print $qr_rels->get("ca_objects_x_entities.date_out");
 					print "</div>";	
 					
 					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->getWithTemplate("^ca_objects_x_entities.date_in");
+					print $qr_rels->get("ca_objects_x_entities.date_in");
 					print "</div>";
 
 					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->getWithTemplate("^ca_objects_x_entities.representative");
+					print $qr_rels->get("ca_objects_x_entities.representative");
 					print "</div>";
 											
 					print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
-					print $qr_rels->getWithTemplate("^ca_objects_x_entities.fine");
+					print $qr_rels->get("ca_objects_x_entities.fine");
 					print "</div>";													
 				print "</div>";
+				$vn_i++;
 			}
 		}
 	}
