@@ -3,6 +3,7 @@
 	$pn_set_id = $this->getVar("set_id");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
+	$pn_set_item_id = $this->getVar("set_item_id");
 ?>
 <H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
 <div class="container">
@@ -59,9 +60,9 @@
 </div><!-- end container -->
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
-			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
-			jQuery("#galleryDetailObjectInfo").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
-			galleryHighlightThumbnail("galleryIcon<?php print $vn_first_item_id; ?>");
+			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
+			jQuery("#galleryDetailObjectInfo").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
+			galleryHighlightThumbnail("galleryIcon<?php print ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id; ?>");
 		});
 		function galleryHighlightThumbnail(id) {		
 			jQuery("#galleryDetailImageGrid a").removeClass("galleryIconActive");
