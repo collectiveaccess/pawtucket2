@@ -50,34 +50,31 @@
 	print "</ul><div style='width:100%;clear:both;height:1px;'></div>";
 	}
 
-	if (is_array($va_collection_children_ids = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true))) && sizeof($va_collection_children_ids)) {
+	if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true))) {
 		print "<h6>Content</h6>";
-		$qr_children = caMakeSearchResult('ca_collections', $va_collection_children_ids);
-		while($qr_children->nextHit()) {
-			$vn_collection_id = $qr_children->get('collection_id');
-			print "<div>".caNavLink($this->request, $qr_children->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$vn_collection_id)."</div>";
-			if (in_array($t_item->get('ca_collections.type_id'), caMakeTypeIDList('ca_collections', array('series, subseries', 'collection')))) { 
-				if ($va_object_levels = $qr_children->get('ca_objects.object_id', array('returnAsArray' => true))) {
-					$qr_objects = caMakeSearchResult('ca_objects', $va_object_levels);
-					while($qr_objects->nextHit()) {
-						$vn_object_id = $qr_objects->get('ca_objects.object_id');
-						//$t_object = new ca_objects($va_object_level);
-						print "<div style='padding-left:20px;'>Box: ".$qr_objects->get('ca_objects.location.box')." Folder: ".$qr_objects->get('ca_objects.location.folder')." ".caNavLink($this->request, $qr_objects->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'objects/'.$vn_object_id)."</div>";
+		foreach ($va_collection_children as $vn_content => $va_collection_child) {
+			$t_collection = new ca_collections($va_collection_child);
+			print "<div>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_child)."</div>";
+			if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == 'Sub-Series') {
+				if ($va_object_levels = $t_collection->get('ca_objects.object_id', array('returnAsArray' => true))) {
+					foreach ($va_object_levels as $vn_object => $va_object_level) {
+						$t_object = new ca_objects($va_object_level);
+						print "<div style='padding-left:20px;'>Box: ".$t_object->get('ca_objects.location.box')." Folder: ".$t_object->get('ca_objects.location.folder')." ".$t_object->get('ca_objects.preferred_labels')."</div>";
 					}
 				}
 			}
-			// if ($va_second_children = $t_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true))) {
-// 				foreach ($va_second_children as $vn_second_content => $va_second_child) {
-// 					$t_second_collection = new ca_collections($va_second_child);
-// 					print "<div style='padding-left:20px;'>".caNavLink($this->request, $t_second_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_second_child)."</div>";
-// 					if ($va_third_children = $t_second_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true))) {
-// 						foreach ($va_third_children as $vn_third_content => $va_third_child) {
-// 							$t_third_collection = new ca_collections($va_third_child);
-// 							print "<div style='padding-left:40px;'>".caNavLink($this->request, $t_third_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_third_child)."</div>";
-// 						}
-// 					}
-// 				}
-// 			}
+			if ($va_second_children = $t_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true))) {
+				foreach ($va_second_children as $vn_second_content => $va_second_child) {
+					$t_second_collection = new ca_collections($va_second_child);
+					print "<div style='padding-left:20px;'>".caNavLink($this->request, $t_second_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_second_child)."</div>";
+					if ($va_third_children = $t_second_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true))) {
+						foreach ($va_third_children as $vn_third_content => $va_third_child) {
+							$t_third_collection = new ca_collections($va_third_child);
+							print "<div style='padding-left:40px;'>".caNavLink($this->request, $t_third_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_third_child)."</div>";
+						}
+					}
+				}
+			}
 		}
 	}
 	
@@ -121,10 +118,6 @@
 ?>									
 				</div><!-- end col -->
 			</div><!-- end row -->
-		<?php
-		$t_item->dump();
-		print_R(sizeof($t_item->getRelatedItems('ca_objects')));
-		?>
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row">
 				<div id="bViewButtons">

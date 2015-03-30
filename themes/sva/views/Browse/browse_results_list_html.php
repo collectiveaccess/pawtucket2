@@ -42,36 +42,33 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
-	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
-	
 
+	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
+		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
+	
 	$o_set_config = caGetSetsConfig();
 	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
 	
-
-	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
-		
-
-		$vn_col_span = 3;
+		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
+		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 3;
+			$vn_col_span = 6;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
+			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -80,59 +77,41 @@
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get($vs_pk);
-					$vn_c++;
+					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
-				$vn_c = 0;	
 				$qr_res->seek($vn_start);
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+			} else {
+				$va_images = null;
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				if ($qr_res->get('ca_objects.dates.dates_value')) {
-					$vn_date = ", ".$qr_res->get('ca_objects.dates.dates_value');
-				} else {
-					$vn_date = "";
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+				
+				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+				
+				if(!$vs_image){
+					$vs_image = $vs_placeholder_tag;
 				}
-				if ($qr_res->get('ca_entities.preferred_labels')) {
-					$vs_entity_detail_link 	= "<p>".$qr_res->get("ca_entities.preferred_labels", array('delimiter' => ', ')).$vn_date."</p>";
-				} elseif ($qr_res->get('ca_occurrences.preferred_labels')){
-					$vs_entity_detail_link = "<p>".$qr_res->get("ca_occurrences.preferred_labels", array('delimiter' => ', ')).$vn_date."</p>";
-				} else {
-					$vs_entity_detail_link = ", ".$qr_res->get('ca_objects.dates.dates_value');
-				}
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
-				$vs_thumbnail = "";
-				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
-						$vs_thumbnail = $vs_placeholder_tag;	
-					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-				} else {
-					if($va_images[$vn_id]){
-						$vs_thumbnail = $va_images[$vn_id];
-					}else{
-						$vs_thumbnail = $vs_placeholder_tag;
-					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
-				}
+				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+				
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultItemText'>
-					{$vs_label_detail_link}{$vs_entity_detail_link}
-				</div><!-- end bResultItemText -->
-			</div><!-- end bResultItemContent -->
-			
-		</div><!-- end bResultItem -->
+	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bResultListItemContent'>
+				<div class='bResultListItemText'>
+					{$vs_label_detail_link}
+				</div><!-- end bResultListItemText -->
+			</div><!-- end bResultListItemContent -->
+		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;

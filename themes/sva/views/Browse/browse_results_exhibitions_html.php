@@ -83,13 +83,20 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widethumbnail', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			print "<div class='col-xs-12 col-sm-12 col-md-12 extitles'><div class='row'>";
+			print "<div class='col-xs-2 col-sm-2 col-md-2' style='padding-left:10px;'>&nbsp;</div>";
+			print "<div class='col-xs-3 col-sm-3 col-md-3'>Date</div>";
+			print "<div class='col-xs-3 col-sm-3 col-md-3'>Title</div>";
+			print "<div class='col-xs-2 col-sm-2 col-md-2'>Location</div>";
+			print "<div class='col-xs-2 col-sm-2 col-md-2'>Curator</div>";
+			print "</div></div>";
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.dates.dates_value')) {
@@ -104,10 +111,37 @@
 				} else {
 					$vs_entity_detail_link = ", ".$qr_res->get('ca_objects.dates.dates_value');
 				}
+				if ($va_opening_dates = $qr_res->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
+					#205
+					foreach ($va_opening_dates as $va_opening_key => $va_opening) {
+						if ($va_opening['ex_dates_type'] == 205) {
+							$va_opening_date = $va_opening['ex_dates_value'];
+						} 
+					}
+				}
+				if ($va_closing_dates = $qr_res->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
+					#207
+					foreach ($va_closing_dates as $va_closing_key => $va_closing) {
+						if ($va_closing['ex_dates_type'] == 207) {
+							$va_closing_date = $va_closing['ex_dates_value'];
+						}
+					}
+				}				
+				$vs_date = $va_opening_date." - ".$va_closing_date;
+				if ($qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
+					$vs_location = $qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values));
+				} else {
+					$vs_location = "";
+				}	
+				if ($qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'))) {
+					$vs_curator = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'));
+				} else {
+					$vs_curator = "";
+				}	
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'widethumbnail', array("checkAccess" => $va_access_values)))){
 						$vs_thumbnail = $vs_placeholder_tag;	
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -124,15 +158,28 @@
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultItemText'>
-					{$vs_label_detail_link}{$vs_entity_detail_link}
-				</div><!-- end bResultItemText -->
-			</div><!-- end bResultItemContent -->
-			
-		</div><!-- end bResultItem -->
+	<div class='bResultItemCol col-xs-12 col-sm-12 col-md-12 exhibitions'>
+		<div class='row'>
+			<div class='bResultItem ' >
+				<div class='bResultItemContent'>
+					<div class='col-xs-2 col-sm-2 col-md-2'>
+						<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+					</div>
+					<div class='col-xs-3 col-sm-3 col-md-3'>
+						{$vs_date}
+					</div>
+					<div class='col-xs-3 col-sm-3 col-md-3'>
+						{$vs_label_detail_link}
+					</div>
+					<div class='col-xs-2 col-sm-2 col-md-2'>
+						{$vs_location}
+					</div>
+					<div class='col-xs-2 col-sm-2 col-md-2'>
+						{$vs_curator}
+					</div>					
+				</div><!-- end bResultItemContent -->
+			</div><!-- end bResultItem -->
+		</div><!-- end row -->
 	</div><!-- end col -->";
 				
 				$vn_c++;
