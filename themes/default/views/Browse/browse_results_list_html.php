@@ -49,16 +49,22 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 
-	if(!($vs_placeholder = $o_config->get("placeholder_media_icon"))){
-		$vs_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+
 	
 	$o_set_config = caGetSetsConfig();
 	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
+	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
@@ -86,16 +92,29 @@
 				$va_images = null;
 			}
 			
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			$t_list_item = new ca_list_items();
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
-				
+				$vs_thumbnail = "";
+				$vs_type_placeholder = "";
+				$vs_typecode = "";
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 				if(!$vs_image){
-					$vs_image = $vs_placeholder_tag;
+					if ($vs_table == 'ca_objects') {
+						$t_list_item->load($qr_res->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
+						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_image = $vs_default_placeholder_tag;
+						}
+					}else{
+						$vs_image = $vs_default_placeholder_tag;
+					}
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				

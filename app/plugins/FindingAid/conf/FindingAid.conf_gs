@@ -1,0 +1,27 @@
+# Finding Aid Configuration values
+
+
+# Set to a non-zero value to enable Finding Aids
+enabled = 1
+
+# To restrict your Finding Aid to particular Collection types, list the types below, separated by commas
+restrict_to_types = 
+
+# If set to a non-zero value, your collection hierarchy will be displayed by default
+open_by_default = 1
+
+# Name of your Finding Aid
+page_title = Finding Aid
+
+# Introductory text, displayed at the top of your Finding Aid
+<<<<<<< HEAD
+intro_text = Welcome to the Glenstone Archives. For more information, please contact <a href='mailto:'>Ray Barker</a>.
+
+# Display Template for your hierarchy levels
+display_template = ^ca_collections.preferred_labels.name (^ca_collections.idno)
+=======
+intro_text = Welcome to the Archives.
+
+# Display Template for your hierarchy levels
+display_template = <div><l>^ca_collections.preferred_labels.name (^ca_collections.idno</l>)<br/><div style='font-weight:200; width: 500px; margin-left: 25px;'>^ca_collections.scope_contents</div></div><br/>
+>>>>>>> 6a96e44ce1b124bcd4dd5c95a357aaf789e86433

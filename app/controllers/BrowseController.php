@@ -143,7 +143,6 @@
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
 				$o_browse->removeAllCriteria();
 			}
-			
 				
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
@@ -343,6 +342,7 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
+ 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

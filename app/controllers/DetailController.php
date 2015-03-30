@@ -178,7 +178,7 @@
 				}else{
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
-				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false))));
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array_merge(caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')), array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false)))));
 			}
 			//
 			// map
@@ -200,7 +200,7 @@
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML'));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('map_zoom', $va_options, null))));
 				}
 			}
 			
@@ -331,16 +331,22 @@
  		 * 
  		 */ 
  		public function GetPageListAsJSON() {
- 			$pn_subject_id = $this->request->getParameter('object_id', pInteger);
+ 			if (!($vs_table = $this->request->getActionExtra())) { $vs_table = 'ca_objects'; }
+ 			if (!($t_subject = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { 
+ 				$this->postError(1100, _t('Invalid table'), 'DetailController->GetPage');
+ 				return;
+ 			}
+ 			$pn_subject_id = $this->request->getParameter($t_subject->primaryKey(), pInteger);
  			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
  			$pn_value_id = $this->request->getParameter('value_id', pInteger);
  			$ps_content_mode = $this->request->getParameter('content_mode', pString);
  			
+ 			$t_subject->load($pn_subject_id);
  			
  			$vs_page_cache_key = md5($pn_subject_id.'/'.$pn_representation_id.'/'.$pn_value_id);
  			
  			$this->view->setVar('page_cache_key', $vs_page_cache_key);
- 			$this->view->setVar('t_subject', new ca_objects($pn_subject_id));
+ 			$this->view->setVar('t_subject', $t_subject);
  			$this->view->setVar('t_representation', new ca_object_representations($pn_representation_id));
  			$this->view->setVar('t_attribute_value', new ca_attribute_values($pn_value_id));
  			$this->view->setVar('content_mode', $ps_content_mode);
@@ -350,7 +356,7 @@
  			$va_pages = $va_page_list_cache[$vs_page_cache_key];
  			if (!isset($va_pages)) {
  				// Page cache not set?
- 				$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetPage');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetPage');
  				return;
  			}
  			

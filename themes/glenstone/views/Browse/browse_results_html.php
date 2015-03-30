@@ -69,7 +69,7 @@ if (!$vb_ajax) {	// !ajax
 			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 		}
 	}
-if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")) {	
+if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
 	// Export as PDF
 	print "<div class='reportTools'>";
 	print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
@@ -108,8 +108,8 @@ if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUse
 			}
 			
 			if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-				print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view))."</li>";
-			}	
+				print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1))."</li>";
+			}
 ?>
 		</ul>
 	</div><!-- end btn-group -->

@@ -21,7 +21,7 @@
 		</div><!-- end col -->
 	</div>
 <?php 
-	if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
 ?>	
 	<div class="row">
 		<div class='col-md-12 col-lg-12'>
@@ -48,7 +48,7 @@
 					print "<p>".caNavLink($this->request, "<i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
 					print "<p>".$t_object->get('ca_objects.medium')."</p>";
 					print "<p>".$t_object->get('ca_objects.dimensions.display_dimensions')."</p>";
-					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						print "<p>".$t_object->get('ca_objects.idno')."</p>";
 					}				
 					print "</div><!-- end lotCaption -->";
@@ -130,7 +130,7 @@
 							if ($va_lot_image['invoice_upload_primary'] == "Yes") {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vs_lot_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_lot_image['invoice_upload_media']."</a>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/'.$t_item->tableName(), array('lot_id' => $t_item->getPrimaryKey(), 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_lot_image['invoice_upload_media']."</a>";
 
 								}
 							}
@@ -157,7 +157,7 @@
 							if ($va_bill_image['bill_upload_primary'] == "Yes") {
 								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vs_bill_id, $vn_media_element_id)) ;
 								if ($qr_res->nextRow()) {
-									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_bill_image['bill_upload_media']."</a>";
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo/'.$t_item->tableName(), array('lot_id' => $t_item->getPrimaryKey(), 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_bill_image['bill_upload_media']."</a>";
 
 								}
 							}

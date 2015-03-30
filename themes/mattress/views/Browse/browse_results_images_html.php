@@ -69,17 +69,17 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				if($vs_table == "ca_entities") {
-					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('image')));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_occurrences") {
-					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('image')));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.browse');
 				} else if ($vs_table == "ca_collections") {
-					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true));
+					$va_related_objects = $qr_res->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('image')));
 					$va_first_object_id = $va_related_objects[0];
 					$t_object = new ca_objects($va_first_object_id);
 					$va_rep = $t_object->get('ca_object_representations.media.browse');				

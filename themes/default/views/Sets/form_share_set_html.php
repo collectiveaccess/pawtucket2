@@ -3,7 +3,7 @@
 	$va_errors = $this->getVar("errors");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Share Lightbox"); ?></H1>
+<H1><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></H1>
 <?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-info'>".$this->getVar("message")."</div>";
