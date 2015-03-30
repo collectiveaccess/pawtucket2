@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,7 +40,7 @@
 		}
 		# -------------------------------------------------------
 		/**
-		 * Override checkStatus() to return true - the historyMenu plugin always initializes ok
+		 * Override checkStatus() to return plugin status
 		 */
 		public function checkStatus() {
 			return array(
@@ -59,4 +59,3 @@
 		}
 		# -------------------------------------------------------
 	}
-?>
