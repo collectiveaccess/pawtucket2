@@ -67,6 +67,41 @@
 ?>
 </head>
 <body>
+	<div id="mainContent">
+	<div id="logoArea">
+		<div id="site-filagree"></div>
+		<div id="site-logo">
+			<div id="logo1"></div>
+			<div id="logoMain"><a href="/">The New York Society Library</a></div>
+		</div>
+	</div>
+	<div id="columnRight">
+		<div class="topMain">
+			<div id="searchArea" class="searchArea" style="display: block;">
+				<div class="globalLinks"><a href="/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
+				<div id="globalSearch">
+
+				</div>
+			</div>
+		</div>
+		<div id="topMenu">
+			<ul class="menu" id="mainMenu">
+				<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Home</a></li>
+				<li class="item" id="menuId-2"><a href="https://www.nysoclib.org/about">About Us</a></li>
+				<li class="item active" id="menuId-3"><a href="https://www.nysoclib.org/collection">Our Collection</a></li>
+				<li class="item" id="menuId-4"><a href="https://www.nysoclib.org/events">Our Events</a></li>
+				<li class="item" id="menuId-5"><a href="https://www.nysoclib.org/members">For Members</a></li>
+				<li class="item" id="menuId-6"><a href="https://www.nysoclib.org/children">For Children</a></li>
+				<li class="item" id="menuId-7"><a href="https://www.nysoclib.org/researchers">For Researchers</a></li>
+			</ul>
+		</div>	
+		<div id="topSection">
+			<div id="pageTitle">
+				<h1>Our Collection</h1>
+				<div class="breadcrumb"><a href="/">Home</a> <span class="sep">&gt;</span> Our Collection</div>
+			</div>
+		</div>		
+	</div><!-- end columnRight-->
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -81,9 +116,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-<?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
-?>
+
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -115,15 +148,14 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
 	<div class="container">
+	<div class="row">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
