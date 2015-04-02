@@ -1,0 +1,87 @@
+{
+  "name": "bootstrap-slider",
+  "version": "4.5.7",
+  "description": "Slider view component for Twitter Bootstrap.",
+  "main": "js/bootstrap-slider.js",
+  "scripts": {
+    "prepublish": "bower install",
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/seiyria/bootstrap-slider.git"
+  },
+  "author": "",
+  "license": "BSD",
+  "gitHead": "67eb8fe3c26205efc94ae95b3ef37a469eef0b81",
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-jasmine": "~0.5.2",
+    "grunt-template": "~0.2.0",
+    "grunt-open": "~0.2.2",
+    "bower": "latest",
+    "grunt-contrib-less": "~0.7.0",
+    "grunt-header": "^1.0.0",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-bump": "0.0.16"
+  },
+  "gruntConfig": {
+    "devPort": 9000,
+    "js": {
+      "modernizr": "bower_components/modernizr/modernizr.js",
+      "jquery": "bower_components/jquery/dist/jquery.min.js",
+      "bindPolyfill": "test/phantom_bind_polyfill.js"
+    },
+    "less": {
+      "slider": "less/bootstrap-slider.less"
+    },
+    "css": {
+      "bootstrap": "bower_components/bootstrap/dist/css/bootstrap.min.css",
+      "slider": "css/bootstrap-slider.css"
+    },
+    "tpl": {
+      "SpecRunner": "tpl/SpecRunner.tpl",
+      "index": "tpl/index.tpl"
+    },
+    "temp": {
+      "js": "temp/bootstrap-slider.min.js",
+      "css": "temp/bootstrap-slider.css",
+      "cssMin": "temp/bootstrap-slider.min.css"
+    },
+    "dist": {
+      "js": "dist/bootstrap-slider.min.js",
+      "css": "dist/css/bootstrap-slider.css",
+      "cssMin": "dist/css/bootstrap-slider.min.css"
+    },
+    "spec": "test/specs/**/*.js"
+  },
+  "bugs": {
+    "url": "https://github.com/seiyria/bootstrap-slider/issues"
+  },
+  "homepage": "https://github.com/seiyria/bootstrap-slider",
+  "_id": "bootstrap-slider@4.5.7",
+  "_shasum": "7b45565f6ea2ae17c187ec7e7ec23b0dbdea4a68",
+  "_from": "bootstrap-slider@*",
+  "_npmVersion": "2.0.0",
+  "_npmUser": {
+    "name": "rovolutionary",
+    "email": "rohit.kalkur@gmail.com"
+  },
+  "maintainers": [
+    {
+      "name": "rovolutionary",
+      "email": "rohit.kalkur@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "7b45565f6ea2ae17c187ec7e7ec23b0dbdea4a68",
+    "tarball": "http://registry.npmjs.org/bootstrap-slider/-/bootstrap-slider-4.5.7.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/bootstrap-slider/-/bootstrap-slider-4.5.7.tgz",
+  "readme": "ERROR: No README data found!"
+}
