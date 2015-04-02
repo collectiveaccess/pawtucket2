@@ -44,6 +44,7 @@ a {
 	box-shadow:none;
 	clear:both;
 	margin-bottom:0px;
+	background-color:transparent;
 }
 .navbar .form-control {
 	height:24px;
@@ -198,6 +199,7 @@ ul#mainMenu li a {
 .marginLeft {
 	width:190px;
 	float:left;
+	min-height:400px;
 }
 .marginRight {
 	width:830px;
@@ -273,9 +275,27 @@ div.globalLinks a {
 	border-left: 1px solid #eee;
 }
 
-/* Detail pages */ 
+/* Detail pages */
+@media (min-width: 768px) {
+	.detail .navTop {
+	  display: block;
+	} 
+}
+.prevLink, .resLink, .nextLink {
+	display:inline-block;
+}
+.detail .navTop {
+	text-align:left;
+	margin-top:-33px;
+	margin-left:-1px;
+	width: 300px;
+  	z-index: 1000000;
+}
 .metaTitle {
 	font-family: 'Gudea', sans-serif;	
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	margin-top:-10px;
 }
 .detail .unit {
 	padding: 2px 0px 2px 0px;
@@ -342,7 +362,7 @@ div.globalLinks a {
 	text-align:right;
 }
 .ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
-	font-size:1em !important;
+	font-size:.9em !important;
 	color:#333 !important;
 	fill:#333 !important;
 }
@@ -447,6 +467,7 @@ svg:not(:root) {
   line-height: 15px;
   font-family:"Gudea";
   float:right;
+  margin-top:70px;
 }
 #footerArea .col1 {
   float: left;

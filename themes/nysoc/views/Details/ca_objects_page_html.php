@@ -2,16 +2,16 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 ?>
+<div class='marginLeft'></div>
+<div class='marginRight'>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<div class='prevLink'>{{{previousLink}}}</div>
+		<div class='resLink'>{{{resultsLink}}}</div>
+		<div class='nextLink'>{{{nextLink}}}</div>
 	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
 				{{{representationViewer}}}				
@@ -136,12 +136,9 @@
 	
 	</div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
+
 </div><!-- end row -->
+</div><!-- end marginRight -->
 
 
 

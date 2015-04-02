@@ -2,16 +2,15 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 ?>
+<div class='marginLeft'></div>
+<div class='marginRight'>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<div class='prevLink'>{{{previousLink}}}</div>
+		<div class='resLink'>{{{resultsLink}}}</div>
+		<div class='nextLink'>{{{nextLink}}}</div>
 	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
@@ -77,8 +76,8 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<hr/>
-{{{<ifcount code="ca_objects" min="2">
+			<hr/ style='margin-left:-15px; margin-right:-15px;'>
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row titleBar">
 				<div class='col-sm-3 col-md-3 col-lg-3'>
 					Full Title
@@ -108,72 +107,75 @@
 			
 			// set all of the page object_ids
 			$va_page_ids = array();
-			while($qr_rels->nextHit()) {
-				$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
-			}
-			$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
+			$va_result_count = $qr_rels->numHits();
+			if ($va_result_count > 0) {			
+				while($qr_rels->nextHit()) {
+					$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
+				}
 			
-			$va_parents = array();
-			while($qr_pages->nextHit()) {
-				$va_parents[$qr_pages->get('ca_objects.object_id')] = $qr_pages->get('ca_objects.parent.preferred_labels.name');
-			}
+				$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
 			
-			$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
+				$va_parents = array();
+				while($qr_pages->nextHit()) {
+					$va_parents[$qr_pages->get('ca_objects.object_id')] = $qr_pages->get('ca_objects.parent.preferred_labels.name');
+				}
 			
-			$vn_page_type_id = caGetListItemID('object_types', 'page');
-			$vn_i = 0;
-			while($qr_rels->nextHit()) {
-				if ($qr_rels->get('ca_objects.type_id') == $vn_page_type_id) { continue; }
-				print "<div class='row ledgerRow'>";
-					print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+				$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
+			
+				$vn_page_type_id = caGetListItemID('object_types', 'page');
+				$vn_i = 0;
+				while($qr_rels->nextHit()) {
+					if ($qr_rels->get('ca_objects.type_id') == $vn_page_type_id) { continue; }
+					print "<div class='row ledgerRow'>";
+						print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+							if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
+								$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
+								print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
+							} else {
+								$va_label_trunk = explode(':', $qr_rels->get("ca_objects.preferred_labels"));
+								print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
+							}
+						
+							$va_book_info = array();
+							if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
+								$va_book_info[] = $va_author;
+							} else {$va_author = null;}
+							if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
+								$va_book_info[] = $va_publication_date;
+							} else { $va_publication_date = null; }
+							if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
+								$va_book_info[] = $va_publisher;
+							} else { $va_publisher = null; }
+							TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 						
+				
+						print "</div>";
+			
+						print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
 						if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-							$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
-							print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
-						} else {
-							$va_label_trunk = explode(':', $qr_rels->get("ca_objects.preferred_labels"));
-							print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
+							print $qr_rels->get("ca_objects.preferred_labels.displayname", array('returnAsLink' => true));
 						}
-						
-						$va_book_info = array();
-						if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
-							$va_book_info[] = $va_author;
-						} else {$va_author = null;}
-						if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
-							$va_book_info[] = $va_publication_date;
-						} else { $va_publication_date = null; }
-						if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
-							$va_book_info[] = $va_publisher;
-						} else { $va_publisher = null; }
-						TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 						
-				
-					print "</div>";
-			
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-						print $qr_rels->get("ca_objects.preferred_labels.displayname", array('returnAsLink' => true));
-					}
-					print "</div>";	
+						print "</div>";	
 					
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->get("ca_objects_x_entities.date_out");
-					print "</div>";
+						print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+						print $qr_rels->get("ca_objects_x_entities.date_out");
+						print "</div>";
 
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $qr_rels->get("ca_objects_x_entities.date_in");
-					print "</div>";
+						print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+						print $qr_rels->get("ca_objects_x_entities.date_in");
+						print "</div>";
 											
-					print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
-					print $qr_rels->get("ca_objects_x_entities.fine");
-					print "</div>";
+						print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+						print $qr_rels->get("ca_objects_x_entities.fine");
+						print "</div>";
 					
-					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
-					print $va_parents[$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true))]." ".$qr_rels->get("ca_objects_x_entities.see_original_link", array('returnAsLink' => true));
-					print "</div>";													
-				print "</div>";
+						print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+						print $va_parents[$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true))]." ".$qr_rels->get("ca_objects_x_entities.see_original_link", array('returnAsLink' => true));
+						print "</div>";													
+					print "</div>";
 				
-				$vn_i++;
-			}
-						
+					$vn_i++;
+				}
+			}		
 					?>
 			<script type="text/javascript">
 //				jQuery(document).ready(function() {
@@ -189,9 +191,5 @@
 			</script>
 		</div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
 </div><!-- end row -->
+</div><!-- end marginRight -->
