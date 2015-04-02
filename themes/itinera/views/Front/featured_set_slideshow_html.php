@@ -56,7 +56,7 @@
 						
 						print "<li class='frontSlide'><div class='frontSlide'>";
 						print "<div style='margin:10px;' class='clearfix'><div class='frontSlideImage'>";
-						print caNavLink($this->request, $vs_image_tag, '', 'Itinera', 'Tours', 'Index', array('id' => $vn_entity_id));
+						print caNavLink($this->request, $vs_image_tag, '', '', 'Travelers', 'Index', array('id' => $vn_entity_id));
 							
 						if (!empty($vs_image_source = $qr_res->get('ca_entities.sourceUrlSet.sourceURL_URL'))) {
 							print "<a href='{$vs_image_source}' class='frontSlideImageSource'>Source</a>";

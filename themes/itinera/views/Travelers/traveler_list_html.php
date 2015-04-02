@@ -50,7 +50,19 @@
 		jQuery("#travelerList").load('<?php print caNavUrl($this->request, '*', '*', 'TravelerIndex'); ?>/l/' + jQuery(this).text());
 	});
 	jQuery(".travelerListEntry").bind('click', function() {
+<?php
+	if ($this->request->getController() == 'Chronology') {
+?>
+		jQuery.get('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/id/' + jQuery(this).data('entity_id'), function(d){ 
+	  		jQuery(d).appendTo("#travelerContent");
+		});
+<?php
+	} else {
+?>
 		jQuery("#travelerContent").load('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/id/' + jQuery(this).data('entity_id'));
+<?php
+	}
+?>
 	});
 	jQuery("#travelerListToggle").bind('click', function() { 
 		jQuery('#travelerListContent:visible').animate({opacity: 'toggle', height: 'toggle'}, 250); 
