@@ -140,6 +140,9 @@
 				</li>	
 				<li <?php print ($this->request->getAction() == 'occurrences' ? 'class="active"': ""); ?>>
 					<?php print caNavLink($this->request, "Exhibitions", "", "", "Browse", "occurrences"); ?>
+				</li>
+				<li <?php print ($this->request->getAction() == 'occurrences' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Finding Aid", "", "FindingAid", "Collection", "Index"); ?>
 				</li>							
 <?php
 						#print $this->render("pageFormat/browseMenu.php");

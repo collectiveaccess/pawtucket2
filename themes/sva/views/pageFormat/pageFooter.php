@@ -28,7 +28,7 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
 		</div><!-- end footer -->
 <?php
 	//

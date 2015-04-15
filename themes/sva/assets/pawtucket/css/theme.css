@@ -18,6 +18,9 @@ a:hover {
 .detail ul li {
 	list-style-type:none;
 }
+.objectContents td{
+	padding:5px 10px 5px 10px; 
+}
 .navbar-default .navbar-brand {
 	font-size:17px;
 	color:#000;
@@ -241,4 +244,24 @@ div.advancedSearchField {
 	background-color:#fff;
 }
 
-
+/* Finding Aid */
+.findingAidScope {
+	font-weight:200; 
+	margin: 0 0 10px 30px;
+	text-indent: 0px;
+	font-size:11px;
+}
+.collHeader a {
+	font-size:12px;
+}
+.findingaid table {
+	margin-left:25px;
+	width:95%;
+}
+.findingaid th {
+	font-size:12px;
+	font-family:'DIN17SBOP-Regular';
+}
+.findingaid td { 
+	font-size:12px;
+}
