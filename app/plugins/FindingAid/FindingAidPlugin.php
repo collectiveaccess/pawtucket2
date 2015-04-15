@@ -57,5 +57,22 @@
 		static public function getRoleActionList() {
 			return array();
 		}
-		# -------------------------------------------------------
+		
+ 		/**
+ 		 *
+ 		 */
+ 		static public function hookCanHandleGetAsLinkTarget(&$pa_params) {
+ 			return (strtolower($pa_params['target']) == 'findingaid');
+ 		}
+ 		# ------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		static public function hookGetAsLink(&$pa_params) {
+ 			
+ 			$pa_params['tag'] = caNavLink($pa_params['request'], $pa_params['content'], '', '*', '*', '*', array('id' => $pa_params['id']));
+ 			
+ 			return $pa_params;
+ 		}
+ 		# ------------------------------------------------------
 	}
