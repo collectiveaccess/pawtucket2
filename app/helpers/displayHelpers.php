@@ -130,7 +130,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 		$va_values = array();
 		foreach($pa_values as $vm_id => $va_value_list_by_locale) {
 			if (sizeof($va_value_list_by_locale) == 1) {		// Don't bother looking if there's just a single value
-				$va_values[$vm_id] = array_shift($va_value_list_by_locale);
+				$va_values[$vm_id] = array_pop($va_value_list_by_locale);
 				continue;
 			}
 			foreach($va_value_list_by_locale as $pm_locale => $vm_value) {
@@ -156,7 +156,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 			
 			if (!isset($va_values[$vm_id])) {
 				// desperation mode: pick an available locale
-				$va_values[$vm_id] = array_shift($va_value_list_by_locale);
+				$va_values[$vm_id] = array_pop($va_value_list_by_locale);
 			}
 		}
 		return ($pa_options['returnList']) ? array_values($va_values) : $va_values;
@@ -1199,7 +1199,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 				//
 				// Output checkout info for ca_objects
 				//
-				if ($t_item->canBeCheckedOut() && ($va_checkout_status = $t_item->getCheckoutStatus(array('returnAsArray' => true)))) {
+				if ((bool)$po_view->request->config->get('enable_client_services') && ((bool)$po_view->request->config->get('enable_client_services_sales') || (bool)$po_view->request->config->get('enable_client_services_library')) && $t_item->canBeCheckedOut() && ($va_checkout_status = $t_item->getCheckoutStatus(array('returnAsArray' => true)))) {
 					$vs_buf .= "<div class='inspectorCheckedOut'>".$va_checkout_status['status_display'];
 					if ($va_checkout_status['user_name']) {
 						$vs_buf .= _t("; checked out by %1", $va_checkout_status['user_name']);
@@ -2123,6 +2123,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 	 *						from which the interstitial was launched.
 	 *		sort = optional list of tag values to sort repeating values within a row template on. The tag must appear in the template. You can specify more than one tag by separating the tags with semicolons.
 	 *		sortDirection = The direction of the sort of repeating values within a row template. May be either ASC (ascending) or DESC (descending). [Default is ASC]
+	 *		linkTarget = Optional target to use when generating <l> tag-based links. By default links point to standard detail pages, but plugins may define linkTargets that point elsewhere.
+	 * 		skipIfExpression = skip the elements in $pa_row_ids for which the given expression does not evaluate true
+	 *
 	 * @return mixed Output of processed templates
 	 */
 	function caProcessTemplateForIDs($ps_template, $pm_tablename_or_num, $pa_row_ids, $pa_options=null) {
@@ -2144,6 +2147,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 		}
 		unset($pa_options['returnAsArray']);
 		if(!isset($pa_options['requireLinkTags'])) { $pa_options['requireLinkTags'] = true; }
+
+		$ps_skip_if_expression = caGetOption('skipIfExpression', $pa_options, false);
 		
 		$va_primary_ids = caGetOption("primaryIDs", $pa_options, null);
 		
@@ -2194,7 +2199,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 				'restrictToTypes' => (string)$o_unit->getAttribute("restricttotypes"),
 				'restrictToRelationshipTypes' => (string)$o_unit->getAttribute("restricttorelationshiptypes"),
 				'sort' => explode(";", $o_unit->getAttribute("sort")),
-				'sortDirection' => (string)$o_unit->getAttribute("sortDirection")
+				'sortDirection' => (string)$o_unit->getAttribute("sortDirection"),
+				'skipIfExpression' => (string)$o_unit->getAttribute("skipIfExpression")
 			);
 			$ps_template = str_ireplace($va_unit['directive'], $vs_unit_tag, $ps_template);
 			$vn_unit_id++;
@@ -2270,11 +2276,28 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 		$va_resolve_links_using_row_ids = array();
 
 		$va_tag_val_list = $va_defined_tag_list = array();
-	
+		$va_expression_vars = array();
+
+		/** @var $qr_res SearchResult */
 		while($qr_res->nextHit()) {
 		
 			$vs_pk_val = $qr_res->get($vs_pk);
 			$vs_template =  $ps_template;
+
+			// check if we skip this row because of skipIfExpression
+			if(strlen($ps_skip_if_expression) > 0) {
+				$va_expression_tags = caGetTemplateTags($ps_skip_if_expression);
+
+				foreach($va_expression_tags as $vs_expression_tag) {
+					if(!isset($va_expression_vars[$vs_expression_tag])) {
+						$va_expression_vars[$vs_expression_tag] = $qr_res->get($vs_expression_tag, array('returnIdno' => true, 'delimiter' => ';'));
+					}
+				}
+
+				if(ExpressionParser::evaluate($ps_skip_if_expression, $va_expression_vars)) {
+					continue;
+				}
+			}
 			
 			// Grab values for codes used in ifdef and ifnotdef directives
 			$va_directive_tag_vals = array();	
@@ -2406,6 +2429,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 				$va_relative_to_tmp = $va_unit['relativeTo'] ? explode(".", $va_unit['relativeTo']) : array($ps_tablename);
 				if (!($t_rel_instance = $o_dm->getInstanceByTableName($va_relative_to_tmp[0], true))) { continue; }
 				$vs_unit_delimiter = caGetOption('delimiter', $va_unit, $vs_delimiter);
+				$vs_unit_skip_if_expression = caGetOption('skipIfExpression', $va_unit, false);
 
 				// additional get options for pulling related records
 				$va_get_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
@@ -2443,8 +2467,22 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 							$va_relative_ids = array($vs_pk_val);
 							break;
 					}
-					
-					$va_tmpl_val = caProcessTemplateForIDs($va_unit['content'], $va_relative_to_tmp[0], $va_relative_ids, array_merge($pa_options, array('sort' => $va_get_options['sort'], 'sortDirection' => $va_get_options['sortDirection'], 'returnAsArray' => true, 'delimiter' => $vs_unit_delimiter, 'resolveLinksUsing' => null)));
+
+					// process template for all records selected by unit tag
+					$va_tmpl_val = caProcessTemplateForIDs(
+						$va_unit['content'], $va_relative_to_tmp[0], $va_relative_ids,
+						array_merge(
+							$pa_options,
+							array(
+								'sort' => $va_get_options['sort'],
+								'sortDirection' => $va_get_options['sortDirection'],
+								'returnAsArray' => true,
+								'delimiter' => $vs_unit_delimiter,
+								'resolveLinksUsing' => null,
+								'skipIfExpression' => $vs_unit_skip_if_expression
+							)
+						)
+					);
 					$va_proc_templates[$vn_i] = str_ireplace($va_unit['tag'], join($vs_unit_delimiter,$va_tmpl_val), $va_proc_templates[$vn_i]);
 				} else { 
 					switch(strtolower($va_relative_to_tmp[1])) {
@@ -2468,12 +2506,24 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 							if (method_exists($t_instance, 'isSelfRelationship') && $t_instance->isSelfRelationship()) {
 								$va_relative_ids = array_values($t_instance->getRelatedIDsForSelfRelationship($va_primary_ids[$t_rel_instance->tableName()], array($vs_pk_val)));
 							} else {
-								$va_relative_ids = array_values($qr_res->get($t_rel_instance->tableName().".".$t_rel_instance->primaryKey(), $va_get_options));
+								$va_relative_ids = array_values($qr_res->get($t_rel_instance->tableName().".".$t_rel_instance->primaryKey(), array_merge($va_get_options, array('returnAsArray' => true))));
 							}
 							
 							break;
 					}
-					$vs_tmpl_val = caProcessTemplateForIDs($va_unit['content'], $va_relative_to_tmp[0], $va_relative_ids, array_merge($pa_options, array('sort' => $va_unit['sort'], 'sortDirection' => $va_unit['sortDirection'], 'delimiter' => $vs_unit_delimiter, 'resolveLinksUsing' => null)));
+					$vs_tmpl_val = caProcessTemplateForIDs(
+						$va_unit['content'], $va_relative_to_tmp[0], $va_relative_ids,
+						array_merge(
+							$pa_options,
+							array(
+								'sort' => $va_unit['sort'],
+								'sortDirection' => $va_unit['sortDirection'],
+								'delimiter' => $vs_unit_delimiter,
+								'resolveLinksUsing' => null,
+								'skipIfExpression' => $vs_unit_skip_if_expression
+							)
+						)
+					);
 				
 					$va_proc_templates[$vn_i] = str_ireplace($va_unit['tag'], $vs_tmpl_val, $va_proc_templates[$vn_i]);
 				}
@@ -2640,7 +2690,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 										break;
 									case 'hierarchy':
 										if (is_array($va_val) && (sizeof($va_val) > 0)) {
-											$va_val = array_reverse($va_val);
+											//$va_val = array_reverse($va_val);
 											if ($vs_hierarchy_name) { array_unshift($va_val, $vs_hierarchy_name); }
 											foreach($va_val as $va_hier) {
 												if (!is_array($va_hier)) { $va_hier = array($va_hier); }
@@ -2948,7 +2998,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 		}
 		
 		// Transform links
-		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $pa_row_ids, null, null, $pa_options);
+		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $pa_row_ids, null, caGetOption('linkTarget', $pa_options, null), $pa_options);
 		
 		// Kill any lingering tags (just in case)
 		foreach($va_proc_templates as $vn_i => $vs_proc_template) {

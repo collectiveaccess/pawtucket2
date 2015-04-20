@@ -878,14 +878,12 @@ function caFileIsIncludable($ps_file) {
 	 * format needed for calculations (eg 54.33)
 	 *
 	 * @param string $ps_value The value to convert
-	 * @param string $locale The locale of the value
+	 * @param string $ps_locale The locale of the value
 	 * @return float The converted value
 	 */
-	function caConvertLocaleSpecificFloat($ps_value, $locale = "en_US") {
-		$vo_locale = new Zend_Locale($locale);
-
+	function caConvertLocaleSpecificFloat($ps_value, $ps_locale = "en_US") {
 		try {
-			return Zend_Locale_Format::getNumber($ps_value, array('locale' => $locale));
+			return Zend_Locale_Format::getNumber($ps_value, array('locale' => $ps_locale));
 		} catch (Zend_Locale_Exception $e) { // happens when you enter 54.33 but 54,33 is expected in the current locale
 			return floatval($ps_value);
 		}
@@ -900,8 +898,6 @@ function caFileIsIncludable($ps_file) {
 	 * @return float The converted value
 	 */
 	function caConvertFloatToLocale($pn_value, $locale = "en_US") {
-		$vo_locale = new Zend_Locale($locale);
-
 		try {
 			return Zend_Locale_Format::toNumber($pn_value, array('locale' => $locale));
 		} catch (Zend_Locale_Exception $e) {
@@ -912,10 +908,17 @@ function caFileIsIncludable($ps_file) {
 	/**
 	 * Get the decimal separator
 	 *
-	 * @param string $locale Which locale is to be used to determine the value
+	 * @param string $locale Which locale is to be used to determine the value.
+	 * 		If not set, fall back to UI locale. If UI locale is not set, fall back to "en_US"
 	 * @return string The separator
 	 */
-	function caGetDecimalSeparator($locale = "en_US") {
+	function caGetDecimalSeparator($locale = null) {
+		if(!$locale) {
+			global $g_ui_locale;
+			$locale = $g_ui_locale;
+			if(!$locale) { $locale = 'en_US'; }
+		}
+
 		$va_symbols = Zend_Locale_Data::getList($locale,'symbols');
 		if(isset($va_symbols['decimal'])){
 			return $va_symbols['decimal'];
@@ -2277,26 +2280,6 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * Generate a GUID 
-	 *
-	 * @return string
-	 */
-	function caGenerateGUID(){
-		if (function_exists("openssl_random_pseudo_bytes")) {
-			$vs_data = openssl_random_pseudo_bytes(16);
-		} else {
-			$vs_data = '';
-			for($i=0; $i < 16; $i++) {
-				$vs_data .= chr(mt_rand(0, 255));
-			}
-		}
-		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
-		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
-	}
-	# ----------------------------------------
-	/**
  	 * Query external web service and return whatever body it returns as string
  	 * @param string $ps_url URL of the web service to query
 	 * @return string
@@ -2362,12 +2345,12 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Parse generic dimension (weight or length)
+	 * @param string $ps_value value to parse
+	 * @param null|array $pa_options options array
+	 * @return bool|null|Zend_Measure_Length|Zend_Measure_Weight
 	 */
 	function caParseDimension($ps_value, $pa_options=null) {
-		global $g_ui_locale;
-		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
-		
 		try {
 			if ($vo_length = caParseLengthDimension($ps_value, $pa_options)) {
 				return $vo_length;
@@ -2388,7 +2371,9 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Get length unit type as Zend constant, e.g. 'ft.' = Zend_Measure_Length::FEET
+	 * @param string $ps_unit
+	 * @return null|string
 	 */
 	function caGetLengthUnitType($ps_unit) {
 		switch($ps_unit) {
@@ -2457,12 +2442,16 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Parse length dimension
+	 * @param string $ps_value
+	 * @param null|array $pa_options
+	 * @return bool|null|Zend_Measure_Length
+	 * @throws Exception
 	 */
 	function caParseLengthDimension($ps_value, $pa_options=null) {
 		global $g_ui_locale;
 		$vs_locale = caGetOption('locale', $pa_options, $g_ui_locale);
-	
+
 		$pa_values = array(caConvertFractionalNumberToDecimal(trim($ps_value), $vs_locale));
 		
 		$vo_parsed_measurement = null;
@@ -2512,7 +2501,11 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Parse weight dimension
+	 * @param string $ps_value value to parse
+	 * @param null|array $pa_options options array
+	 * @return bool|null|Zend_Measure_Weight
+	 * @throws Exception
 	 */
 	function caParseWeightDimension($ps_value, $pa_options=null) {
 		global $g_ui_locale;
@@ -2526,7 +2519,6 @@ function caFileIsIncludable($ps_file) {
 			if (preg_match("!^([\d\.\,/ ]+)[ ]*([^\d ]+)!", $vs_expression, $va_matches)) {
 				$vs_value = trim($va_matches[1]);
 				$va_values = explode(" ", $vs_value);
-				$vs_unit_expression = strtolower(trim($va_matches[2]));
 				if ($vs_expression = trim(str_replace($va_matches[0], '', $vs_expression))) {
 					array_unshift($pa_values, $vs_expression);
 				}
@@ -2595,9 +2587,8 @@ function caFileIsIncludable($ps_file) {
 					throw new Exception(_t('Not a valid measurement'));
 				}
 				if ($o_tmp->getValue() < 0) {
-					// length can't be negative in our universe
+					// weight can't be negative in our universe
 					throw new Exception(_t('Must not be less than zero'));
-					return false;
 				}
 				
 				if ($vo_parsed_measurement) {
@@ -2613,6 +2604,24 @@ function caFileIsIncludable($ps_file) {
 		}
 		
 		return $vo_parsed_measurement;
+	}
+	# ----------------------------------------
+	/**
+	 * Generate a GUID 
+	 */
+	function caGenerateGUID(){
+		if (function_exists("openssl_random_pseudo_bytes")) {
+			$vs_data = openssl_random_pseudo_bytes(16);
+		} else {
+			$vs_data = '';
+			for($i=0; $i < 16; $i++) {
+				$vs_data .= chr(mt_rand(0, 255));
+			}
+		}
+		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
+		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
 	}
 	# ----------------------------------------
 	/**

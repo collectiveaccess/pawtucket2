@@ -371,13 +371,19 @@
 		$pb_prevent_duplicate_submits = (isset($pa_options['preventDuplicateSubmits']) && $pa_options['preventDuplicateSubmits']) ? true : false;
 		
 		$vs_graphics_path = (isset($pa_options['graphicsPath']) && $pa_options['graphicsPath']) ? $pa_options['graphicsPath'] : $po_request->getThemeUrlPath()."/graphics";
-		
+
 		$vs_classname = (!$pb_no_background) ? 'form-button' : '';
+		$vs_id = (string) time();
+
+		$vs_extra = '';
+		if(caGetOption('isSaveAndReturn', $pa_options)) {
+			$vs_extra = "jQuery(\"#isSaveAndReturn\").val(\"1\");";
+		}
 		
 		if ($pb_prevent_duplicate_submits) {
-			$vs_button = "<a href='#' onclick='jQuery(\".caSubmit{$ps_id}\").fadeTo(\"fast\", 0.5).attr(\"onclick\", null); jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname} caSubmit{$ps_id}'>";
+			$vs_button = "<a href='#' onclick='$vs_extra jQuery(\".caSubmit{$ps_id}\").fadeTo(\"fast\", 0.5).attr(\"onclick\", null); jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname} caSubmit{$ps_id} {$vs_id}'>";
 		} else {
-			$vs_button = "<a href='#' onclick='jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname}'>";		
+			$vs_button = "<a href='#' onclick='$vs_extra jQuery(\"#{$ps_id}\").submit();' class='{$vs_classname} {$vs_id}'>";
 		}
 		
 		if (!$pb_no_background) { 
@@ -414,7 +420,7 @@
 		// We don't actually display this button or use it to submit the form; the form-button output above does that.
 		// Rather, this <input> tag is only included to force browsers to support submit-on-return-key
 		$vs_button .= "<div style='position: absolute; top: 0px; left:-5000px;'><input type='submit'/></div>";
-		
+
 		return $vs_button;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -437,6 +443,7 @@
 		$vs_classname = (!$pb_no_background) ? 'form-button' : '';
 		
 		$va_attr = array();
+		if ($ps_id) { $va_attr[] = "id='{$ps_id}'"; }
 		if (is_array($pa_attributes)) {
 			foreach($pa_attributes as $vs_name => $vs_value) {
 				$va_attr[] = $vs_name."='".($vs_value)."'";
@@ -892,7 +899,7 @@
 				return null;
 				break;
 		}
-		
+
 		switch($vs_table) {
 			case 'ca_relationship_types':
 				$vs_action = isset($pa_options['action']) ? $pa_options['action'] : (($po_request->isLoggedIn() && $po_request->user->canDoAction('can_configure_relationship_types')) ? 'Edit' : 'Summary'); 
@@ -900,7 +907,11 @@
 			default:
 				if(isset($pa_options['action'])){
 					$vs_action = $pa_options['action'];
-				} elseif($po_request->isLoggedIn() && $po_request->user->canAccess($vs_module,$vs_controller,"Edit",array($vs_pk => $pn_id)) && !(bool)$po_request->config->get($vs_table.'_editor_defaults_to_summary_view')) {
+				} elseif(
+					$po_request->isLoggedIn() &&
+					$po_request->user->canAccess($vs_module,$vs_controller,"Edit",array($vs_pk => $pn_id)) &&
+					!((bool)$po_request->config->get($vs_table.'_editor_defaults_to_summary_view') && $pn_id) // when the id is null/0, we go to the Edit action, even when *_editor_defaults_to_summary_view is set
+				) {
 					$vs_action = 'Edit';
 				} else {
 					$vs_action = 'Summary';
@@ -955,8 +966,7 @@
 		$vs_pk = $t_table->primaryKey();
 		$vs_table = $ps_table;
 		
-		$vs_module = '';
-		$vs_controller = 'Detail';
+		$vb_id_exists = null;
 		
 		if(isset($pa_options['action'])){
 			$vs_action = $pa_options['action'];
@@ -978,7 +988,7 @@
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {
 			// Make sure record link points to exists
-			if (!$vb_id_exists && ($pn_id > 0) && !$t_table->load($pn_id)) {
+			if (($pn_id > 0) && !$t_table->load($pn_id)) {
 				return null;
 			}
 		}
@@ -994,7 +1004,7 @@
 			);
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
-			//$pa_additional_parameters = array_merge(array('id' => $pn_id), $pa_additional_parameters);
+			$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
 			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
 		}
 	}
