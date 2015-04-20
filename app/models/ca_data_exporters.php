@@ -559,6 +559,28 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Get name for exporter target table
+	 * @return null|string
+	 */
+	public function getTargetTableName() {
+		if(!$this->getPrimaryKey()) { return null; }
+
+		$o_dm = Datamodel::load();
+		return $o_dm->getTableName($this->get('table_num'));
+	}
+	# ------------------------------------------------------
+	/**
+	 * Get instance for exporter target table
+	 * @return BaseModel|null
+	 */
+	public function getTargetTableInstance() {
+		if(!$this->getPrimaryKey()) { return null; }
+
+		$o_dm = Datamodel::load();
+		return $o_dm->getTableInstance($this->get('table_num'));
+	}
+	# ------------------------------------------------------
+	/**
 	 * Get file extension for downloadable files, depending on the format
 	 */
 	public function getFileExtension(){
@@ -1483,6 +1505,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 
 			$va_restrict_to_types = $t_exporter_item->getSetting('restrictToTypes');
 			$va_restrict_to_rel_types = $t_exporter_item->getSetting('restrictToRelationshipTypes');
+			$va_restrict_to_bundle_vals = $t_exporter_item->getSetting('restrictToBundleValues');
 			$va_check_access = $t_exporter_item->getSetting('checkAccess');
 			$va_sort = $t_exporter_item->getSetting('sort');
 
@@ -1548,10 +1571,10 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					break;
 				default:
 					if($vn_new_table_num) {
-
 						$va_options = array(
 							'restrictToTypes' => $va_restrict_to_types,
 							'restrictToRelationshipTypes' => $va_restrict_to_rel_types,
+							'restrictToBundleValues' => $va_restrict_to_bundle_vals,
 							'checkAccess' => $va_check_access,
 							'sort' => $va_sort,
 						);
@@ -1689,22 +1712,47 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 
 			$o_log->logInfo(_t("Processing mapping in attribute mode for attribute_id = %1.", $vn_attribute_id));
 
-			$t_attr = new ca_attributes($vn_attribute_id);
-			$va_values = $t_attr->getAttributeValues();
+			if($vs_source) { // trying to find the source only makes sense if the source is set
+				$t_attr = new ca_attributes($vn_attribute_id);
+				$va_values = $t_attr->getAttributeValues();
 
-			$o_log->logDebug(_t("Trying to find code %1 in value array for the current attribute.", $vs_source));
-			$o_log->logDebug(_t("Value array is %1.", $va_values));
-
-			foreach($va_values as $vo_val) {
-				if($vo_val->getElementCode() == $vs_source) {
-
-					$o_log->logDebug(_t("Found value %1.", $vo_val->getDisplayValue()));
-
-					$va_item_info[] = array(
-						'text' => $vo_val->getDisplayValue(),
-						'element' => $vs_element,
-					);
+				$va_src_tmp = explode('.', $vs_source);
+				if(sizeof($va_src_tmp) == 2) {
+					$o_dm = Datamodel::load();
+					if($t_attr->get('table_num') == $o_dm->getTableNum($va_src_tmp[0])) {
+						$vs_source = $va_src_tmp[1];
+					}
 				}
+
+				$o_log->logDebug(_t("Trying to find code %1 in value array for the current attribute.", $vs_source));
+				$o_log->logDebug(_t("Value array is %1.", print_r($va_values, true)));
+
+				foreach($va_values as $vo_val) {
+					$va_display_val_options = array();
+					if($vo_val instanceof ListAttributeValue) {
+						$t_element = ca_metadata_elements::getInstance($t_attr->get('element_id'));
+						$va_display_val_options = array('list_id' => $t_element->get('list_id'));
+
+						if($t_exporter_item->getSetting('returnIdno')) {
+							$va_display_val_options['returnIdno'] = true;
+						}
+					}
+
+					$o_log->logDebug(_t("Trying to match code from array %1 and the code we're looking for %2.", $vo_val->getElementCode(), $vs_source));
+					if($vo_val->getElementCode() == $vs_source) {
+
+						$o_log->logDebug(_t("Found value %1.", $vo_val->getDisplayValue($va_display_val_options)));
+
+						$va_item_info[] = array(
+							'text' => $vo_val->getDisplayValue($va_display_val_options),
+							'element' => $vs_element,
+						);
+					}
+				}
+			} else { // no source in attribute context probably means this is some form of wrapper, e.g. a MARC field
+				$va_item_info[] = array(
+					'element' => $vs_element,
+				);
 			}
 		} else if($vs_source) {
 			$o_log->logDebug(_t("Source for current mapping is %1", $vs_source));
@@ -1740,7 +1788,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 						'text' => $vs_get,
 						'element' => $vs_element,
 					);
-				} else { // if user wants current element repeated in case of multiple returned values, go ahead and do that
+				} else { // user wants current element repeated in case of multiple returned values
 					$va_get_options['delimiter'] = ';#;';
 					$vs_values = $t_instance->get($vs_source,$va_get_options);
 
