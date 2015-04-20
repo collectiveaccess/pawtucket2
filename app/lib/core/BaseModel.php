@@ -309,12 +309,14 @@ class BaseModel extends BaseObject {
 	 * @access private
 	 */
 	private $field_conflicts;
-
-
-	/** 
-	 * Single instance of search indexer used by all models
+	
+	
+	/**
+	 * Search indexer instance (one per model instance)
+	 *
+	 * @access private
 	 */
-	static public $search_indexer;
+	private $search_indexer;
 	
 	/**
 	 * Single instance of HTML Purifier used by all models
@@ -3054,12 +3056,12 @@ class BaseModel extends BaseObject {
 	 * @return SearchIndexer
 	 */
 	public function getSearchIndexer($ps_engine=null) {
-		if (!BaseModel::$search_indexer) {
-			BaseModel::$search_indexer = new SearchIndexer($this->getDb(), $ps_engine);
+		if (!$this->search_indexer) {
+			$this->search_indexer = new SearchIndexer($this->getDb(), $ps_engine);
 		} else {
-			BaseModel::$search_indexer->setDb($this->getDb());
+			$this->search_indexer->setDb($this->getDb());
 		}
-		return BaseModel::$search_indexer;
+		return $this->search_indexer;
 	}
 
 	/**
@@ -8202,15 +8204,28 @@ $pa_options["display_form_field_tips"] = true;
 							$t_list = new ca_lists();
 							$va_list_attrs = array( 'id' => $pa_options['id']);
 							//if ($vn_max_pixel_width) { $va_list_attrs['style'] = $vs_width_style; }
-							
+
+							if(method_exists($this, 'getTypeFieldName') && ($ps_field == $this->getTypeFieldName())) {
+								$va_limit_list = caGetTypeListForUser($this->tableName(), array('access' => __CA_BUNDLE_ACCESS_EDIT__));
+							}
 							
 							// NOTE: "raw" field value (value passed into method, before the model default value is applied) is used so as to allow the list default to be used if needed
-							$vs_element = $t_list->getListAsHTMLFormElement($vs_list_code, $pa_options["name"].$vs_multiple_name_extension, $va_list_attrs, array('value' => $vm_raw_field_value, 'key' => $vs_key, 'nullOption' => $vs_null_option, 'readonly' => $pa_options['readonly']));
+							$vs_element = $t_list->getListAsHTMLFormElement(
+								$vs_list_code, $pa_options["name"].$vs_multiple_name_extension, $va_list_attrs,
+								array(
+									'value' => $vm_raw_field_value,
+									'key' => $vs_key,
+									'nullOption' => $vs_null_option,
+									'readonly' => $pa_options['readonly'],
+									'restrictTypeListForTable' => $this->tableName(),
+									'limitToItemsWithID' => $va_limit_list ? $va_limit_list : null,
+								)
+							);
 							
 							if (isset($pa_options['hide_select_if_no_options']) && $pa_options['hide_select_if_no_options'] && (!$vs_element)) {
 								$vs_element = "";
 								$ps_format = '^ERRORS^ELEMENT';
-							} 
+							}
 						} else {
 							// -----
 							// from related table
@@ -9434,11 +9449,10 @@ $pa_options["display_form_field_tips"] = true;
 		$vn_rel_table_num = $t_item_rel->tableNum();
 		
 		// Reindex modified relationships
-		if (!BaseModel::$search_indexer) {
-			BaseModel::$search_indexer = new SearchIndexer($this->getDb());
-		}
+		
+		$o_indexer = $this->getSearchIndexer();
 		foreach($va_to_reindex_relations as $vn_relation_id => $va_row) {
-			BaseModel::$search_indexer->indexRow($vn_rel_table_num, $vn_relation_id, $va_row, false, null, array($vs_item_pk => true));
+			$o_indexer->indexRow($vn_rel_table_num, $vn_relation_id, $va_row, false, null, array($vs_item_pk => true));
 		}
 		
 		return sizeof($va_to_reindex_relations);
@@ -9539,11 +9553,9 @@ $pa_options["display_form_field_tips"] = true;
 		$vn_rel_table_num = $t_item_rel->tableNum();
 		
 		// Reindex modified relationships
-		if (!BaseModel::$search_indexer) {
-			BaseModel::$search_indexer = new SearchIndexer($this->getDb());
-		}
+		$o_indexer = $this->getSearchIndexer();
 		foreach($va_new_relations as $vn_relation_id => $va_row) {
-			BaseModel::$search_indexer->indexRow($vn_rel_table_num, $vn_relation_id, $va_row, false, null, array($vs_item_pk => true));
+			$o_indexer->indexRow($vn_rel_table_num, $vn_relation_id, $va_row, false, null, array($vs_item_pk => true));
 		}
 		
 		return sizeof($va_new_relations);
