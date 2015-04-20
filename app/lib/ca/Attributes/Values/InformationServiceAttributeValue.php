@@ -190,8 +190,6 @@
  		 *
  		 */
  		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
- 			$o_config = Configuration::load();
- 			
  			$ps_value = trim(preg_replace("![\t\n\r]+!", ' ', $ps_value));
  			
  			//if (!trim($ps_value)) {
@@ -228,8 +226,6 @@
  		 * @return string
  		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
- 			$o_config = Configuration::load();
- 			
  			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight'));
  			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : 'lookupBg');
  			
