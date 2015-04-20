@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/core/Plugins/InformationService/BaseInformationServicePlugin.php : base class for geographic map plugins
+ * app/lib/core/Plugins/PDFRenderer/BasePDFRendererPlugin.php : base class for PDFRenderer plugins
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,7 +24,7 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Geographic
+ * @subpackage Print
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
@@ -35,35 +35,35 @@
     */ 
     
 include_once(__CA_LIB_DIR__."/core/Plugins/WLPlug.php");
-include_once(__CA_LIB_DIR__."/core/Plugins/IWLPlugInformationService.php");
+include_once(__CA_LIB_DIR__."/core/Plugins/IWLPlugPDFRenderer.php");
 include_once(__CA_LIB_DIR__."/core/Configuration.php");
+include_once(__CA_LIB_DIR__."/core/Print/PDFRenderer.php");
 
-abstract class BaseInformationServicePlugin Extends WLPlug {
-	// properties for this plugin instance
+abstract class BasePDFRendererPlugin Extends WLPlug {
+	# ------------------------------------------------
+	/**
+	 * properties for this plugin instance
+	 */
 	protected $properties = array(
 		
 	);
 	
-	// app config
+	/**
+	 * app config
+	 */
 	protected $opo_config;
 	
-	
-
-	// plugin info
+	/**
+	 * plugin info
+	 */
 	protected $info = array(
-		"NAME" => "InformationService",
+		"NAME" => "?",
 		"PROPERTIES" => array(
-			'id' => 'W'
+			"CODE" => "W",
 		)
 	);
 	
-	# ------------------------------------------------
-	/**
-	 *
-	 */
-	public function init() {
 	
-	}
 	# ------------------------------------------------
 	/**
 	 *
@@ -73,7 +73,7 @@ abstract class BaseInformationServicePlugin Extends WLPlug {
 	}
 	# ------------------------------------------------
 	/**
-	 *
+	 * Initialize plugin and create new instance
 	 */
 	public function register() {
 		$this->opo_config = Configuration::load();
@@ -113,7 +113,12 @@ abstract class BaseInformationServicePlugin Extends WLPlug {
 	}
 	# ----------------------------------------------------------
 	/**
+	 * Set plugin property
 	 *
+	 * @param string $property
+	 * @param mixed $value
+	 *
+	 * @return bool True on success, false on failure
 	 */
 	public function set($property, $value) {
 		if ($this->info["PROPERTIES"][$property]) {
@@ -129,35 +134,28 @@ abstract class BaseInformationServicePlugin Extends WLPlug {
 			}
 		} else {
 			# invalid property
-			$this->postError(1650, _t("Can't set property %1", $property), "WLPlugInformationServiceGoogleMaps->set()");
-			return '';
+			$this->postError(1650, _t("Can't set property %1", $property), "BasePDFRendererPlugin->set()");
+			return false;
 		}
 		return true;
 	}
-	# -------------------------------------------------------
+	# ------------------------------------------------
 	/**
-	 * 
-	 * 
-	 * @return string
+	 * Initialize plugin values (stub)
+	 *
+	 * @return bool True on success, false on failure
 	 */
-	public function getDisplayName() {
-		return $this->info['NAME'];
-	}
-	# -------------------------------------------------------
-	/**
-	 * 
-	 * 
-	 * @return string
-	 */
-	public function getDescription() {
-		return $this->description;
+	public function init() {
+		return true;
 	}
 	# ------------------------------------------------
 	/**
+	 * Clean up on deallocation (stub)
 	 *
+	 * @return bool True on success, false on failure
 	 */
 	public function cleanup() {
-		return;
+		return true;
 	}
 	# ------------------------------------------------
 }
