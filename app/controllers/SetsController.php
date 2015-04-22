@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,6 +35,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
+	require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
  
  	class SetsController extends FindController {
  		# -------------------------------------------------------
@@ -325,6 +326,7 @@
  		# ------------------------------------------------------
  		function saveSetInfo() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -355,7 +357,6 @@
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', 1);
-				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				if($t_set->get("set_id")){
 					# --- edit/add description
 					$t_set->replaceAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
@@ -512,6 +513,7 @@
  			
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  			$o_purifier = new HTMLPurifier();
+ 			
  			$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
  			# --- ps_user can be list of emails separated by comma
  			$va_users = explode(", ", $ps_user);
@@ -916,6 +918,8 @@
  				}
  			}else{
  				$t_set = new ca_sets();
+ 				$t_set->purify(true);
+ 				
 				# --- set name - if not sent, make a decent default
 				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
@@ -926,7 +930,10 @@
 	
 				$t_list = new ca_lists();
 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				
 				$t_object = new ca_objects();
+				$t_object->purify(true);
+				
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', 1);
@@ -1055,13 +1062,13 @@
  		 * Uses _getSetID() to figure out the ID of the current set, then returns a ca_sets object for it
  		 * and also sets the 'current_set_id' user variable
  		 */
- 		private function _getSet($vs_access_level = __CA_SET_EDIT_ACCESS__) {
+ 		private function _getSet($pn_access_level=__CA_SET_EDIT_ACCESS__) {
  			$t_set = new ca_sets();
  			$vn_set_id = $this->_getSetID();
  			if($vn_set_id){
 				$t_set->load($vn_set_id);
 				
-				if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $vs_access_level))) {
+				if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $pn_access_level))) {
 					$this->request->user->setVar('current_set_id', $vn_set_id);
 					# --- pass the access level the user has to the set - needed to display the proper controls in views
 					$vb_write_access = false;
@@ -1092,4 +1099,3 @@
  		}
  		# -------------------------------------------------------
  	}
- ?>
