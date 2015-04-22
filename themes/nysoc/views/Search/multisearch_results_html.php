@@ -1,6 +1,11 @@
-<div class='marginLeft'>
-</div>
-<div class='marginRight'>
+<div class="page">
+	<div class="wrapper">
+		<div class="sidebar">
+
+		</div>
+		<div class="content-wrapper">
+      		<div class="content-inner">
+				<div class="container">
 <?php
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
@@ -43,3 +48,9 @@
 	TooltipManager::add('#Block', 'Type of record');
 ?>
 </div>
+
+				</div><!-- end container -->
+			</div><!--end content-inner -->
+		</div><!--end content-wrapper-->
+	</div><!--end wrapper-->
+</div><!--end page-->

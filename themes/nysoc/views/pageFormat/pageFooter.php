@@ -46,12 +46,7 @@
 					<div>11:00 AM - 5:00 PM</div>
 				</div>
 				<div id="libInfo" class="col4">
-					<h3>The Library Will Be Closed</h3>
 					<div>
-						<div>
-							<span style="line-height: 1.538em;"><span style="line-height: 1.538em;">Sunday, April 5 for Easter.</span></span>
-						</div>
-						<div>&nbsp;</div>
 						<div><p><span style="line-height: 1.538em;">All areas except Circulation close 15 minutes prior to building closing time.</span></p></div>
 					</div>
 				</div>
