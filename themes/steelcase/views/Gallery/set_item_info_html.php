@@ -42,21 +42,49 @@
 ?>
 		<HR/>
 <?php
+		$va_classification_links = array();
 		$t_list_item = new ca_list_items();
-		if(trim($t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Classification</H6>";
-			$t_list_item->load($t_object->get("ca_objects.decorative_types"));
-			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
+		$va_decorative_types = $t_object->get("ca_objects.decorative_types", array("returnAsArray" => true));
+		if(sizeof($va_decorative_types)){
+			foreach($va_decorative_types as $va_decorative_type){
+				$vn_decorative_type = $va_decorative_type["decorative_types"];
+				$t_list_item->load($vn_decorative_type);
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $vn_decorative_type));
+				}
+			}
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
-		if(trim($t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Classification</H6>";
-			$t_list_item->load($t_object->get("ca_objects.documentation_types"));
-			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
+		$va_documentation_types = $t_object->get("ca_objects.documentation_types", array("returnAsArray" => true));
+		if(sizeof($va_documentation_types)){
+			foreach($va_documentation_types as $va_documentation_type){
+				$vn_documentation_type = $va_documentation_type["documentation_types"];
+				$t_list_item->load($vn_documentation_type);
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $vn_documentation_type));
+				}
+			}
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
-		if(trim($t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)))){
-			print "<H6>Classification</H6>";
-			$t_list_item->load($t_object->get("ca_objects.fine_art_types"));
-			print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
+		$va_fine_art_types = $t_object->get("ca_objects.fine_art_types", array("returnAsArray" => true));
+		if(sizeof($va_fine_art_types)){
+			foreach($va_fine_art_types as $va_fine_art_type){
+				$vn_fine_art_type = $va_fine_art_type["fine_art_types"];
+				$t_list_item->load($vn_fine_art_type);
+				if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+					$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $vn_fine_art_type));
+				}
+			}
+			if(sizeof($va_classification_links)){
+				print "<H6>Classification</H6>";
+				print join(", ", $va_classification_links);
+			}
 		}
 ?>
 		{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
@@ -114,7 +142,7 @@
 			$va_materials_display = array();
 			foreach($va_materials as $vn_material_id => $va_material){
 				$vs_material = $t_lists->getItemFromListForDisplayByItemID("material", $va_material["material"]);
-				if(trim($vs_materials)){
+				if(trim($vs_material)){
 					$va_materials_display[] = caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
 				}
 			}
@@ -222,6 +250,79 @@
 		if($vs_location_display || $t_object->get("ca_objects.idno") || trim($t_object->get("ca_objects.credit_line"))){
 			print "<HR/>";
 		}
+		#
+		# User-generated comments, tags and ratings
+		#
+		$va_user_comments = $t_object->getComments(null, true);
+		$va_comments = array();
+		if (is_array($va_user_comments)) {
+			foreach($va_user_comments as $va_user_comment){
+				if($va_user_comment["comment"] || $va_user_comment["media1"] || $va_user_comment["media2"] || $va_user_comment["media3"] || $va_user_comment["media4"]){
+					# TODO: format date based on locale
+					$va_user_comment["date"] = date("n/j/Y", $va_user_comment["created_on"]);
+					
+					# -- get name of commenter
+					if($va_user_comment["user_id"]){
+						$t_user = new ca_users($va_user_comment["user_id"]);
+						$va_user_comment["author"] = $t_user->getName();
+					}elseif($va_user_comment["name"]){
+						$va_user_comment["author"] = $va_user_comment["name"];
+					}
+					$va_comments[] = $va_user_comment;
+				}
+			}
+		}
+		$va_user_tags = $t_object->getTags(null, true);
+		$va_tags = array();
+		
+		if (is_array($va_user_tags)) {
+			foreach($va_user_tags as $va_user_tag){
+				if(!in_array($va_user_tag["tag"], $va_tags)){
+					$va_tags[] = $va_user_tag["tag"];
+				}
+			}
+		}
+?>
+<div id="detailTools">
+	<div class="detailTool"><?php print caDetailLink($this->request, "<span class='glyphicon glyphicon-plus'></span>"._t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); ?></div>
+	<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+	<div id='detailComments'><?php #print caDetailItemComments($this->request, $t_object->getPrimaryKey(), $t_object, $va_comments, $va_tags); ?>
+	
+<?php
+		if(is_array($va_comments) && (sizeof($va_comments) > 0)){
+			foreach($va_comments as $va_comment){
+				print "<blockquote>";
+				if($va_comment["media1"]){
+					print '<div class="pull-right" id="commentMedia'.$va_comment["comment_id"].'">';
+					print $va_comment["media1"]["tiny"]["TAG"];						
+					print "</div><!-- end pullright commentMedia -->\n";
+					TooltipManager::add(
+						"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
+					);
+				}
+				if($va_comment["comment"]){
+					print $va_comment["comment"];
+				}				
+				print "<small>".$va_comment["author"].", ".$va_comment["date"]."</small></blockquote>";
+			}
+		}
+		if(is_array($va_tags) && sizeof($va_tags) > 0){
+			$va_tag_links = array();
+			foreach($va_tags as $vs_tag){
+				$va_tag_links[] = caNavLink($this->request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => $vs_tag));
+			}
+			print "<h2>"._t("Tags")."</h2>\n
+				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
+		}		
+		if($this->request->isLoggedIn()){
+			print "<br/><button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey(), "set_item_id" => $this->getVar("item_id")))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+		}else{
+			print "<br/><button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
+		}
 
 ?>
-<?php print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); ?>
+	
+	
+	
+	</div><!-- end itemComments -->
+</div><!-- end detailTools -->

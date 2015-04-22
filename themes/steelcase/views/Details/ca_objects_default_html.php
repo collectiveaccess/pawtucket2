@@ -65,21 +65,49 @@
 ?>
 				<HR/>
 <?php
+				$va_classification_links = array();
 				$t_list_item = new ca_list_items();
-				if(trim($t_object->get("ca_objects.decorative_types", array("convertCodesToDisplayText" => true)))){
-					print "<H6>Classification</H6>";
-					$t_list_item->load($t_object->get("ca_objects.decorative_types"));
-					print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $t_object->get("ca_objects.decorative_types")));
+				$va_decorative_types = $t_object->get("ca_objects.decorative_types", array("returnAsArray" => true));
+				if(sizeof($va_decorative_types)){
+					foreach($va_decorative_types as $va_decorative_type){
+						$vn_decorative_type = $va_decorative_type["decorative_types"];
+						$t_list_item->load($vn_decorative_type);
+						if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+							$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "decorative_types_facet", "id" => $vn_decorative_type));
+						}
+					}
+					if(sizeof($va_classification_links)){
+						print "<H6>Classification</H6>";
+						print join(", ", $va_classification_links);
+					}
 				}
-				if(trim($t_object->get("ca_objects.documentation_types", array("convertCodesToDisplayText" => true)))){
-					print "<H6>Classification</H6>";
-					$t_list_item->load($t_object->get("ca_objects.documentation_types"));
-					print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $t_object->get("ca_objects.documentation_types")));
+				$va_documentation_types = $t_object->get("ca_objects.documentation_types", array("returnAsArray" => true));
+				if(sizeof($va_documentation_types)){
+					foreach($va_documentation_types as $va_documentation_type){
+						$vn_documentation_type = $va_documentation_type["documentation_types"];
+						$t_list_item->load($vn_documentation_type);
+						if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+							$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "documentation_types_facet", "id" => $vn_documentation_type));
+						}
+					}
+					if(sizeof($va_classification_links)){
+						print "<H6>Classification</H6>";
+						print join(", ", $va_classification_links);
+					}
 				}
-				if(trim($t_object->get("ca_objects.fine_art_types", array("convertCodesToDisplayText" => true)))){
-					print "<H6>Classification</H6>";
-					$t_list_item->load($t_object->get("ca_objects.fine_art_types"));
-					print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $t_object->get("ca_objects.fine_art_types")));
+				$va_fine_art_types = $t_object->get("ca_objects.fine_art_types", array("returnAsArray" => true));
+				if(sizeof($va_fine_art_types)){
+					foreach($va_fine_art_types as $va_fine_art_type){
+						$vn_fine_art_type = $va_fine_art_type["fine_art_types"];
+						$t_list_item->load($vn_fine_art_type);
+						if(trim($t_list_item->get("ca_list_item_labels.name_singular"))){
+							$va_classification_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Objects", array("facet" => "fine_art_types_facet", "id" => $vn_fine_art_type));
+						}
+					}
+					if(sizeof($va_classification_links)){
+						print "<H6>Classification</H6>";
+						print join(", ", $va_classification_links);
+					}
 				}
 ?>
 				{{{<ifdef code="ca_objects.dimensions_frame.display_dimensions_frame"><H6>Framed dimensions</H6>^ca_objects.dimensions_frame.display_dimensions_frame</ifdef>}}}
@@ -137,7 +165,7 @@
 					$va_materials_display = array();
 					foreach($va_materials as $vn_material_id => $va_material){
 						$vs_material = $t_lists->getItemFromListForDisplayByItemID("material", $va_material["material"]);
-						if(trim($vs_materials)){
+						if(trim($vs_material)){
 							$va_materials_display[] = caNavLink($this->request, $vs_material, "", "", "Browse", "Objects", array("facet" => "material_facet", "id" => $va_material["material"]));
 						}
 					}

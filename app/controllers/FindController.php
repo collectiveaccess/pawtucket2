@@ -68,11 +68,14 @@
  			$ps_cache_key = $this->request->getParameter('key', pString);
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
  			
- 			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
- 				// invalid browse type – throw error
- 				die("Invalid browse type");
- 			} 			
- 			
+ 			if($ps_browse_type == "caLightbox"){
+ 				$va_browse_info['table'] = 'ca_objects';
+ 			}else{
+				if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
+					// invalid browse type – throw error
+					die("Invalid browse type");
+				} 			
+			} 			
  			$this->view->setVar("facet_name", $ps_facet_name);
  			$this->view->setVar("key", $ps_cache_key);
  			$this->view->setVar("browse_type", $ps_browse_type);

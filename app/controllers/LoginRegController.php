@@ -116,10 +116,11 @@ class LoginRegController extends ActionController {
 		}
 		MetaTagManager::setWindowTitle(_t("User Profile"));
 		$t_user = $this->request->user;
+		$t_user->purify(true);
 		
-		$ps_email = strip_tags($this->request->getParameter("email", pString));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
 		$ps_password = $this->request->getParameter("password", pString);
 		$ps_password2 = $this->request->getParameter("password2", pString);
 		$ps_security = $this->request->getParameter("security", pString);
@@ -264,11 +265,12 @@ class LoginRegController extends ActionController {
 		$this->request->deauthenticate();
 
 		$t_user = new ca_users();
+		$t_user->purify(true);
 
 		# --- process incoming registration attempt
-		$ps_email = strip_tags($this->request->getParameter("email", pString));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
 		$ps_password = $this->request->getParameter("password", pString);
 		$ps_password2 = $this->request->getParameter("password2", pString);
 		$ps_security = $this->request->getParameter("security", pString);
@@ -474,11 +476,12 @@ class LoginRegController extends ActionController {
 					$this->response->setRedirect($vs_url);
 				}
 			}
-		}else{
+		}
+
+		if(sizeof($va_errors) > 0) {
 			$this->view->setVar('errors', $va_errors);
 			$this->registerForm($t_user);
 		}
-
 	}
 	# -------------------------------------------------------
 	function joinGroup() {
@@ -597,6 +600,7 @@ class LoginRegController extends ActionController {
 						break;
 					}
 					$t_user = new ca_users();
+					$t_user->purify(true);
 					$t_user->load($vs_user_id);
 					# verify user exists with this e-mail address
 					if ($t_user->getPrimaryKey()) {

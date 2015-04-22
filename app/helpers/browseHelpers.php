@@ -231,7 +231,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$vs_default_facet = null;
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			if (!$vs_default_facet) { $vs_default_facet = $vs_facet_name; }
-			$vs_buf .= "<li ".(!$vs_buf ? "class='active'" : "")."><a href='#' onclick='jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></li>\n";
+			$vs_buf .= "<li ".(!$vs_buf ? "class='active'" : "")."><a href='#' onclick='jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\", function() { jQuery(this).parent().scrollTop(0); }); jQuery(this).parent().siblings().removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_facet_info['label_plural'])."</a></li>\n";
 		}
 		
 		if ($vs_default_facet) {

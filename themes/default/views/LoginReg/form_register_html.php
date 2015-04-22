@@ -82,7 +82,7 @@
 		jQuery('#RegForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'register', null); ?>',
-				jQuery('#RegForm').serialize()
+				jQuery('#RegForm').serializeObject()
 			);
 			e.preventDefault();
 			return false;

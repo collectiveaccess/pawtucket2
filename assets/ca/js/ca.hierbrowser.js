@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -79,6 +79,7 @@ var caUI = caUI || {};
 			
 			indicatorUrl: '',
 			editButtonIcon: '',
+			disabledButtonIcon: '',
 			
 			hasChildrenIndicator: 'has_children',	/* name of key in data to use to determine if an item has children */
 			alwaysShowChildCount: true,
@@ -91,7 +92,7 @@ var caUI = caUI || {};
 			_pageLoadsForLevel:[],				// log of which pages per-level have been loaded already
 			_queuedLoadsForLevel: [],			// parameters for pending loads per-level
 			
-			maxItemsPerHierarchyLevelPage: 300	// maximum number of items to load at one time into a level
+			maxItemsPerHierarchyLevelPage: 500	// maximum number of items to load at one time into a level
 		}, options);
 		
 		if (!that.levelDataUrl) { 
@@ -146,9 +147,7 @@ if (that.uiStyle == 'horizontal') {
 					data.shift();
 				}
 				var l = 0;
-				console.log("mod", data);
 				jQuery.each(data, function(i, id) {
-					console.log("setup", i, id, item_id);
 					that.setUpHierarchyLevel(i, id, 1, item_id);
 					l++;
 				});
@@ -212,6 +211,31 @@ if (that.uiStyle == 'horizontal') {
 			jQuery('#' + newLevelDivID).data('parent_id', item_id);
 			jQuery('#' + newLevelDivID).append(newLevelList);
 			
+			var selected_item_id_cl = selected_item_id;
+			
+			jQuery('#' + newLevelDivID).scroll(function () { 
+				if((jQuery('#' + newLevelDivID).scrollTop() + jQuery('#' + newLevelDivID).height()) >= (jQuery('#' + newLevelDivID).prop('scrollHeight'))) {
+					var p = jQuery('#' + newLevelDivID).data("page");
+					
+					if ((p === undefined) || (p == 0)) { p = 0; }	// always start with page one
+					p++;
+					
+					// Are we at the end of the list?
+					if (jQuery('#' + newLevelDivID).data('itemCount') <= (p * that.maxItemsPerHierarchyLevelPage)) { 
+						return false;
+					}
+					
+					jQuery('#' + newLevelDivID).data("page", p);
+					var l = jQuery('#' + newLevelDivID).data('level');
+					
+					if (!that._pageLoadsForLevel[l] || !that._pageLoadsForLevel[l][p]) {		// is page loaded?
+						if (!that._pageLoadsForLevel[l]) { that._pageLoadsForLevel[l] = []; }
+						that._pageLoadsForLevel[l][p] = true;		
+						that.queueHierarchyLevelDataLoad(l, item_id, false, newLevelDivID, newLevelListID, selected_item_id_cl, p * that.maxItemsPerHierarchyLevelPage, true);
+					}
+				}
+			});
+			
 			that.showIndicator(newLevelDivID);
 } else {
 	if (that.uiStyle == 'vertical') {
@@ -228,7 +252,7 @@ if (that.uiStyle == 'horizontal') {
 				if (!item_id) {
 					that.clearLevelsStartingAt(level + 1);
 				} else {
-					that.setUpHierarchyLevel(level + 1, item_id, 0, undefined, fetchData);
+					that.setUpHierarchyLevel(level + 1, item_id, 0, undefined, true);
 					that.selectItem(level, item_id, jQuery('#' + newLevelDivID).data('parent_id'), 0, {});
 				}
 			});
@@ -275,9 +299,11 @@ if (that.uiStyle == 'horizontal') {
 		// Load "page" of hierarchy level via AJAX
 		//
 		that.loadHierarchyLevelData = function() {
+			if (that.isLoadingLevel) { return; }
+			that.isLoadingLevel = true;
+					
 			var id_list = [];
 			var itemIDsToLevelInfo = {};
-			
 			var is_init = false;
 			for(var l = 0; l < that._queuedLoadsForLevel.length; l++) {
 				for(var i = 0; i < that._queuedLoadsForLevel[l].length; i++) {
@@ -316,7 +342,7 @@ if (that.uiStyle == 'horizontal') {
 				}
 			}
 			
-			if (!id_list.length) { return; }
+			if (!id_list.length) { that.isLoadingLevel = false; return; }
 			
 			var start = 0;
 			jQuery.getJSON(that.levelDataUrl, { id: id_list.join(';'), bundle: that.bundle, init: is_init ? 1 : '', root_item_id: that.selectedItemIDs[0] ? that.selectedItemIDs[0] : '', start: start * that.maxItemsPerHierarchyLevelPage, max: (that.uiStyle == 'vertical') ? 0 : that.maxItemsPerHierarchyLevelPage }, function(dataForLevels) {
@@ -335,8 +361,11 @@ if (that.uiStyle == 'horizontal') {
 					
 					var foundSelected = false;
 					jQuery('#' + newLevelDivID).data('itemCount', data['_itemCount']);
-					jQuery.each(data, function(i, item) {
-						if (!item) { return; }
+					
+					for(var i in data['_sortOrder']) {
+						var item = data[data['_sortOrder'][i]];
+						if (!item) { continue; }
+						if (!item.name) { item.name = '??? ' + item['item_id']; }
 						if (item['item_id']) {
 							if ((is_init) && (level == 0) && (!that.selectedItemIDs[0])) {
 								that.selectedItemIDs[0] = item['item_id'];
@@ -350,7 +379,7 @@ if (that.uiStyle == 'horizontal') {
 								if (item.children > 0) {
 									moreButton = "<div style='float: right;'><a href='#' id='hierBrowser_" + that.name + '_level_' + level + '_item_' + item['item_id'] + "_edit' >" + that.editButtonIcon + "</a></div>";
 								} else {
-									moreButton = "<div style='float: right;'><a href='#' id='hierBrowser_" + that.name + '_level_' + level + '_item_' + item['item_id'] + "_edit'  style='opacity: 0.3;'>" + that.editButtonIcon + "</a></div>";
+									moreButton = "<div style='float: right;'><a href='#' id='hierBrowser_" + that.name + '_level_' + level + '_item_' + item['item_id'] + "_edit'  class='noChildren'>" + that.disabledButtonIcon + "</a></div>";
 								}
 							}
 							
@@ -358,17 +387,22 @@ if (that.uiStyle == 'horizontal') {
 								moreButton += "<div style='float: right; margin-right: 5px; opacity: 0.3;' id='hierBrowser_" + that.name + "_extract_container'><a href='#' id='hierBrowser_" + that.name + "_extract'>" + that.extractFromHierarchyButtonIcon + "</a></div>";
 							}
 							
-							if ( (!((level == 0) && that.dontAllowEditForFirstLevel))) {
+							if ((item.is_enabled !== undefined) && (parseInt(item.is_enabled) === 0)) {
+								jQuery('#' + newLevelListID).append(
+									"<li class='" + that.className + "'>" + moreButton +  item.name + "</li>"
+								);
+							} else if ((!((level == 0) && that.dontAllowEditForFirstLevel))) {
 								jQuery('#' + newLevelListID).append(
 									"<li class='" + that.className + "'>" + moreButton +"<a href='#' id='hierBrowser_" + that.name + '_level_' + level + '_item_' + item['item_id'] + "' class='" + that.className + "'>"  +  item.name + "</a></li>"
 								);
 							} else {
 								jQuery('#' + newLevelListID).append(
-									"<li class='" + that.className + "'>" + moreButton + item.name + "</li>"
+									"<li class='" + that.className + "'>" + moreButton + "<a href='#' id='hierBrowser_" + that.name + '_level_' + level + '_item_' + item['item_id'] + "' class='" + that.className + "'>"  +  item.name + "</a></li>"
 								);
 							}
 							
 							jQuery('#' + newLevelListID + " li:last a").data('item_id', item['item_id']);
+							jQuery('#' + newLevelListID + " li:last a").data('item', item);
 							if(that.editDataForFirstLevel) {
 								jQuery('#' + newLevelListID + " li:last a").data(that.editDataForFirstLevel, item[that.editDataForFirstLevel]);
 							}
@@ -378,7 +412,7 @@ if (that.uiStyle == 'horizontal') {
 							}
 							
 							// edit button
-							if (!((level == 0) && that.dontAllowEditForFirstLevel)) {
+							if ((!((level == 0) && that.dontAllowEditForFirstLevel)) && ((item.is_enabled === undefined) || (parseInt(item.is_enabled) === 1))) {
 								var editUrl = '';
 								var editData = 'item_id';
 								if (that.editUrlForFirstLevel && (level == 0)) {
@@ -399,7 +433,7 @@ if (that.uiStyle == 'horizontal') {
 										var l = jQuery(this).parent().parent().parent().data('level');
 										var item_id = jQuery(this).data('item_id');
 										var has_children = jQuery(this).data('has_children');
-										that.selectItem(l, item_id, jQuery('#' + newLevelDivID).data('parent_id'), has_children, item);
+										that.selectItem(l, item_id, jQuery('#' + newLevelDivID).data('parent_id'), has_children, jQuery(this).data('item'));
 										return false;
 									});
 								}
@@ -411,7 +445,7 @@ if (that.uiStyle == 'horizontal') {
 									var l = jQuery(this).parent().parent().parent().parent().data('level');
 									var item_id = jQuery(this).data('item_id');
 									var has_children = jQuery(this).data('has_children');
-									that.selectItem(l, item_id, jQuery('#' + newLevelDivID).data('parent_id'), has_children, item);
+									that.selectItem(l, item_id, jQuery('#' + newLevelDivID).data('parent_id'), has_children, jQuery(this).data('item'));
 									
 									// scroll to new level
 									that.setUpHierarchyLevel(l + 1, item_id, 0, undefined, true);
@@ -438,20 +472,20 @@ if (that.uiStyle == 'horizontal') {
 		}
 	}
 							// Pass item_id to caller if required
-							if (is_init && that.selectOnLoad && that.onSelection && is_init && item['item_id'] == selected_item_id) {
+							if (is_init && that.selectOnLoad && that.onSelection && item['item_id'] == selected_item_id) {
 								var formattedDisplayString = that.currentSelectionDisplayFormat.replace('%1', item.name);
 								that.onSelection(item['item_id'], item.parent_id, item.name, formattedDisplayString, item.type_id);
 							}
 						} else {
 							if (item.parent_id && (that.selectedItemIDs.length == 0)) { that.selectedItemIDs[0] = item.parent_id; }
 						}
-					});
+					}//);
 					
 					var dontDoSelectAndScroll = false;
 					if (!foundSelected && that.selectedItemIDs[level]) {
 						var p = jQuery('#' + newLevelDivID).data("page");
 						if (!p || (p < 0)) { p = 0; }
-						p++;
+						
 						jQuery('#' + newLevelDivID).data("page", p);
 						if (jQuery('#' + newLevelDivID).data('itemCount') > (p * that.maxItemsPerHierarchyLevelPage)) { 
 							if (!that._pageLoadsForLevel[level] || !that._pageLoadsForLevel[level][p]) {		// is page loaded?
@@ -489,7 +523,7 @@ if (that.uiStyle == 'horizontal') {
 			} else {
 				if (is_init) {
 					if (that.selectedItemIDs[level] !== undefined) {
-						jQuery("#" + newLevelListID + " option[value=" + that.selectedItemIDs[level] + "]").attr('selected', 1);
+						jQuery("#" + newLevelListID + " option[value=" + that.selectedItemIDs[level] + "]").prop('selected', 1);
 					}
 				}
 				
@@ -511,33 +545,14 @@ if (that.uiStyle == 'horizontal') {
 					
 					// Handle loading of long hierarchy levels via ajax on scroll
 	if (that.uiStyle == 'horizontal') {
-					var selected_item_id_cl = selected_item_id;
-					jQuery('#' + newLevelDivID).scroll(function () { 
-						var curPage = jQuery('#' + newLevelDivID).data("page");
-						if (!curPage) { curPage = 0; }
-					   if (jQuery('#' + newLevelDivID).scrollTop() >= ((curPage * jQuery('#' + newLevelDivID).height()) - 10)) {
-						  // get page #
-						  var p = Math.ceil(jQuery('#' + newLevelDivID).scrollTop()/jQuery('#' + newLevelDivID).height());
-						  if (p < 0) { p = 0; }
-						  if (jQuery('#' + newLevelDivID).data('itemCount') <= (p * that.maxItemsPerHierarchyLevelPage)) { 
-							return;
-						  }
-						  jQuery('#' + newLevelDivID).data("page", p);
-						  var l = jQuery('#' + newLevelDivID).data('level');
-						  if (!that._pageLoadsForLevel[l] || !that._pageLoadsForLevel[l][p]) {		// is page loaded?
-							if (!that._pageLoadsForLevel[l]) { that._pageLoadsForLevel[l] = []; }
-							that._pageLoadsForLevel[l][p] = true;		
-								 	
-							that.queueHierarchyLevelDataLoad(l, item_id, false, newLevelDivID, newLevelListID, selected_item_id_cl, p * that.maxItemsPerHierarchyLevelPage, true);
-						  }
-					   }
-					});
+					
 	}
 					that.hideIndicator(newLevelDivID);
-					
-					// try to load any outstanding level pages
-					that.loadHierarchyLevelData();
 				});
+				that.isLoadingLevel = false; 
+					
+				// try to load any outstanding level pages
+				that.loadHierarchyLevelData();
 			});
 		}
 		// --------------------------------------------------------------------------------

@@ -44,9 +44,11 @@
 	$vs_facet_list = "";	
 	
 	if($vb_is_nav){
-		foreach($va_facet_content as $vn_id => $va_item) {
-			print "<div class='browseFacetItem'>".caNavLink($this->request, $va_item['label'], 'col-sm-4 col-md-3', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
-		}
+		print "<div id='bHierarchyListMorePanel_".$vs_facet_name."'>".caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))."</div>";
+		
+		#foreach($va_facet_content as $vn_id => $va_item) {
+		#	print "<div class='browseFacetItem'>".caNavLink($this->request, $va_item['label'], 'col-sm-4 col-md-3', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
+		#}
 	} else {
 		print "<H1>".$va_facet_info["label_plural"]."</H1>";
 		print "<div id='bAncestorList'></div>";
