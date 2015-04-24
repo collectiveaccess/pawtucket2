@@ -48,7 +48,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<title><?php print $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -68,94 +68,82 @@
 </head>
 <body>
 	<div id="mainContent">
-	<div id="logoArea">
-		<div id="site-filagree"></div>
-		<div id="site-logo">
-			<div id="logo1"></div>
-			<div id="logoMain"><a href="/">The New York Society Library</a></div>
+	<div id="headerArea">
+		<div id="logoArea">
+			<div id="site-filagree"></div>
+			<div id="site-logo">
+				<div id="logo1"></div>
+				<div id="logoMain"><a href="/">The New York Society Library</a></div>
+			</div>
+			<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<div class="formOutline">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search Digital Collections" name="search">
+					</div>
+				</div>
+			</form>
 		</div>
-	</div>
-	<div id="columnRight">
-		<div class="topMain">
-			<div id="searchArea" class="searchArea" style="display: block;">
-				<div class="globalLinks"><a href="/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
-				<div id="globalSearch">
-
+		
+		<div id="columnRight">
+			<div class="topMain">
+				<div id="searchArea" class="searchArea" style="display: block;">
+					<div class="globalLinks"><a href="/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
+					<div id="globalSearch">
+						<!--<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<input type="text" class="form-control" placeholder="Search Digital Collections" name="search">
+								</div>
+							</div>		
+						</form>-->
+					</div>
 				</div>
 			</div>
-		</div>
-		<div id="topMenu">
-			<ul class="menu" id="mainMenu">
-				<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Home</a></li>
-				<li class="item" id="menuId-2"><a href="https://www.nysoclib.org/about">About Us</a></li>
-				<li class="item active" id="menuId-3"><a href="https://www.nysoclib.org/collection">Our Collection</a></li>
-				<li class="item" id="menuId-4"><a href="https://www.nysoclib.org/events">Our Events</a></li>
-				<li class="item" id="menuId-5"><a href="https://www.nysoclib.org/members">For Members</a></li>
-				<li class="item" id="menuId-6"><a href="https://www.nysoclib.org/children">For Children</a></li>
-				<li class="item" id="menuId-7"><a href="https://www.nysoclib.org/researchers">For Researchers</a></li>
-			</ul>
-		</div>	
-		<div id="topSection">
-			<div id="pageTitle">
-				<h1>Our Collection</h1>
-				<div class="breadcrumb"><a href="/">Home</a> <span class="sep">&gt;</span> Our Collection</div>
-			</div>
-		</div>		
-	</div><!-- end columnRight-->
-	<nav class="navbar navbar-default yamm" role="navigation">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-
-			</div>
-
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">					
+			<div id="topMenu">
+				<nav class="navbar navbar-default yamm" role="navigation">
+				<ul class="menu" id="mainMenu">
+					<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Library Home</a></li>
+					<li class="item" id="menuId-2"><a href="#">Project Home</a></li>
 <?php
-							print $vs_user_links;
-?>
+					print $this->render("pageFormat/browseMenu.php");
+?>					
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-4"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
+					<li class="item" id="menuId-5"><a href="#">Finding Aids</a></li>
+					<li class="item" id="menuId-6"><a href="#">About this Project</a></li>
+					<li class="item" id="menuId-7"><a href="#">User Guide</a></li>
+					
 				</ul>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+				</nav>
+			</div>	
+			<div id="topSection">
+				<div id="pageTitle">
+					<h1>Our Collection</h1>					
+					<div class="breadcrumb"><?php print MetaTagManager::getWindowTitle(); ?></div>
+				</div>
+			</div>		
+		</div><!-- end columnRight-->
+		<div class="rightMenu">
+			<!--<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<div class="formOutline">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search Digital Collections" name="search">
+					</div>
+					<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu">
-<?php
+
 							print $vs_user_links;
-?>
+
 						</ul>
 					</li>
-				</ul>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
-						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
-				<ul class="nav navbar-nav navbar-right">
-<?php
-						print $this->render("pageFormat/browseMenu.php");
-?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Gallery", "Index"); ?></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
-	</nav>
-	<div class="container">
+				</ul>				
+			</form>-->
+		</div>	
+	</div><!-- end headerArea-->
+	<div style="clear:both;"></div>
+	<div class="container" >
 	<div class="row">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

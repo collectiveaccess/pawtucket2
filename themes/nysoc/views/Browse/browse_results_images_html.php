@@ -112,7 +112,7 @@
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 					}
-					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Volume" || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Bib") {
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Volume" || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Bib"  || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Page") {
 						$vs_label_detail_link 	= caDetailLink($this->request,$qr_res->get("ca_objects.parent.preferred_labels.name")." ".$qr_res->get("ca_objects.preferred_labels.name"), '', $vs_table, $vn_id);
 						$vs_label_detail_link.= "<br/>".$qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')))."<br/>".$qr_res->get('ca_entities.publication_date');
 					}

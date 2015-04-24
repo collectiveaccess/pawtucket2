@@ -95,7 +95,7 @@
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
-				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<br/><?php print ($qr_results->get('ca_objects.parent.preferred_labels.name') ? $qr_results->get('ca_objects.parent.preferred_labels.name')."<br/>" : "").$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

@@ -5,7 +5,12 @@ body {
   	font-family: 'Gudea', sans-serif;
   	margin-top:-5px;
 }
-
+#mainContent {
+	width:1024px;
+	margin:0px auto 0px auto;
+	position:relative;
+	left:-8px;
+}
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'Gudea', sans-serif;
 }
@@ -18,64 +23,7 @@ h6 {
 a {
 	color:#333;
 }
-#mainContent {
-	margin:0px 10px 0px 10px;
-	position:relative;
-	left:-8px;
-	overflow:hidden;
-	min-width:1024px;
-}
-.page {
-  margin: 20px 0
-}
-.wrapper {
-  max-width: 1800px;
-  margin: 0 auto;
-  position: relative;
-  /*padding: 0 20px;*/
-  min-height: 600px;
-}
-.content-wrapper {
-  float: right;
-  width: 100%;
-  min-width:830px;
-}
-.content-inner {
-  margin-left: 194px;
-  clear: both;
-  overflow: auto;
-  min-height: 600px;
-  min-width:840px;
-}
-.sidebar {
-  position: relative;
-  width: 194px;
-  margin-right: -194px;
-  float: left;
-  overflow: hidden;
-  color: #333;
-  min-height: 600px;
-  margin-top:-74px;
-}
-.sidebar a{
-	color:#333
-}
-@media (min-width: 1024px) {
-	#mainContent {
-		margin:0px 5% 0px 5%;
-	}
-}
-@media (max-width: 768px) {
-	.sidebar {
-		margin-top:-81px;
-	}
-}
-#headerArea {
-	width:100%;
-	clear:both;
-	margin-bottom:45px;
-	display:inline-block;
-}
+
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: 'Gudea', sans-serif;
 	padding-top:5px;
@@ -108,16 +56,11 @@ a {
 	padding:3px 5px 3px 5px;
 	color:#333;
 }
-@media (min-width: 768px) {
-	.navbar-form {
-	  padding-right: 0px;
-	}
-}
 #topMenu {
   position: absolute;
   top: 95px;
   z-index: 100000;
-  width: 100%;
+  width: 830px;
   height: 24px;
   background: rgb(255,255,255);
   background: transparent;
@@ -127,7 +70,7 @@ a {
   background: rgba(255,255,255,0.8);
   display: block;
   clear: both;
-  /*overflow: hidden;*/
+  overflow: hidden;
 }
 ul#mainMenu {
   width: 830px;
@@ -168,23 +111,18 @@ ul#mainMenu li, div#headAlert, div#pageTitle, div.breadcrumb, div.selectors, div
   -webkit-user-select: none;
   -o-user-select: none;
 }
-ul#mainMenu li.active a {
-  background: #aaa;
+ul#mainMenu li a:hover, ul#mainMenu li.active a {
+  background: #d6742a;
   color: #fff;
   text-decoration: none;
 }
-ul#mainMenu li a:hover {
-	background-color:#d6742a;
-	color:#fff;
-}
-ul#mainMenu li.item {
+ul#mainMenu li {
   float: left;
   margin-right: 1px;
 }
 ul.menu li {
   margin: 0;
 }
-
 ul#mainMenu li a {
   font-family: 'Gudea',sans-serif;
   line-height: 24px;
@@ -193,90 +131,17 @@ ul#mainMenu li a {
   display: block;
   text-align: center;
 }
-ul#mainMenu li #browseMenuTypeFacet a{
-	text-align:left;
-	line-height:18px;
-	padding-bottom:5px;
-}
-ul#mainMenu .filterMenuFacetList li  {
-	margin-bottom:8px;
-}
-ul#mainMenu .filterMenuFacetList li  {
-	line-height: 14px;
-}
-.filterMenureults {
-	max-height:350px;
-}
-#browse-menu.dropdown-menu {
-	top:24px;
-	margin:0px;
-	border:1px solid #ccc;
-}
-.rightMenu {
-	position:relative;
-	top:194px;
-}
-#colSearch .formOutline {
-	float:left;
-	background: rgba(255,255,255,0.8);
-}
-#colSearch .formOutline .form-control{
-	border:0px;
-	background-color:transparent;
-	height:24px;
-	box-shadow: none;
-	-webkit-box-shadow:none;
-}
-#colSearch .formOutline .btn-search {
-	background-color:transparent;
-	padding:3px 5px 3px 5px;
-}
-/* Test Styles 1
-
-#colSearch .formOutline .form-control {
-	border:1px solid #ccc;
-	border-radius:0px;
-}
-@media (min-width: 768px) {
-	.navbar-form .form-group {
-	  width: 185px;
-	}
-	.navbar-form {
-  		padding-right: 30px;
-	}
-}
-*/
-/* Test Styles 2 */
-#colSearch .formOutline .form-control {
-	border:1px solid #ccc;
-	border-radius:0px;
-}
-@media (min-width: 768px) {
-	.navbar-form .form-group {
-	  width: 185px;
-	}
-	.navbar-form {
-  		padding-right: 5px;
-	}
-}
-.sidebar {
-	margin-top:-28px;
-}
-
-#user-navbar {
-	float:right;
-}
 #topMenu a{
   text-decoration: none;
 }
 #topSection {
-  background: url('../graphics/test2.jpg') no-repeat scroll 0 0 transparent;
+  background: url('../graphics/banner_image2.jpg') no-repeat scroll 0 0 transparent;
   display: block;
   height: 355px;
-  min-width:830px;
+  width: 830px;
   position: relative;
   padding-top: 24px;
-  height:130px; 
+  height:130px;
 }
 #pageTitle {
   position: absolute;
@@ -327,9 +192,9 @@ ul#mainMenu .filterMenuFacetList li  {
   background-size: 97px 95px;
 }
 #columnRight {
-  position: absolute;
-  left: 194px;
-  width: 100%;
+  float: right;
+  width: 830px;
+  height: auto;
 }
 .marginLeft {
 	width:190px;
@@ -337,15 +202,13 @@ ul#mainMenu .filterMenuFacetList li  {
 	min-height:400px;
 }
 .marginRight {
-	min-width:830px;
-	float:left;
-	width:100%;
+	width:830px;
+	float:right;
 }
 .topMain {
-  width: 100%;
+  width: 830px;
   height: 95px;
   display: block;
-  padding-right:170px;
 }
 div#searchArea {
   width: 218px;
@@ -374,11 +237,10 @@ div.globalLinks a {
 /* Browse Menu */
 
 .filterMenuFacetList li.active {
-	background-color:#aaa; 
+	background-color:#a8d9e2; 
 }
 .filterMenuFacetList li {
 	padding-left:5px;
-	padding-right:5px;
 }
 /* Front Page */
 
@@ -419,7 +281,6 @@ div.globalLinks a {
 	margin-bottom:0px !important;
 }
 /* Detail pages */
-
 @media (min-width: 768px) {
 	.detail .navTop {
 	  display: block;
@@ -428,38 +289,12 @@ div.globalLinks a {
 .prevLink, .resLink, .nextLink {
 	display:inline-block;
 }
-.prevLink {
-	float:left;
-}
-.nextLink {
-	float:right;
-}
 .detail .navTop {
 	text-align:left;
-	margin-top:20px;
+	margin-top:-33px;
 	margin-left:-1px;
 	width: 300px;
   	z-index: 1000000;
-  	padding-left:0px;
-  	padding-right:0px;
-  	width:196px;
-}
-.detail .navTop a {
-  padding: 3px 5px 3px 5px;
-  background-color:#fff;
-  text-transform:none;
-  font-size:12px;
-}
-.detail .navTop a .small {
-  font-size:12px;
-  color:#999;
-}
-.detailNav {
-	clear:both;
-	float:right;
-}
-.nextLink {
-	margin-left:20px;
 }
 .metaTitle {
 	font-family: 'Gudea', sans-serif;	
@@ -475,14 +310,6 @@ div.globalLinks a {
 }
 .detail #detailTools a, .detail .detailTool span{ 
 	color:#000;
-}
-
-a.readmore-js-toggle {
-	color:#d77421;
-}
-.bookTitle {
-	max-height:50px;
-	overflow:hidden;
 }
 .visualize {
 	font-size:16px;
@@ -636,16 +463,15 @@ svg:not(:root) {
 /* Footer */
 
 #footerArea {
-  width: 100%;
+  width: 830px;
   height: 209px;
-  margin-left:194px;
-  background: url('../graphics/footerbg.png') repeat-x;
+  background: url('../graphics/footerbg.png') no-repeat;
   padding: 20px 17px 20px 17px;
   font-size: 10px;
   color: #747060;
   line-height: 15px;
   font-family:"Gudea";
-  float:left;
+  float:right;
   margin-top:70px;
 }
 #footerArea .col1 {
