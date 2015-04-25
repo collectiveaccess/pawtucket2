@@ -15,7 +15,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_collections.preferred_labels.displayname}}}</H4>
+					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row -->

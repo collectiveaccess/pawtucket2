@@ -3537,16 +3537,16 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 	 * Used in SearchResult::get() and BundlableLabelableBaseModelWithAttributes::get() to automatically generate links when fetching
 	 * information from related tables.
 	 *
-	 * @param array $pa_text An array of strings to create links for
+	 * @param array|string $pa_text An array of strings to create links for; or a single string to create a link for
 	 * @param string $ps_table_name The name of the table/record to which the links refer
-	 * @param array $pa_row_ids Array of row_ids to link to. Values must correspond by index with those in $pa_text
+	 * @param array|int $pa_row_ids Array of row_ids to link to, or a single integer row_id. Values must correspond by index with those in $pa_text.
 	 * @param string $ps_class Optional CSS class to apply to links
 	 * @param string $ps_target
 	 * @param array $pa_options Supported options are:
 	 *		requireLinkTags = if set then links are only added when explicitly defined with <l> tags. Default is to make the entire text a link in the absence of <l> tags.
 	 * 		addRelParameter =
 	 *
-	 * @return array A list of HTML links
+	 * @return array|string A list of HTML links, or a single HTML link string if $pa_text is passed a string rather than an array
 	 */
 	function caCreateLinksFromText($pa_text, $ps_table_name, $pa_row_ids, $ps_class=null, $ps_target=null, $pa_options=null) {
 		if (!in_array(__CA_APP_TYPE__, array('PROVIDENCE', 'PAWTUCKET'))) { return $pa_text; }
@@ -3572,6 +3572,13 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 		
 		global $g_request;
 		if (!$g_request) { return $pa_text; }
+		
+		$vb_return_string = false;
+		if (!is_array($pa_text)) { 
+			$pa_text = array($pa_text);
+			$vb_return_string = true;
+		}
+		if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
 		
 		foreach($pa_text as $vn_i => $vs_text) {
 			$vs_text = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $vs_text);		// DomDcoument converts single quotes around attributes to double quotes so we do the same to the template
@@ -3645,6 +3652,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "!\^([\/A-Za-z0-9]+\[[\@\[\]\
 				}
 			}
 		}
+		if ($vb_return_string) { return array_shift($va_links); }
 		return $va_links;
 	}
 	# ------------------------------------------------------------------

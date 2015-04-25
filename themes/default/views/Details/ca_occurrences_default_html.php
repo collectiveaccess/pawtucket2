@@ -15,7 +15,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
 					<H6>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row -->

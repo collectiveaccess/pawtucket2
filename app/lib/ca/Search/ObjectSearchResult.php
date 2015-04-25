@@ -251,12 +251,15 @@ class ObjectSearchResult extends BaseSearchResult {
 	}
 	# -------------------------------------
 	/**
+	 * Indicates if current user has rights to view media
 	 *
+	 * @param array $pa_access_values List of access values which media must have if user is to be able to view
+	 * @return boolean True if user has access, false if not
 	 */
 	 private function _haveAccessToRepresentation($pa_access_values) {
 	 	if (!is_array($pa_access_values)) { $pa_access_values = array(); }
 	 	if (!sizeof($pa_access_values)) { return true; }
-	 	if (!in_array($this->get('ca_object_representations.access'), $pa_access_values)) {
+	 	if (!sizeof(array_intersect($this->get('ca_object_representations.access', array('returnAsArray' => true)), $pa_access_values))) {
 			return false;	
 		}
 		return true;

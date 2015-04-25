@@ -4271,6 +4271,8 @@ if (!$vb_batch) {
  	 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
  	 *		groupFields = Groups together fields in an arrangement that is easier for import to another system. Used by the ItemInfo web service when in "import" mode. Default is false.
  	 *		returnLocaleCodes = Return locale values as codes (Ex. en_US) rather than numeric database-specific locale_ids. Default is false.
+ 	 *		dontReturnLabels = 
+ 	 *		criteria = 
  	 * @return array - list of related items
  	 */
 	public function getRelatedItems($pm_rel_table_name_or_num, $pa_options=null) {
@@ -4514,7 +4516,7 @@ if (!$vb_batch) {
 
 		// if related item is labelable then include the label table in the query as well
 		$vs_label_display_field = null;
-		if (method_exists($t_rel_item, "getLabelTableName")) {
+		if (method_exists($t_rel_item, "getLabelTableName") && !caGetOption('dontReturnLabels', $pa_options, false)) {
 			if($vs_label_table_name = $t_rel_item->getLabelTableName()) {           // make sure it actually has a label table...
 				$va_path[] = $vs_label_table_name;
 				$t_rel_item_label = $this->getAppDatamodel()->getTableInstance($vs_label_table_name);
@@ -4587,6 +4589,12 @@ if (!$vb_batch) {
 						$vs_order_by = " ORDER BY ".$t_rel_item->tableName().".{$vs_sort}";
 						$vs_sort_fld = $vs_sort;
 						$va_selects[] = $t_rel_item->tableName().".{$vs_sort}";
+					}
+				}
+								
+				if(($va_criteria = caGetOption('criteria', $pa_options, null)) && is_array($va_criteria)) {
+					foreach($va_criteria as $vs_criteria) {
+						$va_wheres[] = $vs_criteria;		
 					}
 				}
 
@@ -4719,6 +4727,12 @@ if (!$vb_batch) {
 			} else {
 				if ($t_rel_item && ($vs_sort = $t_rel_item->getProperty('ID_NUMBERING_SORT_FIELD'))) {
 					$vs_order_by = " ORDER BY ".$t_rel_item->tableName().".{$vs_sort}";
+				}
+			}
+			
+			if(($va_criteria = caGetOption('criteria', $pa_options, null)) && is_array($va_criteria)) {
+				foreach($va_criteria as $vs_criteria) {
+					$va_wheres[] = $vs_criteria;		
 				}
 			}
 

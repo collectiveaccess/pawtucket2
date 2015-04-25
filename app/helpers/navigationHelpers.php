@@ -966,7 +966,8 @@
 		$vs_pk = $t_table->primaryKey();
 		$vs_table = $ps_table;
 		
-		$vb_id_exists = null;
+		$vs_module = '';
+		$vs_controller = 'Detail';
 		
 		if(isset($pa_options['action'])){
 			$vs_action = $pa_options['action'];
@@ -988,7 +989,7 @@
 		
 		if (isset($pa_options['verifyLink']) && $pa_options['verifyLink']) {
 			// Make sure record link points to exists
-			if (($pn_id > 0) && !$t_table->load($pn_id)) {
+			if (!$vb_id_exists && ($pn_id > 0) && !$t_table->load($pn_id)) {
 				return null;
 			}
 		}
@@ -1004,7 +1005,7 @@
 			);
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
-			$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
+			//$pa_additional_parameters = array_merge(array('id' => $pn_id), $pa_additional_parameters);
 			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
 		}
 	}
@@ -1143,4 +1144,3 @@
 		);
 	}
 	# ------------------------------------------------------------------------------------------------
-?>
