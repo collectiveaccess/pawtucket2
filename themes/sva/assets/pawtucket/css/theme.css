@@ -161,10 +161,10 @@ div.advancedSearchField {
 	width:100%;
 }
 .exhibitions .bResultItemContent {
-	height:100px;
+	height:220px;
 }
 .exhibitions .bResultItemCol  {
-	height:180px;
+	height:220px;
 }
 .exhibitions .bResultItem {
 	font-size:12px;
@@ -238,10 +238,16 @@ div.advancedSearchField {
 	display:none;
 }
 .bResultItemCol {
-	height:240px;
+	height:280px;
+}
+.bResultItemContent {
+	height:280px;
 }
 .bResultItem:hover .bResultItemContent {
 	background-color:#fff;
+}
+.bResultItem .bResultItemImg {
+	max-height:none;
 }
 
 /* Finding Aid */

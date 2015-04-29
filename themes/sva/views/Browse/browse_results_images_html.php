@@ -76,14 +76,14 @@
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
-			
+
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'squarethumb', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -107,7 +107,7 @@
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'squarethumb', array("checkAccess" => $va_access_values)))){
 						$vs_thumbnail = $vs_placeholder_tag;	
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -124,7 +124,7 @@
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+	<div class='bResultItemCol col-xs-6 col-sm-4 col-md-3 col-lg-2'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
