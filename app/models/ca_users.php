@@ -1508,6 +1508,10 @@ class ca_users extends BaseModel {
 	 */	
 	public function setPreference($ps_pref, $ps_val) {
 		if ($this->isValidPreference($ps_pref)) {
+			if ($this->purify()) {
+				if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = new HTMLPurifier(); }
+				$ps_val = BaseModel::$html_purifier->purify($ps_val);
+			}
 			if ($this->isValidPreferenceValue($ps_pref, $ps_val, 1)) {
 				$va_prefs = $this->getVar("_user_preferences");
 				$va_prefs[$ps_pref] = $ps_val;

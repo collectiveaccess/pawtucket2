@@ -39,7 +39,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByControl}}}
+				<!--<?php print caNavLink($this->request, _t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?> | -->{{{sortByList}}}
 			</small>
 			<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 			<div class='blockResults'>
@@ -86,6 +86,7 @@
 						sortControlSelector: '#{{{block}}}_sort',
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
+						scrollControlDisabledOpacity: 0,
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});

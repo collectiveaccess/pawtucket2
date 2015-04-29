@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -438,10 +438,10 @@
 				if (in_array($vs_field, array('preferred_labels', 'nonpreferred_labels')) && is_array($vm_value) && sizeof($vm_value)) { $vb_has_label_fields = true; break; }
 			}
 			
-			if (!$vb_has_label_fields && $ps_sort) {
-				$va_sort_tmp = explode('.', $ps_sort);
-				if ($va_sort_tmp[0] == $t_instance->getLabelTableName()) { $vb_has_label_fields = true; }
-				if (in_array($va_sort_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) { $vb_has_label_fields = true; }
+			$vs_sort_proc = $ps_sort;
+			if ((preg_match("!^{$vs_table}.preferred_labels[\.]{0,1}(.*)!", $ps_sort, $va_matches)) || (preg_match("!^{$vs_table}.nonpreferred_labels[\.]{0,1}(.*)!", $ps_sort, $va_matches))) { 
+				$vs_sort_proc = ($va_matches[1] && ($t_label->hasField($va_matches[1]))) ? "{$vs_label_table}.".$va_matches[1] : "{$vs_label_table}.".$t_label->getDisplayField();
+				$vb_has_label_fields = true; 
 			}
 			
 			$vb_has_attributes = false;
@@ -651,19 +651,20 @@
 			$vs_sql .=" WHERE {$vs_deleted_sql} ".join(" {$ps_boolean} ", $va_label_sql);
 			
 			$vs_orderby = '';
-			if ($ps_sort) {
-				$ps_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
-				$va_tmp = explode(".", $ps_sort);
+
+			if ($vs_sort_proc) {
+				$vs_sort_direction = caGetOption('sortDirection', $pa_options, 'ASC', array('validValues' => array('ASC', 'DESC')));
+				$va_tmp = explode(".", $vs_sort_proc);
 				if (sizeof($va_tmp) == 2) {
 					switch($va_tmp[0]) {
 						case $vs_table:
 							if ($t_instance->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$ps_sort} {$ps_sort_direction}";
+								$vs_orderby = " ORDER BY {$vs_sort_proc} {$vs_sort_direction}";
 							}
 							break;
 						case $vs_label_table:
 							if ($t_label->hasField($va_tmp[1])) {
-								$vs_orderby = " ORDER BY {$ps_sort} {$ps_sort_direction}";
+								$vs_orderby = " ORDER BY {$vs_sort_proc} {$vs_sort_direction}";
 							}
 							break;
 					}
@@ -808,7 +809,10 @@
 								$t_instance = $this->getAppDatamodel()->getInstanceByTableNum($this->tableNum());
 								
 								$vb_check_access = is_array($pa_options['checkAccess']) && $t_instance->hasField('access');
-								$vs_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								$va_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
+								if (!is_array($va_sort) && $va_sort) { $va_sort = array($va_sort); }
+								if (!is_array($va_sort)) { $va_sort = array(); }
+								
 								$vs_sort_direction = (isset($pa_options['sort_direction']) && in_array(strtolower($pa_options['sort_direction']), array('asc', 'desc'))) ? strtolower($pa_options['sort_direction']) : 'asc';
 								
 								$qr_children = $this->makeSearchResult($this->tableName(), $va_children_ids);
@@ -817,7 +821,10 @@
 								while($qr_children->nextHit()) {
 									if ($vb_check_access && !in_array($qr_children->get("{$vs_table}.access"), $pa_options['checkAccess'])) { continue; }
 									
-									$vs_sort_key = ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+									$vs_sort_key = '';
+									foreach($va_sort as $vs_sort){ 
+										$vs_sort_key .= ($vs_sort) ? $qr_children->get($vs_sort) : 0;
+									}
 									if(!is_array($va_data[$vs_sort_key])) { $va_data[$vs_sort_key] = array(); }
 									$va_data[$vs_sort_key] = array_merge($va_data[$vs_sort_key], $qr_children->get($vs_childless_path, array_merge($pa_options, array('returnAsArray' => true))));
 								}
@@ -1166,6 +1173,42 @@
 					break;
 			}
 			return parent::get($ps_field, $pa_options);
+		}
+		# --------------------------------------------------------------------------------
+		/**
+		 * Returns true if bundle is valid for this model
+		 * 
+		 * @access public
+		 * @param string $ps_bundle bundle name
+		 * @param int $pn_type_id Optional record type
+		 * @return bool
+		 */ 
+		public function hasBundle ($ps_bundle, $pn_type_id=null) {
+			$va_bundle_bits = explode(".", $ps_bundle);
+			$vn_num_bits = sizeof($va_bundle_bits);
+	
+			if (($vn_num_bits == 1) && (in_array($ps_bundle, array('preferred_labels', 'nonpreferred_labels'))))  {
+				return true;
+			} elseif ($vn_num_bits == 2) {
+				if (($va_bundle_bits[0] == $this->tableName()) && (in_array($va_bundle_bits[1], array('preferred_labels', 'nonpreferred_labels')))) {
+					return true;
+				} elseif (($va_bundle_bits[0] != $this->tableName()) && ($t_rel = $this->getAppDatamodel()->getInstanceByTableName($va_bundle_bits[0], true))) {
+					return $t_rel->hasBundle($ps_bundle, $pn_type_id);
+				} else {
+					return parent::hasBundle($ps_bundle, $pn_type_id);
+				}
+			} elseif($vn_num_bits == 3) {
+				if (($va_bundle_bits[0] == $this->tableName()) && (in_array($va_bundle_bits[1], array('preferred_labels', 'nonpreferred_labels')))) {
+					if (!($t_label = $this->getLabelTableInstance())) { return false; }
+					return $t_label->hasField($va_bundle_bits[2]);
+				} elseif (($va_bundle_bits[0] != $this->tableName()) && ($t_rel = $this->getAppDatamodel()->getInstanceByTableName($va_bundle_bits[0], true))) {
+					return $t_rel->hasBundle($ps_bundle, $pn_type_id);
+				} else {
+					return parent::hasBundle($ps_bundle, $pn_type_id);
+				}
+			} else {
+				return parent::hasBundle($ps_bundle, $pn_type_id);
+			}
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -2089,6 +2132,7 @@
 			
 			$o_dm = Datamodel::load();
 			$t_rel = $o_dm->getInstanceByTableName($vs_group_rel_table, true);
+			if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
 			
 			$va_current_groups = $this->getUserGroups();
 			
@@ -2146,6 +2190,7 @@
 			
 			$o_dm = Datamodel::load();
 			$t_rel = $o_dm->getInstanceByTableName($vs_group_rel_table);
+			if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
 			
 			$va_current_groups = $this->getUserGroups();
 			
@@ -2320,6 +2365,7 @@
 			$o_dm = Datamodel::load();
 			$t_rel = $o_dm->getInstanceByTableName($vs_user_rel_table, true);
 			
+			if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
 			foreach($pa_user_ids as $vn_user_id => $vn_access) {
 				$t_rel->clear();
 				$t_rel->load(array('user_id' => $vn_user_id, $vs_pk => $vn_id));		// try to load existing record
@@ -2367,6 +2413,7 @@
 			
 			$o_dm = Datamodel::load();
 			$t_rel = $o_dm->getInstanceByTableName($vs_user_rel_table);
+			if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
 			
 			$va_current_users = $this->getUsers();
 			

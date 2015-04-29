@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -74,7 +74,7 @@ if (!$vb_ajax) {	// !ajax
 			print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 		}
 	}
-if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
+if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 	// Export as PDF
 	print "<div class='reportTools'>";
 	print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
@@ -124,7 +124,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 		</ul>
 	</div><!-- end btn-group -->
 <?php
-			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+		print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
 ?>
 </H1>
 <div class="row" style="clear:both;">
@@ -187,6 +187,20 @@ if (!$vb_ajax) {	// !ajax
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
 			padding: 20,
 			nextSelector: 'a.jscroll-next'
+		});
+		
+		jQuery('#setsSelectMultiple input:checkbox').bind('change', function(e) {
+			var c = jQuery.cookieJar('lastChecked');
+			c.set(jQuery(this).attr('id'), jQuery(this).prop('checked'));
+		});
+		
+		jQuery('#setsSelectMultiple input:checkbox').each(function() {
+			var c = jQuery.cookieJar('lastChecked');
+			if (c.get(jQuery(this).attr('id'))) {
+				c.set(jQuery(this).prop('checked', 1));
+				jQuery('#bSetsSelectMultipleButton').show();
+				jQuery(".bSetsSelectMultiple").show();
+			}
 		});
 		
 		jQuery('#setsSelectMultiple').submit(function(e){		

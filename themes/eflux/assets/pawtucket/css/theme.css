@@ -53,6 +53,9 @@ h6 {
 	font-size:16px;
 	font-family:arial, helvetica, sans serif;
 }
+.navbar-default .navbar-nav > li > a:hover {
+	background-color:#f9f9f9;
+}
 .navbar .navbar-nav > .active > a {
 	color:#000;
 }
@@ -75,6 +78,11 @@ h6 {
 .navbar-form {
 	margin-top:25px;
 }
+.navbar-brand {
+	width:261px;
+	margin-top:6px;
+	padding-bottom:6px;
+}
 
 /* Browse Menu */
 
@@ -83,16 +91,18 @@ h6 {
 	font-weight:bold;
 	color:#000;
 	line-height: 1.4em;
-	margin-bottom: 15px;
 	display: block;	
 	border-bottom:1px solid #fff;
 }
 .filterMenuFacetList li {
 	padding:0px;
 	margin:0px;
+	margin-bottom:10px;
 }
 .filterMenuFacetList li.active {
 	background-color:#fff;
+	border-bottom:1px solid #000;
+	margin-bottom:10px;
 }
 .filterbylabel {
 	color:#000;
@@ -137,6 +147,23 @@ input#browseMenuFacetSearchInput  {
 
 .front H1 {
 	font-size:18px;
+}
+.borderleft {
+	border-left:1px solid #ccc;
+	text-align:center;
+}
+.borderleft img{
+	width:150px;
+}
+.browsedigi {
+	font-family:efluxregular;
+	clear:both;
+	font-weight:bold;
+	padding-top:10px;
+}
+.frontSlideCaption a:hover {
+	color:#ccc;
+	text-decoration:none;
 }
 
 /* Multisearch */
@@ -231,6 +258,9 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 .filterMenureults {
 	margin-left:0px;
 }
+.objects.browse.results .btn.btn-default.btn-sm {
+	cursor:initial;
+}
 
 /* Detail */
 
@@ -255,6 +285,9 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 }
 .collections.detail .image img {
 	width:100%;
+}
+.BookReaderContainer {
+	height:inherit !important;
 }
 
 /* Footer */

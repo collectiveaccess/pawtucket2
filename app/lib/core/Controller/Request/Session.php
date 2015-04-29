@@ -77,7 +77,7 @@ class Session {
 		if (!$pb_dont_create_new_session) {
 			if (!($vs_key = $this->getSessionID())) {
 				$vs_cookiepath = ((__CA_URL_ROOT__== '') ? '/' : __CA_URL_ROOT__);
-				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = caGenerateGUIDV4(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
+				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = caGenerateGUID(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
 		 	}
 		 	
 			// initialize session var storage
@@ -110,7 +110,7 @@ class Session {
 		$va_ip_last_seen[$_SERVER['REMOTE_ADDR']] = time();
 		
 		if($vs_key && ($va_ip_list[$_SERVER['REMOTE_ADDR']] > 5)) {
-			$va_ip_session_keys[$_SERVER['REMOTE_ADDR']] = caGenerateGUIDV4();
+			$va_ip_session_keys[$_SERVER['REMOTE_ADDR']] = caGenerateGUID();
 		}
 		
 		ExternalCache::save('ipList', $va_ip_list, 'SessionVars', 60 * 60 * 24);				// ip lists persist for 24 hours
