@@ -86,6 +86,7 @@ h1 {
 }
 #mainmenu .navButton li {
 	list-style-type: none;
+	text-align:left;
 }
 #mainmenu .navButtonFirst a, #mainmenu .navButtonFirstHighlight a {
   display: block;
@@ -142,6 +143,16 @@ h1 {
 #mainmenu .navButton #browse-menu div.browseFacetItem a {
 	height:60px;
 	padding:10px;
+	font-family:helvetica;
+	text-transform:none;
+}
+.filterMenureults {
+	margin-left:-4px;
+}
+.browseMenuBrowseAll .btn-default, .browseMenuBrowseAll, .browseMenuBrowseAll .btn, .browseMenuBrowseAll .btn-default:hover{
+	box-shadow:none;
+	border:0px;
+	background-color:transparent;
 }
 .navbar-form {
 	padding:0px;
@@ -153,6 +164,9 @@ h1 {
 }
 .navbar .formOutline {
 	border:0px;
+}
+.nav .nav-divider {
+	margin:0px;
 }
 /* Footer */
 
@@ -610,4 +624,8 @@ a.shareButton {
 }
 .multisearch .authoritySet a {
 	text-decoration:none;
+}
+.multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
+	height:180px;
+	padding-top:85px;
 }
