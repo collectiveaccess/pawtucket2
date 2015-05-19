@@ -104,14 +104,24 @@
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
-						$t_list_item->load($qr_res->get("type_id"));
-						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
-							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-						}else{
-							$vs_thumbnail = $vs_default_placeholder_tag;
+						# --- get the placeholder graphic from the novamuse theme
+						$va_themes = caExtractValuesByUserLocale($qr_res->get("novastory_category", array("returnAsArray" => true)));
+						$vs_placeholder = "";
+						if(sizeof($va_themes)){
+							$t_list_item = new ca_list_items();
+							foreach($va_themes as $k => $vs_list_item_id){
+								$t_list_item->load($vs_list_item_id);
+								if(caGetThemeGraphic($this->request, 'placeholders/'.$t_list_item->get("idno").'.png')){
+									$vs_thumbnail = caGetThemeGraphic($this->request, 'placeholders/'.$t_list_item->get("idno").'.png');
+									$vn_padding_top_bottom = 5;
+								}
+							}
 						}
-					}
+						if(!$vs_image){
+							$vs_image = caGetThemeGraphic($this->request, 'placeholders/placeholder.png');
+							$vn_padding_top_bottom = 5;
+						}
+					}					
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 
 					$vs_label_detail_link .= "<p>".$qr_res->get('ca_objects.idno')."</p>";

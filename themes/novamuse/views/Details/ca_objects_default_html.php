@@ -1,4 +1,5 @@
 <?php
+	AssetLoadManager::register("carousel");
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	
@@ -91,7 +92,7 @@
 				}
 			} 
 			
-			MetaTagManager::addMeta("og:image", array('property' => 'og:image', 'content' => $t_rep->getMediaUrl('media', 'medium')));
+			MetaTagManager::addMeta("og:image", $t_rep->getMediaUrl('media', 'medium'));
  ?>
  				<div class="useRestrictions">Image use must be for education or personal purposes only.<br/>The contributing institution must be credited.</div>
   			</div>
@@ -118,11 +119,10 @@
 			
 <?php
 		
-			if($this->getVar("ranking")){
-				$vn_numRankings = $this->getVar("numRankings");
+			if($vn_numRankings = $t_object->getNumRatings(false)){
 				$like_message = "<span class='likebk' style='float:right;'>"._t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people")."</span>";
 			}
-			print "<div id='likeThis'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'like.gif').$like_message, '', 'Detail', 'Object', 'saveCommentRanking', array('object_id' => $vn_object_id, 'rank' => 5))."</div>";
+			print "<div id='likeThis'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'like.gif').$like_message, '', '', 'Detail', 'SaveCommentTagging', array('item_id' => $vn_object_id, 'rank' => 5, 'inline' => 1, 'tablename' => 'ca_objects', 'name' => 'anonymous', 'email' => 'anonymous'))."</div>";
 ?>
 			<div style='width: 100%; clear:both; height:1px;'></div> 
 			<!-- AddThis Button BEGIN -->
@@ -160,28 +160,43 @@
 		$vs_text_theme = $t_object->get("novastory_category", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
 		print "<div class='object-typeContainer'>";
 		if(sizeof($va_theme_info)){
-		
-			print "<div id='objTypeCycle'>";
+?>
+			<div class="jcarousel-wrapper">
+				<div class="jcarousel">
+					<ul>
+<?php
+			#print "<div id='objTypeCycle'>";
 			foreach($va_themes_info as $k => $va_theme_display_info){
-				print '<div class="object-type">';
+				print '<li><div class="object-type">';
 				if($va_theme_display_info["icon"]){
 					print "<img src='".$va_theme_display_info["icon"]."' alt='".$va_theme_display_info["name"]."' />";
 				}
 				print "<div class='object-type-name'>".caNavLink($this->request, $va_theme_display_info["name"], "", "", "Browse/objects", "facet/novastory_category_facet/id/".$va_theme_display_info["id"])."</div>";
-				print "</div>";
+				print "</div></li>";
 			}
-			print "</div><!-- end objTypeCycle -->";
+			#print "</div><!-- end objTypeCycle -->";
+?>
+					</ul>
+				</div>
+			</div>
+<?php
 			if(sizeof($va_theme_info) > 1){
 	?>
-				<script type="text/javascript">
-					$(document).ready(function() {
-					   $('#objTypeCycle').cycle({
-								   fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
-								   speed:  1000,
-								   timeout: 4000
-						   });
-					});
-				</script>
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				$('.jcarousel')
+					.jcarousel({
+						// Core configuration goes here
+						wrap: 'circular'
+					})
+					.jcarouselAutoscroll({
+						interval: 4000,
+						target: '+=1',
+						autostart: true
+					})
+				;
+			});
+		</script>
 	<?php
 			}
 		}

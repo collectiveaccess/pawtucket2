@@ -140,9 +140,15 @@
 										</ul>
 									</li>
 								</ul>
-<?php							}
-			?>
+<?php	
+							}
+?>
 						</div>
+						<div class='socialIcons'>
+							<div class='socialIcon'><a href='https://www.facebook.com/NovaMuse' target='_blank'><i class='fa fa-facebook-square'></i></a></div>
+							<div class='socialIcon'><a href='https://www.pinterest.com/novamuse/' target='_blank'><i class='fa fa-pinterest-square'></i></a></div>
+							<div class='socialIcon'><a href='https://twitter.com/novamuse_ca' target='_blank'><i class='fa fa-twitter-square'></i></a></div>
+						</div>						
 						<div class="navButton-search">
 							<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 								<div class="formOutline">
@@ -153,6 +159,7 @@
 								</div>
 							</form>						
 						</div>
+
 					</div>
 				</div><!--end main menu-->
 			</div><!-- /.navbar-collapse -->

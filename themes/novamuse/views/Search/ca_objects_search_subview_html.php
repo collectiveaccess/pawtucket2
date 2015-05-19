@@ -85,12 +85,22 @@
 <?php 
 				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
 				if(!$vs_image){
-					$t_list_item->load($qr_results->get("type_id"));
-					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
-						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
-					}else{
-						$vs_image = $vs_default_placeholder_tag;
+					# --- get the placeholder graphic from the novamuse theme
+					$va_themes = caExtractValuesByUserLocale($qr_results->get("novastory_category", array("returnAsArray" => true)));
+					$vs_placeholder = "";
+					if(sizeof($va_themes)){
+						$t_list_item = new ca_list_items();
+						foreach($va_themes as $k => $vs_list_item_id){
+							$t_list_item->load($vs_list_item_id);
+							if(caGetThemeGraphic($this->request, 'placeholders/'.$t_list_item->get("idno").'.png')){
+								$vs_image = caGetThemeGraphic($this->request, 'placeholders/'.$t_list_item->get("idno").'.png');
+								$vn_padding_top_bottom = 5;
+							}
+						}
+					}
+					if(!$vs_image){
+						$vs_image = caGetThemeGraphic($this->request, 'placeholders/placeholder.png');
+						$vn_padding_top_bottom = 5;
 					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
