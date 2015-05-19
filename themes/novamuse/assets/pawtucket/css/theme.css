@@ -265,6 +265,9 @@ h2 {
 	max-height:600px !important;
 	overflow:hidden;
 }
+.hpWrapper div.jcarousel {
+	height:480px;
+}
 .innerSlide {
 	max-height:600px;
 	overflow:hidden;

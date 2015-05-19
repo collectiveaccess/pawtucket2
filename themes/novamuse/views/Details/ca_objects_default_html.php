@@ -224,7 +224,7 @@
 				}
 				# --- parent hierarchy info
 				if($t_object->get('parent_id')){
-					print _t("Part Of").": ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
+					print _t("Part Of").": ".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', '', 'Detail', 'objects/'.$t_object->get('parent_id'))."</div>";
 				}
 				# --- category
 				if($t_object->get('ns_category')){
@@ -314,7 +314,7 @@
 			if(sizeof($va_sim_items)){
 				print '<div class="thumbs-col1"><p class="subtitletextcaps">'._t("Similar Items").'</p>';
 				foreach($va_sim_items as $va_similar_item){
-					print "<div class='thumb'>".caNavLink($this->request, $va_similar_item["media"], "", "Detail", "Object", "Show", array("object_id" => $va_similar_item["object_id"]))."</div>";
+					print "<div class='thumb'>".caNavLink($this->request, $va_similar_item["media"], "", "", "Detail", "objects/".$va_similar_item["object_id"])."</div>";
 				}
 				print '<div class="clear"></div></div>';
 			}
