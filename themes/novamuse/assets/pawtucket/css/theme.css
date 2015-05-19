@@ -22,6 +22,9 @@ h1 {
   text-transform:none;
   font-weight:bold;
 }
+h2 {
+	color: #19568c;
+}
 .clear {
   clear: both;
   width: 100%, height:1px;
@@ -67,6 +70,7 @@ h1 {
   margin-top: 90px;
   background-color: #19568c;
   width:100%;
+  min-width:760px;
 }
 .navButtonHighlight, #mainmenu .navButtonFirstHighlight {
   float: left;
@@ -76,6 +80,7 @@ h1 {
   background-image: url('../graphics/button_grad2.png');
   background-repeat: repeat-x;
   background-color: #eb4646;
+  list-style-type:none;
 }
 #mainmenu .navButton, #mainmenu .navButtonFirst {
   float: left;
@@ -106,6 +111,24 @@ h1 {
   font-size: 11px;
   font-family: WeissBT-Roman;
   height:40px;
+}
+#mainmenu .navButton #browse-menu a, #mainmenu .navButtonHighlight #browse-menu  a {
+  list-style-type: none;
+  margin: 0 15px 0 15px;
+  padding: 0 5px 0 5px;
+  float: left;
+  color:#19568c;
+  height:auto;
+  text-align:left;
+}
+#mainmenu .navButton #browse-menu div.browseFacetItem a, #mainmenu .navButtonHighlight #browse-menu div.browseFacetItem a {
+	height:60px;
+	padding: 10px;
+  	font-family: helvetica;
+  	text-transform: none;
+}
+.filterbylabel {
+	text-align:left;
 }
 #mainmenu .navButton .dropdown-menu a  {
 	color:#0079c1;
@@ -140,11 +163,18 @@ h1 {
 	padding:0px;
 	border-bottom:0px;
 }
+#mainmenu .navButton #browse-menu .filterMenuFacetList li a {
+	line-height:1.5em;
+	margin-bottom:10px;
+	margin-left:0px;
+	width:100%;
+}
 #mainmenu .navButton #browse-menu div.browseFacetItem a {
 	height:60px;
 	padding:10px;
 	font-family:helvetica;
 	text-transform:none;
+	margin:0px;
 }
 .filterMenureults {
 	margin-left:-4px;
@@ -168,6 +198,27 @@ h1 {
 .nav .nav-divider {
 	margin:0px;
 }
+.socialIcons {
+	float:right;
+	margin: 0px 15px 0px 15px;
+}
+.socialIcon {
+	float: right;
+	padding: 8px 2px 0px 2px;
+	font-size: 24px;
+}
+.socialIcon a{
+	color:#fff;
+}
+@media (min-width: 768px) {
+	.navbar .formOutline {
+	   margin-left: 0px;
+	}
+	.navbar-form .form-group {
+  		width: 100px;
+	}
+}
+
 /* Footer */
 
 #footer {
@@ -209,13 +260,34 @@ h1 {
   padding: 0px;
   text-align: left;
 }
+.hpWrapper .jcarousel {
+	margin:0px auto 0px auto !important;
+	max-height:600px !important;
+	overflow:hidden;
+}
+.innerSlide {
+	max-height:600px;
+	overflow:hidden;
+}
+.hpWrapper .jcarousel div{
+	width:100% !important;
+	max-width:800px;
+}
+.hpWrapper .jcarousel img{
+	width:100%;
+	height:auto;
+	max-width:800px;
+}
+.hpWrapper .frontSlide .frontSlideCaption {
+	width:auto !important;
+}
 .front .jcarousel-control-next {
 	right:0px;
 }
 .front .jcarousel-control-prev {
 	left:0px !important;
 }
-.frontSlide .frontSlideCaption {
+.hpWrapper .frontSlide .frontSlideCaption {
   text-align: right;
   font-family: WeissBT-Roman;
   font-size: 16px;
@@ -226,16 +298,16 @@ h1 {
   bottom: 30px;
   right: 0px;
   z-index: 10000;
-  width:auto;
   opacity:1;
   transition:none;
   -webkit-transition:none;
   font-weight:normal;
+  color:#19568c;
 }
-.frontSlide:hover .frontSlideCaption {
+.hpWrapper .frontSlide:hover .frontSlideCaption {
   background: rgba(255, 255, 255, 0.7);
   padding: 15px;
-  color: #FFF;
+  color:#19568c;
   z-index: 100;
   font-weight: bold;
   padding: 10px 10px 10px 15px;
@@ -246,7 +318,7 @@ h1 {
   opacity:1;
   font-weight:normal;
 }
-.frontSlideCaption a {
+.hpWrapper .frontSlideCaption a {
 	color: #0079c1;
 }
 .setDescription {
@@ -302,6 +374,10 @@ a.shareButton {
   padding-left: 10px;
   letter-spacing: 1px;
 }
+.recentlyAdded img {
+	width:100%;
+	height:auto;
+}
 
 /* About */
 
@@ -356,6 +432,13 @@ a.shareButton {
   width: 40%;
   padding-bottom: 15px;
 }
+.dashboardStats div {
+	height:50px;
+}
+.mostPopular img{
+	width:100%;
+	height:auto;
+}
 
 /* Detail */
 #pageArea.detail{
@@ -376,6 +459,9 @@ a.shareButton {
   -webkit-margin-after: 1em;
   -webkit-margin-start: 0px;
   -webkit-margin-end: 0px;
+}
+.detail.entities .unit {
+	margin-bottom:10px;
 }
 .objecttitle {
   width: 480px;
@@ -429,7 +515,7 @@ a.shareButton {
   font-size: 14px;
   text-transform: uppercase;
   background-color: #09375d;
-  width: 100%;
+  width: 229px;
 }
 .object-type img {
   float: left;
@@ -536,8 +622,12 @@ p.noPadding {
 .prevnav {
   float: left;
 }
+.backnav {
+	display:inline-block;
+}
 .nextnav {
 	float:right;
+	display:inline-block;
 }
 .detail-login-link {
   text-align: center;
@@ -628,4 +718,36 @@ a.shareButton {
 .multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
 	height:180px;
 	padding-top:85px;
+}
+
+/* Sets */
+
+#pageArea.sets .dropdown-menu > li > a {
+	padding-top:7px;
+	padding-bottom:7px;
+}
+#pageArea.sets .dropdown-menu > li > a:hover {
+	color:#333;
+}
+#pageArea.sets .dropdown-menu .divider {
+	margin:0px;
+}
+#pageArea.sets .dropdown-menu {
+	padding:0px;
+}
+.lbSetExpandedInfo a {
+	text-decoration:none;
+}
+
+/* Plugins */
+
+.stats .statsLeftCol {
+	float:right;
+	width:100%;
+}
+.stats .statsLeftInner {
+	margin-right:200px;
+}
+.stats .imageRightCol {
+	margin-left:-160px;
 }
