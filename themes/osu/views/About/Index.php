@@ -17,7 +17,7 @@
 
 	<h3>Support</h3>
 	<div class='dotDivide'></div>	
-	<p>The Csuri Project at OSU is supported by the Advanced Computing Center for the Arts and Design (ACCAD) and the College of the Arts, and is housed at ACCAD. Donations to support the Csuri Project are welcome and can be made through The Ohio State University's <a href="http://giveto.osu.edu" title="OSU's Development Office Web Site">Development Office</a>.</p>
+	<p>The Csuri Project at OSU is supported by the Advanced Computing Center for the Arts and Design (ACCAD) and the College of the Arts and Sciences, and is housed at ACCAD. Donations to support the Csuri Project are welcome and can be made through The Ohio State University's <a href="http://giveto.osu.edu" title="OSU's Development Office Web Site">Development Office</a>.</p>
 
 	</div>
 </div>

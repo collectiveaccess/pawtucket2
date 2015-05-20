@@ -102,7 +102,7 @@
 	</div>
 	<div id="header">
 		<a href="/" title="Return to Home Page" id="logoCsuri"></a><br>
-		<a href="http://arts.osu.edu" title="OSU The College of the Arts" id="logoSub"></a><br>
+		<a href="http://arts.osu.edu" title="OSU The College of the Arts" id="logoSub"><?php print caGetThemeGraphic($this->request, 'college_arts.jpg'); ?></a><br>
 		<a href="http://accad.osu.edu" title="The Advanced Computing Center for Arts and Design" id="logoSub2"></a>
 	</div>	
 	<nav class="navbar navbar-default yamm" role="navigation">
