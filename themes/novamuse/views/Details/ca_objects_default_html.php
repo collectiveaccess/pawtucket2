@@ -108,7 +108,7 @@
 			}
 			print '</div>';
 		}
-			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'Object', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >"._t("Zoom")."</a></div>";
+			print "<div class='nav2'><a href='#' class='shareButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >"._t("Zoom")."</a></div>";
 		}else{
 			print "<div class='objectslides'><img src='".$vs_placeholder."'></div><div class='nav1Spacer'><!-- empty --></div>";
 		}
