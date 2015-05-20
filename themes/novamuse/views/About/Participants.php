@@ -8,7 +8,7 @@
 	$va_member_inst_by_region = array();
 	if($qr_member_institutions->numHits() > 0){
 		while($qr_member_institutions->nextHit()){
-			$va_member_inst_by_region[$qr_member_institutions->get("mem_inst_region", array('convertCodesToDisplayText' => true))][$qr_member_institutions->get("entity_id")] = caNavLink($this->request, join("; ", $qr_member_institutions->getDisplayLabels()), '', 'Detail', 'Entity', 'Show', array('entity_id' => $qr_member_institutions->get("entity_id")));
+			$va_member_inst_by_region[$qr_member_institutions->get("mem_inst_region", array('convertCodesToDisplayText' => true))][$qr_member_institutions->get("entity_id")] = caNavLink($this->request, join("; ", $qr_member_institutions->getDisplayLabels()), '', '', 'Detail', 'entities/'.$qr_member_institutions->get("entity_id"));
 		}
 	}
 	ksort($va_member_inst_by_region);

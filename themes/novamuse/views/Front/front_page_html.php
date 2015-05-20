@@ -70,6 +70,7 @@
 				<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
 				</div>
 				<!-- AddThis Button END -->
+
 				
 			</div><!--end slidewrapper-->
 			<div id="subcontentcontainerHP">
@@ -80,3 +81,37 @@
 ?>	
 			</div><!--end subcontentcontainer-->
 		</div><!--end hpwrapper-->
+<!--		<div class='row'>
+				<hr>
+
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-12 col-lg-12'>
+					<h2>Recent Tweets </h2>
+					<a class="twitter-timeline" href="https://twitter.com/NovaMuse_ca" data-widget-id="598927083369271296">Tweets by @NovaMuse_ca</a>
+					<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>					
+				</div>			
+			</div>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='container'>	
+					<div class='row recentlyAdded'>	
+						<div class='col-sm-12 col-md-12 col-lg-12'>
+							<h2>Recently Added </h2>
+						</div>	
+
+					$t_object = new ca_objects();
+					$va_recently_added_items = $t_object->getRecentlyAddedItems(8, array('checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => 1));
+					if ($va_recently_added_items) {
+						foreach($va_recently_added_items as $vn_recently_added_info){
+							$t_object = new ca_objects($vn_recently_added_info["object_id"]);
+							$va_rep = $t_object->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => $this->opa_access_values));
+							print "<div class='col-sm-6 col-md-6 col-lg-6'>";
+							print caNavLink($this->request, $va_rep['tags']['widepreview'], '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.object_id'));
+							print "<p class='caption'>".$t_object->getLabelForDisplay()."</p>";
+							print "</div>";
+						}
+					}
+			
+					</div>  
+				</div>
+			</div>			
+		</div>	 -->	
