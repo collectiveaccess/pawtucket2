@@ -306,6 +306,8 @@ h2 {
   -webkit-transition:none;
   font-weight:normal;
   color:#19568c;
+  height:80px;
+  top:400px;
 }
 .hpWrapper .frontSlide:hover .frontSlideCaption {
   background: rgba(255, 255, 255, 0.7);
