@@ -55,6 +55,11 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+  <script>
+	  $(function() {
+		$( "#entityTable" ).tabs();
+	  });
+  </script>	
 <?php
 	//
 	// Pull in JS and CSS for debug bar
@@ -65,6 +70,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+
 </head>
 <body>
 	<div id="mainContent">
@@ -80,6 +86,7 @@
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="Search Digital Collections" name="search">
 					</div>
+					<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 				</div>
 			</form>
 		</div>
@@ -117,7 +124,7 @@
 			</div>	
 			<div id="topSection">
 				<div id="pageTitle">
-					<h1>Our Collection</h1>					
+					<h1>Database of Historic Reading Records</h1>					
 					<div class="breadcrumb"><?php print MetaTagManager::getWindowTitle(); ?></div>
 				</div>
 			</div>		
