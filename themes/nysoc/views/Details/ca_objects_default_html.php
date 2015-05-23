@@ -78,10 +78,10 @@
 				}
 				if ($qr_rels->get("ca_entities.industry_occupations")) {
 					$va_occupation_count = $qr_rels->get("ca_entities.industry_occupations", array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
-					foreach ($va_occupation_count as $va_occupation_key => $va_occupations_type) {
-						foreach ($va_occupations_type as $va_occupation_key => $va_occupation) {
-							$va_occupations["$va_occupation"][] = $qr_rels->get("ca_entities.entity_id");
-						}
+					foreach ($va_occupation_count as $vs_occupations_type) {
+						//foreach ($va_occupations_type as $va_occupation_key => $va_occupation) {
+							$va_occupations[$vs_occupations_type][] = $qr_rels->get("ca_entities.entity_id");
+						//}
 					}
 				}
 								

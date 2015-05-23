@@ -108,15 +108,15 @@
 			{{{representationViewer}}}
 			<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 <?php	
-			if ($va_occupations = $t_item->get('ca_entities.industry_occupations', array('returnAsArray' => true))) {
+			if ($va_occupations = $t_item->get('ca_entities.industry_occupations', array('returnAsArray' => true, 'convertCodesToDisplayText' => false))) {
 				print "<H6>Occupation</H6>";
 				$va_as_text = $t_item->get('ca_entities.industry_occupations', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
 				$va_occupations_list = array();
-				foreach ($va_occupations as $va_key => $va_occupation) {
-					foreach ($va_occupation as $va_key2 => $va_occupation_id) {
+				foreach ($va_occupations as $vn_x => $vn_occupation_id) {
+					//foreach ($va_occupation as $va_key2 => $va_occupation_id) {
 						if ($va_occupation_id == 551){continue;}
-						$va_occupations_list[] = caNavLink($this->request, ucfirst($va_as_text[$va_key][$va_key2]), '', '', 'Browse', 'entities/facet/occupation_facet/id/'.$va_occupation_id)."</a>";
-					}
+						$va_occupations_list[] = caNavLink($this->request, ucfirst($va_as_text[$vn_x]), '', '', 'Browse', 'entities/facet/occupation_facet/id/'.$vn_occupation_id)."</a>";
+					//}
 				}
 				print "<div>";
 				print join(', ', $va_occupations_list);
