@@ -83,14 +83,14 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widethumbnail', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
-			print "<div class='col-xs-12 col-sm-12 col-md-12 extitles'><div class='row'>";
+			print "<div class='container extitles'><div class='row'>";
 			print "<div class='col-xs-2 col-sm-2 col-md-2' style='padding-left:10px;'>&nbsp;</div>";
 			print "<div class='col-xs-3 col-sm-3 col-md-3'>Date</div>";
 			print "<div class='col-xs-3 col-sm-3 col-md-3'>Title</div>";
@@ -141,7 +141,7 @@
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'widethumbnail', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'widepreview', array("checkAccess" => $va_access_values)))){
 						$vs_thumbnail = $vs_placeholder_tag;	
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -184,7 +184,5 @@
 				
 				$vn_c++;
 			}
-			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>

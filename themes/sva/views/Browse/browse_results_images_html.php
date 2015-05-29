@@ -90,6 +90,7 @@
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.dates.dates_value')) {
@@ -137,7 +138,5 @@
 				
 				$vn_c++;
 			}
-			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
