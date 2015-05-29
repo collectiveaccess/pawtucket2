@@ -89,6 +89,8 @@
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+			$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continous');
+			
  			$this->view->setVar('name', $va_browse_info['displayName']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
