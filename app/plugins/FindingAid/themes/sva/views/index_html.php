@@ -124,7 +124,7 @@
 				$t_this_level = new ca_collections($va_hierarchy_item['id']);
 				if ($t_parent) {
 					if (($t_this_level) && ($t_parent->get('ca_collections.type_id') != 104) && ($t_parent->get('ca_collections.type_id') != 281)) {
-						if (is_array($va_ids = $t_this_level->get('ca_objects.object_id', array('returnAsArray'=> true, 'sort' => 'ca_objects.preferred_labels'))) && sizeof($va_ids)) {
+						if (is_array($va_ids = $t_this_level->get('ca_objects.object_id', array('returnAsArray'=> true, 'sort' => 'ca_objects.preferred_labels', 'checkAccess' => array(1,2)))) && sizeof($va_ids)) {
 							$qr_objects = caMakeSearchResult('ca_objects', $va_ids);
 							
 							print '<table class="table findingaid">
@@ -143,7 +143,7 @@
 									print "<tr>";
 										print "<td>".($qr_objects->get('ca_objects.location.box') ? "B ".$qr_objects->get('ca_objects.location.box'): "").' '.($qr_objects->get('ca_objects.location.drawer') ? "D ".$qr_objects->get('ca_objects.location.drawer') : "")."</td>";
 										print "<td>".($qr_objects->get('ca_objects.location.folder') ? "F ".$qr_objects->get('ca_objects.location.folder') : "").' '.($qr_objects->get('ca_objects.location.item_location') ? "I ".$qr_objects->get('ca_objects.location.item_location') : "")."</td>"; 
-										if ($qr_objects->get('access') > 0) {
+										if ($qr_objects->get('access') == 1) {
 											print "<td>".$qr_objects->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
 										} else {
 											print "<td>".$qr_objects->get('ca_objects.preferred_labels.name');
@@ -184,7 +184,7 @@
 	//
 	if (!$qr_top_level_collections) {
 		if (($t_parent) && ($t_parent->get('ca_collections.type_id') != 104)) {
-			if (is_array($va_ids = $t_parent->get('ca_objects.object_id', array('returnAsArray'=> true, 'sort' => 'ca_objects.idno'))) && sizeof($va_ids)) {
+			if (is_array($va_ids = $t_parent->get('ca_objects.object_id', array('returnAsArray'=> true, 'sort' => 'ca_objects.idno', 'checkAccess' => array(1,2)))) && sizeof($va_ids)) {
 				$qr_objects = caMakeSearchResult('ca_objects', $va_ids);
 ?>
 		<table class="table findingaid" style='margin-left:0px;'>
@@ -207,7 +207,7 @@
 ?>				
 				<td>
 <?php
-					if ($qr_objects->get('access') > 0) {
+					if ($qr_objects->get('access') == 1) {
 						print $qr_objects->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
 					} else {
 						print $qr_objects->get('ca_objects.preferred_labels.name');
