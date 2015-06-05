@@ -48,13 +48,21 @@
 
 			{{{<ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related Entity</span></ifcount>}}}
 			{{{<ifcount code="ca_entities" min="2"><span class='metaTitle'>Related Entities</span></ifcount>}}}
-			{{{<ifcount code="ca_entities.preferred_labels" min="1"><unit relativeTo="ca_entities" delimiter="<br/>"><l><div class='meta'>^ca_entities.preferred_labels</div></l></unit></ifcount>}}}
+			{{{<ifcount code="ca_entities.related" min="1"><div class='meta'><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></ifcount></div>}}}
 			
-			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='metaTitle'>LCSH Names</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_names</div></unit></span></ifcount>}}}
-			
-			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='metaTitle'>LCSH Subjects</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_subjects</div></unit></span></ifcount>}}}
+			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='metaTitle'>LCSH Names</span></ifcount>}}} 
+			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><div class='meta'><unit delimiter=" ">^ca_occurrences.lcsh_names</unit></div></ifcount>}}}
+<?php
+			if ($va_lcsh_subjects = $t_occurrence->get('ca_occurrences.lcsh_subjects', array('returnAsArray' => true))) {
+				print "<span class='metaTitle'>LCSH Subjects</span>";
+				print "<div class='meta'>";
+				foreach ($va_lcsh_subjects as $va_key => $va_lcsh_subject) {
+					$va_lcsh = explode('[', $va_lcsh_subject['lcsh_subjects']);
+					print $va_lcsh[0]."<br/>";
+				}
+				print "</div>";
+			}
+?>			
 			
 			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
 <?php
@@ -62,10 +70,10 @@
 				print "<div><span class='metaTitle'>Air Date</span><span class='meta'>".$t_occurrence->get('ca_occurrences.workDate.dates_value')."</span></div>";
 			}
 			if ($t_occurrence->get('ca_occurrences.genre') != "") {
-				print "<div><span class='metaTitle'>Genre</span><span class='meta'>".$t_occurrence->get('ca_occurrences.genre')."</span></div>";
+				print "<div><span class='metaTitle'>Genre</span><span class='meta'>".$t_occurrence->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))."</span></div>";
 			}	
 			if ($t_occurrence->get('ca_occurrences.productionTypes') != "") {
-				print "<div><span class='metaTitle'>Production type</span><span class='meta'>".$t_occurrence->get('ca_occurrences.productionTypes')."</span></div>";
+				print "<div><span class='metaTitle'>Production type</span><span class='meta'>".$t_occurrence->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))."</span></div>";
 			}
 			if ($t_occurrence->get('ca_occurrences.mission.missionCritical') == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: ".$t_occurrence->get('ca_occurrences.mission.missionCritical')."</div>";
@@ -76,10 +84,10 @@
 			if (sizeof($va_awards) > 0) {
 				print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
-					print "<div>Award: ".$va_award['award_event']."</div>";
-					print "<div>Year: ".$va_award['award_year']."</div>";
-					print "<div>Type: ".$va_award['award_types']."</div>";
-					print "<div>Notes: ".$va_award['award_notes']."</div>";
+					print "<div>Award: ".$t_occurrence->get('ca_occurrences.awards.award_event', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Year: ".$t_occurrence->get('ca_occurrences.awards.award_year', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Type: ".$t_occurrence->get('ca_occurrences.awards.award_types', array('convertCodesToDisplayText' => true))."</div>";
+					print "<div>Notes: ".$t_occurrence->get('ca_occurrences.awards.award_notes', array('convertCodesToDisplayText' => true))."</div>";
 					print "<div style='height:10px;'></div>";
 				}
 				print "</span></div>";

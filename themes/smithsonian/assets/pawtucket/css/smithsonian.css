@@ -871,6 +871,7 @@ a.browseRemoveFacet img {
 .detail .meta {
 	width:60%;
 	display:inline-block;
+	margin-bottom:10px;
 }
 .detail .metaTitle {
 	width:30%;
