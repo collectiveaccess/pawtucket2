@@ -12,6 +12,12 @@
 		<div class="container"><div class="row">
 			<div class='col-md-6 col-lg-6'>
 				{{{representationViewer}}}
+				<div id="detailTools">
+					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+				</div><!-- end detailTools -->		
+				
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6 metadata'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
@@ -50,28 +56,32 @@
 ?>
 			
 			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'>^ca_occurrences.locationText</span></ifcount>}}}
-
-			<div>
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places.related" min="1" max="1"><span class='metaTitle'>Related place</span></ifcount></unit>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places.related" min="2"><span class="metaTitle">Related places</span></ifcount></unit>}}}
-			{{{<unit relativeTo="ca_occurrences"><ifcount code="ca_places.related" min="1"><div class='meta'><unit delimiter=" ➜ ">^ca_places.hierarchy.preferred_labels.name</unit></div></ifcount></unit>}}}					
-			</div>
-
+			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifcount>}}}
+			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location (legacy text)</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
 <?php
-	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
-			$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
+			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
+				print "<span class='metaTitle'>Related places</span>";
+				print "<div class='meta'>";
+				foreach ($va_rel_works as $va_key => $va_occurrence_id) {
+					$t_occurrence = new ca_occurrences($va_occurrence_id);
+					print $t_occurrence->get('ca_places.preferred_labels');
+				}
+				print "</div>";
+			}
+
+			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
+				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 			
-			while($qr_occ->nextHit()) {
-				if (is_array($va_contributors = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('subject', 'interviewee'), 'returnAsArray' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
-					print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
-					foreach ($va_contributors as $cont_key => $va_contributor) {
-						print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
+				while($qr_occ->nextHit()) {
+					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('subject', 'interviewee'), 'returnAsArray' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
+						print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
+						foreach ($va_contributors as $cont_key => $va_contributor) {
+							print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
+						}
+						print "</div></div>";
 					}
-					print "</div></div>";
 				}
 			}
-		}
 ?>
 			
 			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
@@ -123,21 +133,28 @@
 			if (sizeof($va_ids) > 0) {
 				$qr_res = caMakeSearchResult('ca_occurrences', $va_ids);
 			
-				$vs_awards = '';
-				while($qr_res->nextHit()) {
-					if (!$qr_res->get('ca_occurrences.awards.award_year')) { continue; }
-					$vs_awards .= "<div>Award: ".$qr_res->get('ca_occurrences.awards.award_event', array('convertCodesToDisplayText' => true))."</div>";
-					$vs_awards .= "<div>Year: ".$qr_res->get('ca_occurrences.awards.award_year', array('convertCodesToDisplayText' => true))."</div>";
-					$vs_awards .= "<div>Type: ".$qr_res->get('ca_occurrences.awards.award_types', array('convertCodesToDisplayText' => true))."</div>";
-					$vs_awards .= "<div>Notes: ".$qr_res->get('ca_occurrences.awards.award_notes', array('convertCodesToDisplayText' => true))."</div>";
-					$vs_awards .= "<div style='height:10px;'></div>";
-				}
-				
-				if ($vs_awards) { 
-					$vs_awards = "<div><span class='metaTitle'>Awards</span><div class='meta'>{$vs_awards}</div></div>";
+				$va_awards = $qr_res->get('ca_occurrences.awards', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
+				if (sizeof($va_awards) > 0) {
+					print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
+					foreach ($va_awards as $award => $va_award) {
+						if ($va_award['award_event']) {
+							array_shift($va_award['award_event']);
+							print "<div>Award: ".join(' > ', $va_award['award_event'])."</div>";
+						}
+						if ($va_award['award_year']) {
+							print "<div>Award Year: ".$va_award['award_year']."</div>";
+						}
+						if ($va_award['award_types'][0] != "Root node for award_types") {
+							print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
+						}
+						if ($va_award['award_notes']) {
+							print "<div>Award Notes: ".$va_award['award_notes']."</div>";
+						}										
+						print "<div style='height:10px;'></div>";
+					}
+					print "</span></div>";
 				}
 			}
-			print $vs_awards;
 			
 			if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
@@ -154,10 +171,29 @@
 ?>				
 	
 				{{{<ifcount code='ca_objects.essenceTrack' min='1'><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit><p>Type: ^ca_objects.essenceTrack.essenceTrackType</p><p>Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</p><p>Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</p><p>Scan Type: ^ca_objects.essenceTrack.ScanType</p><p>Standard: ^ca_objects.essenceTrack.essenceTrackStandard</p><p>Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</p><p>Duration: ^ca_objects.essenceTrack.essenceTrackDuration</p></unit></div></div></ifcount>}}}
+				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
 
+<?php
+			if ($va_lcsh_names = $t_object->get('ca_objects.lcsh_names', array('returnAsArray' => true))) {
+				print "<span class='metaTitle'>LCSH Names</span>";
+				print "<div class='meta'>";
+				foreach ($va_lcsh_names as $va_key => $va_lcsh_name) {
+					$va_name = explode('[', $va_lcsh_name['lcsh_names']);
+					print $va_name[0]."<br/>";
+				}
+				print "</div>";
+			}
+			if ($va_lcsh_subjects = $t_object->get('ca_objects.lcsh_subjects', array('returnAsArray' => true))) {
+				print "<span class='metaTitle'>LCSH Subjects</span>";
+				print "<div class='meta'>";
+				foreach ($va_lcsh_subjects as $va_key => $va_lcsh_subject) {
+					$va_lcsh = explode('[', $va_lcsh_subject['lcsh_subjects']);
+					print $va_lcsh[0]."<br/>";
+				}
+				print "</div>";
+			}
+?>	
 
-				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-				{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
