@@ -56,6 +56,9 @@
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
+	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -91,7 +94,7 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -125,6 +128,7 @@
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
 					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
@@ -144,3 +148,10 @@
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		if($("#bSetsSelectMultipleButton").is(":visible")){
+			$(".bSetsSelectMultiple").show();
+		}
+	});
+</script>

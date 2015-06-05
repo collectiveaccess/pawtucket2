@@ -51,8 +51,8 @@
  		 */ 
  		public function Index() {
  			$this->view->setVar('t_collection', new ca_collections());
- 			$va_display_template = $this->config->get('display_template');
- 			$this->view->setVar('display_template', $va_display_template);
+ 			$this->view->setVar('display_template', $this->config->get('display_template'));
+ 			$this->view->setVar('ancestor_template', $this->config->get('ancestor_template'));
  			$this->view->setVar('page_title', $this->config->get('page_title'));
  			$this->view->setVar('intro_text', $this->config->get('intro_text'));
  			$this->view->setVar('open_by_default', $this->config->get('open_by_default'));
@@ -63,6 +63,7 @@
 					
  			$this->render("index_html.php");
  		}
+ 		
  		# ------------------------------------------------------
  	}
  ?>

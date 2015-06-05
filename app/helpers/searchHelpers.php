@@ -405,7 +405,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {
 				$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
-			$qr_res = $o_search->search($ps_search_expression.(($vb_match_on_stem && !preg_match('!\*$!', $ps_search_expression)) ? '*' : ''), $va_options);
+			$qr_res = $o_search->search(trim($ps_search_expression).(($vb_match_on_stem && !preg_match('![\*\"\']$!', $ps_search_expression)) ? '*' : ''), $va_options);
 			
 			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
 			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
@@ -624,6 +624,9 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					}
 					break;
 				default:
+					if (!is_array($pa_form_values[$vs_dotless_element]) && $pa_form_values[$vs_dotless_element]) {
+						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
+					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }

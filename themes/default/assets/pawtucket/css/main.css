@@ -391,6 +391,7 @@ h1 i {
 	padding-bottom:10px;
 	float:left;
 	padding-top:10px;
+	padding-right:0px;
 }
 
 .filterMenuFacetList ul{
@@ -403,7 +404,7 @@ h1 i {
 .filterMenuFacetList li{
 	list-style-type:none;
 	margin:0 0 2px 0;
-	padding:0 2px 0 2px;
+	padding:0 2px 0 4px;
 	border-radius:2px;
 }
 
@@ -512,7 +513,7 @@ div.browseFacetItem a{
 	float:left; 
 	padding-top:2px;
 	margin-right:-15px; 
-	margin-left:12px;
+	/*margin-left:12px;*/
 	max-height:250px;
 	overflow:auto;
 }
@@ -525,7 +526,6 @@ div.browseFacetItem a{
 	background-color:#e7e7e7;
 	margin-top:-5px;
 	padding-top:2px;
-	margin-right:4px;
 }	
 .mainfacet	li{
 	list-style-type:none;
@@ -688,10 +688,42 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* lightbox lb */
 /* --------------------------------- */
+.sets H1, .sets H1 .btn-group{
+	padding:0px;
+	margin:0px;
+}
+.sets .setsBack{
+	margin:0px 5px 0px 0px;
+	background-color:#EBEBEB;
+	text-transform:uppercase;
+	padding:0px 5px 3px 5px;
+	text-align:center;
+	float:left;
+}
+.sets .setsBack a{
+	color:#8e8985;
+	line-height:.3em;
+	font-size:14px;
+	text-decoration:none;
+}
+.sets .setsBack a .small{
+	font-size:7px;
+	color:#ababab;
+	padding-top:0px;
+	padding-bottom:5px;
+}
+.sets H5{
+	margin-top:0px;
+	padding-top:0px;
+}
 #lbViewButtons{
-	float:right;
 	font-size:18px;
 	padding-bottom:5px;
+}
+@media (min-width: 767px) {
+	#lbViewButtons{
+		text-align:right;
+	}
 }
 #lbViewButtons a .glyphicon {
 	color:#ababab;
@@ -702,6 +734,10 @@ a.browseRemoveFacet img {
 .lbSetContainer{
 	width:100%;
 	position:relative;
+}
+.lbSetCount {
+	font-size:16px;
+	color:#858585;
 }
 .lbSet{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -723,6 +759,13 @@ a.browseRemoveFacet img {
 }
 .lbSet h5{
 	text-transform:uppercase;
+	font-size:13px;
+	margin-top:0px;
+	height:1em;
+	overflow:hidden;
+}
+.lbSet:hover H5{
+	height:auto;
 }
 @media (max-width: 767px) {
 	.lbSet h5{
@@ -733,6 +776,12 @@ a.browseRemoveFacet img {
 }
 .lbItemContainer{
 	min-height:310px;
+	min-width:150px;
+	position:relative;
+	border:1px solid transparent;
+}
+.lbItemContainerList{
+	min-height:72px;
 	min-width:150px;
 	position:relative;
 	border:1px solid transparent;
@@ -748,13 +797,21 @@ a.browseRemoveFacet img {
 	line-height:1.2em;
 	font-size:11px;	
 }
+.lbItemContainerList .lbItem{
+	margin-bottom:15px;
+}
 .lbItem:hover{
-	position:absolute;
 	cursor:move;
 	z-index:1000;
 }
+.lbItemContainer .lbItem:hover{
+	position:absolute;
+}
+.lbItemContainerList .lbItem:hover{
+	width:100%;
+}
 @media (min-width: 768px) {
-	.lbItem:hover{
+	.lbItemContainer .lbItem:hover{
 		padding:15px;
 		width:110%;
 		left:-5%;
@@ -765,11 +822,14 @@ a.browseRemoveFacet img {
 	height:250px;
 	overflow:hidden;
 }
-.lbItem:hover .lbItemContent{
+.lbItemContainerList .lbItemContent{
+	height:72px;
+}
+.lbItemContainer .lbItem:hover .lbItemContent{
 	min-height:250px;
 	height:auto;
 }
-.lbExpandedInfo, .lbSetExpandedInfo{
+.lbItemContainer .lbExpandedInfo, .lbSetExpandedInfo{
 	width:100%;
 	z-index:100;
 	display:none;
@@ -781,9 +841,6 @@ a.browseRemoveFacet img {
 .lbExpandedInfo HR, .lbSetExpandedInfo HR{
 	margin-bottom:5px;
 	margin-top:5px;
-}
-.lbSet H5{
-	margin-top:0px;
 }
 .lbItem a, .lbSet a{
 	color:#666;
@@ -799,6 +856,17 @@ a.browseRemoveFacet img {
 }
 .lbItemImg img{
 	width:100%;
+	height:auto;
+}
+.lbItemContainerList .lbItemImg{
+	width:72px;
+	max-height:72px;
+	text-align:center;
+	float:left;
+	margin-right:10px;
+}
+.lbItemContainerList .lbItemImg img{
+	width:auto;
 	height:auto;
 }
 .lbItemThumb, lbSetThumb{
@@ -876,6 +944,12 @@ a.browseRemoveFacet img {
 	width:100%;
 	margin-bottom:10px;
 }
+.lbItemContainerList .lbSetImgPlaceholder{
+	padding:10px;
+}
+.lbItemContainerList .lbSetImgPlaceholder{
+	font-size: 30px;
+}
 .lbSetItemComment{
 	display:none;
 	width:100%;
@@ -896,6 +970,13 @@ a.browseRemoveFacet img {
 		width:220px;
 	}
 }
+.lbItemContainerList .lbSetItemComment{
+	left:0px;
+	width:100%;
+	height:auto;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
 .lbSetComment{
 	display:none;
 	padding-bottom:5px;
@@ -910,11 +991,11 @@ a.browseRemoveFacet img {
 	padding-bottom:5px;
 }
 
-.lbSetItemComment{
+.lbItemContainer .lbSetItemComment{
 	padding-top:25px;
 }
 	
-.lbSetItemComment .closecomment {
+.lbItemContainer .lbSetItemComment .closecomment {
 	margin-top:-15px;
 }
 .lbSetItemComment .lbComments{
@@ -923,7 +1004,7 @@ a.browseRemoveFacet img {
 	clear:right;
 	margin-bottom:10px;
 }
-.lbItem:hover .lbSetItemComment .lbComments{
+.lbItemContainer .lbItem:hover .lbSetItemComment .lbComments{
 	max-height:150px;
 }
 .lbSetComment .lbComments{
@@ -977,11 +1058,22 @@ a.browseRemoveFacet img {
 	color:#000;
 
 }*/
-.activitycol .lbSetCommentHeader {
+.activitycol .lbSetCommentHeader, .lbSetCommentHeader {
 	font-weight:bold;
 	padding-top:10px;
 	margin-top:10px;
 	border-top:1px solid #e3e3e3;	
+}
+.lbSetCommentHeader a{
+	color:#858585;
+}
+.lbSetCommentHeader HR{
+	margin:10px 0px 10px 0px;
+}
+.lbItemContainerList .lbSetCommentHeader {
+	border-top:none;
+	margin-top:0px;
+	padding-top:5px;
 }
 .activitystream {
 	height:700px; 
@@ -1430,7 +1522,7 @@ a.readmore-js-toggle{
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */
-.results strong {
+.results strong, .sets H5 strong {
 	color:#000;
 	text-transform:uppercase;
 	font-size:12px;
@@ -1505,6 +1597,19 @@ a.readmore-js-toggle{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     line-height: 1em;
     padding: 10px;
+}
+.bSetsSelectMultiple{
+	display:none;	
+}
+.bResultItem .bSetsSelectMultiple, .bResultListItem .bSetsSelectMultiple{
+	position:absolute;
+	right:20px;
+	top:0px;
+	z-index:100;
+}
+.bResultItem:hover .bSetsSelectMultiple{
+	right:13px;
+	top:20px;
 }
 .bResultItem .bResultItemImg {
     margin-bottom: 5px;
@@ -1734,7 +1839,7 @@ a.readmore-js-toggle{
 	margin-bottom:5px;
 	}
 
-.browse .btn {
+.browse .btn, .sets .btn {
 	background-color:#fafafa;
 	border:1px solid #efefef;
 	font-size:10px;
@@ -1742,7 +1847,7 @@ a.readmore-js-toggle{
 	margin-left:5px;
 	margin-right:5px;
 	}
-.browse .btn a, .browse .btn .glyphicon{color:#8c8c8c;}	
+.browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{color:#8c8c8c;}	
 
 /* timeline results */
 #bTimelineContainer{
@@ -2096,6 +2201,7 @@ a.readmore-js-toggle{
 .BookReaderContainer{
 	width: 100%;
 	height: 100% !important;
+	min-height: 500px !important;
 }
 .DV-views{
 	margin-left:72px;

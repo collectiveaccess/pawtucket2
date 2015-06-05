@@ -25,12 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
+	$va_lightbox_display_name = caGetSetDisplayName();
+	$vs_lightbox_display_name = ucFirst($va_lightbox_display_name["singular"]);
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$vs_user_links = "";
 	if($this->request->isLoggedIn()){
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		if(!$this->request->config->get("disable_my_collections")){
+			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_display_name, '', '', 'Sets', 'Index', array())."</li>";
+		}
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
@@ -119,11 +125,12 @@
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>	
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container">
+	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

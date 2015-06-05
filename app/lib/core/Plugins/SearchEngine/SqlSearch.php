@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2013 Whirl-i-Gig
+ * Copyright 2010-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -282,11 +282,27 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							$t_last_table = $t_table;
 							$vs_last_table = $vs_table;
 						}
-						$va_wheres[] = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
 					} else {
 						// join in primary table
-						$va_wheres[] = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
 					}
+					
+					if (in_array('NULL', $va_filter)) {
+						switch($va_filter['operator']) {
+							case 'in':
+								if (strpos(strtolower($va_filter['value']), 'null') !== false) {
+									$vs_where = "({$vs_where} OR (".$va_filter['field']." IS NULL))";
+								}
+								break;
+							case 'not in':
+								if (strpos(strtolower($va_filter['value']), 'null') !== false) {
+									$vs_where = "({$vs_where} OR (".$va_filter['field']." IS NOT NULL))";
+								}
+								break;
+						}
+					}
+					$va_wheres[] = $vs_where;
 				}
 			}
 			
@@ -342,16 +358,31 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							$t_last_table = $t_table;
 							$vs_last_table = $vs_table;
 						}
-						$va_wheres[] = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
 					} else {
 						$t_table = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true);
 						// join in primary table
 						if (!isset($va_joins[$va_tmp[0]])) {
 							$va_joins[$va_tmp[0]] = "INNER JOIN ".$va_tmp[0]." ON ".$va_tmp[0].".".$t_table->primaryKey()." = ca_sql_search_search_final.row_id";
 						}
-						$va_wheres[] = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
 					}
+					
+					switch($va_filter['operator']) {
+						case 'in':
+							if (strpos(strtolower($va_filter['value']), 'null') !== false) {
+								$vs_where = "({$vs_where} OR (".$va_filter['field']." IS NULL))";
+							}
+							break;
+						case 'not in':
+							if (strpos(strtolower($va_filter['value']), 'null') !== false) {
+								$vs_where = "({$vs_where} OR (".$va_filter['field']." IS NOT NULL))";
+							}
+							break;
+					}
+					$va_wheres[] = $vs_where;
 				}
+				
 				Debug::msg("set up filters for {$ps_search_expression} took ".$t->getTime(4));
 			}
 			
@@ -653,17 +684,24 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							break;
 						case 'Zend_Search_Lucene_Search_Query_Phrase':
 	if ($this->getOption('strictPhraseSearching')) {
+							
+							$vs_search_tokenizer_regex = $this->opo_search_config->get('search_tokenizer_regex');
+							
 						 	$va_words = array();
 						 	foreach($o_lucene_query_element->getQueryTerms() as $o_term) {
 								if (!$vs_access_point && ($vs_field = $o_term->field)) { $vs_access_point = $vs_field; }
 								
-								$va_raw_terms[] = $vs_text = (string)$o_term->text;
-								if (strlen($vs_escaped_text = $this->opo_db->escape($vs_text))) {
-									$va_words[] = $vs_escaped_text;
+								$va_terms = preg_split("![{$vs_search_tokenizer_regex}]+!u", (string)$o_term->text);
+						
+								foreach($va_terms as $vs_term) {
+									$va_raw_terms[] = $vs_term;
+									if (strlen($vs_escaped_text = $this->opo_db->escape($vs_term))) {
+										$va_words[] = $vs_escaped_text;
+									}
 								}
 							}
 							if (!sizeof($va_words)) { continue(3); }
-							
+						
 							$va_ap_tmp = explode(".", $vs_access_point);
 							$vn_fld_table = $vn_fld_num = null;
 							if(sizeof($va_ap_tmp) >= 2) {
@@ -749,7 +787,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									break;
 								}
 								
-								$va_terms = $this->_tokenize($vs_term, true, $vn_i);
+								$va_terms = array($vs_term); //$this->_tokenize($vs_term, true, $vn_i);
 								$vb_has_wildcard = (bool)(preg_match('!\*$!', $vs_term));
 								$vb_output_term = false;
 								foreach($va_terms as $vs_term) {
@@ -762,7 +800,12 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 										$va_ft_like_terms[] = $vs_stripped_term;
 									} else {
 										// do stemming
-										if ($this->opb_do_stemming) {
+										$vb_do_stemming = $this->opb_do_stemming;
+										if (mb_substr($vs_term, -1) == '|') {
+											$vs_term = mb_substr($vs_term, 0, mb_strlen($vs_term) - 1);
+											$vb_do_stemming = false;
+										}
+										if ($vb_do_stemming) {
 											$vs_to_stem = preg_replace('!\*$!u', '', $vs_term);
 											if (!preg_match('!y$!u', $vs_to_stem) && !preg_match('![0-9]+!', $vs_to_stem)) {	// don't stem things ending in 'y' as that can cause problems (eg "Bowery" becomes "Boweri")
 												if (!($vs_stem = trim($this->opo_stemmer->stem($vs_to_stem)))) {
@@ -779,11 +822,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									$vb_output_term = true;	
 								
 								}
-								if ($vb_output_term) {
-									$va_raw_terms[] = $vs_term;
-								} else {
-									$vn_i--;
-								}
+								if ($vb_output_term) { $va_raw_terms[] = $vs_term; }
 							}
 							
 							break;
@@ -1897,6 +1936,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				$va_tmp = explode(',', $pa_filter['value']);
 				$va_values = array();
 				foreach($va_tmp as $vs_tmp) {
+					if ($vs_tmp == 'NULL') { continue; }
 					$va_values[] = (int)$vs_tmp;
 				}
 				return "(".join(",", $va_values).")";

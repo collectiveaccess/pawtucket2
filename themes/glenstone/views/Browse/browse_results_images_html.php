@@ -109,19 +109,37 @@
 					$vs_label_artist	 	= "<p class='artist lower'>".caDetailLink($this->request, $qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist')), '', $vs_table, $vn_id)."</p>";
 					$vs_label_detail_link 	= "<p><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
 					if ($qr_res->get('is_deaccessioned') && ($qr_res->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
-						$vs_idno_detail_link = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
+						$vs_deaccessioned = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
 					} else {
-						$vs_idno_detail_link = "";
+						$vs_deaccessioned = "";
 					}
-					if ($this->request->user->hasUserRole("founder") || $this->request->user->hasUserRole("supercurator") || $this->request->user->hasUserRole("collection")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatoral_all_new") || $this->request->user->hasUserRole("curatoral_basic_new")  || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 						$vs_art_idno_link = "<p class='idno'>".$qr_res->get("ca_objects.idno")."</p>";
 					} else {
 						$vs_art_idno_link = "";
 					}
 				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					#$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					$vs_label_detail_link 	= "<p>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</p>";
 					$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
+					if ($qr_res->get('ca_objects.dc_date.dc_dates_value')) {
+						$vs_date_link = "<p>".$qr_res->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+					}else {
+						$vs_date_link = "";
+					}
+					if ($qr_res->get('ca_objects.type_id') == 23 || $qr_res->get('ca_objects.type_id') == 26 || $qr_res->get('ca_objects.type_id') == 25 || $qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27){
+						$vs_type_link = "<p>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+					} else {
+						$vs_type_link = "";
+					}
+					if ($qr_res->get('ca_objects.type_id') == 23 || $qr_res->get('ca_objects.type_id') == 26 || $qr_res->get('ca_objects.type_id') == 25 || $qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27){
+						$va_collection_id = $qr_res->get('ca_collections.collection_id');
+						$t_collection = new ca_collections($va_collection_id);
+						$vn_parent_ids = $t_collection->getHierarchyAncestors($va_collection_id, array('idsOnly' => true));
+						$vn_highest_level = end($vn_parent_ids);
+						$t_top_level = new ca_collections($vn_highest_level);
+						$vs_collection_link = "<p>".caNavLink($this->request, $t_top_level->get('ca_collections.preferred_labels'), '', 'Detail', 'collections', $vn_highest_level)."</p>";					
+					}					
 				}
 				if ($vs_table == 'ca_objects') {
 					if ($qr_res->get('ca_objects.type_id') == 25) {
@@ -140,13 +158,17 @@
 						}
 					} elseif ($qr_res->get('ca_objects.type_id') == 23 && !($qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)))){
 						$va_icon = "<i class='fa fa-archive'></i>";
+					} elseif ($qr_res->get('ca_objects.type_id') == 24 && !($qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)))){
+						$va_icon = "<i class='fa fa-archive'></i>";
+					} elseif ($qr_res->get('ca_objects.type_id') == 27 && !($qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)))){
+						$va_icon = "<i class='fa fa-archive'></i>";
 					} else {
 						$va_icon = "";
 					}
 					if ($qr_res->get('ca_objects.type_id') == 1903){
 						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$t_copy->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_parent_id);				
 					} elseif ($qr_res->get('ca_objects.type_id') == 25) {
-						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_parent_id);										
+						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon, '', $vs_table, $vn_id);										
 					} else {
 						$vs_rep_detail_link 	= caDetailLink($this->request, $va_icon.$qr_res->getMediaTag('ca_object_representations.media', 'medium', array('checkAccess' => $va_access_values)), '', $vs_table, $vn_id);				
 					}
@@ -160,9 +182,10 @@
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' id='cResultSelected_{$vn_id}' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_artist}{$vs_label_detail_link}{$vs_idno_detail_link}{$vs_art_idno_link}{$vs_library_info}
+					{$vs_label_artist}{$vs_label_detail_link}{$vs_collection_link}{$vs_type_link}{$vs_date_link}{$vs_art_idno_link}{$vs_library_info}{$vs_deaccessioned}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
@@ -179,3 +202,10 @@
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		if($("#bSetsSelectMultipleButton").is(":visible")){
+			$(".bSetsSelectMultiple").show();
+		}
+	});
+</script>

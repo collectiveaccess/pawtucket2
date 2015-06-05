@@ -72,6 +72,127 @@ class LoginRegController extends ActionController {
 		$this->render("LoginReg/form_register_html.php");
 	}
 	# ------------------------------------------------------
+	function profileForm($t_user = "") {
+		if(!$this->request->isLoggedIn()){
+			$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
+		if ($this->request->config->get('dont_allow_registration_and_login')) {
+			$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
+		MetaTagManager::setWindowTitle(_t("User Profile"));
+		if(!is_object($t_user)){
+			$t_user = $this->request->user;
+		}
+		$this->view->setVar("t_user", $t_user);
+		
+		$va_profile_prefs = $t_user->getValidPreferences('profile');
+		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
+			$va_elements = array();
+			foreach($va_profile_prefs as $vs_pref) {
+				$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
+				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='".$vs_pref."' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+			}
+
+			$this->view->setVar("profile_settings", $va_elements);
+		}
+
+		$this->render("LoginReg/form_profile_html.php");
+	}
+	# ------------------------------------------------------
+	function profileSave() {
+		if(!$this->request->isLoggedIn()){
+			$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
+		if ($this->request->config->get('dont_allow_registration_and_login')) {
+			$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
+		MetaTagManager::setWindowTitle(_t("User Profile"));
+		$t_user = $this->request->user;
+		$t_user->purify(true);
+		
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
+		$ps_password = $this->request->getParameter("password", pString);
+		$ps_password2 = $this->request->getParameter("password2", pString);
+		$ps_security = $this->request->getParameter("security", pString);
+
+		$va_errors = array();
+
+		if (!caCheckEmailAddress($ps_email)) {
+			$va_errors["email"] = _t("E-mail address is not valid.");
+		}else{
+			$t_user->set("email", $ps_email);
+			$t_user->set("user_name",$ps_email);
+		}
+		if (!$ps_fname) {
+			$va_errors["fname"] = _t("Please enter your first name");
+		}else{
+			$t_user->set("fname", $ps_fname);
+		}
+		if (!$ps_lname) {
+			$va_errors["lname"] = _t("Please enter your last name");
+		}else{
+			$t_user->set("lname", $ps_lname);
+		}
+		if ($ps_password) {
+			if($ps_password != $ps_password2){
+				$va_errors["password"] = _t("Passwords do not match");
+			}else{
+				$t_user->set("password", $ps_password);
+			}
+		}
+
+		// Check user profile responses
+		$va_profile_prefs = $t_user->getValidPreferences('profile');
+		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
+			foreach($va_profile_prefs as $vs_pref) {
+				$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
+				if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
+					$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
+
+					$t_user->clearErrors();
+				}else{
+					$t_user->setPreference($vs_pref, $this->request->getParameter('pref_'.$vs_pref, pString));
+				}
+			}
+		}		
+		
+		if(sizeof($va_errors) == 0){
+			if(sizeof($va_errors) == 0){
+				# --- there are no errors so update new user record
+				$t_user->setMode(ACCESS_WRITE);
+				$t_user->update();
+				if($t_user->numErrors()) {
+					$va_errors["general"] = join("; ", $t_user->getErrors());
+				}else{
+					#success
+					$this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
+					// If we are editing the user record of the currently logged in user
+					// we have a problem: the request object flushes out changes to its own user object
+					// for the logged-in user at the end of the request overwriting any changes we've made.
+					//
+					// To avoid this we check here to see if we're editing the currently logged-in
+					// user and reload the request's copy if needed.
+					$this->request->user->load($t_user->getPrimaryKey());
+				}
+			}
+		}
+		if(sizeof($va_errors)){
+			$this->notification->addNotification(_t("There were errors, your profile could not be updated"), __NOTIFICATION_TYPE_ERROR__);
+			$this->view->setVar("errors", $va_errors);
+		}
+		$this->profileForm();
+	}
+	# ------------------------------------------------------
 	function resetForm() {
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
 		$this->render("LoginReg/form_reset_html.php");
@@ -144,11 +265,12 @@ class LoginRegController extends ActionController {
 		$this->request->deauthenticate();
 
 		$t_user = new ca_users();
+		$t_user->purify(true);
 
 		# --- process incoming registration attempt
-		$ps_email = strip_tags($this->request->getParameter("email", pString));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
 		$ps_password = $this->request->getParameter("password", pString);
 		$ps_password2 = $this->request->getParameter("password2", pString);
 		$ps_security = $this->request->getParameter("security", pString);
@@ -235,7 +357,11 @@ class LoginRegController extends ActionController {
 					break;
 				# -------------
 				case "active":
-					$t_user->set("active",1);
+					if($this->request->config->get('dont_approve_logins_on_registration')){
+						$t_user->set("active",0);
+					}else{
+						$t_user->set("active",1);
+					}
 					break;
 				# -------------
 				case "userclass":
@@ -299,42 +425,63 @@ class LoginRegController extends ActionController {
 				# -- generate mail text from template - get both the text and the html versions
 				$vs_mail_message_text = $o_view->render("mailTemplates/reg_conf.tpl");
 				$vs_mail_message_html = $o_view->render("mailTemplates/reg_conf_html.tpl");
-
 				caSendmail($t_user->get('email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 
-				$t_user = new ca_users();
-				# log in the new user
-				$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
+				if($this->request->config->get("email_notification_for_new_registrations")){
+					# --- send email to admin
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 
-				if($this->request->isLoggedIn()){
-					if($this->request->isAjax()){
-						$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
-						$this->render("Form/reload_html.php");
-						return;
-					}else{
-						$vs_action = $vs_controller = $vs_module_path = '';
-						if ($vs_default_action = $this->request->config->get('default_action')) {
-							$va_tmp = explode('/', $vs_default_action);
-							$vs_action = array_pop($va_tmp);
-							if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
-							if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
-						} else {
-							$vs_controller = 'Splash';
-							$vs_action = 'Index';
+					$o_view->setVar("t_user", $t_user);
+					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/reg_admin_notification_subject.tpl");
+	
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/reg_admin_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/reg_admin_notification_html.tpl");
+					
+					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				}
+
+				$t_user = new ca_users();
+				$vs_action = $vs_controller = $vs_module_path = '';
+				if ($vs_default_action = $this->request->config->get('default_action')) {
+					$va_tmp = explode('/', $vs_default_action);
+					$vs_action = array_pop($va_tmp);
+					if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
+					if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+				} else {
+					$vs_controller = 'Splash';
+					$vs_action = 'Index';
+				}
+				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+				if($t_user->get("active")){
+					# log in the new user
+					$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
+	
+					if($this->request->isLoggedIn()){
+						if($this->request->isAjax()){
+							$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
+							$this->render("Form/reload_html.php");
+							return;
+						}else{
+							$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+							$this->response->setRedirect($vs_url);
 						}
-						$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
-						$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-						$this->response->setRedirect($vs_url);
+					}else{
+						$va_errors["register"] = _t("Login failed.");
 					}
 				}else{
-					$va_errors["register"] = _t("Login failed.");
+					# --- registration needs approval
+					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+					$this->response->setRedirect($vs_url);
 				}
 			}
-		}else{
+		}
+
+		if(sizeof($va_errors) > 0) {
 			$this->view->setVar('errors', $va_errors);
 			$this->registerForm($t_user);
 		}
-
 	}
 	# -------------------------------------------------------
 	function joinGroup() {
@@ -453,6 +600,7 @@ class LoginRegController extends ActionController {
 						break;
 					}
 					$t_user = new ca_users();
+					$t_user->purify(true);
 					$t_user->load($vs_user_id);
 					# verify user exists with this e-mail address
 					if ($t_user->getPrimaryKey()) {

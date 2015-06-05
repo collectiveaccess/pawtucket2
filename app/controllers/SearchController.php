@@ -95,12 +95,11 @@
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+ 			$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continuous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continuous');
+			
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			if (!trim($ps_view = $this->request->getParameter('view', pString))) {
- 				$ps_view = caGetOption('view', $pa_options, $this->opo_result_context->getCurrentView());
- 			}
- 			
+ 			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
@@ -380,6 +379,7 @@
  				$va_parse = caParseTagOptions($vs_tag);
  				$vs_tag_proc = $va_parse['tag'];
  				$va_opts = $va_parse['options'];
+ 				$va_opts['checkAccess'] = caGetUserAccessValues($this->request);
  				
  				if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
 					$va_default_form_values[$vs_tag_proc] = $vs_default_value;

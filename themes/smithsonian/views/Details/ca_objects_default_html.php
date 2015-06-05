@@ -155,6 +155,7 @@
 	
 				{{{<ifcount code='ca_objects.essenceTrack' min='1'><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit><p>Type: ^ca_objects.essenceTrack.essenceTrackType</p><p>Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</p><p>Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</p><p>Scan Type: ^ca_objects.essenceTrack.ScanType</p><p>Standard: ^ca_objects.essenceTrack.essenceTrackStandard</p><p>Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</p><p>Duration: ^ca_objects.essenceTrack.essenceTrackDuration</p></unit></div></div></ifcount>}}}
 
+
 				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 			</div><!-- end col -->

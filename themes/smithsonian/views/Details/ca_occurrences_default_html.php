@@ -48,6 +48,7 @@
 
 			{{{<ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related Entity</span></ifcount>}}}
 			{{{<ifcount code="ca_entities" min="2"><span class='metaTitle'>Related Entities</span></ifcount>}}}
+
 			{{{<ifcount code="ca_entities.related" min="1"><div class='meta'><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></ifcount></div>}}}
 			
 			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='metaTitle'>LCSH Names</span></ifcount>}}} 
@@ -63,6 +64,7 @@
 				print "</div>";
 			}
 ?>			
+
 			
 			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
 <?php

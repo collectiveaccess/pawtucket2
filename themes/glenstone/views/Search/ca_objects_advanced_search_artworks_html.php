@@ -25,7 +25,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class="row collection">
 		<div class="col-sm-6">	
 			<div class="advSearch">
-				<h1>Search Collection</h1>
+				<h1>Art Advanced Search</h1>
 				{{{form}}}
 
 					<div class="advancedSearchField">
@@ -78,9 +78,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<div class='row'>
 		<div class="col-sm-12">
 			<hr>
-<!--			<h1>Artists</h1> -->
+			<h1>Artists by Last Name</h1>  
 <?php
-/*		//$o_artist_search = new ObjectSearch();
+		//$o_artist_search = new ObjectSearch();
 		//$qr_artists = $o_artist_search->search("ca_entities.preferred_labels.displayname/artist:*");
 		$o_db = new Db();
 		$qr_res = $o_db->query("
@@ -97,8 +97,21 @@ $va_access_values = caGetUserAccessValues($this->request);
 		
 		$va_artists = array();
 		while ($qr_artists->nextHit()) {
-			$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
-			$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+			$va_has_artwork = false;
+			if ($qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values))) {
+				$va_artworks = $qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values, 'returnAsArray' => true));
+				foreach ($va_artworks as $vn_artwork_key => $va_artwork) {
+					$vn_artwork_id = $va_artwork['object_id'];
+					$t_object = new ca_objects($vn_artwork_id);
+					if ($t_object->get('ca_objects.type_id') == 28){
+						$va_has_artwork = true;
+					}
+				}
+				if ($va_has_artwork == true) {
+					$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
+					$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+				}
+			}
 		} 
 		#print "<pre>";
 		#print_r($va_artists);
@@ -112,7 +125,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 				print "<div class='artistName'>".$va_artist."</div>";
 			}
 		}
-*/		
+		
 ?>			
 			
 		</div><!--end col-->
