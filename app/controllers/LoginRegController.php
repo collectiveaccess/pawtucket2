@@ -442,7 +442,7 @@ class LoginRegController extends ActionController {
 					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 				}
 
-				$t_user = new ca_users();
+				#$t_user = new ca_users();
 				$vs_action = $vs_controller = $vs_module_path = '';
 				if ($vs_default_action = $this->request->config->get('default_action')) {
 					$va_tmp = explode('/', $vs_default_action);
@@ -472,8 +472,14 @@ class LoginRegController extends ActionController {
 					}
 				}else{
 					# --- registration needs approval
-					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-					$this->response->setRedirect($vs_url);
+					if($this->request->isAjax()){
+						$this->view->setVar("message", _t('Thank you for registering!  Your account will be activated after review.').$vs_group_message);
+						$this->render("Form/reload_html.php");
+						return;
+					}else{
+						$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+						$this->response->setRedirect($vs_url);
+					}
 				}
 			}
 		}
