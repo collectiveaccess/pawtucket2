@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,6 +27,7 @@
  */
  
 	require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
  
  	class ContactController extends ActionController {
  		# -------------------------------------------------------
@@ -51,6 +52,7 @@
  		}
  		# ------------------------------------------------------
  		public function Send() {
+ 			$o_purifier = new HTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){
@@ -70,7 +72,7 @@
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
- 					$vs_element_value = $this->request->getParameter($vs_element_name, pString);
+ 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString));
  					if($va_options["required"] && !$vs_element_value){
  						$va_errors[$vs_element_name] = true;
  						$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");

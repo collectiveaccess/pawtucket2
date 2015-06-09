@@ -296,6 +296,41 @@ a.socialIcon i{
   margin:0px;
 }
 /*
+	Front
+*/
+.front H1{
+	padding-top:17px;
+}
+.front ul.introText{
+	padding: 12px 70px 0px 70px;
+}
+.front ul.introText li{
+	color:#858585;
+	line-height:1.2;
+	text-transform:none;
+	font-size:15px;
+	padding-bottom:10px;
+}
+@media (min-width: 768px) {
+	.front ul.introText li {
+		font-size:17px;
+	}
+}
+.front H2.lastLogIn{
+	padding-left:25px;
+}
+.front H2{
+	color:#858585;
+	line-height:1.2;
+	text-transform:none;
+	font-size:15px;
+}
+@media (min-width: 768px) {
+	.front H2 {
+		font-size:20px;
+	}
+}
+/*
 	Gallery
 */
 .gallery .galleryNext, .gallery .galleryPrevious{
@@ -328,6 +363,28 @@ a.socialIcon i{
 }
 .gallery H6, .gallery h6{
 	text-transform:uppercase;
+}
+
+.gallery #detailTools{
+	clear:both;
+	padding-top:0px;
+	margin-top:0px;
+
+}
+.gallery .detailTool {
+	color: #858585;
+	font-size: 11px;
+    padding: 5px;
+    margin-right:5px;
+    text-transform: uppercase;
+    border-radius:3px;    
+}
+.gallery .detailTool span{
+	color:#929292;
+	margin-right:5px;
+}
+.gallery .detailTool a{
+	text-decoration:none;
 }
 
 /* advanced search */

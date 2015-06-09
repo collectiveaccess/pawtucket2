@@ -34,12 +34,20 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>It was the early 1980s and construction for the Steelcase Global Headquarters in Grand Rapids, Michigan was underway. During this expansion Chairman and CEO Bob Pew embraced the opportunity to grow the company’s art collection displayed in Steelcase facilities and plants around the country... <?php print caNavLink($this->request, _t("Read more"), "", "", "About", "Index"); ?></H1>
-			<br/><br/>
+			<H1>Welcome to the beta release of the Steelcase digital art collection!</H1>
+			<ul class="introText">
+				<li>The site works best in Chrome, Safari, and Firefox</li>
+				<li>Only works in storage are viewable at this time</li>
+				<li>Inventory of works-on-display will begin in June 2015</li>
+				<li>Newly inventoried artwork will appear in stages beginning in July allowing you to learn about the inspirational artwork surrounding your workspace</li>
+				<li>A mobile app allowing for customer/employee walking tours of select works on display is planned for release in late 2015</li>
+				<li>Your feedback is appreciated and is extremely important for making Art.Steelcase.com a useful resource</li>
+				<li>Explore and have fun!</li>
+			</ul>
 <?php 
 			if($this->request->user->getLastLogout()){
 				$vs_last_logout_date = "after ".date("F j, Y", $this->request->user->getLastLogout());
-				print "<H2>".caNavLink($this->request, _t("See what changed since your last login")." <i class='fa fa-caret-right'></i>", "", "", "Search", "objects", array("search" => "modified:\"".$vs_last_logout_date."\""))."</H2>";
+				print "<H2 class='lastLogIn'>".caNavLink($this->request, _t("See what changed since your last login")." <i class='fa fa-caret-right'></i>", "", "", "Search", "objects", array("search" => "modified:\"".$vs_last_logout_date."\""))."</H2>";
 			}
 ?>
 		</div><!--end col-sm-8-->

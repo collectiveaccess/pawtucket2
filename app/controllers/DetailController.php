@@ -200,7 +200,7 @@
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('map_zoom', $va_options, null))));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('zoom_level', $va_options, 12))));
 				}
 			}
 			
@@ -533,7 +533,12 @@
 			
 			$va_info = $t_rep->getMediaInfo('media');
 			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_object->get('idno'));
-			switch($this->request->user->getPreference('downloaded_file_naming')) {
+			
+			if (!($vs_mode = $this->request->user->getPreference('downloaded_file_naming'))) {
+				$vs_mode = $this->request->config->get('downloaded_file_naming');
+			}
+			
+			switch($vs_mode) {
 				case 'idno':
 					$this->view->setVar('version_download_name', $vs_idno_proc.'.'.$va_rep_info['EXTENSION']);
 					break;

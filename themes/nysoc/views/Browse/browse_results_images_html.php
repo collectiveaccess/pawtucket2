@@ -56,6 +56,9 @@
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
+	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -91,7 +94,7 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -109,7 +112,34 @@
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 					}
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Volume" || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Bib") {
+						$vs_label_detail_link 	= caDetailLink($this->request,$qr_res->get("ca_objects.parent.preferred_labels.name")." ".$qr_res->get("ca_objects.preferred_labels.name"), '', $vs_table, $vn_id);
+						$vs_label_detail_link.= "<br/>".$qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')))."<br/>".$qr_res->get('ca_entities.publication_date');
+					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+				} elseif ($vs_table == 'ca_entities'){
+					if ($qr_res->get('ca_entities.life_dates')) {
+						$vs_lifedates = "<br/>".$qr_res->get('ca_entities.life_dates');
+					} else {
+						$vs_lifedates = null;
+					}
+					if ($qr_res->get('ca_entities.industry_occupations')) {
+						$vs_occupation = "<br/>".$qr_res->get('ca_entities.industry_occupations', array('delimiter' => ', ', 'convertCodesToDisplayText' => true));
+					} else {
+						$vs_occupation = null;
+					}
+					if ($qr_res->get('ca_entities.country_origin')) {
+						$vs_country = "<br/>".$qr_res->get('ca_entities.country_origin', array('delimiter' => ', ', 'convertCodesToDisplayText' => true));
+					} else {
+						$vs_country = null;
+					}										
+					$vs_entity_info = $vs_lifedates.$vs_occupation.$vs_country;
+					if($va_images[$vn_id]){
+						$vs_thumbnail = $va_images[$vn_id];
+					}else{
+						$vs_thumbnail = $vs_default_placeholder_tag;
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
 				} else {
 					if($va_images[$vn_id]){
 						$vs_thumbnail = $va_images[$vn_id];
@@ -118,36 +148,27 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$va_dates =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities">^ca_objects_x_entities.date_out</unit>');
-				$va_date_in =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities">^ca_objects_x_entities.date_in</unit>');
-				$va_fine =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities">^ca_objects_x_entities.fine</unit>');
-				$va_ledger =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities" >^ca_objects.preferred_labels</unit>', array('restrictToTypes' => array('ledger')));
-
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
-
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+				if (($qr_res->get('ca_entities.biography.biography_text')) && ($vs_table != 'ca_objects')) {
+					$vs_expanded_info = $qr_res->get('ca_entities.biography.biography_text');
+				} else {
+					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+				}
 
 				print "
-	<div class=' col-xs-12 col-sm-12 col-md-12'>
-		<div class='row readerRow'>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				{$vs_label_detail_link}
-			</div>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				
-			</div>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				{$va_dates}
-			</div>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				{$va_date_in}
-			</div>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				{$va_fine}
-			</div>
-			<div class='metaCell col-xs-2 col-sm-2 col-md-2'>
-				{$va_ledger}
-			</div>												
+	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemText'>
+					{$vs_label_detail_link}{$vs_entity_info}
+				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+				<hr>
+				{$vs_expanded_info}
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
 				
@@ -157,3 +178,10 @@
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		if($("#bSetsSelectMultipleButton").is(":visible")){
+			$(".bSetsSelectMultiple").show();
+		}
+	});
+</script>

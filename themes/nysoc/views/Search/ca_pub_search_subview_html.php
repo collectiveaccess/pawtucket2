@@ -75,7 +75,13 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet pubSet'>\n"; $vb_div_open = true;}
-				print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $qr_results->get('ca_objects.parent.preferred_labels')." ".$qr_results->get('ca_objects.preferred_labels.displayname'), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+				if ($va_parent_label = $qr_results->get('ca_objects.parent.preferred_labels')) {
+					$va_title_parts = explode(':', $qr_results->get('ca_objects.parent.preferred_labels'));
+					print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $va_title_parts[0]." ".$qr_results->get('ca_objects.preferred_labels.displayname'), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+				} else {
+					$va_title_parts = explode(':', $qr_results->get('ca_objects.preferred_labels'));
+					print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $va_title_parts[0], '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+				}				
 				print "<p>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'))).($qr_results->get('ca_objects.publication_date') && $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'))) ? ", ".$qr_results->get('ca_objects.publication_date') : $qr_results->get('ca_objects.publication_date'))."</p>";
 				print "</div>";
 			$vn_count++;

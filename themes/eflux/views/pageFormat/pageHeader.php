@@ -82,7 +82,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'eflux.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'rr_templogo1.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
