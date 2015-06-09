@@ -98,7 +98,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;">
+					<li class="dropdown" style="position:relative; display: none">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu">
 <?php
@@ -107,7 +107,7 @@
 						</ul>
 					</li>
 					<li>
-						<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-list'></span>", "", "", "Search/advanced", "objects"); ?>
+						<?php print caNavLink($this->request, "<i class='fa fa-ellipsis-h'></i>", "", "", "Search/advanced", "objects"); ?>
 					</li>
 				</ul>
 
@@ -150,7 +150,7 @@
 
 				</ul>	
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3 col-sm-offset-1">
 							<h2 class='about'><?php print caNavLink($this->request, _t("About the archives"), "", "", "About", "Index"); ?></h2>
 				</div>
 			</div><!-- end row -->
