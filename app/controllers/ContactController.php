@@ -27,7 +27,6 @@
  */
  
 	require_once(__CA_LIB_DIR__."/core/Error.php");
-	require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
  
  	class ContactController extends ActionController {
  		# -------------------------------------------------------
