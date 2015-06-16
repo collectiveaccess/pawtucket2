@@ -26,7 +26,7 @@
 										<div class='prevLink'>{{{previousLink}}}</div>
 										<div class='nextLink'>{{{nextLink}}}</div>
 									</div>								
-									<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+									<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 								</div><!-- end col -->
 							</div><!-- end row -->
 							<div class="row">			

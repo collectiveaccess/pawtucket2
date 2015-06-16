@@ -11,7 +11,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+			<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 			{{{<unit><ifdef code="ca_occurrences.nonpreferred_labels"><p>^ca_occurrences.nonpreferred_labels.displayname</p></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.idno"><p>ID: ^ca_occurrences.idno</p></ifdef></unit>}}}
 <?php

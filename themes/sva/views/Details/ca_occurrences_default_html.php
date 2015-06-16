@@ -10,7 +10,7 @@
 <div class="container">
 	<div class="row">
 		<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-			<div class='objTitle'>{{{^ca_occurrences.preferred_labels.displayname}}}</div>
+			<div class='objTitle'>{{{^ca_occurrences.preferred_labels}}}</div>
 	
 <?php					
 		if ($va_department = $t_occurrence->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('department'), 'checkAccess' => $va_access_values))) {

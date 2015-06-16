@@ -103,7 +103,7 @@
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+					<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 					{{{<ifdef code="ca_occurrences.description"><br/>^ca_occurrences.description<br/><br/></ifdef>}}}
 <?php
 					$t_object_thumb = new ca_objects();
