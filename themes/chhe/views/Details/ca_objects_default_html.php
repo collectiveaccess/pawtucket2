@@ -200,7 +200,7 @@
 						<p><strong>Comments (<?php print sizeof($va_comments); ?>)</strong></p>
 <?php
 						foreach($va_comments as $va_comment){
-							print "<p>".$va_comment["comment"]."<br/>";		
+							print "<p class='commentdisplay'>".$va_comment["comment"]."<br/>";		
 							print "&mdash; ".$va_comment["author"].", ".(($va_comment["location"]) ? $va_comment["location"].", " : "").$va_comment["date"]."</p>";
 						}
 					}

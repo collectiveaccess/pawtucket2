@@ -457,6 +457,11 @@ color:#ccc;}
 .mainbody .commentsarea p{
 	font-size:15px;
 }
+
+.commentdisplay {
+	font-weight: bold;
+}
+
 .detail H3 {
     color: #fff;
     margin:0px 0px 15px 0px;
