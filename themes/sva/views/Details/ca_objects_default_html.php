@@ -3,14 +3,9 @@
 	$va_comments = $this->getVar("comments");
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
+
+
+
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
@@ -46,7 +41,7 @@
 				if ($va_materials = $t_object->get('ca_objects.materials', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><span class='detailLabel'>Materials</span><span class='detailInfo'>".$va_materials."</span></div>";
 				}
-				if ($va_dims = $t_object->get('ca_objects.dimensions_as_text', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
+				if ($va_dims = $t_object->get('ca_objects.dimensions', array('delimiter' => ' &times; ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><span class='detailLabel'>Measurements</span><span class='detailInfo'>".$va_dims."</span></div>";
 				}	
 				if ($va_exhibition = $t_object->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
@@ -67,11 +62,9 @@
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
+
+
+
 </div><!-- end row -->
 
 

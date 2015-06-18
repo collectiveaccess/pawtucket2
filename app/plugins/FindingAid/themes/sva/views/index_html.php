@@ -95,7 +95,7 @@
 	//
 	// Output the hierarchy down to lowest collection level
 	//
-	print "<h6>Container List</h6>";
+	print "<h6>Contents</h6>";
 	if ($qr_top_level_collections) {
 		while($qr_top_level_collections->nextHit()) { 
 			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id', array('checkAccess' => $va_user_access));
@@ -106,7 +106,7 @@
 					continue;
 				}
 				print "<div class='collHeader' style='margin-left: ".($va_hierarchy_item['level'] * 35)."px; clear:both;'>";
-				if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
+				if (($va_hierarchy_item['level']) == 0) {
 					print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
 				} else {
 					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
@@ -130,8 +130,8 @@
 							print '<table class="table findingaid">
 								<thead>
 									<tr>
-										<th>BOX/DRAWER</th>
-										<th>FOLDER/ITEM</th>
+										<th></th>
+										<th></th>
 										<th>TITLE</th>
 										<th>DATE</th>
 									</tr>
@@ -141,8 +141,8 @@
 								while($qr_objects->nextHit()) {
 
 									print "<tr>";
-										print "<td>".($qr_objects->get('ca_objects.location.box') ? "B ".$qr_objects->get('ca_objects.location.box'): "").' '.($qr_objects->get('ca_objects.location.drawer') ? "D ".$qr_objects->get('ca_objects.location.drawer') : "")."</td>";
-										print "<td>".($qr_objects->get('ca_objects.location.folder') ? "F ".$qr_objects->get('ca_objects.location.folder') : "").' '.($qr_objects->get('ca_objects.location.item_location') ? "I ".$qr_objects->get('ca_objects.location.item_location') : "")."</td>"; 
+										print "<td>".($qr_objects->get('ca_objects.location.box') ? "B".$qr_objects->get('ca_objects.location.box'): "").' '.($qr_objects->get('ca_objects.location.drawer') ? "D".$qr_objects->get('ca_objects.location.drawer') : "")."</td>";
+										print "<td>".($qr_objects->get('ca_objects.location.folder') ? "F".$qr_objects->get('ca_objects.location.folder') : "").' '.($qr_objects->get('ca_objects.location.item_location') ? "I".$qr_objects->get('ca_objects.location.item_location') : "")."</td>"; 
 										if ($qr_objects->get('access') == 1) {
 											print "<td>".$qr_objects->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
 										} else {
@@ -190,8 +190,8 @@
 		<table class="table findingaid" style='margin-left:0px;'>
 			<thead>
 				<tr>
-					<th>BOX/DRAWER</th>
-					<th>FOLDER/ITEM</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
 					<th>TITLE</th>
 					<th>DATE</th>
 				</tr>
@@ -202,8 +202,8 @@
 ?>
 			<tr>
 <?php			
-				print "<td>".($qr_objects->get('ca_objects.location.box') ? "B ".$qr_objects->get('ca_objects.location.box'): "").' '.($qr_objects->get('ca_objects.location.drawer') ? "D ".$qr_objects->get('ca_objects.location.drawer') : "")."</td>";
-				print "<td>".($qr_objects->get('ca_objects.location.folder') ? "F ".$qr_objects->get('ca_objects.location.folder') : "").' '.($qr_objects->get('ca_objects.location.item_location') ? "I ".$qr_objects->get('ca_objects.location.item_location') : "")."</td>";
+				print "<td>".($qr_objects->get('ca_objects.location.box') ? "B".$qr_objects->get('ca_objects.location.box'): "").' '.($qr_objects->get('ca_objects.location.drawer') ? "D".$qr_objects->get('ca_objects.location.drawer') : "")."</td>";
+				print "<td>".($qr_objects->get('ca_objects.location.folder') ? "F".$qr_objects->get('ca_objects.location.folder') : "").' '.($qr_objects->get('ca_objects.location.item_location') ? "I".$qr_objects->get('ca_objects.location.item_location') : "")."</td>";
 ?>				
 				<td>
 <?php

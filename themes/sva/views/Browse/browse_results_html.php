@@ -190,7 +190,7 @@ if (!$vb_ajax) {	// !ajax
 					$va_num_pages = floor($qr_res->numHits() / $vn_hits_per_block);
 					$vn_i = 1;
 					while ($va_num_pages > 0) {
-						print "<li ".($vn_start==($vn_hits_per_block*$vn_i) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => $vn_hits_per_block*$vn_i, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
+						print "<li ".($vn_start==(($vn_hits_per_block*$vn_i)-$vn_hits_per_block) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => ($vn_hits_per_block*$vn_i)-$vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
 						$vn_i++;
 						$va_num_pages--;
 					}					

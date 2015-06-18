@@ -100,8 +100,6 @@
 				}
 				if ($qr_res->get('ca_entities.preferred_labels')) {
 					$vs_entity_detail_link 	= "<p>".$qr_res->get("ca_entities.preferred_labels", array('delimiter' => ', ')).$vn_date."</p>";
-				} elseif ($qr_res->get('ca_occurrences.preferred_labels')){
-					$vs_entity_detail_link = "<p>".$qr_res->get("ca_occurrences.preferred_labels", array('delimiter' => ', ')).$vn_date."</p>";
 				} else {
 					$vs_entity_detail_link = ", ".$qr_res->get('ca_objects.dates.dates_value');
 				}

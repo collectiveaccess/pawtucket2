@@ -8,14 +8,7 @@
  	$va_view_icons = $o_config->getAssoc("views")
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft --> 
-	</div><!-- end col -->
+
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">			
@@ -40,23 +33,17 @@
 				if ($va_idno = $t_occurrence->get('ca_occurrences.idno', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='detailLabel'>ID</span><span class='detailInfo'>".$va_idno."</span></div>";
 				}
-				if ($va_opening_dates = $t_occurrence->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
+				if ($va_opening_dates = $t_occurrence->get('ca_occurrences.dates', array('returnAsArray' => true))) {
 					#205
 					foreach ($va_opening_dates as $va_opening_key => $va_opening) {
-						if ($va_opening['ex_dates_type'] == 205) {
-							$va_opening_date = $va_opening['ex_dates_value'];
+						if ($va_opening['dates_type'] == 304) {
+							$va_opening_date = $va_opening['dates_value'];
 						}
 					}
 				}
-				if ($va_closing_dates = $t_occurrence->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-					#207
-					foreach ($va_closing_dates as $va_closing_key => $va_closing) {
-						if ($va_closing['ex_dates_type'] == 207) {
-							$va_closing_date = $va_closing['ex_dates_value'];
-						}
-					}
-				}
-				print "<div class='unit'><span class='detailLabel'>Date</span><span class='detailInfo'>".$va_opening_date." - ".$va_closing_date."</span></div>";
+
+
+				print "<div class='unit'><span class='detailLabel'>Date</span><span class='detailInfo'>".$va_opening_date."</span></div>";
 				
 				if ($va_reception_dates = $t_occurrence->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
 					#206
@@ -66,7 +53,7 @@
 						}
 					}
 					if ($va_reception_date) {
-						print "<div class='unit'><span class='detailLabel'>Reception</span><span class='detailInfo'>".$va_reception_date."</span></div>";
+						/* print "<div class='unit'><span class='detailLabel'>Reception</span><span class='detailInfo'>".$va_reception_date."</span></div>"; */
 					}
 				}
 				if ($va_place = $t_occurrence->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {

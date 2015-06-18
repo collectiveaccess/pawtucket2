@@ -92,10 +92,10 @@
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			print "<div class='container extitles'><div class='row'>";
 			print "<div class='col-xs-2 col-sm-2 col-md-2' style='padding-left:10px;'>&nbsp;</div>";
-			print "<div class='col-xs-3 col-sm-3 col-md-3'>Date</div>";
-			print "<div class='col-xs-3 col-sm-3 col-md-3'>Title</div>";
-			print "<div class='col-xs-2 col-sm-2 col-md-2'>Location</div>";
-			print "<div class='col-xs-2 col-sm-2 col-md-2'>Curator</div>";
+			print "<div class='col-xs-2 col-sm-2 col-md-2'>Date</div>";
+			print "<div class='col-xs-4 col-sm-4 col-md-4'>Title</div>";
+			print "<div class='col-xs-4 col-sm-4 col-md-4'>Exhibitors</div>";
+			print "<!-- <div class='col-xs-2 col-sm-2 col-md-2'>Curator</div> -->";
 			print "</div></div>";
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
@@ -111,6 +111,9 @@
 				} else {
 					$vs_entity_detail_link = ", ".$qr_res->get('ca_objects.dates.dates_value');
 				}
+
+/*
+
 				if ($va_opening_dates = $qr_res->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
 					#205
 					foreach ($va_opening_dates as $va_opening_key => $va_opening) {
@@ -127,17 +130,48 @@
 						}
 					}
 				}				
-				$vs_date = $va_opening_date." - ".$va_closing_date;
+
+*/
+
+				if ($va_closing_dates = $qr_res->get('ca_occurrences.dates', array('returnAsArray' => true))) {
+					
+					#304 = "exhibition_date" type
+					#305 = reception type
+					
+					foreach ($va_closing_dates as $va_closing_key => $va_closing) {
+						if ($va_closing['dates_type'] == 304) {
+							$va_closing_date = $va_closing['dates_value'];
+						}
+					}
+				}				
+
+
+
+				$vs_date = $va_closing_date;
+				
 				if ($qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 					$vs_location = $qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values));
 				} else {
 					$vs_location = "";
 				}	
+				
+				
+				
+				
+				
+				
 				if ($qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'))) {
 					$vs_curator = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'));
 				} else {
 					$vs_curator = "";
-				}	
+				}
+				
+				if ($qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('exhibitor'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))) {
+					$vs_exhibitor = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('exhibitor'), 'checkAccess' => $va_access_values, 'delimiter' => ', '));
+				} else {
+					$vs_exhibitor = "";
+				}
+					
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
@@ -165,18 +199,18 @@
 					<div class='col-xs-2 col-sm-2 col-md-2'>
 						<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					</div>
-					<div class='col-xs-3 col-sm-3 col-md-3'>
+					<div class='col-xs-2 col-sm-2 col-md-2'>
 						{$vs_date}
 					</div>
-					<div class='col-xs-3 col-sm-3 col-md-3'>
+					<div class='col-xs-4 col-sm-4 col-md-4'>
 						{$vs_label_detail_link}
 					</div>
-					<div class='col-xs-2 col-sm-2 col-md-2'>
-						{$vs_location}
+					<div class='col-xs-4 col-sm-4 col-md-4'>
+						{$vs_exhibitor}
 					</div>
-					<div class='col-xs-2 col-sm-2 col-md-2'>
+<!--					<div class='col-xs-2 col-sm-2 col-md-2'>
 						{$vs_curator}
-					</div>					
+					</div>					-->
 				</div><!-- end bResultItemContent -->
 			</div><!-- end bResultItem -->
 		</div><!-- end row -->
