@@ -1,0 +1,323 @@
+body {
+  background: url('../graphics/indexbg.jpg') top center no-repeat;
+  font-family: proximanova, Helvetica, sans-serif;
+  /* font-size: 12px; */
+  color: #333;
+  margin:0px auto;
+  max-width:1000px;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family:proximanova;
+}
+h1 {
+	color: #29549c;
+	font-family:proximanova;
+}
+h2 {
+	color:#333;
+	text-transform:none;
+	font-size:24px;
+	font-weight:bold;
+	margin-bottom:2px;
+}
+a {
+	color: #29549c
+}
+.dotDivide {
+	width:100%;
+	height:1px;
+	border-top:1px dotted #ccc;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+#masthead {
+  font: 75% "trebuchet ms", sans-serif;
+  /* width: 99%; */
+  height: 29px;
+  max-height: 29px;
+  margin: 0 auto;
+  padding: 0px;
+  background: #CCC url('../graphics/gradient.jpg') repeat-y;
+}
+h1.masttitle {
+  clear: left;
+  height: 29px;
+  padding: 9px 9px 9px 9px;
+  text-align: center;
+  color: #900;
+  margin: 0px;
+  float: left;
+  font-weight: normal;
+  background: #900;
+  font-family: "trebuchet ms", sans-serif;
+  font-size: 100%;
+  line-height: 11px;
+  border-right: 1px solid #FAF3E1;
+  text-transform:none;
+}
+h1.masttitle a:visited, h2.masturl a:visited {
+  text-decoration: none;
+  color: #FAF3E1;
+}
+h2.masturl {
+  color: #900;
+  margin: 0px;
+  float: left;
+  padding: 9px 0px 9px 9px;
+  font-family: "trebuchet ms", sans-serif;
+  font-size: 100%;
+  line-height: 11px;
+  font-weight: normal;
+}
+#mastnavigation {
+  float: right;
+  padding-top: 9px;
+  margin: 0px;
+  font-family: "trebuchet ms", Helvetica, Arial, sans-serif;
+  line-height: 11px;
+  font-weight: normal;
+}
+@media (max-width: 575px) {
+	#mastnavigation {
+		display:none;
+	}
+}
+#mastnavigation ol {
+  display: inline;
+  margin: 0px;
+  list-style-type: none;
+  color: #fff;
+}
+#mastnavigation ol li {
+  display: inline;
+}
+#mastnavigation ol li a {
+  color: #000000;
+  font-weight: normal;
+  text-decoration: none;
+  margin-right: 6px;
+}
+#mastnavigation input {
+  vertical-align: middle;
+  margin: -1px 0px 0px 4px;
+}
+#mastnavigation input.textfield {
+  padding: 0px 0px 0px 4px;
+  background: #DDE0C6;
+  font: 75% "trebuchet ms", sans-serif;
+  width: 80px;
+  border: 1px solid gray;
+  color: #4E512D;
+}
+.label {
+  display: none;
+}
+br.clearall {
+  clear: both;
+}
+#header {
+  height: 120px;
+  position: relative;
+  background: url('../graphics/mainbg.jpg') top center no-repeat;
+}
+#logoCsuri {
+  position: absolute;
+  display: block;
+  width: 344px;
+  height: 28px;
+  background: url('../graphics/logo_csuri.gif') 0 -15px no-repeat;
+  top: 35px;
+  left: 10px;
+  border: 0;
+  clear: both;
+}
+#logoSub {
+  position: absolute;
+  background: url('../graphics/logo_sub.gif') 0 -10px no-repeat;
+  display: block;
+  width: 220px;
+  height: 20px;
+  top: 65px;
+  left: 10px;
+  border: 0;
+  clear: both;
+}
+#logoSub2 {
+  position: absolute;
+  background: url('../graphics/logo_sub2.gif') 0 -5px no-repeat;
+  display: block;
+  top: 85px;
+  left: 10px;
+  border: 0;
+  clear: both;
+  width: 410px;
+  height: 16px;
+}
+.navbar {
+	background-color: #ecece2;
+	min-height:0px;
+}
+.nav > li > a {
+  padding: 10px 5px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.navbar-nav > li > a {
+	padding-top:8px;
+	padding-bottom:0px;
+	line-height: 22px;
+}
+.nav > li.dropdown > a.icon {
+	padding-top:9px;
+	padding-bottom:5px;
+	margin-right:0px;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+	background-color:transparent;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	background-color:transparent;
+}
+.navbar .form-control {
+	height:24px;
+}
+.navbar .btn-search {
+	padding:1px;
+	padding-right:5px;
+	padding-top:3px;
+}
+.navbar .formOutline {
+	border-radius:4px;
+	background-color:#fff;
+}
+.navbar .form-control {
+	padding-top:2px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family:Proximanova;
+}
+.navbar .navbar-nav > .active > a {
+	background-color:transparent;
+	border-bottom:2px solid #333;
+}
+.dropdown-menu > li > a {
+	text-align:left;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+	background-color:#f7f7f7;
+	color:#333;
+}
+@media (min-width: 768px) {
+	.navbar-form {
+	  padding-right: 5px;
+	  margin-top: 5px;
+	}
+}
+#pageArea {
+	background-color:#fff;
+}
+#footer {
+	margin-top:40px;
+}
+#footer a {
+	color: #29549c
+}
+
+/* About Pages*/
+
+div.profileLeft {
+  float: left;
+  width: 100%;
+  margin: 0 10px 15px 0;
+  padding: 0;
+}
+.profileLeft img {
+  float: left;
+  margin: 0 15px 0 0;
+  border: 0;
+}
+.profileLeft h4 {
+  color: #29549c;
+  letter-spacing: 1px;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 5px 0 0 0;
+  margin: 0;
+}
+span.light {
+  color: #333;
+  font-size: 12px;
+  letter-spacing: 0;
+}
+address {
+  padding: 0 0 0 10px;
+  margin: 15px 0 0 0;
+  font-style: normal;
+  border-left: 5px solid #eee;
+  float: left;
+}
+
+/* Front Page */
+
+.front H1 {
+	padding-top:10px;
+	padding-left:0px;
+}
+.highLight {
+	background-color:#f7f7f7;
+	padding:20px;
+	font-style:italic;
+}
+.highLight small{
+	font-style:normal;
+}
+
+/* Explore */
+
+#contentInner {
+  position: relative;
+  clear: both;
+  margin: 0;
+  padding: 0 0 15px 0;
+  /* background: url(../images/headBox3.jpg) top right no-repeat; */
+}
+#csuriDownload {
+  width: 290px;
+  height: 90px;
+  top: 0;
+  right: 0;
+  position: absolute;
+  background: url('../graphics/book.gif') left 10px no-repeat;
+  padding: 15px 0 0 90px;
+}
+#contentInner p {
+  font-size: 12px;
+}
+#box1 h2, #box2 h2 {
+	margin-top:0px;
+}
+div.box ul {
+  margin: 10px 0 30px 0;
+  padding: 0;
+  list-style: none;
+}
+div.box ul li.link {
+  margin-top: 7px;
+  font-size: 12px;
+}
+div.box ul li.lidef {
+  font-size: 11px;
+  padding: 0 0 0 14px;
+}
+.event {
+	height:350px;
+}
+.placeholder {
+	background-color:#f7f7f7;
+	min-height:150px;
+	border-radius:4px;
+}
+.eventImg img{
+	width:100%;
+	height:auto;
+}

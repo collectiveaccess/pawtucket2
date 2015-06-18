@@ -1,0 +1,297 @@
+#
+# 
+#
+browseTypes = {
+	occurrences = {
+		displayName = _(Works),
+		table = ca_occurrences,
+		
+		# comment this out or leave empty if you don't want to restrict by type
+		restrictToTypes = [work],
+		
+		# comment this out or leave empty if you want all available facets presented to the user
+		availableFacets = [],
+		
+		# formats available for display of results
+		# possible values are: images, list, timeline, map
+		views = {
+			images = {},
+			list = {},
+		},
+		
+		sortBy = {
+			Type = ca_occurrence_labels.workType,
+			Identifier = ca_occurrences.idno,
+			Title = ca_occurrence_labels.name
+		}
+	},
+	objects = {
+		displayName = _(Objects),
+		table = ca_objects,
+		
+		restrictToTypes = [],
+		availableFacets = [],
+		
+		# formats available for display of results
+		# possible values are: images, list, timeline, map
+		views = {
+			images = {},
+			list = {},
+		},
+		sortBy = {
+			Identifier = ca_objects.idno,
+			Title = ca_object_labels.name
+		}
+	}
+
+}
+
+ca_occurrences = {
+	name = _("Works"),
+	facets = {
+		type_facet = {
+			type = attribute, 
+			element_code = workType,
+			group_mode = none,
+			exclude_values = [null],
+			label_singular = _("Work type"),
+			label_plural = _("Work types")
+		},	
+		restriction_facet = {
+			type = attribute, 
+			element_code = restrictions,
+			group_mode = none,
+			facet_groups = ,
+			label_singular = _("Restriction"),
+			label_plural = _("Restrictions")
+		},
+		depicts_facet = {
+			type = attribute, 
+			element_code = sniDepiction,
+			group_mode = none,
+			facet_groups = ,
+			label_singular = _("SI Depicted"),
+			label_plural = _("SI Depicted")
+		},
+		place_facet = {
+			type = authority,
+			
+			table = ca_places,
+			relationship_table = ca_places_x_occurrences,
+			restrict_to_types = [],
+			restrict_to_relationship_types = [],
+			exclude_values = [root_node],
+			
+			group_mode = none,
+			
+			facet_groups = ,
+			
+			label_singular = _("Place"),
+			label_plural = _("Places")
+		},
+		location_facet = {
+			type = attribute, 
+			element_code = location,
+			group_mode = none,
+			facet_groups = ,
+			label_singular = _("Location"),
+			label_plural = _("Locations")
+		},					
+		entities_facet = {
+			type = authority,
+			
+			table = ca_entities,
+			relationship_table = ca_objects_x_entities,
+			restrict_to_types = [],
+			restrict_to_relationship_types = [],
+			
+			group_mode = none,
+			
+			facet_groups = ,
+			
+			label_singular = _("Entity"),
+			label_plural = _("Entities")
+		},
+		lcsh_facet = {
+			type = attribute, 
+			element_code = lcsh_subjects,
+			group_mode = none,
+			facet_groups = ,
+			label_singular = _("LCSH Subjects"),
+			label_plural = _("LCSH Subjects")
+		},
+		subjects_facet = {
+			type = attribute, 
+			element_code = lcsh_names,
+			group_mode = none,
+			facet_groups = ,
+			label_singular = _("LCSH Name"),
+			label_plural = _("LCSH Names")
+		},	
+		date_facet = {
+			type = normalizedDates,
+			element_code = dates_value,
+			
+			normalization = years,
+			group_mode = none,
+			
+			label_singular = _("Date"),
+			label_plural = _("Dates")
+		},	
+		genre_facet = {
+			type = attribute, 
+			element_code = genre,
+			group_mode = none,
+			exclude_values = [null],
+			label_singular = _("Genre"),
+			label_plural = _("Genres"),
+		},	
+		color_facet = {
+			type = attribute, 
+			element_code = color,
+			relative_to = ca_objects,
+			group_mode = none,
+			exclude_values = [not_specified],
+			label_singular = _("Color"),
+			label_plural = _("Colors"),
+		},		
+		production_facet = {
+			type = attribute, 
+			element_code = productionTypes,
+			group_mode = none,
+			exclude_values = [na],
+			label_singular = _("Production Type"),
+			label_plural = _("Production Types")
+		},	
+		mission_facet = {
+			type = attribute, 
+			element_code = missionCritical,
+			group_mode = none,
+			label_singular = _("Mission Critical"),
+			label_plural = _("Mission Critical")
+		},	
+		award_facet = {
+			type = attribute, 
+			element_code = award_event,
+			group_mode = none,
+			label_singular = _("Award"),
+			label_plural = _("Awards")
+		},	
+		distribution_facet = {
+			type = attribute, 
+			element_code = distribution_list,
+			group_mode = none,
+			label_singular = _("Distribution Status"),
+			label_plural = _("Distribution Status")
+		},																		
+	}
+}
+ca_objects = {
+	name = _("Objects"),
+	facets = {	
+		color_facet = {
+			type = attribute,
+			element_code = color,
+			group_mode = none,
+			facet_groups = ,
+			exclude_values = [not_specified],
+			label_singular = _("Color"),
+			label_plural = _("Colors")
+		},
+		item_format_facet = {
+			type = attribute,
+			element_code = video_physical,
+			group_mode = none,
+			facet_groups = ,
+			exclude_values = [not_specified],
+			label_singular = _("Moving Image Item Format"),
+			label_plural = _("Moving Image Item Formats")
+		},	
+		physical_facet = {
+			type = attribute,
+			element_code = physical,
+			group_mode = none,
+			facet_groups = ,
+			exclude_values = [not_specified],
+			label_singular = _("Supporting Material Format"),
+			label_plural = _("Supporting Material Formats")
+		},
+		digital_facet = {
+			type = attribute,
+			element_code = digital_moving_image,
+			group_mode = none,
+			facet_groups = ,
+			exclude_values = [not_specified],
+			label_singular = _("Moving Image Digital Format"),
+			label_plural = _("Moving Image Digital Formats")
+		},
+		supporting_facet = {
+			type = attribute,
+			element_code = digital_supporting,
+			group_mode = none,
+			facet_groups = ,
+			exclude_values = [not_specified],
+			label_singular = _("Supporting Material Digital Format"),
+			label_plural = _("Supporting Material Digital Formats")
+		},								
+		type_facet = {
+			type = fieldList,
+			field = type_id,
+			
+			group_mode = none,
+			
+			label_singular = _("Type"),
+			label_plural = _("Types")
+		},	
+		date_facet = {
+			type = normalizedDates,
+			element_code = dates_value,
+			
+			normalization = years,
+			group_mode = none,
+			
+			label_singular = _("Date"),
+			label_plural = _("Dates")
+		},
+		has_media_facet = {
+			type = has,
+			
+			table = ca_object_representations,
+			relationship_table = ca_objects_x_object_representations,
+			restrict_to_types = [],
+			restrict_to_relationship_types = [],
+			
+			#single_value = 1,
+			group_mode = none,
+			
+			label_yes = _("Has media"),
+			label_no = _("Has no media"),
+			
+			label_singular = _("has media"),
+			label_plural = _("has media")
+		},				
+	}
+}
+
+views = {
+	images = {
+		icon = glyphicon-th
+	},
+	list = {
+		icon = glyphicon-list
+	},
+	timeline = {
+		icon = glyphicon-time
+	},
+	map = {
+		icon = glyphicon-globe
+	}
+}
+
+defaultHitsPerBlock = 36
+
+# --- refine_col_class -> boostrap col class to assign to refine col - defaults to: col-sm-8 col-md-8 col-lg-8
+result_col_class = col-sm-8 col-md-9 col-lg-9
+
+# --- refine_col_class -> boostrap col class to assign to refine col - defaults to: col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1
+refine_col_class = col-sm-4 col-md-3 col-lg-3 

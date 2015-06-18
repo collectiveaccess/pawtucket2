@@ -391,6 +391,7 @@ h1 i {
 	padding-bottom:10px;
 	float:left;
 	padding-top:10px;
+	padding-right:0px;
 }
 
 .filterMenuFacetList ul{
@@ -403,7 +404,7 @@ h1 i {
 .filterMenuFacetList li{
 	list-style-type:none;
 	margin:0 0 2px 0;
-	padding:0 2px 0 2px;
+	padding:0 2px 0 4px;
 	border-radius:2px;
 }
 
@@ -512,7 +513,7 @@ div.browseFacetItem a{
 	float:left; 
 	padding-top:2px;
 	margin-right:-15px; 
-	margin-left:12px;
+	/*margin-left:12px;*/
 	max-height:250px;
 	overflow:auto;
 }
@@ -525,7 +526,6 @@ div.browseFacetItem a{
 	background-color:#e7e7e7;
 	margin-top:-5px;
 	padding-top:2px;
-	margin-right:4px;
 }	
 .mainfacet	li{
 	list-style-type:none;
