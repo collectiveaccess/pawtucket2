@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -57,13 +57,30 @@
  			$this->view->setVar('intro_text', $this->config->get('intro_text'));
  			$this->view->setVar('open_by_default', $this->config->get('open_by_default'));
  			
+ 			
+			$va_user_access = caGetUserAccessValues($this->request);
+			$t_parent = new ca_collections();
+ 			if (!($pn_parent_id = $this->request->getParameter('id', pInteger))) { 
+				$pn_parent_id = null; 
+			} else {
+				if ($t_parent->load($pn_parent_id)) {
+					if (!in_array($t_parent->get('access'), $va_user_access)) { 
+						$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2500?r='.urlencode($this->request->getFullUrlPath()));
+						return;
+					}
+				} else {
+					$t_parent = null; $pn_parent_id = null;
+				}
+			}
+			
+			$this->view->setVar('parent_id', $pn_parent_id);
+			$this->view->setVar('t_parent', $t_parent);
+ 			
  			$va_restrict_to_types = explode(", ", $this->config->get('restrict_to_types'));
 			$vs_restrict_types = '"'.implode('", "', $va_restrict_to_types).'"';	
 			$this->view->setVar('restrict_to_types', $vs_restrict_types);
 					
  			$this->render("index_html.php");
  		}
- 		
  		# ------------------------------------------------------
  	}
- ?>

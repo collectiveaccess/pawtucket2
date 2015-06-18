@@ -8,14 +8,10 @@
 	
 	$va_user_access = caGetUserAccessValues($this->request);
 	
-	if (!($pn_parent_id = $this->request->getParameter('id', pInteger))) { 
-		$pn_parent_id = null; 
-	} else {
-		$t_parent = new ca_collections($pn_parent_id);
-		if (!$t_parent->getPrimaryKey()) { $t_parent = null; $pn_parent_id = null; }
-	}
+	$pn_parent_id = $this->getVar('parent_id');
+	$t_parent = $this->getVar('t_parent');
 	
-	$qr_top_level_collections = ca_collections::find(array('parent_id' => $pn_parent_id), array('returnAs' => 'searchResult'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => $pn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.idno_sort'));
 	
 ?>
 
