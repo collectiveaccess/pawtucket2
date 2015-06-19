@@ -1,0 +1,108 @@
+browseTypes = {
+	entities = {
+		table = ca_entities,
+		
+		# comment this out or leave empty if you don't want to restrict by type
+		restrictToTypes = [],
+		
+		# comment this out or leave empty if you want all available facets presented to the user
+		availableFacets = []
+	},
+	works = {
+		table = ca_occurrences,
+		
+		# comment this out or leave empty if you don't want to restrict by type
+		restrictToTypes = [works],
+		
+		# comment this out or leave empty if you want all available facets presented to the user
+		availableFacets = []
+	},
+	objects = {
+		table = ca_objects,
+		
+		# comment this out or leave empty if you don't want to restrict by type
+		restrictToTypes = [],
+		
+		# comment this out or leave empty if you want all available facets presented to the user
+		availableFacets = []
+	},
+	collections = {
+		table = ca_collections,
+		
+		# comment this out or leave empty if you don't want to restrict by type
+		restrictToTypes = [],
+		
+		# comment this out or leave empty if you want all available facets presented to the user
+		availableFacets = []
+	}
+}
+
+ca_entities = {
+	name = _("Entities"),
+	facets = {
+		#exhibition_facet = {
+		#	type = authority,
+		#	table = ca_occurrences,
+		#	generate_facets_for_types = 0,
+		#	relationship_table = ca_entities_x_occurrences,
+		#	restrict_to_types = [exhibition],
+		#	
+		#	group_mode = alphabetical,
+		#	
+		#	indefinite_article = an,
+		#	label_singular = _("Exhibiton"),
+		#	label_plural = _("Exhibitions")
+		#},
+		#work_facet = {
+		#	type = authority,
+		#	table = ca_collections,
+		#	relationship_table = ca_entities_x_collections,
+		#	restrict_to_types = [],
+		#	
+		#	group_mode = alphabetical,
+		#	
+		#	label_singular = _("Work"),
+		#	label_plural = _("Works")
+		#},
+		technique_facet = {
+			type = authority,
+			table = ca_list_items,
+			relationship_table = ca_entities_x_vocabulary_terms,
+			relative_to = ca_collections,
+			restrict_to_types = [],
+			
+			group_mode = alphabetical,
+			
+			label_singular = _("Technique"),
+			label_plural = _("Techniques")
+		},		
+		nationality_facet = {
+			type = attribute,
+			element_code = nationality,
+			
+			group_mode = alphabetical,
+			
+			label_singular = _("Nationality"),
+			label_plural = _("Nationalities")
+		},
+		#technique_facet = {
+		#	type = attribute,
+		#	element_code = technique,
+		#	relative_to = ca_collections,
+		#	
+		#	group_mode = alphabetical,
+		#	
+		#	label_singular = _("Technique"),
+		#	label_plural = _("Techniques")
+		#},
+		gender_facet = {
+			type = attribute,
+			element_code = gender,
+			
+			group_mode = alphabetical,
+			
+			label_singular = _("Gender"),
+			label_plural = _("Genders")
+		},
+	}
+}
