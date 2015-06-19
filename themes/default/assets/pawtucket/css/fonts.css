@@ -19,8 +19,17 @@
 */
 
 
-/* @import must be at top of file, otherwise CSS will not work */
-@import url("//hello.myfonts.net/count/28ec2c");
+/* DIN-Regular*/  
+@font-face {font-family: 'DIN17SBOP-Regular';src: url('din/28EC2C_0_0.eot');src: url('din/28EC2C_0_0.eot?#iefix') format('embedded-opentype'),url('din/28EC2C_0_0.woff') format('woff'),url('din/28EC2C_0_0.ttf') format('truetype');}
 
-  
-@font-face {font-family: 'DIN17SBOP-Regular';src: url('webfonts/28EC2C_0_0.eot');src: url('webfonts/28EC2C_0_0.eot?#iefix') format('embedded-opentype'),url('webfonts/28EC2C_0_0.woff') format('woff'),url('webfonts/28EC2C_0_0.ttf') format('truetype');}
+
+/* Proxima-Nova */
+@font-face {font-family: 'Proximanova';src: url('proximanova/proximanova-reg-webfont.eot');src: url('proximanova/proximanova-reg-webfont.eot?#iefix') format('embedded-opentype'),url('proximanova/proximanova-reg-webfont.woff') format('woff'),url('proximanova/proximanova-reg-webfont.ttf') format('truetype');}
+
+@font-face {font-family: 'ProximanovaBold';src: url('proximanova/proximanova-bold-webfont.eot');src: url('proximanova/proximanova-bold-webfont.eot?#iefix') format('embedded-opentype'),url('proximanova/proximanova-bold-webfont.woff') format('woff'),url('proximanova/proximanova-bold-webfont.ttf') format('truetype');}
+
+
+/* Franklin Gothic */
+
+@font-face {font-family: 'Franklin Gothic';src: url('franklingothic/frankgotmed-webfont.eot');src: url('franklingothic/frankgotmed-webfont.eot?#iefix') format('embedded-opentype'),url('franklingothic/frankgotmed-webfont.woff') format('woff'),url('franklingothic/frankgotmed-webfont.ttf') format('truetype');}
+

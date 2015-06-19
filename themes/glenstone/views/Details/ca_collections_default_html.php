@@ -21,7 +21,7 @@
 </div><!-- end row -->
 <div class="row">
 	<div class='col-sm-9 col-md-9 col-lg-9'>
-			<H4>{{{^ca_collections.preferred_labels.displayname}}}{{{<ifdef code="ca_collections.idno"> (^ca_collections.idno)</ifdef>}}}</H4>
+			<H4>{{{^ca_collections.preferred_labels}}}{{{<ifdef code="ca_collections.idno"> (^ca_collections.idno)</ifdef>}}}</H4>
 			<H6>{{{^ca_collections.type_id}}}</H6>
 <?php
 			$va_table_contents = array();

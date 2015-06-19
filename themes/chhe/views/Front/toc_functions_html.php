@@ -29,9 +29,8 @@
 		}
 		require_once(__CA_MODELS_DIR__."/ca_list_items.php");
 		$t_list_item = new ca_list_items($vn_item_id);
-		$va_resp['selectedTitle'] = $t_list_item->get('ca_list_item_labels.name_plural');
-		#$va_resp['selectedDescription'] = $t_list_item->get('ca_list_item_labels.description') . "<br/><br>" . caNavLink($this->request, _t('View'), '', '', 'Browse', 'Objects', array('facet' => 'term_facet', 'id' => $vn_i));
-		$va_resp['selectedDescription'] = $t_list_item->get('ca_list_item_labels.description') . "<br/><br>" . caNavLink($this->request, _t('View'), '', '', 'MultiSearch', 'Index', array('search' => 'ca_list_items.item_id:'.$vn_item_id));
+		$va_resp['selectedTitle'] = $t_list_item->get('ca_list_items.preferred_labels.name_plural');
+		$va_resp['selectedDescription'] = $t_list_item->get('ca_list_items.preferred_labels.description') . "<br/><br>" . caNavLink($this->request, _t('View'), '', '', 'MultiSearch', 'Index', array('search' => 'ca_list_items.item_id:'.$vn_item_id));
 		
 		print json_encode($va_resp);
 		return;

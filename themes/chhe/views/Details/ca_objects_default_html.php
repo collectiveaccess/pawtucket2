@@ -125,6 +125,7 @@
 			{{{<ifdef code="ca_objects.idno"><p><strong>Identifer:</strong> ^ca_objects.idno</p></ifdef>}}}
 			{{{<ifdef code="ca_objects.medium"><p><strong>Medium</strong><br/>^ca_objects.medium</p></ifdef>}}}
 			{{{<ifdef code="ca_objects.dimensions_display"><p><strong>Dimensions</strong><br/>^ca_objects.dimensions_display</p></ifdef>}}}
+			{{{<ifcount code="ca_list_items" min="1" restrictToRelationshipTypes='depicts'><p><strong>Topics</strong><br/><unit delimiter='; ' relativeTo='ca_list_items' restrictToRelationshipTypes='depicts'><a href='/index.php/MultiSearch/Index/search/ca_list_items.item_id:^ca_list_items.item_id'>^ca_list_items.preferred_labels.name_plural</a></unit></p></ifcount>}}}
 			{{{<ifcount min="1" code="ca_collections"><p>
 				<ifcount min="1" max="1" code="ca_collections"><strong>Collection</strong>
 				</ifcount><ifcount min="2" code="ca_collections"><strong>Collections</strong></ifcount>
@@ -200,7 +201,7 @@
 						<p><strong>Comments (<?php print sizeof($va_comments); ?>)</strong></p>
 <?php
 						foreach($va_comments as $va_comment){
-							print "<p>".$va_comment["comment"]."<br/>";		
+							print "<p class='commentdisplay'>".$va_comment["comment"]."<br/>";		
 							print "&mdash; ".$va_comment["author"].", ".(($va_comment["location"]) ? $va_comment["location"].", " : "").$va_comment["date"]."</p>";
 						}
 					}

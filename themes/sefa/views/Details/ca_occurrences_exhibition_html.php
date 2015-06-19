@@ -107,7 +107,7 @@
 					Artist: 
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
-					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entity_labels.displayname</l></unit>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
 				</ifcount>}}}
 				</strong>
 <?php

@@ -257,7 +257,7 @@
 			
 										print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
 										if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-											print $qr_rels->get("ca_objects.preferred_labels.displayname", array('returnAsLink' => true));
+											print $qr_rels->get("ca_objects.preferred_labels", array('returnAsLink' => true));
 										}
 										print "</div>";	
 					
