@@ -99,7 +99,7 @@
   			<!--<div class="objectnav">1 of 2</div>-->
    		
 <?php
-		if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_my_collections'))) {
+		if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_lightbox'))) {
 			print '<div class="nav1">';
 			if($this->request->isLoggedIn()){
 				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
