@@ -493,7 +493,7 @@
 
 		}else{
 			if(!$pa_options["dontShowPlaceholder"]){
-				if(!$po_request->config->get("disable_my_collections")){
+				if(!$po_request->config->get("disable_lightbox")){
 					$o_set_config = caGetSetsConfig();
 					$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 					if(!$vs_lightbox_icon){
@@ -538,7 +538,7 @@
 		if(!$va_rep_display_info["no_overlay"]){
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
-		if(!$po_request->config->get("disable_my_collections")){
+		if(!$po_request->config->get("disable_lightbox")){
 			if ($po_request->isLoggedIn()) {
 				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Sets', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_display_name)."'>".$vs_lightbox_icon."</a>\n";
 			}else{

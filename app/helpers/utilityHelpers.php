@@ -2802,3 +2802,26 @@ function caFileIsIncludable($ps_file) {
 		return false;
 	}
 	# ----------------------------------------
+	/**
+	 * Display-and-die
+	 *
+	 * @param mixed $pm_val Value to dump
+	 * @param array $pa_options Option include:
+	 *		live = Don't die [default is to false]
+	 *
+	 */
+	function dd($pm_val, $pa_options=null) {
+		print "<pre>".print_r($pm_val, true)."</pre>\n";
+		if (!caGetOption('live', $pa_options, false)) { die; }
+	}
+	# ----------------------------------------
+	/**
+	 * Output content in HTML <pre> tags
+	 *
+	 * @param mixed $pm_val Value to dump
+	 *
+	 */
+	function pre($pm_val) {
+		dd($pm_val, array('live' => true));
+	}
+	# ----------------------------------------
