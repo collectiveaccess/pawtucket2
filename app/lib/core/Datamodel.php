@@ -72,7 +72,7 @@ class Datamodel {
 		
 		$o_config = Configuration::load();
  			
-		if ($vs_data_model_path = $o_config->get("data_model")) {
+		if ($vs_data_model_path = __CA_CONF_DIR__."/datamodel.conf") {
 			
 			$o_datamodel = Configuration::load($vs_data_model_path);
 			$this->opo_graph = new Graph();

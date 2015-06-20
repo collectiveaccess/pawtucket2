@@ -274,7 +274,7 @@ class ca_representation_annotations extends BundlableLabelableBaseModelWithAttri
 		parent::__construct($pn_id);	# call superclass constructor
 		
  		$o_config = $this->getAppConfig();
- 		$this->opo_type_config = Configuration::load($o_config->get('annotation_type_config'));
+ 		$this->opo_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
 	}
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {

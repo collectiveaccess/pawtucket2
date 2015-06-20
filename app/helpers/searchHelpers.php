@@ -293,8 +293,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caSearchGetTablesForAccessPoints($pa_access_points) {
 		$o_config = Configuration::load();
-		$o_search_config = Configuration::load($o_config->get("search_config"));
-		$o_search_indexing_config = Configuration::load($o_search_config->get("search_indexing_config"));	
+		$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		$o_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');	
 			
 		$va_tables = $o_search_indexing_config->getAssocKeys();
 		
@@ -566,7 +566,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return Configuration 
 	 */
 	function caGetSearchIndexingConfig() {
-		return Configuration::load(__CA_APP_DIR__.'/conf/search_indexing.conf');
+		return Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 	}
 	# ---------------------------------------
 	/**

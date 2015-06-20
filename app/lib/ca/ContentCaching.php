@@ -41,7 +41,7 @@
 		public function __construct() {
 			parent::__construct();
 			
-			$this->opo_caching_config = Configuration::load(__CA_APP_DIR__.'/conf/content_caching.conf');
+			$this->opo_caching_config = Configuration::load(__CA_CONF_DIR__.'/content_caching.conf');
 			$this->opo_content_cache = new ContentCache();
 		}
 		# -------------------------------------------------------

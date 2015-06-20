@@ -50,7 +50,7 @@
 			if (!$pm_type) { $pm_type = array('__default__'); }
 			
 			parent::__construct();
-			$this->opo_idnumber_config = Configuration::load($this->opo_config->get('multipart_id_numbering_config'));
+			$this->opo_idnumber_config = Configuration::load(__CA_CONF_DIR__.'/multipart_id_numbering.conf');
 			$this->opa_formats = $this->opo_idnumber_config->getAssoc('formats');
 			
 			if ($ps_format) { $this->setFormat($ps_format); }

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -215,8 +215,7 @@
 				return $this->opn_start_date.'/'.$this->opn_end_date;
 			}
 			
-			$o_config = Configuration::load();
-			$o_date_config = Configuration::load($o_config->get('datetime_config'));
+			$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 			
 			if ($o_date_config->get('dateFormat') == 'original') {
 				return $this->ops_text_value;
@@ -238,8 +237,7 @@
 		}
  		# ------------------------------------------------------------------
  		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
-            $o_conf = Configuration::load();
-            $o_date_config = Configuration::load($o_conf->get('datetime_config'));
+ 			$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
             $show_Undated = $o_date_config->get('showUndated');
  
  			$ps_value = trim($ps_value);
@@ -276,9 +274,7 @@
 					$this->postError(1970, _t('%1 must not be empty', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
 					return false;
 				} else {
-					
-					$o_config = Configuration::load();
-					$o_date_config = Configuration::load($o_config->get('datetime_config'));
+					$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 			
 					// Default to "undated" date for blanks
 					$vs_undated_date = '';

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -43,8 +43,7 @@
 	 * @return Configuration Returns reference to client services configuration
 	 */
 	function caGetClientServicesConfiguration() {
-		$o_config = Configuration::load();
- 		return Configuration::load($o_config->get('client_services_config'));
+ 		return Configuration::load(__CA_CONF_DIR__.'/client_services.conf');
 	}
 	# ---------------------------------------
 	/**

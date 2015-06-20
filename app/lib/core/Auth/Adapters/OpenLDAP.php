@@ -36,7 +36,7 @@ require_once(__CA_LIB_DIR__.'/core/Auth/PasswordHash.php');
 class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	# --------------------------------------------------------------------------------
 	public static function authenticate($ps_username, $ps_password = '', $pa_options=null) {
-		$po_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$po_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 		
 		if(!function_exists("ldap_connect")){
 			throw new OpenLDAPException(_t("PHP's LDAP module is required for LDAP authentication!"));
@@ -142,7 +142,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	public static function getUserInfo($ps_username, $ps_password) {
-		$po_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$po_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		if(!function_exists("ldap_connect")){
 			throw new OpenLDAPException(_t("PHP's LDAP module is required for LDAP authentication!"));
@@ -227,7 +227,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	private static function postProcessLDAPConfigValue($key, $ps_user_group_name, $ps_user_ou, $ps_base_dn) {
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		$result = $o_auth_config->get($key);
 		$result = str_replace('{username}', $ps_user_group_name, $result);
@@ -238,7 +238,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	private static function isMemberinAtLeastOneGroup($ps_user, $po_ldap){
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 		$vs_base_dn = $o_auth_config->get("ldap_base_dn");
 
 		$vs_group_search_dn = self::postProcessLDAPConfigValue("ldap_group_search_dn_format", '', '', $vs_base_dn);
@@ -273,7 +273,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	private static function getRolesToAddFromDirectory($ps_user, $po_ldap) {
 		$va_return = array();
 
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 		$vs_base_dn = $o_auth_config->get("ldap_base_dn");
 
 		$vs_group_search_dn = self::postProcessLDAPConfigValue("ldap_group_search_dn_format", '', '', $vs_base_dn);
@@ -309,7 +309,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	private static function getGroupsToAddFromDirectory($ps_user, $po_ldap) {
 		$va_return = array();
 
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 		$vs_base_dn = $o_auth_config->get("ldap_base_dn");
 
 		$vs_group_search_dn = self::postProcessLDAPConfigValue("ldap_group_search_dn_format", '', '', $vs_base_dn);
@@ -359,7 +359,7 @@ class OpenLDAPAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	public static function getAccountManagementLink() {
-		$po_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$po_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		if($vs_link = $po_auth_config->get('ldap_manage_account_url')) {
 			return $vs_link;

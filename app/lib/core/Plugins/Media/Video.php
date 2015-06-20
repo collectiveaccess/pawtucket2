@@ -170,8 +170,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# for import and export
 	public function register() {
 		$this->opo_config = Configuration::load();
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__.'/external_applications.conf'));
 		$this->ops_path_to_ffmpeg = $this->opo_external_app_config->get('ffmpeg_app');
 		$this->ops_path_to_qt_faststart = $this->opo_external_app_config->get('qt-faststart_app');
 		$this->opb_ffmpeg_available = caMediaPluginFFfmpegInstalled($this->ops_path_to_ffmpeg);

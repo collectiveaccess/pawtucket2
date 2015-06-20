@@ -514,7 +514,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		$vs_mimetype = $va_media_info['INPUT']['MIMETYPE'];
  		
- 		$o_type_config = Configuration::load($this->getAppConfig()->get('annotation_type_config'));
+ 		$o_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
  		$va_mappings = $o_type_config->getAssoc('mappings');
  		
  		return $va_mappings[$vs_mimetype];

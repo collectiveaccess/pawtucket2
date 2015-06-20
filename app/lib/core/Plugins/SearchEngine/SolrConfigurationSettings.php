@@ -70,8 +70,8 @@ class SolrConfigurationSettings extends ASearchConfigurationSettings {
 	public function __construct(){
 		$this->opo_search_base = new SearchBase();
 		$this->opo_app_config = Configuration::load();
-		$this->opo_search_config = Configuration::load($this->opo_app_config->get("search_config"));
-		$this->opo_search_indexing_config = Configuration::load($this->opo_search_config->get("search_indexing_config"));
+		$this->opo_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		$this->opo_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 		$this->ops_webserver_user = posix_getpwuid(posix_getuid());
 		$this->ops_webserver_user = $this->ops_webserver_user['name'];
 		$this->opa_setting_descriptions = array();

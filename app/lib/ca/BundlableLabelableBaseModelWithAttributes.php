@@ -1072,7 +1072,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						$vn_primary_id = 0;
 						$va_initial_values = array();
 						if (sizeof($va_reps)) {
-							$o_type_config = Configuration::load($t_item->getAppConfig()->get('annotation_type_config'));
+							$o_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
 							$va_annotation_type_mappings = $o_type_config->getAssoc('mappings');
 	
 							$vn_i = 0;

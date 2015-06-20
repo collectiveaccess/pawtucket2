@@ -142,7 +142,7 @@
 			}
 
 			$this->opo_config = Configuration::load();
-			$this->opo_ca_browse_config = Configuration::load($this->opo_config->get('browse_config'));
+			$this->opo_ca_browse_config = Configuration::load(__CA_CONF_DIR__.'/browse.conf');
 			$this->opa_browse_settings = $this->opo_ca_browse_config->getAssoc($this->ops_browse_table_name);
 			
 			// Add "virtual" search facet - allows one to seed a browse with a search
