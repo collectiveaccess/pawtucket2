@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,6 +38,9 @@ class LoginRegController extends ActionController {
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		parent::__construct($po_request, $po_response, $pa_view_paths);
 
+        if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+            throw new ApplicationException('Login/registration not allowed');
+        }
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
