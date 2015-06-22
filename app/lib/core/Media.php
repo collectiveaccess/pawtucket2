@@ -108,7 +108,9 @@ class Media extends BaseObject {
 		$plugin_dir = Media::$plugin_path;
 		
 		# load the plugin
-		require_once("{$plugin_dir}/{$ps_plugin_name}.php");
+		if (!class_exists("WLPlugMedia{$ps_plugin_name}")) { 
+			require_once("{$plugin_dir}/{$ps_plugin_name}.php"); 
+		}
 		$ps_plugin_class = "WLPlugMedia{$ps_plugin_name}";
 		$p = new $ps_plugin_class();
 		
@@ -125,7 +127,9 @@ class Media extends BaseObject {
 		$plugin_dir = Media::$plugin_path;
 		
 		# load the plugin
-		require_once("{$plugin_dir}/{$ps_plugin_name}.php");
+		if (!class_exists("WLPlugMedia{$ps_plugin_name}")) { 
+			require_once("{$plugin_dir}/{$ps_plugin_name}.php"); 
+		}
 		$vs_classname = "WLPlugMedia{$ps_plugin_name}";
 		$p = new $vs_classname;
 		# register the plugin's capabilities
