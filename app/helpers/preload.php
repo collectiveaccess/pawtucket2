@@ -34,6 +34,7 @@
    *
    */
    
+	require_once(__CA_APP_DIR__."/helpers/errorHelpers.php");
 	require_once(__CA_BASE_DIR__.'/vendor/autoload.php');	// composer
    
 	require_once(__CA_LIB_DIR__."/core/Utils/Debug.php");
@@ -46,6 +47,10 @@
 	require_once(__CA_APP_DIR__."/helpers/mailHelpers.php");
 	require_once(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
 	
+	require_once(__CA_LIB_DIR__."/core/Controller/ApplicationException.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/ActionController.php");
+	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
+	
 	require_once(__CA_LIB_DIR__."/core/BaseModel.php");
 	require_once(__CA_LIB_DIR__."/core/Controller/AppController.php");
 	require_once(__CA_LIB_DIR__."/core/Zend/Translate.php");
@@ -54,10 +59,6 @@
 	require_once(__CA_LIB_DIR__."/ca/MetaTagManager.php");
 	require_once(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
 	require_once(__CA_LIB_DIR__."/ca/TooltipManager.php");
-
-	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
-	
-	require_once(__CA_LIB_DIR__."/core/Controller/ActionController.php");
 	
 	require_once(__CA_MODELS_DIR__."/ca_acl.php");
 	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
