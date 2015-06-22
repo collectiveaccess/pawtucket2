@@ -70,7 +70,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#SetForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Sets', 'saveSetInfo', null); ?>',
+				'<?php print caNavUrl($this->request, '', 'Lightbox', 'saveSetInfo', null); ?>',
 				jQuery('#SetForm').serialize()
 			);
 			e.preventDefault();

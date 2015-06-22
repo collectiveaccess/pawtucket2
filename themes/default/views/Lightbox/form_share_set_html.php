@@ -81,7 +81,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#ShareSetForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Sets', 'saveShareSet', null); ?>',
+				'<?php print caNavUrl($this->request, '', 'Lightbox', 'saveShareSet', null); ?>',
 				jQuery('#ShareSetForm').serialize()
 			);
 			e.preventDefault();

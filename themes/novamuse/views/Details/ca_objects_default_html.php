@@ -102,9 +102,9 @@
 		if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_lightbox'))) {
 			print '<div class="nav1">';
 			if($this->request->isLoggedIn()){
-				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'Sets', 'addItem', array('object_id' => $vn_object_id));
+				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'Lightbox', 'addItem', array('object_id' => $vn_object_id));
 			}else{
-				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'LoginReg', 'form', array('site_last_page' => 'Sets', 'object_id' => $vn_object_id));
+				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'LoginReg', 'form', array('site_last_page' => 'Lightbox', 'object_id' => $vn_object_id));
 			}
 			print '</div>';
 		}

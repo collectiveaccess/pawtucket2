@@ -95,7 +95,7 @@ if (!$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($qr_res->numHits()){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
 					}
 					if($vs_sort_control_type == 'dropdown'){
@@ -222,7 +222,7 @@ if (!$vb_ajax) {	// !ajax
 			   objIDs.push($(this).val());
 			});
 			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
 			e.preventDefault();
 			return false;
 		});

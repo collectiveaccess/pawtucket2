@@ -73,7 +73,7 @@
  			}else{
 				if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
 					// invalid browse type – throw error
-					die("Invalid browse type");
+					throw new ApplicationException("Invalid browse type");
 				} 			
 			} 			
  			$this->view->setVar("facet_name", $ps_facet_name);
@@ -224,7 +224,7 @@
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				throw new ApplicationException("Invalid browse type");
  			} 			
  			$this->view->setVar("browse_type", $ps_browse_type);
  			$vs_class = $va_browse_info['table'];

@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Sets/set_detail_thumbnail_html.php : 
+ * themes/default/Sets/set_detail_list_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -45,11 +45,11 @@
 		while($q_set_items->nextHit() && ($vn_c < $vn_hits_per_block)){
 			$t_set_item = new ca_set_items(array("row_id" => $q_set_items->get("object_id"), "set_id" => $t_set->get("set_id"), "table_num" => $vn_object_table_num));
 			if($t_set_item->get("item_id")){
-				print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem".$t_set_item->get("item_id")."' id='row-".$q_set_items->get("object_id")."'><div class='lbItemContainer'>";
-				print caLightboxSetDetailItem($this->request, $q_set_items, $t_set_item, array("write_access" => $vb_write_access));
+				print "<div class='col-xs-12 col-sm-4 lbItem".$t_set_item->get("item_id")."' id='row-".$q_set_items->get("object_id")."'><div class='lbItemContainerList'>";
+				print caLightboxSetDetailItem($this->request, $q_set_items, $t_set_item, array("write_access" => $vb_write_access, "view" => "list"));
 				print "</div></div><!-- end col 3 -->";
-				$vn_c++;
 			}
+			$vn_c++;
 		}
 	}else{
 		print "<div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div>";
@@ -64,7 +64,7 @@ if($vb_write_access){
 			 jQuery(".lbItemDeleteButton").click(
 				function() {
 					var id = this.id.replace('lbItemDelete', '');
-					jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Sets', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) { 
+					jQuery.getJSON('<?php print caNavUrl($this->request, '', '*', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) { 
 						if(data.status == 'ok') { 
 							jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
 						} else {
@@ -86,7 +86,7 @@ if($vb_write_access){
 					// POST to server using $.post or $.ajax
 					$.ajax({
 						type: 'POST',
-						url: '<?php print caNavUrl($this->request, "", "Sets", "AjaxReorderItems"); ?>/row_ids/' + data
+						url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
 					});
 				}
 			});

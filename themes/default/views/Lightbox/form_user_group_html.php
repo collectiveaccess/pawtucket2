@@ -63,7 +63,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#UserGroupForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Sets', 'saveUserGroup', null); ?>',
+				'<?php print caNavUrl($this->request, '', 'Lightbox', 'saveUserGroup', null); ?>',
 				jQuery('#UserGroupForm').serialize()
 			);
 			e.preventDefault();

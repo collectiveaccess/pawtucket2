@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/SetsController.php
+ * controllers/LightboxController.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -36,7 +36,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  
- 	class SetsController extends FindController {
+ 	class LightboxController extends FindController {
  		# -------------------------------------------------------
  		 protected $opa_access_values;
  		 protected $opa_user_groups;
@@ -46,7 +46,10 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+ 			if ($this->request->config->get('disable_lightbox')) {
+ 				throw new ApplicationException('Lightbox is not enabled');
+ 			}
+ 			if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
  			$this->opa_access_values = caGetUserAccessValues($this->request);
@@ -82,7 +85,7 @@
  			}
  			$this->view->setVar("activity", $va_set_change_log);
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
- 			$this->render("Sets/set_list_html.php");
+ 			$this->render("Lightbox/set_list_html.php");
  		}
  		# ------------------------------------------------------
  		function setDetail() {
@@ -296,10 +299,10 @@
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
- 					$this->render("Sets/set_detail_timelineData_json.php");
+ 					$this->render("Lightbox/set_detail_timelineData_json.php");
  					break;
  				default:
- 					$this->render("Sets/set_detail_html.php");
+ 					$this->render("Lightbox/set_detail_html.php");
  					break;
  			}
  		}
@@ -320,12 +323,12 @@
 				}
  			}
  			$this->view->setVar("set", $t_set);
- 			$this->render("Sets/form_set_info_html.php");
+ 			$this->render("Lightbox/form_set_info_html.php");
  		}
  		# ------------------------------------------------------
  		function saveSetInfo() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'Index')); return; }
+ 			if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -404,7 +407,7 @@
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
- 			$this->render("Sets/set_access_html.php");
+ 			$this->render("Lightbox/set_access_html.php");
  		}
  		# ------------------------------------------------------
  		function saveGroupAccess() {
@@ -414,7 +417,7 @@
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
- 			$this->render("Sets/set_access_html.php");
+ 			$this->render("Lightbox/set_access_html.php");
  		}
  		# ------------------------------------------------------
  		function removeGroupAccess() {
@@ -504,7 +507,7 @@
  		function shareSetForm() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
- 			$this->render("Sets/form_share_set_html.php");
+ 			$this->render("Lightbox/form_share_set_html.php");
  		}
  		# ------------------------------------------------------
  		function saveShareSet() {
@@ -649,7 +652,7 @@
  		function userGroupList() {
  			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
  			
- 			$this->render("Sets/user_group_list_html.php");
+ 			$this->render("Lightbox/user_group_list_html.php");
  		}
  		# ------------------------------------------------------
  		function userGroupForm() {
@@ -659,7 +662,7 @@
  				$t_user_group = new ca_user_groups();
  			}
  			$this->view->setVar("user_group",$t_user_group);
- 			$this->render("Sets/form_user_group_html.php");
+ 			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
  		function saveUserGroup() {
@@ -733,7 +736,7 @@
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("comments", $va_comments);
-			$this->render("Sets/ajax_comments.php");
+			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
  		function AjaxSaveComment() {
@@ -771,7 +774,7 @@
  			$this->view->setVar("message", $vs_message);
 			$this->view->setVar("error", $vs_error);
 			$this->view->setVar("close", $vb_close);
-			$this->render("Sets/ajax_comments.php");
+			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
  		function saveComment() {
@@ -799,7 +802,7 @@
  				}
  			}
  			if($ps_tablename == "ca_sets"){
- 				$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
+ 				$this->response->setRedirect(caNavUrl($this->request, '', '*', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
  				#$this->setDetail();
  			}
  		}
@@ -831,12 +834,12 @@
 			$ps_reload = $this->request->getParameter("reload", pString);
  			switch($ps_reload){
  				case "detail":
- 					$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'setDetail'));
+ 					$this->response->setRedirect(caNavUrl($this->request, '', '*', 'setDetail'));
  					return;
  				break;
  				# -----------------------------
  				default:
- 					$this->response->setRedirect(caNavUrl($this->request, '', 'Sets', 'Index'));
+ 					$this->response->setRedirect(caNavUrl($this->request, '', '*', 'Index'));
  					return;
  				break;
  				# -----------------------------
@@ -876,7 +879,7 @@
 				$va_errors[] = _t("%1 is not defined or you don't have access to the lightbox", $this->ops_lightbox_display_name);
 			}
 			$this->view->setVar('errors', $va_errors);
-			$this->render('Sets/ajax_reorder_items_json.php');
+			$this->render('Lightbox/ajax_reorder_items_json.php');
  		}
  		# -------------------------------------------------------
  		public function AjaxDeleteItem() {
@@ -896,7 +899,7 @@
 			}
  			
  			$this->view->setVar('errors', $va_errors);
- 			$this->render('Sets/ajax_delete_item_json.php');
+ 			$this->render('Lightbox/ajax_delete_item_json.php');
  		}
  		# -------------------------------------------------------
  		public function AjaxAddItem() {
@@ -1023,7 +1026,7 @@
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
  			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
- 				$this->render("Sets/form_add_set_item_html.php");
+ 				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));
 				$this->render("Form/reload_html.php");
@@ -1040,7 +1043,7 @@
 			$t_set = $this->_getSet();
 			$this->view->setVar("set", $t_set);
 
-			$this->render("Sets/present_html.php");
+			$this->render("Lightbox/present_html.php");
 		}
  		# -------------------------------------------------------
  		
@@ -1088,7 +1091,7 @@
  		public static function getReturnToResultsUrl($po_request) {
  			$va_ret = array(
  				'module_path' => '',
- 				'controller' => 'Sets',
+ 				'controller' => 'Lightbox',
  				'action' => 'setDetail',
  				'params' => array(
  				

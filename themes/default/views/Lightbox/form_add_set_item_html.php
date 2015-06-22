@@ -77,7 +77,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#AddItemForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Sets', 'AjaxAddItem', null); ?>',
+				'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddItem', null); ?>',
 				jQuery('#AddItemForm').serialize()
 			);
 			e.preventDefault();

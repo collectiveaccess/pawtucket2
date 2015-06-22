@@ -62,7 +62,7 @@
 	</head>
 	<body>
 		<div class="reveal">
-			<?php print caNavLink($this->request, _t("Back to %1", ucfirst($vs_lightbox_display_name)), "", "", "Sets", "setDetail", array("set_id" => $t_set->get("set_id")), array("style" => "font-size:14px; padding:20px;")); ?>
+			<?php print caNavLink($this->request, _t("Back to %1", ucfirst($vs_lightbox_display_name)), "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")), array("style" => "font-size:14px; padding:20px;")); ?>
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 <?php

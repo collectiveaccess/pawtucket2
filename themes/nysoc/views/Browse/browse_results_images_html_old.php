@@ -123,7 +123,7 @@
 				$va_fine =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities">^ca_objects_x_entities.fine</unit>');
 				$va_ledger =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities" >^ca_objects.preferred_labels</unit>', array('restrictToTypes' => array('ledger')));
 
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 

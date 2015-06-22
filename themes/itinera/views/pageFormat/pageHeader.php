@@ -34,7 +34,7 @@
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
 		if(!$this->request->config->get("disable_lightbox")){
-			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_display_name, '', '', 'Sets', 'Index', array())."</li>";
+			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_display_name, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";

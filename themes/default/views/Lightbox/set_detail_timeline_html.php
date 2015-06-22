@@ -46,7 +46,7 @@
 				type:       'timeline',
 				width:      '100%',
 				height:     $('#lbTimelineContainer').height(),
-				source:     '<?php print caNavUrl($this->request, '', 'Sets', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
+				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed',
 				debug: false
 			});
@@ -61,7 +61,7 @@
 			console.log("slide!", e, tl.getCurrentNumber());
 			
 			if (tl.getCurrentNumber() >= (c-2)) {
-				tl.reload(url ='<?php print caNavUrl($this->request, '', 'Sets', '*setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"), 's' => '')); ?>' + s);
+				tl.reload(url ='<?php print caNavUrl($this->request, '', '*', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"), 's' => '')); ?>' + s);
 				console.log("reload", url);
 				s+= c;
 			}

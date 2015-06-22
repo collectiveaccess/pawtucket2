@@ -39,7 +39,7 @@
 	 *
 	 */
 	function caDisplayException(Exception $e) {
-		//print "Fatal exception: ".$e->getMessage();
+		if(class_exists('AppController')) { $o_app = AppController::getInstance()->removeAllPlugins(); }
 		
 		$pn_errno = 0;
 		$ps_errstr = $e->getMessage();
@@ -56,7 +56,10 @@
 	/**
 	 *
 	 */
-	function caDisplayFatalError($pn_errno, $ps_errstr, $ps_errfile, $pn_errline, $pa_errcontext) {
+	function caDisplayFatalError($pn_errno, $ps_errstr, $ps_errfile, $pn_errline, $pa_symboltable) {
+	
+		$pa_errcontext = debug_backtrace(); 
+		array_shift($pa_errcontext); // remove entry for error handler
 		$pa_errcontext_args = caExtractStackTraceArguments($pa_errcontext);
 		$pa_request_params = caExtractRequestParams();
 		
@@ -68,6 +71,7 @@
 				//print "ARGH: $ps_errstr<br>";
 				break;
 			default:
+				if(class_exists('AppController')) { $o_app = AppController::getInstance()->removeAllPlugins(); }
 				require_once((defined("__CA_THEME_DIR__") ? __CA_THEME_DIR__ : __DIR__."/../../themes/default")."/views/system/fatal_error_html.php");
 				exit;
 		}

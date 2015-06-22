@@ -148,7 +148,7 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 				if (($qr_res->get('ca_entities.biography.biography_text')) && ($vs_table != 'ca_objects')) {
 					$vs_expanded_info = $qr_res->get('ca_entities.biography.biography_text');
 				} else {

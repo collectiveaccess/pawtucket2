@@ -62,7 +62,7 @@
 				print "<blockquote>";
 				# --- display link to remove comment?
 				if(($t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__)) || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
-					print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Sets", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => (($vs_tablename == "ca_sets") ? "index" : "detail")))."</div>";
+					print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Lightbox", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => (($vs_tablename == "ca_sets") ? "index" : "detail")))."</div>";
 				}
 				$t_author->load($va_comment["user_id"]);
 				print $va_comment["comment"]."<br/>";
@@ -92,7 +92,7 @@
 		jQuery(document).ready(function() {
 			jQuery('#addComment<?php print $vn_item_id; ?>').submit(function(e){		
 				jQuery('#comment<?php print $vn_item_id; ?>').load(
-					'<?php print caNavUrl($this->request, '', 'Sets', 'AjaxSaveComment', null); ?>',
+					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxSaveComment', null); ?>',
 					jQuery('#addComment<?php print $vn_item_id; ?>').serialize()
 				);
 				e.preventDefault();

@@ -85,7 +85,7 @@
  			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
- 				die("Invalid detail type");
+ 				throw new ApplicationException("Invalid detail type");
  			}
  			
  			$t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
@@ -96,7 +96,7 @@
  			}
  			if (!$t_table->load(($vb_use_identifiers_in_urls && $t_table->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_table->hasField('deleted')) ? array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_table->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_table->hasField('deleted')) ? array($t_table->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_table->primaryKey() => (int)$ps_id)))) {
  				// invalid id - throw error
- 				die("Invalid id");
+ 				throw new ApplicationException("Invalid id");
  			} 
  			
  			// Printables
@@ -692,7 +692,7 @@
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
- 				die("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
+ 				throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
  			}
 			$ps_table = $this->request->getParameter("tablename", pString);
 			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
@@ -827,10 +827,10 @@
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
- 				die("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
+ 				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
-  				die("ID does not exist");		// shouldn't happen
+  				throw new ApplicationException("ID does not exist");		// shouldn't happen
  			}
  			
  			$this->view->setVar('t_item', $t_item);
@@ -847,7 +847,7 @@
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
- 				die("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
+ 				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
   				$this->view->setVar("message", _t("ID does not exist"));

@@ -77,7 +77,7 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type $ps_function");
+ 				throw new ApplicationException("Invalid browse type $ps_function");
  			}
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
@@ -350,7 +350,7 @@
  			
  			if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) {
  				// invalid advanced search type – throw error
- 				die("Invalid advanced search type");
+ 				throw new ApplicationException("Invalid advanced search type");
  			}
  			$vs_class = $va_search_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));

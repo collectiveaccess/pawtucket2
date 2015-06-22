@@ -57,7 +57,7 @@
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
+		<div class="col-sm-7 col-md-7 col-lg-7">			
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -79,7 +79,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Sets", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
 				<?php print "<span class='lbSetCount'>(".$q_set_items->numHits()." items)</span>"; ?>
@@ -115,37 +115,30 @@ if (!$vb_ajax) {	// !ajax
 							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 							print "<li class='divider'></li>";
 						}
-?>				
-						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_display_name_plural), "", "", "Sets", "Index"); ?></li>
-						<li class="divider"></li>
-<?php
 					if($vb_write_access){
 ?>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_display_name)); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_display_name)); ?></a></li>
 <?php
 					}
 ?>
-						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Sets", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
+						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
 <?php
-						if(is_array($va_export_formats) && sizeof($va_export_formats)){
-							// Export as PDF links
-							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
-							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Sets", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"]))."</li>";
-							}
-						}
+						#if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						#	// Export as PDF links
+						#	print "<li class='divider'></li>\n";
+						#	print "<li class='dropdown-header'>"._t("Download PDF as:")."</li>\n";
+						#	foreach($va_export_formats as $va_export_format){
+						#		print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Lightbox", "setDetail", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						#	}
+						#}
 ?>		
 						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php
 						if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
 ?>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Sets', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
 <?php
 						}
 ?>
@@ -167,7 +160,7 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			</H5>
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="col-sm-5 col-md-5 col-lg-5">
 			<div id="lbViewButtons">
 <?php
 			if(is_array($va_views) && sizeof($va_views)){
@@ -178,6 +171,21 @@ if (!$vb_ajax) {	// !ajax
 						print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
 					}
 				}
+			}
+			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+				// Export as PDF
+				print "<div class='reportTools'>";
+				print caFormTag($this->request, 'view/pdf', 'caExportForm', ($this->request->getModulePath() ? $this->request->getModulePath().'/' : '').$this->request->getController().'/'.$this->request->getAction(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+				print "<select name='export_format'>";
+				foreach($va_export_formats as $va_export_format){
+					print "<option value='".$va_export_format["code"]."'>".$va_export_format["name"]."</option>";
+				}
+				print "</select> ";
+				print caHTMLHiddenInput('key', array('value' => $vs_browse_key));
+				print caHTMLHiddenInput('view', array('value' => 'pdf'));
+				print caHTMLHiddenInput('download', array('value' => 1));
+				print caFormSubmitLink($this->request, _t('Download'), 'button', 'caExportForm')."</form>\n";
+				print "</div>"; 
 			}
 ?>
 			</div>			
@@ -191,8 +199,8 @@ if (!$vb_ajax) {	// !ajax
 		if($q_set_items->numHits()){
 			if ($vn_start < $q_set_items->numHits()) {
 				$q_set_items->seek($vn_start);
-				print $this->render("Sets/set_detail_{$vs_current_view}_html.php");
-				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+				print $this->render("Lightbox/set_detail_{$vs_current_view}_html.php");
+				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '', 'Lightbox', 'setDetail', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 			}
 		}else{
 			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
@@ -213,7 +221,7 @@ if (!$vb_ajax) {	// !ajax
 			$va_comments = array_reverse($this->getVar("comments"));
 ?>
 			<div>
-				<form action="<?php print caNavUrl($this->request, "", "Sets", "saveComment"); ?>" id="addComment" method="post">
+				<form action="<?php print caNavUrl($this->request, "", "Lightbox", "saveComment"); ?>" id="addComment" method="post">
 <?php
 				if($vs_comment_error = $this->getVar("comment_error")){
 					print "<div>".$vs_comment_error."</div>";
@@ -227,32 +235,44 @@ if (!$vb_ajax) {	// !ajax
 					</div><!-- end form-group -->
 					<input type="hidden" name="tablename" value="ca_sets">
 					<input type="hidden" name="item_id" value="<?php print $t_set->get("set_id"); ?>">
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 				</form>
 			</div>
 <?php
 			if(sizeof($va_comments)){
 ?>
-			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?> <i class="fa fa-arrows-v"></i></a><HR/></div>
+			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); jQuery('#lbFilterList').toggle(); moveFilters(); return false;"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?> <i class="fa fa-arrows-v"></i></a><HR/></div>
 <?php
 				if(sizeof($va_comments)){
 					$t_author = new ca_users();
 					print "<div class='lbComments' style='display:none;'>";
+					$i = 0;
 					foreach($va_comments as $va_comment){
 						print "<small>";
 						# --- display link to remove comment?
 						if($vb_write_access || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
-							print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Sets", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => "detail"))."</div>";
+							print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Lightbox", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => "detail"))."</div>";
 						}
 						$t_author->load($va_comment["user_id"]);
 						print $va_comment["comment"]."<br/>";
 						print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
-						print "</small><HR/>";
+						print "</small>";
+						$i++;
+						if($i < sizeof($va_comments)){
+							print "<HR/>";
+						}
 					}
+?>
+					<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); jQuery('#lbFilterList').toggle(); moveFilters(); return false;"><?php print ((sizeof($va_comments) == 1) ? _t("Hide comment") : _t("Hide comments")); ?> <i class="fa fa-arrows-v"></i></a></div>
+<?php
+
 					print "</div>";
 				}
 		
 			}
+			print "<div id='lbFilterList'>";
 			print $this->render("Browse/browse_refine_subview_html.php");
+			print "</div>";
 			
 ?>
 		</div><!-- end col -->
@@ -266,6 +286,12 @@ if (!$vb_ajax) {	// !ajax
 			nextSelector: 'a.jscroll-next'
 		});
 	});
+	
+	function moveFilters() {
+		var offset = $("#bRefine").offset();
+		var initialFilterOffset = $("#lbFilterList").offset();
+		jQuery("#bRefine").offset({top: initialFilterOffset.top, left: offset.left});
+	}
 
 </script>
 <?php

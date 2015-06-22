@@ -72,7 +72,7 @@
  			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				throw new ApplicationException("Invalid browse type");
  			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
@@ -380,7 +380,7 @@
  			$this->view->setVar("target", $ps_target);
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_target))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				throw new ApplicationException("Invalid browse type");
  			}
  			$this->view->setVar("browse_name", $va_browse_info["displayName"]);
 			$this->render("pageFormat/browseMenuFacets.php");
