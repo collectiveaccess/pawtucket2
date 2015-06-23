@@ -38,27 +38,64 @@
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
+        /**
+         * @var array
+         */
  		 protected $opa_access_values;
+
+        /**
+         * @var array
+         */
  		 protected $opa_user_groups;
+
+        /**
+         * @var Configuration
+         */
  		 protected $opo_config;
+
+        /**
+         * @var
+         */
  		 protected $ops_lightbox_display_name;
+
+        /**
+         * @var
+         */
  		 protected $ops_lightbox_display_name_plural;
+
+        /**
+         * @var
+         */
+        protected $opb_is_login_redirect = false;
  		# -------------------------------------------------------
+        /**
+         * @param RequestHTTP $po_request
+         * @param ResponseHTTP $po_response
+         * @param null $pa_view_paths
+         * @throws ApplicationException
+         */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('disable_lightbox')) {
+
+            // Catch disabled lightbox
+            if ($this->request->config->get('disable_lightbox')) {
  				throw new ApplicationException('Lightbox is not enabled');
  			}
  			if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+                $this->opb_is_login_redirect = true;
+                return;
             }
+
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar("access_values", $this->opa_access_values);
+
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
+
  			$this->opo_config = caGetSetsConfig();
- 			caSetPageCSSClasses(array("sets"));
+ 			caSetPageCSSClasses(array("sets", "lightbox"));
  			
  			$va_lightbox_display_name = caGetSetDisplayName($this->opo_config);
  			$this->view->setVar('set_config', $this->opo_config);
@@ -67,47 +104,66 @@
 			$this->ops_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
  		}
  		# -------------------------------------------------------
+        /**
+         *
+         */
  		function Index() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
- 			$t_sets = new ca_sets();
+ 			if($this->opb_is_login_redirect) { return; }
+
+            # Get sets for display
+            $t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
- 			# --- remove write sets from the read array
+
+ 			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
- 			$this->view->setVar("read_sets", $va_read_sets);
+
+            $this->view->setVar("read_sets", $va_read_sets);
  			$this->view->setVar("write_sets", $va_write_sets);
- 			$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
+
+            $va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
  			$this->view->setVar("set_ids", $va_set_ids);
- 			$va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
+
+            # Get set change log
+            $va_set_change_log = $t_sets->getSetChangeLog($va_set_ids);
  			if(is_array($va_set_change_log) && sizeof($va_set_change_log)){
  				$va_set_change_log = array_slice($va_set_change_log, 0, 50);
  			}
  			$this->view->setVar("activity", $va_set_change_log);
+
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			$this->render("Lightbox/set_list_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function setDetail() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+            if($this->opb_is_login_redirect) { return; }
+
  			AssetLoadManager::register("mediaViewer");
  		
 			$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
  			$o_context->setAsLastFind();
-			$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
+
+            $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
 			$this->view->setVar("browse_type", "caLightbox");	# --- this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
- 			$ps_view = $this->request->getParameter('view', pString);
+
+            $ps_view = $this->request->getParameter('view', pString);
  			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData', 'pdf', 'list'))) {
  				$ps_view = 'thumbnail';
  			}
  			$this->view->setVar('view', $ps_view);
 			$this->view->setVar('views', $this->opo_config->getAssoc("views"));
 
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            //
+            // User must at least have read access to the set
+ 			//
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			
  			$vn_set_id = $t_set->get("set_id");
- 			
  			$this->view->setVar("set", $t_set);
+
  			$va_comments = $t_set->getComments();
  			$this->view->setVar("comments", $va_comments);
 
@@ -216,7 +272,8 @@
 			$this->view->setVar('sortDirection', $ps_sort_direction);
 			
 			$va_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
-			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
+
+            $o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
 
 			//
 			// Facets
@@ -307,10 +364,13 @@
  			}
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function setForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
- 			# --- if set exists, we're being redirected here after attempting a save
+            if($this->opb_is_login_redirect) { return; }
+
+ 			// If set exists, we're being redirected here after attempting a save
  			if (!$t_set){
  				# --- set_id is passed, so we're editing a set
  				if($this->request->getParameter('set_id', pInteger)){
@@ -326,9 +386,12 @@
  			$this->render("Lightbox/form_set_info_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function saveSetInfo() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -400,9 +463,12 @@
 			} 			
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function setAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			# --- list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
@@ -410,9 +476,12 @@
  			$this->render("Lightbox/set_access_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function saveGroupAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			# --- list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
@@ -420,9 +489,12 @@
  			$this->render("Lightbox/set_access_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function removeGroupAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			$t_item = new ca_sets_x_user_groups();
 			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
@@ -440,9 +512,12 @@
 			$this->setAccess();
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function removeUserAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
  			$t_item = new ca_sets_x_users();
 			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
@@ -460,9 +535,12 @@
  			$this->setAccess();
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function editGroupAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
  			$t_item = new ca_sets_x_user_groups();
@@ -482,9 +560,12 @@
 			$this->setAccess();
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function editUserAccess() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if($this->opb_is_login_redirect) { return; }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
  			$t_item = new ca_sets_x_users();
@@ -504,15 +585,21 @@
 			$this->setAccess();
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function shareSetForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$this->render("Lightbox/form_share_set_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function saveShareSet() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  			$o_purifier = new HTMLPurifier();
  			
@@ -649,25 +736,33 @@
 			} 		
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function userGroupList() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$this->render("Lightbox/user_group_list_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function userGroupForm() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
- 			if(!$t_user_group){
- 				$t_user_group = new ca_user_groups();
- 			}
+            if($this->opb_is_login_redirect) { return; }
+
+ 			$t_user_group = new ca_user_groups();
  			$this->view->setVar("user_group",$t_user_group);
+
  			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function saveUserGroup() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			$o_purifier = new HTMLPurifier();
@@ -718,12 +813,17 @@
 			} 			
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function AjaxListComments() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			$ps_tablename = $this->request->getParameter('tablename', pString);
+
+ 			$ps_tablename = $this->request->getParameter('table', pString);
+
  			# --- check this is a valid table to have comments in the lightbox
  			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index();}
  			# --- load table
@@ -739,9 +839,12 @@
 			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function AjaxSaveComment() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			# --- when close is set to true, will make the form view disappear after saving form
  			$vb_close = false;
  			$o_datamodel = new Datamodel();
@@ -777,9 +880,12 @@
 			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function saveComment() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
  			$ps_tablename = $this->request->getParameter('tablename', pString);
@@ -807,9 +913,12 @@
  			}
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		function deleteComment() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			$o_datamodel = new Datamodel();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
  			$pn_comment_id = $this->request->getParameter("comment_id", pInteger);
@@ -846,9 +955,12 @@
  			}
  		}
  		# -------------------------------------------------------
+        /**
+         *
+         */
  		public function DeleteSet() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
  				$vs_set_name = $t_set->getLabelForDisplay();
  				$t_set->setMode(ACCESS_WRITE);
@@ -863,9 +975,13 @@
  			$this->Index();
  		}
  		# ------------------------------------------------------
+        /**
+         *
+         */
  		public function AjaxReorderItems() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
-			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+            if($this->opb_is_login_redirect) { return; }
+
+            if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
 				$this->view->setVar("set_id", $t_set->get("set_id"));
 				
@@ -882,9 +998,13 @@
 			$this->render('Lightbox/ajax_reorder_items_json.php');
  		}
  		# -------------------------------------------------------
+        /**
+         *
+         */
  		public function AjaxDeleteItem() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
-			if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+            if($this->opb_is_login_redirect) { return; }
+
+            if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
 				$pn_item_id = $this->request->getParameter('item_id', pInteger);
 				if ($t_set->removeItemByItemID($pn_item_id, $this->request->getUserID())) {
@@ -894,6 +1014,7 @@
 				}
 				$this->view->setVar('set_id', $pn_set_id);
 				$this->view->setVar('item_id', $pn_item_id);
+                $this->view->setVar('count', $t_set->getItemCount(array('checkAccess' => $this->opa_access_values)));
 			} else {
 				$va_errors['general'] = _t('You do not have access to the %1', $this->ops_lightbox_display_name);	
 			}
@@ -902,9 +1023,12 @@
  			$this->render('Lightbox/ajax_delete_item_json.php');
  		}
  		# -------------------------------------------------------
+        /**
+         *
+         */
  		public function AjaxAddItem() {
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			
+            if($this->opb_is_login_redirect) { return; }
+
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			$o_purifier = new HTMLPurifier();
@@ -1019,9 +1143,13 @@
 			}
  		}
  		# -------------------------------------------------------
+        /**
+         *
+         */
  		public function addItemForm(){
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
- 			$this->view->setvar("set", new ca_Sets());
+            if($this->opb_is_login_redirect) { return; }
+
+            $this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
@@ -1037,6 +1165,8 @@
 		 *
 		 */
 		public function Present() {
+            if($this->opb_is_login_redirect) { return; }
+
 			AssetLoadManager::register("reveal.js");
 			$o_app = AppController::getInstance();
 			$o_app->removeAllPlugins();

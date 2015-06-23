@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Sets/set_detail_html.php : 
+ * themes/default/Lightbox/set_detail_html.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -42,18 +42,16 @@
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
 	$vs_sort_control_type 			= $o_set_config->get("sortControlType");
-	if(!$vs_sort_control_type){
-		$vs_sort_control_type = "dropdown";
-	}
+	if(!$vs_sort_control_type){ $vs_sort_control_type = "dropdown"; }
 	
 	$va_export_formats 				= $this->getVar('export_formats');
 	$va_lightbox_display_name 		= caGetSetDisplayName();
 	$vs_lightbox_display_name 		= $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	$vs_browse_key 					= $this->getVar('key');
-	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-	$vb_ajax			= (bool)$this->request->isAjax();
+	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
+	$vb_ajax			            = (bool)$this->request->isAjax();
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
@@ -82,7 +80,12 @@ if (!$vb_ajax) {	// !ajax
 			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
-				<?php print "<span class='lbSetCount'>(".$q_set_items->numHits()." items)</span>"; ?>
+				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$q_set_items->numHits()."</span> items)</span>"; ?>
+<?php
+    //
+    // Gear menu
+    //
+?>
 				<div class="btn-group">
 					<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 					<ul class="dropdown-menu" role="menu">
@@ -188,6 +191,7 @@ if (!$vb_ajax) {	// !ajax
 			<div id="lbSetResultLoadContainer">
 <?php
 } // !ajax
+        // First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
 		if($q_set_items->numHits()){
 			if ($vn_start < $q_set_items->numHits()) {
 				$q_set_items->seek($vn_start);
@@ -199,7 +203,7 @@ if (!$vb_ajax) {	// !ajax
 		}
 if (!$vb_ajax) {	// !ajax
 ?>
-			</div><!-- end lbSetResultLoadContainer -->		
+			</div><!-- end lbSetResultLoadContainer -->
 		</div><!-- end col -->
 		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
@@ -258,15 +262,89 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 <script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#lbSetResultLoadContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 20,
-			nextSelector: 'a.jscroll-next'
-		});
-	});
+	//jQuery(document).ready(function() {
+	//	jQuery('#lbSetResultLoadContainer').jscroll({
+	//		autoTrigger: true,
+	//		loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+	//		padding: 20,
+	//		nextSelector: 'a.jscroll-next'
+	//	});
+	//});
 
+
+    var loadedPages = [];
+    var dataLoading = false;
+    jQuery(window).bind("scroll", function(e) {
+
+        var $e = jQuery("#lbSetResultLoadContainer");
+        var _$scroll = jQuery(window),
+            borderTopWidth = parseInt($e.css('borderTopWidth')),
+            borderTopWidthInt = isNaN(borderTopWidth) ? 0 : borderTopWidth,
+            iContainerTop = parseInt($e.css('paddingTop')) + borderTopWidthInt,
+            iTopHeight = _$scroll.scrollTop(),
+            innerTop = $e.length ? $e.offset().top : 0,
+            iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
+
+        var docHeight = jQuery(document).height();
+       // console.log("d", docHeight, $(window).scrollTop() + $(window).height());
+
+        jQuery("#lbSetResultLoadContainer .jscroll-next").html("Loading...");
+        if (($(window).scrollTop() + $(window).height() >= docHeight) && !dataLoading) {
+            var href = jQuery("#lbSetResultLoadContainer .jscroll-next").attr('href');
+
+            if (href && (loadedPages.indexOf(href) == -1)) {
+                dataLoading = true;
+                jQuery("#lbSetResultLoadContainer .jscroll-next").remove();
+                jQuery("#lbSetResultLoadContainer").append('<div id="resultLoadTmp" />');
+
+                jQuery("#lbSetResultLoadContainer #resultLoadTmp").load(href, function(e) {
+                    loadedPages.push(href);
+
+                    jQuery("#resultLoadTmp").children().appendTo("#lbSetResultLoadContainer");
+                    jQuery("#resultLoadTmp .jscroll-next").appendTo("#lbSetResultLoadContainer");
+                    jQuery("#resultLoadTmp").remove();
+
+                    $(".sortable").sortable('refresh').sortable('refreshPositions');
+                    dataLoading = false;
+                });
+            }
+        }
+    });
+
+    jQuery(document).ready(function() {
+        $("#lbSetResultLoadContainer").sortable({
+            cursor: "move",
+            opacity: 0.8,
+            helper: 'clone',
+            appendTo: 'body',
+            zIndex: 10000,
+            update: function( event, ui ) {
+                var data = $(this).sortable('serialize');
+                // POST to server using $.post or $.ajax
+                $.ajax({
+                    type: 'POST',
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
+                });
+            }
+        });
+
+        jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton",
+            function() {
+                var id = jQuery(this).data("item_id");
+
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
+                    if(data.status == 'ok') {
+                        jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
+                        jQuery('.lbSetCountInt').html(data.count);
+                        // update count
+                    } else {
+                        alert('Error: ' + data.errors.join(';'));
+                    }
+                });
+                return false;
+            }
+        );
+    });
 </script>
 <?php
 } //!ajax

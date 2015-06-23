@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Sets/ajax_comments.php : 
+ * themes/default/Lightbox/ajax_comments.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software

@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Sets/form_set_info_html.php : 
+ * themes/default/Lightbox/form_set_info_html.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
