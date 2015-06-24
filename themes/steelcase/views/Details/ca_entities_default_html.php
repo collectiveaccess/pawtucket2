@@ -34,7 +34,7 @@
 ?>
 						<HR/>
 <?php
-						if($va_styles = $t_item->get("ca_entities.styles_movement", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
+						if($va_styles = $t_item->get("ca_entities.styles_movement", array("returnWithStructure" => true, "convertCodesToDisplayText" => false))){
 							$va_style_display = array();
 							foreach($va_styles as $vn_style_id => $va_style){
 								$vs_style_movement = $t_lists->getItemFromListForDisplayByItemID("styles_movement", $va_style["styles_movement"]);

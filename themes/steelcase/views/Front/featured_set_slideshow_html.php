@@ -56,7 +56,7 @@
 									print $qr_res->get("ca_objects.creation_date");
 								}
 							}
-							$va_entities = $qr_res->get("ca_entities", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
+							$va_entities = $qr_res->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
 							if(sizeof($va_entities)){
 								$t_entity = new ca_entities();
 								print "<br/>";
