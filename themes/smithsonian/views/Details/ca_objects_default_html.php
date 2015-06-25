@@ -60,13 +60,18 @@
 			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location (legacy text)</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
 <?php
 			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
-				print "<span class='metaTitle'>Related places</span>";
-				print "<div class='meta'>";
+				$va_places = array();
 				foreach ($va_rel_works as $va_key => $va_occurrence_id) {
 					$t_occurrence = new ca_occurrences($va_occurrence_id);
-					print $t_occurrence->get('ca_places.preferred_labels');
+					$va_places[] = $t_occurrence->get('ca_places.preferred_labels');
 				}
-				print "</div>";
+				
+				if(sizeof($va_places)) {
+					print "<span class='metaTitle'>Related places</span>";
+					print "<div class='meta'>";
+					print join(", ", $va_places);
+					print "</div>";
+				}
 			}
 
 			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
