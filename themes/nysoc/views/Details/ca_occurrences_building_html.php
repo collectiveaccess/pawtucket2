@@ -22,13 +22,16 @@
 			if ($vs_collections = $t_item->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 				$vs_sidebar_buf.= "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
 			}
-			if ($va_links = $t_item->get('ca_occurrences.resources_link', array('returnAsArray' => true))) {
+			if ($va_links = $t_item->get('ca_occurrences.resources_link', array('returnWithStructure' => true))) {
 				$vs_sidebar_buf.= "<h6>External Resources</h6><div class='unit'>";
-				foreach ($va_links as $va_key => $va_link) {
-					if ($va_link['resources_link_description']) {
-						$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_description']."</a></p>";
-					} else {
-						$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_url']."</a></p>";							
+
+				foreach ($va_links as $va_key => $va_link_a) {
+					foreach ($va_link_a as $va_key => $va_link) {
+						if ($va_link['resources_link_description']) {
+							$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_description']."</a></p>";
+						} else {
+							$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_url']."</a></p>";							
+						}
 					}
 				}
 				$vs_sidebar_buf.= "</div>";
@@ -61,54 +64,37 @@
 							</div><!-- end row -->
 							<div class="row">			
 								<div class='col-md-6 col-lg-6'>
-			<?php
+<?php
 									if ($vs_occ_dates = $t_item->get('ca_occurrences.NYSL_occupied_dates')) {
 										print "<div class='unit'>Occupied by the New York Society Library from ".$vs_occ_dates."</div>";
 									}
 									if ($vs_range = $t_item->get('ca_occurrences.building_range')) {
 										print "<div class='unit'>Building extant from ".$vs_range."</div>";
 									}
-									if ($va_history = $t_item->get('ca_occurrences.building_history')) {
-										print "<div class='unit'><h6>Building History</h6>".$va_history."</div>";
-									}												
-									if ($t_item->get('ca_occurrences.references.references_list')) {
-										$va_references = $t_item->get('ca_occurrences.references', array('delimiter' => '', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^references_list page ^references_page</p>'));
+									if ($t_item->get('ca_occurrences.buliding_history')) {
+										$va_history = $t_item->get('ca_occurrences.buliding_history', array('delimiter' => '', 'convertCodesToDisplayText' => true));
 										print "<div class='unit'>";
-										print "<a href='#' class='openRef' onclick='$(\"#references\").slideDown(); $(\".openRef\").hide(); $(\".closeRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Bibliography & Works Cited</h6></a>";
-										print "<a href='#' class='closeRef' style='display:none;' onclick='$(\"#references\").slideUp(); $(\".closeRef\").hide(); $(\".openRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Bibliography & Works Cited</h6></a>";
+										print "<a href='#' class='openHis' onclick='$(\"#history\").slideDown(); $(\".openHis\").hide(); $(\".closeHis\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Building History</h6></a>";
+										print "<a href='#' class='closeHis' style='display:none;' onclick='$(\"#history\").slideUp(); $(\".closeHis\").hide(); $(\".openHis\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Building History</h6></a>";
+										print "<div id='history' style='display:none;'>".$va_history."</div></div>";
+									}																					
+									if ($t_item->get('ca_occurrences.references.references_list')) {
+										$va_references = $t_item->get('ca_occurrences.references', array('delimiter' => '', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_occurrences.references.references_list page ^ca_occurrences.references.references_page</p>'));
+										print "<div class='unit'>";
+										print "<a href='#' class='openRef' onclick='$(\"#references\").slideDown(); $(\".openRef\").hide(); $(\".closeRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
+										print "<a href='#' class='closeRef' style='display:none;' onclick='$(\"#references\").slideUp(); $(\".closeRef\").hide(); $(\".openRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
 										print "<div id='references' style='display:none;'>".$va_references."</div></div>";
 									}
-									if ($vs_docs = $t_item->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'sort' => 'ca_objects.preferred_labels', 'restrictToTypes' => array('document')))) {
-										print "<div class='unit'>Related Institutional Documents: ".$vs_docs."</div>";
-									}
-									$va_people_by_rels = array();
-									if ($va_related_people = $t_item->get('ca_entities', array('returnAsArray' => true))) {
-										print "<div class='unit'>";
-										foreach ($va_related_people as $va_key => $va_related_person) {
-											$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
-										}
-										$va_people_links = array();
-										foreach ($va_people_by_rels as $va_role => $va_person) {
-											print ucwords($va_role).": ";
-											foreach ($va_person as $va_entity_id => $va_name) {
-												$va_people_links[] = caNavLink($this->request, $va_name, '', '', 'Detail', 'entities/'.$va_entity_id)."<br/>";
-											}
-											print join(', ', $va_people_links);
-										}
-										print "</div>";
-									}
-									if ($vs_event = $t_item->get('ca_occurrences.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'restrictToTypes' => array('personal', 'historic', 'membership')))) {
-										print "<div class='unit'>Related Events: ".$vs_event."</div>";
-									}
+
 																				
-			?>						
-								</div><!-- end col -->
-								<div class='col-md-6 col-lg-6'>
+?>
 									<div id="detailTools">
-										<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 										<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
-									</div><!-- end detailTools -->								
+										<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+									</div><!-- end detailTools -->						
+								</div><!-- end col -->
+								<div class='col-md-6 col-lg-6'>							
 									<div class='vizPlaceholder'><i class='fa fa-picture-o'></i></div>
 									{{{map}}}					
 								</div><!-- end col -->
@@ -135,7 +121,6 @@
 								$vn_c = 0;
 								while ($qr_circ->nextHit()) {
 									$vs_surname = ucfirst($qr_circ->get('ca_entities.preferred_labels.surname', array('restrictToRelationshipTypes' => array('reader'))));
-									print $vs_surname;
 									$va_readers[$vs_surname[0]][$qr_circ->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('reader')))] = $qr_circ->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('reader')));
 									$vn_c++;
 									

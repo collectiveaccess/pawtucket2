@@ -517,8 +517,11 @@ a.readmore-js-toggle {
 	color:#d77421;
 }
 .bookTitle {
-	max-height:50px;
+	max-height:38px;
 	overflow:hidden;
+}
+.jcarousel {
+	width:100%;
 }
 .visualize {
 	font-size:16px;
@@ -739,6 +742,9 @@ svg:not(:root) {
 	padding-right:0px;
 	padding-left:0px; 
 }
+.detail .fa.fa-file-text {
+	font-size:28px;
+}
 .ui-widget {
 	font-family: gudea, helvetica !important;
 	font-size:12px !important;
@@ -794,13 +800,16 @@ svg:not(:root) {
 	z-index: 3000;
 	border: 1px solid #cccccc;
 	background-color: #FFFFFF;
-	padding: 5px 10px 10px 10px;
+	padding: 8px 8px 8px 8px;
+	border-radius:4px;
+	-webkit-border-radius:4px;
 	opacity: 1 !important; 
 	text-align: left;
 	margin-left:150px;
 	margin-top:27px;
 	font-size:12px;
-	width:400px;
+	width:auto;
+	max-width:500px;
 }
 .tooltipImage {
 	float:left;
@@ -902,4 +911,12 @@ a.sbIcon.twitter {
 }
 .clear {
 	clear:both;
+}
+
+/* Login Reg */
+
+@media (min-width: 768px) {
+	#caFormOverlay {
+	  width: 500px;
+	}
 }

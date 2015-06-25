@@ -55,6 +55,12 @@
 							
 											{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 											{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
+											
+											<div id="detailTools">
+												<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+												<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+												<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+											</div><!-- end detailTools -->											
 										</div><!-- end col -->				
 										<div class="col-sm-6 colBorderLeft">
 											{{{map}}}
@@ -72,10 +78,11 @@
 				?>
 							<div class='row titleBar' >
 								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Borrower Name</div>
-								<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'>Book Title</div>
+								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Book Title</div>
+								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Author</div>
 								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date Out</div>
 								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date In</div>
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Representative</div>
+								<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Rep.</div>
 								<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Fine</div>
 							</div>
 				<?php
@@ -85,21 +92,19 @@
 								print "<div class='row ledgerRow'>";
 									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='entity".$vn_i."'>";
 									print $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
-									$vs_entity_info = "";
+									$vs_entity_info = null;
 									if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
 										$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
 									}
-									if ($qr_rels->get("ca_entities.country_origin")) {
-										$vs_entity_info.= $qr_rels->get("ca_entities.country_origin")."<br/>";
-									}
 									if ($qr_rels->getWithTemplate("^ca_entities.industry_occupations")) {
 										$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
-									}					
-									TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info.$qr_rels->getWithTemplate("^ca_entities.biography.biography_text")); 
- 
+									}
+									if ($vs_entity_info) {					
+										TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
+ 									}
 									print "</div>";
 
-									print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='book".$vn_i."'>";
 					
 									if ($qr_rels->get('ca_objects.parent.object_id')) {
 										$vs_book_title = explode(':',$qr_rels->get('ca_objects.parent.preferred_labels.name'));
@@ -121,19 +126,23 @@
 									if ($vs_title = $qr_rels->get("ca_objects_x_entities.book_title")) {
 										print "<br/>transcribed: {$vs_title}";
 									}
-									$va_book_info = array();
-									if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
-										$va_book_info[] = $va_author;
-									} else {$va_author = null;}
-									if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
-										$va_book_info[] = $va_publication_date;
-									} else { $va_publication_date = null; }
-									if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
-										$va_book_info[] = $va_publisher;
-									} else { $va_publisher = null; }
-									TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 
+									#$va_book_info = array();
+									#if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
+									#	$va_book_info[] = $va_author;
+									#} else {$va_author = null;}
+									#if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
+									#	$va_book_info[] = $va_publication_date;
+									#} else { $va_publication_date = null; }
+									#if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
+									#	$va_book_info[] = $va_publisher;
+									#} else { $va_publisher = null; }
+									#TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 
 									print "</div>";
-			
+									
+									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+									print $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
+									print "</div>";	
+				
 									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
 									print $qr_rels->get("ca_objects_x_entities.date_out");
 									print "</div>";	
@@ -142,7 +151,7 @@
 									print $qr_rels->get("ca_objects_x_entities.date_in");
 									print "</div>";
 
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+									print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
 									print $qr_rels->get("ca_objects_x_entities.representative");
 									print "</div>";
 											

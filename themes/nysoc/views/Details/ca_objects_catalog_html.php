@@ -60,7 +60,7 @@
 									print "<div class='unit'><h6>Local Subject</h6>".$vs_local."</div>";
 								}
 								$va_people_by_rels = array();
-								if ($va_related_people = $t_object->get('ca_entities', array('returnAsArray' => true, 'excludeRelationshipTypes' => 'reader'))) {
+								if ($va_related_people = $t_object->get('ca_entities', array('returnWithStructure' => true, 'excludeRelationshipTypes' => 'reader'))) {
 									print "<div class='unit'>";
 									print "<h6>Related People</h6>";
 									foreach ($va_related_people as $va_key => $va_related_person) {
@@ -79,7 +79,12 @@
 								if ($vs_events = $t_object->get('ca_occurrences', array('restrictToTypes' => array('personal', 'historic', 'membership'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 									print "<div class='unit'><h6>Related Events</h6>".$vs_events."</div>";
 								}																															
-				?>								
+?>	
+								<div id="detailTools">
+									<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+									<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+									<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+								</div><!-- end detailTools -->											
 							</div><!-- end col -->
 							<div class='col-sm-6 col-md-6 col-lg-6'>
 								<div class="detailNav">
@@ -88,12 +93,7 @@
 								</div>
 								{{{representationViewer}}}
 								<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-								
-								<div id="detailTools">
-									<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-									<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-									<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-								</div><!-- end detailTools -->			
+			
 							</div><!-- end col -->			
 						</div><!-- end row -->
 					</div><!-- end col -->		
