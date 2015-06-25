@@ -63,13 +63,15 @@
 				$va_places = array();
 				foreach ($va_rel_works as $va_key => $va_occurrence_id) {
 					$t_occurrence = new ca_occurrences($va_occurrence_id);
-					$va_places[] = $t_occurrence->get('ca_places.preferred_labels');
+					if ($vs_places = $t_occurrence->get('ca_places.preferred_labels')) {
+						$va_places[] = $vs_places;
+					}
 				}
 				
 				if(sizeof($va_places)) {
 					print "<span class='metaTitle'>Related places</span>";
 					print "<div class='meta'>";
-					print join(", ", $va_places);
+					print join("; ", $va_places);
 					print "</div>";
 				}
 			}
