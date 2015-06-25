@@ -29,7 +29,7 @@
 			if ($t_occurrence->get('ca_occurrences.sniDepiction', array('excludeValues' => array('not_specified'))) != "") {
 				print "<div><span class='metaTitle'>Depicts SI</span><span class='meta'>".$t_occurrence->get('ca_occurrences.sniDepiction', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 			}	
-			if ($va_contributors = $t_occurrence->get('ca_entities', array('excludeRelationshipTypes' => array('subject, interviewee'), 'returnAsArray' => true))) {
+			if ($va_contributors = $t_occurrence->get('ca_entities', array('excludeRelationshipTypes' => array('subject, interviewee'), 'returnWithStructure' => true))) {
 				print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
 				foreach ($va_contributors as $cont_key => $va_contributor) {
 					print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
@@ -53,7 +53,7 @@
 			
 			
 <?php
-			if ($va_lcsh_names = $t_occurrence->get('ca_occurrences.lcsh_names', array('returnAsArray' => true))) {
+			if ($va_lcsh_names = $t_occurrence->get('ca_occurrences.lcsh_names', array('returnWithStructure' => true))) {
 				print "<span class='metaTitle'>LCSH Names</span>";
 				print "<div class='meta'>";
 				foreach ($va_lcsh_names as $va_key => $va_lcsh_name) {
@@ -62,7 +62,7 @@
 				}
 				print "</div>";
 			}
-			if ($va_lcsh_subjects = $t_occurrence->get('ca_occurrences.lcsh_subjects', array('returnAsArray' => true))) {
+			if ($va_lcsh_subjects = $t_occurrence->get('ca_occurrences.lcsh_subjects', array('returnWithStructure' => true))) {
 				print "<span class='metaTitle'>LCSH Subjects</span>";
 				print "<div class='meta'>";
 				foreach ($va_lcsh_subjects as $va_key => $va_lcsh_subject) {
@@ -90,7 +90,7 @@
 				print "<div>Year: ".$t_occurrence->get('ca_occurrences.mission.missionYear')." (".$t_occurrence->get('ca_occurrences.mission.mission_dates_types').")</div>";
 				print "</span></div>";
 			}
-			$va_awards = $t_occurrence->get('ca_occurrences.awards', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
+			$va_awards = $t_occurrence->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
 			if (sizeof($va_awards) > 0) {
 				print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
