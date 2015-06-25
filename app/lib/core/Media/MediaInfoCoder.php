@@ -255,8 +255,7 @@ class MediaInfoCoder {
 		#
 		# Use icon
 		#
-		if (!is_array($va_media_info[$ps_version])) { print_R($va_media_info); die($ps_version); }
-		if (isset($va_media_info[$ps_version]) && isset($va_media_info[$ps_version]['USE_ICON']) && ($vs_icon_code = $va_media_info[$ps_version]['USE_ICON'])) {
+		if (isset($va_media_info[$ps_version]['USE_ICON']) && ($vs_icon_code = $va_media_info[$ps_version]['USE_ICON'])) {
 			return caGetDefaultMediaIconTag($vs_icon_code, $va_media_info[$ps_version]['WIDTH'], $va_media_info[$ps_version]['HEIGHT']);
 		}
 		
@@ -293,7 +292,7 @@ class MediaInfoCoder {
 		if (!($va_media_info = $this->getMediaArray($ps_data))) {
 			return false;
 		}
-		
+	
 		unset($va_media_info["ORIGINAL_FILENAME"]);
 		unset($va_media_info["INPUT"]);
 		unset($va_media_info["VOLUME"]);
