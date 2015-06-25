@@ -2429,7 +2429,6 @@ class BaseModel extends BaseObject {
 					}
 
 					$this->_FILES_CLEAR = array();
-					$this->logChange("I");
 
 					#
 					# update search index
@@ -2439,6 +2438,8 @@ class BaseModel extends BaseObject {
 					if ((!isset($pa_options['dont_do_search_indexing']) || (!$pa_options['dont_do_search_indexing'])) && !defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
 						$this->doSearchIndexing($this->getFieldValuesArray(true), false, array('isNewRow' => true));
 					}
+
+					$this->logChange("I");
 
 					if ($vb_we_set_transaction) { $this->removeTransaction(true); }
 					
@@ -6408,7 +6409,7 @@ class BaseModel extends BaseObject {
 				return false;
 			}
 			if (!($this->opqs_change_log_snapshot = $o_db->prepare("
-				INSERT INTO ".$vs_change_log_database."ca_change_log_snapshots
+				INSERT IGNORE INTO ".$vs_change_log_database."ca_change_log_snapshots
 				(
 					log_id, snapshot
 				)
@@ -6419,7 +6420,7 @@ class BaseModel extends BaseObject {
 				return false;
 			}
 			if (!($this->opqs_change_log_subjects = $o_db->prepare("
-				INSERT INTO ".$vs_change_log_database."ca_change_log_subjects
+				INSERT IGNORE INTO ".$vs_change_log_database."ca_change_log_subjects
 				(
 					log_id, subject_table_num, subject_row_id
 				)
@@ -7720,6 +7721,7 @@ class BaseModel extends BaseObject {
 	 *			[Default is ids]
 	 *	
 	 *		limit = if searchResult, ids or modelInstances is set, limits number of returned ancestoes. [Default is no limit]
+	 *		includeSelf = Include initial row_id values in returned set [Default is false]
 	 *		
 	 * @return mixed
 	 */
@@ -7732,6 +7734,7 @@ class BaseModel extends BaseObject {
 		$t_instance = new $vs_table;
 		
 	 	if (!($vs_parent_id_fld = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { return null; }
+		$pb_include_self = caGetOption('includeSelf', $pa_options, false);
 		if ($o_trans) { $t_instance->setTransaction($o_trans); }
 		
 		$vs_table_name = $t_instance->tableName();
@@ -7739,7 +7742,7 @@ class BaseModel extends BaseObject {
 		
 		$o_db = $t_instance->getDb();
 		
-		$va_ancestor_row_ids = array();
+		$va_ancestor_row_ids = $pb_include_self ? $pa_row_ids : array();
 		$va_level_row_ids = $pa_row_ids;
 		do {
 			$qr_level = $o_db->query("
@@ -11191,7 +11194,7 @@ $pa_options["display_form_field_tips"] = true;
 	 * using the SearchEngine. For full-text searches, searches on attributes, or searches that require transformations or complex boolean operations use
 	 * the SearchEngine.
 	 *
-	 * @param array $pa_values An array of values to match. Keys are field names. This must be an array with at least one key-value pair where the key is a valid field name for the model.
+	 * @param array $pa_values An array of values to match. Keys are field names. This must be an array with at least one key-value pair where the key is a valid field name for the model. If you pass an integer instead of an array it will be used as the primary key value for the table; result will be returned as "firstModelInstance" unless the returnAs option is explicitly set.
 	 * @param array $pa_options Options are:
 	 *		transaction = optional Transaction instance. If set then all database access is done within the context of the transaction
 	 *		returnAs = what to return; possible values are:
@@ -11217,14 +11220,21 @@ $pa_options["display_form_field_tips"] = true;
 	 *
 	 * @return mixed Depending upon the returnAs option setting, an array, subclass of BaseModel or integer may be returned.
 	 */
-	public static function find($pa_values, $pa_options=null) {
+	public static function find($pa_values, $pa_options=null) {	
+		$t_instance = null;
+		$vs_table = get_called_class();
+		
+		if (!is_array($pa_values) && ((int)$pa_values > 0)) { 
+			$t_instance = new $vs_table;
+			$pa_values = array($t_instance->primaryKey() => (int)$pa_values); 
+			if (!isset($pa_options['returnAs'])) { $pa_options['returnAs'] = 'firstModelInstance'; }
+		}
 		if (!is_array($pa_values) || (sizeof($pa_values) == 0)) { return null; }
 		$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
 		$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 		$o_trans = caGetOption('transaction', $pa_options, null);
 		
-		$vs_table = get_called_class();
-		$t_instance = new $vs_table;
+		if (!$t_instance) { $t_instance = new $vs_table; }
 		if ($o_trans) { $t_instance->setTransaction($o_trans); }
 		
 		$va_sql_wheres = array();
