@@ -808,8 +808,8 @@
 	 * options: "write_access" = false, view = list, thumbnail, caption = caption to override the configured setting, representation = rep tag to use
 	 * 
 	 */
-	function caLightboxSetDetailItem($po_request, $q_result, $t_set_item, $pa_options = array()) {
-		if(!$t_set_item->get("item_id")){
+	function caLightboxSetDetailItem($po_request, $q_result, $pa_set_item, $pa_options = array()) {
+		if(!($vn_item_id = $pa_set_item["item_id"])){
 			return false;
 		}
 		$vb_write_access = false;
@@ -848,7 +848,6 @@
 			}
 		}
 
-        $vn_item_id = $t_set_item->get("item_id");
 
 		$vs_set_item_display .= "<div id='comment{$vn_item_id}' class='lbSetItemComment'><!-- load comments here --></div>\n";
 		$vs_set_item_display .= "<div class='caption'>".$vs_caption."</div>\n";
@@ -863,8 +862,8 @@
 			$vs_set_item_display .= "&nbsp;<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_result->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 
-		$vs_set_item_display .= "&nbsp;&nbsp;<a href='#' title='"._t("Comments")."' onclick='jQuery(\"#comment{$vn_item_id}\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $vn_item_id, 'table' => 'ca_set_items', 'set_id' => $t_set_item->get("set_id")));
-        $vs_set_item_display .= "\", function(){jQuery(\"#comment{$vn_item_id}\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set_item->getNumComments()."</small></a></div>\n";
+		$vs_set_item_display .= "&nbsp;&nbsp;<a href='#' title='"._t("Comments")."' onclick='jQuery(\"#comment{$vn_item_id}\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $vn_item_id, 'table' => 'ca_set_items', 'set_id' => $pa_set_item["set_id"]));
+        $vs_set_item_display .= "\", function(){jQuery(\"#comment{$vn_item_id}\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$pa_set_item['n']."</small></a></div>\n";//".$t_set_item->getNumComments()."
 		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
 
         return $vs_set_item_display;

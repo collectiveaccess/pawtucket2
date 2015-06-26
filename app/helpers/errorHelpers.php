@@ -85,7 +85,7 @@
 		$pa_args = array();
 		foreach($pa_errcontext as $vn_i => $va_trace) {
 			if(!is_array($va_trace)) { return array(); }
-			if(!is_array($va_trace['args'])) { return array(); }
+			if(!isset($va_trace['args']) || !is_array($va_trace['args'])) { return array(); }
 			$pa_args[$vn_i] = array();
 			foreach($va_trace['args'] as $vn_j => $vm_arg) {
 				if (is_object($vm_arg)) { 

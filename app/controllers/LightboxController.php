@@ -164,8 +164,9 @@
  			$vn_set_id = $t_set->get("set_id");
  			$this->view->setVar("set", $t_set);
 
- 			$va_comments = $t_set->getComments();
- 			$this->view->setVar("comments", $va_comments);
+ 			$qr_comments = $t_set->getComments(null, null, array('returnAs' => 'searchResult'));
+ 			$this->view->setVar("comments", $qr_comments);
+            $this->view->setVar("commentCountDisplay", ($vn_comment_count = $qr_comments->numHits())." ".(($vn_comment_count == 1) ? _t("comment") : _t("comments")));
 
 			//
 			// Load existing browse if key is specified
@@ -328,6 +329,34 @@
 			
 			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
+
+           // $va_ids = $qr_res->getAllFieldValues('ca_objects.object_id');
+
+            $va_ids = array();
+            while($qr_res->nextHit()) {
+                $va_ids[] = $qr_res->get('ca_objects.object_id');
+            }
+            $qr_res->seek(0);
+
+            // convert result to set item result set
+            $o_db = new Db();
+            $qr_items = $o_db->query("
+                SELECT item_id, row_id
+                FROM ca_set_items
+                WHERE
+                  row_id IN (?) AND set_id = ?
+            ", array($va_ids, $vn_set_id));
+
+            $va_acc = array();
+            while($qr_items->nextRow()) {
+                $va_acc[$qr_items->get('row_id')][] = array(
+                       'item_id' => $qr_items->get('item_id'),
+                        'num_comments' => 0,
+                    'set_id' => $vn_set_id
+
+                );
+            }
+            $this->view->setVar('setItemInfo', $va_acc);
 			
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
@@ -847,70 +876,49 @@
 
  			# --- when close is set to true, will make the form view disappear after saving form
  			$vb_close = false;
- 			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			$ps_tablename = $this->request->getParameter('tablename', pString);
- 			# --- check this is a valid table to have comments in the lightbox
- 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index(); }
- 			# --- load table
- 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
- 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
- 			$t_item->load($pn_item_id);
- 			$ps_comment = $this->request->getParameter('comment', pString);
- 			if(!$ps_comment){
- 				$vs_error = _t("Please enter a comment");
- 				$this->AjaxListComments();
- 				return;
- 			}else{
- 				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
- 				if($t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
- 					$vs_message = _t("Saved comment");
- 					$vb_close = true;
- 				}else{
- 					$vs_error = _t("There were errors adding your comment: ".join("; ", $t_item->getErrors()));
- 					$this->AjaxListComments();
- 					return;
- 				}
- 			}
- 			$this->view->setVar("tablename", $ps_tablename);
- 			$this->view->setVar("item_id", $pn_item_id);
- 			$this->view->setVar("message", $vs_message);
-			$this->view->setVar("error", $vs_error);
-			$this->view->setVar("close", $vb_close);
-			$this->render("Lightbox/ajax_comments.php");
- 		}
- 		# ------------------------------------------------------
-        /**
-         *
-         */
- 		function saveComment() {
-            if($this->opb_is_login_redirect) { return; }
+ 			$o_datamodel = Datamodel::load();
 
- 			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
- 			$ps_tablename = $this->request->getParameter('tablename', pString);
- 			if (!$ps_tablename) { $this->Index(); return;}
- 			# --- check this is a valid table to have comments in the lightbox
- 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index(); }
- 			# --- load table
- 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
- 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
- 			$t_item->load($pn_item_id);
- 			$ps_comment = $this->request->getParameter('comment', pString);
- 			if(!$ps_comment){
- 					$this->notification->addNotification(_t("Please enter a comment"), __NOTIFICATION_TYPE_ERROR__);
- 			}else{
- 				# --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
- 				if($t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
- 					$this->notification->addNotification(_t("Saved comment"), __NOTIFICATION_TYPE_INFO__);
- 				}else{
- 					$this->notification->addNotification(_t("There were errors saving your comment"), __NOTIFICATION_TYPE_ERROR__);
- 				}
- 			}
- 			if($ps_tablename == "ca_sets"){
- 				$this->response->setRedirect(caNavUrl($this->request, '', '*', 'setDetail', array("key" => $this->request->getParameter('key', pString))));
- 				#$this->setDetail();
- 			}
+            $va_errors = array();
+            $vs_message = null;
+
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+                $va_errors[] = _t("You do not have access to this lightbox");
+            } else {
+ 			    $ps_comment_type = $this->request->getParameter('type', pString);
+
+ 			    # --- check this is a valid table to have comments in the lightbox
+ 			    if(!in_array($ps_comment_type, array("ca_sets", "ca_set_items"))){
+                    $va_errors[] = _t("Invalid type: %1", $ps_comment_type);
+                } else {
+                    # --- load table
+                    $t_item = $o_datamodel->getInstanceByTableName($ps_comment_type, true);
+                    $pn_id = $this->request->getParameter('id', pInteger);
+                    if (!$t_item->load($pn_id)) {
+                        $va_errors[] = _t("Invalid id: %1", $pn_id);
+                    } elseif(!($ps_comment = $this->request->getParameter('comment', pString))) {
+                        $va_errors[] = _t("Please enter a comment");
+                    } elseif($t_comment = $t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
+                        # --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
+                        $vs_message = _t("Saved comment");
+                        $vb_close = true;
+
+                        $this->view->setVar('comment', $ps_comment);
+                        $this->view->setVar('author', $t_comment->get('ca_users.fname').' '.$t_comment->get('ca_users.lname').' '.$t_comment->get('ca_item_comments.created_on'));
+                        $vs_rendered_comment = $this->render("Lightbox/set_comment_html.php", true);
+
+                    } else {
+                        $va_errors[] = _t("There were errors adding your comment: ".join("; ", $t_item->getErrors()));
+                    }
+                }
+            }
+
+ 			$this->view->setVar("type", $ps_comment_type);
+ 			$this->view->setVar("id", $pn_id);
+ 			$this->view->setVar("message", $vs_message);
+            $this->view->setVar("comment", $vs_rendered_comment);
+			$this->view->setVar("errors", $va_errors);
+			$this->view->setVar("close", $vb_close);
+			$this->render("Lightbox/ajax_save_comment_json.php");
  		}
  		# ------------------------------------------------------
         /**

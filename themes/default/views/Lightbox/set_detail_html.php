@@ -213,47 +213,38 @@ if (!$vb_ajax) {	// !ajax
 			if($t_set->get("description")){
 				print $t_set->get("description");
 				print "<HR>";
-			}			
-			$va_comments = array_reverse($this->getVar("comments"));
+			}
 ?>
 			<div>
-				<form action="<?php print caNavUrl($this->request, "", "Lightbox", "saveComment"); ?>" id="addComment" method="post">
+				<form action="#" id="addComment" method="post">
 <?php
 				if($vs_comment_error = $this->getVar("comment_error")){
 					print "<div>".$vs_comment_error."</div>";
 				}
 ?>
 					<div class="form-group">
-						<textarea name="comment" placeholder="add your comment" class="form-control"></textarea>
+						<textarea id="addCommentTextArea" name="comment" placeholder="<?php print addslashes(_t("add your comment")); ?>" class="form-control"></textarea>
 					</div><!-- end form-group -->
 					<div class="form-group text-right">
-						<button type="submit" class="btn btn-default btn-xs">Save</button>
+						<button type="submit" class="btn btn-default btn-xs"><?php print _t('Save'); ?></button>
 					</div><!-- end form-group -->
-					<input type="hidden" name="tablename" value="ca_sets">
-					<input type="hidden" name="item_id" value="<?php print $t_set->get("set_id"); ?>">
 				</form>
 			</div>
 <?php
-			if(sizeof($va_comments)){
+			if(($qr_comments = $this->getVar("comments")) && ($qr_comments->numHits() > 0)) {
 ?>
-			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?> <i class="fa fa-arrows-v"></i></a><HR/></div>
+			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a><HR/></div>
 <?php
-				if(sizeof($va_comments)){
-					$t_author = new ca_users();
-					print "<div class='lbComments' style='display:none;'>";
-					foreach($va_comments as $va_comment){
-						print "<small>";
-						# --- display link to remove comment?
-						if($vb_write_access || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
-							print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Lightbox", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => "detail"))."</div>";
-						}
-						$t_author->load($va_comment["user_id"]);
-						print $va_comment["comment"]."<br/>";
-						print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
-						print "</small><HR/>";
-					}
-					print "</div>";
-				}
+                print "<div class='lbComments' style='display:none;'>";
+                while($qr_comments->nextHit()) {
+                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
+                    $this->setVar('author', $qr_comments->get('ca_users.fname').' '.$qr_comments->get('ca_users.lname').' '.$qr_comments->get('ca_item_comments.created_on'));
+                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
+
+                    print $this->render("Lightbox/set_comment_html.php", true);
+                }
+                print "</div>";
+
 		
 			}
 			print $this->render("Browse/browse_refine_subview_html.php");
@@ -262,16 +253,6 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 <script type="text/javascript">
-	//jQuery(document).ready(function() {
-	//	jQuery('#lbSetResultLoadContainer').jscroll({
-	//		autoTrigger: true,
-	//		loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-	//		padding: 20,
-	//		nextSelector: 'a.jscroll-next'
-	//	});
-	//});
-
-
     var loadedPages = [];
     var dataLoading = false;
     jQuery(window).bind("scroll", function(e) {
@@ -341,9 +322,26 @@ if (!$vb_ajax) {	// !ajax
                         alert('Error: ' + data.errors.join(';'));
                     }
                 });
+
+                e.preventDefault();
                 return false;
             }
         );
+
+        jQuery("#addComment").on('submit', function(e) {
+
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxSaveComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+                if(data.status == 'ok') {
+                    jQuery('.lbComments').append("<p>" + data.comment + "</p>");
+                    jQuery('#lbSetCommentsCount').html(data.countDisplay);
+                } else {
+                    alert('Error: ' + data.errors.join(';'));
+                }
+            });
+
+            e.preventDefault();
+            return false;
+        });
     });
 </script>
 <?php
