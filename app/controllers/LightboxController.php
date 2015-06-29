@@ -165,9 +165,9 @@
  			$this->view->setVar("set", $t_set);
 
  			$qr_comments = $t_set->getComments(null, null, array('returnAs' => 'searchResult'));
-            
+
  			$this->view->setVar("comments", $qr_comments);
-            $this->view->setVar("commentCountDisplay", ($vn_comment_count = $qr_comments->numHits())." ".(($vn_comment_count == 1) ? _t("comment") : _t("comments")));
+            $this->view->setVar("commentCountDisplay", $qr_comments ? (($vn_comment_count = $qr_comments->numHits())." ".(($vn_comment_count == 1) ? _t("comment") : _t("comments"))) : 0);
 
 			//
 			// Load existing browse if key is specified
@@ -860,27 +860,29 @@
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$t_item = $o_datamodel->getTableInstance($ps_tablename);
  			$t_item->load($pn_item_id);
- 			$va_comments = $t_item->getComments();
  			
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
- 			$this->view->setVar("comments", $va_comments);
+ 			$this->view->setVar("comments", $qr_comments = $t_item->getComments(null, null, array('returnAs' => 'searchResult')));
 			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function AjaxSaveComment() {
+ 		function AjaxAddComment() {
             if($this->opb_is_login_redirect) { return; }
 
  			# --- when close is set to true, will make the form view disappear after saving form
- 			$vb_close = false;
+
  			$o_datamodel = Datamodel::load();
 
             $va_errors = array();
+            $vn_count = null;
             $vs_message = null;
+
+            $o_html_purifier = new HTMLPurifier();
 
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
                 $va_errors[] = _t("You do not have access to this lightbox");
@@ -896,16 +898,20 @@
                     $pn_id = $this->request->getParameter('id', pInteger);
                     if (!$t_item->load($pn_id)) {
                         $va_errors[] = _t("Invalid id: %1", $pn_id);
-                    } elseif(!($ps_comment = $this->request->getParameter('comment', pString))) {
+                    } elseif(!($ps_comment = $o_html_purifier->purify($this->request->getParameter('comment', pString)))) {
                         $va_errors[] = _t("Please enter a comment");
                     } elseif($t_comment = $t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
                         # --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
                         $vs_message = _t("Saved comment");
-                        $vb_close = true;
 
                         $this->view->setVar('comment', $ps_comment);
+                        $this->view->setVar('comment_id', $t_comment->getPrimaryKey());
                         $this->view->setVar('author', $t_comment->get('ca_users.fname').' '.$t_comment->get('ca_users.lname').' '.$t_comment->get('ca_item_comments.created_on'));
+
+                        $this->view->setVar('is_writeable', $this->view->getVar('write_access'));
+                        $this->view->setVar('is_author', true);
                         $vs_rendered_comment = $this->render("Lightbox/set_comment_html.php", true);
+                        $vn_count = $t_comment->getItem()->getNumComments();
 
                     } else {
                         $va_errors[] = _t("There were errors adding your comment: ".join("; ", $t_item->getErrors()));
@@ -914,54 +920,58 @@
             }
 
  			$this->view->setVar("type", $ps_comment_type);
- 			$this->view->setVar("id", $pn_id);
+ 			$this->view->setVar("set_id", $pn_id);
  			$this->view->setVar("message", $vs_message);
             $this->view->setVar("comment", $vs_rendered_comment);
+            $this->view->setVar("comment_count", $vn_count);
+            $this->view->setVar("comment_count_display",  $vn_count." ".(($vn_count == 1) ? _t("comment") : _t("comments")));
 			$this->view->setVar("errors", $va_errors);
-			$this->view->setVar("close", $vb_close);
-			$this->render("Lightbox/ajax_save_comment_json.php");
+			$this->render("Lightbox/ajax_add_comment_json.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function deleteComment() {
+ 		function AjaxDeleteComment() {
             if($this->opb_is_login_redirect) { return; }
 
- 			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return;}
- 			$pn_comment_id = $this->request->getParameter("comment_id", pInteger);
- 			$t_comment = new ca_item_comments($pn_comment_id);
- 			
- 			if($t_comment->get("comment_id")){
-				# --- check if user is owner of comment or has edit access to set comment was made on
-				if(($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
-					$this->Index(); return;
-				}
-				
-				$t_comment->setMode(ACCESS_WRITE);
-				$t_comment->delete(true);
-				if ($t_comment->numErrors()) {
-					$this->notification->addNotification(_t("There were errors:".join("; ", $t_comment->getErrors())), __NOTIFICATION_TYPE_ERROR__);
-				}else{
-					$this->notification->addNotification(_t("Removed comment"), __NOTIFICATION_TYPE_INFO__);
-				}
-			}else{
-				$this->notification->addNotification(_t("Invalid comment_id"), __NOTIFICATION_TYPE_ERROR__);
-			}
-			$ps_reload = $this->request->getParameter("reload", pString);
- 			switch($ps_reload){
- 				case "detail":
- 					$this->response->setRedirect(caNavUrl($this->request, '', '*', 'setDetail'));
- 					return;
- 				break;
- 				# -----------------------------
- 				default:
- 					$this->response->setRedirect(caNavUrl($this->request, '', '*', 'Index'));
- 					return;
- 				break;
- 				# -----------------------------
- 			}
+            $va_errors = array();
+            $vs_message = null;
+            $vn_count = null;
+            $pn_comment_id = null;
+
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+                $va_errors[] = _t('You do not have access to this lightbox');
+            } else {
+                $t_comment = new ca_item_comments($pn_comment_id = $this->request->getParameter("comment_id", pInteger));
+
+                if ($t_comment->get("comment_id")) {
+                    $vn_count = $t_comment->getItem()->getNumComments();
+
+                    # --- check if user is owner of comment or has edit access to set comment was made on
+                    if (($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+                        $va_errors[] = _t('You do not have access to this comment');
+                    } else {
+                        $t_comment->setMode(ACCESS_WRITE);
+                        $t_comment->delete(true);
+                        if ($t_comment->numErrors()) {
+                            $va_errors = $t_comment->getErrors();
+				    } else {
+                            $vn_count--;
+                            $vs_message = _t("Removed comment");
+                        }
+                    }
+                } else {
+                    $va_errors[] = _t("Invalid comment_id");
+                }
+
+            }
+            $this->view->setVar("comment_id", $pn_comment_id);
+            $this->view->setVar("comment_count", $vn_count);
+            $this->view->setVar("comment_count_display",  $vn_count." ".(($vn_count == 1) ? _t("comment") : _t("comments")));
+            $this->view->setVar("message", $vs_message);
+            $this->view->setVar("errors", $va_errors);
+            $this->render("Lightbox/ajax_delete_comment_json.php");
  		}
  		# -------------------------------------------------------
         /**

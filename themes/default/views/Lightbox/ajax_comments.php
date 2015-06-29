@@ -29,76 +29,85 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vb_close = $this->getVar("close");
-	$vs_message = $this->getVar("message");
-	$vs_error = $this->getVar("error");
-	$vn_item_id = $this->getVar("item_id");
-	$vs_tablename = $this->getVar("tablename");
-	$va_comments = $this->getVar("comments");
-	$t_set = $this->getVar("set");
-	
-	if($vb_close){
-		print "<p class='text-center'><br/><br/><span class='alert alert-success'>".$vs_message."</span></p>";
+	$vb_close           = $this->getVar("close");
+	$vs_message         = $this->getVar("message");
+	$vs_error           = $this->getVar("error");
+	$vn_item_id         = $this->getVar("item_id");
+	$vs_tablename       = $this->getVar("tablename");
+	$qr_comments        = $this->getVar("comments");
+    $vn_num_comments    = $qr_comments ? $qr_comments->numHits() : 0;
+	$t_set              = $this->getVar("set");
+
 ?>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				setTimeout(function(){
-					window.location.reload();
-					jQuery('#comment<?php print $vn_item_id; ?>').hide();
-					<?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?>
-				}, 1000);	
-			});
-		</script>
+	<div class="pull-right closecomment"><a href="#" onclick='jQuery("#comment{{{item_id}}}").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
+	<div class="lbSetCommentHeader" id="lbSetCommentHeader{{{item_id}}}"><span class="lbSetCommentsCount" id="lbSetCommentHeader{{{item_id}}}Count"><?php print $vn_num_comments." ".(($vn_num_comments == 1) ? _t("comment") : _t("comments")); ?></span></div>
+    <div class="lbComments" id="lbSetComments{{{item_id}}}">
 <?php
-	}else{
-?>
-	<div class="pull-right closecomment"><a href="#" onclick='jQuery("#comment<?php print $vn_item_id; ?>").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
-	<div class="lbSetCommentHeader"><?php print sizeof($va_comments)." ".((sizeof($va_comments) == 1) ? _t("comment") : _t("comments")); ?></div>
-<?php
-		if(sizeof($va_comments)){
-			$t_author = new ca_users();
-			print "<div class='lbComments'>";
-			foreach($va_comments as $vn_comment_id => $va_comment){
-				print "<blockquote>";
-				# --- display link to remove comment?
-				if(($t_set->haveAccessToSet($this->request->user->get("user_id"), __CA_SET_EDIT_ACCESS__)) || ($va_comment["user_id"] == $this->request->user->get("user_id"))){
-					print "<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-times' title='"._t("remove comment")."'></i>", "", "", "Lightbox", "deleteComment", array("comment_id" => $va_comment["comment_id"], "set_id" => $t_set->get("set_id"), "reload" => (($vs_tablename == "ca_sets") ? "index" : "detail")))."</div>";
-				}
-				$t_author->load($va_comment["user_id"]);
-				print $va_comment["comment"]."<br/>";
-				print "<small>".trim($t_author->get("fname")." ".$t_author->get("lname"))." ".date("n/j/y g:i A", $va_comment["created_on"])."</small>";
-				print "</blockquote>";
-			}
-			print "</div>";
+		if(sizeof($qr_comments)){
+                while ($qr_comments->nextHit()) {
+                    print "<blockquote>";
+                    $this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
+                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
+                    $this->setVar('author', $qr_comments->get('ca_users.fname') . ' ' . $qr_comments->get('ca_users.lname') . ' ' . $qr_comments->get('ca_item_comments.created_on'));
+                    $this->setVar('is_author', $qr_comments->get('ca_item_comments.user_id') == $this->request->user->get("user_id"));
+                    print $this->render("Lightbox/set_comment_html.php");
+                    print "</blockquote>";
+                }
 		}
 ?>
-	<div>
-		<form action="#" id="addComment<?php print $vn_item_id; ?>">
+        </div>
+	    <div>
+        <form action="#" id="addComment<?php print $vn_item_id; ?>">
 <?php
 		if($vs_error){
 			print "<div>".$vs_error."</div>";
 		}
 ?>
 			<div>
-				<textarea name="comment" placeholder="add your comment" class="form-control"></textarea>
+				<textarea name="comment" id="addComment<?php print $vn_item_id; ?>TextArea" placeholder="add your comment" class="form-control"></textarea>
 			</div>
 			<input type="submit" value="Save" class="pull-right btn btn-default btn-xs">
-			<input type="hidden" name="tablename" value="<?php print $vs_tablename; ?>">
-			<input type="hidden" name="item_id" value="<?php print $vn_item_id; ?>">
+			<input type="hidden" name="type" value="<?php print $vs_tablename; ?>">
+			<input type="hidden" name="id" value="<?php print $vn_item_id; ?>">
 		</form>
 		<div style="clear:both;"></div>
 	</div>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {
-			jQuery('#addComment<?php print $vn_item_id; ?>').submit(function(e){		
-				jQuery('#comment<?php print $vn_item_id; ?>').load(
-					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxSaveComment', null); ?>',
-					jQuery('#addComment<?php print $vn_item_id; ?>').serialize()
-				);
+			jQuery('#addComment{{{item_id}}}').submit(function(e){
+				jQuery.getJSON(
+					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment', null); ?>',
+					jQuery('#addComment{{{item_id}}}').serialize(), function(data) {
+                        if(data.status == 'ok') {
+                            jQuery("#addComment{{{item_id}}}TextArea").val('');
+                            jQuery('#lbSetComments{{{item_id}}}').append("<blockquote>" + data.comment + "</blockquote>").show();
+                            jQuery('#lbSetCommentHeader{{{item_id}}}').show();
+                            jQuery('#lbSetCommentHeader{{{item_id}}}Count').html(data.displayCount);  // update comment count
+                        } else {
+                            alert('Error: ' + data.errors.join(';'));
+                        }
+                    }
+                );
 				e.preventDefault();
 				return false;
 			});
+
+            jQuery("#lbSetComments{{{item_id}}}").on('click', '.lbComment', function(e) {
+                var comment_id = jQuery(this).data("comment_id");
+                if(comment_id) {
+                    jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                        if(data.status == 'ok') {
+                            jQuery("#lbComments" + data.comment_id).remove();
+                            if (data.count > 0) {
+                                jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').show();
+                                jQuery("#lbSetCommentHeader{{{item_id}}}Count").html(data.displayCount);  // update comment count
+                            } else {
+
+                                jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').hide();
+                            }
+                        }
+                    });
+                }
+            });
 		});
 	</script>
-<?php
-	}

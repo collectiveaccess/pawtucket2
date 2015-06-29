@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 	$qr_set_items               = $this->getVar("result");
-	$va_set_item_info              = $this->getVar("setItemInfo");
+	$va_set_item_info           = $this->getVar("setItemInfo");
 	$vb_write_access            = $this->getVar("write_access");
 	$va_lightbox_display_name   = caGetSetDisplayName();
 	$vs_lightbox_display_name   = $va_lightbox_display_name["singular"];

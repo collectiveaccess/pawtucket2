@@ -1,6 +1,6 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Lightbox/set_comment_html.php :
+/* ----------------------------------------------------------------------
+ * themes/default/views/Sets/ajax_delete_comment_json.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -23,19 +23,16 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage theme/default
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
+	$va_errors = $this->getVar('errors');
+    $vs_message = $this->getVar('message');
+    $vn_comment_id = $this->getVar('comment_id');
+    $vn_comment_count = $this->getVar('comment_count');
+    $vs_comment_count_display = $this->getVar('comment_count_display');
 	
-?><div id="lbComments{{{comment_id}}}" data-comment_id="{{{comment_id}}}" class='lbComment'><small>
-        <?php
-        if($this->getVar('is_writeable') || ($this->getVar('is_author'))){
-            print "<div class='pull-right'><a href='#' class='setComment'><i class='fa fa-times' title='"._t("Remove comment")."'></i></a></div>";
-        }
-        ?>
-    {{{comment}}}
-    {{{author}}} {{{datetime}}}</small>
-    <hr/></div>
+	if (sizeof($va_errors)) {
+			print json_encode(array('status' => 'error', 'errors' => $va_errors));
+	} else {
+			print json_encode(array('status' => 'ok', 'message' => $vs_message, 'comment_id' => $vn_comment_id, 'count' => $vn_comment_count, 'displayCount' => $vs_comment_count_display));
+	}

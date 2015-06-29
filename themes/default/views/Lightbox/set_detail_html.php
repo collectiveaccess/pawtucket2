@@ -201,51 +201,65 @@ if (!$vb_ajax) {	// !ajax
 		}else{
 			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
 		}
-if (!$vb_ajax) {	// !ajax
+if (!$vb_ajax) {    // !ajax
 ?>
-			</div><!-- end lbSetResultLoadContainer -->
-		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+            </div>
+            <!-- end lbSetResultLoadContainer -->
+        </div>
+        <!-- end col -->
+        <div
+            class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+            <?php
+            if (!$vb_write_access) {
+                print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
+            }
+            if ($t_set->get("description")) {
+                print $t_set->get("description");
+                print "<HR>";
+            }
+            ?>
+            <div>
+                <form action="#" id="addComment" method="post">
+                    <?php
+                    if ($vs_comment_error = $this->getVar("comment_error")) {
+                        print "<div>" . $vs_comment_error . "</div>";
+                    }
+                    ?>
+                    <div class="form-group">
+                        <textarea id="addCommentTextArea" name="comment"
+                                  placeholder="<?php print addslashes(_t("add your comment")); ?>"
+                                  class="form-control"></textarea>
+                    </div>
+                    <!-- end form-group -->
+                    <div class="form-group text-right">
+                        <button type="submit" class="btn btn-default btn-xs"><?php print _t('Save'); ?></button>
+                    </div>
+                    <!-- end form-group -->
+                </form>
+            </div>
 <?php
-			if(!$vb_write_access){
-				print "<div class='warning'>"._t("You may not edit this set, you have read only access.")."</div>";
-			}
-			if($t_set->get("description")){
-				print $t_set->get("description");
-				print "<HR>";
-			}
+            $qr_comments = $this->getVar("comments");
+            $vn_num_comments = $qr_comments ? $qr_comments->numHits() : 0;
 ?>
-			<div>
-				<form action="#" id="addComment" method="post">
+            <div class="lbSetCommentHeader" <?php print (($vn_num_comments == 0) ? "style='display:none;'" : ''); ?>><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span
+                        id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a>
+                <hr/>
+            </div>
 <?php
-				if($vs_comment_error = $this->getVar("comment_error")){
-					print "<div>".$vs_comment_error."</div>";
-				}
-?>
-					<div class="form-group">
-						<textarea id="addCommentTextArea" name="comment" placeholder="<?php print addslashes(_t("add your comment")); ?>" class="form-control"></textarea>
-					</div><!-- end form-group -->
-					<div class="form-group text-right">
-						<button type="submit" class="btn btn-default btn-xs"><?php print _t('Save'); ?></button>
-					</div><!-- end form-group -->
-				</form>
-			</div>
-<?php
-			if(($qr_comments = $this->getVar("comments")) && ($qr_comments->numHits() > 0)) {
-?>
-			<div class="lbSetCommentHeader"><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a><HR/></div>
-<?php
-                print "<div class='lbComments' style='display:none;'>";
-                while($qr_comments->nextHit()) {
-                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
-                    $this->setVar('author', $qr_comments->get('ca_users.fname').' '.$qr_comments->get('ca_users.lname').' '.$qr_comments->get('ca_item_comments.created_on'));
+            print "<div class='lbComments' " . (($vn_num_comments == 0) ? "style='display:none;'" : '') . ">";
 
+            if ($vn_num_comments > 0) {
+                $this->setVar('is_writeable', $vb_write_access);
+                while ($qr_comments->nextHit()) {
+                    $this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
+                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
+                    $this->setVar('author', $qr_comments->get('ca_users.fname') . ' ' . $qr_comments->get('ca_users.lname') . ' ' . $qr_comments->get('ca_item_comments.created_on'));
+                    $this->setVar('is_author', $this->getVar('user_id') == $this->request->user->get("user_id"));
                     print $this->render("Lightbox/set_comment_html.php");
                 }
-                print "</div>";
+            }
+            print "</div>";
 
-		
-			}
 			print $this->render("Browse/browse_refine_subview_html.php");
 			
 ?>
@@ -266,7 +280,6 @@ if (!$vb_ajax) {	// !ajax
             iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
 
         var docHeight = jQuery(document).height();
-       // console.log("d", docHeight, $(window).scrollTop() + $(window).height());
 
         jQuery("#lbSetResultLoadContainer .jscroll-next").html("Loading...");
         if (($(window).scrollTop() + $(window).height() >= docHeight) && !dataLoading) {
@@ -315,8 +328,7 @@ if (!$vb_ajax) {	// !ajax
                 jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
-                        jQuery('.lbSetCountInt').html(data.count);
-                        // update count
+                        jQuery('.lbSetCountInt').html(data.count);  // update count
                     } else {
                         alert('Error: ' + data.errors.join(';'));
                     }
@@ -329,10 +341,12 @@ if (!$vb_ajax) {	// !ajax
 
         jQuery("#addComment").on('submit', function(e) {
 
-            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxSaveComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
                 if(data.status == 'ok') {
-                    jQuery('.lbComments').append("<p>" + data.comment + "</p>");
-                    jQuery('#lbSetCommentsCount').html(data.countDisplay);
+                    jQuery("#addCommentTextArea").val('');
+                    jQuery('.lbComments').append(data.comment).show();
+                    jQuery('.lbSetCommentHeader').show();
+                    jQuery('#lbSetCommentsCount').html(data.displayCount);  // update comment count
                 } else {
                     alert('Error: ' + data.errors.join(';'));
                 }
@@ -340,6 +354,24 @@ if (!$vb_ajax) {	// !ajax
 
             e.preventDefault();
             return false;
+        });
+
+        jQuery("div.lbComments").on('click', '.lbComment', function(e) {
+            var comment_id = jQuery(this).data("comment_id");
+            if(comment_id) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                    if(data.status == 'ok') {
+                        jQuery("#lbComments" + data.comment_id).remove();
+                        if (data.count > 0) {
+                            jQuery('.lbComments, .lbSetCommentHeader').show();
+                            jQuery("#lbSetCommentsCount").html(data.displayCount);  // update comment count
+                        } else {
+
+                            jQuery('.lbComments, .lbSetCommentHeader').hide();
+                        }
+                    }
+                });
+            }
         });
     });
 </script>
