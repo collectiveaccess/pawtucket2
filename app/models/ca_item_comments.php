@@ -468,5 +468,20 @@ class ca_item_comments extends BaseModel {
 		
 	}
 	# ------------------------------------------------------
+    /**
+     * Returns instance with item to which the comment is attached
+     *
+     * @return BaseModel instance of model for item associated with comment; null if no comment is loaded; or false if the associated item cannot be fetched.
+     */
+    public function getItem() {
+        if (!$this->getPrimaryKey()) { return null; }
+
+        if (!($t_item = $this->getAppDatamodel()->getInstanceByTableNum($this->get('table_num')))) { return false; }
+
+        if ($t_item->load($this->get('row_id'))) {
+            return $t_item;
+        }
+        return false;
+    }
+    # ------------------------------------------------------
 }
-?>
