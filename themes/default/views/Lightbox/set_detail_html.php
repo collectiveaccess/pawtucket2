@@ -239,9 +239,8 @@ if (!$vb_ajax) {	// !ajax
                 while($qr_comments->nextHit()) {
                     $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
                     $this->setVar('author', $qr_comments->get('ca_users.fname').' '.$qr_comments->get('ca_users.lname').' '.$qr_comments->get('ca_item_comments.created_on'));
-                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
 
-                    print $this->render("Lightbox/set_comment_html.php", true);
+                    print $this->render("Lightbox/set_comment_html.php");
                 }
                 print "</div>";
 

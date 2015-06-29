@@ -165,6 +165,7 @@
  			$this->view->setVar("set", $t_set);
 
  			$qr_comments = $t_set->getComments(null, null, array('returnAs' => 'searchResult'));
+            
  			$this->view->setVar("comments", $qr_comments);
             $this->view->setVar("commentCountDisplay", ($vn_comment_count = $qr_comments->numHits())." ".(($vn_comment_count == 1) ? _t("comment") : _t("comments")));
 
