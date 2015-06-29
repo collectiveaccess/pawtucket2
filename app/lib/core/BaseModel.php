@@ -874,6 +874,16 @@ class BaseModel extends BaseObject {
 						break;
 				}	
 			} else {
+              $va_rels = $this->getRelatedItems($va_tmp[0]);
+                $va_vals = array();
+                if(is_array($va_rels)) {
+                    foreach($va_rels as $va_rel_item) {
+                        if (isset($va_rel_item[$va_tmp[1]])) {
+                            $va_vals[] = $va_rel_item[$va_tmp[1]];
+                        }
+                    }
+                    return $vb_return_as_array ? $va_vals : join(caGetOption('delimiter', $pa_options, ';'), $va_vals);
+                }
 				// can't pull fields from other tables!
 				return $vb_return_as_array ? array() : null;
 			}
@@ -10239,7 +10249,7 @@ $pa_options["display_form_field_tips"] = true;
 			$this->errors = $t_comment->errors;
 			return false;
 		}
-		return $t_comment->getPrimaryKey();
+		return $t_comment;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
