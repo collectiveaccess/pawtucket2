@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -89,6 +89,8 @@
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+			$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continous');
+			
  			$this->view->setVar('name', $va_browse_info['displayName']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
@@ -109,7 +111,7 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
- 			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
 			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
@@ -143,19 +145,25 @@
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
 				$o_browse->removeAllCriteria();
 			}
-				
+			
+			//
+			// Return facet content
+			//	
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
+				$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
+				$this->view->setVar('start', $vn_s);
+				$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
-				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
-				$this->view->setVar('facet_info', $va_facet_info);
+				$this->view->setVar('facet_info', $va_facet_info = $o_browse->getInfoForFacet($vs_facet));
+				
 				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
+						$this->view->setVar('facet_content', $o_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
 						$this->render("Browse/list_facet_html.php");
 					break;
 					case "hierarchical":

@@ -87,6 +87,16 @@
 			}
 			
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			
+			if($this->getVar('paging') == 'numbered') {
+				if ($vn_start > 0) {
+					print caNavLink($this->request, _t('Previous'), '', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+				}
+				if (($vn_start + $vn_hits_per_block) < $qr_res->numHits()) {
+					print caNavLink($this->request, _t('Next'), '', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+				}
+			}
+			
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -116,7 +126,5 @@
 				
 				$vn_c++;
 			}
-			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>

@@ -5700,7 +5700,11 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 							VMM.attachElement(navigation.prevDate, _title);
 							VMM.attachElement(navigation.prevTitle, "");
 						} else {
-							VMM.attachElement(navigation.prevDate, VMM.Date.prettyDate(data[current_slide - 1].startdate, false, data[current_slide - 1].precisiondate));
+							if(data[current_slide - 1].displayDate){
+								VMM.attachElement(navigation.prevDate, data[current_slide - 1].displayDate);
+							}else{
+								VMM.attachElement(navigation.prevDate, VMM.Date.prettyDate(data[current_slide - 1].startdate, false, data[current_slide - 1].precisiondate));
+							}
 							VMM.attachElement(navigation.prevTitle, _title);
 						}
 					} else {
@@ -5718,7 +5722,11 @@ if(typeof VMM != 'undefined' && typeof VMM.Slider == 'undefined') {
 							VMM.attachElement(navigation.nextDate, _title);
 							VMM.attachElement(navigation.nextTitle, "");
 						} else {
-							VMM.attachElement(navigation.nextDate, VMM.Date.prettyDate(data[current_slide + 1].startdate, false, data[current_slide + 1].precisiondate) );
+							if(data[current_slide + 1].displayDate){
+								VMM.attachElement(navigation.nextDate, data[current_slide + 1].displayDate );
+							}else{
+								VMM.attachElement(navigation.nextDate, VMM.Date.prettyDate(data[current_slide + 1].startdate, false, data[current_slide + 1].precisiondate) );
+							}
 							VMM.attachElement(navigation.nextTitle, _title);
 						}
 					} else {
@@ -6065,8 +6073,13 @@ if (typeof VMM.Slider != 'undefined') {
 			if (data.startdate != null && data.startdate != "") {
 				if (type.of(data.startdate) == "date") {
 					if (data.type != "start") {
-						var st	= VMM.Date.prettyDate(data.startdate, false, data.precisiondate);
-						var en	= VMM.Date.prettyDate(data.enddate, false, data.precisiondate);
+						if(data.displayDate){
+							var st	= data.displayDate;
+							var en = data.displayDate;
+						}else{
+							var st	= VMM.Date.prettyDate(data.startdate, false, data.precisiondate);
+							var en	= VMM.Date.prettyDate(data.enddate, false, data.precisiondate);
+						}
 						var tag	= "";
 						/* TAG / CATEGORY
 						================================================== */
@@ -7533,6 +7546,7 @@ if(typeof VMM != 'undefined' && typeof VMM.Timeline == 'undefined') {
 						_date.slug				= data.date[i].slug;
 						_date.uniqueid			= VMM.Util.unique_ID(7);
 						_date.classname			= data.date[i].classname;
+						_date.displayDate		= data.date[i].displayDate;
 						
 						
 						_dates.push(_date);

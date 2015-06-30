@@ -84,6 +84,7 @@
 			"text" => $qr_res->getWithTemplate(caGetOption('description_template', $va_view_info['display'], null)),
 			"tag" => '',
 			"classname" => '',
+			"displayDate" => $qr_res->get($va_view_info['data']),
 			"asset" => array(
 				"media" => $qr_res->getWithTemplate(caGetOption('image', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				"thumbnail" => $qr_res->getWithTemplate(caGetOption('icon', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),

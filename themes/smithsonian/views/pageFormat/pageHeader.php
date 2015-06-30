@@ -105,7 +105,6 @@
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

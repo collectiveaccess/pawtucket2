@@ -118,7 +118,7 @@
         // Check if the href for the next set of content has been set
         function _checkNextHref(data) {
             data = data || $e.data('jscroll');
-            if (!data.nextHref) {
+            if (!data || !data.nextHref) {
                 _debug('warn', 'jScroll: nextSelector not found - destroying');
                 $e.jscroll.destroy();
                 return false;

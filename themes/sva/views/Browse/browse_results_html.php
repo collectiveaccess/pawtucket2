@@ -57,6 +57,7 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
@@ -173,12 +174,66 @@ if (!$vb_ajax) {	// !ajax
 ?>	
 			</div>	
 		</div>
+<?php
+	
+			//
+			// Handle optional paging
+			//
+			switch($this->getVar('paging')){
+				case 'nextprevious':
+					print "<div class=\"row\"><div class=\"col-sm-12 col-md-12 col-lg-12\">";
+					print '<ul class="pagination">';
+
+					if ($vn_start > 0) {
+						print "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
+					}
+					$va_num_pages = floor($qr_res->numHits() / $vn_hits_per_block);
+					$vn_i = 1;
+					while ($va_num_pages > 0) {
+						print "<li ".($vn_start==($vn_hits_per_block*$vn_i) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => $vn_hits_per_block*$vn_i, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
+						$vn_i++;
+						$va_num_pages--;
+					}					
+					if (($vn_start + $vn_hits_per_block) < $qr_res->numHits()) {
+						print "<li>".caNavLink($this->request, _t('Next')." <i class='fa fa-angle-double-right'></i>", 'nextNav', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li>';
+					}
+					print "</ul>";
+					print "</div></div>\n"; 
+					
+					break;
+				case 'letter':
+?>
+					<div class='alpha'> 	
+<?php
+						$vs_current_letter = $this->request->getParameter("l", pString);
+						if (is_array($va_letters = $this->getVar('letterBar'))) {
+							print "Jump To ...<br/>";
+							foreach($va_letters as $vs_letter => $vn_count) {
+								if ($vs_letter == $vs_current_letter) { 
+									print "<strong>{$vs_letter}</strong> ";
+								} else {
+									print caNavLink($this->request, $vs_letter, '', '*', '*', '*', array('l' => $vs_letter, 'key' => $vs_browse_key, 'view' => $vs_current_view)).' ';
+								}
+							}
+							$this->setVar('hits_per_block', 500);
+							print "<div class='currentLetter'>".$vs_current_letter."</div>";
+						}
+?>
+					</div>
+<?php				
+					break;
+			}	
+?>			
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
 } // !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+
+if (($qr_res->numHits() > 0) && ($this->getVar('paging') === 'continuous')) {
+	print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+}
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -188,8 +243,37 @@ if (!$vb_ajax) {	// !ajax
 	
 	
 </div><!-- end row -->	
+<?php
+					
+				if ($this->getVar('paging') == 'nextprevious') {
+					print "<div class=\"row\"><div class=\"col-sm-12 col-md-12 col-lg-12\">";
+					print '<ul class="pagination">';
+					if ($vn_start > 0) {
+						print "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
+					}
+					$va_num_pages = floor($qr_res->numHits() / $vn_hits_per_block);
+					$vn_i = 1;
+					while ($va_num_pages > 0) {
+						print "<li ".($vn_start==($vn_hits_per_block*$vn_i) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => $vn_hits_per_block*$vn_i, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
+						$vn_i++;
+						$va_num_pages--;
+					}
+					if (($vn_start + $vn_hits_per_block) < $qr_res->numHits()) {
+						print "<li>".caNavLink($this->request, _t('Next')." <i class='fa fa-angle-double-right'></i>", 'nextNav', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li>';
+					}
+					print '</ul>';
+					print "</div></div>\n"; 
+					
+				}
+?>
 
 <script type="text/javascript">
+<?php
+	//
+	// For continuous scroll add jscroll
+	//
+	if($this->getVar('paging') === 'continuous') {
+?>
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
@@ -198,6 +282,9 @@ if (!$vb_ajax) {	// !ajax
 			nextSelector: 'a.jscroll-next'
 		});
 	});
+<?php
+	}
+?>
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');
