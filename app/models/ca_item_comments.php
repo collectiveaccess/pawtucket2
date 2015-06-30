@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_item_comments.php : table access class for table ca_item_comments
+ * app/models/ca_item_comments.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -361,7 +361,7 @@ class ca_item_comments extends BaseModel {
 	 *
 	 */
 	public function getUnmoderatedComments() {
-		return $this->getComments('unmoderated');
+		return $this->getCommentsList('unmoderated');
 	}
 	# ------------------------------------------------------
 	/**
@@ -399,13 +399,13 @@ class ca_item_comments extends BaseModel {
 	}
 	# ------------------------------------------------------
 	public function getModeratedComments() {
-		return $this->getComments('moderated');
+		return $this->getCommentsList('moderated');
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
-	public function getComments($ps_mode='', $pn_limit=0) {
+	public function getCommentsList($ps_mode='', $pn_limit=0) {
 		$o_db = $this->getDb();
 		
 		$vs_where = '';
