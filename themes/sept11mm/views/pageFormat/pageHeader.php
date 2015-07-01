@@ -74,7 +74,10 @@
 </head>
 <body>
 	<nav class="navbar navbar-default navbarTop" role="navigation">
-		<div class="container">
+		<div class="container subTitleSmall">
+			<div class="subTitle"><?php print _t("Public Collection"); ?></div>
+		</div>
+		<div class="container" id="topSubNavBar">
 			<ul class="nav navbar-nav navbar-left">
 				<li><a href="#">&laquo; Museum Home</a></li>
 			</ul>
@@ -90,8 +93,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li <?php print ($this->request->getController() == "FAQ") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
-				<li <?php print ($this->request->getController() == "Feedback") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Feedback"), "", "", "Feedback", "Index"); ?></li>
-				<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>
+				<li <?php print (($this->request->getController() == "Contact") && ($this->request->getParameter("contactType", pString) == "reference")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form", array("contactType" => "reference")); ?></li>
 			</ul>	
 		</div>
 	</nav>
@@ -114,10 +116,10 @@
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.png'), "navbar-brand", "", "","");
 ?>
 			</div>
-
+			<div class="subTitle"><?php print _t("Public Collection"); ?></div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-			<div class="subTitle"><?php print _t("Public Collection"); ?></div>
+			
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
 				<ul class="nav navbar-nav">					
 <?php
@@ -141,6 +143,9 @@
 ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>
+					<li class="navBarExtras<?php print ($this->request->getController() == "FAQ") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
+					<li class="navBarExtras<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>
+					<li class="navBarExtras"><a href="#">Museum Home</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
