@@ -640,11 +640,17 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				$t_instance = $o_dm->getInstanceByTableNum($vn_table_num = (int)$qr_table_nums->get('table_num'), true);
 				if (!$t_instance) { continue; }
 				
+				$va_item_sql_params = $va_sql_params;
 				$va_item_wheres = $va_sql_wheres;
 				$va_item_wheres[] = "(cs.table_num = {$vn_table_num})";
 				if ($t_instance->hasField('deleted')) {
 					$va_item_wheres[] = "(t.deleted = 0)";
-				} 
+				}
+				if (!is_null($pa_public_access) && is_array($pa_public_access) && sizeof($pa_public_access)) {
+					$va_item_wheres[] = "(t.access IN (?))";
+					$va_item_sql_params[] = $pa_public_access;
+				}
+				
 				$qr_res = $o_db->query("
 					SELECT cs.set_id, count(distinct row_id) item_count
 					FROM ca_sets cs
@@ -653,7 +659,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					".(sizeof($va_item_wheres) ? 'WHERE ' : '')."
 					".join(' AND ', $va_item_wheres)."
 					GROUP BY cs.set_id
-				", $va_sql_params);
+				", $va_item_sql_params);
 				while($qr_res->nextRow()) {
 					$va_item_counts[(int)$qr_res->get('set_id')] = (int)$qr_res->get('item_count');
 				}

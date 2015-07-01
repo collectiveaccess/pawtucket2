@@ -34,7 +34,7 @@
 		
 		$vs_date = '';
 		while($qr_occ->nextHit()) {
-			$va_dates = $qr_occ->get('ca_occurrences.workDate', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+			$va_dates = $qr_occ->get('ca_occurrences.workDate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
 			
 			foreach($va_dates as $vn_attr_id => $va_date) {
 				if (!$va_date['dates_value']) { continue(2); }
@@ -60,20 +60,27 @@
 			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location (legacy text)</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
 <?php
 			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
-				print "<span class='metaTitle'>Related places</span>";
-				print "<div class='meta'>";
+				$va_places = array();
 				foreach ($va_rel_works as $va_key => $va_occurrence_id) {
 					$t_occurrence = new ca_occurrences($va_occurrence_id);
-					print $t_occurrence->get('ca_places.preferred_labels');
+					if ($vs_places = $t_occurrence->get('ca_places.preferred_labels')) {
+						$va_places[] = $vs_places;
+					}
 				}
-				print "</div>";
+				
+				if(sizeof($va_places)) {
+					print "<span class='metaTitle'>Related places</span>";
+					print "<div class='meta'>";
+					print join("; ", $va_places);
+					print "</div>";
+				}
 			}
 
 			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
 				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 			
 				while($qr_occ->nextHit()) {
-					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('subject', 'interviewee'), 'returnAsArray' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
+					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('subject', 'interviewee'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
 						foreach ($va_contributors as $cont_key => $va_contributor) {
 							print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
@@ -93,14 +100,14 @@
 				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 				
 				while($qr_occ->nextHit()) {
-					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('excludeRelationshipTypes' => array('subject', 'interviewee'), 'returnAsArray' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
+					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('excludeRelationshipTypes' => array('subject', 'interviewee'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
 						foreach ($va_contributors as $cont_key => $va_contributor) {
 							print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
 						}
 						print "</div></div>";
 					}	
-					if (is_array($va_proposers = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('proposed'), 'returnAsArray' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_proposers)) {
+					if (is_array($va_proposers = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('proposed'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_proposers)) {
 						print "<div><span class='metaTitle'>Proposed by</span><div class='meta'>";
 						foreach ($va_proposers as $cont_key => $va_proposer) {
 							print "<div>".caNavLink($this->request, $va_proposer['displayname'], '' , 'Detail', 'entities', $va_proposer['entity_id'])."</div>";
@@ -133,26 +140,28 @@
 			if (sizeof($va_ids) > 0) {
 				$qr_res = caMakeSearchResult('ca_occurrences', $va_ids);
 			
-				$va_awards = $qr_res->get('ca_occurrences.awards', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
-				if (sizeof($va_awards) > 0) {
-					print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
-					foreach ($va_awards as $award => $va_award) {
-						if ($va_award['award_event']) {
-							array_shift($va_award['award_event']);
-							print "<div>Award: ".join(' > ', $va_award['award_event'])."</div>";
+				while($qr_res->nextHit()) {
+					$va_awards = $qr_res->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
+					if (sizeof($va_awards) > 0) {
+						print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
+						foreach ($va_awards as $award => $va_award) {
+							if ($va_award['award_event']) {
+								array_shift($va_award['award_event']);
+								print "<div>Award: ".join(' > ', $va_award['award_event'])."</div>";
+							}
+							if ($va_award['award_year']) {
+								print "<div>Award Year: ".$va_award['award_year']."</div>";
+							}
+							if ($va_award['award_types'][0] != "Root node for award_types") {
+								print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
+							}
+							if ($va_award['award_notes']) {
+								print "<div>Award Notes: ".$va_award['award_notes']."</div>";
+							}										
+							print "<div style='height:10px;'></div>";
 						}
-						if ($va_award['award_year']) {
-							print "<div>Award Year: ".$va_award['award_year']."</div>";
-						}
-						if ($va_award['award_types'][0] != "Root node for award_types") {
-							print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
-						}
-						if ($va_award['award_notes']) {
-							print "<div>Award Notes: ".$va_award['award_notes']."</div>";
-						}										
-						print "<div style='height:10px;'></div>";
+						print "</span></div>";
 					}
-					print "</span></div>";
 				}
 			}
 			
@@ -174,7 +183,7 @@
 				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
 
 <?php
-			if ($va_lcsh_names = $t_object->get('ca_objects.lcsh_names', array('returnAsArray' => true))) {
+			if ($va_lcsh_names = $t_object->get('ca_objects.lcsh_names', array('returnWithStructure' => true))) {
 				print "<span class='metaTitle'>LCSH Names</span>";
 				print "<div class='meta'>";
 				foreach ($va_lcsh_names as $va_key => $va_lcsh_name) {
@@ -183,7 +192,7 @@
 				}
 				print "</div>";
 			}
-			if ($va_lcsh_subjects = $t_object->get('ca_objects.lcsh_subjects', array('returnAsArray' => true))) {
+			if ($va_lcsh_subjects = $t_object->get('ca_objects.lcsh_subjects', array('returnWithStructure' => true))) {
 				print "<span class='metaTitle'>LCSH Subjects</span>";
 				print "<div class='meta'>";
 				foreach ($va_lcsh_subjects as $va_key => $va_lcsh_subject) {
