@@ -95,6 +95,8 @@
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
+ 			$this->view->setVar('paging', in_array(strtolower($va_browse_info['paging']), array('continuous', 'nextprevious', 'letter')) ? strtolower($va_browse_info['paging']) : 'continuous');
+			
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
  			$ps_view = $this->request->getParameter('view', pString);

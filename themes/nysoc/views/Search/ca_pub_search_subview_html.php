@@ -77,7 +77,7 @@
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet pubSet'>\n"; $vb_div_open = true;}
 				if ($va_parent_label = $qr_results->get('ca_objects.parent.preferred_labels')) {
 					$va_title_parts = explode(':', $qr_results->get('ca_objects.parent.preferred_labels'));
-					print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $va_title_parts[0]." ".$qr_results->get('ca_objects.preferred_labels.displayname'), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
+					print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $va_title_parts[0]." ".$qr_results->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
 				} else {
 					$va_title_parts = explode(':', $qr_results->get('ca_objects.preferred_labels'));
 					print "<div class='entitiesResult authorityResult pubResult'>".caNavLink($this->request, $va_title_parts[0], '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));

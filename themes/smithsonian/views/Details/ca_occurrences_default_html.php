@@ -11,14 +11,14 @@
 	</div><!-- end col -->
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+			<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 			{{{<unit><ifdef code="ca_occurrences.nonpreferred_labels"><p>^ca_occurrences.nonpreferred_labels.displayname</p></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.idno"><p>ID: ^ca_occurrences.idno</p></ifdef></unit>}}}
 <?php
 			if ($t_occurrence->get('ca_occurrences.workType', array('excludeValues' => array('null'))) != "") {
 				print "<p>Type: ".$t_occurrence->get('ca_occurrences.workType', array('convertCodesToDisplayText' => true, 'excludeValues' => array('null')))."</p>";
 			}	
-?>			
+?>	
 			{{{<ifcount min="1" code="ca_occurrences.workDate.dates_value" ><p>Date: <unit delimiter=", ">^ca_occurrences.workDate.dates_value <ifcount min="1" code="ca_occurrences.workDate.work_dates_types">(^ca_occurrences.workDate.work_dates_types)</ifdef></unit></p></ifcount>}}}
 			
 			
@@ -29,7 +29,7 @@
 			if ($t_occurrence->get('ca_occurrences.sniDepiction', array('excludeValues' => array('not_specified'))) != "") {
 				print "<div><span class='metaTitle'>Depicts SI</span><span class='meta'>".$t_occurrence->get('ca_occurrences.sniDepiction', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified')))."</span></div>";
 			}	
-			if ($va_contributors = $t_occurrence->get('ca_entities', array('excludeRelationshipTypes' => array('subject, interviewee'), 'returnAsArray' => true))) {
+			if ($va_contributors = $t_occurrence->get('ca_entities', array('excludeRelationshipTypes' => array('subject, interviewee'), 'returnWithStructure' => true))) {
 				print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
 				foreach ($va_contributors as $cont_key => $va_contributor) {
 					print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
@@ -48,13 +48,31 @@
 
 			{{{<ifcount code="ca_entities" min="1" max="1"><span class='metaTitle'>Related Entity</span></ifcount>}}}
 			{{{<ifcount code="ca_entities" min="2"><span class='metaTitle'>Related Entities</span></ifcount>}}}
-			{{{<ifcount code="ca_entities.related" min="1"><unit relativeTo="ca_entities" delimiter="<br/>"><l><div class='meta'>^ca_entities.preferred_labels</div></l></unit></ifcount>}}}
+
+			{{{<ifcount code="ca_entities.related" min="1"><div class='meta'><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></ifcount></div>}}}
 			
-			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='metaTitle'>LCSH Names</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.lcsh_names" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_names</div></unit></span></ifcount>}}}
 			
-			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='metaTitle'>LCSH Subjects</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.lcsh_subjects" min="1"><span class='meta'><unit delimiter=" "><div>^ca_occurrences.lcsh_subjects</div></unit></span></ifcount>}}}
+<?php
+			if ($va_lcsh_names = $t_occurrence->get('ca_occurrences.lcsh_names', array('returnWithStructure' => true))) {
+				print "<span class='metaTitle'>LCSH Names</span>";
+				print "<div class='meta'>";
+				foreach ($va_lcsh_names as $va_key => $va_lcsh_name) {
+					$va_name = explode('[', $va_lcsh_name['lcsh_names']);
+					print $va_name[0]."<br/>";
+				}
+				print "</div>";
+			}
+			if ($va_lcsh_subjects = $t_occurrence->get('ca_occurrences.lcsh_subjects', array('returnWithStructure' => true))) {
+				print "<span class='metaTitle'>LCSH Subjects</span>";
+				print "<div class='meta'>";
+				foreach ($va_lcsh_subjects as $va_key => $va_lcsh_subject) {
+					$va_lcsh = explode('[', $va_lcsh_subject['lcsh_subjects']);
+					print $va_lcsh[0]."<br/>";
+				}
+				print "</div>";
+			}
+?>			
+
 			
 			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
 <?php
@@ -72,20 +90,35 @@
 				print "<div>Year: ".$t_occurrence->get('ca_occurrences.mission.missionYear')." (".$t_occurrence->get('ca_occurrences.mission.mission_dates_types').")</div>";
 				print "</span></div>";
 			}
-			$va_awards = $t_occurrence->get('ca_occurrences.awards', array('returnAsArray' => true));
+			$va_awards = $t_occurrence->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
 			if (sizeof($va_awards) > 0) {
 				print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
 				foreach ($va_awards as $award => $va_award) {
-					print "<div>Award: ".$t_occurrence->get('ca_occurrences.awards.award_event', array('convertCodesToDisplayText' => true))."</div>";
-					print "<div>Year: ".$t_occurrence->get('ca_occurrences.awards.award_year', array('convertCodesToDisplayText' => true))."</div>";
-					print "<div>Type: ".$t_occurrence->get('ca_occurrences.awards.award_types', array('convertCodesToDisplayText' => true))."</div>";
-					print "<div>Notes: ".$t_occurrence->get('ca_occurrences.awards.award_notes', array('convertCodesToDisplayText' => true))."</div>";
+					if ($va_award['award_event']) {
+						array_shift($va_award['award_event']);
+						print "<div>Award: ".join(' > ', $va_award['award_event'])."</div>";
+					}
+					if ($va_award['award_year']) {
+						print "<div>Award Year: ".$va_award['award_year']."</div>";
+					}
+					if ($va_award['award_types'][0] != "Root node for award_types") {
+						print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
+					}
+					if ($va_award['award_notes']) {
+						print "<div>Award Notes: ".$va_award['award_notes']."</div>";
+					}										
 					print "<div style='height:10px;'></div>";
 				}
 				print "</span></div>";
 			}
 													
-?>			
+?>	
+			<div id="detailTools">
+				<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+				<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+				<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+			</div><!-- end detailTools -->		
+		
 		{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='metaTitle'>Distribution Status</span></ifcount>}}}
 			{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='meta'><unit delimiter="<br/>"><div>^ca_occurrences.distribution_status.distribution_list, Expires ^ca_occurrences.distribution_status.distribution_date</div></unit></span></ifcount>}}}									
 		

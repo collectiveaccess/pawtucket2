@@ -51,7 +51,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --><!-- end row --></div><!-- end container -->
+	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

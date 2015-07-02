@@ -35,7 +35,6 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
-	require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
  
  	class SetsController extends FindController {
  		# -------------------------------------------------------

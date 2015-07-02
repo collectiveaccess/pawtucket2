@@ -427,7 +427,7 @@ div.browseFacetItem a{
    border-top:2px solid #fff;
    border-bottom:2px solid #fff;
    float: left;
-   height: 45px;
+   height: 65px;
    padding-top:3px;
    font-size:12px;
 }
@@ -871,6 +871,8 @@ a.browseRemoveFacet img {
 .detail .meta {
 	width:60%;
 	display:inline-block;
+	margin-bottom:10px;
+	min-height: 50px;
 }
 .detail .metaTitle {
 	width:30%;
@@ -1024,6 +1026,10 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 	margin-bottom:5px;
+}
+.detail #detailRelatedObjects #detailScrollButtonNext, .detail #detailRelatedObjects  #detailScrollButtonPrevious{
+	height:265px;
+	padding-top:120px;
 }
 
 

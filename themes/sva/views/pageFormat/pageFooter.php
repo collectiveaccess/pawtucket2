@@ -27,11 +27,8 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="legal">
-			<a href="http://www.visualartsfoundation.org/" target="_blank"><img src="http://www.glaserarchives.org/vaf-off.gif" alt="Visual Arts Foundation" id="vaf" onmouseover="this.src='http://www.glaserarchives.org/vaf-on.gif';" onmouseout="this.src='http://www.glaserarchives.org/vaf-off.gif';"></a>
-			<p id="bgcredit"><span class="caps">BACKGROUND</span> From the Milton Glaser collection. Zanders Calendar. 1984</p>
-			<p>All names, logos, trademarks and/or copyrighted images are the property of their respective owners and their appearance on this site is merely intended to illustrate certain of the content available for educational purposes in the Milton Glaser Design Study Center and Archives of the Visual Arts Foundation and is not intended in any way to imply or suggest that the respective owners of these names, logos, trademarks and/or copyrighted images consent to, approve, endorse, sponsor, or intend to associate with the Visual Arts Foundation or any of its affiliates.</p>			
-			<p>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></p>
+		<div id="footer">
+			<div><small>Powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
 		</div><!-- end footer -->
 <?php
 	//

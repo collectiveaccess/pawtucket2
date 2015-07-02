@@ -33,7 +33,7 @@
 			if($o_representations->numHits()){
 				while($o_representations->nextHit()){
 					if(in_array($o_representations->get("representation_id"), $va_rep_install_ids)){
-						$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => $o_representations->get("ca_object_representations.preferred_labels.name"));
+						$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 					}
 				}
 			}
@@ -71,15 +71,16 @@
 		switch($ps_view){	
 			case "info":
 			default:
+				$vs_image = $t_item->get("ca_object_representations.media.medium", array("restrictToRelationshipTypes" => array("logo")));
+				if($vs_image){
 ?>		
 			
 			<div class="thumbnail thumbnailImgLeft">
-				{{{<ifcount code="ca_object_representations" min="1">
-					<unit relativeTo="ca_object_representations" delimiter=" " restrictToRelationshipTypes="logo">
-						^ca_object_representations.media.small
-					</unit>
-				</ifcount>}}}
+				<?php print $vs_image; ?>
 			</div> <!--end thumbnail-->
+<?php
+				}
+?>
 				<p>
 <?php
 					if($t_item->get("ca_occurrences.art_fair_location")){

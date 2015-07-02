@@ -1734,7 +1734,7 @@
 			}
 
 			if (!$po_opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the HTMLPurifier definition cache directory (app/lib/core/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache) for ownership by \"%1\"...", $vs_user)); }
-			$va_files = caGetDirectoryContentsAsList($vs_path = __CA_LIB_DIR__.'/core/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache', true, false, false, true);
+			$va_files = caGetDirectoryContentsAsList($vs_path = __CA_BASE_DIR__.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer', true, false, false, true);
 
 			foreach($va_files as $vs_path) {
 				chown($vs_path, $vs_user);

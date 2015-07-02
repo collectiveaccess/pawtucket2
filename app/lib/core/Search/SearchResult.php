@@ -282,11 +282,15 @@ class SearchResult extends BaseObject {
 			SELECT t.{$vs_pk}, t.{$vs_parent_id_fld} ".($vs_hier_id_fld ? ", t.{$vs_hier_id_fld}" : '')."
 			FROM {$ps_tablename} t
 			WHERE
-				t.{$vs_pk} IN (?)
+				t.{$vs_pk} IN (?)".($t_rel_instance->hasField('deleted') ? " AND (t.deleted = 0)" : "")."
 		";
 		
 		$va_row_ids_in_current_level = $va_row_ids;
 		
+		// Make sure singletons get into the cache
+		foreach($va_row_ids as $vn_row_id) {
+			SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$vn_row_id][] = $va_row[$vn_row_id];
+		}
 		$va_row_id_map = null;
 		$vn_level = 0;
 		
@@ -345,7 +349,7 @@ class SearchResult extends BaseObject {
 			SELECT {$vs_pk}, {$vs_parent_id_fld}
 			FROM {$ps_tablename}
 			WHERE
-				 {$vs_parent_id_fld} IN (?)
+				 {$vs_parent_id_fld} IN (?)".($t_rel_instance->hasField('deleted') ? " AND (deleted = 0)" : "")."
 		";
 		
 		$va_row_ids_in_current_level = $va_row_ids;
@@ -420,7 +424,7 @@ class SearchResult extends BaseObject {
 			FROM {$ps_tablename} t
 			INNER JOIN {$ps_tablename} AS p ON t.{$vs_parent_id_fld} = p.{$vs_parent_id_fld}
 			WHERE
-				 t.{$vs_pk} IN (?)
+				 t.{$vs_pk} IN (?)".($t_rel_instance->hasField('deleted') ? " AND (t.deleted = 0) AND (p.deleted = 0)" : "")."
 		";
 		
 		
@@ -468,6 +472,8 @@ class SearchResult extends BaseObject {
 	 */
 	public function prefetch($ps_tablename, $pn_start, $pn_num_rows, $pa_options=null) {
 		if (!$ps_tablename ) { return; }
+		
+		$vs_md5 = caMakeCacheKeyFromOptions($pa_options);
 		
 		// get row_ids to fetch
 		if (isset($pa_options['row_ids']) && is_array($pa_options['row_ids'])) {
@@ -586,6 +592,7 @@ class SearchResult extends BaseObject {
 				".$this->ops_table_name.'.'.$this->ops_table_pk." IN (".join(',', $va_row_ids).") {$vs_criteria_sql} {$vs_deleted_sql}
 			{$vs_order_by}
 		";
+		
 		$qr_rel = $this->opo_subject_instance->getDb()->query($vs_sql);
 		
 		$vs_rel_pk = $t_rel_instance->primaryKey();
@@ -595,14 +602,14 @@ class SearchResult extends BaseObject {
 			$vn_rel_row_id = $va_row[$vs_rel_pk];
 			
 			$vn_locale_id = $vb_has_locale_id ? $va_row['locale_id'] : null;
-			self::$s_prefetch_cache[$ps_tablename][$vn_row_id][$vn_locale_id][$vn_rel_row_id] = $va_row;
+			self::$s_prefetch_cache[$ps_tablename][$vn_row_id][$vs_md5][$vn_locale_id][$vn_rel_row_id] = $va_row;
 		}
 		
 		// Fill row_id values for which there is nothing to prefetch with an empty lists
 		// otherwise we'll try and prefetch these again later wasting time.
 		foreach($va_row_ids as $vn_row_id) {
-			if (!isset(self::$s_prefetch_cache[$ps_tablename][$vn_row_id])) {
-				self::$s_prefetch_cache[$ps_tablename][$vn_row_id] = array();
+			if (!isset(self::$s_prefetch_cache[$ps_tablename][$vn_row_id][$vs_md5])) {
+				self::$s_prefetch_cache[$ps_tablename][$vn_row_id][$vs_md5] = array();
 			}
 		}
 	}
@@ -611,6 +618,7 @@ class SearchResult extends BaseObject {
 	 * 
 	 */
 	public function prefetchRelated($ps_tablename, $pn_start, $pn_num_rows, $pa_options) {
+		if (!method_exists($this->opo_subject_instance, "getRelatedItems")) { return false; }
 		unset($pa_options['request']);
 		if (sizeof($va_row_ids = $this->getRowIDsToPrefetch($pn_start, $pn_num_rows)) == 0) { return false; }
 		
@@ -634,8 +642,6 @@ class SearchResult extends BaseObject {
 				'criteria' => array()
 			);
 		}
-		
-		// TODO: why is the repeatedly called?
 		
 		foreach($va_rel_items as $vs_key => $va_rel_item) {
 			self::$s_rel_prefetch_cache[$this->ops_table_name][(int)$va_rel_item['row_id']][$ps_tablename][$vs_md5][$va_rel_item[$va_rel_item['_key']]] = $va_rel_item;
@@ -739,9 +745,8 @@ class SearchResult extends BaseObject {
 	 *			convertCodesToDisplayText = Convert list item_ids text in the user's preferred locale for display. [Default is false]
 	 *			convertCodesToIdno = Convert list item_ids to idno's (ca_list_items.idno). If convertCodesToDisplayText is also set then it will take precedence. [Default is false]
 	 *			output = Convert list item_ids to display text in user's preferred locale ("text") or idno ("idno"). This is an easier to type alternative to the convertCodesToDisplayText and convertCodesToIdno options. [Default is null]
-	 *			sort = Array list of bundles to sort returned values on. Currently sort is only supported when getting related values via simple related <table_name> and <table_name>.related bundle specifiers. Eg. from a ca_objects results you can sort when fetching 'ca_entities', 'ca_entities.related', 'ca_objects.related', etc.. The sortable bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. Sort on attributes is not yet supported. [Default is null]
-	 *			sortDirection = Direction of sort. Use "asc" (ascending) or "desc" (descending). [Default is asc]
- 	 *			
+	 *			sort = Array list of bundles to sort returned values on. Currently sort is only supported when getting related values via simple related <table_name> and <table_name>.related bundle specifiers. Eg. from a ca_objects results you can sort when fetching 'ca_entities', 'ca_entities.related', 'ca_objects.related', etc.. The sortable bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You cannot currenty sort on attributes. [Default is null]
+	 *
 	 *		[Formatting options for hierarchies]
 	 *			maxLevelsFromTop = Restrict the number of levels returned to the top-most beginning with the root. [Default is null]
 	 *			maxLevelsFromBottom = Restrict the number of levels returned to the bottom-most starting with the lowest leaf node. [Default is null]
@@ -1052,6 +1057,7 @@ class SearchResult extends BaseObject {
 								foreach($va_ids as $vn_id) {
 									if(is_array(SearchResult::$opa_hierarchy_parent_prefetch_cache[$va_path_components['table_name']][$vn_id])) {
 										$va_hier_id_list = array_merge(array($vn_id), SearchResult::$opa_hierarchy_parent_prefetch_cache[$va_path_components['table_name']][$vn_id]);
+										
 										if ($vs_hierarchy_direction === 'asc') { $va_hier_id_list = array_reverse($va_hier_id_list); }
 										$va_hier_ids[] = $va_hier_id_list;
 									}
@@ -1278,15 +1284,16 @@ class SearchResult extends BaseObject {
 					}
 				}
 	
+				$vs_opt_md5 = caMakeCacheKeyFromOptions($pa_options);
 //
 // [PRIMARY TABLE] Preferred/nonpreferred labels
 //
 				if (in_array($va_path_components['field_name'], array('preferred_labels', 'nonpreferred_labels')) && ($t_instance instanceof LabelableBaseModelWithAttributes)) {
 					$vs_label_table_name = $t_instance->getLabelTableName();
-					if (!isset(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id])) {
+					if (!isset(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id][$vs_opt_md5])) {
 						$this->prefetchLabels($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $pa_options);
 					}
-					return $this->_getLabelValue(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id], $t_instance, $va_val_opts);
+					return $this->_getLabelValue(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id][$vs_opt_md5], $t_instance, $va_val_opts);
 				}
 					
 				if ($t_instance->hasField($va_path_components['field_name'])) {
@@ -1294,16 +1301,16 @@ class SearchResult extends BaseObject {
 //
 // [PRIMARY TABLE] Plain old intrinsic
 //
-					if (!isset(self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id])) {
+					if (!isset(self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5])) {
 						$this->prefetch($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $pa_options);	
 					}
-					return $this->_getIntrinsicValue(self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id], $t_instance, $va_val_opts);
+					return $this->_getIntrinsicValue(self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $t_instance, $va_val_opts);
 
 				} elseif(method_exists($t_instance, 'isValidBundle') && !$t_instance->hasElement($va_path_components['field_name']) && $t_instance->isValidBundle($va_path_components['field_name'])) {
 //
 // [PRIMARY TABLE] Special bundle
 //				
-					return $t_instance->renderBundleForDisplay($va_path_components['field_name'], $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id], $va_val_opts);
+					return $t_instance->renderBundleForDisplay($va_path_components['field_name'], $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $va_val_opts);
 				} else {
 //
 // [PRIMARY TABLE] Metadata attribute
@@ -1345,7 +1352,7 @@ class SearchResult extends BaseObject {
 			$t_rel_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']] = $this->opo_datamodel->getInstanceByTableName($va_path_components['table_name'], true);
 		}
 
-		if (!($t_rel_instance instanceof BundlableLabelableBaseModelWithAttributes)) { return null; }
+		if (!($t_rel_instance instanceof BaseModel)) { return null; }
 		
 		// Handle table-only case...
 		if (!$va_path_components['field_name']) {
@@ -1369,7 +1376,7 @@ class SearchResult extends BaseObject {
 		}
 		if (!sizeof($va_ids)) { return $pa_options['returnAsArray'] ? array() : null; }
 
-		$qr_rel = $t_rel_instance->makeSearchResult($va_path_components['table_name'], $va_ids);
+		if (!($qr_rel = caMakeSearchResult($va_path_components['table_name'], $va_ids))) { return null; }
 		$va_return_values = array();
 		$va_spec = array();
 		foreach(array('table_name', 'field_name', 'subfield_name') as $vs_f) {
@@ -1605,7 +1612,7 @@ class SearchResult extends BaseObject {
 	 */
 	private function _getIntrinsicValue($pa_value_list, $pt_instance, $pa_options) {
 		$vb_return_as_link 		= isset($pa_options['returnAsLink']) ? $pa_options['returnAsLink'] : false;
-		$vb_get_direct_date 	= isset($pa_options['getDirectDate']) ? $pa_options['getDirectDate'] : isset($pa_options['GET_DIRECT_DATE']) ? $pa_options['GET_DIRECT_DATE'] : false;
+		$vb_get_direct_date 	= (bool) caGetOption(array('getDirectDate', 'GET_DIRECT_DATE'), $pa_options, false);
 		$vb_sortable			= isset($pa_options['sortable']) ? $pa_options['sortable'] : false;
 		
 		$va_path_components		= $pa_options['pathComponents'];
@@ -1956,7 +1963,7 @@ class SearchResult extends BaseObject {
 	function getMediaInfo($ps_field, $ps_version=null, $ps_key=null, $pa_options=null) {
 		$vn_index = (isset($pa_options['index']) && ((int)$pa_options['index'] > 0)) ? (int)$pa_options['index'] : 0;
 		$va_media_info = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
-		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo($va_media_info[$vn_index], $ps_version, $ps_key, $pa_options);
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaInfo(array_shift($va_media_info), $ps_version, $ps_key, $pa_options);
 	}
 	# ------------------------------------------------------------------
 	/**

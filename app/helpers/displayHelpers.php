@@ -987,14 +987,14 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			//
 			// Download media in lot ($vn_num_objects is only set for object lots)
 			if ($vn_num_objects > 0) {
-				$vs_buf .= caNavLink($po_view->request, caNavIcon($po_view->request, __CA_NAV_BUTTON_DOWNLOAD__), "button", $po_view->request->getModulePath(), $po_view->request->getController(), 'getLotMedia', array('lot_id' => $t_item->getPrimaryKey(), 'download' => 1), array('id' => 'inspectorLotMediaDownloadButton'));
+				$vs_buf .= "<div id='inspectorLotMediaDownloadButton'>".caNavLink($po_view->request, caNavIcon($po_view->request, __CA_NAV_BUTTON_DOWNLOAD__), "button", $po_view->request->getModulePath(), $po_view->request->getController(), 'getLotMedia', array('lot_id' => $t_item->getPrimaryKey(), 'download' => 1), array())."</div>\n";
 				TooltipManager::add('#inspectorLotMediaDownloadButton', _t("Download all media associated with objects in this lot"));
 			}
 
 			//
 			// Download media in set
 			if(($vs_table_name == 'ca_sets') && (sizeof($t_item->getItemRowIDs())>0)) {
-				$vs_buf .= caNavLink($po_view->request, caNavIcon($po_view->request, __CA_NAV_BUTTON_DOWNLOAD__), "button", $po_view->request->getModulePath(), $po_view->request->getController(), 'getSetMedia', array('set_id' => $t_item->getPrimaryKey(), 'download' => 1), array('id' => 'inspectorSetMediaDownloadButton'));
+				$vs_buf .= "<div id='inspectorSetMediaDownloadButton'>".caNavLink($po_view->request, caNavIcon($po_view->request, __CA_NAV_BUTTON_DOWNLOAD__), "button", $po_view->request->getModulePath(), $po_view->request->getController(), 'getSetMedia', array('set_id' => $t_item->getPrimaryKey(), 'download' => 1), array())."</div>\n";
 
 				TooltipManager::add('#inspectorSetMediaDownloadButton', _t("Download all media associated with records in this set"));
 			}
@@ -2307,8 +2307,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 
 		/** @var $qr_res SearchResult */
 		while($qr_res->nextHit()) {
-		
-			$vs_pk_val = $qr_res->get($vs_pk);
+			
+			$vs_pk_val = $qr_res->get($vs_pk, array('checkAccess' => $pa_check_access));
+			if (is_array($pa_check_access) && sizeof($pa_check_access) && !in_array($qr_res->get("{$ps_tablename}.access"), $pa_check_access)) { continue; }
 			$vs_template =  $ps_template;
 
 			// check if we skip this row because of skipIfExpression
@@ -2675,6 +2676,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 								
 								$va_additional_options = array('returnAsArray' => true, 'checkAccess' => $pa_check_access);
 								$vs_hierarchy_name = null;
+								
+								$vb_is_hierarchy = false;
 								if (in_array($va_spec_bits[1], array('hierarchy', '_hierarchyName'))) {
 									$t_rel = $o_dm->getInstanceByTableName($va_spec_bits[0], true);
 								
@@ -2700,18 +2703,21 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 										unset($va_val[$vn_primary_id]);
 									}
 								}
-								$va_val = caExtractValuesByUserLocale($va_val);
 								
-								$va_val_tmp = array();
+								if ($va_spec_bits[1] !== 'hierarchy') {
+									$va_val = caExtractValuesByUserLocale($va_val);
+								
+									$va_val_tmp = array();
 							
-								foreach($va_val as $vn_d => $va_vals) {
-									if (is_array($va_vals)) {
-										$va_val_tmp = array_merge($va_val_tmp, array_values($va_vals));
-									} else {
-										$va_val_tmp[] = $va_vals;
+									foreach($va_val as $vn_d => $va_vals) {
+										if (is_array($va_vals)) {
+											$va_val_tmp = array_merge($va_val_tmp, array_values($va_vals));
+										} else {
+											$va_val_tmp[] = $va_vals;
+										}
 									}
+									$va_val = $va_val_tmp;
 								}
-								$va_val = $va_val_tmp;
 								
 								$va_val_proc = array();
 								
@@ -2723,13 +2729,20 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 										break;
 									case 'hierarchy':
 										if (is_array($va_val) && (sizeof($va_val) > 0)) {
-											//$va_val = array_reverse($va_val);
-											if ($vs_hierarchy_name) { array_unshift($va_val, $vs_hierarchy_name); }
+											
+											$va_hier_list = array();
+											if ($vs_hierarchy_name) { array_unshift($va_hier_list, $vs_hierarchy_name); }
+											$vs_name = end($va_spec_bits);
 											foreach($va_val as $va_hier) {
-												if (!is_array($va_hier)) { $va_hier = array($va_hier); }
-												$va_val_proc[] = join(caGetOption("delimiter", $va_tag_opts, $vs_delimiter), $va_hier);
+												$va_hier = caExtractValuesByUserLocale($va_hier);
+												foreach($va_hier as $va_hier_item) {
+													foreach($va_hier_item as $va_hier_value) {
+														$va_hier_list[] = $va_hier_value[$vs_name] ? $va_hier_value[$vs_name] : array_shift($va_hier_value);
+													}
+												}
 											}
-											$va_val_proc = array(join(caGetOption("delimiter", $va_tag_opts, $vs_delimiter), $va_val_proc));
+												
+											$va_val_proc[] = join(caGetOption("delimiter", $va_tag_opts, $vs_delimiter), $va_hier_list);
 										} 
 										break;
 									case 'parent':

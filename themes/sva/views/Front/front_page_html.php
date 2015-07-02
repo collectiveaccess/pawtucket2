@@ -29,79 +29,63 @@
  *
  * ----------------------------------------------------------------------
  */
-		#print $this->render("Front/featured_set_slideshow_html.php");
-
- 	include_once(__CA_LIB_DIR__."/ca/Search/CollectionSearch.php");
-	include_once(__CA_MODELS_DIR__."/ca_lists.php");
-	include_once(__CA_MODELS_DIR__."/ca_collections.php");
- 
-	$t_object = new ca_objects();
+#	print $this->render("Front/featured_set_slideshow_html.php");
 	
-
-	
- ?>
-	<div id="content" class="darchive search">
-
-			<h1>Search</h1>
-				<p></p>
-				<div id="search"><form class="svasearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="">
-						<div class="">
-							<input type="text" class="svaform" placeholder="" name="search">
-						</div>
-						<button type="submit" class="btn-search"><!--<span class="glyphicon glyphicon-search"></span>--></button>
-					</div>
-				</form></div>
-				
-			<div class="asearch"><?php print caNavLink($this->request, 'Advanced Search', '', '', 'Search/advanced', 'objects');?></a></div>
-			<br>
-			
-			
-
-<?php
-			$t_list = new ca_lists();
-			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "collection");
-
-			$o_collection_search = new CollectionSearch();
-			$qr_collections = $o_collection_search->search("ca_collections.type_id:{$vn_collection_type_id}", array('sort' => 'ca_collection_labels.name', 'sort_direction' => 'asc'));
-			
-			if (sizeof($qr_collections) > 0) {
+	$va_featured_ids = array();
+	if($vs_set_code = $this->request->config->get("front_page_set_code")){
+		$t_set = new ca_sets();
+		$t_set->load(array('set_code' => $vs_set_code));
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+			$vs_set_id = $t_set->get("set_id");
+			$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+			$featured_set_items_as_search_result = caMakeSearchResult('ca_occurrences', $va_featured_ids);
+		}
+	}	
 ?>
-				<h1>Design Collections</h1>
-				<ul class="galleries">
-<?php			
-				while($qr_collections->nextHit()) {
-					$va_collection_id = $qr_collections->get('ca_collections.collection_id');
-					print "<li class='mgda collection'>".caNavLink($this->request, $qr_collections->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_id)."</li>";
+<div class="container">
+	<div class="row">
+		<div class="col-sm-8">
+		<h2>Selected exhibitions</h2>
+<?php		
+			if ($featured_set_items_as_search_result) {
+				while ($featured_set_items_as_search_result->nextHit()) {
+					$va_occurrence_id = $featured_set_items_as_search_result->get('ca_occurrences.occurrence_id');
+					$va_related_objects = $featured_set_items_as_search_result->get('ca_objects.object_id', array('returnAsArray' => true));
+					$vn_object_id = $va_related_objects[0];
+					$t_object = new ca_objects($vn_object_id);
+					$va_reps = $t_object->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => $va_access_values));
+					if ($va_opening_dates = $featured_set_items_as_search_result->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
+						#205
+						foreach ($va_opening_dates as $va_opening_key => $va_opening) {
+							if ($va_opening['ex_dates_type'] == 205) {
+								$va_opening_date = $va_opening['ex_dates_value'];
+							}
+						}
+					}
+					if ($va_closing_dates = $featured_set_items_as_search_result->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
+						#207
+						foreach ($va_closing_dates as $va_closing_key => $va_closing) {
+							if ($va_closing['ex_dates_type'] == 207) {
+								$va_closing_date = $va_closing['ex_dates_value'];
+							}
+						}
+					}
+					print "<div class='exGrid'>";
+					print "<div class='splashImage'>".$va_reps['tags']['widepreview']."</div>";
+					print "<div>".caNavLink($this->request, $featured_set_items_as_search_result->get('ca_occurrences.preferred_labels'), '', '', 'Detail', 'occurrences/'.$va_occurrence_id)."</div>";
+					print "<div>".$va_opening_date." - ".$va_closing_date."</div>";
+					print "</div>";
 				}
-				print "</ul>";
 			}
+			print "<div class='fullListing'>".caNavLink($this->request, "Full Listing >>", '', '', 'Browse', 'occurrences')."</div>";
 ?>
-					
-			
-			<h1>SVA Archives</h1>
-			<ul class="galleries">
-				<!-- search links for all: publications, courses, events, exhibitions -->
-				<li class="svaa collection">
-<?php
-				print caNavLink($this->request, _t('Publications'), '', '', 'Detail', 'collections/341');
-?>				
-				</li>
-<!--				<li class="svaa collection">
-<?php
-				print caNavLink($this->request, _t('Courses'), '', '', 'Search', 'Index', array('search' => 'ca_occurrences.type_id:97'));
-?>	
-				</li> -->
-				<li class="svaa collection">
-<?php
-				print caNavLink($this->request, _t('Events'), '', '', 'Search', 'occurrences/facet/type_facet/id/96');
-?>					
-				</li>	
-				<li class="svaa collection">
-<?php
-				print caNavLink($this->request, _t('Exhibitions'), '', '', 'Search', 'occurrences/facet/type_facet/id/95');
-?>					
-				</li>						
-			</ul>	
-			
-		</div> <!-- end content include footer -->
+		</div><!--end col-sm-8-->
+		<div class="col-sm-4">
+			<h2>&nbsp;</h2>
+			<div>The digital archive contains a selection (though not all) of all the materials on exhibitions held at the School of Visual Arts, documented at the SVA Archives.</div>
+			<div>You can also browse our digital archive by <a href='#'>object</a> types, related <a href='#'>people</a>, academic <a href='#'>departments</a>, and exhibition <a href='#'>locations.</a></div>
+			<div>More information about the SVA Archives can be found <a href='#'>here</a></div>
+		</div> <!--end col-sm-4-->	
+	</div><!-- end row -->
+</div> <!--end container-->

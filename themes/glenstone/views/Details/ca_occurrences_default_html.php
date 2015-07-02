@@ -20,7 +20,7 @@
 	</div><!-- end row -->	
 	<div class="row">		
 		<div class="container">
-			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+			<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 			<H5>{{{^ca_occurrences.exh_dates}}}</H5>
 			<div class='exText'>{{{^ca_occurrences.exh_description.exh_description_text}}}</div>
 

@@ -34,11 +34,19 @@
 							<unit relativeTo="ca_objects" delimiter=" "><li><div class='detailObjectsResult'><l>^ca_object_representations.media.widepreview</l><br/><l>^ca_objects.preferred_labels.name</l></div></li><!-- end detailObjectsBlockResult --></unit>
 						</ul>
 					</div><!-- end jcarousel -->
-					
+				
 				</div><!-- end jcarousel-wrapper -->
-			</div><!-- end detailRelatedObjects -->
-			<div class="viewAll"><?php print caNavLink($this->request, _t("View All"), "", "", "Browse", "objects", array("facet" => $vs_browse_facet, 'id' => '^ca_entities.entity_id'), array(), array('dontURLEncodeParameters' => true)); ?></div>
+			</div><!-- end detailRelatedObjects --></ifcount>}}}
+			<div class="viewAll" id="objectViewAll"><?php print caNavLink($this->request, _t("View All"), "", "", "Browse", "objects", array("facet" => $vs_browse_facet, 'id' => '{{{^ca_entities.entity_id}}}'), array(), array('dontURLEncodeParameters' => true)); ?></div>
 			
+			{{{<ifcount code="ca_objects" max="0">
+				<script type='text/javascript'>	
+					jQuery(document).ready(function() {
+						jQuery("#objectViewAll").hide();
+					});
+				</script>
+			</ifcount>}}}
+			{{{<ifcount code="ca_objects" min="1">
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
@@ -116,7 +124,7 @@
 				{{{<ifcount code="ca_entities.related" min="1">
 				<ifcount code="ca_entities.related" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related person</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
 				<ifcount code="ca_entities.related" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related people</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
-				<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit><br/><br/>
+				<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>
 				</ifcount>}}}
 				{{{<ifcount code="ca_collections" min="1">
 				<ifcount code="ca_collections" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collection</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>

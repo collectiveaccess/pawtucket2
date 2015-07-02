@@ -9,7 +9,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row"><div class='col-md-12 col-lg-12'>
-			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+			<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 			<H6>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
 			{{{<ifdef code="ca_occurrences.occurrence_dates"><H6>Date:</H6>^ca_occurrences.occurrence_dates<br/></ifdef>}}}
 			{{{<ifdef code="ca_occurrences.description"><H6>Date:</H6>^ca_occurrences.description<br/></ifdef>}}}
