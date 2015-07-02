@@ -38,7 +38,7 @@
 			if (($qr_rels->get('ca_objects.type_id') != $vn_bib_type_id)&&($qr_rels->get('ca_objects.type_id') != $vn_volume_type_id)) { continue; }
 			if (in_array($qr_rels->get('ca_objects.object_id'), $va_non_read_books)) { continue; }
 			$vs_buf.= "<div class='row ledgerRow'>";
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='book".$vn_i."'>";
+				$vs_buf.= "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
 				$vs_buf.= "<div class='bookTitle'>";
 					if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
 						$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
@@ -75,7 +75,7 @@
 					
 				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
 				if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-					$vs_buf.= $qr_rels->getWithTemplate("<l>^ca_objects.preferred_labels</l>");
+					$vs_buf.= $qr_rels->getWithTemplate("^ca_objects.preferred_labels");
 				}
 				$vs_buf.= "</div>";	
 
@@ -102,7 +102,7 @@
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.fine");
 				$vs_buf.= "</div>";
 
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
 				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));								
 				$vs_buf.= "</div>";													
 			$vs_buf.= "</div>";
@@ -131,7 +131,7 @@
 					//}
 				}
 				print "<div>";
-				print join(', ', $va_occupations_list);
+				print join('<br/>', $va_occupations_list);
 				print "</div>";
 			}
 			if ($va_countries = $t_item->get('ca_entities.country_origin', array('returnWithStructure' => true, 'convertCodesToDisplayText' => false))) {
@@ -197,28 +197,39 @@
 					}							
 				}
 			}
-			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true))) {
-				$vs_sidebar_buf.= "<br/><div class='unit'><span class='metaTitle'>Connect to Digital Resources From: </span><br/>";
-				foreach ($va_resource_links as $va_key => $va_resource_link_t) {
-					foreach ($va_resource_link_t as $va_key2 => $va_resource_link) {
-						if ($va_resource_link['resources_link_description']) {
-							$vs_sidebar_buf.= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_description']."</a><br/>";
-						} elseif ($va_resource_link['resources_link_url']) {
-							$vs_sidebar_buf.= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_url']."</a><br/>";
-						}
-					}
-				}
-				$vs_sidebar_buf.= "</div>";
-			}
+
+
 			if ($va_collections = $t_item->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 				$vs_sidebar_buf.= "<div class='unit'><H6>Finding Aids</H6>";
 				$vs_sidebar_buf.= $va_collections;
 				$vs_sidebar_buf.= "</div>";
 			}	
-			if ($vs_sidebar_buf != "") {
-				print "<h5 style='margin-top:30px;'>Learn More</h5>	";	
+			if ($vs_sidebar_buf) {
+				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
 				print $vs_sidebar_buf;
 			}
+			$vs_learn_even = null;
+			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true))) {
+				$va_link_list = array();
+				foreach ($va_resource_links as $va_key => $va_resource_link_t) {
+					foreach ($va_resource_link_t as $va_key2 => $va_resource_link) {
+						if ($va_resource_link['resources_link_description']) {
+							$va_link_list[]= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_description']."</a>";
+						} elseif ($va_resource_link['resources_link_url']) {
+							$va_link_list[]= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_url']."</a>";
+						}
+					}
+				}
+				if (sizeof($va_link_list) > 0) {
+					$vs_learn_even.= "<div class='unit'>";
+					$vs_learn_even.= join('<br/>', $va_link_list);
+					$vs_learn_even.= "</div>";
+				}
+			}			
+			if ($vs_learn_even != "") {
+				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
+				print $vs_learn_even;
+			}	
 ?>				
 							
 		</div>
@@ -228,7 +239,7 @@
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div class="container">
 							<div class="row">
-								<div class='col-md-12 col-lg-12'>
+								<div class='col-sm-6 col-md-6 col-lg-6'>
 									<div class="detailNav">
 										<div class='left'>
 											<div class='resLink'>{{{resultsLink}}}</div>
@@ -238,10 +249,16 @@
 											<div class='nextLink'>{{{nextLink}}}</div>
 										</div>
 									</div>
+								</div>
+								<div class='col-sm-6 col-md-6 col-lg-6'>
+								</div>
+							</div>
+							<div class='row'>		
+								<div class='col-md-12 col-lg-12'>	
 									<H4>
 										{{{^ca_entities.preferred_labels.displayname}}}
 <?php
-										if ($va_life_dates = $t_item->get('ca_entities.life_dates')) {
+										if ($va_life_dates = $t_item->get('ca_entities.life_dates', array('format' => 'Y - Y'))) {
 											print "<small>(".$va_life_dates.")</small>";
 										}
 ?>									
@@ -260,9 +277,6 @@
 									if ($vs_first_date && $vs_last_date) {
 										print "<div class='unit'><i>".$t_item->get('ca_entities.relationship_to_library', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."<br/>Borrowing activity from ".$vs_first_date." - ".$vs_last_date."</i></div>";
 									}
-									if ($va_buildings = $t_item->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('building'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-										print "<div class='unit'><h6>Library Buildings</h6>".$va_buildings."</div>";
-									}
 ?>						
 									<div class='unit trimText'>{{{<ifdef code="ca_entities.biography.biography_text">^ca_entities.biography.biography_text<br/></ifdef>}}}</div>
 <?php
@@ -278,10 +292,7 @@
 									}
 																																		
 ?>	
-									{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-									{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-									{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}						
-									
+
 									<div id="detailTools">
 										<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
@@ -331,10 +342,69 @@
 								} else {
 									$vs_style = "style='display:none;'";
 								}
-?>								
-								<li><a href="#bookTab">Related Books</a></li>
-								<li><a href="#entTab">Related People & Organizations</a></li>
-								<li><a href="#docTab">Related Documents</a></li>
+								
+								#check entities
+								$vs_people_buf = null;
+								$va_people_by_rels = array();
+								if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true))) {
+									foreach ($va_related_people as $va_key => $va_related_person) {
+										$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
+									}
+									$va_people_links = array();
+									foreach ($va_people_by_rels as $va_role => $va_person) {
+										$vs_people_buf.= "<div class='row'>";
+											$vs_people_buf.= "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
+											$vs_people_buf.= "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
+											$vs_people_buf.= "<div id='ent".$va_role."'>";
+												foreach ($va_person as $va_entity_id => $va_name) {
+													$vs_people_buf.= "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
+												}
+
+											$vs_people_buf.= "</div><!-- end entrole -->";
+										$vs_people_buf.= "</div><!-- end row -->";
+									}
+								}
+									
+								#check books	
+								$vs_book_buf = null;
+								$va_books_by_rels = array();
+								if ($va_related_books = $t_item->get('ca_objects', array('excludeRelationshipTypes' => array('reader'), 'restrictToTypes' => array('bib'),'returnWithStructure' => true))) {
+									$vs_book_buf.= "<div class='unit row'>";
+									foreach ($va_related_books as $va_key => $va_related_book) {
+										$va_books_by_rels[$va_related_book['relationship_typename']][$va_related_book['object_id']] = $va_related_book['label'];
+									}
+									$va_book_links = array();
+									foreach ($va_books_by_rels as $va_role => $va_book) {
+										$vs_book_buf.= "<div class='container'>";
+										$vs_book_buf.= "<div class='row'>";
+										$vs_book_buf.= "<h6>".ucwords($va_role)." of</h6>";
+										foreach ($va_book as $va_book_id => $va_title) {
+											$t_book = new ca_objects($va_book_id);
+											$va_title_trunk = explode(':',$va_title);
+											if ($t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
+												$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))."<br/>";
+											} else {$vs_author = null;}											
+											$vn_pub_date = $t_book->get('ca_objects.publication_date');
+											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><p class='bookButton'>".caNavLink($this->request, $va_title_trunk[0]."<br/>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</p></div>";
+										}
+										$vs_book_buf.= "</div>";
+										$vs_book_buf.= "</div>";
+									}
+									$vs_book_buf.= "</div>";
+								}	
+								#check docs	
+								$vs_doc_buf = null;
+								if ($va_related_documents = $t_item->get('ca_objects', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
+									$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
+									foreach ($va_related_documents as $va_key => $va_related_document) {
+										$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+									}
+									$vs_doc_buf.= "</div>";
+								}												
+?>																
+								<?php if ($vs_book_buf) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
+								<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
+								<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>
 								
 							  </ul>
 							<div id='circTab' <?php print $vs_style; ?>>
@@ -343,7 +413,7 @@
 							
 									{{{<ifcount code="ca_objects" min="1">
 									<div class="row titleBar">
-										<div class='col-sm-2 col-md-2 col-lg-2'>
+										<div class='col-sm-3 col-md-3 col-lg-3'>
 											Full Title
 										</div>
 										<div class='col-sm-1 col-md-1 col-lg-1'>
@@ -364,7 +434,7 @@
 										<div class='col-sm-1 col-md-1 col-lg-1'>
 											Fine
 										</div>		
-										<div class='col-sm-2 col-md-2 col-lg-2'>
+										<div class='col-sm-1 col-md-1 col-lg-1'>
 											Ledger
 										</div>
 									</div><!-- end row -->
@@ -380,25 +450,7 @@
 									<div class='row'>
 										<div class='col-sm-12 col-md-12 col-lg-12'>
 	<?php						
-											$va_people_by_rels = array();
-											if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true))) {
-												foreach ($va_related_people as $va_key => $va_related_person) {
-													$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
-												}
-												$va_people_links = array();
-												foreach ($va_people_by_rels as $va_role => $va_person) {
-													print "<div class='row'>";
-														print "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
-														print "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
-														print "<div id='ent".$va_role."'>";
-															foreach ($va_person as $va_entity_id => $va_name) {
-																print "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
-															}
-
-														print "</div><!-- end entrole -->";
-													print "</div><!-- end row -->";
-												}
-											}
+											print $vs_people_buf;
 	?>									
 										</div>	<!-- end col -->
 									</div>	<!-- end row -->
@@ -409,22 +461,7 @@
 									<div class='row'>
 										<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-										$va_books_by_rels = array();
-										if ($va_related_books = $t_item->get('ca_objects', array('excludeRelationshipTypes' => array('reader'), 'restrictToTypes' => array('bib'),'returnWithStructure' => true))) {
-											print "<div class='unit row'>";
-											foreach ($va_related_books as $va_key => $va_related_book) {
-				
-												$va_books_by_rels[$va_related_book['relationship_typename']][$va_related_book['object_id']] = $va_related_book['label'];
-											}
-											$va_book_links = array();
-											foreach ($va_books_by_rels as $va_role => $va_book) {
-												print "<h6>".ucwords($va_role)." of</h6>";
-												foreach ($va_book as $va_book_id => $va_title) {
-													print "<div class='col-sm-4 col-md-4 col-lg-4'><p class='bookButton'><i class='fa fa-book'></i>&nbsp;".caNavLink($this->request, $va_title, '', '', 'Detail', 'objects/'.$va_book_id)."</p></div>";
-												}
-											}
-											print "</div>";
-										}
+										print $vs_book_buf;
 ?>										
 										</div><!-- end col -->
 									</div><!-- end row -->
@@ -435,11 +472,7 @@
 									<div class='row'>
 										<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-										if ($va_documents = $t_item->get('ca_objects.preferred_labels', array('restrictToTypes' => array('document'), 'returnAsLink' => true))) {
-											print "<div class='unit'><h6>Related Documents</h6>";
-											print $va_documents;
-											print "</div>";
-										}
+										print $vs_doc_buf;
 ?>										
 										</div><!-- end col -->
 									</div><!-- end row -->

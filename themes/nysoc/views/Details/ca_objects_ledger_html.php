@@ -11,14 +11,16 @@
 	<div class="wrapper">
 		<div class="sidebar">
 <?php	
-			if ($va_local_subject = $t_object->get('ca_objects.local_subject', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><h6>Local Subject</h6>".$va_local_subject."</div>";
+			if ($t_object->get('ca_objects.local_subject')) {
+				print "<div class='unit'><H6>Local Subject</H6>";
+				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.local_subject', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'ledger/facet/local_subject/id/'.$t_object->get('ca_objects.local_subject'))."</a></div></div>";
 			}
-			if ($va_genre = $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><h6>Genre</h6>".$va_genre."</div>";
-			}
+			if ($t_object->get('ca_objects.document_type')) {
+				print "<div class='unit'><H6>Genre</H6>";
+				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'ledger/facet/document_type/id/'.$t_object->get('ca_objects.document_type'))."</a></div></div>";
+			}							
 			if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				print "<div class='unit'><h5 style='margin-top:30px;'>Learn More</h5><h6>Finding Aids</h6>".$va_collection."</div>";
+				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6><h6>Finding Aids</h6>".$va_collection."</div>";
 			}							
 ?>
 		</div>
@@ -27,7 +29,7 @@
 				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div class="row">
-							<div class='col-md-12 col-lg-12'>
+							<div class='col-md-6 col-lg-6'>
 								<div class="detailNav">
 									<div class='left'>
 										<div class='resLink'>{{{resultsLink}}}</div>
@@ -37,15 +39,24 @@
 										<div class='nextLink'>{{{nextLink}}}</div>
 									</div>
 								</div>
+							</div>
+							<div class='col-md-6 col-lg-6'>
 							</div><!-- end col -->
 						</div><!-- end row -->
 						<div class="container"><div class="row">
 							<div class='col-sm-12 col-md-12 col-lg-12 ledgerImage'>
-								<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+								<H4>{{{ca_objects.preferred_labels.name}}}</H4>								
 <?php
 								if ($va_related_entities = $t_object->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array('reader'), 'delimiter' => ', ', 'returnAsLink' => true))) {
 									print "<h4>".$va_related_entities."</h4>";
 								}
+?>
+								<div id="detailTools">
+									<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
+									<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+									<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+								</div><!-- end detailTools -->
+<?php								
 								if ($vs_description = $t_object->get('ca_objects.description')) {
 									print "<div>".$vs_description."</div>";
 								}
@@ -74,63 +85,53 @@
 										print "</div>";
 									}
 								}
-								#$vn_i = 0;								
-								#$va_ledger_images = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels.name'));			
-								#foreach ($va_ledger_images as $va_ledger_key => $va_ledger_image) {
-								#	$t_item = new ca_objects($va_ledger_image);	
-								#	print "<div style='width:50%; float:left;'>".$t_item->get('ca_object_representations.media.large')."</div>";
-								#	$vn_i++;
-								#	if ($vn_i == 2) {
-								#		break;
-								#	}			
-								#}
+?>
+								<div id='leavemalone' style='clear:both;'>
+								<div class="cycle-slideshow composite-example row" 
+									data-cycle-fx="scrollHorz"
+									data-cycle-speed="2000" 
+									data-cycle-pause-on-hover="true"
+									data-cycle-slides="> div"
+									data-cycle-timeout="0"
+									data-cycle-prev="#prev"
+        							data-cycle-next="#next"
+									>
+									
+
+<?php								
+								$vn_i = 0;	
+								$vn_skip_me = true;							
+								$va_ledger_images = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels.name'));			
+								foreach ($va_ledger_images as $va_ledger_key => $va_ledger_image) {
+									$t_item = new ca_objects($va_ledger_image);
+									if ($vn_i == 0) { print "<div class='ledgerSlide' style='width:100%'>"; }
+									if ($vn_skip_me == true) { print "<div class='col-sm-6 col-md-6 col-lg-6'></div>"; $vn_i++; $vn_skip_me = false;}	
+									print "<div class='col-sm-6 col-md-6 col-lg-6'>".caNavLink($this->request, $t_item->get('ca_object_representations.media.large'), '', '', 'Detail', 'objects/'.$va_ledger_image)."<div class='caption'>".$t_item->get('ca_objects.preferred_labels')."<br/>".$t_item->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true))."</div></div>";
+									$vn_i++;
+									if ($vn_i == 2) { 
+										print "<div style='clear:both;width:100%;'></div></div>"; 
+										$vn_i = 0; 
+									}	
+								}
 ?>	
-								{{{representationViewer}}}
-								
-									<div id="detailTools">
-										<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
-										<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
-									</div><!-- end detailTools -->
+
+								</div>
+
+    							</div><!-- leave me alone -->
+    							<div class="ledger center">
+        							<span id="prev">Previous </span>
+        							<span id="next"> Next</span>
+    							</div>
 								 									
-								<HR>										
 							</div><!-- end col -->
 						</div><!-- end row -->
 						<div class='row'>
 							<div class='col-sm-12 col-md-12 col-lg-12'>	
-								<div id='objectTable'>
+								<div id='objectTable' style='margin-top:20px'>
 									<ul class='row'>
-										<li><a href="#circTab">Circulation History</a></li>													
 										<li><a href="#entTab">Related People & Organizations</a></li>			
 										<li><a href="#docTab">Related Documents</a></li>	
 									</ul>
-									<div id='circTab' >
-										<div class='container'>
-											<div class='row'>
-<?php
-												$va_ledger_pages = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels.name'));			
-												foreach ($va_ledger_pages as $va_ledger_key => $va_ledger_page) {
-													$t_page = new ca_objects($va_ledger_page);
-													print "<div class='row ledgerRow'>";
-			
-													print "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>";
-													print caNavLink($this->request, $t_page->get('ca_object_representations.media.icon'), '', '', 'Detail', 'objects/'.$va_ledger_page);
-													print "</div>";
-			
-													print "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>";
-													print caNavLink($this->request, $t_page->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_ledger_page);
-													print "</div>";
-			
-													print "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>";
-													print $t_page->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true));
-													print "</div>";	
-			
-													print "</div>";				
-												}
-?>											
-											</div><!-- end row -->
-										</div><!-- end container -->
-									</div><!-- end entTab -->
 									<div id='entTab' >
 										<div class='container'>
 											<div class='row'>
@@ -166,8 +167,12 @@
 											<div class='row'>
 												<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-													if ($vs_docs = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'sort' => 'ca_objects.preferred_labels', 'restrictToTypes' => array('document')))) {
-														print "<div class='unit'>Related Institutional Documents: ".$vs_docs."</div>";
+													if ($va_related_documents = $t_object->get('ca_objects.related', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
+														$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
+														foreach ($va_related_documents as $va_key => $va_related_document) {
+															$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+														}
+														$vs_doc_buf.= "</div>";
 													}
 ?>										
 												</div><!-- end col -->											
@@ -176,14 +181,15 @@
 									</div><!-- end docTab -->																	
 								</div><!-- end objectTable -->	
 							</div><!-- end col -->	
+						</div><!-- end row -->
+						<div class='row'>
+							<div class='col-sm-12 col-md-12 col-lg-12'>
+								<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+							</div><!-- end col -->
 						</div><!-- end row -->													
 					</div><!-- end container -->
 					</div><!-- end col -->
-					<div class='row'>
-					<div class='col-sm-12 col-md-12 col-lg-12'>
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-					</div><!-- end col -->
-				</div><!-- end row --></div><!-- end container -->
+				</div><!-- end container -->
 			</div><!--end content-inner -->
 		</div><!--end content-wrapper-->
 	</div><!--end wrapper-->

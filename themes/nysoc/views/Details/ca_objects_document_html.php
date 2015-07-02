@@ -11,29 +11,41 @@
 	<div class="wrapper">
 		<div class="sidebar">
 <?php
-			if ($va_dc_type = $t_object->get('ca_objects.dc_type', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><h6>Type</h6>".$va_dc_type."</div>";
+			if ($va_dc_types = $t_object->get('ca_objects.dc_type', array('returnAsArray' => true))) {
+				print "<div class='unit'><h6>Type</h6>";
+					foreach ($va_dc_types as $va_dc_type) {
+						print caNavLink($this->request, caGetListItemByIDForDisplay($va_dc_type), '', 'Browse', 'document', 'facet/dc_type/id/'.$va_dc_type)."<br/>";
+					}
+				print "</div>";
 			}
-			if ($va_local = $t_object->get('ca_objects.local_subject', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><h6>Subject</h6>".$va_local."</div>";
+			if ($va_local = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true))) {
+				print "<div class='unit'><h6>Subject</h6>";
+					foreach ($va_local as $va_local_subject) {
+						print caNavLink($this->request, caGetListItemByIDForDisplay($va_local_subject), '', 'Browse', 'document', 'facet/local_subject/id/'.$va_local_subject)."<br/>";
+					}
+				print "</div>";
 			}
-			if ($va_genre = $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><h6>Genre</h6>".$va_genre."</div>";
-			}	
+			if ($va_genres = $t_object->get('ca_objects.document_type', array('returnAsArray' => true))) {
+				print "<div class='unit'><h6>Genre</h6>";
+					foreach ($va_genres as $va_genre) {
+						print caNavLink($this->request, caGetListItemByIDForDisplay($va_genre), '', 'Browse', 'document', 'facet/document_type/id/'.$va_genre)."<br/>";
+					}
+				print "</div>";
+			}							
 			if ($vs_subjects_lcsh = $t_object->get('ca_objects.LCSH', array('returnWithStructure' => 'true'))) {
 				print "<div class='unit'><h6>LC Subject Headings</h6>";
 				foreach ($vs_subjects_lcsh as $va_key => $vs_subject_lcsh_r) {
 					foreach ($vs_subject_lcsh_r as $va_key => $vs_subject_lcsh_l) {
 						foreach ($vs_subject_lcsh_l as $vs_subject_lcsh) {
 							$va_subject = explode(' [', $vs_subject_lcsh);
-							print caNavLink($this->request, $va_subject[0], '', '', 'Search', 'objects/search/'.$vs_subject_lcsh)."<br/>";
+							print caNavLink($this->request, $va_subject[0], '', '', 'Search', 'document/search/'.$va_subject[0])."<br/>";
 						}
 					}
 				}
 				print "</div>";
 			}
 			if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				print "<div class='unit'><h5 style='margin-top:30px;'>Learn More</h5><h6>Finding Aids</h6>".$va_collection."</div>";
+				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6><h6>Finding Aids</h6>".$va_collection."</div>";
 			}											
 ?>
 		</div>
@@ -42,7 +54,7 @@
 				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div class="row">
-							<div class='col-md-12 col-lg-12'>
+							<div class='col-md-6 col-lg-6'>
 								<div class="detailNav">
 									<div class='left'>
 										<div class='resLink'>{{{resultsLink}}}</div>
@@ -52,7 +64,8 @@
 										<div class='nextLink'>{{{nextLink}}}</div>
 									</div>
 								</div>
-
+							</div><!-- end col -->
+							<div class='col-md-6 col-lg-6'>
 							</div><!-- end col -->
 						</div><!-- end row -->
 						<div class="row">
@@ -76,8 +89,21 @@
 								if ($va_building = $t_object->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('building'), 'delimiter' => ', '))) {
 									print "<div class='unit'><h6>Library Building</h6>".$va_building."</div>";
 								}	
-								if ($va_date = $t_object->get('ca_objects.dc_date', array('template' => '^ca_objects.dc_date.dates_value ^ca_objects.dc_date.dc_dates_types', 'delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
-									print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
+								if ($va_date_array = $t_object->get('ca_objects.dc_date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+									$va_date_by_type = array();
+									print "<div class='unit'>";
+									foreach ($va_date_array as $va_key => $va_dates) {
+										foreach ($va_dates as $va_key2 => $va_date) {
+											$va_date_by_type[$va_date['dc_dates_types']][] = $va_date['dates_value'];
+										}
+									}
+									foreach ($va_date_by_type as $va_date_type => $va_date) {
+										print "<br/><span style='text-transform:uppercase;'>".$va_date_type."</span><br/>";
+										foreach ($va_date as $va_key => $vn_date_value) {
+											print $vn_date_value."<br/>";
+										}
+									}
+									print "</div>";
 								}
 								print "<hr/>";
 								if ($va_description = $t_object->get('ca_objects.description.description_text')) {
@@ -118,57 +144,78 @@
 						</div><!-- end row -->
 					</div><!-- end col -->		
 				</div><!-- end row -->
+<?php
+				#check people
+				$vs_people_buf = null;
+				$va_people_by_rels = array();
+				if ($va_related_people = $t_object->get('ca_entities', array('returnWithStructure' => true, 'sort' => 'ca_entities.type_id', 'excludeRelationshipTypes' => array('creator', 'publisher', 'contributor', 'printer')))) {
+		
+					foreach ($va_related_people as $va_key => $va_related_person) {
+						$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
+					}
+					$va_people_links = array();
+					foreach ($va_people_by_rels as $va_role => $va_person) {
+						$vs_people_buf.= "<div class='row'>";
+							$vs_people_buf.= "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
+							$vs_people_buf.= "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
+							$vs_people_buf.= "<div id='ent".$va_role."'>";
+								foreach ($va_person as $va_entity_id => $va_name) {
+									$vs_people_buf.= "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
+								}
 
+							$vs_people_buf.= "</div><!-- end entrole -->";
+						$vs_people_buf.= "</div><!-- end row -->";
+					}
+				}				
+				#check books
+				$vs_book_buf = null;
+				if ($va_books = $t_object->get('ca_objects.related', array('restrictToTypes' => array('bib'), 'returnWithStructure' => true))) {
+					foreach ($va_books as $va_book_id => $va_book) {
+						$t_book = new ca_objects($va_book['object_id']);
+						$va_title_trunk = explode(':',$va_book['label']);
+						if ($t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
+							$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))."<br/>";
+						} else {$vs_author = null;}
+						$vn_pub_date = $t_book->get('ca_objects.publication_date');
+						$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><p class='bookButton'>".caNavLink($this->request, $va_title_trunk[0]."<br/>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book['object_id'])."</p></div>";
+					}
+				}
+				#check docs
+				$vs_doc_buf = null;
+				if ($va_related_documents = $t_object->get('ca_objects.related', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
+					$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
+					foreach ($va_related_documents as $va_key => $va_related_document) {
+						$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+					}
+					$vs_doc_buf.= "</div>";
+				}
+?>
 				<div class="row"><div class='col-sm-12 col-md-12 col-lg-12'>	
 					<div id='objectTable'>
 						<ul class='row'>
-							<li><a href="#entTab">Related People & Organizations</a></li>
-							<li><a href="#bookTab">Related Books</a></li>													
-							<li><a href="#docTab">Related Documents</a></li>	
+							<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
+							<?php if ($vs_book_buf) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
+							<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>	
 						</ul>
 						<div id='entTab' >
 							<div class='container'>
 								<div class='row'>
 									<div class='col-sm-12 col-md-12 col-lg-12'>
 	<?php
-										$va_people_by_rels = array();
-										if ($va_related_people = $t_object->get('ca_entities', array('returnWithStructure' => true, 'sort' => 'ca_entities.type_id'))) {
-								
-											foreach ($va_related_people as $va_key => $va_related_person) {
-												$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
-											}
-											$va_people_links = array();
-											foreach ($va_people_by_rels as $va_role => $va_person) {
-												print "<div class='row'>";
-													print "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
-													print "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
-													print "<div id='ent".$va_role."'>";
-														foreach ($va_person as $va_entity_id => $va_name) {
-															print "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
-														}
-
-													print "</div><!-- end entrole -->";
-												print "</div><!-- end row -->";
-											}
-										}
+									print $vs_people_buf;
 	?>										
 									</div><!-- end col -->											
 								</div><!-- end row -->
 							</div><!-- end container -->
 						</div><!-- end entTab -->	
 						<div id='bookTab' >
-							<h6>Related Books</h6>
+							<h6></h6>
 							<div class='container'>
 								<div class='row'>
 									<div class='col-sm-12 col-md-12 col-lg-12'>	
 										<div class='row'>									
 <?php
-										if ($va_books = $t_object->get('ca_objects.related', array('restrictToTypes' => array('bib'), 'returnWithStructure' => true))) {
-											foreach ($va_books as $va_book_id => $va_book) {
-												print "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<i class='fa fa-book'></i>".$va_book['label'], '', '', 'Detail', 'objects/'.$va_book['object_id'])."</div></div>";
-											}
-										}
-
+										print $vs_book_buf;
 ?>												
 										</div><!-- end row -->
 									</div><!-- end col -->
@@ -180,9 +227,7 @@
 								<div class='row'>
 									<div class='col-sm-12 col-md-12 col-lg-12'>
 	<?php
-										if ($vs_docs = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'sort' => 'ca_objects.preferred_labels', 'restrictToTypes' => array('document')))) {
-											print "<div class='unit'>Related Institutional Documents: ".$vs_docs."</div>";
-										}
+										print $vs_doc_buf;
 	?>										
 									</div><!-- end col -->											
 								</div><!-- end row -->

@@ -14,14 +14,27 @@
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
-			<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-				<div class='resLink'>{{{resultsLink}}}</div>
-			</div><!-- end detailTop -->
+
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">
 				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+						<div class="row">
+							<div class='col-md-6 col-lg-6'>
+								<div class="detailNav">
+									<div class='left'>
+										<div class='resLink'>{{{resultsLink}}}</div>
+									</div>
+									<div class='right'>
+										<div class='prevLink'>{{{previousLink}}}</div>
+										<div class='nextLink'>{{{nextLink}}}</div>
+									</div>
+								</div>
+							</div>
+							<div class='col-md-6 col-lg-6'>
+							</div><!-- end col -->
+						</div><!-- end row -->
 						<div class="container"><div class="row">
 							<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
 								{{{representationViewer}}}				
@@ -32,6 +45,9 @@
 									<div class='prevLink'>{{{previousLink}}}</div>
 									<div class='nextLink'>{{{nextLink}}}</div>
 								</div>
+<?php								
+								print "<h6>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h6>";
+?>								
 								<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 								<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 								<HR>				
@@ -113,6 +129,7 @@
 										} else {
 											$vs_book_title = $vs_book_title[0]." ".$qr_rels->get('ca_objects.preferred_labels.name');
 										}
+										$va_circ_id = $qr_rels->get('ca_objects.parent.object_id');
 									} else {
 										$vs_book_title = explode(':',$qr_rels->get('ca_objects.preferred_labels.name'));
 										if (strlen($vs_book_title[0]) > 120) {
@@ -120,9 +137,10 @@
 										} else {
 											$vs_book_title = $vs_book_title[0];
 										}
+										$va_circ_id = $qr_rels->get('ca_objects.object_id');
 									}
 					
-									print caNavLink($this->request, trim("{$vs_book_title}"), '', '', 'Detail', 'objects/'.$qr_rels->get('ca_objects.object_id'));
+									print caNavLink($this->request, trim("{$vs_book_title}"), '', '', 'Detail', 'objects/'.$va_circ_id);
 									if ($vs_title = $qr_rels->get("ca_objects_x_entities.book_title")) {
 										print "<br/>transcribed: {$vs_title}";
 									}

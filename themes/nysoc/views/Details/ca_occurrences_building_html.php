@@ -22,24 +22,30 @@
 			if ($vs_collections = $t_item->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 				$vs_sidebar_buf.= "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
 			}
+						
+			if ($vs_sidebar_buf != "") {
+				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
+				print $vs_sidebar_buf;
+			}	
+			$vs_learn_even = null;
 			if ($va_links = $t_item->get('ca_occurrences.resources_link', array('returnWithStructure' => true))) {
-				$vs_sidebar_buf.= "<h6>External Resources</h6><div class='unit'>";
+				$vs_learn_even.= "<div class='unit'>";
 
 				foreach ($va_links as $va_key => $va_link_a) {
 					foreach ($va_link_a as $va_key => $va_link) {
 						if ($va_link['resources_link_description']) {
-							$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_description']."</a></p>";
+							$vs_learn_even.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_description']."</a></p>";
 						} else {
-							$vs_sidebar_buf.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_url']."</a></p>";							
+							$vs_learn_even.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_url']."</a></p>";							
 						}
 					}
 				}
-				$vs_sidebar_buf.= "</div>";
-			}						
-			if ($vs_sidebar_buf != "") {
-				print "<h5 style='margin-top:30px;'>Learn More</h5>	";	
-				print $vs_sidebar_buf;
+				$vs_learn_even.= "</div>";
 			}			
+			if ($vs_learn_even != "") {
+				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
+				print $vs_learn_even;
+			}						
 ?>			
 		</div>
 		<div class="content-wrapper">
@@ -65,18 +71,16 @@
 							<div class="row">			
 								<div class='col-md-6 col-lg-6'>
 <?php
-									if ($vs_occ_dates = $t_item->get('ca_occurrences.NYSL_occupied_dates')) {
-										print "<div class='unit'>Occupied by the New York Society Library from ".$vs_occ_dates."</div>";
+									if ($vs_occ_dates = $t_item->get('ca_occurrences.NYSL_occupied_dates', array('format' => 'Y - Y'))) {
+										print "<div class='unit'>Occupied by the New York Society Library ".$vs_occ_dates."</div>";
 									}
-									if ($vs_range = $t_item->get('ca_occurrences.building_range')) {
-										print "<div class='unit'>Building extant from ".$vs_range."</div>";
+									if ($vs_range = $t_item->get('ca_occurrences.building_range', array('format' => 'Y - Y'))) {
+										print "<div class='unit'>Building extant ".$vs_range."</div>";
 									}
 									if ($t_item->get('ca_occurrences.buliding_history')) {
 										$va_history = $t_item->get('ca_occurrences.buliding_history', array('delimiter' => '', 'convertCodesToDisplayText' => true));
 										print "<div class='unit'>";
-										print "<a href='#' class='openHis' onclick='$(\"#history\").slideDown(); $(\".openHis\").hide(); $(\".closeHis\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Building History</h6></a>";
-										print "<a href='#' class='closeHis' style='display:none;' onclick='$(\"#history\").slideUp(); $(\".closeHis\").hide(); $(\".openHis\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Building History</h6></a>";
-										print "<div id='history' style='display:none;'>".$va_history."</div></div>";
+										print "<div id='history' class='trimText'>".$va_history."</div></div>";
 									}																					
 									if ($t_item->get('ca_occurrences.references.references_list')) {
 										$va_references = $t_item->get('ca_occurrences.references', array('delimiter' => '', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_occurrences.references.references_list page ^ca_occurrences.references.references_page</p>'));
@@ -102,45 +106,51 @@
 						</div><!-- end container -->
 					</div><!-- end col -->
 				</div><!-- end row -->
+<?Php
+				#check people
+				$vs_people_buf = null;
+				$va_people_by_rels = array();
+				if ($va_related_people = $t_item->get('ca_entities', array('returnWithStructure' => true, 'sort' => 'ca_entities.preferred_labels.surname'))) {
+		
+					foreach ($va_related_people as $va_key => $va_related_person) {
+						$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
+					}
+					$va_people_links = array();
+					ksort($va_people_by_rels);
+					foreach ($va_people_by_rels as $va_role => $va_person) {
+						$vs_people_buf.= "<div class='row'>";
+							$vs_people_buf.= "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
+							$vs_people_buf.= "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
+							$vs_people_buf.= "<div id='ent".$va_role."'>";
+								foreach ($va_person as $va_entity_id => $va_name) {
+									$vs_people_buf.= "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
+								}
+
+							$vs_people_buf.= "</div><!-- end entrole -->";
+						$vs_people_buf.= "</div><!-- end row -->";
+					}
+				}				
+				#check docs
+				$vs_doc_buf = null;
+				if ($va_related_documents = $t_item->get('ca_objects', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
+					$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
+					foreach ($va_related_documents as $va_key => $va_related_document) {
+						$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+					}
+					$vs_doc_buf.= "</div>";
+				}
+?>				
 				<div id='buildingTable'>
 					<ul class='row'>								
-						<li><a href="#entTab">Related People & Organizations</a></li>
-						<li><a href="#docTab">Related Documents</a></li>			
+						<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
+						<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>									
 					</ul>
 					<div id='entTab' >
 						<div class='container'>
 							<div class='row'>
 								<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php			
-								$o_circulation_search = new EntitySearch();
-								$qr_circ = $o_circulation_search->search("ca_objects_x_entities.date_out:\"{$vs_occ_dates}\"", array('sort' => 'ca_entities.preferred_labels.surname'));
-								
-								$va_readers = array();
-								$va_alpha_list = array();
-								
-								$vn_c = 0;
-								while ($qr_circ->nextHit()) {
-									$vs_surname = ucfirst($qr_circ->get('ca_entities.preferred_labels.surname', array('restrictToRelationshipTypes' => array('reader'))));
-									$va_readers[$vs_surname[0]][$qr_circ->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('reader')))] = $qr_circ->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('reader')));
-									$vn_c++;
-									
-									if ($vn_c > 5000) { break; } 	// limit to 100 max for now 
-								}
-								$vs_letter_bar = null;
-								$vs_names = null;
-								foreach ($va_readers as $va_reader_letter => $va_reader) {
-									$vs_letter_bar.= "<li class='letterHeader' id='".$va_reader_letter."'><a href='#row".$va_reader_letter."'>".$va_reader_letter."<a></li>";
-									$vs_names.= "<div class='row entityRow' id='row".$va_reader_letter."'>";
-									foreach ($va_reader as $vn_entity_id => $vs_entity_name) {
-										$vs_names.= '<div class="col-sm-3 col-md-3 col-lg-3"><div class="entityButton">'.caNavLink($this->request, $vs_entity_name, '', '', 'Detail', 'objects/'.$vn_entity_id)."</div></div>";
-									}
-									$vs_names.= "</div><!-- end row -->";
-								}
-								print "<div id='readerTable'>";
-								print "<ul>".$vs_letter_bar."</ul>";
-								print $vs_names;
-								print "</div>";
-									
+								print $vs_people_buf;								
 ?>								
 								</div><!-- end col-->
 							</div><!-- end row -->
@@ -151,11 +161,7 @@
 							<div class='row'>
 								<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-								if ($va_documents = $t_item->get('ca_objects.preferred_labels', array('restrictToTypes' => array('document'), 'returnAsLink' => true))) {
-									print "<div class='unit'><h6>Related Documents</h6>";
-									print $va_documents;
-									print "</div>";
-								}
+								print $vs_doc_buf;
 ?>										
 								</div><!-- end col -->
 							</div><!-- end row -->
@@ -185,9 +191,14 @@
 		}
 
 	});
-	
+</script>	
+<script type='text/javascript'>
 	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 135
+		});
 		$('#buildingTable').tabs();
-		$('#readerTable').tabs();
 	});
-</script>
+</script>	
+

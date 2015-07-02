@@ -10,9 +10,16 @@
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
-			<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-				<div class='resLink'>{{{resultsLink}}}</div>
-			</div><!-- end detailTop -->
+<?php
+			$vs_learn_even = null;	
+			if ($vs_digilink = $t_object->get('ca_objects.Digital_link')) {
+				$vs_learn_even.=  "<div class='unit'><a href='".$vs_digilink."' target='_blank'>Digital Copy</a></div>";
+			}				
+			if ($vs_learn_even != "") {
+				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
+				print $vs_learn_even;
+			}
+?>
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">

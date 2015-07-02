@@ -496,7 +496,7 @@ div.globalLinks a {
 	color: #d77421;
 }
 .detail #detailTools {
-	margin-top:0px;
+	margin-top:20px;
 	clear:both;
 	height:24px;
 	padding-top:0px;
@@ -518,6 +518,10 @@ a.readmore-js-toggle {
 }
 .bookTitle {
 	max-height:38px;
+	overflow:hidden;
+}
+.bookLabel {
+	max-height:28px;
 	overflow:hidden;
 }
 .jcarousel {
@@ -670,6 +674,25 @@ svg:not(:root) {
 .ledgerImage {
 	margin-bottom:20px;
 }
+.ledgerSlide .caption{
+	height:45px;
+	border-bottom:2px solid #ccc;
+}
+.ledger #next, .ledger #prev {
+	background-color:#d77421;
+	color:#fff;
+	border-radius:4px;
+	-webkit-border-radius:4px;
+	padding:5px;
+	font-weight:bold;
+	margin-top:10px;
+}
+.ledger #prev {
+	float:left;
+}
+.ledger #next {
+	float:right;
+}
 #entityTable {
 	margin-top:20px;
 }
@@ -738,7 +761,7 @@ svg:not(:root) {
 .entityButton .entityName {
 	margin-left:0px;
 }
-#entTab .col-sm-3, #entTab .col-md-3, #entTab .col-lg-3, #bookTab .col-sm-4, #bookTab .col-md-4, #bookTab .col-lg-4{
+#entTab .col-sm-3, #entTab .col-md-3, #entTab .col-lg-3, #bookTab .col-sm-4, #bookTab .col-md-4, #bookTab .col-lg-4, #docTab .col-sm-4, #docTab .col-md-4, #docTab .col-lg-4{
 	padding-right:0px;
 	padding-left:0px; 
 }
