@@ -213,6 +213,7 @@ if (!$vb_ajax) {	// !ajax
 						$vn_object_id = $qr_set_items->get("ca_objects.object_id");
 						if(is_array($va_set_item_info[$vn_object_id])) {
 							foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {	
+								if(!$va_item_info['item_id']) { continue; }
 								$va_items[$va_item_info['item_id']] = array(
 									'object_id' => $vn_object_id, 
 									'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'), 
@@ -228,11 +229,14 @@ if (!$vb_ajax) {	// !ajax
 		
 					$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
 					$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
-					
+			
+					$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
+
 					foreach($va_item_ids as $vn_i => $vn_item_id) {
 						$this->setVar('item_id', $vn_item_id);
 						$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
 						$this->setVar('caption', $va_captions[$vn_i]);
+						$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
 			
 						if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
 							$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);

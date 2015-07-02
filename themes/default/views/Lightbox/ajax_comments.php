@@ -83,6 +83,7 @@
                             jQuery('#lbSetComments{{{item_id}}}').append(data.comment).show();
                             jQuery('#lbSetCommentHeader{{{item_id}}}').show();
                             jQuery('#lbSetCommentHeader{{{item_id}}}Count').html(data.displayCount);  // update comment count
+                            jQuery('#lbSetCommentCount{{{item_id}}}').html(data.count);
                         } else {
                             jQuery("#lbSetCommentErrors{{{item_id}}}").show().html(data.errors.join(';'));
                         }
@@ -99,11 +100,12 @@
                         if(data.status == 'ok') {
                             jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
                             jQuery("#lbComments" + data.comment_id).remove();
+                            
+                    		jQuery('#lbSetCommentCount{{{item_id}}}').html(data.count);
                             if (data.count > 0) {
                                 jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').show();
                                 jQuery("#lbSetCommentHeader{{{item_id}}}Count").html(data.displayCount);  // update comment count
                             } else {
-
                                 jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').hide();
                             }
                         } else {

@@ -31,7 +31,7 @@
 			}
 ?>
 			&nbsp;&nbsp;
-			<a href='#' title='Comments' onclick='jQuery(".lbSetItemComment").hide(); jQuery("#comment{{{item_id}}}").load("<?php print caNavUrl($this->request, '', '*', 'AjaxListComments', array('item_id' => $vn_item_id, 'type' => 'ca_set_items', 'set_id' => $vn_set_id)); ?>", function(){jQuery("#comment{{{item_id}}}").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>{{{commentCount}}}</small></a>
+			<a href='#' title='Comments' onclick='jQuery(".lbSetItemComment").hide(); jQuery("#comment{{{item_id}}}").load("<?php print caNavUrl($this->request, '', '*', 'AjaxListComments', array('item_id' => $vn_item_id, 'type' => 'ca_set_items', 'set_id' => $vn_set_id)); ?>", function(){jQuery("#comment{{{item_id}}}").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small id="lbSetCommentCount{{{item_id}}}">{{{commentCount}}}</small></a>
 			</div>
 	</div><!-- end lbExpandedInfo -->
 </div><!-- end lbItem -->

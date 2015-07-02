@@ -922,7 +922,7 @@
                         $this->view->setVar('is_writeable', $this->view->getVar('write_access'));
                         $this->view->setVar('is_author', true);
                         $vs_rendered_comment = $this->render("Lightbox/set_comment_html.php", true);
-                        $vn_count = $t_comment->getItem()->getNumComments();
+                        $vn_count = (int)$t_comment->getItem()->getNumComments();
 
                     } else {
                         $va_errors[] = _t("There were errors adding your comment: ".join("; ", $t_item->getErrors()));
