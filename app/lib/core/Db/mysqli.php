@@ -252,19 +252,19 @@ class Db_mysqli extends DbDriverBase {
 	 * @param string $ps_sql SQL statement
 	 * @param array $pa_values array of placeholder replacements
 	 */
-	public function execute($po_caller, $opo_statement, $ps_sql, $pa_values) {
+	public function execute($po_caller, $po_statement, $ps_sql, $pa_values) {
 		if (!$ps_sql) {
-			$opo_statement->postError(240, _t("Query is empty"), "Db->mysqli->execute()");
+			$po_statement->postError(240, _t("Query is empty"), "Db->mysqli->execute()");
 			throw new DatabaseException(_t("Query is empty"), 240, "Db->mysqli->execute()");
 			return false;
 		}
 
 		$vs_sql = $ps_sql;
 
-		$va_placeholder_map = $opo_statement->getOption('placeholder_map');
+		$va_placeholder_map = $po_statement->getOption('placeholder_map');
 		$vn_needed_values = sizeof($va_placeholder_map);
 		if ($vn_needed_values != sizeof($pa_values)) {
-			$opo_statement->postError(285, _t("Number of values passed (%1) does not equal number of values required (%2)", sizeof($pa_values), $vn_needed_values),"Db->mysqli->execute()");
+			$po_statement->postError(285, _t("Number of values passed (%1) does not equal number of values required (%2)", sizeof($pa_values), $vn_needed_values),"Db->mysqli->execute()");
 			throw new DatabaseException(_t("Number of values passed (%1) does not equal number of values required (%2)", sizeof($pa_values), $vn_needed_values), 285, "Db->mysqli->execute()");
 			return false;
 		}
@@ -280,7 +280,7 @@ class Db_mysqli extends DbDriverBase {
 			}
 		}
 
-		$va_limit_info = $opo_statement->getLimit();
+		$va_limit_info = $po_statement->getLimit();
 		if (($va_limit_info["limit"] > 0) || ($va_limit_info["offset"] > 0)) {
 			if (!preg_match("/LIMIT[ ]+[\d]+[,]{0,1}[\d]*$/i", $vs_sql)) { 	// check for LIMIT clause is raw SQL
 				$vn_limit = $va_limit_info["limit"];
@@ -294,7 +294,7 @@ class Db_mysqli extends DbDriverBase {
 		}
 		if (!($r_res = mysqli_query($this->opr_db, $vs_sql))) {
 			//print "<pre>".caPrintStacktrace()."</pre>\n";
-			$opo_statement->postError($this->nativeToDbError(mysqli_errno($this->opr_db)), mysqli_error($this->opr_db), "Db->mysqli->execute()");
+			$po_statement->postError($this->nativeToDbError(mysqli_errno($this->opr_db)), mysqli_error($this->opr_db), "Db->mysqli->execute()");
 			throw new DatabaseException(mysqli_error($this->opr_db), $this->nativeToDbError(mysqli_errno($this->opr_db)), "Db->mysqli->execute()");
 			return false;
 		}
