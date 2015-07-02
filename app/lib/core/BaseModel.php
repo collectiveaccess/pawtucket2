@@ -10546,6 +10546,36 @@ $pa_options["display_form_field_tips"] = true;
 	}
 	# --------------------------------------------------------------------------------------------
 	/** 
+	 * Returns number of user comments for items with ids
+	 */ 
+	static public function getNumCommentsForIDs($pa_ids, $pb_moderation_status=true, $pa_options=null) {
+		if(!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+
+		$vs_moderation_sql = '';
+		if (!is_null($pb_moderation_status)) {
+			$vs_moderation_sql = ($pb_moderation_status) ? ' AND (ca_item_comments.moderated_on IS NOT NULL)' : ' AND (ca_item_comments.moderated_on IS NULL)';
+		}
+		
+		$o_dm = Datamodel::load();
+		if (!($vn_table_num = $o_dm->getTableNum(get_called_class()))) { return null; }
+		
+		$o_db = ($o_trans = caGetOption('transaction', $pa_options, null)) ? $o_trans->getDb() : new Db();
+		$qr_comments = $o_db->query("
+			SELECT row_id, count(*) c
+			FROM ca_item_comments
+			WHERE
+				(comment != '') AND (table_num = ?) AND (row_id IN (?)) {$vs_moderation_sql}
+			GROUP BY row_id
+		", array($vn_table_num, $pa_ids));
+		
+		$va_counts = array();
+		while ($qr_comments->nextRow()) {
+			$va_counts[(int)$qr_comments->get('row_id')] = (int)$qr_comments->get('c');
+		}
+		return $va_counts;
+	}
+	# --------------------------------------------------------------------------------------------
+	/** 
 	 * Returns number of user ratings for item
 	 */ 
 	public function getNumRatings($pb_moderation_status=true) {
