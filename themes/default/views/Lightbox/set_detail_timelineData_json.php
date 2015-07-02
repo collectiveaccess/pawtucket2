@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,12 +28,13 @@
  	
 	AssetLoadManager::register('timeline');
 	
-	$va_set_items = $this->getVar("set_items");
-	$t_set = $this->getVar("set");
-	$va_views			= $this->getVar('views');
-	$vs_current_view	= $this->getVar('view');
-	$va_view_info = $va_views[$vs_current_view];
-	$vn_hits_per_block 	= 40;
+	$qr_res	 						= $this->getVar("result");
+	$t_set 							= $this->getVar("set");
+	$va_views						= $this->getVar('views');
+	$vs_current_view				= $this->getVar('view');
+	
+	$va_view_info 					= $va_views[$vs_current_view];
+	$vn_hits_per_block 				= 40;
 
 	$va_data = array(		
 		"headline" => "",
@@ -45,11 +46,7 @@
 			"caption" => ""
 		)
 	);
-	$va_set_object_ids;
-	foreach($va_set_items as $va_set_item){
-		$va_set_object_ids[] = $va_set_item["row_id"];
-	}
-	$qr_res = ca_objects::createResultSet($va_set_object_ids);
+	
 	$vn_c = 0;
 	$qr_res->seek($vn_start);
 	while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {

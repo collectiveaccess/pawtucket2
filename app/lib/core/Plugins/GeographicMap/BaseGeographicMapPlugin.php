@@ -149,16 +149,13 @@ abstract class BaseGeographicMapPlugIn Extends WLPlug {
 	 * @return boolean - true if dimensions were set, false if not
 	 */
 	public function setDimensions($pn_width, $pn_height) {
-			$va_width = caParseElementDimension($pn_width);
-			$va_height = caParseElementDimension($pn_height);
-			if (!$va_width || !$va_height) { return false; }
-			$this->opn_width = $va_width['expression']; 
-			$this->opn_height = $va_height['expression']; 
-			
-			return true;
-		//}
+		$va_width = caParseElementDimension($pn_width);
+		$va_height = caParseElementDimension($pn_height);
+		if (!$va_width || !$va_height) { return false; }
+		$this->opn_width = $va_width['expression']; 
+		$this->opn_height = $va_height['expression']; 
 		
-		//return false;
+		return true;
 	}
 	# ------------------------------------------------
 	/**

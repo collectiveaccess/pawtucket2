@@ -29,15 +29,13 @@
  *
  * ----------------------------------------------------------------------
  */
-	$o_lightbox_config 					= $this->getVar("set_config");
+	$o_lightbox_config 				= $this->getVar("set_config");
 	$qr_set_items 					= $this->getVar("result");
 	$t_set 							= $this->getVar("set");
 	$vn_set_id						= $t_set->get("set_id");
 	$va_set_item_info           	= $this->getVar("setItemInfo");
 	$vb_write_access 				= $this->getVar("write_access");
 	$va_access_values 				= caGetUserAccessValues($this->request);
-
-	$vs_caption_template = $o_lightbox_config->get("caption_template");
 			
 	$va_views						= $this->getVar('views');
 	$vs_current_view				= $this->getVar('view');
@@ -47,7 +45,7 @@
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
 	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
-	if(!$vs_sort_control_type){ $vs_sort_control_type = "dropdown"; }
+	if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
 	
 	$va_export_formats 				= $this->getVar('export_formats');
 	$va_lightbox_display_name 		= caGetSetDisplayName();
@@ -58,10 +56,12 @@
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
 	
+	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
+	$vs_caption_template = 			$o_lightbox_config->get("caption_template");
+	
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
 	
-	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
 	
 if (!$vb_ajax) {	// !ajax
 ?>	
@@ -208,7 +208,7 @@ if (!$vb_ajax) {	// !ajax
 				print $this->render("Browse/browse_results_map_html.php");
 				break;
 			case 'timeline':
-				print $this->render("Lightbox/set_detail_item_html.php");
+				print $this->render("Lightbox/set_detail_timeline_html.php");
 				break;
 			default:
 				// First load is rendered in-template; subsequent loads are via Ajax/continuous scroll

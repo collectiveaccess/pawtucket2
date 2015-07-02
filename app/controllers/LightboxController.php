@@ -155,7 +155,8 @@
  				$ps_view = 'thumbnail';
  			}
  			$this->view->setVar('view', $ps_view);
-			$this->view->setVar('views', $this->opo_config->getAssoc("views"));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			$va_view_info = $va_views[$ps_view];
 
             //
             // User must at least have read access to the set
@@ -360,11 +361,19 @@
 			
 			$o_context->saveContext();
 			
-			
 			// map
 			if ($ps_view === 'map') {
-				$o_map = new GeographicMap("100%", "600px");
-				$o_map->mapFrom($qr_res, 'ca_objects.georeference');
+				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
+		
+				$va_opts['labelTemplate'] = $va_view_info['display']['title_template'];
+				if(isset($va_view_info['display']['ajax_content_url']) && ($va_view_info['display']['ajax_content_url'])) {
+					$va_opts['ajaxContentUrl'] = $va_view_info['display']['ajax_content_url'];
+				} else {
+					$va_opts['contentTemplate'] = $va_view_info['display']['description_template'];
+				}
+			
+				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
+				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
 				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			

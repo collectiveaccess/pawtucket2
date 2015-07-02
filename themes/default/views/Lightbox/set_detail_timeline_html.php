@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,9 +27,9 @@
  */
  	
 	AssetLoadManager::register('timeline');
+	$vs_browse_key 					= $this->getVar('key');					// cache key for current browse
 	$va_set_items = $this->getVar("set_items");
 	$t_set = $this->getVar("set");
-	
 ?>
 	<div id="lbTimelineContainer"><div id="timeline-embed">
 
@@ -46,7 +46,7 @@
 				type:       'timeline',
 				width:      '100%',
 				height:     $('#lbTimelineContainer').height(),
-				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
+				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed',
 				debug: false
 			});
@@ -61,7 +61,7 @@
 			console.log("slide!", e, tl.getCurrentNumber());
 			
 			if (tl.getCurrentNumber() >= (c-2)) {
-				tl.reload(url ='<?php print caNavUrl($this->request, '', '*', 'setDetail', array('view' => 'timelineData', 'set_id' => $t_set->get("set_id"), 's' => '')); ?>' + s);
+				tl.reload(url ='<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"), 's' => '')); ?>' + s);
 				console.log("reload", url);
 				s+= c;
 			}
