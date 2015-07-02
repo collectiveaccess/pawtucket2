@@ -204,8 +204,8 @@
 	 *
 	 * @return Configuration
 	 */
-	function caGetSetsConfig() {
-		return Configuration::load(__CA_THEME_DIR__.'/conf/sets.conf');
+	function caGetLightboxConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/lightbox.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -494,12 +494,12 @@
 		}else{
 			if(!$pa_options["dontShowPlaceholder"]){
 				if(!$po_request->config->get("disable_lightbox")){
-					$o_set_config = caGetSetsConfig();
-					$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+					$o_lightbox_config = caGetLightboxConfig();
+					$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
 					if(!$vs_lightbox_icon){
 						$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 					}
-					$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+					$va_lightbox_display_name = caGetSetDisplayName($o_lightbox_config);
 					$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 					$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 					$vs_tool_bar = "<div id='detailMediaToolbar'>";
@@ -523,12 +523,12 @@
 	 *
 	 */
 	function caRepToolbar($po_request, $t_representation, $pn_object_id){
-		$o_set_config = caGetSetsConfig();
-		$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+		$o_lightbox_config = caGetLightboxConfig();
+		$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
 		if(!$vs_lightbox_icon){
 			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 		}
-		$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+		$va_lightbox_display_name = caGetSetDisplayName($o_lightbox_config);
 		$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 		$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
@@ -971,19 +971,19 @@
 		return $vs_placeholder;
 	}
 	# ---------------------------------------
-	function caGetSetDisplayName($o_set_config = null){
-		if(!$o_set_config){
-			$o_set_config = caGetSetsConfig();
+	function caGetSetDisplayName($o_lightbox_config = null){
+		if(!$o_lightbox_config){
+			$o_lightbox_config = caGetLightboxConfig();
 		}
-		$vs_set_display_name = $o_set_config->get("set_display_name");
+		$vs_set_display_name = $o_lightbox_config->get("set_display_name");
 		if(!$vs_set_display_name){
 			$vs_set_display_name = _t("lightbox");
 		}
-		$vs_set_display_name_plural = $o_set_config->get("set_display_name_plural");
+		$vs_set_display_name_plural = $o_lightbox_config->get("set_display_name_plural");
 		if(!$vs_set_display_name_plural){
 			$vs_set_display_name_plural = _t("lightboxes");
 		}
-		$vs_set_section_heading = $o_set_config->get("set_section_heading");
+		$vs_set_section_heading = $o_lightbox_config->get("set_section_heading");
 		if(!$vs_set_section_heading){
 			$vs_set_section_heading = _t("lightboxes");
 		}

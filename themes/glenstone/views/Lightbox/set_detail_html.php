@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$o_set_config 					= $this->getVar("set_config");
+	$o_lightbox_config 					= $this->getVar("set_config");
 	$q_set_items 					= $this->getVar("result");
 	$t_set 							= $this->getVar("set");
 	$vb_write_access 				= $this->getVar("write_access");
@@ -41,7 +41,7 @@
 	$vs_current_sort				= $this->getVar('sort');
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
-	$vs_sort_control_type 			= $o_set_config->get("sortControlType");
+	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
 	if(!$vs_sort_control_type){
 		$vs_sort_control_type = "dropdown";
 	}
@@ -79,7 +79,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
 				<?php print "<span class='lbSetCount'>(".$q_set_items->numHits()." items)</span>"; ?>
@@ -192,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
 			<div id="lbSetResultLoadContainer">
 <?php
 } // !ajax
@@ -209,7 +209,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end lbSetResultLoadContainer -->		
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
 			if(!$vb_write_access){
 				print "<div class='warning'>"._t("You may not edit this set, you have read only access.")."</div>";

@@ -39,7 +39,7 @@
 	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	$vs_lightbox_section_heading = $va_lightbox_display_name["section_heading"];
-	$o_set_config = $this->getVar("set_config");
+	$o_lightbox_config = $this->getVar("set_config");
 ?>
 	<H1>
 		<?php print ucfirst($vs_lightbox_section_heading); ?>
@@ -60,7 +60,7 @@
 		</div><!-- end btn-group -->
 	</H1>
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_list_left_col_class")) ? $vs_left_col_class : "col-sm-10 col-md-9 col-lg-7"; ?>">
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("set_list_left_col_class")) ? $vs_left_col_class : "col-sm-10 col-md-9 col-lg-7"; ?>">
 <?php
 	if(sizeof($va_set_ids)){
 		$i = 0;
@@ -87,7 +87,7 @@
 	}
 ?>
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_list_right_col_class")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("set_list_right_col_class")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?>">
 <?php
 		if(is_array($va_activity_stream) && sizeof($va_activity_stream)) {
 ?>

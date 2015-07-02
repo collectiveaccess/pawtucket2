@@ -694,6 +694,35 @@ class SearchResult extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	/**
+	  * Returns a list of values for the specified field from all rows in the result set. 
+	  * If you need to extract all values from single field in a result set this method provides a convenient means to do so.
+	  *
+	  * @param mixed $ps_field Array of field names or single name of field to fetch
+	  * @return array List of values for the specified fields
+	  */
+	public function getAllFieldValues($pm_field, $pa_options=null) {
+		$vn_current_row = $this->currentIndex();
+		$this->seek(0);
+		
+		$va_values = array();
+		if(!is_array($pm_field)) {
+			while($this->nextHit()) {
+				$va_values[] = $this->get($pm_field, $pa_options);
+			}
+		} else {
+			while($this->nextHit()) {
+				foreach($pm_field as $vs_field) {
+					$va_values[$vs_field][] = $this->get($vs_field, $pa_options);
+				}
+			}
+		}
+		
+		$this->seek($vn_current_row - 1);
+		
+		return $va_values;
+	}
+	# ------------------------------------------------------------------
+	/**
 	 * Returns a value from the query result. This can be a single value if it is a field in the subject table (eg. objects table in an objects search), or
 	 * perhaps multiple related values (eg. related entities in an objects search). 
 	 *
@@ -1942,6 +1971,51 @@ class SearchResult extends BaseObject {
 			}
 		}
 		return $vs_prop;
+	}
+	# ------------------------------------------------
+	/**
+	 * Determines if there is any data in the result for the specified data field(s)
+	 * Typically used to determine if a result set can be used for visualization (Eg. does a result set have mappable data?)
+	 *
+	 * @param mixed $pa_fields Field or list of fields to check
+	 * @param array $pa_options Options include:
+	 *		limit = number of rows to check before giving up; should be capped at a reasonable value for large empty result sets to avoid timeouts [Default=10000]
+	 *
+	 * @return bool True result set includes data for any of the fields in $pa_fields
+	 */
+	public function hasData($pa_fields, $pa_options=null) {
+		if(!$pa_fields) { return null; }
+		
+		$vn_cur_pos = $this->currentIndex();
+		if ($vn_cur_pos < 0) { $vn_cur_pos = 0; }
+		$this->seek(0);
+		
+		$o_dm = Datamodel::load();
+		
+		if(!is_array($pa_fields) && ($pa_fields)) { $pa_fields = array($pa_fields); }
+		
+		//
+		// Make sure fields actually exist
+		//
+		foreach($pa_fields as $vn_i => $vs_field) {
+			$va_tmp = explode('.', $vs_field);
+			if (!($t_instance = $o_dm->getInstanceByTableName($va_tmp[0], true))) { unset($pa_fields[$vn_i]); continue; } 
+			if (!$t_instance->hasField($va_tmp[1]) && (!$t_instance->hasElement($va_tmp[1]))) { unset($pa_fields[$vn_i]); }
+		}
+		
+		$vn_c = 0;
+		if (($vn_limit = caGetOption('limit', $pa_options, 10000)) < 1) { $vn_limit = 10000; }
+		while($this->nextHit() && ($vn_c < $vn_limit)) {
+			foreach($pa_fields as $vn_i => $vs_field) {
+				if (trim($this->get($vs_field))) {
+					$this->seek($vn_cur_pos);
+					return true;
+				}
+			}
+			$vn_c++;
+		}
+		$this->seek($vn_cur_pos);
+		return false;
 	}
 	# ------------------------------------------------------------------
 	#  Field value accessors (allow you to get specialized values out of encoded fields such as uploaded media and files, dates/date ranges, timecode, etc.) 

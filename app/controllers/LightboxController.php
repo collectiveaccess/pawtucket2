@@ -35,6 +35,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
+ 	require_once(__CA_LIB_DIR__."/core/GeographicMap.php");
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
@@ -94,7 +95,7 @@
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
 
- 			$this->opo_config = caGetSetsConfig();
+ 			$this->opo_config = caGetLightboxConfig();
  			caSetPageCSSClasses(array("sets", "lightbox"));
  			
  			$va_lightbox_display_name = caGetSetDisplayName($this->opo_config);
@@ -147,10 +148,10 @@
  			$o_context->setAsLastFind();
 
             $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
-			$this->view->setVar("browse_type", "caLightbox");	# --- this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
+			$this->view->setVar("browse_type", "caLightbox");	// this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
 
             $ps_view = $this->request->getParameter('view', pString);
- 			if(!in_array($ps_view, array('thumbnail', 'timeline', 'timelineData', 'pdf', 'list'))) {
+ 			if(!in_array($ps_view, array('thumbnail', 'map', 'timeline', 'timelineData', 'pdf', 'list'))) {
  				$ps_view = 'thumbnail';
  			}
  			$this->view->setVar('view', $ps_view);
@@ -191,14 +192,17 @@
 					$o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
 				}
 			}
-			if ($this->request->getParameter('getFacet', pInteger)) {
-				$vs_facet = $this->request->getParameter('facet', pString);
+			
+			//
+			// Return filtering facets
+			//
+			if ($this->request->getParameter('getFacet', pInteger) && $vs_facet = $this->request->getParameter('facet', pString)) {
 				$this->view->setVar('facet_name', $vs_facet);
 				$this->view->setVar('key', $o_browse->getBrowseID());
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet);
 				$this->view->setVar('facet_info', $va_facet_info);
 				
-				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+				// pull in different views based on format for facet - alphabetical, list, hierarchy
 				 switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":
@@ -212,6 +216,7 @@
 				}
 				return;
 			}
+			
 			//
 			// Add criteria and execute
 			//
@@ -247,7 +252,7 @@
  				$vb_sort_changed = true;
  			}
  			if($vb_sort_changed){
-				# --- set the default sortDirection if available
+				// set the default sortDirection if available
 				$va_sort_direction = $this->opo_config->getAssoc("sortDirection");
 				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
 					$o_context->setCurrentSortDirection($ps_sort_direction);
@@ -331,35 +336,10 @@
 			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
 
-           // $va_ids = $qr_res->getAllFieldValues('ca_objects.object_id');
-
-            $va_ids = array();
-            while($qr_res->nextHit()) {
-                $va_ids[] = $qr_res->get('ca_objects.object_id');
+            if (($va_ids = $qr_res->getAllFieldValues('ca_objects.object_id')) && sizeof($va_ids)) {
+                // convert object result to set item result set
+            	$this->view->setVar('setItemInfo', $t_set->rowIDsToItemIDs($va_ids, array('returnAsInfoArray' => true)));
             }
-            $qr_res->seek(0);
-
-            if (sizeof($va_ids)) {
-                // convert result to set item result set
-                $o_db = new Db();
-                $qr_items = $o_db->query("
-                SELECT item_id, row_id
-                FROM ca_set_items
-                WHERE
-                  row_id IN (?) AND set_id = ?
-            ", array($va_ids, $vn_set_id));
-
-                $va_acc = array();
-                while ($qr_items->nextRow()) {
-                    $va_acc[$qr_items->get('row_id')][] = array(
-                        'item_id' => $qr_items->get('item_id'),
-                        'num_comments' => 0,
-                        'set_id' => $vn_set_id
-
-                    );
-                }
-            }
-            $this->view->setVar('setItemInfo', $va_acc);
 			
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
@@ -367,9 +347,7 @@
  				}
  			}
  			$o_context->getItemsPerPage($pn_hits_per_block);
-			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
-			
 			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
 			$o_context->setParameter('key', $vs_key);
@@ -381,6 +359,14 @@
 			$qr_res->seek($vn_start);
 			
 			$o_context->saveContext();
+			
+			
+			// map
+			if ($ps_view === 'map') {
+				$o_map = new GeographicMap("100%", "600px");
+				$o_map->mapFrom($qr_res, 'ca_objects.georeference');
+				$this->view->setVar('map', $o_map->render('HTML', array()));
+			}
  			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
@@ -404,10 +390,10 @@
 
  			// If set exists, we're being redirected here after attempting a save
  			if (!$t_set){
- 				# --- set_id is passed, so we're editing a set
+ 				// set_id is passed, so we're editing a set
  				if($this->request->getParameter('set_id', pInteger)){
 					$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
-					# --- pass name and description to populate form
+					// pass name and description to populate form
 					$this->view->setVar("name", $t_set->getLabelForDisplay());
 					$this->view->setVar("description", $t_set->get("description"));
 				}else{
@@ -429,21 +415,21 @@
  			$va_errors = array();
  			$o_purifier = new HTMLPurifier();
  			
- 			# --- set_id is passed through form, otherwise we're saving a new set
+ 			// set_id is passed through form, otherwise we're saving a new set
  			if($this->request->getParameter('set_id', pInteger)){
  				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
  			}else{
  				$t_set = new ca_sets();
  			}
- 			# --- check for errors
- 			# --- set name - required
+ 			// check for errors
+ 			// set name - required
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
  				$va_errors["name"] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
- 			# --- set description - optional
+ 			// set description - optional
  			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
  			$this->view->setVar("description", $ps_description);
 
@@ -455,7 +441,7 @@
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', 1);
 				if($t_set->get("set_id")){
-					# --- edit/add description
+					// edit/add description
 					$t_set->replaceAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 					$t_set->update();
 				}else{
@@ -463,7 +449,7 @@
 					$t_set->set('type_id', $vn_set_type_user);
 					$t_set->set('user_id', $this->request->getUserID());
 					$t_set->set('set_code', $this->request->getUserID().'_'.time());
-					# --- create new attribute
+					// create new attribute
 					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 					$t_set->insert();
 				}
@@ -472,18 +458,18 @@
 					$this->view->setVar('errors', $va_errors);
 					$this->setForm();
 				}else{
-					# --- save name
+					// save name
 					if (sizeof($va_labels = caExtractValuesByUserLocale($t_set->getLabels(array($g_ui_locale_id), __CA_LABEL_TYPE_PREFERRED__)))) {
-						# --- edit label	
+						// edit label	
 						foreach($va_labels as $vn_set_id => $va_label) {
 							$t_set->editLabel($va_label[0]['label_id'], array('name' => $ps_name), $g_ui_locale_id);
 						}
 					} else {
-						# --- add new label
+						// add new label
 						$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
 					}
 					
-					# --- select the current set
+					// select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
 					$this->view->setVar("message", _t('Saved %1.', $this->ops_lightbox_display_name));
@@ -501,7 +487,7 @@
  		function setAccess() {
             if($this->opb_is_login_redirect) { return; }
             if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			# --- list of groups/users with access to set
+ 			// list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
@@ -514,7 +500,7 @@
  		function saveGroupAccess() {
             if($this->opb_is_login_redirect) { return; }
             if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
- 			# --- list of groups/users with access to set
+ 			// list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
@@ -636,7 +622,7 @@
  			$o_purifier = new HTMLPurifier();
  			
  			$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
- 			# --- ps_user can be list of emails separated by comma
+ 			// ps_user can be list of emails separated by comma
  			$va_users = explode(", ", $ps_user);
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			if(!$pn_group_id && !$ps_user){
@@ -666,8 +652,8 @@
 							$t_group = new ca_user_groups($pn_group_id);
 							$va_group_users = $t_group->getGroupUsers();
 							if(sizeof($va_group_users)){
-								# --- send email to each group user
-								# --- send email confirmation
+								// send email to each group user
+								// send email confirmation
 								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 								$o_view->setVar("set", $t_set->getLabelForDisplay());
 								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
@@ -681,7 +667,7 @@
 								$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
 							
 								foreach($va_group_users as $va_user_info){
-									# --- don't send notification to self
+									// don't send notification to self
 									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
 										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 									}
@@ -699,7 +685,7 @@
 					$va_error_emails_has_access = array();
 					$t_user = new ca_users();
 					foreach($va_users as $vs_user){
-						# --- lookup the user/users
+						// lookup the user/users
 						$t_user->load(array("email" => $vs_user));
 						if($vn_user_id = $t_user->get("user_id")){
 							$t_sets_x_users = new ca_sets_x_users();
@@ -743,8 +729,8 @@
 						$this->render("Form/reload_html.php");
 					}
 					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
-						# --- send email to user
-						# --- send email confirmation
+						// send email to user
+						// send email confirmation
 						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 						$o_view->setVar("set", $t_set->getLabelForDisplay());
 						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
@@ -804,15 +790,15 @@
  				$t_user_group->load($pn_group_id);
  			}
  			
- 			# --- check for errors
- 			# --- group name - required
+ 			// check for errors
+ 			// group name - required
  			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
  				$va_errors["name"] = _t("Please enter the name of your user group");
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
- 			# --- user group description - optional
+ 			// user group description - optional
  			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
  			$this->view->setVar("description", $ps_description);
 
@@ -835,7 +821,7 @@
 					$this->view->setVar('errors', $va_errors);
 					$this->userGroupForm();
 				}else{
-					# --- add current user to group
+					// add current user to group
 					$this->view->setVar("message", _t('Saved user group.'));
  					$this->render("Form/reload_html.php");
 				}
@@ -858,12 +844,12 @@
 
  			$ps_tablename = $this->request->getParameter('type', pString);
 
- 			# --- check this is a valid table to have comments in the lightbox
+ 			// check this is a valid table to have comments in the lightbox
  			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){
                 throw new ApplicationException(_t("Invalid type"));
             }
 
- 			# --- load table
+ 			// load table
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			if (!($t_item = $o_datamodel->getTableInstance($ps_tablename))) {
                 throw new ApplicationException(_t("Invalid type"));
@@ -885,7 +871,7 @@
  		function AjaxAddComment() {
             if($this->opb_is_login_redirect) { return; }
 
- 			# --- when close is set to true, will make the form view disappear after saving form
+ 			// when close is set to true, will make the form view disappear after saving form
 
  			$o_datamodel = Datamodel::load();
 
@@ -900,11 +886,11 @@
             } else {
  			    $ps_comment_type = $this->request->getParameter('type', pString);
 
- 			    # --- check this is a valid table to have comments in the lightbox
+ 			    // check this is a valid table to have comments in the lightbox
  			    if(!in_array($ps_comment_type, array("ca_sets", "ca_set_items"))){
                     $va_errors[] = _t("Invalid type: %1", $ps_comment_type);
                 } else {
-                    # --- load table
+                    // load table
                     $t_item = $o_datamodel->getInstanceByTableName($ps_comment_type, true);
                     $pn_id = $this->request->getParameter('id', pInteger);
                     if (!$t_item->load($pn_id)) {
@@ -912,7 +898,7 @@
                     } elseif(!($ps_comment = $o_html_purifier->purify($this->request->getParameter('comment', pString)))) {
                         $va_errors[] = _t("Please enter a comment");
                     } elseif($t_comment = $t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
-                        # --- pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
+                        // pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
                         $vs_message = _t("Saved comment");
 
                         $this->view->setVar('comment', $ps_comment);
@@ -959,7 +945,7 @@
                 if ($t_comment->get("comment_id")) {
                     $vn_count = $t_comment->getItem()->getNumComments();
 
-                    # --- check if user is owner of comment or has edit access to set comment was made on
+                    // check if user is owner of comment or has edit access to set comment was made on
                     if (($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
                         $va_errors[] = _t('You do not have access to this comment');
                     } else {
@@ -1063,7 +1049,7 @@
  			$va_errors = array();
  			$o_purifier = new HTMLPurifier();
  			
- 			# --- set_id is passed through form, otherwise we're saving a new set, and adding the item to it
+ 			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
  				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
@@ -1076,12 +1062,12 @@
  				$t_set = new ca_sets();
  				$t_set->purify(true);
  				
-				# --- set name - if not sent, make a decent default
+				// set name - if not sent, make a decent default
 				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
 					$ps_name = _t("Your %1", $this->ops_lightbox_display_name);
 				}
-				# --- set description - optional
+				// set description - optional
 				$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
 	
 				$t_list = new ca_lists();
@@ -1098,7 +1084,7 @@
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
 				$t_set->set('set_code', $this->request->getUserID().'_'.time());
-				# --- create new attribute
+				// create new attribute
 				if($ps_description){
 					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 				}
@@ -1109,9 +1095,9 @@
 					$this->addItemForm();
 					return;
 				}else{
-					# --- save name - add new label
+					// save name - add new label
 					$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
-					# --- select the current set
+					// select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 
 				}			
@@ -1146,17 +1132,17 @@
 				}else{
 					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
 						if($pb_saveLastResults){
-							# --- get object ids from last result
+							// get object ids from last result
 							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
 							$va_object_ids = $o_context->getResultList();
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
-							# --- check for those already in set
+							// check for those already in set
 							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
 							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
-							# --- insert items
+							// insert items
 							$t_set->addItems($va_object_ids);
 							$this->view->setVar('message', _t("Successfully added results to %1.", $this->ops_lightbox_display_name));
 							$this->render("Form/reload_html.php");
@@ -1232,7 +1218,7 @@
 				
 				if ($t_set->getPrimaryKey() && ($t_set->haveAccessToSet($this->request->getUserID(), $pn_access_level))) {
 					$this->request->user->setVar('current_set_id', $vn_set_id);
-					# --- pass the access level the user has to the set - needed to display the proper controls in views
+					// pass the access level the user has to the set - needed to display the proper controls in views
 					$vb_write_access = false;
 					if($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
 						$vb_write_access = true;

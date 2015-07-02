@@ -472,6 +472,45 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		return $t_dupe;
 	}
 	# ------------------------------------------------------
+	/**
+	 * Convert provided row_ids in currently loaded set to their corresponding set item_ids
+	 *
+	 * @param array $pa_row_ids Array of "row_ids" (eg. object_id's for object sets)
+	 * @param array $pa_options Options include:
+	 *		returnAsInfoArray = Return an array for each item_id containing keys for set_id and item_id [Default is false]
+	 *
+	 * @return array A list of item_ids, or arrays if returnAsInfoArray option is set
+	 */
+	public function rowIDsToItemIDs($pa_row_ids, $pa_options=null) {
+		if (!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids)) { return null; }
+		
+		$pa_row_ids = array_filter($pa_row_ids, function($a) { return (bool)$a; });
+		if (!sizeof($pa_row_ids)) { return null; }
+		
+		$o_db = $this->getDb();
+		$qr_items = $o_db->query("
+			SELECT item_id, row_id
+			FROM ca_set_items
+			WHERE
+			  row_id IN (?) AND set_id = ?
+		", array($pa_row_ids, $vn_set_id));
+
+		if (caGetOption('returnAsInfoArray', $pa_options, false)) {
+			$va_acc = array();
+			while ($qr_items->nextRow()) {
+				$va_acc[$qr_items->get('row_id')][] = array(
+					'item_id' => $qr_items->get('item_id'),
+					'set_id' => $vn_set_id
+				);
+			}
+			
+			return $va_acc;
+		}
+		
+		return $qr_items->getAllFieldValues('item_id');
+	}
+	# ------------------------------------------------------
 	# Set lists
 	# ------------------------------------------------------
 	/**

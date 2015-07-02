@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$o_set_config 					= $this->getVar("set_config");
+	$o_lightbox_config 					= $this->getVar("set_config");
 	$qr_set_items 					= $this->getVar("result");
 	$t_set 							= $this->getVar("set");
 	$vn_set_id						= $t_set->get("set_id");
@@ -37,7 +37,7 @@
 	$vb_write_access 				= $this->getVar("write_access");
 	$va_access_values 				= caGetUserAccessValues($this->request);
 
-	$vs_caption_template = $o_set_config->get("caption_template");
+	$vs_caption_template = $o_lightbox_config->get("caption_template");
 			
 	$va_views						= $this->getVar('views');
 	$vs_current_view				= $this->getVar('view');
@@ -46,7 +46,7 @@
 	$vs_current_sort				= $this->getVar('sort');
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
-	$vs_sort_control_type 			= $o_set_config->get("sortControlType");
+	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
 	if(!$vs_sort_control_type){ $vs_sort_control_type = "dropdown"; }
 	
 	$va_export_formats 				= $this->getVar('export_formats');
@@ -58,12 +58,15 @@
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
 	
+	$qr_comments 					= $this->getVar("comments");
+	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
+	
 	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
 	
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -85,7 +88,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
@@ -178,7 +181,7 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			</H5>
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
 <?php
 			if(is_array($va_views) && sizeof($va_views)){
@@ -195,77 +198,88 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_set_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
 			<div id="lbSetResultLoadContainer">
 <?php
 } // !ajax
-        // First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
-        $this->setVar('set_id', $vn_set_id);
-		if($qr_set_items->numHits()){
-			if ($vn_start < $qr_set_items->numHits()) {
-				$qr_set_items->seek($vn_start);
 
+		switch($vs_current_view) {
+			case 'map':
+				print $this->render("Browse/browse_results_map_html.php");
+				break;
+			case 'timeline':
+				print $this->render("Lightbox/set_detail_item_html.php");
+				break;
+			default:
+				// First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
+				$this->setVar('set_id', $vn_set_id);
 				if($qr_set_items->numHits()){
-					$vn_c = 0;
+					if ($vn_start < $qr_set_items->numHits()) {
+						$qr_set_items->seek($vn_start);
 
-					$va_items = $va_placeholders = array();
-					while($qr_set_items->nextHit() && ($vn_c < $vn_hits_per_block)) {
-						$vn_object_id = $qr_set_items->get("ca_objects.object_id");
-						if(is_array($va_set_item_info[$vn_object_id])) {
-							foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {	
-								if(!$va_item_info['item_id']) { continue; }
-								$va_items[$va_item_info['item_id']] = array(
-									'object_id' => $vn_object_id, 
-									'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'), 
-									'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
-								);
+						if($qr_set_items->numHits()){
+							$vn_c = 0;
+
+							$va_items = $va_placeholders = array();
+							while($qr_set_items->nextHit() && ($vn_c < $vn_hits_per_block)) {
+								$vn_object_id = $qr_set_items->get("ca_objects.object_id");
+								if(is_array($va_set_item_info[$vn_object_id])) {
+									foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {	
+										if(!$va_item_info['item_id']) { continue; }
+										$va_items[$va_item_info['item_id']] = array(
+											'object_id' => $vn_object_id, 
+											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'), 
+											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
+										);
+									}
+								}
+							}
+		
+							$va_item_ids = array_keys($va_items);
+							$va_object_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'object_id');
+							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
+		
+							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
+							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
+			
+							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
+
+							foreach($va_item_ids as $vn_i => $vn_item_id) {
+								$this->setVar('item_id', $vn_item_id);
+								$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
+								$this->setVar('caption', $va_captions[$vn_i]);
+								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
+			
+								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
+									$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
+								} else {
+									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
+									$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
+								}
+								$this->setVar('representation', $vs_representation);
+			
+								switch($vs_current_view) {
+									case 'list':
+										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+										break;
+									default:
+										print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+										break;
+								}
+								print $this->render("Lightbox/set_detail_item_html.php");
+								print "</div></div><!-- end col 3 -->";
+								
+								$vn_c++;
 							}
 						}
-					}
-		
-					$va_item_ids = array_keys($va_items);
-					$va_object_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'object_id');
-					$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
-		
-					$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
-					$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
-			
-					$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
-
-					foreach($va_item_ids as $vn_i => $vn_item_id) {
-						$this->setVar('item_id', $vn_item_id);
-						$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
-						$this->setVar('caption', $va_captions[$vn_i]);
-						$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
-			
-						if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
-							$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
-						} else {
-							if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-							$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
-						}
-						$this->setVar('representation', $vs_representation);
-			
-						switch($vs_current_view) {
-							case 'list':
-								print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
-								break;
-							default:
-								print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
-		   						break;
-						}
-						print $this->render("Lightbox/set_detail_item_html.php");
-						print "</div></div><!-- end col 3 -->";
-								
-						$vn_c++;
-					}
-				}
 				
-				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+						print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+					}
+				}else{
+					print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
+				}
+				break;
 			}
-		}else{
-			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
-		}
 if (!$vb_ajax) {    // !ajax
 ?>
             </div>
@@ -273,7 +287,7 @@ if (!$vb_ajax) {    // !ajax
         </div>
         <!-- end col -->
         <div
-            class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+            class="<?php print ($vs_right_col_class = $o_lightbox_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
             <?php
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
@@ -286,11 +300,6 @@ if (!$vb_ajax) {    // !ajax
             <div>
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
-                    <?php
-                    if ($vs_comment_error = $this->getVar("comment_error")) {
-                        print "<div>" . $vs_comment_error . "</div>";
-                    }
-                    ?>
                     <div class="form-group">
                         <textarea id="addCommentTextArea" name="comment"
                                   placeholder="<?php print addslashes(_t("add your comment")); ?>"
@@ -303,10 +312,6 @@ if (!$vb_ajax) {    // !ajax
                     <!-- end form-group -->
                 </form>
             </div>
-<?php
-            $qr_comments = $this->getVar("comments");
-            $vn_num_comments = $qr_comments ? $qr_comments->numHits() : 0;
-?>
             <div class="lbSetCommentHeader" <?php print (($vn_num_comments == 0) ? "style='display:none;'" : ''); ?>><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span
                         id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a>
                 <hr/>
@@ -332,6 +337,9 @@ if (!$vb_ajax) {    // !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 <script type="text/javascript">
+<?php
+	if (in_array($vs_current_view, array('list', 'thumbnail'))) {
+?>
     var pageLoadList = [];
     var dataLoading = false;
     jQuery(window).bind("scroll", function(e) {
@@ -441,6 +449,9 @@ if (!$vb_ajax) {    // !ajax
             }
         });
     });
+<?php
+	}
+?>
 </script>
 <?php
 } //!ajax

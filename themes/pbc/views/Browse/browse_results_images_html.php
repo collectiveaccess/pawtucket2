@@ -51,8 +51,8 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	$o_lightbox_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
