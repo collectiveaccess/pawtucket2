@@ -4925,20 +4925,20 @@ if (!$vb_batch) {
 				}
 			}
 
-			if ($vb_is_combo_key_relation) {
-				$va_joins = array("INNER JOIN {$vs_related_table_name} ON {$vs_related_table_name}.row_id = ".$this->primaryKey(true)." AND {$vs_related_table_name}.table_num = ".$this->tableNum());
-			} else {
-				foreach($va_path as $vs_join_table) {
+			foreach($va_path as $vs_join_table) {
+				if ($vb_is_combo_key_relation && ($vs_join_table == $vs_related_table_name)) {
+					$va_joins[] = "INNER JOIN {$vs_related_table_name} ON {$vs_related_table_name}.row_id = ".$this->primaryKey(true)." AND {$vs_related_table_name}.table_num = ".$this->tableNum();
+				} else {
 					$va_rel_info = $this->getAppDatamodel()->getRelationships($vs_cur_table, $vs_join_table);
 					$vs_join = 'INNER JOIN '.$vs_join_table.' ON ';
-				
+			
 					$va_tmp = array();
 					foreach($va_rel_info[$vs_cur_table][$vs_join_table] as $vn_i => $va_rel) {
 						$va_tmp[] = $vs_cur_table.".".$va_rel_info[$vs_cur_table][$vs_join_table][$vn_i][0].' = '.$vs_join_table.'.'.$va_rel_info[$vs_cur_table][$vs_join_table][$vn_i][1]."\n";
 					}
 					$va_joins[] = $vs_join.join(' OR ', $va_tmp);
-					$vs_cur_table = $vs_join_table;
 				}
+				$vs_cur_table = $vs_join_table;
 			}
 
 			// If we're getting ca_set_items, we have to rename the intrinsic row_id field because the pk is named row_id below. Hence, this hack.
