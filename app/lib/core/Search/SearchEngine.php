@@ -142,7 +142,7 @@ class SearchEngine extends SearchBase {
 			$ps_search .= $vs_append_to_search;
 		}
 		
-		$ps_search = str_replace("[BLANK]", '"[BLANK]"', $ps_search);	// the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\[BLANK\](?!")/i', '"[BLANK]"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		if(($vn_limit = caGetOption('limit', $pa_options, null, array('castTo' => 'int'))) < 0) { $vn_limit = null; }
@@ -180,7 +180,7 @@ class SearchEngine extends SearchBase {
 		
 		$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
 		
-		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList($oa_options), true));
+		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList($pa_options), true));
 		$o_cache = new SearchCache();
 		$vb_from_cache = false;
 
@@ -286,7 +286,7 @@ class SearchEngine extends SearchBase {
 				$va_hits = $this->filterHitsByACL($va_hits, $this->opn_tablenum, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
 			
-			if ($vs_sort != '_natural') {
+			if ($vs_sort && ($vs_sort !== '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} elseif (($vs_sort == '_natural') && ($vs_sort_direction == 'desc')) {
 				$va_hits = array_reverse($va_hits);
