@@ -45,7 +45,7 @@
  		$o_config = Configuration::load();
  		$vs_plugin_name = $o_config->get('mapping_plugin');
  		
- 		if (!file_exists(__CA_LIB_DIR__.'/core/Plugins/GeographicMap/'.$vs_plugin_name.'.php')) { die("Mapping plugin {$vs_plugin_name} does not exist"); }
+ 		if (!file_exists(__CA_LIB_DIR__.'/core/Plugins/GeographicMap/'.$vs_plugin_name.'.php')) { throw new ApplicationException("Mapping plugin {$vs_plugin_name} does not exist"); }
  		
  		require_once(__CA_LIB_DIR__.'/core/Plugins/GeographicMap/'.$vs_plugin_name.'.php');
  		$vs_plugin_classname = 'WLPlugGeographicMap'.$vs_plugin_name;
@@ -227,7 +227,7 @@
  					}
  				}
  				
- 				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnAsArray' => true, 'returnAllLocales' => true))) {
+ 				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => true))) {
  					$vn_id = $po_data_object->get("{$vs_table}.{$vs_pk}");
  					$vs_table = $po_data_object->tableName();
  					foreach($va_coordinates as $vn_element_id => $va_geonames_by_locale) {
