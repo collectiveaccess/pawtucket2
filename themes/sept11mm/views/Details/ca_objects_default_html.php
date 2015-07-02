@@ -67,6 +67,7 @@
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4 unit")); ?>
 					</div>
 				</div>
+				<div style='clear:left;'></div>
 				
 				{{{<ifdef code="ca_objects.public_description"><div class="unit"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
 				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
@@ -77,6 +78,42 @@
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 					<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id"))); ?></div><!-- end detailTool -->
 				</div><!-- end detailTools -->
-										
 	</div><!-- end col -->
 </div><!-- end row -->
+<?php
+			
+	$o_search = caGetSearchInstance("ca_objects");
+	$qr_res = $o_search->search('ca_objects.type_id:'.$t_object->get("type_id"), array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
+	$vn_seek_to = rand(0,$qr_res->numHits()-4);
+	$qr_res->seek($vn_seek_to);
+	$i = 0;
+	if($qr_res->numHits() > 1){
+?>
+<div class="row">
+	<div class='col-xs-12'>
+		<H1>
+<?php
+			print caNavLink($this->request, _t("More"), "moreRelatedItems", "", "Search", "objects", array("search" => "ca_objects.type_id:".$t_object->get("type_id")));
+?>
+		Related Items</H1>
+	</div><!-- end col -->
+</div><!-- end row -->
+<div class="row">
+<?php
+		while($qr_res->nextHit()){
+			if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
+				print "<div class='col-sm-3 detailRelatedItems'>";
+				print caDetailLink($this->request, $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => caGetUserAccessValues($this->request))), '', 'ca_objects', $qr_res->get('ca_objects.object_id'));
+				print "<br/>".caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $qr_res->get('ca_objects.object_id'));
+				print "</div>";
+				$i++;
+				if($i == 4){
+					break;
+				}
+			}
+		}
+?>
+</div><!-- end row -->
+<?php
+	}
+?>

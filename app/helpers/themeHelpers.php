@@ -377,7 +377,7 @@
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
 			if(sizeof($va_rep_ids)){
 				$vn_primary_id = array_search("1", $va_rep_ids);
-				if($vn_primary){
+				if($vn_primary_id){
 					unset($va_rep_ids[$vn_primary_id]);
 					$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
 				}else{
@@ -391,13 +391,20 @@
 			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
 			
 			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
-			
+			$va_rep_info = array();
 			$qr_reps->seek(0);
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
-				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
+				#$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
+				if($vn_rep_id == $vn_primary_id){
+					$vn_index = 0;
+				}else{
+					$vn_index = $qr_reps->get('ca_objects_x_object_representations.rank');
+				}
+				$va_rep_info[$vn_index] = array("rep_id" => $qr_reps->get('representation_id'), "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>");
 			}
+			ksort($va_rep_info);
 			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
@@ -405,15 +412,15 @@
 			
 			$vn_count = 0;
 			$va_slide_rep_ids = array();
-			foreach($va_rep_tags as $vn_rep_id => $vs_rep_tag){
+			foreach($va_rep_info as $vn_order => $va_rep){
 				if(sizeof($va_rep_ids) > 1){
-					$vs_output .= "<li id='slide".$vn_rep_id."' class='".$vn_rep_id."'>";
+					$vs_output .= "<li id='slide".$va_rep["rep_id"]."' class='".$va_rep["rep_id"]."'>";
 				}
-				if ($vn_count == 0) { $vs_output .= $vs_rep_tag; }	// only load first one initially
+				if ($vn_count == 0) { $vs_output .= $va_rep["tag"]; }	// only load first one initially
 				if(sizeof($va_rep_ids) > 1){
 					$vs_output .= "</li>";
 				}
-				$va_slide_rep_ids[] = $vn_rep_id;
+				$va_slide_rep_ids[] = (int)$va_rep["rep_id"];
 				$vn_count++;
 			}
 			if(sizeof($va_rep_ids) > 1){
@@ -442,7 +449,6 @@
 							}).on('jcarousel:animateend', function(event, carousel) {
 								var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
 								var i = caSlideRepresentationIDs.indexOf(current_rep_id);
-									
 								if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
 									// load media via ajax
 									jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
@@ -635,7 +641,9 @@
 			case "list":
 				$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='".$pa_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+					if($vs_link){
+						$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='".$pa_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+					}
 				}
 				$vs_formatted_thumbs .= "</ul>";
 				return $vs_formatted_thumbs;
@@ -644,7 +652,9 @@
 			case "bsCols":
 				$vs_formatted_thumbs = "<div class='container'><div class='row' id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					$vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail".$vn_rep_id."' class='".$pa_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$pa_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+					if($vs_link){
+						$vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail".$vn_rep_id."' class='".$pa_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$pa_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+					}
 				}
 				$vs_formatted_thumbs .= "</div></div>\n";
 				return $vs_formatted_thumbs;

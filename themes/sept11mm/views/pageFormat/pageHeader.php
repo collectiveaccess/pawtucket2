@@ -61,6 +61,11 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+    		jQuery('#advancedSearch-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
+    	});
+	</script>
 <?php
 	//
 	// Pull in JS and CSS for debug bar
@@ -140,8 +145,8 @@
 				<ul class="nav navbar-nav navbar-right">
 <?php
 						print $this->render("pageFormat/browseMenu.php");
+						print $this->render("pageFormat/advancedSearchMenu.php");
 ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>
 					<li class="navBarExtras<?php print ($this->request->getController() == "FAQ") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
 					<li class="navBarExtras<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>
