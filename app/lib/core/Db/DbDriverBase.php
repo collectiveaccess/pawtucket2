@@ -86,4 +86,22 @@ class DbDriverBase {
 		return addslashes($ps_text);
 	}
 }
-?>
+
+class DatabaseException extends Exception {
+	private $opn_error_number = null;
+	private $ops_error_context = null;
+	
+	public function __construct($ps_error_message, $pn_error_number, $ps_error_context=null) {
+		parent::__construct($ps_error_message);
+		$this->opn_error_number = $pn_error_number;
+		$this->ops_error_context = $ps_error_context;
+	}
+	
+	public function getNumber() {
+		return $this->opn_error_number;
+	}
+	
+	public function getContext() {
+		return $this->ops_error_context;
+	}
+}
