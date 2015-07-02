@@ -131,7 +131,7 @@
 			$g_request->session->setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 		}
 		$g_request->close();
-	} catch (ApplicationException $e) {
+	} catch (Exception $e) {
 		caDisplayException($e);
 	}	
 	
