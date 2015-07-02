@@ -1670,11 +1670,13 @@ a.readmore-js-toggle{
     z-index: 1000;
 }
 #bRefine {
-	 background-color: #EFEFEF;
+	background-color: #EFEFEF;
+	width: 275px;
     line-height: 0.75em;
     padding: 15px 10px;
     position: relative;
     z-index: 10;
+    overflow-y: auto;
 }
 #bRefine H3 {
 	margin:0px;
@@ -1697,6 +1699,12 @@ a.readmore-js-toggle{
 #bRefine div {
 	margin-bottom:5px;
 }
+
+#bRefine.fixed {    
+    position: fixed;     
+    top: 0px;    
+} 
+
 #bMorePanel{
 	position:fixed;
 	right:0px;

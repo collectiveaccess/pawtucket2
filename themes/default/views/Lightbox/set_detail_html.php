@@ -30,10 +30,15 @@
  * ----------------------------------------------------------------------
  */
 	$o_set_config 					= $this->getVar("set_config");
-	$q_set_items 					= $this->getVar("result");
+	$qr_set_items 					= $this->getVar("result");
 	$t_set 							= $this->getVar("set");
+	$vn_set_id						= $t_set->get("set_id");
+	$va_set_item_info           	= $this->getVar("setItemInfo");
 	$vb_write_access 				= $this->getVar("write_access");
-	
+	$va_access_values 				= caGetUserAccessValues($this->request);
+
+	$vs_caption_template = $o_set_config->get("caption_template");
+			
 	$va_views						= $this->getVar('views');
 	$vs_current_view				= $this->getVar('view');
 	$va_criteria					= $this->getVar('criteria');
@@ -52,6 +57,9 @@
 	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
+	
+	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
+	
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
@@ -80,7 +88,7 @@ if (!$vb_ajax) {	// !ajax
 			<div class="setsBack"><?php print caNavLink($this->request, ($o_set_config->get("backLink")) ? $o_set_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print $t_set->getLabelForDisplay(); ?>
-				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$q_set_items->numHits()."</span> items)</span>"; ?>
+				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
 <?php
     //
     // Gear menu
@@ -120,10 +128,10 @@ if (!$vb_ajax) {	// !ajax
 						}
 ?>				
 						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_display_name_plural), "", "", "Lightbox", "Index"); ?></li>
-						<li class="divider"></li>
 <?php
 					if($vb_write_access){
 ?>
+                        <li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_display_name)); ?></a></li>
@@ -192,10 +200,63 @@ if (!$vb_ajax) {	// !ajax
 <?php
 } // !ajax
         // First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
-		if($q_set_items->numHits()){
-			if ($vn_start < $q_set_items->numHits()) {
-				$q_set_items->seek($vn_start);
-				print $this->render("Lightbox/set_detail_{$vs_current_view}_html.php");
+        $this->setVar('set_id', $vn_set_id);
+		if($qr_set_items->numHits()){
+			if ($vn_start < $qr_set_items->numHits()) {
+				$qr_set_items->seek($vn_start);
+
+				if($qr_set_items->numHits()){
+					$vn_c = 0;
+
+					$va_items = $va_placeholders = array();
+					while($qr_set_items->nextHit() && ($vn_c < $vn_hits_per_block)) {
+						$vn_object_id = $qr_set_items->get("ca_objects.object_id");
+						if(is_array($va_set_item_info[$vn_object_id])) {
+							foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {	
+								$va_items[$va_item_info['item_id']] = array(
+									'object_id' => $vn_object_id, 
+									'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'), 
+									'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
+								);
+							}
+						}
+					}
+		
+					$va_item_ids = array_keys($va_items);
+					$va_object_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'object_id');
+					$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
+		
+					$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
+					$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
+					
+					foreach($va_item_ids as $vn_i => $vn_item_id) {
+						$this->setVar('item_id', $vn_item_id);
+						$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
+						$this->setVar('caption', $va_captions[$vn_i]);
+			
+						if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
+							$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
+						} else {
+							if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
+							$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
+						}
+						$this->setVar('representation', $vs_representation);
+			
+						switch($vs_current_view) {
+							case 'list':
+								print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+								break;
+							default:
+								print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
+		   						break;
+						}
+						print $this->render("Lightbox/set_detail_item_html.php");
+						print "</div></div><!-- end col 3 -->";
+								
+						$vn_c++;
+					}
+				}
+				
 				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 			}
 		}else{
@@ -215,10 +276,11 @@ if (!$vb_ajax) {    // !ajax
             }
             if ($t_set->get("description")) {
                 print $t_set->get("description");
-                print "<HR>";
+                print "<hr/>";
             }
             ?>
             <div>
+                <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <?php
                     if ($vs_comment_error = $this->getVar("comment_error")) {
@@ -266,10 +328,9 @@ if (!$vb_ajax) {    // !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 <script type="text/javascript">
-    var loadedPages = [];
+    var pageLoadList = [];
     var dataLoading = false;
     jQuery(window).bind("scroll", function(e) {
-
         var $e = jQuery("#lbSetResultLoadContainer");
         var _$scroll = jQuery(window),
             borderTopWidth = parseInt($e.css('borderTopWidth')),
@@ -280,24 +341,25 @@ if (!$vb_ajax) {    // !ajax
             iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
 
         var docHeight = jQuery(document).height();
+        docHeightOffset = docHeight/2;
 
         jQuery("#lbSetResultLoadContainer .jscroll-next").html("Loading...");
-        if (($(window).scrollTop() + $(window).height() >= docHeight) && !dataLoading) {
+        if ((jQuery(window).scrollTop() + $(window).height() >= docHeightOffset) && !dataLoading) {
             var href = jQuery("#lbSetResultLoadContainer .jscroll-next").attr('href');
 
-            if (href && (loadedPages.indexOf(href) == -1)) {
+            if (href && (pageLoadList.indexOf(href) == -1)) {
                 dataLoading = true;
                 jQuery("#lbSetResultLoadContainer .jscroll-next").remove();
                 jQuery("#lbSetResultLoadContainer").append('<div id="resultLoadTmp" />');
 
                 jQuery("#lbSetResultLoadContainer #resultLoadTmp").load(href, function(e) {
-                    loadedPages.push(href);
+                    pageLoadList.push(href);
 
                     jQuery("#resultLoadTmp").children().appendTo("#lbSetResultLoadContainer");
                     jQuery("#resultLoadTmp .jscroll-next").appendTo("#lbSetResultLoadContainer");
                     jQuery("#resultLoadTmp").remove();
 
-                    $(".sortable").sortable('refresh').sortable('refreshPositions');
+                    jQuery(".sortable").sortable('refresh').sortable('refreshPositions');
                     dataLoading = false;
                 });
             }
@@ -313,16 +375,14 @@ if (!$vb_ajax) {    // !ajax
             zIndex: 10000,
             update: function( event, ui ) {
                 var data = $(this).sortable('serialize');
-                // POST to server using $.post or $.ajax
-                $.ajax({
+                jQuery.ajax({
                     type: 'POST',
                     url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
                 });
             }
         });
 
-        jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton",
-            function() {
+        jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton", function(e) {
                 var id = jQuery(this).data("item_id");
 
                 jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
@@ -340,15 +400,15 @@ if (!$vb_ajax) {    // !ajax
         );
 
         jQuery("#addComment").on('submit', function(e) {
-
             jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
                 if(data.status == 'ok') {
+                    jQuery("#lbSetCommentErrors").hide()
                     jQuery("#addCommentTextArea").val('');
                     jQuery('.lbComments').append(data.comment).show();
                     jQuery('.lbSetCommentHeader').show();
                     jQuery('#lbSetCommentsCount').html(data.displayCount);  // update comment count
                 } else {
-                    alert('Error: ' + data.errors.join(';'));
+                    jQuery("#lbSetCommentErrors").show().html(data.errors.join(';'));
                 }
             });
 
@@ -361,6 +421,7 @@ if (!$vb_ajax) {    // !ajax
             if(comment_id) {
                 jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
                     if(data.status == 'ok') {
+                        jQuery("#lbSetCommentErrors").hide()
                         jQuery("#lbComments" + data.comment_id).remove();
                         if (data.count > 0) {
                             jQuery('.lbComments, .lbSetCommentHeader').show();
@@ -369,6 +430,8 @@ if (!$vb_ajax) {    // !ajax
 
                             jQuery('.lbComments, .lbSetCommentHeader').hide();
                         }
+                    } else {
+                        jQuery("#lbSetCommentErrors").show().html(data.errors.join(';'));
                     }
                 });
             }

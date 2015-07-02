@@ -40,18 +40,17 @@
 
 ?>
 	<div class="pull-right closecomment"><a href="#" onclick='jQuery("#comment{{{item_id}}}").hide(); <?php print ($vs_tablename=="ca_sets") ? "jQuery(\"#lbSetThumbRow".$vn_item_id."\").show();" : ""; ?> return false;' title='<?php print _t("close"); ?>'><span class="glyphicon glyphicon-remove-circle"></span></a></div>
-	<div class="lbSetCommentHeader" id="lbSetCommentHeader{{{item_id}}}"><span class="lbSetCommentsCount" id="lbSetCommentHeader{{{item_id}}}Count"><?php print $vn_num_comments." ".(($vn_num_comments == 1) ? _t("comment") : _t("comments")); ?></span></div>
+    <div id="lbSetCommentErrors{{{item_id}}}" style="display: none;" class='alert alert-danger'></div>
+    <div class="lbSetCommentHeader" id="lbSetCommentHeader{{{item_id}}}" <?php print ($vn_num_comments == 0 ? 'style="display: none;"' : ''); ?>><span class="lbSetCommentsCount" id="lbSetCommentHeader{{{item_id}}}Count"><?php print $vn_num_comments." ".(($vn_num_comments == 1) ? _t("comment") : _t("comments")); ?></span></div>
     <div class="lbComments" id="lbSetComments{{{item_id}}}">
 <?php
 		if(sizeof($qr_comments)){
                 while ($qr_comments->nextHit()) {
-                    print "<blockquote>";
                     $this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
                     $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
                     $this->setVar('author', $qr_comments->get('ca_users.fname') . ' ' . $qr_comments->get('ca_users.lname') . ' ' . $qr_comments->get('ca_item_comments.created_on'));
                     $this->setVar('is_author', $qr_comments->get('ca_item_comments.user_id') == $this->request->user->get("user_id"));
                     print $this->render("Lightbox/set_comment_html.php");
-                    print "</blockquote>";
                 }
 		}
 ?>
@@ -79,12 +78,13 @@
 					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment', null); ?>',
 					jQuery('#addComment{{{item_id}}}').serialize(), function(data) {
                         if(data.status == 'ok') {
+                            jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
                             jQuery("#addComment{{{item_id}}}TextArea").val('');
-                            jQuery('#lbSetComments{{{item_id}}}').append("<blockquote>" + data.comment + "</blockquote>").show();
+                            jQuery('#lbSetComments{{{item_id}}}').append(data.comment).show();
                             jQuery('#lbSetCommentHeader{{{item_id}}}').show();
                             jQuery('#lbSetCommentHeader{{{item_id}}}Count').html(data.displayCount);  // update comment count
                         } else {
-                            alert('Error: ' + data.errors.join(';'));
+                            jQuery("#lbSetCommentErrors{{{item_id}}}").show().html(data.errors.join(';'));
                         }
                     }
                 );
@@ -97,6 +97,7 @@
                 if(comment_id) {
                     jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
                         if(data.status == 'ok') {
+                            jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
                             jQuery("#lbComments" + data.comment_id).remove();
                             if (data.count > 0) {
                                 jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').show();
@@ -105,6 +106,8 @@
 
                                 jQuery('#lbSetComments{{{item_id}}}, #lbSetCommentHeader{{{item_id}}}').hide();
                             }
+                        } else {
+                            jQuery("#lbSetCommentErrors{{{item_id}}}").show().html(data.errors.join(';'));
                         }
                     });
                 }

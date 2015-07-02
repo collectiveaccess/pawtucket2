@@ -339,23 +339,25 @@
             }
             $qr_res->seek(0);
 
-            // convert result to set item result set
-            $o_db = new Db();
-            $qr_items = $o_db->query("
+            if (sizeof($va_ids)) {
+                // convert result to set item result set
+                $o_db = new Db();
+                $qr_items = $o_db->query("
                 SELECT item_id, row_id
                 FROM ca_set_items
                 WHERE
                   row_id IN (?) AND set_id = ?
             ", array($va_ids, $vn_set_id));
 
-            $va_acc = array();
-            while($qr_items->nextRow()) {
-                $va_acc[$qr_items->get('row_id')][] = array(
-                       'item_id' => $qr_items->get('item_id'),
+                $va_acc = array();
+                while ($qr_items->nextRow()) {
+                    $va_acc[$qr_items->get('row_id')][] = array(
+                        'item_id' => $qr_items->get('item_id'),
                         'num_comments' => 0,
-                    'set_id' => $vn_set_id
+                        'set_id' => $vn_set_id
 
-                );
+                    );
+                }
             }
             $this->view->setVar('setItemInfo', $va_acc);
 			
@@ -850,16 +852,25 @@
             if($this->opb_is_login_redirect) { return; }
 
  			$o_datamodel = new Datamodel();
- 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+ 			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+                throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
 
- 			$ps_tablename = $this->request->getParameter('table', pString);
+ 			$ps_tablename = $this->request->getParameter('type', pString);
 
  			# --- check this is a valid table to have comments in the lightbox
- 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){ $this->Index();}
+ 			if(!in_array($ps_tablename, array("ca_sets", "ca_set_items"))){
+                throw new ApplicationException(_t("Invalid type"));
+            }
+
  			# --- load table
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
- 			$t_item = $o_datamodel->getTableInstance($ps_tablename);
- 			$t_item->load($pn_item_id);
+ 			if (!($t_item = $o_datamodel->getTableInstance($ps_tablename))) {
+                throw new ApplicationException(_t("Invalid type"));
+            }
+ 			if (!$t_item->load($pn_item_id)) {
+                throw new ApplicationException(_t("Item does not exist"));
+            }
  			
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);

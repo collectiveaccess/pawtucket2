@@ -56,7 +56,6 @@
 <?php
 				}
 ?>
-				<li class="divider"></li>
 			</ul>
 		</div><!-- end btn-group -->
 	</H1>
@@ -165,8 +164,8 @@
 						break;
 						# ----------------------------------------
 					}
-					print "<br/><small>".date("n/j/y g:iA", $va_activity["log_datetime"])."</small></small>";
-					print "</div><HR>";
+					print "<br/>".date("n/j/y g:iA", $va_activity["log_datetime"])."</small>";
+					print "</div><hr/>";
 				}
 ?>
 			</div><!-- end scroll -->

@@ -22,18 +22,18 @@
  * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
- * 
+ *
  * @package CollectiveAccess
  * @subpackage utils
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- * 
+ *
  * ----------------------------------------------------------------------
  */
 
 	/**
 	*
 	*/
-   
+
    	# ---------------------------------------
 	/**
 	 * Generate HTML <img> tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
@@ -42,19 +42,19 @@
 	 * @param string $ps_file_path
 	 * @param array $pa_attributes
 	 * @param array $pa_options
-	 * @return string 
+	 * @return string
 	 */
 	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
 		$vs_base_url_path = $po_request->getThemeUrlPath();
 		$vs_base_path = $po_request->getThemeDirectoryPath();
 		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
-		
+
 		if (!file_exists($vs_base_path.$vs_file_path)) {
 			$vs_base_url_path = $po_request->getDefaultThemeUrlPath();
 		}
-		
+
 		$vs_html = caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
-		
+
 		return $vs_html;
 	}
 	# ---------------------------------------
@@ -64,7 +64,7 @@
 	 * @param RequestHTTP $po_request
 	 * @param string $ps_file_path
 	 * @param array $pa_options
-	 * @return string 
+	 * @return string
 	 */
 	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
 		$vs_base_path = $po_request->getThemeUrlPath();
@@ -77,7 +77,7 @@
 	}
 	# ---------------------------------------
 	/**
-	 * Set CSS classes to add the "pageArea" page content <div>, overwriting any previous setting. 
+	 * Set CSS classes to add the "pageArea" page content <div>, overwriting any previous setting.
 	 * Use to set classes specific to each page type and context.
 	 *
 	 * @param RequestHTTP $po_request
@@ -89,9 +89,9 @@
 		global $g_theme_page_css_classes;
 		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
 		if (!is_array($pa_page_classes)) { $pa_page_classes = array(); }
-		
+
 		$g_theme_page_css_classes = $pa_page_classes;
-		
+
 		return true;
 	}
 	# ---------------------------------------
@@ -106,13 +106,13 @@
 	function caAddPageCSSClasses($pa_page_classes) {
 		global $g_theme_page_css_classes;
 		if (!is_array($pa_page_classes) && $pa_page_classes) { $pa_page_classes = array($pa_page_classes); }
-		
+
 		if(!is_array($va_classes = $g_theme_page_css_classes)) {
 			return false;
 		}
-		
+
 		$g_theme_page_css_classes = array_unique(array_merge($pa_page_classes, $va_classes));
-		
+
 		return true;
 	}
 	# ---------------------------------------
@@ -140,10 +140,10 @@
 	 */
 	function caStaticPageUrl($ps_path, $pa_options=null) {
 		global $g_request;
-		
+
 		if (!($po_request = caGetOption('request', $pa_options, null))) { $po_request = $g_request; }
 		$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().$ps_path;
-		
+
 		if (!caGetOption('dontPrint', $pa_options, false)) {
 			print $vs_url;
 		}
@@ -153,7 +153,7 @@
 	/**
 	 * Get theme-specific detail configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetDetailConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/detail.conf');
@@ -162,7 +162,7 @@
 	/**
 	 * Get theme-specific gallery section configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetGalleryConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/gallery.conf');
@@ -171,7 +171,7 @@
 	/**
 	 * Get theme-specific contact configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetContactConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/contact.conf');
@@ -180,7 +180,7 @@
 	/**
 	 * Get theme-specific front page configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetFrontConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/front.conf');
@@ -189,7 +189,7 @@
 	/**
 	 * Get theme-specific icon configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetIconsConfig() {
 		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
@@ -202,7 +202,7 @@
 	/**
 	 * Get theme-specific sets/lightbox configuration
 	 *
-	 * @return Configuration 
+	 * @return Configuration
 	 */
 	function caGetSetsConfig() {
 		return Configuration::load(__CA_THEME_DIR__.'/conf/sets.conf');
@@ -210,8 +210,8 @@
 	# ---------------------------------------
 	/**
 	 * Returns associative array, keyed by primary key value with values being
-	 * the preferred label of the row from a suitable locale, ready for display 
-	 * 
+	 * the preferred label of the row from a suitable locale, ready for display
+	 *
 	 * @param array $pa_ids indexed array of primary key values to fetch labels for
 	 * @param array $pa_options
 	 * @return array List of media
@@ -219,22 +219,22 @@
 	function caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options=null) {
 		if (!is_array($pa_ids) && (is_numeric($pa_ids)) && ($pa_ids > 0)) { $pa_ids = array($pa_ids); }
 		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return array(); }
-		
+
 		$pa_access_values = caGetOption("checkAccess", $pa_options, array());
 		$pa_versions = caGetOption("versions", $pa_options, array(), array('castTo' => 'array'));
 		$ps_table = caGetOption("table", $pa_options, 'ca_objects');
 		$pa_return = caGetOption("return", $pa_options, array(), array('castTo' => 'array'));
-		
+
 		$vs_access_where = '';
 		if (isset($pa_access_values) && is_array($pa_access_values) && sizeof($pa_access_values)) {
 			$vs_access_where = ' AND orep.access IN ('.join(',', $pa_access_values).')';
 		}
 		$o_db = new Db();
 		$o_dm = Datamodel::load();
-		
+
 		if (!($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($ps_table))) { return null; }
 		$vs_pk = $o_dm->getTablePrimaryKeyName($ps_table);
-	
+
 		$qr_res = $o_db->query("
 			SELECT oxor.{$vs_pk}, orep.media, orep.representation_id
 			FROM ca_object_representations orep
@@ -242,20 +242,20 @@
 			WHERE
 				(oxor.{$vs_pk} IN (".join(',', $pa_ids).")) AND oxor.is_primary = 1 AND orep.deleted = 0 {$vs_access_where}
 		");
-	
+
 		$vb_return_tags = (sizeof($pa_return) == 0) || in_array('tags', $pa_return);
 		$vb_return_info = (sizeof($pa_return) == 0) || in_array('info', $pa_return);
 		$vb_return_urls = (sizeof($pa_return) == 0) || in_array('urls', $pa_return);
-		
+
 		$va_media = array();
 		while($qr_res->nextRow()) {
 			$va_media_tags = array();
 			if ($pa_versions && is_array($pa_versions) && sizeof($pa_versions)) { $va_versions = $pa_versions; } else { $va_versions = $qr_res->getMediaVersions('media'); }
-			
+
 			$vb_media_set = false;
 			foreach($va_versions as $vs_version) {
 				if (!$vb_media_set && $qr_res->getMediaPath('ca_object_representations.media', $vs_version)) { $vb_media_set = true; }
-				
+
 				if ($vb_return_tags) {
 					if (sizeof($va_versions) == 1) {
 						$va_media_tags['tags'] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
@@ -278,69 +278,69 @@
 					}
 				}
 			}
-			
+
 			$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
-			
+
 			if (!$vb_media_set)  { continue; }
-			
+
 			if (sizeof($pa_return) == 1) {
 				$va_media_tags = $va_media_tags[$pa_return[0]];
 			}
 			$va_media[$qr_res->get($vs_pk)] = $va_media_tags;
 		}
-	
+
 		// Return empty array when there's no media
 		if(!sizeof($va_media)) { return array(); }
-	
+
 		// Preserve order of input ids
 		$va_media_sorted = array();
 		foreach($pa_ids as $vn_id) {
 			if(!isset($va_media[$vn_id]) || !$va_media[$vn_id]) { continue; }
 			$va_media_sorted[$vn_id] = $va_media[$vn_id];
-		} 
-		
+		}
+
 		return $va_media_sorted;
 	}
 	# ---------------------------------------
 	/**
 	 * Returns associative array, keyed by primary key value with values being
-	 * the preferred label of the row from a suitable locale, ready for display 
-	 * 
+	 * the preferred label of the row from a suitable locale, ready for display
+	 *
 	 * @param array $pa_ids indexed array of primary key values to fetch labels for
 	 * @param array $pa_options
 	 * @return array List of media
 	 */
 	function caGetPrimaryRepresentationTagsForIDs($pa_ids, $pa_options=null) {
 		$pa_options['return'] = array('tags');
-		
+
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
 	}
 	# ---------------------------------------
 	/**
 	 * Returns associative array, keyed by primary key value with values being
-	 * the preferred label of the row from a suitable locale, ready for display 
-	 * 
+	 * the preferred label of the row from a suitable locale, ready for display
+	 *
 	 * @param array $pa_ids indexed array of primary key values to fetch labels for
 	 * @param array $pa_options
 	 * @return array List of media
 	 */
 	function caGetPrimaryRepresentationInfoForIDs($pa_ids, $pa_options=null) {
 		$pa_options['return'] = array('info');
-		
+
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
 	}
 	# ---------------------------------------
 	/**
 	 * Returns associative array, keyed by primary key value with values being
-	 * the preferred label of the row from a suitable locale, ready for display 
-	 * 
+	 * the preferred label of the row from a suitable locale, ready for display
+	 *
 	 * @param array $pa_ids indexed array of primary key values to fetch labels for
 	 * @param array $pa_options
 	 * @return array List of media
 	 */
 	function caGetPrimaryRepresentationUrlsForIDs($pa_ids, $pa_options=null) {
 		$pa_options['return'] = array('urls');
-		
+
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
 	}
 	# ---------------------------------------
@@ -350,7 +350,7 @@
 	 * options
 	 *		primaryOnly - true/false, show only the primary rep, default false
 	 *		dontShowPlaceholder - true/false, default false
-	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
+	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)
 	 *
 	 *
 	 * NOTE: references classes in caObjectRepresentationThumbnails to select current thumbnail
@@ -389,20 +389,20 @@
 		if(sizeof($va_rep_ids)){
 			$vs_output = "";
 			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
-			
+
 			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
-			
+
 			$qr_reps->seek(0);
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
 				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
 			}
-			
+
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
 			}
-			
+
 			$vn_count = 0;
 			$va_slide_rep_ids = array();
 			foreach($va_rep_tags as $vn_rep_id => $vs_rep_tag){
@@ -427,7 +427,7 @@
 							/* width of li */
 							$('.jcarousel li').width($('.jcarousel').width());
 							$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
-							
+
 							/* Carousel initialization */
 							$('.jcarousel').jcarousel({
 								animation: {
@@ -435,18 +435,18 @@
 								},
 								wrap: 'circular'
 							});
-					
+
 							// make fadeIn effect
 							$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
 								$(carousel._element.context).find('li').hide().fadeIn(500);
 							}).on('jcarousel:animateend', function(event, carousel) {
 								var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
 								var i = caSlideRepresentationIDs.indexOf(current_rep_id);
-									
+
 								if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
 									// load media via ajax
 									jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
-									
+
 									jQuery('#slide' + caSlideRepresentationIDs[i]).load('".caNavUrl($po_request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => ''))."' + caSlideRepresentationIDs[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSlideRepresentationIDs[i]);
 								}
 							});
@@ -455,7 +455,7 @@
 							$('#detailRepNavPrev')
 								.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
 								.on('jcarouselcontrol:inactive', function() { $(this).addClass('inactive'); })
-								.jcarouselControl({ 
+								.jcarouselControl({
 									target: '-=1',
 									method: function() {
 											$('.jcarousel').jcarousel('scroll', '-=1', true, function() {
@@ -466,7 +466,7 @@
 											});
 										}
 								});
-					
+
 							/* Next control initialization */
 							$('#detailRepNavNext')
 								.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
@@ -482,7 +482,7 @@
 											});
 										}
 								});";
-							if($vn_current_rep_id){	
+							if($vn_current_rep_id){
 								$vs_output .= "$('.jcarousel').jcarousel('scroll', $('#slide".$vn_current_rep_id."'));";
 							}
 				$vs_output .= "
@@ -510,7 +510,7 @@
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}
-				$vs_placeholder = getPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon");
+				$vs_placeholder = caGetPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon");
 				return "<div class='detailMediaPlaceholder'>".$vs_placeholder."</div>".$vs_tool_bar;
 			}
 		}
@@ -533,7 +533,7 @@
 		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 		$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-		
+
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";
 		if(!$va_rep_display_info["no_overlay"]){
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
@@ -658,7 +658,7 @@
 	}
 	# ---------------------------------------
 	/*
-	 * list of comments and 
+	 * list of comments and
 	 * comment form for all detail pages
 	 *
 	 */
@@ -669,7 +669,7 @@
 				$vs_tmp .= "<blockquote>";
 				if($va_comment["media1"]){
 					$vs_tmp .= '<div class="pull-right" id="commentMedia'.$va_comment["comment_id"].'">';
-					$vs_tmp .= $va_comment["media1"]["tiny"]["TAG"];						
+					$vs_tmp .= $va_comment["media1"]["tiny"]["TAG"];
 					$vs_tmp .= "</div><!-- end pullright commentMedia -->\n";
 					TooltipManager::add(
 						"#commentMedia".$va_comment["comment_id"], $va_comment["media1"]["large_preview"]["TAG"]
@@ -677,7 +677,7 @@
 				}
 				if($va_comment["comment"]){
 					$vs_tmp .= $va_comment["comment"];
-				}				
+				}
 				$vs_tmp .= "<small>".$va_comment["author"].", ".$va_comment["date"]."</small></blockquote>";
 			}
 		}
@@ -688,9 +688,9 @@
 			}
 			$vs_tmp .= "<h2>"._t("Tags")."</h2>\n
 				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
-		}		
+		}
 		if($po_request->isLoggedIn()){
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("type" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 		}else{
 			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
 		}
@@ -699,7 +699,7 @@
 	# ---------------------------------------
 	/*
 	 * Returns the info for each set
-	 * 
+	 *
 	 * options: "write_access" = false
 	 *
 	 */
@@ -718,17 +718,18 @@
 			$vs_set_display .= "<div class='pull-right caption'>Read Only</div>";
 		}
 		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</H5>";
-		$va_lightbox_display_name = caGetSetDisplayName();
+
+        $va_lightbox_display_name = caGetSetDisplayName();
 		$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
-		if(sizeof($va_set_items)){
-			$vs_primary_image_block = "";
-			$vs_secondary_image_block = "";
+
+        if(sizeof($va_set_items)){
+			$vs_primary_image_block = $vs_secondary_image_block = "";
 			$vn_i = 1;
 			$t_list_items = new ca_list_items();
 			foreach($va_set_items as $va_set_item){
 				$t_list_items->load($va_set_item["type_id"]);
-				$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
+				$vs_placeholder = caGetPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
 				if($vn_i == 1){
 					# --- is the iconlarge version available?
 					$vs_large_icon = "icon";
@@ -768,18 +769,19 @@
 		if($vb_write_access){
 			$vs_set_display .= "<div class='pull-right'>".caNavLink($po_request, '<span class="glyphicon glyphicon-trash"></span>', '', '', '*', 'DeleteSet', array('set_id' => $t_set->get("set_id")), array("title" => _t("Delete")))."</div>\n";
 		}
-		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'tablename' => 'ca_sets', 'set_id' => $t_set->get("set_id")))."\", function(){jQuery(\"#lbSetThumbRow".$t_set->get("set_id")."\").hide(); jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
+		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'type' => 'ca_sets', 'set_id' => $t_set->get("set_id")))."\", function(){jQuery(\"#lbSetThumbRow".$t_set->get("set_id")."\").hide(); jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
 		if($vb_write_access){
 			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id")))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
-		}	
+		}
 		$vs_set_display .= "</div>\n";
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
-		return $vs_set_display;
+
+        return $vs_set_display;
 	}
 	# ---------------------------------------
 	/*
 	 * Returns placeholder No lightboxes box
-	 * 
+	 *
 	 *
 	 */
 	function caLightboxSetListItemPlaceholder($po_request) {
@@ -802,76 +804,8 @@
 	}
 	# ---------------------------------------
 	/**
-	 * Returns the info for each set item
-	 * 
-	 * q_result -> object search loaded with object record for this set_id
-	 * options: "write_access" = false, view = list, thumbnail, caption = caption to override the configured setting, representation = rep tag to use
-	 * 
-	 */
-	function caLightboxSetDetailItem($po_request, $q_result, $pa_set_item, $pa_options = array()) {
-		if(!($vn_item_id = $pa_set_item["item_id"])){
-			return false;
-		}
-		$vb_write_access = false;
-		if($pa_options["write_access"]){
-			$vb_write_access = true;
-		}
-		$vs_view = $pa_options["view"];
-		if(!in_array($vs_view, array("thumbnails", "list"))){
-			$vs_view = "thumbnails";
-		}
-		$va_access_values = caGetUserAccessValues($po_request);
-		$t_list_items = new ca_list_items($q_result->get("ca_objects.type_id"));
-		$vs_placeholder = getPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
-
-        $vs_caption = "";
-		if(!($vs_caption = $pa_options["caption"])){
-			$o_config = caGetSetsConfig();
-			$vs_caption_template = $o_config->get("caption_template");
-
-            $vs_caption = ($vs_caption_template) ? $q_result->getWithTemplate($vs_caption_template) : $vs_caption = $q_result->get("ca_objects.preferred_labels.name");
-		}
-
-		$vs_set_item_display = "<div class='lbItem'><div class='lbItemContent'>\n";
-
-		if($pa_options["representation"]){
-			$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg'>".$pa_options["representation"]."</div>", '', 'ca_objects', $q_result->get("object_id"));
-		}else{
-			$vs_media_version = "medium";
-			if($vs_view == "list"){
-				$vs_media_version = "icon";
-			}
-			if($vs_tag = $q_result->getMediaTag('ca_object_representations.media', $vs_media_version, array("checkAccess" => $va_access_values))){
-				$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg'>".$vs_tag."</div>", '', 'ca_objects', $q_result->get("object_id"));
-			}else{
-				$vs_set_item_display .= caDetailLink($po_request, "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_placeholder."</div>", '', 'ca_objects', $q_result->get("object_id"));
-			}
-		}
-
-
-		$vs_set_item_display .= "<div id='comment{$vn_item_id}' class='lbSetItemComment'><!-- load comments here --></div>\n";
-		$vs_set_item_display .= "<div class='caption'>".$vs_caption."</div>\n";
-		$vs_set_item_display .= "</div><!-- end lbItemContent -->\n";
-		$vs_set_item_display .= "<div class='lbExpandedInfo' id='lbExpandedInfo{$vn_item_id}'>\n<hr>\n";
-		if($vb_write_access){
-			$vs_set_item_display .= "<div class='pull-right'><a href='#' class='lbItemDeleteButton' id='lbItemDelete{$vn_item_id}' data-item_id='{$vn_item_id}' title='"._t("Remove")."'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
-		}
-		$vs_set_item_display .= "<div>".caDetailLink($po_request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $q_result->get("object_id"), "", array("title" => _t("View Item Detail")))."\n";
-
-		if($vn_rep_id = $q_result->get('ca_object_representations.representation_id')){
-			$vs_set_item_display .= "&nbsp;<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_result->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-		}
-
-		$vs_set_item_display .= "&nbsp;&nbsp;<a href='#' title='"._t("Comments")."' onclick='jQuery(\"#comment{$vn_item_id}\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $vn_item_id, 'table' => 'ca_set_items', 'set_id' => $pa_set_item["set_id"]));
-        $vs_set_item_display .= "\", function(){jQuery(\"#comment{$vn_item_id}\").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small>".$pa_set_item['n']."</small></a></div>\n";//".$t_set_item->getNumComments()."
-		$vs_set_item_display .= "</div><!-- end lbExpandedInfo --></div><!-- end lbItem -->\n";
-
-        return $vs_set_item_display;
-	}
-	# ---------------------------------------
-	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	$g_theme_detail_for_type_cache = array();
 	function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
@@ -880,51 +814,51 @@
 		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action]; }
 		$o_config = caGetDetailConfig();
 		$o_dm = Datamodel::load();
-		
+
 		$vs_preferred_detail = caGetOption('preferredDetail', $pa_options, null);
-		
+
 		if (!($vs_table = $o_dm->getTableName($pm_table))) { return null; }
-		
+
 		if ($pm_type) {
 			$t_instance = $o_dm->getInstanceByTableName($vs_table, true);
 			$vs_type = is_numeric($pm_type) ? $t_instance->getTypeCode($pm_type) : $pm_type;
 		} else {
 			$vs_type = null;
-		}	
-		
+		}
+
 		$va_detail_types = $o_config->getAssoc('detailTypes');
-	
+
 		$vs_detail_type = null;
 		foreach($va_detail_types as $vs_code => $va_info) {
 			if ($va_info['table'] == $vs_table) {
 				$va_detail_aliases = caGetOption('aliases', $va_info, array(), array('castTo' => 'array'));
-				
+
 				if (is_null($pm_type) || !is_array($va_info['restrictToTypes']) || (sizeof($va_info['restrictToTypes']) == 0) || in_array($vs_type, $va_info['restrictToTypes'])) {
 					// If the code matches the current url action use that in preference to anything else
-					
+
 					// does it have an alias?
 					if ($vs_preferred_detail && ($vs_code == $vs_preferred_detail)) { return $vs_preferred_detail; }
 					if ($vs_preferred_detail && in_array($vs_preferred_detail, $va_detail_aliases)) { return $vs_preferred_detail; }
 					if ($vs_current_action && ($vs_code == $vs_current_action)) { return $vs_code; }
 					if ($vs_current_action && in_array($vs_current_action, $va_detail_aliases)) { return $vs_current_action; }
-					
+
 					$vs_detail_type = $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = $vs_code;
 				}
 			}
 		}
-		
+
 		if (!$vs_detail_type) $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type] = $g_theme_detail_for_type_cache[$vs_table.'/'.$vs_type.'/'.$vs_current_action] = null;
 		return $vs_detail_type;
 	}
 	# ---------------------------------------
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 */
 	function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids, $pa_options=null) {
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
-		
+
 		if (method_exists($t_instance, "getPrimaryMediaForIDs")) {
 			// Use directly related media if defined
 			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
@@ -933,11 +867,11 @@
 				if(!is_array($va_media_info)) { continue; }
 				$va_media_by_id[$vn_id] = $va_media_info['tags'][$vs_version];
 			}
-			if(sizeof($va_media_by_id)){			
+			if(sizeof($va_media_by_id)){
 				return $va_media_by_id;
 			}
 		}
-		
+
 		if(!is_array($pa_options)){
 			$pa_options = array();
 		}
@@ -948,12 +882,12 @@
 		}
 		$va_path = array_keys($o_dm->getPath($vs_table = $t_instance->tableName(), "ca_objects"));
 		$vs_pk = $t_instance->primaryKey();
-		
+
 		$va_params = array();
-		
+
 		$vs_linking_table = $va_path[1];
-		
-		
+
+
 		$vs_rel_type_where = '';
 		if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
 			$va_rel_types = caMakeRelationshipTypeIDList($vs_linking_table, $va_rel_types);
@@ -962,12 +896,12 @@
 				$va_params[] = $va_rel_types;
 			}
 		}
-		
+
 		if(is_array($pa_ids) && sizeof($pa_ids)) {
 			$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
 			$va_params[] = $pa_ids;
 		}
-		
+
 		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
@@ -978,9 +912,9 @@
 				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
 			GROUP BY {$vs_table}.{$vs_pk}
 		";
-		
+
 		$o_db = $t_instance->getDb();
-		
+
 		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
 		while($qr_res->nextRow()) {
@@ -991,27 +925,27 @@
 	# ---------------------------------------
 	/**
 	 * class -> class name of <ul>
-	 * 
+	 *
 	 */
 	function caGetGallerySetsAsList($po_request, $vs_class, $pa_options=null){
 		$o_config = caGetGalleryConfig();
 		$va_access_values = caGetUserAccessValues($po_request);
  		$t_list = new ca_lists();
- 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
+ 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type'));
  		$vs_set_list = "";
 		if($vn_gallery_set_type_id){
 			$t_set = new ca_sets();
 			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
-			
+
 			$vn_limit = caGetOption('limit', $pa_options, 100);
 			if(sizeof($va_sets)){
 				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").">\n";
-				
+
 				$vn_c = 0;
 				foreach($va_sets as $vn_set_id => $va_set){
 					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
 					$vn_c++;
-					
+
 					if ($vn_c >= $vn_limit) { break; }
 				}
 				$vs_set_list .= "</ul>\n";
@@ -1020,7 +954,7 @@
 		return $vs_set_list;
 	}
 	# ---------------------------------------
-	function getPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_media_icon"){
+	function caGetPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_media_icon"){
 		$o_config = caGetIconsConfig();
 		$va_placeholders_by_type = $o_config->getAssoc("placeholders");
 		$vs_placeholder = $o_config->get($vs_placeholder_type);
