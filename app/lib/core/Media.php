@@ -45,7 +45,7 @@ class Media extends BaseObject {
 	# ----------------------------------------------------------
 	# Properties
 	# ----------------------------------------------------------
-	public $DEBUG = false;
+	public $DEBUG = true;
 	private $plugins = array();
 	private $instance;
 	
@@ -56,7 +56,7 @@ class Media extends BaseObject {
 	static $WLMedia_unregistered_plugin_cache = array();
 	static $WLMedia_plugin_names = null;
 	
-	static $plugin_path = __CA_LIB_DIR__.'/core/plugins/Media';
+	static $plugin_path = __CA_LIB_DIR__.'/core/Plugins/Media';
 	
 	# ----------------------------------------------------------
 	# Methods
@@ -70,6 +70,8 @@ class Media extends BaseObject {
 		
 		Media::$WLMedia_plugin_names = array();
 		$dir = opendir(Media::$plugin_path);
+		if (!$dir) { throw new ApplicationException(_t('Cannot open media plugin directory %1', Media::$plugin_path)); }
+	
 		while (($plugin = readdir($dir)) !== false) {
 			if ($plugin == "BaseMediaPlugin.php") { continue; }
 			if (preg_match("/^([A-Za-z_]+[A-Za-z0-9_]*).php$/", $plugin, $m)) {
