@@ -232,12 +232,7 @@
 				}
 				print "</div>";
 			}
-			if ($vs_catalogs = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'sort' => 'ca_objects.preferred_labels', 'restrictToTypes' => array('catalog')))) {
-				print "<div class='unit'><h6>Appears in</h6>".$vs_catalogs."</div>";
-			}
-			if ($va_related_ledgers) {
-				print "<h6>Related Ledgers</h6>".join('<br/>', $va_ledger_links);
-			}
+
 			$vs_sidebar_buf = null;
 			if ($t_object->get("ca_objects.nysl_link")){
 				if (($t_object->get("ca_objects.collection_status") == 687) | ($t_object->get("ca_objects.collection_status") == 689)) {
@@ -512,19 +507,53 @@
 																			
 								#Check related documents
 								$vs_doc_buf = null;
-								if ($va_related_documents = $t_object->get('ca_objects.related', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
-									$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
-									foreach ($va_related_documents as $va_key => $va_related_document) {
-										$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+								$va_docs_by_type = array();
+								$vs_i_have_docs = false;
+								if ($va_related_documents = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('document'), 'returnAsArray' => true))) {
+									foreach ($va_related_documents as $va_key => $vn_doc_id) {
+										$t_doc = new ca_objects($vn_doc_id);
+										$vs_doc_type = $t_doc->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+										$va_docs_by_type[$vs_doc_type][$vn_doc_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_doc->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_doc_id)."</div></div>";	
+										$vs_i_have_docs = true;
 									}
+								}
+								if ($va_related_catalogs = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('catalog'), 'returnAsArray' => true))) {
+									foreach ($va_related_catalogs as $va_key => $vn_cat_id) {
+										$t_cat = new ca_objects($vn_cat_id);
+										$vs_cat_type = $t_cat->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+										$va_docs_by_type[$vs_cat_type][$vn_cat_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_cat->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_cat_id)."</div></div>";	
+										$vs_i_have_docs = true;
+									}
+								}
+								if (sizeof($va_ledger_links) > 0) {
+									foreach ($va_ledger_links as $vn_ledger_id => $vs_ledger_link) {
+										$t_ledger = new ca_objects($vn_ledger_id);
+										$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+										$va_docs_by_type[$vs_ledger_type][$vn_ledger_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".$vs_ledger_link."</div></div>";	
+										$vs_i_have_docs = true;
+									}
+								}							
+								if ($vs_i_have_docs == true) {
+									$vs_doc_buf.= "<div class='row'>";
+										ksort($va_docs_by_type);
+										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+											$vs_doc_buf.= "<div class='row'>";
+											foreach ($vs_documents as $va_key => $vs_doc) {
+												$vs_doc_buf.= $vs_doc;
+											}
+											$vs_doc_buf.= "</div>";
+										}
 									$vs_doc_buf.= "</div>";
 								}
+								
+
 ?>					
 								<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
 								<?php if ($vs_book_buf && $vs_is_related) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
 								<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>
 							</ul>
-							<div id='circTab' >
+							<div id='circTab' <?php print $vs_style; ?>>
 								<div class='container'>
 									<div class='row'>
 										<div class='row titleBar' >

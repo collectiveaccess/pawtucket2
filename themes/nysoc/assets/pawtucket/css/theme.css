@@ -176,6 +176,18 @@ ul#mainMenu li.item:hover {
 ul#mainMenu li.item:hover a{
 	color:#fff;
 }
+ul#mainMenu #browse-menu li.item:hover a{
+	color:#747060;
+}
+ul#mainMenu  li.item:hover #browse-menu a{
+	color:#747060;
+}
+ul#mainMenu #browse-menu li a:hover {
+	color:#747060;
+}
+ul#mainMenu li.item:hover #browse-menu .filterMenuFacetList li.active a {
+	color:#fff;
+}
 ul.menu li {
   margin: 0;
 }
@@ -393,6 +405,12 @@ div.globalLinks a {
 .filterMenuFacetList li {
 	padding-left:5px;
 	padding-right:5px;
+}
+.bResultListItem .bResultListItemImg {
+	margin-right:0px;
+}
+#browseResultsContainer {
+	padding-right:15px;
 }
 /* Front Page */
 

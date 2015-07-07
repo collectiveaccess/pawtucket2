@@ -177,16 +177,49 @@
 							$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))."<br/>";
 						} else {$vs_author = null;}
 						$vn_pub_date = $t_book->get('ca_objects.publication_date');
-						$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><p class='bookButton'>".caNavLink($this->request, $va_title_trunk[0]."<br/>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book['object_id'])."</p></div>";
+						$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$va_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book['object_id'])."</div></div>";
 					}
 				}
-				#check docs
+				#check docs	
 				$vs_doc_buf = null;
-				if ($va_related_documents = $t_object->get('ca_objects.related', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
-					$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
-					foreach ($va_related_documents as $va_key => $va_related_document) {
-						$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
+				$va_docs_by_type = array();
+				$vs_i_have_docs = false;
+				if ($va_related_documents = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('document'), 'returnAsArray' => true))) {
+					foreach ($va_related_documents as $va_key => $vn_doc_id) {
+						$t_doc = new ca_objects($vn_doc_id);
+						$vs_doc_type = $t_doc->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_doc_type][$vn_doc_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_doc->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_doc_id)."</div></div>";	
+						$vs_i_have_docs = true;
 					}
+				}								
+				if ($va_related_catalogs = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('catalog'), 'returnAsArray' => true))) {
+					foreach ($va_related_catalogs as $va_key => $vn_cat_id) {
+						$t_cat = new ca_objects($vn_cat_id);
+						$vs_cat_type = $t_cat->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_cat_type][$vn_cat_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_cat->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_cat_id)."</div></div>";	
+						$vs_i_have_docs = true;
+					}
+				}
+				$va_ledger_list = array();
+				if ($va_related_ledgers = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('ledger'), 'returnAsArray' => true))) {
+					foreach ($va_related_ledgers as $va_key => $vn_ledger_id) {
+						$t_ledger = new ca_objects($vn_ledger_id);
+						$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_ledger_type][$vn_ledger_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_ledger->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_ledger_id)."</div></div>";	
+						$vs_i_have_docs = true;
+					}
+				}						
+				if ($vs_i_have_docs == true) {
+					$vs_doc_buf.= "<div class='row'>";
+						ksort($va_docs_by_type);
+						foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+							$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+							$vs_doc_buf.= "<div class='row'>";
+							foreach ($vs_documents as $va_key => $vs_doc) {
+								$vs_doc_buf.= $vs_doc;
+							}
+							$vs_doc_buf.= "</div>";
+						}
 					$vs_doc_buf.= "</div>";
 				}
 ?>
