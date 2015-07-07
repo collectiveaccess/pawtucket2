@@ -31,9 +31,9 @@
  */
 	$t_set = $this->getVar('set');
 	$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('small', 'medium'))));
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 ?>
 <!doctype html>
 <html lang="en">
@@ -62,7 +62,7 @@
 	</head>
 	<body>
 		<div class="reveal">
-			<?php print caNavLink($this->request, _t("Back to %1", ucfirst($vs_lightbox_display_name)), "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")), array("style" => "font-size:14px; padding:20px;")); ?>
+			<?php print caNavLink($this->request, _t("Back to %1", ucfirst($vs_lightbox_displayname)), "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")), array("style" => "font-size:14px; padding:20px;")); ?>
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 <?php

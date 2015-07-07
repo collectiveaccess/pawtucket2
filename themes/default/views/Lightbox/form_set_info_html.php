@@ -29,14 +29,14 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_set = $this->getVar("set");
-	$va_errors = $this->getVar("errors");
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$t_set 							= $this->getVar("set");
+	$va_errors 						= $this->getVar("errors");
+	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
+	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("%1 Info", ucfirst($vs_lightbox_display_name)); ?></H1>
+<H1><?php print _t("%1 Information", ucfirst($vs_lightbox_displayname)); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
@@ -48,10 +48,6 @@
 			print "<div class='alert alert-danger'>".$va_errors["name"]."</div>";
 		}
 		print "<div class='form-group".(($va_errors["name"]) ? " has-error" : "")."'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' value='".$this->getVar("name")."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-		#if($va_errors["access"]){
-		#	print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
-		#}
-		#print $t_set->htmlFormElement("access","<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}
@@ -59,7 +55,7 @@
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Save</button>
+				<button type="submit" class="btn btn-default"><?php print _t('Save'); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="set_id" value="<?php print $t_set->get("set_id"); ?>">
@@ -69,9 +65,24 @@
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#SetForm').submit(function(e){		
-			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Lightbox', 'saveSetInfo', null); ?>',
-				jQuery('#SetForm').serialize()
+			jQuery.getJSON(
+				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
+				jQuery('#SetForm').serializeObject(), function(data) {
+					jQuery("#lbSetName" + data.set_id).html(data.name);
+					jQuery("#caMediaPanel").data('panel').hidePanel();
+					
+					if(data.is_insert) { 
+						// add new set to list
+						var h = "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>" + data.block + "</div>";
+						var l = jQuery('.lbSetListItemRow').last().find('.lbSetListItemCol').length;
+				
+						if (l >= 2) {	// add row
+							jQuery('.lbSetListItemRow').last().parent().append('<div class="row lbSetListItemRow">' + h + "</div>");
+						} else {
+							jQuery('.lbSetListItemRow').last().append(h);
+						}
+					}
+				}
 			);
 			e.preventDefault();
 			return false;

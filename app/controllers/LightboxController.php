@@ -68,6 +68,17 @@
          * @var
          */
         protected $opb_is_login_redirect = false;
+        
+        /**
+         * @var HTMLPurifier
+         */
+        protected $purifier;
+        
+        /**
+         * @var string
+         */
+        protected $ops_tablename = 'ca_objects';
+        
  		# -------------------------------------------------------
         /**
          * @param RequestHTTP $po_request
@@ -98,17 +109,19 @@
  			$this->opo_config = caGetLightboxConfig();
  			caSetPageCSSClasses(array("sets", "lightbox"));
  			
- 			$va_lightbox_display_name = caGetSetDisplayName($this->opo_config);
+ 			$va_lightboxDisplayName = caGetLightboxDisplayName($this->opo_config);
  			$this->view->setVar('set_config', $this->opo_config);
  			
-			$this->ops_lightbox_display_name = $va_lightbox_display_name["singular"];
-			$this->ops_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+			$this->ops_lightbox_display_name = $va_lightboxDisplayName["singular"];
+			$this->ops_lightbox_display_name_plural = $va_lightboxDisplayName["plural"];
+			
+			$this->purifier = new HTMLPurifier();
  		}
  		# -------------------------------------------------------
         /**
          *
          */
- 		function Index() {
+ 		function index() {
  			if($this->opb_is_login_redirect) { return; }
 
             # Get sets for display
@@ -150,11 +163,7 @@
             $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
 			$this->view->setVar("browse_type", "caLightbox");	// this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
 
-            $ps_view = $this->request->getParameter('view', pString);
- 			if(!in_array($ps_view, array('thumbnail', 'map', 'timeline', 'timelineData', 'pdf', 'list'))) {
- 				$ps_view = 'thumbnail';
- 			}
- 			$this->view->setVar('view', $ps_view);
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request)));
 			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
 			$va_view_info = $va_views[$ps_view];
 
@@ -286,7 +295,7 @@
 			//
 			// Facets
 			//
-			if ($vs_facet_group = $this->opo_config->get("set_facet_group")) {
+			if ($vs_facet_group = $this->opo_config->get("setFacetGroup")) {
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = $this->opo_config->get("availableFacets");
@@ -365,12 +374,7 @@
 			if ($ps_view === 'map') {
 				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
 		
-				$va_opts['labelTemplate'] = $va_view_info['display']['title_template'];
-				if(isset($va_view_info['display']['ajax_content_url']) && ($va_view_info['display']['ajax_content_url'])) {
-					$va_opts['ajaxContentUrl'] = $va_view_info['display']['ajax_content_url'];
-				} else {
-					$va_opts['contentTemplate'] = $va_view_info['display']['description_template'];
-				}
+				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('view' => $ps_view));
 			
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
@@ -379,8 +383,11 @@
  			
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
  			switch($ps_view) {
+ 				case 'xlsx':
+ 				case 'pptx':
  				case 'pdf':
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Lightbox/set_detail_timelineData_json.php");
@@ -397,18 +404,15 @@
  		function setForm() {
             if($this->opb_is_login_redirect) { return; }
 
- 			// If set exists, we're being redirected here after attempting a save
- 			if (!$t_set){
- 				// set_id is passed, so we're editing a set
- 				if($this->request->getParameter('set_id', pInteger)){
-					$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
-					// pass name and description to populate form
-					$this->view->setVar("name", $t_set->getLabelForDisplay());
-					$this->view->setVar("description", $t_set->get("description"));
-				}else{
-					$t_set = new ca_sets();
-				}
- 			}
+			// set_id is passed, so we're editing a set
+			if($this->request->getParameter('set_id', pInteger)){
+				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
+				// pass name and description to populate form
+				$this->view->setVar("name", $t_set->getLabelForDisplay());
+				$this->view->setVar("description", $t_set->get("description"));
+			}else{
+				$t_set = new ca_sets();
+			}
  			$this->view->setVar("set", $t_set);
  			$this->render("Lightbox/form_set_info_html.php");
  		}
@@ -416,36 +420,35 @@
         /**
          *
          */
- 		function saveSetInfo() {
+ 		function ajaxSaveSetInfo() {
             if($this->opb_is_login_redirect) { return; }
             if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
- 			$o_purifier = new HTMLPurifier();
  			
  			// set_id is passed through form, otherwise we're saving a new set
- 			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
- 			}else{
- 				$t_set = new ca_sets();
- 			}
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
+ 			
  			// check for errors
  			// set name - required
- 			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
- 			if(!$ps_name){
- 				$va_errors["name"] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
- 			}else{
- 				$this->view->setVar("name", $ps_name);
+ 			;
+ 			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
+ 				$va_errors[] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
  			}
+ 			$this->view->setVar("name", $ps_name);
+ 			
  			// set description - optional
- 			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+ 			$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
  			$this->view->setVar("description", $ps_description);
 
  			$t_list = new ca_lists();
  			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+ 			
  			$t_object = new ca_objects();
  			$vn_object_table_num = $t_object->tableNum();
+ 			
+ 			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', 1);
@@ -461,9 +464,10 @@
 					// create new attribute
 					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 					$t_set->insert();
+					$vb_is_insert = true;
 				}
 				if($t_set->numErrors()) {
-					$va_errors["general"] = join("; ", $t_set->getErrors());
+					$va_errors[] = join("; ", $t_set->getErrors());
 					$this->view->setVar('errors', $va_errors);
 					$this->setForm();
 				}else{
@@ -481,13 +485,17 @@
 					// select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
-					$this->view->setVar("message", _t('Saved %1.', $this->ops_lightbox_display_name));
- 					$this->render("Form/reload_html.php");
+					$this->view->setVar("message", _t('Saved %1', $this->ops_lightbox_display_name));
+					
+					$this->view->setVar('block', caLightboxSetListItem($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
-				$this->setForm();
-			} 			
+			} 	
+			$this->view->setVar('set_id', $t_set->get("set_id"));	
+			$this->view->setVar('is_insert', $vb_is_insert);
+					
+			$this->render("Lightbox/ajax_save_set_info_json.php");
  		}
  		# ------------------------------------------------------
         /**
@@ -628,9 +636,8 @@
             if($this->opb_is_login_redirect) { return; }
 
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
- 			$o_purifier = new HTMLPurifier();
  			
- 			$ps_user = $o_purifier->purify($this->request->getParameter('user', pString));
+ 			$ps_user = $this->purifier->purify($this->request->getParameter('user', pString));
  			// ps_user can be list of emails separated by comma
  			$va_users = explode(", ", $ps_user);
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
@@ -792,7 +799,6 @@
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
- 			$o_purifier = new HTMLPurifier();
  			
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
@@ -801,14 +807,14 @@
  			
  			// check for errors
  			// group name - required
- 			$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
+ 			$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
  				$va_errors["name"] = _t("Please enter the name of your user group");
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
  			// user group description - optional
- 			$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+ 			$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
  			$this->view->setVar("description", $ps_description);
 
  			if(sizeof($va_errors) == 0){
@@ -843,10 +849,10 @@
         /**
          *
          */
- 		function AjaxListComments() {
+ 		function ajaxListComments() {
             if($this->opb_is_login_redirect) { return; }
 
- 			$o_datamodel = new Datamodel();
+ 			$o_datamodel = Datamodel::load();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
                 throw new ApplicationException(_t("You do not have access to this lightbox"));
             }
@@ -859,10 +865,10 @@
             }
 
  			// load table
- 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			if (!($t_item = $o_datamodel->getTableInstance($ps_tablename))) {
                 throw new ApplicationException(_t("Invalid type"));
             }
+ 			$pn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger);
  			if (!$t_item->load($pn_item_id)) {
                 throw new ApplicationException(_t("Item does not exist"));
             }
@@ -871,13 +877,14 @@
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("comments", $qr_comments = $t_item->getComments(null, null, array('returnAs' => 'searchResult')));
+			
 			$this->render("Lightbox/ajax_comments.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function AjaxAddComment() {
+ 		function ajaxAddComment() {
             if($this->opb_is_login_redirect) { return; }
 
  			// when close is set to true, will make the form view disappear after saving form
@@ -887,8 +894,6 @@
             $va_errors = array();
             $vn_count = null;
             $vs_message = null;
-
-            $o_html_purifier = new HTMLPurifier();
 
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
                 $va_errors[] = _t("You do not have access to this lightbox");
@@ -904,7 +909,7 @@
                     $pn_id = $this->request->getParameter('id', pInteger);
                     if (!$t_item->load($pn_id)) {
                         $va_errors[] = _t("Invalid id: %1", $pn_id);
-                    } elseif(!($ps_comment = $o_html_purifier->purify($this->request->getParameter('comment', pString)))) {
+                    } elseif(!($ps_comment = $this->purifier->purify($this->request->getParameter('comment', pString)))) {
                         $va_errors[] = _t("Please enter a comment");
                     } elseif($t_comment = $t_item->addComment($ps_comment, null, $this->request->getUserID(), null, null, null, 1, $this->request->getUserID(), array("purify" => true))){
                         // pass user's id as moderator - all set comments should be made public, it's a private space and comments should not need to be moderated
@@ -938,7 +943,7 @@
         /**
          *
          */
- 		function AjaxDeleteComment() {
+ 		function ajaxDeleteComment() {
             if($this->opb_is_login_redirect) { return; }
 
             $va_errors = array();
@@ -983,27 +988,39 @@
         /**
          *
          */
- 		public function DeleteSet() {
+ 		public function deleteLightbox() {
             if($this->opb_is_login_redirect) { return; }
 
+			$va_errors = array();
+			$vs_message = $vn_set_id = $vs_set_name = null;
+			
  			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
  				$vs_set_name = $t_set->getLabelForDisplay();
  				$t_set->setMode(ACCESS_WRITE);
  				$t_set->delete();
  				
  				if($t_set->numErrors()) {
- 					$this->notification->addNotification(_t("<em>%1</em> could not be deleted: %2", $vs_set_name, join("; ", $t_set->getErrors())), __NOTIFICATION_TYPE_ERROR__);
+ 					$va_errors[] = _t("<em>%1</em> could not be deleted: %2", $vs_set_name, join("; ", $t_set->getErrors()));
  				} else {
- 					$this->notification->addNotification(_t("<em>%1</em> was deleted", $vs_set_name), __NOTIFICATION_TYPE_INFO__);
+ 					$vs_message = _t("<em>%1</em> was deleted", $vs_set_name);
  				}
+ 				$vn_set_id = $t_set->get('set_id');
+ 			} else {
+ 				$va_errors[] = _t('Invalid set_id');
  			}
- 			$this->Index();
+ 			
+ 			$this->view->setVar('message', $vs_message);
+ 			$this->view->setVar('set_id', $vn_set_id);
+ 			$this->view->setVar('errors', $va_errors);
+ 			$this->view->setVar('name', $vs_set_name);
+ 			
+ 			$this->render("Lightbox/ajax_delete_set_json.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		public function AjaxReorderItems() {
+ 		public function ajaxReorderItems() {
             if($this->opb_is_login_redirect) { return; }
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
@@ -1026,7 +1043,7 @@
         /**
          *
          */
- 		public function AjaxDeleteItem() {
+ 		public function ajaxDeleteItem() {
             if($this->opb_is_login_redirect) { return; }
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
@@ -1037,9 +1054,9 @@
 				} else {
 					$va_errors[] = _t('Could not remove item from %1', $this->ops_lightbox_display_name);
 				}
-				$this->view->setVar('set_id', $pn_set_id);
+				$this->view->setVar('set_id', $t_set->getPrimaryKey());
 				$this->view->setVar('item_id', $pn_item_id);
-                $this->view->setVar('count', $t_set->getItemCount(array('checkAccess' => $this->opa_access_values)));
+                $this->view->setVar('count', $t_set->getItemCount(array('user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values)));
 			} else {
 				$va_errors['general'] = _t('You do not have access to the %1', $this->ops_lightbox_display_name);	
 			}
@@ -1051,12 +1068,11 @@
         /**
          *
          */
- 		public function AjaxAddItem() {
+ 		public function ajaxAddItem() {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
- 			$o_purifier = new HTMLPurifier();
  			
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
@@ -1072,12 +1088,12 @@
  				$t_set->purify(true);
  				
 				// set name - if not sent, make a decent default
-				$ps_name = $o_purifier->purify($this->request->getParameter('name', pString));
+				$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
 					$ps_name = _t("Your %1", $this->ops_lightbox_display_name);
 				}
 				// set description - optional
-				$ps_description =  $o_purifier->purify($this->request->getParameter('description', pString));
+				$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
 	
 				$t_list = new ca_lists();
 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
@@ -1185,11 +1201,31 @@
 				$this->render("Form/reload_html.php");
  			}
  		}
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            
+            $pn_id = $this->request->getParameter('id', pString); 
+            $ps_view = $this->request->getParameter('view', pString);
+ 			
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			$va_view_info = $va_views[$ps_view];
+            
+			$vs_content_template = $va_view_info['display']['description_template'];
+			
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', array($pn_id)));
+			
+         	$this->render("Lightbox/ajax_map_item_html.php");   
+        }
 		# ------------------------------------------------------
 		/**
 		 *
 		 */
-		public function Present() {
+		public function present() {
             if($this->opb_is_login_redirect) { return; }
 
 			AssetLoadManager::register("reveal.js");

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,6 +30,10 @@
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
  	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
+	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
+	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPPowerPoint/Autoloader.php');
+	\PhpOffice\PhpPowerpoint\Autoloader::register();
  	
  	class FindController extends ActionController {
  		# -------------------------------------------------------
@@ -41,8 +45,21 @@
  			
  			// merge displays with drop-in print templates
 			$va_export_options = caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			
+			// add Excel/PowerPoint export options configured in app.conf
+			$va_export_config = $po_request->config->getAssoc('export_formats');
+	
+			if(is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename])) {
+				foreach($va_export_config[$this->ops_tablename] as $vs_export_code => $va_export_option) {
+					$va_export_options[] = array(
+						'name' => $va_export_option['name'],
+						'code' => $vs_export_code,
+						'type' => $va_export_option['type']
+					);
+				}
+			}
+			
 			$this->view->setVar('export_formats', $va_export_options);
-			//$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
 			
 			$va_options = array();
 			foreach($va_export_options as $vn_i => $va_format_info) {
@@ -335,6 +352,7 @@
 			
 			$this->view->setVar('criteria_summary', $ps_criteria_summary);
 			
+			$vs_type = null;
 			if (substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
 			} elseif (substr($ps_template, 0, 9) === '_display_') {
@@ -368,39 +386,283 @@
 					return;
 				}
 				$va_template_info = caGetPrintTemplateDetails('results', 'display');
+				$vs_type = 'pdf';
 			} else {
-				$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
-				return;
+				// Look it up in app.conf export_formats
+				$va_export_config = $this->request->config->getAssoc('export_formats');
+				if (is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename]) && is_array($va_export_config[$this->ops_tablename][$ps_template])) {
+					
+					switch($va_export_config[$this->ops_tablename][$ps_template]['type']) {
+						case 'xlsx':
+							$vs_type = 'xlsx';
+							break;
+						case 'pptx':
+							$vs_type = 'pptx';
+							break;
+					}
+				} else {
+					$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
+					return;
+				}
 			}
 			
-			//
-			// PDF output
-			//
-			if (!is_array($va_template_info)) {
-				$this->postError(3110, _t("Could not find view for PDF"),"FindController->_genExport()");
-				return;
-			}
-			
-			try {
-				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
-				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-			
-				set_time_limit(600);
-				$vs_content = $this->render($va_template_info['path']);
-				$o_dompdf = new DOMPDF();
-				$o_dompdf->load_html($vs_content);
-				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
-				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('results'));
-				$o_dompdf->render();
-				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+			switch($vs_type) {
+				case 'xlsx':
 
-				$vb_printed_properly = true;
-			} catch (Exception $e) {
-				$vb_printed_properly = false;
-				$this->postError(3100, _t("Could not generate PDF"),"FindController->_genExport()");
-			}
+					$vn_ratio_pixels_to_excel_height = 0.85;
+					$vn_ratio_pixels_to_excel_width = 0.135;
+
+					$va_supercol_a_to_z = range('A', 'Z');
+					$vs_supercol = '';
+	
+					$va_a_to_z = range('A', 'Z');
+	
+					$workbook = new PHPExcel();
+
+					// more accurate (but slower) automatic cell size calculation
+					PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
+
+					$o_sheet = $workbook->getActiveSheet();
+					// mise en forme
+					$columntitlestyle = array(
+							'font'=>array(
+									'name' => 'Arial',
+									'size' => 12,
+									'bold' => true),
+							'alignment'=>array(
+									'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+									'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER,
+									'wrap' => true,
+									'shrinkToFit'=> true),
+							'borders' => array(
+									'allborders'=>array(
+											'style' => PHPExcel_Style_Border::BORDER_THICK)));
+					$cellstyle = array(
+							'font'=>array(
+									'name' => 'Arial',
+									'size' => 11,
+									'bold' => false),
+							'alignment'=>array(
+									'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+									'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER,
+									'wrap' => true,
+									'shrinkToFit'=> true),
+							'borders' => array(
+									'allborders'=>array(
+											'style' => PHPExcel_Style_Border::BORDER_THIN)));
+
+					$o_sheet->getDefaultStyle()->applyFromArray($cellstyle);
+					$o_sheet->setTitle("CollectiveAccess");
+	
+					$vn_line = 1;
+
+					$vs_column = reset($va_a_to_z);
+	
+					// Column headers
+					$o_sheet->getRowDimension($vn_line)->setRowHeight(30);
+					foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $vs_template) {
+						if($vs_column) {
+							$o_sheet->setCellValue($vs_supercol.$vs_column.$vn_line,$vs_title);
+							$o_sheet->getStyle($vs_supercol.$vs_column.$vn_line)->applyFromArray($columntitlestyle);
+							if (!($vs_column = next($va_a_to_z))) {
+								$vs_supercol = array_shift($va_supercol_a_to_z);
+								$vs_column = reset($va_a_to_z);
+							}
+						}
+					}
+
+	
+					$vn_line = 2 ;
+
+					while($po_result->nextHit()) {
+						$vs_column = reset($va_a_to_z);
+		
+						$va_supercol_a_to_z = range('A', 'Z');
+						$vs_supercol = '';
+
+						// default to automatic row height. works pretty well in Excel but not so much in LibreOffice/OOo :-(
+						$o_sheet->getRowDimension($vn_line)->setRowHeight(-1);
+
+						foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $va_settings) {
+
+							if (
+								(strpos($vs_template, 'ca_object_representations.media') !== false)
+								&& 
+								preg_match("!ca_object_representations\.media\.([A-Za-z0-9_\-]+)!", $va_settings['template'], $va_matches)
+							) {
+								$vs_version = $va_matches[1];
+								$va_info = $po_result->getMediaInfo('ca_object_representations.media', $vs_version);
 				
-			return;
+								if($va_info['MIMETYPE'] == 'image/jpeg') { // don't try to insert anything non-jpeg into an Excel file
+				
+									if (is_file($vs_path = $po_result->getMediaPath('ca_object_representations.media', $vs_version))) {
+										$image = "image".$vs_supercol.$vs_column.$vn_line;
+										$drawing = new PHPExcel_Worksheet_Drawing();
+										$drawing->setName($image);
+										$drawing->setDescription($image);
+										$drawing->setPath($vs_path);
+										$drawing->setCoordinates($vs_supercol.$vs_column.$vn_line);
+										$drawing->setWorksheet($o_sheet);
+										$drawing->setOffsetX(10);
+										$drawing->setOffsetY(10);
+									}
+
+									$vn_width = floor(intval($va_info['PROPERTIES']['width']) * $vn_ratio_pixels_to_excel_width);
+									$vn_height = floor(intval($va_info['PROPERTIES']['height']) * $vn_ratio_pixels_to_excel_height);
+
+									// set the calculated withs for the current row and column,
+									// but make sure we don't make either smaller than they already are
+									if($vn_width > $o_sheet->getColumnDimension($vs_supercol.$vs_column)->getWidth()) {
+										$o_sheet->getColumnDimension($vs_supercol.$vs_column)->setWidth($vn_width);	
+									}
+									if($vn_height > $o_sheet->getRowDimension($vn_line)->getRowHeight()){
+										$o_sheet->getRowDimension($vn_line)->setRowHeight($vn_height);
+									}
+
+								}
+							} elseif ($vs_display_text = $po_result->getWithTemplate($va_settings['template'])) {
+				
+								$o_sheet->setCellValue($vs_supercol.$vs_column.$vn_line, html_entity_decode(strip_tags(br2nl($vs_display_text)), ENT_QUOTES | ENT_HTML5));
+								// We trust the autosizing up to a certain point, but
+								// we want column widths to be finite :-).
+								// Since Arial is not fixed-with and font rendering
+								// is different from system to system, this can get a
+								// little dicey. The values come from experimentation.
+								if ($o_sheet->getColumnDimension($vs_supercol.$vs_column)->getWidth() == -1) {  // don't overwrite existing settings
+									if(strlen($vs_display_text)>55) {
+										$o_sheet->getColumnDimension($vs_supercol.$vs_column)->setWidth(50);
+									}
+								}
+							}
+
+							if (!($vs_column = next($va_a_to_z))) {
+								$vs_supercol = array_shift($va_supercol_a_to_z);
+								$vs_column = reset($va_a_to_z);
+							}
+						}
+
+						$vn_line++;
+					}
+
+					// set column width to auto for all columns where we haven't set width manually yet
+					foreach(range('A','Z') as $vs_chr) {
+						if ($o_sheet->getColumnDimension($vs_chr)->getWidth() == -1) {
+							$o_sheet->getColumnDimension($vs_chr)->setAutoSize(true);	
+						}
+					}
+	
+					$o_writer = new PHPExcel_Writer_Excel2007($workbook);
+
+					header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+					header('Content-Disposition:inline;filename=Export.xlsx ');
+					$o_writer->save('php://output');
+					break;
+				case 'pptx':
+					$ppt = new PhpOffice\PhpPowerpoint\PhpPowerpoint();
+
+					$vn_slide = 0;
+					while($po_result->nextHit()) {
+						if ($vn_slide > 0) {
+							$slide = $ppt->createSlide();
+						} else {
+							$slide = $ppt->getActiveSlide();
+						}
+						
+						foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $va_settings) {
+
+							if (
+								(strpos($va_settings['template'], 'ca_object_representations.media') !== false)
+								&& 
+								preg_match("!ca_object_representations\.media\.([A-Za-z0-9_\-]+)!", $va_settings['template'], $va_matches)
+							) {
+								$vs_version = $va_matches[1];
+								$va_info = $po_result->getMediaInfo('ca_object_representations.media', $vs_version);
+				
+								if($va_info['MIMETYPE'] == 'image/jpeg') { // don't try to insert anything non-jpeg into an Excel file
+				
+									if (is_file($vs_path = $po_result->getMediaPath('ca_object_representations.media', $vs_version))) {
+										$shape = $slide->createDrawingShape();
+										$shape->setName($va_info['ORIGINAL_FILENAME'])
+											  ->setDescription('Image')
+											  ->setPath($vs_path)
+											  ->setWidth(caConvertMeasurementToPoints(caGetOption('width', $va_settings, '100px'), array('dpi' => 96)))
+											  ->setHeight(caConvertMeasurementToPoints(caGetOption('height', $va_settings, '100px'), array('dpi' => 96)))
+											  ->setOffsetX(caConvertMeasurementToPoints(caGetOption('x', $va_settings, '100px'), array('dpi' => 96)))
+											  ->setOffsetY(caConvertMeasurementToPoints(caGetOption('y', $va_settings, '100px'), array('dpi' => 96)));
+										$shape->getShadow()->setVisible(true)
+														   ->setDirection(45)
+														   ->setDistance(10);
+									}
+								}
+							} elseif ($vs_display_text = html_entity_decode(strip_tags($po_result->getWithTemplate($va_settings['template'])))) {
+								switch($vs_align = caGetOption('align', $va_settings, 'center')) {
+									case 'center':
+										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_CENTER;
+										break;
+									case 'left':
+										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_LEFT;
+										break;
+									case 'right':
+									default:
+										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_RIGHT;
+										break;
+								}
+				
+								$shape = $slide->createRichTextShape()
+									  ->setHeight(caConvertMeasurementToPoints(caGetOption('height', $va_settings, '100px'), array('dpi' => 96)))
+									  ->setWidth(caConvertMeasurementToPoints(caGetOption('width', $va_settings, '100px'), array('dpi' => 96)))
+									  ->setOffsetX(caConvertMeasurementToPoints(caGetOption('x', $va_settings, '100px'), array('dpi' => 96)))
+									  ->setOffsetY(caConvertMeasurementToPoints(caGetOption('y', $va_settings, '100px'), array('dpi' => 96)));
+								$shape->getActiveParagraph()->getAlignment()->setHorizontal($vs_align);
+								$textRun = $shape->createTextRun($vs_display_text);
+								$textRun->getFont()->setBold((bool)caGetOption('bold', $va_settings, false))
+												   ->setSize(caConvertMeasurementToPoints(caGetOption('size', $va_settings, '36px'), array('dpi' => 96)))
+												   ->setColor( new \PhpOffice\PhpPowerpoint\Style\Color( caGetOption('color', $va_settings, 'cccccc') ) );
+							}
+
+						}
+
+						$vn_slide++;
+					}
+
+					
+					header('Content-type: application/vnd.openxmlformats-officedocument.presentationml.presentation');
+					header('Content-Disposition:inline;filename=Export.pptx ');
+					
+					$o_writer = \PhpOffice\PhpPowerpoint\IOFactory::createWriter($ppt, 'PowerPoint2007');
+					$o_writer->save('php://output');
+					break;
+				default:
+				case 'pdf':
+					//
+					// PDF output
+					//
+					if (!is_array($va_template_info)) {
+						$this->postError(3110, _t("Could not find view for PDF"),"FindController->_genExport()");
+						return;
+					}
+			
+					try {
+						$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
+						$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
+			
+						set_time_limit(600);
+						$vs_content = $this->render($va_template_info['path']);
+						$o_dompdf = new DOMPDF();
+						$o_dompdf->load_html($vs_content);
+						$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
+						$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('results'));
+						$o_dompdf->render();
+						$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+
+						$vb_printed_properly = true;
+					} catch (Exception $e) {
+						$vb_printed_properly = false;
+						$this->postError(3100, _t("Could not generate PDF"),"FindController->_genExport()");
+					}
+				
+					return;
+			}
 		}
 		# ------------------------------------------------------------------
  		/**

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -495,18 +495,18 @@
 			if(!$pa_options["dontShowPlaceholder"]){
 				if(!$po_request->config->get("disable_lightbox")){
 					$o_lightbox_config = caGetLightboxConfig();
-					$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
+					$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 					if(!$vs_lightbox_icon){
 						$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 					}
-					$va_lightbox_display_name = caGetSetDisplayName($o_lightbox_config);
-					$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-					$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+					$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+					$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+					$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 					$vs_tool_bar = "<div id='detailMediaToolbar'>";
 					if ($po_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_display_name)."'>".$vs_lightbox_icon."</a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_display_name)."'>".$vs_lightbox_icon."</a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}
@@ -524,13 +524,13 @@
 	 */
 	function caRepToolbar($po_request, $t_representation, $pn_object_id){
 		$o_lightbox_config = caGetLightboxConfig();
-		$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
+		$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 		if(!$vs_lightbox_icon){
 			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 		}
-		$va_lightbox_display_name = caGetSetDisplayName($o_lightbox_config);
-		$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+		$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+		$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 		$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 
@@ -540,9 +540,9 @@
 		}
 		if(!$po_request->config->get("disable_lightbox")){
 			if ($po_request->isLoggedIn()) {
-				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_display_name)."'>".$vs_lightbox_icon."</a>\n";
+				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 			}else{
-				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_display_name)."'>".$vs_lightbox_icon."</a>\n";
+				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 			}
 		}
 		if(caObjectsDisplayDownloadLink($po_request)){
@@ -704,7 +704,7 @@
 	 *
 	 */
 	function caLightboxSetListItem($po_request, $t_set, $va_check_access = array(), $pa_options = array()) {
-		if(!$t_set->get("set_id")){
+		if(!($vn_set_id = $t_set->get("set_id"))) {
 			return false;
 		}
 		$vb_write_access = false;
@@ -712,16 +712,16 @@
 			$vb_write_access = true;
 		}
 		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
-		$vs_set_display = "";
-		$vs_set_display .= "<div class='lbSetContainer'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
+		
+		$vs_set_display = "<div class='lbSetContainer' id='lbSetContainer{$vn_set_id}'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
 		if(!$vb_write_access){
 			$vs_set_display .= "<div class='pull-right caption'>Read Only</div>";
 		}
-		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</H5>";
+		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id), array('id' => "lbSetName{$vn_set_id}"))."</H5>";
 
-        $va_lightbox_display_name = caGetSetDisplayName();
-		$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+        $va_lightboxDisplayName = caGetLightboxDisplayName();
+		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+		$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 
         if(sizeof($va_set_items)){
 			$vs_primary_image_block = $vs_secondary_image_block = "";
@@ -737,41 +737,41 @@
 						$vs_large_icon = "iconlarge";
 					}
 					if($va_set_item["representation_tag_".$vs_large_icon]){
-						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
 					}else{
-						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetImg --></div>\n";
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
 					}
 				}else{
 					if($va_set_item["representation_tag_icon"]){
-						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</div><!-- end lbSetThumb --></div>\n";
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetThumb --></div>\n";
 					}else{
-						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</div>\n";
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
 					}
 				}
 				$vn_i++;
 			}
 			while($vn_i < 6){
-				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $t_set->get("set_id")))."</div>";
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>";
 				$vn_i++;
 			}
 		}else{
-			$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'><div class='lbSetImgPlaceholder'>"._t("this %1 contains no items", $vs_lightbox_display_name)."</div><!-- end lbSetImgPlaceholder --></div><!-- end lbSetImg --></div>\n";
+			$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'><div class='lbSetImgPlaceholder'>"._t("this %1 contains no items", $vs_lightbox_displayname)."</div><!-- end lbSetImgPlaceholder --></div><!-- end lbSetImg --></div>\n";
 			$i = 1;
 			while($vn_i < 4){
 				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder --></div>";
 				$vn_i++;
 			}
 		}
-		$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment".$t_set->get("set_id")."' class='lbSetComment'><!-- load comments here --></div>\n<div class='lbSetThumbRowContainer'><div class='row lbSetThumbRow' id='lbSetThumbRow".$t_set->get("set_id")."'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end lbSetThumbRowContainer --></div><!-- end col --></div><!-- end row -->";
+		$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment{$vn_set_id}' class='lbSetComment'><!-- load comments here --></div>\n<div class='lbSetThumbRowContainer'><div class='row lbSetThumbRow' id='lbSetThumbRow{$vn_set_id}'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end lbSetThumbRowContainer --></div><!-- end col --></div><!-- end row -->";
 		$vs_set_display .= "</div><!-- end lbSetContent -->\n";
-		$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo".$t_set->get("set_id")."'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
+		$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo{$vn_set_id}'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
 		$vs_set_display .= "<div>Num items: ".$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."</div>\n";
 		if($vb_write_access){
-			$vs_set_display .= "<div class='pull-right'>".caNavLink($po_request, '<span class="glyphicon glyphicon-trash"></span>', '', '', '*', 'DeleteSet', array('set_id' => $t_set->get("set_id")), array("title" => _t("Delete")))."</div>\n";
+			$vs_set_display .= "<div class='pull-right'><a href='#' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 		}
-		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment".$t_set->get("set_id")."\").load(\"".caNavUrl($po_request, '', '*', 'AjaxListComments', array('item_id' => $t_set->get("set_id"), 'type' => 'ca_sets', 'set_id' => $t_set->get("set_id")))."\", function(){jQuery(\"#lbSetThumbRow".$t_set->get("set_id")."\").hide(); jQuery(\"#comment".$t_set->get("set_id")."\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
+		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment{$vn_set_id}\").load(\"".caNavUrl($po_request, '', 'Lightbox', 'AjaxListComments', array('type' => 'ca_sets', 'set_id' => $vn_set_id))."\", function(){jQuery(\"#lbSetThumbRow{$vn_set_id}\").hide(); jQuery(\"#comment{$vn_set_id}\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
 		if($vb_write_access){
-			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id")))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
+			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LightBox', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
 		}
 		$vs_set_display .= "</div>\n";
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
@@ -785,12 +785,12 @@
 	 *
 	 */
 	function caLightboxSetListItemPlaceholder($po_request) {
-		$va_lightbox_display_name = caGetSetDisplayName();
-		$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-		$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+		$va_lightboxDisplayName = caGetLightboxDisplayName();
+		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+		$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 		$vs_set_display = "";
 		$vs_set_display .= "<div class='lbSet'><div class='lbSetContent'>\n
-								<H5>"._t("Create your first %1", $vs_lightbox_display_name)."</H5>
+								<H5>"._t("Create your first %1", $vs_lightbox_displayname)."</H5>
 								<div class='row'><div class='col-sm-6'><div class='lbSetImgPlaceholder'><br/><br/></div><!-- end lbSetImgPlaceholder --></div><div class='col-sm-6'>
 									<div class='row lbSetThumbRow'>
 										<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder --></div>
@@ -971,22 +971,34 @@
 		return $vs_placeholder;
 	}
 	# ---------------------------------------
-	function caGetSetDisplayName($o_lightbox_config = null){
-		if(!$o_lightbox_config){
-			$o_lightbox_config = caGetLightboxConfig();
+	/**
+	 *
+	 */
+	function caGetLightboxDisplayName($o_lightbox_config = null){
+		if(!$o_lightbox_config){ $o_lightbox_config = caGetLightboxConfig(); }
+		$vs_lightbox_displayname = $o_lightbox_config->get("lightboxDisplayName");
+		if(!$vs_lightbox_displayname){
+			$vs_lightbox_displayname = _t("lightbox");
 		}
-		$vs_set_display_name = $o_lightbox_config->get("set_display_name");
-		if(!$vs_set_display_name){
-			$vs_set_display_name = _t("lightbox");
+		$vs_lightbox_displayname_plural = $o_lightbox_config->get("lightboxDisplayNamePlural");
+		if(!$vs_lightbox_displayname_plural){
+			$vs_lightbox_displayname_plural = _t("lightboxes");
 		}
-		$vs_set_display_name_plural = $o_lightbox_config->get("set_display_name_plural");
-		if(!$vs_set_display_name_plural){
-			$vs_set_display_name_plural = _t("lightboxes");
+		$vs_lightbox_section_heading = $o_lightbox_config->get("lightboxSectionHeading");
+		if(!$vs_lightbox_section_heading){
+			$vs_lightbox_section_heading = _t("lightboxes");
 		}
-		$vs_set_section_heading = $o_lightbox_config->get("set_section_heading");
-		if(!$vs_set_section_heading){
-			$vs_set_section_heading = _t("lightboxes");
+		return array("singular" => $vs_lightbox_displayname, "plural" => $vs_lightbox_displayname_plural, "section_heading" => $vs_lightbox_section_heading);
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caCheckLightboxView($pa_options = null){
+		if (!($ps_view = caGetOption('view', $pa_options, null)) && ($o_request = caGetOption('request', $pa_options, null))) { $ps_view = $o_request->getParameter('view', pString); }
+		if(!in_array($ps_view, array('thumbnail', 'map', 'timeline', 'timelineData', 'pdf', 'list', 'xlsx', 'pptx'))) {
+			$ps_view = caGetOption('default', $pa_options, 'thumbnail');
 		}
-		return array("singular" => $vs_set_display_name, "plural" => $vs_set_display_name_plural, "section_heading" => $vs_set_section_heading);
+		return $ps_view;
 	}
 	# ---------------------------------------

@@ -31,12 +31,12 @@
  */
 	$va_user_groups = $this->getVar("user_groups");
 	$va_users = $this->getVar("users");
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("%1 Access", ucfirst($vs_lightbox_display_name)); ?></H1>
+<H1><?php print _t("%1 Access", ucfirst($vs_lightbox_displayname)); ?></H1>
 <?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-info'>".$this->getVar("message")."</div>";

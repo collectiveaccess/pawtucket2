@@ -1709,7 +1709,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	public function getItemCount($pa_options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
 		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
-		if (!$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
+		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
 		$o_dm = Datamodel::load();
