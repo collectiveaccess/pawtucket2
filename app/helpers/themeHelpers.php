@@ -765,7 +765,7 @@
 		$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment{$vn_set_id}' class='lbSetComment'><!-- load comments here --></div>\n<div class='lbSetThumbRowContainer'><div class='row lbSetThumbRow' id='lbSetThumbRow{$vn_set_id}'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end lbSetThumbRowContainer --></div><!-- end col --></div><!-- end row -->";
 		$vs_set_display .= "</div><!-- end lbSetContent -->\n";
 		$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo{$vn_set_id}'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
-		$vs_set_display .= "<div>Num items: ".$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."</div>\n";
+		$vs_set_display .= "<div>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."</div>\n";
 		if($vb_write_access){
 			$vs_set_display .= "<div class='pull-right'><a href='#' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 		}
@@ -777,30 +777,6 @@
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
 
         return $vs_set_display;
-	}
-	# ---------------------------------------
-	/*
-	 * Returns placeholder No lightboxes box
-	 *
-	 *
-	 */
-	function caLightboxSetListItemPlaceholder($po_request) {
-		$va_lightboxDisplayName = caGetLightboxDisplayName();
-		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-		$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
-		$vs_set_display = "";
-		$vs_set_display .= "<div class='lbSet'><div class='lbSetContent'>\n
-								<H5>"._t("Create your first %1", $vs_lightbox_displayname)."</H5>
-								<div class='row'><div class='col-sm-6'><div class='lbSetImgPlaceholder'><br/><br/></div><!-- end lbSetImgPlaceholder --></div><div class='col-sm-6'>
-									<div class='row lbSetThumbRow'>
-										<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder --></div>
-										<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder --></div>
-										<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder --></div>
-										<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder --></div>
-									</div><!-- end row --></div><!-- end col -->
-								</div><!-- end row -->
-							</div><!-- end lbSetContent -->\n</div><!-- end lbSet -->\n";
-		return $vs_set_display;
 	}
 	# ---------------------------------------
 	/**
@@ -954,6 +930,9 @@
 		return $vs_set_list;
 	}
 	# ---------------------------------------
+	/**
+	 *
+	 */
 	function caGetPlaceholder($vs_type_code, $vs_placeholder_type = "placeholder_media_icon"){
 		$o_config = caGetIconsConfig();
 		$va_placeholders_by_type = $o_config->getAssoc("placeholders");

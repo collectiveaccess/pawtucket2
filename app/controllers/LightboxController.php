@@ -124,6 +124,11 @@
  		function index() {
  			if($this->opb_is_login_redirect) { return; }
 
+			
+			$va_lightbox_displayname = caGetLightboxDisplayName();
+			$this->view->setVar('lightbox_displayname', $va_lightbox_displayname["singular"]);
+			$this->view->setVar('lightbox_displayname_plural', $va_lightbox_displayname["plural"]);
+
             # Get sets for display
             $t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1));
@@ -154,6 +159,8 @@
          */
  		function setDetail() {
             if($this->opb_is_login_redirect) { return; }
+            $this->request->setParameter('callback', null);
+            unset($_REQUEST['callback']);
 
  			AssetLoadManager::register("mediaViewer");
  		
@@ -186,6 +193,7 @@
 			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
 				$o_browse->reload($ps_cache_key);
 			}
+			
 			//
 			// Clear criteria if required
 			//
@@ -292,6 +300,7 @@
 
             $o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
 
+		if ($ps_view !== 'timelineData') {
 			//
 			// Facets
 			//
@@ -333,7 +342,7 @@
 			}
 			
 			$this->view->setVar('criteria', $va_criteria_for_display);
-			
+		}	
 			// 
 			// Results
 			//
