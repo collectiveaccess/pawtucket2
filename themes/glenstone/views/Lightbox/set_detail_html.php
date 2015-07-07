@@ -47,9 +47,9 @@
 	}
 	
 	$va_export_formats 				= $this->getVar('export_formats');
-	$va_lightbox_display_name 		= caGetSetDisplayName();
-	$vs_lightbox_display_name 		= $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
+	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vs_browse_key 					= $this->getVar('key');
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
@@ -118,8 +118,8 @@ if (!$vb_ajax) {	// !ajax
 					if($vb_write_access){
 ?>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_display_name)); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_display_name)); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
 <?php
 					}
 ?>
@@ -192,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("set_detail_left_col_class")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
 			<div id="lbSetResultLoadContainer">
 <?php
 } // !ajax
@@ -203,13 +203,13 @@ if (!$vb_ajax) {	// !ajax
 				print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '', 'Lightbox', 'setDetail', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 			}
 		}else{
-			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div></div>";
+			print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
 		}
 if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end lbSetResultLoadContainer -->		
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
 			if(!$vb_write_access){
 				print "<div class='warning'>"._t("You may not edit this set, you have read only access.")."</div>";

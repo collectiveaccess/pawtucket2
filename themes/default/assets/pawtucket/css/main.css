@@ -1854,8 +1854,13 @@ a.readmore-js-toggle{
 	color:#666;
 	margin-left:5px;
 	margin-right:5px;
-	}
+}
+
 .browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{color:#8c8c8c;}	
+
+.modal-dialog .btn {
+	font-size:14px;
+}
 
 /* timeline results */
 #bTimelineContainer{

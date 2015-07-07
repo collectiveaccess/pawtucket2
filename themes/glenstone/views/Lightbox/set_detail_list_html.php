@@ -32,9 +32,9 @@
 	$q_set_items = $this->getVar("result");
 	$t_set = $this->getVar("set");
 	$vb_write_access = $this->getVar("write_access");
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vn_object_table_num = $this->request->datamodel->getTableNum("ca_objects");
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 ?>
@@ -138,7 +138,7 @@
 			$vn_c++;
 		}
 	}else{
-		print "<div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_display_name)."</div>";
+		print "<div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div>";
 	}
 ?>
 			</div><!-- end row -->

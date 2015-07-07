@@ -58,7 +58,7 @@
 
 	
 	$o_lightbox_config = caGetLightboxConfig();
-	$vs_lightbox_icon = $o_lightbox_config->get("add_to_lightbox_icon");
+	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}

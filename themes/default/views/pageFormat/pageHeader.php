@@ -25,9 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = ucFirst($va_lightbox_display_name["singular"]);
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = ucFirst($va_lightboxDisplayName["singular"]);
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -35,7 +35,7 @@
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(!$this->request->config->get("disable_lightbox")){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_display_name, '', '', 'Lightbox', 'Index', array())."</li>";
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_displayname, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";

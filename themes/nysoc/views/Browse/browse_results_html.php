@@ -57,9 +57,9 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -113,8 +113,8 @@ if (!$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($qr_res->numHits()){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
-						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_displayname)."</a></li>";
+						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_displayname)."</a></li>";
 					}
 					if($vs_sort_control_type == 'dropdown'){
 ?>
@@ -156,7 +156,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_displayname)."</button></a>";
 ?>
 		</H1>
 		<H5>
