@@ -2057,7 +2057,7 @@ class BaseModel extends BaseObject {
 	 */
 	public function insert ($pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		
+	
 		$vb_we_set_transaction = false;
 		$this->clearErrors();
 		if ($this->getMode() == ACCESS_WRITE) {
@@ -2072,7 +2072,7 @@ class BaseModel extends BaseObject {
 
 			$va_media_fields = array();
 			$va_file_fields = array();
-
+			
 			//
 			// Set any auto-set hierarchical fields (eg. HIERARCHY_LEFT_INDEX_FLD and HIERARCHY_RIGHT_INDEX_FLD indexing for all and HIERARCHY_ID_FLD for ad-hoc hierarchies) here
 			//
@@ -2133,9 +2133,10 @@ class BaseModel extends BaseObject {
 
 			$va_need_to_set_rank_for = array();
 			foreach($this->FIELDS as $vs_field => $va_attr) {
-			
+	
 				$vs_field_type = $va_attr["FIELD_TYPE"];				# field type
-				$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
+				//$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
+				$vs_field_value = $this->_FIELD_VALUES[$vs_field];
 				
 				if (isset($va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) && (bool)$va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) { continue; }
 				
@@ -2148,6 +2149,7 @@ class BaseModel extends BaseObject {
 					# can return a list of *all* input errors to the caller; this is perfect listing all form input errors in
 					# a form-based user interface
 				}
+				
 				if ($pb_need_reload) {
 					$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));	// reload value since verifyFieldValue() may force the value to a default
 				}
@@ -2161,7 +2163,7 @@ class BaseModel extends BaseObject {
 						}
 					}
 				}
-
+				
 				# --- check ->one relations
 				if (isset($va_many_to_one_relations[$vs_field]) && $va_many_to_one_relations[$vs_field]) {
 					# Nothing to verify if key is null
@@ -2383,7 +2385,7 @@ class BaseModel extends BaseObject {
 					}
 				}
 			}
-
+			
 			if ($this->numErrors() == 0) {
 				$vs_fields = substr($vs_fields,0,strlen($vs_fields)-1);	# remove trailing comma
 				$vs_values = substr($vs_values,0,strlen($vs_values)-1);	# remove trailing comma
@@ -2393,10 +2395,10 @@ class BaseModel extends BaseObject {
 				if ($this->debug) echo $vs_sql;
 				
 				$o_db->query($vs_sql);
+				
 				if ($o_db->numErrors() == 0) {
 					if ($this->getFieldInfo($vs_pk = $this->primaryKey(), "IDENTITY")) {
 						$this->_FIELD_VALUES[$vs_pk] = $vn_new_id = $o_db->getLastInsertID();
-						
 						if (sizeof($va_need_to_set_rank_for)) {
 							$va_sql_sets = array();
 							foreach($va_need_to_set_rank_for as $vs_rank_fld) {
@@ -2417,7 +2419,7 @@ class BaseModel extends BaseObject {
 								}
 							}
 						}
-
+						
 						if (sizeof($va_file_fields) > 0) {
 							foreach($va_file_fields as $f) {
 								if($vs_msql = $this->_processFiles($f)) {
@@ -2456,7 +2458,7 @@ class BaseModel extends BaseObject {
 					if ((!isset($pa_options['dont_do_search_indexing']) || (!$pa_options['dont_do_search_indexing'])) && !defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
 						$this->doSearchIndexing($this->getFieldValuesArray(true), false, array('isNewRow' => true));
 					}
-
+					
 					$this->logChange("I");
 
 					if ($vb_we_set_transaction) { $this->removeTransaction(true); }
@@ -2466,7 +2468,7 @@ class BaseModel extends BaseObject {
 					if (sizeof(BaseModel::$s_instance_cache[$vs_table_name = $this->tableName()]) > 100) { 	// Limit cache to 100 instances per table
 						BaseModel::$s_instance_cache[$vs_table_name] = array_slice(BaseModel::$s_instance_cache[$vs_table_name], 0, 50, true);
 					}
-					
+						
 					// Update instance cache
 					BaseModel::$s_instance_cache[$vs_table_name][(int)$vn_id] = $this->_FIELD_VALUES;
 					return $vn_id;
@@ -3981,9 +3983,6 @@ class BaseModel extends BaseObject {
 	 	$vn_max_execution_time = ini_get('max_execution_time');
 	 	set_time_limit(7200);
 	 	
-		$o_tq = new TaskQueue();
-		$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
-
 		# only set file if something was uploaded
 		# (ie. don't nuke an existing file because none
 		#      was uploaded)
@@ -4004,6 +4003,12 @@ class BaseModel extends BaseObject {
 			$this->_FIELD_VALUES[$ps_field] = null;
 			$vs_sql =  "{$ps_field} = ".$this->quote(caSerializeForDatabase($this->_FILES[$ps_field], true)).",";
 		} else {
+			// Bail if no file is actually set
+			if(!isset($this->_SET_FILES[$ps_field]['tmp_name'])) { return false; }
+			
+			$o_tq = new TaskQueue();
+			$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
+		
 			//
 			// Process incoming files
 			//
@@ -10249,6 +10254,7 @@ $pa_options["display_form_field_tips"] = true;
 			$this->errors = $t_comment->errors;
 			return false;
 		}
+		
 		return $t_comment;
 	}
 	# --------------------------------------------------------------------------------------------
