@@ -45,7 +45,7 @@ class Media extends BaseObject {
 	# ----------------------------------------------------------
 	# Properties
 	# ----------------------------------------------------------
-	public $DEBUG = true;
+	public $DEBUG = false;
 	private $plugins = array();
 	private $instance;
 	
