@@ -1870,7 +1870,7 @@ var methods = {
 								view.tools['rotation'] = "<a href='#' title='" + view.get_tool_tip('rotation') + "' id='" + options.id + "ControlRotation' class='tileviewerControl'><img src='" + options.buttonUrlPath + "/rotate.png' width='23' height='25'/></a>";	
 							}
 							
-							if (options.allowAnnotationList) {
+							if (options.allowAnnotationList && options.showAnnotationTools) {
 								view.tools['list'] = "<a href='#' title='" + view.get_tool_tip('list') + "' id='" + options.id + "ControlAnnotationList' class='tileviewerControl'><img src='" + options.buttonUrlPath + "/list.png' width='28' height='25'/></a>";	
 							}
 					

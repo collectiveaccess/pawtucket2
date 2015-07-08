@@ -1202,6 +1202,7 @@
 		 *
 		 */
 		public function GetAnnotations() {
+			if (!$this->request->isLoggedIn()) { throw new ApplicationException(_t('Must be logged in')); }
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 			$t_rep = new ca_object_representations($pn_representation_id);
 			$t_rep->annotationMode('user');
@@ -1243,6 +1244,7 @@
 		 */
 		public function SaveAnnotations() {
 			global $g_ui_locale_id;
+			if (!$this->request->isLoggedIn()) { throw new ApplicationException(_t('Must be logged in')); }
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 			$t_rep = new ca_object_representations($pn_representation_id);
 			$t_rep->annotationMode('user');
