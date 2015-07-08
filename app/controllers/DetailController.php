@@ -1192,4 +1192,99 @@
  			$this->response->addContent($o_view->render('ca_attributes_download_media.php'));
  		}
  		# -------------------------------------------------------
+ 		# User annotations
+ 		# -------------------------------------------------------
+		/**
+		 * Returns JSON feed of annotations on an object representation
+		 *
+		 * Expects the following request parameters:
+		 *		representation_id = the id of the ca_object_representations record to display; the representation must belong to the specified object
+		 *
+		 */
+		public function GetAnnotations() {
+			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+			$t_rep = new ca_object_representations($pn_representation_id);
+			$t_rep->annotationMode('user');
+
+			$va_annotations_raw = $t_rep->getAnnotations();
+			$va_annotations = array();
+
+			foreach($va_annotations_raw as $vn_annotation_id => $va_annotation) {
+				$va_annotations[] = array(
+					'annotation_id' => $va_annotation['annotation_id'],
+					'x' => 				caGetOption('x', $va_annotation, 0, array('castTo' => 'float')),
+					'y' => 				caGetOption('y', $va_annotation, 0, array('castTo' => 'float')),
+					'w' => 				caGetOption('w', $va_annotation, 0, array('castTo' => 'float')),
+					'h' => 				caGetOption('h', $va_annotation, 0, array('castTo' => 'float')),
+					'tx' => 			caGetOption('tx', $va_annotation, 0, array('castTo' => 'float')),
+					'ty' => 			caGetOption('ty', $va_annotation, 0, array('castTo' => 'float')),
+					'tw' => 			caGetOption('tw', $va_annotation, 0, array('castTo' => 'float')),
+					'th' => 			caGetOption('th', $va_annotation, 0, array('castTo' => 'float')),
+					'points' => 		caGetOption('points', $va_annotation, array(), array('castTo' => 'array')),
+					'label' => 			caGetOption('label', $va_annotation, '', array('castTo' => 'string')),
+					'description' => 	caGetOption('description', $va_annotation, '', array('castTo' => 'string')),
+					'type' => 			caGetOption('type', $va_annotation, 'rect', array('castTo' => 'string')),
+					'locked' => 		caGetOption('locked', $va_annotation, '0', array('castTo' => 'string')),
+					'options' => 		caGetOption('options', $va_annotation, array(), array('castTo' => 'array')),
+					'key' =>			caGetOption('key', $va_annotation, null)
+				);
+			}
+
+			$this->view->setVar('annotations', $va_annotations);
+			$this->render('Details/ajax_representation_annotations_json.php');
+		}
+		# -------------------------------------------------------
+		/**
+		 * Saves annotations to an object representation
+		 *
+		 * Expects the following request parameters:
+		 *		representation_id = the id of the ca_object_representations record to save annotations to; the representation must belong to the specified object
+		 *
+		 */
+		public function SaveAnnotations() {
+			global $g_ui_locale_id;
+			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+			$t_rep = new ca_object_representations($pn_representation_id);
+			$t_rep->annotationMode('user');
+			$pa_annotations = $this->request->getParameter('save', pArray);
+
+			$va_annotation_ids = array();
+			if (is_array($pa_annotations)) {
+				foreach($pa_annotations as $vn_i => $va_annotation) {
+					$vs_label = (isset($va_annotation['label']) && ($va_annotation['label'])) ? $va_annotation['label'] : '';
+					if (isset($va_annotation['annotation_id']) && ($vn_annotation_id = $va_annotation['annotation_id'])) {
+						// edit existing annotation
+						$t_rep->editAnnotation($vn_annotation_id, $g_ui_locale_id, $va_annotation, 0, 0);
+						$va_annotation_ids[$va_annotation['index']] = $vn_annotation_id;
+					} else {
+						// new annotation
+						$va_annotation_ids[$va_annotation['index']] = $t_rep->addAnnotation($vs_label, $g_ui_locale_id, $this->request->getUserID(), $va_annotation, 0, 0);
+					}
+				}
+			}
+			$va_annotations = array(
+				'error' => $t_rep->numErrors() ? join("; ", $t_rep->getErrors()) : null,
+				'annotation_ids' => $va_annotation_ids
+			);
+
+			$pa_annotations = $this->request->getParameter('delete', pArray);
+
+			if (is_array($pa_annotations)) {
+				foreach($pa_annotations as $vn_to_delete_annotation_id) {
+					$t_rep->removeAnnotation($vn_to_delete_annotation_id);
+				}
+			}
+
+
+			$this->view->setVar('annotations', $va_annotations);
+			$this->render('Details/ajax_representation_annotations_json.php');
+		}
+		# -------------------------------------------------------
+		/**
+		 * Returns media viewer help text for display
+		 */
+		public function ViewerHelp() {
+			$this->render('Details/viewer_help_html.php');
+		}
+ 		# -------------------------------------------------------
 	}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2013 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -97,6 +97,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				require_once(__CA_LIB_DIR__.'/ca/Search/RepresentationAnnotationSearch.php');
 				return new RepresentationAnnotationSearch();
 				break;
+			case 'ca_user_representation_annotations':
+				require_once(__CA_LIB_DIR__.'/ca/Search/UserRepresentationAnnotationSearch.php');
+				return new UserRepresentationAnnotationSearch();
+				break;
 			case 'ca_item_comments':
 				require_once(__CA_LIB_DIR__.'/ca/Search/ItemCommentSearch.php');
 				return new ItemCommentSearch();
@@ -172,12 +176,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				$vs_controller = ($vb_return_advanced) ? 'SearchObjectLotsAdvanced' : 'SearchObjectLots';
 				$vs_action = 'Index';
 				break;
-			case 'ca_object_events':
-			case 45:
-                $vs_module = 'find';
-				$vs_controller = ($vb_return_advanced) ? 'SearchObjectEventsAdvanced' : 'SearchObjectEvents';
-				$vs_action = 'Index';
-                break;
 			case 'ca_entities':
 			case 20:
 				$vs_module = 'find';
@@ -224,6 +222,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			case 82:
 				$vs_module = 'find';
 				$vs_controller = ($vb_return_advanced) ? 'SearchRepresentationAnnotationsAdvanced' : 'SearchRepresentationAnnotations';
+				$vs_action = 'Index';
+				break;
+			case 'ca_user_representation_annotations':
+			case 219:
+				$vs_module = 'find';
+				$vs_controller = ($vb_return_advanced) ? 'SearchUserRepresentationAnnotationsAdvanced' : 'SearchUserRepresentationAnnotations';
 				$vs_action = 'Index';
 				break;
 			case 'ca_relationship_types':
