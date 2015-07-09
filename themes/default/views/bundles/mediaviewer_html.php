@@ -114,6 +114,15 @@ if($vs_display_type == 'media_overlay'){
 <?php
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }
+	
+	$va_display_options['help_load_url'] = caNavUrl($this->request, '', 'Detail', 'ViewerHelp');
+	if ($this->request->isLoggedIn()) {
+		$va_display_options['annotation_load_url'] = caNavUrl($this->request, '', 'Detail', 'GetAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()));
+		$va_display_options['annotation_save_url'] = caNavUrl($this->request, '', 'Detail', 'SaveAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()));
+		$va_display_options['read_only'] = false;
+	} else {
+		$va_display_options['read_only'] = true;
+	}
 	$vs_tag = $t_rep->getMediaTag('media', $vs_show_version, array_merge($va_display_options, array(
 		'id' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia' : 'caMediaDisplayContentMedia', 
 		'viewer_base_url' => $this->request->getBaseUrlPath()
