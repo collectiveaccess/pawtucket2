@@ -2358,4 +2358,28 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		return $va_groups;
 	}
 	# ---------------------------------------------------------------
+	public function getSetResponseIds($pn_user_id = null, $pn_set_id = null){
+		if(!$pn_set_id){
+			$pn_set_id = $this->getPrimaryKey();
+		}
+		if (!$pn_set_id) { return null; }
+		$o_db = $this->getDB();
+		$va_set_ids = array();
+		$va_wheres = array();
+		if($pn_user_id){
+			$va_wheres[] = " AND s.user_id = ".(int)$pn_user_id;
+		}
+		$q_responses = $o_db->query("
+						SELECT s.set_id
+						FROM ca_sets s
+						WHERE s.deleted = 0 AND s.parent_id = ?
+						".join(" ", $va_wheres), $pn_set_id);
+		if($q_responses->numRows()){
+			while($q_responses->nextRow()){
+				$va_set_ids[] = $q_responses->get("set_id");
+			}
+		}
+		return $va_set_ids;
+	}
+	# ---------------------------------------------------------------
 }

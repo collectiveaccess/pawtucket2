@@ -1087,7 +1087,57 @@ a.browseRemoveFacet img {
 }	
 #lbTimelineContainer{
 	height:500px;
-}	
+}
+/* --------------------------------- */
+/* classroom */
+/* --------------------------------- */
+.classroom h1{
+	margin-bottom:15px;
+}
+.classroom h5{
+	text-transform:uppercase;
+}
+.crSet{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	position:relative;
+	padding:15px 15px 10px 15px;
+	margin:0px 0px 30px 0px;
+	background-color:#FFFFFF;
+	font-size:12px;
+}
+.crSet h5{
+	text-transform:uppercase;
+	font-size:13px;
+	margin-top:0px;
+}
+.crSet h5 a{
+	color:#858585;
+}
+@media (max-width: 768px) {
+	.crSet .crSetImg{
+		padding-bottom:10px;
+	}
+}
+.crSet .crSetImg img{
+	width:100%;
+	height:auto;
+}
+.crSet .btn{
+	margin-top:-5px;
+}
+.crSet hr{
+	margin:10px 0px 10px 0px;
+}
+.crDetailCommentCol{
+	overflow:auto;
+	max-height:450px;
+}
+.crDetailAssignmentInfo{
+	background-color: #EDEDED;
+	padding:10px;
+	margin-top:0px;
+}
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
