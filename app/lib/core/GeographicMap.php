@@ -128,7 +128,7 @@
  		$va_tmp = explode('.', $ps_georeference_field_name);
  		$vs_field_name = array_pop($va_tmp);
  			
- 		$va_point_buf = array();	
+ 		//$va_point_buf = array();	
  		
  		//
  		// Data object is a model instance?
@@ -157,11 +157,9 @@
 						}
 					} 
 					
-					if (!is_null($vs_color)) {
+					if (!is_null($vs_color) && $vs_color && (strpos($vs_color, '^') !== false)) {
 						$vs_color = caProcessTemplateForIDs($vs_color, $po_data_object->tableName(), array($vn_id), array('returnAsLink' => false));
-					} else {
-						$vs_color = null;
-					}
+					} 
 					
 					if (isset($pa_options['ajaxContentUrl']) && $pa_options['ajaxContentUrl']) {
 						$vs_ajax_content = $pa_options['ajaxContentUrl'];
@@ -197,8 +195,8 @@
 					} else {
 						$this->addMapItem(new GeographicMapItem(array('latitude' => $va_coordinate['latitude'], 'longitude' => $va_coordinate['longitude'], 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color)));
 					}
-					if (!$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]) { $vn_point_count++;}
-					$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]++;
+					//if (!$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]) { $vn_point_count++;}
+					//$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]++;
 				}
 				
 				$vn_item_count++;
@@ -220,18 +218,17 @@
  			$t_instance = $po_data_object->getResultTableInstance();
  			$vs_table = $t_instance->tableName();
  			$vs_pk = $t_instance->primaryKey();
+ 			
  			while($po_data_object->nextHit()) {
- 				if ($va_access_values) {
- 					if (!in_array($po_data_object->get('access'), $va_access_values)) {
- 						continue;
- 					}
- 				}
- 				
- 				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => true))) {
+				if (is_array($va_access_values) && !in_array($po_data_object->get('access'), $va_access_values)) {
+					continue;
+				}
+ 				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false))) {
  					$vn_id = $po_data_object->get("{$vs_table}.{$vs_pk}");
+ 					
  					$vs_table = $po_data_object->tableName();
- 					foreach($va_coordinates as $vn_element_id => $va_geonames_by_locale) {
- 						foreach($va_geonames_by_locale as $vn_locale_id => $va_coord_list) {
+ 					foreach($va_coordinates as $vn_element_id => $va_coord_list) {
+ 						//foreach($va_geonames_by_locale as $vn_locale_id => $va_coord_list) {
  							foreach($va_coord_list as $vn_attribute_id => $va_geoname) {
 								$va_coordinate = isset($va_geoname[$vs_field_name]) ? $va_geoname[$vs_field_name] : $va_geoname;
 							
@@ -248,11 +245,9 @@
 									}
 								} 
 								
-								if (!is_null($pa_options['color'])) {
+								if (!is_null($vs_color) && $vs_color && (strpos($vs_color, '^') !== false)) {
 									$vs_color = caProcessTemplateForIDs($pa_options['color'], $vs_table, array($vn_id), array('returnAsLink' => false));
-								} else {
-									$vs_color = null;
-								}
+								} 
 								
 								if (isset($pa_options['ajaxContentUrl']) && $pa_options['ajaxContentUrl']) {
 									$vs_ajax_content = $pa_options['ajaxContentUrl'];
@@ -290,12 +285,13 @@
 									$this->addMapItem(new GeographicMapItem(array('latitude' => $va_coordinate['latitude'], 'longitude' => $va_coordinate['longitude'], 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color)));
 								}
 								
-								if (!$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]) { $vn_point_count++;}
-								$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]++;
+								//if (!$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]) { $vn_point_count++;}
+								//$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]++;
 							}
 							$vn_item_count++;
+							//if ($vn_item_count> 50){ break(3); }
 						}
-					}
+					//}
 				}
  			}	
 		}
