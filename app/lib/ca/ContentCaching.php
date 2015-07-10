@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010 Whirl-i-Gig
+ * Copyright 2010-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,6 +31,9 @@ require_once(__CA_LIB_DIR__.'/core/Configuration.php');
 
 class ContentCaching extends AppControllerPlugin {
 	# -------------------------------------------------------
+	/**
+	 * @var Configuration
+	 */
 	private $opo_caching_config = null;
 
 	private $opb_needs_to_be_cached = false;
@@ -43,28 +46,24 @@ class ContentCaching extends AppControllerPlugin {
 	}
 	# -------------------------------------------------------
 	private function getKeyForRequest() {
-		if ($va_caching_settings = $this->getCachingSettingsForRequest()) {
-			$va_param_list = is_array($va_caching_settings['parameters']) ? $va_caching_settings['parameters'] : array();
-			$vs_key = $this->opo_content_cache->generateKeyFromRequest($this->getRequest(), $va_param_list);
-
-			return $vs_key;
+		if ($vn_ttl = $this->getCachingTTLForRequest()) {
+			return $this->getRequest()->getHash();
 		}
 
 		return null;
 	}
 	# -------------------------------------------------------
-	private function getCachingSettingsForRequest() {
+	private function getCachingTTLForRequest() {
 		$o_req = $this->getRequest();
-		$vs_controller_path = $o_req->getModulePath();
-		$vs_controller = $o_req->getController();
-
 		$vs_path = ($o_req->getModulePath() ? $o_req->getModulePath().'/' : '').$o_req->getController();
 
 		$va_cached_actions = $this->opo_caching_config->getAssoc('cached_actions');
 
 		if (isset($va_cached_actions[$vs_path]) && is_array($va_cached_actions[$vs_path])) {
 			$vs_action = $o_req->getAction();
-			if (isset($va_cached_actions[$vs_path][$vs_action]) && is_array($va_cached_actions[$vs_path][$vs_action])) {
+
+
+			if (isset($va_cached_actions[$vs_path][$vs_action]) && is_numeric($va_cached_actions[$vs_path][$vs_action])) {
 				return $va_cached_actions[$vs_path][$vs_action];
 			}
 		}
@@ -79,7 +78,7 @@ class ContentCaching extends AppControllerPlugin {
 		// does this need to be cached?
 		if ($vs_key = $this->getKeyForRequest()) {
 			// is this cached?
-			if ($this->opo_content_cache->isInCache($vs_key)) {
+			if(ExternalCache::contains($vs_key, 'PawtucketPageCache')) {
 				// yep... so prevent dispatch and output cache in postDispatch
 				$this->opb_output_from_cache = true;
 
@@ -104,15 +103,17 @@ class ContentCaching extends AppControllerPlugin {
 		$o_resp = $this->getResponse();
 		if ($this->opb_needs_to_be_cached) {
 			// cache output
-			$va_caching_settings = $this->getCachingSettingsForRequest();
-			if (($vn_lifetime = $va_caching_settings['lifetime']) <= 0) {
-				$vn_lifetime = 120;		// default cache lifetime for item is 120 seconds
+			if($vn_ttl = $this->getCachingTTLForRequest()) {
+				file_put_contents('/tmp/makesure', "saving $vs_key\n", FILE_APPEND);
+				ExternalCache::save($vs_key, $o_resp->getContent(), 'PawtucketPageCache', $vn_ttl);
 			}
-			$this->opo_content_cache->cache($vs_key, $o_resp->getContent(), $vn_lifetime);
 		} else {
 			if ($this->opb_output_from_cache) {
 				// request wasn't dispatched so we need to add content to response from cache here
-				$o_resp->addContent($this->opo_content_cache->getFromCache($vs_key));
+				if($vs_key) {
+					file_put_contents('/tmp/makesure', "from cache\n", FILE_APPEND);
+					$o_resp->addContent(ExternalCache::fetch($vs_key, 'PawtucketPageCache'));
+				}
 			}
 		}
 	}
