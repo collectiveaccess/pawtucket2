@@ -2073,7 +2073,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
-	*
+	*			parents_only - Only show those sets with parent_id IS NULL  
 	*
 	*
 	*/
@@ -2170,6 +2170,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 					
 					$va_sql_wheres[] = "({$vs_sql})";
 				}
+			}
+			if($pa_options["parents_only"]){
+				$va_sql_wheres[] = "cs.parent_id IS NULL";
 			}
 			$qr_res = $o_db->query("SELECT cs.set_id, cs.user_id, type_id, cu.fname, cu.lname
 									FROM ca_sets cs

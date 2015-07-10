@@ -54,6 +54,7 @@
 	
 	<div class="row">
 		<div class="<?php print ($vs_left_col_class = $o_classroom_config->get("setListLeftColClass")) ? $vs_left_col_class : "col-sm-10 col-md-9 col-lg-7"; ?>">
+		<div class="crSetList">
 <?php
 	if(sizeof($va_set_ids)){
 		$vn_i = 0;
@@ -69,7 +70,17 @@
 			print "</div><!-- end row -->";
 		}
 	}
-	print "<div class='row' id='crSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-6 col-md-6'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
+	print "</div><!-- end crSetList -->";
+	print "<div class='row' id='crSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-12'>\n";
+	if($vs_user_role == $this->getVar("educator_role")){
+		print _t("You have no %1.", $vs_classroom_displayname_plural);	
+?>
+		<a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_classroom_displayname)); ?></a>
+<?php
+	}else{
+		print _t("You have no %1.", $vs_classroom_displayname_plural);	
+	}
+	print "\n</div><!-- end col --></div><!-- end row -->\n";
 ?>
 		</div><!-- end col 1-->
 		<div class="<?php print ($vs_right_col_class = $o_classroom_config->get("setListRightColClass")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?>">
@@ -78,33 +89,36 @@
 		if($vs_user_role == $this->getVar("educator_role")){
 ?>
 			<div class="text-center"><a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_classroom_displayname)); ?></a></div>
-			<H2>Your Classes</H2>
-			<small>Classes are an easy way to make groups of site users for you to share your assignments with.</small>
+			<H2>Your Groups</H2>
+			<p><small>Groups are an easy way to share your <?php print $vs_classroom_displayname_plural; ?> with your classes.  Simply make a group, and use the Share <?php print $vs_classroom_displayname; ?> link in the gear to link <?php print $vs_classroom_displayname_plural; ?> with groups.  You can then distribute the link to join the group to share the <?php print $vs_classroom_displayname; ?> with your students.</small></p>
 <?php
+			print "<div class='text-center'><a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', '*', 'userGroupForm', array())."\"); return false;' >"._t("New Group")."</a></div><HR/>";
 			if(sizeof($va_user_groups)){
 				foreach($va_user_groups as $va_user_group){
-					print "<div><a href='#' onClick='$(\"#userGroup".$va_user_group["group_id"]."\").slideToggle();'><div class='pull-right'><span class='glyphicon glyphicon-expand'></span></div>".$va_user_group["name"]."</a></div>";
-					print "<div id='userGroup".$va_user_group["group_id"]."' style='display:none; padding-left:20px;'>";
+					print "<div class='crListUserGroup'><a href='#' onClick='$(\"#userGroup".$va_user_group["group_id"]."\").slideToggle(); return false;'><div class='pull-right'><span class='glyphicon glyphicon-expand'></span></div>".$va_user_group["name"]."</a>";
+					print "<br/><small>"._t("%1 members", sizeof($va_user_group["members"]))."<br/>";
+					print "</small>\n";
+					
+					print "<div id='userGroup".$va_user_group["group_id"]."' style='display:none; padding-left:10px;'><small>";
 					print '<dl>';
 					if($va_user_group["description"]){
 						print "<dt>"._t("Description")."</dt><dd>".$va_user_group["description"]."</dd>";
 					}
-					print "<dt>"._t("Url to join class")."</dt><dd>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_id" => $va_user_group["group_id"]))."</dd>";
+					print "<dt>"._t("Url to join group")."</dt><dd><textarea class='form-control'>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_id" => $va_user_group["group_id"], "section" => "classroom"))."</textarea></dd>";
 					print "<dt>"._t("Members")."</dt><dd>";
 					if(is_array($va_user_group["members"]) && sizeof($va_user_group["members"])){
+						print "<ul>";
 						foreach($va_user_group["members"] as $va_group_user){
-							print trim($va_group_user["fname"]." ".$va_group_user["lname"]).", <a href='mailto:".$va_group_user["email"]."'>".$va_group_user["email"]."</a><br/>";
+							print "<li>".trim($va_group_user["fname"]." ".$va_group_user["lname"])."<br/><a href='mailto:".$va_group_user["email"]."'>".$va_group_user["email"]."</a></li>";
 						}
+						print "</ul>";
 					}else{
 						print _t("Group has no users");
 					}
 					print "</dd></dl>";
-					print "</div><!-- end userGroup -->";
+					print "</small></div><!-- end userGroup --></div><!-- end crListUserGroup -->";
 				}
-			}else{
-				print _t("You have made no user groups");
 			}
-			print "<HR/><div class='text-center'><a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', '*', 'userGroupForm', array())."\"); return false;' >"._t("New Class")."</a></div>";
 		}
 ?>
 		</div><!-- end col -->

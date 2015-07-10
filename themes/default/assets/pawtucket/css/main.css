@@ -1097,6 +1097,9 @@ a.browseRemoveFacet img {
 .classroom h5{
 	text-transform:uppercase;
 }
+.classroom small{
+	line-height:1.1em;
+}
 .crSet{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -1137,6 +1140,21 @@ a.browseRemoveFacet img {
 	background-color: #EDEDED;
 	padding:10px;
 	margin-top:0px;
+}
+.crListUserGroup{
+	padding-bottom:15px;
+}
+.crListUserGroup ul{
+	padding-left:15px !important;
+	max-height:120px;
+	overflow:auto;
+}
+.crListUserGroup dl{
+	padding-bottom:0px;
+	margin-bottom:0px;
+}
+.crListUserGroup dd{
+	padding-bottom:10px;
 }
 /* --------------------------------- */
 /* front page */

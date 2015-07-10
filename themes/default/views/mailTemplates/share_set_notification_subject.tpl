@@ -26,9 +26,8 @@
  * ----------------------------------------------------------------------
  */
 	$ps_from_name = $this->getVar("from_name");
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$vs_lightbox_displayname = $this->getVar("display_name");
+	$vs_lightbox_displayname_plural = $this->getVar("display_name_plural");
 
 	print _t("%1 has shared a %2 with you", $ps_from_name, $vs_lightbox_displayname);
 ?>

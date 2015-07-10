@@ -65,6 +65,7 @@
 	
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
+	$vs_user_role						= $this->getVar("user_role");
 	
 if (!$vb_ajax) {	// !ajax
 ?>	
@@ -212,14 +213,19 @@ if (!$vb_ajax) {	// !ajax
 			print "<dt>"._t("Created by")."</dt><dd>".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</dd>\n";
 			print "</dl>\n";
 		}
+		print "<p id='crSetDescription".$t_set->get("set_id")."'>";
 		if ($vs_description = $t_set->get("description")) {
-			print "<p id='crSetDescription".$t_set->get("set_id")."'>".$vs_description."</p><hr/>";
+			print $vs_description;
 		}
+		print "</p><hr/>";
 		# --- show repond option to Students for parent sets (don't show respond button on reponses)
 		if(!$t_set->get("parent_id")){
 			if($vs_user_role == $this->getVar("student_role")){
 				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID());
+				$vb_response = false;
+				print "<div id='crUserResponse'>";
 				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
+					$vb_response = true;
 					print "<H5>Your Response</H5>";
 					$t_response_set = new ca_sets();
 					foreach($va_user_response_ids as $vn_response_set_id){
@@ -228,15 +234,14 @@ if (!$vb_ajax) {	// !ajax
 							print caClassroomSetListItem($this->request, $t_response_set, $va_access_values, array("write_access" => $vb_write_access));
 						}
 					}
-					print "<hr/>";
-				}else{
+				}
+				print "</div>";
 ?>
-				<p class='userResponse'>
+				<div id='crUserRespond' <?php #print (($vb_response) ? "style='display:none;'" : ""); ?>>
 					<a href='#' class='btn btn-default pull-left' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Respond"); ?></a>
 					Click RESPOND to make a collection of items in response to this assignment. Once you’ve made your collection, you can add items to it while searching and browsing the site.
-				</p><hr/>
+				</div><hr/>
 <?php
-				}
 			}
 			$va_response_ids = $t_set->getSetResponseIds();
 			if(is_array($va_response_ids) && sizeof($va_response_ids)){
@@ -363,11 +368,6 @@ if (!$vb_ajax) {    // !ajax
         <!-- end col -->
         <div
             class="<?php print ($vs_right_col_class = $o_classroom_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
-<?php
-            if (!$vb_write_access) {
-                print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
-            }
-?>
             <div>
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
@@ -405,7 +405,50 @@ if (!$vb_ajax) {    // !ajax
 ?>
 		</div><!-- end col -->
 	</div><!-- end row -->
+<?php
+	//
+	// Delete set confirm dialog - used to delete response sets
+	//
+?>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="Confirm delete" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				
+			</div>
+			<div class="modal-footer">
+				<a class="btn btn-ok btn-delete"><span class="glyphicon glyphicon-trash"></span> <?php print _t('Delete'); ?></a>
+				<a class="btn" data-dismiss="modal"><?php print _t('Cancel'); ?></a>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('#confirm-delete').on('show.bs.modal', function(e) {
+			var set_id = jQuery(e.relatedTarget).data('set_id');
+			var set_name = jQuery(e.relatedTarget).data('set_name');
+	
+			var b = '<?php print addslashes(_t('Really delete <strong><em>%1</em></strong>? This action cannot be undone.', "^set_name")); ?>';
+			jQuery(".modal-body").html(b.replace("^set_name", set_name));
+			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
+		}).find('.btn-delete').on('click', function(e) {
+			var set_id = jQuery(this).data('set_id');
+			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
+				if(data.status == 'ok') {
+					jQuery("#crSetContainer" + set_id).remove();
+					jQuery("#crUserResponse").html(' ');
+					jQuery('#crUserRespond').show();
+					jQuery("#crSetListErrors").hide();
+				} else {
+					jQuery("#crSetListErrors").html(data.errors.join(';')).show();
+				}
+				jQuery('#confirm-delete').modal('hide');
+			});
+		
+		});
+	});
 <?php
 	if (in_array($vs_current_view, array('list', 'thumbnail'))) {
 ?>

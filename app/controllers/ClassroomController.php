@@ -131,12 +131,12 @@
  		# -------------------------------------------------------
  		function userGroupForm() {
  			
- 			parent::userGroupForm(array('user_group_heading' => _t('Class')));
+ 			parent::userGroupForm(array('user_group_heading' => _t('Group')));
  		}
  		# -------------------------------------------------------
  		function saveUserGroup() {
  			
- 			parent::saveUserGroup(array('user_group_terminology' => _t('class')));
+ 			parent::saveUserGroup(array('user_group_terminology' => _t('group')));
  		}
  		# -------------------------------------------------------
  		function ajaxSaveSetInfo() {
@@ -147,6 +147,18 @@
  		function setDetail() {
  			
  			parent::setDetail(array('view' => 'Classroom/set_detail_html.php', 'display_name' => $this->ops_classroom_display_name));
+ 		}
+ 		# ------------------------------------------------------
+ 		function shareSetForm() {
+           parent::shareSetForm(array('display_name' => $this->ops_classroom_display_name));
+ 		}
+ 		# -------------------------------------------------------
+ 		function saveShareSet() {
+           parent::saveShareSet(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
+ 		}
+ 		# -------------------------------------------------------
+ 		function setAccess() {
+           parent::setAccess(array('view' => 'Classroom/set_access_html.php'));
  		}
  		# -------------------------------------------------------
  		

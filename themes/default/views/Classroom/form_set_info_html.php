@@ -83,11 +83,13 @@
 <?php
 						if($pn_parent_id){
 ?>
-						jQuery('.userResponse').html(h);
+						jQuery('#crUserResponse').html('<H5>Your Response</H5>' + h);
+						jQuery('#crUserRespond').hide();
 <?php
 						}else{
 ?>
-						jQuery('.lbSetListItemRow').last().append(h);
+						jQuery('.crSetList').last().append(h);
+						jQuery('#crSetListPlaceholder').hide();
 <?php
 						}	
 ?>
