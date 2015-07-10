@@ -46,6 +46,11 @@
  		 */
  		protected $opa_access_values = array();
  		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Browse';
+ 		
  		# -------------------------------------------------------
  		/**
  		 *
@@ -55,6 +60,8 @@
  			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            $this->opo_config = caGetBrowseConfig();
+            
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("find_type", $this->ops_find_type);
@@ -65,8 +72,7 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			$o_config = caGetBrowseConfig();
- 			$this->view->setVar("config", $o_config);
+ 			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
@@ -103,6 +109,8 @@
 				$va_views['timelineData'] = array();
 			}
 			
+			$va_view_info = $va_views[$ps_view];
+			
  			if(!in_array($ps_view, array_keys($va_views))) {
  				$ps_view = array_shift(array_keys($va_views));
  			}
@@ -123,7 +131,7 @@
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
 			$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
 			$this->view->setVar('view', $ps_view);
-			$this->view->setVar('viewIcons', $o_config->getAssoc("views"));
+			$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
 		
 			//
 			// Load existing browse if key is specified
@@ -316,7 +324,7 @@
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
- 					$pn_hits_per_block = $o_config->get("defaultHitsPerBlock");
+ 					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
  				}
  			}
  			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
@@ -340,6 +348,18 @@
  			if ($ps_type) {
  				if ($this->render("Browse/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
+ 			
+ 			// map
+			if ($ps_view === 'map') {
+				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
+		
+				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
+			
+				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
+				$qr_res->seek(0);
+				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
+				$this->view->setVar('map', $x=$o_map->render('HTML', array()));
+			}
  			
  			switch($ps_view) {
  				case 'pdf':
@@ -403,5 +423,32 @@
  			
  			return join(" / ", $va_buf);
   		}
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            
+            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
+            $ps_view = $this->request->getParameter('view', pString);
+            $ps_browse = $this->request->getParameter('browse', pString);
+            if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
+ 				// invalid browse type – throw error
+ 				throw new ApplicationException("Invalid browse type");
+ 			}
+ 			
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
+				throw new ApplicationException("Invalid view");
+			}
+            
+			$vs_content_template = $va_view_info['display']['description_template'];
+			
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br/>")));
+			
+         	$this->render("Browse/ajax_map_item_html.php");   
+        }
  		# -------------------------------------------------------
 	}

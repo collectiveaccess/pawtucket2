@@ -46,6 +46,11 @@
  		 */
  		protected $opa_access_values = array();
  		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Search';
+ 		
  		# -------------------------------------------------------
  		/**
  		 *

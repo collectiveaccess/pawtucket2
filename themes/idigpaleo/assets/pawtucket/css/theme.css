@@ -228,3 +228,9 @@ hr{
 	background-color:#999;
 	border:0px;
 }
+
+h5.headingVernacularName {
+	margin: 0 0 10px 0;
+	padding: 0px;
+	font-size: 14px;
+}

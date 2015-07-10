@@ -26,6 +26,7 @@
 			
 			<div class='col-sm-6 col-md-6'>
 				<H4>{{{<ifdef code="ca_objects.taxonomy_specimen.scientific_name">^ca_objects.taxonomy_specimen.scientific_name</ifdef>}}}</H4>
+				<H5 class="headingVernacularName">{{{<ifdef code="ca_objects.taxonomy_specimen.vernacular_name"><a href="^ca_objects.taxonomy_specimen.vernacular_url">^ca_objects.taxonomy_specimen.vernacular_name</a></ifdef>}}}</H5>
 				{{{<ifdef code="ca_objects.idno">^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.source_id">^ca_objects.source_id<br/><br/></ifdef>}}}
 				
@@ -102,7 +103,7 @@
 					}
 					
 	?>
-
+				{{{map}}}
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->

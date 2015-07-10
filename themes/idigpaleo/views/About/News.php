@@ -1,14 +1,39 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": News");
+	require_once(__CA_APP_DIR__.'/lib/vendor/autoload.php');
+	use Guzzle\Http\Client;
+
+	$client = new Client();
+	$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
+
+	$va_news = json_decode(json_encode($response->xml()),TRUE);
 ?>
 <H1><?php print _t("News"); ?></H1>
-<div class="row">
-	<div class="col-sm-6 col-md-5">
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dolor purus, facilisis vitae orci at, egestas iaculis turpis. Aliquam ut vestibulum tellus. Nam nec nisi tellus. Phasellus imperdiet risus pulvinar, varius justo sed, egestas turpis. Integer porta tempus lobortis. Ut luctus ac est nec sagittis. Nam aliquam vel ante at blandit. Phasellus neque massa, vulputate a mattis eu, blandit convallis tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut dignissim dui quam. Duis interdum mauris eget augue scelerisque elementum. Etiam condimentum nibh eget mi rutrum condimentum. Maecenas et cursus urna, quis sollicitudin libero. Donec sit amet augue suscipit, ultricies dolor quis, aliquam magna. Nunc ut hendrerit odio, vitae rutrum sapien.</p>
-		<p>Maecenas nec erat cursus, egestas velit pulvinar, ultrices libero. Vivamus viverra sapien risus, et tincidunt ipsum ultrices et. In malesuada, tellus sit amet interdum tincidunt, massa sem laoreet nulla, ac mollis lorem lacus sit amet ipsum. Nullam vel quam leo. Ut et tincidunt nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam vel rutrum tortor, sit amet bibendum augue. Nullam nisi leo, imperdiet et feugiat vitae, malesuada nec risus. Cras adipiscing molestie ultrices. Sed quis purus sollicitudin, accumsan nisi in, eleifend mauris. Aliquam erat volutpat.</p>
-	</div>
-	<div class="col-sm-6 col-md-5">
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dolor purus, facilisis vitae orci at, egestas iaculis turpis. Aliquam ut vestibulum tellus. Nam nec nisi tellus. Phasellus imperdiet risus pulvinar, varius justo sed, egestas turpis. Integer porta tempus lobortis. Ut luctus ac est nec sagittis. Nam aliquam vel ante at blandit. Phasellus neque massa, vulputate a mattis eu, blandit convallis tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut dignissim dui quam. Duis interdum mauris eget augue scelerisque elementum. Etiam condimentum nibh eget mi rutrum condimentum. Maecenas et cursus urna, quis sollicitudin libero. Donec sit amet augue suscipit, ultricies dolor quis, aliquam magna. Nunc ut hendrerit odio, vitae rutrum sapien.</p>
-		<p>Maecenas nec erat cursus, egestas velit pulvinar, ultrices libero. Vivamus viverra sapien risus, et tincidunt ipsum ultrices et. In malesuada, tellus sit amet interdum tincidunt, massa sem laoreet nulla, ac mollis lorem lacus sit amet ipsum. Nullam vel quam leo. Ut et tincidunt nunc. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam vel rutrum tortor, sit amet bibendum augue. Nullam nisi leo, imperdiet et feugiat vitae, malesuada nec risus. Cras adipiscing molestie ultrices. Sed quis purus sollicitudin, accumsan nisi in, eleifend mauris. Aliquam erat volutpat.</p>
-	</div>
-</div>
+<?php
+		if(is_array($va_news)){
+			$i = 0;
+			foreach($va_news["channel"]["item"] as $va_news_item){
+				#print_r($va_news_item);
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print "<div class='col-sm-6 news'><H2>";
+				if($va_news_item["link"]){
+					print "<a href='".$va_news_item["link"]."' target='_blank'>".$va_news_item["title"]."</a>";
+				}else{
+					print $va_news_item["title"];
+				}
+				print "</H2>";	
+				print date("F j, Y", strtotime($va_news_item["pubDate"]));
+				print "</div>";
+				$i++;
+				if($i == 2){
+					print "</div>";
+					$i = 0;
+				}
+			}
+			if($i == 1){
+				print "</div>"; 
+			}
+		}
+?>

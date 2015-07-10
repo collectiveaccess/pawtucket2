@@ -37,6 +37,17 @@
  	
  	class FindController extends ActionController {
  		# -------------------------------------------------------
+        /**
+         * @var Configuration
+         */
+ 		 protected $opo_config;
+ 		 
+        /**
+         * @var 
+         */
+ 		 protected $ops_view_prefix=null;
+ 		 
+ 		# -------------------------------------------------------
  		/**
  		 *
  		 */
@@ -675,5 +686,25 @@
  		public function getCriteriaForDisplay() {
  			return $this->opo_result_context ? $this->opo_result_context->getSearchExpression() : '';		// just give back the search expression verbatim; works ok for simple searches	
  		}
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            
+            $pn_id = $this->request->getParameter('id', pString); 
+            $ps_view = $this->request->getParameter('view', pString);
+ 			
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			$va_view_info = $va_views[$ps_view];
+            
+			$vs_content_template = $va_view_info['display']['description_template'];
+			
+ 			$this->view->setVar('contentTemplate', $vs_content_template. caProcessTemplateForIDs($vs_content_template, 'ca_objects', array($pn_id)));
+			
+         	$this->render($this->ops_view_prefix."/ajax_map_item_html.php");   
+        }
  		# ------------------------------------------------------------------
  	}

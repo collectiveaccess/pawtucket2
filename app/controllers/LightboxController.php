@@ -50,11 +50,6 @@
  		 protected $opa_user_groups;
 
         /**
-         * @var Configuration
-         */
- 		 protected $opo_config;
-
-        /**
          * @var
          */
  		 protected $ops_lightbox_display_name;
@@ -78,6 +73,11 @@
          * @var string
          */
         protected $ops_tablename = 'ca_objects';
+        
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Lightbox';
         
  		# -------------------------------------------------------
         /**
@@ -1217,7 +1217,7 @@
  		public function ajaxGetMapItem() {
             if($this->opb_is_login_redirect) { return; }
             
-            $pn_id = $this->request->getParameter('id', pString); 
+            $pa_ids = explode(";", $this->request->getParameter('id', pString)); 
             $ps_view = $this->request->getParameter('view', pString);
  			
  			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
@@ -1226,7 +1226,7 @@
             
 			$vs_content_template = $va_view_info['display']['description_template'];
 			
- 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', array($pn_id)));
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values)));
 			
          	$this->render("Lightbox/ajax_map_item_html.php");   
         }
