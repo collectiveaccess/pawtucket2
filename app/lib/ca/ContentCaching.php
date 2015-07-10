@@ -28,21 +28,18 @@
  
  	require_once(__CA_LIB_DIR__.'/core/Controller/AppController/AppControllerPlugin.php');
  	require_once(__CA_LIB_DIR__.'/core/Configuration.php');
- 	require_once(__CA_LIB_DIR__.'/core/ContentCache.php');
  
 	class ContentCaching extends AppControllerPlugin {
 		# -------------------------------------------------------
 		private $opo_caching_config = null;
-		private $opo_content_cache = null;
 		
 		private $opb_needs_to_be_cached = false;
 		private $opb_output_from_cache = false;
 		# -------------------------------------------------------
 		public function __construct() {
 			parent::__construct();
-			
-			$this->opo_caching_config = Configuration::load(__CA_APP_DIR__.'/conf/content_caching.conf');
-			$this->opo_content_cache = new ContentCache();
+
+			$this->opo_caching_config = Configuration::load(__CA_CONF_DIR__.'/content_caching.conf');
 		}
 		# -------------------------------------------------------
 		private function getKeyForRequest() {
@@ -121,4 +118,3 @@
 		}
 		# -------------------------------------------------------
 	}
-?>
