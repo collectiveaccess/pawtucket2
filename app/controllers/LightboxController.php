@@ -121,7 +121,7 @@
         /**
          *
          */
- 		function index() {
+ 		function index($va_options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			
@@ -151,13 +151,14 @@
  			$this->view->setVar("activity", $va_set_change_log);
 
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
- 			$this->render("Lightbox/set_list_html.php");
+ 			
+ 			$this->render(caGetOption("view", $va_options, "Lightbox/set_list_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function setDetail() {
+ 		function setDetail($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
             $this->request->setParameter('callback', null);
             unset($_REQUEST['callback']);
@@ -296,9 +297,9 @@
 			$this->view->setVar('secondarySort', $ps_secondary_sort);
 			$this->view->setVar('sortDirection', $ps_sort_direction);
 			
-			$va_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
+			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -402,7 +403,7 @@
  					$this->render("Lightbox/set_detail_timelineData_json.php");
  					break;
  				default:
- 					$this->render("Lightbox/set_detail_html.php");
+ 					$this->render(caGetOption("view", $va_options, "Lightbox/set_detail_html.php"));
  					break;
  			}
  		}
@@ -410,7 +411,7 @@
         /**
          *
          */
- 		function setForm() {
+ 		function setForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
 			// set_id is passed, so we're editing a set
@@ -423,27 +424,28 @@
 				$t_set = new ca_sets();
 			}
  			$this->view->setVar("set", $t_set);
- 			$this->render("Lightbox/form_set_info_html.php");
+ 			$this->render(caGetOption("view", $va_options, "Lightbox/form_set_info_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function ajaxSaveSetInfo() {
+ 		function ajaxSaveSetInfo($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
+ 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
  			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
  			
  			// check for errors
  			// set name - required
- 			;
+ 			
  			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
- 				$va_errors[] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
+ 				$va_errors[] = _t("Please enter the name of your %1", $vs_display_name);
  			}
  			$this->view->setVar("name", $ps_name);
  			
@@ -470,6 +472,7 @@
 					$t_set->set('type_id', $vn_set_type_user);
 					$t_set->set('user_id', $this->request->getUserID());
 					$t_set->set('set_code', $this->request->getUserID().'_'.time());
+					$t_set->set('parent_id', $this->request->getParameter('parent_id', pInteger));
 					// create new attribute
 					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 					$t_set->insert();
@@ -494,9 +497,9 @@
 					// select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
-					$this->view->setVar("message", _t('Saved %1', $this->ops_lightbox_display_name));
-					
-					$this->view->setVar('block', caLightboxSetListItem($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
+					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
+					$vs_set_list_item_function = caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
+					$this->view->setVar('block', $vs_set_list_item_function($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
@@ -791,23 +794,25 @@
         /**
          *
          */
- 		function userGroupForm() {
+ 		function userGroupForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			$t_user_group = new ca_user_groups();
  			$this->view->setVar("user_group",$t_user_group);
-
+			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $va_options, _t("User Group")));
  			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function saveUserGroup() {
+ 		function saveUserGroup($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
+ 			
+ 			$vs_user_group_terminology = caGetOption("user_group_terminology", $va_options, _t("user group"));
  			
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
@@ -818,7 +823,7 @@
  			// group name - required
  			$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors["name"] = _t("Please enter the name of your user group");
+ 				$va_errors["name"] = _t("Please enter the name of your %1", $vs_user_group_terminology);
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
@@ -846,7 +851,7 @@
 					$this->userGroupForm();
 				}else{
 					// add current user to group
-					$this->view->setVar("message", _t('Saved user group.'));
+					$this->view->setVar("message", _t('Saved %1.', $vs_user_group_terminology));
  					$this->render("Form/reload_html.php");
 				}
 			}else{

@@ -69,6 +69,7 @@
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 				jQuery('#SetForm').serializeObject(), function(data) {
 					jQuery("#lbSetName" + data.set_id).html(data.name);
+					jQuery("#lbSetDescription" + data.set_id).html(data.description);
 					jQuery("#caMediaPanel").data('panel').hidePanel();
 					
 					if(data.is_insert) { 

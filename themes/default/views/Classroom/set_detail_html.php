@@ -29,9 +29,16 @@
  *
  * ----------------------------------------------------------------------
  */
-	$o_lightbox_config 				= $this->getVar("set_config");
+	$o_classroom_config 				= $this->getVar("classroom_config");
+	$vs_classroom_displayname 			= $this->getVar("classroom_display_name");
+	$vs_classroom_displayname_plural 	= $this->getVar("classroom_display_name_plural");
+	$vs_classroom_section_heading		= $this->getVar("classroom_section_heading");
+
 	$qr_set_items 					= $this->getVar("result");
 	$t_set 							= $this->getVar("set");
+	if($t_set->get("parent_id")){
+		$t_parent_set = new ca_sets($t_set->get("parent_id"));
+	}
 	$vn_set_id						= $t_set->get("set_id");
 	$va_set_item_info           	= $this->getVar("setItemInfo");
 	$vb_write_access 				= $this->getVar("write_access");
@@ -44,29 +51,25 @@
 	$vs_current_sort				= $this->getVar('sort');
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
-	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
+	$vs_sort_control_type 			= $o_classroom_config->get("sortControlType");
 	if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
 	
 	$va_export_formats 				= $this->getVar('export_formats');
-	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
-	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vs_browse_key 					= $this->getVar('key');
 	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
 	
 	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
-	$vs_caption_template = 			$o_lightbox_config->get("caption_template");
+	$vs_caption_template = 			$o_classroom_config->get("caption_template");
 	
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
 	
-	
 if (!$vb_ajax) {	// !ajax
 ?>	
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
+		<div class="<?php print ($vs_left_col_class = $o_classroom_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -88,7 +91,15 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack">
+<?php
+				if($t_set->get("parent_id")){
+					print caNavLink($this->request, ($o_classroom_config->get("backLink")) ? $o_classroom_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "*", "setDetail", array("set_id" => $t_set->get("parent_id")));
+				}else{
+					print caNavLink($this->request, ($o_classroom_config->get("backLink")) ? $o_classroom_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "*", "Index");
+				}
+?>
+			</div><!-- end setsBack -->
 			<H1>
 				<?php print "<span id='crSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
@@ -130,58 +141,50 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divider'></li>";
 						}
 ?>				
-						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_displayname_plural), "", "", "Lightbox", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, _t("All %1", $vs_classroom_displayname_plural), "", "", "*", "Index"); ?></li>
 <?php
 					if($vb_write_access){
 ?>
                         <li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
 <?php
+						if(!$t_set->get("parent_id") && ($vs_user_role == $this->getVar("educator_role"))){
+?>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_classroom_displayname)); ?></a></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_classroom_displayname)); ?></a></li>
+<?php
+						}
 					}
 ?>
-						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
+						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "*", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
 <?php
 						if(is_array($va_export_formats) && sizeof($va_export_formats)){
 							// Export as PDF links
 							print "<li class='divider'></li>\n";
 							print "<li class='dropdown-header'>"._t("Download as:")."</li>\n";
 							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "*", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
 							}
 						}
+						if($vs_user_role == $this->getVar("educator_role")){
 ?>		
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
+							<li class="divider"></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_classroom_displayname)); ?></a></li>
+							<li class="divider"></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php
-						if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
+							if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
 ?>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
 <?php
+							}
 						}
 ?>
 					</ul>
 				</div><!-- end btn-group -->
 			</H1>
-			<H5>
-<?php
-				if (sizeof($va_criteria) > 1) {
-					foreach($va_criteria as $va_criterion) {
-						if ($va_criterion['facet_name'] != '_search') {
-							print "<strong>".$va_criterion['facet'].':</strong> ';
-							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-							print " ";
-						}
-					}
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1));
-				}
-?>		
-			</H5>
 		</div><!-- end col -->
-		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_classroom_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
 <?php
 			if(is_array($va_views) && sizeof($va_views)){
@@ -201,7 +204,68 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end col -->
 	</div><!-- end row -->
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+		<div class="<?php print ($vs_left_col_class = $o_classroom_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+<?php
+		if($t_set->get("parent_id")){
+			print '<dl class="dl-horizontal crDetailAssignmentInfo">';
+			print "<dt>".ucfirst($vs_classroom_displayname)."</dt><dd>".caNavLink($this->request, $t_parent_set->getLabelForDisplay(), "", "", "*", "setDetail", array("set_id" => $t_set->get("parent_id")))."</dd>\n";
+			print "<dt>"._t("Created by")."</dt><dd>".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</dd>\n";
+			print "</dl>\n";
+		}
+		if ($vs_description = $t_set->get("description")) {
+			print "<p id='crSetDescription".$t_set->get("set_id")."'>".$vs_description."</p><hr/>";
+		}
+		# --- show repond option to Students for parent sets (don't show respond button on reponses)
+		if(!$t_set->get("parent_id")){
+			if($vs_user_role == $this->getVar("student_role")){
+				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID());
+				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
+					print "<H5>Your Response</H5>";
+					$t_response_set = new ca_sets();
+					foreach($va_user_response_ids as $vn_response_set_id){
+						if ($t_response_set->load($vn_response_set_id)) {
+							$vb_write_access = $t_response_set->haveAccessToSet($this->request->getUserID(), 2);
+							print caClassroomSetListItem($this->request, $t_response_set, $va_access_values, array("write_access" => $vb_write_access));
+						}
+					}
+					print "<hr/>";
+				}else{
+?>
+				<p class='userResponse'>
+					<a href='#' class='btn btn-default pull-left' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Respond"); ?></a>
+					Click RESPOND to make a collection of items in response to this assignment. Once you’ve made your collection, you can add items to it while searching and browsing the site.
+				</p><hr/>
+<?php
+				}
+			}
+			$va_response_ids = $t_set->getSetResponseIds();
+			if(is_array($va_response_ids) && sizeof($va_response_ids)){
+				print "";
+				print "<H5><a href='#' onClick='jQuery(\"#crResponses\").toggle(); return false;'>"._t("All Responses")." (".sizeof($va_response_ids).") <i class='fa fa-arrows-v'></i></H5></a>";
+				$t_response_set = new ca_sets();
+				$i = 0;
+				print "<div id='crResponses'".(($qr_set_items->numHits()) ? " style='display:none;'" : "").">";
+				foreach($va_response_ids as $vn_response_set_id){
+					if ($t_response_set->load($vn_response_set_id)) {
+						if($i == 0){
+							print "<div class='row'>";
+						}
+						print "<div class='col-xs-12 col-sm-6'>".caClassroomSetResponseItem($this->request, $t_response_set, $va_access_values)."</div><!-- end col -->";
+						$i++;
+						if($i == 2){
+							print "</div><!-- end row -->";
+							$i = 0;
+						}
+					}
+				}
+				if($i == 1){
+					print "</div><!-- end row -->";
+				}
+				print "</div>";
+				print "<hr/>";
+			}
+		}
+?>
 			<div id="lbSetResultLoadContainer">
 <?php
 } // !ajax
@@ -287,7 +351,7 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 				}else{
-					print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
+					print "<div class='row'><div class='col-sm-12'>"._t("Click the %1 near items throughout the site to add items to this %2.", $o_classroom_config->get("addToClassroomIcon"), $vs_classroom_displayname)."</div></div>";
 				}
 				break;
 			}
@@ -298,13 +362,10 @@ if (!$vb_ajax) {    // !ajax
         </div>
         <!-- end col -->
         <div
-            class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+            class="<?php print ($vs_right_col_class = $o_classroom_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
-            }
-            if ($vs_description = $t_set->get("description")) {
-                print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
 ?>
             <div>
@@ -322,12 +383,11 @@ if (!$vb_ajax) {    // !ajax
                     <!-- end form-group -->
                 </form>
             </div>
-            <div class="lbSetCommentHeader" <?php print (($vn_num_comments == 0) ? "style='display:none;'" : ''); ?>><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span
-                        id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a>
+            <div class="lbSetCommentHeader" <?php print (($vn_num_comments == 0) ? "style='display:none;'" : ''); ?>><a href="#" onClick="jQuery('.lbComments').toggle(); return false;"><span id="lbSetCommentsCount">{{{commentCountDisplay}}}</span> <i class="fa fa-arrows-v"></i></a>
                 <hr/>
             </div>
 <?php
-            print "<div class='lbComments' " . (($vn_num_comments == 0) ? "style='display:none;'" : '') . ">";
+            print "<div class='lbComments crDetailCommentCol' " . (($vn_num_comments == 0) ? "style='display:none;'" : '') . ">";
 
             if ($vn_num_comments > 0) {
                 $this->setVar('is_writeable', $vb_write_access);
@@ -341,7 +401,6 @@ if (!$vb_ajax) {    // !ajax
             }
             print "</div>";
 
-			print $this->render("Browse/browse_refine_subview_html.php");
 			
 ?>
 		</div><!-- end col -->
