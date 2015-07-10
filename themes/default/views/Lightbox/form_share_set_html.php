@@ -31,9 +31,10 @@
  */
 	$va_user_groups = $this->getVar("user_groups");
 	$va_errors = $this->getVar("errors");
+	$vs_display_name = $this->getVar("display_name");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></H1>
+<H1><?php print _t("Share %1", ucfirst($vs_display_name)); ?></H1>
 <?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-info'>".$this->getVar("message")."</div>";
@@ -63,11 +64,15 @@
 		if($va_errors["access"]){
 			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>\n";
 		}
-		print "<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Access")."</label><div class='col-sm-7'><select name='access' class='form-control'>\n";
-		print "<option value='1'>"._t("Can read")."</option>\n";
-		print "<option value='2'>"._t("Can edit")."</option>\n";
-		print "</select>\n";
-		print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		if($this->request->getController() == "Lightbox"){
+			print "<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Access")."</label><div class='col-sm-7'><select name='access' class='form-control'>\n";
+			print "<option value='1'>"._t("Can read")."</option>\n";
+			print "<option value='2'>"._t("Can edit")."</option>\n";
+			print "</select>\n";
+			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		}else{
+			print "<input type='hidden' name='access' value='1'>";
+		}
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
@@ -81,7 +86,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#ShareSetForm').submit(function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Lightbox', 'saveShareSet', null); ?>',
+				'<?php print caNavUrl($this->request, '', '*', 'saveShareSet', null); ?>',
 				jQuery('#ShareSetForm').serialize()
 			);
 			e.preventDefault();

@@ -2073,7 +2073,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
-	*
+	*			parents_only - Only show those sets with parent_id IS NULL  
 	*
 	*
 	*/
@@ -2170,6 +2170,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 					
 					$va_sql_wheres[] = "({$vs_sql})";
 				}
+			}
+			if($pa_options["parents_only"]){
+				$va_sql_wheres[] = "cs.parent_id IS NULL";
 			}
 			$qr_res = $o_db->query("SELECT cs.set_id, cs.user_id, type_id, cu.fname, cu.lname
 									FROM ca_sets cs
@@ -2356,6 +2359,30 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		}
 		return $va_groups;
+	}
+	# ---------------------------------------------------------------
+	public function getSetResponseIds($pn_user_id = null, $pn_set_id = null){
+		if(!$pn_set_id){
+			$pn_set_id = $this->getPrimaryKey();
+		}
+		if (!$pn_set_id) { return null; }
+		$o_db = $this->getDB();
+		$va_set_ids = array();
+		$va_wheres = array();
+		if($pn_user_id){
+			$va_wheres[] = " AND s.user_id = ".(int)$pn_user_id;
+		}
+		$q_responses = $o_db->query("
+						SELECT s.set_id
+						FROM ca_sets s
+						WHERE s.deleted = 0 AND s.parent_id = ?
+						".join(" ", $va_wheres), $pn_set_id);
+		if($q_responses->numRows()){
+			while($q_responses->nextRow()){
+				$va_set_ids[] = $q_responses->get("set_id");
+			}
+		}
+		return $va_set_ids;
 	}
 	# ---------------------------------------------------------------
 }

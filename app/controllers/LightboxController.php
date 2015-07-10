@@ -121,7 +121,7 @@
         /**
          *
          */
- 		function index() {
+ 		function index($va_options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			
@@ -131,8 +131,8 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1, "parents_only" => true));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2, "parents_only" => true));
 
  			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
@@ -151,13 +151,14 @@
  			$this->view->setVar("activity", $va_set_change_log);
 
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
- 			$this->render("Lightbox/set_list_html.php");
+ 			
+ 			$this->render(caGetOption("view", $va_options, "Lightbox/set_list_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function setDetail() {
+ 		function setDetail($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
             $this->request->setParameter('callback', null);
             unset($_REQUEST['callback']);
@@ -296,9 +297,9 @@
 			$this->view->setVar('secondarySort', $ps_secondary_sort);
 			$this->view->setVar('sortDirection', $ps_sort_direction);
 			
-			$va_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
+			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => true)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -402,7 +403,7 @@
  					$this->render("Lightbox/set_detail_timelineData_json.php");
  					break;
  				default:
- 					$this->render("Lightbox/set_detail_html.php");
+ 					$this->render(caGetOption("view", $va_options, "Lightbox/set_detail_html.php"));
  					break;
  			}
  		}
@@ -410,7 +411,7 @@
         /**
          *
          */
- 		function setForm() {
+ 		function setForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
 			// set_id is passed, so we're editing a set
@@ -423,27 +424,35 @@
 				$t_set = new ca_sets();
 			}
  			$this->view->setVar("set", $t_set);
- 			$this->render("Lightbox/form_set_info_html.php");
+ 			$this->render(caGetOption("view", $va_options, "Lightbox/form_set_info_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function ajaxSaveSetInfo() {
+ 		function ajaxSaveSetInfo($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
+ 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
  			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
  			
+ 			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
+ 				# --- if making a new reponse set, check there isn't already one for the user
+ 				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID(), $pn_parent_id);
+ 				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
+ 					$va_errors[] = _t('Only one reponse allowed');
+ 				}
+ 			}
  			// check for errors
  			// set name - required
- 			;
+ 			
  			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
- 				$va_errors[] = _t("Please enter the name of your %1", $this->ops_lightbox_display_name);
+ 				$va_errors[] = _t("Please enter the name of your %1", $vs_display_name);
  			}
  			$this->view->setVar("name", $ps_name);
  			
@@ -470,6 +479,7 @@
 					$t_set->set('type_id', $vn_set_type_user);
 					$t_set->set('user_id', $this->request->getUserID());
 					$t_set->set('set_code', $this->request->getUserID().'_'.time());
+					$t_set->set('parent_id', $this->request->getParameter('parent_id', pInteger));
 					// create new attribute
 					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
 					$t_set->insert();
@@ -494,9 +504,9 @@
 					// select the current set
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
-					$this->view->setVar("message", _t('Saved %1', $this->ops_lightbox_display_name));
-					
-					$this->view->setVar('block', caLightboxSetListItem($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
+					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
+					$vs_set_list_item_function = caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
+					$this->view->setVar('block', $vs_set_list_item_function($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
@@ -510,14 +520,14 @@
         /**
          *
          */
- 		function setAccess() {
+ 		function setAccess($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
  			// list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
- 			$this->render("Lightbox/set_access_html.php");
+ 			$this->render(caGetOption("view", $va_options, "Lightbox/set_access_html.php"));
  		}
  		# ------------------------------------------------------
         /**
@@ -632,20 +642,24 @@
         /**
          *
          */
- 		function shareSetForm() {
+ 		function shareSetForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
-
+			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+			$this->view->setVar("display_name", $vs_display_name);
  			$this->render("Lightbox/form_share_set_html.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function saveShareSet() {
+ 		function saveShareSet($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
- 			
+ 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+ 			$this->view->setVar("display_name", $vs_display_name);
+ 			$this->view->setVar("display_name_plural", $vs_display_name_plural);
  			$ps_user = $this->purifier->purify($this->request->getParameter('user', pString));
  			// ps_user can be list of emails separated by comma
  			$va_users = explode(", ", $ps_user);
@@ -661,7 +675,7 @@
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
-						$this->view->setVar("message", _t('Group already has access to the %1', $this->ops_lightbox_display_name));
+						$this->view->setVar("message", _t('Group already has access to the %1', $vs_display_name));
 						$this->render("Form/reload_html.php");
 					}else{
 						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
@@ -682,7 +696,8 @@
 								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 								$o_view->setVar("set", $t_set->getLabelForDisplay());
 								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
-							
+								$o_view->setVar("display_name", $vs_display_name);
+ 								$o_view->setVar("display_name_plural", $vs_display_name_plural);
 							
 								# -- generate email subject line from template
 								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -700,7 +715,7 @@
 							}							
 							
 							
-							$this->view->setVar("message", _t('Shared %1 with group', $this->ops_lightbox_display_name));
+							$this->view->setVar("message", _t('Shared %1 with group', $vs_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}
@@ -723,7 +738,7 @@
 								$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
 								$t_sets_x_users->insert();
 								if($t_sets_x_users->numErrors()) {
-									$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $this->ops_lightbox_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
+									$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $vs_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
 									$this->view->setVar('errors', $va_errors);
 									$this->shareSetForm();
 								}else{
@@ -741,16 +756,16 @@
 							$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ").implode(", ", $va_error_emails);
 						}
 						if(sizeof($va_error_emails_has_access)){
-							$va_user_errors[] = _t("The following email(s) you entered already have access to this %1: ", $this->ops_lightbox_display_name).implode(", ", $va_error_emails_has_access);
+							$va_user_errors[] = _t("The following email(s) you entered already have access to this %1: ", $vs_display_name).implode(", ", $va_error_emails_has_access);
 						}
 						if(sizeof($va_success_emails)){
-							$this->view->setVar('message', _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
+							$this->view->setVar('message', _t('Shared %1 with: ', $vs_display_name).implode(", ", $va_success_emails));
 						}
 						$va_errors["user"] = implode("<br/>", $va_user_errors);
 						$this->view->setVar('errors', $va_errors);
 						$this->shareSetForm();
 					}else{
-						$this->view->setVar("message", _t('Shared %1 with: ', $this->ops_lightbox_display_name).implode(", ", $va_success_emails));
+						$this->view->setVar("message", _t('Shared %1 with: ', $vs_display_name).implode(", ", $va_success_emails));
 						$this->render("Form/reload_html.php");
 					}
 					if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
@@ -791,23 +806,25 @@
         /**
          *
          */
- 		function userGroupForm() {
+ 		function userGroupForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			$t_user_group = new ca_user_groups();
  			$this->view->setVar("user_group",$t_user_group);
-
+			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $va_options, _t("User Group")));
  			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function saveUserGroup() {
+ 		function saveUserGroup($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
+ 			
+ 			$vs_user_group_terminology = caGetOption("user_group_terminology", $va_options, _t("user group"));
  			
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
@@ -818,7 +835,7 @@
  			// group name - required
  			$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
  			if(!$ps_name){
- 				$va_errors["name"] = _t("Please enter the name of your user group");
+ 				$va_errors["name"] = _t("Please enter the name of your %1", $vs_user_group_terminology);
  			}else{
  				$this->view->setVar("name", $ps_name);
  			}
@@ -846,7 +863,7 @@
 					$this->userGroupForm();
 				}else{
 					// add current user to group
-					$this->view->setVar("message", _t('Saved user group.'));
+					$this->view->setVar("message", _t('Saved %1.', $vs_user_group_terminology));
  					$this->render("Form/reload_html.php");
 				}
 			}else{

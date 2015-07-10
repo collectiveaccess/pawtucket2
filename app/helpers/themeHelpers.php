@@ -209,6 +209,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific sets/classroom configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetClassroomConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/classroom.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display
 	 *
@@ -779,6 +788,96 @@
         return $vs_set_display;
 	}
 	# ---------------------------------------
+	/*
+	 * Returns the info for each set
+	 *
+	 * options: "write_access" = false
+	 *
+	 */
+	function caClassroomSetListItem($po_request, $t_set, $va_check_access = array(), $pa_options = array()) {
+		if(!($vn_set_id = $t_set->get("set_id"))) {
+			return false;
+		}
+		$vb_write_access = false;
+		if($pa_options["write_access"]){
+			$vb_write_access = true;
+		}
+		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 6)));
+		
+		$vs_set_display = "<div class='crSetContainer' id='crSetContainer{$vn_set_id}'><div class='crSet'>\n";
+		$vs_set_display .= caNavLink($po_request, _t("View"), "btn btn-default pull-right", "", "Classroom", "setDetail", array("set_id" => $vn_set_id));
+		$vs_set_display .= "<H5 id='crSetName".$t_set->get("set_id")."'>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id), array('id' => "crSetName{$vn_set_id}"))."</H5>";
+
+        $va_classroomDisplayName = caGetClassroomDisplayName();
+		$vs_classroom_displayname = $va_classroomDisplayName["singular"];
+		$vs_classroom_displayname_plural = $va_classroomDisplayName["plural"];
+
+		$vs_set_display .= "<p id='crSetDescription".$t_set->get("set_id")."'>";
+		if ($vs_description = $t_set->get("description")) {
+			$vs_set_display .= $vs_description;
+		}
+		$vs_set_display .= "</p><hr/>";
+
+        if(sizeof($va_set_items)){
+			$vs_image_block = "";
+			$t_list_items = new ca_list_items();
+			foreach($va_set_items as $va_set_item){
+				$t_list_items->load($va_set_item["type_id"]);
+				$vs_placeholder = caGetPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
+				# --- is the iconlarge version available?
+				$vs_large_icon = "icon";
+				if($va_set_item["representation_url_iconlarge"]){
+					$vs_large_icon = "iconlarge";
+				}
+				if($va_set_item["representation_tag_".$vs_large_icon]){
+					$vs_image_block .= "<div class='col-xs-4 col-sm-2 crSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+				}else{
+					$vs_image_block .= "<div class='col-xs-4 crSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+				}
+			}
+			$vs_set_display .= "<div class='row'>".$vs_image_block."</div><!-- end row -->";
+			$vs_set_display .= "\n<hr/>";		
+		}
+		if($vb_write_access){
+			$vs_set_display .= "<div class='pull-right'>";
+			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'shareSetForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Share %1", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-share'></span></a>&nbsp;&nbsp;\n";
+			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setAccess', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Manage %1 Access", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;\n";
+			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Classroom', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>&nbsp;&nbsp;\n";
+			$vs_set_display .= "<a href='#' title='"._t("Delete")."' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
+		}
+		$vs_set_display .= "<small>"._t("Items:").$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."&nbsp;&nbsp;&nbsp;"._t("Comments:").$t_set->getNumComments()."&nbsp;&nbsp;&nbsp;"._t("Responses").": ".sizeof($t_set->getSetResponseIds())."</small>\n";
+		$vs_set_display .= "</div><!-- end crSet --></div><!-- end crSetContainer -->\n";
+
+        return $vs_set_display;
+	}
+	# ---------------------------------------
+	/*
+	 * Returns the info for each reponse set in classroom interface
+	 *
+	 * options: "write_access" = false
+	 *
+	 */
+	function caClassroomSetResponseItem($po_request, $t_set, $va_check_access = array(), $pa_options = array()) {
+		if(!($vn_set_id = $t_set->get("set_id"))) {
+			return false;
+		}
+		$vb_write_access = false;
+		if($pa_options["write_access"]){
+			$vb_write_access = true;
+		}
+		$vs_set_display = "<div class='crSetContainer' id='crSetContainer{$vn_set_id}'><div class='crSet'>\n";
+		$vs_set_display .= caNavLink($po_request, _t("View"), "btn btn-default pull-right", "", "Classroom", "setDetail", array("set_id" => $vn_set_id));
+		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id), array('id' => "crSetName{$vn_set_id}"))."</H5>";
+
+        $vs_set_display .= "<small>\n";
+		$vs_set_display .= _t("Created by:").trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."<br/>\n";
+		$vs_set_display .= _t("Items:").$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."&nbsp;&nbsp;&nbsp;\n";
+		$vs_set_display .= _t("Comments:").$t_set->getNumComments()."&nbsp;&nbsp;&nbsp;</small>\n";
+		$vs_set_display .= "</div><!-- end crSet --></div><!-- end crSetContainer -->\n";
+
+        return $vs_set_display;
+	}
+	# ---------------------------------------
 	/**
 	 *
 	 *
@@ -968,6 +1067,26 @@
 			$vs_lightbox_section_heading = _t("lightboxes");
 		}
 		return array("singular" => $vs_lightbox_displayname, "plural" => $vs_lightbox_displayname_plural, "section_heading" => $vs_lightbox_section_heading);
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetClassroomDisplayName($o_classroom_config = null){
+		if(!$o_classroom_config){ $o_classroom_config = caGetClassroomConfig(); }
+		$vs_classroom_displayname = $o_classroom_config->get("classroomDisplayName");
+		if(!$vs_classroom_displayname){
+			$vs_classroom_displayname = _t("assignment");
+		}
+		$vs_classroom_displayname_plural = $o_classroom_config->get("classroomDisplayNamePlural");
+		if(!$vs_classroom_displayname_plural){
+			$vs_classroom_displayname_plural = _t("assignment");
+		}
+		$vs_classroom_section_heading = $o_classroom_config->get("classroomSectionHeading");
+		if(!$vs_classroom_section_heading){
+			$vs_classroom_section_heading = _t("classroom");
+		}
+		return array("singular" => $vs_classroom_displayname, "plural" => $vs_classroom_displayname_plural, "section_heading" => $vs_classroom_section_heading);
 	}
 	# ---------------------------------------
 	/**

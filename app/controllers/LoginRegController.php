@@ -507,7 +507,10 @@ class LoginRegController extends ActionController {
 					$vs_group_message = _t("You are already a member of the group");
 				}
 				$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
-				$this->response->setRedirect(caNavUrl($this->request, "", "Lightbox", "Index"));
+				if(!$vs_controller = $this->request->getParameter("section", pString)){
+					$vs_controller = "Lightbox";
+				}
+				$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 			}else{
 				$t_user_group->load($pn_group_id);
 				$this->request->session->setVar("join_user_group_id", $pn_group_id);

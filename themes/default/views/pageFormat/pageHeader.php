@@ -28,6 +28,8 @@
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_displayname = ucFirst($va_lightboxDisplayName["singular"]);
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$va_classroomDisplayName = caGetClassroomDisplayName();
+	$vs_classroom_displayname = ucFirst($va_classroomDisplayName["singular"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -36,6 +38,9 @@
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(!$this->request->config->get("disable_lightbox")){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_displayname, '', '', 'Lightbox', 'Index', array())."</li>";
+		}
+		if(!$this->request->config->get("disable_classroom")){
+			$va_user_links[] = "<li>".caNavLink($this->request, _t("Classroom"), '', '', 'Classroom', 'Index', array())."</li>";
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
