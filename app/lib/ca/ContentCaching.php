@@ -104,14 +104,12 @@ class ContentCaching extends AppControllerPlugin {
 		if ($this->opb_needs_to_be_cached) {
 			// cache output
 			if($vn_ttl = $this->getCachingTTLForRequest()) {
-				file_put_contents('/tmp/makesure', "saving $vs_key\n", FILE_APPEND);
 				ExternalCache::save($vs_key, $o_resp->getContent(), 'PawtucketPageCache', $vn_ttl);
 			}
 		} else {
 			if ($this->opb_output_from_cache) {
 				// request wasn't dispatched so we need to add content to response from cache here
 				if($vs_key) {
-					file_put_contents('/tmp/makesure', "from cache\n", FILE_APPEND);
 					$o_resp->addContent(ExternalCache::fetch($vs_key, 'PawtucketPageCache'));
 				}
 			}
