@@ -204,8 +204,8 @@ class Db_pdo_mysql extends DbDriverBase {
 			$opo_statement->closeCursor();
 			$opo_statement->execute((is_array($va_tmp['values']) && sizeof($va_tmp['values'])) ? array_values($va_tmp['values']) : null);
 		} catch(PDOException $e) {
-			$po_caller->postError($po_caller->nativeToDbError($this->opr_db->errorCode()), $e->getMessage(), "Db->pdo_mysql->execute()");
-			throw new DatabaseException($e->getMessage(), $po_caller->nativeToDbError($this->opr_db->errorCode()), "Db->pdo_mysql->execute()");
+			$po_caller->postError($this->nativeToDbError($this->opr_db->errorCode()), $e->getMessage(), "Db->pdo_mysql->execute()");
+			throw new DatabaseException($e->getMessage(), $this->nativeToDbError($this->opr_db->errorCode()), "Db->pdo_mysql->execute()");
 			return false;
 		}
 

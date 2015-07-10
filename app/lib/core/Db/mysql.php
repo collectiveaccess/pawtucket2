@@ -315,15 +315,15 @@ class Db_mysql extends DbDriverBase {
 					}
 					
 					if (!$r_res) {
-						$opo_statement->postError($po_caller->nativeToDbError($vn_mysql_err), mysql_error($this->opr_db), "Db->mysql->execute()");
-						throw new DatabaseException(mysql_error($this->opr_db), $po_caller->nativeToDbError($vn_mysql_err), "Db->mysql->execute()");
+						$opo_statement->postError($this->nativeToDbError($vn_mysql_err), mysql_error($this->opr_db), "Db->mysql->execute()");
+						throw new DatabaseException(mysql_error($this->opr_db), $this->nativeToDbError($vn_mysql_err), "Db->mysql->execute()");
 						return false;
 					}
 					return new DbResult($this, $r_res);
 					break;
 				default:
-					$opo_statement->postError($po_caller->nativeToDbError($vn_mysql_err), mysql_error($this->opr_db), "Db->mysql->execute()");
-					throw new DatabaseException(mysql_error($this->opr_db), $po_caller->nativeToDbError($vn_mysql_err), "Db->mysql->execute()");
+					$opo_statement->postError($this->nativeToDbError($vn_mysql_err), mysql_error($this->opr_db), "Db->mysql->execute()");
+					throw new DatabaseException(mysql_error($this->opr_db), $this->nativeToDbError($vn_mysql_err), "Db->mysql->execute()");
 					break;
 			}
 			return false;
