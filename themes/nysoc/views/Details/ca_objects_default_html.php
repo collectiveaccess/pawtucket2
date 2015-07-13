@@ -57,12 +57,13 @@
 			if ($qr_rels->get('ca_objects_x_entities.type_id') != 100) {
 				continue;
 			}
-			$vs_buf.= "<div class='row ledgerRow'>";
+			$vs_buf.= "<tr class='ledgerRow'>";
 				
 				# Borrower Name
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='entity".$vn_i."'>";
+				$vs_buf.= "<td id='entity".$vn_i."'>";
+				$vs_buf.= "<span title='".$qr_rels->get("ca_entities.preferred_labels.surname").", ".$qr_rels->get("ca_entities.preferred_labels.forename")."'><span>";
 				$vs_buf.= $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 			
 				$vs_entity_info = null;
 				if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
@@ -84,47 +85,47 @@
 				}	
 				
 				# Volume		
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				if (substr($qr_rels->get("ca_objects.preferred_labels"), 0, 6) == "Volume") {
 					$vs_buf.= $qr_rels->get("ca_objects.preferred_labels");
 				}
-				$vs_buf.= "</div>";			
+				$vs_buf.= "</td>";			
 				
 				# Date Out
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_out");
-				$vs_buf.= "</div>";	
+				$vs_buf.= "</td>";	
 				
 				# Date In
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_in");
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 				
 				# Fine
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.fine");
-				$vs_buf.= "</div>";	
+				$vs_buf.= "</td>";	
 				
 				# Title as Transcribed			
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.book_title");
 				if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
 					$vs_buf.= caNavLink($this->request, '&nbsp;<i class="fa fa-exclamation-triangle"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
 					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
 				}				
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 				
 				# Representative
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.representative");
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 								
 				# Ledger Page & sidebar related ledgers
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
 				$va_related_ledgers[] = $va_parents[$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true))];
-				$vs_buf.= "</div>";													
-			$vs_buf.= "</div>";
+				$vs_buf.= "</td>";													
+			$vs_buf.= "</tr><!-- end ledgerRow -->";
 		
 			# Reader Count
 				$vn_entity_id = $qr_rels->get("ca_entities.entity_id");
@@ -291,13 +292,19 @@
 						if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
 							print "<h4 style='font-size:16px;'>".$va_authors."</h4>";
 						}
-						if ($va_parent_label = $t_object->get('ca_objects.parent.preferred_labels')) {
-							print "<h4 style='font-size:16px;'>".caNavLink($this->request, $t_object->get('ca_objects.parent.preferred_labels'), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.parent.object_id'))." ".$t_object->get('ca_objects.preferred_labels')."</h4>";					
+						if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Bib') {
+							if ($va_parent_label = $t_object->get('ca_objects.parent.preferred_labels')) {
+								print "<h4 style='font-size:16px;'>".caNavLink($this->request, $t_object->get('ca_objects.parent.preferred_labels'), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.parent.object_id'))." ".$t_object->get('ca_objects.preferred_labels')."</h4>";					
+							} else {
+								print "<h4 style='font-size:16px;'>".$t_object->get('ca_objects.preferred_labels')."</h4>";
+							}
+							if ($vs_alt_title = $t_object->get('ca_objects.nonpreferred_labels')) {
+								print "<a href='#' onclick='$(\".altTitle\").slideDown();'><h6><i class='fa fa-pencil'></i> Alternate Titles</h6></a><div class='altTitle' style='display:none;'>".$vs_alt_title."</div>";
+							}
 						} else {
-							print "<h4 style='font-size:16px;'>".$t_object->get('ca_objects.preferred_labels')."</h4>";
-						}
-						if ($vs_alt_title = $t_object->get('ca_objects.nonpreferred_labels')) {
-							print "<a href='#' onclick='$(\".altTitle\").slideDown();'><h6><i class='fa fa-pencil'></i> Alternate Titles</h6></a><div class='altTitle' style='display:none;'>".$vs_alt_title."</div>";
+							if ($vs_alt_title = $t_object->get('ca_objects.nonpreferred_labels')) {
+								print "<h4>".$vs_alt_title."</h4>";
+							}
 						}	
 							
 						print "<div class='unit'>";
@@ -485,24 +492,40 @@
 								$vs_book_buf = null;
 								$vs_is_related = false;
 								$va_related_books = array();
-								if ($va_author_ids = $t_object->get('ca_entities.entity_id', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array('author')))){
-									foreach ($va_author_ids as $va_key => $va_author_id) {
-										$t_entity = new ca_entities($va_author_id);
-										$va_related_books[] = $t_entity->get('ca_objects', array('restrictToTypes' => array('bib'), 'returnWithStructure' => true));
+								if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'bib') {
+									if ($va_author_ids = $t_object->get('ca_entities.entity_id', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array('author')))){
+										foreach ($va_author_ids as $va_key => $va_author_id) {
+											$t_entity = new ca_entities($va_author_id);
+											$va_related_books[] = $t_entity->get('ca_objects', array('restrictToTypes' => array('bib'), 'restrictToRelationshipTypes' => array('author'), 'returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort'));
+										}
+										$vs_book_buf.= "<div class='row'>";
+										foreach ($va_related_books as $va_key => $va_related_book_pl) {
+											foreach ($va_related_book_pl as $va_book_id => $va_related_book) {
+												if ($va_related_book['object_id'] == $t_object->get('ca_objects.object_id')) { continue; }
+												$vs_book_label = explode(':', $va_related_book['label']);
+												$vs_author = $t_entity->get('ca_entities.preferred_labels');
+												$t_book = new ca_objects($va_related_book['object_id']);
+												$vs_pub_date = $t_book->get('ca_objects.publication_date');
+												$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
+												$vs_is_related = true;
+											}
+										}
+										$vs_book_buf.= "</div><!-- end row -->";
 									}
-									$vs_book_buf.= "<div class='row'>";
-									foreach ($va_related_books as $va_key => $va_related_book_pl) {
-										foreach ($va_related_book_pl as $va_book_id => $va_related_book) {
+								} else {
+									if ($va_related_books = $t_object->get('ca_objects.related', array('returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort','restrictToTypes' => array('bib')))){
+										$vs_book_buf.= "<div class='row'>";
+										foreach ($va_related_books as $va_book_id => $va_related_book) {
 											if ($va_related_book['object_id'] == $t_object->get('ca_objects.object_id')) { continue; }
 											$vs_book_label = explode(':', $va_related_book['label']);
-											$vs_author = $t_entity->get('ca_entities.preferred_labels');
 											$t_book = new ca_objects($va_related_book['object_id']);
+											$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')));
 											$vs_pub_date = $t_book->get('ca_objects.publication_date');
 											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
 											$vs_is_related = true;
 										}
+										$vs_book_buf.= "</div><!-- end row -->";
 									}
-									$vs_book_buf.= "</div><!-- end row -->";
 								}
 																			
 								#Check related documents
@@ -554,25 +577,26 @@
 								<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>
 							</ul>
 							<div id='circTab' <?php print $vs_style; ?>>
-								<div class='container'>
-									<div class='row'>
-										<div class='row titleBar' >
-											<hr></hr>
-											<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Borrower Name</div>											
-											<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Volume</div>
-											<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date Out</div>
-											<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date In</div>
-											<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Fine</div>
-											<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Transcribed Title</div>				
-											<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Repr.</div>
-											<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Ledger</div>
-
-										</div><!-- end row -->
-				<?php			
-										print $vs_buf;
-				?>		
-									</div><!-- end row -->
-								</div><!-- end container -->
+								<table id='circTable' class="display" style='width:100%;'>
+									<thead class='titleBar' >
+										<tr>
+											<th>Borrower Name<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>											
+											<th>Volume<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Date Out<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Date In<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Fine<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></div>
+											<th>Transcribed<br/>Title<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>				
+											<th>Repr.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Ledger<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+										</tr>
+										
+									</thead><!-- end row -->
+									<tbody>
+<?php			
+									print $vs_buf;
+?>		
+									</tbody>
+								</table><!-- end row -->
 							</div><!-- end circTab -->			
 							<div id='entTab' >
 								<div class='container'>
@@ -586,7 +610,13 @@
 								</div><!-- end container -->								
 							</div><!-- end entTab -->	
 							<div id='bookTab' >
-							<?Php if ($vs_book_buf && $vs_is_related) {print '<h6>Books by this author</h6>';}?>
+<?Php 
+								if ($vs_book_buf && $vs_is_related && $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'bib') {
+									print '<h6>Books by this author</h6>';
+								} else if ($vs_book_buf && $vs_is_related) {
+									print '<h6>Books in this catalog</h6>';
+								}
+?>
 								<div class='container'>
 									<div class='row'>
 										<div class='col-sm-12 col-md-12 col-lg-12'>									
@@ -633,6 +663,15 @@
 		  maxHeight: 120
 		});
 		$('#objectTable').tabs();
+    	$('#circTable').dataTable({
+    		"order": [[ 2, "asc" ]],
+    		columnDefs: [{ 
+       			type: 'title-string', targets: 0
+       		}, { 
+       			type: 'natural', targets: [1,4,5] 
+    		}],
+     		paging: false
+    	});
 	});
 </script>
 

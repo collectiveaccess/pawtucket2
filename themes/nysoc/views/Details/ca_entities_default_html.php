@@ -1,11 +1,24 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	
 	$va_type = $t_item->get('ca_entities.type_id', array('convertCodesToDisplayText' => true));
 	$va_title = ((strlen($t_item->get('ca_entities.preferred_labels')) > 40) ? substr($t_item->get('ca_entities.preferred_labels'), 0, 37)."..." : $t_item->get('ca_entities.preferred_labels'));	
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+
+	#Wikipedia Info
+	if ($t_item->get("ca_entities.wikipedia_entry.image_thumbnail")) {
+		$vs_wiki_thumb = "<img src='".$t_item->get("ca_entities.wikipedia_entry.image_thumbnail")."'/>";
+	}
+	if ($t_item->get("ca_entities.wikipedia_entry.extract")) {
+		$vs_wiki_bio = $t_item->get("ca_entities.wikipedia_entry.abstract");
+		$vs_wiki_bio = $t_item->get("ca_entities.wikipedia_entry.abstract");
+		$vs_wiki_bio = explode('<h2>', $vs_wiki_bio);
+		$vs_wiki_bio = $vs_wiki_bio[0];
+	}
+	if ($t_item->get("ca_entities.wikipedia_entry.fullurl")) {	
+		$vs_wiki_link = "<a href='".$t_item->get("ca_entities.wikipedia_entry.fullurl")."' target='_blank'>read this on wikipedia.org</a>";
+	}
 	
 	#Circulation History
 	$vs_first_date = null;
@@ -37,15 +50,17 @@
 		while($qr_rels->nextHit()) {
 			if (($qr_rels->get('ca_objects.type_id') != $vn_bib_type_id)&&($qr_rels->get('ca_objects.type_id') != $vn_volume_type_id)) { continue; }
 			if (in_array($qr_rels->get('ca_objects.object_id'), $va_non_read_books)) { continue; }
-			$vs_buf.= "<div class='row ledgerRow'>";
-				$vs_buf.= "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+			$vs_buf.= "<tr class='ledgerRow'>";
+				$vs_buf.= "<td id='book".$vn_i."' style='max-width:200px;'>";
 				$vs_buf.= "<div class='bookTitle'>";
 					if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
 						$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
 						$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
+						$vs_sort_title = $qr_rels->get("ca_objects.parent.preferred_labels.name_sort");
 					} else {
 						$va_label_trunk = explode(':', $qr_rels->get("ca_objects.preferred_labels"));
 						$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
+						$vs_sort_title = $qr_rels->get("ca_objects.preferred_labels.name_sort");
 					}
 					
 					#$va_book_info = array();
@@ -66,46 +81,48 @@
 					if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
 						$vs_buf.= "&nbsp;".caNavLink($this->request, "<i class='fa fa-exclamation-triangle'></i>", '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
 						TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
-					}				
-				$vs_buf.= "</div>";
+					}
+				$vs_buf.= "<span title='".$vs_sort_title."'><span>";
+				$vs_buf.= "</td>";
 				
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
+				$vs_buf.= "<span title='".$qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit></unit>')."'><span>";
 				$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 					
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
 					$vs_buf.= $qr_rels->getWithTemplate("^ca_objects.preferred_labels");
 				}
-				$vs_buf.= "</div>";	
+				$vs_buf.= "</td>";	
 
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_out");
 				if ($vs_first_date == null) {
 					$vs_first_date = $qr_rels->get("ca_objects_x_entities.date_out");
 				}
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 
-				$vs_buf.= "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_in");
 				$vs_last_date = $qr_rels->get("ca_objects_x_entities.date_in");
 				if (!$vs_last_date) {
 					$vs_last_date = $qr_rels->get("ca_objects_x_entities.date_out");
 				}
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 				
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.representative");
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 									
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= $qr_rels->get("ca_objects_x_entities.fine");
-				$vs_buf.= "</div>";
+				$vs_buf.= "</td>";
 
-				$vs_buf.= "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+				$vs_buf.= "<td>";
 				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));								
-				$vs_buf.= "</div>";													
-			$vs_buf.= "</div>";
+				$vs_buf.= "</td>";													
+			$vs_buf.= "</tr>";
 
 			$vn_i++;
 			$vs_has_circulation = true;
@@ -116,23 +133,27 @@
 ?>
 <div class="page">
 	<div class="wrapper">
-		<div class="sidebar">		
-			{{{representationViewer}}}
-			<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+		<div class="sidebar">
 <?php	
+			if ($this->getVar('representationViewer')) {			
+				print $this->getVar('representationViewer');
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
+			} else {
+				print "<div class='entityThumb'><a href='".$t_item->get("ca_entities.wikipedia_entry.image_viewer_url")."' target='_blank'>".$vs_wiki_thumb."</a></div>";
+			}
 			if ($va_occupations = $t_item->get('ca_entities.industry_occupations', array('returnAsArray' => true, 'convertCodesToDisplayText' => false))) {
-				print "<H6>Occupation</H6>";
 				$va_as_text = $t_item->get('ca_entities.industry_occupations', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
 				$va_occupations_list = array();
 				foreach ($va_occupations as $vn_x => $vn_occupation_id) {
-					//foreach ($va_occupation as $va_key2 => $va_occupation_id) {
-						if ($va_occupation_id == 551){continue;}
-						$va_occupations_list[] = caNavLink($this->request, ucfirst($va_as_text[$vn_x]), '', '', 'Browse', 'entities/facet/occupation_facet/id/'.$vn_occupation_id)."</a>";
-					//}
+					if (($vn_occupation_id == 551) | ($vn_occupation_id == 0)){continue;}
+					$va_occupations_list[] = caNavLink($this->request, ucfirst($va_as_text[$vn_x]), '', '', 'Browse', 'entities/facet/occupation_facet/id/'.$vn_occupation_id)."</a>";
 				}
-				print "<div>";
-				print join('<br/>', $va_occupations_list);
-				print "</div>";
+				if (sizeof($va_occupations_list) > 0) {
+					print "<H6>Occupation</H6>";
+					print "<div>";
+					print join('<br/>', $va_occupations_list);
+					print "</div>";
+				}
 			}
 			if ($va_countries = $t_item->get('ca_entities.country_origin', array('returnWithStructure' => true, 'convertCodesToDisplayText' => false))) {
 				$va_country_as_text = $t_item->get('ca_entities.country_origin', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
@@ -199,13 +220,13 @@
 			}
 
 
-			if ($va_collections = $t_item->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				$vs_sidebar_buf.= "<div class='unit'><H6>Finding Aids</H6>";
-				$vs_sidebar_buf.= $va_collections;
-				$vs_sidebar_buf.= "</div>";
+			if ($va_collections_list = $t_item->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
+				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
+				
+				$vs_sidebar_buf .= join("<br/>\n", $va_collections_for_display);
 			}	
 			if ($vs_sidebar_buf) {
-				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
+				print "<h6 style='margin-top:20px;'>In The Library</h6>	";	
 				print $vs_sidebar_buf;
 			}
 			$vs_learn_even = null;
@@ -225,11 +246,15 @@
 					$vs_learn_even.= join('<br/>', $va_link_list);
 					$vs_learn_even.= "</div>";
 				}
-			}			
+			}	
+			if ($t_item->get("ca_entities.wikipedia_entry.fullurl")) {
+				$vs_learn_even.= "<a href='".$t_item->get("ca_entities.wikipedia_entry.fullurl")."' target='_blank'>Wikipedia</a><br/>";
+			}		
 			if ($vs_learn_even != "") {
 				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
 				print $vs_learn_even;
 			}	
+			
 ?>				
 							
 		</div>
@@ -261,6 +286,17 @@
 										if ($va_life_dates = $t_item->get('ca_entities.life_dates', array('format' => 'Y - Y'))) {
 											print "<small>(".$va_life_dates.")</small>";
 										}
+										if ($va_org_dates = $t_item->get('ca_entities.org_dates', array('rawDate' => true, 'returnAsArray' => true))) {
+											foreach ($va_org_dates as $va_key => $va_org_date) {
+												$va_start_date = explode('.',$va_org_date['start']);
+												$va_end_date = explode('.',$va_end_date['end']);
+											}
+											if (($va_start_date[0]) && ($va_end_date[0] < date('Y'))){
+												print "<small>(Active ".$va_start_date[0]." - ".$va_end_date[0].")</small>";
+											} elseif ($va_start_date[0]) {
+												print "<small>(Founded ".$va_start_date[0].")</small>";
+											}
+										}										
 ?>									
 									</H4>
 									<div class='unit'>{{{<ifdef code="ca_entities.nonpreferred_labels">Also Known As: <unit delimiter='; '>^ca_entities.nonpreferred_labels.displayname</unit></ifdef>}}}</div>
@@ -271,15 +307,15 @@
 								
 				<?php
 
-									if ($va_org_dates = $t_item->get('ca_entities.org_dates')) {
-										print "<H6 style='padding-bottom:20px;'>".$va_org_dates."</H6>";
-									}
+
 									if ($vs_first_date && $vs_last_date) {
 										print "<div class='unit'><i>".$t_item->get('ca_entities.relationship_to_library', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."<br/>Borrowing activity from ".$vs_first_date." to ".$vs_last_date.".</i></div>";
 									}
-?>						
-									<div class='unit trimText'>{{{<ifdef code="ca_entities.biography.biography_text">^ca_entities.biography.biography_text<br/></ifdef>}}}</div>
-<?php
+									if (($t_item->get('ca_entities.biography.biography_text')) && (($t_item->get('ca_entities.biography.bio_status', array('convertCodesToDisplayText' => true)) == "Full Completed") | ($t_item->get('ca_entities.biography.bio_status', array('convertCodesToDisplayText' => true)) == "Brief Completed"))) {
+										print "<div class='unit trimText biography'>".$t_item->get('ca_entities.biography.biography_text')."</div>";
+									} else {
+										print "<div class='wikipedia'><div class='unit biography trimText'>".$vs_wiki_bio."</div><div>".$vs_wiki_link."</div></div>";
+									}
 									if ($t_item->get('ca_entities.references.references_list')) {
 										$va_references = $t_item->get('ca_entities.references', array('delimiter' => '', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_entities.references.references_list page ^ca_entities.references.references_page</p>'));
 										print "<div class='unit'>";
@@ -438,41 +474,27 @@
 								
 							  </ul>
 							<div id='circTab' <?php print $vs_style; ?>>
-								<div class='container'>	
-									<hr/ style='margin-left:-15px; margin-right:-15px;'>
-							
-									{{{<ifcount code="ca_objects" min="1">
-									<div class="row titleBar">
-										<div class='col-sm-3 col-md-3 col-lg-3'>
-											Full Title
-										</div>
-										<div class='col-sm-1 col-md-1 col-lg-1'>
-											Author
-										</div>										
-										<div class='col-sm-1 col-md-1 col-lg-1'>
-											Volume
-										</div>
-										<div class='col-sm-2 col-md-2 col-lg-2'>
-											Date Out
-										</div>
-										<div class='col-sm-2 col-md-2 col-lg-2'>
-											Date In
-										</div>
-										<div class='col-sm-1 col-md-1 col-lg-1'>
-											Rep.
-										</div>											
-										<div class='col-sm-1 col-md-1 col-lg-1'>
-											Fine
-										</div>		
-										<div class='col-sm-1 col-md-1 col-lg-1'>
-											Ledger
-										</div>
-									</div><!-- end row -->
-									</ifcount>}}}
+								<table id='circTable' class="display" style='width:100%;'>
+									<thead class='titleBar' >
+										{{{<ifcount code="ca_objects" min="1">
+										<tr>
+											<th>Full Title<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Author<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>										
+											<th>Volume<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Date Out<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Date In<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Rep.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>											
+											<th>Fine<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>		
+											<th>Ledger<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+										</tr><!-- end row -->
+										</ifcount>}}}
+									</thead>
+									<tbody>
 		<?php 
 									print $vs_buf;								
 		?>
-								</div><!-- end container -->
+									</tbody>
+								</table><!-- end table -->
 							</div><!-- end circTab -->
 						
 							<div id='entTab' >
@@ -528,6 +550,15 @@
 		  maxHeight: 135
 		});
 		$('#entityTable').tabs();
+    	$('#circTable').dataTable({
+    		"order": [[ 3, "asc" ]],
+    		columnDefs: [{ 
+       			type: 'title-string', targets: [0,1]
+       		}, { 
+       			type: 'natural', targets: [2,5,6] 
+    		}],
+     		paging: false
+    	});		
 	});
 </script>
 <script>

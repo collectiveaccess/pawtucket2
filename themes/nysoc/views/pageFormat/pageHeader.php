@@ -110,12 +110,14 @@
 				<nav class="navbar navbar-default yamm" role="navigation">
 				<ul class="menu" id="mainMenu">
 					<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Library Home</a></li>
-					<li class="item" id="menuId-2"><a href="#">Project Home</a></li>
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active item"' : 'class="item"'; ?> id="menuId-2"><?php print caNavLink($this->request, _t("Project Home"), "", "", "", ""); ?></li>
+					
 <?php
 					print $this->render("pageFormat/browseMenu.php");
 ?>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-4"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
-					<li class="item" id="menuId-5"><a href="#">Finding Aids</a></li>
+					<li <?php print ($this->request->getController() == "Collection") ? 'class="active item"' : 'class="item"'; ?> id="menuId-5"><?php print caNavLink($this->request, _t("Finding Aids"), "", "FindingAid", "Collection", "Index"); ?></li>
+					
 					<li class="item" id="menuId-6"><a href="#">About this Project</a></li>
 					<li class="item" id="menuId-7"><a href="#">User Guide</a></li>
 					

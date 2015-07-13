@@ -91,22 +91,29 @@
 					if (is_array($va_object_entity_rels = $va_references[$t_object->getAppDatamodel()->getTableNum('ca_objects_x_entities')])) {
 						$va_rel_ids = array_keys($va_object_entity_rels);
 						if(sizeof($va_rel_ids) > 0) {
+						
 				?>
-							<div class='row titleBar' >
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Borrower Name</div>
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Book Title</div>
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Author</div>
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date Out</div>
-								<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>Date In</div>
-								<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Rep.</div>
-								<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>Fine</div>
-							</div>
+						<table id='circTable' class="display" style='width:100%;'>
+							<thead class='titleBar' >
+								<tr>
+									<th>Borrower Name<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Book Title<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Author<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Date Out<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Date In<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Rep.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+									<th>Fine<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+								</tr>
+							</thead>
+							<tbody>	
 				<?php
 							$vn_i = 0;
 							$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids);
 							while($qr_rels->nextHit()) {
-								print "<div class='row ledgerRow'>";
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='entity".$vn_i."'>";
+								print "<tr class='ledgerRow'>";
+									print "<td id='entity".$vn_i."'>";
+									print "<span title='".$qr_rels->get("ca_entities.preferred_labels.surname").", ".$qr_rels->get("ca_entities.preferred_labels.forename")."'><span>";
+
 									print $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
 									$vs_entity_info = null;
 									if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
@@ -118,9 +125,9 @@
 									if ($vs_entity_info) {					
 										TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
  									}
-									print "</div>";
+									print "</td>";
 
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2' id='book".$vn_i."'>";
+									print "<td id='book".$vn_i."' style='max-width:200px;'>";
 					
 									if ($qr_rels->get('ca_objects.parent.object_id')) {
 										$vs_book_title = explode(':',$qr_rels->get('ca_objects.parent.preferred_labels.name'));
@@ -130,6 +137,7 @@
 											$vs_book_title = $vs_book_title[0]." ".$qr_rels->get('ca_objects.preferred_labels.name');
 										}
 										$va_circ_id = $qr_rels->get('ca_objects.parent.object_id');
+										$vs_sort_title = $qr_rels->get('ca_objects.parent.preferred_labels.name_sort');
 									} else {
 										$vs_book_title = explode(':',$qr_rels->get('ca_objects.preferred_labels.name'));
 										if (strlen($vs_book_title[0]) > 120) {
@@ -138,12 +146,15 @@
 											$vs_book_title = $vs_book_title[0];
 										}
 										$va_circ_id = $qr_rels->get('ca_objects.object_id');
+										$vs_sort_title = $qr_rels->get('ca_objects.preferred_labels.name_sort');
 									}
 					
 									print caNavLink($this->request, trim("{$vs_book_title}"), '', '', 'Detail', 'objects/'.$va_circ_id);
 									if ($vs_title = $qr_rels->get("ca_objects_x_entities.book_title")) {
 										print "<br/>transcribed: {$vs_title}";
 									}
+									print "<span title='".$vs_sort_title."'><span>";
+
 									#$va_book_info = array();
 									#if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
 									#	$va_book_info[] = $va_author;
@@ -155,34 +166,39 @@
 									#	$va_book_info[] = $va_publisher;
 									#} else { $va_publisher = null; }
 									#TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 
-									print "</div>";
+									print "</td>";
 									
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+									print "<td>";
+									print "<span title='".$qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit></unit>')."'><span>";
 									print $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
-									print "</div>";	
+									print "</td>"; 
 				
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+									print "<td>";
 									print $qr_rels->get("ca_objects_x_entities.date_out");
-									print "</div>";	
+									print "</td>";	
 					
-									print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+									print "<td>";
 									print $qr_rels->get("ca_objects_x_entities.date_in");
-									print "</div>";
+									print "</td>";
 
-									print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+									print "<td>";
 									print $qr_rels->get("ca_objects_x_entities.representative");
-									print "</div>";
+									print "</td>";
 											
-									print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+									print "<td>";
 									print $qr_rels->get("ca_objects_x_entities.fine");
-									print "</div>";													
-								print "</div>";
+									print "</td>";													
+								print "</tr>";
 								$vn_i++;
 							}
+?>							
+							</tbody>
+						</table>
+<?php							
 						}
 					}
 				?>				
-	
+
 					</div><!-- end container -->
 					</div><!-- end col -->
 
@@ -193,12 +209,21 @@
 </div><!--end page-->
 
 
-
+	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
 		  maxHeight: 120
 		});
+    	$('#circTable').dataTable({
+    		"order": [[ 3, "asc" ]],
+    		columnDefs: [{ 
+       			type: 'title-string', targets: [0,1,2]
+       		}, { 
+       			type: 'natural', targets: [5,6] 
+    		}],
+     		paging: false
+    	});
 	});
-</script>
+</script>	

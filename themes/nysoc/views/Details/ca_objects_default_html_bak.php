@@ -220,35 +220,24 @@
 				print "<h6>19TH C. SUBJECTS</h6>";
 				print $vs_subj_buf;
 			}
-			$vs_curr_buf = null;
 			if ($vs_subjects_lcsh = $t_object->get('ca_objects.LCSH', array('returnWithStructure' => 'true'))) {
+				print "<div class='unit'><h6>Current Subjects</h6>";
 				foreach ($vs_subjects_lcsh as $va_key => $vs_subject_lcsh_r) {
 					foreach ($vs_subject_lcsh_r as $va_key => $vs_subject_lcsh_s) {
 						foreach ($vs_subject_lcsh_s as $vs_subject_lcsh) {
 							$va_subject = explode(' [', $vs_subject_lcsh);
-							$vs_curr_buf.= caNavLink($this->request, $va_subject[0], '', '', 'Search', 'objects/search/'.$vs_subject_lcsh)."<br/>";
+							print caNavLink($this->request, $va_subject[0], '', '', 'Search', 'objects/search/'.$vs_subject_lcsh)."<br/>";
 						}
 					}
 				}
-			}
-			if ($va_local = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true))) {
-				foreach ($va_local as $va_local_subject) {
-					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_local_subject), '', 'Browse', 'document', 'facet/local_subject/id/'.$va_local_subject)."<br/>";
-				}
-			}
-			if ($va_genres = $t_object->get('ca_objects.document_type', array('returnAsArray' => true))) {
-				foreach ($va_genres as $va_genre) {
-					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_genre), '', 'Browse', 'document', 'facet/document_type/id/'.$va_genre)."<br/>";
-				}
-			}
-			if ($vs_curr_buf) {
-				print "<div class='unit'><h6>Current Subjects</h6>";
-				print $vs_curr_buf;
 				print "</div>";
 			}
+
 			$vs_sidebar_buf = null;
 			if ($t_object->get("ca_objects.nysl_link")){
-				$vs_sidebar_buf.= "<a href='".$t_object->get("ca_objects.nysl_link")."' target='_blank'>Catalog Record</a>";
+				if (($t_object->get("ca_objects.collection_status") == 687) | ($t_object->get("ca_objects.collection_status") == 689)) {
+					$vs_sidebar_buf.= "<a href='".$t_object->get("ca_objects.nysl_link")."' target='_blank'>Catalog Record</a>";
+				}
 			}								
 			if ($vs_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 				$vs_sidebar_buf.= "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
