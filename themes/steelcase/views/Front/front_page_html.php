@@ -36,12 +36,12 @@
 		<div class="col-sm-8">
 			<H1>Welcome to the beta release of the Steelcase digital art collection!</H1>
 			<ul class="introText">
-				<li>The site works best in Chrome, Safari, and Firefox</li>
-				<li>Only works in storage are viewable at this time</li>
-				<li>Inventory of works-on-display will begin in June 2015</li>
-				<li>Newly inventoried artwork will appear in stages beginning in July allowing you to learn about the inspirational artwork surrounding your workspace</li>
-				<li>A mobile app allowing for customer/employee walking tours of select works on display is planned for release in late 2015</li>
-				<li>Your feedback is appreciated and is extremely important for making Art.Steelcase.com a useful resource</li>
+				<li>The database works best in Chrome, Safari, and Firefox</li>
+				<li>Inventory of works on display is currently in progress</li>
+				<li>Newly inventoried artwork will begin to appear in July 2015, allowing you to learn about the inspirational artwork in your and other workspaces</li>
+				<li>A mobile app allowing for customer/employee walking tours of select works on display is planned for release in 2016</li>
+				<li>Your feedback is appreciated and is extremely important for making art.steelcase.com a useful resource</li>
+				<li>For any questions, comments or artwork requests, contact <a href="mailto:art@steelcase.com">art@steelcase.com</a></li>
 				<li>Explore and have fun!</li>
 			</ul>
 <?php 
