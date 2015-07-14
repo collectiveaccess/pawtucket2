@@ -296,6 +296,24 @@ address {
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	background-color:transparent;
 }
+.repViewerContCont {
+	margin-bottom:10px;
+}
+.dlButton {
+	margin-top:20px;
+	margin-bottom:10px;
+}
+.dlFile {
+	color:#fff;
+	background-color:#333;
+	padding:10px;
+	border-radius:4px;
+	-webkit-border-radius:4px;
+}
+a.dlFile {
+	color:#fff;
+	font-weight:Bold;
+}
 
 /* Explore */
 
