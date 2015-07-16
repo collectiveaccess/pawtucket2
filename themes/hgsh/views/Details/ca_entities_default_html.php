@@ -2,7 +2,7 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar("access_values");
-	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("featured", "cover"), "checkAccess" => $va_access_values));
+	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured", "cover"), "checkAccess" => $va_access_values));
 ?>
 <div class="row">
 	<div class='col-xs-12'>
@@ -105,7 +105,7 @@
 	<div class="detailTitle">{{{^ca_entities.preferred_labels.displayname}}}</div>
 <?php
 	$t_object_thumb = new ca_objects();
-	$va_entities = $t_item->get("ca_entities", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_entities)){
 		if(sizeof($va_entities) == 1){
 			print "<div class='btn btn-default'>Related person/organisation</div>";
@@ -131,7 +131,7 @@
 			$i++;
 		}
 	}
-	$va_collections = $t_item->get("ca_collections", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_collections)){
 		print "<div class='btn btn-default'>Related collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
 		$t_rel_collection = new ca_collections();
@@ -153,7 +153,7 @@
 			$i++;
 		}
 	}
-	$va_places = $t_item->get("ca_places", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_places = $t_item->get("ca_places", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_places)){
 		print "<div class='btn btn-default'>Related place".((sizeof($va_places) > 1) ? "s" : "")."</div>";
 		$t_rel_place = new ca_places();
@@ -175,7 +175,7 @@
 			$i++;
 		}
 	}
-	$va_occurrences = $t_item->get("ca_occurrences", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_occurrences = $t_item->get("ca_occurrences", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_occurrences)){
 		print "<div class='btn btn-default'>Related event".((sizeof($va_occurrences) > 1) ? "s" : "")."</div>";
 		$t_rel_occurrence = new ca_occurrences();
