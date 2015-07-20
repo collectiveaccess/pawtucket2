@@ -218,58 +218,6 @@ if (!$vb_ajax) {	// !ajax
 			print $vs_description;
 		}
 		print "</p><hr/>";
-		# --- show repond option to Students for parent sets (don't show respond button on reponses)
-		if(!$t_set->get("parent_id")){
-			if($vs_user_role == $this->getVar("student_role")){
-				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID());
-				$vb_response = false;
-				print "<div id='crUserResponse'>";
-				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
-					$vb_response = true;
-					print "<H5>Your Response</H5>";
-					$t_response_set = new ca_sets();
-					foreach($va_user_response_ids as $vn_response_set_id){
-						if ($t_response_set->load($vn_response_set_id)) {
-							$vb_write_access = $t_response_set->haveAccessToSet($this->request->getUserID(), 2);
-							print caClassroomSetListItem($this->request, $t_response_set, $va_access_values, array("write_access" => $vb_write_access));
-						}
-					}
-				}
-				print "</div>";
-?>
-				<div id='crUserRespond' <?php #print (($vb_response) ? "style='display:none;'" : ""); ?>>
-					<a href='#' class='btn btn-default pull-left' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Respond"); ?></a>
-					Click RESPOND to make a collection of items in response to this assignment. Once you’ve made your collection, you can add items to it while searching and browsing the site.
-				</div><hr/>
-<?php
-			}
-			$va_response_ids = $t_set->getSetResponseIds();
-			if(is_array($va_response_ids) && sizeof($va_response_ids)){
-				print "";
-				print "<H5><a href='#' onClick='jQuery(\"#crResponses\").toggle(); return false;'>"._t("All Responses")." (".sizeof($va_response_ids).") <i class='fa fa-arrows-v'></i></H5></a>";
-				$t_response_set = new ca_sets();
-				$i = 0;
-				print "<div id='crResponses'".(($qr_set_items->numHits()) ? " style='display:none;'" : "").">";
-				foreach($va_response_ids as $vn_response_set_id){
-					if ($t_response_set->load($vn_response_set_id)) {
-						if($i == 0){
-							print "<div class='row'>";
-						}
-						print "<div class='col-xs-12 col-sm-6'>".caClassroomSetResponseItem($this->request, $t_response_set, $va_access_values)."</div><!-- end col -->";
-						$i++;
-						if($i == 2){
-							print "</div><!-- end row -->";
-							$i = 0;
-						}
-					}
-				}
-				if($i == 1){
-					print "</div><!-- end row -->";
-				}
-				print "</div>";
-				print "<hr/>";
-			}
-		}
 ?>
 			<div id="lbSetResultLoadContainer">
 <?php
@@ -361,7 +309,9 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 				}else{
-					print "<div class='row'><div class='col-sm-12'>"._t("Click the %1 near items throughout the site to add items to this %2.", $o_classroom_config->get("addToClassroomIcon"), $vs_classroom_displayname)."</div></div>";
+					if($vb_write_access){
+						print "<div class='row'><div class='col-sm-12'>"._t("Click the %1 near items throughout the site to add items to this %2.", $o_classroom_config->get("addToClassroomIcon"), $vs_classroom_displayname)."</div></div>";
+					}
 				}
 				break;
 			}
@@ -371,15 +321,62 @@ if (!$vb_ajax) {    // !ajax
             <!-- end lbSetResultLoadContainer -->
         </div>
         <!-- end col -->
-        <div
-            class="<?php print ($vs_right_col_class = $o_classroom_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+        <div class="<?php print ($vs_right_col_class = $o_classroom_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
+<?php
+        # --- show respond option to Students for parent sets (don't show respond button on reponses)
+		if(!$t_set->get("parent_id")){
+			$va_response_ids = $t_set->getSetResponseIds();
+			$va_user_response_ids = array();
+			if($vs_user_role == $this->getVar("student_role")){
+				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID());
+				$vb_response = false;
+				print "<div id='crUserResponse'>";
+				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
+					$vb_response = true;
+					print "<H5>Your Response</H5>";
+					$t_response_set = new ca_sets();
+					foreach($va_user_response_ids as $vn_response_set_id){
+						if ($t_response_set->load($vn_response_set_id)) {
+							$vb_write_access = $t_response_set->haveAccessToSet($this->request->getUserID(), 2);
+							print caClassroomSetListItem($this->request, $t_response_set, $va_access_values, array("write_access" => $vb_write_access));
+						}
+						# --- unset from the list of all responses so user does not see their reponse twice
+						if(($vn_key = array_search($vn_response_set_id, $va_response_ids)) !== false) {
+    						unset($va_response_ids[$vn_key]);
+						}
+					}
+				}
+				print "</div>";
+?>
+				<div id='crUserRespond' <?php print (($vb_response) ? "style='display:none;'" : ""); ?>>
+					<small>Click RESPOND to make a collection of items in response to this assignment. Once you’ve made your collection, you can add items to it while searching and browsing the site.</small>
+					<div class='text-center'><a href='#' class='btn btn-default' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Respond"); ?></a></div>
+				</div>
+<?php
+			}
+			
+			if(is_array($va_response_ids) && sizeof($va_response_ids)){
+				print "<div class='crResponseHeader'><a href='#' onClick='jQuery(\"#crResponses\").toggle(); return false;'>"._t("%1 Response%2", sizeof($va_response_ids), ((sizeof($va_response_ids) == 1) ? "" : "s"))." <i class='fa fa-arrows-v'></i></a></div>";
+				$t_response_set = new ca_sets();
+				$i = 0;
+				print "<div id='crResponses'".(($qr_set_items->numHits()) ? " style='display:none;'" : "").">";
+				foreach($va_response_ids as $vn_response_set_id){
+					if ($t_response_set->load($vn_response_set_id)) {
+						print caClassroomSetResponseItem($this->request, $t_response_set, $va_access_values);
+					}
+				}
+				print "</div>";
+				print "<hr/>";
+			}
+		}
+?>
+            
             <div>
+            	<H5><?php print _t("Comments"); ?></H5>
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <div class="form-group">
-                        <textarea id="addCommentTextArea" name="comment"
-                                  placeholder="<?php print addslashes(_t("add your comment")); ?>"
-                                  class="form-control"></textarea>
+                        <textarea id="addCommentTextArea" name="comment" placeholder="<?php print addslashes(_t("add your comment")); ?>" class="form-control"></textarea>
                     </div>
                     <!-- end form-group -->
                     <div class="form-group text-right">
@@ -405,8 +402,6 @@ if (!$vb_ajax) {    // !ajax
                 }
             }
             print "</div>";
-
-			
 ?>
 		</div><!-- end col -->
 	</div><!-- end row -->

@@ -25,23 +25,22 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_displayname = ucFirst($va_lightboxDisplayName["singular"]);
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_displayname = ucFirst($va_classroomDisplayName["singular"]);
+	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
-	$va_user_links = [];
+	$va_user_links = array();
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(!$this->request->config->get("disable_lightbox")){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_displayname, '', '', 'Lightbox', 'Index', array())."</li>";
+		if(caDisplayLightbox($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
-		if(!$this->request->config->get("disable_classroom")){
-			$va_user_links[] = "<li>".caNavLink($this->request, _t("Classroom"), '', '', 'Classroom', 'Index', array())."</li>";
+		if(caDisplayClassroom($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";

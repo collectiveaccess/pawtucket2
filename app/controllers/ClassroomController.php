@@ -82,7 +82,7 @@
             if ($this->request->config->get('disable_classroom')) {
  				throw new ApplicationException('Classroom is not enabled');
  			}
- 			if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
+ 			if (!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
                 $this->opb_is_login_redirect = true;
                 return;
@@ -159,6 +159,18 @@
  		# -------------------------------------------------------
  		function setAccess() {
            parent::setAccess(array('view' => 'Classroom/set_access_html.php'));
+ 		}
+ 		# -------------------------------------------------------
+ 		function addItemForm() {
+ 			parent::addItemForm(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
+ 		}
+ 		# -------------------------------------------------------
+ 		function ajaxAddItem() {
+ 			parent::ajaxAddItem(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
+ 		}
+ 		# -------------------------------------------------------
+ 		function present() {
+ 			parent::present(array('controller' => 'Classroom', 'display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
  		}
  		# -------------------------------------------------------
  		

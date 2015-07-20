@@ -90,7 +90,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
-				<?php print "<span id='crSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
+				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
 <?php
     //
@@ -292,7 +292,11 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 				}else{
-					print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
+					if($vb_write_access){
+						print "<div class='row'><div class='col-sm-12'>"._t("Click the %1 near items throughout the site to add items to this %2.", $o_lightbox_config->get("addToLightboxIcon"), $vs_lightbox_displayname)."</div></div>";
+					}else{
+						print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
+					}
 				}
 				break;
 			}

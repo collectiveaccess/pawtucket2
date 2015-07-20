@@ -238,3 +238,11 @@ h5.headingVernacularName {
 .classroom a:hover, .classroom a:active, .classroom a:focus{
 	color:#DFA800;
 }
+.lbSetImgPlaceholder{
+	padding:30px 5px 32px 5px;
+}
+.classroom HR, .classroom hr{
+	height:1px;
+	background-color:#dedede;
+	border:0px;
+}
