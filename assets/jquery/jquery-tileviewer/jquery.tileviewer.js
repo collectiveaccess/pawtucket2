@@ -2239,7 +2239,7 @@ var methods = {
 							// Image measurement scaling controls
 							//
 							if (options.enableMeasurements) {
-								jQuery($this).append("<div class='tileviewerImageScaleControls'><div class='tileviewerImageScaleControlText'>" + options.imageScaleControlFirstSetText + "</div><form class='form-inline'><div class='form-group tileviewerImageScaleControlsHelpText'>Length: <input type='text' id='tileviewerImageScaleInput' size='10'/> <button type='submit' class='btn btn-default' id='tileviewerImageScaleSet'>Set</button><div></form></div>");
+								jQuery($this).append("<div class='tileviewerImageScaleControls'><div class='tileviewerImageScaleControlText'>" + options.imageScaleControlFirstSetText + "</div><form class='form-inline'><div class='form-group tileviewerImageScaleControlsHelpText'>Length: <input type='text' id='tileviewerImageScaleInput' size='10'/> <button class='btn btn-default' id='tileviewerImageScaleSet'>Set</button><div></form></div>");
 								jQuery('#tileviewerImageScaleSet').on('click', function(e) {
 									if (!((view.selectedAnnotation !== null) && (view.annotations[view.selectedAnnotation]))) { return; }
 									console.log(view.annotations[view.selectedAnnotation]);
