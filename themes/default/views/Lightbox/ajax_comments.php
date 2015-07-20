@@ -112,6 +112,7 @@
                             jQuery("#lbSetCommentErrors{{{item_id}}}").show().html(data.errors.join(';'));
                         }
                     });
+					return false;
                 }
             });
 		});

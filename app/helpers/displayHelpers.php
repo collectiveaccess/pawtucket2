@@ -4103,6 +4103,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  		$vn_object_id = (isset($pa_options['object_id']) && $pa_options['object_id']) ? $pa_options['object_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
+ 		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
  		
@@ -4140,6 +4141,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			if (is_array($pa_additional_display_options)) { $va_rep_display_info = array_merge($va_rep_display_info, $pa_additional_display_options); }
 			$o_view->setVar('display_options', $va_rep_display_info);
 			$o_view->setVar('representation_id', $vn_representation_id);
+			$o_view->setVar('item_id', $vn_item_id);
 			$o_view->setVar('t_object_representation', $po_data);
 			$o_view->setVar('versions', $va_versions = $po_data->getMediaVersions('media'));
 			

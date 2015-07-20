@@ -33,7 +33,7 @@
  	require_once(__CA_APP_DIR__.'/lib/vendor/autoload.php');
 	require_once(__CA_MODELS_DIR__."/ca_item_comments.php");
 	$t_item_comments = new ca_item_comments();
-	$va_comments = $t_item_comments->getComments("moderated", 2);
+	$va_comments = $t_item_comments->getCommentsList("moderated", 2);
 	$va_access_values = $this->getVar("access_values");
 ?>
 	<div class="row">

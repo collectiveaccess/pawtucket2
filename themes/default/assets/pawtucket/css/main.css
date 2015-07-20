@@ -942,7 +942,6 @@ a.browseRemoveFacet img {
 	padding:60px 5px 72px 5px;
 	text-align:center;
 	width:100%;
-	margin-bottom:10px;
 }
 .lbItemContainerList .lbSetImgPlaceholder{
 	padding:10px;
@@ -1147,7 +1146,6 @@ a.browseRemoveFacet img {
 .crListUserGroup ul{
 	padding-left:15px !important;
 	max-height:120px;
-	overflow:auto;
 }
 .crListUserGroup dl{
 	padding-bottom:0px;
@@ -1156,6 +1154,31 @@ a.browseRemoveFacet img {
 .crListUserGroup dd{
 	padding-bottom:10px;
 }
+.crSetImgPlaceholder{
+	
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	color: #858585;
+	padding:25% 0px 25% 0px;
+	text-align:center;
+	width:100%;
+}
+#crUserRespond{
+	padding:15px;
+	background-color:#f5f5f5;
+	margin-bottom:20px;
+}
+#crUserRespond .btn{
+	margin-top:10px;
+}
+.crResponseHeader {
+	font-size:11px;
+	padding-bottom:5px;
+	font-weight:bold;
+}
+.crResponseHeader a{
+ 	color:#858585;
+ }
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
@@ -1458,7 +1481,7 @@ a.browseRemoveFacet img {
     text-transform: uppercase;
     border-radius:3px;    
 }
-.detail .detailTool span{
+.detail .detailTool span, .detail .detailTool i{
 	color:#929292;
 	margin-right:5px;
 }

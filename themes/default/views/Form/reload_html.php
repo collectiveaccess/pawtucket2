@@ -17,18 +17,20 @@ $(document).ready(function() {
 	c.remove();
 	
 <?php
-	if($vs_message){
+	if($this->request->isAjax()){
+		if($vs_message){
 ?>
-		setTimeout(function(){
-			$('#caFormOverlay').fadeOut(300, function() {
-				 window.location.reload();
-			 });
-		}, 1500);
+			setTimeout(function(){
+				$('#caFormOverlay').fadeOut(300, function() {
+					 window.location.reload();
+				 });
+			}, 1500);
 <?php
-	}else{
+		}else{
 ?>
-		window.location.reload();
+			window.location.reload();
 <?php
+		}
 	}
 ?>
 });
