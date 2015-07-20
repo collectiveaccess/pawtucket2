@@ -2178,6 +2178,15 @@ class SearchResult extends BaseObject {
 	/**
 	 * 
 	 */
+	function getMediaScale($ps_field) {  
+		$va_media_infos = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
+
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaScale(array_shift($va_media_infos), $pa_options);	
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * 
+	 */
 	function mediaIsMirrored($ps_field, $ps_version) {
 		$va_field = $this->getFieldInfo($ps_field);
 		return $GLOBALS["_DbResult_mediainfocoder"]->mediaIsMirrored(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))), $ps_version);

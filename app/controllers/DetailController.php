@@ -308,6 +308,7 @@
  		public function GetRepresentationInfo() {
  			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
+ 			$pn_item_id 			= $this->request->getParameter('item_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
  			
@@ -317,7 +318,7 @@
  				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
  				return;
  			}
- 			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
+ 			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'item_id' => $pn_item_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
 			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
@@ -1207,7 +1208,7 @@
 			$t_rep = new ca_object_representations($pn_representation_id);
 			$t_rep->annotationMode('user');
 
-			$va_annotations_raw = $t_rep->getAnnotations();
+			$va_annotations_raw = $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger)));
 			$va_annotations = array();
 
 			foreach($va_annotations_raw as $vn_annotation_id => $va_annotation) {
@@ -1231,6 +1232,10 @@
 				);
 			}
 
+			if (is_array($va_media_scale = $t_rep->getMediaScale('media'))) {
+				$va_annotations[] = $va_media_scale;
+			}
+
 			$this->view->setVar('annotations', $va_annotations);
 			$this->render('Details/ajax_representation_annotations_json.php');
 		}
@@ -1246,7 +1251,11 @@
 			global $g_ui_locale_id;
 			if (!$this->request->isLoggedIn()) { throw new ApplicationException(_t('Must be logged in')); }
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
+			$vn_item_id = $this->request->getParameter('item_id', pInteger);
+			
 			$t_rep = new ca_object_representations($pn_representation_id);
+			if (!$t_rep->getPrimaryKey()) { throw new ApplicationException(_t('Invalid representation_id')); }
+			
 			$t_rep->annotationMode('user');
 			$pa_annotations = $this->request->getParameter('save', pArray);
 
@@ -1260,7 +1269,7 @@
 						$va_annotation_ids[$va_annotation['index']] = $vn_annotation_id;
 					} else {
 						// new annotation
-						$va_annotation_ids[$va_annotation['index']] = $t_rep->addAnnotation($vs_label, $g_ui_locale_id, $this->request->getUserID(), $va_annotation, 0, 0);
+						$va_annotation_ids[$va_annotation['index']] = $t_rep->addAnnotation($vs_label, $g_ui_locale_id, $this->request->getUserID(), $va_annotation, 0, 0, null, array('item_id' => $vn_item_id));
 					}
 				}
 			}
@@ -1276,7 +1285,23 @@
 					$t_rep->removeAnnotation($vn_to_delete_annotation_id);
 				}
 			}
-
+			
+			// save scale if set
+			if (
+				($vs_measurement = $this->request->getParameter('measurement', pString))
+				&&
+				(strlen($vn_width = $this->request->getParameter('width', pFloat)))
+				&&
+				(strlen($vn_height = $this->request->getParameter('height', pFloat)))
+			) {
+				if (is_array($va_m = caParseMeasurement($vs_measurement))) {
+					$vn_theta = atan($vn_height/$vn_width);
+					$vn_value_x = $va_m['value'] * cos($vn_theta);
+					
+					$t_rep->setMediaScale('media', $vn_value_x.$va_m['units'], $vn_width);
+					$va_annotations = array_merge($va_annotations, $t_rep->getMediaScale('media'));
+				}
+			}
 
 			$this->view->setVar('annotations', $va_annotations);
 			$this->render('Details/ajax_representation_annotations_json.php');

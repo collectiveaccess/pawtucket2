@@ -1147,7 +1147,6 @@ a.browseRemoveFacet img {
 .crListUserGroup ul{
 	padding-left:15px !important;
 	max-height:120px;
-	overflow:auto;
 }
 .crListUserGroup dl{
 	padding-bottom:0px;

@@ -70,6 +70,32 @@
 			print "</div><!-- end row -->";
 		}
 	}
+	if($vs_user_role == $this->getVar("educator_role")){
+		# --- educator help text
+?>
+		<H2>How to get started</H2>
+		<p>
+			Use the New <?php print ucfirst($vs_classroom_displayname); ?> link above to create an <?php print $vs_classroom_displayname; ?> to share with your students.  To start, define a name and description. The description should contain instructions for the student to follow.  Once you've created the <?php print ucfirst($vs_classroom_displayname); ?>, you can use the <?php print $o_classroom_config->get("addToClassroomIcon"); ?> button near items throughout the site to add them to your <?php print $vs_classroom_displayname; ?>, creating a slideshow of items for students to interact with.
+		</p>
+		<p>
+			You can share your <?php print $vs_classroom_displayname; ?> with individual students or groups by using the Share <?php print ucfirst($vs_classroom_displayname); ?> link.  Students can join groups by simply following the provided group Url.  The will be prompted to login or register and automatically linked to the group.
+		</p>
+		<p>
+			How can students engage with <?php print $vs_classroom_displayname_plural; ?>? You can prompt students to interact with <?php print $vs_classroom_displayname_plural; ?> in a variety of ways.
+			<ul>
+				<li>
+					They can answer questions or share observations by adding comments at the <?php print $vs_classroom_displayname; ?>, or item level.
+				</li>
+				<li>
+					They can use the site's image annotation tools to label or measure images by clicking the <span class='glyphicon glyphicon-zoom-in'></span> button by <?php print $vs_classroom_displayname; ?> items.
+				</li>
+				<li>
+					Finally, students can respond to <?php print $vs_classroom_displayname_plural; ?> by creating their own collection of items complete with name, description, image annotations and comments.
+				</li>
+			</ul>
+		</p>
+<?php
+	}
 	print "</div><!-- end crSetList -->";
 	print "<div class='row' id='crSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-12'>\n";
 	if($vs_user_role == $this->getVar("educator_role")){
@@ -90,7 +116,7 @@
 ?>
 			<div class="text-center"><a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_classroom_displayname)); ?></a></div>
 			<H2>Your Groups</H2>
-			<p><small>Groups are an easy way to share your <?php print $vs_classroom_displayname_plural; ?> with your classes.  Simply make a group, and use the Share <?php print $vs_classroom_displayname; ?> link in the gear to link <?php print $vs_classroom_displayname_plural; ?> with groups.  You can then distribute the link to join the group to share the <?php print $vs_classroom_displayname; ?> with your students.</small></p>
+			<p><small>Groups are an easy way to share your <?php print $vs_classroom_displayname_plural; ?> with your classes.  Simply make a group, and use the Share <?php print ucfirst($vs_classroom_displayname); ?> button to link your <?php print $vs_classroom_displayname_plural; ?> with groups.  Individual students can join the group by following the group's Url.</small></p>
 <?php
 			print "<div class='text-center'><a href='#' class='btn btn-default btn-lg' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', '*', 'userGroupForm', array())."\"); return false;' >"._t("New Group")."</a></div><HR/>";
 			if(sizeof($va_user_groups)){

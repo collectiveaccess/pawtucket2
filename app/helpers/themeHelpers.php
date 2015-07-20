@@ -699,7 +699,7 @@
 				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
 		}
 		if($po_request->isLoggedIn()){
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("type" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 		}else{
 			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
 		}
@@ -845,7 +845,7 @@
 			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Classroom', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>&nbsp;&nbsp;\n";
 			$vs_set_display .= "<a href='#' title='"._t("Delete")."' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 		}
-		$vs_set_display .= "<small>"._t("Items:").$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."&nbsp;&nbsp;&nbsp;"._t("Comments:").$t_set->getNumComments()."&nbsp;&nbsp;&nbsp;"._t("Responses").": ".sizeof($t_set->getSetResponseIds())."</small>\n";
+		$vs_set_display .= "<small>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."&nbsp;&nbsp;&nbsp;"._t("Comments: %1", $t_set->getNumComments())."&nbsp;&nbsp;&nbsp;"._t("Responses: %1", sizeof($t_set->getSetResponseIds()))."</small>\n";
 		$vs_set_display .= "</div><!-- end crSet --></div><!-- end crSetContainer -->\n";
 
         return $vs_set_display;

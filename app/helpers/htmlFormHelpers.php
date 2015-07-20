@@ -366,6 +366,8 @@
 			$vn_viewer_width = 				$pa_options["viewer_width"];
 			$vn_viewer_height = 			$pa_options["viewer_height"];
 			
+			$vn_media_scale_factor = 		floatval($pa_options["scale"]);
+	
 			$vs_annotation_load_url	=		caGetOption("annotation_load_url", $pa_options, null);
 			$vs_annotation_save_url	=		caGetOption("annotation_save_url", $pa_options, null);
 			$vs_help_load_url	=			caGetOption("help_load_url", $pa_options, null);
@@ -393,7 +395,7 @@
 			}
 			
 			$vs_error_tag = caGetOption("alt_image_tag", $pa_options, '');
-			
+	
 			$vn_viewer_width_with_units = $vn_viewer_width;
 			$vn_viewer_height_with_units = $vn_viewer_height; 
 			if (preg_match('!^[\d]+$!', $vn_viewer_width)) { $vn_viewer_width_with_units .= 'px'; }

@@ -358,10 +358,12 @@
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $x=$o_map->render('HTML', array()));
+				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			
  			switch($ps_view) {
+ 				case 'xlsx':
+ 				case 'pptx':
  				case 'pdf':
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
@@ -423,32 +425,5 @@
  			
  			return join(" / ", $va_buf);
   		}
- 		# -------------------------------------------------------
-        /**
-         * Return text for map item info bubble
-         */
- 		public function ajaxGetMapItem() {
-            if($this->opb_is_login_redirect) { return; }
-            
-            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
-            $ps_view = $this->request->getParameter('view', pString);
-            $ps_browse = $this->request->getParameter('browse', pString);
-            if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
- 				// invalid browse type – throw error
- 				throw new ApplicationException("Invalid browse type");
- 			}
- 			
- 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
-			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
-			if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
-				throw new ApplicationException("Invalid view");
-			}
-            
-			$vs_content_template = $va_view_info['display']['description_template'];
-			
- 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br/>")));
-			
-         	$this->render("Browse/ajax_map_item_html.php");   
-        }
  		# -------------------------------------------------------
 	}

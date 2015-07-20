@@ -116,6 +116,7 @@ require_once(__CA_LIB_DIR__."/core/Db/Transaction.php");
 require_once(__CA_LIB_DIR__."/core/Media/MediaProcessingSettings.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/gisHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
 require_once(__CA_LIB_DIR__.'/ca/MediaReplicator.php');
@@ -874,16 +875,16 @@ class BaseModel extends BaseObject {
 						break;
 				}	
 			} else {
-              $va_rels = $this->getRelatedItems($va_tmp[0]);
-                $va_vals = array();
-                if(is_array($va_rels)) {
-                    foreach($va_rels as $va_rel_item) {
-                        if (isset($va_rel_item[$va_tmp[1]])) {
-                            $va_vals[] = $va_rel_item[$va_tmp[1]];
-                        }
-                    }
-                    return $vb_return_as_array ? $va_vals : join(caGetOption('delimiter', $pa_options, ';'), $va_vals);
-                }
+            	$va_rels = $this->getRelatedItems($va_tmp[0]);
+				$va_vals = array();
+				if(is_array($va_rels)) {
+					foreach($va_rels as $va_rel_item) {
+						if (isset($va_rel_item[$va_tmp[1]])) {
+							$va_vals[] = $va_rel_item[$va_tmp[1]];
+						}
+					}
+					return $vb_return_as_array ? $va_vals : join(caGetOption('delimiter', $pa_options, ';'), $va_vals);
+				}
 				// can't pull fields from other tables!
 				return $vb_return_as_array ? array() : null;
 			}
@@ -2601,6 +2602,13 @@ class BaseModel extends BaseObject {
 				$vn_orig_hier_right 	= $this->get($vs_hier_right_fld);
 				
 				$vn_parent_id 			= $this->get($vs_parent_id_fld);
+				
+				// Don't allow parent to be set 
+				if ($vn_parent_id == $this->getPrimaryKey()) {
+					$vn_parent_id = $this->getOriginalValue($vs_parent_id_fld);
+					if ($vn_parent_id == $this->getPrimaryKey()) { $vn_parent_id = null; }
+					$this->set($vs_parent_id_fld, $vn_parent_id);
+				}
 					
 				if ($vb_parent_id_changed = $this->changed($vs_parent_id_fld)) {
 					$va_parent_info = $this->_getHierarchyParent($vn_parent_id);
@@ -3076,7 +3084,14 @@ class BaseModel extends BaseObject {
 		}
 		
 		$o_indexer = $this->getSearchIndexer(caGetOption('engine', $pa_options, null));
-		return $o_indexer->indexRow($this->tableNum(), $this->getPrimaryKey(), $this->getFieldValuesArray(true), $pb_reindex_mode, null, $pa_changed_field_values_array, $this->_FIELD_VALUES_OLD, $pa_options);
+		return $o_indexer->indexRow(
+			$this->tableNum(), $this->getPrimaryKey(), // identify record
+			$this->getFieldValuesArray(true), // data to index
+			$pb_reindex_mode,
+			null, // esclusion list, always null in the beginning
+			$pa_changed_field_values_array, // changed values
+			$pa_options
+		);
 	}
 	
 	/**
@@ -3775,6 +3790,8 @@ class BaseModel extends BaseObject {
 				unset($va_media_desc["_undo_"]);
 				unset($va_media_desc["TRANSFORMATION_HISTORY"]);
 				unset($va_media_desc["_CENTER"]);
+				unset($va_media_desc["_SCALE"]);
+				unset($va_media_desc["_SCALE_UNITS"]);
 				return array_keys($va_media_desc);
 			}
 		} else {
@@ -3983,6 +4000,9 @@ class BaseModel extends BaseObject {
 	 	$vn_max_execution_time = ini_get('max_execution_time');
 	 	set_time_limit(7200);
 	 	
+		$o_tq = new TaskQueue();
+		$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
+
 		# only set file if something was uploaded
 		# (ie. don't nuke an existing file because none
 		#      was uploaded)
@@ -4021,19 +4041,19 @@ class BaseModel extends BaseObject {
 			
 			$vb_allow_fetching_of_urls = (bool)$this->_CONFIG->get('allow_fetching_of_media_from_remote_urls');
 			$vb_is_fetched_file = false;
-			if ($vb_allow_fetching_of_urls && (bool)ini_get('allow_url_fopen') && isURL($this->_SET_FILES[$ps_field]['tmp_name'])) {
+			if ($vb_allow_fetching_of_urls && (bool)ini_get('allow_url_fopen') && isURL($vs_url = html_entity_decode($this->_SET_FILES[$ps_field]['tmp_name']))) {
 				$vs_tmp_file = tempnam(__CA_APP_DIR__.'/tmp', 'caUrlCopy');
-				$r_incoming_fp = @fopen($this->_SET_FILES[$ps_field]['tmp_name'], 'r');
+				$r_incoming_fp = fopen($vs_url, 'r');
 				
 				if (!$r_incoming_fp) {
-					$this->postError(1600, _t('Cannot open remote URL [%1] to fetch media', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
+					$this->postError(1600, _t('Cannot open remote URL [%1] to fetch media', $vs_url),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 					set_time_limit($vn_max_execution_time);
 					return false;
 				}
 				
 				$r_outgoing_fp = fopen($vs_tmp_file, 'w');
 				if (!$r_outgoing_fp) {
-					$this->postError(1600, _t('Cannot open file for media fetched from URL [%1]', $this->_SET_FILES[$ps_field]['tmp_name']),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
+					$this->postError(1600, _t('Cannot open file for media fetched from URL [%1]', $vs_url),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 					set_time_limit($vn_max_execution_time);
 					return false;
 				}
@@ -4043,7 +4063,7 @@ class BaseModel extends BaseObject {
 				fclose($r_incoming_fp);
 				fclose($r_outgoing_fp);
 				
-				$vs_url_fetched_from = $this->_SET_FILES[$ps_field]['tmp_name'];
+				$vs_url_fetched_from = $vs_url;
 				$vn_url_fetched_on = time();
 				$this->_SET_FILES[$ps_field]['tmp_name'] = $vs_tmp_file;
 				$vb_is_fetched_file = true;
@@ -4212,6 +4232,8 @@ class BaseModel extends BaseObject {
 				$media_desc = array(
 					"ORIGINAL_FILENAME" => $this->_SET_FILES[$ps_field]['original_filename'],
 					"_CENTER" => $va_center,
+					"_SCALE" => caGetOption('_SCALE', $va_tmp, array()),
+					"_SCALE_UNITS" => caGetOption('_SCALE_UNITS', $va_tmp, array()),
 					"INPUT" => array(
 						"MIMETYPE" => $m->get("mimetype"),
 						"WIDTH" => $m->get("width"),
@@ -4964,7 +4986,6 @@ class BaseModel extends BaseObject {
 		$va_media_info['_CENTER']['x'] = $pn_center_x;
 		$va_media_info['_CENTER']['y'] = $pn_center_y;
 		
-		// Regenerate derivatives 
 		$this->setMode(ACCESS_WRITE);
 		$this->setMediaInfo($ps_field, $va_media_info);
 		$this->update();
@@ -4972,6 +4993,57 @@ class BaseModel extends BaseObject {
 		$this->update();
 		
 		return $this->numErrors() ? false : true;
+	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Set scaling conversion factor for media. Allows physical measurements to be derived from image pixel measurements.
+	 * A measurement with physical units of the kind passable to caConvertMeasurementToPoints() (Eg. "55mm", "5 ft", "10km") and
+	 * the percentage of the image *width* the measurement covers are passed, from which the scale factor is calculated and stored.
+	 *
+	 * @param string $ps_field The name of the media field
+	 * @param string $ps_dimension A measurement with dimensional units (ex. "55mm", "5 ft", "10km")
+	 * @param float $pn_percent_of_image_width Percentage of image *width* the measurement covers from 0 to 1. If you pass a value > 1 it will be divided by 100 for calculations. [Default is 1]
+	 * @param array $pa_options An array of options. No options are currently implemented.
+	 *
+	 * @return bool True on success, false if an error occurred.
+	 */
+	public function setMediaScale($ps_field, $ps_dimension, $pn_percent_of_image_width=1, $pa_options=null) {
+		if ($pn_percent_of_image_width > 1) { $pn_percent_of_image_width /= 100; }
+		if ($pn_percent_of_image_width <= 0) { $pn_percent_of_image_width = 1; }
+		$va_media_info = $this->getMediaInfo($ps_field);
+		if (!is_array($va_media_info)) {
+			return null;
+		}
+		
+		$va_dim = caParseMeasurement($ps_dimension);
+		
+		$va_media_info['_SCALE'] = $pn_percent_of_image_width/$va_dim['value'];
+		$va_media_info['_SCALE_UNITS'] = $va_dim['units'];
+	
+		$this->setMode(ACCESS_WRITE);
+		$this->setMediaInfo($ps_field, $va_media_info);
+		$this->update();
+		$this->set('media', $this->getMediaPath('media', 'original'), array('original_filename' => $vs_original_filename));
+		$this->update();
+		
+		return $this->numErrors() ? false : true;
+	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Returns scaling conversion factor for media. Allows physical measurements to be derived from image pixel measurements.
+	 *
+	 * @param string $ps_field The name of the media field
+	 * @param array $pa_options An array of options. No options are currently implemented.
+	 *
+	 * @return array Value or null if not set
+	 */
+	public function getMediaScale($ps_field, $pa_options=null) {
+		$va_media_info = $this->getMediaInfo($ps_field);
+		if (!is_array($va_media_info)) {
+			return null;
+		}
+		
+		return array('scale' => caGetOption('_SCALE', $va_media_info, null), 'measurementUnits' => caGetOption('_SCALE_UNITS', $va_media_info, null));;
 	}
 	# --------------------------------------------------------------------------------
 	/**

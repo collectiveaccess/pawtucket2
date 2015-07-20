@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2013 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,6 +28,7 @@
 
 $t_rep 						= $this->getVar('t_object_representation');
 $vn_representation_id 		= $t_rep->getPrimaryKey();
+$vn_item_id					= $this->getVar('item_id');
 $t_object 					= $this->getVar('t_object');
 $va_display_options		 	= $this->getVar('display_options');
 $vs_display_type		 	= $this->getVar('display_type');
@@ -117,9 +118,10 @@ if($vs_display_type == 'media_overlay'){
 	
 	$va_display_options['help_load_url'] = caNavUrl($this->request, '', 'Detail', 'ViewerHelp');
 	if ($this->request->isLoggedIn()) {
-		$va_display_options['annotation_load_url'] = caNavUrl($this->request, '', 'Detail', 'GetAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()));
-		$va_display_options['annotation_save_url'] = caNavUrl($this->request, '', 'Detail', 'SaveAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()));
+		$va_display_options['annotation_load_url'] = caNavUrl($this->request, '', 'Detail', 'GetAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'item_id' => $vn_item_id));
+		$va_display_options['annotation_save_url'] = caNavUrl($this->request, '', 'Detail', 'SaveAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'item_id' => $vn_item_id));
 		$va_display_options['read_only'] = false;
+		$va_display_options['scale'] = $t_rep->getMediaScale('media');
 	} else {
 		$va_display_options['read_only'] = true;
 	}

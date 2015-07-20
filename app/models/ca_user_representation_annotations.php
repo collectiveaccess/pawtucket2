@@ -73,6 +73,13 @@ BaseModel::$s_ca_models_definitions['ca_user_representation_annotations'] = arra
 				'DEFAULT' => '',
 				'LABEL' => _t('User'), 'DESCRIPTION' => _t('The user who created the annotation.')
 		),
+		'item_id' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => '',
+				'LABEL' => _t('Set item'), 'DESCRIPTION' => _t('Optional set item with which annotation is associated.')
+		),
 		'type_code' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT, 
 				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
