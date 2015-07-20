@@ -121,7 +121,10 @@ var methods = {
 			
 			enableMeasurements: true,						// show measurement tool and prompt to set image scale
 			scale: null,									// measurement scale factor
-			measurementUnits: null							// measurement units to display
+			measurementUnits: null,							// measurement units to display
+			
+			imageScaleControlFirstSetText: "<div class='tileviewerImageScaleControlsHeader'>A scale must be set for this image before measurements can be evaluated.</div><div class='tileviewerImageScaleControlsHelpText'>Enter the length with units (mm, cm, m, km, in, ft, miles, etc.) of the currently selected measurement below.</div>",
+			imageScaleControlChangeSettingText: "<div class='tileviewerImageScaleControlsHeader'>This image is scaled at %1.</div><div class='tileviewerImageScaleControlsHelpText'>To change scale enter the length with units (mm, cm, m, km, in, ft, miles, etc.) of the currently selected measurement below.</div>"
         };
 
         return this.each(function() {
@@ -280,9 +283,9 @@ var methods = {
                     		
                     		jQuery.each(data, function(k, v) {
                     			if (v['scale'] && v['measurementUnits']) { 
-                    				console.log(v);
                     				options.scale = v['scale'];
                     				options.measurementUnits = v['measurementUnits'];
+                    				jQuery(".tileviewerImageScaleControls div.tileviewerImageScaleControlText").html(options.imageScaleControlChangeSettingText.replace("%1", "1" + options.measurementUnits + " = " + (options.scale.toFixed(2) * 100) + "% of width"));
                     				return;
                     			}
                     			v['index'] = k;
@@ -850,6 +853,7 @@ var methods = {
 													var w_scaled = w / (options.scale);
 													var h = (y2 - y1)/layerHeight/layerMag;
 													var h_scaled = h / ((layerWidth/layerHeight) * (options.scale));
+													//console.log("xs", options.scale, "ys", (layerWidth/layerHeight) * (options.scale), layerWidth, layerHeight, layerMag);
 													var d = Math.sqrt(Math.pow(w_scaled, 2) + Math.pow(h_scaled, 2));
 													
 													m = d.toFixed(2) + options.measurementUnits;
@@ -861,14 +865,14 @@ var methods = {
 												ctx.translate((x2 + x1)/2, (y2 + y1)/2);
 												ctx.rotate(angle - (Math.PI/2));
 												ctx.textAlign = "center";
-												ctx.font = "20px Arial";
+												ctx.font = "24px Arial";
 												ctx.fillStyle = '#333';
-												ctx.fillText(m, 0, 22);
+												ctx.fillText(m, 0, 24);
 												ctx.restore();
 													
-												if (!options.scale) { jQuery(".tileviewerImageScaleControls").fadeIn(500); }
+												if (selectedAnnotation == i) { jQuery(".tileviewerImageScaleControls").show(); }
 											} else {
-												if (!options.scale) { jQuery(".tileviewerImageScaleControls").hide(0); }
+												jQuery(".tileviewerImageScaleControls").hide(); 
 											}
 											
 											// Draw points
@@ -1875,7 +1879,7 @@ var methods = {
                         	var d = $(view.controls).find(".tileviewerToolbarCol");
                      						
 							view.tools = {};
-							view.tools['pan'] = "<a href='#' title='" + view.get_tool_tip('pan') + "' id='" + options.id + "ControlPanImage' class='tileviewerControl'><i class=\"fa fa-arrows\"></i></a>";
+							view.tools['pan'] = "<a href='#' title='" + view.get_tool_tip('pan') + "' id='" + options.id + "ControlPanImage' class='tileviewerControl " + (options.panMode ? 'tileviewerControlSelected' : '') + "'><i class=\"fa fa-arrows\"></i></a>";
 							if (options.useAnnotations && options.showAnnotationTools && !options.lockAnnotations) { 
 								view.tools['point'] = "<a href='#' title='" + view.get_tool_tip('point') + "' id='" + options.id + "ControlAddPointAnnotation' class='tileviewerControl'><i class=\"fa fa-circle-thin\"></i></a>";		
 								view.tools['rect'] = "<a href='#' title='" + view.get_tool_tip('rect') + "' id='" + options.id + "ControlAddRectAnnotation' class='tileviewerControl'><i class=\"fa fa-square-o\"></i></a>";
@@ -1883,7 +1887,7 @@ var methods = {
 								if (options.enableMeasurements) {
 									view.tools['measure'] = "<a href='#' title='" + view.get_tool_tip('measure') + "' id='" + options.id + "ControlAddMeasureAnnotation' class='tileviewerControl'><i class=\"fa fa-text-width\"></i></a>";	
 								}
-								view.tools['lock'] = "<a href='#' title='" + view.get_tool_tip('lock') + "' id='" + options.id + "ControlLockAnnotations' class='tileviewerControl'><i class=\"fa fa-lock\"></i></a>";
+								view.tools['lock'] = "<a href='#' title='" + view.get_tool_tip('lock') + "' id='" + options.id + "ControlLockAnnotations' class='tileviewerControl " + (options.lockAnnotations ? 'tileviewerControlSelected' : '') + "'><i class=\"fa fa-lock\"></i></a>";
 								
 							}
 							if (options.useAnnotations && options.showAnnotationTools && options.useKey) {
@@ -1896,7 +1900,7 @@ var methods = {
 							}
 							
 							if (options.useAnnotations && options.showAnnotationTools) {
-								view.tools['toggleAnnotations'] = "<a href='#' title='" + view.get_tool_tip('toggleAnnotations') + "' id='" + options.id + "ControlToggleAnnotations' class='tileviewerControl'><i class=\"fa fa-eye\"></i></a>";	
+								view.tools['toggleAnnotations'] = "<a href='#' title='" + view.get_tool_tip('toggleAnnotations') + "' id='" + options.id + "ControlToggleAnnotations' class='tileviewerControl " + (options.displayAnnotations ? 'tileviewerControlSelected' : '') + "'><i class=\"fa fa-eye\"></i></a>";	
 							}
 							
 							if (options.mediaDownloadUrl) {
@@ -2235,7 +2239,7 @@ var methods = {
 							// Image measurement scaling controls
 							//
 							if (options.enableMeasurements) {
-								jQuery($this).append("<div class='tileviewerImageScaleControls'><div class='tileviewerImageScaleControlsHeader'>A scale must be set for this image before measurements can be evaluated.</div><div class='tileviewerImageScaleControlsHelpText'>Enter the length with units (mm, cm, m, km, in, ft, miles, etc.) of the currently selected measurement below.</div><form class='form-inline'><div class='form-group tileviewerImageScaleControlsHelpText'>Length: <input type='text' id='tileviewerImageScaleInput' size='10'/> <button type='submit' class='btn btn-default' id='tileviewerImageScaleSet'>Set</button><div></form></div>");
+								jQuery($this).append("<div class='tileviewerImageScaleControls'><div class='tileviewerImageScaleControlText'>" + options.imageScaleControlFirstSetText + "</div><form class='form-inline'><div class='form-group tileviewerImageScaleControlsHelpText'>Length: <input type='text' id='tileviewerImageScaleInput' size='10'/> <button type='submit' class='btn btn-default' id='tileviewerImageScaleSet'>Set</button><div></form></div>");
 								jQuery('#tileviewerImageScaleSet').on('click', function(e) {
 									if (!((view.selectedAnnotation !== null) && (view.annotations[view.selectedAnnotation]))) { return; }
 									console.log(view.annotations[view.selectedAnnotation]);
@@ -2243,11 +2247,18 @@ var methods = {
 									var w = view.annotations[view.selectedAnnotation].w/100;
 									var h = view.annotations[view.selectedAnnotation].h/100;
 									
+									// Save scale factor
 									jQuery.getJSON(options.annotationSaveUrl, { 'measurement': m, 'width': w, 'height': h}, function(data) {
+										console.log(m, w, h, data);
 										options.scale = data.scale;
 										options.measurementUnits = data.measurementUnits;
+										
+										view.needdraw = true;
+										
+										jQuery(".tileviewerImageScaleControls div.tileviewerImageScaleControlText").html(options.imageScaleControlChangeSettingText.replace("%1", "1" + options.measurementUnits + " = " + (options.scale.toFixed(2) * 100) + "% of width"));
 									});
 								});
+								jQuery('#tileviewerImageScaleInput').val('');
 								
 								// Hide it by default
 								jQuery($this).find(".tileviewerImageScaleControls").css("display", "none");
@@ -3241,7 +3252,7 @@ var methods = {
 								view.dragAnnotationLastCoords = {x: x, y: y};
 								view.needdraw = true;
 							} else {     
-								if (!options.scale) { jQuery(".tileviewerImageScaleControls").hide(0); }
+								jQuery(".tileviewerImageScaleControls").hide(0); 
 								               	
 								// Add annotation?
 								if (options.addRectAnnotationMode) {

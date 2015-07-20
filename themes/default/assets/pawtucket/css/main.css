@@ -2374,14 +2374,13 @@ div.caMediaOverlayControls a:hover{
 }
 div.caMediaOverlayControls .close{
 	float:right;
-	width:15px;
-	height:16px;
-	background-image:url("../graphics/buttons/x_white.png");
 	margin: 0px 10px 0px 20px;
+	font-size: 22px;
 }
 div.caMediaOverlayControls .download{
 	float:right;
-	margin-left:20px;
+	margin: 2px 0 0 20px;
+	font-size: 16px;
 }
 div.caMediaOverlayControls .objectInfo{
 	font-size:11px;
