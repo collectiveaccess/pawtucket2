@@ -178,7 +178,7 @@
             //
             // User must at least have read access to the set
  			//
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); return; }
+            if (!($t_set = $this->_getSet(__CA_SET_READ_ACCESS__))) { $this->Index(); return; }
  			
  			$vn_set_id = $t_set->get("set_id");
  			$this->view->setVar("set", $t_set);
