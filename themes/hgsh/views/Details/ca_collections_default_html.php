@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");	
 	$va_access_values = $this->getVar("access_values");
-	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured", "cover"), "checkAccess" => $va_access_values));
+	$va_cover_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("cover"), "checkAccess" => $va_access_values));
+	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
 ?>
 <div class="row">
 	<div class='col-xs-12'>
@@ -10,97 +11,66 @@
 	</div>
 </div><!-- end row -->
 <div class="row">		
-<div class='col-sm-6'>
+<div class='col-sm-8'>
 	<div class="detailTitleSmall">{{{^ca_collections.preferred_labels.name}}}</div>
 <?php
-		if(is_array($va_featured_items) && sizeof($va_featured_items)){
-			$q_featured_objects = caMakeSearchResult('ca_objects', $va_featured_items);
-			$vb_item_output = 0;
-			if($q_featured_objects->numHits()){
-?>   
-				<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>
-<?php
-							while($q_featured_objects->nextHit()){
-								if($vs_media = $q_featured_objects->getWithTemplate("<div class='repViewerContCont'><div class='repViewerCont'><l>^ca_object_representations.media.large</l></div></div>", array("checkAccess" => $va_access_values))){
-									print "<li><div class='detailSlide'>".$vs_media;
-									$vs_caption = $q_featured_objects->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
-									if($vs_caption){
-										print "<p class='detailCaptionText'>".$vs_caption."</p>";
-									}
-									print "</div></li>";
-									$vb_item_output++;
-								}
-							}
-?>
-						</ul>
-					</div><!-- end jcarousel -->
-<?php
-					if($vb_item_output > 1){
-?>
-					<!-- Prev/next controls -->
-					<div id='detailRepNav'><a href='#' id='detailRepNavPrev' title='"._t("Previous")."'><span class='glyphicon glyphicon-arrow-left'></span></a> <a href='#' id='detailRepNavNext' title='"._t("Next")."'><span class='glyphicon glyphicon-arrow-right'></span></a></div>
-<?php
-					}
-?>
-				</div><!-- end jcarousel-wrapper -->
-				<script type='text/javascript'>
-					jQuery(document).ready(function() {
-						/* width of li */
-						$('.jcarousel li').width($('.jcarousel').width());
-						$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
-						
-						/*
-						Carousel initialization
-						*/
-						$('.jcarousel')
-							.jcarousel({
-								// Options go here
-							});
-				
-						/*
-						 Prev control initialization
-						 */
-						$('#detailRepNavPrev')
-							.on('jcarouselcontrol:active', function() {
-								$(this).removeClass('inactive');
-							})
-							.on('jcarouselcontrol:inactive', function() {
-								$(this).addClass('inactive');
-							})
-							.jcarouselControl({
-								// Options go here
-								target: '-=1'
-							});
-				
-						/*
-						 Next control initialization
-						 */
-						$('#detailRepNavNext')
-							.on('jcarouselcontrol:active', function() {
-								$(this).removeClass('inactive');
-							})
-							.on('jcarouselcontrol:inactive', function() {
-								$(this).addClass('inactive');
-							})
-							.jcarouselControl({
-								// Options go here
-								target: '+=1'
-							});
-
-					});
-				</script>
-	<br/>
-<?php
-			}
-
+		if(is_array($va_cover_items) && sizeof($va_cover_items)){
+			$vn_cover_id = $va_cover_items[0];
+			$t_cover_object = new ca_objects($vn_cover_id);
+			if($vs_media = $t_cover_object->getWithTemplate("<l>^ca_object_representations.media.large</l>", array("checkAccess" => $va_access_values))){
+				print "<div class='detailCoverObject'>".$vs_media;
+				$vs_caption = $t_cover_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+				if($vs_caption){
+					print "<p class='detailCaptionText'>".$vs_caption."</p>";
+				}
+				print "</div>";
+			}			
 		}
 ?>
 	{{{<ifdef code="ca_collections.description"><p>^ca_collections.description</p></ifdef>}}}
+	{{{<ifdef code="ca_collections.additional_info">
+			<div class="detailMoreInfo" id="additional_info_link"><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;">Read More <span class="glyphicon glyphicon-arrow-down small"></span></a></div>
+			<p id='additional_info' style='display:none;'>^ca_collections.additional_info<br/><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;" class="detailMoreInfo">Hide <span class="glyphicon glyphicon-arrow-up"></span></a></p>
+	</ifdef>}}}
 <?php
-	#print "<br/><p>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("collection_id")))."</p>";
+		if(is_array($va_featured_items) && sizeof($va_featured_items)){
+			$q_featured_objects = caMakeSearchResult('ca_objects', $va_featured_items);
+			if($q_featured_objects->numHits()){
+				print "<div class='row'><div class='col-sm-12'><div class='btn btn-default'>"._t("Featured Objects")."</div></div></div><!-- end row -->\n";
+				$i = 0;
+				while($q_featured_objects->nextHit()){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					if(!($vs_media = $q_featured_objects->getWithTemplate("<l>^ca_object_representations.media.resultcrop</l>", array("checkAccess" => $va_access_values)))){
+						$vs_media = caGetThemeGraphic($this->request, 'placeholder.jpg');
+					}
+					$vs_caption = $q_featured_objects->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+					if($vs_caption){
+						$vs_caption = "<div class='bResultText'>".$vs_caption."</div>";
+					}
+					
+					print "<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4'>
+						<div class='bResult'>
+							{$vs_media}
+							{$vs_caption}
+						</div>
+					</div><!-- end col -->";
+					$i++;
+					if($i == 3){
+						print "</div><!-- end row -->";
+						$i = 0;
+					}
+				}
+				if($i > 0){
+					print "</div><!-- end row -->";
+				}
+			}
+		}
+	print "<br/><p>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("collection_id")))."</p>";
 ?>		
 </div><!-- end col -->
-<div class='col-sm-6'>
+<div class='col-sm-4'>
 	<div class="detailTitle">{{{^ca_collections.preferred_labels.name}}}</div>
 <?php
 	$t_object_thumb = new ca_objects();
@@ -200,29 +170,3 @@
 ?>
 </div><!-- end col -->
 </div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
-			<div class='row'>
-				<div class='col-sm-12'>
-					<div class='btn btn-default'>Related objects</div>
-				</div>
-			</div>
-			<div class="row">
-				<div id="browseResultsContainer">
-					
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
