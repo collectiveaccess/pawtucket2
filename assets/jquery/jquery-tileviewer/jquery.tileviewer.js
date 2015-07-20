@@ -2242,7 +2242,6 @@ var methods = {
 								jQuery($this).append("<div class='tileviewerImageScaleControls'><div class='tileviewerImageScaleControlText'>" + options.imageScaleControlFirstSetText + "</div><form class='form-inline'><div class='form-group tileviewerImageScaleControlsHelpText'>Length: <input type='text' id='tileviewerImageScaleInput' size='10'/> <button class='btn btn-default' id='tileviewerImageScaleSet'>Set</button><div></form></div>");
 								jQuery('#tileviewerImageScaleSet').on('click', function(e) {
 									if (!((view.selectedAnnotation !== null) && (view.annotations[view.selectedAnnotation]))) { return; }
-									console.log(view.annotations[view.selectedAnnotation]);
 									var m = jQuery('#tileviewerImageScaleInput').val();
 									var w = view.annotations[view.selectedAnnotation].w/100;
 									var h = view.annotations[view.selectedAnnotation].h/100;
@@ -2257,6 +2256,9 @@ var methods = {
 										
 										jQuery(".tileviewerImageScaleControls div.tileviewerImageScaleControlText").html(options.imageScaleControlChangeSettingText.replace("%1", "1" + options.measurementUnits + " = " + (options.scale.toFixed(2) * 100) + "% of width"));
 									});
+									
+									e.preventDefault();
+									return false;
 								});
 								jQuery('#tileviewerImageScaleInput').val('');
 								
