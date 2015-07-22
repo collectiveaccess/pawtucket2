@@ -2,10 +2,11 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	
-	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+	$va_docs = caNavLink($this->request, 'Digital Collections', '', '', 'Browse', 'docs');
+	$va_type = caNavLink($this->request, 'Circulation Ledgers', '', '', 'Browse', 'docs/facet/document_type/id/652');
 	$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);	
+	MetaTagManager::setWindowTitle($va_home." > ".$va_docs." > ".$va_type." > ".$va_title);	
 ?>
 <div class="page">
 	<div class="wrapper">
@@ -18,10 +19,13 @@
 			if ($t_object->get('ca_objects.document_type')) {
 				print "<div class='unit'><H6>Genre</H6>";
 				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'ledger/facet/document_type/id/'.$t_object->get('ca_objects.document_type'))."</a></div></div>";
-			}							
-			if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6><h6>Finding Aids</h6>".$va_collection."</div>";
-			}							
+			}
+			if ($va_collections_list = $t_object->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
+				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
+				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6>";
+				print join("<br/>\n", $va_collections_for_display);
+				print "</div>";
+			}																	
 ?>
 		</div>
 		<div class="content-wrapper">

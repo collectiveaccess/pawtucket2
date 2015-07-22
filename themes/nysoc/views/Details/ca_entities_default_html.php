@@ -1,7 +1,7 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	$va_type = $t_item->get('ca_entities.type_id', array('convertCodesToDisplayText' => true));
+	$va_type = caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
 	$va_title = ((strlen($t_item->get('ca_entities.preferred_labels')) > 40) ? substr($t_item->get('ca_entities.preferred_labels'), 0, 37)."..." : $t_item->get('ca_entities.preferred_labels'));	
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);

@@ -1,7 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+	$va_type = caNavLink($this->request, 'Books', '', '', 'Browse', 'objects');
 	if ($t_object->get('ca_objects.parent.preferred_labels')) {
 		$va_title = ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')).": ".$t_object->get('ca_objects.preferred_labels');
 	} else {
@@ -65,24 +65,24 @@
 				$vs_buf.= $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
 				$vs_buf.= "</td>";
 			
-				$vs_entity_info = null;
-				if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
-					$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
-				}
-				if (($qr_rels->get("ca_entities.industry_occupations")) && ($qr_rels->get("ca_entities.industry_occupations") != 551)) {
-					$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
-				}
-				if ($qr_rels->get("ca_entities.industry_occupations")) {
-					$va_occupation_count = $qr_rels->get("ca_entities.industry_occupations", array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
-					foreach ($va_occupation_count as $vs_occupations_type) {
+				#$vs_entity_info = null;
+				#if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
+				#	$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
+				#}
+				#if (($qr_rels->get("ca_entities.industry_occupations")) && ($qr_rels->get("ca_entities.industry_occupations") != 551)) {
+				#	$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
+				#}
+				#if ($qr_rels->get("ca_entities.industry_occupations")) {
+				#	$va_occupation_count = $qr_rels->get("ca_entities.industry_occupations", array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+				#	foreach ($va_occupation_count as $vs_occupations_type) {
 						//foreach ($va_occupations_type as $va_occupation_key => $va_occupation) {
-							$va_occupations[$vs_occupations_type][] = $qr_rels->get("ca_entities.entity_id");
+				#			$va_occupations[$vs_occupations_type][] = $qr_rels->get("ca_entities.entity_id");
 						//}
-					}
-				}
-				if ($vs_entity_info) {				
-					TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
-				}	
+				#	}
+				#}
+				#if ($vs_entity_info) {				
+				#	TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
+				#}	
 				
 				# Volume		
 				$vs_buf.= "<td>";
@@ -239,10 +239,11 @@
 				if (($t_object->get("ca_objects.collection_status") == 687) | ($t_object->get("ca_objects.collection_status") == 689)) {
 					$vs_sidebar_buf.= "<a href='".$t_object->get("ca_objects.nysl_link")."' target='_blank'>Catalog Record</a>";
 				}
-			}								
-			if ($vs_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				$vs_sidebar_buf.= "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
-			}			
+			}
+			if ($va_collections_list = $t_object->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
+				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
+				$vs_sidebar_buf.= join("<br/>\n", $va_collections_for_display);
+			}														
 			if ($vs_sidebar_buf != "") {
 				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
 				print $vs_sidebar_buf;

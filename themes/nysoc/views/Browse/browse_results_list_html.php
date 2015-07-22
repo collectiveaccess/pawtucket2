@@ -103,7 +103,7 @@
 				$vs_typecode = "";
 				$t_lists = new ca_lists();
 				$vn_bib_id = $t_lists->getItemIDFromList("object_types", "bib");
-				$vs_image = (($vs_table === 'ca_objects') && ($qr_res->get('ca_objects.type_id') != $vn_bib_id)) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+				if(($vs_table === 'ca_objects') && ($qr_res->get('ca_objects.type_id') != $vn_bib_id)) {$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));}
 				
 				#if(!$vs_image){
 				#	if ($vs_table == 'ca_objects') {
@@ -128,6 +128,9 @@
 				} else {
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				}
+				if ($vs_table === 'ca_entities') {
+					$vs_entity_info = "<br/>".$qr_res->get('ca_entities.life_dates');
+				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
@@ -140,14 +143,10 @@
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
-					{$vs_label_detail_link}
+					{$vs_label_detail_link}{$vs_entity_info}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
-			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-				<hr>
-				{$vs_expanded_info}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
-			</div><!-- bResultListItemExpandedInfo -->
+
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";
 				

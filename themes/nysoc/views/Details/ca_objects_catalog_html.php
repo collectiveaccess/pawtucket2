@@ -1,14 +1,13 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-	if ($t_object->get('ca_objects.parent.preferred_labels')) {
-		$va_title = ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')).": ".$t_object->get('ca_objects.preferred_labels');
-	} else {
-		$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
-	}
+	
+	$va_type = caNavLink($this->request, 'Digital Collections', '', '', 'Browse', 'objects');
+	$va_docs = caNavLink($this->request, 'Catalogs', '', '', 'Browse', 'docs/facet/document_type/id/650');
+	$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
+
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_docs." > ".$va_title);
 	
 		#Circulation Records
 		$va_obj_ids = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
@@ -249,14 +248,17 @@
 			$vs_sidebar_buf = null;
 			if ($t_object->get("ca_objects.nysl_link")){
 				$vs_sidebar_buf.= "<a href='".$t_object->get("ca_objects.nysl_link")."' target='_blank'>Catalog Record</a>";
-			}								
-			if ($vs_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				$vs_sidebar_buf.= "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
-			}			
+			}
+			if ($va_collections_list = $t_object->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
+				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
+				$vs_sidebar_buf.= "<div class='unit'>";
+				$vs_sidebar_buf.= join("<br/>\n", $va_collections_for_display);
+				$vs_sidebar_buf.= "</div>";
+			}						
 			if ($vs_sidebar_buf != "") {
 				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
 				print $vs_sidebar_buf;
-			}	
+			}		
 			$vs_learn_even = null;
 			if ($vs_etsc = $t_object->get('ca_objects.ETSC_container.ETSC_link')) {
 				$va_etsc_links = $t_object->get('ca_objects.ETSC_container', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
@@ -502,42 +504,20 @@
 								$vs_book_buf = null;
 								$vs_is_related = false;
 								$va_related_books = array();
-								if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'bib') {
-									if ($va_author_ids = $t_object->get('ca_entities.entity_id', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array('author')))){
-										foreach ($va_author_ids as $va_key => $va_author_id) {
-											$t_entity = new ca_entities($va_author_id);
-											$va_related_books[] = $t_entity->get('ca_objects', array('restrictToTypes' => array('bib'), 'restrictToRelationshipTypes' => array('author'), 'returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort'));
-										}
-										$vs_book_buf.= "<div class='row'>";
-										foreach ($va_related_books as $va_key => $va_related_book_pl) {
-											foreach ($va_related_book_pl as $va_book_id => $va_related_book) {
-												if ($va_related_book['object_id'] == $t_object->get('ca_objects.object_id')) { continue; }
-												$vs_book_label = explode(':', $va_related_book['label']);
-												$vs_author = $t_entity->get('ca_entities.preferred_labels');
-												$t_book = new ca_objects($va_related_book['object_id']);
-												$vs_pub_date = $t_book->get('ca_objects.publication_date');
-												$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
-												$vs_is_related = true;
-											}
-										}
-										$vs_book_buf.= "</div><!-- end row -->";
+
+								if ($va_related_books = $t_object->get('ca_objects.related', array('returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort','restrictToTypes' => array('bib')))){
+									$vs_book_buf.= "<div class='row'>";
+									foreach ($va_related_books as $va_book_id => $va_related_book) {
+										if ($va_related_book['object_id'] == $t_object->get('ca_objects.object_id')) { continue; }
+										$vs_book_label = explode(':', $va_related_book['label']);
+										$t_book = new ca_objects($va_related_book['object_id']);
+										$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')));
+										$vs_pub_date = $t_book->get('ca_objects.publication_date');
+										$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
+										$vs_is_related = true;
 									}
-								} else {
-									if ($va_related_books = $t_object->get('ca_objects.related', array('returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort','restrictToTypes' => array('bib')))){
-										$vs_book_buf.= "<div class='row'>";
-										foreach ($va_related_books as $va_book_id => $va_related_book) {
-											if ($va_related_book['object_id'] == $t_object->get('ca_objects.object_id')) { continue; }
-											$vs_book_label = explode(':', $va_related_book['label']);
-											$t_book = new ca_objects($va_related_book['object_id']);
-											$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')));
-											$vs_pub_date = $t_book->get('ca_objects.publication_date');
-											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
-											$vs_is_related = true;
-										}
-										$vs_book_buf.= "</div><!-- end row -->";
-									}
-								}
-																			
+									$vs_book_buf.= "</div><!-- end row -->";
+								}											
 								#Check related documents
 								$vs_doc_buf = null;
 								$va_docs_by_type = array();

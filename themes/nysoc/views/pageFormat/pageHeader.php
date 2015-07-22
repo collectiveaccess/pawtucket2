@@ -79,7 +79,7 @@
 			<div id="site-filagree"></div>
 			<div id="site-logo">
 				<div id="logo1"></div>
-				<div id="logoMain"><a href="/">The New York Society Library</a></div>
+				<div id="logoMain"><a href="http://www.nysoclib.org">The New York Society Library</a></div>
 			</div>
 			<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="formOutline">
@@ -114,11 +114,13 @@
 					
 <?php
 					print $this->render("pageFormat/browseMenu.php");
-?>					
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-4"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collection") ? 'class="active item"' : 'class="item"'; ?> id="menuId-5"><?php print caNavLink($this->request, _t("Finding Aids"), "", "FindingAid", "Collection", "Index"); ?></li>
+?>		
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active item"' : 'class="item"'; ?> id="menuId-4"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+			
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-5"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collection") ? 'class="active item"' : 'class="item"'; ?> id="menuId-6"><?php print caNavLink($this->request, _t("Finding Aids"), "", "FindingAid", "Collection", "Index"); ?></li>
 					
-					<li class="item" id="menuId-6"><a href="#">About this Project</a></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active item"' : 'class="item"'; ?> id="menuId-7"><?php print caNavLink($this->request, _t("About this Project"), "", "", "About", "Index"); ?></li>
 					<li class="item" id="menuId-7"><a href="#">User Guide</a></li>
 					
 				</ul>

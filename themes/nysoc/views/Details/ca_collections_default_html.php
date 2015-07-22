@@ -1,6 +1,23 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$vn_id = $t_item->get('ca_collections.collection_id');
+	
+	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_type = caNavLink($this->request, "Finding Aids", '', 'FindingAid', 'Collection', 'Index');
+	$va_title = $t_item->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true));
+	foreach ($va_title as $va_collection_key => $va_collection_names) {
+		foreach ($va_collection_names as $va_key => $va_collection_name) {
+			foreach ($va_collection_name as $vn_collection_id => $va_name) {
+				if ($vn_id != $vn_collection_id) {
+					$va_collection_list[] = caNavLink($this->request, $va_name['name'], '', '', 'Detail', 'collections/'.$vn_collection_id);
+				} else {
+					$va_collection_list[] = $va_name['name'];
+				}
+			}
+		}
+	}
+	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".join(' > ', $va_collection_list));
 	
 	$vs_buf = null;
 	$va_anchors = array();
@@ -105,7 +122,10 @@
 									</div>
 								</div>
 							</div>
-							<div class='col-md-6 col-lg-6'>
+							<div class='col-md-6 col-lg-6' style='text-align:right;'>
+<?php
+							print caNavLink($this->request, 'Download Finding Aid', '', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
+?>							
 							</div><!-- end col -->
 						</div><!-- end row -->
 

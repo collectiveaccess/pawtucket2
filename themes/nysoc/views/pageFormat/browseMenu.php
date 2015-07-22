@@ -54,7 +54,7 @@
 				$vs_first_browse = null;
 ?>
 				 <li id="menuId-3" class="item dropdown yamm-fw<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"> <!-- add class yamm-fw for full width-->
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Search & Browse"); ?></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
 					<ul class="dropdown-menu" id="browse-menu">
 						<li class="browseNavFacet">			
 							<div class="browseMenuContent container">

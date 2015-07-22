@@ -5,47 +5,41 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
 
 	
-	$va_type = "Library Buildings";
+	$va_type = "Historic Events";
 	$va_title = ((strlen($t_item->get('ca_occurrences.preferred_labels')) > 40) ? substr($t_item->get('ca_occurrences.preferred_labels'), 0, 37)."..." : $t_item->get('ca_occurrences.preferred_labels'));	
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);	
+	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+	if ($t_item->get("ca_occurrences.wikipedia_entry.abstract")) {
+		$vs_wiki_desc = $t_item->get("ca_occurrences.wikipedia_entry.abstract");
+		$vs_wiki_desc = $t_item->get("ca_occurrences.wikipedia_entry.abstract");
+		$vs_wiki_desc = explode('<h2>', $vs_wiki_desc);
+		$vs_wiki_desc = $vs_wiki_desc[0];
+	}
+	if ($t_item->get("ca_occurrences.wikipedia_entry.fullurl")) {	
+		$vs_wiki_link = "<a href='".$t_item->get("ca_occurrences.wikipedia_entry.fullurl")."' target='_blank'>read this on wikipedia.org</a>";
+	}	
 ?>
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
 			{{{representationViewer}}}
 <?php
-			if ($vs_ledger = $t_item->get('ca_objects.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'sort' => 'ca_objects.preferred_labels', 'restrictToTypes' => array('ledger')))) {
-				print "<div class='unit'><h6>Related Ledgers</h6>".$vs_ledger."</div>";
+			if ($t_item->get("ca_occurrences.wikipedia_entry.image_thumbnail")) {
+				$vs_wiki_thumb = "<img src='".$t_item->get("ca_occurrences.wikipedia_entry.image_thumbnail")."'/>";
 			}
-			$vs_sidebar_buf = null;
-			if ($va_collections_list = $t_item->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
-				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
-				$vs_sidebar_buf .= join("<br/>\n", $va_collections_for_display);
-			}						
-			if ($vs_sidebar_buf != "") {
-				print "<h6 style='margin-top:30px;'>In The Library</h6>	";	
-				print $vs_sidebar_buf;
+			if ($this->getVar('representationViewer')) {			
+				print $this->getVar('representationViewer');
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
+			} else {
+				print "<div class='entityThumb'><a href='".$t_item->get("ca_occurrences.wikipedia_entry.image_viewer_url")."' target='_blank'>".$vs_wiki_thumb."</a></div>";
 			}	
-			$vs_learn_even = null;
-			if ($va_links = $t_item->get('ca_occurrences.resources_link', array('returnWithStructure' => true))) {
-				$vs_learn_even.= "<div class='unit'>";
-
-				foreach ($va_links as $va_key => $va_link_a) {
-					foreach ($va_link_a as $va_key => $va_link) {
-						if ($va_link['resources_link_description']) {
-							$vs_learn_even.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_description']."</a></p>";
-						} else {
-							$vs_learn_even.= "<p><a href='".$va_link['resources_link_url']."' target='_blank'>".$va_link['resources_link_url']."</a></p>";							
-						}
-					}
-				}
-				$vs_learn_even.= "</div>";
-			}			
-			if ($vs_learn_even != "") {
-				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
-				print $vs_learn_even;
-			}						
+			if ($va_historic_event = $t_item->get('ca_occurrences.historic_event_category', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true))) {
+				print "<div class='unit'><h6>Event Type</h6>".$va_historic_event."</div>";
+			}	
+			if ($t_item->get("ca_occurrences.wikipedia_entry.fullurl")) {	
+				print "<div class='unit'><h6>Learn Even More</h6><a href='".$t_item->get("ca_occurrences.wikipedia_entry.fullurl")."' target='_blank'>Wikipedia</a></div>";
+			}
+									
 ?>			
 		</div>
 		<div class="content-wrapper">
@@ -71,16 +65,10 @@
 							<div class="row">			
 								<div class='col-md-6 col-lg-6'>
 <?php
-									if ($vs_occ_dates = $t_item->get('ca_occurrences.NYSL_occupied_dates', array('format' => 'Y - Y'))) {
-										print "<div class='unit'>Occupied by the New York Society Library ".$vs_occ_dates."</div>";
-									}
-									if ($vs_range = $t_item->get('ca_occurrences.building_range', array('format' => 'Y - Y'))) {
-										print "<div class='unit'>Building extant ".$vs_range."</div>";
-									}
-									if ($t_item->get('ca_occurrences.buliding_history')) {
-										$va_history = $t_item->get('ca_occurrences.buliding_history', array('delimiter' => '', 'convertCodesToDisplayText' => true));
-										print "<div class='unit'>";
-										print "<div id='history' class='trimText'>".$va_history."</div></div>";
+									if ($t_item->get('ca_occurrences.event_description')) {
+										print "<div class='unit trimText biography'>".$t_item->get('ca_occurrences.event_description')."</div>";
+									} else {
+										print "<div class='wikipedia'><div class='unit biography trimText'>".$vs_wiki_desc."</div><div>".$vs_wiki_link."</div></div>";
 									}																					
 									if ($t_item->get('ca_occurrences.references.references_list')) {
 										$va_references = $t_item->get('ca_occurrences.references', array('delimiter' => '', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_occurrences.references.references_list page ^ca_occurrences.references.references_page</p>'));
@@ -100,7 +88,6 @@
 								</div><!-- end col -->
 								<div class='col-md-6 col-lg-6'>							
 									<div class='vizPlaceholder'><i class='fa fa-picture-o'></i></div>
-									{{{map}}}					
 								</div><!-- end col -->
 							</div><!-- end row -->
 						</div><!-- end container -->
@@ -129,6 +116,23 @@
 							$vs_people_buf.= "</div><!-- end entrole -->";
 						$vs_people_buf.= "</div><!-- end row -->";
 					}
+				}
+				#Check related books
+				$vs_book_buf = null;
+				$vs_is_related = false;
+				$va_related_books = array();
+
+				if ($va_related_books = $t_item->get('ca_objects', array('returnWithStructure' => true, 'sort' => 'ca_objects.preferred_labels.name_sort','restrictToTypes' => array('bib')))){
+					$vs_book_buf.= "<div class='row'>";
+					foreach ($va_related_books as $va_book_id => $va_related_book) {
+						$vs_book_label = explode(':', $va_related_book['label']);
+						$t_book = new ca_objects($va_related_book['object_id']);
+						$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')));
+						$vs_pub_date = $t_book->get('ca_objects.publication_date');
+						$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, "<div class='bookLabel'>".$vs_book_label[0].'</div>'.$vs_author.'<br/>'.$vs_pub_date, '', '', 'Detail', 'objects/'.$va_related_book['object_id'])."</div></div>";
+						$vs_is_related = true;
+					}
+					$vs_book_buf.= "</div><!-- end row -->";
 				}				
 				#check docs	
 				$vs_doc_buf = null;
@@ -176,6 +180,7 @@
 				<div id='buildingTable'>
 					<ul class='row'>								
 						<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
+						<?php if ($vs_book_buf) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
 						<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>									
 					</ul>
 					<div id='entTab' >
@@ -189,6 +194,22 @@
 							</div><!-- end row -->
 						</div><!-- end container -->
 					</div><!-- end entTab -->
+					<div id='bookTab'>
+<?php					
+						if ($vs_book_buf && $vs_is_related) {
+							print '<h6>Related Books</h6>';
+						}
+?>								
+						<div class='container'>
+							<div class='row'>
+								<div class='col-sm-12 col-md-12 col-lg-12'>
+<?php
+								print $vs_book_buf;
+?>										
+								</div><!-- end col -->
+							</div><!-- end row -->
+						</div><!-- end container -->
+					</div><!-- end bookTab -->					
 					<div id='docTab'>
 						<div class='container'>
 							<div class='row'>

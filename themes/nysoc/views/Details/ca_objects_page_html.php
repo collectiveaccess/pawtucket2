@@ -2,14 +2,14 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	
-	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-	if ($t_object->get('ca_objects.parent.preferred_labels')) {
-		$va_title = ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')).": ".$t_object->get('ca_objects.preferred_labels');
-	} else {
-		$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
-	}
+	$va_type = caNavLink($this->request, 'Digital Collections', '', '', 'Browse', 'objects');
+	$va_docs = caNavLink($this->request, 'Circulation Ledgers', '', '', 'Browse', 'docs/facet/document_type/id/652');
+	$va_page = $t_object->get('ca_objects.preferred_labels');
+
+	$va_ledger = caNavLink($this->request, ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.parent.object_id'));
+
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_docs." > ".$va_ledger." > ".$va_page);
 ?>
 <div class="page">
 	<div class="wrapper">

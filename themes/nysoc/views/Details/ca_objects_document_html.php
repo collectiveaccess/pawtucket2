@@ -2,10 +2,11 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	
-	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+	$va_type = caNavLink($this->request, 'Digital Collections', '', '', 'Browse', 'objects');
+	$va_docs = caNavLink($this->request, 'Documents', '', '', 'Browse', 'docs/facet/document_type/id/663');
 	$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);	
+	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_docs." > ".$va_title);	
 ?>
 <div class="page">
 	<div class="wrapper">
@@ -44,9 +45,12 @@
 				}
 				print "</div>";
 			}
-			if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6><h6>Finding Aids</h6>".$va_collection."</div>";
-			}											
+			if ($va_collections_list = $t_object->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
+				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
+				print "<div class='unit'><h6 style='margin-top:30px;'>In The Library</h6>";
+				print join("<br/>\n", $va_collections_for_display);
+				print "</div>";
+			}														
 ?>
 		</div>
 		<div class="content-wrapper">
