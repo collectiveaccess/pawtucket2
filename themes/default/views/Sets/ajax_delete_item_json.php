@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * pawtucket2/themes/default/views/Sets/ajax_delete_item_json.php : 
+ * themes/default/views/Sets/ajax_delete_item_json.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$va_errors = $this->getVar('errors');
 	
 	if (sizeof($va_errors)) {
@@ -33,4 +32,3 @@
 	} else {
 			print json_encode(array('status' => 'ok', 'set_id' => $this->getVar('set_id'), 'item_id' => $this->getVar('item_id')));
 	}
-?>

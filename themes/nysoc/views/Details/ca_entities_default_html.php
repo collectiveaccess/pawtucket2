@@ -45,7 +45,7 @@
 ?>	
 					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.related.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities.related" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 									
 
 					
@@ -53,7 +53,8 @@
 				<div class='col-md-6 col-lg-6'>
 <?php
 					if ($t_item->get('ca_object_representations')) {
-						print "<div class='entityThumb'>".$t_item->get('ca_object_representations.media.large')."</div>";
+						$va_rep = $t_item->getPrimaryRepresentation(array('large'), null, array('return_with_access' => $va_access_values, 'tagsOnly' => true));
+						print "<div class='entityThumb'>".$va_rep['tags']['large']."</div>";
 					}
 ?>
 					<div id="detailTools">
@@ -79,7 +80,7 @@
 			<hr/>
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row titleBar">
-				<div class='col-sm-2 col-md-2 col-lg-2'>
+				<div class='col-sm-3 col-md-3 col-lg-3'>
 					Full Title
 				</div>
 				<div class='col-sm-2 col-md-2 col-lg-2'>
@@ -91,31 +92,101 @@
 				<div class='col-sm-2 col-md-2 col-lg-2'>
 					Date In
 				</div>	
-				<div class='col-sm-2 col-md-2 col-lg-2'>
+				<div class='col-sm-1 col-md-1 col-lg-1'>
 					Fine
 				</div>		
 				<div class='col-sm-2 col-md-2 col-lg-2'>
 					Ledger
 				</div>
 			</div><!-- end row -->
-			<div id="browseResultsContainer" class="row">										
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
 </ifcount>}}}
+					<?php 
+						//print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); 
+						
+			$va_rel_ids = $t_item->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
+			$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids, array('sort' => 'ca_objects_x_entities.date_out'));
+			
+			// set all of the page object_ids
+			$va_page_ids = array();
+			while($qr_rels->nextHit()) {
+				$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
+			}
+			$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
+			
+			$va_parents = array();
+			while($qr_pages->nextHit()) {
+				$va_parents[$qr_pages->get('ca_objects.object_id')] = $qr_pages->get('ca_objects.parent.preferred_labels.name');
+			}
+			
+			$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
+			
+			$vn_page_type_id = caGetListItemID('object_types', 'page');
+			$vn_i = 0;
+			while($qr_rels->nextHit()) {
+				if ($qr_rels->get('ca_objects.type_id') == $vn_page_type_id) { continue; }
+				print "<div class='row ledgerRow'>";
+					print "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3' id='book".$vn_i."'>";
+						if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
+							$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
+							print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
+						} else {
+							$va_label_trunk = explode(':', $qr_rels->get("ca_objects.preferred_labels"));
+							print caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
+						}
+						
+						$va_book_info = array();
+						if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
+							$va_book_info[] = $va_author;
+						} else {$va_author = null;}
+						if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
+							$va_book_info[] = $va_publication_date;
+						} else { $va_publication_date = null; }
+						if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
+							$va_book_info[] = $va_publisher;
+						} else { $va_publisher = null; }
+						TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 						
+				
+					print "</div>";
+			
+					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+					if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
+						print $qr_rels->get("ca_objects.preferred_labels.displayname", array('returnAsLink' => true));
+					}
+					print "</div>";	
+					
+					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+					print $qr_rels->get("ca_objects_x_entities.date_out");
+					print "</div>";
+
+					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+					print $qr_rels->get("ca_objects_x_entities.date_in");
+					print "</div>";
+											
+					print "<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>";
+					print $qr_rels->get("ca_objects_x_entities.fine");
+					print "</div>";
+					
+					print "<div class='col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+					print $va_parents[$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true))]." ".$qr_rels->get("ca_objects_x_entities.see_original_link", array('returnAsLink' => true));
+					print "</div>";													
+				print "</div>";
+				
+				$vn_i++;
+			}
+						
+					?>
+			<script type="text/javascript">
+//				jQuery(document).ready(function() {
+//					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+//						jQuery('#browseResultsContainer').jscroll({
+//							autoTrigger: true,
+//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+//							padding: 20,
+//							nextSelector: 'a.jscroll-next'
+//						});
+//					});					
+//				});
+			</script>
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

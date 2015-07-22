@@ -30,9 +30,9 @@
 			<li class="lidef">Drawings, paintings and analogue computer art created during the transition from traditional art to computer art.</li>
 			<li class="link"><?php print caNavLink($this->request, "» Historical Sketches, 1964–1966", "", "", "Detail", "collections/27"); ?></li>
 			<li class="lidef">Sketches made while Csuri processed the fine art world's early, and often negative, attitude toward computer art.</li>
-			<li class="link"><?php print caNavLink($this->request, "» Plotter Drawings and Sculpture, 1966–1970", "", "", "Detail", "collections/21"); ?></li>
+			<li class="link"><?php print caNavLink($this->request, "» Plotter Drawings and Sculpture, 1966–1970", "", "", "Detail", "collections/19"); ?></li>
 			<li class="lidef">Early drawings and digitally generated sculpture made with a main frame computer, punch cards and a drum plotter.  Includes  still images from the fragmentation animations and randomness series.</li>
-			<li class="link"><?php print caNavLink($this->request, "» Fragmentation Animations, 1968–1970", "", "", "Detail", "collections/19"); ?></li>
+			<li class="link"><?php print caNavLink($this->request, "» Fragmentation Animations, 1968–1970", "", "", "Detail", "collections/36"); ?></li>
 			<li class="lidef">Early animations that show the electronic "morphing" of Csuri's hand drawing.</li>
 			<li class="link"><?php print caNavLink($this->request, "» Real-time Art, 1969–1973", "", "", "Detail", "collections/23"); ?></li>
 			<li class="lidef">Art objects that allow the user to participate in determining the final aesthetic object.</li>

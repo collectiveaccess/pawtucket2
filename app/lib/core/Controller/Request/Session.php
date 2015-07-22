@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2014 Whirl-i-Gig
+ * Copyright 2000-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -75,34 +75,16 @@ class Session {
 		}
 		
 		if (!$pb_dont_create_new_session) {
-			if (!($vs_session_id = $this->getSessionID())) {
+			if (!($vs_key = $this->getSessionID())) {
 				$vs_cookiepath = ((__CA_URL_ROOT__== '') ? '/' : __CA_URL_ROOT__);
-				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = $this->generateGUIDV4(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
+				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = caGenerateGUID(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
 		 	}
-
+		 	
 			// initialize session var storage
-			if($this->getSessionID() && !ExternalCache::contains($this->getSessionID(), 'SessionVars')) {
-				ExternalCache::save($this->getSessionID(), array(), 'SessionVars', $this->lifetime);
+			if($vs_key && !ExternalCache::contains($vs_key, 'SessionVars')) {
+				ExternalCache::save($vs_key, array(), 'SessionVars', $this->lifetime);
 			}
 		}
-	}
-	# ----------------------------------------
-	/**
-	 * Generate a GUID 
-	 */
-	private function generateGUIDV4(){
-		if (function_exists("openssl_random_pseudo_bytes")) {
-			$vs_data = openssl_random_pseudo_bytes(16);
-		} else {
-			$vs_data = '';
-			for($i=0; $i < 16; $i++) {
-				$vs_data .= chr(mt_rand(0, 255));
-			}
-		}
-		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
-		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
 	}
 	# ----------------------------------------
 	# --- Methods
@@ -111,7 +93,31 @@ class Session {
 	 * Returns client's session_id. 
 	 */
 	public function getSessionID () {
-		return isset($_COOKIE[$this->name]) ? $_COOKIE[$this->name] : null;
+		if (isset($_COOKIE[$this->name]) && $_COOKIE[$this->name]) { return $_COOKIE[$this->name]; }
+		
+		// If client doesn't support cookies and connects repeatedly then we'll end up creating a session for
+		// each connection. GoogleSearch appliances do this.
+		//
+		// To avoid this we keep track of connections by IP address and if it connects without a session cookie 
+		// too many times in a given period we force it to a fixed session key
+		if (!is_array($va_ip_list = ExternalCache::fetch('ipList', 'SessionVars'))) { $va_ip_list = array(); }
+		if (!is_array($va_ip_last_seen = ExternalCache::fetch('ipLastSeen', 'SessionVars'))) { $va_ip_last_seen = array(); }
+		if (!is_array($va_ip_session_keys = ExternalCache::fetch('ipSessionKeys', 'SessionVars'))) { $va_ip_session_keys = array(); }
+		if (isset($va_ip_last_seen[$_SERVER['REMOTE_ADDR']]) && ((time() - $va_ip_last_seen[$_SERVER['REMOTE_ADDR']]) > (60*60*4))) {	// 4 hour window
+			$va_ip_list[$_SERVER['REMOTE_ADDR']] = 0;
+		}
+		$va_ip_list[$_SERVER['REMOTE_ADDR']]++;
+		$va_ip_last_seen[$_SERVER['REMOTE_ADDR']] = time();
+		
+		if($vs_key && ($va_ip_list[$_SERVER['REMOTE_ADDR']] > 5)) {
+			$va_ip_session_keys[$_SERVER['REMOTE_ADDR']] = caGenerateGUID();
+		}
+		
+		ExternalCache::save('ipList', $va_ip_list, 'SessionVars', 60 * 60 * 24);				// ip lists persist for 24 hours
+		ExternalCache::save('ipLastSeen', $va_ip_last_seen, 'SessionVars', 60 * 60 * 24);
+		ExternalCache::save('ipSessionKeys', $va_ip_session_keys, 'SessionVars', 60 * 60 * 24);
+	
+		return (isset($va_ip_session_keys[$_SERVER['REMOTE_ADDR']]) && $va_ip_session_keys[$_SERVER['REMOTE_ADDR']]) ? $va_ip_session_keys[$_SERVER['REMOTE_ADDR']] : null;
 	}
 	# ----------------------------------------
 	/**
@@ -124,6 +130,18 @@ class Session {
 		}
 		// Delete session data
 		ExternalCache::delete($this->getSessionID(), 'SessionVars');
+		
+		// Delete ip tracking
+		if (!is_array($va_ip_list = ExternalCache::fetch('ipList', 'SessionVars'))) { $va_ip_list = array(); }
+		if (!is_array($va_ip_last_seen = ExternalCache::fetch('ipLastSeen', 'SessionVars'))) { $va_ip_last_seen = array(); }
+		if (!is_array($va_ip_session_keys = ExternalCache::fetch('ipSessionKeys', 'SessionVars'))) { $va_ip_session_keys = array(); }
+		unset($va_ip_list[$_SERVER['REMOTE_ADDR']]);
+		unset($va_ip_last_seen[$_SERVER['REMOTE_ADDR']]);
+		unset($va_ip_session_keys[$_SERVER['REMOTE_ADDR']]);
+		ExternalCache::save('ipList', $va_ip_list, 'SessionVars', 60 * 60 * 24);
+		ExternalCache::save('ipLastSeen', $va_ip_last_seen, 'SessionVars', 60 * 60 * 24);
+		ExternalCache::save('ipSessionKeys', $va_ip_session_keys, 'SessionVars', 60 * 60 * 24);
+		
 		session_destroy();
 	}
 	# ----------------------------------------

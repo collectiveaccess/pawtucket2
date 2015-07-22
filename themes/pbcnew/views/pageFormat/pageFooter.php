@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -32,7 +32,7 @@
 		<div class="Box">P</div>
 		<div class="Box">B</div>
 		<div class="Box">C</div>
-		<div class="Message">Copyright © Radio Pakistan, 2013</div>
+		<div class="Message">Copyright © Radio Pakistan, 2015</div>
 	</div>
 </div>
 <?php

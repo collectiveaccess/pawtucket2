@@ -143,6 +143,37 @@ div.advancedSearchField {
 
 /* Browse */
 
+.nextNav {
+	float:right;
+}
+.prevNav {
+	float:left;
+}
+.results a.prevNav .fa, .results a.nextNav .fa {
+  color: red; 
+}
+.alpha a {
+	text-transform:uppercase;
+}
+.results strong {
+	font-weight:bold;
+	color:red;
+	font-size:14px;
+}
+#browseResultsContainer {
+	padding-left:15px;
+	padding-right:15px;
+}
+.currentLetter {
+	clear:both;
+	font-size:28px;
+	width:100%;
+	text-transform:uppercase;
+	border-top:1px solid #000;
+	padding-left:10px;
+	padding-top:10px;
+	margin-top:10px;
+}
 .exhibitions .bResultItem {
 	padding:0px;
 }
@@ -161,10 +192,11 @@ div.advancedSearchField {
 	width:100%;
 }
 .exhibitions .bResultItemContent {
-	height:100px;
+	height:220px;
+	margin-top:15px;
 }
-.exhibitions .bResultItemCol  {
-	height:180px;
+.occurrences.browse.results .bResultItemCol  {
+	height:150px;
 }
 .exhibitions .bResultItem {
 	font-size:12px;
@@ -238,10 +270,16 @@ div.advancedSearchField {
 	display:none;
 }
 .bResultItemCol {
-	height:240px;
+	height:280px;
+}
+.bResultItemContent {
+	height:280px;
 }
 .bResultItem:hover .bResultItemContent {
 	background-color:#fff;
+}
+.bResultItem .bResultItemImg {
+	max-height:none;
 }
 
 /* Finding Aid */
