@@ -19,8 +19,10 @@
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H4>{{{<ifdef code="ca_objects.preferred_labels"><H6>Title:</H6>^ca_objects.preferred_labels<br/></ifdef>}}}</H4>
-				<HR>				
+				<H2>{{{<ifdef code="ca_objects.preferred_labels">^ca_objects.preferred_labels<br/></ifdef>}}}</H2>
+<?php
+				print "<h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h6>";
+?>				<HR>				
 				
 				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
 				
@@ -40,7 +42,7 @@
 				
 				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Reader</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="2"><H6>Related Readers</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="reader"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+				{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="first_reader;second_reader;third_reader"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 				
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Board Of Study</H6></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><H6>Related Boards of Study</H6></ifcount>}}}

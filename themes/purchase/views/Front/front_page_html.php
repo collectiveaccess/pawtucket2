@@ -29,17 +29,21 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+		#print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+		<div class="col-sm-6">
+			<h2>Purchase College, SUNY Student Projects digital repository</h2>
+			<p>Welcome to the Purchase College, SUNY Student Projects digital repository. Browse and search the culminating scholarly experiences of Purchase College graduate and undergraduate students including senior projects, capstone papers, and master’s theses. Projects from [# majors] from the School of Liberal Arts and Sciences, [# majors] from the School of the Arts, and the School of Liberal Studies & Continuing Education are represented in the digital repository. Presently, the digital repository includes projects from [YEAR] to the present. To request an older project, please contact us.</p>
 		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
+		<div class="col-sm-6">
+		<div class='searchDiv'>
 <?php
-		print $this->render("Front/gallery_set_links_html.php");
+		print "<h2>Find & Discover</h2>";  
+		print $this->render("Search/ca_objects_advanced_search_html.php");
 ?>
+		</div>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
 </div> <!--end container-->
