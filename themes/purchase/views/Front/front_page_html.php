@@ -41,6 +41,8 @@
 		<div class='searchDiv'>
 <?php
 		print "<h2>Find & Discover</h2>";  
+		
+		caSetAdvancedSearchFormInView($this, 'objects', "Search/ca_objects_advanced_search_html.php", array('controller' => 'Search', 'request' => $this->request));
 		print $this->render("Search/ca_objects_advanced_search_html.php");
 ?>
 		</div>
