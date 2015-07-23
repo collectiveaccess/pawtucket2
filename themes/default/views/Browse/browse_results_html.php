@@ -94,7 +94,7 @@ if (!$vb_ajax) {	// !ajax
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 				<ul class="dropdown-menu" role="menu">
 <?php
-					if($qr_res->numHits()){
+					if($qr_res->numHits()  && !$this->request->config->get("disable_my_collections")){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
 					}
@@ -131,7 +131,7 @@ if (!$vb_ajax) {	// !ajax
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 						}
 					}
 ?>
