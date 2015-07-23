@@ -25,6 +25,8 @@
 	$vs_buf = "";
 	$va_rel_ids = $t_item->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
 	$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids, array('sort' => 'ca_objects_x_entities.date_out'));
+	//$qr_rels->disableGetWithTemplatePrefetch(true);
+	
 	$va_non_read_books = $t_item->get('ca_objects.object_id', array('restrictToTypes' => array('bib', 'volume'), 'excludeRelationshipTypes' => array('reader'), 'returnAsArray' => true));
 	// set all of the page object_ids
 	$va_page_ids = array();
@@ -87,7 +89,7 @@
 				
 				$vs_buf.= "<td>";
 				$vs_buf.= "<span title='".$qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit></unit>')."'><span>";
-				$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
+				$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.displayname</unit></unit>');
 				$vs_buf.= "</td>";
 					
 				$vs_buf.= "<td>";
