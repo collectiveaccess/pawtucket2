@@ -198,7 +198,7 @@ ul#mainMenu li.item.active .browseMenuBrowseAll a {
 ul#mainMenu li.item {
   float: left;
   margin-right: 1px;
-  padding:0px 20px 0px 20px;
+  padding:0px 15px 0px 15px; 
 }
 ul#mainMenu li.item:hover {
 	background-color:#d6742a;
@@ -628,6 +628,12 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 }
 a.readmore-js-toggle {
 	color:#d77421;
+}
+.atm-f {
+	height:26px !important;
+}
+.atm-i {
+	margin-top:10px !important;
 }
 .bookTitle {
 	max-height:38px;
