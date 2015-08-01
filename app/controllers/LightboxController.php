@@ -50,11 +50,6 @@
  		 protected $opa_user_groups;
 
         /**
-         * @var Configuration
-         */
- 		 protected $opo_config;
-
-        /**
          * @var
          */
  		 protected $ops_lightbox_display_name;
@@ -79,6 +74,11 @@
          */
         protected $ops_tablename = 'ca_objects';
         
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Lightbox';
+        
  		# -------------------------------------------------------
         /**
          * @param RequestHTTP $po_request
@@ -90,10 +90,10 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 
             // Catch disabled lightbox
-            if ($this->request->config->get('disable_lightbox')) {
- 				throw new ApplicationException('Lightbox is not enabled');
+            if ($this->request->config->get('disable_lightbox') && $this->request->config->get('disable_classroom')) {
+ 				throw new ApplicationException('Lightbox/classroom is not enabled');
  			}
- 			if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
+ 			if (!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
                 $this->opb_is_login_redirect = true;
                 return;
@@ -132,7 +132,7 @@
             # Get sets for display
             $t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2, "parents_only" => true));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
 
  			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
@@ -178,7 +178,7 @@
             //
             // User must at least have read access to the set
  			//
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!($t_set = $this->_getSet(__CA_SET_READ_ACCESS__))) { $this->Index(); return; }
  			
  			$vn_set_id = $t_set->get("set_id");
  			$this->view->setVar("set", $t_set);
@@ -416,10 +416,13 @@
 
 			// set_id is passed, so we're editing a set
 			if($this->request->getParameter('set_id', pInteger)){
-				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
-				// pass name and description to populate form
-				$this->view->setVar("name", $t_set->getLabelForDisplay());
-				$this->view->setVar("description", $t_set->get("description"));
+				if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+					// pass name and description to populate form
+					$this->view->setVar("name", $t_set->getLabelForDisplay());
+					$this->view->setVar("description", $t_set->get("description"));
+				}else{
+					throw new ApplicationException(_t("You do not have access to this lightbox"));
+				}
 			}else{
 				$t_set = new ca_sets();
 			}
@@ -522,7 +525,9 @@
          */
  		function setAccess($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			// list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
@@ -535,7 +540,9 @@
          */
  		function saveGroupAccess() {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			// list of groups/users with access to set
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
@@ -548,7 +555,9 @@
          */
  		function removeGroupAccess() {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			$t_item = new ca_sets_x_user_groups();
 			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
@@ -571,7 +580,9 @@
          */
  		function removeUserAccess() {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
  			$t_item = new ca_sets_x_users();
 			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
@@ -594,7 +605,9 @@
          */
  		function editGroupAccess() {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
  			$t_item = new ca_sets_x_user_groups();
@@ -619,7 +632,9 @@
          */
  		function editUserAccess() {
             if($this->opb_is_login_redirect) { return; }
-            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) { $this->Index(); }
+            if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
+            	throw new ApplicationException(_t("You do not have access to this lightbox"));
+            }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
  			$t_item = new ca_sets_x_users();
@@ -644,6 +659,9 @@
          */
  		function shareSetForm($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
+			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
+ 			}
 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
 			$this->view->setVar("display_name", $vs_display_name);
  			$this->render("Lightbox/form_share_set_html.php");
@@ -655,7 +673,9 @@
  		function saveShareSet($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
- 			$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
+ 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
+ 			}
  			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
  			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
  			$this->view->setVar("display_name", $vs_display_name);
@@ -774,7 +794,9 @@
 						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 						$o_view->setVar("set", $t_set->getLabelForDisplay());
 						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
-					
+						$o_view->setVar("display_name", $vs_display_name);
+ 						$o_view->setVar("display_name_plural", $vs_display_name_plural);
+							
 					
 						# -- generate email subject line from template
 						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -829,6 +851,9 @@
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
  				$t_user_group->load($pn_group_id);
+ 				if($t_user_group->get("user_id") != $this->request->getUserId()){
+ 					throw new ApplicationException(_t("You do not have access to this user group"));
+ 				}
  			}
  			
  			// check for errors
@@ -922,7 +947,7 @@
             $vs_message = null;
 
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
-                $va_errors[] = _t("You do not have access to this lightbox");
+                throw new ApplicationException(_t("You do not have access to this lightbox"));
             } else {
  			    $ps_comment_type = $this->request->getParameter('type', pString);
 
@@ -1032,7 +1057,7 @@
  				}
  				$vn_set_id = $t_set->get('set_id');
  			} else {
- 				$va_errors[] = _t('Invalid set_id');
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
  			
  			$this->view->setVar('message', $vs_message);
@@ -1060,7 +1085,7 @@
 				}
 				$va_errors = $t_set->reorderItems($va_row_ids);
 			}else{
-				$va_errors[] = _t("%1 is not defined or you don't have access to the lightbox", $this->ops_lightbox_display_name);
+				throw new ApplicationException(_t("You do not have access to this lightbox"));
 			}
 			$this->view->setVar('errors', $va_errors);
 			$this->render('Lightbox/ajax_reorder_items_json.php');
@@ -1084,7 +1109,7 @@
 				$this->view->setVar('item_id', $pn_item_id);
                 $this->view->setVar('count', $t_set->getItemCount(array('user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values)));
 			} else {
-				$va_errors['general'] = _t('You do not have access to the %1', $this->ops_lightbox_display_name);	
+				throw new ApplicationException(_t("You do not have access to this lightbox"));	
 			}
  			
  			$this->view->setVar('errors', $va_errors);
@@ -1094,17 +1119,22 @@
         /**
          *
          */
- 		public function ajaxAddItem() {
+ 		public function ajaxAddItem($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
+ 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$this->view->setVar("display_name", $vs_display_name);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+            $this->view->setVar("display_name_plural", $vs_display_name_plural);
+            
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
  				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
- 					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $this->ops_lightbox_display_name);
+ 					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);
  					$this->addItemForm();
  					return;
@@ -1116,7 +1146,7 @@
 				// set name - if not sent, make a decent default
 				$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
-					$ps_name = _t("Your %1", $this->ops_lightbox_display_name);
+					$ps_name = _t("Your %1", $vs_display_name);
 				}
 				// set description - optional
 				$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
@@ -1173,11 +1203,11 @@
 							$this->view->setVar('message', _t("Successfully added item."));
 							$this->render("Form/reload_html.php");
 						} else {
-							$va_errors["message"] = _t('Could not add item to %1', $this->ops_lightbox_display_name);
+							$va_errors["message"] = _t('Could not add item to %1', $vs_display_name);
 							$this->render("Form/reload_html.php");
 						}
 					}else{
-						$this->view->setVar('message', _t("Item already in %1.", $this->ops_lightbox_display_name));
+						$this->view->setVar('message', _t("Item already in %1.", $vs_display_name));
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
@@ -1195,11 +1225,11 @@
 							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
 							// insert items
 							$t_set->addItems($va_object_ids);
-							$this->view->setVar('message', _t("Successfully added results to %1.", $this->ops_lightbox_display_name));
+							$this->view->setVar('message', _t("Successfully added results to %1.", $vs_display_name));
 							$this->render("Form/reload_html.php");
 							
 						}else{
-							$this->view->setVar('message', _t("No objects in search result to add to %1", $this->ops_lightbox_display_name));
+							$this->view->setVar('message', _t("No objects in search result to add to %1", $vs_display_name));
 							$this->render("Form/reload_html.php");
 						}
 					}else{
@@ -1213,9 +1243,11 @@
         /**
          *
          */
- 		public function addItemForm(){
+ 		public function addItemForm($va_options = array()){
             if($this->opb_is_login_redirect) { return; }
 
+            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
             $this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
@@ -1234,7 +1266,7 @@
  		public function ajaxGetMapItem() {
             if($this->opb_is_login_redirect) { return; }
             
-            $pn_id = $this->request->getParameter('id', pString); 
+            $pa_ids = explode(";", $this->request->getParameter('id', pString)); 
             $ps_view = $this->request->getParameter('view', pString);
  			
  			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
@@ -1243,7 +1275,7 @@
             
 			$vs_content_template = $va_view_info['display']['description_template'];
 			
- 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', array($pn_id)));
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values)));
 			
          	$this->render("Lightbox/ajax_map_item_html.php");   
         }
@@ -1251,13 +1283,19 @@
 		/**
 		 *
 		 */
-		public function present() {
+		public function present($va_options = null) {
             if($this->opb_is_login_redirect) { return; }
-
+			if(!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
+				$this->Index();
+				return;
+			}
+			$this->view->setVar("controller", caGetOption("controller", $va_options, "Lightbox"));
+            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
+			
 			AssetLoadManager::register("reveal.js");
 			$o_app = AppController::getInstance();
 			$o_app->removeAllPlugins();
-			$t_set = $this->_getSet();
 			$this->view->setVar("set", $t_set);
 
 			$this->render("Lightbox/present_html.php");

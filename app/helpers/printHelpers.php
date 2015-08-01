@@ -267,6 +267,36 @@
 	}
 	# ------------------------------------------------------------------
 	/**
+	 * Converts string quantity with units ($ps_value parameter) to a numeric quantity in
+	 * the units specified by the $ps_units parameter. Units are limited to inches, centimeters, millimeters, pixels and points as
+	 * this function is primarily used to switch between units used when generating PDFs.
+	 *
+	 * @param $ps_value string The value to convert. Valid units are in, cm, mm, px and p. If units are invalid or omitted points are assumed.
+	 * @param $ps_units string A valid measurement unit: in, cm, mm, px, p (inches, centimeters, millimeters, pixels, points) respectively.
+	 *
+	 * @return int Converted measurement. If the output units are omitted or otherwise not valid, pixels are assumed.
+	 */
+	function caParseMeasurement($ps_value, $pa_options=null) {
+		if (!preg_match("/^([\d\.]+)[ ]*([A-Za-z]*)$/", $ps_value, $va_matches)) {
+			return null;
+		}
+
+		switch(strtolower($va_matches[2])) {
+			case 'in':
+			case 'cm':
+			case 'mm':
+			case 'px':
+			case 'p':
+				return array('value' => $va_matches[1], 'units' => $va_matches[2]);
+				break;
+			default:
+				return null;
+				break;
+		}
+
+	}
+	# ------------------------------------------------------------------
+	/**
 	 *
 	 */
 	function caGenerateBarcode($ps_value, $pa_options=null) {

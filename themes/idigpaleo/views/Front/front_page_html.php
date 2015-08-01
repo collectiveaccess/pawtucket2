@@ -30,17 +30,36 @@
  * ----------------------------------------------------------------------
  */
  
+ 	require_once(__CA_APP_DIR__.'/lib/vendor/autoload.php');
 	require_once(__CA_MODELS_DIR__."/ca_item_comments.php");
 	$t_item_comments = new ca_item_comments();
-	$va_comments = $t_item_comments->getComments("moderated", 2);
+	$va_comments = $t_item_comments->getCommentsList("moderated", 2);
 	$va_access_values = $this->getVar("access_values");
 ?>
 	<div class="row">
 		<div class="col-sm-6 border-right news">
-			<?php print caGetThemeGraphic($this->request, 'hp_news.jpg'); ?>
+			<?php print caGetThemeGraphic($this->request, 'hp_news2.jpg'); ?>
 			<H1>News</H1>
-			<H2>News Heading</H2>
-			<H3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus nunc nisi, eu sollicitudin nibh pellentesque non.</H3>
+<?php
+		use Guzzle\Http\Client;
+	
+		$client = new Client('http://fossilinsects.colorado.edu/');
+		
+		$client = new Client();
+		$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
+		$va_news = json_decode(json_encode($response->xml()),TRUE);
+		if(is_array($va_news)){
+			$va_first_item = $va_news["channel"]["item"][0];
+			print "<H2>";
+			if($va_first_item["link"]){
+				print "<a href='".$va_first_item["link"]."' target='_blank'>".$va_first_item["title"]."</a>";
+			}else{
+				print $va_first_item["title"];
+			}
+			print "</H2>";	
+		}
+?>
+			<H3 class="text-right"><?php print caNavLink($this->request, _t("More"), "", "", "About", "News"); ?></H3>
 		</div><!--end col-sm-6-->
 		<div class="col-sm-6">
 <?php
@@ -99,10 +118,17 @@
 		<div class="col-sm-1 col-sm-offset-1 border-left frontComments"></div>
 <?php
 		}
+		$va_institutions = array(
+			array("name" => "Colorado Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_cu_logo2.jpg')),
+			array("name" => "National Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_nmnh_logo.jpg')),
+			array("name" => "Museum of Comparative Zoology, Harvard University", "graphic" => caGetThemeGraphic($this->request, 'hp_harvard_logo.jpg')),
+			array("name" => "Yale Peabody Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_yale_logo.jpg'))		
+		);
+		$vn_key = array_rand($va_institutions);
 ?>
 		<div class="col-sm-4 featuredInstitution">
 			<H2>Featured Institution</H2>
-			<p class="text-center"><?php print caGetThemeGraphic($this->request, 'hp_cu_logo.jpg'); ?></p>
-			<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus nunc nisi, eu sollicitudin nibh pellentesque non.</div>
+			<p class="text-center"><?php print $va_institutions[$vn_key]["graphic"]; ?></p>
+			<H4 class="text-center"><?php print $va_institutions[$vn_key]["name"]; ?></H4>
 		</div>
 	</div>

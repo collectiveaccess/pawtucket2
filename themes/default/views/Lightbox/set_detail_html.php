@@ -91,7 +91,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
-				<?php print "<span id='crSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
+				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
 <?php
     //
@@ -261,15 +261,19 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
 								$this->setVar('caption', $va_captions[$vn_i]);
 								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
-
+			
+								$vn_representation_id = null;
 								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
-									$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
+									$vn_representation_id = $va_representations[$vn_object_id]['representation_id'];
+									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
+									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
 								} else {
 									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-									$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
+									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div></a>";
+									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
 								}
 								$this->setVar('representation', $vs_representation);
-
+								$this->setVar('representation_id', $vn_representation_id);
 								switch($vs_current_view) {
 									case 'list':
 										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
@@ -288,7 +292,11 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 				}else{
-					print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
+					if($vb_write_access){
+						print "<div class='row'><div class='col-sm-12'>"._t("Click the %1 near items throughout the site to add items to this %2.", $o_lightbox_config->get("addToLightboxIcon"), $vs_lightbox_displayname)."</div></div>";
+					}else{
+						print "<div class='row'><div class='col-sm-12'>"._t("There are no items in this %1", $vs_lightbox_displayname)."</div></div>";
+					}
 				}
 				break;
 			}
@@ -466,4 +474,3 @@ if (!$vb_ajax) {    // !ajax
 </script>
 <?php
 } //!ajax
-?>

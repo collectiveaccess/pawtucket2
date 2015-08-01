@@ -596,6 +596,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 *			start =
  	 *			max = 
  	 *			labelsOnly =
+ 	 *			user_id = 
+ 	 *			item_id =
  	 * @return array List of annotations attached to the current representation, key'ed on annotation_id. Value is an array will all values; annotation labels are returned in the current locale.
  	 */
  	public function getAnnotations($pa_options=null) {
@@ -603,10 +605,16 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		if (!is_array($pa_options)) { $pa_options = array(); }
  		
+ 		$pn_user_id = caGetOption('user_id', $pa_options, null);
+ 		$pn_item_id = caGetOption('item_id', $pa_options, null);
+ 		
  		if (!($o_coder = $this->getAnnotationPropertyCoderInstance($this->getAnnotationType()))) {
  			// does not support annotations
  			return null;
  		}
+ 		
+ 		$va_params = array((int)$vn_representation_id);
+ 		
  		$o_db = $this->getDb();
  		
  		$vs_annotation_table = $this->annotationTable(); 		
@@ -616,13 +624,24 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
 			$vs_access_sql = ' AND cra.access IN ('.join(',', $pa_options['checkAccess']).')';
 		}
+		
+		$vs_limit_sql = '';
+ 		if ($pn_user_id) {
+			$vs_limit_sql = ' AND cra.user_id = ?';
+			$va_params[] = $pn_user_id;
+		}
+		
+ 		if ($pn_item_id) {
+			$vs_limit_sql .= ' AND cra.item_id = ?';
+			$va_params[] = $pn_item_id;
+		}
  		
  		$qr_annotations = $o_db->query("
  			SELECT 	cra.annotation_id, cra.locale_id, cra.props, cra.representation_id, cra.user_id, cra.type_code, cra.access, cra.status
  			FROM {$vs_annotation_table} cra
  			WHERE
- 				cra.representation_id = ? {$vs_access_sql}
- 		", (int)$vn_representation_id);
+ 				cra.representation_id = ? {$vs_access_sql} {$vs_limit_sql}
+ 		", $va_params);
  		
  		$vs_sort_by_property = $this->getAnnotationSortProperty();
  		$va_annotations = array();
@@ -747,6 +766,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$t_annotation->set('type_code', $o_coder->getType());
  		$t_annotation->set('locale_id', $pn_locale_id);
  		$t_annotation->set('user_id', $pn_user_id);
+ 		
+ 		// TODO: verify that item_id exists and is accessible by user
+ 		$t_annotation->set('item_id', caGetOption('item_id', $pa_options, null));
  		$t_annotation->set('status', $pn_status);
  		$t_annotation->set('access', $pn_access);
  		
@@ -844,6 +866,11 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
 			$t_annotation->set('type_code', $o_coder->getType());
 			$t_annotation->set('locale_id', $pn_locale_id);
+			
+			// TODO: verify that item_id exists and is accessible by user
+			if (isset($pa_options['item_id'])) {
+ 				$t_annotation->set('item_id', caGetOption('item_id', $pa_options, null));
+ 			}
 			$t_annotation->set('status', $pn_status);
 			$t_annotation->set('access', $pn_access);
 			

@@ -532,14 +532,7 @@
 	 *
 	 */
 	function caRepToolbar($po_request, $t_representation, $pn_object_id){
-		$o_lightbox_config = caGetLightboxConfig();
-		$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
-		if(!$vs_lightbox_icon){
-			$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
-		}
-		$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
-		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-		$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
 		$va_rep_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $t_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 
@@ -547,12 +540,8 @@
 		if(!$va_rep_display_info["no_overlay"]){
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
-		if(!$po_request->config->get("disable_lightbox")){
-			if ($po_request->isLoggedIn()) {
-				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
-			}else{
-				$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
-			}
+		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
 		if(caObjectsDisplayDownloadLink($po_request)){
 			# -- get version to download configured in media_display.conf
@@ -699,7 +688,7 @@
 				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
 		}
 		if($po_request->isLoggedIn()){
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("type" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 		}else{
 			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
 		}
@@ -780,7 +769,7 @@
 		}
 		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment{$vn_set_id}\").load(\"".caNavUrl($po_request, '', 'Lightbox', 'AjaxListComments', array('type' => 'ca_sets', 'set_id' => $vn_set_id))."\", function(){jQuery(\"#lbSetThumbRow{$vn_set_id}\").hide(); jQuery(\"#comment{$vn_set_id}\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
 		if($vb_write_access){
-			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LightBox', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
+			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
 		}
 		$vs_set_display .= "</div>\n";
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
@@ -802,8 +791,6 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 6)));
-		
 		$vs_set_display = "<div class='crSetContainer' id='crSetContainer{$vn_set_id}'><div class='crSet'>\n";
 		$vs_set_display .= caNavLink($po_request, _t("View"), "btn btn-default pull-right", "", "Classroom", "setDetail", array("set_id" => $vn_set_id));
 		$vs_set_display .= "<H5 id='crSetName".$t_set->get("set_id")."'>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id), array('id' => "crSetName{$vn_set_id}"))."</H5>";
@@ -818,34 +805,45 @@
 		}
 		$vs_set_display .= "</p><hr/>";
 
-        if(sizeof($va_set_items)){
-			$vs_image_block = "";
-			$t_list_items = new ca_list_items();
-			foreach($va_set_items as $va_set_item){
-				$t_list_items->load($va_set_item["type_id"]);
-				$vs_placeholder = caGetPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
-				# --- is the iconlarge version available?
-				$vs_large_icon = "icon";
-				if($va_set_item["representation_url_iconlarge"]){
-					$vs_large_icon = "iconlarge";
+		if(!$t_set->get("parent_id")){
+			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 6)));
+			
+			if(sizeof($va_set_items)){
+				$vs_image_block = "";
+				$t_list_items = new ca_list_items();
+				foreach($va_set_items as $va_set_item){
+					$t_list_items->load($va_set_item["type_id"]);
+					$vs_placeholder = caGetPlaceholder($t_list_items->get("idno"), "placeholder_media_icon");
+					# --- is the iconlarge version available?
+					$vs_large_icon = "icon";
+					if($va_set_item["representation_url_iconlarge"]){
+						$vs_large_icon = "iconlarge";
+					}
+					if($va_set_item["representation_tag_".$vs_large_icon]){
+						$vs_image_block .= "<div class='col-xs-4 col-sm-2 crSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+					}else{
+						$vs_image_block .= "<div class='col-xs-4 col-sm-2 crSetImg'>".caNavLink($po_request, "<div class='crSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+					}
 				}
-				if($va_set_item["representation_tag_".$vs_large_icon]){
-					$vs_image_block .= "<div class='col-xs-4 col-sm-2 crSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
-				}else{
-					$vs_image_block .= "<div class='col-xs-4 crSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Classroom", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
-				}
+				$vs_set_display .= "<div class='row'>".$vs_image_block."</div><!-- end row -->";
+				$vs_set_display .= "\n<hr/>";		
 			}
-			$vs_set_display .= "<div class='row'>".$vs_image_block."</div><!-- end row -->";
-			$vs_set_display .= "\n<hr/>";		
 		}
 		if($vb_write_access){
 			$vs_set_display .= "<div class='pull-right'>";
-			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'shareSetForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Share %1", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-share'></span></a>&nbsp;&nbsp;\n";
-			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setAccess', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Manage %1 Access", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;\n";
+			if(!$t_set->get("parent_id")){
+				$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'shareSetForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Share %1", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-share'></span></a>&nbsp;&nbsp;\n";
+				$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setAccess', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Manage %1 Access", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;\n";
+			}
 			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Classroom', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>&nbsp;&nbsp;\n";
 			$vs_set_display .= "<a href='#' title='"._t("Delete")."' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 		}
-		$vs_set_display .= "<small>"._t("Items:").$t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access))."&nbsp;&nbsp;&nbsp;"._t("Comments:").$t_set->getNumComments()."&nbsp;&nbsp;&nbsp;"._t("Responses").": ".sizeof($t_set->getSetResponseIds())."</small>\n";
+
+		$vs_set_display .= "<small>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."&nbsp;&nbsp;&nbsp;"._t("Comments: %1", $t_set->getNumComments());
+		if(!$t_set->get("parent_id")){
+			$vs_set_display .= "&nbsp;&nbsp;&nbsp;"._t("Responses: %1", sizeof($t_set->getSetResponseIds()));
+		}
+		$vs_set_display .= "</small>\n";
 		$vs_set_display .= "</div><!-- end crSet --></div><!-- end crSetContainer -->\n";
 
         return $vs_set_display;
@@ -1087,6 +1085,75 @@
 			$vs_classroom_section_heading = _t("classroom");
 		}
 		return array("singular" => $vs_classroom_displayname, "plural" => $vs_classroom_displayname_plural, "section_heading" => $vs_classroom_section_heading);
+	}
+	# ---------------------------------------
+	function caDisplayLightbox($po_request){
+		if($po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox") && ($po_request->config->get("disable_classroom") || !in_array($po_request->user->getPreference('user_profile_classroom_role'), array('STUDENT', 'EDUCATOR')))){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	# ---------------------------------------
+	function caDisplayClassroom($po_request){
+		if($po_request->isLoggedIn() && !$po_request->config->get("disable_classroom") && in_array($po_request->user->getPreference('user_profile_classroom_role'), array('STUDENT', 'EDUCATOR'))){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	# ---------------------------------------
+	function caGetAddToSetInfo($po_request){
+		$va_link_info = array();
+		if(!$po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){
+			$o_lightbox_config = caGetLightboxConfig();
+			$va_link_info["controller"] = "Lightbox";
+			$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
+			if(!$va_link_info["icon"]){
+				$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
+			}
+			$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+			$va_link_info["name_singular"] = $va_lightboxDisplayName["singular"];
+			$va_link_info["name_plural"] = $va_lightboxDisplayName["plural"];
+			$va_link_info["section_heading"] = $va_lightboxDisplayName["section_heading"];
+			$vs_classroom_name = "";
+			if(!$po_request->config->get("disable_classroom")){
+				$o_classroom_config = caGetClassroomConfig();
+				$va_classroomDisplayName = caGetClassroomDisplayName($o_lightbox_config);			
+				$vs_classroom_name = $va_classroomDisplayName["singular"];
+			}
+			$va_link_info["link_text"] = _t("Login to add to %1", $va_link_info["name_singular"].(($vs_classroom_name) ? "/".$vs_classroom_name : ""));
+			return $va_link_info;
+		}
+		if(caDisplayLightbox($po_request)){
+			$o_lightbox_config = caGetLightboxConfig();
+			$va_link_info["controller"] = "Lightbox";
+			$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
+			if(!$va_link_info["icon"]){
+				$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
+			}
+			$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+			$va_link_info["name_singular"] = $va_lightboxDisplayName["singular"];
+			$va_link_info["name_plural"] = $va_lightboxDisplayName["plural"];
+			$va_link_info["section_heading"] = $va_lightboxDisplayName["section_heading"];
+			$va_link_info["link_text"] = _t("Add to %1", $va_link_info["name_singular"]);
+			return $va_link_info;
+		}
+		if(caDisplayClassroom($po_request)){
+			$o_classroom_config = caGetClassroomConfig();
+			$va_link_info["controller"] = "Classroom";
+			$va_link_info["icon"] = $o_classroom_config->get("addToClassroomIcon");
+			if(!$va_link_info["icon"]){
+				$va_link_info["icon"] = "<i class='fa fa-suitcase'></i>";
+			}
+			$va_classroomDisplayName = caGetClassroomDisplayName($o_classroom_config);
+			$va_link_info["name_singular"] = $va_classroomDisplayName["singular"];
+			$va_link_info["name_plural"] = $va_classroomDisplayName["plural"];
+			$va_link_info["section_heading"] = $va_classroomDisplayName["section_heading"];
+			$va_link_info["link_text"] = _t("Add to %1", $va_link_info["name_singular"]);	
+			return $va_link_info;
+		}
+		return false;
 	}
 	# ---------------------------------------
 	/**

@@ -792,6 +792,12 @@ class SearchResult extends BaseObject {
 	 * 	@return mixed String or array
 	 */
 	public function get($ps_field, $pa_options=null) {
+		// Return primary key of primary table as quickly as possible
+		if (($ps_field == $this->ops_table_pk) || ($ps_field == $this->ops_table_name.'.'.$this->ops_table_pk)) {
+			return $this->opo_engine_result->get($this->ops_table_pk);
+		}
+		
+		//$t = new Timer();
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		$vb_return_as_array = isset($pa_options['returnAsArray']) ? (bool)$pa_options['returnAsArray'] : false;
 		$va_filters = is_array($pa_options['filters']) ? $pa_options['filters'] : array();
@@ -805,9 +811,10 @@ class SearchResult extends BaseObject {
 		if (isset($pa_options['template']) && $pa_options['template']) {
 			return $this->getWithTemplate($pa_options['template'], $pa_options);
 		}
-		
+		//print "[GET 1 $ps_field] ".$t->GetTime(4)."<br>\n";
+		//if ($ps_field == 'ca_objects.object_id') { print caPrintStackTrace(); }
 		$vm_val = self::_get($ps_field, $pa_options);
-		
+		//print "[GET 2 $ps_field] ".$t->GetTime(4)."<br>\n";
 		if ($vb_return_as_array && sizeof($va_filters)) {
 			$va_tmp = explode(".", $ps_field);
 			if (sizeof($va_tmp) > 1) { array_pop($va_tmp); }
@@ -1355,7 +1362,7 @@ class SearchResult extends BaseObject {
 					}
 					$va_attributes = ca_attributes::getAttributes($this->opo_subject_instance->getDb(), $this->opn_table_num, $vn_row_id, array($vn_element_id), array());
 			
-					return $this->_getAttributeValue($va_attributes[$vn_element_id], $t_instance, $va_val_opts);
+					return $this->_getAttributeValue($vn_row_id, $va_attributes[$vn_element_id], $t_instance, $va_val_opts);
 				}
 			}
 		}
@@ -1540,12 +1547,12 @@ class SearchResult extends BaseObject {
 	 *
 	 * @return array|string
 	 */
-	private function _getAttributeValue($pa_value_list, $pt_instance, $pa_options) {
+	private function _getAttributeValue($vn_id, $pa_value_list, $pt_instance, $pa_options) {
 		$va_path_components			=& $pa_options['pathComponents'];
 		$va_return_values = array();
 		
 		
-		$vn_id = $this->get($pt_instance->primaryKey(true));
+		//$vn_id = $this->get($pt_instance->primaryKey(true));
 		$vs_table_name = $pt_instance->tableName();
 		
 		if (is_array($pa_value_list) && sizeof($pa_value_list)) {
@@ -2166,6 +2173,15 @@ class SearchResult extends BaseObject {
 	function hasMedia($ps_field) {  
 		$va_field = $this->getFieldInfo($ps_field);
 		return $GLOBALS["_DbResult_mediainfocoder"]->hasMedia(array_shift($this->get($va_field["field"], array("unserialize" => true, 'returnWithStructure' => true))));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * 
+	 */
+	function getMediaScale($ps_field) {  
+		$va_media_infos = $this->get($ps_field, array("unserialize" => true, 'returnWithStructure' => true));
+
+		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaScale(array_shift($va_media_infos), $pa_options);	
 	}
 	# ------------------------------------------------------------------
 	/**

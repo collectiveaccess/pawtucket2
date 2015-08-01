@@ -37,6 +37,17 @@
  	
  	class FindController extends ActionController {
  		# -------------------------------------------------------
+        /**
+         * @var Configuration
+         */
+ 		 protected $opo_config;
+ 		 
+        /**
+         * @var 
+         */
+ 		 protected $ops_view_prefix=null;
+ 		 
+ 		# -------------------------------------------------------
  		/**
  		 *
  		 */
@@ -567,7 +578,7 @@
 						} else {
 							$slide = $ppt->getActiveSlide();
 						}
-						
+				
 						foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $va_settings) {
 
 							if (
@@ -594,7 +605,7 @@
 														   ->setDistance(10);
 									}
 								}
-							} elseif ($vs_display_text = html_entity_decode(strip_tags($po_result->getWithTemplate($va_settings['template'])))) {
+							} elseif ($vs_display_text = html_entity_decode(strip_tags(br2nl($po_result->getWithTemplate($va_settings['template']))))) {
 								switch($vs_align = caGetOption('align', $va_settings, 'center')) {
 									case 'center':
 										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_CENTER;
@@ -675,5 +686,32 @@
  		public function getCriteriaForDisplay() {
  			return $this->opo_result_context ? $this->opo_result_context->getSearchExpression() : '';		// just give back the search expression verbatim; works ok for simple searches	
  		}
- 		# ------------------------------------------------------------------
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            
+            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
+            $ps_view = $this->request->getParameter('view', pString);
+            $ps_browse = $this->request->getParameter('browse', pString);
+            if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
+ 				// invalid browse type – throw error
+ 				throw new ApplicationException("Invalid browse type");
+ 			}
+ 			
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
+				throw new ApplicationException("Invalid view");
+			}
+            
+			$vs_content_template = $va_view_info['display']['description_template'];
+			
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br/>")));
+			
+         	$this->render("Browse/ajax_map_item_html.php");   
+        }
+ 		# -------------------------------------------------------
  	}
