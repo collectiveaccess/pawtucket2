@@ -2934,7 +2934,23 @@ var methods = {
             	// Begin ANNOTATIONS: init text editor
             	//
                 $(view.annotationTextEditor).addClass("tileviewerAnnotationTextEditor");
-            
+						
+				$(view.annotationTextEditor).on("blur", function(e) {
+					var inAnnotation;
+					if(inAnnotation = jQuery(view.annotationTextEditor).data('dirty')) {
+						// Save changed text label
+						jQuery(view.annotationTextEditor).data('dirty', null);
+					
+						var annotation = view._get_annotation_by_index(inAnnotation['index']);
+						if(!annotation) { return; }	// annotation has been deleted
+						annotation['label'] = jQuery('#tileviewerAnnotationTextLabel').val();
+
+						view.make_annotation_dirty(inAnnotation['index']);
+						view.save_annotations([inAnnotation['index']], []);
+						view.draw();
+					}
+				});
+                
                 annotationContainer.append(view.annotationTextEditor);
                 $(view.annotationTextEditor).draggable();
                 
