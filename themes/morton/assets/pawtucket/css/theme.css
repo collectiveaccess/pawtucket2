@@ -35,7 +35,11 @@ a {
 	  margin-top: 45px;
 	}
 }
+/* Detail */
 
+h4.entity {
+	color:#666;
+}
 /* Footer */
 
 #footer {

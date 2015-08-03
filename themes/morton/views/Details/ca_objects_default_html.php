@@ -25,10 +25,35 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
+<?php
+				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
+?>			
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{^ca_objects.type_id}}}{{{<ifdef code='ca_objects.pbcoreMediaTypes'>, ^ca_objects.pbcoreMediaTypes</ifdef>}}}</H6>
 				<HR>
 <?php
+					if ($vs_pub_description = $t_object->get('ca_objects.publication_description')){
+						print "<div class='unit'><h6>Publication Information</h6>".$vs_pub_description."</div>";
+					}
+					$va_format_buf = null;
+					if ($t_object->get('ca_objects.format')) {
+						$va_format_buf .= "<div class='unit'><b>Format: </b>".$t_object->get('ca_objects.format')."</div>";
+					}
+					if (($t_object->get('ca_objects.digitization_info.digital_status') != 272) && $t_object->get('ca_objects.digitization_info.digital_status')) {
+						$va_format_buf .= "<div class='unit'><b>Digitization Status: </b>".$t_object->get('ca_objects.digitization_info.digital_status', array('convertCodesToDisplayText' => true))."</div>";
+					}
+					if ($t_object->get('ca_objects.reproduction')) {
+						$va_format_buf .= "<div class='unit'><b>Reproduction: </b>".$t_object->get('ca_objects.reproduction', array('convertCodesToDisplayText' => true))."</div>";
+					}
+					if ($t_object->get('ca_objects.dimensions')) {
+						$va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true));
+						print "<pre>";
+						print_r($va_dimensions);
+						print "</pre>";
+						$va_format_buf .= "<div class='unit'><b>Dimensions: </b>".$t_object->get('ca_objects.dimensions')."</div>";
+					}										
+					if ($va_format_buf) {
+						print "<div class='unit'><h3>Format and extent</h3>".$va_format_buf."</div>";
+					}					
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
 						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 					}
@@ -38,6 +63,7 @@
 					if ($vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>', 'template' => '^ca_objects.date.date_value ^ca_objects.date.date_types <ifdef code="date_notes"><br/>^ca_objects.date.date_notes</ifdef>', 'convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 					}
+
 					if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Language</h6>".$vs_language."</div>";
 					}
