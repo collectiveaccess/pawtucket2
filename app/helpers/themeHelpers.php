@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -377,7 +377,7 @@
 			$va_rep_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
 			if(sizeof($va_rep_ids)){
 				$vn_primary_id = array_search("1", $va_rep_ids);
-				if($vn_primary){
+				if($vn_primary_id){
 					unset($va_rep_ids[$vn_primary_id]);
 					$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
 				}else{
@@ -391,13 +391,19 @@
 			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
 			
 			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
-			
+			$va_rep_info = array();
 			$qr_reps->seek(0);
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
-				$va_rep_tags[$vn_rep_id] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>";
+				if($vn_rep_id == $vn_primary_id){
+					$vn_index = 0;
+				}else{
+					$vn_index = $qr_reps->get('ca_objects_x_object_representations.rank');
+				}
+				$va_rep_info[$vn_index] = array("rep_id" => $qr_reps->get('representation_id'), "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar."</div></div>");
 			}
+			ksort($va_rep_info);
 			
 			if(sizeof($va_rep_ids) > 1){
 				$vs_output .= '<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>';
@@ -405,15 +411,15 @@
 			
 			$vn_count = 0;
 			$va_slide_rep_ids = array();
-			foreach($va_rep_tags as $vn_rep_id => $vs_rep_tag){
+			foreach($va_rep_info as $vn_order => $va_rep){
 				if(sizeof($va_rep_ids) > 1){
-					$vs_output .= "<li id='slide".$vn_rep_id."' class='".$vn_rep_id."'>";
+					$vs_output .= "<li id='slide".$va_rep["rep_id"]."' class='".$va_rep["rep_id"]."'>";
 				}
-				if ($vn_count == 0) { $vs_output .= $vs_rep_tag; }	// only load first one initially
+				if ($vn_count == 0) { $vs_output .= $va_rep["tag"]; }	// only load first one initially
 				if(sizeof($va_rep_ids) > 1){
 					$vs_output .= "</li>";
 				}
-				$va_slide_rep_ids[] = $vn_rep_id;
+				$va_slide_rep_ids[] = (int)$va_rep["rep_id"];
 				$vn_count++;
 			}
 			if(sizeof($va_rep_ids) > 1){
@@ -442,7 +448,6 @@
 							}).on('jcarousel:animateend', function(event, carousel) {
 								var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
 								var i = caSlideRepresentationIDs.indexOf(current_rep_id);
-									
 								if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
 									// load media via ajax
 									jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
@@ -635,7 +640,9 @@
 			case "list":
 				$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='".$pa_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+					if($vs_link){
+						$vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail".$vn_rep_id."'".(($vn_rep_id == $pn_rep_id) ? " class='".$pa_options["currentRepClass"]."'" : "").">".$vs_link."</li>\n";
+					}
 				}
 				$vs_formatted_thumbs .= "</ul>";
 				return $vs_formatted_thumbs;
@@ -644,7 +651,9 @@
 			case "bsCols":
 				$vs_formatted_thumbs = "<div class='container'><div class='row' id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					$vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail".$vn_rep_id."' class='".$pa_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$pa_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+					if($vs_link){
+						$vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail".$vn_rep_id."' class='".$pa_options["bsColClasses"].(($vn_rep_id == $pn_rep_id) ? " ".$pa_options["currentRepClass"] : "")."'>".$vs_link."</div>\n";
+					}
 				}
 				$vs_formatted_thumbs .= "</div></div>\n";
 				return $vs_formatted_thumbs;
@@ -1103,5 +1112,112 @@
 			$vs_set_section_heading = _t("lightboxes");
 		}
 		return array("singular" => $vs_set_display_name, "plural" => $vs_set_display_name_plural, "section_heading" => $vs_set_section_heading);
+	}
+	
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caSetAdvancedSearchFormInView($po_view, $ps_function, $ps_view, $pa_options=null) {
+		require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
+		
+		if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) { return null; }
+		
+		$o_dm = Datamodel::load();
+ 		if (!($pt_subject = $o_dm->getInstanceByTableName($va_search_info['table'], true))) { return null; }
+ 		
+		$po_request = caGetOption('request', $pa_options, null);
+		$ps_controller = caGetOption('controller', $pa_options, null);
+		$ps_form_name = caGetOption('formName', $pa_options, 'caAdvancedSearch');
+		
+		$vs_script = null;
+		
+		$pa_tags = $po_view->getTagList($ps_view);
+		if (!is_array($pa_tags) || !sizeof($pa_tags)) { return null; }
+		
+		$va_form_elements = array();
+		foreach($pa_tags as $vs_tag) {
+			$va_parse = caParseTagOptions($vs_tag);
+			$vs_tag_proc = $va_parse['tag'];
+			$va_opts = $va_parse['options'];
+			$va_opts['checkAccess'] = $po_request ? caGetUserAccessValues($po_request) : null;
+			
+			if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
+				$va_default_form_values[$vs_tag_proc] = $vs_default_value;
+				unset($va_opts['default']);
+			} 
+		
+			$vs_tag_val = null;
+			switch(strtolower($vs_tag_proc)) {
+				case 'submit':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
+					break;
+				case 'reset':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
+		
+					$vs_script = "<script type='text/javascript'>
+jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
+	jQuery('#caAdvancedSearch').submit();
+	return false;
+});
+jQuery('.caAdvancedSearchFormReset').bind('click', function() {
+	jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
+	jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
+	jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
+	return false;
+});
+jQuery(document).ready(function() {
+	var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
+	for (f in defaultValues) {
+		var f_proc = f + '[]';
+		jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
+			if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
+		});
+	}
+	for (f in defaultBooleans) {
+		var f_proc = f + '[]';
+		jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
+			if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
+		});
+	}
+});
+</script>\n";
+					break;
+				default:
+		
+					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
+						$po_view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
+					} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
+						$po_view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
+					} else {
+						$va_opts['asArrayElement'] = true;
+						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
+							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+						}
+						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
+							$po_view->setVar($vs_tag, $vs_tag_val);
+						}
+						
+						$va_tmp = explode('.', $vs_tag_proc);
+						if((($t_element = ca_metadata_elements::getInstance($va_tmp[1])) && ($t_element->get('datatype') == 0))) {
+							if (is_array($va_elements = $t_element->getElementsInSet())) {
+								foreach($va_elements as $va_element) {
+									if ($va_element['datatype'] > 0) {
+										$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
+									}
+								}
+							}
+							break;
+						}
+					}
+					if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
+					break;
+			}
+		}
+		
+		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
+ 		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 			
+		return $va_form_elements;
 	}
 	# ---------------------------------------

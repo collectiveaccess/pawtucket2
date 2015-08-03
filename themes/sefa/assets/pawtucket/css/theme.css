@@ -544,7 +544,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 		display:inline;
 	}
 }	
-.socialicon{
+.socialicon, .socialiconDibs{
 	padding-left:2px;
 }
 .socialright{
@@ -559,14 +559,14 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	filter:alpha(opacity=50); /* For IE8 and earlier */
 }
 @media (max-width: 992px) {
-	.socialicon img{
+	.socialicon img, .socialiconDibs img{
 		width:28px;
 		height:28px;
 		margin-right:5px;
 	}
 }
 @media (min-width: 993px) {
-	.socialicon img{
+	.socialicon img, .socialiconDibs img{
 		width:17px;
 		height:17px;
 	}

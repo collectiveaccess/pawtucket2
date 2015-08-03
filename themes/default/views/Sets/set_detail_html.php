@@ -170,7 +170,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="<?php print ($vs_right_col_class = $o_set_config->get("set_detail_right_col_class")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
 <?php
-			if(is_array($va_views) && sizeof($va_views)){
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
 				foreach($va_views as $vs_view => $va_view_info) {
 					if ($vs_current_view === $vs_view) {
 						print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'"></span></a> ';

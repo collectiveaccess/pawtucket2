@@ -255,7 +255,6 @@ class MediaInfoCoder {
 		#
 		# Use icon
 		#
-		if (!is_array($va_media_info[$ps_version])) { print_R($va_media_info); die($ps_version); }
 		if (isset($va_media_info[$ps_version]) && isset($va_media_info[$ps_version]['USE_ICON']) && ($vs_icon_code = $va_media_info[$ps_version]['USE_ICON'])) {
 			return caGetDefaultMediaIconTag($vs_icon_code, $va_media_info[$ps_version]['WIDTH'], $va_media_info[$ps_version]['HEIGHT']);
 		}
