@@ -85,9 +85,9 @@
 					if ($vs_identifier = $t_object->get('ca_objects.idno')){
 						print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
 					}					
-					if ($vs_coll_identifier = $t_object->get('ca_collections.idno', array('returnAsLink' => true))){
-						print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
-					}					
+					#if ($vs_coll_identifier = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true))){
+					#	print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
+					#}					
 					if ($t_object->get('ca_objects.type_id')) {
 						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					}
