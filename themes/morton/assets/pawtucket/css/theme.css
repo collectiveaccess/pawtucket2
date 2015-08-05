@@ -12,6 +12,13 @@ h1, h2, h3, h4, h5, h6, h7 {
 h2 {
 	color: #77a22f;
 }
+h7 {
+	text-transform:uppercase;
+	font-size:10px;
+	font-weight:bold;
+	margin-bottom:8px;
+	display:inline-block;
+}
 a {
 	color: #77a22f;
 }
@@ -53,7 +60,13 @@ h4.entity {
 /* Search */
 
 .multisearch .multisearchResult {
-	font-size:12px;
+	font-size:11px;
+}
+.multisearch .multisearchResult p{
+	margin-bottom:5px;
+}
+.multisearchImgPlaceholder {
+	margin-bottom:8px;
 }
 .multisearch .objectsResult.multisearchResult {
 	width:220px;
@@ -70,6 +83,9 @@ h4.entity {
 
 .filterMenuFacetList li.active {
 	background-color:#f7f7f7;
+}
+.filterMenureults {
+	max-height:300px;
 }
 
 /* Advanced Search */

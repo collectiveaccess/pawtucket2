@@ -24,26 +24,37 @@
 				<div class='col-md-6 col-lg-6'>
 <?php
 					if ($vs_nationality = $t_item->get('ca_entities.nationalityCreator', array('delimiter' => ', '))) {
-						print "<div class='unit'><h6>Nationality</h6>".$vs_nationality."</unit>";
+						print "<div class='unit'><h6>Nationality</h6>".$vs_nationality."</unit></div>";
 					}
-					if ($vs_vital = $t_item->get('ca_entities.vital_dates', array('template' => '^vital_date_value ^vital_date_types <ifdef code="vital_date_location">^vital_date_location</ifdef>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><h6>Vital dates</h6>".$vs_vital."</unit>";
+					if ($t_item->get('ca_entities.vital_dates.vital_date_value')) {
+						$vs_vital = $t_item->get('ca_entities.vital_dates', array('template' => '^vital_date_value ^vital_date_types <ifdef code="vital_date_location">^vital_date_location</ifdef>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true));					
+						print "<div class='unit'><h6>Vital dates</h6>".$vs_vital."</unit></div>";
 					}
-					if ($vs_vital_org = $t_item->get('ca_entities.vital_datesOrg', array('template' => '^org_vital_date_value ^org_vital_date_types <ifdef code="org_vital_date_location">^org_vital_date_location</ifdef>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><h6>Vital dates</h6>".$vs_vital_org."</unit>";
+					if ($t_item->get('ca_entities.vital_datesOrg.org.vital_date_value')) {
+						$vs_vital_org = $t_item->get('ca_entities.vital_datesOrg', array('template' => '^org_vital_date_value ^org_vital_date_types <ifdef code="org_vital_date_location">^org_vital_date_location</ifdef>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true));					
+						print "<div class='unit'><h6>Vital dates</h6>".$vs_vital_org."</unit></div>";
 					}
 					if ($vs_gender = $t_item->get('ca_entities.genderCreator', array('delimiter' => ', '))) {
-						print "<div class='unit'><h6>Gender</h6>".$vs_gender."</unit>";
+						print "<div class='unit'><h6>Gender</h6>".$vs_gender."</unit></div>";
 					}
 					if ($vs_role = $t_item->get('ca_entities.roleCreator', array('delimiter' => ', '))) {
-						print "<div class='unit'><h6>Role</h6>".$vs_role."</unit>";
+						print "<div class='unit'><h6>Role</h6>".$vs_role."</unit></div>";
 					}	
 					if ($vs_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h6>Biography</h6>".$vs_bio."</unit>";
+						print "<div class='unit'><h6>Biography</h6>".$vs_bio."</unit></div>";
 					}	
 					if ($vs_sourcebio = $t_item->get('ca_entities.biography_source')) {
-						print "<div class='unit'><h6>Source of Biography</h6>".$vs_sourcebio."</unit>";
+						print "<div class='unit'><h6>Source of Biography</h6>".$vs_sourcebio."</unit></div>";
 					}
+					if ($t_item->get('ca_entities.external_link.url_entry')) {
+						print "<div class='unit'><h6>External URL</H6>";
+						if ($t_item->get('ca_entities.external_link.url_entry') && $t_item->get('ca_entities.external_link.url_source')) {
+							print "<a href='".$t_item->get('ca_entities.external_link.url_entry')."' target='_blank'>".$t_item->get('ca_entities.external_link.url_source')."</a>";
+						} else {
+							print "<a href='".$t_item->get('ca_entities.external_link.url_entry')."' target='_blank'>".$t_item->get('ca_entities.external_link.url_entry')."</a>";
+						}
+						print "</div>";
+					}					
 																																	
 ?>
 					<div id="detailTools">
@@ -65,10 +76,7 @@
 					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
+								
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="2">

@@ -94,10 +94,10 @@
 					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
-
-				print "<br/>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
-				print ", ".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-				print "<br/>".$qr_results->get('ca_objects.date.date_value', array('delimiter' => ', '));
+				print "<h7>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
+				print "<p>".$qr_results->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>";
+				print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>";
+				print "<p>".$qr_results->get('ca_objects.date.date_value', array('delimiter' => ', '))."</p>";
 			print "</div><!-- end blockResult -->";
 
 			$vn_count++;

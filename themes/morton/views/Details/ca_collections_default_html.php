@@ -22,8 +22,8 @@
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 <?php
-					if ($vs_repository = $t_item->get('ca_collections.repository', array('template' => '^repositoryName ^repositoryLocation', 'delimiter' => '<br/>'))) {
-						print "<div class='unit'><h6>Repository/h6>".$vs_repository."</div>";
+					if ($vs_repository = $t_item->get('ca_collections.repository', array('template' => '<ifdef code="ca_collections.repository.repositoryName"><b>Repository Name: </b></ifdef> ^ca_collections.repository.repositoryName <ifdef code="ca_collections.repository.repositoryLocation"><br/><b>Repository Location: </b></ifdef> ^ca_collections.repository.repositoryLocation', 'delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Repository</h6>".$vs_repository."</div>";
 					}
 					if ($vs_desc = $t_item->get('ca_collections.description.description_text', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Description</h6>".$vs_desc."</div>";
@@ -36,7 +36,31 @@
 					}
 					if ($vs_creator = $t_item->get('ca_entities', array('delimiter' => ', ', 'returnAsLink' => true, 'template' => '^preferred_labels ^relationship_type'))) {
 						print "<div class='unit'><h6>Creator</h6>".$vs_creator."</div>";
-					}																				
+					}
+					if ($vs_agency = $t_item->get('ca_collections.agencyHistory')) {
+						print "<div class='unit'><h6>Agency History</h6>".$vs_agency."</div>";
+					}
+					if ($vs_agency = $t_item->get('ca_collections.agencyHistory')) {
+						print "<div class='unit'><h6>Agency History</h6>".$vs_agency."</div>";
+					}
+					if ($vs_abstract = $t_item->get('ca_collections.abstract')) {
+						print "<div class='unit'><h6>Abstract</h6>".$vs_abstract."</div>";
+					}
+					if ($vs_citation = $t_item->get('ca_collections.preferCite')) {
+						print "<div class='unit'><h6>Preferred Citation</h6>".$vs_citation."</div>";
+					}
+					if ($vs_custodhist = $t_item->get('ca_collections.custodhist')) {
+						print "<div class='unit'><h6>Custodial history</h6>".$vs_custodhist."</div>";
+					}
+					if ($vs_acqinfo = $t_item->get('ca_collections.acqinfo')) {
+						print "<div class='unit'><h6>Immediate Source of Acquisition</h6>".$vs_acqinfo."</div>";
+					}
+					if ($vs_accruals = $t_item->get('ca_collections.accruals')) {
+						print "<div class='unit'><h6>Accruals</h6>".$vs_accruals."</div>";
+					}	
+					if ($vs_accruals = $t_item->get('ca_collections.accruals')) {
+						print "<div class='unit'><h6>Accruals</h6>".$vs_accruals."</div>";
+					}																																																											
 ?>
 					<div id="detailTools">
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
