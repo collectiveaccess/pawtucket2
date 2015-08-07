@@ -32,31 +32,62 @@
 		<div class='repDisplay'>
 			{{{representationViewer}}}
 		</div>		
-				{{{<ifdef code="ca_objects.idno"><div class="unit">^ca_objects.idno</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions"><div class="unit">^ca_objects.dimensions</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Common Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
 				
 <?php
+				$va_dimensions_fields = array("dimensions_height", "dimensions_width", "dimensions_depth", "Dimensions_Length");
+				$va_dimensions_informations = array_pop($t_object->get("ca_objects.dimensions", array("returnWithStructure" => true)));
+				if(is_array($va_dimensions_informations) && sizeof($va_dimensions_informations)){
+					$va_dimensions_formatted = array();
+					$va_dimensions_metric_formatted = array();
+					foreach($va_dimensions_informations as $va_dimensions_information){
+						$va_dimensions_pieces = array();
+						$va_dimensions_pieces_metric = array();
+						foreach($va_dimensions_fields as $vs_field){
+							if($va_dimensions_information[$vs_field]){
+								$va_dimensions_pieces[] = $va_dimensions_information[$vs_field];
+								$vn_dimension = trim(str_replace("in", "", $va_dimensions_information[$vs_field]));
+								$va_dimensions_pieces_metric[] = ($vn_dimension * 2.54)." cm";
+							}
+						}
+						$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? $va_dimensions_information["dimension_text"].": " : "").join(" X ", $va_dimensions_pieces);
+						$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? $va_dimensions_information["dimension_text"].": " : "").join(" X ", $va_dimensions_pieces_metric);
+					}
+				}				
+				
+				if(sizeof($va_dimensions_formatted)){
+					print "<div class='unit'><b>Dimensions:</b> ".join("; ", $va_dimensions_formatted);
+					if(sizeof($va_dimensions_metric_formatted)){
+						print "<br/><b>Dimensions (Metric):</b>".join("; ", $va_dimensions_metric_formatted);
+					}
+					print "</div>";
+				}
+				$vn_source_id = null;
 				if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
 					if(is_array($va_sources) && sizeof($va_sources)){
 						print "<div class='unit'>";
-						print "Source".((sizeof($va_sources) > 1) ? "s" : "").": ";
+						print "<b>Source".((sizeof($va_sources) > 1) ? "s" : "").":</b> ";
 						$va_source_display = array();
 						foreach($va_sources as $va_source){
 							$va_source_display[] = caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]));
 						}
 						print implode(", ", $va_source_display)."</div>";
+						$vn_source_id = $va_source["entity_id"];
 					}
 
 				}
 				if($t_object->get("ca_object_lots.credit_line")){
-					print "<div class='unit'><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+					print "<div class='unit'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
 				}
+				$va_list_ids = array();
 				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
 					if(is_array($va_subjects) && sizeof($va_subjects)){
 						print "<div class='unit'>";
 						print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
 						foreach($va_subjects as $va_subject){
 							print caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]))."<br/>";
+							$va_list_ids[] = $va_subject["item_id"];
 						}
 						print "</div>";
 					}
@@ -73,17 +104,40 @@
 				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
 				{{{<ifdef code="ca_objects.curators_comment"><div class="unit" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment</unit></ifdef>}}}
 				
-				<div id="detailTools">
+				<div id="detailTools" style="clear:none;">
+<?php
+				if($t_object->get("ca_objects.curators_comment")){
+?>
 					<div class="detailTool"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comments</a></div><!-- end detailTool -->
+<?php
+				}
+?>
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 					<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id"))); ?></div><!-- end detailTool -->
 				</div><!-- end detailTools -->
 	</div><!-- end col -->
 </div><!-- end row -->
 <?php
-			
+# object name-  ca_objects.preferred_label: 
+# source- entity_id:
+# keyword- list_item_id:
+# --- build the search terms
+$va_search = array();
+if($t_object->get("ca_objects.preferred_labels.name")){
+	$va_search[] = "ca_objects.preferred_label:'".$t_object->get("ca_objects.preferred_labels.name")."'";
+}
+if($vn_source_id){
+	$va_search[] = "entity_id:".$vn_source_id;
+}
+if(sizeof($va_list_ids)){
+	foreach($va_list_ids as $vn_list_id){
+		$va_search[] = "list_item_id:".$vn_list_id;
+	}
+}
+if(sizeof($va_search)){
+	$vs_search_term = join(" OR ", $va_search);
 	$o_search = caGetSearchInstance("ca_objects");
-	$qr_res = $o_search->search('ca_objects.type_id:'.$t_object->get("type_id"), array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
+	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
 	$vn_seek_to = rand(0,$qr_res->numHits()-4);
 	$qr_res->seek($vn_seek_to);
 	$i = 0;
@@ -93,7 +147,7 @@
 	<div class='col-xs-12'>
 		<H1>
 <?php
-			print caNavLink($this->request, _t("More"), "moreRelatedItems", "", "Search", "objects", array("search" => "ca_objects.type_id:".$t_object->get("type_id")));
+			print caNavLink($this->request, _t("More"), "moreRelatedItems", "", "Search", "objects", array("search" => $vs_search_term));
 ?>
 		Related Items</H1>
 	</div><!-- end col -->
@@ -116,4 +170,5 @@
 </div><!-- end row -->
 <?php
 	}
+}
 ?>

@@ -46,10 +46,24 @@
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
 							print "<li><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+							print "<div class='frontSlideInfo'>";
+							if($qr_res->get("ca_objects.preferred_labels.name")){
+								print "<H2>".$qr_res->get("ca_objects.preferred_labels.name")."</H2>";
 							}
+							if($qr_res->get("ca_objects.idno")){
+								print "<p><b>Accession Number:</b> ".$qr_res->get("ca_objects.idno")."</p>";
+							}
+							if($qr_res->get("ca_objects.public_title")){
+								print "<p><b>Common Title:</b> ".$qr_res->get("ca_objects.public_title")."</p>";
+							}
+							if($qr_res->get("ca_object_lots.credit_line")){
+								print "<p><b>Credit Line: </b><i>".$qr_res->get("ca_object_lots.credit_line")."</i></p>";
+							}
+							if($qr_res->get("ca_object_representations.photo_credit")){
+								print "<p><b>Photo Credit:</b> ".$qr_res->get("ca_object_representations.photo_credit");
+							}
+							print "<br/><br/>".caDetailLink($this->request, _t("VIEW FULL RECORD"), 'btn btn-default', 'ca_objects',  $qr_res->get("object_id"));
+							print "</div>";
 							print "</div></li>";
 							$vb_item_output = true;
 						}
@@ -71,13 +85,27 @@
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
 				/*
+					Set width of li to width of container and do it on page resize
+				*/
+				
+				$('.front .jcarousel-wrapper li').width($('.jcarousel-wrapper').width());
+				$( window ).resize(function() {
+					$('.front .jcarousel-wrapper li').width($('.jcarousel-wrapper').width());
+				});
+				/*
 				Carousel initialization
 				*/
 				$('.jcarousel')
 					.jcarousel({
-						// Options go here
-					});
-		
+						wrap: 'circular',
+						animation: 'slow'
+					})
+					.jcarouselAutoscroll({
+						interval: 3000,
+						target: '+=1',
+						autostart: true
+					})
+				;
 				/*
 				 Prev control initialization
 				 */
@@ -107,6 +135,15 @@
 						// Options go here
 						target: '+=1'
 					});
+					
+					
+				
+				$('.jcarousel-control-prev-text').bind('click', function() {
+					$('.jcarousel').jcarouselAutoscroll('stop');
+				});
+				$('.jcarousel-control-next-text').bind('click', function() {
+					$('.jcarousel').jcarouselAutoscroll('stop');
+				});
 			});
 		</script>
 <?php

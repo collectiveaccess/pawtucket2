@@ -56,9 +56,9 @@ H1, h1{
 	background-color:#FFFFFF;
 	border-top:5px solid #21B1E7;
 	padding-bottom:50px;
-	min-height:450px;
+	min-height:500px;
 }
-#pageArea.results, #pageArea.contact, #pageArea.detail, #pageArea.sets{
+#pageArea.results, #pageArea.contact, #pageArea.detail, #pageArea.sets, #pageArea.staticPage, #pageArea.loginreg{
 	padding-left:20px;
 	padding-right:20px;
 }
@@ -194,6 +194,38 @@ H1, h1{
      background-color:transparent;
      color:#FDB813;
 }
+.front .frontSlide{
+	background-color:#F0F4F6;
+}
+.front .jcarousel-controls{
+	background-color:#FFFFFF;
+}
+.frontSlide img{
+	height:150px;
+	width:auto;
+}
+.frontSlide{
+	height:150px;
+}
+.front .frontSlideInfo{
+	padding:20px;
+}
+@media (min-width: 768px) {
+	.front .frontSlide img{
+		border-right:4px solid #FFF;
+		margin-right:20px;
+	}
+	.frontSlide{
+		height:400px;
+	}
+	.frontSlide img{
+		height:400px;
+		width:auto;
+		float:left;
+	}
+}
+
+
 /* --------------------------------- */
 /* nav */
 /* --------------------------------- */
@@ -419,19 +451,21 @@ div.browseMenuBrowseAll {
 	color:#21B1E7;
 	background-color:transparent;
 }
-div.browseFacetItem a{
+div.browseFacetItem{
    background-color:#F0F4F6;
    color:#000;
-   border-left:4px solid #fff;
-   border-top:2px solid #fff;
-   border-bottom:2px solid #fff;
-   float: left;
-   height: 60px;
    padding-top:3px;
-   font-size:12px;
 }
-div.browseFacetItem a:hover{
+div.browseFacetItem:hover{
 	background-color:#F0F4F6;
+}
+div.browseFacetItem a{
+   font-size:12px;
+   padding:5px 0px 0px 0px !important;
+   margin:0px !important;
+   color:#000;
+}
+div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	color:#21B1E7;
 }
 .filterbylabel{
@@ -511,6 +545,16 @@ div.browseFacetItem a:hover{
 .btn-default:hover{
 	background-color:#003F69;
     color:#FFF;
+}
+#caFormOverlay  #RegForm H1{
+	margin-bottom:0px;
+}
+#caFormOverlay  #RegForm .row{
+	background-color: #003F69;
+	margin-top:-20px;
+	margin-bottom:15px;
+	padding-top:20px;
+	padding-bottom:0px;
 }
 /* ------------------------------------------*/
 /* gallery */
@@ -595,6 +639,13 @@ div.browseFacetItem a:hover{
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }
+.gallery #galleryDetailObjectInfo .unit{
+	margin-bottom:10px;
+	line-height:1.4em;
+}
+.galleryDetailBottom{
+	margin-top:10px;
+}
 /* ------------------------------------------*/
 /* detail */
 /*------------------------------------------*/
@@ -658,7 +709,7 @@ div.browseFacetItem a:hover{
 	color: #21B1E7;
 	font-size: 12px;
     padding: 0px;
-    margin-right:25px;
+    margin-right:22px;
     text-transform: uppercase; 
 	font-family:'gotham-medium'; 
 	margin-bottom:10px; 
@@ -700,6 +751,12 @@ div.browseFacetItem a:hover{
 .detail .moreRelatedItems:hover{
 	color:#FDB813;
 	text-decoration:none;
+}
+#detailRepresentationThumbnails a.active img{
+	border:1px solid #21B1E7;
+}
+#detailRepresentationThumbnails a:hover img{
+	border:1px solid #21B1E7;
 }
 /* -------------------------------------- */
 /* -- browse -- * /

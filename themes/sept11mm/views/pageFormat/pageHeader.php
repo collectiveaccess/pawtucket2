@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = ucFirst($va_lightbox_display_name["singular"]);
+	$vs_lightbox_display_name = ucFirst($va_lightbox_display_name["section_heading"]);
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$vs_user_links = "";
@@ -97,7 +97,7 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li <?php print ($this->request->getController() == "FAQ") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
+				<li <?php print ($this->request->getController() == "FAQ") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "faq"); ?></li>
 				<li <?php print (($this->request->getController() == "Contact") && ($this->request->getParameter("contactType", pString) == "reference")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form", array("contactType" => "reference")); ?></li>
 			</ul>	
 		</div>

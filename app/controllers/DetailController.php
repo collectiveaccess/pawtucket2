@@ -179,7 +179,7 @@
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
 				}
 				$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array_merge($va_media_display_info, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false)))));
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_table->getPrimaryKey(), $t_representation, $t_table, array_merge($va_media_display_info, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false)))));
 			}
 			//
 			// map
@@ -310,6 +310,7 @@
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
+ 			$va_detail_options = (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
  			
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
@@ -320,9 +321,14 @@
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
+			$vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false);
+			$vs_caption = "";
+			if($vs_caption_template){
+				$vs_caption = $t_rep->getWithTemplate($vs_caption_template);
+			}
 			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
 			if ($this->request->getParameter('include_tool_bar', pInteger)) {
-				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id)."</div></div>";
+				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id).$vs_caption."</div></div>";
 			}
 
  			$this->response->addContent($vs_output);

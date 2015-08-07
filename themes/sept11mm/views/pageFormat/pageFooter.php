@@ -31,7 +31,7 @@
 	<div id="footer">
 		<div class="container">
 			<ul class="list-inline">
-				<li><a href="www.google.com">Contact Us</a></li>
+				<li><a href="#">Contact Us</a></li>
 				<li><a href="#">Terms of Use / Privacy Policy</a></li>
 			</ul>
 			<div>

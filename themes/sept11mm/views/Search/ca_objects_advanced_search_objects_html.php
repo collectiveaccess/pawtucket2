@@ -1,7 +1,7 @@
 <div class="container" id="advancedSearchFormObjects">
+	{{{form}}}
 	<div class="row">
 		<div class="col-sm-6">
-			{{{form}}}
 			<div class="form-group">
 				<label for="keyword"><?php print _t("Search term:"); ?></label>
 				{{{_fulltext%height=35px&class=form-control}}}
@@ -31,8 +31,8 @@
 	<div class="row">
 		<div class="col-sm-12 text-right">
 			{{{submit%label=Search}}}
-			
-			{{{/form}}}
+						
 		</div>
 	</div>
+	{{{/form}}}
 </div>

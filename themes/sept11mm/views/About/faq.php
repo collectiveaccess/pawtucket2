@@ -1,7 +1,7 @@
 <?php
-	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": FAQ");
 ?>
-<H1><?php print _t("About"); ?></H1>
+<H1><?php print _t("FAQ"); ?></H1>
 <div class="row">
 	<div class="col-sm-6 col-md-6">
 		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dolor purus, facilisis vitae orci at, egestas iaculis turpis. Aliquam ut vestibulum tellus. Nam nec nisi tellus. Phasellus imperdiet risus pulvinar, varius justo sed, egestas turpis. Integer porta tempus lobortis. Ut luctus ac est nec sagittis. Nam aliquam vel ante at blandit. Phasellus neque massa, vulputate a mattis eu, blandit convallis tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut dignissim dui quam. Duis interdum mauris eget augue scelerisque elementum. Etiam condimentum nibh eget mi rutrum condimentum. Maecenas et cursus urna, quis sollicitudin libero. Donec sit amet augue suscipit, ultricies dolor quis, aliquam magna. Nunc ut hendrerit odio, vitae rutrum sapien.</p>
