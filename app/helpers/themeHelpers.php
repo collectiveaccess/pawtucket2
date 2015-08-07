@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1113,5 +1113,112 @@
 			$vs_set_section_heading = _t("lightboxes");
 		}
 		return array("singular" => $vs_set_display_name, "plural" => $vs_set_display_name_plural, "section_heading" => $vs_set_section_heading);
+	}
+	
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caSetAdvancedSearchFormInView($po_view, $ps_function, $ps_view, $pa_options=null) {
+		require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
+		
+		if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) { return null; }
+		
+		$o_dm = Datamodel::load();
+ 		if (!($pt_subject = $o_dm->getInstanceByTableName($va_search_info['table'], true))) { return null; }
+ 		
+		$po_request = caGetOption('request', $pa_options, null);
+		$ps_controller = caGetOption('controller', $pa_options, null);
+		$ps_form_name = caGetOption('formName', $pa_options, 'caAdvancedSearch');
+		
+		$vs_script = null;
+		
+		$pa_tags = $po_view->getTagList($ps_view);
+		if (!is_array($pa_tags) || !sizeof($pa_tags)) { return null; }
+		
+		$va_form_elements = array();
+		foreach($pa_tags as $vs_tag) {
+			$va_parse = caParseTagOptions($vs_tag);
+			$vs_tag_proc = $va_parse['tag'];
+			$va_opts = $va_parse['options'];
+			$va_opts['checkAccess'] = $po_request ? caGetUserAccessValues($po_request) : null;
+			
+			if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
+				$va_default_form_values[$vs_tag_proc] = $vs_default_value;
+				unset($va_opts['default']);
+			} 
+		
+			$vs_tag_val = null;
+			switch(strtolower($vs_tag_proc)) {
+				case 'submit':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
+					break;
+				case 'reset':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
+		
+					$vs_script = "<script type='text/javascript'>
+jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
+	jQuery('#caAdvancedSearch').submit();
+	return false;
+});
+jQuery('.caAdvancedSearchFormReset').bind('click', function() {
+	jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
+	jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
+	jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
+	return false;
+});
+jQuery(document).ready(function() {
+	var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
+	for (f in defaultValues) {
+		var f_proc = f + '[]';
+		jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
+			if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
+		});
+	}
+	for (f in defaultBooleans) {
+		var f_proc = f + '[]';
+		jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
+			if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
+		});
+	}
+});
+</script>\n";
+					break;
+				default:
+		
+					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
+						$po_view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
+					} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
+						$po_view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
+					} else {
+						$va_opts['asArrayElement'] = true;
+						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
+							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+						}
+						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
+							$po_view->setVar($vs_tag, $vs_tag_val);
+						}
+						
+						$va_tmp = explode('.', $vs_tag_proc);
+						if((($t_element = ca_metadata_elements::getInstance($va_tmp[1])) && ($t_element->get('datatype') == 0))) {
+							if (is_array($va_elements = $t_element->getElementsInSet())) {
+								foreach($va_elements as $va_element) {
+									if ($va_element['datatype'] > 0) {
+										$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
+									}
+								}
+							}
+							break;
+						}
+					}
+					if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
+					break;
+			}
+		}
+		
+		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
+ 		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 			
+		return $va_form_elements;
 	}
 	# ---------------------------------------

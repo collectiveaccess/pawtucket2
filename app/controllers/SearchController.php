@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -367,98 +367,9 @@
  			
  			$this->opo_result_context->saveContext();
  			
- 			$va_tags = $this->view->getTagList($va_search_info['view']);
- 			
- 			$t_subject = $this->request->datamodel->getInstanceByTableName($va_search_info['table'], true);
- 			
- 			$va_form_elements = array();
- 			
- 			$vs_script = null;
- 			
- 			foreach($va_tags as $vs_tag) {
- 				$va_parse = caParseTagOptions($vs_tag);
- 				$vs_tag_proc = $va_parse['tag'];
- 				$va_opts = $va_parse['options'];
- 				$va_opts['checkAccess'] = caGetUserAccessValues($this->request);
- 				
- 				if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
-					$va_default_form_values[$vs_tag_proc] = $vs_default_value;
-					unset($va_opts['default']);
-				} 
- 			
-				$vs_tag_val = null;
- 				switch(strtolower($vs_tag_proc)) {
- 					case 'submit':
- 						$this->view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
- 						break;
- 					case 'reset':
- 						$this->view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
- 			
- 						$vs_script = "<script type='text/javascript'>
-	jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
-		jQuery('#caAdvancedSearch').submit();
-		return false;
-	});
-	jQuery('.caAdvancedSearchFormReset').bind('click', function() {
-		jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
-		jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
-		jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
-		return false;
-	});
-	jQuery(document).ready(function() {
-		var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
-		for (f in defaultValues) {
-			var f_proc = f + '[]';
-			jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
-				if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
-			});
-		}
-		for (f in defaultBooleans) {
-			var f_proc = f + '[]';
-			jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
-				if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
-			});
-		}
-	});
-</script>\n";
- 						break;
- 					default:
- 			
-						if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
-							$this->view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
-						} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
-							$this->view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
-						} else {
-							$va_opts['asArrayElement'] = true;
-							if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
-								$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
-							}
-							if ($vs_tag_val = $t_subject->htmlFormElementForSearch($this->request, $vs_tag_proc, $va_opts)) {
-								$this->view->setVar($vs_tag, $vs_tag_val);
-							}
-							
-							$va_tmp = explode('.', $vs_tag_proc);
- 							if((($t_element = ca_metadata_elements::getInstance($va_tmp[1])) && ($t_element->get('datatype') == 0))) {
-								if (is_array($va_elements = $t_element->getElementsInSet())) {
-									foreach($va_elements as $va_element) {
-										if ($va_element['datatype'] > 0) {
-											$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
-										}
-									}
-								}
-								break;
-							}
-						}
-						if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
-						break;
-				}
- 			}
- 			
- 			$this->view->setVar("form", caFormTag($this->request, "{$ps_function}", 'caAdvancedSearch', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
- 			$this->view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 			caSetAdvancedSearchFormInView($this->view, $ps_function, $va_search_info['view'], array('request' => $this->request));
  			
  			$this->render($va_search_info['view']);
-			
 		}
  		# -------------------------------------------------------
 		/** 
