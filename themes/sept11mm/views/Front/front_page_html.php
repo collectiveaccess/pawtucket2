@@ -43,7 +43,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-4">
-			<H2>Lorem ipsum</H2>
+			<H2>Features</H2>
 <?php
 		print $this->render("Front/gallery_set_links_html.php");
 ?>

@@ -62,6 +62,7 @@
 			$t_parent = new ca_collections();
  			if (!($pn_parent_id = $this->request->getParameter('id', pInteger))) { 
 				$pn_parent_id = null; 
+				$t_parent = null;
 			} else {
 				if ($t_parent->load($pn_parent_id)) {
 					if (!in_array($t_parent->get('access'), $va_user_access)) { 

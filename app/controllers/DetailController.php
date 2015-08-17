@@ -320,7 +320,7 @@
  			}
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
-			
+
 			$vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false);
 			$vs_caption = "";
 			if($vs_caption_template){

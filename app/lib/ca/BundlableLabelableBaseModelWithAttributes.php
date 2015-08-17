@@ -4551,6 +4551,7 @@ if (!$vb_batch) {
 			}
 			$pa_options['excludeTypes'][] = $pa_options['excludeType'];
 		}
+
 		if (isset($pa_options['excludeTypes']) && is_array($pa_options['excludeTypes'])) {
 			$va_type_ids = caMakeTypeIDList($vs_related_table, $pa_options['excludeTypes']);
 
@@ -4862,6 +4863,7 @@ if (!$vb_batch) {
 					}
 
 					$vn_locale_id = $qr_res->get('locale_id');
+
 					if ($vb_use_locale_codes) {
 						$va_rels[$vs_v]['locale_id'] = $vn_locale_id = $t_locale->localeIDToCode($vn_locale_id);
 					}
@@ -4973,10 +4975,8 @@ if (!$vb_batch) {
 			
 			if ($vb_uses_relationship_types)  {
 				$va_rel_types = $t_rel->getRelationshipInfo($t_tmp->tableName());
-				if(method_exists($t_tmp, 'getLeftTableName')) {
-					$vs_left_table = $t_tmp->getLeftTableName();
-					$vs_direction = ($vs_left_table == $this->tableName()) ? 'ltor' : 'rtol';
-				}
+				$vs_left_table = $t_tmp->getLeftTableName();
+				$vs_direction = ($vs_left_table == $this->tableName()) ? 'ltor' : 'rtol';
 			}
 			$va_rels = array();
 			$vn_c = 0;

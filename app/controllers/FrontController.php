@@ -90,11 +90,11 @@
  			//
  			$ps_function = preg_replace("![^A-Za-z0-9_\-]+!", "", $ps_function);
  			$vs_path = "Front/{$ps_function}_html.php";
- 			if (file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
- 				$this->render($vs_path);
- 			} else {
- 				$this->render("Front/front_page_html.php");
+ 			if (!file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
+ 				$vs_path = "Front/front_page_html.php";
  			}
+ 			
+ 			$this->render($vs_path);
  		}
  		# -------------------------------------------------------
 		/** 
