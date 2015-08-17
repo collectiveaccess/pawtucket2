@@ -15,26 +15,27 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
-		<h4>Entities Advanced Search<small> or <br/>
-		<?php print caNavLink($this->request, 'Search Publications', '', '', 'Search', 'advanced/objects');?> | 
+		<h4>People & Organizations Advanced Search<small> or <br/>
+		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?> | 
-		<?php print caNavLink($this->request, 'Search Collections', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
-		<?php			
-			print "<p>Enter your search terms in the fields below.</p>";
-		?>
+
 
 		{{{form}}}
 
 			<div class='advancedContainer'>
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
-						Keyword<br/>
+						Keyword: <i class="fa fa-info-circle" id='keyword'></i><br/>
 						{{{_fulltext%width=680px&height=25px}}}
 					</div>
+<?php
+						TooltipManager::add('#keyword', "Enter keywords or use <a href='http://www.lib.berkeley.edu/TeachingLib/Guides/Internet/Boolean.pdf' target='_blank'>Boolean operators</a> for more complex searches."); 
+?>						
 				</div>			
 				<div class='advancedUnit'>
-					<h3>Entity Information</h3>
+					<h3>Personal or Organizational Details</h3>
 					<div class="advancedSearchField">
 						Name:<br/>
 						{{{ca_entities.preferred_labels.name%width=220px}}}
@@ -61,21 +62,21 @@
 						Relationship to the Library:<br/>
 						{{{ca_entities.relationship_to_library%width=220px}}}
 					</div>					
-				</div>
-				<div class='advancedUnit'>
-					<div class="advancedSearchField">
-						Lifedates<br/>
-						{{{ca_entities.life_dates%width=200px&height=25px}}}
-					</div>																				
 				</div>	
 				<div class='advancedUnit'>
 					<h3>Circulation Information</h3>
 					<div class="advancedSearchField">
-						Date Out:<br/>
+						Date Out: <i class="fa fa-info-circle" id='dateout'></i><br/>
+<?php
+						TooltipManager::add('#dateout', "Search for single dates or a range by day, month, or year. e.g., <i>7/1/1789</i>, or <i>7/1/1789-7/1/1790</i>, or <i>1790-1791</i>"); 
+?>						
 						{{{ca_objects_x_entities.date_out%width=220px}}}
 					</div>
 					<div class="advancedSearchField">
-						Date In:<br/>
+						Date In: <i class="fa fa-info-circle" id='datein'></i><br/>
+<?php
+						TooltipManager::add('#datein', "Search for single dates or a range by day, month, or year. e.g., <i>7/1/1789</i>, or <i>7/1/1789-7/1/1790</i>, or <i>1790-1791</i>"); 
+?>
 						{{{ca_objects_x_entities.date_in%width=220px}}}
 					</div>	
 					<div class="advancedSearchField">
@@ -89,10 +90,29 @@
 						{{{ca_objects_x_entities.representative%width=220px&height=25px}}}
 					</div>
 					<div class="advancedSearchField">
-						Uncertain Transcription:<br/>
+						Uncertain Transcription: <i class="fa fa-info-circle" id='uncertain'></i><br/>
+<?php
+						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
+?>						
 						{{{ca_objects_x_entities.see_original%width=220px}}}
 					</div>
-				</div>											
+					<div class="advancedSearchField">
+						Collection Status: <i class="fa fa-info-circle" id='collection'></i><br/>
+<?php
+						TooltipManager::add('#collection', "Search for books based on their availability at the New York Society Library today."); 
+?>						
+						{{{ca_objects.collection_status%width=220px&restrictToRelationshipTypes=reader}}}
+					</div>					
+				</div>	
+				<div class='advancedUnit'>
+					<div class="advancedSearchField">
+						Transcribed Title: <i class="fa fa-info-circle" id='transcribed'></i><br/>
+<?php
+						TooltipManager::add('#transcribed', "The Library's circulation records often reference the same book in different ways. Search for books based on the way they were recorded at check out."); 
+?>						
+						{{{ca_objects.book_title%width=220px&height=25px&restrictToRelationshipTypes=reader}}}
+					</div>				
+				</div>										
 				<br style="clear: both;"/>
 
 				<div class='advButton' style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>

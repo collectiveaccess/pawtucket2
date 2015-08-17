@@ -44,12 +44,17 @@
 			<div class="jcarousel">
 				<ul>
 <?php
+					$vn_i = 0;
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->get('ca_sets.set_media', array('version' => 'large'))){
 							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, '', '', 'Gallery', $qr_res->get('ca_sets.set_id'));
 							print caNavLink($this->request, "<div class='frontSlideCaption'><div class='setTitle'>".$qr_res->get('ca_sets.preferred_labels')."</div><div class='setDescription'>".$qr_res->get('ca_sets.set_description')."</div></div>", '', '', 'Gallery', $qr_res->get('ca_sets.set_id'));
 							print "</div></li>";
+							if ($vn_i == 1) {
+								print "<li><div class='frontSlide'>".caGetThemeGraphic($this->request, 'adams_william.jpg')."<div class='frontSlideCaption'><div class='setTitle'>Data Visualizations</div><div class='setDescription'>See these historic circulation records in a new way.</div></div></div></li>";
+							}
 							$vb_item_output = true;
+							$vn_i++;
 						}
 					}
 							$va_slide_image = caGetThemeGraphic($this->request, 'finalslide.jpg');
@@ -63,8 +68,8 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="jcarousel-control-prev disabled"><i class="fa fa-angle-left"></i></a>
+			<a href="#" onclick="$('.jcarousel-control-prev').removeClass('disabled');return false;" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
 			<!-- Pagination -->
 			<p class="jcarousel-pagination">
@@ -80,8 +85,22 @@
 				Carousel initialization
 				*/
 				$('.jcarousel')
+					.on('jcarousel:createend', function() {
+						// Arguments:
+						// 1. The method to call
+						// 2. The index of the item (note that indexes are 0-based)
+						// 3. A flag telling jCarousel jumping to the index without animation
+						$(this).jcarousel('scroll', 1, false);
+					})				
+					.on('jcarousel:targetin', 'li', function() {
+						$(this).addClass('activeSlide');
+					})
+					.on('jcarousel:targetout', 'li', function() {
+						$(this).removeClass('activeSlide');
+					})
 					.jcarousel({
-						// Options go here
+						wrap: 'circular',
+						center: 'true'
 					});
 		
 				/*
@@ -105,6 +124,7 @@
 				$('.jcarousel-control-next')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
+						
 					})
 					.on('jcarouselcontrol:inactive', function() {
 						$(this).addClass('inactive');

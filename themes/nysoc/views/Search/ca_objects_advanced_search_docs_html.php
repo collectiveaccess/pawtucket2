@@ -14,15 +14,13 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
-		<h4>Collections Advanced Search<small> or <br/>
-		<?php print caNavLink($this->request, 'Search Publications', '', '', 'Search', 'advanced/objects');?> | 
-		<?php print caNavLink($this->request, 'Search Entities', '', '', 'Search', 'advanced/entities');?> | 
+		<h4>Documents Advanced Search<small> or <br/>
+		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
+		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?>
 		</small></h4>
 
-		<?php			
-			print "<p>Enter your search terms in the fields below.</p>";
-		?>
+
 
 		{{{form}}}
 
@@ -57,7 +55,7 @@
 						{{{ca_objects.document_type%width=200px&height=25px}}}
 					</div>				
 					<div class="advancedSearchField">
-						LC Subjects<br/>
+						Current Subjects<br/>
 						{{{ca_objects.LCSH%width=200px&height=25px}}}
 					</div>
 				</div>

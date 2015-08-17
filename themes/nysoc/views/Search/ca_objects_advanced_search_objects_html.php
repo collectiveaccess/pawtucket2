@@ -14,22 +14,23 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
-		<h4>Publications Advanced Search<small> or <br/>
-		<?php print caNavLink($this->request, 'Search Entities', '', '', 'Search', 'advanced/entities');?> | 
+		<h4>Books Advanced Search<small> or <br/>
+		<?php print caNavLink($this->request, 'People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?> | 
-		<?php print caNavLink($this->request, 'Search Collections', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
-		<?php			
-			print "<p>Enter your search terms in the fields below.</p>";
-		?>
+
 
 		{{{form}}}
 
 			<div class='advancedContainer'>
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
-						Keyword<br/>
+						Keyword: <i class="fa fa-info-circle" id='keyword'></i><br/>
+<?php
+						TooltipManager::add('#keyword', "Enter keywords or use <a href='http://www.lib.berkeley.edu/TeachingLib/Guides/Internet/Boolean.pdf' target='_blank'>Boolean operators</a> for more complex searches."); 
+?>						
 						{{{_fulltext%width=680px&height=25px}}}
 					</div>
 				</div>	
@@ -54,41 +55,56 @@
 						{{{ca_entities.preferred_labels.name%width=220px&restrictToRelationshipTypes=printer;publisher}}}
 					</div>				
 					<div class="advancedSearchField">
-						Publication Date<i> (e.g. 1650-1750)</i><br/>
+						Publication Date<i> (e.g. 1650-1750)</i>: <br/>
 						{{{ca_objects.publication_date%width=200px&height=40px&useDatePicker=0}}}
 					</div>
 					<div class="advancedSearchField">
-						Publication Location<br/>
+						Publication Location: <br/>
 						{{{ca_objects.publication_place.publication_place_text%width=200px&height=25px}}}
 					</div>																				
 				</div>
 				<div class='advancedUnit'>
-
 					<div class="advancedSearchField">
-						1838 Subjects:<br/>
-						{{{ca_objects.subjects_1838%width=220px}}}
-					</div>	
-					<div class="advancedSearchField">
-						1813 Subjects:<br/>
+						1813 Subjects: <i class="fa fa-info-circle" id='subjects1813'></i><br/>
+<?php
+						TooltipManager::add('#subjects1813', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1813 print catalog.", '', '', 'Detail', 'objects/7')); 
+?>						
 						{{{ca_objects.subjects_1813%width=220px}}}
 					</div>
 					<div class="advancedSearchField">
-						1850 Subjects:<br/>
+						1838 Subjects: <i class="fa fa-info-circle" id='subjects1838'></i><br/>
+<?php
+						TooltipManager::add('#subjects1838', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1838 print catalog.", '', '', 'Detail', 'objects/11555')); 
+?>							
+						{{{ca_objects.subjects_1838%width=220px}}}
+					</div>	
+
+					<div class="advancedSearchField">
+						1850 Subjects: <i class="fa fa-info-circle" id='subjects1850'></i><br/>
+<?php
+						TooltipManager::add('#subjects1850', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1850 print catalog.", '', '', 'Detail', 'objects/9')); 
+?>							
 						{{{ca_objects.Analytical_Catalog_1850%width=220px}}}
 					</div>																													
 				</div>	
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
-						LC Subjects<br/>
+						Current Subjects: <i class="fa fa-info-circle" id='subjects'></i><br/>
+<?php
+						TooltipManager::add('#subjects', "Keyword search for books classified according to today's subject headings from the <a href='http://authorities.loc.gov' target='_blank'>Library of Congress</a>."); 
+?>						
 						{{{ca_objects.LCSH%width=200px&height=25px}}}
 					</div>
 					<div class="advancedSearchField">
-						Collection Status:<br/>
+						Collection Status: <i class="fa fa-info-circle" id='collection'></i><br/>
+<?php
+						TooltipManager::add('#collection', "Search for books based on their availability at the New York Society Library today."); 
+?>						
 						{{{ca_objects.collection_status%width=220px}}}
 					</div>																								
 				</div>							
 				<div class='advancedUnit'>
-					<h3>Reader Information</h3>
+					<h3>Personal or Organizational Details</h3> 
 					<div class="advancedSearchField">
 						Reader:<br/>
 						{{{ca_entities.preferred_labels.name%width=220px&restrictToRelationshipTypes=reader}}}
@@ -111,15 +127,24 @@
 				<div class='advancedUnit'>
 					<h3>Circulation Information</h3>
 					<div class="advancedSearchField">
-						Date Out:<br/>
+						Date Out: <i class="fa fa-info-circle" id='dateout'></i><br/>
+<?php
+						TooltipManager::add('#dateout', "Search for single dates or a range by day, month, or year. e.g., <i>7/1/1789</i>, or <i>7/1/1789-7/1/1790</i>, or <i>1790-1791</i>."); 
+?>						
 						{{{ca_objects_x_entities.date_out%width=220px}}}
 					</div>
 					<div class="advancedSearchField">
-						Date In:<br/>
+						Date In:  <i class="fa fa-info-circle" id='datein'></i><br/>
+<?php
+						TooltipManager::add('#datein', "Search for single dates or a range by day, month, or year. e.g., <i>7/1/1789</i>, or <i>7/1/1789-7/1/1790</i>, or <i>1790-1791</i>."); 
+?>						
 						{{{ca_objects_x_entities.date_in%width=220px}}}
 					</div>	
 					<div class="advancedSearchField">
-						Transcribed Title:<br/>
+						Transcribed Title: <i class="fa fa-info-circle" id='transcribed'></i><br/>
+<?php
+						TooltipManager::add('#transcribed', "The Library's circulation records often reference the same book in different ways. Search for books based on the way they were recorded at check out."); 
+?>						
 						{{{ca_objects_x_entities.book_title%width=220px&height=25px}}}
 					</div>
 				</div>	
@@ -133,7 +158,10 @@
 						{{{ca_objects_x_entities.fine%width=220px&height=25px}}}
 					</div>									
 					<div class="advancedSearchField">
-						Uncertain Transcription:<br/>
+						Uncertain Transcription:  <i class="fa fa-info-circle" id='uncertain'></i><br/>
+<?php
+						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
+?>						
 						{{{ca_objects_x_entities.see_original%width=220px}}}
 					</div>
 				</div>																		

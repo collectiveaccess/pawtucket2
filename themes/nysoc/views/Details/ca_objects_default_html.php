@@ -323,7 +323,10 @@
 						print "</div>";
 						if ($vs_public_notes = $t_object->get('ca_objects.public_notes')) {
 							print "<div class='unit'><h6>Note</h6>".$vs_public_notes."</div>";
-						}	
+						}
+						if ($t_object->get('ca_objects.status', array('convertCodesToDisplayText' => true)) == 'new') {
+							print "<div class='incomplete'><i class='fa fa-sticky-note'></i> <i>Metadata for this record is currently incomplete. Click Contribute to submit information for inclusion on this page. See the ".caNavLink($this->request, 'User Guide', '', '', 'About', 'userguide')." to learn more about Contributing.</i></div>";
+						}							
 						if ($vs_collection_status = $t_object->get('ca_objects.collection_status', array('convertCodesToDisplayText' => true))) {
 							if (($vs_collection_status == 'Copy in collection is a later acquisition')|($vs_collection_status == 'In Collection')) {
 								if ($va_opac_link = $t_object->get('ca_objects.nysl_link')) {
@@ -379,7 +382,7 @@
 							<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 							<!-- AddThis Button END -->
 							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
-							<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
 					<div class='col-sm-6 col-md-6 col-lg-6'>

@@ -21,7 +21,7 @@
 				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='margin-top:15px;'>
 
-	<h1><?php print $vs_page_title; ?></h1>
+	<h4><?php print $vs_page_title; ?></h4>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
 <?php	

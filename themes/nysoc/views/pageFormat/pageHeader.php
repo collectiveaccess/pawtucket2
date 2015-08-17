@@ -120,8 +120,9 @@
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-5"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collection") ? 'class="active item"' : 'class="item"'; ?> id="menuId-6"><?php print caNavLink($this->request, _t("Finding Aids"), "", "FindingAid", "Collection", "Index"); ?></li>
 					
-					<li <?php print ($this->request->getController() == "About") ? 'class="active item"' : 'class="item"'; ?> id="menuId-7"><?php print caNavLink($this->request, _t("About this Project"), "", "", "About", "Index"); ?></li>
-					<li class="item" id="menuId-7"><a href="#">User Guide</a></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active item"' : 'class="item"'; ?> id="menuId-7"><?php print caNavLink($this->request, _t("About this Project"), "", "", "About", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "About")  && ($this->request->getAction() == "userguide"))? 'class="active item"' : 'class="item"'; ?> id="menuId-8"><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "userguide"); ?></li>
+					
 					
 				</ul>
 				</nav>

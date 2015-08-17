@@ -1,7 +1,7 @@
 <?php
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
 
-	MetaTagManager::setWindowTitle($va_home." > About");
+	MetaTagManager::setWindowTitle($va_home." > User Guide");
 ?>
 <div class="page">
 	<div class="wrapper">
@@ -12,7 +12,7 @@
 				<div class="container">		
 					<div class="row">
 						<div class="col-sm-12">
-							<H4><?php print _t("About"); ?></H4>
+							<h4><?php print _t("User Guide"); ?></H4>
 						</div>
 					</div>
 					<div class='row'>	
