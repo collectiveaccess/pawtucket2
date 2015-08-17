@@ -88,6 +88,7 @@
 			print "<p>".$va_scope_contents."</p>";
 		}
 	}
+	
 	//
 	// Output the hierarchy down to lowest collection level
 	//
@@ -97,6 +98,8 @@
 			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id', array('checkAccess' => $va_user_access));
 			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('sort' => 'ca_collections.idno_sort', 'includeRoot' => true, 'linkTarget' => 'findingaid', 'collection_id' => $vn_top_level_collection_id, 'checkAccess' => $va_user_access));
 
+
+			$vn_last_level = 0;
 			foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 				if ((!$t_parent) && ($va_hierarchy_item['level'] != 0) && ($va_hierarchy_item['level'] != 1)) {
 					continue;
@@ -105,7 +108,7 @@
 				if (($va_hierarchy_item['level']) == 0) {
 					print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
 				} else {
-					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
+					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 10))."' ";
 					print "<i class='fa fa-angle-right finding-aid' {$va_opacity}></i>";
 				}
 				print "{$va_hierarchy_item['display']}\n";
@@ -155,7 +158,7 @@
 										}
 										print "</td>";
 								
-										print "<td>".($vs_date = $qr_objects->get('ca_objects.dates_value')) ? $vs_date : $qr_objects->get('ca_objects.date_as_text')."</td>"; 
+										print "<td>".(($vs_date = $qr_objects->get('ca_objects.dates.dates_value', ['returnAsArray' => true])) ? join("; ", $vs_date) : $qr_objects->get('ca_objects.date_as_text'))."</td>"; 
 									print "</tr>";
 
 								}
