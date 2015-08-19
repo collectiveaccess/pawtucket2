@@ -2327,7 +2327,6 @@ a.readmore-js-toggle{
 	width:15px;
 	height:16px;
 	margin:10px;
-	background-image:url("../graphics/buttons/x.png");
 }
 #caMediaPanel #close a{
 	text-decoration:none;
@@ -2376,6 +2375,7 @@ div.caMediaOverlayControls .close{
 	float:right;
 	margin: 0px 10px 0px 20px;
 	font-size: 22px;
+	opacity: 0.9;
 }
 div.caMediaOverlayControls .download{
 	float:right;
@@ -2687,10 +2687,10 @@ div.advancedSearchField {
 
 /* tooltips */
 .ui-tooltip {
-	padding: 10px;
-	min-width: 120px;
+	padding: 5px;
+	/* min-width: 120px; */
 	max-width: 300px;
-	min-height: 50px;
+	*/ min-height: 50px; */
 }
 
 /* ----------------- print specific styles ----------------------*/
