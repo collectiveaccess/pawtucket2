@@ -2073,7 +2073,7 @@
 			
 			// is facet cached?
 			$va_facet_content = null;
-			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) { 			
+			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) { 		
 				$va_facet_content = $va_facet_cache = $this->getFacetContent($ps_facet_name, $pa_options);
 				$vb_needs_caching = true;
 			}
@@ -2084,7 +2084,9 @@
 				$va_facet_cache = array_slice($va_facet_cache, (int)$pn_start);
 			}
 			
-			if ($va_facet_content && is_array($va_facet_content)) {
+			//if ($va_facet_content && is_array($va_facet_content)) {
+			if($vb_needs_caching) {
+				if(!is_array($va_facet_content)) { $va_facet_content = array(); }
 				$this->opo_ca_browse_cache->setFacet($ps_facet_name, $va_facet_content);
 				$this->opo_ca_browse_cache->save();
 			}
