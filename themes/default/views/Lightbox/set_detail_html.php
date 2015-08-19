@@ -1,3 +1,4 @@
+
 <?php
 /** ---------------------------------------------------------------------
  * themes/default/Lightbox/set_detail_html.php :
@@ -15,10 +16,10 @@
  * the terms of the provided license as published by Whirl-i-Gig
  *
  * CollectiveAccess is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * This source code is free and modifiable under the terms of 
+ * This source code is free and modifiable under the terms of
  * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
@@ -36,17 +37,17 @@
 	$va_set_item_info           	= $this->getVar("setItemInfo");
 	$vb_write_access 				= $this->getVar("write_access");
 	$va_access_values 				= caGetUserAccessValues($this->request);
-			
+
 	$va_views						= $this->getVar('views');
 	$vs_current_view				= $this->getVar('view');
 	$va_criteria					= $this->getVar('criteria');
-	
+
 	$vs_current_sort				= $this->getVar('sort');
 	$vs_current_secondary_sort		= $this->getVar('secondarySort');
 	$vs_sort_dir					= $this->getVar('sortDirection');
 	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
 	if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
-	
+
 	$va_export_formats 				= $this->getVar('export_formats');
 	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
 	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
@@ -55,19 +56,19 @@
 	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
-	
+
 	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
 	$vs_caption_template = 			$o_lightbox_config->get("caption_template");
-	
+
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-	
-	
+
+
 if (!$vb_ajax) {	// !ajax
-?>	
+?>
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">			
-<?php 
+		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>">
+<?php
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
 					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -129,7 +130,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
 							print "<li class='divider'></li>";
 						}
-?>				
+?>
 						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_displayname_plural), "", "", "Lightbox", "Index"); ?></li>
 <?php
 					if($vb_write_access){
@@ -151,7 +152,7 @@ if (!$vb_ajax) {	// !ajax
 								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
 							}
 						}
-?>		
+?>
 						<li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
 						<li class="divider"></li>
@@ -178,7 +179,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1));
 				}
-?>		
+?>
 			</H5>
 		</div><!-- end col -->
 		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
@@ -197,7 +198,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			</div>			
+			</div>
 		</div><!-- end col -->
 	</div><!-- end row -->
 	<div class="row">
@@ -233,26 +234,26 @@ if (!$vb_ajax) {	// !ajax
 							while($qr_set_items->nextHit() && ($vn_c < $vn_hits_per_block)) {
 								$vn_object_id = $qr_set_items->get("ca_objects.object_id");
 								if(is_array($va_set_item_info[$vn_object_id])) {
-									foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {	
+									foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {
 										if(!$va_item_info['item_id']) { continue; }
 										$va_items[$va_item_info['item_id']] = array(
-											'object_id' => $vn_object_id, 
-											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'), 
+											'object_id' => $vn_object_id,
+											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
 											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
 										);
 									}
 								}
 								$vn_c++;
 							}
-		
+
 							$va_item_ids = array_keys($va_items);
 							$va_object_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'object_id');
-							
+
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
-		
+
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
 							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
-			
+
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
 
 							foreach($va_item_ids as $vn_i => $vn_item_id) {
@@ -273,7 +274,6 @@ if (!$vb_ajax) {	// !ajax
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
-								
 								switch($vs_current_view) {
 									case 'list':
 										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
@@ -286,7 +286,7 @@ if (!$vb_ajax) {	// !ajax
 								print "</div></div><!-- end col 3 -->";
 							}
 						}
-				
+
 						if ($vn_num_hits > $vn_start + $vn_hits_per_block) {
 							print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 						}
@@ -351,7 +351,7 @@ if (!$vb_ajax) {    // !ajax
             print "</div>";
 
 			print $this->render("Browse/browse_refine_subview_html.php");
-			
+
 ?>
 		</div><!-- end col -->
 	</div><!-- end row -->
@@ -474,4 +474,3 @@ if (!$vb_ajax) {    // !ajax
 </script>
 <?php
 } //!ajax
-?>
