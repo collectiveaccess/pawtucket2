@@ -195,8 +195,8 @@
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
 					if ($t_table->get($vs_map_attribute)){
-						$o_map->mapFrom($t_table, $vs_map_attribute);
-						$vn_mapped_count++;
+						$va_ret = $o_map->mapFrom($t_table, $vs_map_attribute);
+						$vn_mapped_count += $va_ret['items'];
 					}
 				}
 				
