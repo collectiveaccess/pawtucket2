@@ -351,6 +351,7 @@
 	 *		primaryOnly - true/false, show only the primary rep, default false
 	 *		dontShowPlaceholder - true/false, default false
 	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
+	 *		captionTemplate = formatted caption to display under media defined in detail.conf	
 	 *
 	 *
 	 * NOTE: references classes in caObjectRepresentationThumbnails to select current thumbnail
@@ -396,12 +397,14 @@
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
+
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				if($vn_rep_id == $vn_primary_id){
 					$vn_index = 0;
 				}else{
 					$vn_index = $qr_reps->get('ca_objects_x_object_representations.rank');
 				}
+				
 				$va_rep_info[$vn_index] = array("rep_id" => $qr_reps->get('representation_id'), "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar.$vs_caption."</div></div>");
 			}
 			ksort($va_rep_info);

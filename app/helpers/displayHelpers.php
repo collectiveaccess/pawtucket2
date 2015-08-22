@@ -4284,8 +4284,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					$o_view->setVar('next_representation_id', $vn_next_rep);
 				}	
 				if (!in_array($ps_version, $va_versions)) { 
-					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = $va_versions[0]; }
 				}
+				
 				$o_view->setVar('version_info', $po_data->getMediaInfo('media', $ps_version));
 				$o_view->setVar('version', $ps_version);
 			}
@@ -4294,7 +4295,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		return $va_buf;
  	}
 	# ------------------------------------------------------------------
-	# ------------------------------------------------------
  	/**
  	 * Return rendered HTML for media viewer for both re
  	 *

@@ -1,3 +1,7 @@
+<?php
+	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	MetaTagManager::setWindowTitle($va_home." > Search");
+?>
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">

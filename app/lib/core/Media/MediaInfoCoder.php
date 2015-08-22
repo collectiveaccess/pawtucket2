@@ -292,7 +292,7 @@ class MediaInfoCoder {
 		if (!($va_media_info = $this->getMediaArray($ps_data))) {
 			return false;
 		}
-		
+	
 		unset($va_media_info["ORIGINAL_FILENAME"]);
 		unset($va_media_info["INPUT"]);
 		unset($va_media_info["VOLUME"]);
