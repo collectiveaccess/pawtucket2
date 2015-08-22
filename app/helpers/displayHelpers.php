@@ -2306,11 +2306,13 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		$va_expression_vars = array();
 
 		/** @var $qr_res SearchResult */
+		$va_ids_with_access = array();
 		while($qr_res->nextHit()) {
 			
 			$vs_pk_val = $qr_res->get($vs_pk, array('checkAccess' => $pa_check_access));
 			if (is_array($pa_check_access) && sizeof($pa_check_access) && !in_array($qr_res->get("{$ps_tablename}.access"), $pa_check_access)) { continue; }
 			$vs_template =  $ps_template;
+			$va_ids_with_access[] = $vs_pk_val;
 
 			// check if we skip this row because of skipIfExpression
 			if(strlen($ps_skip_if_expression) > 0) {
@@ -3052,7 +3054,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		}
 		
 		// Transform links
-		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $pa_row_ids, null, caGetOption('linkTarget', $pa_options, null), $pa_options);
+		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $va_ids_with_access, null, caGetOption('linkTarget', $pa_options, null), $pa_options);
 		
 		// Kill any lingering tags (just in case)
 		foreach($va_proc_templates as $vn_i => $vs_proc_template) {
@@ -4284,8 +4286,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					$o_view->setVar('next_representation_id', $vn_next_rep);
 				}	
 				if (!in_array($ps_version, $va_versions)) { 
-					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = $va_versions[0]; }
 				}
+				
 				$o_view->setVar('version_info', $po_data->getMediaInfo('media', $ps_version));
 				$o_view->setVar('version', $ps_version);
 			}
@@ -4294,7 +4297,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		return $va_buf;
  	}
 	# ------------------------------------------------------------------
-	# ------------------------------------------------------
  	/**
  	 * Return rendered HTML for media viewer for both re
  	 *

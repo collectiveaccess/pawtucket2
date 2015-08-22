@@ -97,7 +97,11 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+				$vs_label = "";
+				if(!($vs_label = $qr_res->get("{$vs_table}.preferred_labels.displayname"))){
+					$vs_label = $qr_res->get("{$vs_table}.preferred_labels.name");
+				}
+				$vs_label_detail_link 	= caDetailLink($this->request, $vs_label, '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";

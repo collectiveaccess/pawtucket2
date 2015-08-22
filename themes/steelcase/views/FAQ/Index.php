@@ -5,57 +5,58 @@
 <div class="row">
 	<div class="col-sm-12 col-md-10">
 		<p>
-			<strong>How can I best utilize the art collection website?</strong>
+			<strong>How can I best utilize the database?</strong>
 		</p>
 		<p>
-			There are many different search capabilities on here—take advantage of them! You can explore works by color, size, style/movement, artist, subject matter, location and more. Or just put search terms in the upper-right corner box. We’ve also curated featured collections and sets so that visitors can learn about the collection from a thematic standpoint.
-		</p>
-		<br/>
-		<p>
-			<strong>Can I save my favorite works so I can easily return to these?</strong>
+			There are many different search capabilities on here—take advantage of them! You can explore works by color, size, style/movement, artist, subject matter, location and more. Or simply enter search terms in the upper-right corner box. The art team has also curated featured collections and galleries so that you can learn about the art from different angles.
 		</p>
 		<p>
-			You can! It’s easy to create, save and share sets of your favorite works—or ones you plan to request for display use—from the My Sets tab. You can also share sets you’ve created with art@steelcase.com. 
-		</p>
-		<br/>
-		<p>
-			<strong>How do I request a work of art for temporary or permanent display use?</strong>
+			<br/><strong>Can I save works of interest and easily return to them?</strong>
 		</p>
 		<p>
-			Contact the art manager using by clicking the envelope in the upper-right corner or send an email directly to art@steelcase.com with the Steelcase-assigned number of each work you’re interested in, along with specifics of the requested use (location, purpose, length of display). 
+			Yes—it’s easy to create and save sets of works in the My Sets tab. You can also share sets with other users and groups by clicking on the gear next to your created set name.
 		</p>
 		<p>
-			Once we’ve determined whether the requested works are available and suitable for use, we’ll set up a time to show you the works in person. You’ll also be able to view locations for each work, including ones currently out on loan.  
+			<br/><strong>How do I request a work of art for temporary or permanent display use?</strong>
 		</p>
 		<p>
-			You’ll also need to complete an art loan agreement form outlining terms of use, responsibility, and project number to bill for any associated costs (shipping, handling, insurance, framing or restoration charges). 
-		</p>
-		<br/>
+			Contact the art team by clicking the envelope in the upper-right corner, or send an email directly to art@steelcase.com. Include the Steelcase-assigned asset number of each work you’re interested in, along with specifics of the requested use: location, purpose, length of display. You can also share sets of requested works with art@steelcase.com.
+		</p>		
 		<p>
-			<strong>What if I’m located outside of Grand Rapids?</strong>
+			<br/><strong>What else do I need to know about the art request and loan process?</strong>
+		</p>
+		<p>
+			Once the art team has determined whether the requested works are available and suitable for use, we’ll set up a time to meet and show them to you in person. Use may be restricted by artwork value or requested display location.
+		</p>
+		<p>
+			You’ll also need to complete an art loan agreement form outlining terms of use, responsibilities and project number to bill for all associated costs. These forms can be accessed in the database.
+		</p>
+		<p>
+			Please allow adequate time to request, view and have works restored/reframed (if necessary), prior to your shipping deadline.
+		</p>
+		<p>
+			<br/><strong>What if I’m located outside of Grand Rapids?</strong>
 		</p>
 		<p>
 			The artwork request process will be the same, except that you won’t be able to view the work(s) in person prior to using them. 
 		</p>
 		<p>
-			Please note that for all requested display use outside of the United States, you will need to complete an international art loan agreement form. Please also take a moment to read about the requirements and associated costs for international art loans. 
-		</p>
-		<br/>
-		<p>
-			<strong>Can I request works that are currently on display in corporate office spaces?</strong>
+			Please note that for all requested display use outside of the United States, you will need to complete an international art loan agreement form. Please also take a moment to read the guidelines for international art loans, which you can find in the international loan form record in the database.
 		</p>
 		<p>
-			Possibly—it doesn’t hurt to ask! Some works are not available due to their monetary value, placement and/or significance. Works that are part of a series may also not be available.
-		</p>
-		<br/>
-		<p>
-			<strong>Anything else I should know?</strong>
+			<br/><strong>Can I borrow works that are currently on display in corporate office spaces?</strong>
 		</p>
 		<p>
-			Photographs can be deceiving. Viewing the work(s) in person, if possible, will give you a better sense of color and scale, and also help in determining whether any restoration or reframing is needed. Sample swatches will also help match colors.
+			Possibly—it doesn’t hurt to ask! Some works may not be available due to value, current placement and/or significance. Works on display that are part of a series may also not be available.
 		</p>
 		<p>
-			Lastly, send us your feedback! Use the contact form or email <a href="mailto:art@steelcase.com">art@steelcase.com</a> directly with suggestions on how to make the digital art collection work better for you. We are also happy to meet with you and discuss possibilities for improvement. 
-		</p>			
+			<br/><strong>Anything else I should know?</strong>
+		</p>
+		<p>
+			Images of works in the database can be deceiving. Viewing the work(s) in person, if possible, will give you a better sense of color and scale, and also help determine whether restoration/reframing is needed. Sample swatches also help match colors.
+		</p>
+		<p>
+			Lastly, send us your feedback! Use the contact form or email art@steelcase.com with suggestions on how to make the database work better for you and your project needs. The art team is also happy to meet with you and discuss possibilities for improvement.
+		</p>
 	</div>
 </div>

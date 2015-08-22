@@ -178,4 +178,11 @@
     'italic' => DOMPDF_FONT_DIR . 'SansLightItalic',
     'bold_italic' => DOMPDF_FONT_DIR . 'SansLightPlain',
   ),
+  'gudea' => 
+  array (
+    'normal' => DOMPDF_FONT_DIR . 'Gudea-Regular',
+    'bold' => DOMPDF_FONT_DIR . 'Gudea-Bold',
+    'italic' => DOMPDF_FONT_DIR . 'Gudea-Italic',
+    'bold_italic' => DOMPDF_FONT_DIR . 'Gudea-Regular',
+  ),
 ) ?>

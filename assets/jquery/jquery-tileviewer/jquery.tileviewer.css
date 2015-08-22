@@ -30,7 +30,7 @@
 	left: 0px;
 	padding: 3px;
 	background-color: rgba(0, 0, 0, 0.5);
-	
+	text-align: center; 
 	opacity: 0.85;
 	
 	-webkit-border-bottom-right-radius: 6px;
@@ -244,7 +244,14 @@ p.tileviewerHelpTextBlock {
 	clear: both;
 }
 
-p.tileviewerHelpText, div.tileviewerHelpText {
+.tileviewerHelpPanel .content h2, .tileviewerHelpPanel .content h3 {
+	font-family: Helvetica, Arial, Sans-Serif;
+}
+
+p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
+	font-family: Helvetica, Arial, Sans-Serif;
+	font-size: 12px;
+	line-height: 14px;
 	text-align: left;
 }
 

@@ -138,10 +138,10 @@
 				<li <?php print ($this->request->getAction() == 'departments' ? 'class="active"': ""); ?>>
 					<?php print caNavLink($this->request, "Departments", "", "", "Browse", "departments"); ?>
 				</li>	
-				<li <?php print ($this->request->getAction() == 'occurrences' ? 'class="active"': ""); ?>>
-					<?php print caNavLink($this->request, "Exhibitions", "", "", "Browse", "occurrences"); ?>
+				<li <?php print ($this->request->getAction() == 'exhibitions' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Exhibitions", "", "", "Browse", "exhibitions"); ?>
 				</li>
-				<li <?php print ($this->request->getAction() == 'occurrences' ? 'class="active"': ""); ?>>
+				<li <?php print ($this->request->getController() == 'Collection' ? 'class="active"': ""); ?>>
 					<?php print caNavLink($this->request, "Finding Aid", "", "FindingAid", "Collection", "Index"); ?>
 				</li>							
 <?php

@@ -2136,8 +2136,7 @@ class BaseModel extends BaseObject {
 			foreach($this->FIELDS as $vs_field => $va_attr) {
 	
 				$vs_field_type = $va_attr["FIELD_TYPE"];				# field type
-				//$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
-				$vs_field_value = $this->_FIELD_VALUES[$vs_field];
+				$vs_field_value = $this->get($vs_field, array("TIMECODE_FORMAT" => "RAW"));
 				
 				if (isset($va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) && (bool)$va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) { continue; }
 				
@@ -2457,7 +2456,12 @@ class BaseModel extends BaseObject {
 					$vn_id = $this->getPrimaryKey();
 					
 					if ((!isset($pa_options['dont_do_search_indexing']) || (!$pa_options['dont_do_search_indexing'])) && !defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
-						$this->doSearchIndexing($this->getFieldValuesArray(true), false, array('isNewRow' => true));
+						$va_index_options = array('isNewRow' => true);
+						if(caGetOption('queueIndexing', $pa_options, false)) {
+							$va_index_options['queueIndexing'] = true;
+						}
+
+						$this->doSearchIndexing($this->getFieldValuesArray(true), false, $va_index_options);
 					}
 					
 					$this->logChange("I");
@@ -3020,7 +3024,12 @@ class BaseModel extends BaseObject {
 					}
 					if ((!isset($pa_options['dont_do_search_indexing']) || (!$pa_options['dont_do_search_indexing'])) &&  !defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
 						# update search index
-						$this->doSearchIndexing(null, false);
+						$va_index_options = array();
+						if(caGetOption('queueIndexing', $pa_options, false)) {
+							$va_index_options['queueIndexing'] = true;
+						}
+
+						$this->doSearchIndexing(null, false, $va_index_options);
 					}
 														
 					if (is_array($va_rebuild_hierarchical_index)) {
@@ -3119,6 +3128,7 @@ class BaseModel extends BaseObject {
 	 * @param bool $pb_delete_related delete stuff related to the record? pass non-zero value if you want to.
 	 * @param array $pa_options Options for delete process. Options are:
 	 *		hard = if true records which can support "soft" delete are really deleted rather than simply being marked as deleted
+	 *		queueIndexing =
 	 * @param array $pa_fields instead of deleting the record represented by this object instance you can
 	 * pass an array of field => value assignments which is used in a SQL-DELETE-WHERE clause.
 	 * @param array $pa_table_list this is your possibility to pass an array of table name => true assignments
@@ -3126,6 +3136,7 @@ class BaseModel extends BaseObject {
 	 */
 	public function delete ($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
 		if(!is_array($pa_options)) { $pa_options = array(); }
+		$pb_queue_indexing = caGetOption('queueIndexing', $pa_options, false);;
 		
 		$vn_id = $this->getPrimaryKey();
 		if ($this->hasField('deleted') && (!isset($pa_options['hard']) || !$pa_options['hard'])) {
@@ -3139,10 +3150,10 @@ class BaseModel extends BaseObject {
 				$this->setMode(ACCESS_WRITE);
 				$this->set('deleted', 1);
 				if ($vn_rc = $this->update(array('force' => true))) {
-					if(!defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
+					if(!defined('__CA_DONT_DO_SEARCH_INDEXING__') || !__CA_DONT_DO_SEARCH_INDEXING__) {
 						$o_indexer = $this->getSearchIndexer();
 						$o_indexer->startRowUnIndexing($this->tableNum(), $vn_id);
-						$o_indexer->commitRowUnIndexing($this->tableNum(), $vn_id);
+						$o_indexer->commitRowUnIndexing($this->tableNum(), $vn_id, array('queueIndexing' => $pb_queue_indexing));
 					}
 				}
 				$this->logChange("D");
@@ -3295,7 +3306,7 @@ class BaseModel extends BaseObject {
 			# --- complete delete of search index entries
 			#
 			if(!defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
-				$o_indexer->commitRowUnIndexing($this->tableNum(), $vn_id);
+				$o_indexer->commitRowUnIndexing($this->tableNum(), $vn_id, array('queueIndexing' => $pb_queue_indexing));
 			}
 			
 			# cancel and pending queued tasks against this record
@@ -10279,7 +10290,7 @@ $pa_options["display_form_field_tips"] = true;
 	 *				media3_original_filename = original file name to set for comment "media3"
 	 *				media4_original_filename = original file name to set for comment "media4"
 	 * @param $ps_location [string] = location of user
-	 * @return int comment_id of newly created comment, false on error or null if parameters are invalid
+	 * @return ca_item_comments BaseModel representation of newly created comment, false on error or null if parameters are invalid
 	 */
 	public function addComment($ps_comment, $pn_rating=null, $pn_user_id=null, $pn_locale_id=null, $ps_name=null, $ps_email=null, $pn_access=0, $pn_moderator=null, $pa_options=null, $ps_media1=null, $ps_media2=null, $ps_media3=null, $ps_media4=null, $ps_location=null) {
 		global $g_ui_locale_id;
@@ -11390,6 +11401,8 @@ $pa_options["display_form_field_tips"] = true;
 	 *		sort = field to sort on. Must be in <table>.<field> or <field> format and be an intrinsic field in the primary table. Sort order can be set using the sortDirection option.
 	 *		sortDirection = the direction of the sort. Values are ASC (ascending) and DESC (descending). Default is ASC.
 	 *		allowWildcards = consider "%" as a wildcard when searching. Any term including a "%" character will be queried using the SQL LIKE operator. [Default is false]
+	 *		purify = process text with HTMLPurifier before search. Purifier encodes &, < and > characters, and performs other transformations that can cause searches on literal text to fail. If you are purifying all input (the default) then leave this set true. [Default is true]
+	 *		purifyWithFallback = executes the search with "purify" set and falls back to search with unpurified text if nothing is found. [Default is false]
 	 *
 	 * @return mixed Depending upon the returnAs option setting, an array, subclass of BaseModel or integer may be returned.
 	 */
@@ -11411,6 +11424,11 @@ $pa_options["display_form_field_tips"] = true;
 		if ($o_trans) { $t_instance->setTransaction($o_trans); }
 		
 		$va_sql_wheres = array();
+		
+		$vb_purify_with_fallback = caGetOption('purifyWithFallback', $pa_options, false);
+		$vb_purify = $vb_purify_with_fallback ? true : caGetOption('purify', $pa_options, true);
+		
+		if ($vb_purify) { $pa_values = caPurifyArray($pa_values); }
 		
 		//
 		// Convert type id
@@ -11537,6 +11555,11 @@ $pa_options["display_form_field_tips"] = true;
 		$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
 		
 		$qr_res = $o_db->query($vs_sql);
+		
+		if ($vb_purify_with_fallback && ($qr_res->numRows() == 0)) {
+			return self::find($pa_values, array_merge($pa_options, ['purifyWithFallback' => false, 'purify' => false]));
+		}
+		
 		$vn_c = 0;
 	
 		$vs_pk = $t_instance->primaryKey();

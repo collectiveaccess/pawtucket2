@@ -7,14 +7,6 @@
  	$va_view_icons = $o_config->getAssoc("views")
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">			
@@ -63,10 +55,10 @@
 					{{{<unit relativeTo="ca_entities" restrictToTypes="department" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit>}}}
 
 					{{{<ifcount code="ca_occurrences" restrictToTypes="exhibitions" min="1" ><H6>Related Exhibitions</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit>}}}
 					
 					{{{<ifcount code="ca_occurrences" restrictToTypes="events" min="1" ><H6>Related Events</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" restrictToTypes="events" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_occurrences" restrictToTypes="events" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit>}}}
 										
 
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
@@ -108,6 +100,8 @@
 </ifcount>}}}		
 
 </div><!-- end container -->
+</div><!-- end col -->
+</div><!-- end row -->
 
 <script type="text/javascript">
 		
