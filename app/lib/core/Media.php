@@ -56,13 +56,13 @@ class Media extends BaseObject {
 	static $WLMedia_unregistered_plugin_cache = array();
 	static $WLMedia_plugin_names = null;
 	
-	static $plugin_path = __CA_LIB_DIR__.'/core/Plugins/Media';
+	static $plugin_path = null;
 	
 	# ----------------------------------------------------------
 	# Methods
 	# ----------------------------------------------------------
 	public function __construct($pb_no_cache=false) { 
-		
+		if (!Media::$plugin_path) { Media::$plugin_path = __CA_LIB_DIR__.'/core/Plugins/Media'; }
 	}
 	# ----------------------------------------------------------
 	public function getPluginNames() {
