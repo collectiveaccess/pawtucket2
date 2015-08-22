@@ -133,6 +133,8 @@ class SearchResult extends BaseObject {
 		
 		
 		$this->opo_tep = $GLOBALS["_DbResult_time_expression_parser"];
+		
+		self::$s_template_prefetch_cache = array();
 	}
 	# ------------------------------------------------------------------
 	public function cloneInit() {
@@ -806,14 +808,16 @@ class SearchResult extends BaseObject {
 	 * 	@return mixed String or array
 	 */
 	public function get($ps_field, $pa_options=null) {
+		$vb_return_as_array = isset($pa_options['returnAsArray']) ? (bool)$pa_options['returnAsArray'] : false;
+		$vb_return_with_structure = isset($pa_options['returnWithStructure']) ? (bool)$pa_options['returnWithStructure'] : false;
 		// Return primary key of primary table as quickly as possible
 		if (($ps_field == $this->ops_table_pk) || ($ps_field == $this->ops_table_name.'.'.$this->ops_table_pk)) {
-			return $this->opo_engine_result->get($this->ops_table_pk);
+			$vn_id = $this->opo_engine_result->get($this->ops_table_pk);
+			return ($vb_return_as_array || $vb_return_with_structure) ? array($vn_id) : $vn_id;
 		}
 		
 		//$t = new Timer();
 		if(!is_array($pa_options)) { $pa_options = array(); }
-		$vb_return_as_array = isset($pa_options['returnAsArray']) ? (bool)$pa_options['returnAsArray'] : false;
 		$va_filters = is_array($pa_options['filters']) ? $pa_options['filters'] : array();
 		
 		// Add table name to field specs that lack it
@@ -825,10 +829,9 @@ class SearchResult extends BaseObject {
 		if (isset($pa_options['template']) && $pa_options['template']) {
 			return $this->getWithTemplate($pa_options['template'], $pa_options);
 		}
-		//print "[GET 1 $ps_field] ".$t->GetTime(4)."<br>\n";
-		//if ($ps_field == 'ca_objects.object_id') { print caPrintStackTrace(); }
+		
 		$vm_val = self::_get($ps_field, $pa_options);
-		//print "[GET 2 $ps_field] ".$t->GetTime(4)."<br>\n";
+		
 		if ($vb_return_as_array && sizeof($va_filters)) {
 			$va_tmp = explode(".", $ps_field);
 			if (sizeof($va_tmp) > 1) { array_pop($va_tmp); }
@@ -1390,7 +1393,7 @@ class SearchResult extends BaseObject {
 					}
 					$va_attributes = ca_attributes::getAttributes($this->opo_subject_instance->getDb(), $this->opn_table_num, $vn_row_id, array($vn_element_id), array());
 			
-					return $this->_getAttributeValue($vn_row_id, $va_attributes[$vn_element_id], $t_instance, $va_val_opts);
+					return $this->_getAttributeValue($va_attributes[$vn_element_id], $t_instance, $va_val_opts);
 				}
 			}
 		}
@@ -1456,8 +1459,10 @@ class SearchResult extends BaseObject {
 			if (is_null($vm_val)) { continue; } // Skip null values; indicates that there was no related value
 			
 			if ($pa_options['returnWithStructure']) {
+				if (!is_array($vm_val)) { $vm_val = array($vm_val); }
 				$va_return_values = array_merge($va_return_values, $vm_val);
 			} elseif ($pa_options['returnAsArray']) {
+				if (!is_array($vm_val)) { $vm_val = array($vm_val); }
 				foreach($vm_val as $vn_i => $vs_val) {
 					// We include blanks in arrays so various get() calls on different fields in the same record set align
 					$va_return_values[] = $vs_val;
@@ -1575,12 +1580,12 @@ class SearchResult extends BaseObject {
 	 *
 	 * @return array|string
 	 */
-	private function _getAttributeValue($vn_id, $pa_value_list, $pt_instance, $pa_options) {
+	private function _getAttributeValue($pa_value_list, $pt_instance, $pa_options) {
 		$va_path_components			=& $pa_options['pathComponents'];
 		$va_return_values = array();
 		
 		
-		//$vn_id = $this->get($pt_instance->primaryKey(true));
+		$vn_id = $this->get($pt_instance->primaryKey(true));
 		$vs_table_name = $pt_instance->tableName();
 		
 		if (is_array($pa_value_list) && sizeof($pa_value_list)) {
