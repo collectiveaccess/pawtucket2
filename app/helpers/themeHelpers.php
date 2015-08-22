@@ -1137,6 +1137,8 @@
 		if (!is_array($pa_tags) || !sizeof($pa_tags)) { return null; }
 		
 		$va_form_elements = array();
+		
+		$vb_submit_or_reset_set = false;
 		foreach($pa_tags as $vs_tag) {
 			$va_parse = caParseTagOptions($vs_tag);
 			$vs_tag_proc = $va_parse['tag'];
@@ -1152,37 +1154,11 @@
 			switch(strtolower($vs_tag_proc)) {
 				case 'submit':
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
+					$vb_submit_or_reset_set = true;
 					break;
 				case 'reset':
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
-		
-					$vs_script = "<script type='text/javascript'>
-jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
-	jQuery('#caAdvancedSearch').submit();
-	return false;
-});
-jQuery('.caAdvancedSearchFormReset').bind('click', function() {
-	jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
-	jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
-	jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
-	return false;
-});
-jQuery(document).ready(function() {
-	var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
-	for (f in defaultValues) {
-		var f_proc = f + '[]';
-		jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
-			if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
-		});
-	}
-	for (f in defaultBooleans) {
-		var f_proc = f + '[]';
-		jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
-			if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
-		});
-	}
-});
-</script>\n";
+					$vb_submit_or_reset_set = true;
 					break;
 				default:
 		
@@ -1214,6 +1190,36 @@ jQuery(document).ready(function() {
 					if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
 					break;
 			}
+		}
+		
+		if($vb_submit_or_reset_set) {
+			$vs_script = "<script type='text/javascript'>
+			jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
+				jQuery('#caAdvancedSearch').submit();
+				return false;
+			});
+			jQuery('.caAdvancedSearchFormReset').bind('click', function() {
+				jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
+				jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
+				jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
+				return false;
+			});
+			jQuery(document).ready(function() {
+				var f, defaultValues = ".json_encode($va_default_form_values).", defaultBooleans = ".json_encode($va_default_form_booleans).";
+				for (f in defaultValues) {
+					var f_proc = f + '[]';
+					jQuery('input[name=\"' + f_proc+ '\"], textarea[name=\"' + f_proc+ '\"], select[name=\"' + f_proc+ '\"]').each(function(k, v) {
+						if (defaultValues[f][k]) { jQuery(v).val(defaultValues[f][k]); } 
+					});
+				}
+				for (f in defaultBooleans) {
+					var f_proc = f + '[]';
+					jQuery('select[name=\"' + f_proc+ '\"].caAdvancedSearchBoolean').each(function(k, v) {
+						if (defaultBooleans[f][k]) { jQuery(v).val(defaultBooleans[f][k]); }
+					});
+				}
+			});
+			</script>\n";
 		}
 		
 		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));

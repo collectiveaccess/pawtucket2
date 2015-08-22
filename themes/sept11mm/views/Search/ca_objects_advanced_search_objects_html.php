@@ -1,4 +1,4 @@
-<div class="container" id="advancedSearchFormObjects">
+<div class="container">
 	{{{form}}}
 	<div class="row">
 		<div class="col-sm-6">
@@ -10,7 +10,7 @@
 		<div class="col-sm-6">
 			<div class="form-group">
 				<label for="Term">Keyword:</label>
-				{{{ca_list_items.preferred_labels.name_plural%class=form-control&select=1}}}
+				{{{ca_list_items.preferred_labels.name_plural%class=form-control&select=1&list=voc_6}}}
 			</div>		
 		</div>
 	</div>
@@ -24,13 +24,13 @@
 		<div class="col-sm-6">
 			<div class="form-group advSearchGroup">
 				<label for="Type">Type:</label>
-				{{{ca_objects.type_id%class=form-control}}}
+				{{{ca_objects.type_id%class=form-control&inUse=1}}}
 			</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-12 text-right">
-			{{{submit%label=Search}}}
+			{{{reset%label=Reset}}}&nbsp;&nbsp;{{{submit%label=Search}}}
 						
 		</div>
 	</div>
