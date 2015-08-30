@@ -366,9 +366,13 @@
 			$vn_viewer_width = 				$pa_options["viewer_width"];
 			$vn_viewer_height = 			$pa_options["viewer_height"];
 			
+			$vn_media_scale_factor = 		floatval($pa_options["scale"]);
+	
 			$vs_annotation_load_url	=		caGetOption("annotation_load_url", $pa_options, null);
 			$vs_annotation_save_url	=		caGetOption("annotation_save_url", $pa_options, null);
 			$vs_help_load_url	=			caGetOption("help_load_url", $pa_options, null);
+			
+			$vb_read_only	=				caGetOption("read_only", $pa_options, null);
 			
 			$vs_annotation_editor_panel =	caGetOption("annotationEditorPanel", $pa_options, null);
 			$vs_annotation_editor_url =		caGetOption("annotationEditorUrl", $pa_options, null);
@@ -391,7 +395,7 @@
 			}
 			
 			$vs_error_tag = caGetOption("alt_image_tag", $pa_options, '');
-			
+	
 			$vn_viewer_width_with_units = $vn_viewer_width;
 			$vn_viewer_height_with_units = $vn_viewer_height; 
 			if (preg_match('!^[\d]+$!', $vn_viewer_width)) { $vn_viewer_width_with_units .= 'px'; }
@@ -417,6 +421,8 @@ $vs_tag = "
 								annotationEditorUrl: '{$vs_annotation_editor_url}',
 								annotationEditorLink: '".addslashes(_t('More...'))."',
 								helpLoadUrl: '{$vs_help_load_url}',
+								lockAnnotations: ".($vb_read_only ? "true" : "false").",
+								showAnnotationTools: ".($vb_read_only ? "false" : "true").",
 								info: {
 									width: '{$vn_width}',
 									height: '{$vn_height}',

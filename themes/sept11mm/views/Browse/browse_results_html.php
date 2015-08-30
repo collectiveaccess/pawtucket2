@@ -57,7 +57,7 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
+	$va_lightbox_display_name = caGetLightboxDisplayName();
 	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	
@@ -150,7 +150,11 @@ if (!$vb_ajax) {	// !ajax
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					if(strpos($va_criterion['value'], "preferred_label") && strpos($va_criterion['value'], " OR ")){
+						print " "._t(" Related items");
+					}else{
+						print ' '.$va_criterion['value'];
+					}
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){

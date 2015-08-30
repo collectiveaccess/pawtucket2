@@ -40,7 +40,7 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 			return false;
 		}
 
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		$o_log = new Eventlog();
 
@@ -107,7 +107,7 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	public static function getUserInfo($ps_username, $ps_password) {
-		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		// external database config
 		$vs_extdb_host = $o_auth_config->get("extdb_host");
@@ -258,7 +258,7 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
 	# --------------------------------------------------------------------------------
 	public static function getAccountManagementLink() {
-		$o_auth_cfg = Configuration::load(Configuration::load()->get('authentication_config'));
+		$o_auth_cfg = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 
 		if($vs_link = $o_auth_cfg->get('extdb_manage_account_url')) {
 			return $vs_link;

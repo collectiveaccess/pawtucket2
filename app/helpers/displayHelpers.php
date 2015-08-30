@@ -1527,7 +1527,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			//
 			
 			if ($vs_table_name === 'ca_commerce_orders') {
-				$o_client_services_config = Configuration::load($po_view->request->config->get('client_services_config'));
+				$o_client_services_config = Configuration::load(__CA_CONF_DIR__.'/client_services.conf');
 				$va_order_totals = $t_item->getOrderTotals();
 				if (($va_order_totals['fee'] + $va_order_totals['tax']+ $va_order_totals['shipping']+ $va_order_totals['handling'] + $va_order_totals['additional_order_fees'] + $va_order_totals['additional_item_fees']) != 0) {	
 					$vs_currency_symbol = $o_client_services_config->get('currency_symbol');
@@ -2306,11 +2306,13 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		$va_expression_vars = array();
 
 		/** @var $qr_res SearchResult */
+		$va_ids_with_access = array();
 		while($qr_res->nextHit()) {
 			
 			$vs_pk_val = $qr_res->get($vs_pk, array('checkAccess' => $pa_check_access));
 			if (is_array($pa_check_access) && sizeof($pa_check_access) && !in_array($qr_res->get("{$ps_tablename}.access"), $pa_check_access)) { continue; }
 			$vs_template =  $ps_template;
+			$va_ids_with_access[] = $vs_pk_val;
 
 			// check if we skip this row because of skipIfExpression
 			if(strlen($ps_skip_if_expression) > 0) {
@@ -3052,7 +3054,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		}
 		
 		// Transform links
-		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $pa_row_ids, null, caGetOption('linkTarget', $pa_options, null), $pa_options);
+		$va_proc_templates = caCreateLinksFromText($va_proc_templates, $ps_resolve_links_using, ($ps_resolve_links_using != $ps_tablename) ? $va_resolve_links_using_row_ids : $va_ids_with_access, null, caGetOption('linkTarget', $pa_options, null), $pa_options);
 		
 		// Kill any lingering tags (just in case)
 		foreach($va_proc_templates as $vn_i => $vs_proc_template) {
@@ -3542,7 +3544,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	 */
 	function caGetMediaMimetypeToDisplayClassMap($ps_context) {
 		$o_config = Configuration::load();
-		$o_media_display_config = Configuration::load($o_config->get('media_display'));
+		$o_media_display_config = Configuration::load(__CA_CONF_DIR__.'/media_display.conf');
 		
 		if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
 		
@@ -4103,6 +4105,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  		$vn_object_id = (isset($pa_options['object_id']) && $pa_options['object_id']) ? $pa_options['object_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
+ 		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
  		
@@ -4140,6 +4143,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			if (is_array($pa_additional_display_options)) { $va_rep_display_info = array_merge($va_rep_display_info, $pa_additional_display_options); }
 			$o_view->setVar('display_options', $va_rep_display_info);
 			$o_view->setVar('representation_id', $vn_representation_id);
+			$o_view->setVar('item_id', $vn_item_id);
 			$o_view->setVar('t_object_representation', $po_data);
 			$o_view->setVar('versions', $va_versions = $po_data->getMediaVersions('media'));
 			
@@ -4282,8 +4286,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					$o_view->setVar('next_representation_id', $vn_next_rep);
 				}	
 				if (!in_array($ps_version, $va_versions)) { 
-					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = null; }
+					if (!($ps_version = $va_rep_display_info['display_version'])) { $ps_version = $va_versions[0]; }
 				}
+				
 				$o_view->setVar('version_info', $po_data->getMediaInfo('media', $ps_version));
 				$o_view->setVar('version', $ps_version);
 			}
@@ -4292,7 +4297,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		return $va_buf;
  	}
 	# ------------------------------------------------------------------
-	# ------------------------------------------------------
  	/**
  	 * Return rendered HTML for media viewer for both re
  	 *

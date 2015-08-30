@@ -229,8 +229,8 @@ define("__CA_SITE_HOSTNAME__", $_SERVER['HTTP_HOST']);
 # IT IS VERY UNLIKELY THAT YOU WILL NEED TO CHANGE ANYTHING UNDER THIS LINE
 # --------------------------------------------------------------------------------------------
 
-# Only MySQL databases are currently supported so leave this set to 'mysql'!
-define("__CA_DB_TYPE__", 'mysql');
+# mysql = old mysql drive, mysqli = "new" driver, pdo_mysql = PDO driver_version; mysqli is recommended
+define("__CA_DB_TYPE__", 'mysqli');
 
 # Path to CollectiveAccess 'app' directory 
 define("__CA_APP_DIR__", __CA_BASE_DIR__."/app");
