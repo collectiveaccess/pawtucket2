@@ -1,12 +1,14 @@
 <?php
-	$t_item = $this->getVar("item");
-	$va_comments = $this->getVar("comments");
-	$va_type = caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
-	$va_title = ((strlen($t_item->get('ca_entities.preferred_labels')) > 40) ? substr($t_item->get('ca_entities.preferred_labels'), 0, 37)."..." : $t_item->get('ca_entities.preferred_labels'));	
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+	$t = new Timer();
+	$t_item 		= $this->getVar("item");
+	$va_comments 	= $this->getVar("comments");
+	$vs_type 		= caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
+	$vs_title 		= caTruncateStringWithEllipsis($t_item->get('ca_entities.preferred_labels'), 40);	
+	$vs_home 		= caNavLink($this->request, "Project Home", '', '', '', '');
+	
+	MetaTagManager::setWindowTitle($vs_home." > ".$vs_type." > ".$vs_title);
 
-	#Wikipedia Info
+	# Wikipedia Info
 	if ($t_item->get("ca_entities.wikipedia_entry.image_thumbnail")) {
 		$vs_wiki_thumb = "<img src='".$t_item->get("ca_entities.wikipedia_entry.image_thumbnail")."'/>";
 	}
@@ -20,10 +22,11 @@
 		$vs_wiki_link = "<a href='".$t_item->get("ca_entities.wikipedia_entry.fullurl")."' target='_blank'>read this on wikipedia.org</a>";
 	}
 	
-	#Circulation History
+	# Circulation History
 	$vs_first_date = null;
 	$vs_buf = "";
 	$va_rel_ids = $t_item->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
+	
 	$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids, array('sort' => 'ca_objects_x_entities.date_out'));
 	//$qr_rels->disableGetWithTemplatePrefetch(true);
 	
@@ -49,68 +52,75 @@
 		$vn_volume_type_id = caGetListItemID('object_types', 'volume');
 		$vn_i = 0;
 		$vs_has_circulation = false;
+		
 		while($qr_rels->nextHit()) {
 			if (($qr_rels->get('ca_objects.type_id') != $vn_bib_type_id)&&($qr_rels->get('ca_objects.type_id') != $vn_volume_type_id)) { continue; }
 			if (in_array($qr_rels->get('ca_objects.object_id'), $va_non_read_books)) { continue; }
+			
+			$vs_current_title = $qr_rels->get("ca_objects.preferred_labels.name");
+			$vs_parent_title = $qr_rels->get("ca_objects.parent.preferred_labels.name");
+			
+			$vs_see_original_link = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true));
+			
 			$vs_buf.= "<tr class='ledgerRow'>";
 				$vs_buf.= "<td id='book".$vn_i."' style='max-width:200px;'>";
 				$vs_buf.= "<div class='bookTitle'>";
-					if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-						$va_label_trunk = explode(':', $qr_rels->get("ca_objects.parent.preferred_labels"));
-						$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
-						$vs_sort_title = $qr_rels->get("ca_objects.parent.preferred_labels.name_sort");
-					} else {
-						$va_label_trunk = explode(':', $qr_rels->get("ca_objects.preferred_labels"));
-						$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
-						$vs_sort_title = $qr_rels->get("ca_objects.preferred_labels.name_sort");
-					}
 					
-					#$va_book_info = array();
-					#if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
-					#	$va_book_info[] = $va_author;
-					#} else {$va_author = null;}
-					#if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
-					#	$va_book_info[] = $va_publication_date;
-					#} else { $va_publication_date = null; }
-					#if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
-					#	$va_book_info[] = $va_publisher;
-					#} else { $va_publisher = null; }
-					#TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 						
-					
+				if ($vs_parent_title) {
+					$va_label_trunk = explode(':', $vs_parent_title);
+					$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.parent.object_id"));
+					$vs_sort_title = $qr_rels->get("ca_objects.parent.preferred_labels.name_sort");
+				} else {
+					$va_label_trunk = explode(':', $vs_current_title);
+					$vs_buf.= caNavLink($this->request, $va_label_trunk[0], '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects.object_id"));
+					$vs_sort_title = $qr_rels->get("ca_objects.preferred_labels.name_sort");
+				}
+				
+						#$va_book_info = array();
+						#if ($va_author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>')) {
+						#	$va_book_info[] = $va_author;
+						#} else {$va_author = null;}
+						#if ($va_publication_date = $qr_rels->get("ca_objects.publication_date")) {
+						#	$va_book_info[] = $va_publication_date;
+						#} else { $va_publication_date = null; }
+						#if ($va_publisher = $qr_rels->get("ca_objects.publisher")) {
+						#	$va_book_info[] = $va_publisher;
+						#} else { $va_publisher = null; }
+						#TooltipManager::add('#book'.$vn_i, $qr_rels->get('ca_objects.parent.preferred_labels.name')." ".$qr_rels->get('ca_objects.preferred_labels.name')."<br/>".join('<br/>', $va_book_info)); 						
+				
 
 				$vs_buf.= "</div>";
-					$vs_buf.= "Transcribed: ".$qr_rels->get("ca_objects_x_entities.book_title");
-					if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
-						$vs_buf.= "&nbsp;".caNavLink($this->request, "<i class='fa fa-exclamation-triangle'></i>", '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
-						TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
-					}
+
+				$vs_buf.= "Transcribed: ".$qr_rels->get("ca_objects_x_entities.book_title");
+				if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
+					$vs_buf.= "&nbsp;".caNavLink($this->request, "<i class='fa fa-exclamation-triangle'></i>", '', '', 'Detail', 'objects/'.$vs_see_original_link);
+					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
+				}
+				
 				$vs_buf.= "<span title='".$vs_sort_title."'><span>";
 				$vs_buf.= "</td>";
 				
 				$vs_buf.= "<td>";
-				$vs_buf.= "<span title='".$qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit></unit>')."'><span>";
-				$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.displayname</unit></unit>');
-				$vs_buf.= "</td>";
+				//$x = new Timer();
+				$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</span></unit></unit>');
+				//$vs_buf.= " [".$x->getTime(4)."]";
+				$vs_buf .= "</td>";
 					
 				$vs_buf.= "<td>";
-				if ($qr_rels->get("ca_objects.parent.preferred_labels")) {
-					$vs_buf.= $qr_rels->getWithTemplate("^ca_objects.preferred_labels");
-				}
+				$vs_buf.= $vs_current_title;
 				$vs_buf.= "</td>";	
 
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_out");
-				if ($vs_first_date == null) {
-					$vs_first_date = $qr_rels->get("ca_objects_x_entities.date_out");
+				$vs_buf.= ($vs_date_out = $qr_rels->get("ca_objects_x_entities.date_out"));
+				if (is_null($vs_first_date)) {
+					$vs_first_date = $vs_date_out;
 				}
 				$vs_buf.= "</td>";
 
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_in");
-				$vs_last_date = $qr_rels->get("ca_objects_x_entities.date_in");
-				if (!$vs_last_date) {
-					$vs_last_date = $qr_rels->get("ca_objects_x_entities.date_out");
-				}
+				$vs_buf.= ($vs_date_in = $qr_rels->get("ca_objects_x_entities.date_in"));
+				
+				$vs_last_date = $vs_date_in ? $vs_date_in : $vs_date_out;
 				$vs_buf.= "</td>";
 				
 				$vs_buf.= "<td>";
@@ -122,7 +132,7 @@
 				$vs_buf.= "</td>";
 
 				$vs_buf.= "<td>";
-				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));								
+				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$vs_see_original_link);								
 				$vs_buf.= "</td>";													
 			$vs_buf.= "</tr>";
 
@@ -209,12 +219,12 @@
 					}
 				}
 				#if ($va_nysl_link['entity_opac_URL']) {$vs_sidebar_buf.= "<h6>Connect to the New York Society Library Catalog</h6>";}
-				foreach ($va_opac_by_type as $va_type => $va_opac_link) {
+				foreach ($va_opac_by_type as $vs_type => $va_opac_link) {
 					foreach ($va_opac_link as $va_key => $va_link) {
-						if ($va_type == 'author') {
+						if ($vs_type == 'author') {
 							$vs_sidebar_buf.= "<p><a href='".$va_link."' target='_blank'>Books by ".$t_item->get('ca_entities.preferred_labels')."</a></p>";
 						}
-						if ($va_type == 'subject') {
+						if ($vs_type == 'subject') {
 							$vs_sidebar_buf.= "<p><a href='".$va_link."' target='_blank'>Books about ".$t_item->get('ca_entities.preferred_labels')."</a></p>";
 						}
 					}							
@@ -416,14 +426,14 @@
 										$vs_book_buf.= "<div class='container'>";
 										$vs_book_buf.= "<div class='row'>";
 										$vs_book_buf.= "<h6>".ucwords($va_role)." of</h6>";
-										foreach ($va_book as $va_book_id => $va_title) {
+										foreach ($va_book as $va_book_id => $vs_title) {
 											$t_book = new ca_objects($va_book_id);
-											$va_title_trunk = explode(':',$va_title);
+											$vs_title_trunk = explode(':',$vs_title);
 											if ($t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
 												$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))."<br/>";
 											} else {$vs_author = null;}											
 											$vn_pub_date = $t_book->get('ca_objects.publication_date');
-											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$va_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
+											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$vs_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
 										}
 										$vs_book_buf.= "</div>";
 										$vs_book_buf.= "</div>";
@@ -582,3 +592,5 @@
 
 	});
 </script>
+<?php
+	print "[FINAL] ".$t->getTime(4)."<br/>\n";
