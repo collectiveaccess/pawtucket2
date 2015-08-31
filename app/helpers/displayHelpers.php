@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,6 +41,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ExpressionParser.php');
 require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
 require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
+require_once(__CA_LIB_DIR__.'/core/Parsers/DisplayTemplateParser.php');
 
 /**
  * Regex used to parse bundle display template tags (Eg. ^I_am_a_tag)
@@ -2015,7 +2016,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		if (preg_match_all(__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__, $ps_template, $va_matches)) {
 			foreach($va_matches[1] as $vn_i => $vs_possible_tag) {
 				if (strpos($vs_possible_tag, "~") !== false) { continue; }	// don't clip trailing characters when there's a tag directive specified
-				$va_matches[1][$vn_i] = rtrim($vs_possible_tag, "/.");	// remove trailing slashes and periods
+				$va_matches[1][$vn_i] = rtrim($vs_possible_tag, "/.%");	// remove trailing slashes, periods and percent signs as they're potentially valid tag characters that are never meant to be at the end
 			}
 			$va_tags = $va_matches[1];
 		}
@@ -2032,12 +2033,14 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	 *			prefix = string to add to beginning of tags extracted from template before doing lookup into value array
 	 *			removePrefix = string to remove from tags extracted from template before doing lookup into value array
 	 *			getFrom = a model instance to draw data from. If set, $pa_values is ignored.
+	 *			quote = quote replacement values (Eg. ^ca_objects.idno becomes "2015.001" rather than 2015.001). Value containing quotes will be escaped with a backslash. [Default is false]
 	 *
 	 * @return string Output of processed template
 	 */
 	function caProcessTemplate($ps_template, $pa_values, $pa_options=null) {
-		$vs_prefix = isset($pa_options['prefix']) ? $pa_options['prefix'] : null;
-		$vs_remove_prefix = isset($pa_options['removePrefix']) ? $pa_options['removePrefix'] : null;
+		$ps_prefix = caGetOption('prefix', $pa_options, null);
+		$ps_remove_prefix = caGetOption('removePrefix', $pa_options, null);
+		$pb_quote = caGetOption('quote', $pa_options, false);
 		
 		$va_tags = caGetTemplateTags($ps_template);
 		
@@ -2049,11 +2052,11 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		foreach($va_tags as $vs_tag) {
 			$va_tmp = explode("~", $vs_tag);
 			$vs_proc_tag = array_shift($va_tmp);
-			if ($vs_remove_prefix) {
-				$vs_proc_tag = str_replace($vs_remove_prefix, '', $vs_proc_tag);
+			if ($ps_remove_prefix) {
+				$vs_proc_tag = str_replace($ps_remove_prefix, '', $vs_proc_tag);
 			}
-			if ($vs_prefix) {
-				$vs_proc_tag = $vs_prefix.$vs_proc_tag;
+			if ($ps_prefix) {
+				$vs_proc_tag = $ps_prefix.$vs_proc_tag;
 			}
 			
 			if ($t_instance && ($vs_gotten_val = $t_instance->get($vs_proc_tag, $pa_options))) {
@@ -2064,7 +2067,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					// If value is an array try to make a string of it
 					$vs_val = join(" ", $vs_val);
 				}
+				
 				$vs_val = caProcessTemplateTagDirectives($vs_val, $va_tmp);
+				
+				if ($pb_quote) { $vs_val = '"'.addslashes($vs_val).'"'; }
 				$ps_template = preg_replace("!\^(?={$vs_tag}[^A-Za-z0-9]+|{$vs_tag}$){$vs_tag}!", $vs_val, $ps_template);
 			}
 		}
