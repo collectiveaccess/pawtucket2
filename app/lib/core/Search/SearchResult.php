@@ -92,7 +92,7 @@ class SearchResult extends BaseObject {
 
 	# ------------------------------------------------------------------
 	private $opb_disable_get_with_template_prefetch = false;
-	static $s_template_prefetch_cache = array();
+	static $s_template_prefetch_cache;
 	# ------------------------------------------------------------------
 	public function __construct($po_engine_result=null, $pa_tables=null) {
 		$this->opo_db = new Db();
@@ -134,7 +134,7 @@ class SearchResult extends BaseObject {
 		
 		$this->opo_tep = $GLOBALS["_DbResult_time_expression_parser"];
 		
-		self::$s_template_prefetch_cache = array();
+		if (!is_array(self::$s_template_prefetch_cache)) { self::$s_template_prefetch_cache = array(); }
 	}
 	# ------------------------------------------------------------------
 	public function cloneInit() {
