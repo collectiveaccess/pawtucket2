@@ -92,7 +92,7 @@
 			<div class='bResContent'>".
 				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'><b>"._t("Language").": </b>^ca_objects.language</ifdef>", array("convertCodesToDisplayText" =>true))
 			."<br/><b>"._t("Authors").": </b>".
-				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", "))
+				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", "))
 			."</div><!-- end bResContent -->
 		</div><!-- end bResItem -->
 	</div><!-- end col -->";

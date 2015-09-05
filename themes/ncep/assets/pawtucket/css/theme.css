@@ -484,23 +484,26 @@ nav, .navbar, .navbar-default{
 	line-height:1.2em;
 }
 /*  DETAIL  */
-.detailTop{
+.detailBox{
 	background-color:#FFFFFF;
 	-webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	padding:25px;
-	margin:-20px 0px 0px 1px;
+	margin:0px 0px 40px 1px;
 	font-size:14px;
 }
-.detailTop p{
+.detailBoxTop{
+	margin:-20px 0px 40px 1px !important;
+}
+.detailBox p{
 	line-height:1.1em;
 	padding-bottom:8px;
 }
-.detailTop a{
+.detailBox a{
 	color:#626801;
 	text-decoration:underline;
 }
-.detailTop b{
+.detailBox b{
 	color:#2E536E;
 	font-weight:normal;
 }

@@ -5,16 +5,16 @@
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
+	</div><!-- end navTop -->
 	<div class='col-xs-12'>
-		<div class="detailTop">
+		<div class="detailBox detailBoxTop">
 			<div class="detailNav pull-right">
 				{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 			</div><!-- end detailNav -->
 			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 					
 			<div class="row">
-				{{{<if expression="(length(^ca_objects.abstract) > 0) or (length(^ca_objects.related%restrictToRelationshipTypes=translation) > 0)">
+				{{{<if rule="(length(^ca_objects.abstract) > 0) or (length(^ca_objects.related%restrictToRelationshipTypes=translation) > 0)">
 				<div class='col-xs-12 col-sm-6'>
 					<ifdef code="ca_objects.abstract"><p>^ca_objects.abstract</p></ifdef>
 					<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="translation">
@@ -49,7 +49,23 @@
 					<p><b>Components:</b> <?php print sizeof($va_component_ids); ?></p>
 				</div>
 			</div>
-		</div>
+		</div><!-- end detailBox -->
+		<div class="row">
+			<div class='col-xs-2'>
+			
+			</div><!-- end col-2 -->
+			<div class='col-xs-10'>
+				<div class="detailBox">
+<?php
+					$va_learn = $t_object->get("ca_objects.children", array("returnWithStructure" => true, "checkAccess" => caGetUserAccessValues($this->request)));
+					print_r($va_learn);
+?>
+					{{{<ifdef code="ca_objects.children" restrictToTypes="Synthesis">
+						<unit relativeTo="ca_objects.children" delimiter="<br/>" restrictToTypes="Synthesis">^ca_objects.preferred_labels.name ^ca_objects.type_id</unit>
+					</ifdef>}}}
+				</div><!-- end detailBox -->
+			</div><!-- end col-10 -->
+		</div><!-- end row -->
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				{{{representationViewer}}}
