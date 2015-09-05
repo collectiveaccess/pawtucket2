@@ -68,9 +68,6 @@ class DisplayTemplateParser {
 		$o_doc = str_get_dom($ps_template);	
 		$ps_template = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_doc->html()));	// replace template with parsed version; this allows us to do text find/replace later
 		
-		$o_doc = str_get_dom($ps_template);		// parse template again with units replaced by unit tags in the format [[#X]]
-		$ps_template = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_doc->html()));	// replace template with parsed version; this allows us to do text find/replace later
-	
 		$va_tags = DisplayTemplateParser::_getTags($o_doc->children, ['maxLevels' => 2]);
 
 		if (!is_array(DisplayTemplateParser::$template_cache)) { DisplayTemplateParser::$template_cache = []; }
@@ -150,8 +147,8 @@ class DisplayTemplateParser {
 	 *		sortDirection = The direction of the sort of repeating values within a row template. May be either ASC (ascending) or DESC (descending). [Default is ASC]
 	 *		linkTarget = Optional target to use when generating <l> tag-based links. By default links point to standard detail pages, but plugins may define linkTargets that point elsewhere.
 	 * 		skipIfExpression = skip the elements in $pa_row_ids for which the given expression does not evaluate true
-	 *		includeBlankValuesInArray = include blank template values in returned array when returnAsArray is set. If you need the returned array of values to line up with the row_ids in $pa_row_ids this should be set. [Default is false]
-	 *
+	 *		includeBlankValuesInArray = include blank template values in primary template and all <unit>s in returned array when returnAsArray is set. If you need the returned array of values to line up with the row_ids in $pa_row_ids this should be set. [Default is false]
+	 *		includeBlankValuesInTopLevelForPrefetch = include blank template values in *primary template* (not <unit>s) in returned array when returnAsArray is set. Used by template prefetcher to ensure returned values align with id indices. [Default is false]
 	 * @return mixed Output of processed templates
 	 *
 	 * TODO: sort and sortDirection are not currently supported! They are ignored for the time being
@@ -178,6 +175,7 @@ class DisplayTemplateParser {
 			$ps_delimiter = caGetOption('delimiter', $pa_options, '; ');
 			
 			$pb_include_blanks = caGetOption('includeBlankValuesInArray', $pa_options, false);
+			$pb_include_blanks_for_prefetch = caGetOption('includeBlankValuesInTopLevelForPrefetch', $pa_options, false);
 		
 		// Bail if no rows or template are set
 		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids) || !$ps_template) {
@@ -228,7 +226,8 @@ class DisplayTemplateParser {
 			array_merge(['addRelParameter' => true, 'requireLinkTags' => true], $pa_options)
 		);
 		
-		if (!$pb_include_blanks) { $va_proc_templates = array_filter($va_proc_templates, 'strlen'); }
+		$pb_include_blanks_for_prefetch = false;
+		if (!$pb_include_blanks && !$pb_include_blanks_for_prefetch) { $va_proc_templates = array_filter($va_proc_templates, 'strlen'); }
 		
 		if (!$pb_return_as_array) {
 			return join($ps_delimiter, $va_proc_templates);
@@ -251,6 +250,7 @@ class DisplayTemplateParser {
 		$pb_is_case = caGetOption('isCase', $pa_options, false, ['castTo' => 'boolean']);
 		$pb_quote = caGetOption('quote', $pa_options, false, ['castTo' => 'boolean']);
 		$pa_primary_ids = caGetOption('primaryIDs', $pa_options, null);
+		$pb_include_blanks = caGetOption('includeBlankValuesInArray', $pa_options, false);
 		
 		unset($pa_options['quote']);
 		
@@ -380,8 +380,9 @@ class DisplayTemplateParser {
 				
 					if ($va_relative_to_tmp[0] && !($t_rel_instance = $o_dm->getInstanceByTableName($va_relative_to_tmp[0], true))) { continue; }
 					
+					// <unit> attributes
 					$vs_unit_delimiter = $o_node->delimiter ? (string)$o_node->delimiter : $ps_delimiter;
-			
+					$vb_unique = $o_node->unique ? (bool)$o_node->unique : false;
 					$vs_unit_skip_if_expression = (string)$o_node->skipIfExpression;
 					
 					$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
@@ -436,7 +437,8 @@ class DisplayTemplateParser {
 								]
 							)
 						);
-						
+						if ($vb_unique) { $va_tmpl_val = array_unique($va_tmpl_val); }
+					
 						$vs_acc .= join($vs_unit_delimiter, $va_tmpl_val);
 						if ($pb_is_case) { break(2); }
 					} else { 
@@ -481,6 +483,7 @@ class DisplayTemplateParser {
 								]
 							)
 						);	
+						if ($vb_unique) { $va_tmpl_val = array_unique($va_tmpl_val); }
 						
 						$vs_acc .= join($vs_unit_delimiter, $va_tmpl_val);
 						if ($pb_is_case) { break(2); }
