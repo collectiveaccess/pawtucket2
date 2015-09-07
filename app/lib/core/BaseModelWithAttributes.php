@@ -1312,6 +1312,10 @@
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
 				return $this->getTypeListAsHTMLFormElement($ps_field, array('class' => caGetOption('class', $pa_options, null)), array_merge($pa_options, array('nullOption' => '-')));
 			}
+											
+			if (in_array($va_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) {
+				return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
+			}
 			
 			if (!in_array($va_tmp[0], array('created', 'modified'))) {		// let change log searches filter down to BaseModel
 				if ($va_tmp[0] != $this->tableName()) { return null; }
