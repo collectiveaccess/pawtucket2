@@ -105,7 +105,6 @@
 				// Exportables/printables
 				// 	merge displays with drop-in print templates
 				//
-				Timer::start('export');
 				$va_export_options = caGetAvailablePrintTemplates('summary', array('table' => $t_subject->tableName())); 
 				$this->view->setVar('export_formats', $va_export_options);
 			
@@ -120,9 +119,7 @@
 				}
 				ksort($va_options);
 				$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
-				Timer::p('export');
 			}
-		
  			
 			#
  			# Enforce access control
