@@ -45,7 +45,6 @@
 	require_once(__CA_APP_DIR__."/helpers/navigationHelpers.php");
 	require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 	require_once(__CA_APP_DIR__."/helpers/mailHelpers.php");
-	require_once(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
 	
 	require_once(__CA_LIB_DIR__."/core/Controller/ApplicationException.php");
 	require_once(__CA_LIB_DIR__."/core/Controller/ActionController.php");

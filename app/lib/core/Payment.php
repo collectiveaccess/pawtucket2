@@ -34,7 +34,6 @@
   *
   */
   
-	require_once(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
 	require_once(__CA_LIB_DIR__."/core/Configuration.php");
 	
 	class Payment {
