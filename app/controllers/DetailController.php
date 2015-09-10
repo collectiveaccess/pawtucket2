@@ -307,7 +307,6 @@
  		 *
  		 *	Optional request parameters:
  		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
- 		 *		order_item_id = ca_commerce_order_items.item_id value to limit representation display to
  		 *
  		 */ 
  		public function GetRepresentationInfo() {
