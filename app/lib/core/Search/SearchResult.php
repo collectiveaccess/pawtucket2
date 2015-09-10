@@ -83,7 +83,6 @@ class SearchResult extends BaseObject {
 	static $s_instance_cache = array();
 	static $s_timestamp_cache = array();
 	static $s_rel_prefetch_cache = array();
-	static $s_search_result_cache = array();
 	static $s_parsed_field_component_cache = array();
 	static $opa_hierarchy_parent_prefetch_cache = array();
 	static $opa_hierarchy_children_prefetch_cache = array();
@@ -207,7 +206,6 @@ class SearchResult extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	public function nextHit() {
-		SearchResult::$s_search_result_cache[$this->ops_table_name] = null;
 		return $this->opo_engine_result->nextHit();
 	}
 	# ------------------------------------------------------------------
@@ -216,7 +214,6 @@ class SearchResult extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	public function previousHit() {
-		SearchResult::$s_search_result_cache[$this->ops_table_name] = null;
 		$vn_index = $this->opo_engine_result->currentRow();
 		if ($vn_index >= 0) {
 			$this->opo_engine_result->seek($vn_index);
@@ -653,7 +650,7 @@ class SearchResult extends BaseObject {
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 		
 		$vs_md5 = caMakeCacheKeyFromOptions($pa_options);
-	
+		
 		$va_criteria = is_array($this->opa_tables[$ps_tablename]) ? $this->opa_tables[$ps_tablename]['criteria'] : null;
 		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, array_merge($pa_options, array('row_ids' => $va_row_ids, 'limit' => 100000, 'criteria' => $va_criteria)));		// if there are more than 100,000 then we have a problem
 		
@@ -902,23 +899,21 @@ class SearchResult extends BaseObject {
 			$vs_access_chk_key  = $va_path_components['field_name'];
 		}
 
-		// TODO: cache
-		//if (($va_path_components['field_name'] !== 'access') && (caGetBundleAccessLevel($va_path_components['table_name'], $vs_access_chk_key) == __CA_BUNDLE_ACCESS_NONE__)) {
-		//	return null;
-		//}
+		if (($va_path_components['field_name'] !== 'access') && (caGetBundleAccessLevel($va_path_components['table_name'], $vs_access_chk_key) == __CA_BUNDLE_ACCESS_NONE__)) {
+			return null;
+		}
 		
-		// if(!(($vs_value = $this->opo_engine_result->get($ps_field, $pa_options)) === false)) {
-// 			if ($vb_return_as_array) {
-// 				if ($vb_return_all_locales) {
-// 					$vm_val = array(1 => $vs_value);
-// 				} else {
-// 					$vm_val = array($vs_value);
-// 				}
-// 			} else {
-// 				$vm_val = $vs_value;
-// 			}
-// 			goto filter;
-// 		}
+		if(!(($vs_value = $this->opo_engine_result->get($ps_field, $pa_options)) === false)) {
+			if ($vb_return_as_array) {
+				if ($vb_return_all_locales) {
+					return array(1 => $vs_value);
+				} else {
+					return array($vs_value);
+				}
+			} else {
+				return $vs_value;
+			}
+		}
 		
 		if (!($t_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']])) {
 			$t_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']] = SearchResult::$opo_datamodel->getInstanceByTableName($va_path_components['table_name'], true);
@@ -1208,17 +1203,22 @@ class SearchResult extends BaseObject {
 //
 // [RELATED TABLE] 
 //
-			$vs_opt_md5 = caMakeCacheKeyFromOptions(array_merge($pa_options, array('dontReturnLabels' => false)));
+			$vb_return_cache_options = false;
+			if (caGetOption('returnCacheOptions', $pa_options, false)) {
+				$vb_return_cache_options = true; unset($pa_options['returnCacheOptions']);
+			}
+			$vs_opt_md5 = caMakeCacheKeyFromOptions($va_get_opts = array_merge($pa_options, array('dontReturnLabels' => false)));
+
+			if ($vb_return_cache_options) { return $va_get_opts; }
 			
 			if (!isset(self::$s_rel_prefetch_cache[$this->ops_table_name][$vn_row_id][$va_path_components['table_name']][$vs_opt_md5])) {
-				$this->prefetchRelated($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), array_merge($pa_options, array('dontReturnLabels' => false)));
-			}
+				$this->prefetchRelated($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $va_get_opts);
+			} 
 			
 			$va_related_items = self::$s_rel_prefetch_cache[$this->ops_table_name][$vn_row_id][$va_path_components['table_name']][$vs_opt_md5];
 
 			if (!is_array($va_related_items)) { return ($vb_return_with_structure || $vb_return_as_array) ? array() : null; }
 		
-			
 			$vm_val = $this->_getRelatedValue($va_related_items, $va_val_opts);
 			goto filter;
 		} else {
@@ -1472,14 +1472,8 @@ class SearchResult extends BaseObject {
 		}
 		if (!sizeof($va_ids)) { return $pa_options['returnAsArray'] ? array() : null; }
 
-		if (SearchResult::$s_search_result_cache[$this->ops_table_name][$va_path_components['table_name']]) {
-			$qr_rel = SearchResult::$s_search_result_cache[$this->ops_table_name][$va_path_components['table_name']];
-			$qr_rel->seek(0);
-		} else {
-			if (!($qr_rel = caMakeSearchResult($va_path_components['table_name'], $va_ids, array('instance' => $t_rel_instance)))) { return null; }
-			SearchResult::$s_search_result_cache[$this->ops_table_name][$va_path_components['table_name']] = $qr_rel;
-		}
 		
+		if (!($qr_rel = caMakeSearchResult($va_path_components['table_name'], $va_ids, array('instance' => $t_rel_instance)))) { return null; }
 
 		$va_return_values = array();
 		$va_spec = array();
@@ -1934,20 +1928,24 @@ class SearchResult extends BaseObject {
 	 */
 	public function getWithTemplate($ps_template, $pa_options=null) {
 		if($this->opb_disable_get_with_template_prefetch) {
-			return caProcessTemplateForIDs($ps_template, $this->ops_table_name, array($this->get($this->ops_table_name.".".$this->ops_subject_pk)), $pa_options);
+			if(!is_array($pa_options)) { $pa_options = array(); }
+			return caProcessTemplateForIDs($ps_template, $this->ops_table_name, array($this->get($this->ops_table_name.".".$this->ops_subject_pk)), array_merge($pa_options, ['dontPrefetchRelated' => true]));
 		}
 
 		// the assumption is that if you run getWithTemplate for the current row, you'll probably run it for the next bunch of rows too
 		// since running caProcessTemplateForIDs for every single row is slow, we prefetch a set number of rows here
 		$vs_cache_base_key = $this->getCacheKeyForGetWithTemplate($ps_template, $pa_options);
 
-		if(!isset(self::$s_template_prefetch_cache[$vs_cache_base_key][$this->opo_engine_result->currentRow()])) {
+		if(!isset(self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row = $this->opo_engine_result->currentRow()])) {
 			$this->prefetchForGetWithTemplate($ps_template, $pa_options);
 		}
 
-		return self::$s_template_prefetch_cache[$vs_cache_base_key][$this->opo_engine_result->currentRow()];
+		return self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row];
 	}
 	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
 	private function prefetchForGetWithTemplate($ps_template, $pa_options) {
 		$va_ids = $this->getRowIDsToPrefetch($this->opo_engine_result->currentRow(), 500);
 		$vs_cache_base_key = $this->getCacheKeyForGetWithTemplate($ps_template, $pa_options);
@@ -1957,17 +1955,29 @@ class SearchResult extends BaseObject {
 		$va_vals = caProcessTemplateForIDs($ps_template, $this->ops_table_name, $va_ids, $pa_options);
 
 		// if we're at the first hit, we don't need to offset the cache keys, so we can use $va_vals as-is
-		if($this->opo_engine_result->currentRow() == 0) {
+		if(($vn_cur_row = $this->opo_engine_result->currentRow()) == 0) {
 			self::$s_template_prefetch_cache[$vs_cache_base_key] = array_values($va_vals);
 		} else {
 			// this is kind of slow but we hope that users usually pull when the ptr is still at the first result
 			// I tried messing around with array_walk instead of this loop but that doesn't gain us much, and this is way easier to read
-			foreach($va_vals as $vn_i => $vs_val) {
-				self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_i + $this->opo_engine_result->currentRow()] = $vs_val;
+			$vn_i = 0;
+			foreach($va_vals as $vs_val) {
+				self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row + $vn_i] = $vs_val;
+				$vn_i++;
 			}
 		}
 	}
 	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function clearGetWithTemplatePrefetch() {
+		self::$s_template_prefetch_cache = array();
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
 	private function getCacheKeyForGetWithTemplate($ps_template, $pa_options) {
 		unset($pa_options['request']);
 		return $this->ops_table_name.'/'.$ps_template.'/'.md5(serialize($pa_options));
@@ -1990,7 +2000,6 @@ class SearchResult extends BaseObject {
 	 * @return bool True on success, false on failure
 	 */
 	public function seek($pn_index) {
-		SearchResult::$s_search_result_cache[$this->ops_table_name] = null;
 		return $this->opo_engine_result->seek($pn_index);
 	}
 	# ------------------------------------------------------------------
