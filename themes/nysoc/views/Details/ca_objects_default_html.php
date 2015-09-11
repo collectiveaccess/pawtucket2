@@ -1,27 +1,32 @@
 <?php
-	$t_object = $this->getVar("item");
-	$va_comments = $this->getVar("comments");
-	$va_type = caNavLink($this->request, 'Books', '', '', 'Browse', 'objects');
-	if ($t_object->get('ca_objects.parent.preferred_labels')) {
-		$va_title = ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')).": ".$t_object->get('ca_objects.preferred_labels');
-	} else {
-		$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
-	}
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);
+	Timer::start('page');
+
+	$t_object 			= $this->getVar("item");
+	$va_comments 		= $this->getVar("comments");
+	$vs_type 			= caNavLink($this->request, 'Books', '', '', 'Browse', 'objects');
 	
-		#Circulation Records
+	$vs_title 			= caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 40);	
+	$vs_parent_title 	= caTruncateStringWithEllipsis($t_object->get('ca_objects.parent.preferred_labels.name'), 40);	
+	
+	$va_entity_reading_list_cache = array();
+	
+	if ($vs_parent_title) {
+		$vs_title = "{$vs_parent_title}: {$vs_title}";
+	} 
+	
+	$vn_object_id = $t_object->getPrimaryKey();
+	
+	
+	$vs_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	MetaTagManager::setWindowTitle($vs_home." > ".$vs_type." > ".$vs_title);
+	
+		# Circulation Records
 		$va_obj_ids = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
-		
+
 		if ($va_children_ids = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true))) {	
-			foreach ($va_children_ids as $va_id => $va_children_id) {
-				$t_child = new ca_objects($va_children_id);
-				$va_child_rel_ids = $t_child->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
-				if (sizeof($va_child_rel_ids) > 0) {
-					foreach ($va_child_rel_ids as $vn_id => $va_children_rel_id) {
-						$va_obj_ids[] = $va_children_rel_id;
-					}
-				}
+			$qr_children = caMakeSearchResult('ca_objects', $va_children_ids);
+			while($qr_children->nextHit()) {
+				$va_obj_ids = array_merge($va_obj_ids, $qr_children->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true)));
 			}
 		}
 				
@@ -30,39 +35,74 @@
 		// set all of the page object_ids
 		$va_page_ids = array();
 		if ($qr_rels) {
-			$va_result_count = $qr_rels->numHits();
+			$vn_result_count = $qr_rels->numHits();
 		} 
-				
+		
+		$va_entity_ids = array();
 		while($qr_rels->nextHit()) {
 			$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
+			$va_entity_ids[$qr_rels->get('ca_objects_x_entities.entity_id')] = true;
 		}
+		
+		$va_entities = array();
+		if ($qr_entities = caMakeSearchResult('ca_entities', array_keys($va_entity_ids))) {
+			while($qr_entities->nextHit()) {
+				if (!isset($va_entities[$vn_entity_id = $qr_entities->get('ca_entities.entity_id')])) {
+					$va_entity = $qr_entities->get("ca_entities.preferred_labels", ['returnAsArray' => true, 'returnWithStructure' => false, 'assumeDisplayField' => false]);
+		
+					if (is_array($va_entity)) {
+						$va_entity = array_shift($va_entity);
+						$va_entities[$va_entity['entity_id']] = array(
+							'forename' => $va_entity['forename'],
+							'surname' => $va_entity['surname'],
+							'displayname' => $va_entity['displayname'],
+							'displayname_with_link' => array_shift(caCreateLinksFromText([$va_entity['displayname']], 'ca_entities', [$vn_entity_id]))
+						);
+					}
+				}
+			}
+		}
+		
 		$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
 	
 		$va_parents = array();
 		while($qr_pages->nextHit()) {
-			$va_parents[$qr_pages->get('ca_objects.object_id')] = caNavLink($this->request, $qr_pages->get('ca_objects.parent.preferred_labels.name'), '', '', 'Detail', 'objects/'.$qr_pages->get('ca_objects.parent.object_id'));
-			$va_ledger_links[$qr_pages->get('ca_objects.parent.object_id')] = caNavLink($this->request, $qr_pages->get('ca_objects.parent.preferred_labels.name'), '', '', 'Detail', 'objects/'.$qr_pages->get('ca_objects.parent.object_id'));
+			$vn_parent_id = $qr_pages->get('ca_objects.parent_id');
+			$vs_parent_title = $qr_pages->get('ca_objects.parent.preferred_labels.name');
+			$vn_object_id = $qr_pages->get('ca_objects.object_id');
+			
+			$va_parents[$vn_object_id] = $va_ledger_links[$vn_parent_id] = caNavLink($this->request, $vs_parent_title, '', '', 'Detail', 'objects/'.$vn_parent_id);
 
 		}
 
 		$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
+		
 		$vn_i = 0;
 		$vs_buf = "";
 		$vs_has_circulation = false;	
 		$va_readers = array();
 		$va_full_set_readers = array();
 		$va_occupations = array();
-	
+
+		$qr_rels->setOption('prefetchAttributes', ['see_original_link', 'see_original', 'date_in', 'date_out', 'book_title', 'representative', 'fine']); 
+		$qr_rels->setOption('prefetch', 250);
 		while($qr_rels->nextHit()) {
-			if ($qr_rels->get('ca_objects_x_entities.type_id') != 100) {
+			if ((int)$qr_rels->get('ca_objects_x_entities.type_id') !== 100) {
 				continue;
 			}
 			$vs_buf.= "<tr class='ledgerRow'>";
 				
 				# Borrower Name
+				
+				$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+				$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
+				$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
+				$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
+				$vs_borrower_displayname_with_link = $va_entities[$vn_borrower_entity_id]['displayname_with_link']; //$qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
+	
 				$vs_buf.= "<td id='entity".$vn_i."'>";
-				$vs_buf.= "<span title='".$qr_rels->get("ca_entities.preferred_labels.surname").", ".$qr_rels->get("ca_entities.preferred_labels.forename")."'><span>";
-				$vs_buf.= $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
+				$vs_buf.= "<span title='{$vs_borrower_surname}, {$vs_borrower_forename}'><span>";
+				$vs_buf.= $vs_borrower_displayname_with_link;
 				$vs_buf.= "</td>";
 			
 				#$vs_entity_info = null;
@@ -86,31 +126,36 @@
 				
 				# Volume		
 				$vs_buf.= "<td>";
-				if (substr($qr_rels->get("ca_objects.preferred_labels"), 0, 6) == "Volume") {
-					$vs_buf.= $qr_rels->get("ca_objects.preferred_labels");
+				
+				$vs_volume_title = $qr_rels->get("ca_objects.preferred_labels.name");
+				
+				if (substr($vs_volume_title, 0, 6) == "Volume") {
+					$vs_buf.= $vs_volume_title;
 				}
 				$vs_buf.= "</td>";			
 				
 				# Date Out
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_out");
+				$vs_buf.= $vs_date_out = $qr_rels->get("ca_objects_x_entities.date_out");
 				$vs_buf.= "</td>";	
 				
 				# Date In
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.date_in");
+				$vs_buf.= $vs_date_in = $qr_rels->get("ca_objects_x_entities.date_in");
 				$vs_buf.= "</td>";
 				
 				# Fine
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.fine");
+				$vs_buf.= $vs_fine = $qr_rels->get("ca_objects_x_entities.fine");
 				$vs_buf.= "</td>";	
 				
 				# Title as Transcribed			
+				$vn_see_original_link = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true));
+			
 				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.book_title");
+				$vs_buf.= $vs_book_title = $qr_rels->get("ca_objects_x_entities.book_title");
 				if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
-					$vs_buf.= caNavLink($this->request, '&nbsp;<i class="fa fa-exclamation-triangle"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
+					$vs_buf.= caNavLink($this->request, '&nbsp;<i class="fa fa-exclamation-triangle"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
 					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
 				}				
 				$vs_buf.= "</td>";
@@ -122,32 +167,45 @@
 								
 				# Ledger Page & sidebar related ledgers
 				$vs_buf.= "<td>";
-				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
-				$va_related_ledgers[] = $va_parents[$qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true))];
+				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
+				$va_related_ledgers[] = $va_parents[$vn_see_original_link];
 				$vs_buf.= "</td>";													
 			$vs_buf.= "</tr><!-- end ledgerRow -->";
-		
-			# Reader Count
-				$vn_entity_id = $qr_rels->get("ca_entities.entity_id");
-				$va_readers[$vn_entity_id] = $qr_rels->get("ca_entities.preferred_labels.displayname");
 			
-				$t_entity = new ca_entities($vn_entity_id);
-				$va_reading_list = $t_entity->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
-				$va_volume_list = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true));
-				foreach ($va_volume_list as $va_volume_key => $va_volume_list_id) {
-					$vn_read_volume = false;
-					foreach ($va_reading_list as $va_reading_key => $va_reading_id) {
-						if ($va_reading_id == $va_volume_list_id) {
-							$vn_read_volume = true;
-						}
+if(false) {		
+			# Reader Count
+				$va_readers[$vn_borrower_entity_id] = $vs_borrower_displayname;
+			
+				$vb_read_volume = false;
+				
+				if (isset($va_entity_reading_list_cache[$vn_borrower_entity_id])) {
+					$va_volume_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['volume_list'];
+					$va_reading_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['reading_list'];
+				} else {
+					$t_entity = new ca_entities($vn_borrower_entity_id);
+					if ($t_entity->getPrimaryKey()) {
+						$va_reading_list = $t_entity->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
+						$va_volume_list = $t_entity->get('ca_objects.children.object_id', array('returnAsArray' => true));
+				
+						$va_entity_reading_list_cache[$vn_borrower_entity_id] = array(
+							'volume_list' => $va_volume_list,
+							'reading_list' => $va_reading_list
+						);
 					}
 				}
-				if ($vn_read_volume == true) {
-					$va_full_set_readers[$vn_entity_id] = $qr_rels->get("ca_entities.preferred_labels.displayname");
+				
+				if (is_array($va_reading_list)) {
+					if(sizeof(array_intersect($va_volume_list, $va_reading_list))) {
+						$vb_read_volume = true;
+					}
 				}
+				if ($vb_read_volume) { $va_full_set_readers[$vn_borrower_entity_id] = $vs_borrower_displayname; }
+				
+}			
 			$vn_i++;
 			$vs_has_circulation = true;
 		}
+		
 		# Occupation Pie Chart data
 		$vn_all_professions = 0;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
@@ -391,74 +449,165 @@
 				</div><!-- end row -->
 		
 <?php
-		if ($va_result_count > 0) {	
+		if ($vn_result_count > 0) {	
 ?>
 				<div class="row">
 					<div class='col-sm-12 col-md-12 col-lg-12'>
-						<div class='visualize'><a href='#' onclick="$('#visualizePane').slideDown();document.querySelector('.ct-chart').__chartist__.update();return false;"><i class='fa fa-gears'></i> Visualize</a></div>	
+						<div class='visualize'><a href='#' onclick="$('#visualizePane').slideDown();document.querySelector('#stat_bib_readers_by_occupation').__chartist__.update();document.querySelector('#stat_bib_checkout_durations').__chartist__.update();document.querySelector('#stat_bib_checkout_distribution').__chartist__.update(); return false;"><i class='fa fa-gears'></i> Visualize</a></div>	
 					</div><!-- end col -->			
 				</div><!-- end row -->
 				<div class='row' id='visualizePane' style='display:none;'>
 					<hr></hr>
 					<div class='col-sm-3 col-md-3 col-lg-3'>
+<?php
+	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
+	
+	$vn_bib_id = $t_object->getPrimaryKey();
+	if ($stat_bib_readers_by_occupation[$vn_bib_id]) {
+?>
+						<h1>Readers by occupation</h1>
 			
-						<h1>Circulation</h1>
-			<?php
-						print "<div class='time'>Average checkout time<br/><span class='count'>0 weeks</span></div>";
-						print "<div class='checkouts'>Total checkouts<br/><span class='count'>".$qr_rels->numHits()."</span></div>";
-						print "<div class='readers'><div>Total readers</div>";
-						if ($t_object->get('ca_objects.children.object_id')) {
-							print "<div class='partial'>partial set<br/><span class='count'>".sizeof($va_readers)."</span></div>";
-							print "<div class='full'>full set<br/><span class='count'>".sizeof($va_full_set_readers)."</span></div>";
-						} else {
-							print "<div class='partial'><span class='count'>".sizeof($va_readers)."</span></div>";
-						}
-						print "</div>";
-			?>	
+						<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>
+						<script type="text/javascript">
+							var data = {
+							  labels: <?php print json_encode(array_keys($stat_bib_readers_by_occupation[$vn_bib_id])); ?>,
+							  series: <?php print json_encode(array_values($stat_bib_readers_by_occupation[$vn_bib_id])); ?>
+							};
+
+							var options = {
+							  labelInterpolationFnc: function(value) {
+								return value[0]
+							  }
+							};
+
+							var responsiveOptions = [
+							  ['screen and (min-width: 640px)', {
+								chartPadding: 50,
+								labelOffset: 30,
+								labelDirection: 'explode',
+								labelInterpolationFnc: function(value) {
+								  return value;
+								}
+							  }],
+							  ['screen and (min-width: 1024px)', {
+								labelOffset: 30,
+								chartPadding: 50
+							  }]
+							];
+
+							new Chartist.Pie('#stat_bib_readers_by_occupation', data, options, responsiveOptions);
+
+						</script>	
 						<!-- Chartist -->
+<?php
+	}
+?>
 					</div><!-- end col-->
-					<div class='col-sm-6 col-md-6 col-lg-6' >
-						<h1>Readers</h1>
-						<div class="ct-chart ct-square"></div>
-							<script>
-								var data = {
-								  labels: [<?php print join(', ', $va_labels); ?>],
-								  series: [
-								  <?php print join(', ', $va_js_stuff); ?>
-								  ]
-								};
+					<div class='col-sm-3 col-md-3 col-lg-3'>
+<?php
+	$stat_bib_checkout_durations = CompositeCache::fetch('stat_bib_checkout_durations', 'vizData');
+	
+	if ($stat_bib_checkout_durations[$vn_bib_id]) {
+?>
+						<h1>Check out duration</h1>
+			
+						<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
+						<script type="text/javascript">
+							var data = {
+							  labels: <?php print json_encode(array_keys($stat_bib_checkout_durations[$vn_bib_id])); ?>,
+							  series: <?php print json_encode(array_values($stat_bib_checkout_durations[$vn_bib_id])); ?>
+							};
 
-								var options = {
-								  labelInterpolationFnc: function(value) {
-									return value[0]
-								  }
-								};
+							var options = {
+							  labelInterpolationFnc: function(value) {
+								return value[0]
+							  }
+							};
 
-								var responsiveOptions = [
-								  ['screen and (min-width: 640px)', {
-									chartPadding: 50,
-									labelOffset: 70,
-									labelDirection: 'explode',
-									labelInterpolationFnc: function(value) {
-									  return value;
-									}
-								  }],
-								  ['screen and (min-width: 1024px)', {
-									labelOffset: 90,
-									chartPadding: 50
-								  }]
-								];
+							var responsiveOptions = [
+							  ['screen and (min-width: 640px)', {
+								chartPadding: 50,
+								labelOffset: 30,
+								labelDirection: 'explode',
+								labelInterpolationFnc: function(value) {
+								  return value;
+								}
+							  }],
+							  ['screen and (min-width: 1024px)', {
+								labelOffset: 30,
+								chartPadding: 50
+							  }]
+							];
 
-								new Chartist.Pie('.ct-chart', data, options, responsiveOptions);
+							new Chartist.Pie('#stat_bib_checkout_durations', data, options, responsiveOptions);
 
-							</script>	
-					</div><!-- end col-->
+						</script>	
+						<!-- Chartist -->
+					
+					</div>
+<?php
+	}
+?>
+					<div class='col-sm-3 col-md-3 col-lg-3'>
+<?php
+	
+	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
+	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
+	if($stat_bib_checkout_distribution) {
+?>
+						<h1>Check out distribution</h1>
+			
+						<div id="stat_bib_checkout_distribution" class="ct-chart ct-square"></div>
+						<div class="ct-key"><span class="ct-series-a-key">This book</span> <span class="ct-series-b-key">Average</span></div>
+						<script type="text/javascript">
+							var data = {
+							  labels: <?php print json_encode(array_keys($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
+							  series: [
+							  			<?php print json_encode(array_values($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
+							  			<?php print json_encode(array_values($stat_avg_checkout_distribution)); ?>
+							  		]
+							};
+							
+							var options = {
+								fullWidth: true,
+								// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
+								axisX: {
+									onlyInteger: true,
+									offset: 10
+								},
+								axisY: {
+									onlyInteger: true,
+									offset: 10
+								},
+								width: "430px",
+								height: "240px"
+							};
+							
+							var responsiveOptions = [
+							  ['screen and (min-width: 640px)', {
+								chartPadding: 20,
+								labelOffset: 30,
+								labelDirection: 'explode'
+							  }],
+							  ['screen and (min-width: 1024px)', {
+								labelOffset: 30,
+								chartPadding: 20
+							  }]
+							];
+
+							new Chartist.Line('#stat_bib_checkout_distribution', data, options, responsiveOptions);
+						</script>
+
+<?php
+	}
+?>
+					</div>
 					<div class='col-sm-3 col-md-3 col-lg-3'>					
 						<div class='closeBut'><a href='#' onclick="$('#visualizePane').slideUp(); return false;">close</a></div>
 					</div><!-- end col-->
 				</div><!-- end row visualizationpane -->
 <?php	
-			}	
+			}
 ?>	
 				<div class='row'>
 					<div class='col-sm-12 col-md-12 col-lg-12'>	
@@ -661,8 +810,6 @@
 
 
 
-
-
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
@@ -696,3 +843,5 @@
 
 	});
 </script>
+<?php
+	Timer::p('page');

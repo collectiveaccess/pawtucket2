@@ -1298,3 +1298,26 @@ a.sbIcon.twitter {
 	  width: 500px;
 	}
 }
+
+/* chartist */
+.ct-key {
+	margin: 20px 0 0 30px;
+}
+
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line,
+.ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+    stroke: blue
+}
+
+.ct-series-a-key {
+	color: blue;
+}
+
+.ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line,
+.ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
+    stroke: green
+}
+
+.ct-series-b-key {
+	color: green;
+}

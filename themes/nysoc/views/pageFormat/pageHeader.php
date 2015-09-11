@@ -48,7 +48,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print $this->request->config->get("app_display_name"); ?></title>
+	<title><?php print strip_tags(MetaTagManager::getWindowTitle()); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
