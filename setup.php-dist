@@ -308,6 +308,9 @@ define('__CA_REDIS_HOST__', 'localhost');
 define('__CA_REDIS_PORT__', 6379);
 # --------------------------------------------------------------------------------------------
 
+# let libraries know what application we're in
+define("__CA_APP_TYPE__", "PAWTUCKET");	
+
 # include version number
 require_once(__CA_APP_DIR__.'/version.php');
 
