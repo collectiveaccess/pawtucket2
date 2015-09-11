@@ -1191,28 +1191,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		jQuery('#objectLotsNonConformingNumberList').hide();
 	});
 </script>\n";	
-			}
-			
-			if ($vs_table_name === 'ca_objects') {				
-				//
-				// Output loan info for ca_objects
-				//
-				if ($po_view->request->user->canDoAction('can_manage_clients') && ($va_loan_details = $t_item->isOnLoan())) {
-					$vs_buf .= "<div>".caNavLink($po_view->request, _t('On loan to %1', $va_loan_details['billing_fname'].' '.$va_loan_details['billing_lname']), 'inspectorOnLoan', 'client/library', 'OrderEditor', 'Edit', array('order_id' => $va_loan_details['order_id']))."</div>";
-				}
-								
-				//
-				// Output checkout info for ca_objects
-				//
-				if ((bool)$po_view->request->config->get('enable_client_services') && ((bool)$po_view->request->config->get('enable_client_services_sales') || (bool)$po_view->request->config->get('enable_client_services_library')) && $t_item->canBeCheckedOut() && ($va_checkout_status = $t_item->getCheckoutStatus(array('returnAsArray' => true)))) {
-					$vs_buf .= "<div class='inspectorCheckedOut'>".$va_checkout_status['status_display'];
-					if ($va_checkout_status['user_name']) {
-						$vs_buf .= _t("; checked out by %1", $va_checkout_status['user_name']);
-					}
-					$vs_buf .= "</div>";
-				}
-			}
-			
+			}	
 			
 			//
 			// Output related objects for ca_object_representations
