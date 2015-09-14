@@ -36,6 +36,7 @@
 		exit; 
 	}
 	require_once('./setup.php');
+	if (defined("__CA_APP_TYPE__")) { define("__CA_APP_TYPE__", "PAWTUCKET");	}
 	caWriteServerConfigHints();
 	
 	try {
