@@ -105,20 +105,20 @@
 				// Exportables/printables
 				// 	merge displays with drop-in print templates
 				//
-				$va_export_options = caGetAvailablePrintTemplates('summary', array('table' => $t_subject->tableName())); 
-				$this->view->setVar('export_formats', $va_export_options);
+				$va_available_export_options = caGetAvailablePrintTemplates('summary', array('table' => $t_subject->tableName())); 
+				$this->view->setVar('export_formats', $va_available_export_options);
 			
-				$va_options = array();
-				foreach($va_export_options as $vn_i => $va_format_info) {
-					$va_options[$va_format_info['name']] = $va_format_info['code'];
+				$va_export_options = array();
+				foreach($va_available_export_options as $vn_i => $va_format_info) {
+					$va_export_options[$va_format_info['name']] = $va_format_info['code'];
 				}
 				// Get current display list
 				$t_display = new ca_bundle_displays();
 				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
-					$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
+					$va_export_options[$va_display['name']] = "_display_".$va_display['display_id'];
 				}
-				ksort($va_options);
-				$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
+				ksort($va_export_options);
+				$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_export_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
 			}
  			
 			#
