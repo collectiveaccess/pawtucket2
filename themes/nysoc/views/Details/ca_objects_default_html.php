@@ -742,7 +742,7 @@ if(false) {
 											<th>Date In<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 											<th>Fine<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></div>
 											<th>Transcribed<br/>Title<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>				
-											<th>Repr.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Rep.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 											<th>Ledger<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 										</tr>
 										

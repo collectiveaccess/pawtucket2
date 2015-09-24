@@ -664,7 +664,7 @@ a.readmore-js-toggle {
 	margin-top:10px !important;
 }
 .bookTitle {
-	max-height:38px;
+	max-height:48px;
 	overflow:hidden;
 }
 .biography h2 {
@@ -746,8 +746,9 @@ a.readmore-js-toggle {
 }
 .ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
 	font-size:.9em !important;
-	color:#333 !important;
-	fill:#333 !important;
+	color:#666 !important;
+	fill:#666 !important;
+	font-weight:bold;
 }
 .ct-chart {
 	overflow:visible !important;
@@ -791,6 +792,54 @@ svg:not(:root) {
 }
 .color12 {
 	fill: #000000;
+}
+.vizTitle {
+	color:#333;
+	text-transform:uppercase;
+	font-size:14px;
+	text-align:center;
+	border-bottom:1px solid #ddd;
+}
+.vizName {
+	font-size:14px;
+	color:#666;
+    padding: 10px 0px 30px 0px;
+    text-align: center;	
+}
+.expand {
+	padding:0px;
+	text-align:center;
+	color:#d77421;
+	text-transform:uppercase;
+}
+.ct-chart.ct-golden-section {
+	margin:20px -20px 0px -20px;
+}
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+	stroke: #d77421 !important; 
+}
+.ct-series-a-key {
+    color: #d77421 !important;
+    position: absolute;
+    top: 30px;
+    font-size:14px;
+    left:20px;
+}
+.ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line, .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
+	stroke: #5e9eaa !important;
+}
+.ct-series-b-key {
+    color: #5e9eaa !important;
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    font-size:14px;    
+}
+.ct-series.ct-series-a .ct-slice:not(.ct-donut) {
+	fill: #5e9eaa !important;
+}
+#stat_bib_books_by_subject_area .ct-label, #stat_entity_checkout_durations .ct-label {
+	display:none;
 }
 .readerRow {
 	border-bottom:1px solid #ccc;
@@ -1301,9 +1350,11 @@ a.sbIcon.twitter {
 
 /* chartist */
 .ct-key {
-	margin: 20px 0 0 30px;
+	margin: 0px 0 0 30px;
 }
-
+.ct-chart .ct-label.ct-horizontal {
+	padding-top:8px;
+}
 .ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line,
 .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
     stroke: blue
