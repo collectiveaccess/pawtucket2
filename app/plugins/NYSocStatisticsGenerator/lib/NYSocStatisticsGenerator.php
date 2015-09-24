@@ -50,7 +50,6 @@
 		 *
 		 */
 		public function perBibStatistics() {
-		return;
 if(true) {		
 			//
 			// Readers by occupation
@@ -198,7 +197,7 @@ if(true) {
 		 *
 		 */
 		public function perEntityStatistics() {
-if (false) {		
+if (true) {		
 			//
 			// Books by subject area
 			//
