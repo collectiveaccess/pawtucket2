@@ -164,7 +164,7 @@
 <?php	
 			if ($this->getVar('representationViewer')) {			
 				print $this->getVar('representationViewer');
-				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-3 col-xs-4"));
 			} else {
 				print "<div class='entityThumb'><a href='".$t_item->get("ca_entities.wikipedia_entry.image_viewer_url")."' target='_blank'>".$vs_wiki_thumb."</a></div>";
 			}
@@ -291,7 +291,7 @@
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div class="container">
 							<div class="row">
-								<div class='col-sm-6 col-md-6 col-lg-6'>
+								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
 									<div class="detailNav">
 										<div class='left'>
 											<div class='resLink'>{{{resultsLink}}}</div>
@@ -302,11 +302,11 @@
 										</div>
 									</div>
 								</div>
-								<div class='col-sm-6 col-md-6 col-lg-6'>
+								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
 								</div>
 							</div>
 							<div class='row'>		
-								<div class='col-md-12 col-lg-12'>	
+								<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>	
 									<H4>
 										{{{^ca_entities.preferred_labels.displayname}}}
 <?php
@@ -331,7 +331,7 @@
 								</div><!-- end col -->
 							</div><!-- end row -->
 							<div class="row">			
-								<div class='col-md-6 col-lg-6'>
+								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
 								
 				<?php
 									if ($vs_first_date && $vs_last_date) {
@@ -361,26 +361,38 @@
 										<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 									</div><!-- end detailTools -->							
 								</div><!-- end col -->
-
-								<div class='col-md-6 col-lg-6' style='border-left:1px solid #ddd; margin-top:-30px;'>
+<?php
+								if ($vb_has_circulation == false) {
+									$va_class = "hideme";
+								} else {
+									$va_class = "";
+								}
+?>
+								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd; margin-top:-30px;'>
 									<div class="row">
-										<div class="col-md-12 col-lg-12">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
-												<button type="button" class="overlay-close">Close</button>
-												<div style="width:100%; height:300px;">
-													<div class='vizTitle'>Circulation Activity</div>
-													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"></div> 
+												<div class='vizTitle'>Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>
+													<button type="button" class="overlay-close">Close</button>
+												</div>
+												
+												<div style="width:60%; height:400px; float:left; padding-right:10px;">
+													
+													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"> 
 													<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+													</div>
 												</div>
-												<div style="width:40%">
-													<div class='vizName'>Books by subject area</div>
-													<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
-												</div>
-												<div style="width:40%">
-													<div class="vizName">Check out duration</div> 
-													<div id="stat_entity_checkout_durations2" class="ct-chart ct-golden-section"></div>
-												</div>																					
+												<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
+													<div style="width:80%; ">
+														<div class='vizName'>Books by subject area</div>
+														<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
+													</div>
+													<div style="width:80%; ">
+														<div class="vizName">Check out duration</div> 
+														<div id="stat_entity_checkout_durations2" class="ct-chart ct-golden-section"></div>
+													</div>	
+												</div>																				
 											</div>										
 	<?php	
 									$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
@@ -412,8 +424,7 @@
 												onlyInteger: true,
 												offset: 20
 											},
-											width: "430px",
-											height: "240px"
+				
 										};
 							
 										var responsiveOptions = [
@@ -438,10 +449,10 @@
 										</div><!-- end-col -->
 									</div><!-- end row -->	
 									<div class="row">
-										<div class="col-sm-12 col-md-12 col-lg-12"><div class="vizTitle"></div>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><div class="vizTitle"></div>
 									</div>
 									<div class="row">	
-										<div class="col-sm-6 col-md-6 col-lg-6">
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
 									$stat_bib_books_by_subject_area = CompositeCache::fetch('stat_bib_books_by_subject_area', 'vizData');
 
@@ -462,7 +473,30 @@
 												return value[0]
 											  }
 											};
+											var $chart = $('#stat_bib_books_by_subject_area2');
 
+											var $subjectAreaToolTip = $chart
+											  .append('<div class="tooltip"></div>')
+											  .find('.tooltip')
+											  .hide();
+
+											$chart.on('mouseenter', '.ct-series', function() {
+												var $slice = $(this),
+												value = $slice.find('path').attr('ct:value');
+												sliceName = $slice.find('text.ct-label').text();
+												$subjectAreaToolTip.html(sliceName).show();
+											});
+
+											$chart.on('mouseleave', '.ct-series', function() {
+											  $subjectAreaToolTip.hide();
+											});
+
+											$chart.on('mousemove', function(event) {
+											  $subjectAreaToolTip.css({
+												left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
+												top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+											  });
+											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
 												chartPadding: 30,
@@ -473,8 +507,8 @@
 												}
 											  }],
 											  ['screen and (min-width: 1024px)', {
-												labelOffset: 30,
-												chartPadding: 30
+												labelOffset: 60,
+												chartPadding: 20
 											  }]
 											];
 
@@ -487,7 +521,7 @@
 									}
 ?>										
 										</div><!-- end col-->
-										<div class="col-sm-6 col-md-6 col-lg-6">
+										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
 										$stat_entity_checkout_durations = CompositeCache::fetch('stat_entity_checkout_durations', 'vizData');
 
@@ -507,7 +541,30 @@
 												return value[0]
 											  }
 											};
+											var $chart = $('#stat_entity_checkout_durations2');
 
+											var $durationToolTip = $chart
+											  .append('<div class="tooltip"></div>')
+											  .find('.tooltip')
+											  .hide();
+
+											$chart.on('mouseenter', '.ct-series', function() {
+												var $slice = $(this),
+												value = $slice.find('path').attr('ct:value');
+												sliceName = $slice.find('text.ct-label').text();
+												$durationToolTip.html(sliceName).show();
+											});
+
+											$chart.on('mouseleave', '.ct-series', function() {
+											  $durationToolTip.hide();
+											});
+
+											$chart.on('mousemove', function(event) {
+											  $durationToolTip.css({
+												left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
+												top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+											  });
+											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
 												chartPadding: 30,
@@ -518,8 +575,8 @@
 												}
 											  }],
 											  ['screen and (min-width: 1024px)', {
-												labelOffset: 30,
-												chartPadding: 30
+												labelOffset: 60,
+												chartPadding: 20
 											  }]
 											];
 
@@ -535,10 +592,10 @@
 ?>										
 										</div><!-- end col-->
 									</div>	<!-- end row -->
-									<div class="row">
-										<div class="col-sm-12 col-md-12 col-lg-12 expand" >
+									<div class="row <?php print $va_class; ?>">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
 											<section>
-												<p><button id="trigger-overlay" type="button">Click to Expand</button></p>
+												<p ><button id="trigger-overlay" type="button">Click to Expand</button></p>
 											</section>
 										</div>
 									</div>	
@@ -600,7 +657,7 @@
 											$vs_people_buf.= "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
 											$vs_people_buf.= "<div id='ent".$va_role."'>";
 												foreach ($va_person as $va_entity_id => $va_name) {
-													$vs_people_buf.= "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
+													$vs_people_buf.= "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
 												}
 
 											$vs_people_buf.= "</div><!-- end entrole -->";
@@ -624,11 +681,11 @@
 										foreach ($va_book as $va_book_id => $vs_title) {
 											$t_book = new ca_objects($va_book_id);
 											$vs_title_trunk = explode(':',$vs_title);
-											if ($t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
-												$vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))."<br/>";
-											} else {$vs_author = null;}											
+											if (!($vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ')))) {
+												$vs_author = null;
+											}											
 											$vn_pub_date = $t_book->get('ca_objects.publication_date');
-											$vs_book_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$vs_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
+											$vs_book_buf.= "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$vs_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
 										}
 										$vs_book_buf.= "</div>";
 										$vs_book_buf.= "</div>";
@@ -644,7 +701,7 @@
 									foreach ($va_related_documents as $va_key => $vn_doc_id) {
 										$t_doc = new ca_objects($vn_doc_id);
 										$vs_doc_type = $t_doc->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
-										$va_docs_by_type[$vs_doc_type][$vn_doc_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_doc->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_doc_id)."</div></div>";	
+										$va_docs_by_type[$vs_doc_type][$vn_doc_id] = "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_doc->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_doc_id)."</div></div>";	
 										$vs_i_have_docs = true;
 									}
 								}								
@@ -652,7 +709,7 @@
 									foreach ($va_related_catalogs as $va_key => $vn_cat_id) {
 										$t_cat = new ca_objects($vn_cat_id);
 										$vs_cat_type = $t_cat->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
-										$va_docs_by_type[$vs_cat_type][$vn_cat_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_cat->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_cat_id)."</div></div>";	
+										$va_docs_by_type[$vs_cat_type][$vn_cat_id] = "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_cat->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_cat_id)."</div></div>";	
 										$vs_i_have_docs = true;
 									}
 								}
@@ -663,7 +720,7 @@
 										$t_ledger = new ca_objects($t_page->get('ca_objects.parent.object_id'));
 										$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
 										$vn_ledger_id = $t_ledger->get('ca_objects.object_id');
-										$va_docs_by_type[$vs_ledger_type][$vn_ledger_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_ledger->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_ledger_id)."</div></div>";	
+										$va_docs_by_type[$vs_ledger_type][$vn_ledger_id] = "<div class='col-xs-3 col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_ledger->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_ledger_id)."</div></div>";	
 										$vs_i_have_docs = true;
 									}
 								}						
@@ -716,7 +773,7 @@
 							<div id='entTab' >
 								<div class='container'>
 									<div class='row'>
-										<div class='col-sm-12 col-md-12 col-lg-12'>
+										<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 	<?php						
 											print $vs_people_buf;
 	?>									
@@ -727,7 +784,7 @@
 							<div id='bookTab'>
 								<div class='container'>
 									<div class='row'>
-										<div class='col-sm-12 col-md-12 col-lg-12'>
+										<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
 										print $vs_book_buf;
 ?>										
@@ -738,7 +795,7 @@
 							<div id='docTab'>
 								<div class='container'>
 									<div class='row'>
-										<div class='col-sm-12 col-md-12 col-lg-12'>
+										<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
 										print $vs_doc_buf;
 ?>										
@@ -750,7 +807,7 @@
 					</div><!-- end col -->
 				</div><!-- end row -->
 				<div class='row'>
-					<div class='col-sm-12 col-md-12 col-lg-12'>
+					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					</div><!-- end col -->
 				</div><!-- end row --></div><!-- end container -->

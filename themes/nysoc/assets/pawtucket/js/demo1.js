@@ -1,7 +1,11 @@
 jQuery(document).ready(function() {
 	var triggerBttn = document.getElementById( 'trigger-overlay' ),
-		overlay = document.querySelector( 'div.overlay' ),
-		closeBttn = overlay.querySelector( 'button.overlay-close' );
+		overlay = document.querySelector( 'div.overlay' );
+		if ($("button.overlay-close")[0]) {
+			closeBttn = overlay.querySelector( 'button.overlay-close' );
+		} else {
+			closeBttn = null;
+		}
 		transEndEventNames = {
 			'WebkitTransition': 'webkitTransitionEnd',
 			'MozTransition': 'transitionend',
@@ -33,8 +37,11 @@ jQuery(document).ready(function() {
 		else if( !classie.has( overlay, 'close' ) ) {
 			classie.add( overlay, 'open' );
 		}
+	};
+	if (triggerBttn) {
+		triggerBttn.addEventListener( 'click', toggleOverlay );
+	};
+	if (closeBttn) {
+		closeBttn.addEventListener( 'click', toggleOverlay );
 	}
-
-	triggerBttn.addEventListener( 'click', toggleOverlay );
-	closeBttn.addEventListener( 'click', toggleOverlay );
 });
