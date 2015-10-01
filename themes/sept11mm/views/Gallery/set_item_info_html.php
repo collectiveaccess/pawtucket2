@@ -3,7 +3,7 @@
 ?>
 	<H2>{{{ca_objects.preferred_labels.name}}}</H2>
 	{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
-	{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Common Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
+	{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
 				
 <?php
 	if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
