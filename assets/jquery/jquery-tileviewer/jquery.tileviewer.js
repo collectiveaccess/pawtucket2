@@ -105,9 +105,11 @@ var methods = {
             lockAnnotations: false,						// lock annotations on load - will display but cannot add, remove or drag existing annotations
             lockAnnotationText: false,					// lock annotation text on load - will display text but not be editable
             showAnnotationTools: true,					// show annotation tools on load
+
             annotationTextDisplayMode: 'mouseover',		// how to display annotation text: 'simultaneous' = show all annotation text all the time; 'mouseover' = show annotation text only when mouse is over the annotation or it is selected; 'selected' = show annotation text only when it is selected
 			annotationColor: "#000000", //"EE7B19",
 			annotationColorSelected: "#CC0000",
+
 			highlightPointsWithCircles: true,			// draw circles around point label locations?
 			allowDraggableTextBoxesForRects: true,		// allow draggable text boxes for rectangular annotations?
 			
@@ -119,6 +121,7 @@ var methods = {
 			
 			annotationEditorPanel: null,					// instance of ca.panel to open full annotation editor in
 			annotationEditorUrl: null,						// url to load full annotation editor form
+
 			annotationEditorLink: 'More',				// content of full annotation editor link
 			
 			annotationDisplayMode: 'center',				// perimeter, center 
@@ -159,6 +162,23 @@ var methods = {
 
         return this.each(function() {
             var $this = $(this);
+        
+			//
+			// Convert string to boolean
+			//
+			var stringToBoolean = function(s){
+				switch(s.toLowerCase().trim()){
+					case "true": case "yes": case "1": return true;
+					case "false": case "no": case "0": case null: return false;
+					default: return Boolean(s);
+				}
+			}
+            // force user-provided options to boolean when required
+            jQuery.each(defaults, function(k, v) {
+            	if ((typeof v == 'boolean') && (options[k] !== undefined) && (typeof options[k] !== 'boolean')) {
+            		options[k] = stringToBoolean(options[k]);
+            	}
+            });
             options = $.extend(defaults, options);//override defaults with options
             
             $this.data("options", options);
@@ -300,6 +320,7 @@ var methods = {
                     },
                     
                     load_annotations: function() {     
+
                     	if (!options.useAnnotations || !options.annotationLoadUrl || !options.annotationLoadUrl.trim()) { return; }
                     	
                     	jQuery.getJSON(options.annotationLoadUrl, function(data) {

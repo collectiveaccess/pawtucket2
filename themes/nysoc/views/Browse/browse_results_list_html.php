@@ -57,12 +57,12 @@
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	
-	$o_set_config = caGetSetsConfig();
+	$o_set_config = caGetLightboxConfig();
 	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
-	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+	$va_lightbox_display_name = caGetLightboxDisplayName($o_set_config);
 	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	

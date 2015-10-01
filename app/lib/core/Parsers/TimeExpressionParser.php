@@ -156,7 +156,7 @@ class TimeExpressionParser {
 		global $g_ui_locale;
 		
 		$o_config = Configuration::load();
-		$this->opo_datetime_settings = Configuration::load($o_config->get('datetime_config'));
+		$this->opo_datetime_settings = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 		
 		if (!$ps_iso_code) { $ps_iso_code = $g_ui_locale; }
 		if (!$ps_iso_code) { $ps_iso_code = 'en_US'; }
@@ -2969,6 +2969,10 @@ class TimeExpressionParser {
 		return date("t", mktime(0, 0, 0, $pn_month, 1, $pn_year));
 	}
 	# -------------------------------------------------------------------
+	public function daysInYear($pn_year) {
+		return ((($year % 4) == 0) && ((($year % 100) != 0) || (($year %400) == 0))) ? 366 : 365;
+	}
+	# -------------------------------------------------------------------
 	public function getDayList() {
 		return $this->opo_language_settings->getList('dayListDisplay');
 	}
@@ -3230,9 +3234,45 @@ class TimeExpressionParser {
 	}
 	# -------------------------------------------------------------------
 	/**
+	 * Return time in currently loaded date range.
+	 *
+	 * @param array $pa_options Options include:
+	 *		returnAs = time units of return value. Valid values are: days, hours, minutes, seconds. [Default is seconds]
+	 * @return int Time in interval
+	 */
+	public function interval($pa_options=null) {
+		if (!$this->opn_start_historic || !$this->opn_end_historic) { return null; }
+		if ($this->opn_start_historic > $this->opn_end_historic) { return null; }
+		$va_start = $this->getHistoricDateParts($this->opn_start_historic);
+		$va_end = $this->getHistoricDateParts($this->opn_end_historic);
+		
+		$vo_start = new DateTime($this->getISODateTime($va_start, 'FULL'));
+		$vo_end = new DateTime($this->getISODateTime($va_end, 'FULL'));
+		
+		$vo_interval = $vo_start->diff($vo_end);
+		
+		switch(strtolower(caGetOption('returnAs', $pa_options, 'seconds'))) {
+			case 'days':
+				return $vo_interval->days + (($vo_interval->h >= 12) ? 1 : 0);
+				break;
+			case 'hours':
+				return ($vo_interval->days * 24 * 60 * 60) + ($vo_interval->h * 60 * 60) + (($vo_interval->m >= 30) ? 1 : 0);
+				break;
+			case 'minutes':
+				return ($vo_interval->days * 24 * 60 * 60) + ($vo_interval->h * 60 * 60) + ($vo_interval->m * 60) + (($vo_interval->s >= 30) ? 1 : 0);
+				break;
+			case 'seconds':
+			default:
+				return ($vo_interval->days * 24 * 60 * 60) + ($vo_interval->h * 60 * 60) + ($vo_interval->m * 60) + $vo_interval->s;
+				break;
+		}
+		return null;
+	}
+	# -------------------------------------------------------------------
+	/**
 	 * Timezone-less version of getDate()
 	 */
-	function gmgetdate($ts = null){ 
+	public function gmgetdate($ts = null){ 
         $k = array('seconds','minutes','hours','mday', 
                 'wday','mon','year','yday','weekday','month',0);
         return(array_combine($k,explode(":",

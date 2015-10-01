@@ -989,7 +989,6 @@ a.browseRemoveFacet img {
 	padding:60px 5px 72px 5px;
 	text-align:center;
 	width:100%;
-	margin-bottom:10px;
 }
 .lbItemContainerList .lbSetImgPlaceholder{
 	padding:10px;
@@ -1134,7 +1133,99 @@ a.browseRemoveFacet img {
 }	
 #lbTimelineContainer{
 	height:500px;
-}	
+}
+/* --------------------------------- */
+/* classroom */
+/* --------------------------------- */
+.classroom h1{
+	margin-bottom:15px;
+}
+.classroom h5{
+	text-transform:uppercase;
+}
+.classroom small{
+	line-height:1.1em;
+}
+.crSet{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	position:relative;
+	padding:15px 15px 10px 15px;
+	margin:0px 0px 30px 0px;
+	background-color:#FFFFFF;
+	font-size:12px;
+}
+.crSet h5{
+	text-transform:uppercase;
+	font-size:13px;
+	margin-top:0px;
+}
+.crSet h5 a{
+	color:#858585;
+}
+@media (max-width: 768px) {
+	.crSet .crSetImg{
+		padding-bottom:10px;
+	}
+}
+.crSet .crSetImg img{
+	width:100%;
+	height:auto;
+}
+.crSet .btn{
+	margin-top:-5px;
+}
+.crSet hr{
+	margin:10px 0px 10px 0px;
+}
+.crDetailCommentCol{
+	overflow:auto;
+	max-height:450px;
+}
+.crDetailAssignmentInfo{
+	background-color: #EDEDED;
+	padding:10px;
+	margin-top:0px;
+}
+.crListUserGroup{
+	padding-bottom:15px;
+}
+.crListUserGroup ul{
+	padding-left:15px !important;
+	max-height:120px;
+}
+.crListUserGroup dl{
+	padding-bottom:0px;
+	margin-bottom:0px;
+}
+.crListUserGroup dd{
+	padding-bottom:10px;
+}
+.crSetImgPlaceholder{
+	
+	background-color: #F5F5F5;
+	border:2px solid #EDEDED;
+	color: #858585;
+	padding:25% 0px 25% 0px;
+	text-align:center;
+	width:100%;
+}
+#crUserRespond{
+	padding:15px;
+	background-color:#f5f5f5;
+	margin-bottom:20px;
+}
+#crUserRespond .btn{
+	margin-top:10px;
+}
+.crResponseHeader {
+	font-size:11px;
+	padding-bottom:5px;
+	font-weight:bold;
+}
+.crResponseHeader a{
+ 	color:#858585;
+ }
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
@@ -1437,7 +1528,7 @@ a.browseRemoveFacet img {
     text-transform: uppercase;
     border-radius:3px;    
 }
-.detail .detailTool span{
+.detail .detailTool span, .detail .detailTool i{
 	color:#929292;
 	margin-right:5px;
 }
@@ -1717,11 +1808,13 @@ a.readmore-js-toggle{
     z-index: 1000;
 }
 #bRefine {
-	 background-color: #EFEFEF;
+	background-color: #EFEFEF;
+	width: 275px;
     line-height: 0.75em;
     padding: 15px 10px;
     position: relative;
     z-index: 10;
+    overflow-y: auto;
 }
 #bRefine H3 {
 	margin:0px;
@@ -1744,6 +1837,12 @@ a.readmore-js-toggle{
 #bRefine div {
 	margin-bottom:5px;
 }
+
+#bRefine.fixed {    
+    position: fixed;     
+    top: 0px;    
+} 
+
 #bMorePanel{
 	position:fixed;
 	right:0px;
@@ -1893,8 +1992,13 @@ a.readmore-js-toggle{
 	color:#666;
 	margin-left:5px;
 	margin-right:5px;
-	}
+}
+
 .browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{color:#8c8c8c;}	
+
+.modal-dialog .btn {
+	font-size:14px;
+}
 
 /* timeline results */
 #bTimelineContainer{
@@ -2270,7 +2374,6 @@ a.readmore-js-toggle{
 	width:15px;
 	height:16px;
 	margin:10px;
-	background-image:url("../graphics/buttons/x.png");
 }
 #caMediaPanel #close a{
 	text-decoration:none;
@@ -2317,14 +2420,14 @@ div.caMediaOverlayControls a:hover{
 }
 div.caMediaOverlayControls .close{
 	float:right;
-	width:15px;
-	height:16px;
-	background-image:url("../graphics/buttons/x_white.png");
 	margin: 0px 10px 0px 20px;
+	font-size: 22px;
+	opacity: 0.9;
 }
 div.caMediaOverlayControls .download{
 	float:right;
-	margin-left:20px;
+	margin: 2px 0 0 20px;
+	font-size: 16px;
 }
 div.caMediaOverlayControls .objectInfo{
 	font-size:11px;
@@ -2631,10 +2734,10 @@ div.advancedSearchField {
 
 /* tooltips */
 .ui-tooltip {
-	padding: 10px;
-	min-width: 120px;
+	padding: 5px;
+	/* min-width: 120px; */
 	max-width: 300px;
-	min-height: 50px;
+	*/ min-height: 50px; */
 }
 
 /* ----------------- print specific styles ----------------------*/

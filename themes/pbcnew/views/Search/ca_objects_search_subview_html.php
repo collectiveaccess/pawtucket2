@@ -88,7 +88,7 @@
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 						$vs_image = caNavLink($this->request, "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>", '', '', 'Detail', 'objects/'.$vn_object_id);
 					}else{
 						$vs_image = caNavLink($this->request, $vs_default_placeholder_tag, '', '', 'Detail', 'objects/'.$vn_object_id);

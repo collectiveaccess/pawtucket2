@@ -57,9 +57,9 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 if (!$vb_ajax) {	// !ajax
 ?>

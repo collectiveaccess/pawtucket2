@@ -54,11 +54,7 @@
 	}
 	$vs_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_placeholder."</div>";
 	
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
-	if(!$vs_lightbox_icon){
-		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
-	}
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
@@ -86,7 +82,6 @@
 				$va_images = null;
 			}
 			
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -99,8 +94,10 @@
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
-
+				$vs_add_to_set_link = "";
+				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+				}
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
@@ -113,8 +110,7 @@
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
-				{$vs_expanded_info}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				{$vs_expanded_info}{$vs_add_to_set_link}
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";

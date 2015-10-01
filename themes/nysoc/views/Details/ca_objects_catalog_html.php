@@ -394,80 +394,23 @@
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
 					<div class='col-sm-6 col-md-6 col-lg-6'>
-							
+						<!-- New Overlay -->
+						<div class="overlay overlay-corner">
+							<div class='vizTitle'>Circulation Activity for <?php print $t_object->get('ca_objects.preferred_labels'); ?>
+								<button type="button" class="overlay-close">Close</button>
+							</div>																				
+						</div>						
+						Viz go here
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
+								<section>
+									<p><button id="trigger-overlay" type="button">Click to Expand</button></p>
+								</section>
+							</div>
+						</div>								
 					</div><!-- end col -->			
 				</div><!-- end row -->
 		
-<?php
-		if ($va_result_count > 0) {	
-?>
-				<div class="row">
-					<div class='col-sm-12 col-md-12 col-lg-12'>
-						<div class='visualize'><a href='#' onclick="$('#visualizePane').slideDown();document.querySelector('.ct-chart').__chartist__.update();return false;"><i class='fa fa-gears'></i> Visualize</a></div>	
-					</div><!-- end col -->			
-				</div><!-- end row -->
-				<div class='row' id='visualizePane' style='display:none;'>
-					<hr></hr>
-					<div class='col-sm-3 col-md-3 col-lg-3'>
-			
-						<h1>Circulation</h1>
-			<?php
-						print "<div class='time'>Average checkout time<br/><span class='count'>0 weeks</span></div>";
-						print "<div class='checkouts'>Total checkouts<br/><span class='count'>".$qr_rels->numHits()."</span></div>";
-						print "<div class='readers'><div>Total readers</div>";
-						if ($t_object->get('ca_objects.children.object_id')) {
-							print "<div class='partial'>partial set<br/><span class='count'>".sizeof($va_readers)."</span></div>";
-							print "<div class='full'>full set<br/><span class='count'>".sizeof($va_full_set_readers)."</span></div>";
-						} else {
-							print "<div class='partial'><span class='count'>".sizeof($va_readers)."</span></div>";
-						}
-						print "</div>";
-			?>	
-						<!-- Chartist -->
-					</div><!-- end col-->
-					<div class='col-sm-6 col-md-6 col-lg-6' >
-						<h1>Readers</h1>
-						<div class="ct-chart ct-square"></div>
-							<script>
-								var data = {
-								  labels: [<?php print join(', ', $va_labels); ?>],
-								  series: [
-								  <?php print join(', ', $va_js_stuff); ?>
-								  ]
-								};
-
-								var options = {
-								  labelInterpolationFnc: function(value) {
-									return value[0]
-								  }
-								};
-
-								var responsiveOptions = [
-								  ['screen and (min-width: 640px)', {
-									chartPadding: 50,
-									labelOffset: 70,
-									labelDirection: 'explode',
-									labelInterpolationFnc: function(value) {
-									  return value;
-									}
-								  }],
-								  ['screen and (min-width: 1024px)', {
-									labelOffset: 90,
-									chartPadding: 50
-								  }]
-								];
-
-								new Chartist.Pie('.ct-chart', data, options, responsiveOptions);
-
-							</script>	
-					</div><!-- end col-->
-					<div class='col-sm-3 col-md-3 col-lg-3'>					
-						<div class='closeBut'><a href='#' onclick="$('#visualizePane').slideUp(); return false;">close</a></div>
-					</div><!-- end col-->
-				</div><!-- end row visualizationpane -->
-<?php	
-			}	
-?>	
 				<div class='row'>
 					<div class='col-sm-12 col-md-12 col-lg-12'>	
 						<div id='objectTable'>

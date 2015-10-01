@@ -44,6 +44,9 @@ a {
 .page {
   /*margin: 20px 0*/
 }
+.hideme {
+	display:none;
+}
 .wrapper {
   max-width: 1800px;
   margin: 0 auto;
@@ -133,7 +136,14 @@ a {
 }
 @media (max-width: 767px){
 	.navbar-form .form-group {
-	  width: 190px;
+	  width: 165px;
+	}
+}
+@media (max-width: 767px) {
+	.btn-search {
+		position:relative;
+		top:0px;
+		right:0px;
 	}
 }
 #topMenu {
@@ -664,7 +674,7 @@ a.readmore-js-toggle {
 	margin-top:10px !important;
 }
 .bookTitle {
-	max-height:38px;
+	max-height:48px;
 	overflow:hidden;
 }
 .biography h2 {
@@ -744,14 +754,38 @@ a.readmore-js-toggle {
 .closeBut {
 	text-align:right;
 }
-.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
+.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal, #stat_entity_checkout_distribution.ct-chart .ct-label.ct-horizontal, #stat_bib_checkout_distribution.ct-chart .ct-label.ct-horizontal  {
 	font-size:.9em !important;
-	color:#333 !important;
-	fill:#333 !important;
+	color:#666 !important;
+	fill:#666 !important;
+	font-weight:bold;
+}
+.overlay {
+	padding:20px;
+}
+.overlay .overlay-close {
+	width:60px;
+	height:60px;
+	margin-top:-10px;
+	background-color:#000;
+}
+.overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
+	color:#000 !important;
+	fill:#000 !important;
+	font-size:1.2em !important;
+}
+.overlay .circles #stat_bib_books_by_subject_area2 .ct-label:hover, .overlay .circles #stat_entity_checkout_durations2 .ct-label:hover, .overlay .circles #stat_entity_checkout_distribution2 .ct-label:hover {
+	background-color:#ddd;
+	border-radius:4px;
+	padding:5px;
 }
 .ct-chart {
 	overflow:visible !important;
 	margin-top:-45px;
+}
+.overlay .ct-chart {
+	overflow:visible !important;
+	margin-top:0px;
 }
 svg:not(:root) {
 	overflow:visible !important;
@@ -791,6 +825,80 @@ svg:not(:root) {
 }
 .color12 {
 	fill: #000000;
+}
+.vizTitle {
+	color:#333;
+	text-transform:uppercase;
+	font-size:14px;
+	text-align:center;
+	border-bottom:1px solid #ddd;
+}
+.overlay .vizTitle {
+	font-size:28px;
+	padding:10px;
+	text-transform:none;
+}
+.vizName {
+	font-size:14px;
+	color:#666;
+    padding: 10px 0px 30px 0px;
+    text-align: center;	
+}
+.overlay .vizName {
+	text-transform:uppercase;
+	color:#000;
+	font-size:18px;
+	color:#d77421;
+	border-bottom:1px solid #ddd;
+	padding:10px 0px 10px 0px;
+}
+.objects.bib .overlay .vizName { 
+	margin-bottom:20px;
+}
+.expand {
+	padding:0px;
+	text-align:center;
+	color:#d77421;
+	text-transform:uppercase;
+}
+.ct-chart.ct-golden-section {
+	margin:20px -20px 0px -10px;
+}
+.overlay .ct-chart.ct-golden-section {
+	margin:0px;
+
+}
+.overlay .ct-chart-line {
+	margin-top:40px;
+}
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+	stroke: #d77421 !important; 
+}
+.ct-series-a-key {
+    color: #d77421 !important;
+    position: absolute;
+    top: 30px;
+    font-size:14px;
+    left:20px;
+}
+.ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line, .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
+	stroke: #5e9eaa !important;
+}
+.ct-series-b-key {
+    color: #5e9eaa !important;
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    font-size:14px;    
+}
+.ct-series.ct-series-a .ct-slice:not(.ct-donut) {
+	fill: #5e9eaa !important;
+}
+#stat_bib_books_by_subject_area .ct-label, #stat_entity_checkout_durations .ct-label, #stat_bib_checkout_durations .ct-label, #stat_bib_readers_by_occupation .ct-label {
+	display:none;
+}
+#stat_entity_checkout_distribution .ct-label.ct-horizontal, #stat_bib_checkout_distribution .ct-label.ct-horizontal{
+	display:none;
 }
 .readerRow {
 	border-bottom:1px solid #ccc;
@@ -856,6 +964,9 @@ svg:not(:root) {
 	float:right;
 }
 #entityTable {
+	margin-top:20px;
+}
+#objectTable {
 	margin-top:20px;
 }
 #objectTable.ui-tabs .ui-tabs-nav{
@@ -1297,4 +1408,37 @@ a.sbIcon.twitter {
 	#caFormOverlay {
 	  width: 500px;
 	}
+}
+.tileviewer div.viewerControls {
+	background-color:#333 !important;
+}
+.ui-helper-hidden-accessible {
+	background-color:#333 !important;
+	padding:5px !important;
+	display:block !important;
+}	
+
+/* chartist */
+.ct-key {
+	margin: 0px 0 0 30px;
+}
+.ct-chart .ct-label.ct-horizontal {
+	padding-top:8px;
+}
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line,
+.ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+    stroke: blue
+}
+
+.ct-series-a-key {
+	color: blue;
+}
+
+.ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line,
+.ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
+    stroke: green
+}
+
+.ct-series-b-key {
+	color: green;
 }

@@ -142,7 +142,7 @@
 			}
 
 			$this->opo_config = Configuration::load();
-			$this->opo_ca_browse_config = Configuration::load($this->opo_config->get('browse_config'));
+			$this->opo_ca_browse_config = Configuration::load(__CA_CONF_DIR__.'/browse.conf');
 			$this->opa_browse_settings = $this->opo_ca_browse_config->getAssoc($this->ops_browse_table_name);
 			
 			// Add "virtual" search facet - allows one to seed a browse with a search
@@ -2073,7 +2073,7 @@
 			
 			// is facet cached?
 			$va_facet_content = null;
-			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) { 			
+			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) { 		
 				$va_facet_content = $va_facet_cache = $this->getFacetContent($ps_facet_name, $pa_options);
 				$vb_needs_caching = true;
 			}
@@ -2084,7 +2084,9 @@
 				$va_facet_cache = array_slice($va_facet_cache, (int)$pn_start);
 			}
 			
-			if ($va_facet_content && is_array($va_facet_content)) {
+			//if ($va_facet_content && is_array($va_facet_content)) {
+			if($vb_needs_caching) {
+				if(!is_array($va_facet_content)) { $va_facet_content = array(); }
 				$this->opo_ca_browse_cache->setFacet($ps_facet_name, $va_facet_content);
 				$this->opo_ca_browse_cache->save();
 			}

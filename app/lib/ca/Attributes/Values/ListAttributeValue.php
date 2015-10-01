@@ -221,6 +221,7 @@
  		 * @return string The value
  		 */
 		public function getDisplayValue($pa_options=null) {
+			Timer::start('list');
 			if (isset($pa_options['output'])) {
 				switch(strtolower($pa_options['output'])) {
 					case 'idno':
@@ -248,25 +249,21 @@
 			
 			$vn_list_id = (is_array($pa_options) && isset($pa_options['list_id'])) ? (int)$pa_options['list_id'] : null;
 			if ($vn_list_id > 0) {
-				$t_list = new ca_lists();
-				
-				if ($o_trans = (isset($pa_options['transaction']) ? $pa_options['transaction'] : null)) {
-					$t_list->setTransaction($o_trans);
-				}
-				$t_item = new ca_list_items(); 
-				if ($pa_options['showHierarchy'] || $vb_return_idno) { 
-					if ($o_trans) { $t_item->setTransaction($o_trans); }
-				}
-				
-				$vs_get_spec = ((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'preferred_labels.name_singular' : 'preferred_labels.name_plural');
-
 				// do we need to get the hierarchy?
 				if ($pa_options['showHierarchy']) {
+					// TODO: too slow
+					$vs_get_spec = ((isset($pa_options['useSingular']) && $pa_options['useSingular']) ? 'preferred_labels.name_singular' : 'preferred_labels.name_plural');
+
+					$t_item = new ca_list_items(); 
+					if ($pa_options['showHierarchy'] || $vb_return_idno) { 
+						if ($o_trans) { $t_item->setTransaction($o_trans); }
+					}
+				
 					$t_item->load((int)$this->opn_item_id);
 					return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('removeFirstItems' => 1, 'delimiter' => ' ➔ ', $pa_options)));
 				} 
 				
-				return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->opn_item_id, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true);
+				return caGetListItemByIDForDisplay($this->opn_item_id, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true, $pa_options);
 			}
 			return $this->ops_text_value;
 		}

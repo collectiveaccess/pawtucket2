@@ -57,9 +57,9 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 
 	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
@@ -161,7 +161,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_displayname)."</button></a>";
 ?>
 		</H1>
 		<H5>
@@ -226,7 +226,7 @@ if (!$vb_ajax) {	// !ajax
 			   objIDs.push($(this).val());
 			});
 			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
 			e.preventDefault();
 			return false;
 		});
