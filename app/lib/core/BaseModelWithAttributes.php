@@ -1233,6 +1233,7 @@
 		 *		childrenOfCurrentTypeOnly = Returns only types below the current type
 		 *		restrictToTypes = Array of type_ids to restrict type list to
 		 *		inUse = Return only types that are used by at least one record. [Default is false]
+		 *		checkAccess = Array of access values to filter returned values on. Available for any related table with an "access" field (ca_objects, ca_entities, etc.). If omitted no filtering is performed. [Default is null]
 		 * @return string HTML for list element
 		 */ 
 		public function getTypeListAsHTMLFormElement($ps_name, $pa_attributes=null, $pa_options=null) {
@@ -1244,7 +1245,15 @@
 			$pa_options['limitToItemsWithID'] = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
 			
 			if (caGetOption('inUse', $pa_options, false)) {
-				$qr_types_in_use = $this->getDb()->query("SELECT DISTINCT type_id FROM ".$this->tableName().($this->hasField('deleted') ? " WHERE deleted = 0" : ""));
+				$vs_access_sql = '';
+				$va_sql_params = array();
+				if (($va_check_access = caGetOption('checkAccess', $pa_options, null)) && is_array($va_check_access) && sizeof($va_check_access) && $this->hasField('access')) {
+					array_walk($va_check_access, function(&$pm_item, $ps_key) { $pm_item = (int)$pm_item; });
+					$vs_access_sql = " AND (access IN (?))";
+					$va_sql_params[] = $va_check_access;
+					
+					$qr_types_in_use = $this->getDb()->query("SELECT DISTINCT type_id FROM ".$this->tableName().($this->hasField('deleted') ? " WHERE deleted = 0 {$vs_access_sql}" : ""), $va_sql_params);
+				}
 				if(!is_array($pa_options['limitToItemsWithID'])) { $pa_options['limitToItemsWithID'] = array(); }
 				
 				if($qr_types_in_use->numRows() > 0) {
@@ -1642,6 +1651,7 @@
 					'label' => $va_label['name'],
 					'description' => $va_label['description'],
 					't_subject' => $this,
+					'table' => $this->tableName(),
 					'request' => $po_request,
 					'class' => $pa_options['class'],
 					'nullOption' => '-',

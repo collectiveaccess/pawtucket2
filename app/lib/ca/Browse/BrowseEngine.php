@@ -2724,7 +2724,9 @@
 							FROM {$vs_label_table_name} l
 								{$vs_join_sql}
 								{$vs_where_sql}
+							ORDER BY l.{$vs_label_display_field}
 						";
+						
 						$qr_res = $this->opo_db->query($vs_sql);
 						
 						$va_values = array();

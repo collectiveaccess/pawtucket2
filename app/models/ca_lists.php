@@ -1289,11 +1289,39 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			$pa_options['limitToItemsWithID'] += array_keys($va_to_add);
 		}
 		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
+		if(!is_array($pa_check_access) && $pa_check_access) { $va_check_access = array($va_check_access); }
+		
+		$va_in_use_list = null;
+		if ($pa_options['inUse'] && (int)$pa_options['element_id'] && $pa_options['table']) {
+			$o_dm = Datamodel::load();
+			if ($t_instance = $o_dm->getInstance($pa_options['table'], true)) {
+				$va_params = array((int)$pa_options['element_id']);
+				if(is_array($pa_check_access) && sizeof($pa_check_access)) {
+					$va_params[] = $pa_check_access;
+				}
+				
+				$qr_in_use = $t_list->getDb()->query("
+					SELECT DISTINCT cav.item_id
+					FROM ca_attribute_values cav
+					INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+					INNER JOIN ".$t_instance->tableName()." AS t ON t.".$t_instance->primaryKey()." = ca.row_id
+					WHERE 
+						(cav.element_id = ?) AND 
+						(ca.table_num = ".$t_instance->tableNum().") 
+						".(($t_instance->hasField('deleted') ? " AND (t.deleted = 0)" : ""))."
+						".((is_array($pa_check_access) && sizeof($pa_check_access)) ? " AND t.access IN (?)" : "")."
+				", $va_params);
+				$va_in_use_list = $qr_in_use->getAllFieldValues('item_id');
+			}
+		}
+		
 		$va_colors = array();
 		$vn_default_val = null;
 		foreach($va_list_items as $vn_item_id => $va_item) {
 			if (is_array($pa_options['limitToItemsWithID']) && !in_array($vn_item_id, $pa_options['limitToItemsWithID'])) { continue; }
 			if (is_array($pa_options['omitItemsWithID']) && in_array($vn_item_id, $pa_options['omitItemsWithID'])) { continue; }
+			if (is_array($va_in_use_list) && !in_array($vn_item_id, $va_in_use_list)) { continue; }
 			
 			$va_options[$va_item[$pa_options['key']]] = str_repeat('&nbsp;', intval($va_item['LEVEL']) * 3).' '.$va_item['name_singular'];
 			if (!$va_item['is_enabled'] || (is_array($va_disabled_item_ids) && in_array($vn_item_id, $va_disabled_item_ids))) { $va_disabled_options[$va_item[$pa_options['key']]] = true; }

@@ -1,6 +1,6 @@
 <?php
 	Timer::start('page');
-	//Timer::disable('page');
+	Timer::disable('page');
 	$t_item 		= $this->getVar("item");
 	$va_comments 	= $this->getVar("comments");
 	$vs_type 		= caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
@@ -17,7 +17,6 @@
 		$vs_wiki_thumb = "<img src='".$t_item->get("ca_entities.wikipedia_entry.image_thumbnail")."'/>";
 	}
 	if ($t_item->get("ca_entities.wikipedia_entry.extract")) {
-		$vs_wiki_bio = $t_item->get("ca_entities.wikipedia_entry.abstract");
 		$vs_wiki_bio = $t_item->get("ca_entities.wikipedia_entry.abstract");
 		$vs_wiki_bio = explode('<h2>', $vs_wiki_bio);
 		$vs_wiki_bio = $vs_wiki_bio[0];

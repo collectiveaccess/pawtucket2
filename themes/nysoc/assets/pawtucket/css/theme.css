@@ -1447,3 +1447,337 @@ a.sbIcon.twitter {
 .ct-series-b-key {
 	color: green;
 }
+
+
+/* --------- */
+/* reader list */
+
+
+div#readerList {
+	position: relative;
+	overflow: hidden;
+	max-height: 300px;
+	min-height: 30px;
+	background-color: #EDF7F1;
+}
+
+.readerListContent {
+	padding: 10px 0 10px 0;
+	margin: 10px 0 10px 0;
+	
+	min-height: 30px;
+	max-height: 240px;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+#readerListToggle {	
+	position: absolute;
+	top: 4px;
+	right: 10px;
+	font-family: latoregular;
+	font-weight: bold;
+	color: #cc0000;
+	font-size: 18px;
+}
+
+#readerListToggle:hover {
+	cursor: pointer;
+}
+
+#readerListContent {
+	display: none;
+	padding: 0 5px 10px 5px;
+	
+}
+
+div.readerListLetterBar {
+	width: 100%;
+	text-align: center;
+	font-family: Helvetica, Arial;
+	font-size: 20px;
+	margin: 5px 0 10px 0;
+}
+
+div.readerListLetterBar .availableLetter {
+	color: #000;
+	margin: 0 10px 0 0;
+}
+
+div.readerListLetterBar .disabledLetter {
+	color: #aaa;
+	margin: 0 10px 0 0;
+}
+
+div.readerListLetterBar .activeLetter {
+	color: #cc0000;
+	margin: 0 10px 0 0;
+}
+
+div#readerContentContainer {
+	padding: 0px;
+}
+
+div#readerContent {
+	border: 1px solid #eee;
+	height: 700px;
+}
+
+/* reader card */
+div#readerCardContainer {
+	background-color: #DEF0E7;
+	padding: 10px;
+	height: 700px;
+	overflow-y: auto;
+}
+
+div.readerCardContent {
+	background-color: #DEF0E7;
+}
+
+div.readerCardContent .readerCardCaption{
+	padding:0px;
+	margin: 0 0 0 5px;
+	
+	font-family: latoregular;
+	color: #6e6e6e;
+}
+
+.readerCardContent .readerCardCaption a{
+	color: #6e6e6e;
+}
+
+div.readerCardContent .readerCardImage {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+}
+
+div.readerCardContent .readerCardCaption .readerCardArtistName {
+	font-size: 20px;	
+}
+
+div.readerCardContent .readerCardCaption .readerCardArtistRoles {
+	font-size: 15px;
+}
+
+div.readerCardContent .readerCardImageSource {
+	font-size: 10px;
+	font-style: italic;
+	text-decoration: none;
+	color: #6e6e6e;
+}
+
+
+/* D3-based entity relationship diagram */
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+}
+
+
+/* Circulation chart */
+#circulationGraph {
+	width: 83.33%;
+	height: 600px;
+}
+
+/* Route map */
+#routeMap {
+	width: 83.33%;
+	height: 600px;
+}
+
+#routeMapYearSlider {
+	width: 100%;
+}
+
+/* Route map artist list */
+.readerMapList {
+	background-color: #DEF0E7;
+	font-family: latoregular;
+	color: #6e6e6e;
+	margin: 0 0 0 0;
+	padding: 5px;
+	position: relative;
+	
+	border-bottom: 1px dotted #999;
+}
+
+.readerMapListImage {
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.readerMapListImagePlaceholder {
+	float: left;
+	margin: 0 5px 0 0;
+	width: 72px;
+	height: 72px;
+	background-color: #eee;
+}
+
+.readerMapListRemove {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.readerMapListRemove:hover {
+	cursor: pointer;
+}
+
+.readerMapListArtistName {
+	font-size: 12px;
+}
+
+.readerMapListArtistRoles {
+	font-size: 10px;
+}
+
+.readerMapListColorKey {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #000;
+	bottom: 5px;
+	right: 5px;
+	border-radius: 3px;
+}
+
+.readerMapListArtistDates {
+	font-size: 10px;
+	font-style: italic;
+}
+
+.readerMapListArtistPopupImage {
+	float: left; 
+	margin: 0 5px 0 0;
+}
+
+
+
+/* CHRONOLOGY classes */
+
+.readerChronology{
+
+}
+
+.readerChronologyTrack{
+	height: 198px;
+	margin: 8px 0 8px 0;
+	clear:both;
+}
+
+.readerChronologyTrackContainer {
+	height:176px;
+	
+	background-color:#ededed;
+	margin: 0px;
+	padding: 0px;
+}
+
+.readerChronologyTrackInfo {
+	position:relative;
+	float:left;
+	
+	height: 100%;
+	
+	background-color:#dedede;
+	
+	margin: 0px;
+	padding: 0px;
+}
+
+.readerChronologyTrackInfo div {
+	margin:10px 10px 0px 10px;
+}
+.readerChronologyTrackInfo .trackTitle{
+	font-size: 14px;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-weight:bold;
+}
+
+.readerChronologyTrackInfo .trackImage{
+	margin: 0 0 0 10px;
+}
+
+
+.readerChronologyCarousel {
+	position: relative;
+}
+
+.readerChronologyTrackSliderContainer {
+	height: 22px;
+	background-color:#ededed;
+	padding: 0px;
+	margin: 0px;
+}
+
+.readerChronologyCarouselSlider {
+	margin: 0px;
+}
+
+.readerChronologyTrackSliderOffset {
+	height: 22px;
+	background-color:#dedede;
+	padding: 0px;
+	margin: 0px;
+	position: relative;
+}
+
+.readerChronologyItem {
+	width: 190px;
+	height: 160px;
+	background-color: #fff;
+	padding: 5px;
+	margin: 5px 0 5px 5px;
+}
+.readerChronologyItemText {
+	height: 45px;
+}
+.readerChronologyItemName {
+	font-size: 10px;
+	font-style: italic;
+}
+
+.readerChronologyItemDate {
+	font-size: 12px;
+}
+
+.readerChronologyItemRemove {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	cursor: pointer;
+}
+
+.readerChronologySyncContainer {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+
+.readerChronologySync {
+	cursor: pointer;
+}
+
+#intineraChronologyNoEntities {
+	display: block;
+}
+
+.readerListSectionHeading {
+	font-weight: bold;
+	font-size: 16px;
+}
