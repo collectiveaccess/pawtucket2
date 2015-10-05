@@ -19,7 +19,7 @@
 <div id='readerList' class='clearfix'>
 	<!-- Index of all readers -->
 </div>
-
+<br/>
 <div class="container">
 	<div class="row">
 		<div class="col-sm-10 ct-chart ct-square" id='circulationGraph'>

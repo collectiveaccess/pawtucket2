@@ -1,4 +1,7 @@
 <?php
+ 	AssetLoadManager::register('leaflet');
+ 	AssetLoadManager::register('slider');
+	
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	
@@ -400,14 +403,23 @@
 								<button type="button" class="overlay-close">Close</button>
 							</div>																				
 						</div>						
-						Viz go here
+<?php
+	// map
+	$this->setVar('dont_show_catalogue_list', true);
+	$this->setVar('map_css_id', 'publisherMapCatalogueDetail');
+	$this->setVar('show_catalogue_id', $t_object->get('ca_objects.object_id'));
+	print $this->render('Map/index_html.php');
+	
+	
+?>
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
 								<section>
-									<p><button id="trigger-overlay" type="button">Click to Expand</button></p>
+									<!--<p><button id="trigger-overlay" type="button">Click to Expand</button></p>-->
+									<p><?php print caNavLink($this->request, 'See map for all catalogues', '', '', 'Map', 'Index'); ?></p>
 								</section>
 							</div>
-						</div>								
+						</div>					
 					</div><!-- end col -->			
 				</div><!-- end row -->
 		

@@ -1,5 +1,6 @@
 <?php
 	Timer::start('page');
+	Timer::disable('page');
 
 	$t_object 			= $this->getVar("item");
 	$va_comments 		= $this->getVar("comments");

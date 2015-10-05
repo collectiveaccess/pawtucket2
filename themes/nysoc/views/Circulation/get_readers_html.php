@@ -51,11 +51,11 @@
 	_circulationGraph.update(_circulationGraphData);
 </script>
 
-	<div class='readerMapList clearfix'>
+	<div class='readerList clearfix'>
 		<!-- Average circulate stats are always displayed -->
-		<div class='readerMapListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
-		<div class='readerMapListImage'></div>
-		<div class='readerMapListArtistName'>Average</div>
+		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
+		<div class='readerListImage'></div>
+		<div class='readerListName'>Average</div>
 	</div>
 <?php
 		// Output entity list
@@ -65,26 +65,24 @@
 			while($qr_res->nextHit()) {
 				$vn_entity_id = $qr_res->get('ca_entities.entity_id');
 				if (!($vs_image_tag = $qr_res->get('ca_object_representations.media.icon'))) {
-					$vs_image_tag = "<div class='readerMapListImagePlaceholder'>&nbsp;</div>";
+					$vs_image_tag = "<div class='readerListImagePlaceholder'>&nbsp;</div>";
 				}
 ?>
-	<div class='readerMapList clearfix'>
-		<div class='readerMapListRemove' data-entity_id='<?php print $vn_entity_id; ?>'>&#10006;</div>
-		<div class='readerMapListColorKey' style='background-color: #<?php print $va_series_colors[$vn_c]; ?>;'>&nbsp;</div>
-		<div class='readerMapListImage'><?php print caDetailLink($this->request, $vs_image_tag, '', 'ca_entities', $vn_entity_id); ?></div>
-		<div class='readerMapListArtistName'><?php print caDetailLink($this->request, $qr_res->get('ca_entities.preferred_labels.displayname'), '', 'ca_entities', $vn_entity_id); ?><br/><?php print $qr_res->get('ca_entities.life_dates', array('format' => 'Y - Y')); ?></div>
+	<div class='readerList clearfix'>
+		<div class='readerListRemove' data-entity_id='<?php print $vn_entity_id; ?>'>&#10006;</div>
+		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[$vn_c]; ?>;'>&nbsp;</div>
+		<div class='readerListImage'><?php print caDetailLink($this->request, $vs_image_tag, '', 'ca_entities', $vn_entity_id); ?></div>
+		<div class='readerListName'><?php print caDetailLink($this->request, $qr_res->get('ca_entities.preferred_labels.displayname'), '', 'ca_entities', $vn_entity_id); ?><br/><?php print $qr_res->get('ca_entities.life_dates', array('format' => 'Y - Y')); ?></div>
 	</div>
 <?php			
 				$vn_c++;
 			}
 		}
 ?>
-		<script type="text/javascript">
-			jQuery(".readerMapListRemove").bind("click", function() {
-				var id = jQuery(this).data('entity_id');
-				
-				jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetReaders', array('m' => 'remove')); ?>/id/' + id);
-			});
-		</script>
-<?php
-	
+<script type="text/javascript">
+	jQuery(".readerListRemove").bind("click", function() {
+		var id = jQuery(this).data('entity_id');
+		
+		jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetReaders', array('m' => 'remove')); ?>/id/' + id);
+	});
+</script>

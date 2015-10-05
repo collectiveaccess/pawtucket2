@@ -1,10 +1,17 @@
+<?php
+	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
+	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
+?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-10" id='publisherMap'>
+		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
 			
 		</div>
-		<div class="col-sm-2" id='travelerContentContainer'>
-			<div id='travelerContent' style="height: 600px;">
+<?php
+	if (!$vb_dont_show_catalogue_list) {
+?>
+		<div class="col-sm-2" id='publisherContentContainer'>
+			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
 					$qr_cats = ca_objects::find(['type_id' => 'catalog'], ['returnAs' => 'searchResult']);
@@ -22,6 +29,9 @@
 				</form>
 			</div>
 		</div>
+<?php
+	}
+?>
 	</div>
 	<div class="row">
 		<div class="col-sm-1">
@@ -52,10 +62,19 @@
 			m.startYear = m.endYear = null;
 			
 			var allMarkers = L.featureGroup().addTo(m.l);
-			
+<?php
+	if (!$vb_dont_show_catalogue_list) {
+?>			
 			var selectedCatalogIDs = jQuery("form#catalogue_list input[type=checkbox]:checked").map(function() {
 				return this.value;
 			}).get();
+<?php
+	} else {
+?>
+			var selectedCatalogIDs = ["<?php print $this->getVar('show_catalogue_id'); ?>"];
+<?php
+	}
+?>
 			jQuery.each(m.data, function(k, map_data_by_location) {
 				
 				if(!map_data_by_location) { return; }
@@ -65,7 +84,7 @@
 				var count_for_current_range = 0;
 				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
 					jQuery.each(by_catalog, function(catalog_id, date_range) {
-						if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { return; }
+						if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { console.log("skip", catalog_id, selectedCatalogIDs);  return; }
 						if (
 							(start > 0) && (end > 0)
 							&& (!(
@@ -119,9 +138,9 @@
 		
 
 		// Load map data
-		jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'GetMapData'); ?>', function(d) {
+		jQuery.getJSON('<?php print caNavUrl($this->request, '*', 'Map', 'GetMapData'); ?>', function(d) {
 			map.data = d;
-			map.l = L.map('publisherMap').setView([51.505, -0.09], 13);
+			map.l = L.map('<?php print $vs_map_id; ?>').setView([51.505, -0.09], 13);
 			map.baseLayer = L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.{ext}', {
 				maxZoom: 18, 
 				ext: 'png'
@@ -129,7 +148,7 @@
 
 			map.generateMap();
 			
-			jQuery('#publisherMap').data('_map_', map);
+			jQuery('#<?php print $vs_map_id; ?>').data('_map_', map);
 			
 			 jQuery("#publisherMapYear").bootstrapSlider({min: map.startYear, max: map.endYear}).on('slide', function(v) {
 				jQuery('#publisherMapYearSliderStart').html(v.value[0]);

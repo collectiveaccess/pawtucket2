@@ -48,15 +48,14 @@
 <?php
 	}	
 ?>
-		
 	_circulationGraph.update(_circulationGraphData);
 </script>
 
-	<div class='readerMapList clearfix'>
+	<div class='readerList clearfix'>
 		<!-- Average circulate stats are always displayed -->
-		<div class='readerMapListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
-		<div class='readerMapListImage'></div>
-		<div class='readerMapListArtistName'>Average</div>
+		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
+		<div class='readerListImage'></div>
+		<div class='readerListName'>Average</div>
 	</div>
 <?php
 		// Output object list
@@ -66,26 +65,23 @@
 			while($qr_res->nextHit()) {
 				$vn_object_id = $qr_res->get('ca_objects.object_id');
 				if (!($vs_image_tag = $qr_res->get('ca_object_representations.media.icon'))) {
-					$vs_image_tag = "<div class='readerMapListImagePlaceholder'>&nbsp;</div>";
+					$vs_image_tag = "<div class='readerListImagePlaceholder'>&nbsp;</div>";
 				}
 ?>
-	<div class='readerMapList clearfix'>
-		<div class='readerMapListRemove' data-object_id='<?php print $vn_object_id; ?>'>&#10006;</div>
-		<div class='readerMapListColorKey' style='background-color: #<?php print $va_series_colors[$vn_c]; ?>;'>&nbsp;</div>
-		<div class='readerMapListImage'><?php print caDetailLink($this->request, $vs_image_tag, '', 'ca_objects', $vn_object_id); ?></div>
-		<div class='readerMapListArtistName'><?php print caDetailLink($this->request, $qr_res->get('ca_objects.preferred_labels.name'), '', 'ca_objects', $vn_object_id); ?><br/><?php print $qr_res->get('ca_objects.life_dates', array('format' => 'Y - Y')); ?></div>
+	<div class='readerList clearfix'>
+		<div class='readerListRemove' data-object_id='<?php print $vn_object_id; ?>'>&#10006;</div>
+		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[$vn_c]; ?>;'>&nbsp;</div>
+		<div class='readerListName'><?php print caDetailLink($this->request, caTruncateStringWithEllipsis($qr_res->get('ca_objects.preferred_labels.name'), 60), '', 'ca_objects', $vn_object_id); ?><br/><?php print ($vs_place = $qr_res->get('ca_objects.publication_place.publication_place_text')).($vs_place ? ', ' : '').$qr_res->get('ca_objects.publication_date', array('format' => 'Y')); ?></div>
 	</div>
 <?php			
 				$vn_c++;
 			}
 		}
 ?>
-		<script type="text/javascript">
-			jQuery(".readerMapListRemove").bind("click", function() {
-				var id = jQuery(this).data('object_id');
-				
-				jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetBooks', array('m' => 'remove')); ?>/id/' + id);
-			});
-		</script>
-<?php
-	
+<script type="text/javascript">
+	jQuery(".readerListRemove").bind("click", function() {
+		var id = jQuery(this).data('object_id');
+		
+		jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetBooks', array('m' => 'remove')); ?>/id/' + id);
+	});
+</script>
