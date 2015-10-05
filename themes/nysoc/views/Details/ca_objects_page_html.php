@@ -81,7 +81,22 @@
 											</div><!-- end detailTools -->											
 										</div><!-- end col -->				
 										<div class="col-sm-6 colBorderLeft">
-											{{{map}}}
+											<div class='col-sm-6 col-md-6 col-lg-6'>
+												<!-- New Overlay -->
+												<div class="overlay overlay-corner">
+													<div class='vizTitle'>Circulation Activity for <?php print $t_object->get('ca_objects.preferred_labels'); ?>
+														<button type="button" class="overlay-close">Close</button>
+													</div>																				
+												</div>						
+												Viz go here
+												<div class="row">
+													<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
+														<section>
+															<p><button id="trigger-overlay" type="button">Click to Expand</button></p>
+														</section>
+													</div>
+												</div>								
+											</div><!-- end col -->
 										</div>
 									</div><!-- end row -->
 							</div><!-- end col -->

@@ -782,21 +782,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				
 				if (!$vs_label) { 
 					switch($vs_table_name) {
-						case 'ca_commerce_orders':
-							if ($t_item->get('order_type') == 'L') {
-								if ($vs_org = $t_item->get('billing_organization')) {
-									$vs_label = _t('%5 #%4 on %1 to %2 (%3)', caGetLocalizedDate($t_item->get('created_on', array('getDirectDate' => true)), array('dateFormat' => 'delimited', 'timeOmit' => true)), $t_item->get('billing_fname').' '.$t_item->get('billing_lname'), $vs_org, $t_item->getOrderNumber(), caUcFirstUTF8Safe($t_item->getProperty('NAME_SINGULAR')));
-								} else {
-									$vs_label = _t('%4 #%3 on %1 to %2', caGetLocalizedDate($t_item->get('created_on', array('getDirectDate' => true)), array('dateFormat' => 'delimited', 'timeOmit' => true)),$t_item->get('billing_fname').' '.$t_item->get('billing_lname'), $t_item->getOrderNumber(), caUcFirstUTF8Safe($t_item->getProperty('NAME_SINGULAR')));
-								}
-							} else {
-								if ($vs_org = $t_item->get('billing_organization')) {
-									$vs_label = _t('%5 #%4 on %1 from %2 (%3)', caGetLocalizedDate($t_item->get('created_on', array('getDirectDate' => true)), array('dateFormat' => 'delimited', 'timeOmit' => true)), $t_item->get('billing_fname').' '.$t_item->get('billing_lname'), $vs_org, $t_item->getOrderNumber(), caUcFirstUTF8Safe($t_item->getProperty('NAME_SINGULAR')));
-								} else {
-									$vs_label = _t('%4 #%3 on %1 from %2', caGetLocalizedDate($t_item->get('created_on', array('getDirectDate' => true)), array('dateFormat' => 'delimited', 'timeOmit' => true)),$t_item->get('billing_fname').' '.$t_item->get('billing_lname'), $t_item->getOrderNumber(), caUcFirstUTF8Safe($t_item->getProperty('NAME_SINGULAR')));
-								}
-							}
-							break;
 						default:
 							if (($vs_table_name === 'ca_objects') && $vb_dont_use_labels_for_ca_objects) {
 								$vs_label = $vs_idno;
@@ -1206,28 +1191,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		jQuery('#objectLotsNonConformingNumberList').hide();
 	});
 </script>\n";	
-			}
-			
-			if ($vs_table_name === 'ca_objects') {				
-				//
-				// Output loan info for ca_objects
-				//
-				if ($po_view->request->user->canDoAction('can_manage_clients') && ($va_loan_details = $t_item->isOnLoan())) {
-					$vs_buf .= "<div>".caNavLink($po_view->request, _t('On loan to %1', $va_loan_details['billing_fname'].' '.$va_loan_details['billing_lname']), 'inspectorOnLoan', 'client/library', 'OrderEditor', 'Edit', array('order_id' => $va_loan_details['order_id']))."</div>";
-				}
-								
-				//
-				// Output checkout info for ca_objects
-				//
-				if ((bool)$po_view->request->config->get('enable_client_services') && ((bool)$po_view->request->config->get('enable_client_services_sales') || (bool)$po_view->request->config->get('enable_client_services_library')) && $t_item->canBeCheckedOut() && ($va_checkout_status = $t_item->getCheckoutStatus(array('returnAsArray' => true)))) {
-					$vs_buf .= "<div class='inspectorCheckedOut'>".$va_checkout_status['status_display'];
-					if ($va_checkout_status['user_name']) {
-						$vs_buf .= _t("; checked out by %1", $va_checkout_status['user_name']);
-					}
-					$vs_buf .= "</div>";
-				}
-			}
-			
+			}	
 			
 			//
 			// Output related objects for ca_object_representations
@@ -1523,46 +1487,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				}
 			}
 			
-			//
-			// Output extra useful info for client services/commerce orders
-			//
-			
-			if ($vs_table_name === 'ca_commerce_orders') {
-				$o_client_services_config = Configuration::load(__CA_CONF_DIR__.'/client_services.conf');
-				$va_order_totals = $t_item->getOrderTotals();
-				if (($va_order_totals['fee'] + $va_order_totals['tax']+ $va_order_totals['shipping']+ $va_order_totals['handling'] + $va_order_totals['additional_order_fees'] + $va_order_totals['additional_item_fees']) != 0) {	
-					$vs_currency_symbol = $o_client_services_config->get('currency_symbol');
-					
-					$vs_buf .= "<table style='margin-left: 10px;'>";
-					$vs_buf .= "<tr><td><strong>"._t("Items").'</strong></td><td>'.$vs_currency_symbol.sprintf("%4.2f", $va_order_totals['fee'])." (".(int)$va_order_totals['items'].")</td></tr>\n";
-					$vs_buf .= "<tr><td><strong>"._t("S+H").'</strong></td><td>'.$vs_currency_symbol.sprintf("%4.2f", ($va_order_totals['shipping'] + $va_order_totals['handling']))."</td></tr>\n";
-					$vs_buf .= "<tr><td><strong>"._t("Tax").'</strong></td><td>'.$vs_currency_symbol.sprintf("%4.2f", $va_order_totals['tax'])."</td></tr>\n";
-					
-					$vs_buf .= "<tr><td><strong>"._t("Addtl fees").'</strong></td><td>'.$vs_currency_symbol.sprintf("%4.2f", ($va_order_totals['additional_order_fees'] + $va_order_totals['additional_item_fees']))."</td></tr>\n";
-					$vs_buf .= "<tr><td><strong>"._t("Total").'</strong></td><td>'.$vs_currency_symbol.sprintf("%4.2f", $va_order_totals['fee'] + $va_order_totals['tax']+ $va_order_totals['shipping']+ $va_order_totals['handling'] + $va_order_totals['additional_order_fees'] + $va_order_totals['additional_item_fees'])."</td></tr>\n";
-					$vs_buf .= "</table>";
-					$vs_buf .= "<strong>".$t_item->getFieldInfo('payment_status', 'LABEL')."</strong>: ".$t_item->getChoiceListValue('payment_status', $t_item->get('payment_status'))."<br/>\n";
-				}
-				
-				$vs_buf .= "<br/><strong>".$t_item->getFieldInfo('order_status', 'LABEL')."</strong>: ".$t_item->getChoiceListValue('order_status', $t_item->get('order_status'))."<br/>\n";
-				
-				
-				if ($vs_shipping_date = $t_item->get('shipping_date', array('dateFormat' => 'delimited', 'timeOmit' => true))) {
-					$vs_buf .= "<strong>".$t_item->getFieldInfo('shipping_date', 'LABEL')."</strong>: ".$vs_shipping_date;
-					
-					if ($vs_shipped_on_date = $t_item->get('shipped_on_date', array('dateFormat' => 'delimited'))) {
-						$vs_buf .= " ("._t('shipped %1', $vs_shipped_on_date).")";
-					} else {
-						$vs_buf .= " ("._t('not shipped').")";
-					}
-					
-					$vs_buf .= "<br/>\n";
-				}
-				if (($vn_shipping_method = $t_item->get('shipping_method')) && ($t_item->getChoiceListValue('shipping_method', $vn_shipping_method) != 'None')) {
-					$vs_buf .= "<strong>".$t_item->getFieldInfo('shipping_method', 'LABEL')."</strong>: ".$t_item->getChoiceListValue('shipping_method', $vn_shipping_method)."<br/>\n";
-				}
-			}
-
 			//
 			// Output configurable additional info from config, if set
 			// 
@@ -2706,10 +2630,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		}
 		
 		// Parse template
-		$o_dom = new DOMDocument('1.0', 'utf-8');
-		$o_dom->preserveWhiteSpace = true;
-		libxml_use_internal_errors(true);								// don't reported mangled HTML errors
-		
+		$o_doc = str_get_dom($ps_template);	
 		
 		$va_links = array();
 		
@@ -2717,21 +2638,14 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		if (!$g_request) { return $pa_text; }
 		
 		foreach($pa_text as $vn_i => $vs_text) {
-			$vs_text = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $vs_text);		// DomDcoument converts single quotes around attributes to double quotes so we do the same to the template
-			$vs_text = preg_replace("![ ]+/>!", "/>", $vs_text);
-			$vs_text = preg_replace("![\r\n]+!", "", $vs_text);							// DomDocument removes newlines so we do the same here to the template
-			
-		
-			$o_dom->loadHTML('<?xml encoding="utf-8">'.mb_convert_encoding($vs_text, 'HTML-ENTITIES', 'UTF-8'));		// Needs XML declaration to force it to consider the text as UTF-8. Please don't ask why. No one knows.
-			$o_dom->encoding = 'utf-8';
-			libxml_clear_errors();
-			
+			$vs_text = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $vs_text);	
 			$va_l_tags = array();
-			$o_links = $o_dom->getElementsByTagName("l");				// l=link
-		
+			$o_links = $o_doc('l');
+			
 			foreach($o_links as $o_link) {
 				if (!$o_link) { continue; }
-				$vs_html = $o_dom->saveXML($o_link);
+				$vs_html = $o_link->html();
+				
 				$vs_content = preg_replace("!^<[^\>]+>!", "", $vs_html);
 				$vs_content = preg_replace("!<[^\>]+>$!", "", $vs_content);
 		
@@ -3191,7 +3105,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  		$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
  		$vn_object_id = (isset($pa_options['object_id']) && $pa_options['object_id']) ? $pa_options['object_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
- 		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
@@ -3209,9 +3122,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		
 		$t_set_item = new ca_set_items();
 		if ($vn_item_id) { $t_set_item->load($vn_item_id); }
-		
-		$t_order_item = new ca_commerce_order_items();
-		if ($vn_order_item_id) { $t_order_item->load($vn_order_item_id); }
 		
 		$o_view->setVar('containerID', $vs_container_dom_id);
 		
@@ -3266,7 +3176,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			
  			$o_view->setVar('t_object', $t_object);
  			$o_view->setVar('t_set_item', $t_set_item);
- 			$o_view->setVar('t_order_item', $t_order_item);
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);
 		}
@@ -3290,7 +3199,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  		$vs_container_dom_id = (isset($pa_options['containerID']) && $pa_options['containerID']) ? $pa_options['containerID'] : null;	
  		$vn_object_id = (isset($pa_options['object_id']) && $pa_options['object_id']) ? $pa_options['object_id'] : null;
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
- 		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
  		
@@ -3307,13 +3215,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		$t_set_item = new ca_set_items();
 		if ($vn_item_id) { $t_set_item->load($vn_item_id); }
 		
-		$t_order_item = new ca_commerce_order_items();
-		if ($vn_order_item_id) { $t_order_item->load($vn_order_item_id); }
-		
 		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');			
 		$o_view->setVar('t_object', $t_object);
 		$o_view->setVar('t_set_item', $t_set_item);
-		$o_view->setVar('t_order_item', $t_order_item);
 		$o_view->setVar('use_media_editor', $vb_media_editor);
 		$o_view->setVar('noControls', $vb_no_controls);
 		
@@ -3405,7 +3309,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  		$vn_value_id = $t_attr_val ? $t_attr_val->getPrimaryKey() : null;
  		
  		$vn_item_id = (isset($pa_options['item_id']) && $pa_options['item_id']) ? $pa_options['item_id'] : null;
- 		$vn_order_item_id = (isset($pa_options['order_item_id']) && $pa_options['order_item_id']) ? $pa_options['order_item_id'] : null;
  		
  		$vb_media_editor = (isset($pa_options['mediaEditor']) && $pa_options['mediaEditor']) ? true : false;
  		$vb_no_controls = (isset($pa_options['noControls']) && $pa_options['noControls']) ? true : false;
@@ -3422,9 +3325,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		
 		$t_set_item = new ca_set_items();
 		if ($vn_item_id) { $t_set_item->load($vn_item_id); }
-		
-		$t_order_item = new ca_commerce_order_items();
-		if ($vn_order_item_id) { $t_order_item->load($vn_order_item_id); }
 		
 		$o_view->setVar('containerID', $vs_container_dom_id);
 		
@@ -3477,7 +3377,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			$o_view->setVar('version_info', $t_rep->getMediaInfo('media', $ps_version));
 			
  			$o_view->setVar('t_set_item', $t_set_item);
- 			$o_view->setVar('t_order_item', $t_order_item);
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);
 		} else {
@@ -3514,7 +3413,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			
  			$o_view->setVar('t_subject', $t_subject);
  			$o_view->setVar('t_set_item', $t_set_item);
- 			$o_view->setVar('t_order_item', $t_order_item);
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);
 		}

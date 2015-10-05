@@ -1809,7 +1809,7 @@ a.readmore-js-toggle{
 }
 #bRefine {
 	background-color: #EFEFEF;
-	width: 275px;
+	/*width: 275px;*/
     line-height: 0.75em;
     padding: 15px 10px;
     position: relative;
@@ -1840,7 +1840,8 @@ a.readmore-js-toggle{
 
 #bRefine.fixed {    
     position: fixed;     
-    top: 0px;    
+    top: 0px; 
+    margin-top:0px;
 } 
 
 #bMorePanel{
