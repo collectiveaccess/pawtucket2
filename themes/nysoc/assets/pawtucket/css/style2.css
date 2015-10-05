@@ -267,3 +267,16 @@ section button {
 		min-height: 34px;
 	}
 }
+
+
+
+
+/* Route map */
+#publisherMap {
+	width: 83.33%;
+	height: 600px;
+}
+
+#publisherMapYearSlider {
+	width: 100%;
+}
