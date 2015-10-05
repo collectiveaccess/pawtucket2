@@ -33,7 +33,7 @@
 			{{{representationViewer}}}
 		</div>		
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Common Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
 				
 <?php
 				$va_dimensions_fields = array("dimensions_height", "dimensions_width", "dimensions_depth", "Dimensions_Length");
@@ -45,21 +45,25 @@
 						$va_dimensions_pieces = array();
 						$va_dimensions_pieces_metric = array();
 						foreach($va_dimensions_fields as $vs_field){
-							if($va_dimensions_information[$vs_field]){
-								$va_dimensions_pieces[] = $va_dimensions_information[$vs_field];
+							if(trim($va_dimensions_information[$vs_field])){
+								$va_dimensions_pieces[] = trim($va_dimensions_information[$vs_field]);
 								$vn_dimension = trim(str_replace("in", "", $va_dimensions_information[$vs_field]));
 								$va_dimensions_pieces_metric[] = ($vn_dimension * 2.54)." cm";
 							}
 						}
-						$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? $va_dimensions_information["dimension_text"].": " : "").join(" X ", $va_dimensions_pieces);
-						$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? $va_dimensions_information["dimension_text"].": " : "").join(" X ", $va_dimensions_pieces_metric);
+						if(sizeof($va_dimensions_pieces)){
+							$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces);
+							$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces_metric);
+						}
+						# --- break to only show first dimension
+						break;
 					}
 				}				
 				
 				if(sizeof($va_dimensions_formatted)){
 					print "<div class='unit'><b>Dimensions:</b> ".join("; ", $va_dimensions_formatted);
 					if(sizeof($va_dimensions_metric_formatted)){
-						print "<br/><b>Dimensions (Metric):</b>".join("; ", $va_dimensions_metric_formatted);
+						print "<br/><b>Dimensions (Metric):</b> ".join("; ", $va_dimensions_metric_formatted);
 					}
 					print "</div>";
 				}
@@ -95,7 +99,7 @@
 ?>
 				<div class="row objRepThumbs">
 					<div class='col-sm-6 col-xs-12'>
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4 unit")); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4 unit", "version" => "iconlarge")); ?>
 					</div>
 				</div>
 				<div style='clear:left;'></div>
