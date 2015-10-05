@@ -287,7 +287,7 @@
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">
-				<div class="container"><div class="row">
+				<div class="container"><div class="row" style="margin-right:0px; margin-left:0px;">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 						<div class="container">
 							<div class="row">
