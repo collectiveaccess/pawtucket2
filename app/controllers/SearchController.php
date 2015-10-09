@@ -144,7 +144,7 @@
 				$o_browse->reload($ps_cache_key);
 			}
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
 			// Clear criteria if required

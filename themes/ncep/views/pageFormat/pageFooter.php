@@ -35,13 +35,13 @@
 						<ul class="list-inline">
 							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
 							<li>|</li>
-							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/blog">Blog</a></li>
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/blog" target="_blank">Blog</a></li>
 							<li>|</li>
-							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training">Training</a></li>
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training" target="_blank">Training</a></li>
 							<li>|</li>
-							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/community">Community</a></li>
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/community" target="_blank">Community</a></li>
 							<li>|</li>
-							<li><a href="https://www.facebook.com/NCEPfan" class="social"><i class="fa fa-facebook-square"></i></a></li>
+							<li><a href="https://www.facebook.com/NCEPfan" class="social"><i class="fa fa-facebook-square" target="_blank"></i></a></li>
 						</ul>
 						&copy; NCEP <?php print date('Y'); ?>
 					</div>

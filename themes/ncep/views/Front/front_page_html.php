@@ -29,6 +29,40 @@
  *
  * ----------------------------------------------------------------------
  */
+$t_list = new ca_lists();
+$va_themes = $t_list->getItemsForList("themes", array("labelsOnly" => true));
+
+$va_access_values = $this->getVar("access_values");
+$qr_picks = $this->getVar('featured_set_items_as_search_result');
+
+$t_object = new ca_objects();
+#$t_ApplicationChangeLog = new ApplicationChangeLog();
+#$va_recent_items = $t_ApplicationChangeLog->getRecentChangesAsRawData($t_object->tableNum(), 20000000, 10);
+#print "<pre>";
+#print_r($va_recent_items);
+#print "</pre>";
+
+$o_db = new Db();
+$q_recent = $o_db->query("
+			SELECT DISTINCT o.object_id, o.parent_id
+			FROM ca_change_log cl
+			INNER JOIN ca_objects AS o ON o.object_id = cl.logged_row_id
+			WHERE cl.logged_table_num = ? AND o.access IN (".join(", ", $va_access_values).") AND o.deleted = 0
+			ORDER BY cl.log_datetime DESC limit 50
+		", $t_object->tableNum());
+$va_recently_updated = array();
+if($q_recent->numRows()){
+	while($q_recent->nextRow()){
+		if($q_recent->get("parent_id")){
+			$va_recently_updated[$q_recent->get("parent_id")] = $q_recent->get("parent_id");
+		}else{
+			$va_recently_updated[$q_recent->get("object_id")] = $q_recent->get("object_id");
+		}
+		if(sizeof($va_recently_updated) == 10){
+			break;
+		}
+	}
+}
 ?>
 	<div class="row">
 		<div class="col-sm-12">
@@ -43,7 +77,7 @@
 			</H2>
 		</div>
 		<div class="col-sm-4">
-			<H2><a href="#" class="btn-default btn-blue">Sign up for updates<?php print caGetThemeGraphic($this->request, 'envelope.jpg'); ?></a></H2>
+			<H2><a href="http://visitor.r20.constantcontact.com/manage/optin?v=001D3J3cQufeW5yfs_ZOekOv19XNQ6s8D-UXCuUuFaJ45UPep-qp4-nmPPja3MMJ24FidjcE-3LDto6ZPwbwdA303S6T7XJVZuiUYG0VRjDpsk%3D" class="btn-default btn-blue" target="_blank">Sign up for updates<?php print caGetThemeGraphic($this->request, 'envelope.jpg'); ?></a></H2>
 		</div>
 	</div>
 	<div class="row">
@@ -69,8 +103,13 @@
 				<div class="tabContainer">
 					<div class="tab">Browse By Theme</div>
 					<div class="tabBody">
-						this is the body<br/>
-						this is the body
+						<ul class="noMarker">
+<?php
+						foreach($va_themes as $vn_item_id => $vs_theme){
+							print "<li>".caNavLink($this->request, $vs_theme, "", "", "Browse", "objects", array("facet" => "theme", "id" => $vn_item_id))."</li>";
+						}
+?>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -79,8 +118,15 @@
 					<div class="tab">Network Picks</div>
 					<div class="tabBody">
 						<ul>
-							<li>this is the body</li>
-							<li>this is the body</li>
+<?php
+						if($qr_picks->numHits()){
+							while($qr_picks->nextHit()){
+								if($qr_picks->get("type_id", array("convertCodesToDisplayText" => true)) == "Module"){
+									print "<li>".$qr_picks->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>")."</li>";
+								}
+							}
+						}
+?>
 						</ul>
 					</div>
 				</div>
@@ -90,8 +136,16 @@
 					<div class="tab">What's New</div>
 					<div class="tabBody">
 						<ul>
-							<li>this is the body</li>
-							<li>this is the body</li>
+<?php
+						if(sizeof($va_recently_updated)){
+							$qr_most_recent = caMakeSearchResult("ca_objects", $va_recently_updated);
+							if($qr_most_recent->numHits()){
+								while($qr_most_recent->nextHit()){
+									print "<li>".$qr_most_recent->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>")."</li>";
+								}
+							}
+						}						
+?>
 						</ul>
 					</div>
 				</div>

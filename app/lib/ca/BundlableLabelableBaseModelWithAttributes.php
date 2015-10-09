@@ -2127,7 +2127,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get('item_id'), $va_in_use_list)) { continue; }
 										$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
 									}
-			
+									uksort($va_opts, "strnatcasecmp");
 									return caHTMLSelect($ps_field.($vb_as_array_element ? "[]" : ""), $va_opts, array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 								} else {
 									return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
