@@ -834,7 +834,7 @@
 									if ($vs_template) {
 										$va_values_tmp = array();
 										foreach($va_values as $vn_i => $va_value_list) {
-											$va_values_tmp[] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('returnAsArray' => false, 'placeholderPrefix' => $va_tmp[1])));
+											$va_values_tmp[] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('returnAsArray' => false, 'placeholderPrefix' => array_slice($va_tmp, 0, 2))));
 										}
 				
 										$va_values = $va_values_tmp;
@@ -909,7 +909,7 @@
 											foreach($va_attribute_values as $vn_attribute_id => $va_data) {
 												if(isset($va_data[$va_tmp[2]])) {
 													if ($vs_template) { 
-														$va_subvalues[$vn_attribute_id] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('requireLinkTags' => true, 'returnAsArray' => false, 'placeholderPrefix' => $va_tmp[1])));
+														$va_subvalues[$vn_attribute_id] = caProcessTemplateForIDs($vs_template, $va_tmp[0], array($vn_row_id), array_merge($pa_options, array('requireLinkTags' => true, 'returnAsArray' => false, 'placeholderPrefix' => array_slice($va_tmp, 0, 2))));
 													} else {
 														$va_subvalues[$vn_attribute_id] = $va_data[$va_tmp[2]];
 													}
@@ -2108,7 +2108,7 @@
 			
 			if ($ps_template) {
 				unset($pa_options['template']);
-				return caProcessTemplateForIDs($ps_template, $this->tableNum(), array($vn_row_id), array_merge($pa_options, array('requireLinkTags' => true, 'placeholderPrefix' => $t_element->get('element_code'))));
+				return caProcessTemplateForIDs($ps_template, $this->tableNum(), array($vn_row_id), array_merge($pa_options, array('requireLinkTags' => true, 'placeholderPrefix' => $this->tableName().'.'.$t_element->get('element_code'))));
 			} else {
 				// no template
 				$va_attribute_list = array();
@@ -2464,6 +2464,7 @@
 			foreach($va_references as $vn_table_num => $va_rows) {
 				$va_row_ids = array_keys($va_rows);
 				if ((sizeof($va_row_ids) > 0) && $t_instance = $o_dm->getInstanceByTableNum($vn_table_num, true)) {
+					if (!$t_instance->hasField('deleted')) { continue; }
 					$vs_pk = $t_instance->primaryKey();
 					$qr_del = $o_db->query("SELECT {$vs_pk} FROM ".$t_instance->tableName()." WHERE {$vs_pk} IN (?)".($t_instance->hasField('deleted') ? "AND deleted = 1" : ''), array($va_row_ids));
 					
@@ -2710,10 +2711,10 @@
 		/**
 		 *
 		 */
-		 public function isValidMetadataElement($pn_element_code_or_id) {
+		 public function isValidMetadataElement($pn_element_code_or_id, $pb_include_sub_element_codes=false) {
 		 	$vn_element_id = $this->_getElementID($pn_element_code_or_id);
-		 	$va_codes = $this->getApplicableElementCodes(null, false, false);
-		 	
+		 	$va_codes = $this->getApplicableElementCodes(null, $pb_include_sub_element_codes, false);
+		
 		 	return (bool)$va_codes[$vn_element_id];
 		 }
 		# ------------------------------------------------------------------
