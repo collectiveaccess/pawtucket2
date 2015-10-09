@@ -14,11 +14,11 @@
 <?php	
 			if ($t_object->get('ca_objects.local_subject')) {
 				print "<div class='unit'><H6>Local Subject</H6>";
-				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.local_subject', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'ledger/facet/local_subject/id/'.$t_object->get('ca_objects.local_subject'))."</a></div></div>";
+				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.local_subject', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'docs/facet/local_subject/id/'.$t_object->get('ca_objects.local_subject'))."</a></div></div>";
 			}
 			if ($t_object->get('ca_objects.document_type')) {
 				print "<div class='unit'><H6>Genre</H6>";
-				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'ledger/facet/document_type/id/'.$t_object->get('ca_objects.document_type'))."</a></div></div>";
+				print "<div>".caNavLink($this->request, $t_object->get('ca_objects.document_type', array('convertCodesToDisplayText' => true)), '', '', 'Browse', 'docs/facet/document_type/id/'.$t_object->get('ca_objects.document_type'))."</a></div></div>";
 			}
 			if ($va_collections_list = $t_object->get('ca_collections.hierarchy.collection_id', array('maxLevelsFromTop' => 1, 'returnAsArray' => true))) {
 				$va_collections_for_display = array_unique(caProcessTemplateForIDs("<l>^ca_collections.preferred_labels.name</l>", "ca_collections", caFlattenArray($va_collections_list, array('unique' => true)), array('returnAsArray' => true)));
@@ -59,7 +59,7 @@
 									<!-- AddThis Button BEGIN -->
 									<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 									<!-- AddThis Button END -->									
-									<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_object.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 									<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 								</div><!-- end detailTools -->
 <?php								
@@ -131,61 +131,101 @@
 								 									
 							</div><!-- end col -->
 						</div><!-- end row -->
-						<div class='row'>
-							<div class='col-sm-12 col-md-12 col-lg-12'>	
-								<div id='objectTable' style='margin-top:20px'>
-									<ul class='row'>
-										<li><a href="#entTab">Related People & Organizations</a></li>			
-										<li><a href="#docTab">Related Documents</a></li>	
-									</ul>
-									<div id='entTab' >
-										<div class='container'>
-											<div class='row'>
-												<div class='col-sm-12 col-md-12 col-lg-12'>
-<?php
-													$va_people_by_rels = array();
-													if ($va_related_people = $t_object->get('ca_entities', array('returnWithStructure' => true, 'sort' => 'ca_entities.type_id'))) {
+			<?php
+				#check people
+				$vs_people_buf = null;
+				$va_people_by_rels = array();
+				if ($va_related_people = $t_object->get('ca_entities', array('returnWithStructure' => true, 'sort' => 'ca_entities.type_id'))) {
 		
-														foreach ($va_related_people as $va_key => $va_related_person) {
-															$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
-														}
-														$va_people_links = array();
-														foreach ($va_people_by_rels as $va_role => $va_person) {
-															print "<div class='row'>";
-																print "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
-																print "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
-																print "<div id='ent".$va_role."'>";
-																	foreach ($va_person as $va_entity_id => $va_name) {
-																		print "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
-																	}
+					foreach ($va_related_people as $va_key => $va_related_person) {
+						$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
+					}
+					$va_people_links = array();
+					foreach ($va_people_by_rels as $va_role => $va_person) {
+						$vs_people_buf.= "<div class='row'>";
+							$vs_people_buf.= "<a href='#' class='closeLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideUp();$(\".closeLink".$va_role."\").hide();$(\".openLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-down'></i></h6></a>";
+							$vs_people_buf.= "<a href='#' style='display:none;' class='openLink".$va_role."' onclick='$(\"#ent".$va_role."\").slideDown();$(\".openLink".$va_role."\").hide();$(\".closeLink".$va_role."\").show();return false;'><h6>".ucwords($va_role)."&nbsp;<i class='fa fa-angle-up'></i></h6></a>";						
+							$vs_people_buf.= "<div id='ent".$va_role."'>";
+								foreach ($va_person as $va_entity_id => $va_name) {
+									$vs_people_buf.= "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $va_name, 'entityName', '', 'Detail', 'entities/'.$va_entity_id)."</div></div>";
+								}
 
-																print "</div><!-- end entrole -->";
-															print "</div><!-- end row -->";
-														}
-													}
-?>										
-												</div><!-- end col -->											
-											</div><!-- end row -->
-										</div><!-- end container -->
-									</div><!-- end bookTab -->	
-									<div id='docTab' >
-										<div class='container'>
-											<div class='row'>
-												<div class='col-sm-12 col-md-12 col-lg-12'>
-<?php
-													if ($va_related_documents = $t_object->get('ca_objects.related', array('restrictToTypes' => array('document'), 'returnWithStructure' => true))) {
-														$vs_doc_buf.= "<div class='row'><h6>Related Documents</h6>";
-														foreach ($va_related_documents as $va_key => $va_related_document) {
-															$vs_doc_buf.= "<div class='col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, $va_related_document['label'],'', '', 'Detail', 'objects/'.$va_related_document['object_id'])."</div></div>";	
-														}
-														$vs_doc_buf.= "</div>";
-													}
-?>										
-												</div><!-- end col -->											
-											</div><!-- end row -->
-										</div><!-- end container -->
-									</div><!-- end docTab -->																	
-								</div><!-- end objectTable -->	
+							$vs_people_buf.= "</div><!-- end entrole -->";
+						$vs_people_buf.= "</div><!-- end row -->";
+					}
+				}				
+				#check docs	
+				$vs_doc_buf = null;
+				$va_docs_by_type = array();
+				$vs_i_have_docs = false;
+				if ($va_related_documents = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('document'), 'returnAsArray' => true))) {
+					foreach ($va_related_documents as $va_key => $vn_doc_id) {
+						$t_doc = new ca_objects($vn_doc_id);
+						$vs_doc_type = $t_doc->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_doc_type][$vn_doc_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_doc->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_doc_id)."</div></div>";	
+						$vs_i_have_docs = true;
+					}
+				}								
+				if ($va_related_catalogs = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('catalog'), 'returnAsArray' => true))) {
+					foreach ($va_related_catalogs as $va_key => $vn_cat_id) {
+						$t_cat = new ca_objects($vn_cat_id);
+						$vs_cat_type = $t_cat->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_cat_type][$vn_cat_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_cat->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_cat_id)."</div></div>";	
+						$vs_i_have_docs = true;
+					}
+				}
+				$va_ledger_list = array();
+				if ($va_related_ledgers = $t_object->get('ca_objects.related.object_id', array('restrictToTypes' => array('ledger'), 'returnAsArray' => true))) {
+					foreach ($va_related_ledgers as $va_key => $vn_ledger_id) {
+						$t_ledger = new ca_objects($vn_ledger_id);
+						$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
+						$va_docs_by_type[$vs_ledger_type][$vn_ledger_id] = "<div class='col-sm-3 col-md-3 col-lg-3'><div class='entityButton'>".caNavLink($this->request, $t_ledger->get('ca_objects.preferred_labels'),'', '', 'Detail', 'objects/'.$vn_ledger_id)."</div></div>";	
+						$vs_i_have_docs = true;
+					}
+				}						
+				if ($vs_i_have_docs == true) {
+					$vs_doc_buf.= "<div class='row'>";
+						ksort($va_docs_by_type);
+						foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+							$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+							$vs_doc_buf.= "<div class='row'>";
+							foreach ($vs_documents as $va_key => $vs_doc) {
+								$vs_doc_buf.= $vs_doc;
+							}
+							$vs_doc_buf.= "</div>";
+						}
+					$vs_doc_buf.= "</div>";
+				}
+?>
+				<div class="row"><div class='col-sm-12 col-md-12 col-lg-12'>	
+					<div id='objectTable'>
+						<ul class='row'>
+							<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
+							<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>	
+						</ul>
+						<div id='entTab' >
+							<div class='container'>
+								<div class='row'>
+									<div class='col-sm-12 col-md-12 col-lg-12'>
+	<?php
+									print $vs_people_buf;
+	?>										
+									</div><!-- end col -->											
+								</div><!-- end row -->
+							</div><!-- end container -->
+						</div><!-- end entTab -->	
+						<div id='docTab' >
+							<div class='container'>
+								<div class='row'>
+									<div class='col-sm-12 col-md-12 col-lg-12'>
+	<?php
+										print $vs_doc_buf;
+	?>										
+									</div><!-- end col -->											
+								</div><!-- end row -->
+							</div><!-- end container -->
+						</div><!-- end docTab -->																	
+					</div><!-- end objectTable -->
 							</div><!-- end col -->	
 						</div><!-- end row -->
 						<div class='row'>
@@ -195,7 +235,7 @@
 						</div><!-- end row -->													
 					</div><!-- end container -->
 					</div><!-- end col -->
-				</div><!-- end container -->
+				</div><!-- end row --></div><!-- end container --> 
 			</div><!--end content-inner -->
 		</div><!--end content-wrapper-->
 	</div><!--end wrapper-->

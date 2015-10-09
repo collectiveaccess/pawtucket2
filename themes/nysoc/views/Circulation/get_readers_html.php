@@ -54,8 +54,8 @@
 	<div class='readerList clearfix'>
 		<!-- Average circulate stats are always displayed -->
 		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
-		<div class='readerListImage'></div>
-		<div class='readerListName'>Average</div>
+		<div class='readerListImage'><div class="readerListImagePlaceholder"></div></div>
+		<div class='readerListName'>Library Average</div>
 	</div>
 <?php
 		// Output entity list

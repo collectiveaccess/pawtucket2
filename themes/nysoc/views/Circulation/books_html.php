@@ -7,7 +7,7 @@
 	$stat_avg_object_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
 	
 	// Generate Chartist-format data "payload"				
-	$va_payload = [0 => ['name' => 'Average', 'data' =>  array_values($stat_avg_object_checkout_distribution)]];	// first item is always "average" circulation plot
+	$va_payload = [0 => ['name' => 'Library Average', 'data' =>  array_values($stat_avg_object_checkout_distribution)]];	// first item is always "average" circulation plot
 	$va_graph_labels = array_keys($stat_avg_object_checkout_distribution);	
 	foreach($va_object_list as $vs_color => $vn_object_id) {
 		$t_object = new ca_objects($vn_object_id);
@@ -16,19 +16,33 @@
 	}
 
 ?>
-<div id='readerList' class='clearfix'>
-	<!-- Index of all readers -->
-</div>
-<br/>
-<div class="container">
+
+<div class="container" id="booksCirculation">
 	<div class="row">
-		<div class="col-sm-10 ct-chart ct-square" id='circulationGraph'>
-			<!-- The graph -->
+		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
+			<h1 style="margin-top:20px;">New York Society Library Circulation</h1>
 		</div>
-		
-		<div class="col-sm-2" id='readerContentContainer'>
-			<div id='readerContent' style="height: 600px;">
- 				<!-- List of currently displays readers -->
+	</div>
+	<div class="row">
+		<div class="col-sm-2 col-md-2 col-lg-2" >
+			<div id='readerContentContainer'>
+				<div id='readerContent' style="height: 600px;">
+					<!-- List of currently displays readers -->
+				</div>
+			</div>
+		</div>	
+		<div class="col-sm-10 col-md-10 col-lg-10 ">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 col-md-12 col-lg-12 ">
+						<div id='readerList' class='clearfix'>
+							<!-- Index of all readers -->
+						</div>				
+					</div>
+				</div>
+			</div>
+			<div class="ct-chart ct-golden-section" id='circulationGraph'>
+				<!-- The graph -->
 			</div>
 		</div>
 	</div>

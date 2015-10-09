@@ -71,10 +71,7 @@
 			<a href="#" class="jcarousel-control-prev disabled"><i class="fa fa-angle-left"></i></a>
 			<a href="#" onclick="$('.jcarousel-control-prev').removeClass('disabled');return false;" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
+
 <?php
 			}
 ?>

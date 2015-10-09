@@ -440,7 +440,7 @@ if(false) {
 							<!-- AddThis Button BEGIN -->
 							<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 							<!-- AddThis Button END -->
-							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
@@ -456,8 +456,8 @@ if(false) {
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<!-- open/close -->
 								<div class="overlay overlay-corner">
-									<div class='vizTitle'>Circulation Activity for <?php print $t_object->get('ca_objects.preferred_labels'); ?>
-										<button type="button" class="overlay-close">Close</button>
+									<div class='vizTitle'><!--Circulation Activity for <?php print caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels'), 120); ?>-->
+										<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 									</div>
 									
 									<div style="width:60%; height:400px; float:left; padding-right:10px;">
@@ -487,8 +487,16 @@ if(false) {
 							</div><!-- end col-->
 						</div><!-- end row-->
 						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand vizTitle" style="margin-top:-20px;padding-bottom:15px;">
+								<section>
+<?php											
+									print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Books', '', '', 'Circulation', 'Books', ['id' => $t_object->getPrimaryKey()]).'</div></p>';
+?>											
+								</section>
+							</div>
+						</div>						
+						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="vizTitle"></div>
 								<div class="row">
 									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">		
 										<div class="vizName">Check out duration</div>
@@ -513,18 +521,21 @@ if(false) {
 
 	$vn_bib_id = $t_object->getPrimaryKey();
 	if ($stat_bib_readers_by_occupation[$vn_bib_id]) {
+		$va_series_labels = array_keys($stat_bib_readers_by_occupation[$vn_bib_id]);
+		$va_series = array_values($stat_bib_readers_by_occupation[$vn_bib_id]);
 ?>
 						
 		<script type="text/javascript">
-			var data = {
-			  labels: <?php print json_encode(array_keys($stat_bib_readers_by_occupation[$vn_bib_id])); ?>,
-			  series: <?php print json_encode(array_values($stat_bib_readers_by_occupation[$vn_bib_id])); ?>
+			var dataForReadersByOccupation = {
+			  labels: <?php print json_encode($va_series_labels); ?>,
+			  series: <?php print json_encode($va_series); ?>
 			};
 
 			var options = {
-			  labelInterpolationFnc: function(value) {
-				return value[0]
-			  }
+				labelInterpolationFnc: function(value, index) {
+				  if(dataForReadersByOccupation.series[index] <= 5) { return ''; }
+				  return value;
+				}
 			};
 			var $chart = $('#stat_bib_readers_by_occupation2');
 
@@ -536,7 +547,9 @@ if(false) {
 			$chart.on('mouseenter', '.ct-series', function() {
 				var $slice = $(this),
 				value = $slice.find('path').attr('ct:value');
-				sliceName = $slice.find('text.ct-label').text();
+				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+			
+				sliceName = dataForReadersByOccupation.labels[l] + " (" + value + ")";	// $slice.find('text.ct-label').text() 
 				$subjectAreaToolTip.html(sliceName).show();
 			});
 
@@ -554,10 +567,7 @@ if(false) {
 			  ['screen and (min-width: 640px)', {
 				chartPadding: 20,
 				labelOffset: 60,
-				labelDirection: 'explode',
-				labelInterpolationFnc: function(value) {
-				  return value;
-				}
+				labelDirection: 'explode'
 			  }],
 			  ['screen and (min-width: 1024px)', {
 				labelOffset: 60,
@@ -565,8 +575,8 @@ if(false) {
 			  }]
 			];
 
-			new Chartist.Pie('#stat_bib_readers_by_occupation', data, options, responsiveOptions);
-			new Chartist.Pie('#stat_bib_readers_by_occupation2', data, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_readers_by_occupation', dataForReadersByOccupation, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_readers_by_occupation2', dataForReadersByOccupation, options, responsiveOptions);
 
 		</script>	
 		<!-- Chartist -->
@@ -576,17 +586,20 @@ if(false) {
 	$stat_bib_checkout_durations = CompositeCache::fetch('stat_bib_checkout_durations', 'vizData');
 	
 	if ($stat_bib_checkout_durations[$vn_bib_id]) {
+		$va_series_labels = array_keys($stat_bib_checkout_durations[$vn_bib_id]);
+		$va_series = array_values($stat_bib_checkout_durations[$vn_bib_id]);
 ?>
 		<script type="text/javascript">
-			var data = {
-			  labels: <?php print json_encode(array_keys($stat_bib_checkout_durations[$vn_bib_id])); ?>,
-			  series: <?php print json_encode(array_values($stat_bib_checkout_durations[$vn_bib_id])); ?>
+			var dataForCheckoutDurations = {
+			  labels: <?php print json_encode($va_series_labels); ?>,
+			  series: <?php print json_encode($va_series); ?>
 			};
 
 			var options = {
-			  labelInterpolationFnc: function(value) {
-				return value[0]
-			  }
+			 	labelInterpolationFnc: function(value, index) {
+				  if(dataForCheckoutDurations.series[index] <= 10) { return ''; }
+				  return value;
+				}
 			};
 			var $chart = $('#stat_bib_checkout_durations2');
 
@@ -598,8 +611,12 @@ if(false) {
 			$chart.on('mouseenter', '.ct-series', function() {
 				var $slice = $(this),
 				value = $slice.find('path').attr('ct:value');
-				sliceName = $slice.find('text.ct-label').text();
+				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+			
+				sliceName = dataForCheckoutDurations.labels[l] + " (" + value + ")";		//$slice.find('text.ct-label').text()
 				$durationToolTip.html(sliceName).show();
+				
+				
 			});
 
 			$chart.on('mouseleave', '.ct-series', function() {
@@ -616,10 +633,7 @@ if(false) {
 			  ['screen and (min-width: 640px)', {
 				chartPadding: 20,
 				labelOffset: 60,
-				labelDirection: 'explode',
-				labelInterpolationFnc: function(value) {
-				  return value;
-				}
+				labelDirection: 'explode'
 			  }],
 			  ['screen and (min-width: 1024px)', {
 				labelOffset: 60,
@@ -627,8 +641,8 @@ if(false) {
 			  }]
 			];
 
-			new Chartist.Pie('#stat_bib_checkout_durations', data, options, responsiveOptions);
-			new Chartist.Pie('#stat_bib_checkout_durations2', data, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_checkout_durations', dataForCheckoutDurations, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_checkout_durations2', dataForCheckoutDurations, options, responsiveOptions);
 
 		</script>	
 		<!-- Chartist -->					
@@ -640,7 +654,7 @@ if(false) {
 	if($stat_bib_checkout_distribution) {
 ?>
 		<script type="text/javascript">
-			var data = {
+			var dataForCheckoutDistribution = {
 			  labels: <?php print json_encode(array_keys($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
 			  series: [
 						<?php print json_encode(array_values($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
@@ -673,8 +687,8 @@ if(false) {
 			  }]
 			];
 
-			new Chartist.Line('#stat_bib_checkout_distribution', data, options, responsiveOptions);
-			new Chartist.Line('#stat_bib_checkout_distribution2', data, options, responsiveOptions);
+			new Chartist.Line('#stat_bib_checkout_distribution', dataForCheckoutDistribution, options, responsiveOptions);
+			new Chartist.Line('#stat_bib_checkout_distribution2', dataForCheckoutDistribution, options, responsiveOptions);
 		</script>
 <?php
 	}

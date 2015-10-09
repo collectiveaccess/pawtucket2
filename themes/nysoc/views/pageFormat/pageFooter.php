@@ -27,7 +27,11 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<a href="#top" style="float:right;padding-top:50px;">Back to Top</a>
+<?php
+		if ($this->request->getController() != "Front") {		
+			print '<a href="#top" style="float:right;padding-top:50px;">Back to Top</a>';
+		}
+?>		
 	</div><!-- end pageArea -->
 	</div><!-- end col --></div><!-- end container -->		
 

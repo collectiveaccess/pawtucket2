@@ -2,15 +2,25 @@
 	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
 	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
 ?>
-<div class="container">
+
+     		
+<div class="container" id="groupMap">
 	<div class="row">
-		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
-			
+		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+<?php		
+			if (!$vb_dont_show_catalogue_list) {
+				print "<h1 style='margin-top:20px;'>Places of Publication</h1>";
+			}
+?>						
 		</div>
+	</div>
+	<div class="row">
+
 <?php
 	if (!$vb_dont_show_catalogue_list) {
 ?>
 		<div class="col-sm-2" id='publisherContentContainer'>
+			<p class="vizTitle">Include in Map</p>
 			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
@@ -19,8 +29,8 @@
 					$va_opts = [];
 					while($qr_cats->nextHit()) {
 						$vn_catalogue_id = $qr_cats->get('ca_objects.object_id');
-						$vs_name = $qr_cats->get('ca_objects.preferred_labels.name');
-	
+						$vs_name = ucWords($qr_cats->get('ca_objects.preferred_labels.name'));
+						if (preg_match('/1825/', $vs_name)) { continue; }		// Skip 1825 for some reason
 						$va_opts[$vs_name] = "<div>".caHTMLCheckboxInput('catalogue_ids', ['value' => $vn_catalogue_id, 'checked' => true])." {$vs_name}</div>";
 					}
 					ksort($va_opts);
@@ -32,18 +42,24 @@
 <?php
 	}
 ?>
+		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
+			
+		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-1">
+		<?php print $vb_dont_show_catalogue_list ? '' : '<div class="col-sm-2 col-md-2 col-lg-2"></div>'; ?>
+
+		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
 			<span id="publisherMapYearSliderStart"></span> 
 		</div>
-		<div class="col-sm-10">
+		<div class="<?php print $vb_dont_show_catalogue_list ? 'col-sm-10 col-md-10 col-lg-10' : 'col-sm-8 col-md-8 col-lg-8'; ?>">
 			<input id="publisherMapYear" data-slider-id="publisherMapYearSlider" type="text" value="" data-slider-min="1700" data-slider-max="1900" data-slider-step="1" data-slider-value="[1740,1850]"/>
 		</div>
-		<div class="col-sm-1">
+		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
 			<span id="publisherMapYearSliderEnd"></span>
 		</div>
 	</div>
+	
 </div>
 
 

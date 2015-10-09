@@ -66,6 +66,9 @@ a {
   min-height: 600px;
   min-width:840px;
 }
+.ledger.detail .content-inner {
+	overflow: visible; 
+}
 .sidebar {
   position: relative;
   width: 194px;
@@ -470,11 +473,11 @@ div.globalLinks a {
 	width:80%;
 }
 .setTitle {
-	font-size:20px;
+	font-size:24px;
 }
 .setDescription {
 	font-weight:normal;
-	font-size:12px;
+	font-size:14px;
 }
 .front .jcarousel-control-next, .front .jcarousel-control-prev {
 	font-size:80px;
@@ -659,7 +662,7 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#000;
 }
 .detailMediaToolbar .dlButton {
-	display:none;
+	/*display:none;*/
 }
 .detail .detailMediaToolbar {
 	padding-right:10px;
@@ -763,12 +766,7 @@ a.readmore-js-toggle {
 .overlay {
 	padding:20px;
 }
-.overlay .overlay-close {
-	width:60px;
-	height:60px;
-	margin-top:-10px;
-	background-color:#000;
-}
+
 .overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
 	color:#000 !important;
 	fill:#000 !important;
@@ -900,6 +898,7 @@ svg:not(:root) {
 #stat_entity_checkout_distribution .ct-label.ct-horizontal, #stat_bib_checkout_distribution .ct-label.ct-horizontal{
 	display:none;
 }
+
 .readerRow {
 	border-bottom:1px solid #ccc;
 	padding-bottom:10px;
@@ -1216,6 +1215,9 @@ div.advancedSearchField {
 .advButton a{ 
 	color:#fff;
 }
+#bViewButtons {
+	display:none;
+}
 
 /* Finding Aid */
 
@@ -1458,26 +1460,30 @@ div#readerList {
 	overflow: hidden;
 	max-height: 300px;
 	min-height: 30px;
-	background-color: #EDF7F1;
-}
-
-.readerListContent {
-	padding: 10px 0 10px 0;
-	margin: 10px 0 10px 0;
 	
+}
+#booksCirculation div#readerList{
+	margin-bottom:0px;
+}
+.readerListContent {
+	padding: 5px 0 10px 0;
+	margin: 10px 0 10px 0;	
 	min-height: 30px;
 	max-height: 240px;
 	overflow-x: hidden;
 	overflow-y: auto;
+	background-color: #f7f7f7;
+    border-bottom: 10px solid #f7f7f7;
+    border-top: 10px solid #f7f7f7;
 }
 
 #readerListToggle {	
 	position: absolute;
 	top: 4px;
 	right: 10px;
-	font-family: latoregular;
+	font-family: gudea, sans-serif;
 	font-weight: bold;
-	color: #cc0000;
+	color: #d77421;
 	font-size: 18px;
 }
 
@@ -1487,40 +1493,53 @@ div#readerList {
 
 #readerListContent {
 	display: none;
-	padding: 0 5px 10px 5px;
 	
 }
 
+.readerListEntry {
+	background-color: #f7f7f7;
+	padding:8px;
+	border-radius: 4px;
+	margin-top:2px;
+	margin-bottom:2px;
+	display:inline-block;
+	width:100%;
+}
 div.readerListLetterBar {
 	width: 100%;
-	text-align: center;
-	font-family: Helvetica, Arial;
-	font-size: 20px;
-	margin: 5px 0 10px 0;
+	text-align: left;
+	font-family: Gudea, sans-serif;
+	font-size: 16px;
+	margin: 5px 0 0px -15px;
+	font-weight:bold;
 }
 
 div.readerListLetterBar .availableLetter {
-	color: #000;
-	margin: 0 10px 0 0;
+	color: #333;
+	margin: 0 5px 0 0;
 }
 
 div.readerListLetterBar .disabledLetter {
-	color: #aaa;
-	margin: 0 10px 0 0;
+	color: #bbb;
+	margin: 0 5px 0 0;
 }
 
 div.readerListLetterBar .activeLetter {
-	color: #cc0000;
-	margin: 0 10px 0 0;
+	color: #d77421;
+	margin: 0 5px 0 0;
 }
-
+.availableLetter, .activeLetter, .disabledLetter {
+	padding:5px 8px 5px 8px;
+	background-color:#eee;
+}
 div#readerContentContainer {
 	padding: 0px;
 }
 
 div#readerContent {
-	border: 1px solid #eee;
+	border: 0px;
 	height: 700px;
+	border-radius:4px;
 }
 
 /* reader card */
@@ -1589,7 +1608,7 @@ div.readerCardContent .readerCardImageSource {
 
 /* Circulation chart */
 #circulationGraph {
-	width: 83.33%;
+	width: 100%;
 	height: 600px;
 	margin-top: 0px;
 }
@@ -1602,26 +1621,78 @@ div.readerCardContent .readerCardImageSource {
 }
 
 #publisherMapCatalogueDetail {
-	width: 83.33%;
+	width: 100%;
 	height: 300px;
 	margin-top: 0px;
+	margin-bottom:20px;
 }
 
-#publisherMapYearSlider {
+.detail.catalog #groupMap #publisherMapYearSlider {
 	width: 100%;
+	left:15px;
+}
+.slider.slider-horizontal {
+	width: 100% !important;
+}
+.slider-handle {
+	background-color: #d6742a !important;
+	background-image: linear-gradient(to bottom, #d6742a 0%, #d6742a 100%) !important;
+}
+.slider-selection {
+	background-color: #d6742a !important;
+	background-image: linear-gradient(to bottom, #d6742a 0%, #d6742a 100%) !important;
+}
+#publisherMapYearSliderStart, #publisherMapYearSliderEnd {
+	background-color:#555;
+	padding:5px;
+	border-radius:4px;
+	color:#fff;
+}
+.tooltip.tooltip-min.top, .tooltip.tooltip-max.top {
+	display:none;
+}
+.tooltip-inner {
+	background-color:#555 !important;
+	padding:5px !important;
+	display:none;
+}
+.tooltip.top {
+	padding:0px; !important;
+}
+.tooltip.top .tooltip-arrow, .tooltip.tooltip-main.top {
+	display:none;
+}
+.leaflet-pane path{
+	fill:#d6742a;
+}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	font-weight:bold;
+}
+.catalog.detail .expand {
+	margin-top:10px;
+}
+#publisherContent div{
+	font-size:13px;
+	color:#666;
+	padding-bottom:10px;
+}
+#publisherContent div input{ 
+	background-color:#333;
+}
+#groupMap #publisherMapYearSlider {
+	left: 0px;
 }
 
 /* Circulation visualization reader list */
 .readerList {
-	background-color: #DEF0E7;
+	background-color: #f7f7f7;
 	font-family: latoregular;
 	color: #6e6e6e;
 	margin: 0 0 0 0;
 	padding: 5px;
 	position: relative;
 	min-height: 50px;
-	
-	border-bottom: 1px dotted #999;
+	border-bottom: 3px solid #fff;
 }
 
 .readerListImage {
@@ -1650,6 +1721,9 @@ div.readerCardContent .readerCardImageSource {
 .readerListName {
 	font-size: 12px;
 	width: 95%;
+	font-family: gudea, sans-serif;
+	font-weight:bold;
+	color:#333;
 }
 
 .readerListColorKey {
