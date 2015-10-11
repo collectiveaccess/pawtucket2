@@ -30,7 +30,7 @@
 	if($this->request->isLoggedIn()){
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
@@ -45,6 +45,8 @@
 		$qr_res->nextHit();
 		$vn_current_exhibition = $qr_res->get("ca_occurrences.occurrence_id");
 		$this->request->session->setVar("current_exhibition_id", $vn_current_exhibition);
+	}else{
+		$this->request->session->setVar("current_exhibition_id", "");
 	}
 
 ?><!DOCTYPE html>
@@ -59,7 +61,9 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
-	
+	<meta name="description" content="The official site for Susan Eley Fine Art, a salon-style gallery showcasing contemporary artists, located in a Landmarked Upper West Side townhouse in Manhattan.">
+	<meta name="keywords" content="Gallery, Art, Contemporary, New York, Salon, Paintings, Photographs">
+
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
@@ -85,7 +89,7 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print (mb_strtolower($this->request->getAction()) == exhibitions) ? 'class="active"' : ''; ?>><?php print ($vn_current_exhibition) ? caDetailLink($this->request, _t("Exhibitions"), '', 'ca_occurrences', $vn_current_exhibition, null, null, array("action" => "exhibitions")) : caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "Exhibitions"); ?></li>
+					<li <?php print (mb_strtolower($this->request->getAction()) == exhibitions) ? 'class="active"' : ''; ?>><?php print ($vn_current_exhibition) ? caDetailLink($this->request, _t("Exhibitions"), '', 'ca_occurrences', $vn_current_exhibition, null, null, array("action" => "exhibitions")) : caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "past_exhibitions"); ?></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "artists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Listing", "Artists"); ?></li>
 					<li><a href="/news/?m=<?php print date("Y"); ?>">News</a></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "fairs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Fairs"), "", "", "Listing", "Fairs"); ?></li>

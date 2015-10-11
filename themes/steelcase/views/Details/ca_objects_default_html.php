@@ -39,7 +39,7 @@
 ?>
 				</H4>
 <?php
-				$va_entities = $t_object->get("ca_entities", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
+				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("creator"), "checkAccess" => $va_access_values));
 				if(sizeof($va_entities)){
 					$t_entity = new ca_entities();
 					print "<H5>";
@@ -67,7 +67,7 @@
 <?php
 				$va_classification_links = array();
 				$t_list_item = new ca_list_items();
-				$va_decorative_types = $t_object->get("ca_objects.decorative_types", array("returnAsArray" => true));
+				$va_decorative_types = $t_object->get("ca_objects.decorative_types", array("returnWithStructure" => true));
 				if(sizeof($va_decorative_types)){
 					foreach($va_decorative_types as $va_decorative_type){
 						$vn_decorative_type = $va_decorative_type["decorative_types"];
@@ -81,7 +81,7 @@
 						print join(", ", $va_classification_links);
 					}
 				}
-				$va_documentation_types = $t_object->get("ca_objects.documentation_types", array("returnAsArray" => true));
+				$va_documentation_types = $t_object->get("ca_objects.documentation_types", array("returnWithStructure" => true));
 				if(sizeof($va_documentation_types)){
 					foreach($va_documentation_types as $va_documentation_type){
 						$vn_documentation_type = $va_documentation_type["documentation_types"];
@@ -95,7 +95,7 @@
 						print join(", ", $va_classification_links);
 					}
 				}
-				$va_fine_art_types = $t_object->get("ca_objects.fine_art_types", array("returnAsArray" => true));
+				$va_fine_art_types = $t_object->get("ca_objects.fine_art_types", array("returnWithStructure" => true));
 				if(sizeof($va_fine_art_types)){
 					foreach($va_fine_art_types as $va_fine_art_type){
 						$vn_fine_art_type = $va_fine_art_type["fine_art_types"];
@@ -160,7 +160,7 @@
 					}
 				}
 				
-				if($va_materials = $t_object->get("ca_objects.material", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
+				if($va_materials = $t_object->get("ca_objects.material", array("returnWithStructure" => true, "convertCodesToDisplayText" => false))){
 					$i = 0;
 					$va_materials_display = array();
 					foreach($va_materials as $vn_material_id => $va_material){
@@ -180,7 +180,7 @@
 				if(trim($t_object->get("ca_objects.dimensions_frame.display_dimensions_frame")) || $t_object->get("ca_objects.dimensions_frame.dimensions_frame_height") || $t_object->get("ca_objects.dimensions.dimensions_height") || trim($t_object->get("ca_objects.dimensions.display_dimensions")) || trim($t_object->get("ca_objects.material")) || trim($t_object->get("description"))){
 					print "<HR/>";
 				}
-				if($va_styles = $t_object->get("ca_objects.styles_movement", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
+				if($va_styles = $t_object->get("ca_objects.styles_movement", array("returnWithStructure" => true, "convertCodesToDisplayText" => false))){
 					$vs_style_display = "";
 					$i = 0;
 					foreach($va_styles as $vn_style_id => $va_style){
@@ -198,7 +198,7 @@
 						print $vs_style_display;
 					}
 				}
-				$va_collections = $t_object->get("ca_collections", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.preferred_labels.name"));
+				$va_collections = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.preferred_labels.name"));
 				if(sizeof($va_collections)){
 					print "<H6>Collection".((sizeof($va_collections) > 1) ? "s" : "")."</H6>";
 					foreach($va_collections as $va_collection){
@@ -213,7 +213,7 @@
 						print caNavLink($this->request, $va_gallery["name"], "", "", "Gallery", $va_gallery["set_id"])."<br/>";
 					}
 				}
-				if($va_themes = $t_object->get("ca_objects.steelcase_themes", array("returnAsArray" => true, "convertCodesToDisplayText" => false))){
+				if($va_themes = $t_object->get("ca_objects.steelcase_themes", array("returnWithStructure" => true, "convertCodesToDisplayText" => false))){
 					$i = 0;
 					$vs_theme_display = "";
 					foreach($va_themes as $vn_theme_id => $va_theme){
@@ -237,7 +237,7 @@
 ?>
 				{{{<ifdef code="ca_objects.idno"><H6>Steelcase Number</H6>^ca_objects.idno</ifdef>}}}			
 <?php
-				$va_storage_locations = $t_object->get("ca_storage_locations", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+				$va_storage_locations = $t_object->get("ca_storage_locations", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 				if(sizeof($va_storage_locations)){
 					$t_location = new ca_storage_locations();
 					$t_relationship = new ca_objects_x_storage_locations();
@@ -245,30 +245,32 @@
 					$va_location_display = array();
 					foreach($va_storage_locations as $va_storage_location){
 						$t_relationship->load($va_storage_location["relation_id"]);
-						$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnAsArray" => true));
+						$va_daterange = null; //$t_relationship->get("effective_date", array("returnWithStructure" => true, "returnAsArray" => true));
+					
 						if(is_array($va_daterange) && sizeof($va_daterange)){
 							foreach($va_daterange as $va_date){
 								break;
 							}
-							#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
+						
 							if(is_array($va_date)){
-								if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
+								if(($vn_now > $va_date["start"]) && ($vn_now < $va_date["end"])){
 									# --- only display the top level from the hierarchy
-									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+									$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
 									foreach($va_hierarchy_ancestors as $va_ancestor){
-										$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
+										$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
 										break;
 									}
 								}
 							}
 						}else{
 							# --- only display the top level from the hierarchy
-							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+							$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
+							
 							foreach($va_hierarchy_ancestors as $va_ancestor){
-								$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
+								//print_R($va_ancestor);
+								$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
 								break;
 							}
-							#$vs_location_display .= $va_storage_location["name"]."<br/>";
 						}
 					}
 					if(sizeof($va_location_display)){

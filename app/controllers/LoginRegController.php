@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,6 +38,9 @@ class LoginRegController extends ActionController {
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		parent::__construct($po_request, $po_response, $pa_view_paths);
 
+        if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+            throw new ApplicationException('Login/registration not allowed');
+        }
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
@@ -442,7 +445,7 @@ class LoginRegController extends ActionController {
 					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 				}
 
-				$t_user = new ca_users();
+				#$t_user = new ca_users();
 				$vs_action = $vs_controller = $vs_module_path = '';
 				if ($vs_default_action = $this->request->config->get('default_action')) {
 					$va_tmp = explode('/', $vs_default_action);
@@ -472,8 +475,14 @@ class LoginRegController extends ActionController {
 					}
 				}else{
 					# --- registration needs approval
-					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-					$this->response->setRedirect($vs_url);
+					if($this->request->isAjax()){
+						$this->view->setVar("message", _t('Thank you for registering!  Your account will be activated after review.').$vs_group_message);
+						$this->render("Form/reload_html.php");
+						return;
+					}else{
+						$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+						$this->response->setRedirect($vs_url);
+					}
 				}
 			}
 		}
@@ -498,7 +507,10 @@ class LoginRegController extends ActionController {
 					$vs_group_message = _t("You are already a member of the group");
 				}
 				$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
-				$this->response->setRedirect(caNavUrl($this->request, "", "Sets", "Index"));
+				if(!$vs_controller = $this->request->getParameter("section", pString)){
+					$vs_controller = "Lightbox";
+				}
+				$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 			}else{
 				$t_user_group->load($pn_group_id);
 				$this->request->session->setVar("join_user_group_id", $pn_group_id);

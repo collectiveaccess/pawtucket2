@@ -41,8 +41,7 @@ require_once(__CA_MODELS_DIR__.'/ca_bundle_display_placements.php');
 require_once(__CA_MODELS_DIR__.'/ca_bundle_displays_x_user_groups.php'); 
 require_once(__CA_MODELS_DIR__.'/ca_bundle_display_type_restrictions.php'); 
 require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php'); 
-require_once(__CA_MODELS_DIR__.'/ca_lists.php'); 
-require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
+require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
 define('__CA_BUNDLE_DISPLAY_NO_ACCESS__', 0);
 define('__CA_BUNDLE_DISPLAY_READ_ACCESS__', 1);
@@ -1136,44 +1135,6 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			}
 		}
 		
-		// get commerce order history bundle (objects only, of course)
-		if ($vs_table == 'ca_objects') {
-			$va_additional_settings = array(
-				'order_type' => array(
-					'formatType' => FT_TEXT,
-					'displayType' => DT_SELECT,
-					'width' => 35, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '',
-					'options' => array(
-						_t('Sales order') => 'O',
-						_t('Loan') => 'L'
-					),
-					'label' => _t('Type of order'),
-					'description' => _t('Determines which type of order is displayed.')
-				)		
-			);
-			
-			$vs_bundle = 'ca_commerce_order_history';
-			$vs_label = _t('Order history');
-			$vs_display = _t('Order history');
-			$vs_description = _t('List of orders (loans or sales) that include this object');
-			
-			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
-				'bundle' => $vs_bundle,
-				'display' => ($vs_format == 'simple') ? $vs_label : $vs_display,
-				'description' => $vs_description,
-				'settingsForm' => $t_placement->getHTMLSettingForm(array('id' => $vs_bundle.'_0')),
-				'settings' => $va_additional_settings
-			);
-			
-			if ($vb_show_tooltips) {
-				TooltipManager::add(
-					"#bundleDisplayEditorBundle_ca_commerce_order_history",
-					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
-				);
-			}
-		}
 		
 		if (caGetBundleAccessLevel($vs_table, "ca_object_representations") != __CA_BUNDLE_ACCESS_NONE__) {
 			// get object representations (objects only, of course)

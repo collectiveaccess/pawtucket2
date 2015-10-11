@@ -44,13 +44,6 @@ class ObjectSearchResult extends BaseSearchResult {
 	protected $ops_table_name = 'ca_objects';
 	# -------------------------------------
 	/**
-	 * Constructor
-	 */
-	public function __construct($po_engine_result=null, $pa_tables=null) {
-		parent::__construct($po_engine_result=null, $pa_tables=null);
-	}
-	# -------------------------------------
-	/**
 	 * Override init to set ca_representations join params
 	 *
 	 * @param IWLPlugSearchEngineResult $po_engine_result

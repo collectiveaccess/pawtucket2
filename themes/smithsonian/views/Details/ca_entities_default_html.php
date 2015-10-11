@@ -79,7 +79,7 @@
 				
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><span class='metaTitle'>Related Work</span></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><span class="metaTitle">Related Works</span></ifcount>}}}
-				{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.displayname</l></unit></div>}}}				
+				{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div>}}}				
 			
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>

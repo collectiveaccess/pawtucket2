@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2013 Whirl-i-Gig
+ * Copyright 2006-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -255,7 +255,6 @@ class MediaInfoCoder {
 		#
 		# Use icon
 		#
-		if (!is_array($va_media_info[$ps_version])) { print_R($va_media_info); die($ps_version); }
 		if (isset($va_media_info[$ps_version]) && isset($va_media_info[$ps_version]['USE_ICON']) && ($vs_icon_code = $va_media_info[$ps_version]['USE_ICON'])) {
 			return caGetDefaultMediaIconTag($vs_icon_code, $va_media_info[$ps_version]['WIDTH'], $va_media_info[$ps_version]['HEIGHT']);
 		}
@@ -293,7 +292,7 @@ class MediaInfoCoder {
 		if (!($va_media_info = $this->getMediaArray($ps_data))) {
 			return false;
 		}
-		
+	
 		unset($va_media_info["ORIGINAL_FILENAME"]);
 		unset($va_media_info["INPUT"]);
 		unset($va_media_info["VOLUME"]);
@@ -345,6 +344,22 @@ class MediaInfoCoder {
 		} else {
 			return $va_media_info["MIRROR_STATUS"][$va_volume_info["accessUsingMirror"]];
 		}
+	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Returns scaling conversion factor for media. Allows physical measurements to be derived from image pixel measurements.
+	 *
+	 * @param string $ps_field The name of the media field
+	 * @param array $pa_options An array of options. No options are currently implemented.
+	 *
+	 * @return float Value or null if not set
+	 */
+	public function getMediaScale($ps_data, $pa_options=null) {
+		if (!($va_media_info = $this->getMediaArray($ps_data))) {
+			return false;
+		}
+		
+		return caGetOption('_SCALE', $va_media_info, null);
 	}
 	# ---------------------------------------------------------------------------
 }

@@ -30,7 +30,7 @@
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
@@ -107,7 +107,7 @@
 					Artist: 
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
-					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entity_labels.displayname</l></unit>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
 				</ifcount>}}}
 				</strong>
 <?php

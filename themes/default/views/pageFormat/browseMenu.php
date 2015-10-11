@@ -45,7 +45,7 @@
 <?php				
 				}else{
 ?>
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", key($va_browse_types)); ?></li>
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")), "", "", "Browse", key($va_browse_types)); ?></li>
 <?php
 				}
 			break;
@@ -54,7 +54,7 @@
 				$vs_first_browse = null;
 ?>
 				 <li class="dropdown yamm-fw<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"> <!-- add class yamm-fw for full width-->
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")); ?></a>
 					<ul class="dropdown-menu" id="browse-menu">
 						<li class="browseNavFacet">			
 							<div class="browseMenuContent container">
@@ -62,7 +62,8 @@
 						if(sizeof($va_browse_types) > 1){
 							# --- only show browse targets if there are more than one
 ?>	
-								<div class="mainfacet">
+								<div class="row">
+									<div class="mainfacet col-sm-12">
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
@@ -73,7 +74,8 @@
 											}
 ?>
 										</ul>
-								</div><!--end main facet-->
+									</div><!--end main facet-->
+								</div>
 <?php
 						} else {
 							$vs_first_browse = key($va_browse_types);

@@ -1734,7 +1734,7 @@
 			}
 
 			if (!$po_opts->getOption("quiet")) { CLIUtils::addMessage(_t("Fixing permissions for the HTMLPurifier definition cache directory (app/lib/core/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache) for ownership by \"%1\"...", $vs_user)); }
-			$va_files = caGetDirectoryContentsAsList($vs_path = __CA_LIB_DIR__.'/core/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache', true, false, false, true);
+			$va_files = caGetDirectoryContentsAsList($vs_path = __CA_BASE_DIR__.'/vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/Serializer', true, false, false, true);
 
 			foreach($va_files as $vs_path) {
 				chown($vs_path, $vs_user);
@@ -1787,8 +1787,8 @@
 			require_once(__CA_LIB_DIR__."/core/Zend/Http/Client.php");
 
 			$vo_app_conf = Configuration::load();
-			$vo_search_conf = Configuration::load($vo_app_conf->get("search_config"));
-			$vo_search_indexing_conf = Configuration::load($vo_search_conf->get("search_indexing_config"));
+			$vo_search_conf = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+			$vo_search_indexing_conf = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 			$o_db = new Db();
 			$o_datamodel = Datamodel::load();
 

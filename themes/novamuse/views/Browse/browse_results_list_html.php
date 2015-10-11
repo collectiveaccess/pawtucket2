@@ -57,14 +57,14 @@
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	$o_lightbox_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
-	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
@@ -93,7 +93,7 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_displayname));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -107,7 +107,7 @@
 					if ($vs_table == 'ca_objects') {
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
 							$vs_image = $vs_default_placeholder_tag;
@@ -122,7 +122,7 @@
 					$vs_label_detail_link .= "<p>".$qr_res->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'restrictToRelationshipTypes' => array('repository')))."</p>";				
 				}
 				
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
@@ -138,7 +138,7 @@
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_lightbox"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";

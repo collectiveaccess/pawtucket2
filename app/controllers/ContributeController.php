@@ -379,8 +379,6 @@
           		}	
           	}
           	
-          	//print_R($va_content_tree); die;
-          	
           	// Set type and idno (from config or tree) and insert
           	// 		Configured values are always used in preference
           	
@@ -572,12 +570,12 @@
  		private function _checkForm($ps_form) {
  			if (!($va_form_info = caGetInfoForContributeFormType($ps_form))) {
  				// invalid form type (shouldn't happen unless misconfigured)
- 				die("Invalid contribute form type");
+ 				throw new ApplicationException("Invalid contribute form type");
  			}
  			
  			if (!($this->pt_subject = $this->request->datamodel->getInstanceByTableName($va_form_info['table']))) {
  				// invalid form table (shouldn't happen unless misconfigured)
- 				die("Invalid contribute table setting");
+ 				throw new ApplicationException("Invalid contribute table setting");
  			}
  			
  			// Does form require login?
