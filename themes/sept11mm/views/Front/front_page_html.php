@@ -49,15 +49,17 @@
 ?>
 		</div> <!--end col-sm-4-->
 		<div class="col-sm-8 frontIntroText">
-			<H2>Lorem ipsum</H2>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget sem ac elit hendrerit fringilla. Cras gravida purus ante, et luctus leo luctus sed. Sed molestie facilisis est in consectetur. Nunc hendrerit, ex vitae convallis bibendum, felis nulla blandit justo, a malesuada risus justo at arcu. Duis condimentum convallis augue a efficitur. Aliquam erat volutpat. Aenean ut feugiat sem. Proin eget eros scelerisque, imperdiet erat ac, mattis velit. Duis justo ante, placerat vitae commodo vitae, ullamcorper nec magna. Nunc aliquam justo vitae justo pharetra, sed dapibus odio tristique.
-			</p>
-			<p>
-				In eu orci vehicula, fringilla turpis at, iaculis dui. Fusce volutpat sed augue eget convallis. Praesent accumsan lacus ac magna laoreet convallis. Nullam ut turpis mauris. Nullam pharetra quis ipsum at fermentum. Donec sagittis finibus mi eget volutpat. Vestibulum ante lorem, elementum nec sagittis et, efficitur at lacus. Ut vehicula pharetra mi ultricies tincidunt. Nunc luctus tempus felis a tincidunt. Donec eu feugiat velit.
-			</p>
-			<p>
-				Integer suscipit arcu sed ipsum porta, ac maximus tortor tempus. Nullam rhoncus augue vitae ex facilisis, ut elementum leo malesuada. Nulla eu cursus mauris, at finibus orci. Nunc scelerisque augue felis, sit amet lobortis enim accumsan commodo. Integer dictum venenatis est, nec interdum elit consequat eget. Integer tellus ex, condimentum nec sem vitae, imperdiet faucibus purus. Donec blandit dictum iaculis. Sed eu egestas mauris. Curabitur vitae purus at dolor bibendum tincidunt. Vivamus maximus justo et tellus pellentesque, a interdum magna vehicula. Vestibulum cursus ullamcorper vestibulum. Etiam bibendum sapien nec vestibulum rutrum.  In eu orci vehicula, fringilla turpis at, iaculis dui. 
+				The Museum collects, preserves, documents, exhibits, interprets and makes available as a public learning resource the material evidence, primary testimony and expanding historical record of response to the terrorist events of February 26, 1993, and September 11, 2001, and their global repercussions.
+ 			</p>
+ 			<p>
+				With the goal of serving as an authoritative gateway of information about these incidents, the Museum acquires wide-ranging materials in various media, for commemoration, education, display, publication and scholarship. The Permanent Collection functions as an extensive reservoir of historical facts, trustworthy content and cumulative insight that will deepen over time, with uses beyond physical exhibition.
+ 			</p>
+ 			<p>
+				This website highlights a portion of the Permanent Collection including objects visible in the Museum but also highlighting objects that are currently not on display.  The content on this site is intended to expand to include the majority of our holdings and will eventually incorporate digital media and Oral Histories.
+ 			</p>
+ 			<p>
+				The Collections Policy is available for review on the 9/11 Memorial’s website: <a href="http://www.911memorial.org" target="_blank">www.911memorial.org</a>.</p>
 			</p>
 		</div><!--end col-sm-8-->
 	
