@@ -79,7 +79,7 @@
  			
 			$pn_object_id = $this->request->getParameter('id', pInteger);
 			
-			if ($pn_object_id && !in_array($pn_entity_id, $va_object_list)) { 
+			if ($pn_object_id && !in_array($pn_object_id, $va_object_list)) { 
 				$va_object_list[] = $pn_object_id; 
 				
  				$this->request->session->setVar('object_list', $va_object_list);

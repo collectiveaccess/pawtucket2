@@ -2075,8 +2075,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										
 					if ($va_tmp[0] != $this->tableName()) {
 						switch(sizeof($va_tmp)) {
-							case 1:
-								return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 							case 2:
 							case 3:
 								if (caGetOption('select', $pa_options, false)) {

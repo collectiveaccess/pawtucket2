@@ -90,14 +90,13 @@
 										print "<div id='references' style='display:none;'>".$va_references."</div></div>";
 									}
 									
-									$va_record_name = explode(' ', $t_item->get('ca_occurrences.preferred_labels')." (".$t_item->get('ca_occurrences.idno').").");
-									$va_record_name = join('%20', $va_record_name);																		
+									$va_record_id = $t_item->get('ca_occurrences.idno');
 ?>
 									<div id="detailTools">
 										<!-- AddThis Button BEGIN -->
 										<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 										<!-- AddThis Button END -->										
-										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=Contribution%20to%20the%20archive&body=I%20have%20some%20information%20about%20<?php print $va_record_name; ?>'>Contribute</a></div><!-- end detailTool -->
+										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $va_record_id; ?>&body='>Contribute</a></div><!-- end detailTool -->
 										<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 									</div><!-- end detailTools -->						
 								</div><!-- end col -->

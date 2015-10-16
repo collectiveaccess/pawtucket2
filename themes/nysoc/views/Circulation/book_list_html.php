@@ -31,8 +31,7 @@
 		$vn_i = 0;
 ?>
 	<div class="row">
-		<div class="col-md-2 readerListSectionHeading">Books</div>
-		<div class="col-md-10 readerListContent">
+		<div class="col-md-12 readerListContent">
 			<div class="row">
 <?php
 		while($qr_readers->nextHit()) {
@@ -60,7 +59,7 @@
 ?>	
 	</div> <!--end container-->
 </div>
-<div id='readerListToggle'>Index</div>
+<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Books</div>
 
 <script type="text/javascript">
 	jQuery("div.readerListLetterBar .availableLetter").bind('click', function() {

@@ -109,16 +109,19 @@
 					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
 				}
 				
-				$vs_buf.= "<span title='".$vs_sort_title."'><span>";
+				$vs_buf.= "<span title='".addslashes($vs_sort_title)."'></span>";
 				$vs_buf.= "</td>";
 				
-				$vs_buf.= "<td >";
+				
+				$vs_name = '';
 				if ($va_parent_title) {
-					$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects.parent"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
+					$vs_name = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects.parent"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
 				} else {
-					$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
+					$vs_name = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
 				}
-				$vs_buf .= "</td>";
+				if (!$vs_name) { $vs_name = "<span title=''></span>"; }
+				
+				$vs_buf.= "<td>{$vs_name}</td>";
 					
 				$vs_buf.= "<td>";
 				if ($va_parent_title) {
@@ -163,7 +166,7 @@
 <?php	
 			if ($this->getVar('representationViewer')) {			
 				print $this->getVar('representationViewer');
-				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-3 col-xs-4"));
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-3 col-xs-4"));
 			} else {
 				print "<div class='entityThumb'><a href='".$t_item->get("ca_entities.wikipedia_entry.image_viewer_url")."' target='_blank'>".$vs_wiki_thumb."</a></div>";
 			}
@@ -356,7 +359,7 @@
 										<!-- AddThis Button BEGIN -->
 										<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 										<!-- AddThis Button END -->
-										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_item->get('ca_entities.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 										<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 									</div><!-- end detailTools -->							
 								</div><!-- end col -->
@@ -372,8 +375,8 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
-												<div class='vizTitle'>Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>
-													<button type="button" class="overlay-close">Close</button>
+												<div class='vizTitle'><!--Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>-->
+													<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 												</div>
 												
 												<div style="width:60%; height:400px; float:left; padding-right:10px;">
@@ -404,7 +407,7 @@
 									<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
 									<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
 									<script type="text/javascript">
-										var data = {
+										var dataForCirculationActivity = {
 										  labels: <?php print json_encode(array_keys($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
 										  series: [
 													<?php print json_encode(array_values($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
@@ -438,8 +441,8 @@
 										  }]
 										];
 
-										new Chartist.Line('#stat_entity_checkout_distribution', data, options, responsiveOptions);
-										new Chartist.Line('#stat_entity_checkout_distribution2', data, options, responsiveOptions);
+										new Chartist.Line('#stat_entity_checkout_distribution', dataForCirculationActivity, options, responsiveOptions);
+										new Chartist.Line('#stat_entity_checkout_distribution2', dataForCirculationActivity, options, responsiveOptions);
 									</script>
 
 	<?php
@@ -448,7 +451,13 @@
 										</div><!-- end-col -->
 									</div><!-- end row -->	
 									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><div class="vizTitle"></div>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand vizTitle" style="margin-top:-20px;padding-bottom:15px;">
+											<section>
+<?php											
+												print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Readers', '', '', 'Circulation', 'readers', ['id' => $t_item->getPrimaryKey()]).'</div></p>';
+?>											
+											</section>
+										</div>
 									</div>
 									<div class="row">	
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -462,15 +471,16 @@
 		
 										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>
 										<script type="text/javascript">
-											var data = {
+											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
 											};
 
 											var options = {
-											  labelInterpolationFnc: function(value) {
-												return value[0]
-											  }
+												labelInterpolationFnc: function(value, index) {
+												  if(dataForSubjectAreas.series[index] <= 1) { return ''; }
+												  return value;
+												}
 											};
 											var $chart = $('#stat_bib_books_by_subject_area2');
 
@@ -482,7 +492,9 @@
 											$chart.on('mouseenter', '.ct-series', function() {
 												var $slice = $(this),
 												value = $slice.find('path').attr('ct:value');
-												sliceName = $slice.find('text.ct-label').text();
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												
+												sliceName = dataForSubjectAreas.labels[l] + " (" + value + ")";		// $slice.find('text.ct-label').text()
 												$subjectAreaToolTip.html(sliceName).show();
 											});
 
@@ -500,10 +512,7 @@
 											  ['screen and (min-width: 640px)', {
 												chartPadding: 30,
 												labelOffset: 30,
-												labelDirection: 'explode',
-												labelInterpolationFnc: function(value) {
-												  return value;
-												}
+												labelDirection: 'explode'
 											  }],
 											  ['screen and (min-width: 1024px)', {
 												labelOffset: 60,
@@ -511,8 +520,8 @@
 											  }]
 											];
 
-											new Chartist.Pie('#stat_bib_books_by_subject_area', data, options, responsiveOptions);
-											new Chartist.Pie('#stat_bib_books_by_subject_area2', data, options, responsiveOptions);
+											new Chartist.Pie('#stat_bib_books_by_subject_area', dataForSubjectAreas, options, responsiveOptions);
+											new Chartist.Pie('#stat_bib_books_by_subject_area2', dataForSubjectAreas, options, responsiveOptions);
 
 										</script>	
 										<!-- Chartist -->
@@ -530,16 +539,18 @@
 		
 										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>
 										<script type="text/javascript">
-											var data = {
+											var dataForCheckoutDuration = {
 											  labels: <?php print json_encode(array_keys($stat_entity_checkout_durations[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_entity_checkout_durations[$vn_entity_id])); ?>
 											};
 
 											var options = {
-											  labelInterpolationFnc: function(value) {
-												return value[0]
-											  }
+												labelInterpolationFnc: function(value, index) {
+												  if(dataForCheckoutDuration.series[index] <= 5) { return ''; }
+												  return value;
+												}
 											};
+											
 											var $chart = $('#stat_entity_checkout_durations2');
 
 											var $durationToolTip = $chart
@@ -550,7 +561,8 @@
 											$chart.on('mouseenter', '.ct-series', function() {
 												var $slice = $(this),
 												value = $slice.find('path').attr('ct:value');
-												sliceName = $slice.find('text.ct-label').text();
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												sliceName = dataForCheckoutDuration.labels[l] + " (" + value + ")";		// $slice.find('text.ct-label').text()
 												$durationToolTip.html(sliceName).show();
 											});
 
@@ -568,10 +580,7 @@
 											  ['screen and (min-width: 640px)', {
 												chartPadding: 30,
 												labelOffset: 30,
-												labelDirection: 'explode',
-												labelInterpolationFnc: function(value) {
-												  return value;
-												}
+												labelDirection: 'explode'
 											  }],
 											  ['screen and (min-width: 1024px)', {
 												labelOffset: 60,
@@ -579,8 +588,8 @@
 											  }]
 											];
 
-											new Chartist.Pie('#stat_entity_checkout_durations', data, options, responsiveOptions);
-											new Chartist.Pie('#stat_entity_checkout_durations2', data, options, responsiveOptions);
+											new Chartist.Pie('#stat_entity_checkout_durations', dataForCheckoutDuration, options, responsiveOptions);
+											new Chartist.Pie('#stat_entity_checkout_durations2', dataForCheckoutDuration, options, responsiveOptions);
 
 										</script>	
 										<!-- Chartist -->
@@ -644,7 +653,7 @@
 								// Check entities
 								$vs_people_buf = null;
 								$va_people_by_rels = array();
-								if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true))) {
+								if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true, 'checkAccess'=> $this->getVar('access_values')))) {
 									foreach ($va_related_people as $va_key => $va_related_person) {
 										if ($vn_entity_id == $va_related_person['entity_id']) { continue; }
 										$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];

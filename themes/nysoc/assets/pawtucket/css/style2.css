@@ -125,13 +125,14 @@ section p {
 	padding: 0px;
 }
 
-section button {
+section button, div.button a, div.button a:hover {
 	border: none;
 	outline: none;
 	background-color:#fff;
 	color: #d77421;
 	font-size:13px;
 	text-transform:uppercase;
+	text-decoration: none;
 }
 
 .related > a {
@@ -181,19 +182,20 @@ section button {
 }
 
 /* Overlay closing cross */
+
 .overlay .overlay-close {
-	width: 80px;
-	height: 80px;
+	width: 30px;
+	height: 30px;
 	position: absolute;
-	right: 20px;
-	top: 20px;
-	overflow: hidden;
+	right: 10px;
+	top: 5px;
 	border: none;
-	background: url(../graphics/cross.png) no-repeat center center;
-	text-indent: 200%;
-	color: transparent;
 	outline: none;
 	z-index: 100;
+	
+	background-color: #fff;
+	padding: 0;
+	margin: 0;
 }
 
 /* Menu style */

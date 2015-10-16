@@ -392,31 +392,25 @@
 							<!-- AddThis Button BEGIN -->
 							<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 							<!-- AddThis Button END -->
-							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
-					<div class='col-sm-6 col-md-6 col-lg-6'>
-						<!-- New Overlay -->
-						<div class="overlay overlay-corner">
-							<div class='vizTitle'>Circulation Activity for <?php print $t_object->get('ca_objects.preferred_labels'); ?>
-								<button type="button" class="overlay-close">Close</button>
-							</div>																				
-						</div>						
+					<div class='col-sm-6 col-md-6 col-lg-6'>					
 <?php
-	// map
-	$this->setVar('dont_show_catalogue_list', true);
-	$this->setVar('map_css_id', 'publisherMapCatalogueDetail');
-	$this->setVar('show_catalogue_id', $t_object->get('ca_objects.object_id'));
-	print $this->render('Map/index_html.php');
-	
-	
+						// map
+						$this->setVar('dont_show_catalogue_list', true);
+						$this->setVar('map_css_id', 'publisherMapCatalogueDetail');
+						$this->setVar('show_catalogue_id', $t_object->get('ca_objects.object_id'));
+						
+						print "<div class='vizTitle'>Publication Places in this catalog</div>";
+						print $this->render('Map/index_html.php');
 ?>
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
 								<section>
 									<!--<p><button id="trigger-overlay" type="button">Click to Expand</button></p>-->
-									<p><?php print caNavLink($this->request, 'See map for all catalogues', '', '', 'Map', 'Index'); ?></p>
+									<p><?php print caNavLink($this->request, '<i class="fa fa-book"></i> Compare Catalogs', '', '', 'Map', 'Index'); ?></p> 
 								</section>
 							</div>
 						</div>					
