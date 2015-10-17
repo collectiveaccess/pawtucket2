@@ -132,9 +132,21 @@ if (!$vb_ajax) {	// !ajax
 	print _t("Results")."&nbsp;&nbsp;&nbsp;<span class='highlight'>".$qr_res->numHits()."</span>";	
 ?>
 	</div><!-- end col -->
+<?php
+	if(is_array($va_facets) && sizeof($va_facets)){
+?>
 	<div class="col-xs-12 col-sm-2">
 		<a href="#" onClick="jQuery('#bRefineContainer').toggle();">BROWSE<i class="fa fa-caret-down"></i></a>
 	</div><!-- end col -->
+<?php
+	}else{
+?>
+		<div class="col-xs-12 col-sm-2">
+		<?php print caNavLink($this->request, _t("View All"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1)); ?>
+		</div><!-- end col -->
+<?php
+	}
+?>
 	<div class="col-xs-12 col-sm-2">
 		<div class="btn-group">
 			<a href="#" data-toggle="dropdown">SORT<i class="fa fa-caret-down"></i></a>
@@ -160,8 +172,24 @@ if (!$vb_ajax) {	// !ajax
 			</ul>
 		</div><!-- end btn-group -->
 	</div><!-- end col -->
+<?php
+	$vs_search = "";
+	if (sizeof($va_criteria) > 0) {
+		foreach($va_criteria as $va_criterion) {
+			if ($va_criterion['facet_name'] == '_search') {
+				$vs_search = $va_criterion['value'];
+				break;
+			}
+		}
+		reset($va_criteria);
+	}
+?>
 	<div class="col-xs-12 col-sm-4">
-		Search within
+		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="<?php print ($vs_search) ? $vs_search : "Search"; ?>" name="search">
+			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+			<input type="hidden" name="facet" value="_search">-->
+		</form>
 	</div><!-- end col -->
 	<div class="col-xs-12 col-sm-2">
 <?php
@@ -189,19 +217,41 @@ if (!$vb_ajax) {	// !ajax
 			<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>
 		</div>
 	</div><!-- end row --></div>
-	<form id="setsSelectMultiple">
 		<div class="row">
 			<div class="col-xs-12">
 			<H5>
 <?php
-		if (sizeof($va_criteria) > 0) {
+		if($vs_table == 'ca_objects'){
+?>
+			<div class="pull-right">
+				<div class="btn-group pull-right">
+					<span class="glyphicon glyphicon-heart bGear" data-toggle="dropdown"></span>
+					<ul class="dropdown-menu" role="menu">
+<?php
+						if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+							print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+							print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						}
+					
+?>
+					</ul>
+				</div><!-- end btn-group -->
+<?php
+			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm bCriteria'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
+			}
+?>			
+			</div>
+<?php
+		}
+		if (sizeof($va_criteria) > 1) {
 			$i = 0;
+			print "<strong>"._t("Filtering by").":</strong>";
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>"._t("Results for").":</strong>";
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="icon-cross"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm bCriteria">'.$va_criterion['value'].' <span class="icon-cross"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					#print ' '.$va_criterion['value'];
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -217,29 +267,9 @@ if (!$vb_ajax) {	// !ajax
 		}
 ?>		
 			</H5>
-<?php
-		if($vs_table == 'ca_objects'){
-?>
-			<div class="btn-group">
-				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
-				<ul class="dropdown-menu" role="menu">
-<?php
-					if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-					}
-					
-?>
-				</ul>
-			</div><!-- end btn-group -->
-<?php
-			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
-			}
-		}
-?>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
+		<form id="setsSelectMultiple">
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php

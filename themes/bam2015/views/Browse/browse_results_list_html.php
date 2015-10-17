@@ -50,7 +50,7 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
+
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
@@ -68,7 +68,7 @@
 				print "
 	<div class='col-xs-12 col-sm-4'>
 		<div class='bBAMResultListItem'>
-			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			".caDetailLink($this->request, '<span class="pull-right icon-arrow-up-right"></span>'.$vs_link_text, '', $vs_table, $vn_id)."
 		</div><!-- end bBAMResultListItem -->
 	</div><!-- end col -->";

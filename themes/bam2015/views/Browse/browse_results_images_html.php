@@ -115,7 +115,7 @@
 				print "
 	<div class='col-xs-12 col-sm-3'>
 		<div class='bBAMResultItem'>
-			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bBAMResultItemImg'>{$vs_add_to_set_link}{$vs_rep_detail_link}</div>
 			<div class='bBAMResultItemText'>
 				<div class='bBAMIcon'>{$vs_type_placeholder}</div>

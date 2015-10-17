@@ -41,7 +41,10 @@ h1, h2, h3, h4, h5, h6 {
 	font-family:"News Gothic";
 }
 h1 {
-	color:#666;
+	color:#000;
+	text-transform:none;
+	font-size:28px;
+	margin-bottom:20px;
 }
 h2 {
 	font-size:30px;
@@ -79,7 +82,7 @@ a {
 	margin-top:8px;
 }
 .navbar-nav > li, .navbar-default .navbar-nav > li:hover {
-	background-color:#333;
+	background-color:#262626;
 	font-family:"News Gothic Condensed";
 	text-transform:uppercase;
 }
@@ -88,10 +91,10 @@ a {
 	padding-bottom:10px;
 	font-family:"News Gothic Condensed";
 	font-weight:bold;
-	color: #888;
+	color: #7c7c7c;
 }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover {
-	color: #888;
+	color: #7c7c7c;
 	font-size:18px;
 	font-family:"News Gothic Condensed";
 }
@@ -103,13 +106,13 @@ a {
 .navbar-default .navbar-nav > .active > a, 
 .navbar-default .navbar-nav > .active > a:hover, 
 .navbar-default .navbar-nav > .active > a:focus {
-	background-color: #333;
+	background-color: #262626;
 	font-family:"News Gothic Condensed";
 }
 .navbar-default .navbar-nav > .open > a, 
 .navbar-default .navbar-nav > .open > a:hover, 
 .navbar-default .navbar-nav > .open > a:focus {
-	color: #888;
+	color: #7c7c7c;
 }
 .nav > li.dropdown > a.icon {
 	padding-top: 10px;
@@ -117,7 +120,7 @@ a {
 }
 .nav > li.dropdown > a.userIcon {
 	padding-top: 15px;
-    padding-bottom: 8px;
+    padding-bottom: 7px;
     font-size:20px;
     padding-left: 24px;
     padding-right: 10px;
@@ -136,8 +139,8 @@ a {
 	border-radius:0px;
 }
 .formOutline .btn-search {
-	color: #888;
-	background-color:#333;
+	color: #7c7c7c;
+	background-color:#262626;
 	font-size:24px;
 	border-radius:0px;
 	padding: 12px 10px 3px 10px;
@@ -146,7 +149,7 @@ a {
 .navbar .form-control {
 	font-family:"News Gothic";
 	font-size:26px;
-	color: #888;
+	color: #7c7c7c;
 	background-color:#000;	
 }
 .navbar .form-control:focus {
@@ -155,8 +158,8 @@ a {
     outline: 0 none;
 }
 input:-webkit-autofill {
-	color: #888;
-	background-color:#333;
+	color: #7c7c7c;
+	background-color:#262626;
 	font-size:24px;
 }
 
@@ -221,7 +224,15 @@ body {
 	padding-top:20px;
 	opacity: 1;
 }
-
+.frontNav .dropdown-menu {
+    opacity: .5;
+}
+.frontNav .dropdown-menu > li > a {
+	font-weight:bold;
+}
+.frontNav .dropdown-menu > li > a:hover {
+	background-color:transparent;
+}
 /* Detail */
 
 .leader {
@@ -254,6 +265,13 @@ body {
 	font-weight: bold;
 	padding-bottom:5px;
 }
+.sets .setsBack {
+	background-color: #fff;
+}
+.sets .setsBack a, .sets .setsBack a .small{
+	color: #000;
+	font-family: "News Gothic";
+}
 .detailSnippet {
 	display: inline-block;
 	font-family: "News Gothic";
@@ -281,6 +299,11 @@ body {
 	padding: 0px;
 	padding-right:8px;
 }
+.unit .label.collection {
+	font-size:14px;
+	text-transform:uppercase;
+	margin-bottom:10px;
+}
 .detail .detailTool a, .detail .detailTool span{
 	color: #000;
 }
@@ -304,6 +327,47 @@ body {
 	margin-top:5px;
 }
 
+/* Media Viewer */
+
+.tileviewer div.viewerControls {
+	opacity:.85 !important;
+	border-bottom-right-radius: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+}
+.tileviewer div a.tileviewerControl:hover {
+	text-decoration:none;
+	color: #00cfb7;
+}
+div.caMediaOverlayControls {
+    opacity: 1.0;
+    background-color: rgba(0,0,0,0.5);
+}
+div.caMediaOverlayControls .objectInfo {
+	font-size:13px;
+}
+.tileviewer div a.tileviewerControlSelected {
+	color: #00cfb7;
+}
+.tileviewerHelpPanel .content h2, .tileviewerHelpPanel .content h3, p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
+	font-family: "News Gothic";
+}
+.tileviewerHelpPanel h3 {
+	font-size:24px;
+}
+.tileviewerHelpPanel h2 {
+	margin-top:10px;
+	margin-bottom: 10px;
+}
+.tileviewerHelpPanel {
+	background-color:#fff;
+	-webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
+	font-size: 15px;
+    line-height: 1.4em;
+}
 /* Finding Aid */
 
 .collHeader a {
@@ -334,10 +398,192 @@ div.advancedSearchField {
     margin: 20px auto 20px auto;
     width: 60px;	
 }
-.caAdvancedSearchFormSubmit a:hover, .caAdvancedSearchFormReset a:hover,
-.caAdvancedSearchFormSubmit a:active, .caAdvancedSearchFormReset a:active{
+a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover,
+a.caAdvancedSearchFormSubmit:active, a.caAdvancedSearchFormReset:active{
 	color: #00cfb7;
 }
 .identifier textarea.form-control {
     width: 400px;
+}
+
+/* Forms */
+
+.dropdown-header {
+	color: #000;
+}
+.bNavOptions .dropdown-menu {
+	text-align:left;
+}
+.bNavOptions .dropdown-menu em {
+	font-style:normal;
+	color: #00cfb7;
+	font-weight:normal;
+}
+#user-navbar .dropdown {
+	font-family: "news gothic";
+}
+li[role=presentation] {
+	text-transform:none;
+    font-size: 13px;
+    padding-right: 5px;	
+}	
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+	background-color: #f9f9f9;
+	color: #000;
+}
+#caFormOverlay {
+	border-radius:0px;
+}
+#caFormOverlay .icon-cross {
+	color: #fff;
+	font-size:20px;
+	margin-top: -20px;
+    display: inline-block;	
+}
+.form-horizontal .control-label, .form-horizontal .radio, .form-horizontal .checkbox, .form-horizontal .radio-inline, .form-horizontal .checkbox-inline {
+	color: #000;
+	font-size:14px;
+}
+.btn-default, .btn-default:hover, .sets .btn {
+	color: #00cfb7;
+	padding:5px 10px 4px 10px;
+	font-weight:bold;
+	text-transform:uppercase;
+	border: 2px solid #00cfb7;
+    margin: 20px auto 20px auto;
+    border-radius: 0px;
+    font-size:14px;
+    background-color:#fff;
+}
+#caFormOverlay h1, .loginreg h1 {
+    font-size: 30px;
+    color: #fff;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.formHeader {
+    background-color: #000;
+    margin: -25px -15px 20px -15px;
+    padding: 10px 10px 1px 10px;
+}
+
+/* Lightbox */
+.lightbox .icon-cog2 {
+	font-size:20px;
+}
+.dropdown-menu > li > a em {
+	font-style:normal;
+	font-weight:bold;
+}
+.lbSet h5 a{
+	color: #000;
+	text-transform:none;
+	font-size:15px;
+}
+.lbItemContainer {
+	height:310px;
+	margin-top:20px;
+}
+.lbItem {
+    padding: 15px;
+    padding-bottom:5px;
+    width: 110%;
+    left: -5%;
+    top: -5%;
+    border-bottom: 2px solid #ddd;
+    box-shadow:none;
+}
+.lbItemContainer .lbItem:hover {
+	padding-bottom:5px;
+}
+.lbItem .caption, .lbItem .caption a {
+	color: #000;
+}
+.lbItemContainer .lbSetItemComment .closecomment {
+	font-size: 16px;
+}
+.lbItemContainer .lbExpandedInfo, .lbSetExpandedInfo {
+	display:inline;
+	font-size:13px;
+	color:#000;
+	text-transform:capitalize;
+}
+.lbItemContainer .lbExpandedInfo a:hover{
+	text-decoration:none;
+}
+.lbItem:hover .lbItemImg {
+    max-height: 200px;
+}
+.lbItemContainer .lbItem:hover .lbItemContent {
+	height: 250px;
+}
+.lbItemContent {
+	margin-bottom:15px;
+}
+.lbSetItemComment {
+    box-shadow: none;
+    margin-top: 2px;
+    border-bottom: 2px solid #ddd;
+    border-right: 2px solid #ddd;
+    border-top: solid 2px #ddd;
+}
+.lbSetItemComment .lbComments blockquote, .lbSetComment .lbComments blockquote {
+	font-size:12px;
+}
+.lbSetItemComment textarea:focus, .lbSetComment textarea:focus {
+	border: 1px solid #00cfb7;
+}
+.lbSetItemComment .lbComments {
+	height:150px;
+	max-height:150px;
+}
+.lbItemContainer .lbItem:hover .lbSetItemComment .lbComments {
+	height:150px;
+}
+.setComment .icon-cross-square {
+	margin-top: -8px;
+    display: block;
+}
+.lbSetItemComment .btn-default {
+	margin-top:1px;
+	padding:1px 4px 1px 4px;
+	color: #666;
+	border: 2px solid #666;
+	font-weight:bold;
+	font-size:12px;
+}
+.lbSetCommentHeader {
+	border: 0px;
+	padding-top: 0px;
+	margin-top: 0px;
+}
+.lbComments hr {
+	margin-top:10px;
+	margin-bottom:0px;	
+}
+.lightbox textarea:focus {
+	border: 1px solid #00cfb7;
+}
+.lbSet {
+	height:300px;
+	box-shadow:none;
+	border-bottom: 2px solid #ddd;
+}
+.lbSet:hover {
+	height:325px;
+}
+.lbSet h5 {
+	height:auto;
+}
+.lbSetExpandedInfo div {
+	margin-bottom: 5px;
+}
+.sets H1 {
+	margin-bottom:20px;
+}
+.lbSetContent {
+	margin-bottom:25px;
+}
+.lbSetImgPlaceholder {
+	padding: 40px 5px 68px 5px;
 }

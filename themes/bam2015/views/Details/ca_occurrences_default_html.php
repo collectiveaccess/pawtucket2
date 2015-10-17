@@ -106,7 +106,7 @@
 					
 				</div>
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<hr class="divide" style="margin-bottom:0px;"/>
 			<div class="container"><div class="row">
 				

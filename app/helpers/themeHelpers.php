@@ -1015,7 +1015,7 @@
 	# ---------------------------------------
 	/**
 	 * class -> class name of <ul>
-	 *
+	 * options -> limit -> limit number of sets returned, role -> role in <ul> tag
 	 */
 	function caGetGallerySetsAsList($po_request, $vs_class, $pa_options=null){
 		$o_config = caGetGalleryConfig();
@@ -1028,8 +1028,9 @@
 			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
 
 			$vn_limit = caGetOption('limit', $pa_options, 100);
+			$vs_role = caGetOption('role', $pa_options, null);
 			if(sizeof($va_sets)){
-				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").">\n";
+				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").(($vs_role) ? " role='".$vs_role."'" : "").">\n";
 
 				$vn_c = 0;
 				foreach($va_sets as $vn_set_id => $va_set){
