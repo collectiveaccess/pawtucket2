@@ -51,14 +51,7 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_set_config = caGetLightboxConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
-	if(!$vs_lightbox_icon){
-		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
-	}
-	$va_lightbox_display_name = caGetLightboxDisplayName($o_set_config);
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -121,8 +114,10 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
-
+				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					$vs_add_to_set_link = "<a href='#' class='addToLightbox' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+				}
+				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
@@ -130,7 +125,7 @@
 		<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='text-center'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}' class='addToLightbox'>".$vs_lightbox_icon."</i></a>")."
+					".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : $vs_add_to_set_link)."
 					{$vs_label_detail_link}
 				</div><!-- end bResultItemText -->
 	</div><!-- end col -->";
