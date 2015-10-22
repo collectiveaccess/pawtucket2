@@ -38,7 +38,7 @@
 						print "<div class='unit'><H6>Description</h6>".$t_item->get('ca_occurrences.description')."</div>";
 					}
 					if($t_item->get('ca_entities')){
-						if ($va_participants = $t_item->get('ca_entities', array('template' => '^ca_entities.preferred_labels ^ca_entities.relationship_typename', 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+						if ($va_participants = $t_item->get('ca_entities', array('template' => ' <unit relativeTo="ca_entities_x_occurrences"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>', 'delimiter' => '<br/>'))) {
 							print "<div class='unit'><H6>Participants</h6>".$va_participants."</div>";
 						}
 					}
