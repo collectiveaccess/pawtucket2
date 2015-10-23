@@ -2,8 +2,9 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_id = $t_item->get('ca_collections.collection_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	$va_type = caNavLink($this->request, "Finding Aids", '', 'FindingAid', 'Collection', 'Index');
 	$va_title = $t_item->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true));
 	foreach ($va_title as $va_collection_key => $va_collection_names) {
@@ -72,7 +73,7 @@
 	if ($va_entities = $t_item->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 		$vs_buf.= "<span class='collectionLabel'>Related Entities: </span><div class='unit'>".$va_entities."</div>";
 	}				
-	$va_hierarchy = $t_item->hierarchyWithTemplate('<l>^ca_collections.preferred_labels</l> (^ca_collections.idno)', array('collection_id' => $t_item->get('ca_collections.collection_id')));
+	$va_hierarchy = $t_item->hierarchyWithTemplate('<l>^ca_collections.preferred_labels</l>', array('collection_id' => $t_item->get('ca_collections.collection_id'), 'checkAccess' => $va_access_values));
 	if ($va_hierarchy) {
 		$vs_buf.= "<h3><a name='contents'>Collection Contents</a></h3>";
 		$va_anchors[] = "<a href='#contents'>Collection Contents</a>";
@@ -88,10 +89,6 @@
 		$vs_buf.= "<h3><a name='objects'>Related Objects</a></h3><div class='unit'>".$va_objects."</div>";
 		$va_anchors[] = "<a href='#objects'>Related Objects</a>";
 	}
-
-
-
-
 ?>
 
 <div class="page">

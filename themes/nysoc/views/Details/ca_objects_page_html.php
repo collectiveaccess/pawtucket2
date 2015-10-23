@@ -8,7 +8,7 @@
 
 	$va_ledger = caNavLink($this->request, ((strlen($t_object->get('ca_objects.parent.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.parent.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.parent.preferred_labels')), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.parent.object_id'));
 
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_docs." > ".$va_ledger." > ".$va_page);
 ?>
 <div class="page">
@@ -46,7 +46,7 @@
 									<div class='nextLink'>{{{nextLink}}}</div>
 								</div>
 <?php								
-								print "<h6>".$t_object->get('ca_objects.parent.preferred_labels')."</h6>";
+								print "<h6>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h6>";
 ?>								
 								<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 								<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>

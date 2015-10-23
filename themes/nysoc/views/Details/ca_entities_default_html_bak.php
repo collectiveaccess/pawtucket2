@@ -408,19 +408,9 @@
 	?>
 
 									<div class='vizTitle'>Circulation Activity <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
-									<div class='col-sm-4 col-md-4 col-lg-4'>
-										<div class='vizName'>Books by subject area 
-											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->
-										</div>
-										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>									
-										<div class="vizName">Check out duration</div> 
-										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>									
-									</div>									
-									<div class='col-sm-8 col-md-8 col-lg-8'>
-										<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
-										<div class="ct-key entityCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
-									</div>
-
+			
+									<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
+									<div class="ct-key entityCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
 									<script type="text/javascript">
 										var dataForCirculationActivity = {
 										  labels: <?php print json_encode(array_keys($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
@@ -482,7 +472,10 @@
 									$vn_entity_id = $t_item->getPrimaryKey();
 									if ($stat_bib_books_by_subject_area[$vn_entity_id]) {
 ?>
-
+										<div class='vizName'>Books by subject area 
+											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->
+										</div>
+										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>
 										<script type="text/javascript">
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
@@ -548,7 +541,8 @@
 
 										if ($stat_entity_checkout_durations[$vn_entity_id]) {
 ?>
-
+										<div class="vizName">Check out duration</div> 
+										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>
 										<script type="text/javascript">
 											var dataForCheckoutDuration = {
 											  labels: <?php print json_encode(array_keys($stat_entity_checkout_durations[$vn_entity_id])); ?>,
@@ -741,7 +735,7 @@
 										ksort($va_docs_by_type);
 										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
 											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-											$vs_doc_buf.= "<div >";
+											$vs_doc_buf.= "<div class='row'>";
 											foreach ($vs_documents as $va_key => $vs_doc) {
 												$vs_doc_buf.= $vs_doc;
 											}
@@ -832,7 +826,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 150
+		  maxHeight: 135
 		});
 		$('#entityTable').tabs();
     	$('#circTable').dataTable({

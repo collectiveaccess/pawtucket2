@@ -26,9 +26,12 @@
 	<div class="row">
 		<div class="col-sm-2" >
 			<div id='readerContentContainer'>
-				<div id='readerContent' style="height: 600px;">
+				<div id='readerContent'>
 					<!-- List of currently displays readers -->
 				</div>
+				<div class="clearfix"></div>
+				<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
+
 			</div>
 		</div>	
 		<div class="col-sm-10 ">

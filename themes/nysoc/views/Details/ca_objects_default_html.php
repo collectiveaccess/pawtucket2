@@ -18,7 +18,7 @@
 	$vn_object_id = $t_object->getPrimaryKey();
 	
 	
-	$vs_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$vs_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($vs_home." > ".$vs_type." > ".$vs_title);
 	
 		# Circulation Records
@@ -456,21 +456,34 @@ if(false) {
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<!-- open/close -->
 								<div class="overlay overlay-corner">
-									<div class='vizTitle'><!--Circulation Activity for <?php print caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels'), 120); ?>-->
+									<div ><!--Circulation Activity for <?php print caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels'), 120); ?>-->
 										<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 									</div>
 									
 									<div style="width:60%; height:400px; float:left; padding-right:10px;">
 										
 										<div id="stat_bib_checkout_distribution2" class="ct-chart ct-golden-section"> 
-										<div class="ct-key"><span class="ct-series-a-key"><?php print $t_object->get('ca_objects.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+										<div class="ct-key">
+											<span class="ct-series-a-key">
+												<i class="fa fa-square"></i> 
+												<span class='blacktext'>
+													<?php print $t_object->get('ca_objects.preferred_labels'); ?>
+												</span>
+											</span> 
+											<span class="ct-series-b-key average">
+												<i class="fa fa-square"></i> 
+												<span class='blacktext'>Library Average</span>
+											</span>
+										</div>	
 										</div>
+									
 									</div>
 									<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
 										<div style="width:80%; ">
 											<div class='vizName'>Readers by Occupation</div>
 											<div id="stat_bib_readers_by_occupation2" class="ct-chart ct-golden-section"></div>
 										</div>
+										<hr style='margin-top:20px;'>
 										<div style="width:80%; ">
 											<div class="vizName">Check out Duration</div> 
 											<div id="stat_bib_checkout_durations2" class="ct-chart ct-golden-section"></div>
@@ -481,13 +494,13 @@ if(false) {
 						</div><!-- end row-->	
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="vizTitle" style="padding-bottom:0px;">Check out distribution</div>
+								<div class="vizTitle" >Check out distribution <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
 								<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
-								<div class="ct-key"><span class="ct-series-a-key">This Title</span> <span class="ct-series-b-key" style="padding-right:10px;">Library Average</span></div>								
+								<div class="ct-key objectsCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'>This Title</span></span> <span class="ct-series-b-key average" style="padding-right:10px;"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>								
 							</div><!-- end col-->
 						</div><!-- end row-->
 						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand vizTitle" style="margin-top:-20px;padding-bottom:15px;">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand " style="margin-top:-20px;padding-bottom:15px; border-bottom:1px solid #ccc;">
 								<section>
 <?php											
 									print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Books', '', '', 'Circulation', 'Books', ['id' => $t_object->getPrimaryKey()]).'</div></p>';
@@ -508,14 +521,7 @@ if(false) {
 									</div><!-- end col-->
 								</div><!-- end row-->
 							</div><!-- end col-->
-						</div><!-- end row-->
-						<div class="row <?php print $va_class; ?>">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
-								<section>
-									<p ><button id="trigger-overlay" type="button">Click to Expand</button></p>
-								</section>
-							</div>
-						</div>						
+						</div><!-- end row-->						
 <?php
 	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
 
