@@ -80,6 +80,7 @@
 				$('.jcarousel')
 					.jcarousel({
 						// Options go here
+						wrap:'circular'
 					});
 		
 				/*
