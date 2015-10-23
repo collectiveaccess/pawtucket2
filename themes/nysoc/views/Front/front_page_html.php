@@ -29,6 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+ 	MetaTagManager::setWindowTitle("");
+
 ?>
 	<div class="container">
 		<div class="row">
@@ -39,13 +42,9 @@
 			</div>
 		</div>	
 		<div class="row">
-			<div class="col-sm-8">
-				<h1>Circulation Records 1789-1792</h1>
-				<h4>Discover something new about New York and New Yorkers through the Society Library’s historic records and collections.</H4>
-			</div><!--end col-sm-8-->
-			<div class="col-sm-4">
-			
-			</div> <!--end col-sm-4-->	
+			<div class="col-sm-12">
+				<h4 style="text-align:center;">Explore more than 100,000 records of books, readers, and borrowing history from the New York Society Library's archives.</H4>
+			</div><!--end col-sm-8-->	
 		</div><!-- end row -->
 	</div> <!--end container-->
 			

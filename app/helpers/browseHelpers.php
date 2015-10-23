@@ -215,6 +215,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return (string)
 	 */
 	function caGetFacetForMenuBar($po_request, $vs_browse_type) {
+		$o_browse_config = caGetBrowseConfig();
 		$vs_key = '';//$po_request->session->getVar('objects_last_browse_id');
 		
 		if (!($va_browse_info = caGetInfoForBrowseType($vs_browse_type))) {
@@ -223,6 +224,11 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		}
 		$o_browse = caGetBrowseInstance($va_browse_info["table"]);
 		if ($vs_key) { $o_browse->reload($vs_key); }
+		
+		if ($vs_menu_bar_facet_group = $o_browse_config->get('menubarFacetGroup')) {
+			$o_browse->setFacetGroup($vs_menu_bar_facet_group);
+		}
+		
 		$o_browse->execute(array('checkAccess' => caGetUserAccessValues($po_request), 'showAllForNoCriteriaBrowse' => true));
 	
 		$va_facets = $o_browse->getInfoForAvailableFacets();

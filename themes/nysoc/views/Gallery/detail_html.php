@@ -5,6 +5,10 @@
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$t_set = new ca_sets($pn_set_id);
+	
+	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	MetaTagManager::setWindowTitle($va_home." > Featured");	
+	
 ?>
 <div class="page">
 	<div class="wrapper">
@@ -50,7 +54,20 @@
 						} 
 					}
 					foreach ($va_set_items as $va_item_type => $va_item_info) {
-						print "<h3>".$va_item_type." <small>(".sizeof($va_item_info).")</small></h3>";;
+						if ($va_item_type == "Bib") {
+							$va_type_label = "Books";
+						} elseif ($va_item_type == "Ledger") {
+							$va_type_label = "Ledgers";
+						} elseif ($va_item_type == "Page") {
+							$va_type_label = "Pages";
+						} elseif ($va_item_type == "Catalog") {
+							$va_type_label = "Catalogs";
+						} elseif ($va_item_type == "Individual") {
+							$va_type_label = "Individuals";
+						} elseif ($va_item_type == "Organization") {
+							$va_type_label = "Organizations";
+						}
+						print "<h3>".$va_type_label." <small>(".sizeof($va_item_info).")</small></h3>";;
 						if ($va_item_type == "Bib") {
 							$va_class = "class='bookButton'";
 						} elseif ($va_item_type == "Individual" | $va_item_type == "Organization") {

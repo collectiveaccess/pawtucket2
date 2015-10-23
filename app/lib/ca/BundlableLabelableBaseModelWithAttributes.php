@@ -2075,8 +2075,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										
 					if ($va_tmp[0] != $this->tableName()) {
 						switch(sizeof($va_tmp)) {
-							case 1:
-								return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 							case 2:
 							case 3:
 								if (caGetOption('select', $pa_options, false)) {
@@ -2098,12 +2096,38 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			
 									$vs_pk = $t_instance->primaryKey();
 									$va_opts = array('-' => '');
+									
+									$va_in_use_list = null;
+									if (caGetOption('inUse', $pa_options, false)) {
+										if (is_array($va_path = $this->_DATAMODEL->getPath($this->tableName(), 'ca_list_items'))) {
+										$va_path = array_keys($va_path);
+											if (sizeof($va_path) == 3) {
+												$vs_table = $this->tableName();
+												$vs_pk = $this->primaryKey();
+											
+												$va_sql_wheres = array();
+												$va_sql_params = array();
+												if ($this->hasField('deleted')) { $va_sql_wheres[] = "(t.deleted = 0)"; }
+												if ($this->hasField('access') && is_array($va_access) && sizeof($va_access)) { $va_sql_wheres[] = "(t.access IN (?))"; $va_sql_params[] = $va_access; }
+											
+												$qr_in_use = $this->getDb()->query("
+													SELECT DISTINCT l.item_id
+													FROM {$va_path[1]} l
+													INNER JOIN {$vs_table} AS t ON t.{$vs_pk} = l.{$vs_pk}
+													".((sizeof($va_sql_wheres) > 0) ? "WHERE ".join(" AND ", $va_sql_wheres) : "")."		
+												", $va_sql_params);
+												$va_in_use_list = $qr_in_use->getAllFieldValues('item_id');
+											}
+										}
+									}
+									
 									while($qr_res->nextHit()) {
 										if (($va_tmp[0] == 'ca_list_items') && (!$qr_res->get('parent_id'))) { continue; }
 										if (is_array($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
+										if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get('item_id'), $va_in_use_list)) { continue; }
 										$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
 									}
-			
+									uksort($va_opts, "strnatcasecmp");
 									return caHTMLSelect($ps_field.($vb_as_array_element ? "[]" : ""), $va_opts, array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 								} else {
 									return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);

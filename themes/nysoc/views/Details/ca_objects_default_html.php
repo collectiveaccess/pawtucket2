@@ -1,5 +1,6 @@
 <?php
 	Timer::start('page');
+	Timer::disable('page');
 
 	$t_object 			= $this->getVar("item");
 	$va_comments 		= $this->getVar("comments");
@@ -439,176 +440,262 @@ if(false) {
 							<!-- AddThis Button BEGIN -->
 							<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 							<!-- AddThis Button END -->
-							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
-					<div class='col-sm-6 col-md-6 col-lg-6'>
-								
-					</div><!-- end col -->			
-				</div><!-- end row -->
-		
 <?php
-		if ($vn_result_count > 0) {	
-?>
-				<div class="row">
-					<div class='col-sm-12 col-md-12 col-lg-12'>
-						<div class='visualize'><a href='#' onclick="$('#visualizePane').slideDown();document.querySelector('#stat_bib_readers_by_occupation').__chartist__.update();document.querySelector('#stat_bib_checkout_durations').__chartist__.update();document.querySelector('#stat_bib_checkout_distribution').__chartist__.update(); return false;"><i class='fa fa-gears'></i> Visualize</a></div>	
-					</div><!-- end col -->			
-				</div><!-- end row -->
-				<div class='row' id='visualizePane' style='display:none;'>
-					<hr></hr>
-					<div class='col-sm-3 col-md-3 col-lg-3'>
+					if ($vs_has_circulation == false) {
+						$va_class = "hideme";
+					} else {
+						$va_class = "";
+					}
+?>					
+					<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd;'>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<!-- open/close -->
+								<div class="overlay overlay-corner">
+									<div class='vizTitle'><!--Circulation Activity for <?php print caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels'), 120); ?>-->
+										<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
+									</div>
+									
+									<div style="width:60%; height:400px; float:left; padding-right:10px;">
+										
+										<div id="stat_bib_checkout_distribution2" class="ct-chart ct-golden-section"> 
+										<div class="ct-key"><span class="ct-series-a-key"><?php print $t_object->get('ca_objects.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+										</div>
+									</div>
+									<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
+										<div style="width:80%; ">
+											<div class='vizName'>Readers by Occupation</div>
+											<div id="stat_bib_readers_by_occupation2" class="ct-chart ct-golden-section"></div>
+										</div>
+										<div style="width:80%; ">
+											<div class="vizName">Check out Duration</div> 
+											<div id="stat_bib_checkout_durations2" class="ct-chart ct-golden-section"></div>
+										</div>	
+									</div>																				
+								</div><!-- end overlay-->
+							</div><!-- end col-->
+						</div><!-- end row-->	
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<div class="vizTitle" style="padding-bottom:0px;">Check out distribution</div>
+								<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
+								<div class="ct-key"><span class="ct-series-a-key">This Title</span> <span class="ct-series-b-key" style="padding-right:10px;">Library Average</span></div>								
+							</div><!-- end col-->
+						</div><!-- end row-->
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand vizTitle" style="margin-top:-20px;padding-bottom:15px;">
+								<section>
+<?php											
+									print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Books', '', '', 'Circulation', 'Books', ['id' => $t_object->getPrimaryKey()]).'</div></p>';
+?>											
+								</section>
+							</div>
+						</div>						
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+								<div class="row">
+									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">		
+										<div class="vizName">Check out duration</div>
+										<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
+									</div><!-- end col-->
+									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+										<div class="vizName">Readers by occupation</div>
+										<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>																								
+									</div><!-- end col-->
+								</div><!-- end row-->
+							</div><!-- end col-->
+						</div><!-- end row-->
+						<div class="row <?php print $va_class; ?>">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
+								<section>
+									<p ><button id="trigger-overlay" type="button">Click to Expand</button></p>
+								</section>
+							</div>
+						</div>						
 <?php
 	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
-	
+
 	$vn_bib_id = $t_object->getPrimaryKey();
 	if ($stat_bib_readers_by_occupation[$vn_bib_id]) {
+		$va_series_labels = array_keys($stat_bib_readers_by_occupation[$vn_bib_id]);
+		$va_series = array_values($stat_bib_readers_by_occupation[$vn_bib_id]);
 ?>
-						<h1>Readers by occupation</h1>
+						
+		<script type="text/javascript">
+			var dataForReadersByOccupation = {
+			  labels: <?php print json_encode($va_series_labels); ?>,
+			  series: <?php print json_encode($va_series); ?>
+			};
+
+			var options = {
+				labelInterpolationFnc: function(value, index) {
+				  if(dataForReadersByOccupation.series[index] <= 5) { return ''; }
+				  return value;
+				}
+			};
+			var $chart = $('#stat_bib_readers_by_occupation2');
+
+			var $subjectAreaToolTip = $chart
+			  .append('<div class="tooltip"></div>')
+			  .find('.tooltip')
+			  .hide();
+
+			$chart.on('mouseenter', '.ct-series', function() {
+				var $slice = $(this),
+				value = $slice.find('path').attr('ct:value');
+				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
 			
-						<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>
-						<script type="text/javascript">
-							var data = {
-							  labels: <?php print json_encode(array_keys($stat_bib_readers_by_occupation[$vn_bib_id])); ?>,
-							  series: <?php print json_encode(array_values($stat_bib_readers_by_occupation[$vn_bib_id])); ?>
-							};
+				sliceName = dataForReadersByOccupation.labels[l] + " (" + value + ")";	// $slice.find('text.ct-label').text() 
+				$subjectAreaToolTip.html(sliceName).show();
+			});
 
-							var options = {
-							  labelInterpolationFnc: function(value) {
-								return value[0]
-							  }
-							};
+			$chart.on('mouseleave', '.ct-series', function() {
+			  $subjectAreaToolTip.hide();
+			});
 
-							var responsiveOptions = [
-							  ['screen and (min-width: 640px)', {
-								chartPadding: 50,
-								labelOffset: 30,
-								labelDirection: 'explode',
-								labelInterpolationFnc: function(value) {
-								  return value;
-								}
-							  }],
-							  ['screen and (min-width: 1024px)', {
-								labelOffset: 30,
-								chartPadding: 50
-							  }]
-							];
+			$chart.on('mousemove', function(event) {
+			  $subjectAreaToolTip.css({
+				left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
+				top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+			  });
+			});
+			var responsiveOptions = [
+			  ['screen and (min-width: 640px)', {
+				chartPadding: 20,
+				labelOffset: 60,
+				labelDirection: 'explode'
+			  }],
+			  ['screen and (min-width: 1024px)', {
+				labelOffset: 60,
+				chartPadding: 20
+			  }]
+			];
 
-							new Chartist.Pie('#stat_bib_readers_by_occupation', data, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_readers_by_occupation', dataForReadersByOccupation, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_readers_by_occupation2', dataForReadersByOccupation, options, responsiveOptions);
 
-						</script>	
-						<!-- Chartist -->
+		</script>	
+		<!-- Chartist -->
 <?php
 	}
-?>
-					</div><!-- end col-->
-					<div class='col-sm-3 col-md-3 col-lg-3'>
-<?php
+
 	$stat_bib_checkout_durations = CompositeCache::fetch('stat_bib_checkout_durations', 'vizData');
 	
 	if ($stat_bib_checkout_durations[$vn_bib_id]) {
+		$va_series_labels = array_keys($stat_bib_checkout_durations[$vn_bib_id]);
+		$va_series = array_values($stat_bib_checkout_durations[$vn_bib_id]);
 ?>
-						<h1>Check out duration</h1>
+		<script type="text/javascript">
+			var dataForCheckoutDurations = {
+			  labels: <?php print json_encode($va_series_labels); ?>,
+			  series: <?php print json_encode($va_series); ?>
+			};
+
+			var options = {
+			 	labelInterpolationFnc: function(value, index) {
+				  if(dataForCheckoutDurations.series[index] <= 10) { return ''; }
+				  return value;
+				}
+			};
+			var $chart = $('#stat_bib_checkout_durations2');
+
+			var $durationToolTip = $chart
+			  .append('<div class="tooltip"></div>')
+			  .find('.tooltip')
+			  .hide();
+
+			$chart.on('mouseenter', '.ct-series', function() {
+				var $slice = $(this),
+				value = $slice.find('path').attr('ct:value');
+				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
 			
-						<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
-						<script type="text/javascript">
-							var data = {
-							  labels: <?php print json_encode(array_keys($stat_bib_checkout_durations[$vn_bib_id])); ?>,
-							  series: <?php print json_encode(array_values($stat_bib_checkout_durations[$vn_bib_id])); ?>
-							};
+				sliceName = dataForCheckoutDurations.labels[l] + " (" + value + ")";		//$slice.find('text.ct-label').text()
+				$durationToolTip.html(sliceName).show();
+				
+				
+			});
 
-							var options = {
-							  labelInterpolationFnc: function(value) {
-								return value[0]
-							  }
-							};
+			$chart.on('mouseleave', '.ct-series', function() {
+			  $durationToolTip.hide();
+			});
 
-							var responsiveOptions = [
-							  ['screen and (min-width: 640px)', {
-								chartPadding: 50,
-								labelOffset: 30,
-								labelDirection: 'explode',
-								labelInterpolationFnc: function(value) {
-								  return value;
-								}
-							  }],
-							  ['screen and (min-width: 1024px)', {
-								labelOffset: 30,
-								chartPadding: 50
-							  }]
-							];
+			$chart.on('mousemove', function(event) {
+			  $durationToolTip.css({
+				left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
+				top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+			  });
+			});
+			var responsiveOptions = [
+			  ['screen and (min-width: 640px)', {
+				chartPadding: 20,
+				labelOffset: 60,
+				labelDirection: 'explode'
+			  }],
+			  ['screen and (min-width: 1024px)', {
+				labelOffset: 60,
+				chartPadding: 20
+			  }]
+			];
 
-							new Chartist.Pie('#stat_bib_checkout_durations', data, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_checkout_durations', dataForCheckoutDurations, options, responsiveOptions);
+			new Chartist.Pie('#stat_bib_checkout_durations2', dataForCheckoutDurations, options, responsiveOptions);
 
-						</script>	
-						<!-- Chartist -->
-					
-					</div>
+		</script>	
+		<!-- Chartist -->					
 <?php
 	}
-?>
-					<div class='col-sm-3 col-md-3 col-lg-3'>
-<?php
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
 	if($stat_bib_checkout_distribution) {
 ?>
-						<h1>Check out distribution</h1>
+		<script type="text/javascript">
+			var dataForCheckoutDistribution = {
+			  labels: <?php print json_encode(array_keys($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
+			  series: [
+						<?php print json_encode(array_values($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
+						<?php print json_encode(array_values($stat_avg_checkout_distribution)); ?>
+					]
+			};
 			
-						<div id="stat_bib_checkout_distribution" class="ct-chart ct-square"></div>
-						<div class="ct-key"><span class="ct-series-a-key">This book</span> <span class="ct-series-b-key">Average</span></div>
-						<script type="text/javascript">
-							var data = {
-							  labels: <?php print json_encode(array_keys($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
-							  series: [
-							  			<?php print json_encode(array_values($stat_bib_checkout_distribution[$vn_bib_id])); ?>,
-							  			<?php print json_encode(array_values($stat_avg_checkout_distribution)); ?>
-							  		]
-							};
-							
-							var options = {
-								fullWidth: true,
-								// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-								axisX: {
-									onlyInteger: true,
-									offset: 10
-								},
-								axisY: {
-									onlyInteger: true,
-									offset: 10
-								},
-								width: "430px",
-								height: "240px"
-							};
-							
-							var responsiveOptions = [
-							  ['screen and (min-width: 640px)', {
-								chartPadding: 20,
-								labelOffset: 30,
-								labelDirection: 'explode'
-							  }],
-							  ['screen and (min-width: 1024px)', {
-								labelOffset: 30,
-								chartPadding: 20
-							  }]
-							];
+			var options = {
+				fullWidth: true,
+				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
+				axisX: {
+					onlyInteger: true,
+					offset: 10
+				},
+				axisY: {
+					onlyInteger: true,
+					offset: 10
+				},
+			};
+			
+			var responsiveOptions = [
+			  ['screen and (min-width: 640px)', {
+				chartPadding: 20,
+				labelOffset: 30,
+				labelDirection: 'explode'
+			  }],
+			  ['screen and (min-width: 1024px)', {
+				labelOffset: 30,
+				chartPadding: 20
+			  }]
+			];
 
-							new Chartist.Line('#stat_bib_checkout_distribution', data, options, responsiveOptions);
-						</script>
-
+			new Chartist.Line('#stat_bib_checkout_distribution', dataForCheckoutDistribution, options, responsiveOptions);
+			new Chartist.Line('#stat_bib_checkout_distribution2', dataForCheckoutDistribution, options, responsiveOptions);
+		</script>
 <?php
 	}
-?>
-					</div>
-					<div class='col-sm-3 col-md-3 col-lg-3'>					
-						<div class='closeBut'><a href='#' onclick="$('#visualizePane').slideUp(); return false;">close</a></div>
-					</div><!-- end col-->
-				</div><!-- end row visualizationpane -->
-<?php	
-			}
-?>	
+?>														
+		
+					</div><!-- end col -->			
+				</div><!-- end row -->
 				<div class='row'>
 					<div class='col-sm-12 col-md-12 col-lg-12'>	
 						<div id='objectTable'>
@@ -742,7 +829,7 @@ if(false) {
 											<th>Date In<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 											<th>Fine<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></div>
 											<th>Transcribed<br/>Title<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>				
-											<th>Repr.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
+											<th>Rep.<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 											<th>Ledger<i class='fa fa-chevron-up'></i><i class='fa fa-chevron-down'></i></th>
 										</tr>
 										

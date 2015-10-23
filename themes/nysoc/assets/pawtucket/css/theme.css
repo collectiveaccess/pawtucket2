@@ -44,6 +44,9 @@ a {
 .page {
   /*margin: 20px 0*/
 }
+.hideme {
+	display:none;
+}
 .wrapper {
   max-width: 1800px;
   margin: 0 auto;
@@ -62,6 +65,9 @@ a {
   overflow: auto;
   min-height: 600px;
   min-width:840px;
+}
+.ledger.detail .content-inner {
+	overflow: visible; 
 }
 .sidebar {
   position: relative;
@@ -133,7 +139,14 @@ a {
 }
 @media (max-width: 767px){
 	.navbar-form .form-group {
-	  width: 190px;
+	  width: 165px;
+	}
+}
+@media (max-width: 767px) {
+	.btn-search {
+		position:relative;
+		top:0px;
+		right:0px;
 	}
 }
 #topMenu {
@@ -460,11 +473,11 @@ div.globalLinks a {
 	width:80%;
 }
 .setTitle {
-	font-size:20px;
+	font-size:24px;
 }
 .setDescription {
 	font-weight:normal;
-	font-size:12px;
+	font-size:14px;
 }
 .front .jcarousel-control-next, .front .jcarousel-control-prev {
 	font-size:80px;
@@ -649,7 +662,7 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#000;
 }
 .detailMediaToolbar .dlButton {
-	display:none;
+	/*display:none;*/
 }
 .detail .detailMediaToolbar {
 	padding-right:10px;
@@ -664,7 +677,7 @@ a.readmore-js-toggle {
 	margin-top:10px !important;
 }
 .bookTitle {
-	max-height:38px;
+	max-height:48px;
 	overflow:hidden;
 }
 .biography h2 {
@@ -744,14 +757,33 @@ a.readmore-js-toggle {
 .closeBut {
 	text-align:right;
 }
-.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
+.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal, #stat_entity_checkout_distribution.ct-chart .ct-label.ct-horizontal, #stat_bib_checkout_distribution.ct-chart .ct-label.ct-horizontal  {
 	font-size:.9em !important;
-	color:#333 !important;
-	fill:#333 !important;
+	color:#666 !important;
+	fill:#666 !important;
+	font-weight:bold;
+}
+.overlay {
+	padding:20px;
+}
+
+.overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
+	color:#000 !important;
+	fill:#000 !important;
+	font-size:1.2em !important;
+}
+.overlay .circles #stat_bib_books_by_subject_area2 .ct-label:hover, .overlay .circles #stat_entity_checkout_durations2 .ct-label:hover, .overlay .circles #stat_entity_checkout_distribution2 .ct-label:hover {
+	background-color:#ddd;
+	border-radius:4px;
+	padding:5px;
 }
 .ct-chart {
 	overflow:visible !important;
 	margin-top:-45px;
+}
+.overlay .ct-chart {
+	overflow:visible !important;
+	margin-top:0px;
 }
 svg:not(:root) {
 	overflow:visible !important;
@@ -792,6 +824,81 @@ svg:not(:root) {
 .color12 {
 	fill: #000000;
 }
+.vizTitle {
+	color:#333;
+	text-transform:uppercase;
+	font-size:14px;
+	text-align:center;
+	border-bottom:1px solid #ddd;
+}
+.overlay .vizTitle {
+	font-size:28px;
+	padding:10px;
+	text-transform:none;
+}
+.vizName {
+	font-size:14px;
+	color:#666;
+    padding: 10px 0px 30px 0px;
+    text-align: center;	
+}
+.overlay .vizName {
+	text-transform:uppercase;
+	color:#000;
+	font-size:18px;
+	color:#d77421;
+	border-bottom:1px solid #ddd;
+	padding:10px 0px 10px 0px;
+}
+.objects.bib .overlay .vizName { 
+	margin-bottom:20px;
+}
+.expand {
+	padding:0px;
+	text-align:center;
+	color:#d77421;
+	text-transform:uppercase;
+}
+.ct-chart.ct-golden-section {
+	margin:20px -20px 0px -10px;
+}
+.overlay .ct-chart.ct-golden-section {
+	margin:0px;
+
+}
+.overlay .ct-chart-line {
+	margin-top:40px;
+}
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+	stroke: #d77421 !important; 
+}
+.ct-series-a-key {
+    color: #d77421 !important;
+    position: absolute;
+    top: 30px;
+    font-size:14px;
+    left:20px;
+}
+.ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line, .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
+	stroke: #5e9eaa !important;
+}
+.ct-series-b-key {
+    color: #5e9eaa !important;
+    position: absolute;
+    top: 30px;
+    right: 0px;
+    font-size:14px;    
+}
+.ct-series.ct-series-a .ct-slice:not(.ct-donut) {
+	fill: #5e9eaa !important;
+}
+#stat_bib_books_by_subject_area .ct-label, #stat_entity_checkout_durations .ct-label, #stat_bib_checkout_durations .ct-label, #stat_bib_readers_by_occupation .ct-label {
+	display:none;
+}
+#stat_entity_checkout_distribution .ct-label.ct-horizontal, #stat_bib_checkout_distribution .ct-label.ct-horizontal{
+	display:none;
+}
+
 .readerRow {
 	border-bottom:1px solid #ccc;
 	padding-bottom:10px;
@@ -858,9 +965,15 @@ svg:not(:root) {
 #entityTable {
 	margin-top:20px;
 }
+#objectTable {
+	margin-top:20px;
+}
 #objectTable.ui-tabs .ui-tabs-nav{
 	margin-left:-15px !important;
 	margin-right:-15px !important;
+}
+table.dataTable thead th, table.dataTable thead td {
+	padding:10px;
 }
 #buildingTable {
 	margin-top:20px;
@@ -1102,6 +1215,9 @@ div.advancedSearchField {
 .advButton a{ 
 	color:#fff;
 }
+#bViewButtons {
+	display:none;
+}
 
 /* Finding Aid */
 
@@ -1298,12 +1414,24 @@ a.sbIcon.twitter {
 	  width: 500px;
 	}
 }
+.tileviewer div.viewerControls {
+	background-color:#333 !important;
+	opacity:1;
+}
+.tileviewerTooltipFormat {
+	background-color:#333 !important;
+	padding:5px !important;
+	display:block !important;
+}	
+
 
 /* chartist */
 .ct-key {
-	margin: 20px 0 0 30px;
+	margin: 0px 0 0 30px;
 }
-
+.ct-chart .ct-label.ct-horizontal {
+	padding-top:8px;
+}
 .ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line,
 .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
     stroke: blue
@@ -1320,4 +1448,290 @@ a.sbIcon.twitter {
 
 .ct-series-b-key {
 	color: green;
+}
+
+
+/* --------- */
+/* reader list */
+
+
+div#readerList {
+	position: relative;
+	overflow: hidden;
+	max-height: 300px;
+	min-height: 30px;
+	
+}
+#booksCirculation div#readerList{
+	margin-bottom:0px;
+}
+.readerListContent {
+	padding: 5px 0 10px 0;
+	margin: 10px 0 10px 0;	
+	min-height: 30px;
+	max-height: 240px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background-color: #f7f7f7;
+    border-bottom: 10px solid #f7f7f7;
+    border-top: 10px solid #f7f7f7;
+}
+
+#readerListToggle {	
+	position: absolute;
+	top: 4px;
+	right: 10px;
+	font-family: gudea, sans-serif;
+	font-weight: bold;
+	color: #d77421;
+	font-size: 18px;
+}
+
+#readerListToggle:hover {
+	cursor: pointer;
+}
+
+#readerListContent {
+	display: none;
+	
+}
+
+.readerListEntry {
+	background-color: #f7f7f7;
+	padding:8px;
+	border-radius: 4px;
+	margin-top:2px;
+	margin-bottom:2px;
+	display:inline-block;
+	width:100%;
+}
+div.readerListLetterBar {
+	width: 100%;
+	text-align: left;
+	font-family: Gudea, sans-serif;
+	font-size: 16px;
+	margin: 5px 0 0px -15px;
+	font-weight:bold;
+}
+
+div.readerListLetterBar .availableLetter {
+	color: #333;
+	margin: 0 5px 0 0;
+}
+
+div.readerListLetterBar .disabledLetter {
+	color: #bbb;
+	margin: 0 5px 0 0;
+}
+
+div.readerListLetterBar .activeLetter {
+	color: #d77421;
+	margin: 0 5px 0 0;
+}
+.availableLetter, .activeLetter, .disabledLetter {
+	padding:5px 8px 5px 8px;
+	background-color:#eee;
+}
+div#readerContentContainer {
+	padding: 0px;
+}
+
+div#readerContent {
+	border: 0px;
+	height: 700px;
+	border-radius:4px;
+}
+
+/* reader card */
+div#readerCardContainer {
+	background-color: #DEF0E7;
+	padding: 10px;
+	height: 700px;
+	overflow-y: auto;
+}
+
+div.readerCardContent {
+	background-color: #DEF0E7;
+}
+
+div.readerCardContent .readerCardCaption{
+	padding:0px;
+	margin: 0 0 0 5px;
+	
+	font-family: latoregular;
+	color: #6e6e6e;
+}
+
+.readerCardContent .readerCardCaption a{
+	color: #6e6e6e;
+}
+
+div.readerCardContent .readerCardImage {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+}
+
+div.readerCardContent .readerCardCaption .readerCardArtistName {
+	font-size: 20px;	
+}
+
+div.readerCardContent .readerCardCaption .readerCardArtistRoles {
+	font-size: 15px;
+}
+
+div.readerCardContent .readerCardImageSource {
+	font-size: 10px;
+	font-style: italic;
+	text-decoration: none;
+	color: #6e6e6e;
+}
+
+
+/* D3-based entity relationship diagram */
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+}
+
+
+/* Circulation chart */
+#circulationGraph {
+	width: 100%;
+	height: 600px;
+	margin-top: 0px;
+}
+
+/* Publication map visualization */
+#publisherMap {
+	width: 83.33%;
+	height: 600px;
+	margin-top: 0px;
+}
+
+#publisherMapCatalogueDetail {
+	width: 100%;
+	height: 300px;
+	margin-top: 0px;
+	margin-bottom:20px;
+}
+
+.detail.catalog #groupMap #publisherMapYearSlider {
+	width: 100%;
+	left:15px;
+}
+.slider.slider-horizontal {
+	width: 100% !important;
+}
+.slider-handle {
+	background-color: #d6742a !important;
+	background-image: linear-gradient(to bottom, #d6742a 0%, #d6742a 100%) !important;
+}
+.slider-selection {
+	background-color: #d6742a !important;
+	background-image: linear-gradient(to bottom, #d6742a 0%, #d6742a 100%) !important;
+}
+#publisherMapYearSliderStart, #publisherMapYearSliderEnd {
+	background-color:#555;
+	padding:5px;
+	border-radius:4px;
+	color:#fff;
+}
+.tooltip.tooltip-min.top, .tooltip.tooltip-max.top {
+	display:none;
+}
+.tooltip-inner {
+	background-color:#555 !important;
+	padding:5px !important;
+	display:none;
+}
+.tooltip.top {
+	padding:0px; !important;
+}
+.tooltip.top .tooltip-arrow, .tooltip.tooltip-main.top {
+	display:none;
+}
+.leaflet-pane path{
+	fill:#d6742a;
+}
+.leaflet-fade-anim .leaflet-map-pane .leaflet-popup {
+	font-weight:bold;
+}
+.catalog.detail .expand {
+	margin-top:10px;
+}
+#publisherContent div{
+	font-size:13px;
+	color:#666;
+	padding-bottom:10px;
+}
+#publisherContent div input{ 
+	background-color:#333;
+}
+#groupMap #publisherMapYearSlider {
+	left: 0px;
+}
+
+/* Circulation visualization reader list */
+.readerList {
+	background-color: #f7f7f7;
+	font-family: latoregular;
+	color: #6e6e6e;
+	margin: 0 0 0 0;
+	padding: 5px;
+	position: relative;
+	min-height: 50px;
+	border-bottom: 3px solid #fff;
+}
+
+.readerListImage {
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.readerListImagePlaceholder {
+	float: left;
+	margin: 0 5px 0 0;
+	width: 72px;
+	height: 72px;
+	background-color: #eee;
+}
+
+.readerListRemove {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.readerListRemove:hover {
+	cursor: pointer;
+}
+
+.readerListName {
+	font-size: 12px;
+	width: 95%;
+	font-family: gudea, sans-serif;
+	font-weight:bold;
+	color:#333;
+}
+
+.readerListColorKey {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #000;
+	bottom: 5px;
+	right: 5px;
+	border-radius: 3px;
 }

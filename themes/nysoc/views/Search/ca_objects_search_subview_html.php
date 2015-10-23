@@ -90,10 +90,10 @@
 					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
-						$vs_image = $vs_default_placeholder_tag;
+						$vs_image = $vs_default_placeholder_tag;  
 					}
 				}
-				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
+				print caNavLink($this->request, $vs_image, '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'));
 ?>
 				<br/><?php print ($qr_results->get('ca_objects.parent.preferred_labels.name') ? $qr_results->get('ca_objects.parent.preferred_labels.name')."<br/>" : "").$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->

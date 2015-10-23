@@ -50,7 +50,6 @@
 		 *
 		 */
 		public function perBibStatistics() {
-		return;
 if(true) {		
 			//
 			// Readers by occupation
@@ -119,32 +118,32 @@ if(true) {
 							$stat_overall_checkout_distribution_books_by_year[(int)$dates_out[$i]['start']][$bib_id] = true;
 						
 							if (($vn_interval >= $day) && ($vn_interval <= 7*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['1-7']++;
-								$stat_overall_bib_checkout_durations['1-7']++;
+								$stat_bib_checkout_durations[$bib_id]['1-7 days']++;
+								$stat_overall_bib_checkout_durations['1-7 days']++;
 							} elseif(($vn_interval > 7*$day) && ($vn_interval <= 14*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['8-14']++;
-								$stat_overall_bib_checkout_durations['8-14']++;
+								$stat_bib_checkout_durations[$bib_id]['8-14 days']++;
+								$stat_overall_bib_checkout_durations['8-14 days']++;
 							} elseif(($vn_interval > 14*$day) && ($vn_interval <= 21*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['15-21']++;
-								$stat_overall_bib_checkout_durations['15-21']++;
+								$stat_bib_checkout_durations[$bib_id]['15-21 days']++;
+								$stat_overall_bib_checkout_durations['15-21 days']++;
 							} elseif(($vn_interval > 21*$day) && ($vn_interval <= 28*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['22-28']++;
-								$stat_overall_bib_checkout_durations['22-28']++;
+								$stat_bib_checkout_durations[$bib_id]['22-28 days']++;
+								$stat_overall_bib_checkout_durations['22-28 days']++;
 							} elseif(($vn_interval > 28*$day) && ($vn_interval <= 35*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['29-35']++;
-								$stat_overall_bib_checkout_durations['29-35']++;
+								$stat_bib_checkout_durations[$bib_id]['29-35 days']++;
+								$stat_overall_bib_checkout_durations['29-35 days']++;
 							} elseif(($vn_interval > 35*$day) && ($vn_interval <= 42*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['36-42']++;
-								$stat_overall_bib_checkout_durations['36-42']++;
+								$stat_bib_checkout_durations[$bib_id]['36-42 days']++;
+								$stat_overall_bib_checkout_durations['36-42 days']++;
 							} elseif(($vn_interval > 42*$day) && ($vn_interval <= 49*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['43-49']++;
-								$stat_overall_bib_checkout_durations['43-49']++;
+								$stat_bib_checkout_durations[$bib_id]['43-49 days']++;
+								$stat_overall_bib_checkout_durations['43-49 days']++;
 							} elseif(($vn_interval > 49*$day) && ($vn_interval <= 56*$day)) {
-								$stat_bib_checkout_durations[$bib_id]['50-56']++;
-								$stat_overall_bib_checkout_durations['50-56']++;
+								$stat_bib_checkout_durations[$bib_id]['50-56 days']++;
+								$stat_overall_bib_checkout_durations['50-56 days']++;
 							} elseif($vn_interval > 56*$day) {
-								$stat_bib_checkout_durations[$bib_id]['57+']++;
-								$stat_overall_bib_checkout_durations['57+']++;
+								$stat_bib_checkout_durations[$bib_id]['57+ days']++;
+								$stat_overall_bib_checkout_durations['57+ days']++;
 							}
 							$x++;
 						}
@@ -159,11 +158,14 @@ if(true) {
 			
 			print CLIProgressBar::start(sizeof($stat_overall_checkout_distribution)*sizeof($stat_bib_checkout_distribution), _t('[Bibs] Sorting years for check out distribution'));
 			foreach(array_keys($stat_overall_checkout_distribution) as $year) {
+				if ($year > 1805) { continue; }
 				foreach($stat_bib_checkout_distribution as $bib_id => $stats) {
 					print CLIProgressBar::next();
 					if (!isset($stats[$year])) { $stat_bib_checkout_distribution[$bib_id][$year] = 0; }
 				}
 			}
+			
+			$stat_bib_checkout_distribution[$bib_id]['1795'] = 0;
 			
 			foreach($stat_bib_checkout_distribution as $bib_id => $stats) {
 				ksort($stat_bib_checkout_distribution[$bib_id]);
@@ -179,6 +181,7 @@ if(true) {
 		
 			print CLIProgressBar::start(sizeof($stat_overall_checkout_distribution), _t('[Bibs] Calculating averages'));
 			foreach($stat_overall_checkout_distribution as $year => $count) {
+				if ($year > 1805) { continue; }
 				print CLIProgressBar::next();
 				
 				$stat_avg_checkout_distribution[$year] = round($count/sizeof($stat_overall_checkout_distribution_books_by_year[$year]));
@@ -198,7 +201,7 @@ if(true) {
 		 *
 		 */
 		public function perEntityStatistics() {
-if (false) {		
+if (true) {		
 			//
 			// Books by subject area
 			//
@@ -214,9 +217,32 @@ if (false) {
 				$stat_bib_books_by_subject_area[$entity_id] = [];
 				
 				// get books
-				$bib_ids = $qr_entities->get('ca_objects.object_id', ['restrictToRelationshipTypes' => ['reader'], 'restrictToTypes' => ['bib']]);
-				$subjects = $qr_entities->get('ca_objects.subjects_1838', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader'], 'restrictToTypes' => ['bib'], 'convertCodesToDisplayText' => true]);
+				$bib_ids = array_merge(
+					$qr_entities->get('ca_objects.children.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']]),
+					$qr_entities->get('ca_objects.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']])
+				);
 				
+				$qr_x = caMakeSearchResult('ca_objects', array_values($bib_ids));
+				
+				if (!$qr_x) { continue; }
+				
+				$subjects = [];
+				while($qr_x->nextHit()) {
+					$subject_list = ($qr_x->get('ca_objects.subjects_1838', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'convertCodesToDisplayText' => true]));
+					
+					if(is_array($subject_list) && sizeof($subject_list)) {
+						foreach($subject_list as $s) {
+							$subjects[] = $s;
+						}
+					} else {
+						$subjects[] = 'Not specified';
+					}
+				}
+				//$subjects = array_merge(
+				//	$qr_entities->get('ca_objects.subjects_1838', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader'], 'convertCodesToDisplayText' => true]),
+				//	$qr_entities->get('ca_objects.children.subjects_1838', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader'],  'convertCodesToDisplayText' => true])
+				//);
+				//print_R($bib_ids);
 				if (!is_array($subjects) || !sizeof($subjects)) { $subjects = [' ']; }
 				foreach($subjects as $subject) {
 					if (!($subject = trim($subject))) { $subject = 'Not specified'; }
@@ -225,10 +251,10 @@ if (false) {
 				print CLIProgressBar::next();
 				$c++;
 			}
-			
 			print CLIProgressBar::finish();
 			CompositeCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
 }
+
 if(true) {			
 			//
 			// Checkout duration and circulation distribution
@@ -262,23 +288,23 @@ if(true) {
 						$stat_overall_entity_checkout_distribution_books_by_year[(int)$dates_out[$i]['start']][$entity_id] = true;
 						
 						if (($vn_interval >= $day) && ($vn_interval <= 7*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['1-7']++;
+							$stat_entity_checkout_durations[$entity_id]['1-7 days']++;
 						} elseif(($vn_interval > 7*$day) && ($vn_interval <= 14*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['8-14']++;
+							$stat_entity_checkout_durations[$entity_id]['8-14 days']++;
 						} elseif(($vn_interval > 14*$day) && ($vn_interval <= 21*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['15-21']++;
+							$stat_entity_checkout_durations[$entity_id]['15-21 days']++;
 						} elseif(($vn_interval > 21*$day) && ($vn_interval <= 28*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['22-28']++;
+							$stat_entity_checkout_durations[$entity_id]['22-28 days']++;
 						} elseif(($vn_interval > 28*$day) && ($vn_interval <= 35*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['29-35']++;
+							$stat_entity_checkout_durations[$entity_id]['29-35 days']++;
 						} elseif(($vn_interval > 35*$day) && ($vn_interval <= 42*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['36-42']++;
+							$stat_entity_checkout_durations[$entity_id]['36-42 days']++;
 						} elseif(($vn_interval > 42*$day) && ($vn_interval <= 49*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['43-49']++;
+							$stat_entity_checkout_durations[$entity_id]['43-49 days']++;
 						} elseif(($vn_interval > 49*$day) && ($vn_interval <= 56*$day)) {
-							$stat_entity_checkout_durations[$entity_id]['50-56']++;
+							$stat_entity_checkout_durations[$entity_id]['50-56 days']++;
 						} elseif($vn_interval > 56*$day) {
-							$stat_entity_checkout_durations[$entity_id]['57+']++;
+							$stat_entity_checkout_durations[$entity_id]['57+ days']++;
 						}
 					}
 				}
@@ -290,11 +316,14 @@ if(true) {
 			
 			print CLIProgressBar::start(sizeof($stat_overall_checkout_distribution)*sizeof($stat_entity_checkout_distribution), _t('[Entities] Sorting years for check out distribution'));
 			foreach(array_keys($stat_overall_checkout_distribution) as $year) {
+				if ($year > 1805) { continue; }
 				foreach($stat_entity_checkout_distribution as $entity_id => $stats) {
 					print CLIProgressBar::next();
 					if (!isset($stats[$year])) { $stat_entity_checkout_distribution[$entity_id][$year] = 0; }
 				}
 			}
+			
+			$stat_bib_checkout_distribution[$bib_id]['1795'] = 0;
 			
 			foreach($stat_entity_checkout_distribution as $entity_id => $stats) {
 				ksort($stat_entity_checkout_distribution[$entity_id]);
@@ -309,6 +338,7 @@ if(true) {
 		
 			print CLIProgressBar::start(sizeof($stat_overall_checkout_distribution), _t('[Bibs] Calculating averages'));
 			foreach($stat_overall_checkout_distribution as $year => $count) {
+				if ($year > 1805) { continue; }
 				print CLIProgressBar::next();
 				
 				$stat_avg_entity_checkout_distribution[$year] = round($count/sizeof($stat_overall_entity_checkout_distribution_books_by_year[$year]));

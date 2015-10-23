@@ -185,7 +185,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
 <?php
-			if(is_array($va_views) && sizeof($va_views)){
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
 				foreach($va_views as $vs_view => $va_view_info) {
 					if(isset($va_view_info['data'])) {
 						if (!$qr_set_items->hasData($va_view_info['data'])) { continue; }	// don't show view options for which there is no data (eg. map requires mappable data)
@@ -251,7 +251,7 @@ if (!$vb_ajax) {	// !ajax
 
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 
-							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
+							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
 							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
 
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
