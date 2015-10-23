@@ -531,7 +531,7 @@
 			if (!in_array(strtolower($ps_direction), array('asc', 'desc'))) { $ps_direction = 'asc'; }
 			$va_sorted_rows = array();
 			
-			if (sizeof($pa_hits) < 1000) {
+			if (sizeof($pa_hits) < 1000000) {
 				//
 				// Perform sort in-memory
 				//

@@ -40,10 +40,6 @@
  
 	class BaseSearchResult extends SearchResult {
 		# -------------------------------------------------------
-		private $opo_list = null;
-		private $opo_datamodel = null;
-		private $opa_locales = null;
-		
 		/**
 		 * Name of labels table for this type of search subject (eg. for ca_objects, the label table is ca_object_labels)
 		 */
@@ -56,10 +52,7 @@
 		# -------------------------------------------------------
 		public function __construct($po_engine_result=null, $pa_tables=null) {
 			parent::__construct($po_engine_result, $pa_tables);
-			$this->opo_list = new ca_lists();
-			$this->opo_datamodel = Datamodel::load();
 			
-			$this->opa_locales = ca_locales::getLocaleList();
 			$this->ops_label_table_name = method_exists($this->opo_subject_instance, "getLabelTableName") ? $this->opo_subject_instance->getLabelTableName() : null;
 			$this->ops_label_display_field = method_exists($this->opo_subject_instance, "getLabelDisplayField") ? $this->opo_subject_instance->getLabelDisplayField() : null;
 		}

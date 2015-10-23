@@ -164,8 +164,7 @@ class WLPlugMediaCoreImage Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# for import and export
 	public function register() {
 		// get config for external apps
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__."/external_applications.conf");
 		$this->ops_CoreImage_path = $this->opo_external_app_config->get('coreimagetool_app');
 		
 		

@@ -62,7 +62,8 @@
 						if(sizeof($va_browse_types) > 1){
 							# --- only show browse targets if there are more than one
 ?>	
-								<div class="mainfacet">
+								<div class="row">
+									<div class="mainfacet col-sm-12">
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
@@ -73,7 +74,8 @@
 											}
 ?>
 										</ul>
-								</div><!--end main facet-->
+									</div><!--end main facet-->
+								</div>
 <?php
 						} else {
 							$vs_first_browse = key($va_browse_types);

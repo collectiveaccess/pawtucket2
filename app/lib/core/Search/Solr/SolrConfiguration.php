@@ -50,8 +50,8 @@ class SolrConfiguration {
 	public static function updateSolrConfiguration($pb_invoked_from_command_line=false){
 		/* get search and search indexing configuration */
 		$po_app_config = Configuration::load();
-		$po_search_config = Configuration::load($po_app_config->get("search_config"));
-		$po_search_indexing_config = Configuration::load($po_search_config->get("search_indexing_config"));
+		$po_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		$po_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 
 		if(defined('__CA_SOLR_HOME_DIR__') && (strlen(__CA_SOLR_HOME_DIR__)>0)) {
 			$ps_solr_home_dir = __CA_SOLR_HOME_DIR__;
