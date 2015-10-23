@@ -102,7 +102,7 @@ a {
 }
 .navbar .form-control {
 	background-color: transparent;
-	width:115px;;
+	width:110px;;
 	height:20px;
 }
 .navbar .formOutline {
@@ -120,7 +120,7 @@ a {
 	text-transform:uppercase;
 	color:#77a22f;
 	font-weight: 700;
-	font-size:11px;
+	font-size:12px;
 	padding:0px;
 	line-height:10px;
 }
@@ -133,8 +133,13 @@ h4.entity {
 }
 /* Footer */
 
+.footerWrapper {
+	width:960px;
+	margin:0px auto 0px auto;
+}
 #footer {
 	padding-top:20px;
+	border-top:0px;
 }
 #footer, #footer a {
 	text-align:center;
@@ -154,10 +159,14 @@ h4.entity {
 }
 .multisearch .objectsResult.multisearchResult {
 	width:220px;
-	height:200px;
+	height:220px;
 }
 .multisearch #objectsBlock .blockResults {
-	height:220px;
+	height:240px;
+}
+.multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
+	height:225px;
+	padding-top:100px;
 }
 #objectsBlock .multisearchImgPlaceholder {
 	padding: 40px 20px 40px 20px;

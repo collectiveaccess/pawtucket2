@@ -27,12 +27,7 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<div>
-				© 2015 THE MORTON ARBORETUM  |  4100 ILLINOIS ROUTE 53, LISLE, IL 60532  |  Map  |  Phone: 630-968-0074  |  Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>  |  <a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy</a>  
-			</div>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-		</div><!-- end footer -->
+
 <?php
 	//
 	// Output HTML for debug bar
@@ -41,7 +36,16 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --><!-- end row --></div><!-- end container -->
+	</div><!-- end pageArea --></div><!-- end col --><!-- end row -->
+	<div class='row'>
+		<div id="footer">
+			<div class='footerWrapper'>
+				© 2015 THE MORTON ARBORETUM  |  4100 ILLINOIS ROUTE 53, LISLE, IL 60532  |  Map  |  Phone: 630-968-0074  |  Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>  |  <a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy</a>  
+				<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
+			</div>
+		</div><!-- end footer -->	
+	</div><!-- end row-->
+	</div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

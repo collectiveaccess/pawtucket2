@@ -96,8 +96,6 @@
 			$t_list_item = new ca_list_items();
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
@@ -113,11 +111,16 @@
 						}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-					$vs_type = "<h7>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7><br/>";
+					$vs_type = "<h7>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
 					if ($qr_res->get('ca_objects.date.date_value')){
 						$vs_date = "<br/>".$qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))."<br/>";
 					} else {
 						$vs_date = null;
+					}
+					if ($va_creator = "<p>".$qr_res->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>") {
+					
+					} else {
+						$va_creator = null;
 					}
 				} else {
 					if($va_images[$vn_id]){
@@ -137,7 +140,7 @@
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_type}{$vs_label_detail_link}<br/>{$vs_idno_detail_link}{$vs_date}
+					{$vs_type}{$vs_label_detail_link}{$vs_date}{$va_creator}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
