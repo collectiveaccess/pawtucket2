@@ -185,4 +185,11 @@
     'italic' => DOMPDF_FONT_DIR . 'Gudea-Italic',
     'bold_italic' => DOMPDF_FONT_DIR . 'Gudea-Regular',
   ),
+  'news gothic' => 
+  array (
+    'normal' => DOMPDF_FONT_DIR . 'newsgoth-bt-roman-webfont',
+    'bold' => DOMPDF_FONT_DIR . 'newsgoth-bt-bold-webfont',
+    'italic' => DOMPDF_FONT_DIR . 'newsgoth-bt-roman-webfont',
+    'bold_italic' => DOMPDF_FONT_DIR . 'newsgoth-bt-roman-webfont',
+  ),
 ) ?>
