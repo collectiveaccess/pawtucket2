@@ -110,7 +110,7 @@
 				<nav class="navbar navbar-default yamm" role="navigation">
 				<ul class="menu" id="mainMenu">
 					<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Library Home</a></li>
-					<li <?php print ($this->request->getController() == "Front") ? 'class="active item"' : 'class="item"'; ?> id="menuId-2"><?php print caNavLink($this->request, _t("Project Home"), "", "", "", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active item"' : 'class="item"'; ?> id="menuId-2"><?php print caNavLink($this->request, _t("City Readers Home"), "", "", "", ""); ?></li>
 					
 <?php
 					print $this->render("pageFormat/browseMenu.php");
@@ -129,7 +129,7 @@
 			</div>	
 			<div id="topSection">
 				<div id="pageTitle">
-					<h1>Database of Historic Reading Records</h1>					
+					<h1>City Readers <span class='headerSmall'>Digital Historic Collections at the New York Society Library</span></h1>					
 					<div class="breadcrumb"><?php print MetaTagManager::getWindowTitle(); ?></div>
 				</div>
 			</div>		

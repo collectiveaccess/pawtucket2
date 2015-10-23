@@ -5,7 +5,7 @@
 <div class="row">
 	<div class="col-sm-8">
 		<h6>Your archive information goes here</h6>
-		<p>p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non leo id odio congue tempor laoreet vitae justo. Nulla arcu nisl, cursus ac pharetra id, aliquam vel est. Pellentesque nec augue ac nibh sagittis dapibus. Sed id tempor tellus, lobortis pretium nunc. Proin sed odio a nulla gravida euismod sit amet nec urna. Cras at arcu eget nibh aliquet vestibulum sed nec sem. Nulla facilisi. Donec rhoncus dolor et dui hendrerit, sit amet sollicitudin est posuere.</p></p>
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non leo id odio congue tempor laoreet vitae justo. Nulla arcu nisl, cursus ac pharetra id, aliquam vel est. Pellentesque nec augue ac nibh sagittis dapibus. Sed id tempor tellus, lobortis pretium nunc. Proin sed odio a nulla gravida euismod sit amet nec urna. Cras at arcu eget nibh aliquet vestibulum sed nec sem. Nulla facilisi. Donec rhoncus dolor et dui hendrerit, sit amet sollicitudin est posuere.</p></p>
 	</div>
 	<div class="col-sm-3 col-sm-offset-1">
 		<h6>Your contact info goes here</h6>

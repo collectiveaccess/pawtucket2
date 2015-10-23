@@ -5,7 +5,7 @@
 	$va_comments 	= $this->getVar("comments");
 	$vs_type 		= caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
 	$vs_title 		= caTruncateStringWithEllipsis($t_item->get('ca_entities.preferred_labels.displayname'), 40);	
-	$vs_home 		= caNavLink($this->request, "Project Home", '', '', '', '');
+	$vs_home 		= caNavLink($this->request, "City Readers", '', '', '', '');
 	
 	$vn_entity_id = $t_item->getPrimaryKey();
 
@@ -289,9 +289,9 @@
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">
-				<div class="container"><div class="row" style="margin-right:0px; margin-left:0px;">
+				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-						<div class="container">
+						
 							<div class="row">
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
 									<div class="detailNav">
@@ -375,23 +375,28 @@
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
-												<div class='vizTitle'><!--Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>-->
+												<div ><!--Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>-->
 													<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 												</div>
 												
 												<div style="width:60%; height:400px; float:left; padding-right:10px;">
 													
 													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"> 
-													<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+													<div class="ct-key"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
 													</div>
 												</div>
 												<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
 													<div style="width:80%; ">
-														<div class='vizName'>Books by subject area</div>
+														<div class='vizName'>Books by subject area 
+															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>
+														</div>
 														<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
-													</div>
+													</div>	
+													<hr style='margin-top:20px;'>						
 													<div style="width:80%; ">
-														<div class="vizName">Check out duration</div> 
+														<div class="vizName">Check out duration
+															<div class='catalogInfo'></div>
+														</div> 
 														<div id="stat_entity_checkout_durations2" class="ct-chart ct-golden-section"></div>
 													</div>	
 												</div>																				
@@ -402,10 +407,20 @@
 									if($stat_entity_checkout_distribution) {
 	?>
 
-									<div class='vizTitle'>Circulation Activity</div>
-			
-									<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
-									<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+									<div class='vizTitle'>Circulation Activity <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
+									<div class='col-sm-4 col-md-4 col-lg-4'>
+										<div class='vizName'>Books by subject area 
+											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->
+										</div>
+										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>									
+										<div class="vizName">Check out duration</div> 
+										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>									
+									</div>									
+									<div class='col-sm-8 col-md-8 col-lg-8'>
+										<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
+										<div class="ct-key entityCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
+									</div>
+
 									<script type="text/javascript">
 										var dataForCirculationActivity = {
 										  labels: <?php print json_encode(array_keys($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
@@ -451,7 +466,7 @@
 										</div><!-- end-col -->
 									</div><!-- end row -->	
 									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand vizTitle" style="margin-top:-20px;padding-bottom:15px;">
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand " style="margin-top:-20px;padding-bottom:15px;border-bottom:1px solid #ccc;">
 											<section>
 <?php											
 												print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Readers', '', '', 'Circulation', 'readers', ['id' => $t_item->getPrimaryKey()]).'</div></p>';
@@ -467,9 +482,7 @@
 									$vn_entity_id = $t_item->getPrimaryKey();
 									if ($stat_bib_books_by_subject_area[$vn_entity_id]) {
 ?>
-										<div class='vizName'>Books by subject area</div>
-		
-										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>
+
 										<script type="text/javascript">
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
@@ -535,9 +548,7 @@
 
 										if ($stat_entity_checkout_durations[$vn_entity_id]) {
 ?>
-										<div class="vizName">Check out duration</div> 
-		
-										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>
+
 										<script type="text/javascript">
 											var dataForCheckoutDuration = {
 											  labels: <?php print json_encode(array_keys($stat_entity_checkout_durations[$vn_entity_id])); ?>,
@@ -600,13 +611,6 @@
 ?>										
 										</div><!-- end col-->
 									</div>	<!-- end row -->
-									<div class="row <?php print $va_class; ?>">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
-											<section>
-												<p ><button id="trigger-overlay" type="button">Click to Expand</button></p>
-											</section>
-										</div>
-									</div>	
 
 																												
 									<!--<div class='vizPlaceholder'><i class='fa fa-picture-o'></i></div>-->
@@ -638,7 +642,7 @@
 ?>															
 								</div><!-- end col -->
 							</div><!-- end row -->							
-						</div><!-- end container -->
+						
 						
 						<div id='entityTable'>
 							<ul class='row'>
@@ -737,7 +741,7 @@
 										ksort($va_docs_by_type);
 										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
 											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-											$vs_doc_buf.= "<div class='row'>";
+											$vs_doc_buf.= "<div >";
 											foreach ($vs_documents as $va_key => $vs_doc) {
 												$vs_doc_buf.= $vs_doc;
 											}
@@ -828,7 +832,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 135
+		  maxHeight: 150
 		});
 		$('#entityTable').tabs();
     	$('#circTable').dataTable({

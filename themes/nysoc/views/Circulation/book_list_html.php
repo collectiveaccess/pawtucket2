@@ -59,7 +59,7 @@
 ?>	
 	</div> <!--end container-->
 </div>
-<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Books</div>
+
 
 <script type="text/javascript">
 	jQuery("div.readerListLetterBar .availableLetter").bind('click', function() {

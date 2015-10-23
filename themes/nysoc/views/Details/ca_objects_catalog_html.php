@@ -9,7 +9,7 @@
 	$va_docs = caNavLink($this->request, 'Catalogs', '', '', 'Browse', 'docs/facet/document_type/id/650');
 	$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
 
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_docs." > ".$va_title);
 	
 		#Circulation Records
@@ -513,9 +513,9 @@
 								}
 								
 
-?>					
+?>	
+								<?php if ($vs_book_buf && $vs_is_related) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>				
 								<?php if ($vs_people_buf) {print '<li><a href="#entTab">Related People & Organizations</a></li>';} ?>			
-								<?php if ($vs_book_buf && $vs_is_related) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
 								<?php if ($vs_doc_buf) {print '<li><a href="#docTab">Related Documents</a></li>';} ?>
 							</ul>
 							<div id='circTab' <?php print $vs_style; ?>>
@@ -538,18 +538,7 @@
 				?>		
 									</div><!-- end row -->
 								</div><!-- end container -->
-							</div><!-- end circTab -->			
-							<div id='entTab' >
-								<div class='container'>
-									<div class='row'>
-										<div class='col-sm-12 col-md-12 col-lg-12'>
-<?php
-											print $vs_people_buf;
-?>										
-										</div><!-- end col -->
-									</div><!-- end row -->
-								</div><!-- end container -->								
-							</div><!-- end entTab -->	
+							</div><!-- end circTab -->
 							<div id='bookTab' >
 <?Php 
 								if ($vs_book_buf && $vs_is_related && $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'bib') {
@@ -567,7 +556,18 @@
 										</div><!-- end col -->
 									</div><!-- end row -->
 								</div><!-- end container -->
-							</div><!-- end bookTab -->	
+							</div><!-- end bookTab -->										
+							<div id='entTab' >
+								<div class='container'>
+									<div class='row'>
+										<div class='col-sm-12 col-md-12 col-lg-12'>
+<?php
+											print $vs_people_buf;
+?>										
+										</div><!-- end col -->
+									</div><!-- end row -->
+								</div><!-- end container -->								
+							</div><!-- end entTab -->		
 							<div id='docTab' >
 								<div class='container'>
 									<div class='row'>
