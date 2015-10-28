@@ -1,4 +1,8 @@
 <?php
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
+	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");
+
 	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
 	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
 ?>
@@ -9,7 +13,7 @@
 		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
 <?php		
 			if (!$vb_dont_show_catalogue_list) {
-				print "<h1 style='margin-top:20px;'>Places of Publication</h1>";
+				print "<h1 style='margin-top:20px;'>Publication City Mapper</h1>";
 			}
 ?>						
 		</div>
@@ -20,7 +24,7 @@
 	if (!$vb_dont_show_catalogue_list) {
 ?>
 		<div class="col-sm-2" id='publisherContentContainer'>
-			<p class="vizTitle">Include in Map</p>
+			<p class="vizTitle" style='text-align:left;'>Display books from checked catalogs</p>
 			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
@@ -59,7 +63,11 @@
 			<span id="publisherMapYearSliderEnd"></span>
 		</div>
 	</div>
-	
+	<div class="row">
+		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+			<p style='margin-top:30px; font-size:16px;'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.</p>
+		</div>
+	</div>
 </div>
 
 

@@ -6,7 +6,7 @@
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$t_set = new ca_sets($pn_set_id);
 	
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > Featured");	
 	
 ?>

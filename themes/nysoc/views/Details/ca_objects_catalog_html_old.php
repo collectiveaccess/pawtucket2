@@ -4,7 +4,7 @@
 	
 	$va_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
 	$va_title = ((strlen($t_object->get('ca_objects.preferred_labels')) > 40) ? substr($t_object->get('ca_objects.preferred_labels'), 0, 37)."..." : $t_object->get('ca_objects.preferred_labels'));	
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".$va_type." > ".$va_title);	
 ?>
 <div class="page">

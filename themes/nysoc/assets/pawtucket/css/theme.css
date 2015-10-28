@@ -12,7 +12,9 @@ h1, h2, h3, h4, h5, h6 {
 h1 {
 	color: #d6742a;
 }
-
+h2 {
+	color: #d6742a;
+}
 h3 {
 	color:#000;
 }
@@ -24,6 +26,7 @@ h5 {
 }
 h6 {
 	padding-bottom:5px;
+	font-size:14px;
 }
 .detail H6 a {
 	font-size:12px;
@@ -31,8 +34,19 @@ h6 {
 	padding:0px;
 	text-transform:none;
 }
+.clearfix {
+	clear:both;
+	width:100%;
+}
 a {
 	color:#333;
+}
+.aboutPage a {
+	color: #d6742a;
+	text-decoration:underline;
+}
+.blacktext {
+	color: #000;
 }
 #mainContent {
 	margin:0px 10px 0px 10px;
@@ -356,7 +370,7 @@ ul#mainMenu .filterMenuFacetList li  {
   text-decoration: none;
 }
 #topSection {
-  background: url('../graphics/uni_banner2.jpg') no-repeat scroll 0 0 transparent; 
+  background: url('../graphics/banner4.jpg') no-repeat scroll 0 0 transparent; 
   display: block;
   height: 355px;
   min-width:830px;
@@ -374,12 +388,21 @@ ul#mainMenu .filterMenuFacetList li  {
   line-height: 18px;
   font-weight: 400;
   text-transform:none;
+  margin-bottom: 0px;
+  margin-top:-2px;
+}
+.headerSmall {
+	display:block;
+	line-height:1em;
+	margin-top: 15px; 
+	font-size: 20px; 
 }
 #pageTitle div.breadcrumb {
   font-size: 12px;
   color: #fff;
   background-color:transparent;
   padding-left:0px; 
+  margin-top:4px;
 }
 #pageTitle div.breadcrumb a, #pageTitle div.breadcrumb span.sep, div#toolArea h1 {
   color: #79d9ec;
@@ -460,6 +483,10 @@ div.globalLinks a {
 #pageArea {
 	background-color:#fff;
 }
+.catalogInfo {
+	font-size:11px;
+	height:24px;
+}
 
 /* Homepage */
 
@@ -479,6 +506,9 @@ div.globalLinks a {
 	font-weight:normal;
 	font-size:14px;
 }
+.front .jcarousel-wrapper {
+	margin-top:22px;
+}
 .front .jcarousel-control-next, .front .jcarousel-control-prev {
 	font-size:80px;
 	font-weight:200;
@@ -493,6 +523,7 @@ div.globalLinks a {
 }
 .jcarousel li {
 	height:400px;
+	min-width:525px;
 }
 .jcarousel .frontSlide {
 	background-color:#000;
@@ -509,10 +540,10 @@ div.globalLinks a {
 .jcarousel li.activeSlide .frontSlideCaption {
 	display:block;
 }
-.disabled { visibility: hidden; }
+/*.disabled { visibility: hidden; }*/
 .jcarousel ul {
-    /* ...other styles left out... */
-    left: -150px;
+    /* ...other styles left out... 
+    left: -150px !important;*/
 }
 
 /* Browse Menu */
@@ -645,9 +676,24 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 }
 .detail .unit {
 	padding: 2px 0px 2px 0px;
+	font-size:14px;
+	line-height: 1.5em;
+}
+.detail .sidebar .unit { 
+	font-size:12px;
+	line-height: 1.25em;
 }
 .detail a {
 	color: #d77421;
+}
+div.sideLink {
+	padding-bottom:10px;
+}
+.sideLink a{
+	color: #d77421;
+	text-transform:uppercase;
+	font-size:16px;
+	text-decoration:none;
 }
 .detail #detailTools {
 	margin-top:20px;
@@ -660,6 +706,7 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 }
 .detail #detailTools a, .detail .detailTool span{ 
 	color:#000;
+	font-size:14px;
 }
 .detailMediaToolbar .dlButton {
 	/*display:none;*/
@@ -669,6 +716,7 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 }
 a.readmore-js-toggle {
 	color:#d77421;
+	font-size:14px;
 }
 .atm-f {
 	height:26px !important;
@@ -695,12 +743,14 @@ a.readmore-js-toggle {
 .incomplete {
 	margin-top:10px;
 	margin-bottom:10px;
+	font-size:14px;
 }
 .incomplete .fa-sticky-note {
 	color: #d77421;
 }
 .jcarousel {
 	width:100%;
+	background-color:#999;
 }
 .visualize {
 	font-size:16px;
@@ -830,6 +880,26 @@ svg:not(:root) {
 	font-size:14px;
 	text-align:center;
 	border-bottom:1px solid #ddd;
+	
+	background-color: #f7f7f7;
+	padding: .5em 1.6em;
+	border-bottom: 3px solid #333;
+    color: #333;
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+.vizTitle button {
+    background: none;
+    color: #d77421;
+    text-transform: none;
+    right: 15px;
+    font-size: 11px;
+    border: 0;
+    position: absolute;
+    font-weight:bold;
+    font-size: 17px;
+    margin-top: -2px;
 }
 .overlay .vizTitle {
 	font-size:28px;
@@ -847,8 +917,7 @@ svg:not(:root) {
 	color:#000;
 	font-size:18px;
 	color:#d77421;
-	border-bottom:1px solid #ddd;
-	padding:10px 0px 10px 0px;
+	padding:10px 0px 0px 0px;
 }
 .objects.bib .overlay .vizName { 
 	margin-bottom:20px;
@@ -860,7 +929,7 @@ svg:not(:root) {
 	text-transform:uppercase;
 }
 .ct-chart.ct-golden-section {
-	margin:20px -20px 0px -10px;
+	margin:10px -20px 0px -10px;
 }
 .overlay .ct-chart.ct-golden-section {
 	margin:0px;
@@ -869,8 +938,18 @@ svg:not(:root) {
 .overlay .ct-chart-line {
 	margin-top:40px;
 }
-.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
-	stroke: #d77421 !important; 
+.ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {
+	stroke: #d77421 !important;
+}
+#circulationGraph.ct-chart .ct-series.ct-series-a .ct-line, #circulationGraph.ct-chart .ct-series.ct-series-a .ct-point {
+	stroke: #999999 !important;
+}
+#stat_entity_checkout_distribution.ct-chart .ct-series.ct-series-b .ct-line, #stat_entity_checkout_distribution.ct-chart .ct-series.ct-series-b .ct-point, .ct-series-b-key.average,
+#stat_bib_checkout_distribution.ct-chart .ct-series.ct-series-b .ct-line, #stat_bib_checkout_distribution.ct-chart .ct-series.ct-series-b .ct-point,
+#stat_bib_checkout_distribution2.ct-chart .ct-series.ct-series-b .ct-line, #stat_bib_checkout_distribution2.ct-chart .ct-series.ct-series-b .ct-point,
+#stat_entity_checkout_distribution2.ct-chart .ct-series.ct-series-b .ct-line, #stat_entity_checkout_distribution2.ct-chart .ct-series.ct-series-b .ct-point{
+	stroke: #999999 !important;
+	color: #999999 !important; 
 }
 .ct-series-a-key {
     color: #d77421 !important;
@@ -898,7 +977,13 @@ svg:not(:root) {
 #stat_entity_checkout_distribution .ct-label.ct-horizontal, #stat_bib_checkout_distribution .ct-label.ct-horizontal{
 	display:none;
 }
-
+.objectsCirculation .ct-series-a-key, .objectsCirculation .ct-series-b-key,
+.entityCirculation .ct-series-a-key, .entityCirculation .ct-series-b-key{
+	position:relative;
+	top:0px;
+	left:-25px;
+	display:block;
+}
 .readerRow {
 	border-bottom:1px solid #ccc;
 	padding-bottom:10px;
@@ -1091,7 +1176,10 @@ table.dataTable thead th {
 .entityButton .entityName {
 	margin-left:0px;
 }
-#entTab .col-sm-3, #entTab .col-md-3, #entTab .col-lg-3, #bookTab .col-sm-4, #bookTab .col-md-4, #bookTab .col-lg-4, #docTab .col-sm-4, #docTab .col-md-4, #docTab .col-lg-4{
+#entTab .col-sm-3, #entTab .col-md-3, #entTab .col-lg-3, 
+#bookTab .col-sm-4, #bookTab .col-md-4, #bookTab .col-lg-4, 
+#docTab .col-sm-4, #docTab .col-md-4, #docTab .col-lg-4,
+#docTab .col-sm-3, #docTab .col-md-3, #docTab .col-lg-3{
 	padding-right:0px;
 	padding-left:0px; 
 }
@@ -1105,7 +1193,7 @@ table.dataTable thead th {
 .ui-tabs .ui-tabs-nav {
 	background-color:#f7f7f7 !important;
 }
-.ui-widget-content {
+.detail .ui-widget-content {
 	background:transparent !important;
 	border: 0px !important;
 }
@@ -1141,7 +1229,7 @@ table.dataTable thead th {
 	border-bottom: 3px solid #333;
 	color:#333 !important;
 }
-.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+.detail .ui-state-default, .detail .ui-widget-content .ui-state-default, .detail .ui-widget-header .ui-state-default {
 	border: 0px !important;
 	background: transparent !important;
 }
@@ -1201,6 +1289,7 @@ div.advancedSearchField {
   float: left;
   width: 30%;
   margin-bottom: 20px;
+  font-size:14px;
 }
 .advancedUnit {
 	clear:both;
@@ -1211,6 +1300,7 @@ div.advancedSearchField {
 	border-radius:4px;
 	-webkit-border-radius:4px;
 	background-color:#999;
+	font-size:14px;
 }
 .advButton a{ 
 	color:#fff;
@@ -1227,9 +1317,14 @@ div.advancedSearchField {
 }
 .collHeader a {
 	font-family:"Gudea";
-	color:#333;
-	font-size:13px;
-	font-weight:bold;
+	color: #d6742a;
+	font-size:14px;
+}
+.collHeader {
+	font-size:14px;
+}
+.collHeader h3 a{
+	color: #d6742a;
 }
 .fa-angle-double-down.finding-aid {
 	margin-left:0px;
@@ -1249,6 +1344,9 @@ div.advancedSearchField {
 	text-decoration:none;
 	color: #d77421;
 }
+.detail.collection {
+	font-size:14px;
+}
 
 /* Sets */
 .gallery .galleryItem {
@@ -1258,7 +1356,7 @@ div.advancedSearchField {
 	overflow:hidden;
 	height:auto;
 }
-.gallery .galleryItem .galleryItemImg {
+.gallery .galleryItem .galleryItemImg  {
 	width:50%;
 	margin-right:0px;
 	overflow:hidden;
@@ -1270,6 +1368,7 @@ div.advancedSearchField {
 	height:180px;
 	overflow:hidden;
 	margin-bottom:5px;
+	font-size:14px;
 }
 .gallery .galleryItem .galleryItemImg img {
     height: 100%;
@@ -1308,6 +1407,14 @@ div.advancedSearchField {
 	width:100%;
 	height:auto;
 	margin-bottom:10px;
+}
+.galleryItem .moreLink {
+	clear:both;
+	position:absolute;
+	bottom:10px;
+}
+.galleryItem .moreLink a {
+	color: #d6742a;
 }
 
 /* Footer */
@@ -1438,9 +1545,13 @@ a.sbIcon.twitter {
 }
 
 .ct-series-a-key {
-	color: blue;
+	color: blue;	
 }
-
+#stat_bib_checkout_distribution2 .ct-series-a-key {
+    width: 80%;
+    max-height: 35px;
+    overflow: hidden;
+}
 .ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line,
 .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
     stroke: green
@@ -1478,13 +1589,13 @@ div#readerList {
 }
 
 #readerListToggle {	
-	position: absolute;
 	top: 4px;
 	right: 10px;
 	font-family: gudea, sans-serif;
 	font-weight: bold;
 	color: #d77421;
-	font-size: 18px;
+	font-size: 14px;
+	margin-top:10px;
 }
 
 #readerListToggle:hover {
@@ -1538,7 +1649,6 @@ div#readerContentContainer {
 
 div#readerContent {
 	border: 0px;
-	height: 700px;
 	border-radius:4px;
 }
 
@@ -1734,4 +1844,11 @@ div.readerCardContent .readerCardImageSource {
 	bottom: 5px;
 	right: 5px;
 	border-radius: 3px;
+}
+
+/* About Page */
+
+.aboutPage {
+	font-size:14px;
+	line-height: 1.5em;
 }

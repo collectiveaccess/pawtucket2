@@ -35,7 +35,7 @@
  		 * Colors for each series (match Chartist stylesheet)
  		 */
  		static $chart_series_colors = [
-			"d77421", "5e9eaa", "f4c63d", "d17905", "453d3f", 
+			"999999", "5e9eaa", "f4c63d", "d17905", "453d3f", 
 			"59922b", "0544d3", "6b0392", "f05b4f", "dda458", "eacf7d", 
 			"86797d", "b2c326", "6188e2", "a748ca"
 		];

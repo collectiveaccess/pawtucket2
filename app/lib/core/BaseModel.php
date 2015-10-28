@@ -11403,7 +11403,8 @@ $pa_options["display_form_field_tips"] = true;
 	 *		allowWildcards = consider "%" as a wildcard when searching. Any term including a "%" character will be queried using the SQL LIKE operator. [Default is false]
 	 *		purify = process text with HTMLPurifier before search. Purifier encodes &, < and > characters, and performs other transformations that can cause searches on literal text to fail. If you are purifying all input (the default) then leave this set true. [Default is true]
 	 *		purifyWithFallback = executes the search with "purify" set and falls back to search with unpurified text if nothing is found. [Default is false]
-	 *
+	 *		checkAccess = array of access values to filter results by; if defined only items with the specified access code(s) are returned. Only supported for <table_name>.hierarchy.preferred_labels and <table_name>.children.preferred_labels because these returns sets of items. For <table_name>.parent.preferred_labels, which returns a single row at most, you should do access checking yourself. (Everything here applies equally to nonpreferred_labels)
+ 	 *
 	 * @return mixed Depending upon the returnAs option setting, an array, subclass of BaseModel or integer may be returned.
 	 */
 	public static function find($pa_values, $pa_options=null) {	
@@ -11419,6 +11420,7 @@ $pa_options["display_form_field_tips"] = true;
 		$ps_return_as = caGetOption('returnAs', $pa_options, 'ids', array('forceLowercase' => true, 'validValues' => array('searchResult', 'ids', 'modelInstances', 'firstId', 'firstModelInstance', 'count')));
 		$ps_boolean = caGetOption('boolean', $pa_options, 'and', array('forceLowercase' => true, 'validValues' => array('and', 'or')));
 		$o_trans = caGetOption('transaction', $pa_options, null);
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 		
 		if (!$t_instance) { $t_instance = new $vs_table; }
 		if ($o_trans) { $t_instance->setTransaction($o_trans); }
@@ -11429,6 +11431,8 @@ $pa_options["display_form_field_tips"] = true;
 		$vb_purify = $vb_purify_with_fallback ? true : caGetOption('purify', $pa_options, true);
 		
 		if ($vb_purify) { $pa_values = caPurifyArray($pa_values); }
+		
+		$va_sql_params = array();
 		
 		//
 		// Convert type id
@@ -11519,7 +11523,14 @@ $pa_options["display_form_field_tips"] = true;
 				}
 			}
 		}
+		
 		if(!sizeof($va_sql_wheres)) { return null; }
+				
+		if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_instance->hasField('access')) {
+			$va_sql_wheres[] = "({$vs_table}.access IN (?))";
+			$va_sql_params[] = $pa_check_access;
+		}
+		
 		$vs_deleted_sql = ($t_instance->hasField('deleted')) ? '(deleted = 0) AND ' : '';
 		$vs_sql = "SELECT * FROM {$vs_table} WHERE {$vs_deleted_sql} (".join(" {$ps_boolean} ", $va_sql_wheres).")";
 		
@@ -11554,7 +11565,7 @@ $pa_options["display_form_field_tips"] = true;
 		
 		$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
 		
-		$qr_res = $o_db->query($vs_sql);
+		$qr_res = $o_db->query($vs_sql, $va_sql_params);
 		
 		if ($vb_purify_with_fallback && ($qr_res->numRows() == 0)) {
 			return self::find($pa_values, array_merge($pa_options, ['purifyWithFallback' => false, 'purify' => false]));
