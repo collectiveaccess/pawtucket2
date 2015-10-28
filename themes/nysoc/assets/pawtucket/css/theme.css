@@ -1347,6 +1347,10 @@ div.advancedSearchField {
 .detail.collection {
 	font-size:14px;
 }
+.colspacer {
+	display:inline-block;
+	width:12px;
+}
 
 /* Sets */
 .gallery .galleryItem {
