@@ -733,6 +733,10 @@ a.readmore-js-toggle {
 	font-size:13px;
 	text-transform:uppercase;
 }
+.page.detail h4 a{
+	font-size:16px;
+	color: #d77421;
+}
 .wikipedia a.readmore-js-toggle{
 	display:none !important;
 }
@@ -815,6 +819,7 @@ a.readmore-js-toggle {
 }
 .overlay {
 	padding:20px;
+	min-width:1025px;
 }
 
 .overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {

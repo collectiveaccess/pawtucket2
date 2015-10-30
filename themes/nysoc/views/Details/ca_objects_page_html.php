@@ -14,7 +14,7 @@
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
-
+			{{{representationViewer}}}
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">
@@ -36,9 +36,6 @@
 							</div><!-- end col -->
 						</div><!-- end row -->
 						<div class="container"><div class="row">
-							<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
-								{{{representationViewer}}}				
-							</div><!-- end col -->
 			
 							<div class='col-sm-6 col-md-6 col-lg-5'>
 								<div class="detailNav">
@@ -46,14 +43,11 @@
 									<div class='nextLink'>{{{nextLink}}}</div>
 								</div>
 <?php								
-								print "<h6>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h6>";
+								print "<h4>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h4>";
 ?>								
 								<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
-								<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 								<HR>				
-				
-								{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
-			
+							
 								<hr></hr>
 									<div class="row">
 										<div class="col-sm-6">		
@@ -86,6 +80,9 @@
 											</div><!-- end col -->
 										</div>
 									</div><!-- end row -->
+							</div><!-- end col -->
+							<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
+												
 							</div><!-- end col -->
 						</div><!-- end row -->
 		
