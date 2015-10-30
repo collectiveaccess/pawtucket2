@@ -446,13 +446,13 @@
 							
 										var responsiveOptions = [
 										  ['screen and (min-width: 640px)', {
-											chartPadding: 20,
+											chartPadding: 0,
 											labelOffset: 30,
 											labelDirection: 'explode'
 										  }],
 										  ['screen and (min-width: 1024px)', {
 											labelOffset: 30,
-											chartPadding: 20
+											chartPadding: 0
 										  }]
 										];
 
@@ -523,7 +523,7 @@
 											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
 												labelDirection: 'explode'
 											  }],
@@ -589,7 +589,7 @@
 											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
 												labelDirection: 'explode'
 											  }],
@@ -832,7 +832,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 150
+		  maxHeight: 160
 		});
 		$('#entityTable').tabs();
     	$('#circTable').dataTable({
