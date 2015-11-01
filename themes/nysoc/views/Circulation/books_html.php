@@ -92,14 +92,13 @@
 		  .find('.tooltip')
 		  .hide();
 
-		$chart.on('mouseenter', '.ct-series', function() {
-			var $slice = $(this),
-			sliceName = $slice.attr('ct:series-name');
-			console.log($slice);
-			$graphToolTip.html(sliceName).show();
+		$chart.on('mouseenter', '.ct-point', function() {
+			var $pt = $(this), $slice = $(this).parent(),
+			sliceName = $slice.attr('ct:series-name'), value = $pt.attr('ct:value');
+			$graphToolTip.html(sliceName + " (" + value + ")").show();
 		});
 
-		$chart.on('mouseleave', '.ct-series', function() {
+		$chart.on('mouseleave', '.ct-point', function() {
 		  $graphToolTip.hide();
 		});
 

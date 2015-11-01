@@ -1612,8 +1612,7 @@ div#readerList {
 }
 
 #readerListContent {
-	display: none;
-	
+	display: none;	
 }
 
 .readerListEntry {
@@ -1853,6 +1852,14 @@ div.readerCardContent .readerCardImageSource {
 	bottom: 5px;
 	right: 5px;
 	border-radius: 3px;
+}
+
+.readerListShowHide {
+	position: absolute;
+	bottom: 5px;
+	right: 25px;
+	font-family: gudea, sans-serif;
+	font-size: 12px;
 }
 
 /* About Page */

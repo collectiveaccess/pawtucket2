@@ -443,6 +443,31 @@
 											},
 				
 										};
+										
+										var $chart = $('#stat_entity_checkout_distribution2');
+			
+										var $distToolTip = $chart
+										  .append('<div class="tooltip"></div>')
+										  .find('.tooltip')
+										  .hide();
+
+										$chart.on('mouseenter', '.ct-point', function() {
+											var $pt = $(this),
+											value = $pt.attr('ct:value');
+											$distToolTip.html(value).show();
+										});
+
+										$chart.on('mouseleave', '.ct-series', function() {
+										  $distToolTip.hide();
+										});
+
+										$chart.on('mousemove', function(event) {
+										  $distToolTip.css({
+											left: (event.offsetX || event.originalEvent.layerX) - $distToolTip.width() / 2,
+											top: (event.offsetY || event.originalEvent.layerY) - $distToolTip.height()
+										  });
+										});
+										
 							
 										var responsiveOptions = [
 										  ['screen and (min-width: 640px)', {
@@ -484,6 +509,7 @@
 ?>
 
 										<script type="text/javascript">
+											var subjectIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
@@ -521,6 +547,19 @@
 												top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
 											  });
 											});
+														
+											$chart.on('click', '.ct-series', function() {
+												var $slice = $(this),
+												value = $slice.find('path').attr('ct:value');
+												
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												var label = dataForSubjectAreas.labels[l];
+				
+												if (parseInt(subjectIDs[label]) > 0) {
+													window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => '1813_subject')); ?>/id/' + subjectIDs[label];
+												}
+											});
+											
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
 												chartPadding: 20,
