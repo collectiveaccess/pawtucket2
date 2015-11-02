@@ -408,6 +408,7 @@
 	?>
 
 									<div class='vizTitle'>Circulation Activity <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
+									
 									<div class='col-sm-4 col-md-4 col-lg-4'>
 										<div class='vizName'>Books by subject area 
 											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->

@@ -504,8 +504,16 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<div class="vizTitle" >Check out distribution <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
-								<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
-								<div class="ct-key objectsCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'>This Title</span></span> <span class="ct-series-b-key average" style="padding-right:10px;"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>								
+								<div class='col-sm-4 col-md-4 col-lg-4'>
+									<div class="vizName">Check out duration</div>
+									<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
+									<div class="vizName">Readers by occupation</div>
+									<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>
+								</div>								
+								<div class='col-sm-8 col-md-8 col-lg-8'>
+									<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
+									<div class="ct-key objectsCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'>This Title</span></span> <span class="ct-series-b-key average" style="padding-right:10px;"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>								
+								</div>
 							</div><!-- end col-->
 						</div><!-- end row-->
 						<div class="row">
@@ -516,21 +524,7 @@
 ?>											
 								</section>
 							</div>
-						</div>						
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="row">
-									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">		
-										<div class="vizName">Check out duration</div>
-										<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
-									</div><!-- end col-->
-									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-										<div class="vizName">Readers by occupation</div>
-										<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>																								
-									</div><!-- end col-->
-								</div><!-- end row-->
-							</div><!-- end col-->
-						</div><!-- end row-->						
+						</div>												
 <?php
 	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
 
@@ -731,13 +725,13 @@
 			
 			var responsiveOptions = [
 			  ['screen and (min-width: 640px)', {
-				chartPadding: 20,
+				chartPadding: 0,
 				labelOffset: 30,
 				labelDirection: 'explode'
 			  }],
 			  ['screen and (min-width: 1024px)', {
 				labelOffset: 30,
-				chartPadding: 20
+				chartPadding: 0
 			  }]
 			];
 

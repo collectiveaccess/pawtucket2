@@ -1,4 +1,9 @@
 <?php
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
+	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Compare Reader Activity");
+	
 	// List of entity ids to display on load
 	$va_entity_list = $this->getVar('entity_list');
 	
@@ -19,13 +24,14 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
-			<h1 style="margin-top:20px;">New York Society Library Circulation</h1>
+			<h1 style="margin-top:20px;">Compare Reader Activity</h1>
 
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2" >
 			<div id='readerContentContainer'>
+				<p class='vizTitle' style='text-align:left;'>Readers to Compare</p>
 				<div id='readerContent'>
 					<!-- List of currently displays readers -->
 				</div>

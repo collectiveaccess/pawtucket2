@@ -43,7 +43,7 @@
 		</div>	
 		<div class="row">
 			<div class="col-sm-12">
-				<h4 style="text-align:center; font-style:italic;">Explore more than 100,000 records of books, readers, and borrowing history from the New York Society Library's archives.</H4>
+				<h4 style="text-align:center; font-style:italic;">Explore more than 100,000 records of books, readers, and borrowing history from the New York Society Library's Special Collections.</H4>
 			</div><!--end col-sm-8-->	
 		</div><!-- end row -->
 	</div> <!--end container-->
