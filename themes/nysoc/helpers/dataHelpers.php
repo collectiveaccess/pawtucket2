@@ -20,7 +20,7 @@
 			WHERE
 				rt.type_code = 'reader' AND el.is_preferred = 1 AND e.deleted = 0 ".
 				(($ps_letter ? " AND (el.surname LIKE ?)" : ''))."
-			ORDER BY el.surname, el.forenmae
+			ORDER BY el.surname, el.forename
 		", $va_params);
 		$va_entity_ids = $qr_res->getAllFieldValues('entity_id');
 		return $qr_readers = caMakeSearchResult('ca_entities', $va_entity_ids, array('sort' => 'ca_entity_labels.surname'));
