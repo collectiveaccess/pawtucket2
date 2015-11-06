@@ -50,6 +50,7 @@
 		 *
 		 */
 		public function perBibStatistics() {
+		
 if(true) {		
 			//
 			// Readers by occupation
@@ -252,7 +253,7 @@ if (true) {
 			
 			$o_db = new Db();
 			
-			$qr_entities = ca_entities::find(['deleted' => '0'], ['returnAs' => 'searchResult']);
+			$qr_entities = ca_entities::find(['entity_id' => '701'], ['returnAs' => 'searchResult']);
 			
 			$c = 0;
 			print CLIProgressBar::start($qr_entities->numHits(), _t('[Entities] Statistics for books by subject area'));
@@ -270,6 +271,7 @@ if (true) {
 				
 				// get books
 				$bib_ids = array_merge(
+					$qr_entities->get('ca_objects.parent.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']]),
 					$qr_entities->get('ca_objects.children.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']]),
 					$qr_entities->get('ca_objects.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']])
 				);
@@ -282,7 +284,7 @@ if (true) {
 				while($qr_x->nextHit()) {
 					//$subject_list = ($qr_x->get('ca_objects.subjects_1813', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'convertCodesToDisplayText' => true]));
 					$subject_list_ids = ($qr_x->get('ca_objects.subjects_1813', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'convertCodesToDisplayText' => false]));
-			
+		
 					if (sizeof($subject_list_ids)) { 
 						$qr_subject_parents = $o_db->query("
 								SELECT item_id, parent_id FROM ca_list_items WHERE item_id IN (?) 
@@ -326,6 +328,7 @@ if (true) {
 				$c++;
 			}
 			print CLIProgressBar::finish();
+			
 			CompositeCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
 			CompositeCache::save('stat_bib_subject_area_ids', $stat_subject_ids, 'vizData');
 }
