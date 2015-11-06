@@ -229,6 +229,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			$o_browse->setFacetGroup($vs_menu_bar_facet_group);
 		}
 		
+		if (is_array($va_browse_info['restrictToTypes']) && sizeof($va_browse_info['restrictToTypes'])) { 
+			$o_browse->setTypeRestrictions($va_browse_info['restrictToTypes']);
+		}
+		
 		$o_browse->execute(array('checkAccess' => caGetUserAccessValues($po_request), 'showAllForNoCriteriaBrowse' => true));
 	
 		$va_facets = $o_browse->getInfoForAvailableFacets();
