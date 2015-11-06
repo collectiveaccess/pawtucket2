@@ -151,18 +151,18 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Representative:<br/>
-						{{{ca_objects_x_entities.representative%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.representative%width=220px&height=25px&render=is_set}}}
 					</div>
 					<div class="advancedSearchField">
 						Fine:<br/>
-						{{{ca_objects_x_entities.fine%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.fine%width=220px&height=25px&render=is_set}}}
 					</div>									
 					<div class="advancedSearchField">
 						Uncertain Transcription:  <i class="fa fa-info-circle" id='uncertain'></i><br/>
 <?php
 						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
 ?>						
-						{{{ca_objects_x_entities.see_original%width=220px}}}
+						{{{ca_objects_x_entities.see_original%width=220px&render=is_set}}}
 					</div>
 				</div>																		
 				<br style="clear: both;"/>

@@ -60,7 +60,7 @@
 					</div>
 					<div class="advancedSearchField">
 						Relationship to the Library:<br/>
-						{{{ca_entities.relationship_to_library%width=220px}}}
+						<div style="margin-top: 5px;">{{{ca_entities.relationship_to_library%width=220px&render=checklist&maxColumns=2}}}</div>
 					</div>					
 				</div>	
 				<div class='advancedUnit'>
@@ -81,20 +81,20 @@
 					</div>	
 					<div class="advancedSearchField">
 						Fine:<br/>
-						{{{ca_objects_x_entities.fine%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.fine%width=220px&height=25px&render=is_set}}}
 					</div>
 				</div>	
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Representative:<br/>
-						{{{ca_objects_x_entities.representative%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.representative%width=220px&height=25px&render=is_set}}}
 					</div>
 					<div class="advancedSearchField">
 						Uncertain Transcription: <i class="fa fa-info-circle" id='uncertain'></i><br/>
 <?php
 						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
 ?>						
-						{{{ca_objects_x_entities.see_original%width=220px}}}
+						{{{ca_objects_x_entities.see_original%width=220px&render=is_set}}}
 					</div>
 					<div class="advancedSearchField">
 						Collection Status: <i class="fa fa-info-circle" id='collection'></i><br/>

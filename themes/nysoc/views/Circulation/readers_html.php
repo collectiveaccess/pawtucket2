@@ -21,6 +21,23 @@
 	}
 
 ?>
+
+<div class="page gallery">
+	<div class="wrapper">
+		<div class="sidebar">
+			<div id='readerContentContainer'>
+				<p class='vizTitle' style='text-align:left;'>Readers to Compare</p>
+				<div id='readerContent'>
+					<!-- List of currently displays readers -->
+				</div>
+				<div class="clearfix"></div>
+				<div class='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
+
+			</div>
+		</div>
+		<div class="content-wrapper">
+      		<div class="content-inner">
+
 <div class="container">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
@@ -29,29 +46,23 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-2" >
-			<div id='readerContentContainer'>
-				<p class='vizTitle' style='text-align:left;'>Readers to Compare</p>
-				<div id='readerContent'>
-					<!-- List of currently displays readers -->
-				</div>
-				<div class="clearfix"></div>
-				<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
-
-			</div>
-		</div>	
-		<div class="col-sm-10 ">
+		<div class="col-sm-12 col-md-12 col-lg-12">
 			<div id='readerList' class='clearfix row'>
 				<!-- Index of all readers -->
 			</div>		
 			<div class="ct-chart ct-golden-section" id='circulationGraph'>
 				<!-- The graph -->
 			</div>
+			<div class='circNote'>Circulation records from 1793-1799 are lost.</div>
 		</div>
-		
 
 	</div>
-</div>
+</div><!-- end container -->
+
+			</div><!-- end content inner -->
+		</div><!-- end content wrapper -->
+	</div><!-- end wrapper -->
+</div><!-- end page -->
 
 <script type="text/javascript">
 	var _circulationGraph;			// GLOBAL for Chartist graph object

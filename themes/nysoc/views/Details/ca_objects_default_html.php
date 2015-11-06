@@ -485,6 +485,7 @@
 											</span>
 										</div>	
 										</div>
+										<div class='ovcircNote'>Circulation records from 1793-1799 are lost.</div>
 									
 									</div>
 									<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
@@ -501,9 +502,9 @@
 								</div><!-- end overlay-->
 							</div><!-- end col-->
 						</div><!-- end row-->	
-						<div class="row">
+						<div class="row" id="trigger-overlay">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="vizTitle" >Check out distribution <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
+								<div class="vizTitle" >Check out distribution <button  type="button"><i class="fa fa-external-link"></i></button></div>
 								<div class='col-sm-4 col-md-4 col-lg-4'>
 									<div class="vizName">Check out duration</div>
 									<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
@@ -568,9 +569,11 @@
 			});
 
 			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 			  $subjectAreaToolTip.css({
-				left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
-				top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+				left: l - $subjectAreaToolTip.width() / 2 - 10,
+				top: t - $subjectAreaToolTip.height() - 40
 			  });
 			});
 			
@@ -647,9 +650,11 @@
 			});
 
 			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 			  $durationToolTip.css({
-				left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
-				top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+				left: l - $durationToolTip.width() / 2 - 10,
+				top: t - $durationToolTip.height() - 40
 			  });
 			});
 			var responsiveOptions = [
@@ -717,9 +722,11 @@
 			});
 
 			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 			  $distToolTip.css({
-				left: (event.offsetX || event.originalEvent.layerX) - $distToolTip.width() / 2,
-				top: (event.offsetY || event.originalEvent.layerY) - $distToolTip.height()
+				left: l - $distToolTip.width() / 2,
+				top: t - $distToolTip.height()
 			  });
 			});
 			

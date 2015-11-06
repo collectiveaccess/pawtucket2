@@ -1,7 +1,7 @@
 <?php
 	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");
+
 
 	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
 	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
@@ -13,6 +13,7 @@
 		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
 <?php		
 			if (!$vb_dont_show_catalogue_list) {
+				MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");			
 				print "<h1 style='margin-top:20px;'>Publication City Mapper</h1>";
 			}
 ?>						
@@ -47,7 +48,7 @@
 	}
 ?>
 		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
-			
+			<div style="text-align: center; margin-top: 60px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
 		</div>
 	</div>
 	<div class="row">
@@ -65,7 +66,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
-			<p style='margin-top:30px; font-size:16px;'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.</p>
+			<p style='margin-top:30px; font-size:16px;' id='mapInfo'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.  Click on a location to see the books published in that location for the selected catalogs and dates. </p>
 		</div>
 	</div>
 </div>
