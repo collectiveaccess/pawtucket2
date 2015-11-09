@@ -21,7 +21,7 @@
 		<div class="content-wrapper">
       		<div class="content-inner">
 				<div class="container"><div class="row">
-					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='margin-top:15px;'>
+					<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6' style='margin-top:15px;'>
 
 	<h2><?php print $vs_page_title; ?></h2>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
@@ -41,7 +41,12 @@
 	}
 ?>
 	</div>
-	
+					</div><!-- end col --> 
+					<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 archivesRight' >
+<?php
+					print caGetThemeGraphic($this->request, 'archives.jpg');
+?>					
+	Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget quam eu turpis pulvinar bibendum. Cras eu pellentesque mi. Donec quam ex, finibus et rhoncus quis, tristique et arcu. Nam suscipit sed diam sed pulvinar. Cras laoreet imperdiet leo ut rutrum. Suspendisse molestie commodo eros quis porta. Sed vulputate velit ac lacinia viverra. Curabitur scelerisque tristique massa, ac sollicitudin sem dignissim sed.
 					</div> <!-- end col-->	
 				</div> <!-- end container--></div> <!-- end row-->	
 			</div> <!-- end content-inner -->
