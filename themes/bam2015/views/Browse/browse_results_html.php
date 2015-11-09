@@ -136,13 +136,13 @@ if (!$vb_ajax) {	// !ajax
 	if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 	<div class="col-xs-12 col-sm-2">
-		<a href="#" onClick="jQuery('#bRefineContainer').toggle();">BROWSE<i class="fa fa-caret-down"></i></a>
+		<a href="#" id="panelLink" onClick="jQuery('#bRefineContainer').toggleClass('open'); ">FILTER<i class="fa fa-caret-down"></i></a>
 	</div><!-- end col -->
 <?php
 	}else{
 ?>
 		<div class="col-xs-12 col-sm-2">
-		<?php print caNavLink($this->request, _t("View All"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1)); ?>
+		<?php print caNavLink($this->request, _t("View All"), '', '*', 'browse', '*', array('view' => $vs_current_view)); ?>
 		</div><!-- end col -->
 <?php
 	}
@@ -216,7 +216,8 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 			<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>
 		</div>
-	</div><!-- end row --></div>
+	</div><!-- end row -->
+</div><!-- end container -->
 		<div class="row">
 			<div class="col-xs-12">
 			<H5>
@@ -244,11 +245,13 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
-		if (sizeof($va_criteria) > 1) {
+		if (sizeof($va_criteria) > 0) {
 			$i = 0;
-			print "<strong>"._t("Filtering by").":</strong>";
 			foreach($va_criteria as $va_criterion) {
 				if ($va_criterion['facet_name'] != '_search') {
+					if($i == 0){
+						print "<strong>"._t("Filtering by").":</strong>";
+					}
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm bCriteria">'.$va_criterion['value'].' <span class="icon-cross"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					#print ' '.$va_criterion['value'];
@@ -268,6 +271,15 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			</H5>
 			</div><!-- end col -->
+		</div>	
+		<div class='row'>
+			<div class='col-sm-12 col-md-12 col-lg-12'>
+				<div class='browseLeader'>
+<?php
+			print "<h1>Browse ".$va_browse_info["displayName"]."</h1>";	
+?>
+				</div>		
+			</div>
 		</div><!-- end row --></div><!-- end container -->
 		<form id="setsSelectMultiple">
 		<div class="row">
@@ -287,7 +299,7 @@ if (!$vb_ajax) {	// !ajax
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 20,
+			padding: 60,
 			nextSelector: 'a.jscroll-next'
 		});
 		

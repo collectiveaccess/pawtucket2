@@ -74,10 +74,10 @@
 							print "<div class='unit'><span class='label'>Premiere: </span>".$vs_premiere."</div>";
 						}
 					}
-					if ($vs_language = $t_item->get('ca_occurrences.productionLanguage', array('convertCodesToDisplayText' => true))) {
+					if (($vs_language = $t_item->get('ca_occurrences.productionLanguage', array('convertCodesToDisplayText' => true))) != "null") {
 						print "<div class='unit'><span class='label'>Production Language: </span>".$vs_language."</div>";
 					}	
-					if ($vs_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true))) {
+					if ($vs_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 						print "<div class='unit'><span class='label'>Country of Origin: </span>".$vs_country."</div>";
 					}														
 ?>
@@ -93,9 +93,9 @@
 					if ($va_description = $t_item->get('ca_occurrences.productionDescription.prodesc_text')) {
 						print "<div class='unit'><span class='label'>Description: </span>".$va_description."</div>";
 					}
-					if ($va_description_source = $t_item->get('ca_occurrences.productionDescription.prodesc_source')) {
-						print "<div class='unit'><span class='label'>Description source: </span>".$va_description_source."</div>";
-					}					
+					#if ($va_description_source = $t_item->get('ca_occurrences.productionDescription.prodesc_source')) {
+					#	print "<div class='unit'><span class='label'>Description source: </span>".$va_description_source."</div>";
+					#}					
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->

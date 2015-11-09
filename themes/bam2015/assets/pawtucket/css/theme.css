@@ -47,14 +47,14 @@ h1 {
 	margin-bottom:20px;
 }
 h2 {
-	font-size:30px;
+	font-size:36px;
 	color: #000;
 	margin-top:5px;
 	margin-bottom: 2px;
 }
 h3 {
 	color: #000;
-	font-size: 14px;
+	font-size: 16px;
 	text-transform:none;
 	margin:0px;
 }
@@ -93,8 +93,8 @@ a {
 	font-weight:bold;
 	color: #7c7c7c;
 }
-.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover {
-	color: #7c7c7c;
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > li > a:focus{
+	color: #7c7c7c !important;
 	font-size:18px;
 	font-family:"News Gothic Condensed";
 }
@@ -122,14 +122,13 @@ a {
 	padding-top: 15px;
     padding-bottom: 7px;
     font-size:20px;
-    padding-left: 24px;
+    padding-left: 10px;
     padding-right: 10px;
 }
 .navbar-default .navbar-form {
 	padding-bottom:0px;
 	margin-top:0px;
 	margin-bottom:0px;
-	margin-right: -15px;
 }
 .navbar-form {
 	padding-right:0px;
@@ -148,19 +147,106 @@ a {
 }
 .navbar .form-control {
 	font-family:"News Gothic";
-	font-size:26px;
+	font-size:16px;
 	color: #7c7c7c;
-	background-color:#000;	
+	background-color:#000;
+	line-height: 26px;	
+}
+.navbar .form-control input, .navbar .form-control:focus  {
+	font-size:16px;
+}
+.navbar ::-webkit-input-placeholder {
+   font-size:26px;
+}
+
+.navbar :-moz-placeholder { /* Firefox 18- */
+   font-size:26px;  
+}
+
+.navbar ::-moz-placeholder {  /* Firefox 19+ */
+   font-size:26px;  
+}
+
+.navbar :-ms-input-placeholder {  
+   font-size:26px; 
+}
+:focus::-webkit-input-placeholder{
+     text-indent: -999px
+}
+:focus::-moz-placeholder{
+     text-indent: -999px
 }
 .navbar .form-control:focus {
     border-color: #19BED1;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.075) inset, 0 0 0px rgba(102, 175, 233, 0.6);
     outline: 0 none;
 }
+@media (min-width: 768px) {
+	.navbar-form .form-group {
+		width: 100px;
+	}
+}
+@media (min-width: 992px){
+	.navbar-form .form-group {
+		width: 140px;
+	}
+}
+#user-navbar .dropdown:hover .dropdown-menu {
+	display: block;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+	background-color: #262626;
+	margin-top:-1px;
+}
+.yamm .nav.navbar-right .dropdown-menu > li > a, .yamm .nav.navbar-right .dropdown-menu > li > a:hover {
+	color: #7c7c7c;
+	font-weight:600;
+	background-color: #262626;
+	margin-left:1px;
+    font-size: 17px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-family: "News Gothic Condensed";
+}
+.yamm .nav.navbar-right .dropdown-menu > li > a.first {
+	padding-top:10px;
+}
+.yamm .nav.navbar-right .dropdown-menu > li > a.last {
+	padding-bottom:10px;
+}
 input:-webkit-autofill {
 	color: #7c7c7c;
 	background-color:#262626;
 	font-size:24px;
+}
+
+.dropdown .dropdown-menu, .dropdown-menu, #bRefineContainer{
+    display: block;
+    opacity: 0;
+    height:1px;
+    padding: 0px;
+
+    -moz-transition:    all 1000ms ease;
+    -webkit-transition: all 1000ms ease;
+    -o-transition:      all 1000ms ease;
+    -ms-transition:     all 1000ms ease;
+    transition:         all 1000ms ease;
+}
+.open .dropdown-menu, #bRefineContainer.open{
+    display: block;
+    opacity: 1;
+    height:auto;
+    padding: 0px;
+}
+.bNavOptions .dropdown-menu li, #bRefineContainer .col-xs-12 {
+	display:none;
+}
+.bNavOptions .open .dropdown-menu li, #bRefineContainer.open .col-xs-12 {
+	display:block;
+}
+.yamm #user-navbar .dropdown-menu > li > a {
+    padding-bottom: 8px;
+    padding-top: 0px;
 }
 
 /* Footer */
@@ -238,12 +324,13 @@ body {
 .leader {
 	text-transform:uppercase;
 	font-family: "News Gothic";	
-	font-size: 13px;
+	font-size: 16px;
 	font-weight: bold;
 	color: #000;
 }
 .detailHead {
 	text-align:center;
+	font-size:16px;
 }
 .detail a {
 	color: #00cfb7;
@@ -291,10 +378,11 @@ body {
 }
 .unit {
 	margin-bottom:10px;
+	font-size:16px;
 }
 .unit .label {
 	color: #000;
-	font-size:12px;
+	font-size:16px;
 	display:inline-block;
 	padding: 0px;
 	padding-right:8px;
@@ -323,8 +411,9 @@ body {
 .closeToggle a:hover{
 	color: #00cfb7;
 }
-#browseResultsContainer {
-	margin-top:5px;
+.detail .detailMediaToolbar span, .gallery .detailMediaToolbar span {
+    font-size: 20px;
+    color: #666;
 }
 
 /* Media Viewer */
@@ -381,7 +470,15 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	margin-bottom:15px;
 	font-size:13px;
 	text-align:right;
+}
+.archivesRight {
+	margin-top:15px;
 }	
+.archivesRight img{
+	width:100%;
+	height:auto;
+	margin-bottom:25px;
+}
 
 /* Advanced Search */
 
@@ -410,6 +507,10 @@ a.caAdvancedSearchFormSubmit:active, a.caAdvancedSearchFormReset:active{
 
 .dropdown-header {
 	color: #000;
+	font-size:14px;
+}
+.dropdown-menu > li > a {
+	font-size:14px;
 }
 .bNavOptions .dropdown-menu {
 	text-align:left;
@@ -418,6 +519,8 @@ a.caAdvancedSearchFormSubmit:active, a.caAdvancedSearchFormReset:active{
 	font-style:normal;
 	color: #00cfb7;
 	font-weight:normal;
+    list-style-type: square;
+    display: list-item;	
 }
 #user-navbar .dropdown {
 	font-family: "news gothic";
@@ -426,6 +529,8 @@ li[role=presentation] {
 	text-transform:none;
     font-size: 13px;
     padding-right: 5px;	
+    color: #7c7c7c;
+    padding-top:10px;
 }	
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
 	background-color: #f9f9f9;
@@ -465,6 +570,19 @@ li[role=presentation] {
     background-color: #000;
     margin: -25px -15px 20px -15px;
     padding: 10px 10px 1px 10px;
+}
+
+/* Browse */
+
+#browseResultsContainer {
+	margin-top:5px;
+}
+.browseLeader {
+	margin-top:10px;
+	margin-bottom:15px;
+}
+.browseLeader h1{
+	margin-bottom:5px;
 }
 
 /* Lightbox */
@@ -586,4 +704,13 @@ li[role=presentation] {
 }
 .lbSetImgPlaceholder {
 	padding: 40px 5px 68px 5px;
+}
+
+/* Multisearch */
+
+.multisearch .authoritySet a {
+	font-size:14px;
+}
+.multisearch .pull-right {
+	font-size:14px;
 }

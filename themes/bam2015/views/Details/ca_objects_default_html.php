@@ -62,9 +62,9 @@
 				if ($va_idno = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><span class='label'>Identifier: </span>".$va_idno."</div>";
 				}
-				if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
-					print "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
-				}
+				#if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
+				#	print "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
+				#}
 				if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='label'>Rights Statement: </span>".$va_rights_statement."</div>";
 				}

@@ -72,7 +72,11 @@
 					$vn_c++;
 				}
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			
+				$va_images_2 = array();
+				# --- default to any related image if the configured relationship type is not available
+				if(caGetOption('selectMediaUsingRelationshipTypes', $va_options, null)){
+					$va_images_2 = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', null, 'checkAccess' => $va_access_values));	
+				}
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
 			}
@@ -83,7 +87,23 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
-				$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+				if($vs_table == 'ca_occurrences'){
+					$vn_chop_len = 90;
+					$vs_date_conjunction = "<br/>";
+					if($vs_current_view == "list"){
+						$vn_chop_len = 40;
+						$vs_date_conjunction = ", ";
+					}
+					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+					if(mb_strlen($vs_link_text) > $vn_chop_len){
+						$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
+					}						
+					if($qr_res->get("ca_occurrences.productionDate")){
+						$vs_link_text = $vs_link_text.$vs_date_conjunction.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+					}
+				}else{
+					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
@@ -98,14 +118,19 @@
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 					}
+					
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
 					$vs_add_to_set_link = "";
 					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a></div>";
 					}				
 				} else {
-					if($va_images[$vn_id]){
-						$vs_thumbnail = $va_images[$vn_id];
+					if($va_images[$vn_id] || $va_images_2[$vn_id]){
+						if($va_images[$vn_id]){
+							$vs_thumbnail = $va_images[$vn_id];
+						}else{
+							$vs_thumbnail = $va_images_2[$vn_id];
+						}
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
@@ -116,7 +141,7 @@
 	<div class='col-xs-12 col-sm-3'>
 		<div class='bBAMResultItem'>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bBAMResultItemImg'>{$vs_add_to_set_link}{$vs_rep_detail_link}</div>
+			<div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div>
 			<div class='bBAMResultItemText'>
 				<div class='bBAMIcon'>{$vs_type_placeholder}</div>
 				".caDetailLink($this->request, $vs_link_text, '', $vs_table, $vn_id)."

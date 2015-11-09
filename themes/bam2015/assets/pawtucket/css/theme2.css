@@ -63,7 +63,7 @@ input:focus{
 	display:block;
 	color:#33d9c5; 
 	text-decoration:none;
-	font-size:12px;
+	font-size:14px;
 	line-height:1em;
 	height:1em;
 	overflow:hidden;
@@ -78,7 +78,7 @@ input:focus{
 }
 .bBAMResultItem{
 	border-bottom:2px solid #DDDDDD;
-	height:290px;
+	height:302px;
 	margin-bottom:35px;
 	position:relative;
 }
@@ -104,26 +104,31 @@ input:focus{
 }
 .bBAMResultItem .bBAMResultItemImg .bBAMResultLB{
 	position:absolute;
-	width:100%;
-	text-align:center;
-	top:43%;
-	display:none;
-	font-size:40px;
+	text-align:right;
+	right:10px;
+	display:block;
+	font-size:30px;
 	color:#FFFFFF !important;
+	top:5px;
 }
 .bBAMResultItem .bBAMResultItemImg:hover .bBAMResultLB{
 	display:block;
 }
 .bBAMResultItem .bBAMResultItemImg .bBAMResultLB a span{
-	color:#FFFFFF !important;
+	color: #fff;
 }
 .bBAMResultItem .bBAMResultItemImg .bBAMResultLB a:hover span{
-	color:#33d9c5 !important;
+	/*color:#33d9c5 !important;*/
 	text-decoration:none;
+	color:#fff !important;
+}
+.bBAMResultItem .bBAMResultItemImg .bBAMResultLB a:active span, .bBAMResultItem .bBAMResultItemImg .bBAMResultLB a:focus span{
+	color:#33d9c5 !important;
+	
 }
 .bBAMResultItem .bBAMResultItemText{
 	margin-top:8px;
-	font-size:11px;
+	font-size:14px;
 	line-height:1.1em;
 	overflow:hidden;
 	height:3.3em;
@@ -139,10 +144,10 @@ input:focus{
 	margin-left:15px;
 	float:right;
 	font-size:14px;
-	padding-top:5px;
+	padding-top:18px;
 }
 .bNavOptions{
-	margin-top:10px;
+	margin-top:0px;
 	text-transform:uppercase;
 	font-weight:bold;
 	font-size:14px;
@@ -251,7 +256,7 @@ input:focus{
 #bRefineContainer{
 	min-height:200px;
 	margin-top:-2px;
-	display:none;
+	/*display:none;*/
 	position:absolute;
 	background-color:#FFFFFF;
 	z-index:10;
@@ -279,7 +284,7 @@ input:focus{
 	font-family: 'News Gothic' !important;
 	text-transform:uppercase;
 	font-weight:bold;
-	font-size:13px;
+	font-size:14px;
 	color:#828282;
 }
 #bRefineContainer .tab-content .bFacetItem{
@@ -287,7 +292,7 @@ input:focus{
 	padding-bottom:5px !important;
 }
 #bRefineContainer .tab-content a{
-	font-size:12px;
+	font-size:14px;
 }
 #bRefineContainer .tab-content a:hover{
 	text-decoration:underline;
@@ -303,6 +308,9 @@ input:focus{
 .results H5 .bGear{
 	margin-left:15px;
 }
+.results strong, .sets H5 strong {
+	font-size:14px;
+}
 .results button.bCriteria{
 	background-color:#f9f9f9 !important;
 	border:2px solid #dddddd !important;
@@ -310,7 +318,7 @@ input:focus{
 	margin:0px 15px 0px 0px;
 	padding:4px 5px 2px 5px;
 	color:#828282;
-	font-size:12px;
+	font-size:14px;
 	line-height:1em;
 	font-weight:normal;
 }
@@ -321,6 +329,7 @@ input:focus{
     background-color: #b5b5b5;
     border: 0px;
     color: #FFFFFF !important;
+    width:200px;
 }
 .bResultItemImgPlaceholder span, .bResultItemImgPlaceholder i{
 	color: #FFFFFF !important;
@@ -347,7 +356,7 @@ input:focus{
 	height:auto;
 }
 .frontNav{
-	margin:10px 30px 0px 30px;
+	margin:0px 30px 0px 30px;
 	text-transform:uppercase;
 	font-weight:bold;
 	font-size:14px;

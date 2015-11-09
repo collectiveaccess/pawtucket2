@@ -71,9 +71,9 @@
 					if ($va_affiliation = $t_item->get('ca_entities.bamAffiliation.affiliation_text')) {
 						print "<div class='unit'><span class='label'>Biography: </span>".$va_affiliation."</div>";
 					}
-					if ($va_affiliation_source = $t_item->get('ca_entities.bamAffiliation.affiliation_source')) {
-						print "<div class='unit'><span class='label'>Source: </span>".$va_affiliation_source."</div>";
-					}					
+					#if ($va_affiliation_source = $t_item->get('ca_entities.bamAffiliation.affiliation_source')) {
+					#	print "<div class='unit'><span class='label'>Source: </span>".$va_affiliation_source."</div>";
+					#}					
 ?>				
 				<!--
 					<div id="detailTools">

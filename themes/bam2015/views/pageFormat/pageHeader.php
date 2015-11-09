@@ -113,12 +113,14 @@
 	if ($vb_has_user_links) {
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;border-right:4px solid #000;">
+					<li class="dropdown"  style="position:relative;border-right:4px solid #000;">
 						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><span class="icon-user"></span></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
+				TooltipManager::add('#userTooltip', "My Bam"); 						
+
 	}
 ?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -131,9 +133,16 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 <?php
-					print "<li>".caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities')."</li>"; 
-					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences')."</li>"; 
-					print "<li>".caNavLink($this->request, 'Digital Collections', '', '', 'FindingAid', 'Collection/Index')."</li>"; 
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse</a>\n";
+					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Productions & Events', 'last', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "</ul></li>";
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers</a>\n";
+					print "<ul class='dropdown-menu'>"; 
+					print "<li>".caNavLink($this->request, 'Advanced Search', 'first', '', 'Search', 'advanced/objects')."</li>\n";
+					print "<li>".caNavLink($this->request, 'Browse Archival Collections', '', '', 'FindingAid', 'Collection/Index')."</li>\n";
+					print "<li>".caNavLink($this->request, 'About the Archive', 'last', '', 'About', 'Index')."</li>\n";					
+					print "</ul></li>";
 
 					#print $this->render("pageFormat/browseMenu.php");
 ?>	

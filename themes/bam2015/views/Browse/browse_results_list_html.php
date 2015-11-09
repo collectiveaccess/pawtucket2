@@ -63,7 +63,23 @@
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-				$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+				if($vs_table == 'ca_occurrences'){
+					$vn_str_len_date = 0;
+					if($qr_res->get("ca_occurrences.productionDate")){
+						$vn_str_len_date = mb_strlen($qr_res->get("ca_occurrences.productionDate"));
+					}
+					$vn_chop_len = 52 - $vn_str_len_date;
+					$vs_date_conjunction = ", ";
+					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+					if(mb_strlen($vs_link_text) > $vn_chop_len){
+						$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
+					}						
+					if($qr_res->get("ca_occurrences.productionDate")){
+						$vs_link_text = $vs_link_text.$vs_date_conjunction.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+					}
+				}else{
+					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+				}
 				
 				print "
 	<div class='col-xs-12 col-sm-4'>
