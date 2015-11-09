@@ -81,6 +81,8 @@
 						break;
 					}
 					
+					//if (!$vn_start && !$vn_end) { continue; }
+					
 					if ($vn_end > 2100) { $vn_end = $vn_start; }
 					if ($vn_start < 0) { $vn_start = $vn_end; }
  					
@@ -116,10 +118,10 @@
 							$va_catalogue_ids = [0];
 						}			
 						foreach($va_catalogue_ids as $vn_catalogue_id) {
-							if(is_array($va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id])) {
-								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id]['count']++;
+							if(is_array($va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id])) {
+								//$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id]['count']++;
 							} else {
-								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id] = [
+								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id] = [
 									'start' => $vn_start, 
 									'end' => $vn_end,
 									'count' => 1
@@ -129,6 +131,7 @@
 					}			
  				}
  			}
+ 			
  			$this->view->setVar('map_data', $va_map_data);
  			
  			$this->render('Map/get_map_data_json.php');

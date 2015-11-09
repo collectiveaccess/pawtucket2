@@ -1,4 +1,8 @@
 <?php
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
+	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");
+
 	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
 	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
 ?>
@@ -9,7 +13,7 @@
 		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
 <?php		
 			if (!$vb_dont_show_catalogue_list) {
-				print "<h1 style='margin-top:20px;'>Places of Publication</h1>";
+				print "<h1 style='margin-top:20px;'>Publication City Mapper</h1>";
 			}
 ?>						
 		</div>
@@ -20,7 +24,7 @@
 	if (!$vb_dont_show_catalogue_list) {
 ?>
 		<div class="col-sm-2" id='publisherContentContainer'>
-			<p class="vizTitle">Include in Map</p>
+			<p class="vizTitle" style='text-align:left;'>Display books from checked catalogs</p>
 			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
@@ -59,7 +63,11 @@
 			<span id="publisherMapYearSliderEnd"></span>
 		</div>
 	</div>
-	
+	<div class="row">
+		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+			<p style='margin-top:30px; font-size:16px;'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.</p>
+		</div>
+	</div>
 </div>
 
 
@@ -96,35 +104,40 @@
 				if(!map_data_by_location) { return; }
 				if(!map_data_by_location['by_date']) { return; }
 				
-				
+				var seen_object_ids = {};
 				var count_for_current_range = 0;
 				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
-					jQuery.each(by_catalog, function(catalog_id, date_range) {
-						if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { console.log("skip", catalog_id, selectedCatalogIDs);  return; }
-						if (
-							(start > 0) && (end > 0)
-							&& (!(
-							((start <= parseInt(date_range['start']))
-							&&
-							(end >= parseInt(date_range['start'])))
-							||
-							(
-							(start <= parseInt(date_range['end']))
-							&&
-							(end >= parseInt(date_range['end'])))))
+					for(var catalog_id in by_catalog) {
+						by_object_id = by_catalog[catalog_id];
+						jQuery.each(by_object_id, function(object_id, date_range) {
+							if (seen_object_ids[object_id]) { return; }
+							if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { return; }
+							if (
+								(start > 0) && (end > 0)
+								&& (!(
+								((start <= parseInt(date_range['start']))
+								&&
+								(end >= parseInt(date_range['start'])))
+								||
+								(
+								(start <= parseInt(date_range['end']))
+								&&
+								(end >= parseInt(date_range['end'])))))
 						
-						) {
-							return;
-						}
-						count_for_current_range += date_range['count'];
+							) {
+								return;
+							}
+							count_for_current_range += date_range['count'];
+							seen_object_ids[object_id] = true;
 					
-						if (!m.startYear || (parseInt(date_range['start']) < m.startYear)) {
-							m.startYear = parseInt(date_range['start']);
-						}
-						if (!m.endYear || (parseInt(date_range['end']) > m.endYear)) {
-							m.endYear = parseInt(date_range['end']);
-						}
-					});
+							if (!m.startYear || (parseInt(date_range['start']) < m.startYear)) {
+								m.startYear = parseInt(date_range['start']);
+							}
+							if (!m.endYear || (parseInt(date_range['end']) > m.endYear)) {
+								m.endYear = parseInt(date_range['end']);
+							}
+						});
+					}
 				});
 				
 				var r = count_for_current_range; 
@@ -137,8 +150,23 @@
 					color: '#444', weight: 2, radius: r,
 					fillColor: '#cc0000',
 					fillOpacity: 0.5
-				}).bindPopup((map_data_by_location['name'] ? map_data_by_location['name'] : map_data_by_location['latitude'] + ", " + map_data_by_location['longitude']) + " (" + count_for_current_range + ")").addTo(allMarkers);
-				
+				}).bindPopup((map_data_by_location['name'] ? map_data_by_location['name'] : map_data_by_location['latitude'] + ", " + map_data_by_location['longitude']) + " (" + count_for_current_range + ")")
+				  .on('mouseover', function (e) {
+						this.openPopup();
+						var placeName = e.target.placeName;
+						jQuery(".leaflet-popup-content-wrapper").on('click', function (e) {
+							if (placeName) {
+								window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'pubplace_facet')); ?>/id/' + escape(placeName);
+							}
+						});
+					})
+        			.on('click', function (e) {
+						if (e.target.placeName) {
+							window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'pubplace_facet')); ?>/id/' + escape(e.target.placeName);
+						}
+					})
+					.addTo(allMarkers);
+				circle.placeName = map_data_by_location['name'];
 			});
 			
 			if (!dontFitToBounds) { m.l.fitBounds(allMarkers.getBounds()); }

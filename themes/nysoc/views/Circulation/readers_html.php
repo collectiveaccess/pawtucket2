@@ -1,4 +1,9 @@
 <?php
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
+	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Compare Reader Activity");
+	
 	// List of entity ids to display on load
 	$va_entity_list = $this->getVar('entity_list');
 	
@@ -19,16 +24,20 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
-			<h1 style="margin-top:20px;">New York Society Library Circulation</h1>
+			<h1 style="margin-top:20px;">Compare Reader Activity</h1>
 
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-2" >
 			<div id='readerContentContainer'>
-				<div id='readerContent' style="height: 600px;">
+				<p class='vizTitle' style='text-align:left;'>Readers to Compare</p>
+				<div id='readerContent'>
 					<!-- List of currently displays readers -->
 				</div>
+				<div class="clearfix"></div>
+				<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
+
 			</div>
 		</div>	
 		<div class="col-sm-10 ">
@@ -85,14 +94,14 @@
 		  .find('.tooltip')
 		  .hide();
 
-		$chart.on('mouseenter', '.ct-series', function() {
-			var $slice = $(this),
-			sliceName = $slice.attr('ct:series-name');
-			console.log($slice);
-			$graphToolTip.html(sliceName).show();
+		$chart.on('mouseenter', '.ct-point', function() {
+			var $pt = $(this), $slice = $(this).parent(),
+			sliceName = $slice.attr('ct:series-name'), value = $pt.attr('ct:value');
+	
+			$graphToolTip.html(sliceName + " (" + value + ")").show();
 		});
 
-		$chart.on('mouseleave', '.ct-series', function() {
+		$chart.on('mouseleave', '.ct-point', function() {
 		  $graphToolTip.hide();
 		});
 

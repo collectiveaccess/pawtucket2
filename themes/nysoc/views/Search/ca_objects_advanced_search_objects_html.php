@@ -1,5 +1,5 @@
 <?php
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > Advanced Search");
 ?>
 <div class="page">

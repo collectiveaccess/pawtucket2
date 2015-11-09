@@ -173,38 +173,38 @@ class RequestDispatcher extends BaseObject {
 						// ... next check the generic "_root_" plugin directory
 						// plugins in here act as if they are in the app/controllers directory
 						if (!file_exists($this->ops_application_plugins_path.'/_root_/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php') || !include_once($this->ops_application_plugins_path.'/_root_/controllers/'.join('/', $this->opa_module_path).'/'.$vs_classname.'.php')) {					
-							// Try to load "Default" controller in controllers directory and call method with controller name
-							if (file_exists($this->ops_controller_path.'/DefaultController.php') && @include_once($this->ops_controller_path.'/DefaultController.php') && is_callable('DefaultController', $this->ops_controller)) {
-						
-								$vs_default_method = $this->ops_controller;
-						
-								// Set DefaultController as controller class
-								$vs_classname = 'DefaultController';	
-						
-								// Take rest of path and pass as params to DefaultController __call()
-								$va_params = array($this->ops_action);
-								if ($this->ops_action_extra) { $va_params[] = $this->ops_action_extra; } 
-						
-								$va_path_params = $this->opo_request->getParameters(array('PATH'));
-								foreach($va_path_params as $vs_param => $vs_value) {
-									if (!$vs_param) { $va_params[] = $vs_param; }
-									if (!$vs_value) { $va_params[] = $vs_value; }
+							// ... next check for root controllers in plugins 
+							$o_app_plugin_manager = new ApplicationPluginManager();
+							$va_app_plugin_names = $o_app_plugin_manager->getPluginNames();
+							
+							$vb_is_error = true;
+							foreach($va_app_plugin_names as $vs_app_plugin_name) {
+								if ($vs_app_plugin_name === '_root_') { continue; }
+								if (file_exists($this->ops_application_plugins_path.'/'.$vs_app_plugin_name.'/controllers/_root_/'.$vs_classname.'.php') && include_once($this->ops_application_plugins_path.'/'.$vs_app_plugin_name.'/controllers/_root_/'.$vs_classname.'.php')) {
+									$vb_is_error = false;
 								}
-								$this->ops_action = $vs_default_method;
-							} else {
-								// ... next check for root controllers in plugins 
-								$o_app_plugin_manager = new ApplicationPluginManager();
-								$va_app_plugin_names = $o_app_plugin_manager->getPluginNames();
-								
-								$vb_is_error = true;
-								foreach($va_app_plugin_names as $vs_app_plugin_name) {
-									if ($vs_app_plugin_name === '_root_') { continue; }
-									if (file_exists($this->ops_application_plugins_path.'/'.$vs_app_plugin_name.'/controllers/_root_/'.$vs_classname.'.php') && include_once($this->ops_application_plugins_path.'/'.$vs_app_plugin_name.'/controllers/_root_/'.$vs_classname.'.php')) {
-										$vb_is_error = false;
+							}
+							
+							if ($vb_is_error) {
+								// Try to load "Default" controller in controllers directory and call method with controller name
+								if (file_exists($this->ops_controller_path.'/DefaultController.php') && @include_once($this->ops_controller_path.'/DefaultController.php')) {
+						
+									$vs_default_method = $this->ops_controller;
+						
+									// Set DefaultController as controller class
+									$vs_classname = 'DefaultController';	
+						
+									// Take rest of path and pass as params to DefaultController __call()
+									$va_params = array($this->ops_action);
+									if ($this->ops_action_extra) { $va_params[] = $this->ops_action_extra; } 
+						
+									$va_path_params = $this->opo_request->getParameters(array('PATH'));
+									foreach($va_path_params as $vs_param => $vs_value) {
+										if (!$vs_param) { $va_params[] = $vs_param; }
+										if (!$vs_value) { $va_params[] = $vs_value; }
 									}
-								}
-								
-								if ($vb_is_error) {
+									$this->ops_action = $vs_default_method;
+								} else {
 									// Invalid controller path
 									$this->postError(2300, _t("Invalid controller path"), "RequestDispatcher->dispatch()");
 									return false;
