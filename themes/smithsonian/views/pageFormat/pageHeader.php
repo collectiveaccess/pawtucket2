@@ -101,7 +101,7 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Help"), "", "", "About", "Index"); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>	

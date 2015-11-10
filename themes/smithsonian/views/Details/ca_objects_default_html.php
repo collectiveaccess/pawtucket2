@@ -17,16 +17,38 @@
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->		
-				
+
+			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
+			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
+
+				{{{<ifcount code='ca_objects.essenceTrack' min='1'><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit><p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate">Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameSize">Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</ifdef></p><p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p></unit></div></div></ifcount>}}}
+
+<?php
+			if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}
+			if (($vs_val = trim($t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}
+			if (($vs_val = trim($t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}
+			if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}				
+?>
+
+				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
+				{{{<unit><ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'><unit delimiter='; '>^ca_objects.color</unit></span></div></ifdef></unit>}}}
+
+					
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6 metadata'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<!--<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>-->
 				<HR>
-<?php				
-?>				
-			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifer</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
-			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
+				
+			
 
 <?php
 	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) && sizeof($va_occurrence_ids)) {
@@ -57,7 +79,7 @@
 			
 			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}
 			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifcount>}}}
-			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location (legacy text)</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
+			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
 <?php
 			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
 				$va_places = array();
@@ -164,23 +186,9 @@
 					}
 				}
 			}
-			
-			if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
-				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}
-			if (($vs_val = trim($t_object->get('ca_objects.physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
-				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}
-			if (($vs_val = trim($t_object->get('ca_objects.digital_moving_image', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
-				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}
-			if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
-				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}				
+						
 ?>				
-	
-				{{{<ifcount code='ca_objects.essenceTrack' min='1'><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit><p>Type: ^ca_objects.essenceTrack.essenceTrackType</p><p>Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</p><p>Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</p><p>Scan Type: ^ca_objects.essenceTrack.ScanType</p><p>Standard: ^ca_objects.essenceTrack.essenceTrackStandard</p><p>Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</p><p>Duration: ^ca_objects.essenceTrack.essenceTrackDuration</p></unit></div></div></ifcount>}}}
-				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
+
 
 <?php
 			if ($va_lcsh_names = $t_object->get('ca_objects.lcsh_names', array('returnWithStructure' => true))) {
