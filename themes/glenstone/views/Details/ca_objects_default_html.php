@@ -6,7 +6,7 @@
 	$va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem("ca_objects", $t_object->get("object_id"), array("user_id" => $this->request->user->get("user_id"))));
 	$va_lightbox_crumbs = array();
 	foreach($va_sets as $vn_set_id => $va_set){
-		$va_lightbox_crumbs[] = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $va_set["name"], "", "", "Sets", "SetDetail", array("set_id" => $vn_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
+		$va_lightbox_crumbs[] = caNavLink($this->request, _t("Lightbox"), "", "", "Lightbox", "Index")." &#8594; ".caNavLink($this->request, $va_set["name"], "", "", "Lightbox", "SetDetail", array("set_id" => $vn_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
 	}
 	$vs_lightbox_crumbs = "";
 	if(sizeof($va_lightbox_crumbs)){

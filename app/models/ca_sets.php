@@ -472,6 +472,45 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		return $t_dupe;
 	}
 	# ------------------------------------------------------
+	/**
+	 * Convert provided row_ids in currently loaded set to their corresponding set item_ids
+	 *
+	 * @param array $pa_row_ids Array of "row_ids" (eg. object_id's for object sets)
+	 * @param array $pa_options Options include:
+	 *		returnAsInfoArray = Return an array for each item_id containing keys for set_id and item_id [Default is false]
+	 *
+	 * @return array A list of item_ids, or arrays if returnAsInfoArray option is set
+	 */
+	public function rowIDsToItemIDs($pa_row_ids, $pa_options=null) {
+		if (!($vn_set_id = $this->getPrimaryKey())) { return null; }
+		if (!is_array($pa_row_ids) || !sizeof($pa_row_ids)) { return null; }
+		
+		$pa_row_ids = array_filter($pa_row_ids, function($a) { return (bool)$a; });
+		if (!sizeof($pa_row_ids)) { return null; }
+		
+		$o_db = $this->getDb();
+		$qr_items = $o_db->query("
+			SELECT item_id, row_id
+			FROM ca_set_items
+			WHERE
+			  row_id IN (?) AND set_id = ?
+		", array($pa_row_ids, $vn_set_id));
+
+		if (caGetOption('returnAsInfoArray', $pa_options, false)) {
+			$va_acc = array();
+			while ($qr_items->nextRow()) {
+				$va_acc[$qr_items->get('row_id')][] = array(
+					'item_id' => $qr_items->get('item_id'),
+					'set_id' => $vn_set_id
+				);
+			}
+			
+			return $va_acc;
+		}
+		
+		return $qr_items->getAllFieldValues('item_id');
+	}
+	# ------------------------------------------------------
 	# Set lists
 	# ------------------------------------------------------
 	/**
@@ -1670,7 +1709,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	public function getItemCount($pa_options=null) {
 		$vn_user_id = isset($pa_options['user_id']) ? (int)$pa_options['user_id'] : null;
 		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
-		if (!$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
+		if ($vn_user_id && !$this->haveAccessToSet($vn_user_id, __CA_SET_READ_ACCESS__)) { return 0; }
 		
 		$o_db = $this->getDb();
 		$o_dm = Datamodel::load();
@@ -2034,7 +2073,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	*			setType - Restricts returned sets to those of the specified type. You can pass a type_id or list item code for the set type. If omitted sets are returned regardless of type.
 	*			access - read = 1, write = 2; Restricts returned sets to those with at least the specified access level for the specified user. If "owner" is true then this option has no effect.
 	*			checkAccess - Restricts returned sets to those with an access level of the specified values. If omitted sets are returned regardless of public access (ca_sets.access) value. Can be a single value or array if you wish to filter on multiple public access values.
-	*
+	*			parents_only - Only show those sets with parent_id IS NULL  
 	*
 	*
 	*/
@@ -2131,6 +2170,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 					
 					$va_sql_wheres[] = "({$vs_sql})";
 				}
+			}
+			if($pa_options["parents_only"]){
+				$va_sql_wheres[] = "cs.parent_id IS NULL";
 			}
 			$qr_res = $o_db->query("SELECT cs.set_id, cs.user_id, type_id, cu.fname, cu.lname
 									FROM ca_sets cs
@@ -2317,6 +2359,30 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		}
 		return $va_groups;
+	}
+	# ---------------------------------------------------------------
+	public function getSetResponseIds($pn_user_id = null, $pn_set_id = null){
+		if(!$pn_set_id){
+			$pn_set_id = $this->getPrimaryKey();
+		}
+		if (!$pn_set_id) { return null; }
+		$o_db = $this->getDB();
+		$va_set_ids = array();
+		$va_wheres = array();
+		if($pn_user_id){
+			$va_wheres[] = " AND s.user_id = ".(int)$pn_user_id;
+		}
+		$q_responses = $o_db->query("
+						SELECT s.set_id
+						FROM ca_sets s
+						WHERE s.deleted = 0 AND s.parent_id = ?
+						".join(" ", $va_wheres), $pn_set_id);
+		if($q_responses->numRows()){
+			while($q_responses->nextRow()){
+				$va_set_ids[] = $q_responses->get("set_id");
+			}
+		}
+		return $va_set_ids;
 	}
 	# ---------------------------------------------------------------
 }

@@ -57,14 +57,19 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	MetaTagManager::setWindowTitle($va_home." > ".ucWords($va_browse_info["labelPlural"]));
+	
 	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-3 col-md-2 col-lg-2"; ?>">
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-3 col-md-3 col-lg-3"; ?>">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -82,7 +87,7 @@ if (!$vb_ajax) {	// !ajax
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-9 col-md-10 col-lg-10"; ?>'>
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-9 col-md-9 col-lg-9"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -112,7 +117,7 @@ if (!$vb_ajax) {	// !ajax
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 				<ul class="dropdown-menu" role="menu">
 <?php
-					if($qr_res->numHits()){
+					if($qr_res->numHits() && !$this->request->config->get("disable_my_collections")){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $vs_lightbox_display_name)."</a></li>";
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $vs_lightbox_display_name)."</a></li>";
 					}
@@ -149,14 +154,14 @@ if (!$vb_ajax) {	// !ajax
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 						}
 					}
 ?>
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
+			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_displayname)."</button></a>";
 ?>
 		</H1>
 		<H5>
@@ -221,7 +226,7 @@ if (!$vb_ajax) {	// !ajax
 			   objIDs.push($(this).val());
 			});
 			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
 			e.preventDefault();
 			return false;
 		});

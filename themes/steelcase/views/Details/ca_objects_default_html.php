@@ -245,30 +245,32 @@
 					$va_location_display = array();
 					foreach($va_storage_locations as $va_storage_location){
 						$t_relationship->load($va_storage_location["relation_id"]);
-						$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnWithStructure" => true));
+						$va_daterange = null; //$t_relationship->get("effective_date", array("returnWithStructure" => true, "returnAsArray" => true));
+					
 						if(is_array($va_daterange) && sizeof($va_daterange)){
 							foreach($va_daterange as $va_date){
 								break;
 							}
-							#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
+						
 							if(is_array($va_date)){
-								if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
+								if(($vn_now > $va_date["start"]) && ($vn_now < $va_date["end"])){
 									# --- only display the top level from the hierarchy
-									$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+									$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
 									foreach($va_hierarchy_ancestors as $va_ancestor){
-										$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
+										$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
 										break;
 									}
 								}
 							}
 						}else{
 							# --- only display the top level from the hierarchy
-							$va_hierarchy_ancestors = array_reverse(caExtractValuesByUserLocale($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name")))));
+							$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
+							
 							foreach($va_hierarchy_ancestors as $va_ancestor){
-								$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
+								//print_R($va_ancestor);
+								$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
 								break;
 							}
-							#$vs_location_display .= $va_storage_location["name"]."<br/>";
 						}
 					}
 					if(sizeof($va_location_display)){

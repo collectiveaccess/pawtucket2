@@ -2,6 +2,7 @@
 app/tmp/*
 setup.php
 /media/*
+/media
 .DS_Store
 .settings
 .project

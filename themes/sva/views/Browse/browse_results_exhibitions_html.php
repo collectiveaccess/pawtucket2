@@ -51,8 +51,8 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	$o_lightbox_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
@@ -112,53 +112,26 @@
 					$vs_entity_detail_link = ", ".$qr_res->get('ca_objects.dates.dates_value');
 				}
 
-/*
+				if ($va_closing_dates = $qr_res->get('ca_occurrences.dates', array('returnWithStructure' => true))) {
+					foreach ($va_closing_dates as $va_closing_key => $va_closing_t) {
+						foreach ($va_closing_t as $va_key => $va_closing) {
+							if ($va_closing['dates_type'] == "Exhibition dates") {
+								$va_closing_date = $va_closing['dates_value'];
+								$vs_date = $va_closing_date;
 
-				if ($va_opening_dates = $qr_res->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-					#205
-					foreach ($va_opening_dates as $va_opening_key => $va_opening) {
-						if ($va_opening['ex_dates_type'] == 205) {
-							$va_opening_date = $va_opening['ex_dates_value'];
-						} 
-					}
-				}
-				if ($va_closing_dates = $qr_res->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-					#207
-					foreach ($va_closing_dates as $va_closing_key => $va_closing) {
-						if ($va_closing['ex_dates_type'] == 207) {
-							$va_closing_date = $va_closing['ex_dates_value'];
+							}
 						}
 					}
+				} else {
+					$va_closing_dates = "";
 				}				
 
-*/
-
-				if ($va_closing_dates = $qr_res->get('ca_occurrences.dates', array('returnAsArray' => true))) {
-					
-					#304 = "exhibition_date" type
-					#305 = reception type
-					
-					foreach ($va_closing_dates as $va_closing_key => $va_closing) {
-						if ($va_closing['dates_type'] == 304) {
-							$va_closing_date = $va_closing['dates_value'];
-						}
-					}
-				}				
-
-
-
-				$vs_date = $va_closing_date;
 				
 				if ($qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 					$vs_location = $qr_res->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values));
 				} else {
 					$vs_location = "";
 				}	
-				
-				
-				
-				
-				
 				
 				if ($qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'))) {
 					$vs_curator = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('curator'), 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'));
@@ -187,7 +160,7 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 

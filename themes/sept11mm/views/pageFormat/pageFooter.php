@@ -27,22 +27,20 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
+	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	<div id="footer">
+		<div class="container">
+			<ul class="list-inline">
+				<li><a href="#">Contact Us</a></li>
+				<li><a href="#">Terms of Use / Privacy Policy</a></li>
 			</ul>
 			<div>
-				Footer text here
+				&copy; 2015 National September 11 Memorial & Museum.<br/>
+				9/11 MEMORIAL is a registered trademark of the National<br/>
+				September 11 Memorial & Museum
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-		</div><!-- end footer -->
+		</div><!-- end container -->
+	</div><!-- end footer -->
 <?php
 	//
 	// Output HTML for debug bar
@@ -51,7 +49,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --><!-- end row --></div><!-- end container -->
+
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

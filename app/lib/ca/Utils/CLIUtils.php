@@ -1787,8 +1787,8 @@
 			require_once(__CA_LIB_DIR__."/core/Zend/Http/Client.php");
 
 			$vo_app_conf = Configuration::load();
-			$vo_search_conf = Configuration::load($vo_app_conf->get("search_config"));
-			$vo_search_indexing_conf = Configuration::load($vo_search_conf->get("search_indexing_config"));
+			$vo_search_conf = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+			$vo_search_indexing_conf = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 			$o_db = new Db();
 			$o_datamodel = Datamodel::load();
 

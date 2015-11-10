@@ -92,7 +92,7 @@ if (!$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($qr_res->numHits()){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</a></li>";
 ?>
 						<li class="divider"></li>
 <?php
