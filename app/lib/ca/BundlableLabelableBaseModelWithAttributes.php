@@ -2077,6 +2077,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						switch(sizeof($va_tmp)) {
 							case 2:
 							case 3:
+								if ($ps_render = caGetOption('render', $pa_options, null)) {
+									switch($ps_render) {
+										case 'is_set':
+											return caHTMLCheckboxInput($ps_field, array('value' => '[SET]'));
+											break;
+									}
+								}
 								if (caGetOption('select', $pa_options, false)) {
 									$va_access = caGetOption('checkAccess', $pa_options, null);
 									if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
