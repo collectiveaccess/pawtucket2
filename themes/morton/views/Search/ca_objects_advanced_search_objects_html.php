@@ -18,21 +18,21 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>
 			<div class="advancedSearchField">
 				Title<br/>
-				{{{ca_objects.preferred_labels.name%width=320px}}}
+				{{{ca_objects.preferred_labels.name%width=380px}}}
 				<!--{{{ca_objects.preferred_labels:boolean}}}-->
 			</div>
 		</div>
 		<div class='col-sm-12 col-md-12 col-lg-12'>			
 			<div class="advancedSearchField">
 				Keyword<br/>
-				{{{_fulltext%width=320px&height=25px}}}
+				{{{_fulltext%width=380px&height=25px}}}
 				<!--{{{_fulltext:boolean}}}-->
 			</div>
 		</div>
 		<div class='col-sm-12 col-md-12 col-lg-12'>
 			<div class="advancedSearchField">
 				Collection <br/>
-				{{{ca_collections.preferred_labels%width=320px&height=40px}}}
+				{{{ca_collections.preferred_labels%width=380px&height=40px}}}
 				<!--{{{ca_collections.preferred_labels:boolean}}}-->
 			</div>
 		</div>				
@@ -46,7 +46,7 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
 				Date range <i>(e.g. 1970-1979)</i><br/>
-				{{{ca_objects.date.date_value%width=320px&height=40px&useDatePicker=0}}}
+				{{{ca_objects.date.date_value%width=380px&height=40px&useDatePicker=0}}}
 				<!--{{{ca_objects.date.date_value:boolean}}}-->
 			</div>
 		</div>	
@@ -59,7 +59,7 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
 				Entity <br/>
-				{{{ca_entities.preferred_labels%width=320px&height=40px}}}
+				{{{ca_entities.preferred_labels%width=380px&height=40px}}}
 				<!--{{{ca_entities.preferred_labels:boolean}}}-->
 			</div>
 		</div>	
@@ -67,27 +67,29 @@
 			<div class="advancedSearchField">
 				Language <br/>
 				{{{ca_objects.language:boolean}}}
-				{{{ca_objects.language%width=240px&height=40px}}}
+				{{{ca_objects.language%width=250px&height=40px}}}
 			</div>
 		</div>
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
 				Reproduction <br/>
 				{{{ca_objects.reproduction:boolean}}}
-				{{{ca_objects.reproduction%width=240px&height=40px}}}
+				{{{ca_objects.reproduction%width=250px&height=40px}}}
 			</div>
-		</div>							
+		</div>	
+	<br style="clear: both;"/>
+	<div style='margin-right:230px;'>
+		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
+		<div style="float: right;">{{{submit%label=Search}}}</div>
+	</div>								
 	</div>	
 	
-	<br style="clear: both;"/>
-	
-	<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-	<div style="float: right;">{{{submit%label=Search}}}</div>
+
 {{{/form}}}
 
 		</div>
 		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
-			<h1>Other Resources</h1>
+			<h2>Other Resources</h2>
 			<p><a href='http://www.mortonarb.org/visit-explore/sterling-morton-library' target='_blank'>Sterling Morton Library Home</a></p>
 <?php			
 
@@ -95,7 +97,7 @@
 
 	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
 ?>	
-			<h1>Recent Searches</h1>
+			<h2 style='margin-top:50px;'>Recent Searches</h2>
 			<ul class='recentSearch'> 
 <?php
 			$v_i = 0;

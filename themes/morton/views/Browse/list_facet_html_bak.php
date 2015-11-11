@@ -49,12 +49,12 @@
 	if($vb_is_nav){
 		if ($vn_start == 0) {
 ?>
-			<div id="panel_<?php print $vs_facet_name; ?>" class="row">
+			<div id="panel_<?php print $vs_facet_name; ?>">
 <?php
 		}
 		foreach($va_facet_content as $vn_id => $va_item) {
 			$va_item_label = explode('[', $va_item['label']);
-			print "<div class='browseFacetItem col-sm-4 col-md-3'>".caNavLink($this->request, $va_item_label[0], '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
+			print "<div class='browseFacetItem'>".caNavLink($this->request, $va_item_label[0], 'col-sm-4 col-md-3', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
 			$vn_c++;
 			
 			if ($vn_c >= $vn_items_per_page) { break; }
@@ -66,7 +66,7 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#panel_<?php print $vs_facet_name; ?>").jscroll({
-						loadingHtml: "<div class='browseFacetItem col-sm-4 col-md-3'><a href='#'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>"
+						loadingHtml: "<div class='browseFacetItem'><a href='#' class='col-sm-4 col-md-3'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>"
 					});
 				});	
 			</script>

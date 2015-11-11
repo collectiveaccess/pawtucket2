@@ -25,10 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
 
-<?php
 	//
 	// Output HTML for debug bar
 	//
@@ -36,15 +33,32 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --><!-- end row -->
-	<div class='row'>
-		<div id="footer">
-			<div class='footerWrapper'>
-				© 2015 THE MORTON ARBORETUM  |  4100 ILLINOIS ROUTE 53, LISLE, IL 60532  |  Map  |  Phone: 630-968-0074  |  Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>  |  <a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy</a>  
-				<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-			</div>
-		</div><!-- end footer -->	
-	</div><!-- end row-->
+	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+
+	
+	</div><!-- end pageWrapper -->
+	<div class='container' style='max-width:none;'>
+		<div class='row'>
+			<div id="footer">
+				<div class='footerWrapper'>
+					<div class='upperBlock'>
+						<div class='col-sm-4 col-md-4 col-lg-4'></div>
+						<div class='col-sm-4 col-md-4 col-lg-4'></div>
+						<div class='col-sm-4 col-md-4 col-lg-4 logos'>
+							<div class='footerLogo'>
+								<?php print caGetThemeGraphic($this->request, 'logo-white-trans-bg-footer.png');?>
+							</div>
+							<div class='champion'>
+								<?php print caGetThemeGraphic($this->request, 'champion-1.png');?>
+							</div>
+						</div>
+					</div>
+					<div class='lowerBlock'>
+						© 2015 THE MORTON ARBORETUM&nbsp;&nbsp;|&nbsp;&nbsp;4100 ILLINOIS ROUTE 53, LISLE, IL 60532&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/visit-explore/plan-visit/maps-and-directions'>Map</a>&nbsp;&nbsp;|&nbsp;&nbsp;Phone: 630-968-0074&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://mortonarb.us6.list-manage.com/subscribe?u=04696075b27b6887a368a4b35&id=6b7fbbfdd2' target='_blank'> Subscribe </a>&nbsp;&nbsp;|&nbsp;&nbsp;Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy&nbsp;&nbsp;</a>  
+					</div>
+				</div>
+			</div><!-- end footer -->	
+		</div><!-- end row-->	
 	</div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
@@ -74,5 +88,6 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
+		
 	</body>
 </html>

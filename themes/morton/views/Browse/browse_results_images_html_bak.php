@@ -42,12 +42,23 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	
+
+	$o_set_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	if(!$vs_lightbox_icon){
+		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
+	}
+	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -55,19 +66,16 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+		
 
-	
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
-		$vn_col_span = 4;
+		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
-		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
+			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 12;
+			$vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -76,77 +84,71 @@
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
+					$va_ids[] = $qr_res->get($vs_pk);
+					$vn_c++;
 				}
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
+				$vn_c = 0;	
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'iconlarge', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
 			}
 			
 			$t_list_item = new ca_list_items();
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= "<h4>".caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels").' ('.$qr_res->get("ca_objects.idno").')', '', $vs_table, $vn_id)."</h4>";
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
-								$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'iconlarge', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				$vs_info = null;
-				if ($va_date = $qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))) {
-					$vs_info.= $va_date;
-				}
-				if ($va_creator = $qr_res->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))) {
-					$vs_info.= "<br>".$va_creator;
-				}
-				if ($va_type = $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))) {
-					$vs_info.= "<br>".$va_type;
-				}				
-				if ($va_desc = $qr_res->get('ca_objects.description.description_text')) {
-					$vs_info.= "<br>".$va_desc;
-				}
-				if ($va_ext = $qr_res->get('ca_objects.extent_text')) {
-					$vs_info.= "<br>".$va_ext;
-				}				
-				if(!$vs_image){
-					if ($vs_table == 'ca_objects') {
+				if ($vs_table == 'ca_objects') {
+					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
-							$vs_image = $vs_default_placeholder_tag;
+							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
-					}else{
-						$vs_image = $vs_default_placeholder_tag;
 					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+					$vs_type = "<h7>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
+					if ($qr_res->get('ca_objects.date.date_value')){
+						$vs_date = "<br/>".$qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))."<br/>";
+					} else {
+						$vs_date = null;
+					}
+					if ($va_creator = "<p>".$qr_res->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>") {
+					
+					} else {
+						$va_creator = null;
+					}
+				} else {
+					if($va_images[$vn_id]){
+						$vs_thumbnail = $va_images[$vn_id];
+					}else{
+						$vs_thumbnail = $vs_default_placeholder_tag;
+					}
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
-				$vs_add_to_set_link = "";
-				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-				}
-				
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultListItemText'>
-					{$vs_label_detail_link}{$vs_info}
-				</div><!-- end bResultListItemText -->
-			</div><!-- end bResultListItemContent -->
-			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
+	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemText'>
+					{$vs_type}{$vs_label_detail_link}{$vs_date}{$va_creator}
+				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
 				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
-			</div><!-- bResultListItemExpandedInfo -->
-		</div><!-- end bResultListItem -->
+			</div><!-- bResultItemExpandedInfo -->
+		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;
