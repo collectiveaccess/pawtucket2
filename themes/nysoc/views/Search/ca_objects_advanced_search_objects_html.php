@@ -15,8 +15,9 @@
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
 		<h4>Books Advanced Search<small> or <br/>
-		<?php print caNavLink($this->request, 'People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
-		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?> | 
+		<!--<a href='#' class='advancedSearchSelected'>Search Books</a> | -->
+		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
+		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
 		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 

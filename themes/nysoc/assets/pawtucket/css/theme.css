@@ -1342,6 +1342,11 @@ table.dataTable thead th {
 
 /* Advanced Search */
 
+a.advancedSearchSelected {
+	font-weight: bold;
+	text-decoration: none;
+}
+
 .advancedContainer {
 	background-color: #f7f7f7;
 	min-height: 250px;

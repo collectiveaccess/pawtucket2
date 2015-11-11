@@ -893,8 +893,7 @@
      		paging: false
     	});		
 	});
-</script>
-<script>
+	
 	$('a[href^="#"]').on('click', function(event) {
 
 		var target = $( $(this).attr('href') );
