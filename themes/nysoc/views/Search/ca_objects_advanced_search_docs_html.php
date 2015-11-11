@@ -17,7 +17,8 @@
 		<h4>Documents Advanced Search<small> or <br/>
 		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
 		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
-		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?>
+		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?>
+		<!--<a href='#' class='advancedSearchSelected'>Search Documents</a>-->
 		</small></h4>
 
 

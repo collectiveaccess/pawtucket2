@@ -15,8 +15,9 @@
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
 		<h4>Books Advanced Search<small> or <br/>
-		<?php print caNavLink($this->request, 'People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
-		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/entities');?> | 
+		<!--<a href='#' class='advancedSearchSelected'>Search Books</a> | -->
+		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
+		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
 		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
@@ -151,18 +152,18 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Representative:<br/>
-						{{{ca_objects_x_entities.representative%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.representative%width=220px&height=25px&render=is_set}}}
 					</div>
 					<div class="advancedSearchField">
 						Fine:<br/>
-						{{{ca_objects_x_entities.fine%width=220px&height=25px}}}
+						{{{ca_objects_x_entities.fine%width=220px&height=25px&render=is_set}}}
 					</div>									
 					<div class="advancedSearchField">
 						Uncertain Transcription:  <i class="fa fa-info-circle" id='uncertain'></i><br/>
 <?php
 						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
 ?>						
-						{{{ca_objects_x_entities.see_original%width=220px}}}
+						{{{ca_objects_x_entities.see_original%width=220px&render=is_set}}}
 					</div>
 				</div>																		
 				<br style="clear: both;"/>

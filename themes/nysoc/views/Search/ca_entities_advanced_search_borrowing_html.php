@@ -1,7 +1,6 @@
 <?php
 	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > Advanced Search");
-
 ?>
 <div class="page">
 	<div class="wrapper">
@@ -15,10 +14,10 @@
 						<div class="container">
 							<div class="row">
 								<div class="col-sm-12 " style="margin-top:20px;">
-		<h4>People & Organizations Advanced Search<small> or <br/>
+		<h4>Borrowing History Advanced Search<small> or <br/>
 		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
-		<!--<a href='#' class='advancedSearchSelected'>Search People & Organizations</a> | -->
-		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
+		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
+		<!--<a href='#' class='advancedSearchSelected'>Search Borrowing History</a> | -->
 		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
@@ -34,36 +33,7 @@
 <?php
 						TooltipManager::add('#keyword', "Enter keywords or use <a href='http://www.lib.berkeley.edu/TeachingLib/Guides/Internet/Boolean.pdf' target='_blank'>Boolean operators</a> for more complex searches."); 
 ?>						
-				</div>			
-				<div class='advancedUnit'>
-					<h3>Personal or Organizational Details</h3>
-					<div class="advancedSearchField">
-						Name:<br/>
-						{{{ca_entities.preferred_labels.name%width=220px}}}
-					</div>
-					<div class="advancedSearchField">
-						Type:<br/>
-						{{{ca_entities.type_id%width=220px}}}
-					</div>					
-					<div class="advancedSearchField">
-						Occupation:<br/>
-						{{{ca_entities.industry_occupations%width=220px}}}
-					</div>
-				</div>	
-				<div class='advancedUnit'>
-					<div class="advancedSearchField">
-						Country of Origin:<br/>
-						{{{ca_entities.country_origin%width=220px}}}
-					</div>					
-					<div class="advancedSearchField">
-						Gender:<br/>
-						{{{ca_entities.gender%width=220px}}}
-					</div>
-					<div class="advancedSearchField">
-						Relationship to the Library:<br/>
-						<div style="margin-top: 5px;">{{{ca_entities.relationship_to_library%width=220px&render=checklist&maxColumns=2}}}</div>
-					</div>					
-				</div>	
+				</div>
 				<div class='advancedUnit'>
 					<h3>Circulation Information</h3>
 					<div class="advancedSearchField">
@@ -87,33 +57,71 @@
 				</div>	
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
-						Representative:<br/>
-						{{{ca_objects_x_entities.representative%width=220px&height=25px&render=is_set}}}
-					</div>
-					<div class="advancedSearchField">
 						Uncertain Transcription: <i class="fa fa-info-circle" id='uncertain'></i><br/>
 <?php
 						TooltipManager::add('#uncertain', "Search for illegible, unclear, or ambiguous transcriptions in the database."); 
 ?>						
 						{{{ca_objects_x_entities.see_original%width=220px&render=is_set}}}
+					</div>			
+					<div class="advancedSearchField">
+						Reader occupation:<br/>
+						{{{ca_entities.industry_occupations%width=220px&restrictToRelationshipTypes=reader}}}
+					</div>
+				</div>	
+				<div class='advancedUnit'>
+					<div class="advancedSearchField">
+						1813 Subjects: <i class="fa fa-info-circle" id='subjects1813'></i><br/>
+<?php
+						TooltipManager::add('#subjects1813', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1813 print catalog.", '', '', 'Detail', 'objects/7')); 
+?>						
+						{{{ca_objects.subjects_1813%width=220px}}}
+					</div>
+					<div class="advancedSearchField">
+						1838 Subjects: <i class="fa fa-info-circle" id='subjects1838'></i><br/>
+<?php
+						TooltipManager::add('#subjects1838', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1838 print catalog.", '', '', 'Detail', 'objects/11555')); 
+?>							
+						{{{ca_objects.subjects_1838%width=220px}}}
+					</div>	
+
+					<div class="advancedSearchField">
+						1850 Subjects: <i class="fa fa-info-circle" id='subjects1850'></i><br/>
+<?php
+						TooltipManager::add('#subjects1850', "Search for books by subject classification in the ".caNavLink($this->request, "Library's 1850 print catalog.", '', '', 'Detail', 'objects/9')); 
+?>							
+						{{{ca_objects.Analytical_Catalog_1850%width=220px}}}
+					</div>																													
+				</div>	
+				<div class='advancedUnit'>
+					<div class="advancedSearchField">
+						Current Subjects: <i class="fa fa-info-circle" id='subjects'></i><br/>
+<?php
+						TooltipManager::add('#subjects', "Keyword search for books classified according to today's subject headings from the <a href='http://authorities.loc.gov' target='_blank'>Library of Congress</a>."); 
+?>						
+						{{{ca_objects.LCSH%width=200px&height=25px}}}
 					</div>
 					<div class="advancedSearchField">
 						Collection Status: <i class="fa fa-info-circle" id='collection'></i><br/>
 <?php
 						TooltipManager::add('#collection', "Search for books based on their availability at the New York Society Library today."); 
 ?>						
-						{{{ca_objects.collection_status%width=220px&restrictToRelationshipTypes=reader}}}
-					</div>					
-				</div>	
+						{{{ca_objects.collection_status%width=220px}}}
+					</div>																								
+				</div>
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
-						Transcribed Title: <i class="fa fa-info-circle" id='transcribed'></i><br/>
-<?php
-						TooltipManager::add('#transcribed', "The Library's circulation records often reference the same book in different ways. Search for books based on the way they were recorded at check out."); 
-?>						
-						{{{ca_objects.book_title%width=220px&height=25px&restrictToRelationshipTypes=reader}}}
-					</div>				
-				</div>										
+						Author:<br/>
+						{{{ca_entities.preferred_labels.name%width=220px&restrictToRelationshipTypes=author}}}
+					</div>
+					<div class="advancedSearchField">
+						Reader gender:<br/>
+						{{{ca_entities.gender%width=220px&restrictToRelationshipTypes=reader}}}
+					</div>
+					<div class="advancedSearchField">
+						Author gender:<br/>
+						{{{ca_entities.gender%width=220px&restrictToRelationshipTypes=author}}}
+					</div>
+				</div>									
 				<br style="clear: both;"/>
 
 				<div class='advButton' style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>

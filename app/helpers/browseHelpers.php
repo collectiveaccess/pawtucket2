@@ -108,6 +108,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		$vs_table = (is_numeric($pm_table_name_or_num)) ? $o_dm->getTableName((int)$pm_table_name_or_num) : $pm_table_name_or_num;
 		
+		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { return null; }
+		if ($t_instance->isRelationship()) { 
+			require_once(__CA_LIB_DIR__.'/ca/Browse/InterstitialBrowse.php');
+			return new InterstitialBrowse(null, null, $vs_table);
+		}
+		
 		switch($vs_table) {
 			case 'ca_objects':
 				require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectBrowse.php');
@@ -227,6 +233,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		if ($vs_menu_bar_facet_group = $o_browse_config->get('menubarFacetGroup')) {
 			$o_browse->setFacetGroup($vs_menu_bar_facet_group);
+		}
+		
+		if (is_array($va_browse_info['restrictToTypes']) && sizeof($va_browse_info['restrictToTypes'])) { 
+			$o_browse->setTypeRestrictions($va_browse_info['restrictToTypes']);
 		}
 		
 		$o_browse->execute(array('checkAccess' => caGetUserAccessValues($po_request), 'showAllForNoCriteriaBrowse' => true));

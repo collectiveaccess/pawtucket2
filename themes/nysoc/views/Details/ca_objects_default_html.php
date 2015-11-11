@@ -35,14 +35,16 @@
 		
 		// set all of the page object_ids
 		$va_page_ids = array();
+		$va_entity_ids = array();
+		$va_parents = array();
 		if ($qr_rels) {
 			$vn_result_count = $qr_rels->numHits();
-		} 
+		 
 		
-		$va_entity_ids = array();
-		while($qr_rels->nextHit()) {
-			$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
-			$va_entity_ids[$qr_rels->get('ca_objects_x_entities.entity_id')] = true;
+			while($qr_rels->nextHit()) {
+				$va_page_ids[] = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => 1));
+				$va_entity_ids[$qr_rels->get('ca_objects_x_entities.entity_id')] = true;
+			}
 		}
 		
 		$va_entities = array();
@@ -64,149 +66,153 @@
 			}
 		}
 		
-		$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
+		if(sizeof($va_page_ids)) { 
+			$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
 	
-		$va_parents = array();
-		while($qr_pages->nextHit()) {
-			$vn_parent_id = $qr_pages->get('ca_objects.parent_id');
-			$vs_parent_title = $qr_pages->get('ca_objects.parent.preferred_labels.name');
-			$vn_object_id = $qr_pages->get('ca_objects.object_id');
+			while($qr_pages->nextHit()) {
+				$vn_parent_id = $qr_pages->get('ca_objects.parent_id');
+				$vs_parent_title = $qr_pages->get('ca_objects.parent.preferred_labels.name');
+				$vn_object_id = $qr_pages->get('ca_objects.object_id');
 			
-			$va_parents[$vn_object_id] = $va_ledger_links[$vn_parent_id] = caNavLink($this->request, $vs_parent_title, '', '', 'Detail', 'objects/'.$vn_parent_id);
+				$va_parents[$vn_object_id] = $va_ledger_links[$vn_parent_id] = caNavLink($this->request, $vs_parent_title, '', '', 'Detail', 'objects/'.$vn_parent_id);
 
+			}
 		}
 
-		$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
-		
 		$vn_i = 0;
 		$vs_buf = "";
 		$vs_has_circulation = false;	
 		$va_readers = array();
 		$va_full_set_readers = array();
 		$va_occupations = array();
-
-		$qr_rels->setOption('prefetchAttributes', ['see_original_link', 'see_original', 'date_in', 'date_out', 'book_title', 'representative', 'fine']); 
-		$qr_rels->setOption('prefetch', 250);
-		while($qr_rels->nextHit()) {
-			if ((int)$qr_rels->get('ca_objects_x_entities.type_id') !== 100) {
-				continue;
-			}
-			$vs_buf.= "<tr class='ledgerRow'>";
-				
-				# Borrower Name
-				
-				$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
-				$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
-				$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
-				$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
-				$vs_borrower_displayname_with_link = $va_entities[$vn_borrower_entity_id]['displayname_with_link']; //$qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
-	
-				$vs_buf.= "<td id='entity".$vn_i."'>";
-				$vs_buf.= "<span title='{$vs_borrower_surname}, {$vs_borrower_forename}'><span>";
-				$vs_buf.= $vs_borrower_displayname_with_link;
-				$vs_buf.= "</td>";
-			
-				#$vs_entity_info = null;
-				#if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
-				#	$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
-				#}
-				#if (($qr_rels->get("ca_entities.industry_occupations")) && ($qr_rels->get("ca_entities.industry_occupations") != 551)) {
-				#	$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
-				#}
-				#if ($qr_rels->get("ca_entities.industry_occupations")) {
-				#	$va_occupation_count = $qr_rels->get("ca_entities.industry_occupations", array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
-				#	foreach ($va_occupation_count as $vs_occupations_type) {
-						//foreach ($va_occupations_type as $va_occupation_key => $va_occupation) {
-				#			$va_occupations[$vs_occupations_type][] = $qr_rels->get("ca_entities.entity_id");
-						//}
-				#	}
-				#}
-				#if ($vs_entity_info) {				
-				#	TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
-				#}	
-				
-				# Volume		
-				$vs_buf.= "<td>";
-				
-				$vs_volume_title = $qr_rels->get("ca_objects.preferred_labels.name");
-				
-				if (substr($vs_volume_title, 0, 6) == "Volume") {
-					$vs_buf.= $vs_volume_title;
-				}
-				$vs_buf.= "</td>";			
-				
-				# Date Out
-				$vs_buf.= "<td>";
-				$vs_buf.= $vs_date_out = $qr_rels->get("ca_objects_x_entities.date_out");
-				$vs_buf.= "</td>";	
-				
-				# Date In
-				$vs_buf.= "<td>";
-				$vs_buf.= $vs_date_in = $qr_rels->get("ca_objects_x_entities.date_in");
-				$vs_buf.= "</td>";
-				
-				# Fine
-				$vs_buf.= "<td>";
-				$vs_buf.= $vs_fine = $qr_rels->get("ca_objects_x_entities.fine");
-				$vs_buf.= "</td>";	
-				
-				# Title as Transcribed			
-				$vn_see_original_link = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true));
-			
-				$vs_buf.= "<td>";
-				$vs_buf.= $vs_book_title = $qr_rels->get("ca_objects_x_entities.book_title");
-				if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
-					$vs_buf.= caNavLink($this->request, '&nbsp;<i class="fa fa-exclamation-triangle"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
-					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
-				}				
-				$vs_buf.= "</td>";
-				
-				# Representative
-				$vs_buf.= "<td>";
-				$vs_buf.= $qr_rels->get("ca_objects_x_entities.representative");
-				$vs_buf.= "</td>";
-								
-				# Ledger Page & sidebar related ledgers
-				$vs_buf.= "<td>";
-				$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
-				$va_related_ledgers[] = $va_parents[$vn_see_original_link];
-				$vs_buf.= "</td>";													
-			$vs_buf.= "</tr><!-- end ledgerRow -->";
-			
-if(false) {		
-			# Reader Count
-				$va_readers[$vn_borrower_entity_id] = $vs_borrower_displayname;
-			
-				$vb_read_volume = false;
-				
-				if (isset($va_entity_reading_list_cache[$vn_borrower_entity_id])) {
-					$va_volume_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['volume_list'];
-					$va_reading_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['reading_list'];
-				} else {
-					$t_entity = new ca_entities($vn_borrower_entity_id);
-					if ($t_entity->getPrimaryKey()) {
-						$va_reading_list = $t_entity->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
-						$va_volume_list = $t_entity->get('ca_objects.children.object_id', array('returnAsArray' => true));
-				
-						$va_entity_reading_list_cache[$vn_borrower_entity_id] = array(
-							'volume_list' => $va_volume_list,
-							'reading_list' => $va_reading_list
-						);
-					}
-				}
-				
-				if (is_array($va_reading_list)) {
-					if(sizeof(array_intersect($va_volume_list, $va_reading_list))) {
-						$vb_read_volume = true;
-					}
-				}
-				if ($vb_read_volume) { $va_full_set_readers[$vn_borrower_entity_id] = $vs_borrower_displayname; }
-				
-}			
-			$vn_i++;
-			$vs_has_circulation = true;
-		}
+		if($qr_rels) {
+			$qr_rels->seek(0);	// reset the result to the beginning so we can run through it again
 		
+
+			$qr_rels->setOption('prefetchAttributes', ['see_original_link', 'see_original', 'date_in', 'date_out', 'book_title', 'representative', 'fine']); 
+			$qr_rels->setOption('prefetch', 250);
+			while($qr_rels->nextHit()) {
+				if ((int)$qr_rels->get('ca_objects_x_entities.type_id') !== 100) {
+					continue;
+				}
+				$vs_buf.= "<tr class='ledgerRow'>";
+				
+					# Borrower Name
+				
+					$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+					$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
+					$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
+					$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
+					$vs_borrower_displayname_with_link = $va_entities[$vn_borrower_entity_id]['displayname_with_link']; //$qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
+	
+					$vs_buf.= "<td id='entity".$vn_i."'>";
+					$vs_buf.= "<span title='{$vs_borrower_surname}, {$vs_borrower_forename}'><span>";
+					$vs_buf.= $vs_borrower_displayname_with_link;
+					$vs_buf.= "</td>";
+			
+					#$vs_entity_info = null;
+					#if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
+					#	$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
+					#}
+					#if (($qr_rels->get("ca_entities.industry_occupations")) && ($qr_rels->get("ca_entities.industry_occupations") != 551)) {
+					#	$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
+					#}
+					#if ($qr_rels->get("ca_entities.industry_occupations")) {
+					#	$va_occupation_count = $qr_rels->get("ca_entities.industry_occupations", array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+					#	foreach ($va_occupation_count as $vs_occupations_type) {
+							//foreach ($va_occupations_type as $va_occupation_key => $va_occupation) {
+					#			$va_occupations[$vs_occupations_type][] = $qr_rels->get("ca_entities.entity_id");
+							//}
+					#	}
+					#}
+					#if ($vs_entity_info) {				
+					#	TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
+					#}	
+				
+					# Volume		
+					$vs_buf.= "<td>";
+				
+					$vs_volume_title = $qr_rels->get("ca_objects.preferred_labels.name");
+				
+					if (substr($vs_volume_title, 0, 6) == "Volume") {
+						$vs_buf.= $vs_volume_title;
+					}
+					$vs_buf.= "</td>";			
+				
+					# Date Out
+					$vs_buf.= "<td>";
+					$vs_buf.= $vs_date_out = $qr_rels->get("ca_objects_x_entities.date_out");
+					$vs_buf.= "</td>";	
+				
+					# Date In
+					$vs_buf.= "<td>";
+					$vs_buf.= $vs_date_in = $qr_rels->get("ca_objects_x_entities.date_in");
+					$vs_buf.= "</td>";
+				
+					# Fine
+					$vs_buf.= "<td>";
+					$vs_buf.= $vs_fine = $qr_rels->get("ca_objects_x_entities.fine");
+					$vs_buf.= "</td>";	
+				
+					# Title as Transcribed			
+					$vn_see_original_link = $qr_rels->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true));
+			
+					$vs_buf.= "<td>";
+					$vs_buf.= $vs_book_title = $qr_rels->get("ca_objects_x_entities.book_title");
+					if ($qr_rels->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
+						$vs_buf.= caNavLink($this->request, '&nbsp;<i class="fa fa-exclamation-triangle"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
+						TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
+					}				
+					$vs_buf.= "</td>";
+				
+					# Representative
+					$vs_buf.= "<td>";
+					$vs_buf.= $qr_rels->get("ca_objects_x_entities.representative");
+					$vs_buf.= "</td>";
+								
+					# Ledger Page & sidebar related ledgers
+					$vs_buf.= "<td>";
+					$vs_buf.= caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$vn_see_original_link);
+					$va_related_ledgers[] = $va_parents[$vn_see_original_link];
+					$vs_buf.= "</td>";													
+				$vs_buf.= "</tr><!-- end ledgerRow -->";
+			
+	if(false) {		
+				# Reader Count
+					$va_readers[$vn_borrower_entity_id] = $vs_borrower_displayname;
+			
+					$vb_read_volume = false;
+				
+					if (isset($va_entity_reading_list_cache[$vn_borrower_entity_id])) {
+						$va_volume_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['volume_list'];
+						$va_reading_list = $va_entity_reading_list_cache[$vn_borrower_entity_id]['reading_list'];
+					} else {
+						$t_entity = new ca_entities($vn_borrower_entity_id);
+						if ($t_entity->getPrimaryKey()) {
+							$va_reading_list = $t_entity->get('ca_objects.object_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('reader')));
+							$va_volume_list = $t_entity->get('ca_objects.children.object_id', array('returnAsArray' => true));
+				
+							$va_entity_reading_list_cache[$vn_borrower_entity_id] = array(
+								'volume_list' => $va_volume_list,
+								'reading_list' => $va_reading_list
+							);
+						}
+					}
+				
+					if (is_array($va_reading_list)) {
+						if(sizeof(array_intersect($va_volume_list, $va_reading_list))) {
+							$vb_read_volume = true;
+						}
+					}
+					if ($vb_read_volume) { $va_full_set_readers[$vn_borrower_entity_id] = $vs_borrower_displayname; }
+				
+	}			
+				$vn_i++;
+				$vs_has_circulation = true;
+			}
+		
+		
+			}
 		# Occupation Pie Chart data
 		$vn_all_professions = 0;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
@@ -397,18 +403,21 @@ if(false) {
 								print "<div class='unit'>".$vs_collection_status."</div>";
 							}
 						}					
-						if ($vs_children = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels'))) {
+						if ($va_children = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels.name_sort'))) {
 							print "<div class='unit'>";
 							print "<a href='#' class='openRef' onclick='$(\"#volumes\").slideDown(); $(\".openRef\").hide(); $(\".closeRef\").show(); return false;'><h6 style='font-size:13px;'>Circulation by Volume&nbsp;<i class='fa fa-angle-down'></i></h6></a>"; 
 							print "<a href='#' class='closeRef' style='display:none;' onclick='$(\"#volumes\").slideUp(); $(\".closeRef\").hide(); $(\".openRef\").show(); return false;'><h6 style='font-size:13px;'>Circulation by Volume&nbsp;<i class='fa fa-angle-up'></i></h6></a>";
 							print "<div id='volumes' style='display:none;'>";					
 							$va_volumes = array();
-							foreach ($vs_children as $va_key => $vs_child) {
-								$t_child = new ca_objects($vs_child);
-								$va_volumes[] = $t_child->get('ca_objects.preferred_labels')." (".sizeof($t_child->get('ca_entities', array('returnAsArray' => true)))." checkouts) ";
+							
+							if (sizeof($va_children) && ($qr_children = caMakeSearchResult('ca_objects', $va_children, array('sort' => 'ca_objects.preferred_labels.name_sort')))) {
+								//foreach ($va_children as $va_key => $vs_child) {
+								while($qr_children->nextHit()) {
+									//$t_child = new ca_objects($vs_child);
+									$va_volumes[] = $qr_children->get('ca_objects.preferred_labels.name')." (".sizeof($qr_children->get('ca_entities', array('returnAsArray' => true)))." checkouts) ";
+								}
+								print join('<br/>', $va_volumes);
 							}
-							sort($va_volumes);
-							print join('<br/>', $va_volumes);
 							print "</div>";
 							print "</div>";
 						}				
@@ -416,10 +425,10 @@ if(false) {
 	
 						#if ($vs_parent_id = $t_object->get('ca_objects.parent.object_id')) {
 						#	$t_parent_bib = new ca_objects($vs_parent_id);
-						#	$vs_children_vol = $t_parent_bib->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels'));
+						#	$va_children_vol = $t_parent_bib->get('ca_objects.children.object_id', array('returnAsArray' => true, 'sort' => 'ca_objects.preferred_labels'));
 						#	print "<div class='unit'><h6>Available Volumes</h6>";
 						#	$va_other_volumes = array();
-						#	foreach ($vs_children_vol as $va_key => $vs_child) {
+						#	foreach ($va_children_vol as $va_key => $vs_child) {
 						#		$t_child = new ca_objects($vs_child);
 						#		$va_other_volumes[] = caNavLink($this->request, $t_child->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$t_child->get('ca_objects.object_id'))." (".sizeof($t_child->get('ca_entities', array('returnAsArray' => true)))." checkouts) ";
 						#	}
@@ -476,6 +485,7 @@ if(false) {
 											</span>
 										</div>	
 										</div>
+										<div class='ovcircNote'>Circulation records from 1793-1799 are lost.</div>
 									
 									</div>
 									<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
@@ -492,11 +502,19 @@ if(false) {
 								</div><!-- end overlay-->
 							</div><!-- end col-->
 						</div><!-- end row-->	
-						<div class="row">
+						<div class="row" id="trigger-overlay">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="vizTitle" >Check out distribution <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
-								<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
-								<div class="ct-key objectsCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'>This Title</span></span> <span class="ct-series-b-key average" style="padding-right:10px;"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>								
+								<div class="vizTitle" >Check out distribution <button  type="button"><i class="fa fa-external-link"></i></button></div>
+								<div class='col-sm-4 col-md-4 col-lg-4'>
+									<div class="vizName">Check out duration</div>
+									<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
+									<div class="vizName">Readers by occupation</div>
+									<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>
+								</div>								
+								<div class='col-sm-8 col-md-8 col-lg-8'>
+									<div id="stat_bib_checkout_distribution" class="ct-chart ct-golden-section"></div>
+									<div class="ct-key objectsCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'>This Title</span></span> <span class="ct-series-b-key average" style="padding-right:10px;"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>								
+								</div>
 							</div><!-- end col-->
 						</div><!-- end row-->
 						<div class="row">
@@ -507,21 +525,7 @@ if(false) {
 ?>											
 								</section>
 							</div>
-						</div>						
-						<div class="row">
-							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-								<div class="row">
-									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">		
-										<div class="vizName">Check out duration</div>
-										<div id="stat_bib_checkout_durations" class="ct-chart ct-square"></div>
-									</div><!-- end col-->
-									<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-										<div class="vizName">Readers by occupation</div>
-										<div id="stat_bib_readers_by_occupation" class="ct-chart ct-square"></div>																								
-									</div><!-- end col-->
-								</div><!-- end row-->
-							</div><!-- end col-->
-						</div><!-- end row-->						
+						</div>												
 <?php
 	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
 
@@ -532,6 +536,7 @@ if(false) {
 ?>
 						
 		<script type="text/javascript">
+			var occupationIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_occupation_ids', 'vizData')); ?>;
 			var dataForReadersByOccupation = {
 			  labels: <?php print json_encode($va_series_labels); ?>,
 			  series: <?php print json_encode($va_series); ?>
@@ -564,11 +569,26 @@ if(false) {
 			});
 
 			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 			  $subjectAreaToolTip.css({
-				left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
-				top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+				left: l - $subjectAreaToolTip.width() / 2 - 10,
+				top: t - $subjectAreaToolTip.height() - 40
 			  });
 			});
+			
+			$chart.on('click', '.ct-series', function() {
+				var $slice = $(this),
+				value = $slice.find('path').attr('ct:value');
+				
+				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+				var label = dataForReadersByOccupation.labels[l];
+				console.log($slice, occupationIDs, label, occupationIDs[label]);
+				if (parseInt(occupationIDs[label]) > 0) {
+					window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'entities', array('facet' => 'occupation_facet')); ?>/id/' + occupationIDs[label];
+				}
+			});
+			
 			var responsiveOptions = [
 			  ['screen and (min-width: 640px)', {
 				chartPadding: 20,
@@ -630,9 +650,11 @@ if(false) {
 			});
 
 			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 			  $durationToolTip.css({
-				left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
-				top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+				left: l - $durationToolTip.width() / 2 - 10,
+				top: t - $durationToolTip.height() - 40
 			  });
 			});
 			var responsiveOptions = [
@@ -681,15 +703,42 @@ if(false) {
 				},
 			};
 			
+			
+			var $chart = $('#stat_bib_checkout_distribution2');
+			
+			var $distToolTip = $chart
+			  .append('<div class="tooltip"></div>')
+			  .find('.tooltip')
+			  .hide();
+
+			$chart.on('mouseenter', '.ct-point', function() {
+				var $pt = $(this),
+				value = $pt.attr('ct:value');
+				$distToolTip.html(value).show();
+			});
+
+			$chart.on('mouseleave', '.ct-series', function() {
+			  $distToolTip.hide();
+			});
+
+			$chart.on('mousemove', function(event) {
+				var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+				var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
+			  $distToolTip.css({
+				left: l - $distToolTip.width() / 2,
+				top: t - $distToolTip.height()
+			  });
+			});
+			
 			var responsiveOptions = [
 			  ['screen and (min-width: 640px)', {
-				chartPadding: 20,
+				chartPadding: 0,
 				labelOffset: 30,
 				labelDirection: 'explode'
 			  }],
 			  ['screen and (min-width: 1024px)', {
 				labelOffset: 30,
-				chartPadding: 20
+				chartPadding: 0
 			  }]
 			];
 

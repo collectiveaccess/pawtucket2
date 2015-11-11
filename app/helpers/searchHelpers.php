@@ -48,6 +48,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		$vs_table = (is_numeric($pm_table_name_or_num)) ? $o_dm->getTableName((int)$pm_table_name_or_num) : $pm_table_name_or_num;
 		
+		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { return null; }
+		if ($t_instance->isRelationship()) { 
+			require_once(__CA_LIB_DIR__.'/ca/Search/InterstitialSearch.php');
+			return new InterstitialSearch($vs_table);
+		}
+		
 		switch($vs_table) {
 			case 'ca_objects':
 				require_once(__CA_LIB_DIR__.'/ca/Search/ObjectSearch.php');

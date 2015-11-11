@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+ * app/lib/ca/Browse/InterstitialBrowseResult.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,27 +24,31 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Core
+ * @subpackage Browse
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
  */
  
- 	MetaTagManager::setWindowTitle("");
+ /**
+  *
+  */
 
-?>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12" style='padding-left:0px; padding-right:0px;'>
-<?php
-			print $this->render("Front/featured_set_slideshow_html.php");
-?>		
-			</div>
-		</div>	
-		<div class="row">
-			<div class="col-sm-12">
-				<h4 style="text-align:center; font-style:italic;">Explore more than 100,000 records of books, readers, and borrowing history from the New York Society Library's Special Collections.</H4>
-			</div><!--end col-sm-8-->	
-		</div><!-- end row -->
-	</div> <!--end container-->
-			
+include_once(__CA_LIB_DIR__."/ca/Search/BaseSearchResult.php");
+
+class InterstitialBrowseResult extends BaseSearchResult {
+	# -------------------------------------
+	/**
+	 * Name of table for this type of search subject
+	 */
+	protected $ops_table_name;
+	# -------------------------------------
+	/**
+	 * Constructor
+	 */
+	public function __construct($ps_table) {
+		$this->ops_table_name = $ps_table;
+		parent::__construct();
+	}
+	# -------------------------------------
+}
