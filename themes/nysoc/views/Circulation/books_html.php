@@ -121,10 +121,12 @@
 		});
 
 		$chart.on('mousemove', function(event) {
-		  $graphToolTip.css({
-			left: (event.offsetX || event.originalEvent.layerX) - $graphToolTip.width() / 2 - 10,
-			top: (event.offsetY || event.originalEvent.layerY) - $graphToolTip.height() - 40
-		  });
+			var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+			var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
+			  $graphToolTip.css({
+				left: l - $graphToolTip.width() / 2 - 10,
+				top: t - $graphToolTip.height() - 40
+			  });
 		});
 
 		var responsiveOptions = [
