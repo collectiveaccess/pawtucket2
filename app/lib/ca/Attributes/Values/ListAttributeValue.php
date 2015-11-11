@@ -373,7 +373,7 @@
  			$vs_render = caGetOption('render', $pa_options, caGetOption('render', $pa_element_info['settings'], ''));
 			$vb_auto_shrink = (bool) caGetOption('auto_shrink', $pa_options, caGetOption('auto_shrink', $pa_element_info['settings'], false));
  			
- 			$vn_max_columns = $pa_element_info['settings']['maxColumns'];
+ 			$vn_max_columns = caGetOption('maxColumns', $pa_options, $pa_element_info['settings']['maxColumns']);
  			if (!$vb_require_value) { $vn_max_columns++; }
  			
  			if(!isset($pa_options['useDefaultWhenNull'])) { 

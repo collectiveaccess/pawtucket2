@@ -1424,7 +1424,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				$vn_c = 0;
 				$vs_buf = "<table>\n";
 				foreach($va_options as $vm_value => $vs_label) {
-					if ($vn_c == 0) { $vs_buf .= "<tr>"; }
+					if ($vn_c == 0) { $vs_buf .= "<tr valign='top'>"; }
 					
 					$va_attributes = array('value' => $vm_value);
 					if (isset($va_disabled_options[$vm_value]) && $va_disabled_options[$vm_value]) {
@@ -1435,7 +1435,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					}
 					if (is_array($pa_options['value']) && in_array($vm_value, $pa_options['value']) ) { $va_attributes['checked'] = '1'; }
 					
-					$vs_buf .= "<td>".caHTMLCheckboxInput($ps_name.'_'.$vm_value, $va_attributes, $pa_options)." {$vs_label}</td>";
+					$vs_buf .= "<td>".caHTMLCheckboxInput($ps_name.'_'.$vm_value, $va_attributes, $pa_options)." {$vs_label}</td><td> </td>";
 					
 					$vn_c++;
 					
