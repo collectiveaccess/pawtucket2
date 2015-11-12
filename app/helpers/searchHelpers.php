@@ -618,7 +618,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, ''));
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
 		
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
@@ -704,7 +704,52 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			}
 			$vs_query_string = trim($vs_query_string). ')';
 		}
+		
 		return $vs_query_string;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetDisplayStringForHTMLFormInput($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
+	
+	 	$va_display_string = array();
+	 	
+	 	foreach($va_form_contents as $vn_i => $vs_element) {
+			$vs_dotless_element = str_replace('.', '_', $vs_element);
+			
+			if (!is_array($pa_form_values[$vs_dotless_element]) || !sizeof($pa_form_values[$vs_dotless_element])) { continue; }
+	
+			if(sizeof(array_filter($pa_form_values[$vs_dotless_element]))) {
+				if(!($vs_label = trim($pa_form_values[$vs_dotless_element.'_label']))) { $vs_label = "???"; }
+				
+				$va_tmp = explode('.', $vs_element);
+				$vs_possible_element_with_rel = array_pop($va_tmp);
+				$va_tmp2 = explode("/", $vs_possible_element_with_rel);
+				$vs_possible_element = array_shift($va_tmp2);
+				switch(ca_metadata_elements::getElementDatatype($vs_possible_element)) {
+					case 3:
+						$va_values = array();
+						foreach($pa_form_values[$vs_dotless_element] as $vn_i => $vm_value) {
+							$va_values[$vn_i] = $x=caGetListItemByIDForDisplay($vm_value);
+						}
+						break;
+					default:
+						$va_values = $pa_form_values[$vs_dotless_element];
+						break;
+				}
+				
+				$va_display_string[] = "{$vs_label}: ".join("; ", $va_values);
+			}
+		}
+		
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormDisplayString_{$pa_form_values['_advancedFormName']}", $va_display_string);
+		$po_result_context->saveContext();
+	
+	 	
+		return join("; ", $va_display_string);
 	}
 	# ---------------------------------------
 	/**
