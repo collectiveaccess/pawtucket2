@@ -482,6 +482,11 @@ div.advancedSearchField {
 	height:60px;
 	float:none;
 }
+div.advancedSearchFieldTall {
+	width:auto;
+	height:120px;
+	float:none;
+}
 .attributeListItem {
 	float:left;
 }

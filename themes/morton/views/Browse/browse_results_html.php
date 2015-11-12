@@ -136,11 +136,12 @@ if (!$vb_ajax) {	// !ajax
 					<div class='col-sm-4 col-md-4 col-lg-4 btn-group'>
 	<?php	
 						$vs_buf = "";		
-						$va_recent_searches = $o_result_context->getSearchHistory(); 
+						
+						$va_recent_searches = $o_result_context->getSearchHistory(array('findTypes' => array('search_advanced', 'search_basic', 'multisearch'))); 
 						if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
 							$v_i = 0;
 							foreach($va_recent_searches as $vs_search => $va_search_info) {
-								$vs_buf.= "<li>".caNavLink($this->request, $vs_search, '', '', 'Search', 'objects', array('search' => $vs_search))."</li>";
+								$vs_buf.= "<li>".caNavLink($this->request, $va_search_info['display'], '', '', 'Search', 'objects', array('search' => $vs_search))."</li>";
 								$v_i++;
 								if ($v_i == 10) {
 									break;
@@ -148,7 +149,7 @@ if (!$vb_ajax) {	// !ajax
 							}
 						}
 	?>			
-						<a href='#' data-toggle="dropdown">Recent Searches <span class='btn'><?php print $vs_search;?><b class='caret'></b></span></a>
+						<a href='#' data-toggle="dropdown">Recent Searches <span class='btn'><?php print $va_search_info['display'];?><b class='caret'></b></span></a>
 						<ul class="dropdown-menu" role="menu">
 	<?php	
 							print $vs_buf;
@@ -218,8 +219,13 @@ if (!$vb_ajax) {	// !ajax
 <?php
 } // !ajax
 
-print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
-
+if ($qr_res->numHits() > 0) {
+	print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+} else {
+?>
+	<h3><?php print _t('No results found'); ?></h3>
+<?php
+}
 if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
@@ -261,4 +267,3 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
-?>

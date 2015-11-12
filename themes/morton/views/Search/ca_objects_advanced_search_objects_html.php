@@ -25,7 +25,7 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>			
 			<div class="advancedSearchField">
 				Keyword<br/>
-				{{{_fulltext%width=380px&height=25px}}}
+				{{{_fulltext%width=380px&height=1}}}
 				<!--{{{_fulltext:boolean}}}-->
 			</div>
 		</div>
@@ -53,14 +53,15 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
 				Media Representation<br/>
-				yes/no
+				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
 		</div>
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
-			<div class="advancedSearchField">
+			<div class="advancedSearchFieldTall">
 				Entity <br/>
-				{{{ca_entities.preferred_labels%width=380px&height=40px}}}
-				<!--{{{ca_entities.preferred_labels:boolean}}}-->
+				{{{ca_entities.preferred_labels.displayname%width=200px&height=90px}}}
+				{{{ca_entities.preferred_labels:relationshipTypes%width=180px&height=90px&multiple=1}}}
+				<br style='clear: both;'/>
 			</div>
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
@@ -92,8 +93,11 @@
 			<h2>Other Resources</h2>
 			<p><a href='http://www.mortonarb.org/visit-explore/sterling-morton-library' target='_blank'>Sterling Morton Library Home</a></p>
 <?php			
-
-	$va_recent_searches = $o_result_context->getSearchHistory(); 
+	// Load "advanced" search history
+	$o_adv_result_context = new ResultContext($this->request, 'ca_objects', 'search_advanced', $this->request->getActionExtra());
+	
+	// Add it to quick search history
+	$va_recent_searches = array_merge($o_result_context->getSearchHistory(), $o_adv_result_context->getSearchHistory()); 
 
 	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
 ?>	
@@ -102,7 +106,7 @@
 <?php
 			$v_i = 0;
 			foreach($va_recent_searches as $vs_search => $va_search_info) {
-				print "<li>".caNavLink($this->request, $vs_search, '', '', 'MultiSearch', 'Index', array('search' => $vs_search))."</li>";
+				print "<li>".caNavLink($this->request, $o_adv_result_context->getSearchExpressionForDisplay($va_search_info['display']), '', '', 'MultiSearch', 'Index', array('search' => $vs_search))."</li>";
 				$v_i++;
 				if ($v_i == 10) {
 					break;
