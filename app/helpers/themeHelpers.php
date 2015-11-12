@@ -1224,6 +1224,14 @@
 						$po_view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
 					} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
 						$po_view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
+					} elseif (preg_match("!^(.*):relationshipTypes$!", $vs_tag_proc, $va_matches)) {
+						$va_tmp = explode(".", $va_matches[1]);
+						
+						$vs_select = '';
+						if ($t_rel = $pt_subject->getRelationshipInstance($va_tmp[0])) {
+							$vs_select = $t_rel->getRelationshipTypesAsHTMLSelect($va_tmp[0], null, null, array_merge(array('class' => 'caAdvancedSearchRelationshipTypes'), $va_opts, array('name' => $vs_tag_proc.'[]')), $va_opts);
+						}
+						$po_view->setVar($vs_tag, $vs_select);
 					} else {
 						$va_opts['asArrayElement'] = true;
 						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
