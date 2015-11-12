@@ -421,7 +421,7 @@ div.browseMenuBrowseSearch input {
     vertical-align: middle;
     width: 100%;
 }
-div.browseFacetItem a{
+/*div.browseFacetItem a{
    background-color:#f5f5f5;
    border-left:4px solid #fff;
    border-top:2px solid #fff;
@@ -430,7 +430,7 @@ div.browseFacetItem a{
    height: 65px;
    padding-top:3px;
    font-size:12px;
-}
+}*/
 @media (max-width: 768px) {
 	div.browseFacetItem a{
 	   width:33%;
@@ -500,11 +500,11 @@ div.browseFacetItem li{
 	margin:0px;
 	padding:0px;
 }
-div.browseFacetItem a:hover {
+/*div.browseFacetItem a:hover {
 	background-color:#e7e7e7;
 	text-decoration:none;
 	color:#666;
-}
+}*/
 a.browseRemoveFacet img {
 	margin-bottom: 3px;	
 }
@@ -871,8 +871,8 @@ a.browseRemoveFacet img {
 .detail .meta {
 	width:60%;
 	display:inline-block;
-	margin-bottom:10px;
-	min-height: 50px;
+	margin-bottom:0px;
+	min-height: 40px; 
 }
 .detail .metaTitle {
 	width:30%;

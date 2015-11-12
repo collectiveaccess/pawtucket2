@@ -21,9 +21,22 @@
 			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
 
-				{{{<ifcount code='ca_objects.essenceTrack' min='1'><div><span class='metaTitle'>Technical Specs</span><div class='meta'><unit><p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate">Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameSize">Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</ifdef></p><p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p><p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p></unit></div></div></ifcount>}}}
-
+		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration" min='1'>
+		    	<div>
+		    		<span class='metaTitle'>Technical Specs</span>
+		    		<div class='meta'>
+		    			<unit>
+		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate">Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</ifdef></p>
+		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameSize">Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</ifdef></p>
+		    				<p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p>
+		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p>
+		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p>
+		    			</unit>
+		    		</div>
+		    	</div> 
+		    </ifdef>}}}
 <?php
+
 			if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
 			}
@@ -53,14 +66,15 @@
 <?php
 	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) && sizeof($va_occurrence_ids)) {
 		$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
-		
 		$vs_date = '';
 		while($qr_occ->nextHit()) {
 			$va_dates = $qr_occ->get('ca_occurrences.workDate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
 			
-			foreach($va_dates as $vn_attr_id => $va_date) {
-				if (!$va_date['dates_value']) { continue(2); }
-				$vs_date .= $va_date['dates_value']." (".$va_date['work_dates_types'].")<br/>";
+			foreach($va_dates as $vn_attr_id => $va_date_t) {
+				foreach ($va_date_t as $vn_att => $va_date) {
+					if (!$va_date['dates_value']) { continue; }
+					$vs_date .= $va_date['dates_value']." (".$va_date['work_dates_types'].")<br/>";
+				}
 			}
 		}
 		
@@ -78,8 +92,8 @@
 ?>
 			
 			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}
-			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.locationText" min="1"><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifcount>}}}
-			{{{<ifcount relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" min="1"><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifcount>}}}
+			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.locationText" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifdef>}}}
+			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifdef>}}}
 <?php
 			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
 				$va_places = array();
@@ -99,10 +113,11 @@
 			}
 
 			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
+				
 				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 			
 				while($qr_occ->nextHit()) {
-					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('restrictToRelationshipTypes' => array('subject', 'interviewee'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
+					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
 						foreach ($va_contributors as $cont_key => $va_contributor) {
 							print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
@@ -111,11 +126,10 @@
 					}
 				}
 			}
-?>
-			
-			{{{<ifcount min="1" code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifcount>}}}
+?>	
+			{{{<ifdef  code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifdef>}}}
 			{{{<unit><ifdef code="ca_occurrences.restrictions"><div><span class='metaTitle'>Restrictions</span><span class='meta'>^ca_occurrences.restrictions</span></div></ifdef></unit>}}}
-			{{{<unit><ifdef code="ca_occurrences.rights"><div><span class='metaTitle'>Rights</span><span class='meta'>^ca_occurrences.rights</span></div></ifdef></unit>}}}
+			{{{<ifdef code="ca_objects.rights"><div><span class='metaTitle'>Rights</span><span class='meta'><unit>^ca_objects.rights</unit></span></div></ifdef>}}}
 
 <?php
 			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
@@ -139,18 +153,19 @@
 				}
 			}
 ?>
-			{{{<ifcount code="ca_occurrences.workDate.dates_value|ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" min="1"><hr><h5>Program Info</h5></ifcount>}}}
+			{{{<ifdef code="ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" ><hr><h5>Program Info</h5></ifdef>}}}
 
 			{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='metaTitle'>Distribution Status</span></ifcount>}}}
-			{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='meta'><unit delimiter="<br/>"><div>^ca_occurrences.distribution_status.distribution_list, Expires ^ca_occurrences.distribution_status.distribution_date</div></unit></span></ifcount>}}}									
+			{{{<ifdef code="ca_occurrences.distribution_status.distribution_date" ><span class='meta'><unit delimiter="<br/>"><div>^ca_occurrences.distribution_status.distribution_list, Expires ^ca_occurrences.distribution_status.distribution_date</div></unit></span></ifdef>}}}									
 
 <?php
-			if (($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))) != "") {
-				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
-			}	
-			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))) != "") {
+			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))) != " ") {
 				print "<div><span class='metaTitle'>Production type</span><div class='meta'>{$vs_prod_type}</div></div>";
 			}
+			if (($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))) != " ") {
+				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
+			}	
+
 			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical', array('convertCodesToDisplayText' => true))) == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: {$vs_mission_crit}</div>";
 				print "<div>Year: ".$t_object->get('ca_occurrences.mission.missionYear')." (".$t_object->get('ca_occurrences.mission.mission_dates_types').")</div>";
@@ -166,21 +181,23 @@
 					$va_awards = $qr_res->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
 					if (sizeof($va_awards) > 0) {
 						print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
-						foreach ($va_awards as $award => $va_award) {
-							if ($va_award['award_event']) {
-								array_shift($va_award['award_event']);
-								print "<div>Award: ".join(' > ', $va_award['award_event'])."</div>";
+						foreach ($va_awards as $award => $va_award_t) {
+							foreach ($va_award_t as $va_award_key => $va_award) {
+								if ($va_award['award_event']) {
+									#array_shift($va_award['award_event']);
+									print "<div>Award: ".$va_award['award_event']."</div>";
+								}
+								if ($va_award['award_year']) {
+									print "<div>Award Year: ".$va_award['award_year']."</div>";
+								}
+								if ($va_award['award_types'][0] != "Root node for award_types") {
+									print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
+								}
+								if ($va_award['award_notes']) {
+									print "<div>Award Notes: ".$va_award['award_notes']."</div>";
+								}										
+								print "<div style='height:10px;'></div>";
 							}
-							if ($va_award['award_year']) {
-								print "<div>Award Year: ".$va_award['award_year']."</div>";
-							}
-							if ($va_award['award_types'][0] != "Root node for award_types") {
-								print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
-							}
-							if ($va_award['award_notes']) {
-								print "<div>Award Notes: ".$va_award['award_notes']."</div>";
-							}										
-							print "<div style='height:10px;'></div>";
 						}
 						print "</span></div>";
 					}
