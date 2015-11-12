@@ -336,7 +336,7 @@
 		 *
 		 * @return boolean - true on success, false on error
 		 */
-		public function addCriteria($ps_facet_name, $pa_row_ids) {
+		public function addCriteria($ps_facet_name, $pa_row_ids, $pa_display_strings=null) {
 			if (is_null($pa_row_ids)) { return null;}
 			if ($ps_facet_name !== '_search') {
 				if (!($va_facet_info = $this->getInfoForFacet($ps_facet_name))) { return false; }
@@ -344,11 +344,15 @@
 			}
 
 			$va_criteria = $this->opo_ca_browse_cache->getParameter('criteria');
+			$va_criteria_display_strings = $this->opo_ca_browse_cache->getParameter('criteria_display_strings');
 			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
-			foreach($pa_row_ids as $vn_row_id) {
+			foreach($pa_row_ids as $vn_i => $vn_row_id) {
 				$va_criteria[$ps_facet_name][urldecode($vn_row_id)] = true;
+				
+				if (isset($pa_display_strings[$vn_i])) { $va_criteria_display_strings[$ps_facet_name][urldecode($vn_row_id)] = $pa_display_strings[$vn_i]; }
 			}
 			$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
+			$this->opo_ca_browse_cache->setParameter('criteria_display_strings', $va_criteria_display_strings);
 			$this->opo_ca_browse_cache->setParameter('sort', null);
 			$this->opo_ca_browse_cache->setParameter('facet_html', null);
 
@@ -474,19 +478,30 @@
 			if ($ps_facet_name && (!$this->isValidFacetName($ps_facet_name))) { return null; }
 
 			$va_criteria = $this->opo_ca_browse_cache->getParameter('criteria');
+			$va_criteria_display_strings = $this->opo_ca_browse_cache->getParameter('criteria_display_strings');
 
 			$va_criteria_with_labels = array();
 			if($ps_facet_name) {
-				$va_criteria = isset($va_criteria[$ps_facet_name]) ? $va_criteria[$ps_facet_name] : null;
-
-				foreach($va_criteria as $vm_criterion => $vn_tmp) {
-					$va_criteria_with_labels[$vm_criterion] = $this->getCriterionLabel($ps_facet_name, $vm_criterion);
+				if (is_array($va_criteria_display_strings[$ps_facet_name])) {
+					foreach($va_criteria_display_strings[$ps_facet_name] as $vm_criterion => $vs_display_criterion) {
+						$va_criteria_with_labels[$vm_criterion] = $this->getCriterionLabel($ps_facet_name, $vs_display_criterion);
+					}
+				} elseif(is_array($va_criteria[$ps_facet_name])) {
+					foreach($va_criteria[$ps_facet_name] as $vm_criterion => $vn_tmp) {
+						$va_criteria_with_labels[$vm_criterion] = $this->getCriterionLabel($ps_facet_name, $vm_criterion);
+					}
 				}
 			} else {
 				if (is_array($va_criteria)) {
 					foreach($va_criteria as $vs_facet_name => $va_criteria_by_facet) {
-						foreach($va_criteria_by_facet as $vm_criterion => $vn_tmp) {
-							$va_criteria_with_labels[$vs_facet_name][$vm_criterion] = $this->getCriterionLabel($vs_facet_name, $vm_criterion);
+						if (is_array($va_criteria_display_strings[$vs_facet_name])) {
+							foreach($va_criteria_display_strings[$vs_facet_name] as $vm_criterion => $vs_display_criterion) {
+								$va_criteria_with_labels[$vs_facet_name][$vm_criterion] = $this->getCriterionLabel($vs_facet_name, $vs_display_criterion);
+							}
+						} else {
+							foreach($va_criteria_by_facet as $vm_criterion => $vn_tmp) {
+								$va_criteria_with_labels[$vs_facet_name][$vm_criterion] = $this->getCriterionLabel($vs_facet_name, $vm_criterion);
+							}
 						}
 					}
 				}
@@ -4927,9 +4942,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					$this->opo_ca_browse_cache->setResults($va_results);
 					$this->opo_ca_browse_cache->save();
 				}
-
-				if (isset($pa_options['limit']) && ($vn_limit = $pa_options['limit'])) {
-					$vn_start = (int) caGetOption($pa_options, 'start', 0);
+				
+				$vn_start = (int) caGetOption('start', $pa_options, 0);
+				$vn_limit = (int) caGetOption('limit', $pa_options, 0);
+				if (($vn_start > 0) || ($vn_limit > 0)) {
 					$va_results = array_slice($va_results, $vn_start, $vn_limit);
 				}
 			}

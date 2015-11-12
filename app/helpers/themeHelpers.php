@@ -1220,7 +1220,6 @@
 					$vb_submit_or_reset_set = true;
 					break;
 				default:
-		
 					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
 						$po_view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
 					} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
@@ -1230,7 +1229,20 @@
 						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
 							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
 						}
+						
+						// Relationship type restrictions
+						if (isset($va_opts['restrictToRelationshipTypes']) && $va_opts['restrictToRelationshipTypes'] && !is_array($va_opts['restrictToRelationshipTypes'])) { 
+							$va_opts['restrictToRelationshipTypes'] = explode(";", $va_opts['restrictToRelationshipTypes']);
+						}
+						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $va_opts, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
+			
 						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
+							switch(strtolower($vs_tag_proc)) {
+								case '_fulltext':		// Set default label for _fulltext if needed
+									if(!isset($va_opts['label'])) { $va_opts['label'] = _t('Keywords'); }
+									break;
+							}
+							$vs_tag_val .= caHTMLHiddenInput("{$vs_tag_proc}{$vs_rel_types}_label", array('value' => isset($va_opts['label']) ? str_replace("_", " ", urldecode($va_opts['label'])) : $pt_subject->getDisplayLabel($vs_tag_proc)));	// set display labels for search criteria
 							$po_view->setVar($vs_tag, $vs_tag_val);
 						}
 						
@@ -1239,14 +1251,14 @@
 							if (is_array($va_elements = $t_element->getElementsInSet())) {
 								foreach($va_elements as $va_element) {
 									if ($va_element['datatype'] > 0) {
-										$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'];
+										$va_form_elements[] = $va_tmp[0].'.'.$va_tmp[1].'.'.$va_element['element_code'].$vs_rel_types;	// add relationship types to field name
 									}
 								}
 							}
 							break;
 						}
 					}
-					if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc; }
+					if ($vs_tag_val) { $va_form_elements[] = $vs_tag_proc.$vs_rel_types; }		// add relationship types to field name
 					break;
 			}
 		}
@@ -1282,7 +1294,7 @@
 		}
 		
 		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
- 		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join(';', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
+ 		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join('|', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
 		return $va_form_elements;
 	}

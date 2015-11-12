@@ -29,41 +29,41 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Keyword<br/>
-						{{{_fulltext%width=680px&height=25px}}}
+						{{{_fulltext%width=680px&height=1&label=Keywords}}}
 					</div>
 				</div>			
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Title:<br/>
-						{{{ca_objects.preferred_labels.name%width=220px}}}
+						{{{ca_objects.preferred_labels.name%width=220px&label=Title}}}
 					</div>
 					<div class="advancedSearchField">
 						Author/contributor/creator:<br/>
-						{{{ca_entities.preferred_labels.name%width=220px&restrictToRelationshipTypes=author;creator;contributor}}}
+						{{{ca_entities.preferred_labels.displayname%width=220px&restrictToRelationshipTypes=author;creator;contributor&label=Author/contributor/creator}}}
 					</div>
 					<div class="advancedSearchField">
 						Printer/Publisher:<br/>
-						{{{ca_entities.preferred_labels.name%width=220px&restrictToRelationshipTypes=printer;publisher}}}
+						{{{ca_entities.preferred_labels.displayname%width=220px&restrictToRelationshipTypes=printer;publisher&label=Printer/Publisher}}}
 					</div>					
 				</div>
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Genre<br/>
-						{{{ca_objects.document_type%width=200px&height=25px}}}
+						{{{ca_objects.document_type%width=200px&height=25px&label=Genre}}}
 					</div>												
 					<div class="advancedSearchField">
 						Local Subject<br/>
-						{{{ca_objects.document_type%width=200px&height=25px}}}
+						{{{ca_objects.document_type%width=200px&height=25px&label=Local+subject}}}
 					</div>				
 					<div class="advancedSearchField">
 						Current Subjects<br/>
-						{{{ca_objects.LCSH%width=200px&height=25px}}}
+						{{{ca_objects.LCSH%width=200px&height=25px&label=Current+subjects}}}
 					</div>
 				</div>
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Date:<br/>
-						{{{ca_objects.dc_date.dates_value%width=220px}}}
+						{{{ca_objects.dc_date.dates_value%width=220px&label=Date}}}
 					</div>	
 				</div>								
 				<br style="clear: both;"/>

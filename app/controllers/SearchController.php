@@ -190,7 +190,7 @@
 			//
 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array(caGetDisplayStringForHTMLFormInput($this->opo_result_context)));
 			}
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
