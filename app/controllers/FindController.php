@@ -69,7 +69,9 @@
 					);
 				}
 			}
-			
+			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+ 			
+ 			
 			$this->view->setVar('export_formats', $va_export_options);
 			
 			$va_options = array();
@@ -269,10 +271,8 @@
  					$t_element = new ca_metadata_elements();
  					if ($t_element->load(array('element_code' => $va_facet_info['element_code']))) {
  						if ($t_element->get('datatype') == 3) { // 3=list
-							if (!$pn_id) {
- 								$t_list = new ca_lists();
-								$pn_id = $t_list->getRootListItemID($t_element->get('list_id'));
-							}
+ 							$t_list = new ca_lists($t_element->get('list_id'));
+							if (!$pn_id) { $pn_id = $t_list->getRootListItemID($t_element->get('list_id')); }
 							$t_item = new ca_list_items($pn_id);
 							
 							if ($t_item->getPrimaryKey()) {
@@ -288,7 +288,9 @@
 										'additionalTableSelectFields' => array($vs_display_fld, 'locale_id'),
 										'additionalTableWheres' => array('('.$vs_label_table_name.'.is_preferred = 1 OR '.$vs_label_table_name.'.is_preferred IS NULL)')
 										)));
-								array_shift($va_ancestors);
+								$va_root = array_shift($va_ancestors);
+								$va_root['NODE']['name_singular'] = $va_root['NODE']['name_plural'] = $t_list->get('ca_lists.preferred_labels.name');
+								array_unshift($va_ancestors, $va_root);
 							}
  						}
  					}
