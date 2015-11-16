@@ -40,7 +40,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
+		<div class="col-sm-10 col-md-10 col-lg-10">
 			<h1 style="margin-top:20px;">Compare Reader Activity</h1>
 
 		</div>
@@ -117,11 +117,13 @@
 		});
 
 		$chart.on('mousemove', function(event) {
-		  var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
-			var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
+		  var l = ((event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX) - $graphToolTip.width() / 2 - 10;
+			var t = ((event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY) - $graphToolTip.height() - 40;
+			if (l < 5) { l = 5; }
+			if (t < 5) { t = 5; }
 			  $graphToolTip.css({
-				left: l - $graphToolTip.width() / 2 - 10,
-				top: t - $graphToolTip.height() - 40
+				left: l,
+				top: t
 			  });
 		});
 

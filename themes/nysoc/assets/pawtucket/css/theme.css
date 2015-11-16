@@ -259,9 +259,14 @@ ul#mainMenu li.item.active .browseHeadernav.caps.active a{
 ul#mainMenu li.item.active .filterMenuFacetList a {
 	color: #747060;
 }
-ul#mainMenu li.item.active .browseFacetItem a {
+ul#mainMenu li.item.active .browseFacetItem a, ul#mainMenu li.item.active .browseFacetItem a {
 	color: #747060;
 }
+
+#bAncestorList {
+	color: #747060;
+}
+
 ul#mainMenu li.item.active .browseMenuBrowseAll a {
 	color: #747060;
 }
@@ -595,6 +600,13 @@ div.globalLinks a {
 .browseHeadernav {
 	padding:0px 5px 0px 5px;
 }
+
+.browseHeadernav:hover {
+	background-color:#d6742a;
+	padding:0px 5px 0px 5px;
+	color:#fff;
+}
+
 ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#fff;
 }
