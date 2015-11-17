@@ -98,6 +98,10 @@
  				// invalid id - throw error
  				throw new ApplicationException("Invalid id");
  			} 
+ 			
+ 			// Record view
+ 			$t_subject->registerItemView();
+ 			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
  			
  			
@@ -162,7 +166,7 @@
  			
  			
  			//
- 			//
+ 			// Representation viewer
  			//
  			if (method_exists($t_subject, 'getPrimaryRepresentationInstance')) {
  				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
@@ -176,9 +180,10 @@
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 				}else{
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+					$this->view->setVar("representation_id", null);
 				}
 				$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_subject->getPrimaryKey(), $t_representation, $t_subject, array_merge($va_media_display_info, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false)))));
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_subject->getPrimaryKey(), $t_representation, $t_subject, array_merge($va_media_display_info, array("showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false)))));
 			}
 			
 			//
