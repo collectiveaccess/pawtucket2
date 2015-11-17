@@ -124,6 +124,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				'cacheCleanFactor' => 0.50,									// percentage of words retained when cleaning the cache
 				
 				'omitPrivateIndexing' => false,								//
+				'excludeFieldsFromSearch' => null,
 				'restrictSearchToFields' => null,
 				'strictPhraseSearching' => true							// strict phrase searching finds only records with the precise phrase; non-strict will find fields with all of the words, in any order
 		);
@@ -266,10 +267,15 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			die("Invalid subject table");
 		}
 		
-		$va_restrict_to_fields = array();
+		$va_restrict_to_fields = $va_exclude_fields_from_search = array();
 		if(is_array($this->getOption('restrictSearchToFields'))) {
 			foreach($this->getOption('restrictSearchToFields') as $vs_f) {
 				$va_restrict_to_fields[] = $this->_getElementIDForAccessPoint($pn_subject_tablenum, $vs_f);
+			}
+		}
+		if(is_array($this->getOption('excludeFieldsFromSearch'))) {
+			foreach($this->getOption('excludeFieldsFromSearch') as $vs_f) {
+				$va_exclude_fields_from_search[] = $this->_getElementIDForAccessPoint($pn_subject_tablenum, $vs_f);
 			}
 		}
 		
@@ -350,7 +356,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			$qr_res = $this->opo_db->query($vs_sql);
 		} else {
 			$this->_createTempTable('ca_sql_search_search_final');
-			$this->_doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, 'ca_sql_search_search_final', 0, array('restrictSearchToFields' => $va_restrict_to_fields));
+			$this->_doQueriesForSqlSearch($po_rewritten_query, $pn_subject_tablenum, 'ca_sql_search_search_final', 0, array('restrictSearchToFields' => $va_restrict_to_fields, 'excludeFieldsFromSearch' => $va_exclude_fields_from_search));
 			Debug::msg("doqueries for {$ps_search_expression} took ".$t->getTime(4));
 				
 			// do we need to filter?
@@ -1307,6 +1313,14 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						}
 						$vs_sql_where .= " AND (".join(" OR ", $va_field_restrict_sql).")";
 					}
+					if (!$vs_fld_num && is_array($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $pa_options, null)) && sizeof($va_exclude_fields_from_search)) {
+						$va_field_restrict_sql = array();
+						foreach($va_exclude_fields_from_search as $va_restrict) {
+							$va_field_restrict_sql[] = "((swi.field_table_num <> ".intval($va_restrict['table_num']).") AND (swi.field_num <> '".$va_restrict['field_num']."'))";
+						}
+						$vs_sql_where .= " AND (".join(" OR ", $va_field_restrict_sql).")";
+					}
+					
 					
 					$va_join = array();
 					if ($vn_direct_sql_target_table_num != $pn_subject_tablenum) {
