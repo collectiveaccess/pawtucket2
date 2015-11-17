@@ -76,14 +76,14 @@ if($this->request->getParameter("detailNav", pInteger)){
 			}
 		}
 ?>
-		<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'search' => $this->request->getParameter("search", pString), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;">View All</a>
+		<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'search' => $this->request->getParameter("search", pString), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;">View All</a>
 <?php
 	}else{
 		if(is_array($va_facets["type_facet"]) && sizeof($va_facets["type_facet"])){
 			print _t("FILTER");
 			foreach($va_facets["type_facet"]["content"] as $vn_item_id => $va_item){
 ?>
-				<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'key' => $vs_browse_key, 'facet' => 'type_facet', 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_item["label"]; ?></a>
+				<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'facet' => 'type_facet', 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_item["label"]; ?></a>
 <?php
 			}
 		}
@@ -99,7 +99,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 					print '<a href="#" class="active">'.$va_view_icons[$vs_view]['icon'].'</a> ';
 				} else {
 ?>
-					<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_view_icons[$vs_view]['icon']; ?></a>
+					<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_view_icons[$vs_view]['icon']; ?></a>
 <?php
 				}
 			}
@@ -127,26 +127,30 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="container">
 <div class="row bNavOptions" style="clear:both; position:relative;">
-	<div class="col-xs-12 col-sm-2">
+	<div class="col-xs-12 col-sm-5">
 <?php
-	print _t("Results")."&nbsp;&nbsp;&nbsp;<span class='highlight'>".$qr_res->numHits()."</span>";	
+	print $va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
 ?>
 	</div><!-- end col -->
 <?php
-	if(is_array($va_facets) && sizeof($va_facets)){
-?>
-	<div class="col-xs-12 col-sm-2">
-		<a href="#" id="panelLink" onClick="jQuery('#bRefineContainer').toggleClass('open'); ">FILTER<i class="fa fa-caret-down"></i></a>
-	</div><!-- end col -->
-<?php
-	}else{
-?>
-		<div class="col-xs-12 col-sm-2">
-		<?php print caNavLink($this->request, _t("View All"), '', '*', 'browse', '*', array('view' => $vs_current_view)); ?>
-		</div><!-- end col -->
-<?php
+	$vs_search = "";
+	if (sizeof($va_criteria) > 0) {
+		foreach($va_criteria as $va_criterion) {
+			if ($va_criterion['facet_name'] == '_search') {
+				$vs_search = $va_criterion['value'];
+				break;
+			}
+		}
+		reset($va_criteria);
 	}
 ?>
+	<div class="col-xs-12 col-sm-3">
+		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="<?php print ($vs_search) ? $vs_search : "Search"; ?>" name="search">
+			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+			<input type="hidden" name="facet" value="_search">-->
+		</form>
+	</div><!-- end col -->
 	<div class="col-xs-12 col-sm-2">
 		<div class="btn-group">
 			<a href="#" data-toggle="dropdown">SORT<i class="fa fa-caret-down"></i></a>
@@ -172,25 +176,6 @@ if (!$vb_ajax) {	// !ajax
 			</ul>
 		</div><!-- end btn-group -->
 	</div><!-- end col -->
-<?php
-	$vs_search = "";
-	if (sizeof($va_criteria) > 0) {
-		foreach($va_criteria as $va_criterion) {
-			if ($va_criterion['facet_name'] == '_search') {
-				$vs_search = $va_criterion['value'];
-				break;
-			}
-		}
-		reset($va_criteria);
-	}
-?>
-	<div class="col-xs-12 col-sm-4">
-		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="<?php print ($vs_search) ? $vs_search : "Search"; ?>" name="search">
-			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-			<input type="hidden" name="facet" value="_search">-->
-		</form>
-	</div><!-- end col -->
 	<div class="col-xs-12 col-sm-2">
 <?php
 		print _t("View");
@@ -206,18 +191,6 @@ if (!$vb_ajax) {	// !ajax
 ?>			
 	</div><!-- end col -->
 </div><!-- end row --></div><!-- end container -->
-<div class="container" style="position:relative;">
-	<div class="row" id="bRefineContainer">
-		<div class="col-xs-12">
-			<div class="row">
-				<div class="col-xs-12 col-sm-2 borderTop"></div>
-				<div class="col-xs-12 col-sm-2"></div>
-				<div class="col-xs-12 col-sm-8 borderTop"></div>
-			</div>
-			<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>
-		</div>
-	</div><!-- end row -->
-</div><!-- end container -->
 		<div class="row">
 			<div class="col-xs-12">
 			<H5>
@@ -245,45 +218,18 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				if ($va_criterion['facet_name'] != '_search') {
-					if($i == 0){
-						print "<strong>"._t("Filtering by").":</strong>";
-					}
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm bCriteria">'.$va_criterion['value'].' <span class="icon-cross"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					#print ' '.$va_criterion['value'];
-				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-				}
-			}
-		}
 ?>		
 			</H5>
 			</div><!-- end col -->
 		</div>	
-		<div class='row'>
-			<div class='col-sm-12 col-md-12 col-lg-12'>
-				<div class='browseLeader'>
-<?php
-			print "<h1>Browse ".$va_browse_info["displayName"]."</h1>";	
-?>
-				</div>		
-			</div>
-		</div><!-- end row --></div><!-- end container -->
-		<form id="setsSelectMultiple">
 		<div class="row">
-			<div id="browseResultsContainer">
+			<div class="col-md-4">
+				<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>			
+			</div>
+			<div class="col-md-8">
+				<form id="setsSelectMultiple">
+				<div class="row">
+					<div id="browseResultsContainer">
 <?php
 } // !ajax
 
@@ -291,9 +237,11 @@ print $this->render("Browse/browse_results_{$vs_current_view}_html.php");
 
 if (!$vb_ajax) {	// !ajax
 ?>
-			</div><!-- end browseResultsContainer -->
+					</div><!-- end browseResultsContainer -->
+				</div><!-- end row -->
+				</form>
+			</div><!-- end col -->
 		</div><!-- end row -->
-		</form>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
@@ -322,7 +270,6 @@ if (!$vb_ajax) {	// !ajax
 	});
 
 </script>
-</div>
 <?php
 			#print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax

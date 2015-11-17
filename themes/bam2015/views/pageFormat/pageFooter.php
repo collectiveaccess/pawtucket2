@@ -36,8 +36,14 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-	
+	</div><!-- end pageArea -->
+<?php
+	if($this->request->getController() != "Front"){
+?>
+	</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+	}
+?>	
 		<div id="footer">
 			<div class="container">
 				<ul class="list-inline pull-right">

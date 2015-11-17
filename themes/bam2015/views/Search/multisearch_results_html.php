@@ -8,7 +8,8 @@
 		print caNavLink($this->request, 'Advanced Search', 'btn-default', '', 'Search', 'advanced/objects');
 ?>
 		</small>
-		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('search'))); ?></h1>
+		<div class="leader text-center">Search Results</div>
+		<h2 class="text-center"><?php print $this->getVar('search'); ?></h2>
 <?php
 		// 
 		// Print out block content (results for each type of search)

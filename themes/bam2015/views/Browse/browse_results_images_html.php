@@ -119,7 +119,16 @@
 						}
 					}
 					
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+					if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+					}else{
+						$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
+					}
+					if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
+						$vs_caption_detail_link 	= caDetailLink($this->request, $vs_link_text, '', $vs_table, $vn_id);
+					}else{
+						$vs_caption_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";
+					}
 					$vs_add_to_set_link = "";
 					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a></div>";
@@ -134,17 +143,18 @@
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);	
+					$vs_caption_detail_link 	= caDetailLink($this->request, $vs_link_text, '', $vs_table, $vn_id);		
 				}
 				
 				print "
-	<div class='col-xs-12 col-sm-3'>
+	<div class='col-xs-12 col-sm-".(($this->request->getParameter("openResultsInOverlay", pInteger) || $this->request->getParameter("homePage", pInteger)) ? "3" : "4")."'>
 		<div class='bBAMResultItem'>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div>
+			<div class='bBAMResultItemImgContainer' ><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
 			<div class='bBAMResultItemText'>
 				<div class='bBAMIcon'>{$vs_type_placeholder}</div>
-				".caDetailLink($this->request, $vs_link_text, '', $vs_table, $vn_id)."
+				".$vs_caption_detail_link."
 			</div>
 		</div><!-- end bBAMResultItem -->
 	</div><!-- end col -->";
@@ -152,7 +162,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => $this->request->getParameter("openResultsInOverlay", pInteger)));
 		}
 ?>
 <script type="text/javascript">

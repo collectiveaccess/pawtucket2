@@ -34,6 +34,12 @@
 	font-weight: normal;
 	font-style: normal;
 }
+@font-face {
+	font-family: 'News Gothic Roman';
+	src:url('../fonts/news_gothic/newsgoth-bt-roman-webfont.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
 body {
 	font-family: "News Gothic";
 }
@@ -61,12 +67,37 @@ h3 {
 a {
 	color: #00cfb7;
 }
+.notificationMessage, .notificationInfo, .notificationError, .notificationWarning {
+    left: 40%;
+    top: 200px;
+    position:absolute;
+    background-color: #fff;
+    border-radius:0px;
+    border: 2px solid #000000;
+    color:#000;
+    font-family:"News Gothic Roman";
+}
+.alert {
+    background-color: #fff;
+    border-radius:0px;
+    border: 2px solid #000000;
+    color:#000;
+    font-family:"News Gothic Roman";
+    margin: -20px -15px -20px -15px;
+}
+.notificationMessage a{
+	color: #000;
+	padding-left:10px;
+}
 .clearfix {
 	width: 100%;
 	clear:both;
 }
 .highlight{
 	color:#33d9c5;
+}
+.grayText{
+	color:#7c7c7c;
 }
 .container {
 	max-width:1230px;
@@ -77,26 +108,28 @@ a {
 	box-shadow:none;
 }
 .navbar-brand {
-	width: 300px;
+	width: 305px;
 	padding-bottom:0px;
 	margin-top:8px;
 }
 .navbar-nav > li, .navbar-default .navbar-nav > li:hover {
 	background-color:#262626;
-	font-family:"News Gothic Condensed";
-	text-transform:uppercase;
+	font-family:"News Gothic";
+	font-weight: lighter;
+	border-right:4px solid #000;
 }
 .navbar-nav > li > a, .navbar-nav > li > a:hover {
 	padding-top:13px;
 	padding-bottom:10px;
-	font-family:"News Gothic Condensed";
-	font-weight:bold;
+	font-family:"News Gothic";
+	font-weight: lighter;
 	color: #7c7c7c;
 }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > li > a:focus{
 	color: #7c7c7c !important;
 	font-size:18px;
-	font-family:"News Gothic Condensed";
+	font-family:"News Gothic";
+	font-weight: lighter;
 }
 .navbar-default .navbar-nav > a,
 .navbar-default .navbar-nav > .open > a, 
@@ -107,7 +140,8 @@ a {
 .navbar-default .navbar-nav > .active > a:hover, 
 .navbar-default .navbar-nav > .active > a:focus {
 	background-color: #262626;
-	font-family:"News Gothic Condensed";
+	font-family:"News Gothic";
+	font-weight: lighter;
 }
 .navbar-default .navbar-nav > .open > a, 
 .navbar-default .navbar-nav > .open > a:hover, 
@@ -147,6 +181,7 @@ a {
 }
 .navbar .form-control {
 	font-family:"News Gothic";
+	font-weight: lighter;
 	font-size:16px;
 	color: #7c7c7c;
 	background-color:#000;
@@ -200,19 +235,24 @@ a {
 }
 .yamm .nav.navbar-right .dropdown-menu > li > a, .yamm .nav.navbar-right .dropdown-menu > li > a:hover {
 	color: #7c7c7c;
-	font-weight:600;
 	background-color: #262626;
 	margin-left:1px;
     font-size: 17px;
     padding-top: 5px;
     padding-bottom: 5px;
-    font-family: "News Gothic Condensed";
+    font-family: "News Gothic";
+	font-weight:normal;
+	opacity: 1;
 }
 .yamm .nav.navbar-right .dropdown-menu > li > a.first {
 	padding-top:10px;
 }
 .yamm .nav.navbar-right .dropdown-menu > li > a.last {
 	padding-bottom:10px;
+}
+.nav a:hover .caret, .nav a:focus .caret {
+  border-top-color: #7c7c7c !Important;
+  border-bottom-color: #7c7c7c !Important;
 }
 input:-webkit-autofill {
 	color: #7c7c7c;
@@ -223,8 +263,8 @@ input:-webkit-autofill {
 .dropdown .dropdown-menu, .dropdown-menu, #bRefineContainer{
     display: block;
     opacity: 0;
-    height:1px;
     padding: 0px;
+    visibility:hidden;
 
     -moz-transition:    all 1000ms ease;
     -webkit-transition: all 1000ms ease;
@@ -232,17 +272,39 @@ input:-webkit-autofill {
     -ms-transition:     all 1000ms ease;
     transition:         all 1000ms ease;
 }
-.open .dropdown-menu, #bRefineContainer.open{
+.frontNav .dropdown-menu{
+	top:35px;
+	left:-16px;
+	right:-16px;
+	padding-left:15px;
+	padding-right:15px;
+	border-top:0px;
+	display: block;
+    opacity: 0;
+    visibility:hidden;
+    padding: 0px;
+    background-color:rgba(255, 255, 255, 0.6);
+
+    -moz-transition:    all 1000ms ease;
+    -webkit-transition: all 1000ms ease;
+    -o-transition:      all 1000ms ease;
+    -ms-transition:     all 1000ms ease;
+    transition:         all 1000ms ease;
+}
+.open .dropdown-menu, #bRefineContainer.open, .frontNav .open .dropdown-menu{
     display: block;
     opacity: 1;
-    height:auto;
     padding: 0px;
+    visibility:visible;
 }
-.bNavOptions .dropdown-menu li, #bRefineContainer .col-xs-12 {
+/*.bNavOptions .dropdown-menu li, #bRefineContainer .col-xs-12, .frontNav .dropdown-menu li {
 	display:none;
 }
-.bNavOptions .open .dropdown-menu li, #bRefineContainer.open .col-xs-12 {
+.bNavOptions .open .dropdown-menu li, #bRefineContainer.open .col-xs-12, .frontNav .open .dropdown-menu li {
 	display:block;
+}*/
+.bNavOptions .dropdown-menu {
+
 }
 .yamm #user-navbar .dropdown-menu > li > a {
     padding-bottom: 8px;
@@ -310,17 +372,10 @@ body {
 	padding-top:20px;
 	opacity: 1;
 }
-.frontNav .dropdown-menu {
-    opacity: .5;
-}
-.frontNav .dropdown-menu > li > a {
-	font-weight:bold;
-}
-.frontNav .dropdown-menu > li > a:hover {
-	background-color:transparent;
-}
 /* Detail */
-
+.detail .unit a{
+	font-family: "News Gothic Roman";
+}
 .leader {
 	text-transform:uppercase;
 	font-family: "News Gothic";	
@@ -331,13 +386,15 @@ body {
 .detailHead {
 	text-align:center;
 	font-size:16px;
+	margin-bottom:10px;
 }
 .detail a {
 	color: #00cfb7;
 }
 .detail HR {
 	border-top:2px solid #dddddd;
-	margin-bottom:30px;
+	margin-bottom: 20px;
+    margin-top: 20px;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	background-color: #fff;
@@ -351,6 +408,12 @@ body {
 	font-family: "News Gothic";
 	font-weight: bold;
 	padding-bottom:5px;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a  {
+	font-size:24px;
+}
+.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
+	font-size:12px;
 }
 .sets .setsBack {
 	background-color: #fff;
@@ -386,11 +449,40 @@ body {
 	display:inline-block;
 	padding: 0px;
 	padding-right:8px;
+	text-transform: uppercase;
+}
+.unit .label.wide {
+	display:block;
+	text-align:left;
+	margin-bottom:10px;
 }
 .unit .label.collection {
 	font-size:14px;
 	text-transform:uppercase;
 	margin-bottom:10px;
+}
+.unit ul {
+	margin-left:10px;
+	padding-left:10px;
+	list-style: none;
+    margin-left: 0;
+    padding-left: 40px;
+    text-indent: -25px;
+}
+.unit li {
+	color: #00cfb7;
+}
+.unit .dash {
+	padding-left:10px;
+	display:inline-block;
+    padding-left: 10px;
+    padding-right: 10px;	
+}
+a.readmore-js-toggle {
+	text-transform:uppercase;
+	text-decoration:underline;
+	font-size:13px;
+	font-weight:bold;
 }
 .detail .detailTool a, .detail .detailTool span{
 	color: #000;
@@ -398,6 +490,7 @@ body {
 .entityRep img{
 	width: 100%;
 	height:auto;
+	
 }
 .closeToggle {
 	color: #00cfb7;
@@ -415,7 +508,87 @@ body {
     font-size: 20px;
     color: #666;
 }
+/* image sizing on details */
+/*
+.landscapeRepContainer, .portraitRepContainer{
+	text-align:center;
+}
+.landscapeRepContainer{
+	max-width:640px;
+	height:auto;
+	margin:0px auto 0px auto;
+}
+.detail .entityRep.landscapeRepContainer img{
+	max-width:640px;
+	height:auto;
+	margin:0px auto 0px auto;
+	width: 100%;
+}
+.detail .portraitRepContainer .repViewerCont img{
+	width:auto;
+	height:640px;
+}
 
+.detail .entityRep.portraitRepContainer img{
+	max-height:640px;
+	width:auto;
+	margin:0px auto 0px auto;
+}*/
+/* object detail in overlay - linked to from productiona nd entity details */
+.detailOverlayNav{
+	padding-top:15%;
+	font-size:100px;
+}
+.detailOverlayNav a {
+	color:#7c7c7c;
+}
+.detailOverlayClose{
+	text-align:right;
+	font-size:80px;
+}
+.detailOverlayImg img{
+	width:auto;
+	max-height:550px;
+}
+.detailOverlayImg span{
+	display:inline-block;
+}
+.detailOverlayImg span.detailOverlayImgOverlayContainer{
+	position:relative;
+}
+.detailOverlayImgOverlay{
+	display:none;
+	position:absolute;
+	bottom: 0px;
+	width:100%;
+	padding:40px 20px 30px 30px;
+	color:#FFFFFF;
+	background-color: rgba(0,0,0,0.8);
+	text-align:left;
+	font-size:16px;
+}
+.detailOverlayImgOverlay a{
+	color:#fff;
+}
+.detailOverlayImgOverlay a.full, .detailOverlayImgOverlay a.full:hover{
+	float:right;
+	font-size:20px;
+	padding-top:20px;
+	color:#00cfb7 !important;
+	text-decoration:none;
+}
+.detailOverlayImg span:hover .detailOverlayImgOverlay{
+	display:block;
+}
+.detailOverlayImgCaption{
+	border-bottom:2px solid #DDDDDD;
+	padding:10px 0px 10px 0px;
+	text-align:left;
+}
+a .detailOverlayImgCaption, .detailOverlayImgCaption a, a:hover .detailOverlayImgCaption, .detailOverlayImgCaption a:hover{
+	color:#000;
+	text-decoration:none;
+}
 /* Media Viewer */
 
 .tileviewer div.viewerControls {
@@ -574,9 +747,9 @@ li[role=presentation] {
 
 /* Browse */
 
-#browseResultsContainer {
+/*#browseResultsContainer {
 	margin-top:5px;
-}
+}*/
 .browseLeader {
 	margin-top:10px;
 	margin-bottom:15px;
@@ -706,11 +879,34 @@ li[role=presentation] {
 	padding: 40px 5px 68px 5px;
 }
 
-/* Multisearch */
+/* Audio Player */
 
-.multisearch .authoritySet a {
+.mejs-container {
+    width: 100% !important;
+    margin-bottom: 40px !important;
+    height: 60px !important;
+}
+@media (max-width: 1240px) {
+	.mejs-container {
+		width: 500px !important;
+	}
+}
+@media (max-width: 1074px) {
+	.mejs-container {
+		width: 400px !important;
+	}
+}
+@media (max-width: 865px) {
+	.mejs-container {
+		width: 320px !important;
+	}
+}
+.mejs-container .mejs-controls .mejs-time span {
 	font-size:14px;
 }
-.multisearch .pull-right {
-	font-size:14px;
+.caAudioPlayer {
+	padding-top:40px;
+}
+.mejs-container .mejs-controls {
+	background:#000 !important;
 }

@@ -133,15 +133,15 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 <?php
-					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse</a>\n";
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Productions & Events', 'last', '', 'Browse', 'occurrences')."</li>\n"; 
 					print "</ul></li>";
-					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers</a>\n";
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Advanced Search', 'first', '', 'Search', 'advanced/objects')."</li>\n";
 					print "<li>".caNavLink($this->request, 'Browse Archival Collections', '', '', 'FindingAid', 'Collection/Index')."</li>\n";
-					print "<li>".caNavLink($this->request, 'About the Archive', 'last', '', 'About', 'Index')."</li>\n";					
+					print "<li>".caNavLink($this->request, 'About the Archives', 'last', '', 'About', 'Index')."</li>\n";					
 					print "</ul></li>";
 
 					#print $this->render("pageFormat/browseMenu.php");
@@ -150,5 +150,11 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
+<?php
+	if($this->request->getController() != "Front"){
+?>
 	<div class="container"><div class="row"><div class="col-xs-12">
+<?php
+	}
+?>
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

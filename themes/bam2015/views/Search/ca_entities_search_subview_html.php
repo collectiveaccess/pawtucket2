@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_occurrences_search_subview_html.php : 
+ * themes/default/views/Search/ca_entities_search_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -52,10 +52,9 @@
 ?>
 			</small>
 			<H3><?php print $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>".$qr_results->numHits()."</span>"; ?></H3>
-
 			<div class='blockResults'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' class='multiSearchResults'>
+				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
 		}
@@ -63,28 +62,19 @@
 		$vn_i = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
-			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true; }
-				print "<div class='{{{block}}}Result bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>";
-				$vs_label = $qr_results->get('ca_occurrences.preferred_labels.name');
-				if(mb_strlen($vs_label) > 50){
-					$vs_label = mb_substr($vs_label, 0, 50)."...";
-				}						
-				if($qr_results->get("ca_occurrences.productionDate")){
-					$vs_label = $vs_label.", ".$qr_results->get("ca_occurrences.productionDate", array("delimiter" => ", "));
-				}
-				print caDetailLink($this->request, $vs_label, '', 'ca_occurrences', $qr_results->get("ca_occurrences.occurrence_id"));
-				print "</div>";
+			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
+				print "<div class='{{{block}}}Result bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
-			if ($vn_i == $vn_items_per_column) {
-				print "</div><!-- end set -->";
+			if ($vn_i >= $vn_items_per_column) {
+				print "</div><!-- end Set -->\n";
 				$vb_div_open = false;
 				$vn_i = 0;
 			}
 			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 		
-		if ($vb_div_open) {print "</div><!-- end set -->";}
+		if ($vb_div_open) {print "</div><!-- end Set -->";}		// closing div if we stop short of a full row
 		
 		if (!$this->request->isAjax()) {
 ?>
@@ -136,4 +126,3 @@
 		}
 	}
 ?>
-

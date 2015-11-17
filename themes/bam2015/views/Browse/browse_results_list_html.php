@@ -80,19 +80,25 @@
 				}else{
 					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
 				}
+				$vs_detail_link = "";
+				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
+					$vs_detail_link	= caDetailLink($this->request, $vs_link_text, '', $vs_table, $vn_id);
+				}else{
+					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";
+				}
 				
 				print "
-	<div class='col-xs-12 col-sm-4'>
+	<div class='col-xs-12 col-sm-".(($this->request->getParameter("openResultsInOverlay", pInteger)) ? "4" : "6")."'>
 		<div class='bBAMResultListItem'>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-			".caDetailLink($this->request, '<span class="pull-right icon-arrow-up-right"></span>'.$vs_link_text, '', $vs_table, $vn_id)."
+			".$vs_detail_link."
 		</div><!-- end bBAMResultListItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => $this->request->getParameter("openResultsInOverlay", pInteger)));
 		}
 ?>
 <script type="text/javascript">
