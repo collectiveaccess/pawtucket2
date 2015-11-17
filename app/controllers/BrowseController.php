@@ -119,8 +119,6 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
- 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
- 			
 			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			

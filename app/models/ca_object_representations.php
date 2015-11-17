@@ -216,6 +216,13 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => 'Source information', 'DESCRIPTION' => 'Serialized array used to store source information for object representation information retrieved via web services [NOT IMPLEMENTED YET].'
+		),
+		'view_count' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
 		)
  	)
 );
@@ -402,6 +409,15 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));
 			
 			$vn_rc = parent::update();
+
+			// Trigger automatic replication
+			$va_auto_targets = $this->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $this->get('access')));
+			if(is_array($va_auto_targets)) {
+				foreach($va_auto_targets as $vs_target => $va_target_info) {
+					$this->replicateMedia('media', $vs_target);
+				}
+			}
+
 		}
 		
 		return $vn_rc;
@@ -496,6 +512,14 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			}
 		}
 		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * The media field is mandatory for representations
+	 * @return array
+	 */
+	public function getMandatoryFields() {
+		return array_merge(parent::getMandatoryFields(), array('media'));
 	}
 	# ------------------------------------------------------
 	# Annotations

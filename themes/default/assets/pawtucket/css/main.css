@@ -489,6 +489,21 @@ div.browseFacetItem{
 		height:60px;
 	}
 }
+
+@media (min-width: 768px) {
+	div.browseFacetHierarchyItem{
+		height:75px;
+	}
+	div.browseFacetHierarchyItem a{
+		display:block;
+		height:75px;
+	}
+}
+
+div.browseFacetHierarchyItem a {
+	display: inline !important;
+}
+
 div.browseFacetItem:hover {
 	background-color:#e7e7e7;
 }
@@ -1889,15 +1904,14 @@ a.readmore-js-toggle{
 	margin-top:5px;
 	width:250px;
 }
-#bMorePanel #bScrollList.bScrollListHierarchy{
-	height:85%;
-}
+
 @media (min-width: 992px) {
 	#bMorePanel #bScrollList{
 		width:350px;
 	}
 }
 #bMorePanel #bScrollList.bScrollListHierarchy{
+	height:85%;
 	padding-left:25px;
 }
 #bMorePanel #bScrollList a{

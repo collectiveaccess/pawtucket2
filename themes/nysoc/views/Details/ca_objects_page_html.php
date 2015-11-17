@@ -43,45 +43,25 @@
 										<div class='nextLink'>{{{nextLink}}}</div>
 									</div>
 								</div>
+								
+<?php								
+								print "<h4>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h4>";
+?>								
+								<H4 style='font-size:16px;'>{{{ca_objects.preferred_labels.name}}}</H4>	
+								
+								<div id="detailTools">
+									<!-- AddThis Button BEGIN -->
+									<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
+									<!-- AddThis Button END -->
+									<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
+									<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
+								</div><!-- end detailTools -->															
+								
 							</div>
 							<div class='col-md-6 col-lg-6'>
 							</div><!-- end col -->
 						</div><!-- end row -->
-						<div class="container"><div class="row">
-			
-							<div class='col-sm-6 col-md-6 col-lg-5'>
-								<div class="detailNav">
-									<div class='prevLink'>{{{previousLink}}}</div>
-									<div class='nextLink'>{{{nextLink}}}</div>
-								</div>
-<?php								
-								print "<h4>".$t_object->get('ca_objects.parent.preferred_labels', array('returnAsLink' => true))."</h4>";
-?>								
-								<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-								<HR>				
-							
-									<div class="row">
-										<div class="col-sm-6">		
-											
-											<div id="detailTools">
-												<!-- AddThis Button BEGIN -->
-												<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
-												<!-- AddThis Button END -->
-												<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
-												<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
-											</div><!-- end detailTools -->											
-										</div><!-- end col -->				
-										<div class="col-sm-6 colBorderLeft">
-											<div class='col-sm-6 col-md-6 col-lg-6'>
-																		
-											</div><!-- end col -->
-										</div>
-									</div><!-- end row -->
-							</div><!-- end col -->
-							<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 ledgerImage'>
-												
-							</div><!-- end col -->
-						</div><!-- end row -->
+						<div class="container">
 		
 			
 				<?php

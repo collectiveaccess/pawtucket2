@@ -26,6 +26,9 @@
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
+<?php
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'viz_sidebar.jpg'), '', '', 'About', 'visualizations');
+?>		
 		</div><!-- end sideBar -->
 		<div class="content-wrapper">
       		<div class="content-inner">

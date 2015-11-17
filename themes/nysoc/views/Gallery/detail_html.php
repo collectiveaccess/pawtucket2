@@ -23,7 +23,8 @@
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>	
 <?php
 					print "<h4>".$t_set->get('ca_sets.preferred_labels')."</h4>";	
-					print "<p>".$t_set->get('ca_sets.set_description')."</p>";
+					#print "<p>".$t_set->get('ca_sets.set_description')."</p>";
+					print "<p>".$t_set->get('ca_sets.rich_description')."</p>";
 
 					$va_set_items = array();
 					foreach ($pa_set_items as $va_set_item_id => $pa_set_item) {

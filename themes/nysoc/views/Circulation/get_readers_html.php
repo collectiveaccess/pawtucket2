@@ -66,7 +66,7 @@
 			while($qr_res->nextHit()) {
 				$vn_entity_id = $qr_res->get('ca_entities.entity_id');
 				if (!($vs_image_tag = $qr_res->get('ca_object_representations.media.icon'))) {
-					$vs_image_tag = "<div class='readerListImagePlaceholder'>&nbsp;</div>";
+					$vs_image_tag = "<div class='readerListImagePlaceholder'>".caGetThemeGraphic($this->request, 'cameo.jpg')."</div>";
 				}
 ?>
 	<div class='readerList clearfix'>

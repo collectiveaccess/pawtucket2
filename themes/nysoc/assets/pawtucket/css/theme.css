@@ -36,7 +36,7 @@ h6 {
 }
 h7 {
 	color: #000;
-	font-size:16px;
+	font-size:18px;
 	display:block; 
 }
 .userGuide h7 a {
@@ -44,7 +44,7 @@ h7 {
 	text-decoration:none;
 }
 h8 {
-	font-size: 14px;
+	font-size: 16px;
 	color: #333;
 	display:block;
 }
@@ -53,13 +53,20 @@ h8 {
 	text-decoration:none; 
 }
 h9 {
-	font-size: 12px;
+	font-size: 14px;
 	color: #666;
 	display:block;
+}
+h7, h8, h9 {
+	margin-bottom:5px;
 }
 .userGuide h9 a {
 	color: #666;
 	text-decoration:none;
+}
+.userGuide p, .userGuide li {
+	font-size:14px; 
+	line-height:1.5em;
 }
 .clearfix {
 	clear:both;
@@ -252,9 +259,14 @@ ul#mainMenu li.item.active .browseHeadernav.caps.active a{
 ul#mainMenu li.item.active .filterMenuFacetList a {
 	color: #747060;
 }
-ul#mainMenu li.item.active .browseFacetItem a {
+ul#mainMenu li.item.active .browseFacetItem a, ul#mainMenu li.item.active .browseFacetItem a {
 	color: #747060;
 }
+
+#bAncestorList {
+	color: #747060;
+}
+
 ul#mainMenu li.item.active .browseMenuBrowseAll a {
 	color: #747060;
 }
@@ -314,6 +326,7 @@ ul#mainMenu li #browseMenuTypeFacet a{
 	line-height:18px;
 	padding-bottom:3px;
 	padding-top:3px;
+	display:inline-block;  
 }
 ul#mainMenu .filterMenuFacetList li  {
 	margin-bottom:8px;
@@ -587,6 +600,13 @@ div.globalLinks a {
 .browseHeadernav {
 	padding:0px 5px 0px 5px;
 }
+
+.browseHeadernav:hover {
+	background-color:#d6742a;
+	padding:0px 5px 0px 5px;
+	color:#fff;
+}
+
 ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#fff;
 }
@@ -638,6 +658,9 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); 
 	border-right: 1px solid #eee;
 	border-left: 1px solid #eee;
+}
+.multisearch small {
+	font-size:100%;
 }
 .vco-slider .slider-item .content .content-container .text .container h2.date {
 	display:none !important;
@@ -863,6 +886,12 @@ a.readmore-js-toggle {
 	border-radius:4px;
 	padding:5px;
 }
+#stat_bib_books_by_subject_area2, #stat_bib_readers_by_occupation2, #stat_bib_checkout_durations, #stat_bib_readers_by_occupation, #stat_bib_checkout_distribution, #stat_bib_books_by_subject_area, #stat_entity_checkout_durations, #stat_entity_checkout_distribution {
+	cursor: pointer !important; 
+}
+#stat_bib_checkout_distribution2 {
+	margin-top:40px;
+}
 .ct-chart {
 	overflow:visible !important;
 	margin-top:-45px;
@@ -1019,6 +1048,15 @@ svg:not(:root) {
 	top:0px;
 	left:-25px;
 	display:block;
+}
+.circNote {
+	margin-left:30%;
+	font-size:12px;
+}
+.ovcircNote {
+	margin-left:30%;
+	font-size:12px;
+	margin-top:70px;
 }
 .readerRow {
 	border-bottom:1px solid #ccc;
@@ -1315,6 +1353,11 @@ table.dataTable thead th {
 }
 
 /* Advanced Search */
+
+a.advancedSearchSelected {
+	font-weight: bold;
+	text-decoration: none;
+}
 
 .advancedContainer {
 	background-color: #f7f7f7;
@@ -1623,6 +1666,14 @@ a.sbIcon.twitter {
     width: 80%;
     max-height: 35px;
     overflow: hidden;
+    margin-top:-40px;
+}
+#stat_bib_checkout_distribution2 .ct-series-b-key,
+#stat_entity_checkout_distribution2 .ct-series-b-key, #stat_entity_checkout_distribution2 .ct-series-a-key{
+	margin-top:-40px;
+}
+#stat_entity_checkout_distribution2 {
+	margin-top:40px;
 }
 .ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line,
 .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
@@ -1660,7 +1711,7 @@ div#readerList {
     border-top: 10px solid #f7f7f7;
 }
 
-#readerListToggle {	
+.readerListToggle {	
 	top: 4px;
 	right: 10px;
 	font-family: gudea, sans-serif;
@@ -1670,8 +1721,16 @@ div#readerList {
 	margin-top:10px;
 }
 
-#readerListToggle:hover {
+.readerListToggle:hover {
 	cursor: pointer;
+}
+.readerListToggle.openpanel {
+	float:right;
+	margin: -40px 0px 0px 0px;
+	z-index:10000;
+	position:relative;
+	background-color: #f7f7f7;
+	padding:5px;
 }
 
 #readerListContent {
@@ -1721,6 +1780,11 @@ div#readerContentContainer {
 div#readerContent {
 	border: 0px;
 	border-radius:4px;
+}
+.togSmall {
+	padding-left:15px;
+	font-size:11px;
+	color: #d77421; 
 }
 
 /* reader card */
@@ -1806,6 +1870,20 @@ div.readerCardContent .readerCardImageSource {
 	height: 300px;
 	margin-top: 0px;
 	margin-bottom:20px;
+}
+.catalog.detail #mapInfo {
+	display:none;
+}
+.leaflet-top, .leaflet-bottom {
+	z-index:5 !important;
+}
+.detail .leaflet-top a, .detail .leaflet-bottom a,
+.detail .leaflet-top a:hover, .detail .leaflet-bottom a:hover{
+	color: #000000;
+	text-decoration:none;
+}
+.leaflet-popup-content {
+	cursor: pointer !important;
 }
 
 .detail.catalog #groupMap #publisherMapYearSlider {
