@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,13 +42,97 @@ class RepresentationAnnotationSearchResult extends BaseSearchResult {
 	 * Name of table for this type of search subject
 	 */
 	protected $ops_table_name = 'ca_representation_annotations';
+	
+	/**
+	 * Annotation properties instance
+	 */
+	protected $opo_annotations_properties = null;
+	protected $opo_type_config = null;
+	
 	# -------------------------------------
 	/**
 	 * Constructor
 	 */
 	public function __construct() {
+ 		$o_config = Configuration::load();
+ 		$this->opo_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
+ 		
 		parent::__construct();
 	}
 	# -------------------------------------
+	/**
+	 *
+	 */
+	public function nextHit() {
+		if ($vn_rc = parent::nextHit()) {
+			$this->opo_annotations_properties = $this->loadProperties($this->getAnnotationType());
+		}
+		return $vn_rc;
+	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function getPropertyValue($ps_property, $pb_return_raw_value=false) {
+ 		return $this->opo_annotations_properties->getProperty($ps_property, $pb_return_raw_value);
+ 	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function getPropertyValues() {
+ 		return $this->opo_annotations_properties->getPropertyValues();
+ 	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function getPropertiesForDisplay($pa_options=null) {
+ 		if($this->opo_annotations_properties instanceof IRepresentationAnnotationPropertyCoder) {
+ 			return $this->opo_annotations_properties->getPropertiesForDisplay($pa_options);	
+ 		} else {
+ 			return '';
+ 		}
+ 	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function getAnnotationType($pn_representation_id=null) {
+ 		if (!$pn_representation_id) {
+			if (!$vn_representation_id = $this->get('ca_representation_annotations.representation_id')) {
+				return false;
+			}
+		} else {
+			$vn_representation_id = $pn_representation_id;
+		}
+ 		$t_rep = new ca_object_representations();
+ 		
+ 		return $t_rep->getAnnotationType($vn_representation_id);
+ 	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function getPropertiesForType($ps_type) {
+ 		$va_types = $this->opo_type_config->getAssoc('types');
+ 		return array_keys($va_types[$ps_type]['properties']);
+ 	}
+	# -------------------------------------
+	/**
+	 *
+	 */
+ 	public function loadProperties($ps_type, $pa_parameters=null) {
+ 		$vs_classname = $ps_type.'RepresentationAnnotationCoder';
+ 		if (!file_exists(__CA_LIB_DIR__.'/ca/RepresentationAnnotationPropertyCoders/'.$vs_classname.'.php')) {
+ 			return false;
+ 		}
+ 		include_once(__CA_LIB_DIR__.'/ca/RepresentationAnnotationPropertyCoders/'.$vs_classname.'.php');
+ 		
+ 		$this->opo_annotations_properties = new $vs_classname;
+ 		$this->opo_annotations_properties->setPropertyValues(is_array($pa_parameters) ? $pa_parameters : caUnserializeForDatabase($this->get('ca_representation_annotations.props')));
+
+ 		return $this->opo_annotations_properties;
+ 	}
+	# -------------------------------------
 }
-?>
