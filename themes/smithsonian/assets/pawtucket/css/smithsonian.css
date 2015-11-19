@@ -1054,7 +1054,6 @@ a.browseRemoveFacet img {
 	padding:0px 0px 0px 20px;
 }
 #bViewButtons{
-	float:right;
 	font-size:18px;
 	padding-bottom:5px;
 }
@@ -1381,6 +1380,14 @@ a.browseRemoveFacet img {
 }
 .multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
 	background-color:#ebebeb;
+}
+
+/* ------------------------------------------*/
+/* advanced search */
+/*------------------------------------------*/
+
+div.advancedSearchField {
+	height: 80px;
 }
 
 /* ------------------------------------------*/

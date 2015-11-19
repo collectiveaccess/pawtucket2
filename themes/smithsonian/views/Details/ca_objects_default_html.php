@@ -21,7 +21,7 @@
 			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
 
-		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration" min='1'>
+		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration|ca_objects.technicalNotes">
 		    	<div>
 		    		<span class='metaTitle'>Technical Specs</span>
 		    		<div class='meta'>
@@ -31,7 +31,8 @@
 		    				<p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p>
 		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p>
 		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p>
-		    			</unit>
+		    				<p><ifdef code="ca_objects.technicalNotes">Technical Notes: ^ca_objects.technicalNotes</ifdef></p>
+		    			</unit> 
 		    		</div>
 		    	</div> 
 		    </ifdef>}}}
@@ -105,7 +106,7 @@
 				}
 				
 				if(sizeof($va_places)) {
-					print "<span class='metaTitle'>Related places</span>";
+					print "<span class='metaTitle'>SI Locations</span>";
 					print "<div class='meta'>";
 					print join("; ", $va_places);
 					print "</div>";
@@ -117,7 +118,7 @@
 				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 			
 				while($qr_occ->nextHit()) {
-					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
+					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array('subject', 'interviewee'), 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
 						foreach ($va_contributors as $cont_key => $va_contributor) {
 							print "<div>".caNavLink($this->request, $va_contributor['displayname']." (".$va_contributor['relationship_typename'].")", '' , 'Detail', 'entities', $va_contributor['entity_id'])."</div>";
@@ -129,12 +130,10 @@
 ?>	
 			{{{<ifdef  code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifdef>}}}
 			{{{<unit><ifdef code="ca_occurrences.restrictions"><div><span class='metaTitle'>Restrictions</span><span class='meta'>^ca_occurrences.restrictions</span></div></ifdef></unit>}}}
-			{{{<ifdef code="ca_objects.rights"><div><span class='metaTitle'>Rights</span><span class='meta'><unit>^ca_objects.rights</unit></span></div></ifdef>}}}
-
+			{{{<ifdef code="ca_occurrences.rights"><div><span class='metaTitle'>Rights Note</span><span class='meta'><unit>^ca_occurrences.rights</unit></span></div></ifdef>}}}
 <?php
 			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
 				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
-				
 				while($qr_occ->nextHit()) {
 					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('excludeRelationshipTypes' => array('subject', 'interviewee'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
@@ -155,14 +154,14 @@
 ?>
 			{{{<ifdef code="ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" ><hr><h5>Program Info</h5></ifdef>}}}
 
-			{{{<ifcount code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='metaTitle'>Distribution Status</span></ifcount>}}}
+			{{{<ifdef code="ca_occurrences.distribution_status.distribution_date" min="1"><span class='metaTitle'>Distribution Status</span></ifdef>}}}
 			{{{<ifdef code="ca_occurrences.distribution_status.distribution_date" ><span class='meta'><unit delimiter="<br/>"><div>^ca_occurrences.distribution_status.distribution_list, Expires ^ca_occurrences.distribution_status.distribution_date</div></unit></span></ifdef>}}}									
 
 <?php
-			if (($vs_prod_type = $t_object->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true))) != " ") {
-				print "<div><span class='metaTitle'>Production type</span><div class='meta'>{$vs_prod_type}</div></div>";
+			if ((strlen($vs_prod_type = $t_object->get('ca_occurrences.productionTypes', array('convertCodesToDisplayText' => true)))) > 1) {
+				print "<div><span class='metaTitle'>Production type</span><div class='meta'>{$vs_prod_type}</div></div>"; 
 			}
-			if (($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true))) != " ") {
+			if ((strlen($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true)))) > 1) {
 				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
 			}	
 
@@ -185,17 +184,9 @@
 							foreach ($va_award_t as $va_award_key => $va_award) {
 								if ($va_award['award_event']) {
 									#array_shift($va_award['award_event']);
-									print "<div>Award: ".$va_award['award_event']."</div>";
-								}
-								if ($va_award['award_year']) {
-									print "<div>Award Year: ".$va_award['award_year']."</div>";
-								}
-								if ($va_award['award_types'][0] != "Root node for award_types") {
-									print "<div>Award Type: ".$va_award['award_types'][0]."</div>";
-								}
-								if ($va_award['award_notes']) {
-									print "<div>Award Notes: ".$va_award['award_notes']."</div>";
-								}										
+									$va_award_name = explode('➔', $va_award['award_event']);
+									print "<div>".$va_award_name[0]."</div>";
+								}									
 								print "<div style='height:10px;'></div>";
 							}
 						}
