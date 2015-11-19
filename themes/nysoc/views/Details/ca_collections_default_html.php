@@ -80,7 +80,7 @@
 		}
 	}
 	if ($va_collection_type != "Collection") {	
-		if ($va_archival_container = $t_item->get('ca_collections.archival_container')) {
+		if ($va_archival_container = $t_item->get('ca_collections.archival_container', array('delimiter' => '<br/>'))) {
 			$vs_buf.= "<span class='collectionLabel'>Archival Container: </span><div class='unit'>".$va_archival_container."</div>";
 		}
 	}	

@@ -35,7 +35,7 @@
 
 				print "<div class='collHeader' >";
 ?>				
-				<div><?php print "<h3>".$qr_top_level_collections->get('ca_collections.preferred_labels', array('returnAsLink' => true))."</h3>";?></div>
+				<div><?php print "<h3>".$qr_top_level_collections->get('ca_collections.preferred_labels')."</h3>";?></div>
 <?php				
 				print "<div id='abstract".$vn_i."'>";
 				print $qr_top_level_collections->get('ca_collections.abstract');

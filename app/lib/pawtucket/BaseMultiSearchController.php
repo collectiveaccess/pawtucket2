@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -94,8 +94,10 @@
  			$o_first_result_context = array_shift(array_values($this->opa_result_contexts));
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
+ 			$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
  			
  			$this->view->setVar('search', $vs_search);
+ 			$this->view->setVar('searchForDisplay', $vs_search_display);
  			$this->view->setVar("config", $this->config);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));

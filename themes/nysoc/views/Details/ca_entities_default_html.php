@@ -259,10 +259,11 @@
 				print $vs_sidebar_buf;
 			}
 			$vs_learn_even = null;
-			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true))) {
+			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true, 'returnAsArray'=> true))) {
 				$va_link_list = array();
 				foreach ($va_resource_links as $va_key => $va_resource_link_t) {
 					foreach ($va_resource_link_t as $va_key2 => $va_resource_link) {
+
 						if ($va_resource_link['resources_link_description']) {
 							$va_link_list[]= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_description']."</a>";
 						} elseif ($va_resource_link['resources_link_url']) {
@@ -371,7 +372,7 @@
 								}
 ?>
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd; margin-top:-30px;'>
-									<div class="row">
+									<div class="row" id="trigger-overlay">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
@@ -384,11 +385,12 @@
 													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"> 
 													<div class="ct-key"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
 													</div>
+													<div class='ovcircNote'>Circulation records from 1793-1799 are lost.</div>
 												</div>
 												<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
 													<div style="width:80%; ">
 														<div class='vizName'>Books by subject area 
-															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>
+															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1813 Library Catalog.", '', '', 'Detail', 'objects/7');?></div>
 														</div>
 														<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
 													</div>	
@@ -407,7 +409,7 @@
 									if($stat_entity_checkout_distribution) {
 	?>
 
-									<div class='vizTitle'>Circulation Activity <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
+									<div class='vizTitle'>Circulation Activity <button  type="button"><i class="fa fa-external-link"></i></button></div>
 									
 									<div class='col-sm-4 col-md-4 col-lg-4'>
 										<div class='vizName'>Books by subject area 
@@ -463,9 +465,11 @@
 										});
 
 										$chart.on('mousemove', function(event) {
+											var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+											var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 										  $distToolTip.css({
-											left: (event.offsetX || event.originalEvent.layerX) - $distToolTip.width() / 2,
-											top: (event.offsetY || event.originalEvent.layerY) - $distToolTip.height()
+											left: l - $distToolTip.width() / 2,
+											top: t - $distToolTip.height()
 										  });
 										});
 										
@@ -543,9 +547,11 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $subjectAreaToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+												left: l - $subjectAreaToolTip.width() / 2 - 10,
+												top: t - $subjectAreaToolTip.height() - 40
 											  });
 											});
 														
@@ -622,9 +628,11 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $durationToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+												left: l - $durationToolTip.width() / 2 - 10,
+												top: t - $durationToolTip.height() - 40
 											  });
 											});
 											var responsiveOptions = [
@@ -885,8 +893,7 @@
      		paging: false
     	});		
 	});
-</script>
-<script>
+	
 	$('a[href^="#"]').on('click', function(event) {
 
 		var target = $( $(this).attr('href') );

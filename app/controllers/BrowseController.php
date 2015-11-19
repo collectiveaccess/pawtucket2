@@ -85,6 +85,8 @@
  			$vs_class = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+ 			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			
  			// Don't set last find when loading facet, as some other controllers use this action and setting
@@ -119,8 +121,6 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
- 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
- 			
 			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			

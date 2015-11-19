@@ -21,15 +21,9 @@
 	}
 
 ?>
-
-<div class="container" id="booksCirculation">
-	<div class="row">
-		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
-			<h1 style="margin-top:20px;">Compare Book Borrowing Activity</h1>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2 col-md-2 col-lg-2" >
+<div class="page compareBooks">
+	<div class="wrapper">
+		<div class="sidebar">
 			<div id='readerContentContainer'>
 				<p class='vizTitle' style='text-align:left;'>Books to Compare</p>
 				<div id='readerContent' >
@@ -37,10 +31,21 @@
 				</div>
 			<div class='clearfix'></div>
 			</div>
-			<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Books</div>				
-
-		</div>	
-		<div class="col-sm-10 col-md-10 col-lg-10 ">
+			<div class='readerListToggle'><i class="fa fa-plus"></i> Compare Books</div>
+			<div class='togSmall'>(Browse by Title)</div>
+		</div>
+		<div class="content-wrapper">
+      		<div class="content-inner">
+      		
+      		
+<div class="container" id="booksCirculation">
+	<div class="row">
+		<div class="col-sm-12 col-md-12  col-lg-12 ">
+			<h1 style="margin-top:20px;">Compare Book Borrowing Activity</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-lg-12 ">
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-12 col-md-12 col-lg-12 ">
@@ -53,9 +58,16 @@
 			<div class="ct-chart ct-golden-section" id='circulationGraph'>
 				<!-- The graph -->
 			</div>
+			<div class='circNote'>Circulation records from 1793-1799 are lost.</div>
 		</div>
 	</div>
-</div>
+</div><!-- end container -->
+
+
+</div><!-- end content inner -->
+		</div><!-- end content wrapper -->
+	</div><!-- end wrapper -->
+</div><!-- end page -->
 
 <script type="text/javascript">
 	var _circulationGraph;			// GLOBAL for Chartist graph object
@@ -109,10 +121,14 @@
 		});
 
 		$chart.on('mousemove', function(event) {
-		  $graphToolTip.css({
-			left: (event.offsetX || event.originalEvent.layerX) - $graphToolTip.width() / 2 - 10,
-			top: (event.offsetY || event.originalEvent.layerY) - $graphToolTip.height() - 40
-		  });
+			 var l = ((event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX) - $graphToolTip.width() / 2 - 10;
+			var t = ((event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY) - $graphToolTip.height() - 40;
+			if (l < 5) { l = 5; }
+			if (t < 5) { t = 5; }
+			  $graphToolTip.css({
+				left: l,
+				top: t
+			  });
 		});
 
 		var responsiveOptions = [

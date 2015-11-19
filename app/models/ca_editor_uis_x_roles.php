@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_item_views.php : table access class for table ca_item_views
+ * app/models/ca_editor_uis_x_roles.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,71 +33,51 @@
  /**
    *
    */
+require_once(__CA_LIB_DIR__.'/core/BaseRelationshipModel.php');
 
-require_once(__CA_LIB_DIR__.'/core/BaseModel.php');
 
-
-BaseModel::$s_ca_models_definitions['ca_item_views'] = array(
- 	'NAME_SINGULAR' 	=> _t('item view'),
- 	'NAME_PLURAL' 		=> _t('item views'),
+BaseModel::$s_ca_models_definitions['ca_editor_uis_x_roles'] = array(
+ 	'NAME_SINGULAR' 	=> _t('editor UI ⇔ role association'),
+ 	'NAME_PLURAL' 		=> _t('editor UI ⇔ role associations'),
  	'FIELDS' 			=> array(
- 		'view_id' => array(
+ 		'relation_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('CollectiveAccess id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this item view')
+				'LABEL' => 'Link id', 'DESCRIPTION' => 'Identifier for Link'
 		),
-		'table_num' => array(
+		'ui_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Table view applies to', 'DESCRIPTION' => 'The table number of the table this view is applied to.',
-				'BOUNDS_LENGTH' => array(1,100)
+				'LABEL' => 'UI id', 'DESCRIPTION' => 'Identifier for UI'
 		),
-		'user_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DISPLAY_FIELD' => array('ca_users.lname', 'ca_users.fname'),
-				'DEFAULT' => '',
-				'LABEL' => _t('User'), 'DESCRIPTION' => _t('The user who viewed the item.')
-		),
-		'row_id' => array(
+		'role_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Row ID', 'DESCRIPTION' => 'Primary key value of the row in the table specified by table_num that this comment applies to.'
+				'LABEL' => 'Role id', 'DESCRIPTION' => 'Identifier for Role',
+				'BOUNDS_VALUE' => array(0,65535)
 		),
-		'locale_id' => array(
+		'access' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DISPLAY_FIELD' => array('ca_locales.name'),
-				'DEFAULT' => '',
-				'LABEL' => _t('Locale'), 'DESCRIPTION' => _t('The locale of the user while viewing the item.')
-		),
-		'viewed_on' => array(
-				'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Date/time'), 'DESCRIPTION' => _t('Date/time item was viewed.')
-		),
-		'ip_addr' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DEFAULT' => '',
-				'LABEL' => _t('IP address of viewer'), 'DESCRIPTION' => _t('The IP address of the viewer.'),
-				'BOUNDS_LENGTH' => array(0,39)
+				'DEFAULT' => 0,
+				'BOUNDS_CHOICE_LIST' => array(
+					_t('has no access set') => __CA_BUNDLE_ACCESS_NONE__,
+					_t('can read') => __CA_BUNDLE_ACCESS_READONLY__,
+					_t('can edit') => __CA_BUNDLE_ACCESS_EDIT__
+				),
+				'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Indicates role&apos;s level of access to the editor UI.')
 		)
- 	)
+	)
 );
 
-class ca_item_views extends BaseModel {
+class ca_editor_uis_x_roles extends BaseRelationshipModel {
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -109,10 +89,10 @@ class ca_item_views extends BaseModel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_item_views';
+	protected $TABLE = 'ca_editor_uis_x_roles';
 	      
 	# what is the primary key of the table?
-	protected $PRIMARY_KEY = 'view_id';
+	protected $PRIMARY_KEY = 'relation_id';
 
 	# ------------------------------------------------------
 	# --- Properties used by standard editing scripts
@@ -123,13 +103,12 @@ class ca_item_views extends BaseModel {
 	# ------------------------------------------------------
 
 	# Array of fields to display in a listing of records from this table
-	protected $LIST_FIELDS = array('user_id');
+	protected $LIST_FIELDS = array();
 
 	# When the list of "list fields" above contains more than one field,
 	# the LIST_DELIMITER text is displayed between fields as a delimiter.
 	# This is typically a comma or space, but can be any string you like
 	protected $LIST_DELIMITER = ' ';
-
 
 	# What you'd call a single record from this table (eg. a "person")
 	protected $NAME_SINGULAR;
@@ -139,7 +118,7 @@ class ca_item_views extends BaseModel {
 
 	# List of fields to sort listing of records by; you can use 
 	# SQL 'ASC' and 'DESC' here if you like.
-	protected $ORDER_BY = array('viewed_on');
+	protected $ORDER_BY = array();
 
 	# Maximum number of record to display per page in a listing
 	protected $MAX_RECORDS_PER_PAGE = 20; 
@@ -151,7 +130,7 @@ class ca_item_views extends BaseModel {
 
 	# If you want to order records arbitrarily, add a numeric field to the table and place
 	# its name here. The generic list scripts can then use it to order table records.
-	protected $RANK = '';
+	protected $RANK = 'rank';
 	
 	
 	# ------------------------------------------------------
@@ -172,7 +151,7 @@ class ca_item_views extends BaseModel {
 	protected $LOG_CHANGES_TO_SELF = false;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
-
+		
 		),
 		"RELATED_TABLES" => array(
 		
@@ -180,14 +159,13 @@ class ca_item_views extends BaseModel {
 	);
 	
 	# ------------------------------------------------------
-	# Labels
+	# --- Relationship info
 	# ------------------------------------------------------
-	protected $LABEL_TABLE_NAME = null;
-	
-	# ------------------------------------------------------
-	# Self-relations
-	# ------------------------------------------------------
-	protected $SELF_RELATION_TABLE_NAME = null;
+	protected $RELATIONSHIP_LEFT_TABLENAME = 'ca_editor_uis';
+	protected $RELATIONSHIP_RIGHT_TABLENAME = 'ca_user_roles';
+	protected $RELATIONSHIP_LEFT_FIELDNAME = 'ui_id';
+	protected $RELATIONSHIP_RIGHT_FIELDNAME = 'role_id';
+	protected $RELATIONSHIP_TYPE_FIELDNAME = null;
 	
 	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
@@ -210,10 +188,4 @@ class ca_item_views extends BaseModel {
 		parent::__construct($pn_id);	# call superclass constructor
 	}
 	# ------------------------------------------------------
-	public function insert($pa_options=null) {
-		$this->set('ip_addr', $_SERVER['REMOTE_ADDR']);
-		return parent::insert($pa_options);
-	}
-	# ------------------------------------------------------
 }
-?>

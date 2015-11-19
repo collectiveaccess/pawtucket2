@@ -50,6 +50,7 @@
 		 *
 		 */
 		public function perBibStatistics() {
+
 if(true) {		
 			//
 			// Readers by occupation
@@ -176,6 +177,9 @@ if(true) {
 							} elseif($vn_interval > 56*$day) {
 								$stat_bib_checkout_durations[$bib_id]['57+ days']++;
 								$stat_overall_bib_checkout_durations['57+ days']++;
+							} else {
+								$stat_bib_checkout_durations[$bib_id]['1-7 days']++;
+								$stat_overall_bib_checkout_durations['1-7 days']++;
 							}
 							$x++;
 						}
@@ -261,6 +265,7 @@ if (true) {
 			$t_list_item = new ca_list_items();
 			$vn_subject_root_id = caGetListRootID('1813_catalog');
 			
+			$t_entity = new ca_entities();
 			$va_entity_ids = array();
 			while($qr_entities->nextHit()) {
 				$entity_id = $qr_entities->get('ca_entities.entity_id');
@@ -268,11 +273,7 @@ if (true) {
 				
 				$stat_bib_books_by_subject_area[$entity_id] = [];
 				
-				// get books
-				$bib_ids = array_merge(
-					$qr_entities->get('ca_objects.children.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']]),
-					$qr_entities->get('ca_objects.object_id', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader']])
-				);
+				$bib_ids = $t_entity->getRelatedItems('ca_objects', array('idsOnly' => true, 'restrictToRelationshipTypes' => ['reader'], 'row_ids' => [$entity_id]));
 				
 				$qr_x = caMakeSearchResult('ca_objects', array_values($bib_ids));
 				
@@ -280,9 +281,8 @@ if (true) {
 				
 				$subjects = [];
 				while($qr_x->nextHit()) {
-					//$subject_list = ($qr_x->get('ca_objects.subjects_1813', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'convertCodesToDisplayText' => true]));
 					$subject_list_ids = ($qr_x->get('ca_objects.subjects_1813', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'convertCodesToDisplayText' => false]));
-			
+		
 					if (sizeof($subject_list_ids)) { 
 						$qr_subject_parents = $o_db->query("
 								SELECT item_id, parent_id FROM ca_list_items WHERE item_id IN (?) 
@@ -308,13 +308,10 @@ if (true) {
 						} else {
 							$subjects[] = 'No metadata';
 						}
+					} else {
+						$subjects[] = 'No metadata';
 					}
 				}
-				//$subjects = array_merge(
-				//	$qr_entities->get('ca_objects.subjects_1813', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader'], 'convertCodesToDisplayText' => true]),
-				//	$qr_entities->get('ca_objects.children.subjects_1813', ['returnAsArray' => true, 'restrictToRelationshipTypes' => ['reader'],  'convertCodesToDisplayText' => true])
-				//);
-				//print_R($bib_ids);
 				
 				
 				if (!is_array($subjects) || !sizeof($subjects)) { $subjects = [' ']; }
@@ -326,6 +323,7 @@ if (true) {
 				$c++;
 			}
 			print CLIProgressBar::finish();
+			
 			CompositeCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
 			CompositeCache::save('stat_bib_subject_area_ids', $stat_subject_ids, 'vizData');
 }
@@ -352,7 +350,7 @@ if(true) {
 				// get readers
 				$dates_in = $qr_entities->get('ca_objects_x_entities.date_in', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'rawDate' => true]);
 				$dates_out = $qr_entities->get('ca_objects_x_entities.date_out', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'rawDate' => true]);
-					
+					print_R($dates_in);
 				if (is_array($dates_in)) {
 					foreach($dates_in as $i => $date_in) {
 						if ((int)$dates_out[$i]['start'] < 1780) { continue; }
@@ -382,6 +380,8 @@ if(true) {
 							$stat_entity_checkout_durations[$entity_id]['50-56 days']++;
 						} elseif($vn_interval > 56*$day) {
 							$stat_entity_checkout_durations[$entity_id]['57+ days']++;
+						} else {
+							$stat_entity_checkout_durations[$entity_id]['1-7 days']++;		// assume empty dates are short borrows
 						}
 					}
 				}

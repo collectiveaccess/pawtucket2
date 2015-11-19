@@ -16,7 +16,7 @@
 		}
 ?>
 		</small>
-		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('search'))); ?></h1>
+		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
 <?php
 		// 
 		// Print out block content (results for each type of search)
@@ -34,8 +34,5 @@
 	}
 ?>
 <?php
-	
-	
-	
 	TooltipManager::add('#Block', 'Type of record');
 ?>
