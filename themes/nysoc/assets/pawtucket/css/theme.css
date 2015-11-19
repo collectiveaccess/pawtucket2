@@ -1369,6 +1369,7 @@ div.advancedSearchField {
   width: 30%;
   margin-bottom: 20px;
   font-size:14px;
+  margin-right: 10px;
 }
 .advancedUnit {
 	clear:both;
@@ -1386,6 +1387,12 @@ div.advancedSearchField {
 }
 #bViewButtons {
 	display:none;
+}
+.searchFormLineModeElementSubLabel {
+	font-size:12px;
+}
+.searchFormLineModeElementSubLabel input[type="checkbox"] {
+	margin-left:5px; 
 }
 
 /* Finding Aid */
