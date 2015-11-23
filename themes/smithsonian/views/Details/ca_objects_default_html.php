@@ -65,7 +65,7 @@
 			
 
 <?php
-	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) && sizeof($va_occurrence_ids)) {
+	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $this->getVar('access_values')))) && sizeof($va_occurrence_ids)) {
 		$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 		$vs_date = '';
 		while($qr_occ->nextHit()) {
@@ -112,11 +112,9 @@
 					print "</div>";
 				}
 			}
-
-			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
 				
-				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
-			
+			if ($qr_occ) {
+				$qr_occ->seek(0);
 				while($qr_occ->nextHit()) {
 					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array('subject', 'interviewee'), 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Subjects</span><div class='meta'>";
@@ -127,13 +125,15 @@
 					}
 				}
 			}
+
 ?>	
 			{{{<ifdef  code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifdef>}}}
 			{{{<unit><ifdef code="ca_occurrences.restrictions"><div><span class='metaTitle'>Restrictions</span><span class='meta'>^ca_occurrences.restrictions</span></div></ifdef></unit>}}}
 			{{{<ifdef code="ca_occurrences.rights"><div><span class='metaTitle'>Rights Note</span><span class='meta'><unit>^ca_occurrences.rights</unit></span></div></ifdef>}}}
 <?php
-			if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true)))) {
-				$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
+
+			if ($qr_occ) {
+				$qr_occ->seek(0);
 				while($qr_occ->nextHit()) {
 					if (is_array($va_contributors = $qr_occ->get('ca_entities', array('excludeRelationshipTypes' => array('subject', 'interviewee'), 'returnWithStructure' => true, 'checkAccess' => caGetUserAccessValues($this->request)))) && sizeof($va_contributors)) {
 						print "<div><span class='metaTitle'>Contributors</span><div class='meta'>";
@@ -151,6 +151,7 @@
 					}	
 				}
 			}
+			
 ?>
 			{{{<ifdef code="ca_occurrences.genre|ca_occurrences.productionTypes|ca_occurrences.mission.missionCritical|ca_occurrences.awards.award_event|ca_occurrences.distribution_status.distribution_date" ><hr><h5>Program Info</h5></ifdef>}}}
 
@@ -171,13 +172,10 @@
 				print "</span></div>";
 			}
 			
-			$va_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true));
 	
-			if (sizeof($va_ids) > 0) {
-				$qr_res = caMakeSearchResult('ca_occurrences', $va_ids);
-			
-				while($qr_res->nextHit()) {
-					$va_awards = $qr_res->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
+			if ($qr_occ) {
+				while($qr_occ->nextHit()) {
+					$va_awards = $qr_occ->get('ca_occurrences.awards', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'showHierarchy' => true));
 					if (sizeof($va_awards) > 0) {
 						print "<div><span class='metaTitle'>Awards</span><span class='meta'>";
 						foreach ($va_awards as $award => $va_award_t) {
@@ -194,6 +192,7 @@
 					}
 				}
 			}
+			
 						
 ?>				
 
