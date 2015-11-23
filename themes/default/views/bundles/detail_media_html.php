@@ -25,9 +25,10 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$vn_representation_count 			= $this->getVar('representationCount');
-	$va_representation_ids				= $this->getVar('representationIDs');
+	$vn_object_id			 			= $this->getVar('object_id');
+	$vn_representation_count 			= $this->getVar('representation_count');
+	$va_representation_ids				= $this->getVar('representation_ids');
+	$vs_show_annotations_mode			= $this->getVar('show_annotations');
 	
 	if ($vn_representation_count > 1) {
 ?>
@@ -48,32 +49,44 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		var caSlideRepresentationIDs = <?php print json_encode($va_representation_ids); ?>;
+		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
 		/* width of li */
-		$('.jcarousel li').width($('.jcarousel').width());
+		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
 		$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 
 		/* Carousel initialization */
-		$('.jcarousel').jcarousel({
-			animation: {
-				duration: 0 // make changing image immediately
-			},
-			wrap: 'circular'
-		});
-
-		// make fadeIn effect
 		$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
 			$(carousel._element.context).find('li').hide().fadeIn(500);
-		}).on('jcarousel:animateend', function(event, carousel) {
+		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
 			var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
-			var i = caSlideRepresentationIDs.indexOf(current_rep_id);
+			var i = caSliderepresentation_ids.indexOf(current_rep_id);
 
-			if (!jQuery('#slide' + caSlideRepresentationIDs[i]).html()) {
-				// load media via ajax
-				jQuery('#slide' + caSlideRepresentationIDs[i]).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
-
-				jQuery('#slide' + caSlideRepresentationIDs[i]).load('<?php print caNavUrl($this->request, '*', '*', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => '')); ?>' + caSlideRepresentationIDs[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSlideRepresentationIDs[i]);
+			if (event.type == 'jcarousel:animateend') {
+				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
+					// load media via ajax
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSliderepresentation_ids[i], function(e) {
+						// update carousel height with current slide height after ajax load
+						$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+					});
+				} else {
+					// update carousel height with current slide height
+					$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+				}
 			}
+<?php
+	if ($vs_show_annotations_mode == 'div') {
+?>
+			// load annotation list via ajax
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('detail_type' => $this->request->getAction(), 'object_id' => $vn_object_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i]); }
+<?php
+	}
+?>
+		}).jcarousel({
+			animation: {
+				duration: 0 // make changing image immediate
+			},
+			wrap: 'both'
 		});
 
 		/* Prev control initialization */
@@ -83,13 +96,13 @@
 			.jcarouselControl({
 				target: '-=1',
 				method: function() {
-						$('.jcarousel').jcarousel('scroll', '-=1', true, function() {
-							var id = $('.jcarousel').jcarousel('target').attr('class');
-							$('#detailRepresentationThumbnails .{{{activeRepresentationClass}}}').removeClass('{{{activeRepresentationClass}}}');
-							$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{activeRepresentationClass}}}');
-							$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{activeRepresentationClass}}}');
-						});
-					}
+					$('.jcarousel').jcarousel('scroll', '-=1', true, function() {
+						var id = $('.jcarousel').jcarousel('target').attr('class');
+						$('#detailRepresentationThumbnails .{{{active_representation_class}}}').removeClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
+					});
+				}
 			});
 
 		/* Next control initialization */
@@ -99,17 +112,20 @@
 			.jcarouselControl({
 				target: '+=1',
 				method: function() {
-						$('.jcarousel').jcarousel('scroll', '+=1', true, function() {
-							var id = $('.jcarousel').jcarousel('target').attr('class');
-							$('#detailRepresentationThumbnails .{{{activeRepresentationClass}}}').removeClass('{{{activeRepresentationClass}}}');
-							$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{activeRepresentationClass}}}');
-							$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{activeRepresentationClass}}}');
-						});
-					}
+					$('.jcarousel').jcarousel('scroll', '+=1', true, function() {
+						var id = $('.jcarousel').jcarousel('target').attr('class');
+						$('#detailRepresentationThumbnails .{{{active_representation_class}}}').removeClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
+					});
+					
+					
+				}
 			});
-			if({{{representationID}}} > 0){
-				$('.jcarousel').jcarousel('scroll', $('#slide{{{representationID}}}'));
-			}
+			
+		if({{{representation_id}}} > 0){
+			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		}
 	});
 </script>
 <?php
@@ -118,6 +134,15 @@
 ?>
 		{{{slides}}}
 <?php
+		if ($vs_show_annotations_mode == 'div') {
+?>	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('detail_type' => $this->request->getAction(), 'object_id' => $vn_object_id, 'representation_id' => '')); ?>' + "{{{representation_id}}}"); }
+	});
+</script>
+<?php
+		}
 	} else {
 		// Use placeholder graphic when no representations are available
 ?>

@@ -164,5 +164,28 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  		}
  		return 0;
  	}
+ 	
+	# ------------------------------------------------------------------
+	/**
+	 * Checks if currently loaded representation is of specified media class. Valid media classes are 'image', 'audio', 'video' and 'document'
+	 * 
+	 * @param string The media class to check for
+	 * @return True if representation is of specified class, false if not
+	 */
+	public function representationIsOfClass($ps_class) {
+ 		if (!($vs_mimetypes_regex = caGetMimetypesForClass($ps_class, array('returnAsRegex' => true)))) { return array(); }
+		
+		return (preg_match("!{$vs_mimetypes_regex}!", $this->get('ca_object_representations.mimetype'))) ? true  : false;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Checks if currently loaded representation has specified MIME type
+	 * 
+	 * @param string The MIME type to check for
+	 * @return bool True if representation has MIME type, false if not
+	 */
+	public function representationIsWithMimetype($ps_mimetype) {
+		return ($this->get('ca_object_representations.mimetype') == $ps_mimetype) ? true : false;
+	}
 	# -------------------------------------
 }

@@ -1950,6 +1950,10 @@ class SearchResult extends BaseObject {
 					
 						if ($pa_options['unserialize']) {
 							$vs_prop = caUnserializeForDatabase($vs_prop);
+							
+							if(is_array($vs_prop) && $va_path_components['subfield_name']) {
+								$vs_prop = isset($vs_prop[$va_path_components['subfield_name']]) ? $vs_prop[$va_path_components['subfield_name']] : null;
+							}
 						}
 					
 						if ($pa_options['convertCodesToDisplayText']) {
