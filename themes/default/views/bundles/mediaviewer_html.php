@@ -32,6 +32,7 @@ $vn_item_id					= $this->getVar('item_id');
 $t_object 					= $this->getVar('t_object');
 $va_display_options		 	= $this->getVar('display_options');
 $vs_display_type		 	= $this->getVar('display_type');
+$vs_poster_version			= $this->getVar('poster_version');
 $vs_show_version 			= $this->getVar('version');
 $vs_container_id 			= $this->getVar('containerID');
 $va_reps 					= $this->getVar('reps');
@@ -125,10 +126,14 @@ if($vs_display_type == 'media_overlay'){
 	} else {
 		$va_display_options['read_only'] = true;
 	}
+	
+	
 	$vs_tag = $t_rep->getMediaTag('media', $vs_show_version, array_merge($va_display_options, array(
-		'id' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia' : 'caMediaDisplayContentMedia', 
-		'viewer_base_url' => $this->request->getBaseUrlPath()
+		'id' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia_'.$t_rep->getPrimaryKey() : 'caMediaDisplayContentMedia_'.$t_rep->getPrimaryKey(), 
+		'viewer_base_url' => $this->request->getBaseUrlPath(), 'class' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia' : '',
+		'poster' => $this->getVar('poster'), 'posterURL' => $this->getVar('posterURL')
 	)));
+	
 	# --- should the media be clickable to open the overlay?
 	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
 		print $vs_tag;
