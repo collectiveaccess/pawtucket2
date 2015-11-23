@@ -551,7 +551,6 @@
 					switch($vn_element_type = $t_element->get('datatype')) {
 						case __CA_ATTRIBUTE_VALUE_LIST__:
 							return caProcessTemplateForIDs("^ca_list_items.hierarchy.preferred_labels.name_plural", "ca_list_items", array($pn_row_id), array("delimiter" => " ➜ ", 'removeFirstItems' => 1));
-							//return $t_list->getItemFromListForDisplayByItemID($t_element->get('list_id'), $pn_row_id , true);
 							break;
 						case __CA_ATTRIBUTE_VALUE_OBJECTS__:
 						case __CA_ATTRIBUTE_VALUE_ENTITIES__:
@@ -2972,11 +2971,12 @@
 											if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
 											if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
 											if ($vb_check_ancestor_access && !in_array($qr_ancestors->get('access'), $pa_options['checkAccess'])) { continue; }
+											if (!($vn_parent_id = $qr_ancestors->get("parent_id"))) { continue; }
 											
 											$va_facet_list[$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}")] = array(
 												'id' => $vn_ancestor_id,
 												'label' => ($vs_label = $qr_ancestors->get('ca_list_items.preferred_labels.name_plural')) ? $vs_label : _t('[BLANK]'),
-												'parent_id' => ($vn_parent_id = $qr_ancestors->get("parent_id")),
+												'parent_id' => $vn_parent_id,
 												'hierarchy_id' => $qr_ancestors->get('list_id'),
 												'child_count' => 1
 											);
