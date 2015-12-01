@@ -12,6 +12,9 @@
 		<div class="container"><div class="row">
 			<div class='col-md-6 col-lg-6'>
 				{{{representationViewer}}}
+				
+				<div id="detailAnnotations"></div>
+				
 				<div id="detailTools">
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->

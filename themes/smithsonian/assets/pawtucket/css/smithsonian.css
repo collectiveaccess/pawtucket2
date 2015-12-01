@@ -939,7 +939,9 @@ a.browseRemoveFacet img {
 .detail #detailTools{
 	border-bottom: 1px solid #dddddd;
 	clear:left;
-	padding-top:10px;
+	padding-top:0px;
+	margin-top:0px; 
+	margin-bottom:20px;
 }
 .detail .detailTool {
 	border-top: 1px solid #dddddd;
