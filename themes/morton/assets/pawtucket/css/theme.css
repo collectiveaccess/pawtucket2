@@ -108,6 +108,7 @@ a {
 	margin-bottom:0px;
 	box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.3);
 	border-bottom: solid 2px #fff; */
+	min-width: 960px;
 }
 .navbar.frontPage  {
 	border-bottom: solid 0px #fff; */
@@ -623,5 +624,17 @@ a.faDownload:hover {
 	color: #77a22f;
 }
 
-
+/* Annotations */ 
+.video-js .vjs-tech {
+	position:relative !important;
+}
+#detailAnnotations h6 {
+	color: #454545;
+	font-weight:bold;
+	text-transform:none;
+	margin-bottom:10px;
+}
+.detail #detailAnnotations ul li:hover {
+	background-color: #ddd;
+}
 

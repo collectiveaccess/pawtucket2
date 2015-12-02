@@ -59,14 +59,14 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 12;
+		$vn_col_span_sm = 12;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
-			$vn_col_span_sm = 6;
+			$vn_col_span = 12;
+			$vn_col_span_sm = 12;
 			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
@@ -96,19 +96,19 @@
 								$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'iconlarge', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				$vs_info = null;
 				if ($va_date = $qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))) {
-					$vs_info.= $va_date;
+					$vs_info.= "<b>Date: </b>".$va_date;
 				}
 				if ($va_creator = $qr_res->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))) {
-					$vs_info.= "<br>".$va_creator;
+					$vs_info.= "<br><b>Creator: </b>".$va_creator;
 				}
 				if ($va_type = $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))) {
-					$vs_info.= "<br>".$va_type;
+					$vs_info.= "<br><b>Type: </b>".$va_type;
 				}				
 				if ($va_desc = $qr_res->get('ca_objects.description.description_text')) {
-					$vs_info.= "<br>".$va_desc;
+					$vs_info.= "<br><b>Description:</b>".$va_desc;
 				}
 				if ($va_ext = $qr_res->get('ca_objects.extent_text')) {
-					$vs_info.= "<br>".$va_ext;
+					$vs_info.= "<br><b>Extent: </b>".$va_ext;
 				}				
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
