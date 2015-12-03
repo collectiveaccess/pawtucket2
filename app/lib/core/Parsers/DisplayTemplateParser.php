@@ -569,7 +569,8 @@ class DisplayTemplateParser {
 								if (method_exists($t_instance, 'isSelfRelationship') && $t_instance->isSelfRelationship() && is_array($pa_primary_ids) && isset($pa_primary_ids[$t_rel_instance->tableName()])) {
 									$va_relative_ids = array_values($t_instance->getRelatedIDsForSelfRelationship($pa_primary_ids[$t_rel_instance->tableName()], array($pr_res->getPrimaryKey())));
 								} else {
-									$va_relative_ids = array_values($pr_res->get($t_rel_instance->primaryKey(true), $va_get_options));
+									$va_relative_ids = $pr_res->get($t_rel_instance->primaryKey(true), $va_get_options);
+									$va_relative_ids = is_array($va_relative_ids) ? array_values($va_relative_ids) : array();
 								}
 							
 								break;
