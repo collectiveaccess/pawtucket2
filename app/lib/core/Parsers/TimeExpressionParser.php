@@ -36,6 +36,12 @@
 
 require_once(__CA_LIB_DIR__."/core/Configuration.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+require_once(__CA_LIB_DIR__."/ca/ApplicationPluginManager.php");
+
+/**
+ * Constant for expression that will parse as current date/time independent of current locale.
+ */
+define("__TEP_NOW__", "__NOW__");
 
 # --- Token types
 define("TEP_TOKEN_INTEGER", 0);
@@ -212,7 +218,9 @@ class TimeExpressionParser {
 	}
 	# -------------------------------------------------------------------
 	public function parse($ps_expression, $pa_options=null) {
-	
+		if ($ps_expression == __TEP_NOW__) {
+			$ps_expression = array_shift($this->opo_language_settings->getList("nowDate"));		
+		}
 		$ps_expression = caRemoveAccents($ps_expression);
 		
 		if (!$pa_options) { $pa_options = array(); }
@@ -686,6 +694,14 @@ class TimeExpressionParser {
 	}
 	# -------------------------------------------------------------------
 	private function preprocess($ps_expression) {
+
+		// Trigger TimeExpressionParser preprocess hook
+		$o_app_plugin_manager = new ApplicationPluginManager();
+		$va_hook_result = $o_app_plugin_manager->hookTimeExpressionParserPreprocessBefore(array("expression"=>$ps_expression));
+		if ($va_hook_result["expression"] != $ps_expression) {
+			$ps_expression = $va_hook_result["expression"];
+		}
+
 		# convert
 		$va_dict = $this->opo_datetime_settings->getAssoc("expressions");
 		$vs_lc_expression = mb_strtolower($ps_expression);
@@ -816,6 +832,12 @@ class TimeExpressionParser {
 
 		// support date entry in the form yyyy-mm-dd/yyy-mm-dd (HSP)
 		$ps_expression = preg_replace("/([\d]{4}#[\d]{2}#[\d]{2})\/([\d]{4}#[\d]{2}#[\d]{2})/", "$1 - $2", $ps_expression);
+
+		// Trigger TimeExpressionParser preprocess hook
+		$va_hook_result = $o_app_plugin_manager->hookTimeExpressionParserPreprocessAfter(array("expression"=>$ps_expression));
+		if ($va_hook_result["expression"] != $ps_expression) {
+			$ps_expression = $va_hook_result["expression"];
+		}
 
 		return trim($ps_expression);
 	}
@@ -1594,8 +1616,20 @@ class TimeExpressionParser {
 			return array('value' => $vs_token, 'type' => TEP_TOKEN_CIRCA);
 		}
 		
-		// W3C datetime (http://www.w3.org/TR/NOTE-datetime)
+		// EXIF date
+		if (preg_match("/^([\d]{4}):([\d]{2}):([\d]{2})$/", $vs_token, $va_matches)) {
+			return(array('value' => $vs_token, 'month' => $va_matches[2], 'day' => $va_matches[3], 'year' => $va_matches[1], 'type' => TEP_TOKEN_DATE));
+		}
 		
+		// EXIF time
+		if (preg_match("/^([\d]{2}):([\d]{2}):([\d]{2}[\.]{0,1}[\d]*)$/", $vs_token, $va_matches)) {
+			// year-month
+			if ((($va_matches[1] >= 0) && ($va_matches[1] <= 23)) && (($va_matches[2] >= 0) && ($va_matches[2] <= 59))  && (($va_matches[3] >= 0) && ($va_matches[3] < 60))) {
+				return(array('value' => $vs_token, 'minutes' => $va_matches[2], 'seconds' => floor($va_matches[3]), 'hours' => $va_matches[1], 'type' => TEP_TOKEN_TIME));
+			}
+		}
+		
+		// W3C datetime (http://www.w3.org/TR/NOTE-datetime)
 		if (preg_match("/^([\d]{4})#([\d]{2})$/", $vs_token, $va_matches)) {
 			// year-month
 			if ((($va_matches[1] >= 1000) && ($va_matches[1] <= 2999)) && (($va_matches[2] >= 1) && ($va_matches[2] <= 12))) {
@@ -1831,7 +1865,7 @@ class TimeExpressionParser {
 				$pa_dates['end']['month'] = $pa_dates['start']['month'];
 				$pa_dates['end']['day'] = $pa_dates['start']['day'];
 			}
-			
+
 			// Two-digit year windowing
 			if (
 				(!isset($pa_dates['start']['dont_window']) || !$pa_dates['start']['dont_window'])
@@ -1841,8 +1875,8 @@ class TimeExpressionParser {
 				$va_tmp = $this->gmgetdate();
 				$vn_current_year = intval(substr($va_tmp['year'], 2, 2));		// get last two digits of current year
 				$vn_current_century = intval(substr($va_tmp['year'], 0, 2)) * 100;
-				
-				if ($pa_dates['start']['year'] <= $vn_current_year) {
+
+				if ($pa_dates['start']['year'] <= ($vn_current_year + 10)) {
 					$pa_dates['start']['year'] += $vn_current_century;
 				} else {
 					$pa_dates['start']['year'] += ($vn_current_century - 100);
@@ -1853,7 +1887,8 @@ class TimeExpressionParser {
 				$va_tmp = $this->gmgetdate();
 				$vn_current_year = intval(substr($va_tmp['year'], 2, 2));		// get last two digits of current year
 				$vn_current_century = intval(substr($va_tmp['year'], 0, 2)) * 100;
-				if ($pa_dates['end']['year'] <= $vn_current_year) {
+
+				if ($pa_dates['end']['year'] <= ($vn_current_year + 10)) {
 					$pa_dates['end']['year'] += $vn_current_century;
 				} else {
 					$pa_dates['end']['year'] += ($vn_current_century - 100);
@@ -2615,9 +2650,15 @@ class TimeExpressionParser {
 						if ((($va_start_pieces['year'] % 100) == 0) && ($va_end_pieces['year'] == ($va_start_pieces['year'] + 99))) {
 							$vn_century = intval($va_start_pieces['year']/100) + 1;
 							$va_ordinals = $this->opo_language_settings->getList("ordinalSuffixes");
+							$va_ordinal_exceptions = $this->opo_language_settings->get("ordinalSuffixExceptions");
+							$vs_ordinal_default = $this->opo_language_settings->get("ordinalSuffixDefault");
 
-							if (!($vs_ordinal = $va_ordinals[$vn_century])) {
-								$vs_ordinal = $this->opo_language_settings->get("ordinalSuffixDefault");
+							$vn_x = intval(substr((string)$vn_century, -1));
+
+							if(is_array($va_ordinal_exceptions) && isset($va_ordinal_exceptions[$vn_century])) {
+								$vs_ordinal = $va_ordinal_exceptions[$vn_century];
+							} else {
+								$vs_ordinal = isset($va_ordinals[$vn_x]) ? $va_ordinals[$vn_x] : $vs_ordinal_default;
 							}
 
 							$va_century_indicators = $this->opo_language_settings->getList("centuryIndicator");
@@ -2926,6 +2967,20 @@ class TimeExpressionParser {
 		return $this->opo_language_settings;
 	}
 	# -------------------------------------------------------------------
+	/**
+	 * Returns a Configuration object with the date/time localization  
+	 * settings for the specified locale
+	 *
+	 * @param string $ps_iso_code ISO code (ex. en_US) 
+	 * @return Configuration Settings for the specified locale or null if the locale is not defined.
+	 */
+	static public function getSettingsForLanguage($ps_iso_code) {
+		$vs_config_path = __CA_LIB_DIR__.'/core/Parsers/TimeExpressionParser/'.$ps_iso_code.'.lang';
+		if(!file_exists($vs_config_path)) { return null; }
+		
+		return Configuration::load($vs_config_path);
+	}
+	# -------------------------------------------------------------------
 	# Error handling
 	# -------------------------------------------------------------------
 	private function setParseError($pa_token, $pn_error) {
@@ -3079,7 +3134,7 @@ class TimeExpressionParser {
 				if ($vn_s <= TEP_START_OF_UNIVERSE) { $vn_s = $vn_e; }
 				if ($vn_e >= TEP_END_OF_UNIVERSE) { $vn_e = $vn_s; }
 				
-				if (($vn_s <= TEP_START_OF_UNIVERSE) || ($vn_e >= TEP_END_OF_UNIVERSE)) { break; }
+				if (($vn_s <= TEP_START_OF_UNIVERSE) || ($vn_e >= TEP_END_OF_UNIVERSE) || ($vn_s == 0) || ($vn_e == 0)) { break; }
 				
 				$vn_s = intval($vn_s/10) * 10;
 				$vn_e = intval($vn_e/10) * 10;
@@ -3104,7 +3159,7 @@ class TimeExpressionParser {
 				if ($vn_s <= TEP_START_OF_UNIVERSE) { $vn_s = $vn_e; }
 				if ($vn_e >= TEP_END_OF_UNIVERSE) { $vn_e = $vn_s; }
 				
-				if (($vn_s <= TEP_START_OF_UNIVERSE) || ($vn_e >= TEP_END_OF_UNIVERSE)) { break; }
+				if (($vn_s <= TEP_START_OF_UNIVERSE) || ($vn_e >= TEP_END_OF_UNIVERSE) || ($vn_s == 0) || ($vn_e == 0)) { break; }
 				
 				$vn_s = intval($vn_s/100) * 100;
 				$vn_e = intval($vn_e/100) * 100;
@@ -3114,14 +3169,20 @@ class TimeExpressionParser {
 					$va_ordinals = 				$this->opo_language_settings->getList("ordinalSuffixes");
 					$vs_ordinal_default = 		$this->opo_language_settings->get("ordinalSuffixDefault");
 					$vs_bc_indicator = 			$this->opo_language_settings->get("dateBCIndicator");
-					
+					$va_ordinal_exceptions =	$this->opo_language_settings->get("ordinalSuffixExceptions");
+
 					for($vn_y=$vn_s; $vn_y <= $vn_e; $vn_y+= 100) {
-						
+
 						$vn_century_num = abs(floor($vn_y/100)) + 1;
 						if ($vn_century_num == 0)  { continue; }
-						$vn_x = substr((string)$vn_century_num, strlen($vn_century_num) - 1, 1); 
-						$vs_ordinal_to_display = isset($va_ordinals[$vn_x]) ? $va_ordinals[$vn_x] : $vs_ordinal_default;
-						
+						$vn_x = substr((string)$vn_century_num, strlen($vn_century_num) - 1, 1);
+
+						if(is_array($va_ordinal_exceptions) && isset($va_ordinal_exceptions[$vn_century_num])) {
+							$vs_ordinal_to_display = $va_ordinal_exceptions[$vn_century_num];
+						} else {
+							$vs_ordinal_to_display = isset($va_ordinals[$vn_x]) ? $va_ordinals[$vn_x] : $vs_ordinal_default;
+						}
+
 						$va_values[(int)$vn_y] = ($vn_century_num).$vs_ordinal_to_display.' '.$va_century_indicators[0].((floor($vn_y/100) < 0) ? ' '.$vs_bc_indicator : '');
 					}
 				}
@@ -3234,7 +3295,7 @@ class TimeExpressionParser {
 	}
 	# -------------------------------------------------------------------
 	/**
-	 * Return time in currently loaded date range.
+	 * Return current date/time 
 	 *
 	 * @param array $pa_options Options include:
 	 *		returnAs = time units of return value. Valid values are: days, hours, minutes, seconds. [Default is seconds]
@@ -3278,5 +3339,32 @@ class TimeExpressionParser {
         return(array_combine($k,explode(":",
                 date('s:i:G:j:w:n:Y:z:l:F:U',is_null($ts)?time():intval($ts)))));
     } 
+ 	# -------------------------------------------------------------------
+	/**
+	 * Return current date/time 
+	 *
+	 * @param array $pa_options Options include:
+	 *		format = format of return value. Options are:
+	 *				unix = Unix-timestamp
+	 *				historic = Historic timestamp 
+	 *				[Default is historic]
+	 *				
+	 */
+	public static function now($pa_options=null) {
+		$ps_format = caGetOption('format', $pa_options, null, ['toLowerCase' => true]);
+		$o_tep = new TimeExpressionParser();
+		$o_tep->parse(__TEP_NOW__);
+		
+		switch($ps_format) {
+			case 'unix':
+				return array_shift($o_tep->getUnixTimestamps());
+				break;
+			case 'historic':
+			default:
+				return array_shift($o_tep->getHistoricTimestamps());
+				break;
+		}
+		return null;
+	}
  	# -------------------------------------------------------------------
 }
