@@ -26,10 +26,10 @@
  * ----------------------------------------------------------------------
  */
  
-	$va_browse_types = caGetBrowseTypes();
+	$va_browse_types = caGetBrowseTypes(array('forMenuBar' => true));
 	$o_config = caGetBrowseConfig();
 	if(sizeof($va_browse_types)){
-		switch($o_config->get("browse_menu_format")){
+		switch($o_config->get("browseMenuFormat")){
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>

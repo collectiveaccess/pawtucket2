@@ -54,7 +54,7 @@
 			
  			
  			$this->render('Map/index_html.php');
- 		}
+ 		}		
  		# -------------------------------------------------------
  		/**
  		 *
@@ -81,6 +81,8 @@
 						break;
 					}
 					
+					//if (!$vn_start && !$vn_end) { continue; }
+					
 					if ($vn_end > 2100) { $vn_end = $vn_start; }
 					if ($vn_start < 0) { $vn_start = $vn_end; }
  					
@@ -93,9 +95,16 @@
 						
 						$vs_key = $va_coord_info['latitude'].'/'.$va_coord_info['longitude'];
 						
-						if (!is_array($va_map_data[$vs_key] )) {
-							$va_catalogue_ids = $qr_res->get('ca_objects.related.object_id', ['restrictToTypes' => ['catalog'], 'returnAsArray' => true]);
+						$va_catalogue_ids = $qr_res->get('ca_objects.related.object_id', ['restrictToTypes' => ['catalog'], 'returnAsArray' => true]);
+						if (!is_array($va_catalogue_ids) || !sizeof($va_catalogue_ids)) { continue; }
 						
+						$va_catalogue_ids_proc = [];
+						foreach($va_catalogue_ids as $vn_catalogue_id) {
+							if ($vn_catalogue_id == 8) { continue; }
+							$va_catalogue_ids_proc[] = $vn_catalogue_id;
+						}
+							
+						if (!is_array($va_map_data[$vs_key] )) {
 							if (!($vs_name = $qr_res->get('ca_objects.publication_place.publication_place_text'))) { $vs_name = $va_coord_info['label']; }
 							$va_map_data[$vs_key] = array(
 								'id' => $vn_object_id,
@@ -103,23 +112,25 @@
 								'latitude' => $va_coord_info['latitude'],
 								'longitude' => $va_coord_info['longitude'],
 								'count' => 1,
-								'catalog_ids' => $va_catalogue_ids,
+								'catalog_ids' => $va_catalogue_ids_proc,
 								'by_date' => []
 							);
 						} else {
 							$va_map_data[$vs_key]['count']++;
+							$va_map_data[$vs_key]['catalog_ids'] = array_unique(array_merge($va_map_data[$vs_key]['catalog_ids'], $va_catalogue_ids_proc));
 						}
 						
 						
 								
-						if (!is_array($va_catalogue_ids) || !sizeof($va_catalogue_ids)) { 	
-							$va_catalogue_ids = [0];
-						}			
+					//	if (!is_array($va_catalogue_ids) || !sizeof($va_catalogue_ids)) { 	
+					//		$va_catalogue_ids = [0];
+					//	}			
 						foreach($va_catalogue_ids as $vn_catalogue_id) {
-							if(is_array($va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id])) {
-								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id]['count']++;
+							if ($vn_catalogue_id == 8) { continue; }
+							if(is_array($va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id])) {
+								//$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id]['count']++;
 							} else {
-								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id] = [
+								$va_map_data[$vs_key]['by_date'][$vn_start.'/'.$vn_end][$vn_catalogue_id][$vn_object_id] = [
 									'start' => $vn_start, 
 									'end' => $vn_end,
 									'count' => 1
@@ -129,6 +140,7 @@
 					}			
  				}
  			}
+ 			
  			$this->view->setVar('map_data', $va_map_data);
  			
  			$this->render('Map/get_map_data_json.php');

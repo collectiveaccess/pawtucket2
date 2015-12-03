@@ -87,7 +87,7 @@
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
 						$vs_image = $vs_default_placeholder_tag;
@@ -95,9 +95,10 @@
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 				print "<h7>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
-				print "<p>".$qr_results->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>";
 				print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>";
 				print "<p>".$qr_results->get('ca_objects.date.date_value', array('delimiter' => ', '))."</p>";
+				print "<p>".$qr_results->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>";
+			
 			print "</div><!-- end blockResult -->";
 
 			$vn_count++;

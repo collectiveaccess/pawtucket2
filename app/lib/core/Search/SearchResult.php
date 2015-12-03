@@ -408,6 +408,7 @@ class SearchResult extends BaseObject {
 			$vs_type_sql = " AND (type_id IN (?)".($t_rel_instance->getFieldInfo('type_id', 'IS_NULL') ? " OR ({$vs_related_table}.type_id IS NULL)" : '').')';;
 			$va_params[] = $va_type_ids;
 		}
+		
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
 			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
@@ -1959,6 +1960,10 @@ class SearchResult extends BaseObject {
 					
 						if ($pa_options['unserialize']) {
 							$vs_prop = caUnserializeForDatabase($vs_prop);
+							
+							if(is_array($vs_prop) && $va_path_components['subfield_name']) {
+								$vs_prop = isset($vs_prop[$va_path_components['subfield_name']]) ? $vs_prop[$va_path_components['subfield_name']] : null;
+							}
 						}
 					
 						if ($pa_options['convertCodesToDisplayText']) {

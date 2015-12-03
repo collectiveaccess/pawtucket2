@@ -21,13 +21,13 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 					if ($vs_nationality = $t_item->get('ca_entities.nationalityCreator', array('delimiter' => ', '))) {
 						print "<div class='unit'><h6>Nationality</h6>".$vs_nationality."</unit></div>";
 					}
 					if ($t_item->get('ca_entities.vital_dates.vital_date_value')) {
-						$vs_vital = $t_item->get('ca_entities.vital_dates', array('template' => '^vital_date_value ^vital_date_types <ifdef code="vital_date_location">^vital_date_location</ifdef>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true));					
+						$vs_vital = $t_item->getWithTemplate('<unit delimiter="<br/>">^ca_entities.vital_dates.vital_date_value ^ca_entities.vital_dates.vital_date_types <ifdef code="ca_entities.vital_dates.vital_date_location">^ca_entities.vital_dates.vital_date_location</ifdef></unit>');					
 						print "<div class='unit'><h6>Vital dates</h6>".$vs_vital."</unit></div>";
 					}
 					if ($t_item->get('ca_entities.vital_datesOrg.org.vital_date_value')) {
@@ -64,7 +64,8 @@
 					</div><!-- end detailTools -->
 					
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{representationViewer}}}
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}

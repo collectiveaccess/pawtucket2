@@ -31,8 +31,7 @@
 		$vn_i = 0;
 ?>
 	<div class="row">
-		<div class="col-md-2 readerListSectionHeading">Books</div>
-		<div class="col-md-10 readerListContent">
+		<div class="col-md-12 readerListContent">
 			<div class="row">
 <?php
 		while($qr_readers->nextHit()) {
@@ -54,13 +53,14 @@
 ?>
 			</div>
 		</div>
+		<div class='readerListToggle openpanel'>close</div>
 	</div>
 <?php
 	}
 ?>	
 	</div> <!--end container-->
 </div>
-<div id='readerListToggle'>Index</div>
+
 
 <script type="text/javascript">
 	jQuery("div.readerListLetterBar .availableLetter").bind('click', function() {
@@ -74,7 +74,7 @@
 		e.preventDefault();
 		return false;
 	});
-	jQuery("#readerListToggle").bind('click', function(e) { 
+	jQuery(".readerListToggle").bind('click', function(e) { 
 		jQuery('#readerListContent:visible').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 		jQuery('#readerListContent:hidden').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 		

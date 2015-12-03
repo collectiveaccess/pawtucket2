@@ -5,7 +5,7 @@
 	$va_comments 	= $this->getVar("comments");
 	$vs_type 		= caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
 	$vs_title 		= caTruncateStringWithEllipsis($t_item->get('ca_entities.preferred_labels.displayname'), 40);	
-	$vs_home 		= caNavLink($this->request, "Project Home", '', '', '', '');
+	$vs_home 		= caNavLink($this->request, "City Readers", '', '', '', '');
 	
 	$vn_entity_id = $t_item->getPrimaryKey();
 
@@ -109,16 +109,19 @@
 					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
 				}
 				
-				$vs_buf.= "<span title='".$vs_sort_title."'><span>";
+				$vs_buf.= "<span title='".addslashes($vs_sort_title)."'></span>";
 				$vs_buf.= "</td>";
 				
-				$vs_buf.= "<td >";
+				
+				$vs_name = '';
 				if ($va_parent_title) {
-					$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects.parent"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
+					$vs_name = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects.parent"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
 				} else {
-					$vs_buf.= $qr_rels->getWithTemplate('<unit relativeTo="ca_objects"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
+					$vs_name = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author"><span title="^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename"></span>^ca_entities.preferred_labels.displayname</unit></unit>');
 				}
-				$vs_buf .= "</td>";
+				if (!$vs_name) { $vs_name = "<span title=''></span>"; }
+				
+				$vs_buf.= "<td>{$vs_name}</td>";
 					
 				$vs_buf.= "<td>";
 				if ($va_parent_title) {
@@ -163,7 +166,7 @@
 <?php	
 			if ($this->getVar('representationViewer')) {			
 				print $this->getVar('representationViewer');
-				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-3 col-xs-4"));
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-3 col-xs-4"));
 			} else {
 				print "<div class='entityThumb'><a href='".$t_item->get("ca_entities.wikipedia_entry.image_viewer_url")."' target='_blank'>".$vs_wiki_thumb."</a></div>";
 			}
@@ -256,10 +259,11 @@
 				print $vs_sidebar_buf;
 			}
 			$vs_learn_even = null;
-			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true))) {
+			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true, 'returnAsArray'=> true))) {
 				$va_link_list = array();
 				foreach ($va_resource_links as $va_key => $va_resource_link_t) {
 					foreach ($va_resource_link_t as $va_key2 => $va_resource_link) {
+
 						if ($va_resource_link['resources_link_description']) {
 							$va_link_list[]= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_description']."</a>";
 						} elseif ($va_resource_link['resources_link_url']) {
@@ -286,9 +290,9 @@
 		</div>
 		<div class="content-wrapper">
       		<div class="content-inner">
-				<div class="container"><div class="row" style="margin-right:0px; margin-left:0px;">
+				<div class="container"><div class="row">
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-						<div class="container">
+						
 							<div class="row">
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
 									<div class="detailNav">
@@ -356,7 +360,7 @@
 										<!-- AddThis Button BEGIN -->
 										<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 										<!-- AddThis Button END -->
-										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
+										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_item->get('ca_entities.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
 										<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
 									</div><!-- end detailTools -->							
 								</div><!-- end col -->
@@ -368,27 +372,33 @@
 								}
 ?>
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd; margin-top:-30px;'>
-									<div class="row">
+									<div class="row" id="trigger-overlay">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
-												<div class='vizTitle'>Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>
-													<button type="button" class="overlay-close">Close</button>
+												<div ><!--Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>-->
+													<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 												</div>
 												
 												<div style="width:60%; height:400px; float:left; padding-right:10px;">
 													
 													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"> 
-													<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+													<div class="ct-key"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
 													</div>
+													<div class='ovcircNote'>Circulation records from 1793-1799 are lost.</div>
 												</div>
 												<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
 													<div style="width:80%; ">
-														<div class='vizName'>Books by subject area</div>
+														<div class='vizName'>Books by subject area 
+															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1813 Library Catalog.", '', '', 'Detail', 'objects/7');?></div>
+														</div>
 														<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
-													</div>
+													</div>	
+													<hr style='margin-top:20px;'>						
 													<div style="width:80%; ">
-														<div class="vizName">Check out duration</div> 
+														<div class="vizName">Check out duration
+															<div class='catalogInfo'></div>
+														</div> 
 														<div id="stat_entity_checkout_durations2" class="ct-chart ct-golden-section"></div>
 													</div>	
 												</div>																				
@@ -399,12 +409,23 @@
 									if($stat_entity_checkout_distribution) {
 	?>
 
-									<div class='vizTitle'>Circulation Activity</div>
-			
-									<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
-									<div class="ct-key"><span class="ct-series-a-key"><?php print $t_item->get('ca_entities.preferred_labels'); ?></span> <span class="ct-series-b-key">Library Average</span></div>
+									<div class='vizTitle'>Circulation Activity <button  type="button"><i class="fa fa-external-link"></i></button></div>
+									
+									<div class='col-sm-4 col-md-4 col-lg-4'>
+										<div class='vizName'>Books by subject area 
+											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->
+										</div>
+										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>									
+										<div class="vizName">Check out duration</div> 
+										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>									
+									</div>									
+									<div class='col-sm-8 col-md-8 col-lg-8'>
+										<div id="stat_entity_checkout_distribution" class="ct-chart ct-golden-section"></div> 
+										<div class="ct-key entityCirculation"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
+									</div>
+
 									<script type="text/javascript">
-										var data = {
+										var dataForCirculationActivity = {
 										  labels: <?php print json_encode(array_keys($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
 										  series: [
 													<?php print json_encode(array_values($stat_entity_checkout_distribution[$vn_entity_id])); ?>,
@@ -425,21 +446,48 @@
 											},
 				
 										};
+										
+										var $chart = $('#stat_entity_checkout_distribution2');
+			
+										var $distToolTip = $chart
+										  .append('<div class="tooltip"></div>')
+										  .find('.tooltip')
+										  .hide();
+
+										$chart.on('mouseenter', '.ct-point', function() {
+											var $pt = $(this),
+											value = $pt.attr('ct:value');
+											$distToolTip.html(value).show();
+										});
+
+										$chart.on('mouseleave', '.ct-series', function() {
+										  $distToolTip.hide();
+										});
+
+										$chart.on('mousemove', function(event) {
+											var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+											var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
+										  $distToolTip.css({
+											left: l - $distToolTip.width() / 2,
+											top: t - $distToolTip.height()
+										  });
+										});
+										
 							
 										var responsiveOptions = [
 										  ['screen and (min-width: 640px)', {
-											chartPadding: 20,
+											chartPadding: 0,
 											labelOffset: 30,
 											labelDirection: 'explode'
 										  }],
 										  ['screen and (min-width: 1024px)', {
 											labelOffset: 30,
-											chartPadding: 20
+											chartPadding: 0
 										  }]
 										];
 
-										new Chartist.Line('#stat_entity_checkout_distribution', data, options, responsiveOptions);
-										new Chartist.Line('#stat_entity_checkout_distribution2', data, options, responsiveOptions);
+										new Chartist.Line('#stat_entity_checkout_distribution', dataForCirculationActivity, options, responsiveOptions);
+										new Chartist.Line('#stat_entity_checkout_distribution2', dataForCirculationActivity, options, responsiveOptions);
 									</script>
 
 	<?php
@@ -448,7 +496,13 @@
 										</div><!-- end-col -->
 									</div><!-- end row -->	
 									<div class="row">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><div class="vizTitle"></div>
+										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand " style="margin-top:-20px;padding-bottom:15px;border-bottom:1px solid #ccc;">
+											<section>
+<?php											
+												print '<p ><div class="button">'.caNavLink($this->request, '<i class="fa fa-plus"></i> Compare Readers', '', '', 'Circulation', 'readers', ['id' => $t_item->getPrimaryKey()]).'</div></p>';
+?>											
+											</section>
+										</div>
 									</div>
 									<div class="row">	
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
@@ -458,19 +512,19 @@
 									$vn_entity_id = $t_item->getPrimaryKey();
 									if ($stat_bib_books_by_subject_area[$vn_entity_id]) {
 ?>
-										<div class='vizName'>Books by subject area</div>
-		
-										<div id="stat_bib_books_by_subject_area" class="ct-chart ct-square"></div>
+
 										<script type="text/javascript">
-											var data = {
+											var subjectIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
+											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
 											};
 
 											var options = {
-											  labelInterpolationFnc: function(value) {
-												return value[0]
-											  }
+												labelInterpolationFnc: function(value, index) {
+												  if(dataForSubjectAreas.series[index] <= 1) { return ''; }
+												  return value;
+												}
 											};
 											var $chart = $('#stat_bib_books_by_subject_area2');
 
@@ -482,7 +536,9 @@
 											$chart.on('mouseenter', '.ct-series', function() {
 												var $slice = $(this),
 												value = $slice.find('path').attr('ct:value');
-												sliceName = $slice.find('text.ct-label').text();
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												
+												sliceName = dataForSubjectAreas.labels[l] + " (" + value + ")";		// $slice.find('text.ct-label').text()
 												$subjectAreaToolTip.html(sliceName).show();
 											});
 
@@ -491,19 +547,31 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $subjectAreaToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+												left: l - $subjectAreaToolTip.width() / 2 - 10,
+												top: t - $subjectAreaToolTip.height() - 40
 											  });
 											});
+														
+											$chart.on('click', '.ct-series', function() {
+												var $slice = $(this),
+												value = $slice.find('path').attr('ct:value');
+												
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												var label = dataForSubjectAreas.labels[l];
+				
+												if (parseInt(subjectIDs[label]) > 0) {
+													window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => '1813_subject')); ?>/id/' + subjectIDs[label];
+												}
+											});
+											
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
-												labelDirection: 'explode',
-												labelInterpolationFnc: function(value) {
-												  return value;
-												}
+												labelDirection: 'explode'
 											  }],
 											  ['screen and (min-width: 1024px)', {
 												labelOffset: 60,
@@ -511,8 +579,8 @@
 											  }]
 											];
 
-											new Chartist.Pie('#stat_bib_books_by_subject_area', data, options, responsiveOptions);
-											new Chartist.Pie('#stat_bib_books_by_subject_area2', data, options, responsiveOptions);
+											new Chartist.Pie('#stat_bib_books_by_subject_area', dataForSubjectAreas, options, responsiveOptions);
+											new Chartist.Pie('#stat_bib_books_by_subject_area2', dataForSubjectAreas, options, responsiveOptions);
 
 										</script>	
 										<!-- Chartist -->
@@ -526,20 +594,20 @@
 
 										if ($stat_entity_checkout_durations[$vn_entity_id]) {
 ?>
-										<div class="vizName">Check out duration</div> 
-		
-										<div id="stat_entity_checkout_durations" class="ct-chart ct-square"></div>
+
 										<script type="text/javascript">
-											var data = {
+											var dataForCheckoutDuration = {
 											  labels: <?php print json_encode(array_keys($stat_entity_checkout_durations[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_entity_checkout_durations[$vn_entity_id])); ?>
 											};
 
 											var options = {
-											  labelInterpolationFnc: function(value) {
-												return value[0]
-											  }
+												labelInterpolationFnc: function(value, index) {
+												  if(dataForCheckoutDuration.series[index] <= 5) { return ''; }
+												  return value;
+												}
 											};
+											
 											var $chart = $('#stat_entity_checkout_durations2');
 
 											var $durationToolTip = $chart
@@ -550,7 +618,8 @@
 											$chart.on('mouseenter', '.ct-series', function() {
 												var $slice = $(this),
 												value = $slice.find('path').attr('ct:value');
-												sliceName = $slice.find('text.ct-label').text();
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												sliceName = dataForCheckoutDuration.labels[l] + " (" + value + ")";		// $slice.find('text.ct-label').text()
 												$durationToolTip.html(sliceName).show();
 											});
 
@@ -559,19 +628,18 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $durationToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+												left: l - $durationToolTip.width() / 2 - 10,
+												top: t - $durationToolTip.height() - 40
 											  });
 											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
-												labelDirection: 'explode',
-												labelInterpolationFnc: function(value) {
-												  return value;
-												}
+												labelDirection: 'explode'
 											  }],
 											  ['screen and (min-width: 1024px)', {
 												labelOffset: 60,
@@ -579,8 +647,8 @@
 											  }]
 											];
 
-											new Chartist.Pie('#stat_entity_checkout_durations', data, options, responsiveOptions);
-											new Chartist.Pie('#stat_entity_checkout_durations2', data, options, responsiveOptions);
+											new Chartist.Pie('#stat_entity_checkout_durations', dataForCheckoutDuration, options, responsiveOptions);
+											new Chartist.Pie('#stat_entity_checkout_durations2', dataForCheckoutDuration, options, responsiveOptions);
 
 										</script>	
 										<!-- Chartist -->
@@ -591,13 +659,6 @@
 ?>										
 										</div><!-- end col-->
 									</div>	<!-- end row -->
-									<div class="row <?php print $va_class; ?>">
-										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 expand" >
-											<section>
-												<p ><button id="trigger-overlay" type="button">Click to Expand</button></p>
-											</section>
-										</div>
-									</div>	
 
 																												
 									<!--<div class='vizPlaceholder'><i class='fa fa-picture-o'></i></div>-->
@@ -629,7 +690,7 @@
 ?>															
 								</div><!-- end col -->
 							</div><!-- end row -->							
-						</div><!-- end container -->
+						
 						
 						<div id='entityTable'>
 							<ul class='row'>
@@ -644,7 +705,7 @@
 								// Check entities
 								$vs_people_buf = null;
 								$va_people_by_rels = array();
-								if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true))) {
+								if ($va_related_people = $t_item->get('ca_entities.related', array('returnWithStructure' => true, 'checkAccess'=> $this->getVar('access_values')))) {
 									foreach ($va_related_people as $va_key => $va_related_person) {
 										if ($vn_entity_id == $va_related_person['entity_id']) { continue; }
 										$va_people_by_rels[$va_related_person['relationship_typename']][$va_related_person['entity_id']] = $va_related_person['label'];
@@ -728,7 +789,7 @@
 										ksort($va_docs_by_type);
 										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
 											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-											$vs_doc_buf.= "<div class='row'>";
+											$vs_doc_buf.= "<div >";
 											foreach ($vs_documents as $va_key => $vs_doc) {
 												$vs_doc_buf.= $vs_doc;
 											}
@@ -819,7 +880,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 135
+		  maxHeight: 160
 		});
 		$('#entityTable').tabs();
     	$('#circTable').dataTable({
@@ -832,8 +893,7 @@
      		paging: false
     	});		
 	});
-</script>
-<script>
+	
 	$('a[href^="#"]').on('click', function(event) {
 
 		var target = $( $(this).attr('href') );

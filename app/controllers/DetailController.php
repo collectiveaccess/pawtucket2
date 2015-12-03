@@ -98,6 +98,10 @@
  				// invalid id - throw error
  				throw new ApplicationException("Invalid id");
  			} 
+ 			
+ 			// Record view
+ 			$t_subject->registerItemView();
+ 			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
  			
  			
@@ -162,7 +166,7 @@
  			
  			
  			//
- 			//
+ 			// Representation viewer
  			//
  			if (method_exists($t_subject, 'getPrimaryRepresentationInstance')) {
  				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
@@ -176,9 +180,10 @@
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 				}else{
 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+					$this->view->setVar("representation_id", null);
 				}
 				$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_subject->getPrimaryKey(), $t_representation, $t_subject, array_merge($va_media_display_info, array("primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false)))));
+				$this->view->setVar("representationViewer", caObjectDetailMedia($this->request, $t_subject->getPrimaryKey(), $t_representation, $t_subject, array_merge($va_media_display_info, array("showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false)))));
 			}
 			
 			//
@@ -315,7 +320,7 @@
  			$pn_item_id 			= $this->request->getParameter('item_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
- 			$va_detail_options = (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			$va_detail_options 		= (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
  			
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
@@ -326,17 +331,62 @@
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'item_id' => $pn_item_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
-			$vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false);
-			$vs_caption = "";
-			if($vs_caption_template){
-				$vs_caption = $t_rep->getWithTemplate($vs_caption_template);
-			}
+			$vs_caption = ($vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false)) ? $t_rep->getWithTemplate($vs_caption_template) : '';
+			
 			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
 			if ($this->request->getParameter('include_tool_bar', pInteger)) {
 				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id).$vs_caption."</div></div>";
 			}
 
  			$this->response->addContent($vs_output);
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns list of *timebased* (audio/video) annotations to display
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		object_id = the id of the ca_objects record to display
+ 		 *		representation_id = the id of the ca_object_representations record to display; the representation must belong to the specified object
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *
+ 		 */ 
+ 		public function GetTimebasedRepresentationAnnotationList() {
+ 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
+ 			$ps_detail_type			= $this->request->getParameter('detail_type', pString);
+ 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			
+ 			if(!$pn_object_id) { $pn_object_id = 0; }
+ 			$t_rep = new ca_object_representations($pn_representation_id);
+ 			if (!$t_rep->getPrimaryKey()) { 
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
+ 				return;
+ 			}
+ 			
+ 			if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
+ 			
+ 			$va_annotation_list = $va_annotation_times = array();
+ 			if (
+				is_array($va_annotations = $t_rep->getAnnotations(array('idsOnly' => true))) //$t_rep->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
+				&& 
+				sizeof($va_annotations)
+				&&
+				($qr_annotations = caMakeSearchResult('ca_representation_annotations', $va_annotations))
+			) {
+				while($qr_annotations->nextHit()) {
+					if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
+					$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
+					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true), (float)$qr_annotations->getPropertyValue('endTimecode', true));
+				}
+			}
+			
+			$this->view->setVar('representation_id', $pn_representation_id);
+			$this->view->setVar('annotation_list', $va_annotation_list);
+			$this->view->setVar('annotation_times', $va_annotation_times);
+ 			
+			$this->render('Details/annotations_html.php');
  		}
 		# -------------------------------------------------------
  		/**
@@ -636,11 +686,7 @@
  				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
  
  				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
- 			} else {
- 				//
  			}
- 			//$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
- 			//$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, array('display' => 'media_overlay', 't_attribute_value' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
  		}
 		# ------------------------------------------------------
 		/**

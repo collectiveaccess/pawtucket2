@@ -37,32 +37,24 @@
 	$vs_key = 				$this->getVar('key');
 	$va_facet_info = 		$this->getVar("facet_info");
 	$vb_is_nav = 			(bool)$this->getVar('isNav');
-	$vn_id = $this->request->getParameter('id', pInteger);
+	$vn_id = 				$this->request->getParameter('id', pInteger);
 	
-	$va_letter_bar = array();
-	$vs_order_by = $va_facet_info["order_by_label_fields"][0];
-	$vs_facet_list = "";	
-	
-	if($vb_is_nav){
-		print "<div id='bHierarchyListMorePanel_".$vs_facet_name."'>".caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))."</div>";
-		
-		#foreach($va_facet_content as $vn_id => $va_item) {
-		#	print "<div class='browseFacetItem'>".caNavLink($this->request, $va_item['label'], 'col-sm-4 col-md-3', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
-		#}
-	} else {
+	if(!$vb_is_nav){
 		print "<H1>".$va_facet_info["label_plural"]."</H1>";
-		print "<div id='bAncestorList'></div>";
-		print "<div id='bScrollList' class='bScrollListHierarchy'>";
-		print "<div id='bHierarchyListMorePanel_".$vs_facet_name."'>".caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))."</div>";
-		print "</div><!-- end bScrollList -->";
-		print "<div style='clear:both;'></div>";
 	}
+	
+	print "<div id='bAncestorList'></div>";
+	print "<div id='bScrollList' class='bScrollListHierarchy'>";
+
+	// Put up spinner while we load data using ajax request
+	print "<div id='bHierarchyListMorePanel_".$vs_facet_name."'>".caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))."</div>";
+	
+	print "</div><!-- end bScrollList -->";
+	print "<div style='clear:both;'></div>";	
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery("#bHierarchyListMorePanel_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id)); ?>");
-	});
-	jQuery(document).ready(function() {
-		jQuery("#bAncestorList").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $this->request->getParameter('id', pInteger))); ?>");
+		jQuery("#bHierarchyListMorePanel_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => $vn_id)); ?>");
+		jQuery("#bAncestorList").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => $this->request->getParameter('id', pInteger))); ?>");
 	});
 </script>

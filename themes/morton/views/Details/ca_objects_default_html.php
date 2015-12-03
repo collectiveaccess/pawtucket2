@@ -13,8 +13,11 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
+				
+				
+				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
@@ -24,7 +27,7 @@
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
 ?>			
@@ -85,9 +88,9 @@
 					if ($vs_identifier = $t_object->get('ca_objects.idno')){
 						print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
 					}					
-					if ($vs_coll_identifier = $t_object->get('ca_collections.idno', array('returnAsLink' => true))){
-						print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
-					}					
+					#if ($vs_coll_identifier = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true))){
+					#	print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
+					#}					
 					if ($t_object->get('ca_objects.type_id')) {
 						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					}
@@ -97,6 +100,9 @@
 					}										
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
 						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
+					}
+					if ($vs_appeared = $t_object->get('ca_objects.appeared_in')){
+						print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."</div>";
 					}
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {

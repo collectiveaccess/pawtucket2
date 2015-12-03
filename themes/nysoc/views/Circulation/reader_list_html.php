@@ -24,6 +24,7 @@
 			}
 ?>
 			</div>
+			
 		</div>
 <?php
 	if ($qr_readers) {
@@ -31,20 +32,19 @@
 		$vn_i = 0;
 ?>
 	<div class="row">
-		<div class="col-md-2 readerListSectionHeading">Readers</div>
-		<div class="col-md-10 readerListContent">
+		<div class="col-md-12 readerListContent">
 <?php
 		$va_rows = [];
 		$vs_row = '';
 		while($qr_readers->nextHit()) {
 			$vs_row .= "
-			<div class='col-sm-4'>
-				<a href='#' class='readerListEntry' data-entity_id='".$qr_readers->get('ca_entities.entity_id')."'>".$qr_readers->get('ca_entities.preferred_labels.displayname')."</a>
-			</div><!--end col-sm-4-->
+			<div class='col-sm-3'>
+				<a href='#' class='readerListEntry' data-entity_id='".$qr_readers->get('ca_entities.entity_id')."'><i class='fa fa-plus' style='padding-right:10px'></i> ".$qr_readers->get('ca_entities.preferred_labels.displayname')."</a>
+			</div><!--end col-sm-3-->
 			";
 			$vn_i++;
 		
-			if ($vn_i >= 3) {
+			if ($vn_i >= 4) {
 				$va_rows[] = $vs_row;
 				$vs_row = '';
 				$vn_i = 0;
@@ -58,6 +58,7 @@
 		}
 ?>
 		</div>
+		<div class='readerListToggle openpanel'>close</div>
 	</div>
 <?php
 	}
@@ -65,7 +66,6 @@
 	</div> <!--end container-->
 </div>
 
-<div id='readerListToggle'>Index</div>
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
@@ -80,7 +80,7 @@
 			e.preventDefault();
 			return false;
 		});
-		jQuery("#readerListToggle").bind('click', function(e) { 
+		jQuery(".readerListToggle").bind('click', function(e) { 
 			jQuery('#readerListContent:visible').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 			jQuery('#readerListContent:hidden').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 		

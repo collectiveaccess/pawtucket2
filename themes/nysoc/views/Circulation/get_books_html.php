@@ -55,7 +55,8 @@
 		<!-- Average circulate stats are always displayed -->
 		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
 		<div class='readerListImage'></div>
-		<div class='readerListName'>Average</div>
+		<a href="#" id="toggleAverage" class="readerListShowHide">Hide</a>
+		<div class='readerListName'>Library Average</div>
 	</div>
 <?php
 		// Output object list
@@ -83,5 +84,12 @@
 		var id = jQuery(this).data('object_id');
 		
 		jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetBooks', array('m' => 'remove')); ?>/id/' + id);
+	});
+	
+	jQuery("#toggleAverage").bind("click", function(e) {
+		jQuery('.ct-series-a').toggle(250);
+		jQuery(this).text((jQuery(this).text() == 'Hide') ? 'Show' : 'Hide');
+		e.preventDefault();
+		return false;
 	});
 </script>

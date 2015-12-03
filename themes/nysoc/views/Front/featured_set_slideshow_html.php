@@ -45,22 +45,23 @@
 				<ul>
 <?php
 					$vn_i = 0;
+					$va_slide_image = caGetThemeGraphic($this->request, 'discover.jpg'); 
+					print "<li><div class='frontSlide'>".caNavLink($this->request, $va_slide_image, '', '', 'Gallery', 'Index');
+					print caNavLink($this->request, "<div class='frontSlideCaption'><div class='setTitle'>Discover More</div><div class='setDescription'>Find curated content from the Society Library's Special Collections in our Featured Gallery.</div></div>", '', '', 'Gallery', 'Index');
+					print "</div></li>";					
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->get('ca_sets.set_media', array('version' => 'large'))){
+						if($vs_media = $qr_res->get('ca_sets.set_media', array('version' => 'slideshow'))){
 							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, '', '', 'Gallery', $qr_res->get('ca_sets.set_id'));
 							print caNavLink($this->request, "<div class='frontSlideCaption'><div class='setTitle'>".$qr_res->get('ca_sets.preferred_labels')."</div><div class='setDescription'>".$qr_res->get('ca_sets.set_description')."</div></div>", '', '', 'Gallery', $qr_res->get('ca_sets.set_id'));
 							print "</div></li>";
-							if ($vn_i == 1) {
-								print "<li><div class='frontSlide'>".caGetThemeGraphic($this->request, 'adams_william.jpg')."<div class='frontSlideCaption'><div class='setTitle'>Data Visualizations</div><div class='setDescription'>See these historic circulation records in a new way.</div></div></div></li>";
+							if ($vn_i == 0) {
+								print "<li><div class='frontSlide'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'visualizations.png'), '', '', 'About', 'visualizations')."<div class='frontSlideCaption'><div class='setTitle'>".caNavLink($this->request, 'Visualization Tools', '', '', 'About', 'visualizations')."</div><div class='setDescription'>View complex data at a glance with customizable graphing and mapping applications.</div></div></div></li>";
 							}
 							$vb_item_output = true;
 							$vn_i++;
 						}
 					}
-							$va_slide_image = caGetThemeGraphic($this->request, 'finalslide.jpg');
-							print "<li><div class='frontSlide'>".caNavLink($this->request, $va_slide_image, '', '', 'Gallery', 'Index');
-							print caNavLink($this->request, "<div class='frontSlideCaption'><div class='setTitle'>Discover More</div><div class='setDescription'>Find more curated content about the Society Library and its historic readers and collections in our Featured Gallery.</div></div>", '', '', 'Gallery', 'Index');
-							print "</div></li>";
+
 ?>
 				</ul>
 			</div><!-- end jcarousel -->
@@ -71,10 +72,7 @@
 			<a href="#" class="jcarousel-control-prev disabled"><i class="fa fa-angle-left"></i></a>
 			<a href="#" onclick="$('.jcarousel-control-prev').removeClass('disabled');return false;" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
+
 <?php
 			}
 ?>
@@ -85,22 +83,23 @@
 				Carousel initialization
 				*/
 				$('.jcarousel')
-					.on('jcarousel:createend', function() {
-						// Arguments:
-						// 1. The method to call
-						// 2. The index of the item (note that indexes are 0-based)
-						// 3. A flag telling jCarousel jumping to the index without animation
-						$(this).jcarousel('scroll', 1, false);
-					})				
+				
 					.on('jcarousel:targetin', 'li', function() {
 						$(this).addClass('activeSlide');
 					})
 					.on('jcarousel:targetout', 'li', function() {
 						$(this).removeClass('activeSlide');
 					})
+					.on('jcarousel:createend', function() {
+						// Arguments:
+						// 1. The method to call
+						// 2. The index of the item (note that indexes are 0-based)
+						// 3. A flag telling jCarousel jumping to the index without animation
+						$(this).jcarousel('scroll', 1, true);
+					})					
 					.jcarousel({
 						wrap: 'circular',
-						center: 'true'
+						center: true
 					});
 		
 				/*
@@ -147,6 +146,7 @@
 					.jcarouselPagination({
 						// Options go here
 					});
+						
 			});
 		</script>
 <?php
