@@ -95,8 +95,8 @@
 						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					}
 					if ($t_object->get('ca_objects.date.date_value')) {
-						$vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>', 'template' => '^ca_objects.date.date_value <ifdef code="ca_objects.date.date_value">^ca_objects.date.date_types</ifdef> <ifdef code="ca_objects.date.date_notes"><br/>^ca_objects.date.date_notes</ifdef>', 'convertCodesToDisplayText' => true));
-						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+						$vs_date = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.date.date_types =~ /Date created/">^ca_objects.date.date_value<br/><ifdef code="ca_objects.date.date_notes"><br/>^ca_objects.date.date_notes</ifdef></if></unit>');
+						print "<div class='unit'><h6>Date Created</h6>".$vs_date."</div>";
 					}										
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
 						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
