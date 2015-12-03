@@ -338,6 +338,7 @@
 		 */
 		public function addCriteria($ps_facet_name, $pa_row_ids, $pa_display_strings=null) {
 			if (is_null($pa_row_ids)) { return null;}
+			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
 			if ($ps_facet_name !== '_search') {
 				if (!($va_facet_info = $this->getInfoForFacet($ps_facet_name))) { return false; }
 				if (!$this->isValidFacetName($ps_facet_name)) { return false; }
@@ -1411,7 +1412,9 @@
 														(
 															(
 																(ca_attribute_values.value_decimal1 <= ?) AND
-																(ca_attribute_values.value_decimal2 >= ?)
+																(ca_attribute_values.value_decimal2 >= ?) AND
+																(ca_attribute_values.value_decimal1 <> ".TEP_START_OF_UNIVERSE.") AND
+																(ca_attribute_values.value_decimal2 <> ".TEP_END_OF_UNIVERSE.") 
 															)
 															OR
 															(ca_attribute_values.value_decimal1 BETWEEN ? AND ?)
@@ -1443,7 +1446,9 @@
 														(
 															(
 																({$this->ops_browse_table_name}.{$vs_browse_start_fld} <= ?) AND
-																({$this->ops_browse_table_name}.{$vs_browse_end_fld} >= ?)
+																({$this->ops_browse_table_name}.{$vs_browse_end_fld} >= ?) AND
+																({$this->ops_browse_table_name}.{$vs_browse_start_fld} <> ".TEP_START_OF_UNIVERSE.") AND
+																({$this->ops_browse_table_name}.{$vs_browse_end_fld} <> ".TEP_END_OF_UNIVERSE.") 
 															)
 															OR
 															({$this->ops_browse_table_name}.{$vs_browse_start_fld} BETWEEN ? AND ?)
@@ -3268,7 +3273,7 @@
 						}
 
 						if (is_array($va_criteria) && sizeof($va_criteria)) {
-							$va_wheres[] = "(li.item_id NOT IN (".join(",", array_keys($va_criteria))."))";
+							$va_wheres[] = "(li.item_id NOT IN (".caQuoteList(join(",", array_keys($va_criteria)))."))";
 						}
 
 						if ($this->opo_config->get('perform_item_level_access_checking')) {
@@ -4708,9 +4713,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							)";
 						}
 					}
+					
+					if (sizeof($va_criteria) > 0) {
+						$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." NOT IN (".join(",", caQuoteList(array_map(intval, array_keys($va_criteria))))."))";	
+					}
 
 					$vs_join_sql = join("\n", $va_joins);
-
 					if ($vb_check_availability_only) {
 	if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
 						$vs_sql = "
