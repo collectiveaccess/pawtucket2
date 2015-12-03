@@ -34,7 +34,7 @@
 <?php
 					if($this->getVar("previousID")){
 ?>
-					<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, 'Detail', 'objects', $this->getVar("previousID"), array('overlay' => 1)); ?>"); return false;'><i class="fa fa-angle-left"></i></a>
+					<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, 'Detail', 'objects', $this->getVar("previousID"), array('overlay' => 1)); ?>"); return false;'><span class="icon-chevron-left"></span></a>
 <?php
 					}
 ?>
@@ -63,7 +63,7 @@
 <?php
 					if($this->getVar("nextID")){
 ?>
-					<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, 'Detail', 'objects', $this->getVar("nextID"), array('overlay' => 1)); ?>"); return false;'><i class="fa fa-angle-right"></i></a>
+					<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, 'Detail', 'objects', $this->getVar("nextID"), array('overlay' => 1)); ?>"); return false;'><span class="icon-chevron-right"></span></a>
 <?php
 					}
 ?>
@@ -87,30 +87,41 @@
 			<div class='col-sm-10 col-md-10 col-lg-10'>
 				<div class="detailHead">
 <?php
+				$vn_show_label_as_title = false;
+				$vs_page_title = "";
 				print "<div class='leader'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
-				$vn_show_label_with_md = false;
 				if(($pn_photo_object_type_id == $t_object->get('ca_objects.type_id')) | ($pn_digi_photo_object_type_id == $t_object->get('ca_objects.type_id'))){
 					if ($va_production_title = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('production'), 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
-						print "<h2>".$va_production_title."</h2>";
-						$vn_show_label_with_md = true;
+						$vs_page_title = "<h2>".$va_production_title."</h2>";
+						$vn_show_label_as_title = true;
 					} elseif ($va_entity_title = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('depicts'), 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
-						print "<h2>".$va_entity_title."</h2>";
-						$vn_show_label_with_md = true;
+						$vs_page_title = "<h2>".$va_entity_title."</h2>";
+						$vn_show_label_as_title = true;
 					} else {
-						print "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";	
+						$vs_page_title = "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";	
 					}
 				}else{
-					print "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";				
+					$vs_page_title = "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";				
 				}
-				if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
-					print "<h3>".$va_source_date."</h3>";
+				if($vn_show_label_as_title){
+					print $vs_page_title;					
+					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+						print "<h3>".$va_source_date."</h3>";
+					}
+				}else{
+					print $vs_page_title;
 				}
 				#Load Metadata
 				$vs_buf = "";
 				$vs_buf_second = "";
-				if($vn_show_label_with_md){
+				if($vn_show_label_as_title){
 					if ($va_object_title = $t_object->get('ca_objects.preferred_labels')) {
 						$vs_buf.= "<div class='unit'><span class='label'>Title</span>".$va_object_title."</div>";
+					}
+				}
+				if(!$vn_show_label_as_title){
+					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+						$vs_buf.= "<div class='unit'><span class='label'>Date</span>".$va_source_date."</div>";
 					}
 				}
 				if ($va_related_entities = $t_object->get('ca_entities', array('excludeRelationshipTypes' => array('rights_holder'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
@@ -199,7 +210,7 @@
 
 ?>				
 		<div class="row" style='margin-bottom:30px;'>
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-6 col-md-5 col-md-offset-1'>
 				<div class="portraitRepContainer">
 <?php
 					print $this->getVar("representationViewer");
@@ -208,7 +219,7 @@
 ?>			
 				</div>
 			</div><!-- end col -->
-			<div class='col-sm-6 col-md-6 col-lg-6'>
+			<div class='col-sm-6 col-md-5'>
 <?php
 				print $vs_buf.$vs_buf_second;
 ?>			

@@ -89,7 +89,7 @@
 				
 				print "
 	<div class='col-xs-12 col-sm-".(($this->request->getParameter("openResultsInOverlay", pInteger)) ? "4" : "6")."'>
-		<div class='bBAMResultListItem'>
+		<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			".$vs_detail_link."
 		</div><!-- end bBAMResultListItem -->

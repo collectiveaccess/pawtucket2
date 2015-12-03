@@ -37,7 +37,7 @@
 	$vn_facet_display_length_initial = 12;
 	$vn_facet_display_length_maximum = 60;
 	
-	if(is_array($va_facets) && sizeof($va_facets)){
+if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && sizeof($va_facets))){	
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<H3>"._t("Filter")."</H3>";
@@ -53,7 +53,7 @@
 				}
 			}
 		}
-		
+	if(is_array($va_facets) && sizeof($va_facets)){		
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {	
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
 				print "<div class='refineFilterBlock'><H5>".$va_facet_info['label_singular']."</H5>"; 
@@ -108,6 +108,7 @@
 				print "</div>";
 			}
 		}
+	}
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
@@ -128,6 +129,6 @@
             }
 		});
 	</script>
-<?php	
-	}
+<?php
+}
 ?>

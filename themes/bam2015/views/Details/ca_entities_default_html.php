@@ -46,9 +46,10 @@
 					$va_rep = $t_object->getPrimaryRepresentation(array('large'), null, array('return_with_access' => $va_access_values));
 					$va_rep_width = $va_rep['info']['large']['WIDTH'];
 					$va_rep_height = $va_rep['info']['large']['HEIGHT'];
+					$vs_orientation = ($va_rep_width > $va_rep_height) ? "landscape" : "portrait";
 ?>
-				<div class='col-sm-6'>
-					<div class="entityRep <?php print ($va_rep_width > $va_rep_height) ? "landscapeRepContainer" : "portraitRepContainer"; ?>">
+				<div class='col-sm-6 <?php print ($vs_orientation == "portrait") ? "col-md-5 col-md-offset-1" : "col-md-6"; ?>'>
+					<div class="entityRep <?php print $vs_orientation; ?>RepContainer">
 <?php
 							$va_rep_id = $t_object->get('ca_object_representations.representation_id', array('checkAccess' => $va_access_values));
 							print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetRepresentationInfo/object_id/".$va_objects[0]."/representation_id/".$va_rep_id."/overlay/1\"); return false;'>".$va_entity_rep."</a>";
@@ -60,7 +61,7 @@
 				$vb_output = true;
 			}
 			if ($vb_output == true) {
-				print "<div class='col-sm-6 col-md-6 col-lg-6'>";
+				print "<div class='col-sm-6 ".(($vs_orientation == "portrait") ? "col-md-5" : "col-md-6")."'>";
 			} else {
 				print "<div class='col-sm-12 col-md-12 col-lg-12'>";
 			}
@@ -176,7 +177,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 130
+		  maxHeight: 134
 		});		
 	});
 </script>

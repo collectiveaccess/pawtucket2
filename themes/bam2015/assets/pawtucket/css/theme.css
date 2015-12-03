@@ -356,12 +356,16 @@ body {
 #homePanel {
 	position:absolute;
 	width:100%;
-	top: -20px;
+	top: 0px;
 	background-color:#f1f2f2;
 	z-index:30000;
 }
 #homePanel .leftSide {
 	text-align:right;
+}
+#homePanel .leftSide img{
+	height:435px;
+	width:auto;
 }
 #homePanel .rightSide {
 
@@ -391,7 +395,7 @@ body {
 .detail a {
 	color: #00cfb7;
 }
-.detail HR {
+.detail HR, .findingaid hr {
 	border-top:2px solid #dddddd;
 	margin-bottom: 20px;
     margin-top: 20px;
@@ -456,10 +460,17 @@ body {
 	text-align:left;
 	margin-bottom:10px;
 }
-.unit .label.collection {
-	font-size:14px;
-	text-transform:uppercase;
+.unit .label.collection, .colContainer.label {
+	font-size:20px;
+	text-transform:none;
 	margin-bottom:10px;
+	float:left;
+	width:100%;
+	text-align:left;
+}
+.unit .label.collection {
+	font-size:28px;
+	text-transform:none;
 }
 .unit ul {
 	margin-left:10px;
@@ -509,7 +520,7 @@ a.readmore-js-toggle {
     color: #666;
 }
 /* image sizing on details */
-/*
+
 .landscapeRepContainer, .portraitRepContainer{
 	text-align:center;
 }
@@ -525,15 +536,20 @@ a.readmore-js-toggle {
 	width: 100%;
 }
 .detail .portraitRepContainer .repViewerCont img{
-	width:auto;
-	height:640px;
+	width:100%;
+	height:auto;
+	max-height:640px;
 }
 
 .detail .entityRep.portraitRepContainer img{
+	width:100%;
+	height:auto;
 	max-height:640px;
-	width:auto;
 	margin:0px auto 0px auto;
-}*/
+}
+#detailRepresentationThumbnails{
+	max-width:400px;
+}
 /* object detail in overlay - linked to from productiona nd entity details */
 .detailOverlayNav{
 	padding-top:15%;
@@ -541,6 +557,9 @@ a.readmore-js-toggle {
 }
 .detailOverlayNav a {
 	color:#7c7c7c;
+}
+.detailOverlayNav a:hover {
+	text-decoration:none;
 }
 .detailOverlayClose{
 	text-align:right;
@@ -635,6 +654,39 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 .collHeader a {
 	font-family: "News Gothic";
 }
+.collectionName {
+	font-size:18px;
+	color: #00cfb7;
+}
+.collectionGraphic {
+	text-align:center;
+	width: 100px;
+	overflow:hidden;
+	border-radius:100px;
+	padding-left:0px;
+	padding-right:0px;
+}
+.collectionGraphic img {	
+	height:100px;
+	
+}
+.collection-form {
+	text-align:right;
+}
+.collection-form .formOutline .btn-search {
+	color: #333;
+	background-color:#fff;
+	font-size:24px;
+	border-radius:0px;
+	padding: 12px 10px 3px 10px;
+	border-right:0;
+	display:inline-block;		
+}
+.collection-form .form-group {
+	width:200px;
+	display:inline-block;
+	margin-bottom:0px;
+}
 .faDownload {
 	float:right;
 	width:100%;
@@ -652,6 +704,48 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	height:auto;
 	margin-bottom:25px;
 }
+.findingAidContainer {
+	float:left;
+	height:500px;
+	width:100%;
+	overflow-y: scroll;
+	padding:20px 10px 10px 10px;
+}
+.findingAidContainer a{
+	width:100%;
+	display:inline-block;
+	padding: 5px;
+}
+.findingAidContainer a .fa{
+	color: #737373;
+}
+.findingAidContainer a:hover {
+	text-decoration:none;
+	background-color: #f9f9f9;
+}
+#collectionLoad {
+	float:left;	
+	padding:20px 10px 10px 10px;
+	height: 500px;
+	overflow-y: scroll;
+	background-color: #f9f9f9;
+	box-shadow: -5px 0px 5px 0px #ccc;
+}
+#collectionLoad a {
+	padding:5px;
+	display:inline-block;
+}
+#collectionLoad a:hover {
+	text-decoration:none;
+}
+#collectionLoad a .fa{
+	color: #737373;
+}
+.findingAidContainer a.openCollection.active {
+	color:#fff;
+	background-color: #00cfb7;
+}
+
 
 /* Advanced Search */
 

@@ -146,7 +146,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 	<div class="col-xs-12 col-sm-3">
 		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="<?php print ($vs_search) ? $vs_search : "Search"; ?>" name="search">
+			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within" <?php print ($vs_search) ? "value='".$vs_search."'" : ""; ?>" name="search">
 			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 			<input type="hidden" name="facet" value="_search">-->
 		</form>
@@ -223,10 +223,20 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end col -->
 		</div>	
 		<div class="row">
+<?php
+	if((sizeof($va_facets) > 0) || ((sizeof($va_criteria) > 0) && ($qr_res->numHits()))){
+?>
 			<div class="col-md-4">
 				<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>			
 			</div>
 			<div class="col-md-8">
+<?php
+	}else{
+?>
+			<div class="col-md-12">
+<?php
+	}
+?>
 				<form id="setsSelectMultiple">
 				<div class="row">
 					<div id="browseResultsContainer">
@@ -271,6 +281,5 @@ if (!$vb_ajax) {	// !ajax
 
 </script>
 <?php
-			#print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
 ?>

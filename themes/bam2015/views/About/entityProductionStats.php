@@ -1,6 +1,6 @@
 <?php
 	$o_db = new Db();
-	$q_entities = $o_db->query("SELECT entity_id from ca_entities where access = 1");
+	$q_entities = $o_db->query("SELECT entity_id from ca_entities where access = 1 AND deleted = 0");
 	if($q_entities->numRows()){
 		$t_entity = new ca_entities();
 		$va_production_counts = array();
