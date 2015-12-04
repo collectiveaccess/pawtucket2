@@ -120,9 +120,14 @@
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
 							$va_subjects_list[] = ucfirst($va_subject_genre);
 						}
-					}											
+					}
+					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+						foreach ($va_subject_keywords as $va_text => $va_subject_keyword) {
+							$va_subjects_list[] = ucfirst($va_subject_keyword);
+						}
+					}																
 					asort($va_subjects_list);
-					if ($va_subjects_list) {
+					if (sizeof($va_subjects_list) > 1) {
 						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
 					}																											
 ?>								
