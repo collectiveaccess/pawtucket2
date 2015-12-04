@@ -23,7 +23,6 @@ $(document).ready(function() {
 			setTimeout(function(){
 				$('#caFormOverlay').fadeOut(300, function() {
 					window.location.href += "/contributed/1";
-					alert(window.location.href);
 					window.location.reload();
 				 });
 			}, 1500);
