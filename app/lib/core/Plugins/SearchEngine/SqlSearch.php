@@ -429,7 +429,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				$vs_where_sql = " WHERE ".join(" AND ", $va_wheres);
 			}
 			$vs_sql = "
-				SELECT DISTINCT row_id
+				SELECT DISTINCT boost, row_id
 				FROM ca_sql_search_search_final
 				{$vs_join_sql}
 				{$vs_where_sql}
@@ -477,7 +477,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		list($vs_table, $vs_field, $vs_subfield) = explode('.', $va_tmp[0]);
 		
 		$vs_rel_table = caGetRelationshipTableName($pn_subject_tablenum, $vs_table);
-		$va_rel_type_ids = ($va_tmp[1] && $vs_rel_table) ? caMakeRelationshipTypeIDList($vs_rel_table, explode(";", $va_tmp[1])) : null;
+		$va_rel_type_ids = ($va_tmp[1] && $vs_rel_table) ? caMakeRelationshipTypeIDList($vs_rel_table, array($va_tmp[1])) : null;
 		
 		if (!($t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { 
 			return array('access_point' => $va_tmp[0]);
@@ -745,13 +745,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							break;
 						case 'Zend_Search_Lucene_Search_Query_Phrase':
 	if ($this->getOption('strictPhraseSearching')) {
-							$vs_search_tokenizer_regex = $this->opo_search_config->get('search_tokenizer_regex');
-							
 						 	$va_words = array();
 						 	foreach($o_lucene_query_element->getQueryTerms() as $o_term) {
 								if (!$vs_access_point && ($vs_field = $o_term->field)) { $vs_access_point = $vs_field; }
 								
-								$va_terms = preg_split("![{$vs_search_tokenizer_regex}]+!u", (string)$o_term->text);
+								$va_terms = preg_split("![".$this->ops_search_tokenizer_regex."]+!u", (string)$o_term->text);
 								$va_raw_terms[] = (string)$o_term->text;
 								foreach($va_terms as $vs_term) {
 									if (strlen($vs_escaped_text = $this->opo_db->escape($vs_term))) {
@@ -839,7 +837,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$va_access_point_info = $this->_getElementIDForAccessPoint($pn_subject_tablenum, $o_term->field);
 								$vs_access_point = $va_access_point_info['access_point'];
 							
-								$vs_term = $o_term->text;
+								//$vs_term = $o_term->text;
+								$vs_term = preg_replace("![".$this->ops_search_tokenizer_regex."]+!u", '', (string)$o_term->text);
 					
 								if ($vs_access_point && (mb_strtoupper($vs_term) == _t('[BLANK]'))) {
 									$t_ap = $this->opo_datamodel->getInstanceByTableNum($va_access_point_info['table_num'], true);
@@ -974,13 +973,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									
 									if (!strlen($vn_fld_num)) {
 										$t_element = new ca_metadata_elements();
-											
-										if ($t_element->load(array('element_code' => ($va_access_point_info['element_info']['element_code'])))) {
-										
-											$va_indexed_fields = $o_base->getFieldsToIndex($pn_subject_tablenum, $vs_table_num);
+										if ($t_element->load(array('element_code' => ($vs_sub_field ? $vs_sub_field : $vs_field)))) {
+											$va_indexed_fields = $o_base->getFieldsToIndex($pn_subject_tablenum, $vn_direct_sql_target_table_num);
 											$vn_fld_num = $t_element->getPrimaryKey();
 											$vn_root_element_id = $t_element->get('hier_element_id');
-									
+											
 											if (!isset($va_indexed_fields['_ca_attribute_'.$vn_fld_num]) && (!$vn_root_element_id || ($vn_root_element_id && !isset($va_indexed_fields['_ca_attribute_'.$vn_root_element_id])))) { break(2); } // skip if not indexed
 											$vs_fld_num = 'A'.$vn_fld_num;
 										
@@ -991,7 +988,6 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 												// This allows us to do "intelligent" querying... for example on date ranges
 												// parsed from natural language input and for length dimensions using unit conversion
 												//
-												
 												switch($t_element->get('datatype')) {
 													case __CA_ATTRIBUTE_VALUE_DATERANGE__:	
 														$vb_all_numbers = true;
@@ -1338,7 +1334,6 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					if((is_array($va_access_point_info['relationship_type_ids']) && sizeof($va_access_point_info['relationship_type_ids']))) {
 						$vs_rel_type_id_sql = " AND (swi.rel_type_id IN (".join(",", $va_access_point_info['relationship_type_ids'])."))";
 					}
-					
 					if (!$vs_fld_num && is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && sizeof($va_restrict_to_fields)) {
 						$va_field_restrict_sql = array();
 						foreach($va_restrict_to_fields as $va_restrict) {
@@ -1357,7 +1352,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							$vs_target_table_name = $t_target->tableName();
 							
 							$va_path = array_keys($this->opo_datamodel->getPath($vn_direct_sql_target_table_num, $pn_subject_tablenum));
-						
+							
 							$vs_left_table = array_shift($va_path);
 							$va_join[] = "INNER JOIN {$vs_left_table} ON {$vs_left_table}.".$this->opo_datamodel->primaryKey($vs_left_table)." = ca.row_id";
 							
@@ -1604,7 +1599,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		$vb_incremental_reindexing = (bool)$this->can('incremental_reindexing');
 		
 		if (!defined("__CollectiveAccess_IS_REINDEXING__") && $vb_incremental_reindexing) {
-			$this->removeRowIndexing($this->opn_indexing_subject_tablenum, $this->opn_indexing_subject_row_id, $pn_content_tablenum, $ps_content_fieldname);
+			$this->removeRowIndexing($this->opn_indexing_subject_tablenum, $this->opn_indexing_subject_row_id, $pn_content_tablenum, array($ps_content_fieldname));
 		}
 		if (!$va_words) {
 			WLPlugSearchEngineSqlSearch::$s_doc_content_buffer[] = '('.$this->opn_indexing_subject_tablenum.','.$this->opn_indexing_subject_row_id.','.$pn_content_tablenum.',\''.$ps_content_fieldname.'\','.$pn_content_row_id.',0,0,'.$vn_private.','.$vn_rel_type_id.')';
@@ -1683,22 +1678,30 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		}
 	}
 	# ------------------------------------------------
-	public function removeRowIndexing($pn_subject_tablenum, $pn_subject_row_id, $pn_field_tablenum=null, $pn_field_num=null, $pn_field_row_id=null) {
-	
-		//print "[SqlSearchDebug] removeRowIndexing: $pn_subject_tablenum/$pn_subject_row_id<br>\n"; 
-		
+	public function removeRowIndexing($pn_subject_tablenum, $pn_subject_row_id, $pn_field_tablenum=null, $pa_field_nums=null, $pn_field_row_id=null) {
+
+		//print "[SqlSearchDebug] removeRowIndexing: $pn_subject_tablenum/$pn_subject_row_id<br>\n";
+
 		// remove dependent row indexing
-		if ($pn_subject_tablenum && $pn_subject_row_id && $pn_field_tablenum && $pn_field_row_id && strlen($pn_field_num)) {
-			//print "DELETE ROW WITH FIELD NUM $pn_subject_tablenum/$pn_subject_row_id/$pn_field_tablenum/$pn_field_num/$pn_field_row_id<br>";
-			return $this->opqr_delete_with_field_row_id_and_num->execute((int)$pn_subject_tablenum, (int)$pn_subject_row_id, (int)$pn_field_tablenum, (string)$pn_field_num, (int)$pn_field_row_id);
+		if ($pn_subject_tablenum && $pn_subject_row_id && $pn_field_tablenum && $pn_field_row_id && is_array($pa_field_nums) && sizeof($pa_field_nums)) {
+			foreach($pa_field_nums as $pn_field_num) {
+				if(!$pn_field_num) { continue; }
+				//print "DELETE ROW WITH FIELD NUM $pn_subject_tablenum/$pn_subject_row_id/$pn_field_tablenum/$pn_field_num/$pn_field_row_id<br>";
+				$this->opqr_delete_with_field_row_id_and_num->execute((int)$pn_subject_tablenum, (int)$pn_subject_row_id, (int)$pn_field_tablenum, (string)$pn_field_num, (int)$pn_field_row_id);
+			}
+			return true;
 		} else {
 			if ($pn_subject_tablenum && $pn_subject_row_id && $pn_field_tablenum && $pn_field_row_id) {
 				//print "DELETE ROW $pn_subject_tablenum/$pn_subject_row_id/$pn_field_tablenum/$pn_field_row_id<br>";
 				return $this->opqr_delete_with_field_row_id->execute((int)$pn_subject_tablenum, (int)$pn_subject_row_id, (int)$pn_field_tablenum, (int)$pn_field_row_id);
 			} else {
-				if ($pn_field_tablenum && !is_null($pn_field_num)) {
-					//print "DELETE FIELD $pn_subject_tablenum/$pn_subject_row_id/$pn_field_tablenum/$pn_field_num<br>";
-					return $this->opqr_delete_with_field_num->execute((int)$pn_subject_tablenum, (int)$pn_subject_row_id, (int)$pn_field_tablenum, (string)$pn_field_num);
+				if ($pn_field_tablenum && is_array($pa_field_nums) && sizeof($pa_field_nums)) {
+					foreach($pa_field_nums as $pn_field_num) {
+						if(!$pn_field_num) { continue; }
+						//print "DELETE FIELD $pn_subject_tablenum/$pn_subject_row_id/$pn_field_tablenum/$pn_field_num<br>";
+						$this->opqr_delete_with_field_num->execute((int)$pn_subject_tablenum, (int)$pn_subject_row_id, (int)$pn_field_tablenum, (string)$pn_field_num);
+					}
+					return true;
 				} else {
 					if (!$pn_subject_tablenum && !$pn_subject_row_id && $pn_field_tablenum && $pn_field_row_id) {
 						//print "DELETE DEP $pn_field_tablenum/$pn_field_row_id<br>";
@@ -1730,7 +1733,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		
 		// Find existing indexing for this subject and content 	
 		foreach($pa_subject_row_ids as $vn_subject_row_id) {
-			$this->removeRowIndexing($pn_subject_tablenum, $vn_subject_row_id, $pn_content_tablenum, $ps_content_fieldnum, $pn_content_row_id);
+			$this->removeRowIndexing($pn_subject_tablenum, $vn_subject_row_id, $pn_content_tablenum, array($ps_content_fieldnum), $pn_content_row_id);
 		}
 		
 		if (caGetOption("DONT_TOKENIZE", $pa_options, false) || in_array('DONT_TOKENIZE', $pa_options)) {
