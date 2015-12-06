@@ -242,7 +242,7 @@ class TimecodeParser {
 						}
 						return $vn_hours.":".sprintf("%02d", $vn_minutes).":".$vs_seconds;
 					} else {
-						return (($vn_hours > 0) ? "{$vn_hours}h " : '').(($vn_minutes > 0) ? "{$vn_minutes}m " : '')."{$vn_seconds}s";
+						return (($vn_hours > 0) ? "{$vn_hours}h " : '').(($vn_minutes > 0) ? "{$vn_minutes}m " : '').sprintf("%02.1f", $vn_seconds)."s";
 					}
 				}
 				break;
