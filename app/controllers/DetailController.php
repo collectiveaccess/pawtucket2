@@ -258,6 +258,8 @@
 				$this->view->setVar('tags', implode(", ", $va_tags));
 			
 				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $va_comments, $va_tags));
+			} else {
+				$this->view->setVar("itemComments", '');
 			}
  			
  			//
