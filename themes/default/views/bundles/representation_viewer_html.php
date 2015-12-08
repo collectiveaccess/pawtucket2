@@ -32,7 +32,7 @@
 	
 	$vs_display_type		 	= $this->getVar('display_type');
 	$va_display_options		 	= $this->getVar('display_options');
-	
+
 	$va_pages = $va_sections = array();
 	$vb_use_book_reader = false;
 	$vn_open_to_page = 1;
@@ -254,4 +254,3 @@
 	} else {
 		print $this->render('mediaviewer_html.php');
 	}
-?>

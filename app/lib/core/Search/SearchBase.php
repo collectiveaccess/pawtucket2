@@ -282,11 +282,11 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 			if(!$va_info = $this->opo_search_indexing_config->get($pm_subject_table)) {
 				return null;
 			}
-			$va_access_points =  $va_info['_access_points'];
+			if(!is_array($va_access_points =  $va_info['_access_points'])) { $va_access_points = array(); }
 			foreach($va_access_points as $vs_k => $va_v) {
 				$va_access_points[mb_strtolower($vs_k)] = $va_v;
 			}
-			return is_array($va_access_points) ? $va_access_points : array();
+			return $va_access_points;
 		}
 		# -------------------------------------------------
 		/**

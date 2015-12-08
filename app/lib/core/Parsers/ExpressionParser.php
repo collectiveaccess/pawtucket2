@@ -736,7 +736,7 @@ class ExpressionParser {
      */
 	private function processFunction($ps_function, $pa_arguments) {
 		if(!function_exists($ps_function)) { return null; }
-		return call_user_func_array($ps_function, $pa_arguments);	
+		return @call_user_func_array($ps_function, $pa_arguments);	
 	}
 	# -------------------------------------------------------------------
 	# Error handling

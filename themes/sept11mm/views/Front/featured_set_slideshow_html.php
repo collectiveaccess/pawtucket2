@@ -54,7 +54,7 @@
 								print "<p><b>Accession Number:</b> ".$qr_res->get("ca_objects.idno")."</p>";
 							}
 							if($qr_res->get("ca_objects.public_title")){
-								print "<p><b>Common Title:</b> ".$qr_res->get("ca_objects.public_title")."</p>";
+								print "<p><b>Title:</b> ".$qr_res->get("ca_objects.public_title")."</p>";
 							}
 							if($qr_res->get("ca_object_lots.credit_line")){
 								print "<p><b>Credit Line: </b><i>".$qr_res->get("ca_object_lots.credit_line")."</i></p>";
@@ -101,7 +101,7 @@
 						animation: 'slow'
 					})
 					.jcarouselAutoscroll({
-						interval: 3000,
+						interval: 5000,
 						target: '+=1',
 						autostart: true
 					})

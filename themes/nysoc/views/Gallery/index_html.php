@@ -9,6 +9,10 @@
 
 	$va_sets = $this->getVar("sets");
 	$va_entity_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_entities', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	MetaTagManager::setWindowTitle($va_home." > Featured");	
+
 	
 	foreach ($va_entity_sets as $va_entity_set) {
 		$va_sets[] = $va_entity_set;
@@ -22,6 +26,9 @@
 <div class="page">
 	<div class="wrapper">
 		<div class="sidebar">
+<?php
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'viz_sidebar.jpg'), '', '', 'About', 'visualizations');
+?>		
 		</div><!-- end sideBar -->
 		<div class="content-wrapper">
       		<div class="content-inner">

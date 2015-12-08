@@ -42,13 +42,13 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	
+	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.png'); ?>">
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 	<link href='http://fonts.googleapis.com/css?family=Gudea:400,700,400italic' rel='stylesheet' type='text/css'>
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print $this->request->config->get("app_display_name"); ?></title>
+	<title><?php print strip_tags(MetaTagManager::getWindowTitle()); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -110,7 +110,7 @@
 				<nav class="navbar navbar-default yamm" role="navigation">
 				<ul class="menu" id="mainMenu">
 					<li class="item" id="menuId-1"><a href="https://www.nysoclib.org/">Library Home</a></li>
-					<li <?php print ($this->request->getController() == "Front") ? 'class="active item"' : 'class="item"'; ?> id="menuId-2"><?php print caNavLink($this->request, _t("Project Home"), "", "", "", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active item"' : 'class="item"'; ?> id="menuId-2"><?php print caNavLink($this->request, _t("City Readers Home"), "", "", "", ""); ?></li>
 					
 <?php
 					print $this->render("pageFormat/browseMenu.php");
@@ -129,7 +129,7 @@
 			</div>	
 			<div id="topSection">
 				<div id="pageTitle">
-					<h1>Database of Historic Reading Records</h1>					
+					<h1>City Readers <span class='headerSmall'>Digital Historic Collections at the New York Society Library</span></h1>					
 					<div class="breadcrumb"><?php print MetaTagManager::getWindowTitle(); ?></div>
 				</div>
 			</div>		

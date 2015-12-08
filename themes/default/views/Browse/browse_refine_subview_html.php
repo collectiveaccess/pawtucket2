@@ -92,18 +92,21 @@
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-            var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
-            jQuery(window).scroll(function () {
-                var scrollTop = $(window).scrollTop();
-                // check the visible top of the browser
-                if (offset.top<scrollTop) {
-                    jQuery('#bRefine').addClass('fixed');
-                } else {
-                    jQuery('#bRefine').removeClass('fixed');
-                }
-            });
+            if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
+				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
+				var panelWidth = jQuery('#bRefine').width();
+				jQuery(window).scroll(function () {
+					var scrollTop = $(window).scrollTop();
+					// check the visible top of the browser
+					if (offset.top<scrollTop) {
+						jQuery('#bRefine').addClass('fixed');
+						jQuery('#bRefine').width(panelWidth);
+					} else {
+						jQuery('#bRefine').removeClass('fixed');
+					}
+				});
+            }
 		});
 	</script>
 <?php	
 	}
-?>

@@ -185,7 +185,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
 <?php
-			if(is_array($va_views) && sizeof($va_views)){
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
 				foreach($va_views as $vs_view => $va_view_info) {
 					if(isset($va_view_info['data'])) {
 						if (!$qr_set_items->hasData($va_view_info['data'])) { continue; }	// don't show view options for which there is no data (eg. map requires mappable data)
@@ -251,7 +251,7 @@ if (!$vb_ajax) {	// !ajax
 
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 
-							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'preview170';
+							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
 							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
 
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
@@ -269,7 +269,7 @@ if (!$vb_ajax) {	// !ajax
 									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
 								} else {
 									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div></a>";
+									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>";
 									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
 								}
 								$this->setVar('representation', $vs_representation);

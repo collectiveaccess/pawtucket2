@@ -282,12 +282,12 @@
  			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
  			
  			
- 			if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
- 				$vs_width = ((int)$vs_width * 6)."px";
- 			}
- 			if (!preg_match("!^[\d\.]+px$!i", $vs_height)) {
- 				$vs_height = ((int)$vs_height * 16)."px";
- 			}
+ 			//if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
+ 			//	$vs_width = ((int)$vs_width * 6)."px";
+ 			//}
+ 			//if (!preg_match("!^[\d\.]+px$!i", $vs_height)) {
+ 			//	$vs_height = ((int)$vs_height * 16)."px";
+ 			//}
  			
  			if ($va_settings['usewysiwygeditor']) {
  				$o_config = Configuration::load();

@@ -183,10 +183,13 @@
  		private $ops_text_value;
  		private $opn_start_date;
  		private $opn_end_date;
+ 		
+ 		static private $o_tep;
+ 		static private $s_date_cache = array();
  		# ------------------------------------------------------------------
  		public function __construct($pa_value_array=null) {
- 			require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  			parent::__construct($pa_value_array);
+ 			if(!DateRangeAttributeValue::$o_tep) { DateRangeAttributeValue::$o_tep = new TimeExpressionParser(); }
  		}
  		# ------------------------------------------------------------------
  		public function loadTypeSpecificValueFromRow($pa_value_array) {
@@ -217,18 +220,15 @@
 			
 			$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 			
-			if ($o_date_config->get('dateFormat') == 'original') {
-				return $this->ops_text_value;
-			} else {				
-				$t_element = new ca_metadata_elements($this->getElementID());
-				$va_settings = $this->getSettingValuesFromElementArray(
-					$t_element->getFieldValuesArray(), 
-					array('isLifespan')
-				);
-				
-				$o_tep = new TimeExpressionParser();
-				$o_tep->setHistoricTimestamps($this->opn_start_date, $this->opn_end_date);
-				return $o_tep->getText(array_merge(array('isLifespan' => $va_settings['isLifespan']), $pa_options)); //$this->ops_text_value;
+			if(isset(DateRangeAttributeValue::$s_date_cache[$vs_date_format = $o_date_config->get('dateFormat')][$this->opn_start_date.'/'.$this->opn_end_date])) {
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date];
+			}
+			if ($vs_date_format == 'original') {
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date] = $this->ops_text_value;
+			} else {
+				$va_settings = MemoryCache::fetch($this->getElementID(), 'ElementSettings');
+				DateRangeAttributeValue::$o_tep->setHistoricTimestamps($this->opn_start_date, $this->opn_end_date);
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date] = DateRangeAttributeValue::$o_tep->getText(array_merge(array('isLifespan' => $va_settings['isLifespan']), $pa_options)); //$this->ops_text_value;
  			}
 		}
  		# ------------------------------------------------------------------
@@ -246,17 +246,16 @@
  				array('dateRangeBoundaries', 'mustNotBeBlank')
  			);
  			
- 			$o_tep = new TimeExpressionParser();
 			if ($ps_value) {
-				if (!$o_tep->parse($ps_value)) { 
+				if (!DateRangeAttributeValue::$o_tep->parse($ps_value)) { 
 					// invalid date
 					$this->postError(1970, _t('%1 is invalid', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
 					return false;
 				}
-				$va_dates = $o_tep->getHistoricTimestamps();
+				$va_dates = DateRangeAttributeValue::$o_tep->getHistoricTimestamps();
 				if ($va_settings['dateRangeBoundaries']) {
-					if ($o_tep->parse($va_settings['dateRangeBoundaries'])) { 
-						$va_boundary_dates = $o_tep->getHistoricTimestamps();
+					if (DateRangeAttributeValue::$o_tep->parse($va_settings['dateRangeBoundaries'])) { 
+						$va_boundary_dates = DateRangeAttributeValue::$o_tep->getHistoricTimestamps();
 						if (
 							($va_dates[0] < $va_boundary_dates[0]) ||
 							($va_dates[0] > $va_boundary_dates[1]) ||
@@ -279,7 +278,7 @@
 					// Default to "undated" date for blanks
 					$vs_undated_date = '';
 					if ((bool)$o_date_config->get('showUndated')) {
-						$o_lang_config = $o_tep->getLanguageSettings();
+						$o_lang_config = DateRangeAttributeValue::$o_tep->getLanguageSettings();
 						$vs_undated_date = array_shift($o_lang_config->getList('undatedDate'));
 					}
 					

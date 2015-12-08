@@ -27,16 +27,17 @@
  */
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
-	define("__CA_APP_TYPE__", "PAWTUCKET");	
 	require("./app/helpers/errorHelpers.php");
-	
-	set_error_handler("caDisplayFatalError");
+	;
+	//set_error_handler("caDisplayFatalError");
 	
 	if (!file_exists('./setup.php')) {
 		caDisplayException(new ApplicationException("No setup.php found"));
 		exit; 
 	}
 	require_once('./setup.php');
+	if (!defined("__CA_APP_TYPE__")) { define("__CA_APP_TYPE__", "PAWTUCKET");	}
+	caWriteServerConfigHints();
 	
 	try {
 		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));

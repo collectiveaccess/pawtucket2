@@ -62,7 +62,7 @@
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 
-	$va_home = caNavLink($this->request, "Project Home", '', '', '', '');
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	MetaTagManager::setWindowTitle($va_home." > ".ucWords($va_browse_info["labelPlural"]));
 	
 	

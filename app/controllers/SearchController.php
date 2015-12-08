@@ -97,8 +97,17 @@
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
+ 			//
+ 			// Handle advanced search form submissions
+ 			//
+ 			$vs_search_expression_for_display = '';
  			if($vb_is_advanced) { 
- 				$this->opo_result_context->setSearchExpression(caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))); 
+ 				$this->opo_result_context->setSearchExpression(
+ 					caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 				); 
+ 				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
+ 					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+ 				}
  			}
  			
  			$this->view->setVar('browseInfo', $va_browse_info);
@@ -144,7 +153,7 @@
 				$o_browse->reload($ps_cache_key);
 			}
 		
-			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types); }
+			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
 			// Clear criteria if required
@@ -189,8 +198,10 @@
 			// Add criteria and execute
 			//
 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
+			$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+			
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')));
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
@@ -347,7 +358,6 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					print $qr_res->numHits();
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
