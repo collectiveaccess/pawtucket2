@@ -1,3 +1,4 @@
+
 @font-face {
 	font-family: 'News Gothic';
 	src:url('../fonts/news_gothic/newsgoth-bt-roman-webfont.ttf');
@@ -125,16 +126,16 @@ a {
 	font-weight: lighter;
 	color: #7c7c7c;
 }
-.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > li > a:focus{
-	color: #7c7c7c !important;
+.navbar-default .navbar-nav > li > a{
+	color: #7c7c7c;
 	font-size:18px;
 	font-family:"News Gothic";
 	font-weight: lighter;
 }
-.navbar-default .navbar-nav > a,
-.navbar-default .navbar-nav > .open > a, 
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:focus, 
+.navbar-default .navbar-nav > li:hover > a{
+	color: #FFF !important;
+}
+.navbar-default .navbar-nav > a, 
 .navbar .navbar-nav > .active > a,
 .navbar-default .navbar-nav > .active > a, 
 .navbar-default .navbar-nav > .active > a:hover, 
@@ -144,9 +145,19 @@ a {
 	font-weight: lighter;
 }
 .navbar-default .navbar-nav > .open > a, 
-.navbar-default .navbar-nav > .open > a:hover, 
-.navbar-default .navbar-nav > .open > a:focus {
-	color: #7c7c7c;
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .open > a:active,
+.navbar-default .navbar-nav > li > a:active,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li:focus > a,
+.navbar-default .navbar-nav > li:active > a {
+	background-color: #00cfb7;
+	color: #fff !important;
+}
+.navbar-default .navbar-nav > .dropdown.open > a .caret, .navbar-default .navbar-nav > li:hover > a .caret {
+    border-top-color: #fff;
+    border-bottom-color: #fff;
 }
 .nav > li.dropdown > a.icon {
 	padding-top: 10px;
@@ -174,21 +185,31 @@ a {
 .formOutline .btn-search {
 	color: #7c7c7c;
 	background-color:#262626;
-	font-size:24px;
+	font-size:28px;
 	border-radius:0px;
-	padding: 12px 10px 3px 10px;
+    padding: 5px 11px 5px 13px;
 	border-right:4px solid #000;		
+}
+.formOutline .btn-search:active {
+	background-color: #00cfb7;
+	color: #fff;
 }
 .navbar .form-control {
 	font-family:"News Gothic";
 	font-weight: lighter;
-	font-size:16px;
-	color: #7c7c7c;
+	/*font-size:16px;
+	color: #7c7c7c;*/
+	font-size:26px;
+	color: #fff;
 	background-color:#000;
-	line-height: 26px;	
+	/*line-height: 26px;*/
+	line-height: 35px;	
+	margin-top: 2px;
 }
 .navbar .form-control input, .navbar .form-control:focus  {
-	font-size:16px;
+	/*font-size:16px;*/
+	color:#fff;
+	font-size:26px;
 }
 .navbar ::-webkit-input-placeholder {
    font-size:26px;
@@ -205,6 +226,23 @@ a {
 .navbar :-ms-input-placeholder {  
    font-size:26px; 
 }
+.navbar .dropdown-menu {
+	border-left:0px;
+}
+.navbar-default .navbar-nav > li:hover, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:active{
+	background-color: #00cfb7;
+	color: #fff !important;
+}
+.navbar-default .navbar-nav > li > a:hover {
+	color: #fff !important;
+}
+.navbar-default .navbar-nav > li.open > a {
+	color: #fff !important;
+}
+.nav a:hover .caret {
+	border-top-color: #fff !important;
+	border-bottom:color: #fff !important;
+}
 :focus::-webkit-input-placeholder{
      text-indent: -999px
 }
@@ -218,13 +256,18 @@ a {
 }
 @media (min-width: 768px) {
 	.navbar-form .form-group {
-		width: 100px;
+		width: 140px;
 	}
 }
 @media (min-width: 992px){
 	.navbar-form .form-group {
-		width: 140px;
+		width: 180px;
 	}
+}
+@media (min-width: 992px) {
+	.navbar .formOutline {
+    	margin-left: 5px;
+    }
 }
 #user-navbar .dropdown:hover .dropdown-menu {
 	display: block;
@@ -233,10 +276,10 @@ a {
 	background-color: #262626;
 	margin-top:-1px;
 }
-.yamm .nav.navbar-right .dropdown-menu > li > a, .yamm .nav.navbar-right .dropdown-menu > li > a:hover {
+.yamm .nav.navbar-right .dropdown-menu > li > a {
 	color: #7c7c7c;
 	background-color: #262626;
-	margin-left:1px;
+	/*margin-left:1px;*/
     font-size: 17px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -244,20 +287,21 @@ a {
 	font-weight:normal;
 	opacity: 1;
 }
-.yamm .nav.navbar-right .dropdown-menu > li > a.first {
+.yamm .nav.navbar-right .dropdown-menu > li > a:hover {
+	color: #fff;
+	background-color: #00cfb7;
+}
+/*.yamm .nav.navbar-right .dropdown-menu > li > a.first {
 	padding-top:10px;
-}
-.yamm .nav.navbar-right .dropdown-menu > li > a.last {
+}*/
+/*.yamm .nav.navbar-right .dropdown-menu > li > a.last {
 	padding-bottom:10px;
-}
-.nav a:hover .caret, .nav a:focus .caret {
-  border-top-color: #7c7c7c !Important;
-  border-bottom-color: #7c7c7c !Important;
-}
+}*/
 input:-webkit-autofill {
 	color: #7c7c7c;
 	background-color:#262626;
-	font-size:24px;
+	font-size:16px;
+	padding-top:4px;
 }
 
 .dropdown .dropdown-menu, .dropdown-menu, #bRefineContainer{
@@ -266,11 +310,11 @@ input:-webkit-autofill {
     padding: 0px;
     visibility:hidden;
 
-    -moz-transition:    all 1000ms ease;
-    -webkit-transition: all 1000ms ease;
-    -o-transition:      all 1000ms ease;
-    -ms-transition:     all 1000ms ease;
-    transition:         all 1000ms ease;
+    -moz-transition:    all 333ms ease;
+    -webkit-transition: all 333ms ease;
+    -o-transition:      all 333ms ease;
+    -ms-transition:     all 333ms ease;
+    transition:         all 333ms ease;
 }
 .frontNav .dropdown-menu{
 	top:35px;
@@ -283,13 +327,13 @@ input:-webkit-autofill {
     opacity: 0;
     visibility:hidden;
     padding: 0px;
-    background-color:rgba(255, 255, 255, 0.6);
+    background-color:fff;
 
-    -moz-transition:    all 1000ms ease;
-    -webkit-transition: all 1000ms ease;
-    -o-transition:      all 1000ms ease;
-    -ms-transition:     all 1000ms ease;
-    transition:         all 1000ms ease;
+    -moz-transition:    all 333ms ease;
+    -webkit-transition: all 333ms ease;
+    -o-transition:      all 333ms ease;
+    -ms-transition:     all 333ms ease;
+    transition:         all 333ms ease;
 }
 .open .dropdown-menu, #bRefineContainer.open, .frontNav .open .dropdown-menu{
     display: block;
@@ -308,7 +352,7 @@ input:-webkit-autofill {
 }
 .yamm #user-navbar .dropdown-menu > li > a {
     padding-bottom: 8px;
-    padding-top: 0px;
+    padding-top: 5px;
 }
 
 /* Footer */
@@ -395,7 +439,7 @@ body {
 .detail a {
 	color: #00cfb7;
 }
-.detail HR, .findingaid hr {
+.detail HR, .findingaid hr, .staticPage hr {
 	border-top:2px solid #dddddd;
 	margin-bottom: 20px;
     margin-top: 20px;
@@ -678,7 +722,7 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	background-color:#fff;
 	font-size:24px;
 	border-radius:0px;
-	padding: 12px 10px 3px 10px;
+	padding: 12px 10px 3px 5px;
 	border-right:0;
 	display:inline-block;		
 }
@@ -686,15 +730,36 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	width:200px;
 	display:inline-block;
 	margin-bottom:0px;
+	vertical-align:middle;
+}
+#collectionSearch .jscroll-next {
+	display:none;
+}
+#collectionSearch {
+	display:none;
+	clear:both;
+	height:300px;
+	max-height:300px;
+	overflow-y: auto;
 }
 .faDownload {
 	float:right;
-	width:100%;
 	clear:left;
-	margin-top:-15px;
+	margin-top:0px;
 	margin-bottom:15px;
 	font-size:13px;
 	text-align:right;
+	color: #00cfb7;
+	padding:5px 10px;
+	font-weight:bold;
+	text-transform:uppercase;
+	border: 2px solid #00cfb7;
+    width: auto;	
+}
+a.faDownload:hover {
+	background-color: #00cfb7;
+	text-decoration:none;
+	color:#fff;
 }
 .archivesRight {
 	margin-top:15px;
@@ -762,9 +827,10 @@ div.advancedSearchField {
     margin: 20px auto 20px auto;
     width: 60px;	
 }
-a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover,
-a.caAdvancedSearchFormSubmit:active, a.caAdvancedSearchFormReset:active{
-	color: #00cfb7;
+a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
+	background-color: #00cfb7;
+	color: #fff;
+	text-decoration:none;
 }
 .identifier textarea.form-control {
     width: 400px;
@@ -826,6 +892,11 @@ li[role=presentation] {
     border-radius: 0px;
     font-size:14px;
     background-color:#fff;
+}
+.btn-default:hover {
+	background-color: #00cfb7;
+	color: #fff;
+	text-decoration:none;
 }
 #caFormOverlay h1, .loginreg h1 {
     font-size: 30px;
@@ -1004,3 +1075,23 @@ li[role=presentation] {
 .mejs-container .mejs-controls {
 	background:#000 !important;
 }
+
+/* Static Page */
+
+.staticTitle {
+    text-transform: uppercase;
+    font-family: "News Gothic";
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+}
+p.linkInfo {
+	margin-bottom:5px;
+}
+.linkInfo .icon{
+	color: #00cfb7;
+	width:18px;
+	display:inline-block;
+}
+
+

@@ -6,7 +6,7 @@ $vn_collection_id = $this->request->getParameter('collection_id', pString);
 
 if ($vn_collection_id) {
 	$t_item = new ca_collections($vn_collection_id);
-	print "<div class='colContainer label'>".$t_item->get('ca_collections.preferred_labels')."</div>";
+	print "<div class='colContainer label'>".caNavLink($this->request, $t_item->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_item->get('ca_collections.collection_id'))."</div>";
 	
 	#first level
 	if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {

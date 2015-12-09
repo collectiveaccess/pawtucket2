@@ -33,19 +33,23 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
+	$va_export_formats = $this->getVar('export_formats');
 	
 	$vn_facet_display_length_initial = 12;
 	$vn_facet_display_length_maximum = 60;
-	
 if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && sizeof($va_facets))){	
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<H3>"._t("Filter")."</H3>";
+		print "<H3>"._t("Filter");
+			
+		print caNavLink($this->request, "<i class='icon-folder-download' style='float:right'></i>", "", "*", "*", "*", array("view" => "xlsx", "download" => true, "export_format" => "basic_excel", "key" => $vs_key));	
+			
+		print "</H3>";	
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn-default bCriteria"><span class="icon-cross pull-right"></span>'.$va_criterion['facet'].": ".$va_criterion['value'].'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn-default bCriteria"><span class="icon-cross pull-right"></span>'.$va_criterion['facet'].": ".$va_criterion['value'].'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_view, 'key' => $vs_key));
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){

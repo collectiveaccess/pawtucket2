@@ -37,29 +37,59 @@
 <?php
 
 					print caNavLink($this->request, 'Download Finding Aid', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
-
+					print "<div class='clearfix'></div>";					
 					if ($vs_historical = $t_item->get('ca_collections.biogHist')) {
 						print "<div class='unit'><span class='label'>Historical Note: </span>".$vs_historical."</div>";
 					}
 					if ($vs_scope = $t_item->get('ca_collections.scopeContent')) {
 						print "<div class='unit'><span class='label'>Scope and Content Note: </span>".$vs_scope."</div>";
 					}
+					if ($va_extent = $t_item->getWithTemplate('<unit delimiter=", ">^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</unit>')) {
+						print "<div class='unit'><span class='label'>Extent: </span>".$va_extent."</div>";
+					}					
 					if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('special_event', 'production'), 'delimiter' => ', '))) {
 						print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
 					}
 ?>
-					<form class="collection-form" role="search" >
+					<div class="collection-form"  >
 						<div class="formOutline">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Search Collections" name="search">
+								<input type="text" id="searchfield" class="form-control" placeholder="Search within this collection" >
 							</div>
-							<button type="submit" class="btn-search"><span class="icon-magnifier"></span></button>
+							<button id="collectionSubmit" class="btn-search"><span class="icon-magnifier"></span></button>
 						</div>
-					</form>
+					</div>
+					
+					<div id='collectionSearch'></div>
+					
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							jQuery("#collectionSubmit").click(function() {
+								var searchstring = $('#searchfield');
+								searchstring.focus();
+								$("#collectionSearch").slideDown("200", function () {
+									$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+									jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('detailNav' => '0', 'openResultsInOverlay' => '0', 'search' => '" + searchstring.val() + "'), array('dontURLEncodeParameters' => true)); ?>")
+								});
+							});
+							$("#searchfield").keypress(function(e) {
+								if(e.which == 13) {
+								var searchstring = $('#searchfield');
+								searchstring.focus();
+									$("#collectionSearch").slideDown("200", function () {
+										$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+										jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('detailNav' => '0', 'openResultsInOverlay' => '0', 'search' => '" + searchstring.val() + "'), array('dontURLEncodeParameters' => true)); ?>")
+									});
+								}
+							});
+							return false;
+						});
+					</script>
+					<div class='clearfix'></div>					
 					
 <?php					
 					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
-						print "<div class='unit row' style='margin-bottom:0px;'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-bottom:0px;'></hr></div><div class='col-sm-4 col-md-4 col-lg-4'><div class='findingAidContainer'><div class='label collection'>Collection Contents </div>";
+						print "<div class='unit row' style='margin-bottom:0px;'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr></div><div class='col-sm-4 col-md-4 col-lg-4'><div class='findingAidContainer'><div class='label collection'>Collection Contents </div>";
 						foreach ($va_collection_children as $col_key => $vn_collection_id) {
 							$t_collection_series = new ca_collections($vn_collection_id);
 							$vs_collection_label = $t_collection_series->get('ca_collections.preferred_labels');

@@ -128,7 +128,7 @@
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
 						</div>
-						<button type="submit" class="btn-search"><span class="icon-magnifier"></span></button>
+						<button type="submit" class="btn-search"><span class="fa fa-search"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">

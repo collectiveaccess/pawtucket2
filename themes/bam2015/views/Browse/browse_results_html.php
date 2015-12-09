@@ -226,10 +226,10 @@ if (!$vb_ajax) {	// !ajax
 <?php
 	if((sizeof($va_facets) > 0) || ((sizeof($va_criteria) > 0) && ($qr_res->numHits()))){
 ?>
-			<div class="col-md-4">
+			<div class="col-sm-4 col-md-4 col-lg-4">
 				<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>			
 			</div>
-			<div class="col-md-8">
+			<div class="col-sm-8 col-md-8 col-lg-8">
 <?php
 	}else{
 ?>
