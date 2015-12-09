@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2004-2014 Whirl-i-Gig
+ * Copyright 2004-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -68,13 +68,11 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 	var $info = array(
 		"IMPORT" => array(
-			"audio/x-realaudio" 				=> "rm",
 			"video/x-ms-asf" 					=> "asf",
 			"video/x-ms-wmv"					=> "wmv",
 			"video/quicktime" 					=> "mov",
 			"video/avi" 						=> "avi",
 			"video/x-flv"						=> "flv",
-			"application/x-shockwave-flash" 	=> "swf",
 			"video/mpeg" 						=> "mpeg",
 			"video/mp4" 						=> "m4v",
 			"video/ogg"							=> "ogg",
@@ -82,13 +80,11 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		),
 
 		"EXPORT" => array(
-			"audio/x-realaudio" 				=> "rm",
 			"video/x-ms-asf" 					=> "asf",
 			"video/x-ms-wmv"					=> "wmv",
 			"video/quicktime" 					=> "mov",
 			"video/avi" 						=> "avi",
 			"video/x-flv"						=> "flv",
-			"application/x-shockwave-flash" 	=> "swf",
 			"video/mpeg" 						=> "mp4",
 			"audio/mpeg"						=> "mp3",
 			"image/jpeg"						=> "jpg",
@@ -146,12 +142,10 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	);
 
 	var $typenames = array(
-		"audio/x-realaudio" 				=> "RealMedia",
 		"video/x-ms-asf" 					=> "WindowsMedia",
 		"video/x-ms-wmv"					=> "WindowsMedia",
 		"video/quicktime" 					=> "QuickTime",
 		"video/x-flv"						=> "FlashVideo (flv)",
-		"application/x-shockwave-flash" 	=> "Flash (swf)",
 		"video/mpeg" 						=> "MPEG",
 		"audio/mpeg"						=> "MP3 audio",
 		"image/jpeg"						=> "JPEG",
@@ -162,12 +156,16 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	);
 
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function __construct() {
 		$this->description = _t('Provides ffmpeg-based audio and video processing services');
 	}
 	# ------------------------------------------------
-	# Tell WebLib what kinds of media this plug-in supports
-	# for import and export
+	/**
+	 * What kinds of media does this plug-in support for import and export
+	 */
 	public function register() {
 		$this->opo_config = Configuration::load();
 		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__.'/external_applications.conf');
@@ -182,6 +180,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return $this->info;
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function checkStatus() {
 		$va_status = parent::checkStatus();
 		
@@ -198,6 +199,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return $va_status;
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function divineFileFormat($filepath) {
 		$ID3 = new getID3();
 		$ID3->option_max_2gb_check = false;
@@ -237,6 +241,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
 	private function _isMPEG4($pa_info) {
 		if ($pa_info['fileformat'] == 'mp4') {
 			return true;
@@ -265,6 +272,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return false;
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
 	public function get($property) {
 		if ($this->handle) {
 			if ($this->info["PROPERTIES"][$property]) {
@@ -278,6 +288,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
 	public function set($property, $value) {
 		if ($this->handle) {
 			if ($this->info["PROPERTIES"][$property]) {
@@ -310,6 +323,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return $this->metadata;
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function read ($filepath) {
 		if (!file_exists($filepath)) {
 			$this->postError(1650, _t("File %1 does not exist", $filepath), "WLPlugVideo->read()");
@@ -415,60 +431,6 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 			# -- get bandwidth
 			switch($this->properties["mimetype"]) {
-				case 'audio/x-realaudio':
-					$video_streams = array();
-					$audio_streams = array();
-					if (is_array($this->handle["real"]["chunks"])) {
-						foreach($this->handle["real"]["chunks"] as $chunk) {
-							if ($chunk["name"] == "MDPR") {
-								if (in_array($chunk["mime_type"], array("video/x-pn-realvideo", "video/x-pn-multirate-realvideo"))) {
-									$video_streams[] = $chunk["max_bit_rate"];
-								} else {
-									if (in_array($chunk["mime_type"], array("audio/x-pn-realaudio", "audio/x-pn-multirate-realaudio"))) {
-										$audio_streams[] = $chunk["max_bit_rate"];
-									}
-								}
-							}
-						}
-
-						sort($video_streams);
-						sort($audio_streams);
-
-						$this->properties["has_video"] = (sizeof($video_streams) ? 1 : 0);
-						$this->properties["has_audio"] = (sizeof($audio_streams) ? 1 : 0);
-					} else {
-						// old real format
-						if (is_array($this->handle["real"]["old_ra_header"])) {
-							if (($this->properties["filesize"] - $this->handle["real"]["old_ra_header"]["audio_bytes"]) > 0) {
-								$this->properties["has_video"] = 1;
-								$video_streams[] = (($this->properties["filesize"] - $this->handle["real"]["old_ra_header"]["audio_bytes"]) * 8) / $this->properties["duration"];
-							} else {
-								$this->properties["has_video"] = 0;
-							}
-							if ($this->handle["real"]["old_ra_header"]["audio_bytes"] > 0) {
-								$this->properties["has_audio"] = 1;
-								$audio_streams[] = ($this->handle["real"]["old_ra_header"]["audio_bytes"] * 8) / $this->properties["duration"];
-							} else {
-								$this->properties["has_audio"] = 0;
-							}
-						} else {
-							$this->properties["has_video"] = 0;
-							$this->properties["has_audio"] = 0;
-						}
-					}
-
-					$this->properties["type_specific"] = array("real" => $this->handle["real"]);
-
-					$this->properties["title"] = 		$this->handle["real"]["comments"]["title"];
-					$this->properties["author"] = 		$this->handle["real"]["comments"]["artist"];
-					$this->properties["copyright"] = 	"";
-					$this->properties["description"] = 	$this->handle["real"]["comments"]["comment"];
-
-					$this->properties["bandwidth"] = array(
-						"min" => (sizeof($video_streams) ? $video_streams[0] : 0) + (sizeof($audio_streams) ? $audio_streams[0] : 0),
-						"max" => (sizeof($video_streams) ? $video_streams[sizeof($video_streams) - 1] : 0)+ (sizeof($audio_streams) ? $audio_streams[sizeof($audio_streams) - 1] : 0)
-					);
-					break;
 				case 'video/x-ms-asf':
 				case 'video/x-ms-wmv':
 					$this->properties["has_video"] = (sizeof($this->handle["asf"]["video_media"]) ? 1 : 0);
@@ -564,6 +526,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
 	public function transform($operation, $parameters) {
 		if (!$this->handle) { return false; }
 		if (!($this->info["TRANSFORMATIONS"][$operation])) {
@@ -642,6 +607,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return 1;
 	}
 	# ----------------------------------------------------------
+	/**
+	 *
+	 */
 	public function write($filepath, $mimetype, $pa_options=null) {
 		if (!$this->handle) { return false; }
 		if (!($ext = $this->info["EXPORT"][$mimetype])) {
@@ -1025,22 +993,37 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return true;
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function getOutputFormats() {
 		return $this->info["EXPORT"];
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function getTransformations() {
 		return $this->info["TRANSFORMATIONS"];
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function getProperties() {
 		return $this->info["PROPERTIES"];
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function mimetype2extension($mimetype) {
 		return $this->info["EXPORT"][$mimetype];
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function extension2mimetype($extension) {
 		reset($this->info["EXPORT"]);
 		while(list($k, $v) = each($this->info["EXPORT"])) {
@@ -1051,16 +1034,25 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return '';
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function mimetype2typename($mimetype) {
 		return $this->typenames[$mimetype];
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function reset() {
 		$this->errors = array();
 		$this->properties = $this->oproperties;
 		return $this->handle = $this->ohandle;
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function init() {
 		$this->errors = array();
 		$this->filepath = "";
@@ -1070,6 +1062,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$this->metadata = array();
 	}
 	# ------------------------------------------------
+	/**
+	 *
+	 */
 	public function htmlTag($ps_url, $pa_properties, $pa_options=null, $pa_volume_info=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
@@ -1082,122 +1077,6 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 		
 		switch($pa_properties["mimetype"]) {
-			# ------------------------------------------------
-			case 'audio/x-realaudio':
-				$vs_name = $pa_options["name"] ? $pa_options["name"] : "prm";
-
-				$vb_show_controls = (isset($pa_options["show_controls"]) && $pa_options["show_controls"]) ? 1 : 0;
-				if ($pa_options["text_only"]) {
-					return "<a href='".(isset($pa_options["url"]) ? $pa_options["url"] : $ps_url)."'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View Realmedia")."</a>";
-				} else {
-					ob_start();
-		?>
-					<table>
-						<tr>
-							<td>
-								<object id="<?php print $vs_name; ?>" width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"]; ?>" classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA">
-									<param name="controls" value="ImageWindow">
-		<?php
-			if ($vb_show_controls) {
-		?>
-									<param name="console" value="<?php print $vs_name; ?>_controls">
-		<?php
-			}
-		?>
-									<param name="autostart" value="true">
-									<param name="type" value="audio/x-pn-realaudio-plugin">
-									<param name="autogotourl" value="false">
-									<param name="src" value="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>">
-
-									<embed name="<?php print $vs_name; ?>" src="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>" width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"]; ?>"
-										controls="ImageWindow" nojava="false"
-										showdisplay="0" showstatusbar="1" autostart="true" type="audio/x-pn-realaudio-plugin">
-									</embed>
-								</object>
-							</td>
-						</tr>
-<?php
-					if ($vb_show_controls) {
-?>
-						<tr>
-							<td>
-								<object id="<?php print $vs_name; ?>_controls" width="<?php print $pa_properties["width"]; ?>" height="32" classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA">
-									<param name="controls" value="ControlPanel">
-									<param name="type" value="audio/x-pn-realaudio-plugin">
-									<param name="src" value="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>">
-
-									<embed name="id_<?php print $vs_name; ?>_controls" src="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>" width="<?php print $pa_properties["width"]; ?>" height="32"
-										console="Clip1" controls="ControlPanel" type="audio/x-pn-realaudio-plugin">
-									</embed>
-								</object>
-							</td>
-						</tr>
-<?php
-					}
-?>
-					</table>
-<?php
-					return ob_get_clean();
-				}
-				break;
-			# ------------------------------------------------
-			case 'video/x-ms-asf':
-			case 'video/x-ms-wmv':
-				$vs_name = $pa_options["name"] ? $pa_options["name"] : "pwmv";
-
-				$vb_show_controls = (isset($pa_options["show_controls"]) && $pa_options["show_controls"]) ? "1" : "0";
-
-				ob_start();
-
-				if (isset($pa_options["text_only"]) && $pa_options["text_only"]) {
-					return "<a href='".(isset($pa_options["url"]) ? $pa_options["url"] : $ps_url)."'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View WindowsMedia")."</a>";
-				} else {
-?>
-					<table>
-						<tr>
-							<td>
-								<object id="<?php print $vs_name; ?>"
-									standby="Loading Microsoft Windows Media Player components..."
-									type="application/x-oleobject"
-									width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"] + ($vb_show_controls == 'true' ? 45 : 0); ?>"
-									codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715"
-									classid="CLSID:22D6F312-B0F6-11D0-94AB-0080C74C7E95">
-									<param name="ShowControls" value="<?php print $vb_show_controls; ?>">
-									<param name="ShowAudioControls" value="<?php print $vb_show_controls; ?>">
-									<param name="ShowPositionControls" value="<?php print $vb_show_controls; ?>">
-									<param name="ShowTracker" value="<?php print $vb_show_controls; ?>">
-									<param name="ShowStatusBar" value="<?php print $vb_show_controls; ?>">
-									<param name="ShowDisplay" value="<?php print $vb_show_controls; ?>">
-									<param name="AnimationatStart" value="0">
-									<param name="AutoStart" value="1">
-									<param name="FileName" value="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>">
-									<param name="AllowChangeDisplaySize" value="1">
-									<param name="DisplaySize" value="0">
-
-									<embed  src="<?php print isset($pa_options["url"]) ? $pa_options["url"] : $ps_url; ?>"
-										name="<?php print $vs_name; ?>"
-										id="<?php print $vs_name; ?>"
-										width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"] + ($vb_show_controls == 'true' ? 45 : 0); ?>"
-										AutoStart="1"
-										AnimationatStart="0"
-										ShowControls="<?php print $vb_show_controls; ?>"
-										ShowAudioControls="<?php print $vb_show_controls; ?>"
-										ShowPositionControls="<?php print $vb_show_controls; ?>"
-										ShowStatusBar="<?php print $vb_show_controls; ?>"
-										ShowTracker="<?php print $vb_show_controls; ?>"
-										ShowDisplay="<?php print $vb_show_controls; ?>"
-										AllowChangeDisplaySize="1"
-										DisplaySize="0"
-										TYPE="application/x-mplayer2"
-										PLUGINSPAGE="http://www.microsoft.com/isapi/redir.dll?prd=windows&sbp=mediaplayer&ar=Media&sba=Plugin&">
-									</embed>
-								</object>
-							</td>
-						</tr>
-					</table>
-<?php
-					return ob_get_clean();
-				}
 			# ------------------------------------------------
 			case 'video/quicktime':
 				$vs_name = $pa_options["name"] ? $pa_options["name"] : "qplayer";
@@ -1256,47 +1135,6 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				ob_start();
 	
 			$vs_config = 'config={"playlist":[{"url":"'.$vs_poster_frame_url.'", "scaling": "fit"}, {"url": "'.$ps_url.'","autoPlay":false,"autoBuffering":true, "scaling": "fit"}]};';
-			$vb_is_rtmp = false;
-			
-			if(($vb_is_rtmp = (substr($ps_url, 0, 7) === 'rtmp://'))) { //  && (isset($pa_options['always_use_flash']) && $pa_options['always_use_flash'])) {
-				$pa_options['always_use_flash'] = true;
-				
-				switch($pa_properties["mimetype"]) {
-					case "video/x-flv":
-						$vs_type = 'flv';
-						break;
-					case 'audio/mpeg':
-						$vs_type = 'mp3';
-						break;
-					case 'video/mpeg':
-					case 'video/mp4':
-					default:
-						$vs_type = 'mp4';
-						break;
-				}
-				
-				if ($vb_is_rtmp) {
-					$va_volume_info =  (isset($pa_volume_info['accessUsingMirror']) && (bool)$pa_volume_info['accessUsingMirror']) ? $pa_volume_info['mirrors'][$pa_volume_info['accessUsingMirror']] : $pa_volume_info;
-				
-					$va_tmp = explode('/', $ps_url);
-					$va_filename = explode('.', array_pop($va_tmp));
-					$vs_ext = $va_filename[1];
-					
-					$vs_stub = ((isset($va_volume_info['accessProtocol']) ? $va_volume_info['accessProtocol'] : $va_volume_info['protocol'])).'://'.((isset($va_volume_info['accessHostname']) ? $va_volume_info['accessHostname'] : $va_volume_info['hostname'])).((isset($va_volume_info['accessUrlPath']) ? $va_volume_info['accessUrlPath'] : $va_volume_info['urlPath']));
-
-					$vs_file_path = str_replace($vs_stub, '', $ps_url);
-					$vs_file_path = preg_replace('!\.'.$vs_ext.'$!', '', $vs_file_path);
-					
-					
-					$vs_config = '{ "playlist":[ {"url": "'.$va_volume_info['rtmpContentPath'].$vs_file_path.'", "provider": "streaming_server"} ], "plugins" : { "streaming_server" : { "url": "flowplayer.rtmp-3.2.3.swf", "netConnectionUrl": "'.((isset($va_volume_info['accessProtocol']) ? $va_volume_info['accessProtocol'] : $va_volume_info['protocol'])).'://'.((isset($va_volume_info['accessHostname']) ? $va_volume_info['accessHostname'] : $va_volume_info['hostname'])).$va_volume_info['rtmpMediaPrefix'].'" } } }';
-				}
-?>
-				<div id="<?php print $vs_id; ?>" style="width: <?php print $vn_width; ?>px; height: <?php print $vn_height; ?>px;"> </div>
-				<script type="text/javascript">
-					flowplayer("<?php print $vs_id; ?>", "<?php print $viewer_base_url; ?>/viewers/apps/flowplayer-3.2.7.swf", <?php print $vs_config; ?>);
-				</script>
-<?php
-			} else {
 ?>
 			<!-- Begin VideoJS -->
 			 <video id="<?php print $vs_id; ?>" class="video-js vjs-default-skin"  
@@ -1305,89 +1143,35 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				  data-setup='{}'>  
 				 <source src="<?php print $ps_url; ?>" type="video/mp4"></source>  
 <?php
-	if(is_array($va_captions)) {
-		foreach($va_captions as $vn_locale_id => $va_caption_track) {
-			print "<track kind=\"captions\" src=\"".$va_caption_track['url']."\" srclang=\"".$va_caption_track["locale_code"]."\" label=\"".$va_caption_track['locale']."\">\n";	
-		}
-	}
+					if(is_array($va_captions)) {
+						foreach($va_captions as $vn_locale_id => $va_caption_track) {
+							print "<track kind=\"captions\" src=\"".$va_caption_track['url']."\" srclang=\"".$va_caption_track["locale_code"]."\" label=\"".$va_caption_track['locale']."\">\n";	
+						}
+					}
 ?>
 				</video>
 			<script type="text/javascript">
 				_V_.players["<?php print $vs_id; ?>"] = undefined;	// make sure VideoJS doesn't think it has already loaded the viewer
 				jQuery("#<?php print $vs_id; ?>").attr('width', jQuery('#<?php print $vs_id; ?>:parent').width()).attr('height', jQuery('#<?php print $vs_id; ?>:parent').height());
 				_V_("<?php print $vs_id; ?>", {}, function() {});
+				
+				if (caUI.mediaPlayerManager) { caUI.mediaPlayerManager.register("<?php print $vs_id; ?>", _V_.players["<?php print $vs_id; ?>"], 'VideoJS'); }
 			</script>
 			<!-- End VideoJS -->
 <?php
-		}
-?>
-
-<?php
 				return ob_get_clean();
 				break;
-			
 			# ------------------------------------------------
 			case 'video/ogg':
-				
-				$vs_id = 							$pa_options["id"] ? $pa_options["id"] : "mp4_player";
-				$vs_poster_frame_url =	$pa_options["poster_frame_url"];
-				$vn_width =						$pa_options["viewer_width"] ? $pa_options["viewer_width"] : $pa_properties["width"];
-				$vn_height =					$pa_options["viewer_height"] ? $pa_options["viewer_height"] : $pa_properties["height"];
-				
-				return "<video id='{$vs_id}' src='{$ps_url}' width='{$vn_width}' height='{$vn_height}' controls='1'></video>";
-				break;
-			# ------------------------------------------------
 			case 'video/x-matroska':
-				
-				$vs_id = 							$pa_options["id"] ? $pa_options["id"] : "mp4_player";
-				$vs_poster_frame_url =	$pa_options["poster_frame_url"];
+			case "video/x-ms-asf":
+			case "video/x-ms-wmv":
+				$vs_id = 						$pa_options["id"] ? $pa_options["id"] : "mp4_player";
+				$vs_poster_frame_url =			$pa_options["poster_frame_url"];
 				$vn_width =						$pa_options["viewer_width"] ? $pa_options["viewer_width"] : $pa_properties["width"];
 				$vn_height =					$pa_options["viewer_height"] ? $pa_options["viewer_height"] : $pa_properties["height"];
 				
 				return "<video id='{$vs_id}' src='{$ps_url}' width='{$vn_width}' height='{$vn_height}' controls='1'></video>";
-				break;
-			# ------------------------------------------------
-			case 'application/x-shockwave-flash':
-				$vs_name = $pa_options["name"] ? $pa_options["name"] : "swfplayer";
-
-				#
-				# We allow forcing of width and height for Flash media
-				#
-				# If you set a width or height, the Flash media will be scaled so it is as large as it
-				# can be without exceeding either dimension
-				if (isset($pa_options["width"]) || isset($pa_options["height"])) {
-					$vn_ratio = 1;
-					$vn_w_ratio = 0;
-					if ($pa_options["width"] > 0) {
-						$vn_ratio = $vn_w_ratio = $pa_options["width"]/$pa_properties["width"];
-					}
-					if ($pa_options["height"] > 0) {
-						$vn_h_ratio = $pa_options["height"]/$pa_properties["height"];
-						if (($vn_h_ratio < $vn_w_ratio) || (!$vn_w_ratio)) {
-							$vn_ratio = $vn_h_ratio;
-						}
-					}
-
-					$pa_options["width"] = intval($pa_properties["width"] * $vn_ratio);
-					$pa_options["height"] = intval($pa_properties["height"] * $vn_ratio);
-				}
-				ob_start();
-
-				if ($pa_options["text_only"]) {
-					return "<a href='$ps_url'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View Flash")."</a>";
-				} else {
-?>
-
-			<div id="<?php print $vs_name; ?>">
-				<h1><?php print _t('You must have the Flash Plug-in version 9.0.124 or better installed to play video and audio in CollectiveAccess'); ?></h1>
-				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
-			</div>
-			<script type="text/javascript">
-				//jQuery(document).ready(function() { swfobject.embedSWF("<?php print $ps_url; ?>", "<?php print $vs_name; ?>", "<?php print isset($pa_options["width"]) ? $pa_options["width"] : $pa_properties["width"]; ?>", "<?php print isset($pa_options["height"]) ? $pa_options["height"] : $pa_properties["height"]; ?>", "9.0.124", "swf/expressInstall.swf", {}, {'allowscriptaccess': 'always', 'allowfullscreen' : 'true', 'allowNetworking' : 'all'}); });
-			</script>
-<?php
-					return ob_get_clean();
-				}
 				break;
 			# ------------------------------------------------
 			case 'image/jpeg':
@@ -1396,7 +1180,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				if (!is_array($pa_properties)) { $pa_properties = array(); }
 				return caHTMLImage($ps_url, array_merge($pa_options, $pa_properties));
 				break;
-				# ------------------------------------------------
+			# ------------------------------------------------
 		}
 	}
 
@@ -1406,4 +1190,3 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	}
 	# ------------------------------------------------
 }
-?>

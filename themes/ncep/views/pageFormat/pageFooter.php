@@ -41,7 +41,7 @@
 							<li>|</li>
 							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/community" target="_blank">Community</a></li>
 							<li>|</li>
-							<li><a href="https://www.facebook.com/NCEPfan" class="social"><i class="fa fa-facebook-square" target="_blank"></i></a></li>
+							<li><a href="https://www.facebook.com/NCEPfan" class="social" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 						</ul>
 						&copy; NCEP <?php print date('Y'); ?>
 					</div>

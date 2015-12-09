@@ -412,6 +412,10 @@ class SearchResult extends BaseObject {
 			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
 		
+		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
+			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
+		}
+		
 		$vs_pk = $t_rel_instance->primaryKey();
 		$vs_parent_id_fld = $t_rel_instance->getProperty('HIERARCHY_PARENT_ID_FLD');
 		$vs_sql = "
@@ -1959,6 +1963,10 @@ class SearchResult extends BaseObject {
 					
 						if ($pa_options['unserialize']) {
 							$vs_prop = caUnserializeForDatabase($vs_prop);
+							
+							if(is_array($vs_prop) && $va_path_components['subfield_name']) {
+								$vs_prop = isset($vs_prop[$va_path_components['subfield_name']]) ? $vs_prop[$va_path_components['subfield_name']] : null;
+							}
 						}
 					
 						if ($pa_options['convertCodesToDisplayText']) {
