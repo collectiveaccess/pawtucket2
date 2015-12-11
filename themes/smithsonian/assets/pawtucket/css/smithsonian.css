@@ -438,7 +438,7 @@ div.browseFacetItem a{
 	.filterMenuFacetList {
 		width:20%;
 	}
-	.filterMenureults {
+	.filterMenuResults {
 		width:80%;
 	}
 	.mainfacet {
@@ -453,7 +453,7 @@ div.browseFacetItem a{
 	margin:0;
 	padding:0;
 }
-.filterMenureults {
+.filterMenuResults {
 	float:left; 
 	padding-top:2px;
 	margin-right:-15px; 
