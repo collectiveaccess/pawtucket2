@@ -1,11 +1,12 @@
 body {
 	font-family: "open sans", helvetica, sans-serif;	
-	
+	min-width:980px;
 	background: #fff url('../graphics/bg-content.png') repeat top left;	
 }
 .pageWrapper {
 	max-width:1280px;
 	margin:0px auto 0px auto;
+	min-width:960px;
 }
 h1 {
 	font-weight: 600;
@@ -108,6 +109,7 @@ a {
 	margin-bottom:0px;
 	box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.3);
 	border-bottom: solid 2px #fff; */
+	min-width: 960px;
 }
 .navbar.frontPage  {
 	border-bottom: solid 0px #fff; */
@@ -575,6 +577,15 @@ div.advancedSearchFieldTall {
 	border-top:solid 6px #77a22f;
 	border-bottom:solid 6px #77a22f;
 }
+.setItemCaption {
+	padding-top: 5px;
+    font-weight: bold;
+}
+@media (min-width: 768px) {
+	.gallery #galleryDetailImageArea {
+		height: 470px;
+	}
+}
 
 /* Finding Aid */
 
@@ -623,5 +634,17 @@ a.faDownload:hover {
 	color: #77a22f;
 }
 
-
+/* Annotations */ 
+.video-js .vjs-tech {
+	position:relative !important;
+}
+#detailAnnotations h6 {
+	color: #454545;
+	font-weight:bold;
+	text-transform:none;
+	margin-bottom:10px;
+}
+.detail #detailAnnotations ul li:hover {
+	background-color: #ddd;
+}
 

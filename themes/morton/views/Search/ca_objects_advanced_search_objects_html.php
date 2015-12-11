@@ -52,7 +52,7 @@
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
-				Media Representation<br/>
+				Has Media<br/>
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 			<div class="advancedSearchFieldTall">
 				Entity <br/>
 				{{{ca_entities.preferred_labels.displayname%width=200px&height=90px}}}
-				{{{ca_entities.preferred_labels:relationshipTypes%width=180px&height=90px&multiple=1}}}
+				{{{ca_entities.preferred_labels.displayname:relationshipTypes%width=180px&height=90px&multiple=1}}}
 				<br style='clear: both;'/>
 			</div>
 		</div>	
