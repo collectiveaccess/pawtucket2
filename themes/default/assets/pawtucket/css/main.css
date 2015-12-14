@@ -632,6 +632,14 @@ a.browseRemoveFacet img {
     overflow: auto;
 }
 
+.detailBrowseFacet {
+	border: 1px solid #dddddd;
+	height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: none;
+}
+
 
 /*!
  * Yamm!3
