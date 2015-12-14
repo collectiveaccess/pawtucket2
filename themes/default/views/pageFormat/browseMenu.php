@@ -28,6 +28,7 @@
  
 	$va_browse_types = caGetBrowseTypes(array('forMenuBar' => true));
 	$o_config = caGetBrowseConfig();
+	
 	if(sizeof($va_browse_types)){
 		if (!($vs_format = $o_config->get("browseMenuFormat"))) { $vs_format = $o_config->get("browse_menu_format"); }
 		switch($vs_format){
@@ -49,7 +50,7 @@
 					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")), "", "", "Browse", key($va_browse_types)); ?></li>
 <?php
 				}
-			break;
+				break;
 			# ------------------------------------------------
 			default:
 				$vs_first_browse = null;
@@ -95,7 +96,7 @@
 						});
 					</script>
 <?php
-			break;
+				break;
+			# ------------------------------------------------
 		}
 	}
-?>

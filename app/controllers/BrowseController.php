@@ -89,10 +89,10 @@
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			
- 			// Don't set last find when loading facet, as some other controllers use this action and setting
- 			// last find will disrupt ResultContext navigation by setting it to "browse" when in fact a search (or some other
- 			// context) is still in effect.
- 			if (!$this->request->getParameter('getFacet', pInteger)) {
+ 			// Don't set last find when loading facet (or when the 'dontSetFind' request param is explicitly set)
+ 			// as some other controllers use this action and setting last find will disrupt ResultContext navigation 
+ 			// by setting it to "browse" when in fact a search (or some other context) is still in effect.
+ 			if (!$this->request->getParameter('getFacet', pInteger) && !$this->request->getParameter('dontSetFind', pInteger)) {
  				$this->opo_result_context->setAsLastFind();
  			}
  			
@@ -158,27 +158,7 @@
 			// Return facet content
 			//	
 			if ($this->request->getParameter('getFacet', pInteger)) {
-				$vs_facet = $this->request->getParameter('facet', pString);
-				$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
-				$this->view->setVar('start', $vn_s);
-				$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
-				$this->view->setVar('facet_name', $vs_facet);
-				$this->view->setVar('key', $o_browse->getBrowseID());
-				$this->view->setVar('facet_info', $va_facet_info = $o_browse->getInfoForFacet($vs_facet));
-				
-				# --- pull in different views based on format for facet - alphabetical, list, hierarchy
-				switch($va_facet_info["group_mode"]){
-					case "alphabetical":
-					case "list":
-					default:
-						$this->view->setVar('facet_content', $o_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
-						$this->render("Browse/list_facet_html.php");
-					break;
-					case "hierarchical":
-						$this->render("Browse/hierarchy_facet_html.php");
-					break;
-				}
-				return;
+				return $this->getFacet($o_browse);
 			}
 		
 			//
@@ -346,7 +326,7 @@
 			$this->opo_result_context->saveContext();
  			
  			if ($ps_type) {
- 				if ($this->render("Browse/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
+ 				if ($this->render($this->ops_view_prefix."/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
  			
  			// map
@@ -369,11 +349,11 @@
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
- 					$this->render("Browse/browse_results_timelineData_json.php");
+ 					$this->render($this->ops_view_prefix."/browse_results_timelineData_json.php");
  					break;
  				default:
  					$this->opo_result_context->setCurrentView($ps_view);
- 					$this->render("Browse/browse_results_html.php");
+ 					$this->render($this->ops_view_prefix."/browse_results_html.php");
  					break;
  			}
  		}
