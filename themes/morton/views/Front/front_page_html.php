@@ -34,7 +34,7 @@
 <div class="container frontPage">
 	<div class="row">
 		<div class="col-sm-8">
-			<h2>THE STERLING MORTON ARCHIVES</h2>
+			<h2>THE STERLING MORTON LIBRARY</h2>
 			<p>The Sterling Morton Library supports the work and mission of The Morton Arboretum. Devoted mainly to the literature of botany and horticulture, especially as it relates to trees and shrubs that can be grown in northern Illinois, the collections of this special library are a unique resource in the Chicago area. Open to all, the Library and its collections present scholarly and general interest information resources about plants.</p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">

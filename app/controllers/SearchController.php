@@ -258,6 +258,9 @@
 			if ($va_restrict_to_fields = caGetOption('restrictSearchToFields', $va_browse_info, null)) {
 				$va_options['restrictSearchToFields'] = $va_restrict_to_fields;
 			}
+			if ($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $va_browse_info, null)) {
+				$va_options['excludeFieldsFromSearch'] = $va_exclude_fields_from_search;
+			}
 			
 			
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {

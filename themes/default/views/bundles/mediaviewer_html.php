@@ -139,7 +139,8 @@ if($vs_display_type == 'media_overlay'){
 		print $vs_tag;
 	}else{
 		if ($t_object && $t_rep) {
-			print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
+			// Images get zoomed on click; everything else requires a click on the magnifying glass icon
+			print $t_rep->representationIsOfClass('image') ? "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>" : $vs_tag;
 		}
 	}
 ?>

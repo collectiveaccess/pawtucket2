@@ -439,6 +439,8 @@
 			$va_rep_info = array();
 			
 			$qr_reps->seek(0);
+			if (!($vs_template = $va_detail_config['options']['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
+ 			
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
@@ -451,7 +453,7 @@
 				
 				$va_annotation_list = array();
 				if ($vs_show_annotations === 'viewer') {		// when annotations are configured
-					
+					$va_props = $qr_reps->getMediaInfo('media', 'original', 'PROPERTIES');
 					if (
 						is_array($va_annotations = $qr_reps->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
 						&& 
@@ -461,7 +463,7 @@
 					) {
 						while($qr_annotations->nextHit()) {
 							if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
-							$va_annotation_list[] = "<a href='#' onclick='caUI.mediaPlayerManager.seek(\"caMediaDisplayContentMedia_{$vn_rep_id}\", ".(float)$qr_annotations->getPropertyValue('startTimecode', true)."); return false;'>".$qr_annotations->get('ca_representation_annotations.preferred_labels.name')."</a> [".caFormatInterval($qr_annotations->getPropertyValue('endTimecode', true) - $qr_annotations->getPropertyValue('startTimecode', true))." @ ".$qr_annotations->getPropertyValue('startTimecode')."]";
+							$va_annotation_list[] = "<a href='#' onclick='caUI.mediaPlayerManager.seek(\"caMediaDisplayContentMedia_{$vn_rep_id}\", ".((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'])."); return false;'>".$qr_annotations->getWithTemplate($vs_template)."</a>";
 						}
 					}
 				}
