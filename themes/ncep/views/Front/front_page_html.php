@@ -58,7 +58,7 @@ if($q_recent->numRows()){
 		}else{
 			$va_recently_updated[$q_recent->get("object_id")] = $q_recent->get("object_id");
 		}
-		if(sizeof($va_recently_updated) == 10){
+		if(sizeof($va_recently_updated) == 5){
 			break;
 		}
 	}
@@ -67,12 +67,41 @@ if($q_recent->numRows()){
 	<div class="row">
 		<div class="col-sm-12">
 			<H1>Resources for conservation educators and practitioners to:</H1>
-			<div class="hp_icons"><?php print caGetThemeGraphic($this->request, 'hp_icons.png', array('title' => _t('Learn'))); ?></div>
+			<div class="hp_icons">
+				<?php print caGetThemeGraphic($this->request, 'hp_icons2.png'); ?>
+				<div class="learnSlice"></div>
+				<div class="exploreSlice"></div>
+				<div class="practiceSlice"></div>
+				<div class="teachSlice"></div>
+				<div class="connectSlice"></div>
+			</div>
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
+<script>
+	$(document).ready(function() {
+		$('.learnSlice').mouseenter(function(e) {  
+		  $('#hpSectionText').html('<br/>LEARN: Relevant, in-depth background resources that synthesize key issues and perspectives on a conservation topic.');
+		});
+		$('.exploreSlice').mouseenter(function(e) {  
+		  $('#hpSectionText').html('<br/>EXPLORE: Real world case studies and scenarios that foster interdisciplinary, problem-based learning.');
+		});
+		$('.practiceSlice').mouseenter(function(e) {  
+		  $('#hpSectionText').html('<br/>PRACTICE: Practical exercises in biodiversity conservation that apply fundamental concepts and develop critical skills.');
+		});
+		$('.teachSlice').mouseenter(function(e) {  
+		  $('#hpSectionText').html('<br/>TEACH: Relevant visuals, teaching notes, exercise solutions, and student learning assessments to enhance teaching.');
+		});
+		$('.connectSlice').mouseenter(function(e) {  
+		  $('#hpSectionText').html('<br/>CONNECT:  Insights, tips, and reviews from the NCEP teaching and learning community.');
+		});
+		$('.hp_icons').mouseleave(function(e) {  
+		  $('#hpSectionText').html('Our open access teaching modules improve access to high quality, up-to-date educational resources for conservation teachers and professional trainers around the world, particularly in regions with high biodiversity, significant threats, and limited opportunities.');
+		});
+	});
+</script>
 	<div class="row">
 		<div class="col-sm-8">	
-			<H2>
+			<H2 id="hpSectionText">
 				Our open access teaching modules improve access to high quality, up-to-date educational resources for conservation teachers and professional trainers around the world, particularly in regions with high biodiversity, significant threats, and limited opportunities.
 			</H2>
 		</div>
@@ -119,7 +148,7 @@ if($q_recent->numRows()){
 					<div class="tabBody">
 						<ul>
 <?php
-						if($qr_picks->numHits()){
+						if($qr_picks && $qr_picks->numHits()){
 							while($qr_picks->nextHit()){
 								if($qr_picks->get("type_id", array("convertCodesToDisplayText" => true)) == "Module"){
 									print "<li>".$qr_picks->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>")."</li>";

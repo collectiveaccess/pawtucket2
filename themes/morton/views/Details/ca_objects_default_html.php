@@ -13,18 +13,23 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
+				
+				
+				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
+<?php if ($this->getVar('commentsEnabled')) { ?>
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+<?php } ?>
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
 ?>			
@@ -92,11 +97,14 @@
 						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					}
 					if ($t_object->get('ca_objects.date.date_value')) {
-						$vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>', 'template' => '^ca_objects.date.date_value <ifdef code="ca_objects.date.date_value">^ca_objects.date.date_types</ifdef> <ifdef code="ca_objects.date.date_notes"><br/>^ca_objects.date.date_notes</ifdef>', 'convertCodesToDisplayText' => true));
-						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+						$vs_date = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.date.date_types =~ /Date created/">^ca_objects.date.date_value<br/><ifdef code="ca_objects.date.date_notes"><br/>^ca_objects.date.date_notes</ifdef></if></unit>');
+						print "<div class='unit'><h6>Date Created</h6>".$vs_date."</div>";
 					}										
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
 						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
+					}
+					if ($vs_appeared = $t_object->get('ca_objects.appeared_in')){
+						print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."</div>";
 					}
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
@@ -114,9 +122,14 @@
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
 							$va_subjects_list[] = ucfirst($va_subject_genre);
 						}
-					}											
+					}
+					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+						foreach ($va_subject_keywords as $va_text => $va_subject_keyword) {
+							$va_subjects_list[] = ucfirst($va_subject_keyword);
+						}
+					}																
 					asort($va_subjects_list);
-					if ($va_subjects_list) {
+					if (sizeof($va_subjects_list) > 1) {
 						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
 					}																											
 ?>								

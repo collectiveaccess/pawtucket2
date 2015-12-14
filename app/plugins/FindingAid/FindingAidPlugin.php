@@ -35,7 +35,7 @@
 			} else {
 				$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
 			}
-			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
+			#$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
 			parent::__construct();
 		}
 		# -------------------------------------------------------

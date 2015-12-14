@@ -421,7 +421,7 @@ div.browseMenuBrowseSearch input {
     vertical-align: middle;
     width: 100%;
 }
-div.browseFacetItem a{
+/*div.browseFacetItem a{
    background-color:#f5f5f5;
    border-left:4px solid #fff;
    border-top:2px solid #fff;
@@ -430,7 +430,7 @@ div.browseFacetItem a{
    height: 65px;
    padding-top:3px;
    font-size:12px;
-}
+}*/
 @media (max-width: 768px) {
 	div.browseFacetItem a{
 	   width:33%;
@@ -438,7 +438,7 @@ div.browseFacetItem a{
 	.filterMenuFacetList {
 		width:20%;
 	}
-	.filterMenureults {
+	.filterMenuResults {
 		width:80%;
 	}
 	.mainfacet {
@@ -453,7 +453,7 @@ div.browseFacetItem a{
 	margin:0;
 	padding:0;
 }
-.filterMenureults {
+.filterMenuResults {
 	float:left; 
 	padding-top:2px;
 	margin-right:-15px; 
@@ -500,11 +500,11 @@ div.browseFacetItem li{
 	margin:0px;
 	padding:0px;
 }
-div.browseFacetItem a:hover {
+/*div.browseFacetItem a:hover {
 	background-color:#e7e7e7;
 	text-decoration:none;
 	color:#666;
-}
+}*/
 a.browseRemoveFacet img {
 	margin-bottom: 3px;	
 }
@@ -871,8 +871,8 @@ a.browseRemoveFacet img {
 .detail .meta {
 	width:60%;
 	display:inline-block;
-	margin-bottom:10px;
-	min-height: 50px;
+	margin-bottom:0px;
+	min-height: 40px; 
 }
 .detail .metaTitle {
 	width:30%;
@@ -939,7 +939,9 @@ a.browseRemoveFacet img {
 .detail #detailTools{
 	border-bottom: 1px solid #dddddd;
 	clear:left;
-	padding-top:10px;
+	padding-top:0px;
+	margin-top:0px; 
+	margin-bottom:20px;
 }
 .detail .detailTool {
 	border-top: 1px solid #dddddd;
@@ -1054,7 +1056,6 @@ a.browseRemoveFacet img {
 	padding:0px 0px 0px 20px;
 }
 #bViewButtons{
-	float:right;
 	font-size:18px;
 	padding-bottom:5px;
 }
@@ -1381,6 +1382,14 @@ a.browseRemoveFacet img {
 }
 .multisearch .placesResult:hover, .multisearch .occurrencesResult:hover, .multisearch .entitiesResult:hover {
 	background-color:#ebebeb;
+}
+
+/* ------------------------------------------*/
+/* advanced search */
+/*------------------------------------------*/
+
+div.advancedSearchField {
+	height: 80px;
 }
 
 /* ------------------------------------------*/
