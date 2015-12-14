@@ -28,10 +28,11 @@
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
+ 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
  	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	
- 	class DetailController extends ActionController {
+ 	class DetailController extends FindController {
  		# -------------------------------------------------------
  		/**
  		 *
@@ -42,6 +43,11 @@
  		 *
  		 */
  		protected $config = null;
+ 		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Details';
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
@@ -81,6 +87,43 @@
  			AssetLoadManager::register("readmore");
  			AssetLoadManager::register("maps");
  			
+ 			//
+			// Return facet content
+			//	
+			if(($ps_facet = $this->request->getParameter('facet', pString)) || ($ps_remove_facet = $this->request->getParameter('removeCriterion', pString))) {
+				$vs_browse_type = $this->request->getParameter('browseType', pString);
+				if (
+					($vs_browse_table = ((isset($this->opa_detail_types[$vs_browse_type]) && isset($this->opa_detail_types[$vs_browse_type]['table']))) ? $this->opa_detail_types[$vs_browse_type]['table'] : null)
+					&&
+					($o_browse = caGetBrowseInstance($vs_browse_table))
+				) {
+					if (!($this->request->getParameter('getFacet', pInteger))) {
+						if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+							$o_browse->reload($ps_cache_key);
+						}
+						
+						if ($ps_facet) { 
+							$o_browse->addCriteria($ps_facet, array($this->request->getParameter('id', pString))); 
+						} else {
+							$o_browse->removeCriteria($ps_remove_facet, array($this->request->getParameter('removeID', pString)));
+						}
+						$o_browse->execute();
+						$ps_cache_key = $o_browse->getBrowseID();
+						$this->request->setParameter('key', $ps_cache_key);
+					} else {
+						$vs_class = 'ca_objects';
+						$o_browse = caGetBrowseInstance($vs_class);
+						if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+							$o_browse->reload($ps_cache_key);
+						} else {
+							$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+							$o_browse->execute();
+						}
+						return $this->getFacet($o_browse);
+					}
+				}
+			}
+			
  			$ps_function = strtolower($ps_function);
  			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
@@ -208,6 +251,68 @@
 				if ($vn_mapped_count > 0) { 
 					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('zoom_level', $va_options, 12))));
 				}
+			}
+			
+			// Filtering of related items
+			if ($t_subject->tableName() != 'ca_objects') {
+				$vs_class = 'ca_objects';
+				$o_browse = caGetBrowseInstance($vs_class);
+				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+					$o_browse->reload($ps_cache_key);
+				} else {
+					$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+					$ps_cache_key = $o_browse->getBrowseID();
+				}
+				$o_browse->execute();
+				
+				$this->view->setVar('key', $o_browse->getBrowseID());
+				$this->view->setVar('browse', $o_browse);
+				//
+				// Facets
+				//
+				if ($vs_facet_group = caGetOption('facetGroup', $va_browse_info, null)) {
+					$o_browse->setFacetGroup($vs_facet_group);
+				}
+			
+				$o_browse->execute();
+				$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
+				$va_facets = $o_browse->getInfoForAvailableFacets();
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
+				}
+				$this->view->setVar('facets', $va_facets);
+		
+				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+			
+				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			
+			
+				// remove base criteria from display list
+				if (is_array($va_base_criteria)) {
+					foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+						unset($va_criteria[$vs_base_facet]);
+					}
+				}
+				$va_criteria = $o_browse->getCriteriaWithLabels();
+			
+				$va_criteria_for_display = array();
+				foreach($va_criteria as $vs_facet_name => $va_criterion) {
+					$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+					foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+						$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+					}
+				}
+				$this->view->setVar('criteria', $va_criteria_for_display);
+				
+				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $ps_function);
+				$o_rel_context->setParameter('key', $vs_key);
+				$o_rel_context->setAsLastFind(true);
+				
+				$qr_rel_res = $o_browse->getResults();
+				$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				
+				$o_rel_context->saveContext();
 			}
 			
  			//
@@ -1369,5 +1474,21 @@
 		public function ViewerHelp() {
 			$this->render('Details/viewer_help_html.php');
 		}
+		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Detail',
+ 				'action' => $po_request->getAction(),
+ 				'params' => array(
+ 					'key'
+ 				)
+ 			);
+			return $va_ret;
+ 		}
  		# -------------------------------------------------------
 	}
