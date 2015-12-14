@@ -612,7 +612,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					$va_ft_stem_terms = array();
 
 					$vs_access_point = '';
-					$va_raw_terms = array();
+					$va_raw_terms = $va_raw_terms_escaped = array();
 					
 					$vs_fld_num = $vs_table_num = $t_table = null;
 					
@@ -757,6 +757,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								
 								$va_terms = preg_split("![".$this->ops_search_tokenizer_regex."]+!u", (string)$o_term->text);
 								$va_raw_terms[] = (string)$o_term->text;
+								$va_raw_terms_escaped[] = '"'.$this->opo_db->escape((string)$o_term->text).'"';
 								foreach($va_terms as $vs_term) {
 									if (strlen($vs_escaped_text = $this->opo_db->escape($vs_term))) {
 										$va_words[] = $vs_escaped_text;
@@ -843,10 +844,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$va_access_point_info = $this->_getElementIDForAccessPoint($pn_subject_tablenum, $o_term->field);
 								$vs_access_point = $va_access_point_info['access_point'];
 							
-								//$vs_term = $o_term->text;
-								$vs_term = preg_replace("![".$this->ops_search_tokenizer_regex."]+!u", '', (string)$o_term->text);
-					
-								if ($vs_access_point && (mb_strtoupper($vs_term) == _t('[BLANK]'))) {
+								$vs_raw_term = (string)$o_term->text;
+								$vs_term = preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", '', $vs_raw_term);
+								
+								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == _t('[BLANK]'))) {
 									$t_ap = $this->opo_datamodel->getInstanceByTableNum($va_access_point_info['table_num'], true);
 									if (is_a($t_ap, 'BaseLabel')) {	// labels have the literal text "[Blank]" indexed to "blank" to indicate blank-ness 
 										$vb_is_blank_search = false;
@@ -857,7 +858,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 										$vs_fld_num = $va_access_point_info['field_num'];
 										break;
 									} 
-								} elseif ($vs_access_point && (mb_strtoupper($vs_term) == _t('[SET]'))) {
+								} elseif ($vs_access_point && (mb_strtoupper($vs_raw_term) == _t('[SET]'))) {
 									$vb_is_not_blank_search = true;
 									$vs_table_num = $va_access_point_info['table_num'];
 									$vs_fld_num = $va_access_point_info['field_num'];
@@ -866,9 +867,9 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									$vs_table_num = $va_access_point_info['table_num'];
 									$vs_fld_num = $va_access_point_info['field_num'];
 								}
-								
+							
 								$va_terms = array($vs_term); //$this->_tokenize($vs_term, true, $vn_i);
-								$vb_has_wildcard = (bool)(preg_match('!\*$!', $vs_term));
+								$vb_has_wildcard = (bool)(preg_match('!\*$!', $vs_raw_term));
 								$vb_output_term = false;
 								foreach($va_terms as $vs_term) {
 									if ($vb_has_wildcard) { $vs_term .= '*'; }
@@ -883,6 +884,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 										$vb_do_stemming = $this->opb_do_stemming;
 										if (mb_substr($vs_term, -1) == '|') {
 											$vs_term = mb_substr($vs_term, 0, mb_strlen($vs_term) - 1);
+											$vb_do_stemming = false;
+										} elseif (mb_substr($vs_raw_term, -1) == '|') {
 											$vb_do_stemming = false;
 										}
 										if ($vb_do_stemming) {
@@ -902,7 +905,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									$vb_output_term = true;	
 								
 								}
-								if ($vb_output_term) { $va_raw_terms[] = $vs_term; }
+								if ($vb_output_term) { $va_raw_terms[] = $vs_raw_term; $va_raw_terms_escaped[] = '"'.$this->opo_db->escape($vs_raw_term).'"'; }
 							}
 							
 							break;
@@ -1296,7 +1299,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						$va_sql_where = array();
 						if (sizeof($va_ft_terms)) {
 							if (($t_table) && (strlen($vs_fld_num) > 1)) {
-								$va_sql_where[] = "((swi.field_table_num = ".intval($vs_table_num).") AND (swi.field_num = '{$vs_fld_num}') AND (sw.word IN (".join(',', $va_ft_terms).")))";
+								$o_search = new SearchEngine();
+								$va_field_info = $o_search->getFieldOptions($pn_subject_tablenum, $vs_table_num, $vs_field);
+								
+								$va_sql_where[] = "((swi.field_table_num = ".intval($vs_table_num).") AND (swi.field_num = '{$vs_fld_num}') AND (sw.word IN (".((in_array('DONT_TOKENIZE', $va_field_info) || in_array('INDEX_AS_IDNO', $va_field_info)) ? join(',', $va_raw_terms_escaped) : join(',', $va_ft_terms)).")))";
 							} else {
 								if (sizeof($va_ft_terms) == 1) {
 									$va_sql_where[] =  "(sw.word = ".$va_ft_terms[0].")";
