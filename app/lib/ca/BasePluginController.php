@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -67,15 +67,27 @@
  			$vs_plugin_name = $po_request->getModulePath();
  			
  			// Load plugin config
- 			$this->config = Configuration::load(__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_plugin_name}.conf");
+ 			$this->config = null;
+ 			
+ 			// The main configuration file for a plugin can be any of the names below
+ 			foreach(array("{$vs_plugin_name}.conf", "plugin.conf", "app.conf") as $vs_config_filename) {
+ 				if(file_exists(__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_config_filename}")) { 
+ 					$this->config = Configuration::load(__CA_APP_DIR__."/plugins/{$vs_plugin_name}/conf/{$vs_config_filename}");
+ 					break;
+ 				}
+ 			}
+ 			if (!$this->config) { throw new ApplicationException(_t('No configuration file found for plugin %1', $vs_plugin_name)); }
  		
  			// Load plugin view paths
  			if (!is_array($pa_view_paths)) { $pa_view_paths = array(); }
+ 			
+ 			// Paths are evaluated back-to-front; we first look in a directory with the name of the plugin in the current theme. If
+ 			// we don't find a view there then we fall back to the old locations in the plugin itself (themes/<theme name>/views and themes/default/views)
  			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/default/views";
  			$pa_view_paths[] = __CA_APP_DIR__."/plugins/{$vs_plugin_name}/themes/".__CA_THEME__."/views";
+ 			$pa_view_paths[] = __CA_THEME_DIR__."/views/{$vs_plugin_name}";
  			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}
  		# -------------------------------------------------------
 	}
-?>
