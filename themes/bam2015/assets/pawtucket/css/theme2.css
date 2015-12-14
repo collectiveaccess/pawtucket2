@@ -69,12 +69,24 @@ input:focus{
 	overflow:hidden;
 	font-family: "News Gothic Roman";
 }
+.bBAMResultListItem.occItem a{
+	height:2.5em;
+	line-height:1.2em;
+}
 .bBAMResultListItem span{
 	color:#33d9c5 !important;
 }
 .bBAMResultListItem a:hover{
 	color:#33d9c5; 
 	text-decoration:none;
+}
+.bBAMResultListItem span.series{
+	text-transform:uppercase;
+	color:#999999 !important;
+	font-size:14px;
+	padding-top:4px;
+	display:inline-block;
+	font-family: "News Gothic Condensed";
 }
 /* image results */
 .bBAMResultItemImg a:hover{

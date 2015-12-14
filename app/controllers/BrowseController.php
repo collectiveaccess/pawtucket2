@@ -82,7 +82,7 @@
  			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
- 			$vs_class = $va_browse_info['table'];
+ 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
@@ -105,10 +105,9 @@
  			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
+ 				$va_views = array('xlsx' => array(), 'pptx' => array(), 'list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
  			} else {
-				$va_views['pdf'] = array();
-				$va_views['timelineData'] = array();
+				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
 			
 			$va_view_info = $va_views[$ps_view];
