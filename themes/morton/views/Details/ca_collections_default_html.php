@@ -29,7 +29,7 @@
 						$va_anchors[] = "<a href='#extent'>Extent</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='extent'>Extent</a></h3>".$vs_extent."</div>";
 					}
-					if ($vs_creator = $t_item->get('ca_entities', array('delimiter' => ', ', 'returnAsLink' => true, 'template' => '^preferred_labels ^relationship_type'))) {
+					if ($vs_creator = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> ^relationship_type</unit>')) {
 						$va_anchors[] = "<a href='#creator'>Creator</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='creator'>Creator</a></h3>".$vs_creator."</div>";
 					}
@@ -97,7 +97,7 @@
 						$va_anchors[] = "<a href='#reprocon'>Conditions governing reproduction</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='reprocon'>Conditions governing reproduction</a></h3>".$vs_reproduction_conditions."</div>";
 					}
-					if ($vs_langmaterial = $t_item->get('ca_collections.langmaterial')) {
+					if ($vs_langmaterial = $t_item->getWithTemplate('<unit delimiter="<br/>">^ca_collections.langmaterial.material ^ca_collections.langmaterial.language1</unit>')) {
 						$va_anchors[] = "<a href='#langmaterial'>Languages and scripts on the material</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='langmaterial'>Languages and scripts on the material</a></h3>".$vs_langmaterial."</div>";
 					}	

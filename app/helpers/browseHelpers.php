@@ -243,7 +243,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$o_browse = caGetBrowseInstance($va_browse_info["table"]);
 		if ($vs_key) { $o_browse->reload($vs_key); }
 		
-		if ($vs_menu_bar_facet_group = $o_browse_config->get('menubarFacetGroup')) {
+		if ((isset($va_browse_info['facetGroup']) && ($vs_menu_bar_facet_group = $va_browse_info['facetGroup'])) || ($vs_menu_bar_facet_group = $o_browse_config->get('menubarFacetGroup'))) {
 			$o_browse->setFacetGroup($vs_menu_bar_facet_group);
 		}
 		

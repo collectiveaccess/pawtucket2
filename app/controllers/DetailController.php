@@ -258,6 +258,8 @@
 				$this->view->setVar('tags', implode(", ", $va_tags));
 			
 				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $va_comments, $va_tags));
+			} else {
+				$this->view->setVar("itemComments", '');
 			}
  			
  			//
@@ -367,6 +369,7 @@
  			
  			if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
  			
+ 			$va_props = $t_rep->getMediaInfo('media', 'original', 'PROPERTIES');
  			$va_annotation_list = $va_annotation_times = array();
  			if (
 				is_array($va_annotations = $t_rep->getAnnotations(array('idsOnly' => true))) //$t_rep->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
@@ -378,7 +381,7 @@
 				while($qr_annotations->nextHit()) {
 					if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
 					$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
-					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true), (float)$qr_annotations->getPropertyValue('endTimecode', true));
+					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$va_props['timecode_offset']);
 				}
 			}
 			

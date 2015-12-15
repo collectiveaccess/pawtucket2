@@ -5,6 +5,9 @@
 	$vs_intro_text = $this->getVar('intro_text');
 	$va_open_by_default = $this->getVar('open_by_default');
 	$va_access_values = caGetUserAccessValues($this->request); 
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	MetaTagManager::setWindowTitle($va_home." > Finding Aids"); 
 	
 	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values));
 	

@@ -19,7 +19,7 @@
 		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
 		<!--<a href='#' class='advancedSearchSelected'>Search People & Organizations</a> | -->
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
-		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Digital Collections', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
 
