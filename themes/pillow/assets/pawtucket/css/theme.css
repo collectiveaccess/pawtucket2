@@ -1,0 +1,70 @@
+body {
+	font-family: Tahoma, sans-serif;
+}
+a, .detail a, #footer ul a {
+	color: #2E4481;
+}
+h1, h2, h3, h4, h5, h6 {
+	color: #2E4481;
+	font-family:tahoma;
+}
+.navbar {
+	background-color: #608456;
+}
+.navbar-brand {
+	width: 120px;
+}
+.navbar .navbar-nav > .active > a, .navbar-nav > li > a, .navbar-nav > li > a:focus {
+	padding-bottom:3px;
+	padding-top:50px;
+	font-size:14px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: Tahoma;
+	text-transform:uppercase;
+	color: #fff;
+	padding-right: 20px;
+	padding-left:20px;
+	font-size:14px;
+}
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover {
+	color: #fff;
+}
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover {
+	background-color: transparent;
+	color: #fff;
+	border-bottom: 2px solid #fff;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	background-color: transparent;
+	color: #fff;
+	border-bottom: 2px solid #fff;	
+}
+.nav > li.dropdown > a.icon {
+	padding-top: 50px;
+}
+.navbar-default .navbar-form {
+	margin-bottom:0px;
+	margin-top:42px;
+}
+.navbar .formOutline {
+	background-color: #fff;
+	border:0px;
+	border-radius:4px;
+}
+@media (min-width: 768px) {
+	.navbar-form .form-group {
+		width: 100px;
+	}
+}
+
+/* Advanced Search */
+
+div.advancedSearchField {
+	height:60px;
+	width:100%;
+}
+.advancedSearchFieldTall {
+	clear:both;
+	height: 130px;
+}
