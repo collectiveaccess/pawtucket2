@@ -216,17 +216,17 @@
 					}
 				}						
 				if ($vs_i_have_docs == true) {
-					$vs_doc_buf.= "<div class='row'>";
-						ksort($va_docs_by_type);
-						foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
-							$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-							$vs_doc_buf.= "<div class='row'>";
-							foreach ($vs_documents as $va_key => $vs_doc) {
-								$vs_doc_buf.= $vs_doc;
-							}
-							$vs_doc_buf.= "</div>";
+					ksort($va_docs_by_type);
+					foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+						$vs_doc_buf.= "<div class='row'>";
+						$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+						$vs_doc_buf.= "<div>";
+						foreach ($vs_documents as $va_key => $vs_doc) {
+							$vs_doc_buf.= $vs_doc;
 						}
-					$vs_doc_buf.= "</div>";
+						$vs_doc_buf.= "</div>";
+						$vs_doc_buf.= "</div>";
+					}	
 				}
 ?>
 				<div class="row"><div class='col-sm-12 col-md-12 col-lg-12'>	

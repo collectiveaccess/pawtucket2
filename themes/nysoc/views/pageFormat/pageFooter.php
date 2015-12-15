@@ -56,7 +56,7 @@
 					</div>
 				</div>
 				<div id="libLinks" class="col5">
-					<div class="footerItems"><a href="/about/map"> MAP</a> <br> <a href="/about/directions"> DIRECTIONS</a> <br> <a href="https://www.facebook.com/nysoclib" target="_blank" class="sbIcon facebook"> Facebook </a> <a href="https://twitter.com/nysoclib" target="_blank" class="sbIcon twitter"> Twitter</a></div>
+					<div class="footerItems"><a href="http://nysoclib.org/about/map"> MAP</a> <br> <a href="http://nysoclib.org/about/directions"> DIRECTIONS</a> <br> <a href="https://www.facebook.com/nysoclib" target="_blank" class="sbIcon facebook"> Facebook </a> <a href="https://twitter.com/nysoclib" target="_blank" class="sbIcon twitter"> Twitter</a></div>
 				</div>
 				<div class="clear">&nbsp;</div>
 				<div id="footerCopyright">

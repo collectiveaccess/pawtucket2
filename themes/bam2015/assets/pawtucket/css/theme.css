@@ -12,9 +12,9 @@
 	font-style: normal;
 }
 @font-face {
-	font-family: 'News Gothic';
+	font-family: 'News Gothic Light';
 	src:url('../fonts/news_gothic/newsgoth-lt-bt-light-webfont.ttf');
-	font-weight: lighter;
+	font-weight: normal;
 	font-style: normal;
 }
 @font-face {
@@ -322,6 +322,8 @@ input:-webkit-autofill {
 	right:-16px;
 	padding-left:15px;
 	padding-right:15px;
+	padding-top:5px;
+	padding-bottom:5px;
 	border-top:0px;
 	display: block;
     opacity: 0;
@@ -335,11 +337,21 @@ input:-webkit-autofill {
     -ms-transition:     all 333ms ease;
     transition:         all 333ms ease;
 }
-.open .dropdown-menu, #bRefineContainer.open, .frontNav .open .dropdown-menu{
+.open .dropdown-menu, #bRefineContainer.open{
     display: block;
     opacity: 1;
     padding: 0px;
     visibility:visible;
+}
+.frontNav .open .dropdown-menu {
+    display: block;
+    opacity: 1;
+    visibility:visible;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+.frontNav .open .dropdown-menu {
+	opacity: .95;
 }
 /*.bNavOptions .dropdown-menu li, #bRefineContainer .col-xs-12, .frontNav .dropdown-menu li {
 	display:none;
@@ -844,6 +856,20 @@ a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
 }
 .dropdown-menu > li > a {
 	font-size:14px;
+}
+.frontNav .dropdown-menu > li > a {
+	text-transform:none;
+	font-size:22px;
+	padding-top:6px;
+	padding-bottom:8px;
+	font-family: "News Gothic Light";
+}
+.frontNav .dropdown-menu > li > a:active {
+	color: #00cfb7;
+}
+.frontNav .dropdown-menu > li > a:hover {
+	color: #00cfb7;
+	background-color:transparent;
 }
 .bNavOptions .dropdown-menu {
 	text-align:left;

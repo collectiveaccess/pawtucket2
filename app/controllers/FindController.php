@@ -499,7 +499,7 @@
 						foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $va_settings) {
 
 							if (
-								(strpos($vs_template, 'ca_object_representations.media') !== false)
+								(strpos($va_settings['template'], 'ca_object_representations.media') !== false)
 								&& 
 								preg_match("!ca_object_representations\.media\.([A-Za-z0-9_\-]+)!", $va_settings['template'], $va_matches)
 							) {
@@ -569,6 +569,7 @@
 					header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 					header('Content-Disposition:inline;filename=Export.xlsx ');
 					$o_writer->save('php://output');
+					exit;
 					break;
 				case 'pptx':
 					$ppt = new PhpOffice\PhpPowerpoint\PhpPowerpoint();
@@ -644,6 +645,7 @@
 					
 					$o_writer = \PhpOffice\PhpPowerpoint\IOFactory::createWriter($ppt, 'PowerPoint2007');
 					$o_writer->save('php://output');
+					exit;
 					break;
 				default:
 				case 'pdf':

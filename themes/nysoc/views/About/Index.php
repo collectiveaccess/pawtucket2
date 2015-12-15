@@ -1,7 +1,7 @@
 <?php
 	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 
-	MetaTagManager::setWindowTitle($va_home." > About");
+	MetaTagManager::setWindowTitle($va_home." > About This Project");
 ?>
 <div class="page aboutPage">
 	<div class="wrapper">

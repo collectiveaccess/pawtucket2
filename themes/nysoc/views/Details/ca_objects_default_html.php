@@ -10,6 +10,7 @@
 	$vs_parent_title 	= caTruncateStringWithEllipsis($t_object->get('ca_objects.parent.preferred_labels.name'), 40);	
 	
 	$va_entity_reading_list_cache = array();
+	$va_access_values = $this->getVar('access_values');
 	
 	if ($vs_parent_title) {
 		$vs_title = "{$vs_parent_title}: {$vs_title}";
@@ -357,8 +358,8 @@
 				<div class="row">			
 					<div class='col-sm-6 col-md-6 col-lg-6'>			
 		<?php
-						if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
-							print "<h4 style='font-size:16px;'>".$va_authors."</h4>";
+						if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
+							print "<h4 style='font-size:16px;'>".$va_authors."</h4>"; 
 						}
 						if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Bib') {
 							if ($va_parent_label = $t_object->get('ca_objects.parent.preferred_labels')) {
@@ -855,17 +856,19 @@
 									}
 								}							
 								if ($vs_i_have_docs == true) {
-									$vs_doc_buf.= "<div class='row'>";
+									
 										ksort($va_docs_by_type);
 										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
-											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
 											$vs_doc_buf.= "<div class='row'>";
+											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+											$vs_doc_buf.= "<div>";
 											foreach ($vs_documents as $va_key => $vs_doc) {
 												$vs_doc_buf.= $vs_doc;
 											}
 											$vs_doc_buf.= "</div>";
+											$vs_doc_buf.= "</div>";
 										}
-									$vs_doc_buf.= "</div>";
+									
 								}
 								
 
