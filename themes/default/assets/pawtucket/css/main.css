@@ -525,7 +525,7 @@ a.browseRemoveFacet img {
 .browseHeadernav{
 	font-size:11px;
 }
-.filterMenureults {
+.filterMenuResults {
 	/*float:left; */
 	padding-top:2px;
 	/*margin-right:-15px; */
@@ -1618,43 +1618,46 @@ a.browseRemoveFacet img {
 	height:auto;
 	margin-bottom:5px;
 }
-.detail #detailAnnotations{
+.detail #detailAnnotations {
 	margin:20px 0px 30px 0px;
 }
-.detail .detailAnnotation{
-	height:80px;
-	width:200px;
-	padding:10px;
+
+.detail #detailAnnotations .detailAnnotationList {
+	max-height: 150px;
+	overflow: auto;
+}
+
+.detail #detailAnnotations ul {
+	margin: 0;
+    padding: 0;
+	list-style-type: none;
+	list-style-position:inside;
+	border-top: 1px #ccc solid;
+	border-left: 1px #ccc solid;
+	border-right: 1px #ccc solid;
+}
+
+.detail #detailAnnotations li {
+    margin: 0;
+    padding: 5px;
+	border-bottom: 1px #ccc solid;
 	background-color:#F5F5F5;
-	margin:0px 2px 0px 2px;
-	position:relative;
 }
-.detail .detailAnnotation:hover{
+
+.detail #detailAnnotations li.active {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.detail #detailAnnotations ul li:hover{
 	background-color:#ABABAB;
-	color:#FFFFFF;
+	cursor: pointer;
 }
-.detail .detailAnnotation:hover a{
-	background-color:#ABABAB;
-	color:#FFFFFF;
+
+.detail #detailAnnotations ul li.detailAnnotation a {
+	text-decoration: none;
 }
-.detail .detailAnnotation .annotationControls{
-	position:absolute;
-	right:0px;
-	bottom:0px;
-	padding:5px;
-}
-.detail .detailAnnotation .annotationControls a{
-	color:#929292;
-	font-size:14px;
-}
-.detail .detailAnnotation:hover .annotationControls a, .detail .detailAnnotation:hover .annotationControls a:hover{
-	color:#F5F5F5;
-}
-.detail #detailAnnotations #detailScrollButtonNext, .detail #detailAnnotations #detailScrollButtonPrevious{
-	margin: 0px;
-	height:80px;
-	padding-top:30px;
-}
+
 #detailRepresentationThumbnails a img{
 	border: 1px solid #dddddd;
     height: auto;

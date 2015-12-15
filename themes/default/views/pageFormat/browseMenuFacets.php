@@ -39,7 +39,7 @@
 		</ul>
 	</div>
 		
-	<div class="filterMenureults col-sm-10">
+	<div class="filterMenuResults col-sm-10">
 		<div class='browseMenuFacet'> </div>	
 	</div>	
 	<div class="browsedivider">&nbsp;</div>
