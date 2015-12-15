@@ -610,6 +610,9 @@ div.globalLinks a {
 ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#fff;
 }
+#bRefine {
+	margin:0px -20px -20px -20px;
+}
 .filterMenuFacetList li.active {
 	background-color:#aaa; 
 }
@@ -752,7 +755,7 @@ div.sideLink {
 .detail #detailTools {
 	margin-top:20px;
 	clear:both;
-	height:24px;
+	height:28px;
 	padding-top:0px;
 }
 .detail .detailTool {
@@ -875,7 +878,9 @@ a.readmore-js-toggle {
 	padding:20px;
 	min-width:1025px;
 }
-
+.overlay-corner.open {
+	overflow-y:auto !important;
+}
 .overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
 	color:#000 !important;
 	fill:#000 !important;
@@ -1233,6 +1238,7 @@ table.dataTable thead th {
   padding: 5px 10px 5px 10px;
   overflow: hidden;
   margin-right:5px;
+  font-size:12px;
 }
 .entityButton {
   background-color: #fff;
@@ -1393,6 +1399,12 @@ div.advancedSearchField {
 }
 .searchFormLineModeElementSubLabel input[type="checkbox"] {
 	margin-left:5px; 
+}
+
+/* Borrowing search */
+
+.borrowing.results a .fa{
+	color: #d77421;
 }
 
 /* Finding Aid */

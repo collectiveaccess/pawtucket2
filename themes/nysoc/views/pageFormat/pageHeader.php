@@ -94,7 +94,7 @@
 		<div id="columnRight">
 			<div class="topMain">
 				<div id="searchArea" class="searchArea" style="display: block;">
-					<div class="globalLinks"><a href="/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
+					<div class="globalLinks"><a href="http://nysoclib.org/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
 					<div id="globalSearch">
 						<!--<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="formOutline">

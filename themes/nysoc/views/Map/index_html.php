@@ -25,7 +25,7 @@
 	if (!$vb_dont_show_catalogue_list) {
 ?>
 		<div class="col-sm-2" id='publisherContentContainer'>
-			<p class="vizTitle" style='text-align:left;'>Display books from checked catalogs</p>
+			<p class="vizTitle" style='text-align:left;'>Catalogs</p>
 			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
@@ -47,8 +47,23 @@
 <?php
 	}
 ?>
-		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
-			<div style="text-align: center; margin-top: 60px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
+		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" >
+<?php
+	if (!$vb_dont_show_catalogue_list) {
+?>			
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<p style='margin-top:0px; font-size:16px;' id='mapInfo'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.  Click on a location to see the books published in that location for the selected catalogs and dates. </p>
+				</div>
+			</div>
+<?php
+	}
+?>			
+			<div class="row">
+				<div id='<?php print $vs_map_id; ?>'>		
+					<div style="text-align: center; margin-top: 60px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
+				</div>
+			</div>
 		</div>
 	</div>
 	<div class="row">
@@ -64,11 +79,7 @@
 			<span id="publisherMapYearSliderEnd"></span>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
-			<p style='margin-top:30px; font-size:16px;' id='mapInfo'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.  Click on a location to see the books published in that location for the selected catalogs and dates. </p>
-		</div>
-	</div>
+
 </div>
 
 

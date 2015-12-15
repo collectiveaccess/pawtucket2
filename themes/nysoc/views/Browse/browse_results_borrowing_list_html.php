@@ -105,7 +105,7 @@
 				
 				$va_labels = $qr_books->get('ca_entities.preferred_labels', array('returnAsArray' => true, 'assumeDisplayField' => false, 'restrictToRelationshipTypes' => array('author')));
 				foreach($va_labels as $va_label) {
-					$va_authors[$vn_object_id] = (($va_authors[$vn_object_id]) ? "; " : "").$va_label['displayname'];
+					$va_authors[$vn_object_id] = (($va_authors[$vn_object_id]) ? "; " : "").caNavLink($this->request, $va_label['displayname'], '', '', 'Detail', 'entities/'.$va_label['entity_id']);
 					$va_authors_sort[$vn_object_id] = (($va_authors[$vn_object_id]) ? "; " : "").addslashes($va_label['surname'].', '.$va_label['forename']);
 				}
 			}
@@ -121,6 +121,11 @@
 					$vs_title_sort = addslashes($qr_res->get('ca_objects.preferred_labels.name_sort'));
 					$vs_volume = $vs_volume_sort = '';
 				}
+				$vs_trans_title = "<br/>Transcribed: ".$qr_res->get('ca_objects_x_entities.book_title');
+				if ($qr_res->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
+					$vs_uncertain = "&nbsp;".caNavLink($this->request, "<i class='fa fa-exclamation-triangle'></i>", '', '', 'Detail', 'objects/'.$qr_res->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
+					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
+				} else { $vs_uncertain = null; }			
 				$vs_author = $va_authors[$qr_res->get("ca_objects_x_entities.object_id")];
 				$vs_author_sort = $va_authors_sort[$qr_res->get("ca_objects_x_entities.object_id")];
 				$vs_borrower = $qr_res->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
@@ -133,7 +138,7 @@
 				print "<tr class='ledgerRow detail'>";
 				print "<td><span title='{$vs_borrower_sort}'></span>{$vs_borrower}</td>";
 				print "<td><span title='{$vs_author_sort}'></span>{$vs_author}</td>";
-				print "<td><div class='bookTitle'><span title='{$vs_title_sort}'></span>{$vs_title}</div></td>";
+				print "<td><div class='bookTitle'><span title='{$vs_title_sort}'></span>{$vs_title}{$vs_trans_title}{$vs_uncertain}</div></td>";
 				print "<td><span title='{$vs_volume_sort}'>{$vs_volume}</span></td>";
 				print "<td>{$vs_date_out}</td>";
 				print "<td>{$vs_date_in}</td>";
@@ -156,7 +161,7 @@
 			$(".bSetsSelectMultiple").show();
 		}
 		$('#circTable').dataTable({
-    		"order": [[ 3, "asc" ]],
+    		"order": [[ 4, "asc" ]],
     		columnDefs: [{ 
        			type: 'title-string', targets: [0,1]
        		}, { 

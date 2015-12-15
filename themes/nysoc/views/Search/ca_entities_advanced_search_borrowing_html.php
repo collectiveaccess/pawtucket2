@@ -18,10 +18,11 @@
 		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
 		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
 		<!--<a href='#' class='advancedSearchSelected'>Search Borrowing History</a> | -->
-		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Digital Collections', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
-
+		<p style='font-size:14px;'>Find records of borrowing activity. Results appear a list of transactions, including the borrower's name, book author and title, and check out and check in dates.</p>
+		
 		{{{form}}}
 
 			<div class='advancedContainer'>

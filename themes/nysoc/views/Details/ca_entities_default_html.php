@@ -330,11 +330,12 @@
 ?>									
 									</H4>
 									
-									<div class='unit'>{{{<ifdef code="ca_entities.nonpreferred_labels">Also Known As: <unit delimiter='; '>^ca_entities.nonpreferred_labels.displayname</unit></ifdef>}}}</div>
 								</div><!-- end col -->
 							</div><!-- end row -->
 							<div class="row">			
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
+									<div class='unit'>{{{<ifdef code="ca_entities.nonpreferred_labels">Also Known As: <unit delimiter='; '>^ca_entities.nonpreferred_labels.displayname</unit></ifdef>}}}</div>
+
 								
 				<?php
 									if ($vs_first_date && $vs_last_date) {
@@ -349,7 +350,7 @@
 										print "<div class='incomplete'><i class='fa fa-sticky-note'></i> <i>Metadata for this record is currently incomplete. Click Contribute to submit information for inclusion on this page. See the ".caNavLink($this->request, 'User Guide', '', '', 'About', 'userguide')." to learn more about Contributing.</i></div>";
 									}
 									if ($t_item->get('ca_entities.references.references_list')) {
-										$va_references = $t_item->get('ca_entities.references', array('delimiter' => '<br/><br/>', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_entities.references.references_list page ^ca_entities.references.references_page</p>'));
+										$va_references = $t_item->get('ca_entities.references', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => '<unit><p style="padding-left:15px;">^ca_entities.references.references_list <ifdef code="ca_entities.references.references_page">page ^ca_entities.references.references_page</ifdef></p></unit>'));
 										print "<div class='unit'>";
 										print "<a href='#' class='openRef' onclick='$(\"#references\").slideDown(); $(\".openRef\").hide(); $(\".closeRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
 										print "<a href='#' class='closeRef' style='display:none;' onclick='$(\"#references\").slideUp(); $(\".closeRef\").hide(); $(\".openRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
@@ -744,7 +745,7 @@
 											if (!($vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ')))) {
 												$vs_author = null;
 											}											
-											$vn_pub_date = $t_book->get('ca_objects.publication_date');
+											if ($vn_pub_date = "<br/>".$t_book->get('ca_objects.publication_date')) {} else {$vn_pub_date = null;}
 											$vs_book_buf.= "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$vs_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
 										}
 										$vs_book_buf.= "</div>";
@@ -784,18 +785,18 @@
 										$vs_i_have_docs = true;
 									}
 								}						
-								if ($vs_i_have_docs == true) {
-									$vs_doc_buf.= "<div class='row'>";
-										ksort($va_docs_by_type);
-										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
-											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-											$vs_doc_buf.= "<div >";
-											foreach ($vs_documents as $va_key => $vs_doc) {
-												$vs_doc_buf.= $vs_doc;
-											}
-											$vs_doc_buf.= "</div>";
+								if ($vs_i_have_docs == true) {		
+									ksort($va_docs_by_type);
+									foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+										$vs_doc_buf.= "<div class='row'>";
+										$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+										$vs_doc_buf.= "<div >";
+										foreach ($vs_documents as $va_key => $vs_doc) {
+											$vs_doc_buf.= $vs_doc;
 										}
-									$vs_doc_buf.= "</div>";
+										$vs_doc_buf.= "</div>";
+										$vs_doc_buf.= "</div>";
+									}
 								}												
 ?>																
 								<?php if ($vs_book_buf) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
