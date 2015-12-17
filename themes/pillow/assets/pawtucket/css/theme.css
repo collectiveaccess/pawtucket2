@@ -57,6 +57,35 @@ h1, h2, h3, h4, h5, h6 {
 		width: 100px;
 	}
 }
+@media (max-width: 897px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		padding-right:10px;
+		padding-left:10px;
+	}
+}
+/* Multisearch */
+
+.multisearch .blockResults {
+	height:210px;
+}
+.multisearch .multisearchResult {
+	height:180px;
+	width:170px;
+}
+.multisearch .multisearchResult p {
+	margin-bottom:4px;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
+	height:185px;
+}
+.multisearch .multisearchResult img {
+	margin-bottom:10px;
+}
+.multisearchImgPlaceholder {
+	border:0px;
+	padding:34px;
+	margin-bottom:10px;
+}
 
 /* Advanced Search */
 
@@ -67,4 +96,10 @@ div.advancedSearchField {
 .advancedSearchFieldTall {
 	clear:both;
 	height: 130px;
+}
+
+/* Finding Aid */
+
+.collHeader a {
+	font-family: Tahoma;
 }

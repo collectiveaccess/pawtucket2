@@ -24,9 +24,15 @@
 					{{{<ifdef code="ca_occurrences.premiere"><H6>Premiere</H6>^ca_occurrences.premiere<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.venue"><H6>Venue</H6>^ca_occurrences.venue<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.productionDate"><H6>Dates</H6>^ca_occurrences.productionDate<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.creationDate"><H6>Creation Date</H6>^ca_occurrences.productionDate<br/></ifdef>}}}
+					
 					{{{<ifdef code="ca_occurrences.perfTiming"><H6>Duration</H6>^ca_occurrences.perfTiming<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.country_origin"><H6>Country of Origin</H6>^ca_occurrences.country_origin<br/></ifdef>}}}
+					
 					{{{<ifdef code="ca_occurrences.music"><H6>Music</H6>^ca_occurrences.music<br/></ifdef>}}}
-					{{{<ifcount code="ca_occurrences.preferred_labels" restrictToTypes="work" min="1"><h6>Works Performed</h6><unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter=', '><l>^ca_occurrences.preferred_labels</l></unit></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related.preferred_labels" restrictToTypes="work" min="1"><h6>Works Performed</h6><unit relativeTo="ca_occurrences.related" restrictToTypes="work" delimiter=', '><l>^ca_occurrences.preferred_labels</l></unit></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related.preferred_labels" restrictToTypes="production" min="1"><h6>Related Productions</h6><unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter='<br/>'><l>^ca_occurrences.preferred_labels</l><ifdef code="ca_occurrences.productionDate">, ^ca_occurrences.productionDate</ifdef></unit></ifcount>}}}
+					
 					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="company" min="1"><h6>Related Company</h6><unit restrictToRelationshipTypes="company" relativeTo="ca_entities" delimiter=', '><l>^ca_entities.preferred_labels</l></unit></ifcount>}}}
 					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" min="1"><h6>Related Performers</h6><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" delimiter=', '><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" min="1"><h6>Production Credits</h6><unit relativeTo="ca_entities_x_occurrences" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" delimiter=', '><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
@@ -43,17 +49,7 @@
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
 					
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-<?php
-					if ($va_related_occurrences = $t_item->get('ca_occurrences.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production')))) {
-						print "<h6>Related productions</h6>".$va_related_occurrences;
-					}
-					if ($va_related_works = $t_item->get('ca_occurrences.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('work')))) {
-						print "<h6>Related works</h6>".$va_related_works;
-					}					
-?>
+
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
