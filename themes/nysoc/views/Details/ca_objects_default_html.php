@@ -545,7 +545,9 @@
 
 			var options = {
 				labelInterpolationFnc: function(value, index) {
-				  if(dataForReadersByOccupation.series[index] <= 5) { return ''; }
+					var t=0;
+				  for(var x in dataForReadersByOccupation.series) { t += dataForReadersByOccupation.series[x] }
+				  if(dataForReadersByOccupation.series[index]/t <= 0.1) { return ''; }
 				  return value;
 				}
 			};
@@ -584,7 +586,7 @@
 				
 				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
 				var label = dataForReadersByOccupation.labels[l];
-				console.log($slice, occupationIDs, label, occupationIDs[label]);
+				
 				if (parseInt(occupationIDs[label]) > 0) {
 					window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'entities', array('facet' => 'occupation_facet')); ?>/id/' + occupationIDs[label];
 				}
@@ -624,7 +626,9 @@
 
 			var options = {
 			 	labelInterpolationFnc: function(value, index) {
-				  if(dataForCheckoutDurations.series[index] <= 10) { return ''; }
+			 	  var t=0;
+			 	  for(var x in dataForCheckoutDurations.series) { t += dataForCheckoutDurations.series[x]; }
+				  if(dataForCheckoutDurations.series[index]/t <= 0.1) { return ''; }
 				  return value;
 				}
 			};

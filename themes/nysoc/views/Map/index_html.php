@@ -118,6 +118,8 @@
 				
 				var seen_object_ids = {};
 				var count_for_current_range = 0;
+				
+				var start = end = null;
 				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
 					for(var catalog_id in by_catalog) {
 						by_object_id = by_catalog[catalog_id];
@@ -151,7 +153,7 @@
 						});
 					}
 				});
-				
+			
 				var r = count_for_current_range; 
 				if (r == 0) { return; }
 				if (r < 10) { r *= 1.5; }
@@ -184,7 +186,6 @@
 			if (!dontFitToBounds) { m.l.fitBounds(allMarkers.getBounds()); }
 		};
 		map.setMapSlider = function() {
-			
 			jQuery('#publisherMapYearSliderStart').html(this.startYear);
 			jQuery('#publisherMapYearSliderEnd').html(this.endYear);
 			
@@ -220,6 +221,7 @@
 		jQuery("form#catalogue_list input[type=checkbox]").on('change', function(e) {
 			var value = jQuery("#publisherMapYear").bootstrapSlider('getValue');
 			map.generateMap(value[0], value[1], true);
+			map.setMapSlider();
 		});
 	});
 </script>

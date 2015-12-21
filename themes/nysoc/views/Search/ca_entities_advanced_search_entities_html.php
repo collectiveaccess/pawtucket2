@@ -82,7 +82,7 @@
 					</div>	
 					<div class="advancedSearchField">
 						Fine:<br/>
-						{{{ca_objects_x_entities.fine%width=220px&height=1&render=is_set&label=Fine}}}
+						{{{ca_objects_x_entities.fine%width=220px&height=25px&render=is_set&label=Fine}}}
 					</div>
 				</div>	
 				<div class='advancedUnit'>

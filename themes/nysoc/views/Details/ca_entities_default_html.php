@@ -523,7 +523,9 @@
 
 											var options = {
 												labelInterpolationFnc: function(value, index) {
-												  if(dataForSubjectAreas.series[index] <= 1) { return ''; }
+												  var t=0;
+												  for(var x in dataForSubjectAreas.series) { t += dataForSubjectAreas.series[x] }
+												  if(dataForSubjectAreas.series[index]/t <= 0.1) { return ''; }
 												  return value;
 												}
 											};
@@ -604,7 +606,9 @@
 
 											var options = {
 												labelInterpolationFnc: function(value, index) {
-												  if(dataForCheckoutDuration.series[index] <= 5) { return ''; }
+												  var t=0;
+												  for(var x in dataForCheckoutDuration.series) { t += dataForCheckoutDuration.series[x] }
+												  if(dataForCheckoutDuration.series[index]/t <= 0.1) { return ''; }
 												  return value;
 												}
 											};
