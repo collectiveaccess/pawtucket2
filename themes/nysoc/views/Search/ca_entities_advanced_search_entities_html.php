@@ -19,7 +19,7 @@
 		<?php print caNavLink($this->request, 'Search Books', '', '', 'Search', 'advanced/objects');?> | 
 		<!--<a href='#' class='advancedSearchSelected'>Search People & Organizations</a> | -->
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
-		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Digital Collections', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
 
@@ -82,7 +82,7 @@
 					</div>	
 					<div class="advancedSearchField">
 						Fine:<br/>
-						{{{ca_objects_x_entities.fine%width=220px&height=1&render=is_set&label=Fine}}}
+						{{{ca_objects_x_entities.fine%width=220px&height=25px&render=is_set&label=Fine}}}
 					</div>
 				</div>	
 				<div class='advancedUnit'>

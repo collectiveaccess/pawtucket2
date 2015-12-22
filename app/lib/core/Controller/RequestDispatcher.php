@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2011 Whirl-i-Gig
+ * Copyright 2007-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -143,7 +143,7 @@ class RequestDispatcher extends BaseObject {
 		$this->opo_request->setAction($this->ops_action);
 		$this->opo_request->setActionExtra($this->ops_action_extra);
 		
-		$this->opo_request->setControllerUrl(join('/', array_merge(array($this->opo_request->getBaseUrlPath(), $this->opo_request->getScriptName()), array($this->opo_request->getModulePath()), array($this->ops_controller))));
+		$this->opo_request->setControllerUrl(preg_replace("![/]+!", "/", join('/', array_merge(array($this->opo_request->getBaseUrlPath(), $this->opo_request->getScriptName()), array($this->opo_request->getModulePath()), array($this->ops_controller)))));
 
 		if ($this->ops_controller != '') {
 			return $this->opb_is_dispatchable = true;

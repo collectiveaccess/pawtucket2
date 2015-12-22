@@ -22,7 +22,8 @@ module.exports = function (grunt) {
         '<%= pkg.config.src %>/scripts/svg-path.js',
         '<%= pkg.config.src %>/scripts/axes/axis.js',
         '<%= pkg.config.src %>/scripts/axes/step-axis.js',
-        '<%= pkg.config.src %>/scripts/axes/linear-scale-axis.js',
+        '<%= pkg.config.src %>/scripts/axes/auto-scale-axis.js',
+        '<%= pkg.config.src %>/scripts/axes/fixed-scale-axis.js',
         '<%= pkg.config.src %>/scripts/charts/line.js',
         '<%= pkg.config.src %>/scripts/charts/bar.js',
         '<%= pkg.config.src %>/scripts/charts/pie.js'
@@ -30,8 +31,8 @@ module.exports = function (grunt) {
       options: {
         specs: '<%= pkg.config.test %>/spec/**/spec-*.js',
         helpers: '<%= pkg.config.test %>/spec/**/helper-*.js',
-        vendor: [
-          'http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js',
+        vendor: [          
+          'node_modules/jasmine-jquery/vendor/jquery/jquery.js',
           'node_modules/jasmine-jquery/lib/jasmine-jquery.js'
         ],
         styles: [

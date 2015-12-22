@@ -41,7 +41,7 @@
 							<div class="galleryItem">
 								<div class="galleryItemImg">
 <?php
-									print caNavLink($this->request, caGetThemeGraphic($this->request, 'readers.jpg'), '', '', 'Circulation', 'readers');
+									print caNavLink($this->request, caGetThemeGraphic($this->request, 'compareicons.jpg'), '', '', 'Circulation', 'readers');
 ?>				
 								</div>
 								<div class="galleryItemText">

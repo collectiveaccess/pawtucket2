@@ -84,24 +84,6 @@ describe('Chartist core', function() {
   });
 
   describe('data normalization tests', function () {
-    it('should normalize based on label length', function() {
-      var data = {
-        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-        series: [
-          [1, 2, 3, 4, 5, 6],
-          [1, 2, 3, 4, 5, 6, 7, 8],
-          [1, 2, 3]
-        ]
-      };
-
-      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
-        [
-          [1, 2, 3, 4, 5, 6, 0, 0, 0, 0],
-          [1, 2, 3, 4, 5, 6, 7, 8, 0, 0],
-          [1, 2, 3, 0, 0, 0, 0, 0, 0, 0]
-        ]
-      );
-    });
 
     it('normalize mixed series types correctly', function() {
       var data = {
@@ -113,11 +95,69 @@ describe('Chartist core', function() {
         ]
       };
 
-      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data), data.labels.length)).toEqual(
+      expect(Chartist.getDataArray(data)).toEqual(
         [
-          [1, 0, 3, 4, 5, 6, 0, 0, 0, 0],
-          [1, 0, 3, 4, 5, 6, 7, 8, 0, 0],
-          [1, 0, 3, 0, 0, 0, 0, 0, 0, 0]
+          [1, 0, 3, 4, 5, 6],
+          [1, 0, 3, 4, 5, 6, 7, 8],
+          [1, 0, 3]
+        ]
+      );
+    });
+
+    it('normalize mixed series for pie chart correctly', function() {
+      var data = {
+        series: [1, {value: 0}, 3, {value: 4}, 5, 6, 7, 8]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [1, 0, 3, 4, 5, 6, 7, 8]
+      );
+    });
+
+    it('normalize mixed series with string values for pie chart correctly', function() {
+      var data = {
+        series: ['1', {value: '0'}, '3', {value: '4'}, '5', '6', '7', '8']
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [1, 0, 3, 4, 5, 6, 7, 8]
+      );
+    });
+
+    it('normalize mixed series types with string values correctly', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          {data: ['1', '0', '3', '4', '5', '6']},
+          ['1', {value: '0'}, '3', {value: '4'}, '5', '6', '7', '8'],
+          {data: ['1', '0', {value: '3'}]}
+        ]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [
+          [1, 0, 3, 4, 5, 6],
+          [1, 0, 3, 4, 5, 6, 7, 8],
+          [1, 0, 3]
+        ]
+      );
+    });
+
+    it('normalize mixed series types with weird values correctly', function() {
+      var data = {
+        labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        series: [
+          {data: [null, NaN, undefined, '4', '5', '6']},
+          ['1', {value: null}, '3', {value: NaN}, '5', '6', '7', '8'],
+          {data: ['1', '0', {value: undefined}]}
+        ]
+      };
+
+      expect(Chartist.getDataArray(data)).toEqual(
+        [
+          [undefined, undefined, undefined, 4, 5, 6],
+          [1, undefined, 3, undefined, 5, 6, 7, 8],
+          [1, 0, undefined]
         ]
       );
     });
@@ -137,8 +177,41 @@ describe('Chartist core', function() {
         }]
       };
 
-      expect(Chartist.normalizeDataArray(Chartist.getDataArray(data))).toEqual(
+      expect(Chartist.getDataArray(data)).toEqual(
         [[1, 4, 2, 7, 2, 0]]
+      );
+    });
+
+    it('should normalize correctly with mixed dimensional input into multi dimensional output', function() {
+      var data = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        series: [{
+          data: [
+            { value: 1 },
+            { value: {y: 4, x: 1}},
+            { y: 2, x: 2},
+            NaN,
+            null,
+            { value: 7 },
+            { value: 2 },
+            { value: null },
+            { y: undefined, x: NaN }
+          ]
+        }]
+      };
+
+      expect(Chartist.getDataArray(data, false, true)).toEqual(
+        [[
+          {x: undefined, y: 1},
+          {x: 1, y: 4},
+          {x: 2, y: 2},
+          undefined,
+          undefined,
+          {x: undefined, y: 7},
+          {x: undefined, y: 2},
+          undefined,
+          {x: undefined, y: undefined}
+        ]]
       );
     });
   });
@@ -205,5 +278,28 @@ describe('Chartist core', function() {
         left: 5
       });
     });
+  });
+  
+  describe('quantity', function() {
+    
+    it('should return value for numbers', function() {
+      expect(Chartist.quantity(100)).toEqual({ value: 100 });
+      expect(Chartist.quantity(0)).toEqual({ value: 0 });
+      expect(Chartist.quantity(NaN)).toEqual({ value: NaN });
+      expect(Chartist.quantity(null)).toEqual({ value: null });
+      expect(Chartist.quantity(undefined)).toEqual({ value: undefined });
+    });
+    
+    it('should return value without unit from string', function() {
+      expect(Chartist.quantity('100')).toEqual({ value: 100, unit : undefined });
+      expect(Chartist.quantity('0')).toEqual({ value: 0, unit : undefined });
+    });
+    
+    it('should return value and unit from string', function() {
+      expect(Chartist.quantity('100%')).toEqual({ value: 100, unit :'%' });
+      expect(Chartist.quantity('100 %')).toEqual({ value: 100, unit :'%' });
+      expect(Chartist.quantity('0px')).toEqual({ value: 0, unit: 'px' });
+    });
+    
   });
 });

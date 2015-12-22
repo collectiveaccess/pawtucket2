@@ -30,11 +30,10 @@
  * ----------------------------------------------------------------------
  */
 
- /**
-   *
-   */
-   
-require_once(__CA_MODELS_DIR__.'/ca_lists.php');
+	/**
+	 *
+	 */
+	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
 
 	# ---------------------------------------
@@ -737,10 +736,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			if(!($vs_label = trim($pa_form_values[$vs_dotless_element.'_label']))) { $vs_label = "???"; }
 		
 			$va_fld = explode(".", $vs_element);
-			if (!($t_table = $o_dm->getInstanceByTableName($va_fld[0], true))) { continue; }
+			$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
 		
 		// TODO: need universal way to convert item_ids in attributes and intrinsics to display text
-			if ($t_table->hasField($va_fld[1])) {
+			if ($t_table && ($t_table->hasField($va_fld[1]))) {
 				switch($va_fld[1]) {
 					case 'type_id':
 						$va_values = array($t_table->getTypeName($pa_form_values[$vs_dotless_element][0]));

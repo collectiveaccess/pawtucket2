@@ -75,12 +75,22 @@
 					}
 					$vn_chop_len = 100 - $vn_str_len_date;
 					$vs_date_conjunction = ", ";
-					$vs_link_text = ($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno");
+					$vs_series_info = "";
+					if($qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true))){
+						$vs_series_info = "<span class='series'><i class='fa fa-ticket'></i> ".$qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true, "delimiter" => ", "))."</span> ";
+					}elseif($qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true))){
+						$vs_series_info = "<span class='series'>".$qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true, "delimiter" => ", "))."</span> ";
+					}
+					$vs_link_text = (($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno"));
 					if(mb_strlen($vs_link_text) > $vn_chop_len){
 						$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
 					}						
-					if($vs_pro_date){
-						$vs_link_text = $vs_link_text.$vs_date_conjunction.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+					#if($vs_pro_date){
+					#	$vs_link_text = $vs_link_text.$vs_date_conjunction.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+					#}
+					#$vs_link_text = $vs_series_info.$vs_link_text;
+					if($vs_pro_date || $vs_series_info){
+						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
 					}
 					# --- if sort is date, get the date as a year so you can display a year heading
 					$vs_start_year = "";
@@ -113,10 +123,12 @@
 					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";
 				}
 				$vs_cols = "";
+				$vs_occ_class = "";
 				if($this->request->getParameter("openResultsInOverlay", pInteger)){
 					$vs_cols = 4;
 				}elseif($vs_table == 'ca_occurrences'){
 					$vs_cols = 12;
+					$vs_occ_class = " occItem";
 				}else{
 					$vs_cols = 6;
 				}
@@ -125,7 +137,7 @@
 				}
 				print "
 	<div class='col-xs-12 col-sm-".$vs_cols."'>
-		<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>
+		<div class='bBAMResultListItem".$vs_occ_class."'><span class='pull-right icon-arrow-up-right'></span>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			".$vs_detail_link."
 		</div><!-- end bBAMResultListItem -->
