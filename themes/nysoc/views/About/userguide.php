@@ -36,14 +36,14 @@
 <p>City Readers provides access to digital images of the Library’s special collections.</p>
 
 <h6 style="margin-top:20px;" style="margin-top:20px;"><a name='ledgers'></a>Ledgers</h6 style="margin-top:20px;">
-<p>Circulation records in the New York Society Library’s institutional archives document the borrowing activity of its members from 1789 to the mid-twentieth century, with <a href='http://mail.nysoclib.org/Digital_Archives/PDF/guides/NYSL_Circulation_Records_Holdings.pdf' target='_blank'>some gaps</a> in between. From 1789 to 1909, borrowing activity was recorded in <a href='#ledgers'>ledgers</a>, large blank books designed for record keeping. The first charging ledger records borrowing activity from 1789 to 1792. At first, transactions were recorded chronologically, but soon after each member was assigned a page (or part of a page) in the ledger on which their personal borrowing histories were kept. Beginning in 1909, Librarians began keeping circulation records on <a href='http://theparisreview.tumblr.com/post/43724812811/what-did-w-h-auden-check-out-from-the-new-york' target='_blank'>individual cards</a>. Most of these were discarded, but select members’ records were retained for their enduring research value.</p>
+<p>Circulation records in the New York Society Library’s institutional archives document the borrowing activity of its members from 1789 to the mid-twentieth century, with <a href='http://mail.nysoclib.org/Digital_Archives/PDF/guides/NYSL_Circulation_Records_Holdings.pdf' target='_blank'>some gaps</a> in between. From 1789 to 1909, borrowing activity was recorded in <a href='#ledgers'>ledgers</a>, large blank books designed for record-keeping. The first charging ledger records borrowing activity from 1789 to 1792. At first, transactions were recorded chronologically, but soon after each member was assigned a page (or part of a page) in the ledger, on which their personal borrowing history was kept. Beginning in 1909, Librarians began keeping circulation records on <a href='http://theparisreview.tumblr.com/post/43724812811/what-did-w-h-auden-check-out-from-the-new-york' target='_blank'>individual cards</a>. Most of these were discarded, but select members’ records were retained for their enduring research value.</p>
 
 <p>The charging ledgers currently available in City Readers record borrowing activity from 1789 to 1792 and 1799 to 1805. Ledgers can be paged through in our book viewer, and each page can be viewed individually for more detail.</p>
 
 <h6 style="margin-top:20px;"><a name='catalogs'></a>Catalogs</h6 style="margin-top:20px;">
-<p>The Library’s eighteenth- and nineteenth-century catalogs document the growth of our collection from 1754 to 1850. The earliest catalogs were arranged alphabetically by size, but rather haphazardly: some books might be cataloged under the author’s name (e.g., Dodsley’s Trifels), others under the title (e.g., Description of China, by Abbey Grosier). In the nineteenth century, catalogs listed all books alphabetically by author, including the place and year of publication.</p>
+<p>The Library’s eighteenth- and nineteenth-century catalogs document the growth of our collection from 1754 to 1850. The earliest catalogs were arranged alphabetically by size, but rather haphazardly: some books might be cataloged under the author’s name (e.g., Dodsley’s Trifels), others under the title (e.g., Description of China, by Abbé Grosier). In the nineteenth century, catalogs listed all books alphabetically by author, including the place and year of publication.</p>
 
-<p>By-laws in catalogs from 1754 to 1789 and in the 1792, 1813, 1838, and 1850 catalogs document the operations and governance of the Library. They also record loan periods (extended for members living outside of the city), fines, membership and shareholders fees, and Library rules, as they changed from year to year. The early catalogs also printed lists of members; the nineteenth century catalogs contain brief histories of the Library.</p>
+<p>By-laws in catalogs from 1754 to 1789 and in the 1792, 1813, 1838, and 1850 catalogs document the operations and governance of the Library. They also record loan periods (extended for members living outside of the city), fines, membership and shareholders fees, and Library rules, as they changed from year to year. The early catalogs also printed lists of members; the nineteenth-century catalogs contain brief histories of the Library.</p>
 
 <ul>
 	<li>Sidebar Links</li>
@@ -63,7 +63,7 @@
 
 <h3><a name='historic'></a>Historic Membership &amp; Collections Records</h3>
 <h6 style="margin-top:20px;"><a name='books'></a>Books</h6 style="margin-top:20px;">
-<p>Each book recorded in the ledgers and in the Library’s early catalogs from 1754 to 1800 is cataloged in City Readers, and many of these survive in the Library’s special collections today. The Library’s nineteenth-century catalogs precisely identify most texts in the Library’s early collections; however, exact identification of some books, such as those which circulated but never appeared in catalogs, or were lost or replaced between 1800 and 1813, is not possible. </p>
+<p>Each book recorded in the ledgers and in the Library’s early catalogs from 1754 to 1800 is cataloged in City Readers, and many of these survive in the Library’s special collections today. The Library’s nineteenth-century catalogs precisely identify most texts in the Library’s early collections; however, exact identification of some books, such as those that circulated but never appeared in catalogs, or were lost or replaced between 1800 and 1813, is not possible. </p>
 <ul>
 	<li>The author, title, and publication data is displayed at the top of the page. The collection status&mdash;indicating whether the circulating copy remains in the Library’s collections, or has been replaced, or is no longer in the collections&mdash;appears below the title and imprint.</li>
 	<li>Circulation by volume shows the number of checkouts for each book in a multivolume set.</li>
@@ -117,7 +117,7 @@
 <h2><a name='using'></a>Using the Site</h2>
 
 <h3><a name='exploring'></a>Exploring relationships</h3>
-<p>Use the links within the record to view related books and people, and to browse books, people, and other records by subject area, document type, and other conditions.</p>
+<p>Use the links within the record to view related books and people and to browse books, people, and other records by subject area, document type, and other conditions.</p>
 
 <p>Borrowing history and additional relationships are included as tabs on the page. The categories below appear in all records for which there is data.</p>
 
@@ -147,11 +147,11 @@
 		<li><b>Associational: </b>People who were directly related through their activities with an association, that is, a political, social, philanthropic, or other society or organization.</li>
 		<li><b>Institutional: </b>People who were directly related through their activities with an institution, such as a university, hospital, or other chartered organization.</li>
 		<li><b>Military: </b>People directly related through their activities in the military.</li>
-		<li><b>Political: </b>Close political relationships (e.g., presidential running mate, concurrent members of congress)</li>
+		<li><b>Political: </b>Close political relationships (e.g., presidential running mate, concurrent members of Congress)</li>
 	</ul>
 	<li>Books</li>
 		<ul>
-		<li><b>Author</b><li>
+		<li><b>Author</b></li>
 		<li><b>Printer or Publisher: </b>A relationship to the book’s printer or publisher appears if that person or business was already connected to the Library. </li>
 		<li><b>Records: </b>Former owners and annotators of Library books, or others whose traces appear in the books themselves. A note accompanying the bibliographic information in City Readers and in the Library’s online catalog provides more specific information.</li>
 		</ul>
@@ -205,7 +205,7 @@
 
 <p>People &amp; Organization records can be filtered by gender, occupation, lifespan (dates during which the person or organization was alive or active), country of birth, relationship of the person to the library, readers of specific subjects from the 1813, 1838, and 1850 catalogs, and the record type (to show only people or only organizations).</p>
 
-<p>Digital Collections records can be filtered by genre (early printed library catalogs, circulation ledgers, or individual pages from the circulation ledgers), local subject, publication date (by century), and current Library of Congress subject.</p>
+<p>Digital Collections records can be filtered by genre (early printed Library catalogs, circulation ledgers, or individual pages from the circulation ledgers), local subject, publication date (by century), and current Library of Congress subject.</p>
 
 <h6 style="margin-top:20px;">Visualizations</h6 style="margin-top:20px;">
 
@@ -239,15 +239,15 @@
 
 <p>Help us gather biographical metadata by contributing to Wikipedia.</p> 
 
-<p>Because Wikipedia does not contain articles on every individual and organization in City Readers, many pages on our site lack complete metadata. By updating existing Wikipedia articles on readers, authors, and organizations in City Readers, you improve the quality and reliability of data available in both City Readers and also in one of the most heavily utilized resources on the internet.</p>
+<p>Because Wikipedia does not contain articles on every individual and organization in City Readers, many pages on our site lack complete metadata. By updating existing Wikipedia articles on readers, authors, and organizations in City Readers, you improve the quality and reliability of data available in both City Readers and also in one of the most heavily used resources on the internet.</p>
 
 <p>We encourage users to:</p>
 <ul>
-	<li><a href="https://en.wikipedia.org/wiki/Wikipedia:Articles_for_creation">Request and create</a> wikis for individuals and organizations recorded in City Readers, but not in Wikipedia. Women readers are especially underrepresented.</li>
+	<li><a href="https://en.wikipedia.org/wiki/Wikipedia:Articles_for_creation">Request and create</a> Wikipedia pages for individuals and organizations recorded in City Readers, but not in Wikipedia. Women readers are especially underrepresented.</li>
 	<li>Improve Wikipedia <a href="https://en.wikipedia.org/wiki/Wikipedia:Stub">stub</a> pages for City Readers people and organizations.</li>
 	<li>Update existing Wikipedia articles with <a href="https://en.wikipedia.org/wiki/Wikipedia:Verifiability">verifiable information</a> pertaining to the occupations of readers, and the familial, social, political, business, and other ties between people and organizations in City Readers. This information greatly enhances the data and visualizations available the database.</li>
 	<li>Get involved with <a href="https://en.wikipedia.org/wiki/Wikipedia:WikiProject_Biography">WikiProject: Biography</a>.</li>
-	<li>We’re always happy to hear about expanded Wikipedia articles on people included in City Readers. Please email us at <a href="mailto:ledger@nysoclib.org">ledger@nysoclib.org</a> to let us know if you update someone’s Wiki.</li>
+	<li>We’re always happy to hear about expanded Wikipedia articles on people included in City Readers. Please email us at <a href="mailto:ledger@nysoclib.org">ledger@nysoclib.org</a> to let us know if you update someone’s Wikipedia page.</li>
 </ul>
 
 <h3>Submit Bibliographical Information</h3>
@@ -258,7 +258,7 @@
 <ul>	
 	<li>A complete citation for the relevant book in MLA format.</li>
 	<li>Links to corresponding records in <a href='http://estc.bl.uk/F/?func=file&file_name=login-bl-estc' target='_blank'>ESTC</a> and/or <a href='https://www.worldcat.org/' target='_blank'>WorldCat</a>.</li>
-	<li>Page references to the book in the Library’s eighteenth and nineteenth century <a href="../Gallery/75">catalogs</a>. </li>
+	<li>Page references to the book in the Library’s eighteenth- and nineteenth-century <a href="../Gallery/75">catalogs</a>. </li>
 </ul>
 
 <h3>Errare humanum est</h3>
