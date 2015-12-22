@@ -170,6 +170,8 @@
 					case "alphabetical":
 					case "list":
 					default:
+						$va_facet_content_all = $o_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values));
+						$this->view->setVar('facet_size', sizeof($va_facet_content_all));
 						$this->view->setVar('facet_content', $o_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
 						$this->render("Browse/list_facet_html.php");
 					break;
