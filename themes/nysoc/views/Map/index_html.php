@@ -60,26 +60,25 @@
 	}
 ?>			
 			<div class="row">
-				<div id='<?php print $vs_map_id; ?>'>		
-					<div style="text-align: center; margin-top: 60px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
+				<div class="col-sm-1 col-md-1 col-lg-1"></div>
+				<div class="col-sm-11 col-md-11 col-lg-11" id='<?php print $vs_map_id; ?>'>	
+					<div style="text-align: center; margin-top: 100px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
+				</div>
+			</div>
+			
+			<div class="row" id='<?php print $vs_map_id; ?>_slider' style='display: none;'>
+				<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
+					<span id="publisherMapYearSliderStart"></span> 
+				</div>
+				<div class="col-sm-10 col-md-10 col-lg-10">
+					<input id="publisherMapYear" data-slider-id="publisherMapYearSlider" type="text" value="" data-slider-min="1700" data-slider-max="1900" data-slider-step="1" data-slider-value="[1740,1850]"/>
+				</div>
+				<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
+					<span id="publisherMapYearSliderEnd"></span>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="row">
-		<?php print $vb_dont_show_catalogue_list ? '' : '<div class="col-sm-2 col-md-2 col-lg-2"></div>'; ?>
-
-		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
-			<span id="publisherMapYearSliderStart"></span> 
-		</div>
-		<div class="<?php print $vb_dont_show_catalogue_list ? 'col-sm-10 col-md-10 col-lg-10' : 'col-sm-8 col-md-8 col-lg-8'; ?>">
-			<input id="publisherMapYear" data-slider-id="publisherMapYearSlider" type="text" value="" data-slider-min="1700" data-slider-max="1900" data-slider-step="1" data-slider-value="[1740,1850]"/>
-		</div>
-		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
-			<span id="publisherMapYearSliderEnd"></span>
-		</div>
-	</div>
-
 </div>
 
 
@@ -90,7 +89,8 @@
 		// Set up map 
 		//
 		var map = {l: null, data: null, baseLayer: null, startYear: null, endYear: null};
-		map.generateMap = function(start, end, dontFitToBounds) {
+		map.generateMap = function(s, e, dontFitToBounds) {
+			var start = s, end = e;
 			var m = this;
 			m.l.eachLayer(function (layer) {
 				if (layer != m.baseLayer) { m.l.removeLayer(layer); }
@@ -119,7 +119,6 @@
 				var seen_object_ids = {};
 				var count_for_current_range = 0;
 				
-				var start = end = null;
 				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
 					for(var catalog_id in by_catalog) {
 						by_object_id = by_catalog[catalog_id];
@@ -191,6 +190,7 @@
 			
 			jQuery('#publisherMapYear').bootstrapSlider('setAttribute', 'min', this.startYear).bootstrapSlider('setAttribute', 'max', this.endYear);
 			jQuery('#publisherMapYear').bootstrapSlider('setValue', [this.startYear, this.endYear]);
+			jQuery('#<?php print $vs_map_id; ?>_slider').show();
 		}
 		
 
