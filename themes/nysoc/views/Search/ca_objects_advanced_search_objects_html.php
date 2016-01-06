@@ -53,7 +53,7 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Printer/Publisher:<br/>
-						{{{ca_entities.preferred_labels.displayname%width=220px&restrictToRelationshipTypes=printer;publisher&label=Printer/Publisher}}}
+						{{{ca_objects.printing_pub_details%width=220px&label=Printer/Publisher}}}
 					</div>				
 					<div class="advancedSearchField">
 						Publication Date<i> (e.g. 1650-1750)</i>: <br/>
