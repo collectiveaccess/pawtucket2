@@ -269,13 +269,13 @@
 					$vs_subj_buf.= join(', ', $vs_1838);
 					$vs_subj_buf.= "</div>";
 				}
-			}								
-			if ($vs_subjects_1850 = $t_object->get('ca_objects.subjects_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => true))) {
+			}		
+			if ($vs_subjects_1850 = $t_object->get('ca_objects.Analytical_Catalog_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => false))) {
 				$vs_1850 = array();
 				foreach ($vs_subjects_1850 as $va_key => $vs_subjects_1850_t) {
 					foreach ($vs_subjects_1850_t as $vs_subjects_1850) {
-						if (($vs_subjects_1850['subjects_1850'] != 964) && ($vs_subjects_1850['subjects_1850'])) {
-							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['subjects_1850']), '', '', 'Search', 'objects/search/ca_objects.subjects_1850:'.$vs_subjects_1850['subjects_1850']);
+						if (($vs_subjects_1850['Analytical_Catalog_1850'] != 964) && ($vs_subjects_1850['Analytical_Catalog_1850'])) {
+							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['Analytical_Catalog_1850']), '', '', 'Search', 'objects/search/ca_objects.Analytical_Catalog_1850:'.$vs_subjects_1850['Analytical_Catalog_1850']);
 						}
 					}
 				}
