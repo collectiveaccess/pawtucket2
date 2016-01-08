@@ -1,0 +1,22 @@
+
+/* Menu */
+
+.navbar-brand {
+	width: 260px;
+	padding-bottom: 5px;
+}
+
+
+/* Browse Panel */
+
+.filterMenureults {
+	max-height:380px;
+}
+
+/* Advanced Search */
+
+div.advancedSearchField {
+    float: none;
+    width: auto;
+    height: 55px;
+}
