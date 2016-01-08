@@ -803,7 +803,7 @@ class WLPlugSearchEngineSolr extends BaseSearchPlugin implements IWLPlugSearchEn
 				"/admin/cores" /* CoreAdminHandler */
 			);
 
-			$vo_search_indexing_config = Configuration::load($this->opo_search_config->get('search_indexing_config'));
+			$vo_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 			$va_tables = $vo_search_indexing_config->getAssocKeys();
 			/* reload all tables */
 			foreach($va_tables as $vs_table){

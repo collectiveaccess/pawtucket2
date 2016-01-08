@@ -66,7 +66,7 @@
  			
  			if (!($va_listing_info = caGetInfoForListingType($ps_function))) {
  				// invalid listing type – throw error
- 				die("Invalid listing type");
+ 				throw new ApplicationException("Invalid listing type");
  			}
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$va_listing_info["displayName"]);
  			
@@ -82,11 +82,11 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) {
- 				die("Invalid table");
+ 				throw new ApplicationException("Invalid table");
  			}
  			
  			if(!($o_browse = caGetBrowseInstance($vs_table))) {
- 				die("Invalid listing");
+ 				throw new ApplicationException("Invalid listing");
  			}
  			
  			// Set browse facet group

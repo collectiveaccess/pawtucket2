@@ -33,7 +33,7 @@
 				if ($va_storage = $t_object->get('ca_objects.location.location_description', array('delimiter' => ' > '))) {
 					print "<div class='unit'><span class='detailLabel'>Location</span><span class='detailInfo'>".$va_storage."</span></div>";
 				}
-				if ($va_type = $t_object->get('ca_objects.object_classification', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
+				if ($va_type = $t_object->get('ca_objects.series', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><span class='detailLabel'>Classification</span><span class='detailInfo'>".$va_type."</span></div>";
 				} else {
 					print "<div class='unit'><span class='detailLabel'>Classification</span><span class='detailInfo'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span></div>";
@@ -53,7 +53,7 @@
 				if ($va_dept = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToTypes' => array('department')))) {
 					print "<div class='unit'><h6>Related Departments</h6>".$va_dept."</div>";
 				}																																
-				if ($va_entities = $t_object->get('ca_entities', array('returnAsLink' => true, 'delimiter' => '<br/>', 'template' => '^ca_entities.preferred_labels (^relationship_typename)'))) {
+				if ($va_entities = $t_object->get('ca_entities', array('returnAsLink' => true, 'delimiter' => '<br/>', 'template' => '^ca_entities.preferred_labels'))) {
 					print "<div class='unit'><h6>Related Entities</h6>".$va_entities."</div>";
 				}					
 				

@@ -119,7 +119,8 @@
 	 */
 	function caNavLink($po_request, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
-			return "<strong>Error: no url for navigation</strong>";
+			//return "<strong>Error: no url for navigation</strong>";
+			$vs_url = '/';
 		}
 		
 		$vs_tag = "<a href='".$vs_url."'";
@@ -144,7 +145,7 @@
 	function caNavButton($po_request, $pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if ($ps_module_path && $ps_controller && $ps_action) {
 			if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
-				return "<strong>Error: no url for navigation</strong>";
+				return '';//<strong>Error: no url for navigation</strong>";
 			}
 		} else {
 			$vs_url = '';
@@ -224,7 +225,7 @@
 	 */
 	function caNavHeaderButton($po_request, $pn_type, $ps_content, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
-			return "<strong>Error: no url for navigation</strong>";
+			return ''; //<strong>Error: no url for navigation</strong>";
 		}
 		
 		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_BUTTON_ICON_POS_LEFT__;
@@ -303,9 +304,15 @@
 		}
 		
 		if ($ps_module_and_controller_path) {
-			$vs_action = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
+			$vs_action = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) ?
+				$po_request->getBaseUrlPath().'/'.$ps_module_and_controller_path.'/'.$ps_action
+				:					
+				$po_request->getBaseUrlPath().'/'.$po_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
 		} else {
-			$vs_action = $po_request->getControllerUrl().'/'.$ps_action;
+			$vs_action = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) ?
+				str_replace("/".$po_request->getScriptName(), "", $po_request->getControllerUrl()).'/'.$ps_action
+				:
+				$po_request->getControllerUrl().'/'.$ps_action;
 		}
 		
 		$vs_buf = "<form action='".$vs_action."' method='".$ps_method."' id='".$ps_id."' $vs_target enctype='".$ps_enctype."'>\n<input type='hidden' name='_formName' value='{$ps_id}'/>\n";

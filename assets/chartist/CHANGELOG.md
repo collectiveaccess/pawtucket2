@@ -1,3 +1,91 @@
+v0.9.5 - 14 Nov 2015
+--------------------
+- Added 'fillHoles' option for line graphs, which continues the line smoothly through data holes (Thanks to Joshua Warner !)
+- Added option to use relative donut width values (Thanks to hansmaad !)
+- Added stackMode for bar charts to create overlapping charts or bipolar stacked charts (Thanks to Douglas Mak !)
+- Fixed issue with unordered ticks in fixed scale axis, fixes #411 (Thanks Carlos !)
+- Fixed left navigation in examples was not using valid anchors, fixes #514 (Thanks Carlos !)
+- Internal refactoring and cleanup (Thanks to hansmaad !)
+
+v0.9.4 - 06 Aug 2015
+--------------------
+- Added axes to all events where they are available in context to provide better API convenience when developing plugins
+- Consider additional parameters of SVG elem when called with DOM node
+
+v0.9.3 - 05 Aug 2015
+--------------------
+- Added better check for undefined values in bar chart, fixes #400
+- Fixed issue with SVG feature check within Svg module (Thanks to Markus Gruber !)
+
+v0.9.2 - 02 Aug 2015
+--------------------
+- Enabled bar charts to use dynamic axes fixes #363, fixes #355
+- Added axis title plugin to plugins page (Thanks to @alexstanbury !)
+- Added a label group for Pie charts to prevent occlusion by slices (Thanks to Anthony Jimenez!)
+- Added better handling for multi values when writing custom attributes, fixes #379
+
+v0.9.1 - 24 Jun 2015
+--------------------
+- Fixed bug with areaBase narrowing process in area charts, fixes #364
+- Fixed bug on bar chart where wrong offset was used (axis offset), fixes #347 (Thanks to @amsardesai !)
+- Fixed bug with namespace attributes that caused duplication of SVG element on updates in old browsers (Thanks to @radist2s !)
+
+v0.9.0 - 10 Jun 2015
+--------------------
+- Major refactoring of axis and projection code, added possibility to configure axes when creating a chart
+- Added areaBase to series options override in line chart, fixes #342
+- Throwing up in infinite loop for edge cases and during development
+- Documentation: Added documentation for axis configuration and getting started guide for custom axes
+
+v0.8.3 - 07 Jun 2015
+--------------------
+- Greatly reduced CSS selector complexity and split slice into slice-pie and slice-donut
+- Added more robust detach mechanism that takes async initialization into account
+- Added better handling for area drawing with segmented paths, fixes #340
+- Documentation: Added getting started guide for styling charts
+
+v0.8.2 - 02 Jun 2015
+--------------------
+- Fixed broken release 0.8.1
+
+v0.8.1 - 02 Jun 2015 (BROKEN!)
+------------------------------
+- Added new option labelPosition for Pie charts to have better control over label placement, fixes #315
+- Added default styles for alignment-baseline
+- Added better support for undefined values in bar charts
+- Refactored getHighLow to use recursion in order to enable more dynamic array structures and better edge case management
+- Fixed issue with Chartist.rho that caused endless loop when called with 1, fixes #318
+
+v0.8.0 - 10 May 2015
+--------------------
+- Added new option to bar charts to allow a series distribution and use a simple one dimensional array for data (#209)
+- Added option for label placement and refactored label positioning code (#302)
+- Added option to only use integer numbers in linear scale axis (#77)
+- Added possibility to add series configuration on line chart to override specific options on series level (#289, #168)
+- Added functionality to handle holes in line charts (#294)
+- Added step interpolation for line charts
+- Added default styles for bar and horizontal bar labels that make more sense (#303)
+- Added series data and meta information to events (#293)
+- Changed line chart behavior to draw points from interpolated values (#295)
+- Removed restriction to SVGElements so Chartist.Svg can be used for HTML DOM elements (#261)
+- Refactored and simplified axis creation, also includes updated CSS label handling
+- Refactored getDataArray for simplification and fixed type conversion issue with data arrays for pie charts
+- Centralized high/low calculations in getHighLow() method and added support for empty charts. Thanks @scthi !
+- Fixed bug in pie chart where meta was only added when series name was specified
+- Fixed bug where special condition to check single value should also include object value notation (#265)
+- Fixed bug with Chartist.extend when null property is extended
+- Fixed bug with Firefox dying with a DOM exception when calling getBBox() on an invisible node. Thanks @scthi !
+- Switched from object literal accessor definition to regular function (#278)
+
+v0.7.4 - 19 Apr 2015
+--------------------
+- Enhanced documentation site (Accessibility plugin, live example eval, fixed path to Sass settings, better HTML example of how to include Chartist, example how to include multiple charts on one page)
+- Added Arc to Chartist.Svg.Path
+- Refactored Chartist.Pie to make use of Svg.Path and expose path in events
+- Closing path of Pie if not a donut for correct strokes
+- Exposing axis objects in created event
+- Changed grid event to use axis object instead of string
+
 v0.7.3 - 27 Feb 2015
 --------------------
 - Fixed bugs in the chart.update method 

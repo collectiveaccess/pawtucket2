@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -92,28 +92,21 @@
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			var offsetBrowseResultsContainer = $("#bRefine").offset();
-			var lastOffset = $("#bRefine").offset();
-			$("body").data("lastOffsetTop", lastOffset.top);
-			$(window).scroll(function() {
-				if(($(document).scrollTop() < $(document).height() - ($("#bRefine").height() + 250)) && (($(document).scrollTop() < $("body").data("lastOffsetTop")) || ($(document).scrollTop() > ($("body").data("lastOffsetTop") + ($("#bRefine").height() - ($(window).height()/3)))))){
-					var offset = $("#bRefine").offset();
-					if($(document).scrollTop() < offsetBrowseResultsContainer.top){
-						jQuery("#bRefine").offset({top: offsetBrowseResultsContainer.top, left: offset.left});
-					}else{
-						jQuery("#bRefine").offset({top: $(document).scrollTop(), left: offset.left});
+            if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
+				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
+				var panelWidth = jQuery('#bRefine').width();
+				jQuery(window).scroll(function () {
+					var scrollTop = $(window).scrollTop();
+					// check the visible top of the browser
+					if (offset.top<scrollTop) {
+						jQuery('#bRefine').addClass('fixed');
+						jQuery('#bRefine').width(panelWidth);
+					} else {
+						jQuery('#bRefine').removeClass('fixed');
 					}
-				}
-				clearTimeout($.data(this, 'scrollTimer'));
-				$.data(this, 'scrollTimer', setTimeout(function() {
-					// do something
-					var lastOffset = $("#bRefine").offset();
-					$("body").data("lastOffsetTop", lastOffset.top);
-					
-				}, 250));
-			});
+				});
+            }
 		});
 	</script>
 <?php	
 	}
-?>

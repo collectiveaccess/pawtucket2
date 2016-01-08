@@ -25,17 +25,30 @@
  *
  * ----------------------------------------------------------------------
  */
+
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
+	$va_classroomDisplayName = caGetClassroomDisplayName();
+	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
+	
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
-	$vs_user_links = "";
+	$va_user_links = array();
 	if($this->request->isLoggedIn()){
-		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		if(caDisplayLightbox($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+		}
+		if(caDisplayClassroom($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
+		}
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
-		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";
+		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
+		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";
 	}
+	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>
 <html lang="en">
@@ -104,24 +117,36 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+<?php
+	if ($vb_has_user_links) {
+?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
 				<ul class="nav navbar-nav">					
 <?php
-							print $vs_user_links;
+							print join("\n", $va_user_links);
 ?>
 				</ul>
 			</div>
+<?php
+	}
+?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+<?php
+	if ($vb_has_user_links) {
+?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu">
 <?php
-							print $vs_user_links;
+							print join("\n", $va_user_links);
 ?>
 						</ul>
 					</li>
 				</ul>
+<?php
+	}
+?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 					<div class="formOutline">
 						<div class="form-group">

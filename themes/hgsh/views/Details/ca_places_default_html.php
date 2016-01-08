@@ -1,8 +1,8 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	$va_access_values = $this->getVar("access_values");
-	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToRelationshipTypes" => array("featured", "cover"), "checkAccess" => $va_access_values));
+	$va_cover_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("cover"), "checkAccess" => $va_access_values));
+	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
 ?>
 <div class="row">
 	<div class='col-xs-12'>
@@ -10,100 +10,71 @@
 	</div>
 </div><!-- end row -->
 <div class="row">		
-<div class='col-sm-6'>
+<div class='col-sm-8'>
 	<div class="detailTitleSmall">{{{^ca_places.preferred_labels.name}}}</div>
 <?php
-	if(is_array($va_featured_items) && sizeof($va_featured_items)){
-		$q_featured_objects = caMakeSearchResult('ca_objects', $va_featured_items);
-		$vb_item_output = 0;
-		if($q_featured_objects->numHits()){
-?>   
-			<div class="jcarousel-wrapper"><div class="jcarousel" id="repViewerCarousel"><ul>
-<?php
-						while($q_featured_objects->nextHit()){
-							if($vs_media = $q_featured_objects->getWithTemplate("<div class='repViewerContCont'><div class='repViewerCont'><l>^ca_object_representations.media.large</l></div></div>", array("checkAccess" => $va_access_values))){
-								print "<li><div class='detailSlide'>".$vs_media;
-								$vs_caption = $q_featured_objects->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
-								if($vs_caption){
-									print "<p class='detailCaptionText'>".$vs_caption."</p>";
-								}
-								print "</div></li>";
-								$vb_item_output++;
-							}
-						}
-?>
-					</ul>
-				</div><!-- end jcarousel -->
-<?php
-				if($vb_item_output > 1){
-?>
-				<!-- Prev/next controls -->
-				<div id='detailRepNav'><a href='#' id='detailRepNavPrev' title='"._t("Previous")."'><span class='glyphicon glyphicon-arrow-left'></span></a> <a href='#' id='detailRepNavNext' title='"._t("Next")."'><span class='glyphicon glyphicon-arrow-right'></span></a></div>
-<?php
+		if(is_array($va_cover_items) && sizeof($va_cover_items)){
+			$vn_cover_id = $va_cover_items[0];
+			$t_cover_object = new ca_objects($vn_cover_id);
+			if($vs_media = $t_cover_object->getWithTemplate("<l>^ca_object_representations.media.large</l>", array("checkAccess" => $va_access_values))){
+				print "<div class='detailCoverObject'>".$vs_media;
+				$vs_caption = $t_cover_object->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+				if($vs_caption){
+					print "<p class='detailCaptionText'>".$vs_caption."</p>";
 				}
-?>
-			</div><!-- end jcarousel-wrapper -->
-			<script type='text/javascript'>
-				jQuery(document).ready(function() {
-					/* width of li */
-					$('.jcarousel li').width($('.jcarousel').width());
-					$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
-					
-					/*
-					Carousel initialization
-					*/
-					$('.jcarousel')
-						.jcarousel({
-							// Options go here
-						});
-			
-					/*
-					 Prev control initialization
-					 */
-					$('#detailRepNavPrev')
-						.on('jcarouselcontrol:active', function() {
-							$(this).removeClass('inactive');
-						})
-						.on('jcarouselcontrol:inactive', function() {
-							$(this).addClass('inactive');
-						})
-						.jcarouselControl({
-							// Options go here
-							target: '-=1'
-						});
-			
-					/*
-					 Next control initialization
-					 */
-					$('#detailRepNavNext')
-						.on('jcarouselcontrol:active', function() {
-							$(this).removeClass('inactive');
-						})
-						.on('jcarouselcontrol:inactive', function() {
-							$(this).addClass('inactive');
-						})
-						.jcarouselControl({
-							// Options go here
-							target: '+=1'
-						});
-
-				});
-			</script>
-	<br/>
-<?php
+				print "</div>";
+			}			
 		}
-	}
 ?>
 	{{{<ifdef code="ca_places.description"><p>^ca_places.description</p></ifdef>}}}
+	{{{<ifdef code="ca_places.additional_info">
+			<div class="detailMoreInfo" id="additional_info_link"><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;">Read More <span class="glyphicon glyphicon-arrow-down small"></span></a></div>
+			<p id='additional_info' style='display:none;'>^ca_places.additional_info<br/><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;" class="detailMoreInfo">Hide <span class="glyphicon glyphicon-arrow-up"></span></a></p>
+	</ifdef>}}}
 <?php
-					print "<br/><p>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "place_facet", "id" => $t_item->get("place_id")))."</p>";
+
+		if(is_array($va_featured_items) && sizeof($va_featured_items)){
+			$q_featured_objects = caMakeSearchResult('ca_objects', $va_featured_items);
+			if($q_featured_objects->numHits()){
+				print "<div class='row'><div class='col-sm-12'><div class='btn btn-default'>"._t("Featured Objects")."</div></div></div><!-- end row -->\n";
+				$i = 0;
+				while($q_featured_objects->nextHit()){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					if(!($vs_media = $q_featured_objects->getWithTemplate("<l>^ca_object_representations.media.resultcrop</l>", array("checkAccess" => $va_access_values)))){
+						$vs_media = caGetThemeGraphic($this->request, 'placeholder.jpg');
+					}
+					$vs_caption = $q_featured_objects->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+					if($vs_caption){
+						$vs_caption = "<div class='bResultText'>".$vs_caption."</div>";
+					}
+					
+					print "<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4'>
+						<div class='bResult'>
+							{$vs_media}
+							{$vs_caption}
+						</div>
+					</div><!-- end col -->";
+					$i++;
+					if($i == 3){
+						print "</div><!-- end row -->";
+						$i = 0;
+					}
+				}
+				if($i > 0){
+					print "</div><!-- end row -->";
+				}
+			}
+		}
+	print "<br/><p>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "place_facet", "id" => $t_item->get("place_id")))."</p>";
 ?>
 </div><!-- end col -->
-<div class='col-sm-6'>
+<div class='col-sm-4'>
 	<div class="detailTitle">{{{^ca_places.preferred_labels.name}}}</div>
 <?php
 		$t_object_thumb = new ca_objects();
-		$va_entities = $t_item->get("ca_entities", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+		$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 		if(sizeof($va_entities)){
 			if(sizeof($va_entities) == 1){
 				print "<div class='btn btn-default'>Related person/organisation</div>";
@@ -129,7 +100,7 @@
 				$i++;
 			}
 		}
-		$va_collections = $t_item->get("ca_collections", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+		$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 		if(sizeof($va_collections)){
 			print "<div class='btn btn-default'>Related collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
 			$t_rel_collection = new ca_collections();
@@ -151,7 +122,7 @@
 				$i++;
 			}
 		}
-		$va_places = $t_item->get("ca_places", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+		$va_places = $t_item->get("ca_places", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 		if(sizeof($va_places)){
 			print "<div class='btn btn-default'>Related place".((sizeof($va_places) > 1) ? "s" : "")."</div>";
 			$t_rel_place = new ca_places();
@@ -173,7 +144,7 @@
 				$i++;
 			}
 		}
-		$va_occurrences = $t_item->get("ca_occurrences", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+		$va_occurrences = $t_item->get("ca_occurrences", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 		if(sizeof($va_occurrences)){
 			print "<div class='btn btn-default'>Related event".((sizeof($va_occurrences) > 1) ? "s" : "")."</div>";
 			$t_rel_occurrence = new ca_occurrences();

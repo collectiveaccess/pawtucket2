@@ -57,28 +57,49 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
 	<div class='col-sm-12 col-md-12 col-lg-12'>
-		<H1>
 <?php
-			print _t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
-?>
-		</H1>
-		<H5>
-<?php
+			#print "<H1>"._t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"))."</H1>";	
+		if($vb_is_search){
+			print "<H5>";
+		}
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					# --- browse refinement is not used in this system
+					# --- instead, detail pages have links to "related" objects browse results
+					# --- there is only ever one criteria, and it should serve as a title including a link back to it's detail page
+					#print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					switch($va_criterion['facet_name']){
+						case "entity_org_facet":
+							$vs_table = "ca_entities";
+						break;
+						# --------------------
+						case "place_facet":
+							$vs_table = "ca_places";
+						break;
+						# --------------------
+						case "collection_facet":
+							$vs_table = "ca_collections";
+						break;
+						# --------------------
+						case "event_facet":
+							$vs_table = "ca_occurrences";
+						break;
+						# --------------------
+						
+					}
+					print caDetailLink($this->request, "<div class='btn pull-left'><i class='fa fa-angle-double-left'></i></div><H1>".$va_criterion['value']."</H1>", '', $vs_table, $va_criterion['id']);
 				}else{
+					print "<strong>".$va_criterion['facet'].':</strong>';
 					print ' '.$va_criterion['value'];
 				}
 				$i++;
@@ -93,9 +114,9 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 		}
-?>		
-		</H5>
-<?php
+		if($vb_is_search){
+			print "</H5>";
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

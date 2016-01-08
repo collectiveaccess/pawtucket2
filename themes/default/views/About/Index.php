@@ -11,6 +11,5 @@
 		<h6>&nbsp;</h6><address>Archives<br>			100 Second Avenue, 2nd floor<br>			New York, NY 10010</address>
 		
 		<address>Jennifer Smith, Archivist<br>			<span class="info">Phone</span> — 212 222.2222<br>			<span class="info">Fax</span> — 212 222.2223<br>			<span class="info">Email</span> — <a href="#">email@archive.edu</a></address>
-		
 	</div>
 </div>

@@ -93,7 +93,7 @@ if (!$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($qr_res->numHits()){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Sets', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</i></a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to lightbox")."</i></a></li>";
 ?>
 						<li class="divider"></li>
 <?php
@@ -179,27 +179,29 @@ if (!$vb_ajax) {	// !ajax
 			//
 			// Handle optional paging
 			//
+			$vs_page_control = '';
 			switch($this->getVar('paging')){
 				case 'nextprevious':
-					print "<div class=\"row\"><div class=\"col-sm-12 col-md-12 col-lg-12\">";
-					print '<ul class="pagination">';
+					$vs_page_control .= "<div class=\"row\"><div class=\"col-sm-12 col-md-12 col-lg-12\">";
+					$vs_page_control .= '<ul class="pagination">';
 
 					if ($vn_start > 0) {
-						print "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
+						$vs_page_control .= "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
 					}
-					$va_num_pages = floor($qr_res->numHits() / $vn_hits_per_block);
+					$vn_num_pages = ceil($qr_res->numHits() / $vn_hits_per_block);
 					$vn_i = 1;
-					while ($va_num_pages > 0) {
-						print "<li ".($vn_start==(($vn_hits_per_block*$vn_i)-$vn_hits_per_block) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => ($vn_hits_per_block*$vn_i)-$vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
+					while ($vn_num_pages > 0) {
+						$vs_page_control .= "<li ".($vn_start==(($vn_hits_per_block*$vn_i)-$vn_hits_per_block) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => ($vn_hits_per_block*$vn_i)-$vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
 						$vn_i++;
-						$va_num_pages--;
+						$vn_num_pages--;
 					}					
 					if (($vn_start + $vn_hits_per_block) < $qr_res->numHits()) {
-						print "<li>".caNavLink($this->request, _t('Next')." <i class='fa fa-angle-double-right'></i>", 'nextNav', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li>';
+						$vs_page_control .= "<li>".caNavLink($this->request, _t('Next')." <i class='fa fa-angle-double-right'></i>", 'nextNav', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li>';
 					}
-					print "</ul>";
-					print "</div></div>\n"; 
+					$vs_page_control .= "</ul>";
+					$vs_page_control .= "</div></div>\n"; 
 					
+					print $vs_page_control;
 					break;
 				case 'letter':
 ?>
@@ -246,24 +248,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 					
 				if ($this->getVar('paging') == 'nextprevious') {
-					print "<div class=\"row\"><div class=\"col-sm-12 col-md-12 col-lg-12\">";
-					print '<ul class="pagination">';
-					if ($vn_start > 0) {
-						print "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
-					}
-					$va_num_pages = floor($qr_res->numHits() / $vn_hits_per_block);
-					$vn_i = 1;
-					while ($va_num_pages > 0) {
-						print "<li ".($vn_start==($vn_hits_per_block*$vn_i) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => $vn_hits_per_block*$vn_i, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
-						$vn_i++;
-						$va_num_pages--;
-					}
-					if (($vn_start + $vn_hits_per_block) < $qr_res->numHits()) {
-						print "<li>".caNavLink($this->request, _t('Next')." <i class='fa fa-angle-double-right'></i>", 'nextNav', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li>';
-					}
-					print '</ul>';
-					print "</div></div>\n"; 
-					
+					print $vs_page_control;
 				}
 ?>
 

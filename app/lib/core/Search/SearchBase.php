@@ -57,8 +57,8 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 		public function __construct($po_db=null, $ps_engine=null) {			
 			$this->opo_datamodel = Datamodel::load();
 			$this->opo_app_config = Configuration::load();
-			$this->opo_search_config = Configuration::load($this->opo_app_config->get("search_config"));
-			$this->opo_search_indexing_config = Configuration::load($this->opo_search_config->get("search_indexing_config"));			
+			$this->opo_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+			$this->opo_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');			
 
 			// load search engine plugin as configured by the 'search_engine_plugin' directive in the main app config file
 			if (!($this->opo_engine = SearchBase::newSearchEngine($ps_engine, $po_db))) {
@@ -282,11 +282,11 @@ require_once(__CA_LIB_DIR__."/core/Db.php");
 			if(!$va_info = $this->opo_search_indexing_config->get($pm_subject_table)) {
 				return null;
 			}
-			$va_access_points =  $va_info['_access_points'];
+			if(!is_array($va_access_points =  $va_info['_access_points'])) { $va_access_points = array(); }
 			foreach($va_access_points as $vs_k => $va_v) {
 				$va_access_points[mb_strtolower($vs_k)] = $va_v;
 			}
-			return is_array($va_access_points) ? $va_access_points : array();
+			return $va_access_points;
 		}
 		# -------------------------------------------------
 		/**

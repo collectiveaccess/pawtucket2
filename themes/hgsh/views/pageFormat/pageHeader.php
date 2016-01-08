@@ -102,10 +102,12 @@
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
-					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/about/"><?php print _t("About"); ?></a></li>
+					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/about/"><?php print _t("History of the Suburb"); ?></a></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>
+					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/links/"><?php print _t("Links"); ?></a></li>
+					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/help/"><?php print _t("Help"); ?></a></li>
 					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/contact-us/"><?php print _t("Contact Us"); ?></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
