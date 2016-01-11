@@ -1,11 +1,12 @@
 body {
 	font-family: "open sans", helvetica, sans-serif;	
-	
+	min-width:980px;
 	background: #fff url('../graphics/bg-content.png') repeat top left;	
 }
 .pageWrapper {
 	max-width:1280px;
 	margin:0px auto 0px auto;
+	min-width:960px;
 }
 h1 {
 	font-weight: 600;
@@ -356,7 +357,7 @@ h4.entity {
 .filterMenuFacetList li.active {
 	background-color:#f7f7f7;
 }
-.filterMenureults {
+.filterMenuResults {
 	max-height:300px;
 }
 .bResultListItemCol {
@@ -575,6 +576,15 @@ div.advancedSearchFieldTall {
 .gallery .jcarousel-wrapper {
 	border-top:solid 6px #77a22f;
 	border-bottom:solid 6px #77a22f;
+}
+.setItemCaption {
+	padding-top: 5px;
+    font-weight: bold;
+}
+@media (min-width: 768px) {
+	.gallery #galleryDetailImageArea {
+		height: 470px;
+	}
 }
 
 /* Finding Aid */

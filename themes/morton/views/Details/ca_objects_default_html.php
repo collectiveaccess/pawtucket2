@@ -21,8 +21,10 @@
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
+<?php if ($this->getVar('commentsEnabled')) { ?>
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
+<?php } ?>
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
 			</div><!-- end col -->
@@ -120,9 +122,14 @@
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
 							$va_subjects_list[] = ucfirst($va_subject_genre);
 						}
-					}											
+					}
+					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+						foreach ($va_subject_keywords as $va_text => $va_subject_keyword) {
+							$va_subjects_list[] = ucfirst($va_subject_keyword);
+						}
+					}																
 					asort($va_subjects_list);
-					if ($va_subjects_list) {
+					if (sizeof($va_subjects_list) > 1) {
 						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
 					}																											
 ?>								
