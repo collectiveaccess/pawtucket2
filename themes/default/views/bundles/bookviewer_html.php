@@ -59,9 +59,9 @@
 		docURL: '<?php print caNavUrl($this->request, '', 'Detail', 'GetPageListAsJSON/'.$t_subject->tableName(), array($va_url['_pk'] => $vn_subject_id, 'representation_id' => $vn_representation_id, 'content_mode' => $vs_content_mode, 'download' => 1)); ?>/data/documentData.json',
 		page: <?php print $vn_initial_page; ?>,
 		sidebar: <?php print ((sizeof($va_sections) > 0) && !isset($va_display_options['no_overlay'])) ? "true" : "false"; ?>,
-		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<img src="'.$this->request->getThemeUrlPath().'/assets/pawtucket/graphics/buttons/x.png" alt="'._t('Close').'"/>' : ''; ?>',
-		editButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/edit.png" alt="<?php print _t('Edit'); ?>"/>',
-		downloadButton: '<img src="<?php print $this->request->getThemeUrlPath(); ?>/assets/pawtucket/graphics/buttons/download.png" alt="<?php print _t('Download'); ?>"/>',
+		closeButton: '<?php print (!isset($va_display_options['no_overlay'])) ? '<i class="fa fa-times" title="'._t('Close').'"></i>' : ''; ?>',
+		editButton: '<i class="fa fa-edit" title="<?php print _t('Edit'); ?>"></i>',
+		downloadButton: '<i class="fa fa-download" title="<?php print _t('Download'); ?>"></i>',
 		sectionsAreSelectable: <?php print ((sizeof($va_sections) > 0) && isset($va_display_options['sectionsAreSelectable']) && ($va_display_options['sectionsAreSelectable'])) ? "true" : "false"; ?>
 
 	});
