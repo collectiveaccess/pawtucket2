@@ -437,13 +437,11 @@
 										var options = {
 											fullWidth: true,
 											// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-											axisY: {
-												onlyInteger: true,
-												offset: 20
+											axisX: {
+												onlyInteger: true
 											},
 											axisY: {
-												onlyInteger: true,
-												offset: 20
+												onlyInteger: true
 											},
 				
 										};

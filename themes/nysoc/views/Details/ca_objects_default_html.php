@@ -699,12 +699,10 @@
 				fullWidth: true,
 				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
 				axisX: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 				axisY: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 			};
 			
