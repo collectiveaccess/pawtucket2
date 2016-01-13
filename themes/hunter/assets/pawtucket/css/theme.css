@@ -94,7 +94,7 @@ nav{
 }
 .navCa{
 	height:auto;
-	min-height:auto;
+	min-height:20px;
 }
 .navCa li > a{
 	color:#FFF !important;
