@@ -707,7 +707,7 @@
 				throw new ApplicationException("Invalid view");
 			}
             
-			$vs_content_template = $va_view_info['display']['description_template'];
+			$vs_content_template = $va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
 			
  			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br/>")));
 			
