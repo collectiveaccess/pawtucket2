@@ -95,7 +95,7 @@
 					# --- if sort is date, get the date as a year so you can display a year heading
 					$vs_start_year = "";
 					$vb_show_year = false;
-					if($vs_current_sort == "Date"){
+					if((!$this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_current_sort == "Date")){
 						$va_pro_date_raw = $qr_res->get("ca_occurrences.productionDate", array("returnWithStructure" => true, "rawDate" => true));
 						if(is_array($va_pro_date_raw) && sizeof($va_pro_date_raw)){
 							$va_pro_date_raw = array_shift($va_pro_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
@@ -124,16 +124,20 @@
 				}
 				$vs_cols = "";
 				$vs_occ_class = "";
-				if($this->request->getParameter("openResultsInOverlay", pInteger)){
-					$vs_cols = 4;
-				}elseif($vs_table == 'ca_occurrences'){
-					$vs_cols = 12;
+				if($vs_table == 'ca_occurrences'){
 					$vs_occ_class = " occItem";
+					if($this->request->getParameter("openResultsInOverlay", pInteger)){
+						$vs_cols = 4;
+					}else{
+						$vs_cols = 12;
+					}
+				}elseif($this->request->getParameter("openResultsInOverlay", pInteger)){
+					$vs_cols = 4;
 				}else{
 					$vs_cols = 6;
 				}
 				if($vb_show_year){
-					print "<div class='col-xs-12'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
 				}
 				print "
 	<div class='col-xs-12 col-sm-".$vs_cols."'>

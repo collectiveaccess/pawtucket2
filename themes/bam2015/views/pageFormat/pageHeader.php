@@ -135,7 +135,8 @@
 <?php
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Productions & Events', 'last', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Programing History', 'last', '', 'ProgramHistory', 'Index')."</li>\n"; 
 					print "</ul></li>";
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 

@@ -95,13 +95,18 @@
 							print join(', ', $va_entity_links);
 							print "</div>";
 						}
-					}									
+					}
+					# --- is there a related work?
+					#$vn_work = $t_item->get("ca_occurrences.related.occurrence_id", array("restrictToTypes" => "work", "limit" => 1, "checkAccess" => $va_access_values));
+					#if($vn_work){
+					#	print caNavLink($this->request, _t('See other productions of this work'), '',  '', 'Search', 'occurrences', array('search' => 'ca_occurrences.related.occurrence_id:'.$vn_work));									
+					#}
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
 
 {{{<ifcount code="ca_objects" min="1">
-			<hr class="divide" style="margin-bottom:0px;"/>
+			<hr class="divide" />
 			<div class="container"><div class="row">
 				
 				<div id="browseResultsContainer">

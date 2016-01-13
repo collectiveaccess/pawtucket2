@@ -27,8 +27,6 @@
 					<div class="pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="icon-cross"></span></div>
 				</div>
 			</div><!-- end row -->
-		</div><!-- end container -->
-		<div class="container">
 			<div class="row">
 				<div class="col-sm-2 detailOverlayNav text-right">
 <?php
@@ -40,24 +38,57 @@
 ?>
 				</div>
 				<div class="col-sm-8 detailOverlayImg text-center">
+<?php
+				if($va_rep_width > $va_rep_height){
+?>
 					<span>
 						<span class="detailOverlayImgOverlayContainer">
 <?php	
-		$vs_label = $t_object->get('ca_objects.preferred_labels');
-		print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
 ?>
-							<div class="detailOverlayImgOverlay">
-<?php
-								print caDetailLink($this->request, $vs_label, "", "ca_objects", $t_object->get("ca_objects.object_id"))."<br/>";
-								print caDetailLink($this->request, "Full Details&nbsp;&nbsp;<span class='icon-arrow-up-right'></span>", "full", "ca_objects", $t_object->get("ca_objects.object_id"));
-?>
-							</div>
-						</span>
 						
+							<div class='detailOverlayImgCaption'>
+								<div class="row">
+									<div class="col-sm-9">
 <?php
-							print caDetailLink($this->request, "<div class='detailOverlayImgCaption'><span class='pull-right'>{$vs_type_placeholder}</span>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
-?>
+										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+?>							
+									</div>
+									<div class="col-sm-3 text-right">
+<?php
+										print caDetailLink($this->request, "Full Details&nbsp;&nbsp;<span class='icon-arrow-up-right'></span>", "full", "ca_objects", $t_object->get("ca_objects.object_id"));
+?>							
+									</div>
+								</div><!-- end row -->
+							</div><!-- end detailOverlayImgCaption -->
+						</span>
 					</span>
+<?php
+				}else{
+?>
+					<div class="row">
+						<div class="col-sm-8 text-right">
+<?php	
+							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+?>						
+						</div>
+						<div class="col-sm-4 text-left detailOverlayImgCaptionVert">
+							<div class='detailOverlayImgCaption'>
+<?php
+										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+?>							
+									<div class="text-right">
+<?php
+										print caDetailLink($this->request, "Full Details&nbsp;&nbsp;<span class='icon-arrow-up-right'></span>", "full", "ca_objects", $t_object->get("ca_objects.object_id"));
+?>							
+									</div>
+							</div><!-- end detailOverlayImgCaption -->
+						
+						</div>
+					</div>
+<?php				
+				}
+?>
 				</div>
 				<div class="col-sm-2 detailOverlayNav text-left">
 <?php

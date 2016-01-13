@@ -38,27 +38,40 @@
 	
 <?php	
 	if ($qr_top_level_collections) {
+		$vn_c = 0;
 		while($qr_top_level_collections->nextHit()) { 
-			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id');
-				$vn_collection_image = $qr_top_level_collections->getWithTemplate('<unit relativeTo="ca_objects" length="1"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.widepreview</unit></unit>', array('checkAccess' => $va_access_values));
-			//print $qr_top_level_collections->get('ca_collections.preferred_labels.name')."<br>\n";
-				print "<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>";
+			if($vn_c == 0){
 				print "<div class='row'>";
-				print "<div class='collectionGraphic col-xs-4 col-sm-4 col-md-4 col-lg-4'>";
-				print $vn_collection_image;
-				print "</div>";
-				print "<div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>";
-				print "<div class='collectionName' >";
-				print $qr_top_level_collections->get('ca_collections.preferred_labels', array('returnAsLink' => true));
-				print "</div>\n";
-				if (strlen($qr_top_level_collections->get('ca_collections.scopeContent')) > 250) {
-					print "<p>".substr($qr_top_level_collections->get('ca_collections.scopeContent'), 0, 247)."...</p>";				
-				} else {
-					print "<p>".$qr_top_level_collections->get('ca_collections.scopeContent')."</p>";
-				}
-				print "</div>\n";
-				print "</div>\n";
-				print "</div>\n";	
+			}
+			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id');
+			#$vn_collection_image = $qr_top_level_collections->getWithTemplate('<unit relativeTo="ca_objects" length="1"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.widepreview</unit></unit>', array('checkAccess' => $va_access_values));
+			//print $qr_top_level_collections->get('ca_collections.preferred_labels.name')."<br>\n";
+			$vn_collection_image = $qr_top_level_collections->get("ca_collections.collection_thumbnail", array("version" => "widepreview"));
+			print "<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>";
+			print "<div class='row'>";
+			print "<div class='collectionGraphic col-xs-4 col-sm-4 col-md-4 col-lg-4'>";
+			print $vn_collection_image;
+			print "</div><!-- end col -->";
+			print "<div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>";
+			print "<div class='collectionName' >";
+			print $qr_top_level_collections->get('ca_collections.preferred_labels', array('returnAsLink' => true));
+			print "</div>\n";
+			if (strlen($qr_top_level_collections->get('ca_collections.collection_description')) > 250) {
+				print "<p>".substr($qr_top_level_collections->get('ca_collections.collection_description'), 0, 247)."...</p>";				
+			} else {
+				print "<p>".$qr_top_level_collections->get('ca_collections.collection_description')."</p>";
+			}
+			print "<br/></div><!-- end col -->\n";
+			print "</div><!-- end row -->\n";
+			print "</div><!-- end col -->\n";	
+			$vn_c++;
+			if($vn_c == 2){
+				print "</div><!-- end row -->";
+				$vn_c = 0;
+			}
+		}
+		if($vn_c == 1){
+			print "</div><!-- end row -->";
 		}
 	} else {
 		print _t('No collections available');
