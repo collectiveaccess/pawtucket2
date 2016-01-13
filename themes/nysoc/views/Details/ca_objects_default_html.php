@@ -684,7 +684,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
