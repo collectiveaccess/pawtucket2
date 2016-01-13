@@ -216,6 +216,13 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => 'Source information', 'DESCRIPTION' => 'Serialized array used to store source information for object representation information retrieved via web services [NOT IMPLEMENTED YET].'
+		),
+		'view_count' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
 		)
  	)
 );
@@ -402,6 +409,15 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));
 			
 			$vn_rc = parent::update();
+
+			// Trigger automatic replication
+			$va_auto_targets = $this->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $this->get('access')));
+			if(is_array($va_auto_targets)) {
+				foreach($va_auto_targets as $vs_target => $va_target_info) {
+					$this->replicateMedia('media', $vs_target);
+				}
+			}
+
 		}
 		
 		return $vn_rc;
@@ -496,6 +512,14 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			}
 		}
 		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * The media field is mandatory for representations
+	 * @return array
+	 */
+	public function getMandatoryFields() {
+		return array_merge(parent::getMandatoryFields(), array('media'));
 	}
 	# ------------------------------------------------------
 	# Annotations
@@ -595,6 +619,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 *			start =
  	 *			max = 
  	 *			labelsOnly =
+ 	 *			idsOnly = 
  	 *			user_id = 
  	 *			item_id =
  	 * @return array List of annotations attached to the current representation, key'ed on annotation_id. Value is an array will all values; annotation labels are returned in the current locale.
@@ -606,6 +631,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		$pn_user_id = caGetOption('user_id', $pa_options, null);
  		$pn_item_id = caGetOption('item_id', $pa_options, null);
+ 		$pb_ids_only = caGetOption('idsOnly', $pa_options, false);
+ 		$pb_labels_only = caGetOption('labelsOnly', $pa_options, false);
  		
  		if (!($o_coder = $this->getAnnotationPropertyCoderInstance($this->getAnnotationType()))) {
  			// does not support annotations
@@ -674,7 +701,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$qr_annotations = caMakeSearchResult($vs_annotation_table, $va_annotation_ids);
  		$va_labels = $va_annotation_classes = array();
  		
- 		// Check if "class" element is configurwed, exists and is a list element
+ 		// Check if "class" element is configured, exists and is a list element
  		if ($vs_class_element = $this->getAppConfig()->get('annotation_class_element')) {
  			$t_anno = new ca_representation_annotations();
  			if (!$t_anno->hasElement($vs_class_element)) { 
@@ -693,6 +720,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  			}
  		}
  		$va_labels_for_locale = caExtractValuesByUserLocale($va_labels);
+ 		if ($pb_labels_only) { return $va_labels_for_locale; }
  		
  		$va_annotation_classes_flattened = array();
  		foreach($va_annotation_classes as $vn_annotation_id => $va_classes) {
@@ -713,13 +741,23 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$va_sorted_annotations = array();
  		foreach($va_annotations as $vs_key => $va_values) {
  			foreach($va_values as $va_val) {
+ 				$vn_annotation_id = $va_val['annotation_id'];	
  				$vs_label = is_array($va_labels_for_locale[$va_val['annotation_id']]) ? array_shift($va_labels_for_locale[$va_val['annotation_id']]) : '';
- 				$va_val['labels'] = $va_labels[$va_val['annotation_id']] ? $va_labels[$va_val['annotation_id']] : array();
- 				$va_val['label'] = $vs_label;
- 				$va_val['key'] = $va_key[$va_annotation_classes_flattened[$va_val['annotation_id']]];
- 				$va_sorted_annotations[$va_val['annotation_id']] = $va_val;
+ 				
+ 				if ($pb_ids_only) {
+ 					$va_val = $vn_annotation_id;
+ 				} elseif ($pb_labels_only) { 
+ 					$va_val = $vs_label;
+ 				} else {
+					$va_val['labels'] = $va_labels[$vn_annotation_id] ? $va_labels[$vn_annotation_id] : array();
+					$va_val['label'] = $vs_label;
+					$va_val['key'] = $va_key[$va_annotation_classes_flattened[$vn_annotation_id]];
+				}
+ 				$va_sorted_annotations[$vn_annotation_id] = $va_val;
  			}
  		}
+ 		if ($pb_ids_only || $pb_labels_only) { return array_values($va_sorted_annotations); }
+ 		
  		
  		if (($vn_start > 0) || ($vn_max > 0)) {
  			if ($vn_max > 0) {

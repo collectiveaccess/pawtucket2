@@ -259,10 +259,11 @@
 				print $vs_sidebar_buf;
 			}
 			$vs_learn_even = null;
-			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true))) {
+			if ($va_resource_links = $t_item->get('ca_entities.resources_link', array('returnWithStructure' => true, 'returnAsArray'=> true))) {
 				$va_link_list = array();
 				foreach ($va_resource_links as $va_key => $va_resource_link_t) {
 					foreach ($va_resource_link_t as $va_key2 => $va_resource_link) {
+
 						if ($va_resource_link['resources_link_description']) {
 							$va_link_list[]= "<a href='".$va_resource_link['resources_link_url']."' target='_blank'>".$va_resource_link['resources_link_description']."</a>";
 						} elseif ($va_resource_link['resources_link_url']) {
@@ -329,11 +330,12 @@
 ?>									
 									</H4>
 									
-									<div class='unit'>{{{<ifdef code="ca_entities.nonpreferred_labels">Also Known As: <unit delimiter='; '>^ca_entities.nonpreferred_labels.displayname</unit></ifdef>}}}</div>
 								</div><!-- end col -->
 							</div><!-- end row -->
 							<div class="row">			
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6'>
+									<div class='unit'>{{{<ifdef code="ca_entities.nonpreferred_labels">Also Known As: <unit delimiter='; '>^ca_entities.nonpreferred_labels.displayname</unit></ifdef>}}}</div>
+
 								
 				<?php
 									if ($vs_first_date && $vs_last_date) {
@@ -348,7 +350,7 @@
 										print "<div class='incomplete'><i class='fa fa-sticky-note'></i> <i>Metadata for this record is currently incomplete. Click Contribute to submit information for inclusion on this page. See the ".caNavLink($this->request, 'User Guide', '', '', 'About', 'userguide')." to learn more about Contributing.</i></div>";
 									}
 									if ($t_item->get('ca_entities.references.references_list')) {
-										$va_references = $t_item->get('ca_entities.references', array('delimiter' => '<br/><br/>', 'convertCodesToDisplayText' => true, 'template' => '<p style="padding-left:15px;">^ca_entities.references.references_list page ^ca_entities.references.references_page</p>'));
+										$va_references = $t_item->get('ca_entities.references', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true, 'template' => '<unit><p style="padding-left:15px;">^ca_entities.references.references_list <ifdef code="ca_entities.references.references_page">page ^ca_entities.references.references_page</ifdef></p></unit>'));
 										print "<div class='unit'>";
 										print "<a href='#' class='openRef' onclick='$(\"#references\").slideDown(); $(\".openRef\").hide(); $(\".closeRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
 										print "<a href='#' class='closeRef' style='display:none;' onclick='$(\"#references\").slideUp(); $(\".closeRef\").hide(); $(\".openRef\").show(); return false;'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;Works Cited</h6></a>";
@@ -371,7 +373,7 @@
 								}
 ?>
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd; margin-top:-30px;'>
-									<div class="row">
+									<div class="row" id="trigger-overlay">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
 											<div class="overlay overlay-corner">
@@ -384,11 +386,12 @@
 													<div id="stat_entity_checkout_distribution2" class="ct-chart ct-golden-section"> 
 													<div class="ct-key"><span class="ct-series-a-key"><i class="fa fa-square"></i> <span class='blacktext'><?php print $t_item->get('ca_entities.preferred_labels'); ?></span></span> <span class="ct-series-b-key average"><i class="fa fa-square"></i> <span class='blacktext'>Library Average</span></span></div>
 													</div>
+													<div class='ovcircNote'>Circulation records from 1793-1799 are lost.</div>
 												</div>
 												<div class='circles' style="width:40%; height:500px; float:left; border-left:1px solid #ddd; padding-left:20px;">
 													<div style="width:80%; ">
 														<div class='vizName'>Books by subject area 
-															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>
+															<div class='catalogInfo'>As classified in the <?php print caNavLink($this->request, "1813 Library Catalog.", '', '', 'Detail', 'objects/7');?></div>
 														</div>
 														<div id="stat_bib_books_by_subject_area2" class="ct-chart ct-golden-section"></div>
 													</div>	
@@ -407,7 +410,8 @@
 									if($stat_entity_checkout_distribution) {
 	?>
 
-									<div class='vizTitle'>Circulation Activity <button id="trigger-overlay" type="button"><i class="fa fa-external-link"></i></button></div>
+									<div class='vizTitle'>Circulation Activity <button  type="button"><i class="fa fa-external-link"></i></button></div>
+									
 									<div class='col-sm-4 col-md-4 col-lg-4'>
 										<div class='vizName'>Books by subject area 
 											<!--<div class='catalogInfo'><i class='fa fa-info-circle'></i> As classified in the <?php print caNavLink($this->request, "1838 Library Catalog.", '', '', 'Detail', 'objects/11555');?></div>-->
@@ -433,26 +437,51 @@
 										var options = {
 											fullWidth: true,
 											// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-											axisY: {
-												onlyInteger: true,
-												offset: 20
+											axisX: {
+												onlyInteger: true
 											},
 											axisY: {
-												onlyInteger: true,
-												offset: 20
+												onlyInteger: true
 											},
 				
 										};
+										
+										var $chart = $('#stat_entity_checkout_distribution2');
+			
+										var $distToolTip = $chart
+										  .append('<div class="tooltip"></div>')
+										  .find('.tooltip')
+										  .hide();
+
+										$chart.on('mouseenter', '.ct-point', function() {
+											var $pt = $(this),
+											value = $pt.attr('ct:value');
+											$distToolTip.html(value).show();
+										});
+
+										$chart.on('mouseleave', '.ct-series', function() {
+										  $distToolTip.hide();
+										});
+
+										$chart.on('mousemove', function(event) {
+											var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+											var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
+										  $distToolTip.css({
+											left: l - $distToolTip.width() / 2,
+											top: t - $distToolTip.height()
+										  });
+										});
+										
 							
 										var responsiveOptions = [
 										  ['screen and (min-width: 640px)', {
-											chartPadding: 20,
+											chartPadding: 0,
 											labelOffset: 30,
 											labelDirection: 'explode'
 										  }],
 										  ['screen and (min-width: 1024px)', {
 											labelOffset: 30,
-											chartPadding: 20
+											chartPadding: 0
 										  }]
 										];
 
@@ -484,6 +513,7 @@
 ?>
 
 										<script type="text/javascript">
+											var subjectIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
@@ -491,7 +521,9 @@
 
 											var options = {
 												labelInterpolationFnc: function(value, index) {
-												  if(dataForSubjectAreas.series[index] <= 1) { return ''; }
+												  var t=0;
+												  for(var x in dataForSubjectAreas.series) { t += dataForSubjectAreas.series[x] }
+												  if(dataForSubjectAreas.series[index]/t <= 0.1) { return ''; }
 												  return value;
 												}
 											};
@@ -516,14 +548,29 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $subjectAreaToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $subjectAreaToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $subjectAreaToolTip.height() - 40
+												left: l - $subjectAreaToolTip.width() / 2 - 10,
+												top: t - $subjectAreaToolTip.height() - 40
 											  });
 											});
+														
+											$chart.on('click', '.ct-series', function() {
+												var $slice = $(this),
+												value = $slice.find('path').attr('ct:value');
+												
+												var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
+												var label = dataForSubjectAreas.labels[l];
+				
+												if (parseInt(subjectIDs[label]) > 0) {
+													window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => '1813_subject')); ?>/id/' + subjectIDs[label];
+												}
+											});
+											
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
 												labelDirection: 'explode'
 											  }],
@@ -557,7 +604,9 @@
 
 											var options = {
 												labelInterpolationFnc: function(value, index) {
-												  if(dataForCheckoutDuration.series[index] <= 5) { return ''; }
+												  var t=0;
+												  for(var x in dataForCheckoutDuration.series) { t += dataForCheckoutDuration.series[x] }
+												  if(dataForCheckoutDuration.series[index]/t <= 0.1) { return ''; }
 												  return value;
 												}
 											};
@@ -582,14 +631,16 @@
 											});
 
 											$chart.on('mousemove', function(event) {
+												var l = (event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX;
+												var t = (event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY;
 											  $durationToolTip.css({
-												left: (event.offsetX || event.originalEvent.layerX) - $durationToolTip.width() / 2 - 10,
-												top: (event.offsetY || event.originalEvent.layerY) - $durationToolTip.height() - 40
+												left: l - $durationToolTip.width() / 2 - 10,
+												top: t - $durationToolTip.height() - 40
 											  });
 											});
 											var responsiveOptions = [
 											  ['screen and (min-width: 640px)', {
-												chartPadding: 30,
+												chartPadding: 20,
 												labelOffset: 30,
 												labelDirection: 'explode'
 											  }],
@@ -696,7 +747,7 @@
 											if (!($vs_author = $t_book->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ')))) {
 												$vs_author = null;
 											}											
-											$vn_pub_date = $t_book->get('ca_objects.publication_date');
+											if ($vn_pub_date = "<br/>".$t_book->get('ca_objects.publication_date')) {} else {$vn_pub_date = null;}
 											$vs_book_buf.= "<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'><div class='bookButton'>".caNavLink($this->request, '<div class="bookLabel">'.$vs_title_trunk[0]."</div>".$vs_author.$vn_pub_date, '', '', 'Detail', 'objects/'.$va_book_id)."</div></div>";
 										}
 										$vs_book_buf.= "</div>";
@@ -736,18 +787,18 @@
 										$vs_i_have_docs = true;
 									}
 								}						
-								if ($vs_i_have_docs == true) {
-									$vs_doc_buf.= "<div class='row'>";
-										ksort($va_docs_by_type);
-										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
-											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
-											$vs_doc_buf.= "<div >";
-											foreach ($vs_documents as $va_key => $vs_doc) {
-												$vs_doc_buf.= $vs_doc;
-											}
-											$vs_doc_buf.= "</div>";
+								if ($vs_i_have_docs == true) {		
+									ksort($va_docs_by_type);
+									foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
+										$vs_doc_buf.= "<div class='row'>";
+										$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+										$vs_doc_buf.= "<div >";
+										foreach ($vs_documents as $va_key => $vs_doc) {
+											$vs_doc_buf.= $vs_doc;
 										}
-									$vs_doc_buf.= "</div>";
+										$vs_doc_buf.= "</div>";
+										$vs_doc_buf.= "</div>";
+									}
 								}												
 ?>																
 								<?php if ($vs_book_buf) {print '<li><a href="#bookTab">Related Books</a></li>';} ?>
@@ -832,7 +883,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 150
+		  maxHeight: 160
 		});
 		$('#entityTable').tabs();
     	$('#circTable').dataTable({
@@ -845,8 +896,7 @@
      		paging: false
     	});		
 	});
-</script>
-<script>
+	
 	$('a[href^="#"]').on('click', function(event) {
 
 		var target = $( $(this).attr('href') );

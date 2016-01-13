@@ -53,6 +53,7 @@
 ?>
 			</div>
 		</div>
+		<div class='readerListToggle openpanel'>close</div>
 	</div>
 <?php
 	}
@@ -73,7 +74,7 @@
 		e.preventDefault();
 		return false;
 	});
-	jQuery("#readerListToggle").bind('click', function(e) { 
+	jQuery(".readerListToggle").bind('click', function(e) { 
 		jQuery('#readerListContent:visible').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 		jQuery('#readerListContent:hidden').animate({opacity: 'toggle', height: 'toggle'}, 250); 
 		

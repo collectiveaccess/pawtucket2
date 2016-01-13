@@ -55,6 +55,7 @@
 		<!-- Average circulate stats are always displayed -->
 		<div class='readerListColorKey' style='background-color: #<?php print $va_series_colors[0]; ?>;'>&nbsp;</div>
 		<div class='readerListImage'><div class="readerListImagePlaceholder"></div></div>
+		<a href="#" id="toggleAverage" class="readerListShowHide">Hide</a>
 		<div class='readerListName'>Library Average</div>
 	</div>
 <?php
@@ -65,7 +66,7 @@
 			while($qr_res->nextHit()) {
 				$vn_entity_id = $qr_res->get('ca_entities.entity_id');
 				if (!($vs_image_tag = $qr_res->get('ca_object_representations.media.icon'))) {
-					$vs_image_tag = "<div class='readerListImagePlaceholder'>&nbsp;</div>";
+					$vs_image_tag = "<div class='readerListImagePlaceholder'>".caGetThemeGraphic($this->request, 'cameo.jpg')."</div>";
 				}
 ?>
 	<div class='readerList clearfix'>
@@ -84,5 +85,11 @@
 		var id = jQuery(this).data('entity_id');
 		
 		jQuery('#readerContent').load('<?php print caNavUrl($this->request, '*', '*', 'GetReaders', array('m' => 'remove')); ?>/id/' + id);
+	});
+	jQuery("#toggleAverage").bind("click", function(e) {
+		jQuery('.ct-series-a').toggle(250);
+		jQuery(this).text((jQuery(this).text() == 'Hide') ? 'Show' : 'Hide');
+		e.preventDefault();
+		return false;
 	});
 </script>

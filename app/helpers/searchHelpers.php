@@ -30,11 +30,10 @@
  * ----------------------------------------------------------------------
  */
 
- /**
-   *
-   */
-   
-require_once(__CA_MODELS_DIR__.'/ca_lists.php');
+	/**
+	 *
+	 */
+	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
 
 	# ---------------------------------------
@@ -47,6 +46,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$o_dm = Datamodel::load();
 		
 		$vs_table = (is_numeric($pm_table_name_or_num)) ? $o_dm->getTableName((int)$pm_table_name_or_num) : $pm_table_name_or_num;
+		
+		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { return null; }
+		if ($t_instance->isRelationship()) { 
+			require_once(__CA_LIB_DIR__.'/ca/Search/InterstitialSearch.php');
+			return new InterstitialSearch($vs_table);
+		}
 		
 		switch($vs_table) {
 			case 'ca_objects':
@@ -409,6 +414,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $va_block_info); }
 			$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
+			$va_options['excludeFieldsFromSearch'] = caGetOption('excludeFieldsFromSearch', $va_block_info, null);
 			
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {
 				$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
@@ -612,7 +618,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, ''));
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
 		
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
@@ -636,6 +642,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
 					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
+						// are there relationship types?
+						if (is_array($pa_form_values[$vs_dotless_element.':relationshipTypes'])) {
+							$vs_element .= "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
+						}
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
 							$va_default_values[$vs_element][] = trim($vs_element_value);
@@ -698,7 +708,75 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			}
 			$vs_query_string = trim($vs_query_string). ')';
 		}
+		
 		return $vs_query_string;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetDisplayStringForHTMLFormInput($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
+
+		$o_dm = Datamodel::load();
+		
+	 	$va_display_string = array();
+	 	
+	 	foreach($va_form_contents as $vn_i => $vs_element) {
+			$vs_dotless_element = str_replace('.', '_', $vs_element);
+			
+			if (
+				(!is_array($pa_form_values[$vs_dotless_element]) && !strlen($pa_form_values[$vs_dotless_element])) 
+				|| 
+				(is_array($pa_form_values[$vs_dotless_element]) && !sizeof(array_filter($pa_form_values[$vs_dotless_element])))
+			) { continue; }
+	
+			if(!is_array($pa_form_values[$vs_dotless_element])) { $pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]); }
+			if(!($vs_label = trim($pa_form_values[$vs_dotless_element.'_label']))) { $vs_label = "???"; }
+		
+			$va_fld = explode(".", $vs_element);
+			$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
+		
+		// TODO: need universal way to convert item_ids in attributes and intrinsics to display text
+			if ($t_table && ($t_table->hasField($va_fld[1]))) {
+				switch($va_fld[1]) {
+					case 'type_id':
+						$va_values = array($t_table->getTypeName($pa_form_values[$vs_dotless_element][0]));
+						break;
+					default:
+						$va_values = $pa_form_values[$vs_dotless_element];
+						break;
+				}
+			} else {
+				$va_tmp = explode('.', $vs_element);
+				$vs_possible_element_with_rel = array_pop($va_tmp);
+				$va_tmp2 = explode("/", $vs_possible_element_with_rel);
+				$vs_possible_element = array_shift($va_tmp2);
+				
+				// TODO: display relationship types when defined?
+				//$vs_relationship_type_ids = array_shift($va_tmp2);
+				
+				switch(ca_metadata_elements::getElementDatatype($vs_possible_element)) {
+					case 3:
+						$va_values = array();
+						foreach($pa_form_values[$vs_dotless_element] as $vn_i => $vm_value) {
+							$va_values[$vn_i] = caGetListItemByIDForDisplay($vm_value);
+						}
+						break;
+					default:
+						$va_values = $pa_form_values[$vs_dotless_element];
+						break;
+				}
+			}
+			
+			$va_display_string[] = "{$vs_label}: ".join("; ", $va_values);
+		}
+		
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormDisplayString_{$pa_form_values['_advancedFormName']}", $va_display_string);
+		$po_result_context->saveContext();
+	
+		return join("; ", $va_display_string);
 	}
 	# ---------------------------------------
 	/**

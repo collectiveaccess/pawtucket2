@@ -6,8 +6,11 @@
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$t_set = new ca_sets($pn_set_id);
 	
+	
 	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
-	MetaTagManager::setWindowTitle($va_home." > Featured");	
+	$vn_featured_home = caNavLink($this->request, 'Featured', '', '', 'Gallery', 'Index');
+	$vn_set_title = $t_set->get('ca_sets.preferred_labels');
+	MetaTagManager::setWindowTitle($va_home." > ".$vn_featured_home." > ".$vn_set_title);	
 	
 ?>
 <div class="page">
@@ -23,7 +26,8 @@
 					<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>	
 <?php
 					print "<h4>".$t_set->get('ca_sets.preferred_labels')."</h4>";	
-					print "<p>".$t_set->get('ca_sets.set_description')."</p>";
+					#print "<p>".$t_set->get('ca_sets.set_description')."</p>";
+					print "<p>".$t_set->get('ca_sets.rich_description')."</p>";
 
 					$va_set_items = array();
 					foreach ($pa_set_items as $va_set_item_id => $pa_set_item) {

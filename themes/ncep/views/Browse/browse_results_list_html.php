@@ -81,7 +81,7 @@
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
 				
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template, array('checkAccess' => caGetUserAccessValues($this->request)));
 
 				print "
 	<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
@@ -90,9 +90,9 @@
 			<div class='pull-right'>{$vs_arrow_link}</div>
 			<H1>{$vs_label_detail_link}<H1>
 			<div class='bResContent'>".
-				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'><b>"._t("Language").": </b>^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true))
-			."<br/><b>"._t("Authors").": </b>".
-				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", "))
+				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
+			."<br/>"._t("Authors").": ".
+				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' restrictToTypes='Synthesis,CaseStudies,Exercise,Presentation' aggregateUnique='1' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", ", 'checkAccess' => caGetUserAccessValues($this->request)))
 			."</div><!-- end bResContent -->
 		</div><!-- end bResItem -->
 	</div><!-- end col -->";

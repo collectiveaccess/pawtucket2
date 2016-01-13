@@ -48,7 +48,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/DisplayTemplateParser.php');
  * More about bundle display templates here: http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates
  */
 
-define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)/");
+define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}|[0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)/");
 	
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -1931,7 +1931,9 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	 * Returns a list of "^" prefixed-tags (eg. ^forename) present in a template
 	 *
 	 * @param string $ps_template
-	 * @param array $pa_options No options are currently supported
+	 * @param array $pa_options 
+	 *		stripOptions =
+	 *		parseOptions = 
 	 * 
 	 * @return array An array of tags
 	 */
@@ -1943,6 +1945,20 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				$va_matches[1][$vn_i] = rtrim($vs_possible_tag, "/.%");	// remove trailing slashes, periods and percent signs as they're potentially valid tag characters that are never meant to be at the end
 			}
 			$va_tags = $va_matches[1];
+		}
+		
+		if (caGetOption('stripOptions', $pa_options, false)) {
+			foreach($va_tags as $vn_i => $vs_tag) {
+				$va_opts = caParseTagOptions($vs_tag);
+				
+				$va_tags[$vn_i] = $va_opts['tag'];
+			}
+		} elseif (caGetOption('parseOptions', $pa_options, false)) {
+			foreach($va_tags as $vn_i => $vs_tag) {
+				$va_opts = caParseTagOptions($vs_tag);
+				
+				$va_tags[$vn_i] = array_merge(array('originalTag' => $vs_tag), $va_opts);
+			}
 		}
 		
 		return $va_tags;
@@ -3178,6 +3194,18 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
  			$o_view->setVar('t_set_item', $t_set_item);
  			$o_view->setVar('use_media_editor', $vb_media_editor);
  			$o_view->setVar('noControls', $vb_no_controls);
+ 			
+ 			if ($po_data->representationIsOfClass('audio') && (is_array($va_reps_to_search = $t_object->getRepresentations(array($va_rep_display_info['poster_frame_version']), null, array("return_with_access" => $va_access_values))))) {
+				
+				foreach($va_reps_to_search as $va_rep) {
+					if (strpos($va_rep['mimetype'], 'image') === false) { continue; }
+					if(isset($va_rep['tags'][$va_rep_display_info['poster_frame_version']])) {
+						$o_view->setVar('poster', $va_rep['tags'][$va_rep_display_info['poster_frame_version']]);
+						$o_view->setVar('posterURL', $va_rep['urls'][$va_rep_display_info['poster_frame_version']]);
+						break;
+					}
+				}
+			}
 		}
  		$o_view->setVar('t_object', $t_object);
 		return $o_view->render('representation_viewer_html.php');
@@ -3227,7 +3255,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		}	
 			
 		if ($t_object->getPrimaryKey()) { 
-			$o_view->setVar('reps', $va_reps = $t_object->getRepresentations(array('icon'), null, array("return_with_access" => $va_access_values)));
+			$o_view->setVar('reps', $va_reps = $t_object->getRepresentations(array('icon', 'medium'), null, array("return_with_access" => $va_access_values)));
 		}
 		
 		$t_media = new Media();
@@ -3282,6 +3310,19 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				
 				$o_view->setVar('version_info', $po_data->getMediaInfo('media', $ps_version));
 				$o_view->setVar('version', $ps_version);
+				
+				if ($po_data->representationIsOfClass('audio') && (is_array($va_reps_to_search = $t_object->getRepresentations(array($va_rep_display_info['poster_frame_version']), null, array("return_with_access" => $va_access_values))))) {
+					
+					foreach($va_reps_to_search as $va_rep) {
+						if (strpos($va_rep['mimetype'], 'image') === false) { continue; }
+						if(isset($va_rep['tags'][$va_rep_display_info['poster_frame_version']])) {
+							$o_view->setVar('poster', $va_rep['tags'][$va_rep_display_info['poster_frame_version']]);
+							$o_view->setVar('posterURL', $va_rep['urls'][$va_rep_display_info['poster_frame_version']]);
+							break;
+						}
+					}
+				}
+				$o_view->setVar('poster_version', $va_rep_display_info['poster_frame_version']);
 			}
 			$va_buf[$vn_representation_id] = $o_view->render('representation_viewer_html.php');
 		}

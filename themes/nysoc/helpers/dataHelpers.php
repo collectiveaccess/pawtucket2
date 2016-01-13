@@ -20,6 +20,7 @@
 			WHERE
 				rt.type_code = 'reader' AND el.is_preferred = 1 AND e.deleted = 0 ".
 				(($ps_letter ? " AND (el.surname LIKE ?)" : ''))."
+			ORDER BY el.surname, el.forename
 		", $va_params);
 		$va_entity_ids = $qr_res->getAllFieldValues('entity_id');
 		return $qr_readers = caMakeSearchResult('ca_entities', $va_entity_ids, array('sort' => 'ca_entity_labels.surname'));
@@ -46,7 +47,8 @@
 			INNER JOIN ca_relationship_types AS rt ON rt.type_id = ctsxo.type_id
 			WHERE
 				ol.is_preferred = 1 AND o.deleted = 0 AND rt.type_code = 'reader' ".
-				(($ps_letter ? " AND (ol.name LIKE ?)" : ''))."
+				(($ps_letter ? " AND (ol.name_sort LIKE ?)" : ''))."
+			ORDER BY ol.name_sort
 		", $va_params);
 		$va_object_ids = $qr_res->getAllFieldValues('object_id');
 

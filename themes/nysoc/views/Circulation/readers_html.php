@@ -1,4 +1,9 @@
 <?php
+
+	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
+	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
+	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Compare Reader Activity");
+	
 	// List of entity ids to display on load
 	$va_entity_list = $this->getVar('entity_list');
 	
@@ -16,36 +21,48 @@
 	}
 
 ?>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-10 col-sm-offset-2 col-md-10 col-md-offset-2 col-lg-10 col-lg-offset-2">
-			<h1 style="margin-top:20px;">New York Society Library Circulation</h1>
 
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-2" >
+<div class="page gallery">
+	<div class="wrapper">
+		<div class="sidebar">
 			<div id='readerContentContainer'>
+				<p class='vizTitle' style='text-align:left;'>Readers to Compare</p>
 				<div id='readerContent'>
 					<!-- List of currently displays readers -->
 				</div>
 				<div class="clearfix"></div>
-				<div id='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
+				<div class='readerListToggle'><i class="fa fa-plus"></i> Compare Readers</div>
 
 			</div>
-		</div>	
-		<div class="col-sm-10 ">
+		</div>
+		<div class="content-wrapper">
+      		<div class="content-inner">
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-10 col-md-10 col-lg-10">
+			<h1 style="margin-top:20px;">Compare Reader Activity</h1>
+
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-12 col-lg-12">
 			<div id='readerList' class='clearfix row'>
 				<!-- Index of all readers -->
 			</div>		
 			<div class="ct-chart ct-golden-section" id='circulationGraph'>
 				<!-- The graph -->
 			</div>
+			<div class='circNote'>Circulation records from 1793-1799 are lost.</div>
 		</div>
-		
 
 	</div>
-</div>
+</div><!-- end container -->
+
+			</div><!-- end content inner -->
+		</div><!-- end content wrapper -->
+	</div><!-- end wrapper -->
+</div><!-- end page -->
 
 <script type="text/javascript">
 	var _circulationGraph;			// GLOBAL for Chartist graph object
@@ -71,7 +88,7 @@
 		var options = {
 			fullWidth: true,
 			// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-			axisY: {
+			axisX: {
 				onlyInteger: true,
 				offset: 20
 			},
@@ -88,22 +105,26 @@
 		  .find('.tooltip')
 		  .hide();
 
-		$chart.on('mouseenter', '.ct-series', function() {
-			var $slice = $(this),
-			sliceName = $slice.attr('ct:series-name');
-			console.log($slice);
-			$graphToolTip.html(sliceName).show();
+		$chart.on('mouseenter', '.ct-point', function() {
+			var $pt = $(this), $slice = $(this).parent(),
+			sliceName = $slice.attr('ct:series-name'), value = $pt.attr('ct:value');
+	
+			$graphToolTip.html(sliceName + " (" + value + ")").show();
 		});
 
-		$chart.on('mouseleave', '.ct-series', function() {
+		$chart.on('mouseleave', '.ct-point', function() {
 		  $graphToolTip.hide();
 		});
 
 		$chart.on('mousemove', function(event) {
-		  $graphToolTip.css({
-			left: (event.offsetX || event.originalEvent.layerX) - $graphToolTip.width() / 2 - 10,
-			top: (event.offsetY || event.originalEvent.layerY) - $graphToolTip.height() - 40
-		  });
+		  var l = ((event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX) - $graphToolTip.width() / 2 - 10;
+			var t = ((event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY) - $graphToolTip.height() - 40;
+			if (l < 5) { l = 5; }
+			if (t < 5) { t = 5; }
+			  $graphToolTip.css({
+				left: l,
+				top: t
+			  });
 		});
 
 		var responsiveOptions = [

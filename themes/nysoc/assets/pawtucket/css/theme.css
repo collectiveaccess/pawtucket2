@@ -6,7 +6,7 @@ body {
   	margin-top:-5px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, h7, h8, h9 {
 	font-family: 'Gudea', sans-serif;
 }
 h1 {
@@ -34,6 +34,40 @@ h6 {
 	padding:0px;
 	text-transform:none;
 }
+h7 {
+	color: #000;
+	font-size:18px;
+	display:block; 
+}
+.userGuide h7 a {
+	color: #000;
+	text-decoration:none;
+}
+h8 {
+	font-size: 16px;
+	color: #333;
+	display:block;
+}
+.userGuide h8 a {
+	color: #333;
+	text-decoration:none; 
+}
+h9 {
+	font-size: 14px;
+	color: #666;
+	display:block;
+}
+h7, h8, h9 {
+	margin-bottom:5px;
+}
+.userGuide h9 a {
+	color: #666;
+	text-decoration:none;
+}
+.userGuide p, .userGuide li {
+	font-size:14px; 
+	line-height:1.5em;
+}
 .clearfix {
 	clear:both;
 	width:100%;
@@ -42,6 +76,10 @@ a {
 	color:#333;
 }
 .aboutPage a {
+	color: #d6742a;
+	text-decoration:underline;
+}
+.userGuide a { 
 	color: #d6742a;
 	text-decoration:underline;
 }
@@ -180,7 +218,7 @@ a {
   /*overflow: hidden;*/
 }
 ul#mainMenu {
-  width: 830px;
+  width: 850px;
   height: 24px;
   overflow: hidden;
   padding-left:0px;
@@ -221,9 +259,14 @@ ul#mainMenu li.item.active .browseHeadernav.caps.active a{
 ul#mainMenu li.item.active .filterMenuFacetList a {
 	color: #747060;
 }
-ul#mainMenu li.item.active .browseFacetItem a {
+ul#mainMenu li.item.active .browseFacetItem a, ul#mainMenu li.item.active .browseFacetItem a {
 	color: #747060;
 }
+
+#bAncestorList {
+	color: #747060;
+}
+
 ul#mainMenu li.item.active .browseMenuBrowseAll a {
 	color: #747060;
 }
@@ -283,6 +326,7 @@ ul#mainMenu li #browseMenuTypeFacet a{
 	line-height:18px;
 	padding-bottom:3px;
 	padding-top:3px;
+	display:inline-block;  
 }
 ul#mainMenu .filterMenuFacetList li  {
 	margin-bottom:8px;
@@ -290,7 +334,7 @@ ul#mainMenu .filterMenuFacetList li  {
 ul#mainMenu .filterMenuFacetList li  {
 	line-height: 14px;
 }
-.filterMenureults {
+.filterMenuResults {
 	max-height:350px;
 }
 #browse-menu.dropdown-menu {
@@ -556,8 +600,18 @@ div.globalLinks a {
 .browseHeadernav {
 	padding:0px 5px 0px 5px;
 }
+
+.browseHeadernav:hover {
+	background-color:#d6742a;
+	padding:0px 5px 0px 5px;
+	color:#fff;
+}
+
 ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	color:#fff;
+}
+#bRefine {
+	margin:0px -20px -20px -20px;
 }
 .filterMenuFacetList li.active {
 	background-color:#aaa; 
@@ -607,6 +661,9 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); 
 	border-right: 1px solid #eee;
 	border-left: 1px solid #eee;
+}
+.multisearch small {
+	font-size:100%;
 }
 .vco-slider .slider-item .content .content-container .text .container h2.date {
 	display:none !important;
@@ -698,7 +755,7 @@ div.sideLink {
 .detail #detailTools {
 	margin-top:20px;
 	clear:both;
-	height:24px;
+	height:28px;
 	padding-top:0px;
 }
 .detail .detailTool {
@@ -732,6 +789,10 @@ a.readmore-js-toggle {
 	color:#333;
 	font-size:13px;
 	text-transform:uppercase;
+}
+.page.detail h4 a{
+	font-size:16px;
+	color: #d77421;
 }
 .wikipedia a.readmore-js-toggle{
 	display:none !important;
@@ -815,8 +876,11 @@ a.readmore-js-toggle {
 }
 .overlay {
 	padding:20px;
+	min-width:1025px;
 }
-
+.overlay-corner.open {
+	overflow-y:auto !important;
+}
 .overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
 	color:#000 !important;
 	fill:#000 !important;
@@ -826,6 +890,12 @@ a.readmore-js-toggle {
 	background-color:#ddd;
 	border-radius:4px;
 	padding:5px;
+}
+#stat_bib_books_by_subject_area2, #stat_bib_readers_by_occupation2, #stat_bib_checkout_durations, #stat_bib_readers_by_occupation, #stat_bib_checkout_distribution, #stat_bib_books_by_subject_area, #stat_entity_checkout_durations, #stat_entity_checkout_distribution {
+	cursor: pointer !important; 
+}
+#stat_bib_checkout_distribution2 {
+	margin-top:40px;
 }
 .ct-chart {
 	overflow:visible !important;
@@ -882,7 +952,7 @@ svg:not(:root) {
 	border-bottom:1px solid #ddd;
 	
 	background-color: #f7f7f7;
-	padding: .5em 1.6em;
+	padding: .5em .6em; 
 	border-bottom: 3px solid #333;
     color: #333;
     font-weight: normal;
@@ -983,6 +1053,15 @@ svg:not(:root) {
 	top:0px;
 	left:-25px;
 	display:block;
+}
+.circNote {
+	margin-left:30%;
+	font-size:12px;
+}
+.ovcircNote {
+	margin-left:30%;
+	font-size:12px;
+	margin-top:70px;
 }
 .readerRow {
 	border-bottom:1px solid #ccc;
@@ -1159,6 +1238,7 @@ table.dataTable thead th {
   padding: 5px 10px 5px 10px;
   overflow: hidden;
   margin-right:5px;
+  font-size:12px;
 }
 .entityButton {
   background-color: #fff;
@@ -1280,6 +1360,11 @@ table.dataTable thead th {
 
 /* Advanced Search */
 
+a.advancedSearchSelected {
+	font-weight: bold;
+	text-decoration: none;
+}
+
 .advancedContainer {
 	background-color: #f7f7f7;
 	min-height: 250px;
@@ -1290,6 +1375,7 @@ div.advancedSearchField {
   width: 30%;
   margin-bottom: 20px;
   font-size:14px;
+  margin-right: 10px;
 }
 .advancedUnit {
 	clear:both;
@@ -1307,6 +1393,18 @@ div.advancedSearchField {
 }
 #bViewButtons {
 	display:none;
+}
+.searchFormLineModeElementSubLabel {
+	font-size:12px;
+}
+.searchFormLineModeElementSubLabel input[type="checkbox"] {
+	margin-left:5px; 
+}
+
+/* Borrowing search */
+
+.borrowing.results a .fa{
+	color: #d77421;
 }
 
 /* Finding Aid */
@@ -1334,7 +1432,7 @@ div.advancedSearchField {
 	text-transform:uppercase;
 }
 .collectionNav {
-	background-color:#f7f7f7;
+
 	padding:5px 5px 15px 5px;
 }
 .collectionNav div{
@@ -1346,6 +1444,42 @@ div.advancedSearchField {
 }
 .detail.collection {
 	font-size:14px;
+}
+.colspacer {
+	display:inline-block;
+	width:12px;
+}
+.faDownload {
+	float:right;
+	font-size:13px;
+    padding: 5px;
+    color: #fff;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    background-color: #d77421;	
+}
+.faDownload a, .faDownload a:hover {
+	color: #fff;
+}
+#contTab {
+	font-size:13px;
+}
+#contTab a{
+	display:inline-block;
+	padding-bottom:5px;
+}
+#contTab .fa-chevron-down {
+	padding-right:5px;
+	margin-left:-5px;
+}
+#contTab .label{
+	font-weight:bold;
+	color:#666;
+	font-size:13px;
+	padding:0px;
+} 
+#contTab p {
+	margin-left:25px;
 }
 
 /* Sets */
@@ -1551,6 +1685,14 @@ a.sbIcon.twitter {
     width: 80%;
     max-height: 35px;
     overflow: hidden;
+    margin-top:-40px;
+}
+#stat_bib_checkout_distribution2 .ct-series-b-key,
+#stat_entity_checkout_distribution2 .ct-series-b-key, #stat_entity_checkout_distribution2 .ct-series-a-key{
+	margin-top:-40px;
+}
+#stat_entity_checkout_distribution2 {
+	margin-top:40px;
 }
 .ct-chart .ct-series.ct-series-b .ct-bar, .ct-chart .ct-series.ct-series-b .ct-line,
 .ct-chart .ct-series.ct-series-b .ct-point, .ct-chart .ct-series.ct-series-b .ct-slice.ct-donut {
@@ -1588,7 +1730,7 @@ div#readerList {
     border-top: 10px solid #f7f7f7;
 }
 
-#readerListToggle {	
+.readerListToggle {	
 	top: 4px;
 	right: 10px;
 	font-family: gudea, sans-serif;
@@ -1598,13 +1740,20 @@ div#readerList {
 	margin-top:10px;
 }
 
-#readerListToggle:hover {
+.readerListToggle:hover {
 	cursor: pointer;
+}
+.readerListToggle.openpanel {
+	float:right;
+	margin: -40px 0px 0px 0px;
+	z-index:10000;
+	position:relative;
+	background-color: #f7f7f7;
+	padding:5px;
 }
 
 #readerListContent {
-	display: none;
-	
+	display: none;	
 }
 
 .readerListEntry {
@@ -1650,6 +1799,11 @@ div#readerContentContainer {
 div#readerContent {
 	border: 0px;
 	border-radius:4px;
+}
+.togSmall {
+	padding-left:15px;
+	font-size:11px;
+	color: #d77421; 
 }
 
 /* reader card */
@@ -1735,6 +1889,20 @@ div.readerCardContent .readerCardImageSource {
 	height: 300px;
 	margin-top: 0px;
 	margin-bottom:20px;
+}
+.catalog.detail #mapInfo {
+	display:none;
+}
+.leaflet-top, .leaflet-bottom {
+	z-index:5 !important;
+}
+.detail .leaflet-top a, .detail .leaflet-bottom a,
+.detail .leaflet-top a:hover, .detail .leaflet-bottom a:hover{
+	color: #000000;
+	text-decoration:none;
+}
+.leaflet-popup-content {
+	cursor: pointer !important;
 }
 
 .detail.catalog #groupMap #publisherMapYearSlider {
@@ -1844,6 +2012,14 @@ div.readerCardContent .readerCardImageSource {
 	bottom: 5px;
 	right: 5px;
 	border-radius: 3px;
+}
+
+.readerListShowHide {
+	position: absolute;
+	bottom: 5px;
+	right: 25px;
+	font-family: gudea, sans-serif;
+	font-size: 12px;
 }
 
 /* About Page */

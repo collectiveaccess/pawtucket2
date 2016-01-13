@@ -16,7 +16,8 @@
 							<H4><?php print _t("Visualizations"); ?></H4>
 						</div>
 					</div>
-					<div class='row'>	
+					<div class='row'>
+						<h2 style='margin-left:15px;'>Graphs</h2>	
 						<div class="col-sm-6 col-md-6 col-lg-6">
 							<div class="galleryItem">
 								<div class="galleryItemImg">
@@ -25,7 +26,7 @@
 ?>				
 								</div>
 								<div class="galleryItemText">
-									<?php print caNavLink($this->request, '<h5>Circulation Data</h5>', '', '', 'Circulation', 'Books');?>
+									<?php print caNavLink($this->request, '<h5>Compare Book Borrowing Activity</h5>', '', '', 'Circulation', 'Books');?>
 									Compare the popularity of different NYSL titles over time.
 									<div class='moreLink'>
 <?php
@@ -40,26 +41,7 @@
 							<div class="galleryItem">
 								<div class="galleryItemImg">
 <?php
-									print caNavLink($this->request, caGetThemeGraphic($this->request, 'map.jpg'), '', '', 'Map', 'Index');
-?>				
-								</div>
-								<div class="galleryItemText">
-									<?php print caNavLink($this->request, '<h5>Publication Locations Mapped</h5>', '', '', 'Map', 'Index');?>
-									See where NYSL titles were published over time.
-									<div class="moreLink">
-<?php
-									print caNavLink($this->request, 'Find out more', '', '', 'Map', 'Index');
-?>	
-									</div>
-								</div>															
-								<div style="clear:both;"><!-- empty --></div>
-							</div>
-						</div>
-						<div class="col-sm-6 col-md-6 col-lg-6">
-							<div class="galleryItem">
-								<div class="galleryItemImg">
-<?php
-									print caNavLink($this->request, caGetThemeGraphic($this->request, 'readers.jpg'), '', '', 'Circulation', 'readers');
+									print caNavLink($this->request, caGetThemeGraphic($this->request, 'compareicons.jpg'), '', '', 'Circulation', 'readers');
 ?>				
 								</div>
 								<div class="galleryItemText">
@@ -68,6 +50,28 @@
 									<div class="moreLink">
 <?php
 									print caNavLink($this->request, 'Find out more', '', '', 'Circulation', 'readers');
+?>	
+									</div>
+								</div>															
+								<div style="clear:both;"><!-- empty --></div>
+							</div>
+						</div>
+					</div><!-- end row -->
+					<div class='row'>
+						<h2 style='margin-left:15px;'>Maps</h2>							
+						<div class="col-sm-6 col-md-6 col-lg-6">
+							<div class="galleryItem">
+								<div class="galleryItemImg">
+<?php
+									print caNavLink($this->request, caGetThemeGraphic($this->request, 'map.jpg'), '', '', 'Map', 'Index');
+?>				
+								</div>
+								<div class="galleryItemText">
+									<?php print caNavLink($this->request, '<h5>Publication City Mapper</h5>', '', '', 'Map', 'Index');?>
+									Compare Library catalogs and track the growth of the Library's collections by place and year of publication.
+									<div class="moreLink">
+<?php
+									print caNavLink($this->request, 'Find out more', '', '', 'Map', 'Index');
 ?>	
 									</div>
 								</div>															

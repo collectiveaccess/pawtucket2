@@ -1,7 +1,7 @@
 <?php
 	$va_home = caNavLink($this->request, "City Readers", '', '', '', '');
 	$va_visualizations = caNavLink($this->request, "Visualizations", '', '', 'About', 'visualizations');
-	MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");
+
 
 	$vb_dont_show_catalogue_list = $this->getVar('dont_show_catalogue_list');
 	if(!($vs_map_id = $this->getVar('map_css_id'))) { $vs_map_id = 'publisherMap'; }
@@ -13,6 +13,7 @@
 		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
 <?php		
 			if (!$vb_dont_show_catalogue_list) {
+				MetaTagManager::setWindowTitle($va_home." > ".$va_visualizations." > Publication City Mapper");			
 				print "<h1 style='margin-top:20px;'>Publication City Mapper</h1>";
 			}
 ?>						
@@ -24,7 +25,7 @@
 	if (!$vb_dont_show_catalogue_list) {
 ?>
 		<div class="col-sm-2" id='publisherContentContainer'>
-			<p class="vizTitle" style='text-align:left;'>Display books from checked catalogs</p>
+			<p class="vizTitle" style='text-align:left;'>Catalogs</p>
 			<div id='publisherContent' style="height: 600px;">
 				<form id="catalogue_list">
 <?php
@@ -46,26 +47,36 @@
 <?php
 	}
 ?>
-		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" id='<?php print $vs_map_id; ?>'>
+		<div class="col-sm-<?php print $vb_dont_show_catalogue_list ? '12' : '10'; ?>" >
+<?php
+	if (!$vb_dont_show_catalogue_list) {
+?>			
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<p style='margin-top:0px; font-size:16px;' id='mapInfo'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.  Click on a location to see the books published in that location for the selected catalogs and dates. </p>
+				</div>
+			</div>
+<?php
+	}
+?>			
+			<div class="row">
+				<div class="col-sm-1 col-md-1 col-lg-1"></div>
+				<div class="col-sm-11 col-md-11 col-lg-11" id='<?php print $vs_map_id; ?>'>	
+					<div style="text-align: center; margin-top: 100px;"><img src="/themes/nysoc/assets/pawtucket/graphics/ajax_loader_gray_256.gif" width="256" height="256" border="0" alt="Loading..."/></div>
+				</div>
+			</div>
 			
-		</div>
-	</div>
-	<div class="row">
-		<?php print $vb_dont_show_catalogue_list ? '' : '<div class="col-sm-2 col-md-2 col-lg-2"></div>'; ?>
-
-		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
-			<span id="publisherMapYearSliderStart"></span> 
-		</div>
-		<div class="<?php print $vb_dont_show_catalogue_list ? 'col-sm-10 col-md-10 col-lg-10' : 'col-sm-8 col-md-8 col-lg-8'; ?>">
-			<input id="publisherMapYear" data-slider-id="publisherMapYearSlider" type="text" value="" data-slider-min="1700" data-slider-max="1900" data-slider-step="1" data-slider-value="[1740,1850]"/>
-		</div>
-		<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
-			<span id="publisherMapYearSliderEnd"></span>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-10 col-md-10 col-lg-10 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
-			<p style='margin-top:30px; font-size:16px;'>Track the growth of the Library's collections by place and year of publication. Use the sliding bar to select a range of publication dates. Choose catalogs from the list at the left to see the publishing history of the collection as it grew over time.</p>
+			<div class="row" id='<?php print $vs_map_id; ?>_slider' style='display: none;'>
+				<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
+					<span id="publisherMapYearSliderStart"></span> 
+				</div>
+				<div class="col-sm-10 col-md-10 col-lg-10">
+					<input id="publisherMapYear" data-slider-id="publisherMapYearSlider" type="text" value="" data-slider-min="1700" data-slider-max="1900" data-slider-step="1" data-slider-value="[1740,1850]"/>
+				</div>
+				<div class="col-sm-1 col-md-1 col-lg-1" style="text-align:center;">
+					<span id="publisherMapYearSliderEnd"></span>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -78,7 +89,8 @@
 		// Set up map 
 		//
 		var map = {l: null, data: null, baseLayer: null, startYear: null, endYear: null};
-		map.generateMap = function(start, end, dontFitToBounds) {
+		map.generateMap = function(s, e, dontFitToBounds) {
+			var start = s, end = e;
 			var m = this;
 			m.l.eachLayer(function (layer) {
 				if (layer != m.baseLayer) { m.l.removeLayer(layer); }
@@ -104,37 +116,43 @@
 				if(!map_data_by_location) { return; }
 				if(!map_data_by_location['by_date']) { return; }
 				
-				
+				var seen_object_ids = {};
 				var count_for_current_range = 0;
-				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
-					jQuery.each(by_catalog, function(catalog_id, date_range) {
-						if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { console.log("skip", catalog_id, selectedCatalogIDs);  return; }
-						if (
-							(start > 0) && (end > 0)
-							&& (!(
-							((start <= parseInt(date_range['start']))
-							&&
-							(end >= parseInt(date_range['start'])))
-							||
-							(
-							(start <= parseInt(date_range['end']))
-							&&
-							(end >= parseInt(date_range['end'])))))
-						
-						) {
-							return;
-						}
-						count_for_current_range += date_range['count'];
-					
-						if (!m.startYear || (parseInt(date_range['start']) < m.startYear)) {
-							m.startYear = parseInt(date_range['start']);
-						}
-						if (!m.endYear || (parseInt(date_range['end']) > m.endYear)) {
-							m.endYear = parseInt(date_range['end']);
-						}
-					});
-				});
 				
+				jQuery.each(map_data_by_location['by_date'], function(i, by_catalog) {
+					for(var catalog_id in by_catalog) {
+						by_object_id = by_catalog[catalog_id];
+						jQuery.each(by_object_id, function(object_id, date_range) {
+							if (seen_object_ids[object_id]) { return; }
+							if ((catalog_id > 0) && (selectedCatalogIDs.indexOf(catalog_id) === -1)) { return; }
+							if (
+								(start > 0) && (end > 0)
+								&& (!(
+								((start <= parseInt(date_range['start']))
+								&&
+								(end >= parseInt(date_range['start'])))
+								||
+								(
+								(start <= parseInt(date_range['end']))
+								&&
+								(end >= parseInt(date_range['end'])))))
+						
+							) {
+								return;
+							}
+							count_for_current_range += date_range['count'];
+							seen_object_ids[object_id] = true;
+					
+							if (!m.startYear || (parseInt(date_range['start']) < m.startYear)) {
+								m.startYear = parseInt(date_range['start']);
+							}
+							if (!m.endYear || (parseInt(date_range['end']) > m.endYear)) {
+								m.endYear = parseInt(date_range['end']);
+							}
+						});
+					}
+				});
+			
 				var r = count_for_current_range; 
 				if (r == 0) { return; }
 				if (r < 10) { r *= 1.5; }
@@ -145,19 +163,34 @@
 					color: '#444', weight: 2, radius: r,
 					fillColor: '#cc0000',
 					fillOpacity: 0.5
-				}).bindPopup((map_data_by_location['name'] ? map_data_by_location['name'] : map_data_by_location['latitude'] + ", " + map_data_by_location['longitude']) + " (" + count_for_current_range + ")").addTo(allMarkers);
-				
+				}).bindPopup((map_data_by_location['name'] ? map_data_by_location['name'] : map_data_by_location['latitude'] + ", " + map_data_by_location['longitude']) + " (" + count_for_current_range + ")")
+				  .on('mouseover', function (e) {
+						this.openPopup();
+						var placeName = e.target.placeName;
+						jQuery(".leaflet-popup-content-wrapper").on('click', function (e) {
+							if (placeName) {
+								window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'pubplace_facet')); ?>/id/' + escape(placeName);
+							}
+						});
+					})
+        			.on('click', function (e) {
+						if (e.target.placeName) {
+							window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'pubplace_facet')); ?>/id/' + escape(e.target.placeName);
+						}
+					})
+					.addTo(allMarkers);
+				circle.placeName = map_data_by_location['name'];
 			});
 			
 			if (!dontFitToBounds) { m.l.fitBounds(allMarkers.getBounds()); }
 		};
 		map.setMapSlider = function() {
-			
 			jQuery('#publisherMapYearSliderStart').html(this.startYear);
 			jQuery('#publisherMapYearSliderEnd').html(this.endYear);
 			
 			jQuery('#publisherMapYear').bootstrapSlider('setAttribute', 'min', this.startYear).bootstrapSlider('setAttribute', 'max', this.endYear);
 			jQuery('#publisherMapYear').bootstrapSlider('setValue', [this.startYear, this.endYear]);
+			jQuery('#<?php print $vs_map_id; ?>_slider').show();
 		}
 		
 
@@ -188,6 +221,7 @@
 		jQuery("form#catalogue_list input[type=checkbox]").on('change', function(e) {
 			var value = jQuery("#publisherMapYear").bootstrapSlider('getValue');
 			map.generateMap(value[0], value[1], true);
+			map.setMapSlider();
 		});
 	});
 </script>

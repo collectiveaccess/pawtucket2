@@ -192,4 +192,11 @@
     'italic' => DOMPDF_FONT_DIR . 'newsgoth-bt-roman-webfont',
     'bold_italic' => DOMPDF_FONT_DIR . 'newsgoth-bt-roman-webfont',
   ),
+  'open sans' => 
+  array (
+    'normal' => DOMPDF_FONT_DIR . 'OpenSans-Regular',
+    'bold' => DOMPDF_FONT_DIR . 'OpenSans-Bold',
+    'italic' => DOMPDF_FONT_DIR . 'OpenSans-Italic',
+    'bold_italic' => DOMPDF_FONT_DIR . 'OpenSans-BoldItalic',
+  ),
 ) ?>
