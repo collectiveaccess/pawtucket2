@@ -126,9 +126,9 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search" name="search" id="navSearch">
 						</div>
-						<button type="submit" class="btn-search"><span class="fa fa-search"></span></button>
+						<button type="submit" class="btn-search" id="navSearchButton"><span class="fa fa-search"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
@@ -151,6 +151,17 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$( "#navSearch" ).focus(function() {
+		  $("#navSearchButton").addClass("navSearchButtonHighlight");
+		});
+		
+		$( "#navSearch" ).focusout(function() {
+		  $("#navSearchButton").removeClass("navSearchButtonHighlight");
+		});
+	});
+</script>
 <?php
 	if($this->request->getController() != "Front"){
 ?>

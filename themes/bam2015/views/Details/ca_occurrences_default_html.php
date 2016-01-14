@@ -20,7 +20,7 @@
 <?php
 					print "<div class='leader'>".$t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					print "<h2>".$t_item->get('ca_occurrences.preferred_labels')."</h2>";
-					if ($va_event_date = $t_item->get('ca_occurrences.productionDate', array('delimiter' => ', '))) {
+					if ($va_event_date = str_replace("-", "&mdash;", $t_item->get('ca_occurrences.productionDate', array('delimiter' => ', ')))) {
 						print "<h3>".$va_event_date."</h3>";
 					}					
 ?>			

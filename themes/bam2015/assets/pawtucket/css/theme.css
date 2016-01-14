@@ -193,9 +193,9 @@ a:hover {
     padding: 5px 11px 5px 13px;
 	border-right:4px solid #000;		
 }
-.formOutline .btn-search:active {
-	background-color: #00cfb7;
-	color: #fff;
+.formOutline .btn-search:active, .formOutline .navSearchButtonHighlight {
+	background-color: #00cfb7 !Important;
+	color: #fff !Important;
 }
 .navbar .form-control {
 	font-family:"News Gothic";

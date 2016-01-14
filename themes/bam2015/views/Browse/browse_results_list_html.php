@@ -90,7 +90,7 @@
 					#}
 					#$vs_link_text = $vs_series_info.$vs_link_text;
 					if($vs_pro_date || $vs_series_info){
-						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.str_replace("-", "&mdash;", $qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", ")));
 					}
 					# --- if sort is date, get the date as a year so you can display a year heading
 					$vs_start_year = "";
@@ -117,7 +117,7 @@
 					}
 				} 
 				$vs_detail_link = "";
-				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
+				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table = "ca_occurrences")){
 					$vs_detail_link	= caDetailLink($this->request, $vs_collection_parent.$vs_link_text, '', $vs_table, $vn_id);
 				}else{
 					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";
