@@ -269,13 +269,13 @@
 					$vs_subj_buf.= join(', ', $vs_1838);
 					$vs_subj_buf.= "</div>";
 				}
-			}								
-			if ($vs_subjects_1850 = $t_object->get('ca_objects.subjects_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => true))) {
+			}		
+			if ($vs_subjects_1850 = $t_object->get('ca_objects.Analytical_Catalog_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => false))) {
 				$vs_1850 = array();
 				foreach ($vs_subjects_1850 as $va_key => $vs_subjects_1850_t) {
 					foreach ($vs_subjects_1850_t as $vs_subjects_1850) {
-						if (($vs_subjects_1850['subjects_1850'] != 964) && ($vs_subjects_1850['subjects_1850'])) {
-							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['subjects_1850']), '', '', 'Search', 'objects/search/ca_objects.subjects_1850:'.$vs_subjects_1850['subjects_1850']);
+						if (($vs_subjects_1850['Analytical_Catalog_1850'] != 964) && ($vs_subjects_1850['Analytical_Catalog_1850'])) {
+							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['Analytical_Catalog_1850']), '', '', 'Search', 'objects/search/ca_objects.Analytical_Catalog_1850:'.$vs_subjects_1850['Analytical_Catalog_1850']);
 						}
 					}
 				}
@@ -684,7 +684,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
@@ -699,12 +699,10 @@
 				fullWidth: true,
 				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
 				axisX: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 				axisY: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 			};
 			

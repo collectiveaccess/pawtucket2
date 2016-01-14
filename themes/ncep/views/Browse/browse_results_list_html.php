@@ -90,8 +90,8 @@
 			<div class='pull-right'>{$vs_arrow_link}</div>
 			<H1>{$vs_label_detail_link}<H1>
 			<div class='bResContent'>".
-				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'><b>"._t("Language").": </b>^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
-			."<br/><b>"._t("Authors").": </b>".
+				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
+			."<br/>"._t("Authors").": ".
 				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' restrictToTypes='Synthesis,CaseStudies,Exercise,Presentation' aggregateUnique='1' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", ", 'checkAccess' => caGetUserAccessValues($this->request)))
 			."</div><!-- end bResContent -->
 		</div><!-- end bResItem -->
