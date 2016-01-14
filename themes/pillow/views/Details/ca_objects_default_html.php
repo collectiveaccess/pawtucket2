@@ -60,6 +60,9 @@
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>				
 <?php
+				if(($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Moving image') | ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Photograph')) {
+					print "<div class='unit'><h6>Identifier</h6>".$t_object->get('ca_objects.idno')."</div>";
+				}
 				if ($va_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Author</h6>".$va_author."</div>";
 				}
@@ -130,15 +133,18 @@
 					if ($vs_duration = $t_object->get('ca_objects.duration')) {
 						print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
 					}
-					if ($vs_camera = $t_object->get('ca_objects.camera')) {
+					if ($vs_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Camera</h6>".$vs_camera."</div>";
-					}															
+					}
+					if ($vs_tech_notes = $t_object->get('ca_objects.technical_notes')) {
+						print "<div class='unit'><h6>Technical Notes</h6>".$vs_tech_notes."</div>";
+					}																				
 				}			
 ?>				
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities.preferred_labels" min="1"><h6>Related Entities</h6><unit relativeTo="ca_objects_x_entities" delimiter=', '><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
+							{{{<ifcount code="ca_entities.preferred_labels" min="1"><h6>Related Entities</h6><unit relativeTo="ca_objects_x_entities" delimiter=', ' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 
 
 <?php
@@ -154,9 +160,14 @@
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
-							if ($va_rights = $t_object->getWithTemplate('<unit>Statement: ^ca_objects.rights.rightsStatement<br/>Rights Holder: ^ca_objects.rights.rightsHolder<br/>Rights Notes: ^ca_objects.rights.rightsNotes</unit>')) {
-								print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
-							}																	
+							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
+								print "<h6>Related Storage Locations</h6>".$va_related_storage;
+							}
+							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
+								if ($va_rights = $t_object->getWithTemplate('<unit>Statement: ^ca_objects.rights.rightsStatement<br/>Rights Holder: ^ca_objects.rights.rightsHolder<br/>Rights Notes: ^ca_objects.rights.rightsNotes</unit>')) {
+									print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
+								}	
+							}																
 ?>								
 							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
