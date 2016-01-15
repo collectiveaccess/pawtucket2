@@ -51,6 +51,28 @@ h2 {
   display: inline-block;
   margin-top: 35px;
 }
+.advSearchField select, .advSearchField .attributeListItem, .advSearchField input, .advSearchField textarea {
+	width:100% !important;
+}
+.multisearch .multisearchResult {
+	width:200px;
+	height:220px;
+	font-size:12px;
+}
+.multisearch .blockResults {
+	height:250px;
+}
+.multisearch .multisearchResult img {
+	margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
+	height:225px;
+	padding-top:100px;
+}
+.multisearch .authoritySet {
+	height:220px;
+}
 /* Browse */
 #bRefine {
 	background-color:#fff;
@@ -69,8 +91,8 @@ h2 {
 }
 .facetList {
 	float:left;
-	height:200px;
-	width: 20%;
+	height:320px;
+	width: 12%;
 	padding-right:5px;
 }
 .advSearchField {
