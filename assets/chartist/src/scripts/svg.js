@@ -22,7 +22,7 @@
    *
    * @memberof Chartist.Svg
    * @constructor
-   * @param {String|SVGElement} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
+   * @param {String|Element} name The name of the SVG element to create or an SVG dom element which should be wrapped into Chartist.Svg
    * @param {Object} attributes An object with properties that will be added as attributes to the SVG element that is created. Attributes with undefined values will not be added.
    * @param {String} className This class or class list will be added to the SVG element
    * @param {Object} parent The parent SVG wrapper object where this newly created wrapper and it's element will be attached to as child
@@ -30,7 +30,7 @@
    */
   function Svg(name, attributes, className, parent, insertFirst) {
     // If Svg is getting called with an SVG element we just return the wrapper
-    if(name instanceof SVGElement) {
+    if(name instanceof Element) {
       this._node = name;
     } else {
       this._node = document.createElementNS(svgNs, name);
@@ -39,21 +39,21 @@
       if(name === 'svg') {
         this._node.setAttributeNS(xmlNs, Chartist.xmlNs.qualifiedName, Chartist.xmlNs.uri);
       }
+    }
 
-      if(attributes) {
-        this.attr(attributes);
-      }
+    if(attributes) {
+      this.attr(attributes);
+    }
 
-      if(className) {
-        this.addClass(className);
-      }
+    if(className) {
+      this.addClass(className);
+    }
 
-      if(parent) {
-        if (insertFirst && parent._node.firstChild) {
-          parent._node.insertBefore(this._node, parent._node.firstChild);
-        } else {
-          parent._node.appendChild(this._node);
-        }
+    if(parent) {
+      if (insertFirst && parent._node.firstChild) {
+        parent._node.insertBefore(this._node, parent._node.firstChild);
+      } else {
+        parent._node.appendChild(this._node);
       }
     }
   }
@@ -108,6 +108,7 @@
   /**
    * Returns the parent Chartist.SVG wrapper object
    *
+   * @memberof Chartist.Svg
    * @return {Chartist.Svg} Returns a Chartist.Svg wrapper around the parent node of the current node. If the parent node is not existing or it's not an SVG node then this function will return null.
    */
   function parent() {
@@ -117,6 +118,7 @@
   /**
    * This method returns a Chartist.Svg wrapper around the root SVG element of the current tree.
    *
+   * @memberof Chartist.Svg
    * @return {Chartist.Svg} The root SVG element wrapped in a Chartist.Svg element
    */
   function root() {
@@ -130,6 +132,7 @@
   /**
    * Find the first child SVG element of the current element that matches a CSS selector. The returned object is a Chartist.Svg wrapper.
    *
+   * @memberof Chartist.Svg
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @return {Chartist.Svg} The SVG wrapper for the element found or null if no element was found
    */
@@ -141,6 +144,7 @@
   /**
    * Find the all child SVG elements of the current element that match a CSS selector. The returned object is a Chartist.Svg.List wrapper.
    *
+   * @memberof Chartist.Svg
    * @param {String} selector A CSS selector that is used to query for child SVG elements
    * @return {Chartist.Svg.List} The SVG wrapper list for the element found or null if no element was found
    */
@@ -307,6 +311,24 @@
   }
 
   /**
+   * "Save" way to get property value from svg BoundingBox.
+   * This is a workaround. Firefox throws an NS_ERROR_FAILURE error if getBBox() is called on an invisible node.
+   * See [NS_ERROR_FAILURE: Component returned failure code: 0x80004005](http://jsfiddle.net/sym3tri/kWWDK/)
+   *
+   * @memberof Chartist.Svg
+   * @param {SVGElement} node The svg node to
+   * @param {String} prop The property to fetch (ex.: height, width, ...)
+   * @returns {Number} The value of the given bbox property
+   */
+  function getBBoxProperty(node, prop) {
+    try {
+      return node.getBBox()[prop];
+    } catch(e) {}
+
+    return 0;
+  }
+
+  /**
    * Get element height with fallback to svg BoundingBox or parent container dimensions:
    * See [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=530985)
    *
@@ -314,7 +336,7 @@
    * @return {Number} The elements height in pixels
    */
   function height() {
-    return this._node.clientHeight || Math.round(this._node.getBBox().height) || this._node.parentNode.clientHeight;
+    return this._node.clientHeight || Math.round(getBBoxProperty(this._node, 'height')) || this._node.parentNode.clientHeight;
   }
 
   /**
@@ -325,7 +347,7 @@
    * @return {Number} The elements width in pixels
    */
   function width() {
-    return this._node.clientWidth || Math.round(this._node.getBBox().width) || this._node.parentNode.clientWidth;
+    return this._node.clientWidth || Math.round(getBBoxProperty(this._node, 'width')) || this._node.parentNode.clientWidth;
   }
 
   /**
@@ -411,7 +433,7 @@
 
           // In guided mode we also set begin to indefinite so we can trigger the start manually and put the begin
           // which needs to be in ms aside
-          timeout = Chartist.stripUnit(animationDefinition.begin || 0);
+          timeout = Chartist.quantity(animationDefinition.begin || 0).value;
           animationDefinition.begin = 'indefinite';
         }
 
@@ -511,7 +533,7 @@
    * @return {Boolean} True of false if the feature is supported or not
    */
   Chartist.Svg.isSupported = function(feature) {
-    return document.implementation.hasFeature('www.http://w3.org/TR/SVG11/feature#' + feature, '1.1');
+    return document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#' + feature, '1.1');
   };
 
   /**

@@ -1,0 +1,134 @@
+body {
+	font-family: Tahoma, sans-serif;
+}
+a, .detail a, #footer ul a {
+	color: #2E4481;
+}
+h1, h2, h3, h4, h5, h6 {
+	color: #2E4481;
+	font-family:tahoma;
+}
+.navbar {
+	background-color: #608456;
+}
+.navbar-brand {
+	width: 120px;
+}
+.navbar .navbar-nav > .active > a, .navbar-nav > li > a, .navbar-nav > li > a:focus {
+	padding-bottom:3px;
+	padding-top:50px;
+	font-size:14px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: Tahoma;
+	text-transform:uppercase;
+	color: #fff;
+	padding-right: 20px;
+	padding-left:20px;
+	font-size:14px;
+}
+.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover {
+	color: #fff;
+}
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover {
+	background-color: transparent;
+	color: #fff;
+	border-bottom: 2px solid #fff;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	background-color: transparent;
+	color: #fff;
+	border-bottom: 2px solid #fff;	
+}
+.nav > li.dropdown > a.icon {
+	padding-top: 50px;
+}
+.navbar-default .navbar-form {
+	margin-bottom:0px;
+	margin-top:42px;
+}
+.navbar .formOutline {
+	background-color: #fff;
+	border:0px;
+	border-radius:4px;
+}
+.mainfacet {
+	margin-bottom:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+	background-color: #f5f5f5;
+}
+.browseTarget {
+	display:block;
+	text-transform:uppercase;
+	font-weight:bold;
+	float:left;
+	margin-top:5px;
+	margin-right:15px;
+}
+.mainfacet li {
+	margin-right:10px;
+    padding: 5px;
+    padding-top:4px;
+}
+.mainfacet li a{
+	color: #999;
+	font-weight:bold;
+	font-size:13px;
+	border-bottom:2px solid #f5f5f5;
+}
+.mainfacet li .active a {
+	color:#608456;
+	border-bottom: 2px solid #608456;
+}
+@media (min-width: 768px) {
+	.navbar-form .form-group {
+		width: 100px;
+	}
+}
+@media (max-width: 897px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		padding-right:10px;
+		padding-left:10px;
+	}
+}
+/* Multisearch */
+
+.multisearch .blockResults {
+	height:210px;
+}
+.multisearch .multisearchResult {
+	height:180px;
+	width:170px;
+}
+.multisearch .multisearchResult p {
+	margin-bottom:4px;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
+	height:185px;
+}
+.multisearch .multisearchResult img {
+	margin-bottom:10px;
+}
+.multisearchImgPlaceholder {
+	border:0px;
+	padding:34px;
+	margin-bottom:10px;
+}
+
+/* Advanced Search */
+
+div.advancedSearchField {
+	height:60px;
+	width:100%;
+}
+.advancedSearchFieldTall {
+	clear:both;
+	height: 130px;
+}
+
+/* Finding Aid */
+
+.collHeader a {
+	font-family: Tahoma;
+}

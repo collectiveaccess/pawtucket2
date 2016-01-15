@@ -484,7 +484,9 @@
                     index,
                     start,
                     curr,
+                    curr2,
                     isVisible,
+                    isVisible2,
                     props,
                     i;
 
@@ -554,21 +556,22 @@
                         if (start <= 0 && ((this.underflow && wrap === 'circular') || wrap === 'both' || wrap === 'first')) {
                             this._scroll(end, animate, callback);
                         } else {
-                            if (this.circular && index < 0) {
+                            if (this.circular && index <= 0) {
+
                                 i    = index;
                                 curr = this.items().get(0);
 
-                                while (i++ < 0) {
+                                while (i++ < 2) {
                                     curr = this.items().eq(-1);
                                     isVisible = this._visible.index(curr) >= 0;
-
-                                    if (isVisible) {
+									
+									if (isVisible) {
                                         curr.after(curr.clone(true).attr('data-jcarousel-clone', true));
                                     }
-
+                                    
                                     this.list().prepend(curr);
-
-                                    // Force items reload
+									
+									// Force items reload
                                     this._items = null;
 
                                     var dim = this.dimension(curr);
@@ -579,7 +582,7 @@
 
                                 }
 
-                                this._scroll(curr, animate, callback);
+                                this._scroll(2, animate, callback);
                             } else {
                                 this._scroll(Math.max(index, 0), animate, callback);
                             }

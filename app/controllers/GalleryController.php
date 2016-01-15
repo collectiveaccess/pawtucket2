@@ -135,8 +135,10 @@
  			$this->view->setVar("set_id", $pn_set_id);
  			
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$this->view->setVar("set_item_id", $pn_item_id); 
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
+ 			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
  			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);

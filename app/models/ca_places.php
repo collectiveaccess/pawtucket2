@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -180,6 +180,13 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Sort order'), 'DESCRIPTION' => _t('Sort order'),
+		),
+		'view_count' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
 		)
  	)
 );
@@ -343,6 +350,8 @@ class ca_places extends RepresentableBaseModel implements IBundleProvider, IHier
 		$this->BUNDLES['ca_list_items'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related vocabulary terms'));
 		$this->BUNDLES['ca_sets'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));
 		
+		$this->BUNDLES['authority_references_list'] = array('type' => 'special', 'repeating' => false, 'label' => _t('References'));
+
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
@@ -371,8 +380,9 @@ class ca_places extends RepresentableBaseModel implements IBundleProvider, IHier
 			WHERE 
 				p.parent_id IS NULL and p.hierarchy_id IN (".join(',', $va_hierarchy_ids).")
 			GROUP BY
-				p.place_id
+				p.place_id, p.hierarchy_id
 		");
+		
 		while ($qr_res->nextRow()) {
 			$vn_hierarchy_id = $qr_res->get('hierarchy_id');
 			$va_place_hierarchies[$vn_hierarchy_id]['place_id'] = $va_place_hierarchies[$vn_hierarchy_id]['item_id'] = $qr_res->get('place_id');

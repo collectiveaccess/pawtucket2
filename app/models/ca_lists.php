@@ -296,6 +296,31 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
+	/**
+	 * Override delete() to scramble the list_code before we soft-delete. This is useful
+	 * because the database field has a unique key that really enforces uniqueneness
+	 * and we might wanna reuse a code of a set we previously deleted.
+	 */
+	public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
+		if($vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) {
+			if(!caGetOption('hard', $pa_options, false)) { // only applies if we don't hard-delete
+				$vb_we_set_transaction = false;
+				if (!$this->inTransaction()) {
+					$o_t = new Transaction($this->getDb());
+					$this->setTransaction($o_t);
+					$vb_we_set_transaction = true;
+				}
+
+				$this->set('list_code', $this->get('list_code') . '_' . time());
+				$this->update(array('force' => true));
+
+				if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+			}
+		}
+
+		return $vn_rc;
+	}
+	# ------------------------------------------------------
 	# List maintenance
 	# ------------------------------------------------------
 	/**
@@ -377,6 +402,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 *		sort =			if set to a __CA_LISTS_SORT_BY_*__ constant, will force the list to be sorted by that criteria overriding the sort order set in the ca_lists.default_sort field
 	 *		idsOnly = 		if true, only the primary key id values of the list items are returned
 	 *		enabledOnly =	return only enabled list items [default=false]
+	 *		omitRoot =		don't include root node [Default=false]
 	 *		labelsOnly = 	if true only labels in the current locale are returns in an array key'ed on item_id
 	 *		start = 		offset to start returning records from [default=0; no offset]
 	 *		limit = 		maximum number of records to return [default=null; no limit]
@@ -392,6 +418,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$pn_start = caGetOption('start', $pa_options, 0);
 		$pn_limit = caGetOption('limit', $pa_options, null);
 		
+		$pb_omit_root = caGetOption('omitRoot', $pa_options, false);
 		$vb_enabled_only = caGetOption('enabledOnly', $pa_options, false);
 	
 		$vb_labels_only = false;
@@ -480,6 +507,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			if ($pn_start > 0) { $qr_res->seek($pn_start); }
 			$vn_c = 0;
 			while($qr_res->nextRow()) {
+				if ($pb_omit_root && !$qr_res->get('parent_id')) { continue; }
 				$vn_item_id = $qr_res->get('item_id');
 				$vn_c++;
 				if (($pn_limit > 0) && ($vn_c > $pn_limit)) { break; }
@@ -1040,9 +1068,12 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * If no list is specified the currently loaded list is used.
 	 *
 	 * @param mixed $pm_list_name_or_id List code or list_id of list to return default item_id for. If omitted the currently loaded list will be used.
+	 * @param array $pa_options Options include options for @see ca_list_items::getItemsForList()
+	 *
 	 * @return int The item_id of the default element or null if no list was specified or loaded. If no default is set for the list in question the first item found is returned.
 	 */
-	public function getDefaultItemID($pm_list_name_or_id=null) {
+	public function getDefaultItemID($pm_list_name_or_id=null, $pa_options=null) {
+		if (!is_array($pa_options)) { $pa_options = array(); }
 		if($pm_list_name_or_id) {
 			$vn_list_id = $this->_getListID($pm_list_name_or_id);
 		} else {
@@ -1057,7 +1088,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			return $t_list_item->getPrimaryKey();
 		}
 		
-		return array_shift($this->getItemsForList($vn_list_id, array('idsOnly' => true)));
+		return array_shift($this->getItemsForList($vn_list_id, array_merge($pa_options, array('idsOnly' => true))));
 	}
 	# ------------------------------------------------------
 	/**
@@ -1243,11 +1274,54 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			$va_options[''] = $pa_options['nullOption'];
 		}
 		
+		
+		if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID'])) {
+			// expand limit list to include parents of items that are included
+			$va_to_add = array();
+			foreach($va_list_items as $vn_item_id => $va_item) {
+				if (($vn_parent_id = $va_item['parent_id']) && in_array($vn_item_id, $pa_options['limitToItemsWithID'])) {
+					$va_to_add[$vn_parent_id] = true;
+					while($vn_parent_id = $va_list_items[$vn_parent_id]['parent_id']) {
+						if($va_list_items[$vn_parent_id]['parent_id']) { $va_to_add[$va_list_items[$vn_parent_id]['parent_id']] = true; }
+					}
+				}
+			}	
+			$pa_options['limitToItemsWithID'] += array_keys($va_to_add);
+		}
+		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
+		if(!is_array($pa_check_access) && $pa_check_access) { $va_check_access = array($va_check_access); }
+		
+		$va_in_use_list = null;
+		if ($pa_options['inUse'] && (int)$pa_options['element_id'] && $pa_options['table']) {
+			$o_dm = Datamodel::load();
+			if ($t_instance = $o_dm->getInstance($pa_options['table'], true)) {
+				$va_params = array((int)$pa_options['element_id']);
+				if(is_array($pa_check_access) && sizeof($pa_check_access)) {
+					$va_params[] = $pa_check_access;
+				}
+				
+				$qr_in_use = $t_list->getDb()->query("
+					SELECT DISTINCT cav.item_id
+					FROM ca_attribute_values cav
+					INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+					INNER JOIN ".$t_instance->tableName()." AS t ON t.".$t_instance->primaryKey()." = ca.row_id
+					WHERE 
+						(cav.element_id = ?) AND 
+						(ca.table_num = ".$t_instance->tableNum().") 
+						".(($t_instance->hasField('deleted') ? " AND (t.deleted = 0)" : ""))."
+						".((is_array($pa_check_access) && sizeof($pa_check_access)) ? " AND t.access IN (?)" : "")."
+				", $va_params);
+				$va_in_use_list = $qr_in_use->getAllFieldValues('item_id');
+			}
+		}
+		
 		$va_colors = array();
 		$vn_default_val = null;
 		foreach($va_list_items as $vn_item_id => $va_item) {
 			if (is_array($pa_options['limitToItemsWithID']) && !in_array($vn_item_id, $pa_options['limitToItemsWithID'])) { continue; }
 			if (is_array($pa_options['omitItemsWithID']) && in_array($vn_item_id, $pa_options['omitItemsWithID'])) { continue; }
+			if (is_array($va_in_use_list) && !in_array($vn_item_id, $va_in_use_list)) { continue; }
 			
 			$va_options[$va_item[$pa_options['key']]] = str_repeat('&nbsp;', intval($va_item['LEVEL']) * 3).' '.$va_item['name_singular'];
 			if (!$va_item['is_enabled'] || (is_array($va_disabled_item_ids) && in_array($vn_item_id, $va_disabled_item_ids))) { $va_disabled_options[$va_item[$pa_options['key']]] = true; }
@@ -1350,7 +1424,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				$vn_c = 0;
 				$vs_buf = "<table>\n";
 				foreach($va_options as $vm_value => $vs_label) {
-					if ($vn_c == 0) { $vs_buf .= "<tr>"; }
+					if ($vn_c == 0) { $vs_buf .= "<tr valign='top'>"; }
 					
 					$va_attributes = array('value' => $vm_value);
 					if (isset($va_disabled_options[$vm_value]) && $va_disabled_options[$vm_value]) {
@@ -1361,7 +1435,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					}
 					if (is_array($pa_options['value']) && in_array($vm_value, $pa_options['value']) ) { $va_attributes['checked'] = '1'; }
 					
-					$vs_buf .= "<td>".caHTMLCheckboxInput($ps_name.'_'.$vm_value, $va_attributes, $pa_options)." {$vs_label}</td>";
+					$vs_buf .= "<td>".caHTMLCheckboxInput($ps_name.'_'.$vm_value, $va_attributes, $pa_options)." {$vs_label}</td><td> </td>";
 					
 					$vn_c++;
 					

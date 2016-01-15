@@ -49,7 +49,7 @@ class AuthenticationManager {
 	public static function init($ps_adapter=null) {
 		if(!is_null($ps_adapter) || ((strlen(self::$g_authentication_adapter) == 0) || !class_exists(self::$g_authentication_adapter))) {
 			$o_app_conf = Configuration::load();
-			$o_auth_config = Configuration::load($o_app_conf->get('authentication_config'));
+			$o_auth_config = Configuration::load(__CA_CONF_DIR__."/authentication.conf");
 
 			$vs_auth_adapter = (!is_null($ps_adapter)) ? $ps_adapter : $o_auth_config->get('auth_adapter');
 
@@ -143,7 +143,7 @@ class AuthenticationManager {
 		self::init();
 
 		if($pn_feature == __CA_AUTH_ADAPTER_FEATURE_RESET_PASSWORDS__) {
-			$po_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
+			$po_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
 			if(!$po_auth_config->get('auth_allow_password_reset')) {
 				return false;
 			}

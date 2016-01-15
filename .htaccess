@@ -1,5 +1,5 @@
 <IfModule mod_rewrite.c>
-	RewriteEngine off
+	RewriteEngine on
 	
 	# Pass all requests not referring directly 
 	# to files in the filesystem to index.php.

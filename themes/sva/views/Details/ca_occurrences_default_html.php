@@ -24,7 +24,7 @@
 				<div class='col-xs-8 col-sm-8 col-md-8 col-lg-8'>
 					<H6>{{{^ca_occurrences.type_id}}}</H6>
 				
-					<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+					<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 <?php	
 				if ($va_description = $t_occurrence->get('ca_occurrences.description_public', array('delimiter' => '<br/>'))) {
 					print "<p>".$va_description."</p>";
@@ -32,29 +32,42 @@
 				if ($va_idno = $t_occurrence->get('ca_occurrences.idno', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='detailLabel'>ID</span><span class='detailInfo'>".$va_idno."</span></div>";
 				}
-				if ($va_opening_dates = $t_occurrence->get('ca_occurrences.dates', array('returnAsArray' => true))) {
-					#205
-					foreach ($va_opening_dates as $va_opening_key => $va_opening) {
-						if ($va_opening['dates_type'] == 304) {
-							$va_opening_date = $va_opening['dates_value'];
+				if ($va_opening_dates = $t_occurrence->get('ca_occurrences.dates', array('returnWithStructure' => true))) {
+					foreach ($va_opening_dates as $va_opening_key => $va_opening_t) {
+						foreach ($va_opening_t as $va_key => $va_opening) {
+							if (
+								(
+									($t_occurrence->get('ca_occurrences.type_id', ['convertCodesToIdno' => true]) !== 'exhibition')
+									&&
+									($va_opening['dates_type'] != "Reception dates")
+								)
+								||
+								($va_opening['dates_type'] == "Exhibition dates")
+							) {
+								$va_opening_date = $va_opening['dates_value'];
+							}
 						}
 					}
 				}
 
-
-				print "<div class='unit'><span class='detailLabel'>Date</span><span class='detailInfo'>".$va_opening_date."</span></div>";
+				if ($va_opening_date) {
+					print "<div class='unit'><span class='detailLabel'>Date</span><span class='detailInfo'>".$va_opening_date."</span></div>";				
+				}
 				
-				if ($va_reception_dates = $t_occurrence->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-					#206
-					foreach ($va_reception_dates as $va_reception_key => $va_reception) {
-						if ($va_reception['ex_dates_type'] == 206) {
-							$va_reception_date = $va_reception['ex_dates_value'];
+				/* omit reception date
+				if ($va_reception_dates = $t_occurrence->get('ca_occurrences.dates', array('returnWithStructure' => true))) {
+					foreach ($va_reception_dates as $va_reception_key => $va_reception_t) {
+						foreach ($va_reception_t as $va_key => $va_reception) {
+							if ($va_reception['dates_type'] == "Reception dates") {
+								$va_reception_date = $va_reception['dates_value'];
+							}
 						}
 					}
 					if ($va_reception_date) {
-						/* print "<div class='unit'><span class='detailLabel'>Reception</span><span class='detailInfo'>".$va_reception_date."</span></div>"; */
+						print "<div class='unit'><span class='detailLabel'>Reception</span><span class='detailInfo'>".$va_reception_date."</span></div>"; 
 					}
-				}
+				} 
+				*/
 				if ($va_place = $t_occurrence->get('ca_places.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><span class='detailLabel'>Location</span><span class='detailInfo'>".$va_place."</span></div>";
 				}	
