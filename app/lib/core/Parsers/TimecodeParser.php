@@ -47,10 +47,12 @@
  * FT_TIMECODE fields.
  *
  */
-require_once(__CA_LIB_DIR__."/core/Error.php");
+require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
 
 
 class TimecodeParser {
+	var $opn_parsed_value_in_seconds;
+	var $opn_timebase = 29.97; // NTSC fps
 	# ------------------------------------------------------------------
 	/**
 	 *

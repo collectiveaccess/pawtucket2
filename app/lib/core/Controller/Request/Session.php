@@ -34,7 +34,7 @@
   *
   */
  
-require_once(__CA_LIB_DIR__."/core/Error.php");
+require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
 require_once(__CA_LIB_DIR__."/core/Configuration.php");
 require_once(__CA_LIB_DIR__."/core/Db.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
@@ -48,6 +48,12 @@ class Session {
 	private $name = "";		# application name
 
 	private $start_time = 0;	# microtime session object was created - used for page performance measurements
+
+	/**
+	 * In-memory session var storage
+	 * @var array
+	 */
+	private $opa_session_vars = array();
 	
 	# ----------------------------------------
 	# --- Constructor
@@ -75,16 +81,105 @@ class Session {
 		}
 		
 		if (!$pb_dont_create_new_session) {
-			if (!($vs_key = $this->getSessionID())) {
+			// try to get session ID from cookie. if that doesn't work, generate a new one
+			if (!($vs_session_id = $this->getSessionID())) {
 				$vs_cookiepath = ((__CA_URL_ROOT__== '') ? '/' : __CA_URL_ROOT__);
-				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = caGenerateGUID(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
+				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = $this->generateGUIDV4(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
 		 	}
-		 	
-			// initialize session var storage
-			if($vs_key && !ExternalCache::contains($vs_key, 'SessionVars')) {
-				ExternalCache::save($vs_key, array(), 'SessionVars', $this->lifetime);
+
+			// initialize in-memory session var storage, either restored from external cache or newly initialized
+			if($this->getSessionID() && ExternalCache::contains($this->getSessionID(), 'SessionVars')) {
+				$this->opa_session_vars = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
+			} else {
+				$this->opa_session_vars = array();
+				if($this->getSessionID()) {
+					ExternalCache::delete($this->getSessionID(), 'SessionVars');
+				}
+				$this->opa_session_vars['session_end_timestamp'] = time() + $this->lifetime;
+			}
+
+			// kill session if it has ended or we don't have a timestamp
+			if(
+				!isset($this->opa_session_vars['session_end_timestamp'])
+				||
+				(is_numeric($this->opa_session_vars['session_end_timestamp']) && (time() > $this->opa_session_vars['session_end_timestamp']))
+			) {
+				$this->opa_session_vars = array();
+				ExternalCache::delete($this->getSessionID(), 'SessionVars');
 			}
 		}
+	}
+	# ----------------------------------------
+	/**
+	 * Destructor: Save session variables to permanent storage
+	 */
+	public function __destruct() {
+		if($this->getSessionID() && is_array($this->opa_session_vars) && (sizeof($this->opa_session_vars) > 0)) {
+			ExternalCache::save($this->getSessionID(), $this->opa_session_vars, 'SessionVars', 0);
+		}
+	}
+	# ----------------------------------------
+	/**
+	 * Generate a GUID 
+	 */
+	private function generateGUIDV4(){
+		if (function_exists("openssl_random_pseudo_bytes")) {
+			$vs_data = openssl_random_pseudo_bytes(16);
+		} else {
+			$vs_data = '';
+			for($i=0; $i < 16; $i++) {
+				$vs_data .= chr(mt_rand(0, 255));
+			}
+		}
+		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
+		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+
+		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
+	}
+	# ----------------------------------------
+	/**
+	 * Return service authentication token for this session (and create it, if none exists yet).
+	 * These tokens usually have a much shorter lifetime than the session.
+	 * @param bool $pb_dont_create_new_token dont create new auth token
+	 * @return string|bool The token, false if
+	 */
+	public function getServiceAuthToken($pb_dont_create_new_token=false) {
+		if(!$this->getSessionID()) { return false; }
+
+		if(ExternalCache::contains($this->getSessionID(), 'SessionIDToServiceAuthTokens')) {
+			return ExternalCache::fetch($this->getSessionID(), 'SessionIDToServiceAuthTokens');
+		}
+
+		if($pb_dont_create_new_token) { return false; }
+
+		// generate new token
+		$vs_token = hash('sha256', mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+
+		// save mappings in both directions for easy lookup. they are valid for 2 hrs (@todo maybe make this configurable?)
+		ExternalCache::save($this->getSessionID(), $vs_token, 'SessionIDToServiceAuthTokens', 60 * 60 * 2);
+		ExternalCache::save($vs_token, $this->getSessionID(), 'ServiceAuthTokensToSessionID', 60 * 60 * 2);
+
+		return $vs_token;
+	}
+
+	/**
+	 * Restore session form a temporary service auth token
+	 * @param string $ps_token
+	 * @param string|null $ps_name
+	 * @return Session|bool The restored session, false on failure
+	 */
+	public static function restoreFromServiceAuthToken($ps_token, $ps_name=null) {
+		$o_config = Configuration::load();
+		$vs_app_name = $o_config->get("app_name");
+
+		if(!ExternalCache::contains($ps_token, 'ServiceAuthTokensToSessionID')) {
+			return false;
+		}
+
+		$vs_session_id = ExternalCache::fetch($ps_token, 'ServiceAuthTokensToSessionID');
+		$_COOKIE[$vs_app_name] = $vs_session_id;
+
+		return new Session($vs_app_name);
 	}
 	# ----------------------------------------
 	# --- Methods
@@ -92,32 +187,8 @@ class Session {
 	/**
 	 * Returns client's session_id. 
 	 */
-	public function getSessionID () {
-		if (isset($_COOKIE[$this->name]) && $_COOKIE[$this->name]) { return $_COOKIE[$this->name]; }
-		
-		// If client doesn't support cookies and connects repeatedly then we'll end up creating a session for
-		// each connection. GoogleSearch appliances do this.
-		//
-		// To avoid this we keep track of connections by IP address and if it connects without a session cookie 
-		// too many times in a given period we force it to a fixed session key
-		if (!is_array($va_ip_list = ExternalCache::fetch('ipList', 'SessionVars'))) { $va_ip_list = array(); }
-		if (!is_array($va_ip_last_seen = ExternalCache::fetch('ipLastSeen', 'SessionVars'))) { $va_ip_last_seen = array(); }
-		if (!is_array($va_ip_session_keys = ExternalCache::fetch('ipSessionKeys', 'SessionVars'))) { $va_ip_session_keys = array(); }
-		if (isset($va_ip_last_seen[$_SERVER['REMOTE_ADDR']]) && ((time() - $va_ip_last_seen[$_SERVER['REMOTE_ADDR']]) > (60*60*4))) {	// 4 hour window
-			$va_ip_list[$_SERVER['REMOTE_ADDR']] = 0;
-		}
-		$va_ip_list[$_SERVER['REMOTE_ADDR']]++;
-		$va_ip_last_seen[$_SERVER['REMOTE_ADDR']] = time();
-		
-		if($vs_key && ($va_ip_list[$_SERVER['REMOTE_ADDR']] > 5)) {
-			$va_ip_session_keys[$_SERVER['REMOTE_ADDR']] = caGenerateGUID();
-		}
-		
-		ExternalCache::save('ipList', $va_ip_list, 'SessionVars', 60 * 60 * 24);				// ip lists persist for 24 hours
-		ExternalCache::save('ipLastSeen', $va_ip_last_seen, 'SessionVars', 60 * 60 * 24);
-		ExternalCache::save('ipSessionKeys', $va_ip_session_keys, 'SessionVars', 60 * 60 * 24);
-	
-		return (isset($va_ip_session_keys[$_SERVER['REMOTE_ADDR']]) && $va_ip_session_keys[$_SERVER['REMOTE_ADDR']]) ? $va_ip_session_keys[$_SERVER['REMOTE_ADDR']] : null;
+	public function getSessionID() {
+		return isset($_COOKIE[$this->name]) ? $_COOKIE[$this->name] : null;
 	}
 	# ----------------------------------------
 	/**
@@ -125,35 +196,33 @@ class Session {
 	 * Useful for logging out users (destroying the session destroys the login)
 	 */
 	public function deleteSession() {
+		// nuke service token caches
+		if($vs_token = $this->getServiceAuthToken(true)) {
+			ExternalCache::delete($vs_token, 'ServiceAuthTokensToSessionID');
+		}
+		ExternalCache::delete($this->getSessionID(), 'SessionIDToServiceAuthTokens');
+
 		if (isset($_COOKIE[session_name()])) {
 			setcookie(session_name(), '', time()- (24 * 60 * 60),'/');
 		}
 		// Delete session data
 		ExternalCache::delete($this->getSessionID(), 'SessionVars');
-		
-		// Delete ip tracking
-		if (!is_array($va_ip_list = ExternalCache::fetch('ipList', 'SessionVars'))) { $va_ip_list = array(); }
-		if (!is_array($va_ip_last_seen = ExternalCache::fetch('ipLastSeen', 'SessionVars'))) { $va_ip_last_seen = array(); }
-		if (!is_array($va_ip_session_keys = ExternalCache::fetch('ipSessionKeys', 'SessionVars'))) { $va_ip_session_keys = array(); }
-		unset($va_ip_list[$_SERVER['REMOTE_ADDR']]);
-		unset($va_ip_last_seen[$_SERVER['REMOTE_ADDR']]);
-		unset($va_ip_session_keys[$_SERVER['REMOTE_ADDR']]);
-		ExternalCache::save('ipList', $va_ip_list, 'SessionVars', 60 * 60 * 24);
-		ExternalCache::save('ipLastSeen', $va_ip_last_seen, 'SessionVars', 60 * 60 * 24);
-		ExternalCache::save('ipSessionKeys', $va_ip_session_keys, 'SessionVars', 60 * 60 * 24);
-		
 		session_destroy();
 	}
 	# ----------------------------------------
 	/**
 	 * Set session variable
-	 * Sesssion var may be number, string or array
+	 * @param string $ps_key variable key
+	 * @param mixed $pm_val Session var may be number, string or array
+	 * @param null|array $pa_options
+	 * 		ENTITY_ENCODE_INPUT =
+	 * 		URL_ENCODE_INPUT =
+	 * @return bool
 	 */
 	public function setVar($ps_key, $pm_val, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		
 		if ($ps_key && $this->getSessionID()) {
-			$va_vars = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
 			if (isset($pa_options["ENTITY_ENCODE_INPUT"]) && $pa_options["ENTITY_ENCODE_INPUT"]) {
 				if (is_string($pm_val)) {
 					$vm_val = html_entity_decode($pm_val);
@@ -167,8 +236,7 @@ class Session {
 					$vm_val = $pm_val;
 				}
 			}
-			$va_vars[$ps_key] = $vm_val;
-			ExternalCache::save($this->getSessionID(), $va_vars, 'SessionVars', $this->lifetime);
+			$this->opa_session_vars[$ps_key] = $vm_val;
 			return true;
 		}
 		return false;
@@ -176,11 +244,10 @@ class Session {
 	# ----------------------------------------
 	/**
 	 * Delete session variable
+	 * @param string $ps_key
 	 */
-	public function delete ($ps_key) {
-		$va_vars = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
-		unset($va_vars[$ps_key]);
-		ExternalCache::save($this->getSessionID(), $va_vars, 'SessionVars', $this->lifetime);
+	public function delete($ps_key) {
+		unset($this->opa_session_vars[$ps_key]);
 	}
 	# ----------------------------------------
 	/**
@@ -189,22 +256,14 @@ class Session {
 	public function getVar($ps_key) {
 		if(!$this->getSessionID()) { return null; }
 
-		if(ExternalCache::contains($this->getSessionID(), 'SessionVars')) {
-			$va_vars = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
-			return isset($va_vars[$ps_key]) ? $va_vars[$ps_key] : null;
-		}
-		return null;
+		return isset($this->opa_session_vars[$ps_key]) ? $this->opa_session_vars[$ps_key] : null;
 	}
 	# ----------------------------------------
 	/**
 	 * Return names of all session vars
 	 */
 	public function getVarKeys() {
-		if(ExternalCache::contains($this->getSessionID(), 'SessionVars')) {
-			$va_vars = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
-			return array_keys($va_vars);
-		}
-		return array();
+		return is_array($this->opa_session_vars) ? array_keys($this->opa_session_vars) : array();
 	}
 	# ----------------------------------------
 	/**

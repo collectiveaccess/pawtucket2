@@ -3074,11 +3074,12 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	* to use it.
 	*
 	* @param mixed $pm_screen
-	* @param RequestHTTP $ps_request
+	* @param RequestHTTP $po_request
 	* @param array $pa_options Options are:
 	*		dryRun = Go through the motions of saving but don't actually write information to the database
 	*		batch = Process save in "batch" mode. Specifically this means honoring batch mode settings (add, replace, remove), skipping bundles that are not supported in batch mode and ignoring updates
 	*		existingRepresentationMap = an array of representation_ids key'ed on file path. If set saveBundlesForScreen() use link the specified representation to the row it is saving rather than processing the uploaded file. saveBundlesForScreen() will build the map as it goes, adding newly uploaded files. If you want it to process a file in a batch situation where it should be processed the first time and linked subsequently then pass an empty array here. saveBundlesForScreen() will use the empty array to build the map.
+	 * @return mixed
 	*/
 	public function saveBundlesForScreen($pm_screen, $po_request, &$pa_options) {
 		$vb_we_set_transaction = false;
@@ -3300,9 +3301,14 @@ if (!$vb_batch) {
 						if (isset($va_attributes_to_delete[$vn_attribute_id]) && $va_attributes_to_delete[$vn_attribute_id]) { continue; }
 						
 						$vn_element_set_id = $o_attr->getElementID();
+
+						// skip element
+						if($po_request->getParameter($vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_set_id.'_dont_save_'.$vn_attribute_id, pInteger)) {
+							continue;
+						}
 						
 						$va_attr_update = array(
-							'locale_id' =>  $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_set_id.'_locale_id_'.$vn_attribute_id, pString) 
+							'locale_id' =>  $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_set_id.'_locale_id_'.$vn_attribute_id, pString)
 						);
 						
 						//
@@ -4666,7 +4672,7 @@ if (!$vb_batch) {
 		$vb_uses_effective_dates = false;
 
 		if(isset($pa_options['sort']) && !is_array($pa_options['sort'])) { $pa_options['sort'] = array($pa_options['sort']); }
-		$pa_sort_fields = (isset($pa_options['sort']) && is_array($pa_options['sort'])) ? $pa_options['sort'] : null;
+		$pa_sort_fields = (isset($pa_options['sort']) && is_array($pa_options['sort'])) ? array_filter($pa_options['sort'], "strlen") : null;
 		$ps_sort_direction = (isset($pa_options['sortDirection']) && $pa_options['sortDirection']) ? $pa_options['sortDirection'] : null;
 
 		if (!$pa_row_ids && ($pn_row_id > 0)) {
@@ -5438,21 +5444,23 @@ if (!$vb_batch) {
 		//
 		// Sort on fields if specified
 		//
-		if (is_array($pa_sort_fields) && sizeof($va_rels)) {
-			$va_ids = array();
+		if (is_array($pa_sort_fields) && sizeof($pa_sort_fields) && sizeof($va_rels)) {
+			$va_ids = $va_ids_to_rel_ids = array();
 			$vs_rel_pk = $t_rel_item->primaryKey();
 			foreach($va_rels as $vn_i => $va_rel) {
 				$va_ids[$vn_i] = $va_rel[$vs_rel_pk];
+				$va_ids_to_rel_ids[$va_rel[$vs_rel_pk]][] = $vn_i;
 			}
 			if (sizeof($va_ids) > 0) {
 				$qr_sort = caMakeSearchResult($vs_related_table_name, array_values($va_ids), array('sort' => $pa_sort_fields, 'sortDirection' => $ps_sort_direction));
 				
-				$va_ids_to_rel_ids = array_flip($va_ids);
 				$va_rels_sorted = array();
 				
 				$vs_rel_pk_full = $t_rel_item->primaryKey(true);
 				while($qr_sort->nextHit()) {
-					$va_rels_sorted[$vn_id = $va_ids_to_rel_ids[$qr_sort->get($vs_rel_pk_full)]] = $va_rels[$vn_id];
+					foreach($va_ids_to_rel_ids[$qr_sort->get($vs_rel_pk_full)] as $vn_rel_id) {
+						$va_rels_sorted[$vn_rel_id] = $va_rels[$vn_rel_id];
+					}
 				}
 				$va_rels = $va_rels_sorted;
 			}
@@ -5498,8 +5506,6 @@ if (!$vb_batch) {
 				return $va_rels;
 				break;
 		}
-
-		return $va_rels;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**

@@ -49,7 +49,7 @@
 		$pa_errcontext_args = caExtractStackTraceArguments($pa_errcontext);
 		//$pa_request_params = caExtractRequestParams();
 		
-		require_once((defined("__CA_THEME_DIR__") ? __CA_THEME_DIR__ : __DIR__."/../../themes/default")."/views/system/fatal_error_html.php");
+		require_once((defined("__CA_THEME_DIR__") ? __CA_THEME_DIR__ : __DIR__.'/../../themes/default').'/views/system/fatal_error_html.php');
 		exit;
 	}
 	# --------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@
 	 *
 	 */
 	function caExtractRequestParams() {
-		if(!include_once(pathinfo(__FILE__, PATHINFO_DIRNAME)."/../../vendor/autoload.php")) { return array(); }
+		if(!include_once(pathinfo(__FILE__, PATHINFO_DIRNAME).'/../../vendor/autoload.php')) { return array(); }
 		
 		if(!is_array($_REQUEST)) { return array(); }
 		
@@ -119,6 +119,7 @@
 		foreach($_REQUEST as $vs_k => $vm_val) {
 			$pa_params[$o_purifier->purify($vs_k)] = $o_purifier->purify($vm_val);
 		}
+
 		return $pa_params;
 	}
 	# --------------------------------------------------------------------------------------------
