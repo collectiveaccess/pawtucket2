@@ -42,6 +42,7 @@
   			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
  		}
  		# -------------------------------------------------------
  		/**
@@ -55,34 +56,63 @@
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
+ 			$va_featured_ids = array();
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
+ 				$vn_shuffle = 0;
+ 				if($this->config->get("front_page_set_random")){
+ 					$vn_shuffle = 1;
+ 				}
 				# Enforce access control on set
 				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 					$this->view->setVar('featured_set', $t_set);
-					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
 					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
 					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
  			}
+ 			#
+ 			# --- no configured set/items in set so grab random objects with media
+ 			#
+ 			if(sizeof($va_featured_ids) == 0){
+ 				$t_object = new ca_objects();
+ 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1)));
+ 				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
+ 			}
  			
  			$this->view->setVar('config', $this->config);
  			
- 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
+ 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
  			$this->view->setVar('result_context', $o_result_context);
+ 			$o_result_context->setAsLastFind();
  			
  			//
  			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
  			//
  			$ps_function = preg_replace("![^A-Za-z0-9_\-]+!", "", $ps_function);
  			$vs_path = "Front/{$ps_function}_html.php";
- 			if (file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
- 				$this->render($vs_path);
- 			} else {
- 				$this->render("Front/front_page_html.php");
+ 			if (!file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
+ 				$vs_path = "Front/front_page_html.php";
  			}
+ 			
+ 			$this->render($vs_path);
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Front',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
  		}
  		# ------------------------------------------------------
  	}

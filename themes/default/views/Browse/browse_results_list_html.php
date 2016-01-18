@@ -42,22 +42,32 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
-	
+	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+
+	
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
-		$vn_col_span_xs = 4;
+		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 6;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
+			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -75,23 +85,42 @@
 				$va_images = null;
 			}
 			
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
+			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
-				
+				$vs_thumbnail = "";
+				$vs_type_placeholder = "";
+				$vs_typecode = "";
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
+				if(!$vs_image){
+					if ($vs_table == 'ca_objects') {
+						$t_list_item->load($qr_res->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_image = $vs_default_placeholder_tag;
+						}
+					}else{
+						$vs_image = $vs_default_placeholder_tag;
+					}
+				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
-
+				$vs_add_to_set_link = "";
+				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+				}
+				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
 					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
@@ -99,8 +128,7 @@
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 				<hr>
-				{$vs_expanded_info}
-				<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'><i class='fa fa-suitcase'></i></a>
+				{$vs_expanded_info}{$vs_add_to_set_link}
 			</div><!-- bResultListItemExpandedInfo -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";
@@ -111,3 +139,10 @@
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		if($("#bSetsSelectMultipleButton").is(":visible")){
+			$(".bSetsSelectMultiple").show();
+		}
+	});
+</script>

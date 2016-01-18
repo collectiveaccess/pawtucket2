@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -126,10 +126,11 @@
  			
  			if (!($vs_sort 	= $this->opo_result_context->getCurrentSort())) { 
  				$va_tmp = array_keys($this->opa_sorts);
- 				$vs_sort = array_shift($va_tmp); 
+ 				$vs_sort = array_shift($va_tmp);
  			}
  			$vs_sort_direction = $this->opo_result_context->getCurrentSortDirection();
-			$vn_display_id 	= $this->opo_result_context->getCurrentBundleDisplay();
+
+			$vb_sort_has_changed = $this->opo_result_context->sortHasChanged();
  			
  			if (!$this->opn_type_restriction_id) { $this->opn_type_restriction_id = ''; }
  			$this->view->setVar('type_id', $this->opn_type_restriction_id);
@@ -140,7 +141,7 @@
  			$va_sortable_elements = ca_metadata_elements::getSortableElements($this->ops_tablename, $this->opn_type_restriction_id);
  			
  			if (!is_array($this->opa_sorts)) { $this->opa_sorts = array(); }
- 			foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
+ 			foreach($va_sortable_elements as $va_sortable_element) {
  				$this->opa_sorts[$this->ops_tablename.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'];
  			}
  			
@@ -173,9 +174,8 @@
  					
  					$this->opo_result_context->setParameter('show_type_id', null);
  				}
- 				
  				if ($this->opn_type_restriction_id) {
- 					$po_search->setTypeRestrictions(array($this->opn_type_restriction_id));
+ 					$po_search->setTypeRestrictions(array($this->opn_type_restriction_id), array('includeSubtypes' => false));
  				}
  				
  				$vb_criteria_have_changed = false;
@@ -222,10 +222,11 @@
 					$this->view->setVar('show_type_id', $vn_show_type_id);
 					$vo_result->filterResult('ca_objects.type_id', $vn_show_type_id);
 				}
- 				if($vb_is_new_search || $vb_criteria_have_changed) {
+		
+ 				if($vb_is_new_search || $vb_criteria_have_changed || $vb_sort_has_changed) {
 					$this->opo_result_context->setResultList($vo_result->getPrimaryKeyValues());
 					$this->opo_result_context->setParameter('availableVisualizationChecked', 0);
-					if ($ps_search) { $vn_page_num = 1; }
+					if ($this->opo_result_context->searchExpressionHasChanged()) { $vn_page_num = 1; }
 				}
  				$this->view->setVar('num_hits', $vo_result->numHits());
  				$this->view->setVar('num_pages', $vn_num_pages = ceil($vo_result->numHits()/$vn_items_per_page));
@@ -265,9 +266,9 @@
 			$this->view->setVar('access_values', $va_access_values);
 			$this->view->setVar('browse', $po_search);
 			
+			$t_display = $this->view->getVar('t_display');
+			if (!is_array($va_display_list = $this->view->getVar('display_list'))) { $va_display_list = array(); }
 			if ($vs_view == 'editable') {
-				$t_display = $this->view->getVar('t_display');
-				$va_display_list = $this->view->getVar('display_list');
 				
 				$va_initial_data = array();
 				$va_row_headers = array();
@@ -288,7 +289,7 @@
 	
 						$vn_item_count++;
 	
-						$va_row_headers[] = ($vn_item_count)." ".caEditorLink($this->request, caNavIcon($this->request, __CA_NAV_BUTTON_EDIT__), 'caResultsEditorEditLink', $vs_subject_table, $vn_id);
+						$va_row_headers[] = ($vn_item_count)." ".caEditorLink($this->request, caNavIcon($this->request, __CA_NAV_BUTTON_EDIT__), 'caResultsEditorEditLink', $this->ops_tablename, $vn_id);
 	
 					}
 				}
@@ -297,10 +298,27 @@
 				$this->view->setVar('rowHeaders', $va_row_headers);
 			}
 			
+			//
+			// Bottom line
+			//
+			$va_bottom_line = array();
+			$vb_bottom_line_is_set = false;
+			foreach($va_display_list as $vn_placement_id => $va_placement) {
+				if(isset($va_placement['settings']['bottom_line']) && $va_placement['settings']['bottom_line']) {
+					$va_bottom_line[$vn_placement_id] = caProcessBottomLineTemplate($this->request, $va_placement, $vo_result, array('pageStart' => ($vn_page_num - 1) * $vn_items_per_page, 'pageEnd' => (($vn_page_num - 1) * $vn_items_per_page) + $vn_items_per_page));
+					$vb_bottom_line_is_set = true;
+				} else {
+					$va_bottom_line[$vn_placement_id] = '';
+				}
+			}
+			
+			$this->view->setVar('bottom_line', $vb_bottom_line_is_set ? $va_bottom_line : null);
+			
+			
  			switch($pa_options['output_format']) {
  				# ------------------------------------
- 				case 'PDF':
- 					$this->_genPDF($vo_result, $this->request->getParameter("label_form", pString), $vs_search, $vs_search);
+ 				case 'LABELS':
+ 					$this->_genLabels($vo_result, $this->request->getParameter("label_form", pString), $vs_search, $vs_search);
  					break;
  				# ------------------------------------
  				case 'EXPORT':
@@ -314,22 +332,17 @@
 						$this->view->setVar('type_list', $t_model->getTypeList());
 					}
 					if ($this->opb_uses_hierarchy_browser) {
-						//if (sizeof($t_model->getHierarchyList()) > 0) {
-							AssetLoadManager::register('hierBrowser');
-							
-							// only for interfaces that use the hierarchy browser
-							$t_list = new ca_lists();
-							if ($vs_type_list_code = $t_model->getTypeListCode()) {
-								$this->view->setVar('num_types', $t_list->numItemsInList($vs_type_list_code));
-								$this->view->setVar('type_menu',  $t_list->getListAsHTMLFormElement($vs_type_list_code, 'type_id', array('id' => 'hierTypeList')));
-							}
-							
-							// set last browse id for hierarchy browser
-							$this->view->setVar('browse_last_id', intval($this->request->session->getVar($this->ops_tablename.'_browse_last_id')));
-						//} else {
-						//	$this->view->setVar('no_hierarchies_defined', 1);
-						//	$this->notification->addNotification(_t("No hierarchies are configured for %1", $t_model->getProperty('NAME_PLURAL')), __NOTIFICATION_TYPE_ERROR__);
-						//}
+						AssetLoadManager::register('hierBrowser');
+						
+						// only for interfaces that use the hierarchy browser
+						$t_list = new ca_lists();
+						if ($vs_type_list_code = $t_model->getTypeListCode()) {
+							$this->view->setVar('num_types', $t_list->numItemsInList($vs_type_list_code));
+							$this->view->setVar('type_menu',  $t_list->getListAsHTMLFormElement($vs_type_list_code, 'type_id', array('id' => 'hierTypeList')));
+						}
+						
+						// set last browse id for hierarchy browser
+						$this->view->setVar('browse_last_id', intval($this->request->session->getVar($this->ops_tablename.'_browse_last_id')));
 					}
 					
 					$this->opo_result_context->setAsLastFind();
@@ -392,7 +405,7 @@
 						'parameters' => array(
 							'type_id' => $va_item['item_id']
 						),
-						'is_enabled' => 1,
+						'is_enabled' => $va_item['is_enabled'],
 						'navigation' => $va_subtypes
 					);
 				}
@@ -510,4 +523,3 @@
  		}
  		# -------------------------------------------------------
  	}
-?>

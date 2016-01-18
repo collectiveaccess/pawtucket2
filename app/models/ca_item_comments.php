@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_item_comments.php : table access class for table ca_item_comments
+ * app/models/ca_item_comments.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,6 +102,14 @@ BaseModel::$s_ca_models_definitions['ca_item_comments'] = array(
 				'IS_NULL' => true, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Name'), 'DESCRIPTION' => _t('Name of commenter.'),
+				'BOUNDS_LENGTH' => array(0,255)
+		),
+		'location' => array(
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 50, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => '',
+				'LABEL' => _t('Location'), 'DESCRIPTION' => _t('Location of commenter.'),
 				'BOUNDS_LENGTH' => array(0,255)
 		),
 		'rating' => array(
@@ -275,7 +283,7 @@ class ca_item_comments extends BaseModel {
 	# Change logging
 	# ------------------------------------------------------
 	protected $UNIT_ID_FIELD = null;
-	protected $LOG_CHANGES_TO_SELF = true;
+	protected $LOG_CHANGES_TO_SELF = false;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
 
@@ -353,7 +361,7 @@ class ca_item_comments extends BaseModel {
 	 *
 	 */
 	public function getUnmoderatedComments() {
-		return $this->getComments('unmoderated');
+		return $this->getCommentsList('unmoderated');
 	}
 	# ------------------------------------------------------
 	/**
@@ -391,13 +399,13 @@ class ca_item_comments extends BaseModel {
 	}
 	# ------------------------------------------------------
 	public function getModeratedComments() {
-		return $this->getComments('moderated');
+		return $this->getCommentsList('moderated');
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
-	public function getComments($ps_mode='', $pn_limit=0) {
+	public function getCommentsList($ps_mode='', $pn_limit=0) {
 		$o_db = $this->getDb();
 		
 		$vs_where = '';
@@ -418,7 +426,7 @@ class ca_item_comments extends BaseModel {
 		$qr_res = $o_db->query("
 			SELECT cic.*, u.user_id, u.fname, u.lname, u.email user_email
 			FROM ca_item_comments cic
-			INNER JOIN ca_users AS u ON u.user_id = cic.user_id
+			LEFT JOIN ca_users AS u ON u.user_id = cic.user_id
 			{$vs_where} ORDER BY cic.created_on DESC {$vs_limit}
 		");
 		
@@ -440,12 +448,10 @@ class ca_item_comments extends BaseModel {
 				}
 			}
 			foreach(array("media1", "media2", "media3", "media4") as $vs_media_field){
-				$va_media_versions = array();
 				$va_media_versions = $qr_res->getMediaVersions($vs_media_field);
 				$va_media = array();
 				if(is_array($va_media_versions) && (sizeof($va_media_versions) > 0)){
 					foreach($va_media_versions as $vs_version){
-						$va_image_info = array();
 						$va_image_info  = $qr_res->getMediaInfo($vs_media_field, $vs_version);
 						$va_image_info["TAG"] = $qr_res->getMediaTag($vs_media_field, $vs_version);
 						$va_image_info["URL"] = $qr_res->getMediaUrl($vs_media_field, $vs_version);
@@ -460,5 +466,20 @@ class ca_item_comments extends BaseModel {
 		
 	}
 	# ------------------------------------------------------
+    /**
+     * Returns instance with item to which the comment is attached
+     *
+     * @return BaseModel instance of model for item associated with comment; null if no comment is loaded; or false if the associated item cannot be fetched.
+     */
+    public function getItem() {
+        if (!$this->getPrimaryKey()) { return null; }
+
+        if (!($t_item = $this->getAppDatamodel()->getInstanceByTableNum($this->get('table_num')))) { return false; }
+
+        if ($t_item->load($this->get('row_id'))) {
+            return $t_item;
+        }
+        return false;
+    }
+    # ------------------------------------------------------
 }
-?>

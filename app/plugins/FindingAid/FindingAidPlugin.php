@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,13 +30,17 @@
 		# -------------------------------------------------------
 		public function __construct($ps_plugin_path) {
 			$this->description = _t('Provides a finding-aid view for your Pawtucket installation');
-			
+			if (__CA_THEME_DIR__.'/conf/FindingAid.conf') {
+				$this->opo_config = Configuration::load(__CA_THEME_DIR__.'/conf/FindingAid.conf');
+			} else {
+				$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
+			}
 			$this->opo_config = Configuration::load($ps_plugin_path.'/conf/FindingAid.conf');
 			parent::__construct();
 		}
 		# -------------------------------------------------------
 		/**
-		 * Override checkStatus() to return true - the historyMenu plugin always initializes ok
+		 * Override checkStatus() to return plugin status
 		 */
 		public function checkStatus() {
 			return array(
@@ -53,6 +57,22 @@
 		static public function getRoleActionList() {
 			return array();
 		}
-		# -------------------------------------------------------
+		
+ 		/**
+ 		 *
+ 		 */
+ 		static public function hookCanHandleGetAsLinkTarget(&$pa_params) {
+ 			return (strtolower($pa_params['target']) == 'findingaid');
+ 		}
+ 		# ------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		static public function hookGetAsLink(&$pa_params) {
+ 			
+ 			$pa_params['tag'] = caNavLink($pa_params['request'], $pa_params['content'], '', '*', '*', '*', array('id' => $pa_params['id']));
+ 			
+ 			return $pa_params;
+ 		}
+ 		# ------------------------------------------------------
 	}
-?>

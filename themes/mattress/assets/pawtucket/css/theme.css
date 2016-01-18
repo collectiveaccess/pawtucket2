@@ -14,9 +14,17 @@ a {
 a:hover {
 	background: transparent;
 	color:#000;
+	text-decoration:underline;
 }
 a:active {
 	background:transparent;
+}
+h1 {
+	color: #000;
+	font-family: "ProximaNovaRegular";
+	padding: 15px 10px 0px 10px;
+	font-size: 24px;
+	line-height: 24px;
 }
 h2, #detail h2, .multiSearch h2{
 	font-size: 24px;
@@ -25,6 +33,9 @@ h2, #detail h2, .multiSearch h2{
 	padding: 0px;
 	font-family: "ProximaNovaRegular";
 	text-transform:none;
+}
+.objectsResult h2 {
+	line-height:.7em;
 }
 h3 {
 	font-family: "ProximaNovaBold";
@@ -73,7 +84,7 @@ h3 {
 	box-shadow:none;
 	border-radius:0;
 	border:0px;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular";
 }
 .navbar .container {
 	padding-left:0px;
@@ -86,7 +97,7 @@ h3 {
 	color: #fff;
 }
 .nav > li > a {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "ProximaNovaRegular", sans-serif;
 }
 .navbar-collapse {
 	padding:0px;
@@ -94,7 +105,7 @@ h3 {
 .navbar-collapse ul li {
 	margin-right: 5px;
 	font-size: 14px;
-	padding: 34px 12px 13px 12px;
+	padding: 37px 12px 4px 12px;
 }
 .navbar-collapse ul li a {
 	font-size: 17px;
@@ -124,18 +135,21 @@ h3 {
 .navbar li.dropdown.open a:hover, .navbar li.dropdown a:hover{
 	font-size: 17px;
 	font-weight: bold;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #EE3E43;
+	font-family: "ProximaNovaRegular", sans-serif;
 }
 .navbar li.dropdown ul li{
 	background-color: #48484a;
 	padding:7px;
 	border-radius: 0px;
 	opacity: .94;
+	padding-right:60px;
 }
 .navbar li.dropdown ul li a{
 	color: #fff;
 	font-weight: normal;
 	font-size: 14px;
+	line-height:1em;
 }
 .navbar li.dropdown ul li a:hover{
 	color:#fff;
@@ -161,6 +175,11 @@ h3 {
 	border-radius:0px;
 	top:65px;
 	background-color:transparent;
+}
+
+.nav > li > a:focus {
+	font-size:17px;
+	font-family: "ProximaNovaRegular";
 }
 .artYou {
 	color: #EE3E43;
@@ -211,8 +230,8 @@ h3 {
   padding-bottom: 15px;
   background-color: #eee;
   border: 1px solid #ddd;
-  background-color: rgba(86,61,124,.15);
-  border: 1px solid rgba(86,61,124,.2);
+  background-color: transparent;
+  border: 0px;
 }
 
 hr {
@@ -298,12 +317,19 @@ hr {
 	text-transform: uppercase;
 }
 .scrollingDiv {
-	width:10000px;
+	width:100000px;
+	overflow: hidden;
+}
+.scrollingDivContent{
+	display:inline-block;
 }
 .aboutText {
 	float:left;
 	width:500px;
 	padding:0px 0px 0px 15px;
+}
+.aboutText b{
+	font-family: "ProximaNovaBold";
 }
 .blockAbout {
 	line-height:1.3em;
@@ -346,9 +372,7 @@ hr {
 #detail {
 	color:#000;
 }
-#detail a {
-	text-decoration:none;
-}
+
 #detailHeader {
 	width:775px;
 }
@@ -361,10 +385,16 @@ hr {
 h2 span.artist {
 	color:#000;
 }
+.curator {
+	font-size:14px;
+	color:#000;
+	font-family: "ProximaNovaBold";
+}
 .detailSubtitle, .collectionHeading {
 	font-family: "ProximaNovaBold";
 	padding:5px 0px 5px 0px;
 	font-size:14px;
+	clear:both;
 }
 #detail .detailNavBgLeft, #detail .detailNavBgRight {
 	background-color: transparent;
@@ -398,7 +428,7 @@ h2 span.artist {
 	background-repeat:no-repeat;
 	background-position: center right;
 	padding-right:15px;
-	width: 45px;
+	width: 85px;
 }
 #detail .detailNavBgLeft .results {
 	padding:10px 0px 8px 0px;
@@ -411,8 +441,14 @@ h2 span.artist {
 #detail #cont img {
 	width: 100%;
 }
+#detail .occurrencesResult {
+	float:left;
+}
 #mediaArea {
 	width:775px;
+}
+#mediaArea img{
+	
 }
 .mediaLarge {
 	float:left;
@@ -424,7 +460,7 @@ h2 span.artist {
 }
 .mediaThumbs {
 	overflow-x:scroll;
-	padding-left:10px;
+	padding-left:10px !important;
 }
 #mediaArea .views{
 	text-transform:uppercase;
@@ -433,7 +469,7 @@ h2 span.artist {
 	margin-left:20px;
 	float:right;
 }
-.mediaThumbs .rep{
+.mediaThumbs .rep, .mediaThumbs .lessonrep, .mediaThumbs .smallrep {
 	height:80px;
 	width: 120px;
 	overflow:hidden;
@@ -446,16 +482,50 @@ h2 span.artist {
 	width:775px;
 	clear:both;
 	padding-top:30px;
+	margin-bottom:20px;
 }
 #infoArea .description {
 	float:left;
 	width:500px;
 	line-height: 1.4em;
 	font-size: 15px;
+	margin-bottom:10px;
+}
+#infoArea .artist.description {
+	clear:left;
+	margin-top:20px;
+}
+#infoArea .readArtist a{
+	clear:left;
+	color: #fff;
+	background-color: #000;
+	font-family: "ProximaNovaRegular";
+	padding: 5px;
+	width: auto;
+	display:inline-block;
+	float:left;
+}
+.readmore-js-toggle, .readmore-js-section {
+	float:left;
+	width:500px;
+}
+a.readmore-js-toggle {
+	color:#fff;
+	background-color:#000;
+	font-family: "ProximaNovaRegular";
+	padding:5px;
+	width:auto;
+	clear:both;
 }
 #detail #infoArea p {
 	line-height: 1.4em;
 	font-size: 15px;
+}
+#detail .lessonLink {
+	clear:both;
+	margin-top:10px;
+	margin-bottom:10px;
+	float:left;
 }
 #infoArea .metatitle{
 	font-size:22px;
@@ -481,6 +551,10 @@ h2 span.artist {
 #detail.entities .detailSubtitle{
 	text-transform:uppercase;
 }
+#detail.entities #eventsBlock .occurrencesResult{
+	width: 150px;
+	margin-right: 20px;
+}
 #detail.entities .mediaThumbs,  #detail.occurrences .mediaThumbs{
 	float:left;
 	margin-left:0px;
@@ -488,7 +562,7 @@ h2 span.artist {
 	overflow-x: scroll;
 	padding-left:0px;
 }
-#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep{
+#detail.entities .mediaThumbs .rep, #detail.occurrences .mediaThumbs .rep, #detail.objects .mediaThumbs .rep{
 	width:200px;
 	height:120px;
 	overflow:hidden;
@@ -512,7 +586,7 @@ h2 span.artist {
 #detail.entities .mediaThumbs .materials, #detail.occurrences .mediaThumbs .materials{
 	padding-top:5px;
 }
-#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet {
+#detail.entities .mediaThumbs .imageSet, #detail.occurrences .mediaThumbs .imageSet, #detail.objects .mediaThumbs .imageSet {
 	float:left;
 	padding-bottom:20px;
 }
@@ -538,6 +612,7 @@ h2 span.artist {
 #relatedInfo #occurrencesBlock .occurrencesResult {
 	width:320px;
 	float:left;
+	margin-bottom:30px;
 }
 #detail .collectionSet {
 	float: left;
@@ -546,20 +621,76 @@ h2 span.artist {
 }
 #detail .collectionsResult {
 	float: left;
-	width: 250px;
+	width: 200px;
 	height: 220px;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
 	margin-right: 15px;
 	line-height: 16px;
 }
+#detail .entities .collectionsResult {
+	height: auto;
+	margin-bottom: 10px;
+}
 #detail .collectionsResult a{
 	color: #000;
 	font-size: 14px;
 	text-decoration: none;
 }
+#detail .entitiesSet .collectionsResult {
+	height:auto;
+	margin-bottom:25px;	
+}
+.close.viewer {
+	opacity: 1;
+	margin-right: 40px;
+	line-height: .8;
+	float:none;
+	width: auto;
+	height: auto;
+	padding:10px;
+	border-radius:4px;
+	background-image: none;
+	margin: 0px;
+	color: #fff;
+	background-color: #000;
+	position: absolute;
+	right: 40px;
+	top: 10px;
+	text-shadow:none;
+	z-index:3200;
+}
+.close.viewer a {
+	color:#fff;
+	padding:10px;
+}
+div.caMediaOverlayControls .objectInfo {
+	width:95%;
+	font-size:14px;
+}
+div.caMediaOverlayControls {
+	opacity:1;
+	padding-bottom:20px;
+}
+div.caMediaOverlayControls a {
+	font-size:14px;
+	font-family: "ProximaNovaRegular";
+	font-weight:normal;
+	text-shadow:none;	
+}
+div.caMediaOverlayControls a {
+	font-size:16px;
+}
+div.caMediaOverlayControls:hover {
+	background-color:#000;
+}
 /* Collection List */
 
+.researchInfo {
+	font-size:18px;
+	line-height:1.2em;
+	padding-bottom:20px;
+}
 .collectionUnit {
 	margin-bottom:35px;
 }
@@ -648,17 +779,22 @@ h2 span.artist {
 	width: 770px;
 	border-top:1px solid #ccc;
 	margin-left:25px;
-	padding: 15px 0px 0px 0px;
+	padding: 15px 0px 20px 0px !important;
 	overflow-y:scroll;
 	min-height:165px;
-	height:240px;
+	height:260px;
+	margin-bottom:20px;
 	/* height:auto; */
 	clear:none;
 }
-
+#detail  .blockResults {
+	height:auto;
+}
+#detail  .blockResults.entities {
+	height:auto;
+}
 #detail .blockResults.exhibitions {
 	height:auto;
-	padding-bottom:20px;
 }
 #objectsBlock, #entitiesBlock, #occurrencesBlock, #collectionsBlock, #eventsBlock {
 	width:100%;
@@ -684,6 +820,10 @@ h2 span.artist {
 	height:auto;
 	font-family: "ProximaNovaBold";
 }
+#detail .collectionsResult .exImage{
+	height:120px;
+	width:200px;
+}
 #detail .entitiesResult {
 	padding-left:0px;
 }
@@ -703,8 +843,14 @@ h2 span.artist {
 	-webkit-box-shadow:none;
 	-moz-box-shadow:none;
 	background-color:transparent;
-	padding: 0px;
+	padding: 0px; 
 	width: 160px;
+	height: 190px;
+}
+#detail .objectsResult { 
+	height: 230px;
+}
+#detail.objects .objectsResult {
 	height: 190px;
 }
 .multiSearch .occurrencesResult {
@@ -749,9 +895,30 @@ h2 span.artist {
 	color:#000;
 	font-size:14px;
 }
+#detail.occurrences .eventSet {
+	width:400px;
+	float:left;
+	padding-right:10px;
+	padding-bottom:0px;
+	height:240px;
+}
+#detail.occurrences #occurrencesBlock .blockResults {
+	height: auto;
+}
 .exDate {
 	color: #EE3E43;
 	font-size:14px;
+}
+#detail .detailMediaToolbar {
+	background-color: #ebebeb;
+	padding: 5px 5px 4px 5px;
+	font-size: 12px;
+	position: absolute;
+	display: none;
+	bottom: 0px;
+}
+#detail .repViewerCont:hover .detailMediaToolbar{
+	display:none;
 }
 .multiSearch .collectionsResult a, .multiSearch a .entitiesResult, .multiSearch .objectsResult a, .multiSearch a .eventsResult,
 #detail a .entitiesResult, #detail .eventsResult a, #detail .objectsResult a{
@@ -766,7 +933,7 @@ h2 span.artist {
 	color:#000; 
 	background-color:transparent;
 }
-#detail .entitiesSet {
+#detail .entitiesSet, #detail .collectionsSet {
 	float:left; 
 	width:250px;
 }
@@ -793,16 +960,23 @@ h2 span.artist {
 	height:auto;
 	overflow: hidden;
 	font-family: "ProximaNovaBold";
-	margin-right: 15px;
+	margin-right: 0px;
+	padding-right:10px;
 	line-height: 16px;
 	margin-bottom:15px;
 }
 #detail.occurrences .artworkResult {
 	width:250px;
 }
-#detail #entitiesBlock .entitySet {
+#detail #entitiesBlock .entitySet, #detail #collectionsBlock .entitySet {
 	width:250px;
 	float:left;
+	margin-bottom:15px;
+}
+.siteResult {
+	font-family: "ProximaNovaBold";
+	display:block;
+	color:#000;
 }
 /* Browse Page */
 
@@ -813,8 +987,11 @@ h2 span.artist {
 	height:auto;
 	min-height: 250px;
 }
+#browseResults .blockTitle a{
+	color:#fff;
+}
 #browseHeader {
-	height:20px;
+	height:40px;
 	width:100%;
 	clear:both;
 }
@@ -836,6 +1013,32 @@ h2 span.artist {
 	padding-top:20px;
 	text-transform:uppercase;
 }
+#bMorePanel {
+	padding-bottom:20px;
+	min-width: 250px;
+}
+#bMorePanel #bLetterBar {
+	margin-right:10px;
+	display:none;
+}
+#bMorePanel #bScrollList {
+	padding-bottom:50px;
+	color:#000;
+}
+#bMorePanel #bScrollList strong {
+	display:none;
+}
+#bMorePanel #bScrollList a {
+	line-height: 1.2em;
+	color: #454545;
+	font-size:12px;
+	font-family: "ProximaNovaRegular";
+}
+@media (min-width: 992px) {
+	#bMorePanel #bScrollList {
+		width: 250px;
+	}
+}
 #browseResults .resultCount {
 	font-size:14px;
 }
@@ -856,6 +1059,9 @@ h2 span.artist {
 	text-decoration: underline;
 	background-image:none;
 }
+#bRefine a:hover {
+	text-decoration:underline;
+}
 #bRefine div {
 	margin-bottom: 0px;
 }
@@ -868,6 +1074,13 @@ h2 span.artist {
 .bResultItemCol {
 	float:left;
 	height:255px;
+}
+#browseResults .bResultItem{
+	padding:0px;
+	margin-right:10px;
+}
+#browseResults .bResultItem:hover{
+	padding:0px;
 }
 .bResultItem {
 	-webkit-box-shadow: none;
@@ -883,13 +1096,14 @@ h2 span.artist {
 }
 .bResultItem .bResultItemImg {
 	height: 180px;
-	min-width: 150px;
+	width:180px;
+	overflow:hidden;
 	background-color: #f7f7f7;
 }
-#browseResults .artistName a{
-	text-transform:uppercase;
-	color:#999;
+.bResultItem:hover .bResultItemImg {
+	height:180px; 
 }
+
 .bResultItem:hover{
 	padding:10px;
 	margin:0px 0px 5px 0px;
@@ -897,12 +1111,15 @@ h2 span.artist {
 	font-size:12px;
 	color:#000;
 }
+.bResultItem .bResultItemText {
+	width:180px;
+}
 span.criteria {
 	background-color:#000;
 	padding:5px;
 	color:#fff;
 	text-transform:uppercase;
-	margin-left:10px;
+	margin-left:0px;
 }
 .browseRemoveFacet {
 	margin-left: 5px;
@@ -943,8 +1160,18 @@ span.criteria {
 	float: right;
 	font-size: 18px;
 	padding-bottom: 0px;
-	clear: both;
+	clear: right;
 	text-align: right; 
+}
+#browseHeader .alpha {
+	float:left;
+	font-size:15px;
+	font-family: "ProximaNovaBold";	
+	padding-bottom:15px;
+	text-transform:uppercase;
+}
+#browseHeader .alpha a{
+	color:red;
 }
 .btn-group .sortBy, .sortMenu .sortBy{
 	float:left;
@@ -983,6 +1210,22 @@ span.criteria {
 	margin-right: 10px;
 	font-size: 13px; 
 }
+.toTop {
+	position: fixed;
+	bottom:0;
+	right:0;
+	width:200px;
+	height:35px;
+	text-align:center;
+	padding:8px;
+	background-color:#000;
+	color:#fff;
+	z-index:10000;
+	display:none;
+}
+.toTop a {
+	color:#fff;
+}
 /* List View */
 
 
@@ -997,6 +1240,7 @@ span.criteria {
 	margin:0px;
 	height:auto;
 	color:#000;
+	box-shadow:none;
 }
 .bResultListItemContent {
 	height:auto;
@@ -1006,9 +1250,11 @@ span.criteria {
 	width: 260px;
 	float: left;
 	margin-top:20px;
+	/*height:25px;*/
 }
 .bResultListItem .bResultListItemText {
 	padding-right: 20px;
+	height:45px;
 }
 .bResultListItem .bResultListItemText a {
 	font-family: "ProximaNovaRegular";
@@ -1060,7 +1306,7 @@ span.criteria {
 }
 .lessonText {
 	float:right;
-	width:50%;
+	width:45%;
 	padding:10px 0px 10px 0px;
 }
 .lessonText h3{
@@ -1221,4 +1467,154 @@ a.downloadButton{
 	width: 60px;
 	padding: 7px;
 }
+
+/* Login Form */
+
+.detailTool {
+	padding:5px;
+}
+.detailTool .glyphicon{
+	padding-right:5px;
+}
+#LoginForm h1, #caFormOverlay h1{
+	font-size:20px;
+	padding-bottom:15px;
+}
+#LoginForm .col-sm-7, #caFormOverlay .col-sm-7{
+	padding-top:0px;
+}
+#LoginForm .form-control, #caFormOverlay .form-control{
+	border: 1px solid #ccc;
+	border-radius:4px;
+	height:2.5em;
+	background-color:#fff;
+}
+#LoginForm .btn-default, #caFormOverlay .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#caFormOverlay .form-control[name="comment"] {
+	height:6em;
+}
+#detailComments .btn-default{
+	background-image: none;
+	background-color:#EE3E43;
+	color:#fff;
+	text-transform:uppercase;
+	text-shadow: none;
+	border:0px;
+	box-shadow: none;
+}
+#tags {
+	margin:10px 0px 10px 0px;
+}
+
+/* Contribute Form */
+
+#contentArea.contribute {
+	margin-left: 10px;
+	background-color: #e6e7e9;
+	border-top: solid #fff 35px;
+	padding-bottom: 40px;
+	min-height: 600px;
+	margin-bottom: 20px;
+	float:none;
+}
+.contributeForm {
+	width: 595px;
+	float: right;
+}
+.contributeForm input, .contributeForm textarea {
+	font-size:14px;
+}
+.contributeForm textarea {
+	-webkit-appearance: textfield;
+	padding: 1px;
+	background-color: white;
+	border: 2px inset #f;
+	border-image-source: initial;
+	border-image-slice: initial;
+	border-image-width: initial;
+	border-image-outset: initial;
+	border-image-repeat: initial;
+	-webkit-rtl-ordering: logical;
+	-webkit-user-select: text;
+	cursor: auto;
+}
+.contributeForm h1{
+	padding-left:0px;
+	color:#EE3E43;
+	text-transform:none;
+}
+.caContributeFormReset, .caContributeFormSubmit {
+	background-color:#EE3E43;
+	color:#fff;
+	padding:5px;
+	border-radius:4px;
+	text-transform:uppercase;
+}
+.caContributeFormReset {
+	margin-right:100px;
+}
+.contributeForm .searchFormLineModeElementSubLabel {
+	font-weight:bold;
+	font-size:10px;
+}
+.contributeForm .contributeField {
+	padding:10px 0px 10px 0px;
+}
+.contributeForm .contributeField input[type="file"]{
+	padding:5px 0px 10px 0px;
+}
+.contributeForm .contributeField .title{
+	font-weight:bold;
+	font-size:13px;
+	padding-bottom:3px;
+	display:inline-block;
+}
+
+div.caMediaOverlayControls .repNav {
+	float:right;
+	text-align:right;
+	width:auto;
+	font-size:16px;
+	top:10px;
+	position:absolute;
+	right:10px;
+}
+
+#welcomeMessage {
+	background-color:black;
+	color:#fff;
+	font-size:18px;
+	position:absolute;
+	top:200px;
+	left:40%;
+	width:400px;
+	padding:20px;
+	line-height:1.4em;
+	height: 152px;
+	display:none;
+}
+#welcomeMessage a{
+	color:red;
+}
+#welcomeMessage .ok a{
+	cursor: pointer;
+	border-radius:4px;
+	padding:4px 10px 3px 10px;
+	background-color:red;
+	color:white;
+	display:inline-block;
+	margin-top:5px;
+	margin-left:310px;
+}
+
+
+
 

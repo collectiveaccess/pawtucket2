@@ -141,8 +141,8 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 	public function register() {
 		$this->opo_config = Configuration::load();
 		
-		$this->opo_search_config = Configuration::load($this->opo_config->get('search_config'));
-		$this->opo_external_app_config = Configuration::load($this->opo_config->get('external_applications'));
+		$this->opo_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__.'/external_applications.conf');
 		
 		$this->ops_ghostscript_path = $this->opo_external_app_config->get('ghostscript_app');
 		$this->ops_pdftotext_path = $this->opo_external_app_config->get('pdftotext_app');
@@ -203,8 +203,8 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 				include_once(__CA_LIB_DIR__."/core/Zend/Pdf.php");
 				$o_pdf = Zend_Pdf::load($ps_filepath);
 				if (sizeof($o_pdf->pages) == 0) { return ''; }
-			} catch(Exception $e){ 
-				return null;
+			} catch(Exception $e){
+				return '';
 			}
 			$o_page = $o_pdf->pages[0];
 			$vn_width = $o_page->getWidth();
@@ -381,8 +381,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		
 		
 		// Try to extract positions of text using PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html)
-		if (caPDFMinerInstalled($this->ops_pdfminer_path)) { 
-		
+		if (caPDFMinerInstalled($this->ops_pdfminer_path)) {
 			
 			// Try to extract text
 			$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
@@ -603,7 +602,8 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		} else {
 			$vb_use_default_icon = true;
 			if (caMediaPluginGhostscriptInstalled($this->ops_ghostscript_path)) {
-				$vn_scaling_correction = $this->get("scaling_correction");
+				$vn_scaling_correction = (float)$this->get("scaling_correction");
+				if ($vn_scaling_correction == 1) { $vn_scaling_correction = 0; }
 				$vs_res = "72x72";
 				if (ceil($this->get("resolution")) > 0) {
 					$vn_res= $this->get("resolution");
@@ -625,19 +625,17 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 				$vb_processed_preview = false;
 				switch($ps_mimetype) {
 					case 'image/jpeg':
-						exec($this->ops_ghostscript_path." -dNOPAUSE -dBATCH -sDEVICE=".($vn_scaling_correction ? "tiff24nc" : "jpeg")." $vs_antialiasing -dJPEGQ=".$vn_quality." -dFirstPage=".$vn_page." -dLastPage=".$vn_page." -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." ".caEscapeShellArg($this->handle["filepath"]), $va_output, $vn_return);
-						
-						if ($vn_return == 0) {
-							$vb_processed_preview = true;
-						}
+						exec($this->ops_ghostscript_path." -dNOPAUSE -dBATCH -sDEVICE=".($vn_scaling_correction ? "tiff24nc" : "jpeg")." {$vs_antialiasing} -dJPEGQ=".$vn_quality." -dFirstPage=".$vn_page." -dLastPage=".$vn_page." -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." ".caEscapeShellArg($this->handle["filepath"]), $va_output, $vn_return);
+						if ($vn_return == 0) { $vb_processed_preview = true; }
+						break;
+					case 'image/png':
+						exec($this->ops_ghostscript_path." -dNOPAUSE -dBATCH -sDEVICE=pngalpha {$vs_antialiasing} -dFirstPage=".$vn_page." -dLastPage=".$vn_page." -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." ".caEscapeShellArg($this->handle["filepath"]), $va_output, $vn_return);
+						if ($vn_return == 0) { $vb_processed_preview = true; }
 						break;
 					case 'image/tiff':
-					case 'image/png':
 					case 'image/gif':
-						exec($this->ops_ghostscript_path." -dNOPAUSE -dBATCH -sDEVICE=tiff24nc $vs_antialiasing -dFirstPage=".$vn_page." -dLastPage=".$vn_page." -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." ".caEscapeShellArg($this->handle["filepath"]), $va_output, $vn_return);
-						if ($vn_return == 0) {
-							$vb_processed_preview = true;
-						}
+						exec($this->ops_ghostscript_path." -dNOPAUSE -dBATCH -sDEVICE=tiff24nc {$vs_antialiasing} -dFirstPage=".$vn_page." -dLastPage=".$vn_page." -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." ".caEscapeShellArg($this->handle["filepath"]), $va_output, $vn_return);
+						if ($vn_return == 0) { $vb_processed_preview = true; }
 						break;
 					default:
 						//die("Unsupported output type in PDF plug-in: $ps_mimetype [this shouldn't happen]");
@@ -669,7 +667,6 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 								$vn_w = ($o_media->get('width') * $vn_scaling_correction);
 								$vn_h = ($o_media->get('height') * $vn_scaling_correction);
 								
-								
 								if (($vn_w > $vn_h) || ($this->get("target_height") == 0)) {
 									$vn_r = $this->get("target_width")/$vn_w;
 									$vn_w = $this->get("target_width");
@@ -687,6 +684,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 									
 								$o_media->transform('SCALE', array('mode' => 'bounding_box', 'antialiasing' => 0.5, 'width' => $vn_w, 'height' => $vn_h));
 								$o_media->transform('UNSHARPEN_MASK', array('sigma' => 0.5, 'radius' => 1, 'threshold' => 1.0, 'amount' => 0.1));
+								$o_media->set('quality',$vn_quality);
 								
 								$o_media->write($ps_filepath, $ps_mimetype, array());
 								if (!$o_media->numErrors()) {

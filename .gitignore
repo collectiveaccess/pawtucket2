@@ -1,3 +1,14 @@
 /nbproject/*
 app/tmp/*
 setup.php
+/media/*
+/media
+.DS_Store
+.settings
+.project
+.idea/
+*.un~
+*.sublime-*
+*.swp
+app/lib/core/Parsers/htmlpurifier/standalone/HTMLPurifier/DefinitionCache/Serializer/*
+app/lib/core/Parsers/dompdf/lib/fonts/*fm.php

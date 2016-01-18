@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,10 +41,17 @@
 				<li><a href="#">Link 2</a></li>
 				<li><a href="#">Link 3</a></li>
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
 		</div><!-- end footer -->
-
-	</div><!-- end pageArea --></div><!-- end container -->
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
+	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

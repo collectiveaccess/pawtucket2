@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -67,7 +67,7 @@
  			foreach($this->opa_search_blocks as $vs_block => $va_block_info) {
  				$va_tables[$va_block_info['table']] = 1;
  				$this->opa_result_contexts[$vs_block] = new ResultContext($po_request, $va_block_info['table'], $this->ops_find_type, $vs_block);
- 				$this->opa_result_contexts[$vs_block]->setAsLastFind();
+ 				$this->opa_result_contexts[$vs_block]->setAsLastFind(false);
  			}
  			
  			// Create generic contexts for each table in multisearch (no specific block); used to house search history and overall counts
@@ -94,11 +94,14 @@
  			$o_first_result_context = array_shift(array_values($this->opa_result_contexts));
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
+ 			$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
  			
  			$this->view->setVar('search', $vs_search);
+ 			$this->view->setVar('searchForDisplay', $vs_search_display);
+ 			$this->view->setVar("config", $this->config);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
- 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts)));
+ 			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts, 'matchOnStem' => (bool)$this->config->get('matchOnStem'))));
  			
  			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString))) { 
  				if (!isset($va_results[$vs_block]['html'])) {

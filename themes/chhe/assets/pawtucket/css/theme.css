@@ -359,7 +359,10 @@ color:#ccc;}
 	box-shadow:         4px 4px 6px 0px #000;
 	border:5px solid #FFF;
 }
-#detailMediaToolbar{
+#detailMediaToolbar, .detailMediaToolbar{
+	display:none;
+}
+.detail .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
 .detail {font-size:15px;}
@@ -454,6 +457,11 @@ color:#ccc;}
 .mainbody .commentsarea p{
 	font-size:15px;
 }
+
+.commentdisplay {
+	font-weight: bold;
+}
+
 .detail H3 {
     color: #fff;
     margin:0px 0px 15px 0px;
@@ -541,6 +549,11 @@ background-position:2px center; }
 .submenu ul li a{color:#4d4d4d; }
 
 .submenu ul li a:hover{color:#9f6950;}
+
+ul.tocSubSubMenu {
+	margin-left:25px;
+	display:none;
+}
 
 .sectionpreview {font-family: 'colaborate-thinregular'; color:#9f6950; font-size:16px;}
 

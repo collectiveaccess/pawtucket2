@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2013 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,6 +28,7 @@
 
 $t_rep 						= $this->getVar('t_object_representation');
 $vn_representation_id 		= $t_rep->getPrimaryKey();
+$vn_item_id					= $this->getVar('item_id');
 $t_object 					= $this->getVar('t_object');
 $va_display_options		 	= $this->getVar('display_options');
 $vs_display_type		 	= $this->getVar('display_type');
@@ -68,16 +69,16 @@ if($vs_display_type == 'media_overlay'){
 ?>
 	<!-- Controls - only for media overlay -->
 	<div class="caMediaOverlayControls">
-		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close">&nbsp;&nbsp;&nbsp;</a></div>
+		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close"><i class="fa fa-times"></i></a></div>
 <?php
-			if(caObjectsDisplayDownloadLink($this->request)){
+			if(caObjectsDisplayDownloadLink($this->request) && $this->request->user->canDoAction('can_download_media')){
 ?>
 				<div class='download'>
 <?php 
 						# -- get version to download configured in media_display.conf
 						$va_download_display_info = caGetMediaDisplayInfo('download', $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 						$vs_download_version = $va_download_display_info['display_version'];
-						print caNavLink($this->request, caGetThemeGraphic($this->request, 'buttons/downloadWhite.png', array('title' => _t("Download Media"))), '', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
+						print caNavLink($this->request, "<i class=\"fa fa-download\"></i>", '', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $t_rep->getPrimaryKey(), "object_id" => $t_object->getPrimaryKey(), "download" => 1, "version" => $vs_download_version));
 ?>				
 				</div>
 <?php
@@ -110,10 +111,20 @@ if($vs_display_type == 'media_overlay'){
 <?php
 }
 ?>
-	<div id="<?php print ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContent' : 'caMediaDisplayContent'; ?>">
+	<div <?php print ($vs_display_type == 'media_overlay') ? 'id="caMediaOverlayContent"' : ''; ?>>
 <?php
 	// return standard tag
 	if (!is_array($va_display_options)) { $va_display_options = array(); }
+	
+	$va_display_options['help_load_url'] = caNavUrl($this->request, '', 'Detail', 'ViewerHelp');
+	if ($this->request->isLoggedIn()) {
+		$va_display_options['annotation_load_url'] = caNavUrl($this->request, '', 'Detail', 'GetAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'item_id' => $vn_item_id));
+		$va_display_options['annotation_save_url'] = caNavUrl($this->request, '', 'Detail', 'SaveAnnotations', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'item_id' => $vn_item_id));
+		$va_display_options['read_only'] = false;
+		$va_display_options['scale'] = $t_rep->getMediaScale('media');
+	} else {
+		$va_display_options['read_only'] = true;
+	}
 	$vs_tag = $t_rep->getMediaTag('media', $vs_show_version, array_merge($va_display_options, array(
 		'id' => ($vs_display_type == 'media_overlay') ? 'caMediaOverlayContentMedia' : 'caMediaDisplayContentMedia', 
 		'viewer_base_url' => $this->request->getBaseUrlPath()
@@ -122,7 +133,9 @@ if($vs_display_type == 'media_overlay'){
 	if($va_display_options['no_overlay'] || $vs_display_type == 'media_overlay'){
 		print $vs_tag;
 	}else{
-		print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey()))."\"); return false;' >".$vs_tag."</a>";
+		if ($t_object && $t_rep) {
+			print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->getPrimaryKey(), 'representation_id' => $t_rep->getPrimaryKey(), 'overlay' => 1))."\"); return false;' >".$vs_tag."</a>";
+		}
 	}
 ?>
 	</div><!-- end caMediaOverlayContent/ caMediaDisplayContent -->

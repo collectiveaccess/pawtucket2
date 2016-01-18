@@ -13,9 +13,9 @@
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
 ?>
-			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form">
+			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form" method="POST">
 				<div class="form-group">
-					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Username"); ?></label>
+					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("E-mail address"); ?></label>
 					<div class="col-sm-7">
 						<input type="text" class="form-control" id="username" name="username">
 					</div><!-- end col-sm-7 -->
@@ -35,12 +35,20 @@
 					<div class="col-sm-offset-<?php print $vn_label_col; ?> col-sm-7">
 <?php
 				if($this->request->isAjax()){
+				
+					if (!$this->request->config->get('dont_allow_registration_and_login')) {
 ?>
 					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
-					<br/><a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
+					<br/>
+<?php
+					}
+?>
+					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
 <?php
 				}else{
-					print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+					if (!$this->request->config->get('dont_allow_registration_and_login')) {
+						print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+					}
 					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>

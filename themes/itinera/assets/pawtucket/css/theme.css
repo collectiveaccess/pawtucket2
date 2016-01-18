@@ -1,0 +1,182 @@
+/* Itinera */
+p.frontText {
+	font-family: latoregular;
+}
+
+a.frontButton {
+	font-size: 20px;
+	font-family: latoregular;
+	text-decoration: none;
+	color: #6e6e6e;
+}
+img.frontButton {
+	width: 21px;
+	height: 21px;
+	vertical-align: text-bottom;
+	margin: 0 5px 0 20px;
+}
+
+li.frontSlide {
+	margin: 0 10px 0 0;
+}
+
+div.frontSlide{
+	width: 800px;
+	background-color: #DEF0E7;
+	padding: 10px;
+}
+
+div.frontSlide .frontSlideCaption{
+	padding:15px;
+	margin: 0 0 0 10px;
+	
+	font-family: latoregular;
+	color: #6e6e6e;
+
+}
+
+.frontSlide .frontSlideCaption a{
+	color: #6e6e6e;
+}
+
+div.frontSlide .frontSlideImage {
+	float: left;
+	margin: 0 15px 0 0;
+}
+
+div.frontSlide .frontSlideCaption .frontSlideArtistName {
+	font-size: 20px;	
+}
+
+div.frontSlide .frontSlideCaption .frontSlideArtistRoles {
+	font-size: 15px;
+}
+
+div.frontSlide .frontSlideImageSource {
+	font-size: 10px;
+	font-style: italic;
+	text-decoration: none;
+	color: #6e6e6e;
+}
+
+div.frontSlide .frontSlideButtons {
+	margin: 40px 0 0 0;
+}
+
+/* --------- */
+/* Traveler list */
+
+
+div#travelerList {
+	width: 100%;
+	position: relative;
+	min-height: 30px;
+	max-height: 300px;
+	overflow-y: auto;
+	background-color: #EDF7F1;
+}
+
+#travelerListToggle {	
+	position: absolute;
+	top: 4px;
+	right: 10px;
+	font-family: latoregular;
+	font-size: 18px;
+}
+
+#travelerListContent {
+	display: none;
+	padding: 0 5px 10px 5px;
+	
+}
+
+div.travelerListLetterBar {
+	width: 100%;
+	text-align: center;
+	font-family: Helvetica, Arial;
+	font-size: 20px;
+	margin: 5px 0 10px 0;
+}
+
+div.travelerListLetterBar .availableLetter {
+	color: #000;
+	margin: 0 10px 0 0;
+}
+
+div.travelerListLetterBar .disabledLetter {
+	color: #aaa;
+	margin: 0 10px 0 0;
+}
+
+div.travelerListLetterBar .activeLetter {
+	color: #cc0000;
+	margin: 0 10px 0 0;
+}
+div#travelerContent {
+	border: 1px solid #eee;
+	height: 700px;
+}
+
+/* Traveler card */
+div#travelerCardContainer {
+	background-color: #DEF0E7;
+	padding: 10px;
+	height: 700px;
+	overflow-y: auto;
+}
+
+div.travelerCardContent {
+	background-color: #DEF0E7;
+}
+
+div.travelerCardContent .travelerCardCaption{
+	padding:0px;
+	margin: 0 0 0 5px;
+	
+	font-family: latoregular;
+	color: #6e6e6e;
+}
+
+.travelerCardContent .travelerCardCaption a{
+	color: #6e6e6e;
+}
+
+div.travelerCardContent .travelerCardImage {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+}
+
+div.travelerCardContent .travelerCardCaption .travelerCardArtistName {
+	font-size: 20px;	
+}
+
+div.travelerCardContent .travelerCardCaption .travelerCardArtistRoles {
+	font-size: 15px;
+}
+
+div.travelerCardContent .travelerCardImageSource {
+	font-size: 10px;
+	font-style: italic;
+	text-decoration: none;
+	color: #6e6e6e;
+}
+
+
+/* D3-based entity relationship diagram */
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}

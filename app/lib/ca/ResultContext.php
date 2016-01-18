@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2013 Whirl-i-Gig
+ * Copyright 2010-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,6 +42,8 @@
 		private $ops_find_subtype;
 		private $opa_context = null;
 		private $opb_is_new_search = false;
+		private $opb_search_expression_has_changed = null;
+		private $opb_sort_has_changed = false;
 		# ------------------------------------------------------------------
 		/**
 		 * To create a result context you pass the table and type of the current find; the ResultContext will be loaded
@@ -84,27 +86,103 @@
 		public function getSearchExpression($pb_from_context_only=false) {
 			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
 				// search specified by request parameter
-				$this->setContextValue('expression', $ps_search);
-				$this->opb_is_new_search = true;
+				if ($ps_search != $this->getContextValue('expression')) {
+					$this->setContextValue('expression', $ps_search);
+					$this->opb_is_new_search = true;
+					$this->opb_search_expression_has_changed = true;
+				} else {
+					if (is_null($this->opb_search_expression_has_changed)) { $this->opb_search_expression_has_changed = false; }
+				}
 				return $ps_search;
 			} else {
 				// get search expression from context
 				if ($va_context = $this->getContext()) {
+					$this->opb_search_expression_has_changed = false;
 					return $va_context['expression'];
 				}
 			}
-			
 			return null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Determines if the search expression is changing during this request
+		 *
+		 * @param $pb_from_context_only boolean Optional; if true then search expression is returned from context only and any search expression request parameter is ignored. Default is false.
+		 * @return bool True if expression is changing
+		 */
+		public function searchExpressionHasChanged($pb_from_context_only=false) {
+			if (!is_null($this->opb_search_expression_has_changed)) { return $this->opb_search_expression_has_changed; }
+			 
+			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
+				// search specified by request parameter
+				if ($ps_search != $this->getContextValue('expression')) {
+					return $this->opb_search_expression_has_changed = true;
+				}
+			}
+			return $this->opb_search_expression_has_changed = false;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Determines if the sort direction is changing during this request
+		 *
+		 * @return bool True if sort is changing
+		 */
+		public function sortHasChanged() {
+			return $this->opb_sort_has_changed;
 		}
 		# ------------------------------------------------------------------
 		/**
 		 * Sets the current search expression for the context.
 		 *
-		 * @param $ps_expression - search expression text
-		 * @return (string) - returns the expression as set
+		 * @param string $ps_expression Search expression text
+		 * @param string $ps_expression Alternate text to use when displaying search to user. Typically used in "advanced" searches where access points and booleans may prove unattractive or hard to read
+		 * @return bool
 		 */
-		public function setSearchExpression($ps_expression) {
-			return $this->setContextValue('expression', $ps_expression);
+		public function setSearchExpression($ps_expression, $ps_display_expression=null) {
+			$this->setContextValue('expression', $ps_expression);
+			$this->setSearchExpressionForDisplay($ps_display_expression ? $ps_display_expression : $ps_expression);
+			
+			return true;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 *
+		 *
+		 * @param $ps_expression - search expression display text
+		 * @return bool
+		 */
+		public function setSearchExpressionForDisplay($ps_display_expression) {
+			$o_semi = $this->getSemiPersistentStorageInstance();
+			$va_expressions_for_display = $o_semi->getVar('expressions_for_display');
+			
+			if (!$va_expressions_for_display[$vs_current_expression = $this->getSearchExpression(true)] || ($vs_current_expression != $ps_display_expression)) {
+				$va_expressions_for_display[$vs_current_expression] = $ps_display_expression;
+			}
+			$o_semi->setVar('expressions_for_display', $va_expressions_for_display);
+			
+			return true;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 *
+		 *
+		 * @return string
+		 */
+		public function getSearchExpressionForDisplay($ps_search_expression=null) {
+			$o_semi = $this->getSemiPersistentStorageInstance();
+			$va_expressions_for_display = $o_semi->getVar('expressions_for_display');
+			//$va_expressions_for_display = array_merge($va_expressions_for_display, $this->getContextValue('expressions_for_display'));
+			
+			if($ps_search_expression && isset($va_expressions_for_display[$ps_search_expression])) { return $va_expressions_for_display[$ps_search_expression]; }	// return display expression for specified search expression if defined
+			if ($ps_search_expression) { return $ps_search_expression; }				// return specified search expression if passed and no display expression is available
+			
+			// Try to return display expression for current search expression if no expression has been passed as a parameter
+			if ($vs_display_expression = $va_expressions_for_display[$vs_original_expression = $this->getSearchExpression(true)]) { 
+				return $vs_display_expression; 
+			}
+			
+			// Return current search expression if no display expression is defined
+			return $vs_original_expression;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -260,6 +338,7 @@
 					return $va_context['sort'] ? $va_context['sort'] : null;
 				}
 			} else {
+				$this->opb_sort_has_changed = true;
 				$this->setContextValue('sort', $ps_sort);
 				return $ps_sort;
 			}
@@ -277,6 +356,41 @@
 		 */
 		public function setCurrentSort($ps_sort) {
 			return $this->setContextValue('sort', $ps_sort);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns the current secondary sort order for the context. This is a bit of text that indicates
+		 * which field (or fields) to use for sorting when displaying the result set. The returned 
+		 * value will be either  the value set for the current context, the value set via the 'sort'
+		 * parameter in the current request or null if no value has been set. The value of the
+		 * request parameter 'sort' takes precedence over any existing context value and will be 
+		 * set as the current context value when present.
+		 *
+		 * @return string - the field (or fields in a comma separated list) to refine the primary sort by
+		 */
+		public function getCurrentSecondarySort() {
+			if (!($ps_secondary_sort = $this->opo_request->getParameter('secondarySort', pString))) {
+ 				if ($va_context = $this->getContext()) {
+					return $va_context['secondarySort'] ? $va_context['secondarySort'] : null;
+				}
+			} else {
+				$this->setContextValue('secondarySort', $ps_secondary_sort);
+				return $ps_secondary_sort;
+			}
+			return null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Sets the secondary sort order to use for this context. While you can
+		 * call this directly, usually the view is set by getCurrentSecondarySort()
+		 * using a value passed in the request.
+		 *
+		 * @param $ps_secondary_sort - the field (in table.field format) for the desired secondary sort
+		 * 
+		 * @return string - sort as set
+		 */
+		public function setCurrentSecondarySort($ps_secondary_sort) {
+			return $this->setContextValue('secondarySort', $ps_secondary_sort);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -445,25 +559,62 @@
 		 *
 		 * @return boolean - always return true
 		 */
-		public function setAsLastFind() {
+		public function setAsLastFind($pb_set_action=true) {
 			$o_storage = $this->getPersistentStorageInstance();
-			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type, array('volatile' => true));	
 			
+			$vs_action = null;
+			if ($pb_set_action) {
+				if ($vs_action = $this->opo_request->getAction()) {
+					if ($vs_action_extra = $this->opo_request->getActionExtra()) {
+						$vs_action .= '/'.$vs_action_extra;
+					}
+				}
+			}
+			
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name, $this->ops_find_type.($this->ops_find_subtype ? '/'.$this->ops_find_subtype : ''), array('volatile' => true));	
+			$o_storage->setVar('result_last_context_'.$this->ops_table_name.'_action', $pb_set_action ? $vs_action : null);
 			return true;
 		}
 		# ------------------------------------------------------------------
 		/**
-		 * Return type of last performed find operation for the specified table, as set with setAsLastFind()
+		 * Return type of last performed find operation for the specified table, as set with setAsLastFind(). 
+		 * Type and subtype are returned as a string, joined together with a "/" character, unless the noSubtypes
+		 * option is set, in which case only the type is returned.
 		 *
 		 * @param $po_request - the current request
 		 * @param $pm_table_name_or_num - the name or number of the table to get the last find operation for
+		 * @param array $pa_options Options include:
+		 *		noSubtype = only return type and omit subtype if present. [Default=no]
+		 *
 		 * @return string - the find type of the last find operation for this table
 		 */
-		static public function getLastFind($po_request, $pm_table_name_or_num) {
+		static public function getLastFind($po_request, $pm_table_name_or_num, $pa_options=null) {
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			$o_storage = ResultContext::_persistentStorageInstance($po_request);
 			
+			if (caGetOption('noSubtype', $pa_options, false)) {
+				$vs_find_tag = $o_storage->getVar('result_last_context_'.$vs_table_name);
+				
+				$va_find_tag = explode('/', $vs_find_tag);
+				return $va_find_tag[0];
+			} 
 			return $o_storage->getVar('result_last_context_'.$vs_table_name);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Return the result content for the last performed find operation for the specified table, as set with setAsLastFind()
+		 *
+		 * @param $po_request - the current request
+		 * @param $pm_table_name_or_num - the name or number of the table to get the last find operation for
+		 * @return ResultContext - result context from the last find operation for this table
+		 */
+		static public function getResultContextForLastFind($po_request, $pm_table_name_or_num) {
+			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			
+			$va_tmp = explode('/', $o_storage->getVar('result_last_context_'.$vs_table_name));
+		
+			return new ResultContext($po_request, $vs_table_name, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -478,13 +629,19 @@
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
+			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
-			$va_nav = $va_find_nav[$vs_last_find];
+			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params);
+			$o_storage = ResultContext::_persistentStorageInstance($po_request);
+			if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
+				$vs_action = $va_nav['action'];
+			}
+			
+			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -502,19 +659,30 @@
 			if (!($vs_table_name = ResultContext::getTableName($pm_table_name_or_num))) { return null; }
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
+			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
-			$va_nav = $va_find_nav[$vs_last_find];
+			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
-			$vs_controller_class = $va_nav['controller']."Controller";
-			$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
+			if (__CA_APP_TYPE__ == 'PAWTUCKET') {
+				// Pawtucket-specific navigation rewriting
+				if (!require_once(__CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")) { return false; }
+				$vs_controller_class = $va_nav['controller']."Controller";
+				$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
+			
+				$o_storage = ResultContext::_persistentStorageInstance($po_request);
+				if (!($vs_action = $o_storage->getVar('result_last_context_'.$vs_table_name.'_action'))) {
+					$vs_action = $va_nav['action'];
+				}
+			} else {
+				$vs_action = $va_nav['action'];
+			}
 			
 			$va_params = array();
 			if (is_array($va_nav['params'])) {
-				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $vs_last_find);
+				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
 				foreach ($va_nav['params'] as $vs_param) {
 					if (!($vs_param = trim($vs_param))) { continue; }
 					if(!trim($va_params[$vs_param] = $po_request->getParameter($vs_param, pString))) {
@@ -527,7 +695,7 @@
 			}
 			
 			
-			return caNavLink($po_request, $ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($va_nav['action']), $pa_params, $pa_attributes);
+			return caNavLink($po_request, $ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params, $pa_attributes);
 		}
 		# ------------------------------------------------------------------
 		# Find history
@@ -536,17 +704,36 @@
 		 * Return the search history for the current context as an array. Each element of the returned
 		 * array is an associative array with two keys:
 		 * 	'hits' is set to the number of items the search found
-		 *	'display' is the search expression used
+		 *	'search' is the search expression used
+		 *	'display' is the user-presentable version of the search expression 
 		 *
 		 * getSearchHistory() will return an empty array if so search history exists.
 		 *
 		 * @return array - the search history as an indexed array.
 		 */ 
-		public function getSearchHistory() {
-			if ($va_context = $this->getContext()) {
-				if(is_array($va_history =  $va_context['history'])) {
-					return $va_history;
+		public function getSearchHistory($pa_options=null) {
+			$va_find_types = caGetOption('findTypes', $pa_options, null);
+			
+			if(is_array($va_find_types) && sizeof($va_find_types)) {
+				$va_available_find_types = $this->getAvailableFindTypes();
+				$va_history = array();
+				foreach($va_find_types as $vs_find_type) {
+					foreach($va_available_find_types as $vs_available_find_type) {
+						if (strpos($vs_available_find_type, $vs_find_type) === 0) {
+							$va_tmp = explode("/", $vs_available_find_type);
+							
+							$va_context = $this->getContext($va_tmp[0], $va_tmp[1]);
+					
+							if (is_array($va_context) && is_array($va_context['history'])) {
+								$va_history = array_merge($va_history, $va_context['history']);
+							}
+						}
+					}
+					
 				}
+				return $va_history;
+			} elseif(($va_context = $this->getContext()) && (is_array($va_history = $va_context['history']))) {
+				return $va_history;
 			}
 			return array();
 		}
@@ -566,7 +753,8 @@
 				if ($vs_search = $this->getSearchExpression()) {
 					$va_history[$vs_search] = array(
 						'hits' => (int)$pn_hits,
-						'display' => $vs_search
+						'search' => $vs_search,
+						'display' => $this->getSearchExpressionForDisplay($vs_search)
 					);
 					
 					$this->setContextValue('history', $va_history);
@@ -582,6 +770,7 @@
 		 * internally to manage context data.
 		 *
 		 * @param string Optional find type string; allows you to load any context regardless of what the current find type is. Don't use this unless you know what you're doing.
+		 * @param string Optional find subtype string; allows you to load any context regardless of what the current find subtype is. Don't use this unless you know what you're doing.
 		 * @return array - context data
 		 */
 		protected function getContext($ps_find_type=null, $ps_find_subtype=null) {
@@ -644,6 +833,16 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Gets value in the context named $ps_key. This method is used 
+		 * to fetch context data. It is not meant to be invoked by outside callers.
+		 *
+		 * @param $ps_key - string identifier for context value
+		 */
+		protected function getContextValue($ps_key) {
+			return $this->opa_context[$ps_key];
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Saves all changes to current context to persistent storage
 		 *
 		 * @param string Optional find type string to save context under; allows you to save to any context regardless of what is currently loaded. Don't use this unless you know what you're doing.
@@ -670,6 +869,11 @@
 			$o_storage = $this->getPersistentStorageInstance();
 			$o_storage->setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : ""), $va_context);
 			
+			// Note find type/subtype combo in list of "used find types" in type/subtype format
+			// This is used by ResultContext::getAvailableFindTypes() to return all available combinations 
+			if (!is_array($va_used_find_types = $o_storage->getVar('used_find_types'))) { $va_used_find_types = array(); }
+			$va_used_find_types[$vs_find_type.($vs_find_subtype ? "/{$vs_find_subtype}" : "")] = 1;
+			$o_storage->setVar('used_find_types', $va_used_find_types);
 			
 			$o_semi_storage = $this->getSemiPersistentStorageInstance();
 			if (!is_array($va_existing_semi_context = $o_semi_storage->getVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : "")))) {
@@ -688,16 +892,10 @@
 		 */
 		public function getAvailableFindTypes() {
 			$o_storage = $this->getPersistentStorageInstance();
-			$va_var_keys = $o_storage->getVarKeys();
 			
-			$va_findtypes = array();
-			foreach($va_var_keys as $vs_var_key) {
-				if (preg_match('!result_context_'.$this->ops_table_name.'_([A-Za-z0-9\-\_]+)$!', $vs_var_key, $va_matches)) {
-					$va_findtypes[] = $va_matches[1];
-				}
-			}
+			if (!is_array($va_findtypes = $o_storage->getVar('used_find_types'))) { $va_findtypes = array(); }
 			
-			return $va_findtypes;
+			return array_keys($va_findtypes);
 		}
 		# ------------------------------------------------------------------
 		# Result list convenience methods

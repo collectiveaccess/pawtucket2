@@ -115,8 +115,7 @@ class WLPlugMediaQuicktimeVR Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# for import and export
 	public function register() {
 		$this->opo_config = Configuration::load();
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__.'/external_applications.conf');
 		$this->ops_path_to_ffmpeg = $this->opo_external_app_config->get('ffmpeg_app');
 
 		if (!caMediaPluginFFfmpegInstalled($this->ops_path_to_ffmpeg)) { return null; }
@@ -333,7 +332,7 @@ class WLPlugMediaQuicktimeVR Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$h = round($h);
 
 				if (!($w > 0 && $h > 0)) {
-					$this->postError(1610, _t("%1: %2 during resize operation", $reason, $description), "WLPlugQuicktimeVR->transform()");
+					$this->postError(1610, _t("Width or height was zero"), "WLPlugQuicktimeVR->transform()");
 					return false;
 				}
 				if ($do_crop) {
@@ -576,7 +575,7 @@ class WLPlugMediaQuicktimeVR Extends BaseMediaPlugin Implements IWLPlugMedia {
 					return "<a href='$ps_url'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View QuickTime")."</a>";
 				} else {
 ?>
-					<table border="0" cellpadding="0" cellspacing="0">
+					<table>
 						<tr>
 							<td>
 								<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"

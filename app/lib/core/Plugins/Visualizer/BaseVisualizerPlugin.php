@@ -24,7 +24,7 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Geographic
+ * @subpackage Visualization
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
@@ -33,7 +33,6 @@
   /**
     *
     */ 
-    
 include_once(__CA_LIB_DIR__."/core/Plugins/WLPlug.php");
 include_once(__CA_LIB_DIR__."/core/Plugins/IWLPlugVisualizer.php");
 include_once(__CA_LIB_DIR__."/core/Configuration.php");
@@ -134,7 +133,7 @@ abstract class BaseVisualizerPlugin Extends WLPlug {
 			}
 		} else {
 			# invalid property
-			$this->postError(1650, _t("Can't set property %1", $property), "WLPlugGeographicMapGoogleMaps->set()");
+			$this->postError(1650, _t("Can't set property %1", $property), "BaseVisualizerPlugin->set()");
 			return '';
 		}
 		return true;
@@ -163,13 +162,52 @@ abstract class BaseVisualizerPlugin Extends WLPlug {
 	 *
 	 * @return - array with width and height in keys 0 and 1 respectively as well as 'width' and 'height' respectively
 	 */
-	public function getDimensions() {
-		return array(
-			0 			=> $this->opn_width,
-			1 			=> $this->opn_height,
-			'width' 	=> $this->opn_width,
-			'height'	=> $this->opn_height,
-		);
+	public function getDimensions($pa_options=null) {
+		return $this->_parseDimensions($this->opn_width, $this->opn_height, $pa_options);
+	}
+	# ------------------------------------------------
+	/**
+	 * Returns currently set dimensions (in pixels) of map
+	 *
+	 * @return - array with width and height in keys 0 and 1 respectively as well as 'width' and 'height' respectively
+	 */
+	protected function _parseDimensions($ps_width, $ps_height, $pa_options=null) {
+		$vs_width = $ps_width;
+		$vs_height = $ps_height;
+		
+		$vn_width = intval($vs_width);
+		$vn_height = intval($vs_height);
+		
+		if ($vn_width < 1) { $vn_width = 200; }
+		if ($vn_height < 1) { $vn_height = 200; }
+		if (!preg_match('!^[\d]+%$!', $vs_width)) {
+			$vn_width = intval($vn_width);
+			if ($vn_width < 1) { $vn_width = 690; }
+			$vs_width = "{$vn_width}px";
+		}
+		if (!preg_match('!^[\d]+%$!', $vs_height)) {
+			$vn_height = intval($vn_height);
+			if ($vn_height < 1) { $vn_height = 300; }
+			$vs_height = "{$vn_height}px";
+		}
+		
+		
+		if (caGetOption('returnPixelValues', $pa_options, false)) {
+			return array(
+				0 			=> $vn_width,
+				1 			=> $vn_height,
+				'width' 	=> $vn_width,
+				'height'	=> $vn_height,
+			);
+
+		} else {
+			return array(
+				0 			=> $vs_width,
+				1 			=> $vs_height,
+				'width' 	=> $vs_width,
+				'height'	=> $vs_height,
+			);
+		}
 	}
 	# ------------------------------------------------
 	/**
@@ -224,7 +262,15 @@ abstract class BaseVisualizerPlugin Extends WLPlug {
 	 */
 	public function numItemsRendered() {
 		return $this->opn_num_items_rendered;
+	}	
+	# --------------------------------------------------------------------------------
+	/**
+	 * Register any required javascript and CSS for loading
+	 *
+	 * @return void 
+	 */
+	public function registerDependencies() {
+		return;
 	}
 	# ------------------------------------------------
 }
-?>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -15,18 +15,18 @@
  * the terms of the provided license as published by Whirl-i-Gig
  *
  * CollectiveAccess is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * This source code is free and modifiable under the terms of 
+ * This source code is free and modifiable under the terms of
  * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
- * 
+ *
  * @package CollectiveAccess
  * @subpackage utils
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- * 
+ *
  * ----------------------------------------------------------------------
  */
  
@@ -34,29 +34,64 @@
    *
    */
    
-	require(__CA_APP_DIR__."/helpers/utilityHelpers.php");
-	require(__CA_APP_DIR__."/helpers/navigationHelpers.php");
-	require(__CA_APP_DIR__."/helpers/themeHelpers.php");
-	require(__CA_APP_DIR__."/helpers/mailHelpers.php");
-	require(__CA_APP_DIR__."/helpers/clientServicesHelpers.php");
-	
-	require(__CA_LIB_DIR__."/core/BaseModel.php");
-	require(__CA_LIB_DIR__."/core/Controller/AppController.php");
-	require(__CA_LIB_DIR__."/core/Zend/Translate.php");
-	require(__CA_LIB_DIR__."/core/Zend/Registry.php");
-	require(__CA_LIB_DIR__."/ca/Search/DidYouMean.php");
-	
-	require(__CA_LIB_DIR__."/ca/MetaTagManager.php");
-	require(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
-	require(__CA_LIB_DIR__."/ca/TooltipManager.php");
+	require_once(__CA_APP_DIR__."/helpers/errorHelpers.php");
+	require_once(__CA_BASE_DIR__.'/vendor/autoload.php');	// composer
+   
+	require_once(__CA_LIB_DIR__."/core/Zend/Translate.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Cache.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Registry.php");
 
-	require(__CA_LIB_DIR__."/ca/ResultContext.php");
+	require_once(__CA_LIB_DIR__."/core/Utils/Debug.php");
+	require_once(__CA_LIB_DIR__."/core/Cache/MemoryCache.php"); // is used in utilityHelpers
+	require_once(__CA_LIB_DIR__."/core/Cache/ExternalCache.php"); // is used in utilityHelpers
+	require_once(__CA_LIB_DIR__."/core/Cache/CompositeCache.php"); // is used in utilityHelpers
+	require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
+
+if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
+	$g_ui_locale = $_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'];
+	initializeLocale($g_ui_locale);
+}
+
+	require_once(__CA_APP_DIR__."/helpers/navigationHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
+	require_once(__CA_APP_DIR__."/helpers/mailHelpers.php");
 	
-	require(__CA_LIB_DIR__."/core/Controller/ActionController.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/ApplicationException.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/ActionController.php");
+	require_once(__CA_LIB_DIR__."/ca/ResultContext.php");
 	
-	require(__CA_MODELS_DIR__."/ca_acl.php");
-	require(__CA_APP_DIR__."/helpers/browseHelpers.php");
+	require_once(__CA_LIB_DIR__."/core/BaseModel.php");
+	require_once(__CA_LIB_DIR__."/core/Controller/AppController.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Translate.php");
+	require_once(__CA_LIB_DIR__."/core/Zend/Registry.php");
+	
+	require_once(__CA_LIB_DIR__."/ca/MetaTagManager.php");
+	require_once(__CA_LIB_DIR__."/ca/AssetLoadManager.php");
+	require_once(__CA_LIB_DIR__."/ca/TooltipManager.php");
+	
+	require_once(__CA_MODELS_DIR__."/ca_acl.php");
+	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 	
 	// initialize Tooltip manager
 	TooltipManager::init();
+	
+	# --- include theme specific helpers
+	$vs_theme_helpers_dir = __CA_THEME_DIR__."/helpers";
+	if(file_exists($vs_theme_helpers_dir)){
+		$va_dir_content = scandir($vs_theme_helpers_dir);
+		if(is_array($va_dir_content) && sizeof($va_dir_content)){
+			foreach($va_dir_content as $vs_file){
+				if(in_array($vs_file, array(".", ".."))){
+					continue;
+				}
+				$vs_file_path = $vs_theme_helpers_dir."/".$vs_file; 
+				if(file_exists($vs_file_path) && !is_dir($vs_file_path)){
+					require_once($vs_file_path);
+				}
+			}
+		}
+	}
+
+
 ?>

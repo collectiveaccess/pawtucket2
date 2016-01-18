@@ -41,6 +41,7 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             } 			
  			caSetPageCSSClasses(array("multisearch"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search").": ".$this->request->getParameter('search', pString));
  		}
  		# -------------------------------------------------------
  		/**
@@ -78,4 +79,3 @@
  		}
  		# -------------------------------------------------------
 	}
- ?>

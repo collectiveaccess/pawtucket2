@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2010 Whirl-i-Gig
+ * Copyright 2006-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -71,13 +71,10 @@ class MediaProcessingSettings {
 		$this->opa_table_settings = $this->opo_config_settings = null;
 		
 		if (!isset($va_field_info['MEDIA_ACCEPT']) || !is_array($va_field_info['MEDIA_ACCEPT'])) {
-			if (!($vs_config_path = $this->opo_config->get('media_processing_settings'))) {
-				return false;
-			}
 			if (!($vs_media_processing_setting = $va_field_info['MEDIA_PROCESSING_SETTING'])) {
 				return false;
 			}
-			$this->opo_config_settings = Configuration::load($vs_config_path);
+			$this->opo_config_settings = Configuration::load(__CA_CONF_DIR__."/media_processing.conf");
 			
 			if (!($this->opa_config_settings_as_array = $this->opo_config_settings->getAssoc($vs_media_processing_setting))) {
 				return false;
@@ -153,16 +150,17 @@ class MediaProcessingSettings {
 		} else {
 			$va_media_types = array($ps_media_type => array());
 		}
-		
-		foreach($va_media_types as $vs_media_type => $va_type_info) {
-			if ($this->opa_table_settings) {
-				if (is_array($this->opa_table_settings['MEDIA_TYPES'][$vs_media_type])) {
-					$va_version_list = array_merge($va_version_list, $this->opa_table_settings['MEDIA_TYPES'][$vs_media_type]['VERSIONS']);
-				}
-			} else {
-				if($this->opo_config_settings) {
-					if (is_array($this->opa_config_settings_as_array['MEDIA_TYPES'][$vs_media_type])) {
-						$va_version_list = array_merge($va_version_list, $this->opa_config_settings_as_array['MEDIA_TYPES'][$vs_media_type]['VERSIONS']);
+		if (is_array($va_media_types)) {
+			foreach($va_media_types as $vs_media_type => $va_type_info) {
+				if ($this->opa_table_settings) {
+					if (is_array($this->opa_table_settings['MEDIA_TYPES'][$vs_media_type])) {
+						$va_version_list = array_merge($va_version_list, $this->opa_table_settings['MEDIA_TYPES'][$vs_media_type]['VERSIONS']);
+					}
+				} else {
+					if($this->opo_config_settings) {
+						if (is_array($this->opa_config_settings_as_array['MEDIA_TYPES'][$vs_media_type])) {
+							$va_version_list = array_merge($va_version_list, $this->opa_config_settings_as_array['MEDIA_TYPES'][$vs_media_type]['VERSIONS']);
+						}
 					}
 				}
 			}
@@ -258,6 +256,22 @@ class MediaProcessingSettings {
 		return null;
 	}
 	# ---------------------------------------------------
+	/**
+	 * Get list of mimetypes accepted by specified volume
+	 *
+	 * @param string $ps_volume The name of the volume
+	 * @return array List of mimetypes accepted by volume
+	 */
+	public function getMimetypesForVolume($ps_volume) {
+		$va_media_accept = $this->getAcceptedMediaTypes();
+		if(!is_array($va_media_accept)) { return null; }
+		
+		$va_mimetypes = array();
+		foreach($va_media_accept as $vs_mimetype => $vs_volume) {
+			if ($ps_volume != $vs_volume) { continue; }
+			$va_mimetypes[$vs_mimetype] = true;
+		}
+		return array_keys($va_mimetypes);
+	}
+	# ---------------------------------------------------
 }
-# ----------------------------------------------------------------------
-?>

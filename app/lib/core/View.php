@@ -46,6 +46,8 @@ class View extends BaseObject {
 	
 	private $ops_character_encoding;
 	
+	private $ops_last_render = null;
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -65,18 +67,18 @@ class View extends BaseObject {
 		
 		$vs_suffix = null;
 		if (!is_array($pm_path)) { 
+			$pm_path = array($pm_path);
+		}
+		foreach($pm_path as $ps_path) {
 			// Preserve any path suffix after "views"
 			// Eg. if path is /web/myinstall/themes/mytheme/views/bundles then we want to retain "/bundles" on the default path
 			$va_suffix_bits = array();
-			$va_tmp = array_reverse(explode("/", $pm_path));
+			$va_tmp = array_reverse(explode("/", $ps_path));
 			foreach($va_tmp as $vs_path_element) {
 				if ($vs_path_element == 'views') { break; }
 				array_push($va_suffix_bits, $vs_path_element);
 			}
-			if ($vs_suffix = join("/", $va_suffix_bits)) { $vs_suffix = '/'.$vs_suffix; }
-			
-			
-			$pm_path = array($pm_path); 
+			if ($vs_suffix = join("/", $va_suffix_bits)) { $vs_suffix = '/'.$vs_suffix; break;}
 		}
 		
 		if (caGetOption('includeDefaultThemePath', $pa_options, true)) {
@@ -120,7 +122,7 @@ class View extends BaseObject {
 	public function addViewPath($pm_path) {
 		if (is_array($pm_path)) {
 			foreach($pm_path as $vs_path) {
-				$this->opa_view_paths[] = $ps_path;
+				$this->opa_view_paths[] = $vs_path;
 			}
 		} else {
 			$this->opa_view_paths[] = $pm_path;
@@ -170,6 +172,7 @@ class View extends BaseObject {
 	public function isCompiled($ps_filepath) {
 		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
 		if (!file_exists($vs_compiled_path)) { return false; }
+		if (filesize($vs_compiled_path) === 0) { return false; }
 		
 		// Check if template change date is newer than compiled
 		$va_view_stat = @stat($ps_filepath);
@@ -182,9 +185,10 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function compile($ps_filepath) {
-		if ($vs_compiled_path = $this->isCompiled($ps_filepath)) { 
-			return json_decode(file_get_contents($vs_compiled_path));
+	public function compile($ps_filepath, $pb_force_recompile=false) {
+		if (!$pb_force_recompile && ($vs_compiled_path = $this->isCompiled($ps_filepath))) { 
+			$va_tags = json_decode(file_get_contents($vs_compiled_path), true);
+			if (is_array($va_tags)) { return $va_tags; }
 		}
 		
 		$vs_buf = $this->_render($ps_filepath);
@@ -193,8 +197,19 @@ class View extends BaseObject {
 		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_buf, $va_matches);
 		
 		$va_tags = $va_matches[1];
+		
+		$vs_raw_buf = file_get_contents($ps_filepath);
+		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_raw_buf, $va_matches);
+		$va_tags += $va_matches[1];
+		$va_tags = array_unique($va_tags);
+		
 		if (!is_array($va_tags)) { $va_tags = array(); }
-		file_put_contents($vs_compiled_path, json_encode($va_tags));
+		
+		if($vs_tags = json_encode($va_tags)) {
+			file_put_contents($vs_compiled_path, $vs_tags);
+		} else {
+			@unlink($vs_compiled_path);
+		}
 		return $va_tags;
 	}
 	# -------------------------------------------------------
@@ -217,6 +232,9 @@ class View extends BaseObject {
 				// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
 				$va_tags = $this->compile($vs_path.'/'.$ps_filename);
 				break;
+			} elseif (file_exists($ps_filename)) {
+				$va_tags = $this->compile($ps_filename);
+				break;
 			}
 		}
 		
@@ -226,36 +244,54 @@ class View extends BaseObject {
 	/**
 	 *
 	 */
-	public function render($ps_filename, $pb_dont_do_var_replacement=false) {
+	public function clearViewTagsVars($ps_filename) {
+		$va_tags = $this->getTagList($ps_filename);
+		
+		foreach($va_tags as $vs_tag) {
+			unset($this->opa_view_vars[$vs_tag]);
+		}
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function render($ps_filename, $pb_dont_do_var_replacement=false, $pa_options=null) {
 		global $g_ui_locale;
+		$this->ops_last_render = null;
 		
 		$vb_output = false;
 		$vs_buf = null;
-		foreach(array_reverse($this->opa_view_paths) as $vs_path) {
-			if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
-				// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
-				$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$g_ui_locale);
-				$vb_output = true;
-				break;
+		if ($ps_filename[0] == '/') { 	// absolute path
+			$vs_buf = $this->_render($ps_filename);
+			$vb_output = true;
+		} else {
+			foreach(array_reverse($this->opa_view_paths) as $vs_path) {
+				if (file_exists($vs_path.'/'.$ps_filename.".".$g_ui_locale)) {
+					// if a l10ed view is at same path than normal but having the locale as last extension, display it (eg. splash_intro_text_html.php.fr_FR)
+					$vs_buf = $this->_render($vs_path.'/'.$ps_filename.".".$g_ui_locale);
+					$vb_output = true;
+					break;
+				}
+				elseif (file_exists($vs_path.'/'.$ps_filename)) {
+					// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
+					$vs_buf = $this->_render($vs_path.'/'.$ps_filename);
+					$vb_output = true;
+					break;
+				}
 			}
-			elseif (file_exists($vs_path.'/'.$ps_filename)) {
-				// if no l10ed version of the view, render the default one which has no locale as last extension (eg. splash_intro_text_html.php)
-				$vs_buf = $this->_render($vs_path.'/'.$ps_filename);
-				$vb_output = true;
-				break;
+			if (!$vb_output) {
+				$this->postError(2400, _t("View %1 was not found", $ps_filename), "View->render()");
 			}
 		}
-		if (!$vb_output) {
-			$this->postError(2400, _t("View %1 was not found", $ps_filename), "View->render()");
-		}
-		
-		if (!$pb_dont_do_var_replacement) {
+		if (!$pb_dont_do_var_replacement && $vb_output) {
 			$va_compile = $this->compile($vs_path.'/'.$ps_filename);
+			
 			$va_vars = $this->getAllVars();
+			
 			foreach($va_compile as $vs_var) {
 				$vm_val = isset($va_vars[$vs_var]) ? $va_vars[$vs_var] : '';
-				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf);
-				
+				$vn_count = 0;
+				$vs_buf = str_replace('{{{'.$vs_var.'}}}', $vm_val, $vs_buf, $vn_count);				
 			}
 		}
 		
@@ -266,12 +302,13 @@ class View extends BaseObject {
 	 *
 	 */
 	private function _render($ps_filename) {
+		if ($this->ops_last_render) { return $this->ops_last_render; }
 		if (!file_exists($ps_filename)) { return null; }
 		ob_start();
 		
 		require($ps_filename);
 		
-		return ob_get_clean();
+		return $this->ops_last_render = ob_get_clean();
 	}
 	# -------------------------------------------------------
 	# Character encodings
@@ -291,4 +328,3 @@ class View extends BaseObject {
 	}
 	# -------------------------------------------------------
 }
-?>

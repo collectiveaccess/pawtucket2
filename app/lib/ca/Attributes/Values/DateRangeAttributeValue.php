@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,7 @@
  /**
   *
   */
+  	define("__CA_ATTRIBUTE_VALUE_DATERANGE__", 2);
  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
@@ -141,6 +142,22 @@
 			'label' => _t('Can be used in display'),
 			'description' => _t('Check this option if this attribute value can be used for display in search results. (The default is to be.)')
 		),
+		'canMakePDF' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output?'),
+			'description' => _t('Check this option if this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
+		'canMakePDFForValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output for individual values?'),
+			'description' => _t('Check this option if individual values for this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
 		'displayTemplate' => array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -166,10 +183,13 @@
  		private $ops_text_value;
  		private $opn_start_date;
  		private $opn_end_date;
+ 		
+ 		static private $o_tep;
+ 		static private $s_date_cache = array();
  		# ------------------------------------------------------------------
  		public function __construct($pa_value_array=null) {
- 			require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
  			parent::__construct($pa_value_array);
+ 			if(!DateRangeAttributeValue::$o_tep) { DateRangeAttributeValue::$o_tep = new TimeExpressionParser(); }
  		}
  		# ------------------------------------------------------------------
  		public function loadTypeSpecificValueFromRow($pa_value_array) {
@@ -187,13 +207,9 @@
 		public function getDisplayValue($pa_options=null) {
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			if (isset($pa_options['rawDate']) && $pa_options['rawDate']) {
-				return array(0 => $this->opn_start_date, 1 =>$this->opn_end_date, 'start' => $this->opn_start_date, 'end' =>$this->opn_end_date);
+				return array(0 => $this->opn_start_date, 1 => $this->opn_end_date, 'start' => $this->opn_start_date, 'end' =>$this->opn_end_date);
 			}
-			if (	
-				(isset($pa_options['GET_DIRECT_DATE']) && $pa_options['GET_DIRECT_DATE'])
-				||
-				(isset($pa_options['getDirectDate']) && $pa_options['getDirectDate'])
-			) {
+			if (caGetOption('GET_DIRECT_DATE', $pa_options, false) || caGetOption('getDirectDate', $pa_options, false)) {
 				return $this->opn_start_date;
 			}
 			
@@ -202,21 +218,17 @@
 				return $this->opn_start_date.'/'.$this->opn_end_date;
 			}
 			
-			$o_config = Configuration::load();
-			$o_date_config = Configuration::load($o_config->get('datetime_config'));
+			$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 			
-			if ($o_date_config->get('dateFormat') == 'original') {
-				return $this->ops_text_value;
-			} else {				
-				$t_element = new ca_metadata_elements($this->getElementID());
-				$va_settings = $this->getSettingValuesFromElementArray(
-					$t_element->getFieldValuesArray(), 
-					array('isLifespan')
-				);
-				
-				$o_tep = new TimeExpressionParser();
-				$o_tep->setHistoricTimestamps($this->opn_start_date, $this->opn_end_date);
-				return $o_tep->getText(array_merge(array('isLifespan' => $va_settings['isLifespan']), $pa_options)); //$this->ops_text_value;
+			if(isset(DateRangeAttributeValue::$s_date_cache[$vs_date_format = $o_date_config->get('dateFormat')][$this->opn_start_date.'/'.$this->opn_end_date])) {
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date];
+			}
+			if ($vs_date_format == 'original') {
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date] = $this->ops_text_value;
+			} else {
+				$va_settings = MemoryCache::fetch($this->getElementID(), 'ElementSettings');
+				DateRangeAttributeValue::$o_tep->setHistoricTimestamps($this->opn_start_date, $this->opn_end_date);
+				return DateRangeAttributeValue::$s_date_cache[$vs_date_format][$this->opn_start_date.'/'.$this->opn_end_date] = DateRangeAttributeValue::$o_tep->getText(array_merge(array('isLifespan' => $va_settings['isLifespan']), $pa_options)); //$this->ops_text_value;
  			}
 		}
  		# ------------------------------------------------------------------
@@ -225,23 +237,25 @@
 		}
  		# ------------------------------------------------------------------
  		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
+ 			$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
+            $show_Undated = $o_date_config->get('showUndated');
+ 
  			$ps_value = trim($ps_value);
  			$va_settings = $this->getSettingValuesFromElementArray(
  				$pa_element_info, 
  				array('dateRangeBoundaries', 'mustNotBeBlank')
  			);
  			
- 			$o_tep = new TimeExpressionParser();
 			if ($ps_value) {
-				if (!$o_tep->parse($ps_value)) { 
+				if (!DateRangeAttributeValue::$o_tep->parse($ps_value)) { 
 					// invalid date
 					$this->postError(1970, _t('%1 is invalid', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
 					return false;
 				}
-				$va_dates = $o_tep->getHistoricTimestamps();
+				$va_dates = DateRangeAttributeValue::$o_tep->getHistoricTimestamps();
 				if ($va_settings['dateRangeBoundaries']) {
-					if ($o_tep->parse($va_settings['dateRangeBoundaries'])) { 
-						$va_boundary_dates = $o_tep->getHistoricTimestamps();
+					if (DateRangeAttributeValue::$o_tep->parse($va_settings['dateRangeBoundaries'])) { 
+						$va_boundary_dates = DateRangeAttributeValue::$o_tep->getHistoricTimestamps();
 						if (
 							($va_dates[0] < $va_boundary_dates[0]) ||
 							($va_dates[0] > $va_boundary_dates[1]) ||
@@ -259,14 +273,12 @@
 					$this->postError(1970, _t('%1 must not be empty', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
 					return false;
 				} else {
-					
-					$o_config = Configuration::load();
-					$o_date_config = Configuration::load($o_config->get('datetime_config'));
+					$o_date_config = Configuration::load(__CA_CONF_DIR__.'/datetime.conf');
 			
 					// Default to "undated" date for blanks
 					$vs_undated_date = '';
 					if ((bool)$o_date_config->get('showUndated')) {
-						$o_lang_config = $o_tep->getLanguageSettings();
+						$o_lang_config = DateRangeAttributeValue::$o_tep->getLanguageSettings();
 						$vs_undated_date = array_shift($o_lang_config->getList('undatedDate'));
 					}
 					
@@ -285,11 +297,24 @@
  		}
  		# ------------------------------------------------------------------
  		/**
+ 		 * Return HTML form element for editing.
  		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			class = the CSS class to apply to all visible form elements [Default=dateBg]
+ 		 *			width = the width of the form element [Default=field width defined in metadata element definition]
+ 		 *			height = the height of the form element [Default=field height defined in metadata element definition]
+ 		 *			t_subject = an instance of the model to which the attribute belongs; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			request = the RequestHTTP object for the current request; required if suggestExistingValues lookups are enabled [Default is null]
+ 		 *			suggestExistingValues = suggest values based on existing input for this element as user types [Default is false]		
+ 		 *			useDatePicker = use calendar-style date picker [Default=false]
+ 		 *
+ 		 * @return string
  		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
 			$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'suggestExistingValues', 'useDatePicker'));
-
+			$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : 'dateBg');
+			
 			if (isset($pa_options['useDatePicker'])) {
  				$va_settings['useDatePicker'] = $pa_options['useDatePicker'];
  			}
@@ -302,7 +327,7 @@
 					'size' => (isset($pa_options['width']) && $pa_options['width'] > 0) ? $pa_options['width'] : $va_settings['fieldWidth'],
 					'value' => '{{'.$pa_element_info['element_id'].'}}',
 					'maxlength' => $vn_max_length,
-					'class' => 'dateBg'
+					'class' => $vs_class
 				)
 			);
 			
@@ -323,12 +348,25 @@
  				</script>\n";
  			}
  			
- 			if ((bool)$va_settings['useDatePicker']) { 
+ 			if ((bool)$va_settings['useDatePicker']) {
+ 				global $g_ui_locale;
+
+ 				// nothing terrible happens if this fails. If no package is registered for the current 
+ 				// locale, the LoadManager simply ignores it and the default settings (en_US) apply
+ 				AssetLoadManager::register("datepicker_i18n_{$g_ui_locale}"); 
+
  				$vs_element .= "<script type='text/javascript'>
  					jQuery(document).ready(function() {
  						jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').datepicker({constrainInput: false});
  					});
  				</script>\n";
+
+				// load localization for datepicker. we can't use the asset manager here
+				// because that doesn't get the script out in time for quickadd forms
+				$vs_i18n_relative_path = '/assets/jquery/jquery-ui/i18n/jquery.ui.datepicker-'.$g_ui_locale.'.js';
+				if(file_exists(__CA_BASE_DIR__.$vs_i18n_relative_path)) {
+					$vs_element .= "<script src='".__CA_URL_ROOT__.$vs_i18n_relative_path."' type='text/javascript'></script>\n";
+				}
  			}
  			
  			return $vs_element;
@@ -350,6 +388,15 @@
 		 */
 		public function sortField() {
 			return 'value_decimal1';
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for date range attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_DATERANGE__;
 		}
  		# ------------------------------------------------------------------
 	}

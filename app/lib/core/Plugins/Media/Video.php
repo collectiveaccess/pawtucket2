@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2004-2013 Whirl-i-Gig
+ * Copyright 2004-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -170,14 +170,13 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# for import and export
 	public function register() {
 		$this->opo_config = Configuration::load();
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__.'/external_applications.conf');
 		$this->ops_path_to_ffmpeg = $this->opo_external_app_config->get('ffmpeg_app');
 		$this->ops_path_to_qt_faststart = $this->opo_external_app_config->get('qt-faststart_app');
 		$this->opb_ffmpeg_available = caMediaPluginFFfmpegInstalled($this->ops_path_to_ffmpeg);
 
-		$this->ops_mediainfo_path = $this->opo_external_app_config->get('mediainfo_app');
-		$this->opb_mediainfo_available = caMediaInfoInstalled($this->ops_mediainfo_path);
+		$this->ops_mediainfo_path = caGetExternalApplicationPath('mediainfo');
+		$this->opb_mediainfo_available = caMediaInfoInstalled();
 
 		$this->info["INSTANCE"] = $this;
 		return $this->info;
@@ -190,7 +189,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$va_status['available'] = true;
 		
 		if(!$this->opb_ffmpeg_available){
-			$va_status['errors'][] = _t("Incoming Audio files will not be transcoded because ffmpeg is not installed.");
+			$va_status['errors'][] = _t("Incoming video files will not be transcoded because ffmpeg is not installed.");
 		}
 		
 		if ($this->opb_mediainfo_available) { 
@@ -324,7 +323,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 			$this->handle = $this->ohandle = $ID3->analyze($filepath);
 			
 			if($this->opb_mediainfo_available){
-				$this->metadata = caExtractMetadataWithMediaInfo($this->ops_mediainfo_path, $filepath);
+				$this->metadata = caExtractMetadataWithMediaInfo($filepath);
 			} else {
 				$this->metadata = $this->handle;
 			}
@@ -406,6 +405,12 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 			$this->properties["typename"] = $this->typenames[$this->properties["mimetype"]] ? $this->typenames[$this->properties["mimetype"]] : "Unknown";
 
 			$this->properties["duration"] = $this->handle["playtime_seconds"];
+
+			// getID3 sometimes messes up the duration. mediainfo seems a little more reliable so use it if it's available
+			if($this->opb_mediainfo_available && ($vn_mediainfo_duration = caExtractVideoFileDurationWithMediaInfo($filepath))) {
+				$this->properties['duration'] = $this->handle["playtime_seconds"] = $vn_mediainfo_duration;
+			}
+
 			$this->properties["filesize"] = filesize($filepath);
 
 			# -- get bandwidth
@@ -621,7 +626,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$h = round($h);
 
 				if (!($w > 0 && $h > 0)) {
-					$this->postError(1610, _t("%1: %2 during resize operation", $reason, $description), "WLPlugVideo->transform()");
+					$this->postError(1610, _t("Width or height was zero"), "WLPlugVideo->transform()");
 					return false;
 				}
 				if ($do_crop) {
@@ -1012,7 +1017,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		
 		exec($this->ops_path_to_ffmpeg." -i ".caEscapeShellArg($this->filepath)." -f mp4 -vcodec libx264 -acodec mp3 -t {$vn_duration}  -y -ss {$vn_start} ".caEscapeShellArg($ps_filepath). ((caGetOSFamily() == OS_POSIX) ? " 2> /dev/null" : ""), $va_output, $vn_return);
 		if ($vn_return != 0) {
-			@unlink($filepath.".".$ext);
+			@unlink($ps_filepath);
 			$this->postError(1610, _t("Error extracting clip from %1 to %2: %3", $ps_start, $ps_end, join("; ", $va_output)), "WLPlugVideo->writeClip()");
 			return false;
 		}
@@ -1087,7 +1092,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				} else {
 					ob_start();
 		?>
-					<table border="0" cellpadding="0" cellspacing="0">
+					<table>
 						<tr>
 							<td>
 								<object id="<?php print $vs_name; ?>" width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"]; ?>" classid="clsid:CFCDAA03-8BE4-11cf-B84B-0020AFBBCCFA">
@@ -1148,7 +1153,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 					return "<a href='".(isset($pa_options["url"]) ? $pa_options["url"] : $ps_url)."'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View WindowsMedia")."</a>";
 				} else {
 ?>
-					<table border="0" cellpadding="0" cellspacing="0">
+					<table>
 						<tr>
 							<td>
 								<object id="<?php print $vs_name; ?>"
@@ -1205,7 +1210,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 					return "<a href='$ps_url'>".(($pa_options["text_only"]) ? $pa_options["text_only"] : "View QuickTime")."</a>";
 				} else {
 ?>
-					<table border="0" cellpadding="0" cellspacing="0">
+					<table>
 						<tr>
 							<td>
 								<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B"
@@ -1245,6 +1250,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 				$vn_width =				$pa_options["viewer_width"] ? $pa_options["viewer_width"] : $pa_properties["width"];
 				$vn_height =			$pa_options["viewer_height"] ? $pa_options["viewer_height"] : $pa_properties["height"];
+				
+				$va_captions = 			caGetOption("captions", $pa_options, array(), array('castTo' => 'array'));
+				
 				ob_start();
 	
 			$vs_config = 'config={"playlist":[{"url":"'.$vs_poster_frame_url.'", "scaling": "fit"}, {"url": "'.$ps_url.'","autoPlay":false,"autoBuffering":true, "scaling": "fit"}]};';
@@ -1295,12 +1303,19 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				  controls preload="auto" width="<?php print $vn_width; ?>" height="<?php print $vn_height; ?>"  
 				  poster="<?php print $vs_poster_frame_url; ?>"  
 				  data-setup='{}'>  
-				 <source src="<?php print $ps_url; ?>" type='video/mp4' />  
+				 <source src="<?php print $ps_url; ?>" type="video/mp4"></source>  
+<?php
+	if(is_array($va_captions)) {
+		foreach($va_captions as $vn_locale_id => $va_caption_track) {
+			print "<track kind=\"captions\" src=\"".$va_caption_track['url']."\" srclang=\"".$va_caption_track["locale_code"]."\" label=\"".$va_caption_track['locale']."\">\n";	
+		}
+	}
+?>
 				</video>
 			<script type="text/javascript">
 				_V_.players["<?php print $vs_id; ?>"] = undefined;	// make sure VideoJS doesn't think it has already loaded the viewer
 				jQuery("#<?php print $vs_id; ?>").attr('width', jQuery('#<?php print $vs_id; ?>:parent').width()).attr('height', jQuery('#<?php print $vs_id; ?>:parent').height());
-				_V_("<?php print $vs_id; ?>", {techOrder: ["flash", "html5"] }, function() {});
+				_V_("<?php print $vs_id; ?>", {}, function() {});
 			</script>
 			<!-- End VideoJS -->
 <?php
@@ -1368,7 +1383,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				<p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" /></a></p>
 			</div>
 			<script type="text/javascript">
-				jQuery(document).ready(function() { swfobject.embedSWF("<?php print $ps_url; ?>", "<?php print $vs_name; ?>", "<?php print isset($pa_options["width"]) ? $pa_options["width"] : $pa_properties["width"]; ?>", "<?php print isset($pa_options["height"]) ? $pa_options["height"] : $pa_properties["height"]; ?>", "9.0.124", "swf/expressInstall.swf", {}, {'allowscriptaccess': 'always', 'allowfullscreen' : 'true', 'allowNetworking' : 'all'}); });
+				//jQuery(document).ready(function() { swfobject.embedSWF("<?php print $ps_url; ?>", "<?php print $vs_name; ?>", "<?php print isset($pa_options["width"]) ? $pa_options["width"] : $pa_properties["width"]; ?>", "<?php print isset($pa_options["height"]) ? $pa_options["height"] : $pa_properties["height"]; ?>", "9.0.124", "swf/expressInstall.swf", {}, {'allowscriptaccess': 'always', 'allowfullscreen' : 'true', 'allowNetworking' : 'all'}); });
 			</script>
 <?php
 					return ob_get_clean();

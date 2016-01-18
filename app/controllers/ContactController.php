@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,15 +42,16 @@
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
  				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
  			}
- 			
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Contact"));
  			caSetPageCSSClasses(array("contact"));
  		}
  		# -------------------------------------------------------
- 		function form() {
+ 		public function Form() {
 			$this->render("Contact/form_html.php");
  		}
  		# ------------------------------------------------------
- 		function send() {
+ 		public function Send() {
+ 			$o_purifier = new HTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){
@@ -70,7 +71,7 @@
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
- 					$vs_element_value = $this->request->getParameter($vs_element_name, pString);
+ 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString));
  					if($va_options["required"] && !$vs_element_value){
  						$va_errors[$vs_element_name] = true;
  						$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");
@@ -109,6 +110,4 @@
  			}
  		}
  		# -------------------------------------------------------
-
  	}
- ?>

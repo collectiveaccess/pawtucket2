@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2013 Whirl-i-Gig
+ * Copyright 2010-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,9 +39,9 @@ require_once(__CA_LIB_DIR__.'/ca/BundlableLabelableBaseModelWithAttributes.php')
 require_once(__CA_MODELS_DIR__.'/ca_bundle_displays.php'); 
 require_once(__CA_MODELS_DIR__.'/ca_bundle_display_placements.php'); 
 require_once(__CA_MODELS_DIR__.'/ca_bundle_displays_x_user_groups.php'); 
+require_once(__CA_MODELS_DIR__.'/ca_bundle_display_type_restrictions.php'); 
 require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php'); 
-require_once(__CA_MODELS_DIR__.'/ca_lists.php'); 
-require_once(__CA_LIB_DIR__."/core/Parsers/htmlpurifier/HTMLPurifier.standalone.php");
+require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
 define('__CA_BUNDLE_DISPLAY_NO_ACCESS__', 0);
 define('__CA_BUNDLE_DISPLAY_READ_ACCESS__', 1);
@@ -114,6 +114,19 @@ BaseModel::$s_ca_models_definitions['ca_bundle_displays'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Settings'), 'DESCRIPTION' => _t('Display settings')
+		),
+		'access' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => 0,
+				'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+				'BOUNDS_CHOICE_LIST' => array(
+					_t('Not accessible to public') => 0,
+					_t('Accessible to public') => 1
+				),
+				'LIST' => 'access_statuses',
+				'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Indicates if display is accessible to the public or not.')
 		)
 	)
 );
@@ -193,7 +206,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	# Change logging
 	# ------------------------------------------------------
 	protected $UNIT_ID_FIELD = null;
-	protected $LOG_CHANGES_TO_SELF = false;
+	protected $LOG_CHANGES_TO_SELF = true;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
 		
@@ -266,7 +279,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		}
 		
 		if ($t_dupe = parent::duplicate($pa_options)) {
-			$vb_duplicate_subitems = isset($pa_options['duplicate_subitems']) && $pa_options['duplicate_subitems'];
+			$vb_duplicate_subitems = caGetOption('duplicate_subitems', $pa_options, false);
 		
 			if ($vb_duplicate_subitems) { 
 				// Try to dupe related ca_bundle_display_placements rows
@@ -285,6 +298,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				
 				foreach($va_items as $vn_item_id => $va_item) {
 					$t_item = new ca_bundle_display_placements();
+					if ($this->inTransaction()) { $t_item->setTransaction($this->getTransaction()); }
 					$t_item->setMode(ACCESS_WRITE);
 					$va_item['display_id'] = $t_dupe->getPrimaryKey();
 					$t_item->set($va_item);
@@ -320,16 +334,56 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		return parent::set($pa_fields, $pm_value, $pa_options);
 	}
 	# ------------------------------------------------------
+	/** 
+	 * Override addLabel() to set display_code if not specifically set by user
+	 */
+	public function addLabel($pa_label_values, $pn_locale_id, $pn_type_id=null, $pb_is_preferred=false, $pa_options=null) {
+		if ($vn_rc = parent::addLabel($pa_label_values, $pn_locale_id, $pn_type_id, $pb_is_preferred, $pa_options)) {
+			$this->_setUniqueSetCode();
+		}
+		return $vn_rc;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Override update() to set display_code if not specifically set by user
+	 */
+	public function update($pa_options=null) {
+		if ($vn_rc = parent::update($pa_options)) {
+			$this->_setUniqueSetCode();
+		}
+		return $vn_rc;
+	}
+	# ------------------------------------------------------
+	/** 
+	 * 
+	 */
+	private function _setUniqueSetCode() {
+		if (!$this->getPrimaryKey()) { return null; }
+		
+		if (!strlen(trim($this->get('display_code')))) {
+			$this->setMode(ACCESS_WRITE);
+			if(!($vs_label = $this->getLabelForDisplay())) { $vs_label = 'display_'.$this->getPrimaryKey(); }
+			$vs_new_display_name = substr(preg_replace('![^A-Za-z0-9]+!', '_', $vs_label), 0, 50);
+			if (ca_bundle_displays::find(array('display_code' => $vs_new_display_name), array('returnAs' => 'firstId')) > 0) {
+				$vs_new_display_name .= '_'.$this->getPrimaryKey();
+			}
+			$this->set('display_code', $vs_new_display_name);
+			return $this->update();
+		}
+		return false;
+	}
+	# ------------------------------------------------------
 	public function __destruct() {
 		unset($this->SETTINGS);
 	}
 	# ------------------------------------------------------
-	protected function initLabelDefinitions() {
-		parent::initLabelDefinitions();
+	protected function initLabelDefinitions($pa_options=null) {
+		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_users'] = array('type' => 'special', 'repeating' => true, 'label' => _t('User access'));
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_bundle_display_placements'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display list contents'));
 		$this->BUNDLES['settings'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display settings'));
+		$this->BUNDLES['ca_bundle_display_type_restrictions'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Type restrictions'));
 	}
 	# ------------------------------------------------------
 	# Display settings
@@ -356,6 +410,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		
 		$t_placement = new ca_bundle_display_placements(null, is_array($pa_options['additional_settings']) ? $pa_options['additional_settings'] : null);
 		$t_placement->setMode(ACCESS_WRITE);
+		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 		$t_placement->set('display_id', $vn_display_id);
 		$t_placement->set('bundle_name', $ps_bundle_name);
 		$t_placement->set('rank', $pn_rank);
@@ -394,6 +449,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		$t_placement = new ca_bundle_display_placements($pn_placement_id);
 		if ($t_placement->getPrimaryKey() && ($t_placement->get('display_id') == $vn_display_id)) {
 			$t_placement->setMode(ACCESS_WRITE);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			$t_placement->delete(true);
 			
 			if ($t_placement->numErrors()) {
@@ -449,6 +505,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		$o_db = $this->getDb();
 		
 		$t_list = new ca_lists();
+		if ($this->inTransaction()) { $t_list->setTransaction($this->getTransaction()); }
 		
 		$qr_res = $o_db->query("
 			SELECT placement_id, bundle_name, settings
@@ -465,6 +522,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			$vs_subject_table = $o_dm->getTableName($this->get('table_num'));
 			$t_subject = $o_dm->getInstanceByTableNum($this->get('table_num'), true);
 			$t_placement = new ca_bundle_display_placements();
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			while($qr_res->nextRow()) {
 				$vs_bundle_name = $qr_res->get('bundle_name');
 				$va_bundle_name = explode(".", $vs_bundle_name);
@@ -497,12 +555,27 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 							$va_placements[$vn_placement_id]['allowInlineEditing'] = false;
 							$va_placements[$vn_placement_id]['inlineEditingType'] = null;
 						} else {
-							$va_placements[$vn_placement_id]['allowInlineEditing'] = true;
+							if(isset($va_bundle_name[1])){
+								// check if identifier is editable
+								$id_editable = $t_subject->opo_idno_plugin_instance->isFormatEditable($vs_subject_table);
+
+								// Do not allow in-line editing if the intrinsic element is identifier and
+								// a). is not editable (editable = 0 in multipart_id_numbering.conf)
+								// b). consists of multiple elements
+								if($va_bundle_name[1] == $t_subject->getProperty('ID_NUMBERING_ID_FIELD') && $id_editable == false)
+									$va_placements[$vn_placement_id]['allowInlineEditing'] = false;
+								else
+									$va_placements[$vn_placement_id]['allowInlineEditing'] = true;
+							}
+
 							switch($t_subject->getFieldInfo($va_bundle_name[1], 'DISPLAY_TYPE')) {
 								case 'DT_SELECT':
 									if (($vs_list_code = $t_subject->getFieldInfo($va_bundle_name[1], 'LIST')) || ($vs_list_code = $t_subject->getFieldInfo($va_bundle_name[1], 'LIST_CODE'))) {
 										$va_placements[$vn_placement_id]['inlineEditingType'] = DT_SELECT;
-										$va_placements[$vn_placement_id]['inlineEditingListValues'] = array_values($t_list->getItemsForList($vs_list_code, array('labelsOnly' => true)));
+										if (!is_array($va_list_labels = $t_list->getItemsForList($vs_list_code, array('labelsOnly' => true)))) {
+											$va_list_labels = array();
+										}
+										$va_placements[$vn_placement_id]['inlineEditingListValues'] = array_values($va_list_labels);
 									} else {
 										$va_placements[$vn_placement_id]['inlineEditingType'] = DT_FIELD;
 									}
@@ -580,17 +653,21 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	 * Returns list of bundle displays subject to options
 	 * 
 	 * @param array $pa_options Optional array of options. Supported options are:
-	 *			table - if set, list is restricted to displays that pertain to the specified table. You can pass a table name or number. If omitted displays for all tables will be returned.
-	 *			user_id - Restricts returned displays to those accessible by the current user. If omitted then all displays, regardless of access are returned.
-	 *			access - Restricts returned displays to those with at least the specified access level for the specified user. If user_id is omitted then this option has no effect. If user_id is set and this option is omitted, then displays where the user has at least read access will be returned. 
+	 *			table = If set, list is restricted to displays that pertain to the specified table. You can pass a table name or number. If omitted displays for all tables will be returned.
+	 *			user_id = Restricts returned displays to those accessible by the current user. If omitted then all displays, regardless of access are returned.
+	 *			restrictToTypes = Restricts returned displays to those bound to the specified type. Default is to not restrict by type.
+	 *			dontIncludeSubtypesInTypeRestriction = If restrictToTypes is set, controls whether or not subtypes are automatically included in the restriction. Default is false – subtypes are included.
+	 *			access = Restricts returned displays to those with at least the specified access level for the specified user. If user_id is omitted then this option has no effect. If user_id is set and this option is omitted, then displays where the user has at least read access will be returned. 
 	 * @return array Array of displays keyed on display_id and then locale_id. Keys for the per-locale value array include: display_id,  display_code, user_id, table_num,  label_id, name (display name of display), locale_id (locale of display name), bundle_display_content_type (display name of content this display pertains to)
 	 */
 	 public function getBundleDisplays($pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		$pm_table_name_or_num = isset($pa_options['table']) ? $pa_options['table'] : null;
-		$pn_user_id = isset($pa_options['user_id']) ? $pa_options['user_id'] : null;
-		$pn_access = isset($pa_options['access']) ? $pa_options['access'] : null;
-		
+		$pm_table_name_or_num = 							caGetOption('table', $pa_options, null);
+		$pn_user_id = 										caGetOption('user_id', $pa_options, null);
+		$pn_user_access = 									caGetOption('access', $pa_options, null); 
+		$pa_access = 										caGetOption('checkAccess', $pa_options, null); 
+		$pa_restrict_to_types = 							caGetOption('restrictToTypes', $pa_options, null);
+		$pb_dont_include_subtypes_in_type_restriction = 	caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, false);
 		
 	 	$o_dm = $this->getAppDatamodel();
 	 	if ($pm_table_name_or_num && !($vn_table_num = $o_dm->getTableNum($pm_table_name_or_num))) { return array(); }
@@ -604,13 +681,24 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			$va_sql_wheres[] = "(bd.table_num = ".intval($vn_table_num).")";
 		}
 		
+		if(is_array($pa_restrict_to_types) && sizeof($pa_restrict_to_types)) {
+			$va_type_list = caMakeTypeIDList($pm_table_name_or_num, $pa_restrict_to_types, array('dontIncludeSubtypesInTypeRestriction' => $pb_dont_include_subtypes_in_type_restriction));
+			if (sizeof($va_type_list) > 0) {
+				$va_sql_wheres[] = "(cbdtr.type_id IS NULL OR cbdtr.type_id IN (".join(",", $va_type_list)."))";
+			}
+		}
+		if (is_array($pa_access) && (sizeof($pa_access))) {
+			$pa_access = array_map("intval", $pa_access);
+			$va_sql_wheres[] = "(bd.access IN (".join(",", $pa_access)."))";
+		}
+		
 		$va_sql_access_wheres = array();
 		if ($pn_user_id) {
 			$t_user = $o_dm->getInstanceByTableName('ca_users', true);
 			$t_user->load($pn_user_id);
 			
 			if ($t_user->getPrimaryKey()) {
-				$vs_access_sql = ($pn_access > 0) ? " AND (access >= ".intval($pn_access).")" : "";
+				$vs_access_sql = ($pn_user_access > 0) ? " AND (access >= ".intval($pn_user_access).")" : "";
 				if (is_array($va_groups = $t_user->getUserGroups()) && sizeof($va_groups)) {
 					$vs_sql = "(
 						(bd.user_id = ".intval($pn_user_id).") OR 
@@ -639,7 +727,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			}
 		}
 		
-		if ($pn_access == __CA_BUNDLE_DISPLAY_READ_ACCESS__) {
+		if ($pn_user_access == __CA_BUNDLE_DISPLAY_READ_ACCESS__) {
 			$va_sql_access_wheres[] = "(bd.is_system = 1)";
 		}
 		
@@ -656,13 +744,15 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			FROM ca_bundle_displays bd
 			LEFT JOIN ca_bundle_display_labels AS bdl ON bd.display_id = bdl.display_id
 			LEFT JOIN ca_locales AS l ON bdl.locale_id = l.locale_id
+			LEFT JOIN ca_bundle_display_type_restrictions AS cbdtr ON bd.display_id = cbdtr.display_id
 			INNER JOIN ca_users AS u ON bd.user_id = u.user_id
 			".(sizeof($va_sql_wheres) ? 'WHERE ' : '')."
 			".join(' AND ', $va_sql_wheres)."
+			ORDER BY -cbdtr.display_id DESC, bdl.name ASC
 		");
+		//print "got $vs_sql";
 		$va_displays = array();
-		
-		$t_list = new ca_lists();
+
 		$va_type_name_cache = array();
 		while($qr_res->nextRow()) {
 			$vn_table_num = $qr_res->get('table_num');
@@ -731,14 +821,15 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	 * Determines if user has access to a display at a specified access level.
 	 *
 	 * @param int $pn_user_id user_id of user to check display access for
-	 * @param int $pn_access type of access required. Use __CA_BUNDLE_DISPLAY_READ_ACCESS__ for read-only access or __CA_BUNDLE_DISPLAY_EDIT_ACCESS__ for editing (full) access
+	 * @param int $pn_user_access type of access required. Use __CA_BUNDLE_DISPLAY_READ_ACCESS__ for read-only access or __CA_BUNDLE_DISPLAY_EDIT_ACCESS__ for editing (full) access
 	 * @param int $pn_display_id The id of the display to check. If omitted then currently loaded display will be checked.
 	 * @return bool True if user has access, false if not
 	 */
-	public function haveAccessToDisplay($pn_user_id, $pn_access, $pn_display_id=null) {
+	public function haveAccessToDisplay($pn_user_id, $pn_user_access, $pn_display_id=null) {
 		if ($pn_display_id) {
 			$vn_display_id = $pn_display_id;
 			$t_disp = new ca_bundle_displays($vn_display_id);
+			if ($this->inTransaction()) { $t_disp->setTransaction($this->getTransaction()); }
 			$vn_display_user_id = $t_disp->get('user_id');
 		} else {
 			$vn_display_user_id = $this->get('user_id');
@@ -747,17 +838,17 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		if(!$vn_display_id && !($vn_display_id = $t_disp->getPrimaryKey())) { 
 			return true; // new display
 		}
-		if (isset(ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access])) {
-			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access];
+		if (isset(ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access])) {
+			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access];
 		}
 		
 		if (($vn_display_user_id == $pn_user_id)) {	// owners have all access
-			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access] = true;
+			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access] = true;
 		}
 		
 		
-		if ((bool)$t_disp->get('is_system') && ($pn_access == __CA_BUNDLE_DISPLAY_READ_ACCESS__)) {	// system displays are readable by all
-			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access] = true;
+		if ((bool)$t_disp->get('is_system') && ($pn_user_access == __CA_BUNDLE_DISPLAY_READ_ACCESS__)) {	// system displays are readable by all
+			return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access] = true;
 		}
 		
 		$o_db =  $this->getDb();
@@ -768,9 +859,9 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			INNER JOIN ca_users_x_groups AS uxg ON uxg.group_id = ug.group_id
 			WHERE 
 				(dxg.access >= ?) AND (uxg.user_id = ?) AND (dxg.display_id = ?)
-		", (int)$pn_access, (int)$pn_user_id, (int)$vn_display_id);
+		", (int)$pn_user_access, (int)$pn_user_id, (int)$vn_display_id);
 	
-		if ($qr_res->numRows() > 0) { return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access] = true; }
+		if ($qr_res->numRows() > 0) { return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access] = true; }
 		
 		$qr_res = $o_db->query("
 			SELECT dxu.display_id 
@@ -778,11 +869,11 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			INNER JOIN ca_users AS u ON dxu.user_id = u.user_id
 			WHERE 
 				(dxu.access >= ?) AND (u.user_id = ?) AND (dxu.display_id = ?)
-		", (int)$pn_access, (int)$pn_user_id, (int)$vn_display_id);
+		", (int)$pn_user_access, (int)$pn_user_id, (int)$vn_display_id);
 	
-		if ($qr_res->numRows() > 0) { return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access] = true; }
+		if ($qr_res->numRows() > 0) { return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access] = true; }
 		
-		return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_access] = false;
+		return ca_bundle_displays::$s_have_access_to_display_cache[$vn_display_id.'/'.$pn_user_id.'/'.$pn_user_access] = false;
 	}
 	# ------------------------------------------------------
 	# Settings
@@ -806,7 +897,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	 * @param $ps_form_name The name of the HTML form this bundle will be part of
 	 * @return string HTML for bundle
 	 */
-	public function getBundleDisplayHTMLFormBundle($po_request, $ps_form_name) {
+	public function getBundleDisplayHTMLFormBundle($po_request, $ps_form_name, $ps_placement_code, $pa_options=null) {
 		if (!$this->haveAccessToDisplay($po_request->getUserID(), __CA_BUNDLE_DISPLAY_EDIT_ACCESS__)) {
 			return null;
 		}
@@ -815,6 +906,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		
 		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl($po_request, $this->getAppDatamodel()->getTableName($this->get('table_num'))));
 		$o_view->setVar('t_display', $this);
+		$o_view->setVar('placement_code', $ps_placement_code);	
 		$o_view->setVar('id_prefix', $ps_form_name);		
 		
 		return $o_view->render('ca_bundle_display_placements.php');
@@ -853,6 +945,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		$va_available_bundles = array();
 		
 		$t_placement = new ca_bundle_display_placements(null, array());
+		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 		
 		// get intrinsic fields
 		$va_additional_settings = array(
@@ -896,6 +989,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		$va_element_codes = $t_instance->getApplicableElementCodes(null, false, $pa_options['no_cache']);
 		
 		$t_md = new ca_metadata_elements();
+		if ($this->inTransaction()) { $t_md->setTransaction($this->getTransaction()); }
 		$va_all_elements = $t_md->getElementsAsList();
 		
 		$va_additional_settings = array(
@@ -926,42 +1020,88 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				'default' => 2048,
 				'label' => _t('Maximum length'),
 				'description' => _t('Maximum length, in characters, of displayed information.')
+			),
+			'filter' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_FIELD,
+				'width' => 35, 'height' => 5,
+				'takesLocale' => false,
+				'default' => '',
+				'label' => _t('Filter using expression'),
+				'description' => _t('Expression to filter values with. Leave blank if you do not wish to filter values.')
 			)
 		);
 		foreach($va_element_codes as $vn_element_id => $vs_element_code) {
 			if (!is_null($va_all_elements[$vn_element_id]['settings']['canBeUsedInDisplay'] ) && !$va_all_elements[$vn_element_id]['settings']['canBeUsedInDisplay']) { continue; }
 			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+			
 			if (caGetBundleAccessLevel($vs_table, $vs_element_code) == __CA_BUNDLE_ACCESS_NONE__) {
 				continue;	
 			}
 			
-			if ($va_all_elements[$vn_element_id]['datatype'] == 3) {	// list
-				$va_even_more_settings = array(
-					'sense' => array(
-						'formatType' => FT_TEXT,
-						'displayType' => DT_SELECT,
-						'width' => 20, 'height' => 1,
-						'takesLocale' => false,
-						'default' => 'singular',
-						'options' => array(
-							_t('Singular') => 'singular',
-							_t('Plural') => 'plural'
-						),
-						'label' => _t('Sense'),
-						'description' => _t('Determines if value used is singular or plural version.')
-					)		
-				);
-			} else {
-				$va_even_more_settings = array();
+			switch($va_all_elements[$vn_element_id]['datatype']) {
+				case 3:	// list
+					$va_even_more_settings = array(
+						'sense' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'width' => 20, 'height' => 1,
+							'takesLocale' => false,
+							'default' => 'singular',
+							'options' => array(
+								_t('Singular') => 'singular',
+								_t('Plural') => 'plural'
+							),
+							'label' => _t('Sense'),
+							'description' => _t('Determines if value used is singular or plural version.')
+						)		
+					);
+					break;
+				case 0:	// container (allows sub-elements to be summarized)
+				case 6: // Currency
+				case 8: // Length
+				case 9:	// Weight
+				case 10: // Timecode
+				case 11: // Integer
+				case 12: // Numeric (decimal)
+					$va_even_more_settings = array(
+						'bottom_line' => array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_FIELD,
+							'width' => 35, 'height' => 5,
+							'takesLocale' => false,
+							'default' => '',
+							'label' => _t('Bottom line format'),
+							'description' => _t('Template to format aggregate data for display under this column. The template can include these aggregate data tags: ^PAGEAVG, ^AVG, ^PAGESUM, ^SUM, ^PAGEMin, ^MIN, ^PAGEMAX, ^MAX. For containers follow the tag with the element code of the subelement to aggregate. Ex. ^SUM:dimensions_width')
+						)		
+					);
+					
+					if ($va_all_elements[$vn_element_id]['datatype'] == 6) {
+						$va_even_more_settings['display_currency_conversion'] = array(
+							'formatType' => FT_NUMBER,
+							'displayType' => DT_CHECKBOXES,
+							'width' => 10, 'height' => 1,
+							'takesLocale' => false,
+							'default' => '0',
+							'label' => _t('Display currency conversion?'),
+							'description' => _t('Check this option if you want your currency values to be displayed in both the specified and local currency.')
+						);
+					}
+					break;
+				default:
+					$va_even_more_settings = array();
+					break;
 			}
 			
 			$vs_bundle = $vs_table.'.'.$vs_element_code;
 			
 			$va_even_more_settings['format'] = $va_additional_settings['format'];
-			$va_even_more_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
+			//$va_even_more_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
 			
 			$t_placement = new ca_bundle_display_placements(null, array_merge($va_additional_settings, $va_even_more_settings));
-			
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+		
 			$vs_display =  "<div id='bundleDisplayEditorBundle_{$vs_table}_{$vs_element_code}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_bundle))."</div>";
 			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
 				'bundle' => $vs_bundle,
@@ -1012,9 +1152,9 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				)
 			);
 			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
-			
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+		
 			$vs_bundle = $vs_table.'.preferred_labels';
-			$va_additional_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
 			
 			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_preferred_labels'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_bundle))."</div>";
 			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
@@ -1036,9 +1176,10 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		if (caGetBundleAccessLevel($vs_table, "nonpreferred_labels") != __CA_BUNDLE_ACCESS_NONE__) {
 			// get non-preferred labels for this table
 			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			
 			$vs_bundle = $vs_table.'.nonpreferred_labels';
-			$va_additional_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
+			
 			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_nonpreferred_labels'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_bundle))."</div>";
 			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
 				'bundle' => $vs_bundle,
@@ -1056,28 +1197,26 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			}
 		}
 		
-		// get commerce order history bundle (objects only, of course)
 		if ($vs_table == 'ca_objects') {
+			
 			$va_additional_settings = array(
-				'order_type' => array(
+				'format' => array(
 					'formatType' => FT_TEXT,
-					'displayType' => DT_SELECT,
-					'width' => 35, 'height' => 1,
+					'displayType' => DT_FIELD,
+					'width' => 35, 'height' => 5,
 					'takesLocale' => false,
 					'default' => '',
-					'options' => array(
-						_t('Sales order') => 'O',
-						_t('Loan') => 'L'
-					),
-					'label' => _t('Type of order'),
-					'description' => _t('Determines which type of order is displayed.')
-				)		
+					'label' => _t('Display format'),
+					'description' => _t('Template used to format output.')
+				)	
 			);
+			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			
-			$vs_bundle = 'ca_commerce_order_history';
-			$vs_label = _t('Order history');
-			$vs_display = _t('Order history');
-			$vs_description = _t('List of orders (loans or sales) that include this object');
+			$vs_bundle = 'ca_object_checkouts';
+			$vs_label = _t('Library checkouts');
+			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_preferred_labels'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> "._t('Library checkouts')."</div>";
+			$vs_description = _t('List of library checkouts that include this object');
 			
 			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
 				'bundle' => $vs_bundle,
@@ -1089,10 +1228,37 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			
 			if ($vb_show_tooltips) {
 				TooltipManager::add(
-					"#bundleDisplayEditorBundle_ca_commerce_order_history",
+					"#bundleDisplayEditorBundle_ca_object_checkouts",
 					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
 				);
 			}
+			
+			$va_additional_settings = array(
+				
+			);
+			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+			
+			$vs_bundle = $vs_table.'.ca_objects_location';
+			$vs_label = _t('Current location');
+			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_ca_objects_location'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> "._t('Current location')."</div>";
+			$vs_description = _t('Current location of object');
+			
+			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
+				'bundle' => $vs_bundle,
+				'display' => ($vs_format == 'simple') ? $vs_label : $vs_display,
+				'description' => $vs_description,
+				'settingsForm' => $t_placement->getHTMLSettingForm(array('id' => $vs_bundle.'_0')),
+				'settings' => $va_additional_settings
+			);
+			
+			if ($vb_show_tooltips) {
+				TooltipManager::add(
+					"#bundleDisplayEditorBundle_ca_objects_location",
+					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
+				);
+			}
+
 		}
 		
 		if (caGetBundleAccessLevel($vs_table, "ca_object_representations") != __CA_BUNDLE_ACCESS_NONE__) {
@@ -1119,7 +1285,8 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				
 				foreach($va_versions as $vs_version => $va_version_info) {
 					$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
-					
+					if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+		
 					$vs_bundle = 'ca_object_representations.media.'.$vs_version;
 					$vs_display = "<div id='bundleDisplayEditorBundle_ca_object_representations_media_{$vs_version}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_bundle))."</div>";
 					$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
@@ -1139,6 +1306,8 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				}
 				
 				$t_rep = new ca_object_representations();
+				if ($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction()); }
+				
 				foreach(array('mimetype', 'md5', 'original_filename') as $vs_rep_field) {
 					$vs_bundle = 'ca_object_representations.'.$vs_rep_field;
 					$vs_display = "<div id='bundleDisplayEditorBundle_ca_object_representations_{$vs_rep_field}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_rep->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_rep->getDisplayLabel($vs_bundle))."</div>";
@@ -1159,9 +1328,9 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		
 		$o_dm = $this->getAppDatamodel();
 		foreach(array(
-			'ca_objects', 'ca_object_lots', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_storage_locations', 'ca_loans', 'ca_movements', 'ca_list_items'
+			'ca_objects', 'ca_object_lots', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_storage_locations', 'ca_loans', 'ca_movements', 'ca_list_items', 'ca_object_representations'
 		) as $vs_related_table) {
-			if ($this->getAppConfig()->get($vs_related_table.'_disable')) { continue; }			
+			if ($this->getAppConfig()->get($vs_related_table.'_disable') && !(($vs_related_table == 'ca_object_representations') && (!$this->getAppConfig()->get('ca_objects_disable')))) { continue; }			
 			if (caGetBundleAccessLevel($vs_table, $vs_related_table) == __CA_BUNDLE_ACCESS_NONE__) { continue; }
 			
 			if ($vs_related_table === $vs_table) { 
@@ -1176,15 +1345,6 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			if ((sizeof($va_path) < 2) || (sizeof($va_path) > 3)) { continue; }		// only use direct relationships (one-many or many-many)
 			
 			$va_additional_settings = array(
-				'makeEditorLink' => array(
-					'formatType' => FT_NUMBER,
-					'displayType' => DT_CHECKBOXES,
-					'width' => 35, 'height' => 5,
-					'takesLocale' => false,
-					'default' => '0',
-					'label' => _t('Display as link to editor'),
-					'description' => _t('If set name of related item will be displayed as a link to edit the item.')
-				),
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
@@ -1222,61 +1382,91 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 					'default' => '',
 					'label' => _t('Delimiter'),
 					'description' => _t('Text to place in-between repeating values.')
-				),
-				'show_hierarchy' => array(
-					'formatType' => FT_NUMBER,
-					'displayType' => DT_CHECKBOXES,
-					'width' => 10, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '0',
-					'label' => _t('Show hierarchy?'),
-					'description' => _t('If checked the full hierarchical path will be shown.')
-				),
-				'remove_first_items' => array(
-					'formatType' => FT_NUMBER,
-					'displayType' => DT_FIELD,
-					'width' => 10, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '0',
-					'label' => _t('Remove first items from hierarchy?'),
-					'description' => _t('If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted.')
-				),
-				'hierarchy_order' => array(
-					'formatType' => FT_TEXT,
-					'displayType' => DT_SELECT,
-					'options' =>array(
-						_t('top first') => 'ASC',
-						_t('bottom first') => 'DESC'
-					),
-					'width' => 35, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '',
-					'label' => _t('Order hierarchy'),
-					'description' => _t('Determines order in which hierarchy is displayed.')
-				),
-				'hierarchy_limit' => array(
-					'formatType' => FT_NUMBER,
-					'displayType' => DT_FIELD,
-					'width' => 10, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '',
-					'label' => _t('Maximum length of hierarchy'),
-					'description' => _t('Maximum number of items to show in the hierarchy. Leave blank to show the unabridged hierarchy.')
-				),
-				'hierarchical_delimiter' => array(
-					'formatType' => FT_TEXT,
-					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 1,
-					'takesLocale' => false,
-					'default' => ' ➔ ',
-					'label' => _t('Hierarchical delimiter'),
-					'description' => _t('Text to place in-between elements of a hierarchical value.')
 				)
 			);
+			if ($t_rel_instance->isHierarchical()) {
+				$va_additional_settings += array(
+					'show_hierarchy' => array(
+						'formatType' => FT_NUMBER,
+						'displayType' => DT_CHECKBOXES,
+						'width' => 10, 'height' => 1,
+						'hideOnSelect' => array('format'),
+						'takesLocale' => false,
+						'default' => '0',
+						'label' => _t('Show hierarchy?'),
+						'description' => _t('If checked the full hierarchical path will be shown.')
+					),
+					'remove_first_items' => array(
+						'formatType' => FT_NUMBER,
+						'displayType' => DT_FIELD,
+						'width' => 10, 'height' => 1,
+						'takesLocale' => false,
+						'default' => '0',
+						'label' => _t('Remove first items from hierarchy?'),
+						'description' => _t('If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted.')
+					),
+					'hierarchy_order' => array(
+						'formatType' => FT_TEXT,
+						'displayType' => DT_SELECT,
+						'options' =>array(
+							_t('top first') => 'ASC',
+							_t('bottom first') => 'DESC'
+						),
+						'width' => 35, 'height' => 1,
+						'takesLocale' => false,
+						'default' => '',
+						'label' => _t('Order hierarchy'),
+						'description' => _t('Determines order in which hierarchy is displayed.')
+					),
+					'hierarchy_limit' => array(
+						'formatType' => FT_NUMBER,
+						'displayType' => DT_FIELD,
+						'width' => 10, 'height' => 1,
+						'takesLocale' => false,
+						'default' => '',
+						'label' => _t('Maximum length of hierarchy'),
+						'description' => _t('Maximum number of items to show in the hierarchy. Leave blank to show the unabridged hierarchy.')
+					),
+					'hierarchical_delimiter' => array(
+						'formatType' => FT_TEXT,
+						'displayType' => DT_FIELD,
+						'width' => 35, 'height' => 1,
+						'takesLocale' => false,
+						'default' => ' ➔ ',
+						'label' => _t('Hierarchical delimiter'),
+						'description' => _t('Text to place in-between elements of a hierarchical value.')
+					)
+				);
+			}
 			
-			$va_additional_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
+			if (
+				(($vs_table === 'ca_objects') && ($vs_related_table === 'ca_storage_locations'))
+				||
+				(($vs_table === 'ca_storage_locations') && ($vs_related_table === 'ca_objects'))
+				||
+				(($vs_table === 'ca_objects') && ($vs_related_table === 'ca_movements'))
+				||
+				(($vs_table === 'ca_movements') && ($vs_related_table === 'ca_objects'))
+				||
+				(($vs_table === 'ca_storage_locations') && ($vs_related_table === 'ca_movements'))
+				||
+				(($vs_table === 'ca_movements') && ($vs_related_table === 'ca_storage_locations'))
+			) {
+				$va_additional_settings['showCurrentOnly'] = array(
+					'formatType' => FT_TEXT,
+					'displayType' => DT_CHECKBOXES,
+					'width' => "10", 'height' => "1",
+					'takesLocale' => false,
+					'default' => '0',
+					'label' => _t('Show current only?'),
+					'description' => _t('If checked only current objects are displayed.')
+				);
+			}
+			
+			//$va_additional_settings['format']['helpText'] = $this->getTemplatePlaceholderDisplayListForBundle($vs_bundle);
 		
 			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 			
 			$vs_id_suffix = "bundleDisplayEditorBundle_".str_replace(".", "_", $vs_bundle);
 			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_id_suffix}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_rel_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_rel_instance->getDisplayLabel($vs_bundle))."</div>";
@@ -1313,6 +1503,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			)
 		);
 		$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 		
 		$vs_bundle = "{$vs_table}.created";
 		$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_created'><span class='bundleDisplayEditorPlacementListItemTitle'>"._t('General')."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_bundle))."</div>";
@@ -1372,15 +1563,15 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	 */
 	public function getPlacementsInDisplay($pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		$pb_no_cache = isset($pa_options['noCache']) ? (bool)$pa_options['noCache'] : false;
-		$pn_user_id = isset($pa_options['user_id']) ? $pa_options['user_id'] : null;
+		$pb_no_cache = caGetOption('noCache', $pa_options, false);
+		$pn_user_id = caGetOption('user_id', $pa_options, null);
 		
 		if ($pn_user_id && !$this->haveAccessToDisplay($pn_user_id, __CA_BUNDLE_DISPLAY_READ_ACCESS__)) {
 			return array();
 		}
 		
-		$vb_show_tooltips = (isset($pa_options['no_tooltips']) && (bool)$pa_options['no_tooltips']) ? false : true;
-		$vs_format = (isset($pa_options['format']) && in_array($pa_options['format'], array('simple', 'full'))) ? $pa_options['format'] : 'full';
+		$vb_show_tooltips = !caGetOption('no_tooltips', $pa_options, false);
+		$vs_format = caGetOption('format', $pa_options, 'full', array('validValues' => array('simple', 'full')));
 		
 		if (!($pn_table_num = $this->getAppDatamodel()->getTableNum($this->get('table_num')))) { return null; }
 		
@@ -1391,7 +1582,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		$va_placements_in_display = array();
 		foreach($va_placements as $vn_placement_id => $va_placement) {
 			$vs_label = ($vs_label = $t_instance->getDisplayLabel($va_placement['bundle_name'])) ? $vs_label : $va_placement['bundle_name'];
-			if(is_array($va_placement['settings']['label'])){
+			if(is_array($va_placement['settings']) && is_array($va_placement['settings']['label'])){
 				$va_tmp = caExtractValuesByUserLocale(array($va_placement['settings']['label']));
 				if ($vs_user_set_label = array_shift($va_tmp)) {
 					$vs_label = "{$vs_label} (<em>{$vs_user_set_label}</em>)";
@@ -1489,6 +1680,8 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 		
 		if ($va_element_codes[$vs_bundle]) {
 			$t_element = new ca_metadata_elements();
+			if ($this->inTransaction()) { $t_element->setTransaction($this->getTransaction()); }
+		
 			if ($t_element->load(array('element_code' => $vs_bundle))) {
 				// is attribute
 				
@@ -1586,23 +1779,17 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 	 * @param object $po_result A sub-class of SearchResult or BaseModel to extract data out of
 	 * @param int $pn_placement_id 
 	 * @param array Optional array of options. Supported options include:
-	 *		request = The current RequestHTTP object; required if using the makeEditorLink option
+	 *		request = The current RequestHTTP object
 	 *		convertCodesToDisplayText = If true numeric list id's and value lists are converted to display text. Default is true. If false then all such values are returned as the original integer codes.
 	 *		forReport = If true then certain values are transformed for display in a report. Namely, all media output is forced to use the version specified by the app.conf 'representation_version_for_report' directive, no matter the setting in the display.
 	 *		purify = if true then value is run through HTMLPurifier (http://htmlpurifier.org) before being returned; this is useful when you want to make sure any HTML in the value is valid, particularly when converting HTML to a PDF as invalid markup will cause an exception. Default is false as HTMLPurify can significantly slow down things if used everywhere.
-	 *		makeEditorLink = if true will attempt to return value in a link to edit the value's record. Is ignored if 'forReport' is set or 'request' is not set
 	 *		delimiter = character(s) to place between repeating values
-	 *
+	 *		showHierarchy = 
+	 *		showCurrentOnly = 
 	 * @return string The processed value ready for display
 	 */
 	public function getDisplayValue($po_result, $pn_placement_id, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
-		if (!isset($pa_options['delimiter'])) { $pa_options['delimiter'] = ";\n\n"; }
-		if (!isset($pa_options['makeEditorLink'])) { $pa_options['makeEditorLink'] = false; }
-		if (!isset($pa_options['forReport'])) { $pa_options['forReport'] = false; }
-		if (!isset($pa_options['purify'])) { $pa_options['purify'] = false; }
-		
 		if (!is_numeric($pn_placement_id)) {
 			$vs_bundle_name = $pn_placement_id;
 			$va_placement = array();
@@ -1611,109 +1798,113 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			$va_placement = $va_placements[$pn_placement_id];
 			$vs_bundle_name = $va_placement['bundle_name'];
 		}
+		$va_settings = 		caGetOption('settings', $va_placement, array(), array('castTo' => 'array'));
+		$o_request = 		caGetOption('request', $pa_options, null);
 		
-		$va_tmp = explode('.', $vs_bundle_name);
+		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
+		if (!isset($pa_options['forReport'])) { $pa_options['forReport'] = false; }
+		if (!isset($pa_options['purify'])) { $pa_options['purify'] = false; }
+		if (!isset($pa_options['asHTML'])) { $pa_options['asHTML'] = true; }
 		
-		if (!isset($pa_options['maximumLength'])) {
-			$pa_options['maximumLength'] =  ($va_placement['settings']['maximum_length']) ? $va_placement['settings']['maximum_length'] : null;
+		if (!isset($pa_options['maximumLength'])) { $pa_options['maximumLength'] =  ($va_settings['maximum_length']) ? $va_settings['maximum_length'] : null; }
+		if (!isset($pa_options['filter'])) { $pa_options['filter'] = caGetOption('filter', $va_settings, null); }
+		
+		$pa_options['delimiter'] = caGetOption('delimiter', $pa_options, caGetOption('delimiter', $va_settings, '; '));
+		$pa_options['dateFormat'] = caGetOption('dateFormat', $pa_options, caGetOption('dateFormat', $va_settings, ''));
+		$pa_options['useSingular'] = (isset($va_settings['sense']) && ($va_settings['sense'] == 'singular')) ? true : false;
+		$pa_options['returnURL'] = (isset($va_settings['display_mode']) && ($va_settings['display_mode'] == 'url'))  ? true : false;
+		
+		if(caGetOption('display_currency_conversion', $va_settings, false) && $o_request && $o_request->isLoggedIn()) {
+			$pa_options['displayCurrencyConversion'] = $o_request->user->getPreference('currency');
 		}
 		
-		$pa_options['makeEditorLink'] = ($va_placement['settings']['makeEditorLink']) ? $va_placement['settings']['makeEditorLink'] : $pa_options['makeEditorLink'];
-		$pa_options['delimiter'] = ($va_placement['settings']['delimiter']) ? $va_placement['settings']['delimiter'] : $pa_options['delimiter'];
-		$pa_options['useSingular'] = (isset($va_placement['settings']['sense']) && ($va_placement['settings']['sense'] == 'singular')) ? true : false;
+		$va_bundle_bits = explode('.', $vs_bundle_name);
 		
-		$pa_options['returnURL'] = (isset($va_placement['settings']['display_mode']) && ($va_placement['settings']['display_mode'] == 'url'))  ? true : false;
+		$pa_options['restrictToRelationshipTypes'] = 	caGetOption('restrict_to_relationship_types', $va_settings, null);
+		$pa_options['restrictToTypes'] =				caGetOption('restrict_to_types', $va_settings, null);
 		
-		$pa_options['dateFormat'] = (isset($va_placement['settings']['dateFormat']) && ($va_placement['settings']['dateFormat'])) ? $va_placement['settings']['dateFormat'] : $pa_options['dateFormat'];
-		
-		$pa_options['hierarchicalDelimiter'] = '';
-		if ($va_placement['settings']['show_hierarchy'] || $pa_options['show_hierarchy']) {
-			if ($va_tmp[1] == 'related') {
-				array_splice($va_tmp, 2, 0, 'hierarchy');
-			} else {
-				array_splice($va_tmp, 1, 0, 'hierarchy');
-			}
-			$vs_bundle_name = join(".", $va_tmp);
-			$pa_options['hierarchicalDelimiter'] = ($va_placement['settings']['hierarchical_delimiter']) ? $va_placement['settings']['hierarchical_delimiter'] : null;	
-			$pa_options['direction'] = ($va_placement['settings']['hierarchy_order']) ? $va_placement['settings']['hierarchy_order'] : null;	
-			$pa_options['bottom'] = ($va_placement['settings']['hierarchy_limit']) ? $va_placement['settings']['hierarchy_limit'] : null;	
-			$pa_options['removeFirstItems'] = ($va_placement['settings']['remove_first_items']) ? $va_placement['settings']['remove_first_items'] : null;	
-		}
-		
-		$pa_options['restrict_to_relationship_types'] = $va_placement['settings']['restrict_to_relationship_types'];
-		$pa_options['restrict_to_types'] = $va_placement['settings']['restrict_to_types'];
-		if ((sizeof($va_tmp) == 1) || ((sizeof($va_tmp) == 2) && ($va_tmp[1] == 'related'))) {
-			$pa_options['template'] = ($va_placement['settings']['format']) ? $va_placement['settings']['format'] : $this->getAppConfig()->get($va_tmp[0].'_relationship_display_format');
+		unset($pa_options['format']);	// don't pass format strings to get() here
+		if ((sizeof($va_bundle_bits) == 1) || ((sizeof($va_bundle_bits) == 2) && ($va_bundle_bits[1] == 'related'))) {
+			$pa_options['template'] = caGetOption('format', $va_settings, $this->getAppConfig()->get($va_bundle_bits[0].'_relationship_display_format'));;
 		} else {
-			$pa_options['template'] = ($va_placement['settings']['format']) ? $va_placement['settings']['format'] : null;
+			$pa_options['template'] = caGetOption('format', $va_settings, null);
 		}
 		
-		if (!isset($pa_options['asHTML'])) {
-			$pa_options['asHTML'] = true;
-		}
-		
-		if (!$pa_options['forReport'] && isset($pa_options['makeEditorLink']) && $pa_options['makeEditorLink'] && isset($pa_options['request']) && $pa_options['request']) {
-			if ($t_instance = $this->getAppDatamodel()->getInstanceByTableName($va_tmp[0], true)) {
-				$va_tmp2 = $va_tmp;
-				if ((sizeof($va_tmp2) > 1) && (in_array($vs_tmp = array_pop($va_tmp2), array('related')))) {
-					$va_tmp2[] = $vs_tmp;
-				}
-				$va_tmp2[] = $t_instance->primaryKey();
+		$vs_val = '';
+		if($vs_template = trim($pa_options['template'])) {
+			unset($pa_options['template']);
 			
-				$va_ids = $po_result->get(join('.', $va_tmp2), array('returnAsArray' => true));
-				$va_links = array();
-				if (is_array($va_ids)) {
-					$va_display_texts = caProcessTemplateForIDs($pa_options['template'], $va_tmp2[0], $va_ids, array_merge($pa_options, array('returnAsArray' => true)));
-					foreach($va_display_texts as $vn_i => $va_text) {
-						
-						if (is_array($va_text)) {
-							if (in_array('hierarchy', $va_tmp2)) {
-								$vs_text = array_pop($va_text);
-								$vn_id = $po_result->get($va_tmp2[0].'.'.$t_instance->primaryKey());
-							} else {
-								if (in_array('related', $va_tmp2)) {
-									$vs_text = $va_text[$t_instance->getLabelDisplayField()];
-								} else {
-									if (is_array($va_text)) {
-										$vs_text = $va_text[$t_instance->getLabelDisplayField()];
-									}
-								}
-								$vn_id = $va_text[$t_instance->primaryKey()];
-							}
-						} else {
-							$vn_id = array_shift($va_ids);
-							$vs_text = $va_text;
-						}
-						
-						$va_links[] = caEditorLink($pa_options['request'], $vs_text, '', $va_tmp2[0], $vn_id);
-					}
+			if ($t_instance = $this->getAppDatamodel()->getInstanceByTableName($va_bundle_bits[0], true)) {
+				$va_bundle_bits_proc = $va_bundle_bits;
+				$vb_is_related = false;
+				if ((sizeof($va_bundle_bits) == 1) || ((sizeof($va_bundle_bits) == 2) && $va_bundle_bits[1] == 'related')) {
+					// pulling related
+					$vb_is_related = true;
+				} elseif ((sizeof($va_bundle_bits_proc) > 1) && (in_array($vs_tmp = array_pop($va_bundle_bits_proc), array('related')))) {
+					// pulling related
+					$va_bundle_bits_proc[] = $vs_tmp;
+					$vb_is_related = true;
+				} else {
+					// pulling current record
+					$va_bundle_bits_proc[] = $t_instance->primaryKey();
 				}
-				$vs_val = join($pa_options['delimiter'], $va_links);
+				
+				if ($vb_is_related) {
+					$vs_restrict_to_types = is_array($pa_options['restrictToTypes']) ? "restrictToTypes=\"".join("|", $pa_options['restrictToTypes'])."\"" : "";
+					$vs_restrict_to_relationship_types = is_array($pa_options['restrictToRelationshipTypes']) ? "restrictToRelationshipTypes=\"".join("|", $pa_options['restrictToRelationshipTypes'])."\"" : "";
+					
+					// resolve template relative to relationship
+					$o_dm = $this->getAppDatamodel();
+					if (is_array($va_path = $o_dm->getPath($po_result->tableName(), $t_instance->tableName()))) {
+						$va_path = array_keys($va_path);
+						$vs_unit_tag = "<unit relativeTo=\"".$va_path[1]."\" delimiter=\"".$pa_options['delimiter']."\" {$vs_restrict_to_types} {$vs_restrict_to_relationship_types}>";
+
+						switch(sizeof($va_path)) {
+							case 3:
+								// For regular relationships just evaluate the template relative to the relationship record
+								// this way the template can reference interstitial data
+								$vs_val = $po_result->getWithTemplate($vs_unit_tag.$vs_template."</unit>", $pa_options);
+								break;
+							case 2:
+								$t_rel = $o_dm->getInstanceByTableName($va_path[1], true);
+								if (method_exists($t_rel, 'isSelfRelationship') && $t_rel->isSelfRelationship()) {
+									// is a self-relationship
+									$vs_val = $po_result->getWithTemplate($vs_unit_tag.$vs_template."</unit>", array_merge($pa_options, array('primaryIDs' => array($po_result->tableName() => array($po_result->getPrimaryKey())))));
+								} else {
+									// is a many-one relationship; evaluate the template for these relative
+									// to the related record
+									$vs_val = $po_result->getWithTemplate($vs_unit_tag.$vs_template."</unit>", $pa_options);
+								}
+								break;
+							default:
+								$vs_val = _t("???");
+								break;
+						}
+					}
+				} else {
+					// resolve template relative to current record
+					$vs_val = $po_result->getWithTemplate($vs_template);
+				}
+				
 			}
 		} else {
-			$vs_val = $po_result->get($vs_bundle_name, $pa_options);
-		
-			if (isset($pa_options['maximumLength']) && ((int)$pa_options['maximumLength'] > 0)) {
-				$vs_stripped_val = strip_tags($vs_val);
-				if (mb_strlen($vs_stripped_val) > (int)$pa_options['maximumLength']) {
-					return mb_substr($vs_stripped_val, 0, (int)$pa_options['maximumLength']);
-				}
-			}
+			// Straight get
+			$vs_val = $po_result->get(join(".", $va_bundle_bits), $pa_options);
 		}
 		
 		if (isset($pa_options['purify']) && $pa_options['purify']) {
-			$o_purifier = new HTMLPurifier();
-    		$vs_val = $o_purifier->purify($vs_val);
+    		$vs_val = ca_bundle_displays::getPurifier()->purify($vs_val);
 		}
 		
 		return $vs_val;
 	}
 	# ------------------------------------------------------
-	public function savePlacementsFromHTMLForm($po_request, $ps_form_prefix) {;
-		if ($vs_bundles = $po_request->getParameter($ps_form_prefix.'_ca_bundle_display_placementsdisplayBundleList', pString)) {
+	public function savePlacementsFromHTMLForm($po_request, $ps_form_prefix, $ps_placement_code) {;
+		if ($vs_bundles = $po_request->getParameter("{$ps_placement_code}{$ps_form_prefix}displayBundleList", pString)) {
 			$va_bundles = explode(';', $vs_bundles);
 			
 			$t_display = new ca_bundle_displays($this->getPrimaryKey());
+			if ($this->inTransaction()) { $t_display->setTransaction($this->getTransaction()); }
 			$va_placements = $t_display->getPlacements(array('user_id' => $po_request->getUserID()));
 			
 			// remove deleted bundles
@@ -1729,7 +1920,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			}
 			
 			$va_locale_list = ca_locales::getLocaleList(array('index_by_code' => true));
-			
+
 			$va_available_bundles = $t_display->getAvailableBundles();
 			foreach($va_bundles as $vn_i => $vs_bundle) {
 				// get settings
@@ -1743,9 +1934,9 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				$vs_bundle_proc = str_replace(".", "_", $vs_bundle);
 				
 				$va_settings = array();
-				
+			
 				foreach($_REQUEST as $vs_key => $vs_val) {
-					if (preg_match("!^{$vs_bundle_proc}_([\d]+)_(.*)$!", $vs_key, $va_matches)) {
+					if (preg_match("!^{$vs_bundle_proc}_([\d]+)_([^\d]+.*)$!", $vs_key, $va_matches)) {
 						
 						// is this locale-specific?
 						if (preg_match('!(.*)_([a-z]{2}_[A-Z]{2})$!', $va_matches[2], $va_locale_matches)) {
@@ -1765,6 +1956,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 					}
 				} else {
 					$t_placement = new ca_bundle_display_placements($vn_placement_id, $va_available_bundles[$vs_bundle]['settings']);
+					if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 					$t_placement->setMode(ACCESS_WRITE);
 					$t_placement->set('rank', $vn_i + 1);
 					
@@ -1785,6 +1977,203 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}
 		} 
+	}
+	# ----------------------------------------
+	# Type restrictions
+	# ----------------------------------------
+	/**
+	 * Adds restriction (a binding between the display and item type)
+	 *
+	 * @param int $pn_type_id the type
+	 * @param array $pa_settings Array of options for the restriction. (No options are currently implemented).
+	 * @return bool True on success, false on error, null if no screen is loaded
+	 * 
+	 */
+	public function addTypeRestriction($pn_type_id, $va_settings=null) {
+		if (!($vn_display_id = $this->getPrimaryKey())) { return null; }		// display must be loaded
+		if (!is_array($va_settings)) { $va_settings = array(); }
+		
+		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($this->get('table_num')))) { return false; }
+		
+		$va_type_list = $t_instance->getTypeList();
+		if (!isset($va_type_list[$pn_type_id])) { return false; }
+		
+		$t_restriction = new ca_bundle_display_type_restrictions();
+		if ($this->inTransaction()) { $t_restriction->setTransaction($this->getTransaction()); }
+		$t_restriction->setMode(ACCESS_WRITE);
+		$t_restriction->set('table_num', $this->get('table_num'));
+		$t_restriction->set('type_id', $pn_type_id);
+		$t_restriction->set('display_id', $this->getPrimaryKey());
+		foreach($va_settings as $vs_setting => $vs_setting_value) {
+			$t_restriction->setSetting($vs_setting, $vs_setting_value);
+		}
+		$t_restriction->insert();
+		
+		if ($t_restriction->numErrors()) {
+			$this->errors = $t_restriction->errors();
+			return false;
+		}
+		return true;
+	}
+	# ----------------------------------------
+	/**
+	 * Sets restrictions for currently loaded display
+	 *
+	 * @param array $pa_type_ids list of types to restrict to
+	 * @return bool True on success, false on error, null if no screen is loaded
+	 * 
+	 */
+	public function setTypeRestrictions($pa_type_ids) {
+		if (!($vn_display_id = $this->getPrimaryKey())) { return null; }		// display must be loaded
+		if (!is_array($pa_type_ids)) {
+			if (is_numeric($pa_type_ids)) { 
+				$pa_type_ids = array($pa_type_ids); 
+			} else {
+				$pa_type_ids = array();
+			}
+		}
+		
+		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($this->get('table_num')))) { return false; }
+		
+		$va_type_list = $t_instance->getTypeList();
+		$va_current_restrictions = $this->getTypeRestrictions();
+		$va_current_type_ids = array();
+		foreach($va_current_restrictions as $vn_i => $va_restriction) {
+			$va_current_type_ids[$va_restriction['type_id']] = true;
+		}
+		
+		foreach($va_type_list as $vn_type_id => $va_type_info) {
+			if(in_array($vn_type_id, $pa_type_ids)) {
+				// need to set
+				if(!isset($va_current_type_ids[$vn_type_id])) {
+					$this->addTypeRestriction($vn_type_id);
+				}
+			} else {
+				// need to unset
+				if(isset($va_current_type_ids[$vn_type_id])) {
+					$this->removeTypeRestriction($vn_type_id);
+				}
+			}
+		}
+		return true;
+	}
+	# ----------------------------------------
+	/**
+	 * Remove restriction from currently loaded display for specified type
+	 *
+	 * @param int $pn_type_id The type of the restriction
+	 * @return bool True on success, false on error, null if no screen is loaded
+	 */
+	public function removeTypeRestriction($pn_type_id) {
+		if (!($vn_display_id = $this->getPrimaryKey())) { return null; }		// display must be loaded
+		
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			DELETE FROM ca_bundle_display_type_restrictions
+			WHERE
+				display_id = ? AND type_id = ?
+		", (int)$this->getPrimaryKey(), (int)$pn_type_id);
+		
+		if ($o_db->numErrors()) {
+			$this->errors = $o_db->errors();
+			return false;
+		}
+		return true;
+	}
+	# ----------------------------------------
+	/**
+	 * Remove all type restrictions from loaded display
+	 *
+	 * @return bool True on success, false on error, null if no screen is loaded 
+	 */
+	public function removeAllTypeRestrictions() {
+		if (!($vn_display_id = $this->getPrimaryKey())) { return null; }		// display must be loaded
+		
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			DELETE FROM ca_bundle_display_type_restrictions
+			WHERE
+				display_id = ?
+		", (int)$this->getPrimaryKey());
+		
+		if ($o_db->numErrors()) {
+			$this->errors = $o_db->errors();
+			return false;
+		}
+		return true;
+	}
+	# ----------------------------------------
+	/**
+	 * Return restrictions for currently loaded display
+	 *
+	 * @param int $pn_type_id Type to limit returned restrictions to; if omitted or null then all restrictions are returned
+	 * @return array A list of restrictions, false on error or null if no ui is loaded
+	 */
+	public function getTypeRestrictions($pn_type_id=null) {
+		if (!($vn_display_id = $this->getPrimaryKey())) { return null; }		// display must be loaded
+		
+		$o_db = $this->getDb();
+		
+		$vs_table_type_sql = '';
+		if ($pn_type_id > 0) {
+			$vs_table_type_sql .= ' AND type_id = '.intval($pn_type_id);
+		}
+		$qr_res = $o_db->query("
+			SELECT *
+			FROM ca_bundle_display_type_restrictions
+			WHERE
+				display_id = ? {$vs_table_type_sql}
+		", (int)$this->getPrimaryKey());
+		
+		if ($o_db->numErrors()) {
+			$this->errors = $o_db->errors();
+			return false;
+		}
+		
+		$va_restrictions = array();
+		while($qr_res->nextRow()) {
+			$va_restrictions[] = $qr_res->getRow();
+		}
+		return $va_restrictions;
+	}
+	# ----------------------------------------
+	/**
+	 * Renders and returns HTML form bundle for management of type restriction in the currently loaded display
+	 * 
+	 * @param object $po_request The current request object
+	 * @param string $ps_form_name The name of the form in which the bundle will be rendered
+	 *
+	 * @return string Rendered HTML bundle for display
+	 */
+	public function getTypeRestrictionsHTMLFormBundle($po_request, $ps_form_name, $ps_placement_code, $pa_options=null) {
+		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
+		
+		$o_view->setVar('t_display', $this);			
+		$o_view->setVar('id_prefix', $ps_form_name);	
+		$o_view->setVar('placement_code', $ps_placement_code);		
+		$o_view->setVar('request', $po_request);
+		
+		$va_type_restrictions = $this->getTypeRestrictions();
+		$va_restriction_type_ids = array();
+		if (is_array($va_type_restrictions)) {
+			foreach($va_type_restrictions as $vn_i => $va_restriction) {
+				$va_restriction_type_ids[] = $va_restriction['type_id'];
+			}
+		}
+		
+		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($vn_table_num = $this->get('table_num')))) { return null; }
+		
+		$o_view->setVar('type_restrictions', $t_instance->getTypeListAsHTMLFormElement('type_restrictions[]', array('multiple' => 1, 'height' => 5), array('value' => 0, 'values' => $va_restriction_type_ids)));
+	
+		return $o_view->render('ca_bundle_display_type_restrictions.php');
+	}
+	# ----------------------------------------
+	public function saveTypeRestrictionsFromHTMLForm($po_request, $ps_form_prefix, $ps_placement_code) {
+		if (!$this->getPrimaryKey()) { return null; }
+		
+		return $this->setTypeRestrictions($po_request->getParameter('type_restrictions', pArray));
 	}
 	# ------------------------------------------------------
 }

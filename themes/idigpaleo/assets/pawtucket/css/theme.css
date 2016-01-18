@@ -1,0 +1,248 @@
+/* yellow Rule: #FFBD1F, yellow text: DFA800, dark gray nav BG: 3B3B3B, text grays: 262626, 676767 */
+.container {
+	max-width:1015px;
+}
+body {
+	font-family: "News Cycle", arial;
+}
+a {
+	color:#676767;
+}
+/* --- header styles --- */
+.navHeader{
+	padding:0px 0px 3px 0px;
+}
+.navbar{
+	background-color: #3B3B3B;
+	border-top:1px solid #FFBD1F;
+	border-bottom:1px solid #FFBD1F;
+	-webkit-box-shadow:none;
+	box-shadow:none;
+}
+.navbar-nav > li > a {
+	color:#FFFFFF !important;
+}
+.navbar .formOutline{
+	border:1px solid #FFF;
+	background-color:#FFFFFF;
+}
+H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
+	font-family: "News Cycle";
+	font-weight: 400;
+	font-style: normal;
+}
+H1, H1, H2, h2{
+	color: #DFA800;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: "News Cycle";
+	text-transform:uppercase;
+	font-size:17px;
+	font-weight: 700;
+	letter-spacing:1px;
+}
+.navbar-nav > li > a {
+    line-height: 20px;
+} 
+@media (min-width: 768px) {
+	.navbar-form {
+		margin-top:8px;
+	}
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  background-color: #3B3B3B;
+}
+.navbar .navbar-nav > .active > a,
+.navbar .navbar-nav > .active > a:hover,
+.navbar .navbar-nav > .active > a:focus {
+  	background-color: #3B3B3B;
+    color: #DFA800 !important;
+}
+.navbar-nav li.open > a{
+	background-color: #000000 !important;
+}
+.nav > li.dropdown > a.icon{
+	padding-bottom:15px;
+}
+.navbar{
+	margin-bottom:5px;
+}
+
+hr{
+	height:3px;
+	background-color:#FFBD1F;
+	border:0px;
+}
+.form-control:focus {
+    border-color: #000000;
+}
+/*--- static pages ---*/
+#pageArea{
+	padding:0px 10px 0px 10px;
+}
+
+/* --- footer ---*/
+#footer{
+	border-top: 3px solid #FFBD1F;
+}
+#footer ul a{
+	color: #DFA800;
+	text-decoration:none;
+}
+/*--- front page ---*/
+#pageArea.front{
+	padding:0px;
+}
+@media (min-width: 768px) {
+	.border-right{
+		border-right: 1px solid #999;
+	}
+	.border-left{
+		border-left: 1px solid #999;
+	}
+}
+.front .news{
+	padding-bottom:20px;
+}
+.front .news img{
+	width:100%;
+	height:auto;
+}
+.front .news H2{
+	font-size:21px;
+	color:#000000;
+	margin-top:20px;
+	margin-left:10px;
+}
+.front .news H3{
+	font-size:18px;
+	color:#000000;
+	margin-top:10px;
+	text-transform:none;
+	margin-left:10px;
+	line-height:1.2em;
+	font-weight:400;
+}
+.front H1{
+	background-color:#FFFFFF;
+	color:#DFA800;
+	padding:5px 35px 17px 0px;
+	margin-top:-46px;
+	margin-bottom:0px;
+	position:relative;
+	z-index:100;
+	float:left;
+	line-height:1em;
+	font-size:24px;
+}
+.front H2{
+	color:#DFA800;
+	margin:10px 0px 20px 0px;
+	padding:0px;
+	line-height:1em;
+	font-size:24px;
+}
+.front H3{
+	color:#000000;
+	margin:10px 0px 20px 0px;
+	padding:0px;
+	line-height:1em;
+	font-size:24px;
+	font-weight:700;
+	text-transform:none;
+}
+.frontSlide{
+	height:317px;
+	overflow:hidden;
+	width:478px;
+}
+.frontSlide img{
+	height:auto;
+	width:100%;
+}
+.frontSlide .frontSlideCaption, .frontSlide:hover .frontSlideCaption{
+	opacity:1;
+	padding:10px;
+	height:45px;
+	left:183px;
+	font-weight:normal;
+	font-size:10px;
+}
+.front .jcarousel{
+	padding-bottom:0px;
+	margin-bottom:0px;
+}
+.front .frontCarouselThumbnail img{
+	width:100%;
+	height:auto;
+}
+.front .commentsImg img{
+	width:100%;
+	height:auto;
+}
+
+.front .featuredInstitution div{
+	padding:10px 20px 10px 10px;
+}
+.front .frontComments{
+	min-height:375px;
+}
+.front .frontComments .quote{
+	margin:20px 0px 20px 0px;
+}
+.front .frontComments .quote img{
+	margin-right:5px;
+	vertical-align:text-bottom;
+}
+.front .frontComments .quote .byline{
+	color:#828282;
+	text-transform:uppercase;
+	padding-top:5px;
+}
+.front .frontComments HR{
+	height:1px;
+	background-color: #999;
+	margin:0px -15px 0px -15px;
+}
+/* --- detail --- */
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	margin-top:0px;
+}
+.detail .detailNavBgLeft{
+	position:absolute;
+	left:5px;
+}
+.detail .detailNavBgRight{
+	position:absolute;
+	right:5px;
+}
+.detail .navTop a{
+	margin-top:0px;
+}
+.detail HR{
+	height:1px;
+	background-color:#999;
+	border:0px;
+}
+
+h5.headingVernacularName {
+	margin: 0 0 10px 0;
+	padding: 0px;
+	font-size: 14px;
+}
+/* --- classroom --- */
+.classroom a:hover, .classroom a:active, .classroom a:focus{
+	color:#DFA800;
+}
+.lbSetImgPlaceholder{
+	padding:30px 5px 32px 5px;
+}
+.classroom HR, .classroom hr{
+	height:1px;
+	background-color:#dedede;
+	border:0px;
+}

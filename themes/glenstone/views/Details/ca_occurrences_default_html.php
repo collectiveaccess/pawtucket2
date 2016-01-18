@@ -1,11 +1,12 @@
 <?php
 	$t_occurrence = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = $this->getVar('access_values');
 ?>
 	<div class="row">
 		<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 			<div class="detailNavBgLeft">
-				{{{previousLink}}}{{{resultsLink}}}
+				{{{resultsLink}}}<div class='detailPrevLink'>{{{previousLink}}}</div>
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->
 		<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
@@ -19,12 +20,13 @@
 	</div><!-- end row -->	
 	<div class="row">		
 		<div class="container">
-			<H4>{{{^ca_occurrences.preferred_labels.displayname}}}</H4>
+			<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 			<H5>{{{^ca_occurrences.exh_dates}}}</H5>
+			<div class='exText'>{{{^ca_occurrences.exh_description.exh_description_text}}}</div>
 
 		<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedObjects">
 				<H6>Related Artworks </H6>
@@ -37,9 +39,22 @@
 <?php
 						foreach ($va_artwork_ids as $va_object_id => $va_artwork_id) {
 							$t_object = new ca_objects($va_artwork_id);
+							$va_rep = $t_object->getPrimaryRepresentation(array('library'), null, array('return_with_access' => $va_access_values));
+							
+							if (strlen($t_object->get('ca_objects.preferred_labels')) > 200) {
+								$va_artwork_title = substr($t_object->get('ca_objects.preferred_labels'), 0, 197)."...";  
+							} else {
+								$va_artwork_title = $t_object->get('ca_objects.preferred_labels');
+							}
+							
 							print "<li>";
-							print "<div class='detailObjectsResult'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.library'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'objects/'.$va_artwork_id)."</div>";
+							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
+								// If currently deaccessioned then display deaccession message
+								print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
+								#if ($vs_deaccession_notes = $t_object->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
+							}
 							print "</li>";
 						}
 ?>						
@@ -96,7 +111,10 @@
 					
 		<!-- Related Archival Materials -->
 			
-		{{{<ifcount code="ca_objects" restrictToTypes="audio|moving_image|image|ephemera|document" min="1">
+<?php	
+		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)));	
+		if ($va_related_objects) {	
+?>		
 			<div id="detailRelatedArchives">
 				<H6>Related Archival Material </H6>
 				<div class="jcarousel-wrapper">
@@ -105,7 +123,11 @@
 					<!-- Carousel -->
 					<div class="jcarouselarchive">
 						<ul>
-							<unit relativeTo="ca_objects"  restrictToTypes="audio|moving_image|image|ephemera|document" delimiter=" "><li><div class='detailObjectsResult'><l>^ca_object_representations.media.library</l></div><div class='caption'><i><l>^ca_objects.preferred_labels.name</l></i><ifdef code="ca_objects.dc_date.dc_dates_value"><br/><l>^ca_objects.dc_date.dc_dates_value</l></ifdef></div></li><!-- end detailObjectsBlockResult --></unit>
+<?php
+						foreach ($va_related_objects as $vn_object_id => $va_related_object) {
+							#print '<li><div class="detailObjectsResult"><l>^ca_object_representations.media.library</l></div><div class="caption"><i><l>^ca_objects.preferred_labels.name</l></i><ifdef code="ca_objects.dc_date.dc_dates_value"><br/><l>^ca_objects.dc_date.dc_dates_value</l></ifdef></div></li><!-- end detailObjectsBlockResult -->';
+						}
+?>						
 						</ul>
 					</div><!-- end jcarousel -->
 					
@@ -151,8 +173,10 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->
-			
+			</script><!-- Related Archives -->
+<?php
+		}
+?>			
 		<!-- Related Library Materials -->
 			
 		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
@@ -170,7 +194,8 @@
 					
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end detailRelatedObjects -->
-			<script type='text/javascript'>
+			</ifcount>}}}<!-- Related Books -->			
+<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					/*
 					Carousel initialization
@@ -210,8 +235,7 @@
 							target: '+=1'
 						});
 				});
-			</script></ifcount>}}}<!-- Related Archives -->			
-			
+			</script>			
 			
 		</div><!-- end container -->
 	</div><!-- end row -->

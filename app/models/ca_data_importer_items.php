@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012 Whirl-i-Gig
+ * Copyright 2012-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -185,8 +185,8 @@ class ca_data_importer_items extends BaseModel {
 		$this->initSettings();
 	}
 	# ------------------------------------------------------
-	protected function initLabelDefinitions() {
-		parent::initLabelDefinitions();
+	protected function initLabelDefinitions($pa_options=null) {
+		parent::initLabelDefinitions($pa_options);
 		
 		// TODO
 	}
@@ -222,6 +222,46 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Replacement values'),
 			'description' => _t('Return-separated list of CollectiveAccess list item idnos that correspond to the mapped values from the original data source.  For example sound recording (entered in the Original values column) maps to audio_digital, which is entered here in the Replacement values column.')
 		);
+		$va_settings['skipIfEmpty'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'options' => array(
+				_t('yes') => 1,
+				_t('no') => 0
+			),
+			'label' => _t('Skip mapping if empty'),
+			'description' => _t('Skip mapping if value for this element is empty.')
+		);
+		$va_settings['skipIfValue'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'label' => _t('Skip mapping if value'),
+			'description' => _t('Skip mapping if value for this element is equal to the specified value(s).')
+		);
+		$va_settings['skipIfNotValue'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'label' => _t('Skip mapping if not value'),
+			'description' => _t('Skip mapping if value for this element is not equal to the specified value(s).')
+		);
+		$va_settings['skipIfExpression'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'label' => _t('Skip if expression'),
+			'description' => _t('Skip mapping if value for the expression is true.')
+		);
 		$va_settings['skipGroupIfEmpty'] = array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -252,6 +292,15 @@ class ca_data_importer_items extends BaseModel {
 			'default' => 0,
 			'label' => _t('Skip group if not value'),
 			'description' => _t('Skip all of the elements in the group if value for this element is not equal to any of the specified values(s).')
+		);
+		$va_settings['skipGroupIfExpression'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'label' => _t('Skip group if expression'),
+			'description' => _t('Skip all of the elements in the group if value for the expression is true.')
 		);
 		$va_settings['skipRowIfEmpty'] = array(
 			'formatType' => FT_TEXT,
@@ -284,6 +333,15 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Skip row if value is not'),
 			'description' => _t('Skip the row if value for this element is not equal to any of the specified value(s).')
 		);
+		$va_settings['skipRowIfExpression'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'label' => _t('Skip row if expression'),
+			'description' => _t('Skip the row if value for the expression is true.')
+		);
 		$va_settings['default'] = array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -311,6 +369,15 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Restrict to types'),
 			'description' => _t('Restricts the the mapping to only records of the designated type.  For example the Duration field is only applicable to objects of the type moving_image and not photograph.')
 		);
+		$va_settings['restrictToRelationshipTypes'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 10, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Restrict to relationship types'),
+			'description' => _t('Restricts the mapping to pull only records related with the designated relatonship types from the source. This option is only supported by sources that have a notion of related data and relationship types, most notably (and for now only) the CollectiveAccessDataReader.')
+		);
 		$va_settings['prefix'] = array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
@@ -337,6 +404,15 @@ class ca_data_importer_items extends BaseModel {
 			'default' => '',
 			'label' => _t('Format with template'),
 			'description' => _t('Format imported value with provided template. Template may include caret (^) prefixed placeholders that refer to data source values.')
+		);
+		$va_settings['applyRegularExpressions'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 4,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Apply one or more regular expression-based substitutions to a soruce value prior to import.'),
+			'description' => _t('A list of Perl-compatible regular expressions. Each expression has two parts, a matching expression and a substitution expression, and is expressed as a JSON object with <em>match</em> and <em>replaceWith</em> keys. Ex. [{"match": "([\\d]+)\\.([\\d]+)", "replaceWith": "\\1:\\2"}, {"match": "[^\\d:]+", "replaceWith": ""}] ')
 		);
 		$va_settings['maxLength'] = array(
 			'formatType' => FT_NUMBER,
@@ -378,6 +454,70 @@ class ca_data_importer_items extends BaseModel {
 			'label' => _t('Convert newlines to HTML'),
 			'description' => _t('Convert newline characters in text to HTML &lt;BR/&gt; tags.')
 		);
+		$va_settings['useAsSingleValue'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Use as single value'),
+			'description' => _t('Force repeating values to be imported as a single value concatenated with the specified delimiter.')
+		);
+		$va_settings['matchOn'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Match on'),
+			'description' => _t('List indicating sequence of checks for an existing record; values of array can be "label" and "idno". Ex. array("idno", "label") will first try to match on idno and then label if the first match fails.')
+		);
+		$va_settings['truncateLongLabels'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Truncate long labels?'),
+			'description' => _t('Truncate preferred and non-preferred labels that exceed the maximum length to fit.')
+		);
+		$va_settings['lookahead'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '0',
+			'label' => _t('Lookahead'),
+			'description' => _t('Number of rows ahead of the current row to pull value from.')
+		);
+		$va_settings['useParentAsSubject'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Use parent as subject'),
+			'description' => _t('Import parent of subject instead of subject. This option is primarily useful when you are using a hierarchy builder refinery mapped to parent_id to create the entire hierarchy (including subject) and want the bottom-most level of the hierarchy to be the subject.')
+		);
+		$va_settings['treatAsIdentifiersForMultipleRows'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Treat value as identifiers for multiple rows'),
+			'description' => _t('Explode value on delimiter and use as identifiers for multiple rows.')
+		);
+		$va_settings['displaynameFormat'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 2,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Display name format'),
+			'description' => _t('Transform label using options for formatting entity display names. Default is to use value as is. Other options are surnameCommaForename, forenameCommaSurname, forenameSurname. See DataMigrationUtils::splitEntityName().')
+		);
+		
 		$this->SETTINGS = new ModelSettings($this, 'settings', $va_settings);
 	}
 	# ------------------------------------------------------
@@ -456,8 +596,9 @@ class ca_data_importer_items extends BaseModel {
 		
 		$va_refinery_list = array();
 		foreach($va_refinery_names as $vs_name) {
-			$o_refinery = RefineryManager::getRefineryInstance($vs_name);
-			$va_refinery_list[$vs_name] = $o_refinery->getTitle();
+			if ($o_refinery = RefineryManager::getRefineryInstance($vs_name)) {
+				$va_refinery_list[$vs_name] = $o_refinery->getTitle();
+			}
 		}
 		
 		return $va_refinery_list;
@@ -474,4 +615,3 @@ class ca_data_importer_items extends BaseModel {
 	}
 	# ------------------------------------------------------
 }
-?>

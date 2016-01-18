@@ -46,7 +46,7 @@
 				case 'reset':
 		?>
 					<p><?php print _t("Please enter your new password."); ?></p>
-					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" role="form">
+					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" role="form" method="POST">
 
 
 						<div class="form-group">

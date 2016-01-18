@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2013 Whirl-i-Gig
+ * Copyright 2009-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,6 +33,8 @@
  /**
   *
   */
+  	define("__CA_ATTRIBUTE_VALUE_FILE__", 15);
+  	
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/AttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/core/Configuration.php');
@@ -59,6 +61,22 @@
 			'width' => 1, 'height' => 1,
 			'label' => _t('Can be used in display'),
 			'description' => _t('Check this option if this attribute value can be used for display in search results. (The default is to be.)')
+		),
+		'canMakePDF' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output?'),
+			'description' => _t('Check this option if this metadata element can be output as a printable PDF. (The default is not to be.)')
+		),
+		'canMakePDFForValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow PDF output for individual values?'),
+			'description' => _t('Check this option if individual values for this metadata element can be output as a printable PDF. (The default is not to be.)')
 		),
 		'displayTemplate' => array(
 			'formatType' => FT_TEXT,
@@ -105,7 +123,7 @@
  		 *
  		 */
 		public function getDisplayValue($pa_options=null) {
-			
+			if(isset($pa_options['forDuplication']) && $pa_options['forDuplication']) { $pa_options['return'] = 'path'; }
 			if(!isset($pa_options['return'])) { $pa_options['return'] = null; } else { $pa_options['return'] = strtolower($pa_options['return']); }
 			
 			switch($pa_options['return']) {
@@ -141,25 +159,46 @@
 				$vs_val = "<div class='attributeFileInfoContainer'>";
 				$vs_val .= "<div class='attributeFileFileName'>{$vs_filename}</div><div class='attributeFileFileInfo'>{$vs_dimensions}";
 				if (is_object($pa_options['request'])) {
-					$vs_val .= caNavLink($pa_options['request'], caNavIcon($pa_options['request'], __CA_NAV_BUTTON_DOWNLOAD__, null, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadFile', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton'));
+					$vs_val .= caNavLink($pa_options['request'], caNavIcon($pa_options['request'], __CA_NAV_BUTTON_DOWNLOAD__, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadAttributeFile', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton'));
 				}
 				$vs_val .= "</div></div>";
 			}
 			return $vs_val;
 		}
  		# ------------------------------------------------------------------
- 		public function parseValue($ps_value, $pa_element_info) {
+ 		public function parseValue($ps_value, $pa_element_info, $pa_options=null) {
  			$vb_is_file_path = false;
+ 			$vb_is_user_media = false;
  			if (
  				(is_array($ps_value) && $ps_value['_uploaded_file'] && file_exists($ps_value['tmp_name']) && (filesize($ps_value['tmp_name']) > 0))
  				||
  				($vb_is_file_path = file_exists($ps_value))
+ 				||
+ 				($vb_is_file_path = preg_match("!^userMedia[\d]+/!", $ps_value))
+ 				||
+ 				($vb_is_user_media = preg_match("!^userMedia[\d]+/!", $ps_value))
  			) {
  				// got file
+ 				$vs_original_name = null;
+ 				if ($vb_is_user_media) {
+ 					$vb_is_file_path = true;
+ 					$o_config = Configuration::load();
+ 					if (!is_writeable($vs_tmp_directory = $o_config->get('ajax_media_upload_tmp_directory'))) {
+						$vs_tmp_directory = caGetTempDirPath();
+					}
+					$ps_value = "{$vs_tmp_directory}/{$ps_value}";
+					
+					// read metadata
+					if (file_exists("{$ps_value}_metadata")) {
+						if (is_array($va_tmp_metadata = json_decode(file_get_contents("{$ps_value}_metadata"), true))) {
+							$vs_original_name = $va_tmp_metadata['original_filename'];
+						}
+					}
+ 				}
  				if ($vb_is_file_path) {
  					return array(
 						'value_blob' => $ps_value,
-						'value_longtext2' => $ps_value,
+						'value_longtext2' => $vs_original_name ? $vs_original_name : $ps_value,
 						'value_decimal1' => null,
 						'value_decimal2' => null,
 						'_file' => true			// this tells the ca_attribute_values (which is the caller) to treat value_blob as a path to a file to be ingested
@@ -186,16 +225,29 @@
 			);
  		}
  		# ------------------------------------------------------------------
+ 		/**
+ 		 * Return HTML form element for editing.
+ 		 *
+ 		 * @param array $pa_element_info An array of information about the metadata element being edited
+ 		 * @param array $pa_options array Options include:
+ 		 *			class = the CSS class to apply to all visible form elements [Default=lookupBg]
+ 		 *			width = the width of the form element [Default=field width defined in metadata element definition]
+ 		 *			height = the height of the form element [Default=field height defined in metadata element definition]
+ 		 *
+ 		 * @return string
+ 		 */
  		public function htmlFormElement($pa_element_info, $pa_options=null) {
- 			$vs_element = '<table><tr>';
- 			$vs_element .= '<td><div id="{fieldNamePrefix}upload_control_{n}" class="attributeFileDownloadControl">'._t("Select a file").': <input type="file" name="{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}"></div></td>' ;
+ 			//$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
  			
- 			$vs_element .= '<td>{'.$pa_element_info['element_id'].'}</td>';
- 			$vs_element .= '</tr></table>';
+ 			// TODO: this should be prettier
+ 			$vs_element = '<div>';
+ 			$vs_element .= '<div>{'.$pa_element_info['element_id'].'}</div>';
+ 			$vs_element .= '<div id="{fieldNamePrefix}upload_control_{n}" class="attributeFileDownloadControl">'._t("Set file").': <input type="file" name="{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}"></div>' ;
+ 			$vs_element .= '</div>';
  			return $vs_element;
  		}
  		# ------------------------------------------------------------------
- 		public function getAvailableSettings() {
+ 		public function getAvailableSettings($pa_element_info=null) {
  			global $_ca_attribute_settings;
  			
  			return $_ca_attribute_settings['FileAttributeValue'];
@@ -208,6 +260,15 @@
 		 */
 		public function sortField() {
 			return null;
+		}
+ 		# ------------------------------------------------------------------
+		/**
+		 * Returns constant for file attribute value
+		 * 
+		 * @return int Attribute value type code
+		 */
+		public function getType() {
+			return __CA_ATTRIBUTE_VALUE_FILE__;
 		}
  		# ------------------------------------------------------------------
 	}

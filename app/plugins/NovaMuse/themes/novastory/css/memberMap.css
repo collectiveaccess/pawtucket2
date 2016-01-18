@@ -1,0 +1,6 @@
+#memberMapBalloonContainer{
+	max-height:200px;
+	width:400px;
+	margin-right:20px;
+	overflow-y:auto;
+}

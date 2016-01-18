@@ -70,8 +70,7 @@ class AccessRestrictions {
 	}
 	# -------------------------------------------------------
 	public function __construct(){
-		$vo_app_conf = Configuration::load();
-		$this->opo_acr_config = Configuration::load($vo_app_conf->get("access_restrictions"));
+		$this->opo_acr_config = Configuration::load(__CA_CONF_DIR__.'/access_restrictions.conf');
 		$this->opa_acr = $this->opo_acr_config->get("access_restrictions");
 		$this->opt_user = new ca_users();
 		
@@ -279,7 +278,7 @@ class AccessRestrictions {
 				$vs_class = "ca_object_representations";
 				break;
 			case "ObjectEditor":
-				if($ps_action == "GetRepresentationInfo"){
+				if($ps_action == "GetMediaOverlay"){
 					$vs_class = "ca_object_representations";
 				} else {
 					$vs_class = "ca_objects";

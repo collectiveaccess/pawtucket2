@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -222,8 +222,7 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 	public function register() {
 		// get config for external apps
 		$this->opo_config = Configuration::load();
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__."/external_applications.conf");
 		$this->ops_graphicsmagick_path = $this->opo_external_app_config->get('graphicsmagick_app');
 		
 		$this->ops_CoreImage_path = $this->opo_external_app_config->get('coreimagetool_app');
@@ -441,7 +440,6 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 					# load image properties
 					$this->properties["width"] = $this->handle['width'];
 					$this->properties["height"] = $this->handle['height'];
-					$this->properties["quality"] = "";
 					$this->properties["mimetype"] = $this->handle['mimetype'];
 					$this->properties["typename"] = $this->handle['magick'];
 					$this->properties["filesize"] = filesize($filepath);
@@ -564,7 +562,7 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 						break;
 					case 'south':
 						$vn_watermark_x = ($cw - $vn_watermark_width)/2;
-						$vn_watermark_y = $cw - $vn_watermark_width;
+						$vn_watermark_y = $ch - $vn_watermark_height;
 						$position = "South";
 						break;
 					case 'center':
@@ -684,11 +682,20 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 										break;
 									case 'center':
 									default:
+										$crop_from_offset_x = $crop_from_offset_y = 0;
+										
+										// Get image center
+										$vn_center_x = caGetOption('_centerX', $parameters, 0.5);
+										$vn_center_y = caGetOption('_centerY', $parameters, 0.5);
 										if ($w > $parameters["width"]) {
-											$crop_from_offset_x = ceil(($w - $parameters["width"])/2);
+											$crop_from_offset_x = ceil($w * $vn_center_x) - ($parameters["width"]/2);
+											if (($crop_from_offset_x + $parameters["width"]) > $w) { $crop_from_offset_x = $w - $parameters["width"]; }
+											if ($crop_from_offset_x < 0) { $crop_from_offset_x = 0; }
 										} else {
 											if ($h > $parameters["height"]) {
-												$crop_from_offset_y = ceil(($h - $parameters["height"])/2);
+												$crop_from_offset_y = ceil($h * $vn_center_y) - ($parameters["height"]/2);
+												if (($crop_from_offset_y + $parameters["height"]) > $h) { $crop_from_offset_y = $h - $parameters["height"]; }
+												if ($crop_from_offset_y < 0) { $crop_from_offset_y = 0; }
 											}
 										}
 										break;
@@ -826,7 +833,7 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 			} 
 					
 			if (!$this->_graphicsMagickWrite($this->handle, $filepath.".".$ext, $mimetype, $this->properties["quality"])) {
-				$this->postError(1610, _t("%1: %2", $reason, $description), "WLPlugImageMagick->write()");
+				$this->postError(1610, _t("Could not write file %1", $filepath.".".$ext), "WLPlugImageMagick->write()");
 				return false;
 			}
 			
@@ -997,19 +1004,96 @@ class WLPlugMediaGraphicsMagick Extends BaseMediaPlugin Implements IWLPlugMedia 
 	private function _graphicsMagickGetMetadata($ps_filepath) {
 		$va_metadata = array();
 			
-		if(function_exists('exif_read_data')) {
+		/* EXIF metadata */
+		if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = caSanitizeArray(@exif_read_data($ps_filepath, 'EXIF', true, false)))) { $va_metadata['EXIF'] = $va_exif; }
 		}
-			
+
+		// if the builtin EXIF extraction is not used or failed for some reason, try ExifTool
+		if(!isset($va_metadata['EXIF']) || !is_array($va_metadata['EXIF'])) {
+			if(caExifToolInstalled()) {
+				$va_metadata['EXIF'] = caExtractMetadataWithExifTool($ps_filepath, true);
+			}
+		}
+
+		// else try GraphicsMagick
+		if(!isset($va_metadata['EXIF']) || !is_array($va_metadata['EXIF'])) {
+			exec($this->ops_graphicsmagick_path.' identify -format "%[EXIF:*]" '.caEscapeShellArg($ps_filepath), $va_output, $vn_return);
+			if(is_array($va_output) && sizeof($va_output)>1) {
+				foreach($va_output as $vs_output_line) {
+					$va_tmp = explode('=', $vs_output_line); // format is "Make=NIKON CORPORATION"
+					if(isset($va_tmp[0]) && isset($va_tmp[1])) {
+						$va_metadata['EXIF'][$va_tmp[0]] = $va_tmp[1];
+					}
+				}
+			}
+			$va_output = array();
+		}
+
 		$o_xmp = new XMPParser();
 		if ($o_xmp->parse($ps_filepath)) {
 			if (is_array($va_xmp_metadata = $o_xmp->getMetadata()) && sizeof($va_xmp_metadata)) {
-				$va_metadata['XMP'] = $va_xmp_metadata;
+				$va_metadata['XMP'] = array();
+				foreach($va_xmp_metadata as $vs_xmp_tag => $va_xmp_values) {
+					 $va_metadata['XMP'][$vs_xmp_tag] = join('; ',$va_xmp_values);
+				}
+				
 			}
 		}
-			
-		// GM doesn't seem to support DPX or IPTC metadata extraction :-(
-			
+		
+		/* IPTC metadata */
+		$vs_iptc_file = tempnam(caGetTempDirPath(), 'gmiptc');
+		@rename($vs_iptc_file, $vs_iptc_file.'.iptc'); // GM uses the file extension to figure out what we want
+		$vs_iptc_file .= '.iptc';
+		exec($this->ops_graphicsmagick_path." convert ".caEscapeShellArg($ps_filepath)." ".caEscapeShellArg($vs_iptc_file). " 2> /dev/null", $va_output, $vn_return);
+
+		$vs_iptc_data = file_get_contents($vs_iptc_file);
+		@unlink($vs_iptc_file);
+
+		$va_iptc_raw = iptcparse($vs_iptc_data);
+
+		$va_iptc_tags = array(
+			'2#004'=>'Genre',
+			'2#005'=>'DocumentTitle',
+			'2#010'=>'Urgency',
+			'2#015'=>'Category',
+			'2#020'=>'Subcategories',
+			'2#025'=>'Keywords',
+			'2#040'=>'SpecialInstructions',
+			'2#055'=>'CreationDate',
+			'2#060'=>'TimeCreated',
+			'2#080'=>'AuthorByline',
+			'2#085'=>'AuthorTitle',
+			'2#090'=>'City',
+			'2#095'=>'State',
+			'2#100'=>'CountryCode',
+			'2#101'=>'Country',
+			'2#103'=>'OTR',
+			'2#105'=>'Headline',
+			'2#110'=>'Credit',
+			'2#115'=>'PhotoSource',
+			'2#116'=>'Copyright',
+			'2#120'=>'Caption',
+			'2#122'=>'CaptionWriter'
+		);
+
+		$va_iptc = array();
+		if (is_array($va_iptc_raw)) {
+			foreach($va_iptc_raw as $vs_iptc_tag => $va_iptc_tag_data){
+				if(isset($va_iptc_tags[$vs_iptc_tag])) {
+					$va_iptc[$va_iptc_tags[$vs_iptc_tag]] = join('; ',$va_iptc_tag_data);
+				}
+			}
+		}
+
+		if (sizeof($va_iptc)) {
+			$va_metadata['IPTC'] = $va_iptc;
+		}
+
+		/* DPX metadata */
+		exec($this->ops_graphicsmagick_path." identify -format '%[DPX:*]' ".caEscapeShellArg($ps_filepath), $va_output, $vn_return);
+		if ($va_output[0]) { $va_metadata['DPX'] = $va_output; }
+
 		return $va_metadata;
 	}
 	# ------------------------------------------------

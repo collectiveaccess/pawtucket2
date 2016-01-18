@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2008 Whirl-i-Gig
+ * Copyright 2006-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -84,6 +84,14 @@ class DbStatement extends DbBase {
 	 * @access private
 	 */
 	var $opa_options;
+	
+	
+	/**
+	 * Native statement object for database drivers that can natively prepare statements with placeholders.
+	 * If set then DbStatement will wrap the native object rather than emulate placeholder functionality
+	 *
+	 */
+	var $opo_native_statement = null;
 
 	/**
 	 * Constructor
@@ -92,11 +100,22 @@ class DbStatement extends DbBase {
 	 * @param string $ps_sql the SQL statement
 	 * @param array $po_options options array
 	 */
-	function DbStatement(&$po_db, $ps_sql, $po_options=null) {
-		$this->opo_db =& $po_db;
+	function __construct($po_db, $ps_sql, $po_options=null) {
+		$this->opo_db = $po_db;
 		$this->ops_sql = $ps_sql;
+	
+		$this->opo_native_statement = caGetOption('native_statement', $po_options, null);
 
 		$this->opa_options = $po_options;
+	}
+	
+	/**
+	 * Set database connection
+	 *
+	 * @param mixed $po_db instance of the db driver you are using
+	 */
+	function setDb($po_db) {
+		$this->opo_db = $po_db;	
 	}
 
 	/**
@@ -112,7 +131,7 @@ class DbStatement extends DbBase {
 			$va_args = $va_args[0];
 		}
 		
-		if ($vb_res = $this->opo_db->execute($this, $this, $this->ops_sql, $va_args)) {
+		if ($vb_res = $this->opo_db->execute($this, $this->opo_native_statement ? $this->opo_native_statement : $this, $this->ops_sql, $va_args)) {
 			$this->opn_last_insert_id = $this->opo_db->getLastInsertID($this);
 		}
 		return $vb_res;
@@ -122,15 +141,16 @@ class DbStatement extends DbBase {
 	 * Executes a stored statement (same as above) but in this case you can pass options as array.
 	 *
 	 * @see DbStatement::execute()
-	 * @return mixed result
+	 * @param array $pa_params
+	 * @return DbResult result
 	 */
 	function executeWithParamsAsArray($pa_params) {
 		$this->clearErrors();
 
-		if ($vb_res = $this->opo_db->execute($this, $this,$this->ops_sql, $pa_params)) {
+		if ($o_res = $this->opo_db->execute($this, $this->opo_native_statement ? $this->opo_native_statement : $this, $this->ops_sql, $pa_params)) {
 			$this->opn_last_insert_id = $this->opo_db->getLastInsertID($this);
 		}
-		return $vb_res;
+		return $o_res;
 	}
 
 	/**
@@ -218,4 +238,3 @@ class DbStatement extends DbBase {
 		//print "DESTRUCT db statement\n";
 	}
 }
-?>

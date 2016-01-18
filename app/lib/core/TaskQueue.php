@@ -79,9 +79,10 @@ class TaskQueue extends BaseObject {
 	function getHandlerName($ps_handler) {
 		if (sizeof($this->opa_handler_plugin_dirs)) {
 			foreach($this->opa_handler_plugin_dirs as $vs_handler_dir) {
-				if (file_exists($vs_handler_dir."/".$ps_handler.".php")) {
-					require_once($vs_handler_dir."/".$ps_handler.".php");
-					eval("\$h = new WLPlugTaskQueueHandler".$ps_handler."();");
+				if (file_exists("{$vs_handler_dir}/{$ps_handler}.php")) {
+					require_once("{$vs_handler_dir}/{$ps_handler}.php");
+					$ps_handler_class = "WLPlugTaskQueueHandler{$ps_handler}";
+					$h = new $ps_handler_class();
 			
 					return $h->getHandlerName();
 				}
@@ -117,9 +118,10 @@ class TaskQueue extends BaseObject {
 		
 		if (sizeof($this->opa_handler_plugin_dirs)) {
 			foreach($this->opa_handler_plugin_dirs as $vs_handler_dir) {
-				if (file_exists($vs_handler_dir."/".$vs_handler.".php")) {
-					require_once($vs_handler_dir."/".$vs_handler.".php");
-					eval("\$h = new WLPlugTaskQueueHandler".$vs_handler."();");
+				if (file_exists("{$vs_handler_dir}/{$vs_handler}.php")) {
+					require_once("{$vs_handler_dir}/{$vs_handler}.php");					
+					$ps_handler_class = "WLPlugTaskQueueHandler{$vs_handler}";
+					$h = new $ps_handler_class();
 					
 					return $h->getParametersForDisplay($va_rec);
 				}
@@ -194,6 +196,49 @@ class TaskQueue extends BaseObject {
 		} else {
 			$this->postError(507, _t("No tmp directory configured!"), "TaskQueue->copyFileToQueueTmp()");
 			return "";
+		}
+	}
+	# ---------------------------------------------------------------------------
+	/**
+	 * Reset unfinished tasks, i.e. tasks with started_on!=null, completed_on==null and error_code=0
+	 * This is useful when the task queue script (or the whole machine) crashed.
+	 * It shouldn't interfere with any running handlers.
+	 */
+	function resetUnfinishedTasks() {
+		// verify registered processes
+		$o_appvars = new ApplicationVars();
+		$va_opo_processes = $o_appvars->getVar("taskqueue_opo_processes");
+		if (!is_array($va_opo_processes)) { $va_opo_processes = array(); }
+		$va_opo_verified_processes = $this->verifyProcesses($va_opo_processes);
+		$o_appvars->setVar("taskqueue_opo_processes", $va_opo_verified_processes);
+		$o_appvars->save();
+
+		$o_db = new Db();
+		$qr_unfinished = $o_db->query("
+			SELECT *
+			FROM ca_task_queue
+			WHERE
+				completed_on IS NULL AND
+				started_on IS NOT NULL AND
+				error_code = 0
+		");
+
+		// reset start datetime for zombie rows
+		while($qr_unfinished->nextRow()) {
+			// don't touch rows that are being processed right now
+			if(
+				$this->rowKeyIsBeingProcessed($qr_unfinished->get('row_key')) ||
+				$this->entityKeyIsBeingProcessed($qr_unfinished->get('entity_key'))
+			) {
+				continue;
+			}
+			// reset started_on datetime
+			$this->opo_eventlog->log(array(
+				"CODE" => "QUE",
+				"SOURCE" => "TaskQueue->resetUnfinishedTasks()",
+				"MESSAGE" => "Reset start_date for unfinished task with task_id ".$qr_unfinished->get('task_id')
+			));
+			$o_db->query("UPDATE ca_task_queue SET started_on = NULL WHERE task_id = ?", $qr_unfinished->get('task_id'));
 		}
 	}
 	# ---------------------------------------------------------------------------
@@ -275,8 +320,9 @@ class TaskQueue extends BaseObject {
 				$proc_parameters = unserialize(base64_decode($qr_tasks->get("parameters")));
 				
 				# load handler
-				require_once($vs_handler_dir."/".$proc_handler.".php");
-				eval("\$h = new WLPlugTaskQueueHandler".$proc_handler."();");
+				require_once("{$vs_handler_dir}/{$proc_handler}.php");
+				$proc_handler_class = "WLPlugTaskQueueHandler{$proc_handler}";
+				$h = new $proc_handler_class();
 				
 				$vn_start_time = $this->_microtime2float();
 				if ($va_report = $h->process($proc_parameters)) {
@@ -382,8 +428,9 @@ class TaskQueue extends BaseObject {
 			}
 			
 			# load handler
-			require_once($vs_handler_dir."/".$proc_handler.".php");
-			eval("\$h = new WLPlugTaskQueueHandler".$proc_handler."();");
+			require_once("{$vs_handler_dir}/{$proc_handler}.php");
+			$proc_handler_class = "WLPlugTaskQueueHandler{$proc_handler}";
+			$h = new $proc_handler_class();
 			
 			$proc_parameters = unserialize(base64_decode($qr_tasks->get("parameters")));
 			if (!($h->cancel($qr_tasks->get("task_id"), $proc_parameters))) {
@@ -485,8 +532,9 @@ class TaskQueue extends BaseObject {
 			}
 			
 			# load handler
-			require_once($vs_handler_dir."/".$proc_handler.".php");
-			eval("\$h = new WLPlugTaskQueueHandler".$proc_handler."();");
+			require_once("{$vs_handler_dir}/{$proc_handler}.php");
+			$proc_handler_class = "WLPlugTaskQueueHandler{$proc_handler}";
+			$h = new $proc_handler_class();
 			
 			$proc_parameters = unserialize(base64_decode($qr_tasks->get("parameters")));
 			if (!($h->cancel($qr_tasks->get("task_id"), $proc_parameters))) {
@@ -603,7 +651,7 @@ class TaskQueue extends BaseObject {
 		
 		if (is_array($va_opo_processes)) {
 			foreach($va_opo_processes as $va_proc_info) {
-				if ($va_proc_info['entity_key'] == $ps_entity_key) {
+				if ($va_proc_info['entity_key'] == $ps_row_key) {
 					return true;
 				} 
 			}

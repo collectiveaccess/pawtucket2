@@ -114,8 +114,7 @@ class TilepicParser {
 	# ------------------------------------------------------------------------------------
 	function TilepicParser($filename="") {
 		$this->opo_config = Configuration::load();
-		$vs_external_app_config_path = $this->opo_config->get('external_applications');
-		$this->opo_external_app_config = Configuration::load($vs_external_app_config_path);
+		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__."/external_applications.conf");
 		$this->ops_imagemagick_path = $this->opo_external_app_config->get('imagemagick_path');
 		$this->ops_CoreImage_path = $this->opo_external_app_config->get('coreimagetool_app');
 		$this->opa_CoreImage_pipeline = array();
@@ -356,7 +355,7 @@ class TilepicParser {
 	# ------------------------------------------------
 	private function _imageMagickRead($ps_filepath) {
 		if (caMediaPluginImageMagickInstalled($this->ops_imagemagick_path)) {
-			exec($this->ops_imagemagick_path.'/identify -format "%m;%w;%h\n" "'.$ps_filepath."\" 2> /dev/null", $va_output, $vn_return);
+			exec($this->ops_imagemagick_path.'/identify -format "%m;%w;%h\n" '.caEscapeShellArg($ps_filepath)." 2> /dev/null", $va_output, $vn_return);
 			
 			$va_tmp = explode(';', $va_output[0]);
 			if (sizeof($va_tmp) != 3) {
@@ -377,8 +376,7 @@ class TilepicParser {
 	# ------------------------------------------------
 	private function _graphicsMagickRead($ps_filepath) {
 		if (caMediaPluginGraphicsMagickInstalled($this->ops_graphicsmagick_path)) {
-			exec($this->ops_graphicsmagick_path.' identify -format "%m;%w;%h\n" "'.$ps_filepath."\" 2> /dev/null", $va_output, $vn_return);
-			
+			exec($this->ops_graphicsmagick_path.' identify -format "%m;%w;%h\n" '.caEscapeShellArg($ps_filepath)." 2> /dev/null", $va_output, $vn_return);
 			$va_tmp = explode(';', $va_output[0]);
 			if (sizeof($va_tmp) != 3) {
 				return null;
@@ -446,7 +444,7 @@ class TilepicParser {
 					break;
 			}
 		}
-		exec($this->ops_imagemagick_path.'/convert "'.$ps_source_filepath.'[0]" '.join(' ', $va_ops).' "'.$ps_dest_filepath.'"');
+		exec($this->ops_imagemagick_path.'/convert '.caEscapeShellArg($ps_source_filepath.'[0]').' '.join(' ', $va_ops).' "'.$ps_dest_filepath.'"');
 		return true;
 	}
 	# ------------------------------------------------
@@ -502,7 +500,7 @@ class TilepicParser {
 					break;
 			}
 		}
-		exec($this->ops_graphicsmagick_path.' convert "'.$ps_source_filepath.'[0]" '.join(' ', $va_ops).' "'.$ps_dest_filepath.'"');
+		exec($this->ops_graphicsmagick_path.' convert '.caEscapeShellArg($ps_source_filepath.'[0]').' '.join(' ', $va_ops).' "'.$ps_dest_filepath.'"');
 		return true;
 	}
 	# ------------------------------------------------
@@ -538,7 +536,7 @@ class TilepicParser {
 	# ------------------------------------------------
 	private function _CoreImageRead($ps_filepath) {
 		if (caMediaPluginCoreImageInstalled($this->ops_CoreImage_path)) {
-			$vs_output = shell_exec('sips --getProperty format --getProperty space --getProperty bitsPerSample --getProperty pixelWidth --getProperty pixelHeight --getProperty dpiWidth --getProperty dpiHeight "'.$ps_filepath."\" 2> /dev/null");
+			$vs_output = shell_exec('sips --getProperty format --getProperty space --getProperty bitsPerSample --getProperty pixelWidth --getProperty pixelHeight --getProperty dpiWidth --getProperty dpiHeight '.caEscapeShellArg($ps_filepath)." 2> /dev/null");
 			
 			$va_tmp = explode("\n", $vs_output);
 			
@@ -691,7 +689,7 @@ class TilepicParser {
 			$vs_filepath = $vs_tmp_fname;
         }
         
-         if(function_exists('exif_read_data')) {
+         if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 				if (isset($va_exif['IFD0']['Orientation'])) {
 					$vn_orientation_rotate = null;
@@ -956,7 +954,7 @@ class TilepicParser {
 				$vs_filepath = $vs_tmp_fname;
 		}
 
-		 if(function_exists('exif_read_data')) {
+		 if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 				if (isset($va_exif['IFD0']['Orientation'])) {
 					$vn_orientation_rotate = null;
@@ -1222,7 +1220,7 @@ class TilepicParser {
 			$vs_filepath = $vs_tmp_fname;
         }
         
-        if(function_exists('exif_read_data')) {
+        if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 				if (isset($va_exif['IFD0']['Orientation'])) {
 					$vn_orientation_rotate = null;
@@ -1498,6 +1496,15 @@ class TilepicParser {
 		}
 	}
 	# ------------------------------------------------------------------------------------
+	public function setResourceLimits_imagick($po_handle) {
+		$po_handle->setResourceLimit(imagick::RESOURCETYPE_MEMORY, 1024*1024*1024);		// Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.
+		$po_handle->setResourceLimit(imagick::RESOURCETYPE_MAP, 1024*1024*1024);		// Set maximum amount of memory map in bytes to allocate for the pixel cache.
+		$po_handle->setResourceLimit(imagick::RESOURCETYPE_AREA, 6144*6144);			// Set the maximum width * height of an image that can reside in the pixel cache memory.
+		$po_handle->setResourceLimit(imagick::RESOURCETYPE_FILE, 1024);					// Set maximum number of open pixel cache files.
+		$po_handle->setResourceLimit(imagick::RESOURCETYPE_DISK, 64*1024*1024*1024);					// Set maximum amount of disk space in bytes permitted for use by the pixel cache.	
+		return true;
+	}
+	# ------------------------------------------------------------------------------------
 	function encode_imagick ($ps_filepath, $ps_output_path, $pa_options) {
 		if (!($magick = $this->mimetype2magick[$pa_options["output_mimetype"]])) {
 			$this->error = "Invalid output format";
@@ -1508,12 +1515,15 @@ class TilepicParser {
 		# Open image
 		#
 		$h = new Imagick();
+		$this->setResourceLimits_imagick($h);
+		
         if (!$h->readImage($ps_filepath)) {
 			$this->error = "Couldn't open image $ps_filepath";
 			return false;
         }
+        $h->profileImage('*', null);
         
-        if(function_exists('exif_read_data')) {
+        if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 				if (isset($va_exif['IFD0']['Orientation'])) {
 					$vn_orientation = $va_exif['IFD0']['Orientation'];
@@ -1706,6 +1716,15 @@ class TilepicParser {
 		}
 	}
 	# ------------------------------------------------------------------------------------
+	public function setResourceLimits_gmagick($po_handle) {
+		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MEMORY, 1024*1024*1024);		// Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.
+		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MAP, 1024*1024*1024);		// Set maximum amount of memory map in bytes to allocate for the pixel cache.
+		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_AREA, 6144*6144);			// Set the maximum width * height of an image that can reside in the pixel cache memory.
+		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_FILE, 1024);					// Set maximum number of open pixel cache files.
+		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_DISK, 64*1024*1024*1024);					// Set maximum amount of disk space in bytes permitted for use by the pixel cache.
+		return true;
+	}
+	# ------------------------------------------------------------------------------------
 	function encode_gmagick ($ps_filepath, $ps_output_path, $pa_options) {
 		if (!($magick = $this->mimetype2magick[$pa_options["output_mimetype"]])) {
 			$this->error = "Invalid output format";
@@ -1717,13 +1736,15 @@ class TilepicParser {
 		#
 		try {
 			$h = new Gmagick($ps_filepath);
+			$h->stripimage();
+			$this->setResourceLimits_gmagick($h);
 			$h->setimageindex(0);	// force use of first image in multi-page TIFF
 		} catch (Exception $e){
 			$this->error = "Couldn't open image $ps_filepath";
 			return false;
 		}
 
-		if(function_exists('exif_read_data')) {
+		if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 			if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 				if (isset($va_exif['IFD0']['Orientation'])) {
 					$vn_orientation = $va_exif['IFD0']['Orientation'];
@@ -1938,7 +1959,7 @@ class TilepicParser {
 					break;
 				case IMAGETYPE_JPEG:
 					$r_image = imagecreatefromjpeg($ps_filepath);
-					 if(function_exists('exif_read_data')) {
+					 if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
 						if (is_array($va_exif = @exif_read_data($ps_filepath, 'EXIF', true, false))) { 
 							if (isset($va_exif['IFD0']['Orientation'])) {
 								$vn_orientation = $va_exif['IFD0']['Orientation'];
@@ -2324,6 +2345,7 @@ class TilepicParser {
 		}
 		
 		$h = new Imagick();
+		$this->setResourceLimits_imagick($h);
 		if ($h->newImage($layer_tiles[$layer_number]["width"], $layer_tiles[$layer_number]["height"], "#ffffff")) {
 			$this->error = "Couldn't create new image for layer";
 			return false;
@@ -2340,6 +2362,7 @@ class TilepicParser {
 				$tile = $this->getTile($tile_number);
 				if ($tile) { 
 					$t = new Imagick();
+					$this->setResourceLimits_imagick($t);
 					$t->readImageBlob($tile);
 					if (!$h->compositeImage($t, imagick::COMPOSITE_OVER,$cx,$cy)) {
 						$this->error = "Couldn't add tile: composite failed";
