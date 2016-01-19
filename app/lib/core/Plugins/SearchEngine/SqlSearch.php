@@ -975,6 +975,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						} else {
 							if ((!$vb_is_blank_search && !$vb_is_not_blank_search) && $vs_table && $vs_field && ($t_table = $this->opo_datamodel->getInstanceByTableName($vs_table, true)) ) {
 								$vs_table_num = $t_table->tableNum();
+								
 								if (is_numeric($vs_field)) {
 									$vs_fld_num = 'I'.$vs_field;
 									$vn_fld_num = (int)$vs_field;
@@ -985,6 +986,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									if (!strlen($vn_fld_num)) {
 										$t_element = new ca_metadata_elements();
 										if ($t_element->load(array('element_code' => ($vs_sub_field ? $vs_sub_field : $vs_field)))) {
+											$vn_direct_sql_target_table_num = $vs_table_num;
 											$va_indexed_fields = $o_base->getFieldsToIndex($pn_subject_tablenum, $vn_direct_sql_target_table_num);
 											$vn_fld_num = $t_element->getPrimaryKey();
 											$vn_root_element_id = $t_element->get('hier_element_id');
@@ -1009,6 +1011,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 															}
 														}
 														$vs_raw_term = join(' ', $va_raw_terms);
+														
 														$vb_exact = ($vs_raw_term{0} == "#") ? true : false;	// dates prepended by "#" are considered "exact" or "contained - the matched dates must be wholly contained by the search term
 														if ($vb_exact) {
 															$vs_raw_term = substr($vs_raw_term, 1);
@@ -1400,19 +1403,34 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$pa_direct_sql_query_params = array(($vn_direct_sql_target_table_num != $pn_subject_tablenum) ? $vn_direct_sql_target_table_num : (int)$pn_subject_tablenum);
 							}
 						} else {
-							$vs_sql = "
-								INSERT IGNORE INTO {$ps_dest_table}
-								SELECT swi.row_id, SUM(swi.boost)
-								FROM ca_sql_search_word_index swi
-								".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
-								WHERE
-									{$vs_sql_where}
-									AND
-									swi.table_num = ?
-									{$vs_rel_type_id_sql}
-									".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
-								GROUP BY swi.row_id
-							";
+							if ($vb_is_blank_search || $vb_is_not_blank_search) {
+								$vs_sql = "
+									INSERT IGNORE INTO {$ps_dest_table}
+									SELECT DISTINCT swi.row_id, 1
+									FROM ca_sql_search_word_index swi
+									INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
+									WHERE
+										{$vs_sql_where}
+										AND
+										swi.table_num = ?
+										{$vs_rel_type_id_sql}
+										".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
+								";
+							} else {
+								$vs_sql = "
+									INSERT IGNORE INTO {$ps_dest_table}
+									SELECT swi.row_id, SUM(swi.boost)
+									FROM ca_sql_search_word_index swi
+									".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
+									WHERE
+										{$vs_sql_where}
+										AND
+										swi.table_num = ?
+										{$vs_rel_type_id_sql}
+										".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
+									GROUP BY swi.row_id
+								";
+							}
 							$pa_direct_sql_query_params = array((int)$pn_subject_tablenum);
 						}
 
