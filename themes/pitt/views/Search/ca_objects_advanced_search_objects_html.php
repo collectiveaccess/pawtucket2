@@ -52,7 +52,7 @@
 		</div>											
 		<div class="advancedSearchField">
 			Type:<br/>
-			{{{ca_objects.type_id}}}
+			{{{ca_objects.type}}}
 		</div>
 	</div>	
 	
