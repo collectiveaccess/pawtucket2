@@ -16,7 +16,7 @@
 			<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-12'>
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H6>{{{^ca_entities.type_id}}}{{{<ifdef code="ca_entities.idno">, ^ca_entities.idno</ifdef>}}}</H6>
+					<H6>{{{^ca_entities.type_id}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			

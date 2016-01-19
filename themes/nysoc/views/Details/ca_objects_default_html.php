@@ -684,7 +684,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
@@ -699,12 +699,10 @@
 				fullWidth: true,
 				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
 				axisX: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 				axisY: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 			};
 			
