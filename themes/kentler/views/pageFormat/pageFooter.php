@@ -27,21 +27,34 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+</div><!-- end pageArea -->
+<?php
+	if(strtolower($this->request->getController()) != "front"){
+?>
+		</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php	
+	}
+?>
 		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
-			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<h5 class="pull-right">
+							<span class="openSansBold">HOURS</span>&nbsp;&nbsp; Thurs-Sun <span class="openSansBold">&middot;</span> 12-5PM<br/>
+							<span class="openSansBold">PHONE</span>&nbsp;&nbsp; 718<span class="openSansBold">&middot;</span>875<span class="openSansBold">&middot;</span>2098
+							<br/><ul class="list-inline pull-right social">
+								<li><i class="fa fa-twitter"></i></li>
+								<li><i class="fa fa-facebook-square"></i></li>
+								<li><a href="mailto:info@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
+							</ul>
+						</h5>
+					
+						<h3>
+							353 Van Brunt Street<br/>RED HOOK &middot; Brooklyn<br/>New York &middot; NY &middot; <span style="letter-spacing:1px">11231</span>
+						</h3>
+					</div><!-- end col -->
+				</div><!-- end row -->
+			</div><!-- end container -->
 		</div><!-- end footer -->
 <?php
 	//
@@ -49,9 +62,11 @@
 	//
 	if(Debug::isEnabled()) {
 		print Debug::$bar->getJavascriptRenderer()->render();
-	}
+	}	
+		#first visit sets the session
+		$this->request->session->setVar('visited', 'has_visited');
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

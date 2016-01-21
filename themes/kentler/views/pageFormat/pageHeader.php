@@ -54,6 +54,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300,700,800,300italic,400italic,600italic,700italic,800italic' rel='stylesheet' type='text/css'>
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -76,7 +77,7 @@
 ?>
 </head>
 <body>
-	<nav class="navbar navbar-default yamm" role="navigation">
+	<nav class="navbar navbar-default navbar-fixed-top yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -97,7 +98,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, _t("Kentler International Drawing Space"), "navbar-brand", "", "","");
+				print caGetThemeGraphic($this->request, 'door.png');
+				print caNavLink($this->request, "<div class='line1'>"._t("Kentler")."</div><div class='line2'>"._t("International")."</div><div class='line3'>"._t("Drawing Space")."</div>", "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -132,17 +134,71 @@
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search pinkText"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>
+						<ul class='dropdown-menu'> 
+							<li><a href="#">Current</a></li>
+							<li><a href="#">Upcoming</a></li>
+							<li><a href="#">Past</a></li>
+							<li><a href="#">Proposals</a></li>
+						</ul>
+					</li>
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Flatfiles <span class='caret'></span></a>
+						<ul class='dropdown-menu'> 
+							<li><?php print caNavLink($this->request, _t("Flatfiles Digital Archive"), "", "", "Listing", "flatfileArtists"); ?></li>
+							<li><a href="#">Traveling Shows</a></li>
+							<li><a href="#">Red Hook Archives</a></li>
+							<li><a href="#">Visit the Flatfiles</a></li>
+							<li><a href="#">Proposals</a></li>
+						</ul>					
+					</li>
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Education <span class='caret'></span></a>
+						<ul class='dropdown-menu'> 
+							<li><a href="#">School Programs</a></li>
+							<li><a href="#">After School Programs</a></li>
+							<li><a href="#">Drawing Together</a></li>
+							<li><a href="#">Residency Programs</a></li>
+							<li><a href="#">Partner with K.I.D.S. Art Education</a><li>
+							<li><a href="#">K.I.D.S. Blog</a></li>
+						</ul>					
+					</li>
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Events <span class='caret'></span></a>
+						<ul class='dropdown-menu'>
+							<li><a href="#">Upcoming</a></li>
+							<li><a href="#">Past</a></li>
+						</ul>					
+					</li>															
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>
+						<ul class='dropdown-menu'> 
+							<li><a href="#">Mission & History</a></li>
+							<li><a href="#">Staff & Boards</a></li>
+							<li><a href="#">Press</a></li>
+							<li><a href="#">Contact Us</a></li>
+							<li><a href="#">Visit</a></li>
+						</ul>					
+					</li>
+					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Support <span class='caret'></span></a>
+						<ul class='dropdown-menu'> 
+							<li><a href="#">Donate</a></li>
+							<li><a href="#">Volunteer</a></li>
+							<li><a href="#">Internships</a></li>
+							<li><a href="#">Fundraisers</a></li>
+							<li><a href="#">Supporters</a></li> 
+						</ul>					
+					</li>					
+					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+<?php
+	if(strtolower($this->request->getController()) != "front"){
+?>
+		<div class="container"><div class="row"><div class="col-xs-12">
+<?php	
+	}
+?>
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
