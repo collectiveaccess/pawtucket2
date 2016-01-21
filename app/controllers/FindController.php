@@ -89,6 +89,39 @@
  		}
  		# ------------------------------------------------------------------
  		/**
+ 		 * 
+ 		 */
+ 		protected function getFacet($po_browse) {
+ 			//
+			// Return facet content
+			//	
+			$this->view->setVar('browse', $po_browse);
+			
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$vs_facet = $this->request->getParameter('facet', pString);
+			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
+			$this->view->setVar('start', $vn_s);
+			$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
+			$this->view->setVar('facet_name', $vs_facet);
+			$this->view->setVar('key', $po_browse->getBrowseID());
+			$this->view->setVar('facet_info', $va_facet_info = $po_browse->getInfoForFacet($vs_facet));
+			
+			# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+			switch($va_facet_info["group_mode"]){
+				case "alphabetical":
+				case "list":
+				default:
+					$this->view->setVar('facet_content', $po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
+					$this->render($this->ops_view_prefix."/list_facet_html.php");
+					break;
+				case "hierarchical":
+					$this->render($this->ops_view_prefix."/hierarchy_facet_html.php");
+					break;
+			}
+			return;
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
  		 * Given a item_id (request parameter 'id') returns a list of direct children for use in the hierarchy browser
  		 * Returned data is JSON format
  		 */
@@ -169,8 +202,8 @@
 						if(!$vn_id) {
 							$va_hier_ids = $o_browse->getHierarchyIDsForFacet($ps_facet_name, array('checkAccess' => $va_access_values));
 							$t_item = $this->request->datamodel->getInstanceByTableName($va_facet_info['table']);
-							$t_item->load($vn_id);
 							$vn_id = $vn_root = $t_item->getHierarchyRootID();
+							$t_item->load($vn_id);
 							$va_hierarchy_list = $t_item->getHierarchyList(true);
 							
 							$vn_last_id = null;
@@ -499,7 +532,7 @@
 						foreach($va_export_config[$this->ops_tablename][$ps_template]['columns'] as $vs_title => $va_settings) {
 
 							if (
-								(strpos($vs_template, 'ca_object_representations.media') !== false)
+								(strpos($va_settings['template'], 'ca_object_representations.media') !== false)
 								&& 
 								preg_match("!ca_object_representations\.media\.([A-Za-z0-9_\-]+)!", $va_settings['template'], $va_matches)
 							) {
@@ -569,6 +602,7 @@
 					header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 					header('Content-Disposition:inline;filename=Export.xlsx ');
 					$o_writer->save('php://output');
+					exit;
 					break;
 				case 'pptx':
 					$ppt = new PhpOffice\PhpPowerpoint\PhpPowerpoint();
@@ -644,6 +678,7 @@
 					
 					$o_writer = \PhpOffice\PhpPowerpoint\IOFactory::createWriter($ppt, 'PowerPoint2007');
 					$o_writer->save('php://output');
+					exit;
 					break;
 				default:
 				case 'pdf':

@@ -10,6 +10,7 @@
 	$vs_parent_title 	= caTruncateStringWithEllipsis($t_object->get('ca_objects.parent.preferred_labels.name'), 40);	
 	
 	$va_entity_reading_list_cache = array();
+	$va_access_values = $this->getVar('access_values');
 	
 	if ($vs_parent_title) {
 		$vs_title = "{$vs_parent_title}: {$vs_title}";
@@ -99,7 +100,8 @@
 				
 					# Borrower Name
 				
-					$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+					$vn_borrower_entity_id = $qr_rels->get("ca_entities.entity_id");
+					if (!$vn_borrower_entity_id) { continue; }
 					$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
 					$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
 					$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
@@ -268,13 +270,13 @@
 					$vs_subj_buf.= join(', ', $vs_1838);
 					$vs_subj_buf.= "</div>";
 				}
-			}								
-			if ($vs_subjects_1850 = $t_object->get('ca_objects.subjects_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => true))) {
+			}		
+			if ($vs_subjects_1850 = $t_object->get('ca_objects.Analytical_Catalog_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => false))) {
 				$vs_1850 = array();
 				foreach ($vs_subjects_1850 as $va_key => $vs_subjects_1850_t) {
 					foreach ($vs_subjects_1850_t as $vs_subjects_1850) {
-						if (($vs_subjects_1850['subjects_1850'] != 964) && ($vs_subjects_1850['subjects_1850'])) {
-							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['subjects_1850']), '', '', 'Search', 'objects/search/ca_objects.subjects_1850:'.$vs_subjects_1850['subjects_1850']);
+						if (($vs_subjects_1850['Analytical_Catalog_1850'] != 964) && ($vs_subjects_1850['Analytical_Catalog_1850'])) {
+							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['Analytical_Catalog_1850']), '', '', 'Search', 'objects/search/ca_objects.Analytical_Catalog_1850:'.$vs_subjects_1850['Analytical_Catalog_1850']);
 						}
 					}
 				}
@@ -357,8 +359,8 @@
 				<div class="row">			
 					<div class='col-sm-6 col-md-6 col-lg-6'>			
 		<?php
-						if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
-							print "<h4 style='font-size:16px;'>".$va_authors."</h4>";
+						if ($va_authors = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
+							print "<h4 style='font-size:16px;'>".$va_authors."</h4>"; 
 						}
 						if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Bib') {
 							if ($va_parent_label = $t_object->get('ca_objects.parent.preferred_labels')) {
@@ -544,7 +546,9 @@
 
 			var options = {
 				labelInterpolationFnc: function(value, index) {
-				  if(dataForReadersByOccupation.series[index] <= 5) { return ''; }
+					var t=0;
+				  for(var x in dataForReadersByOccupation.series) { t += dataForReadersByOccupation.series[x] }
+				  if(dataForReadersByOccupation.series[index]/t <= 0.1) { return ''; }
 				  return value;
 				}
 			};
@@ -583,7 +587,7 @@
 				
 				var l = $slice.attr("class").replace("ct-series ct-series-", "").charCodeAt(0) - 97;
 				var label = dataForReadersByOccupation.labels[l];
-				console.log($slice, occupationIDs, label, occupationIDs[label]);
+				
 				if (parseInt(occupationIDs[label]) > 0) {
 					window.location = '<?php print caNavUrl($this->request, '', 'Browse', 'entities', array('facet' => 'occupation_facet')); ?>/id/' + occupationIDs[label];
 				}
@@ -623,7 +627,9 @@
 
 			var options = {
 			 	labelInterpolationFnc: function(value, index) {
-				  if(dataForCheckoutDurations.series[index] <= 10) { return ''; }
+			 	  var t=0;
+			 	  for(var x in dataForCheckoutDurations.series) { t += dataForCheckoutDurations.series[x]; }
+				  if(dataForCheckoutDurations.series[index]/t <= 0.1) { return ''; }
 				  return value;
 				}
 			};
@@ -679,7 +685,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
@@ -694,12 +700,10 @@
 				fullWidth: true,
 				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
 				axisX: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 				axisY: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 			};
 			
@@ -855,17 +859,19 @@
 									}
 								}							
 								if ($vs_i_have_docs == true) {
-									$vs_doc_buf.= "<div class='row'>";
+									
 										ksort($va_docs_by_type);
 										foreach ($va_docs_by_type as $vs_doc_type => $vs_documents) {
-											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
 											$vs_doc_buf.= "<div class='row'>";
+											$vs_doc_buf.= "<h6>Related ".$vs_doc_type."</h6>";
+											$vs_doc_buf.= "<div>";
 											foreach ($vs_documents as $va_key => $vs_doc) {
 												$vs_doc_buf.= $vs_doc;
 											}
 											$vs_doc_buf.= "</div>";
+											$vs_doc_buf.= "</div>";
 										}
-									$vs_doc_buf.= "</div>";
+									
 								}
 								
 

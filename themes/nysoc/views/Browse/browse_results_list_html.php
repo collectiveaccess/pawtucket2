@@ -125,6 +125,15 @@
 						$vs_pub_date = "<br/>".$qr_res->get('ca_objects.publication_date');
 					}
 					$vs_label_detail_link 	= caDetailLink($this->request, '<div class="bookLabel">'.$va_title_trunc[0].'</div>'.$vs_author.$vs_pub_date, '', $vs_table, $vn_id);
+				}elseif ($vs_table === 'ca_objects_x_entities') {
+					$va_title_trunc = explode(":", $qr_res->get("ca_objects.preferred_labels"));
+					
+					$vs_author = $qr_res->get("ca_entities.preferred_labels", array('delimiter' => ', '));
+					$vs_entity_info = "<br/>".$qr_res->get('ca_entities.life_dates');
+					if ($qr_res->get('ca_objects.publication_date')) {
+						$vs_pub_date = "<br/>".$qr_res->get('ca_objects.publication_date');
+					}
+					$vs_label_detail_link 	= caDetailLink($this->request, '<div class="bookLabel">'.$va_title_trunc[0].'</div>'.$vs_author.$vs_pub_date, '', $vs_table, $vn_id);
 				} else {
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				}

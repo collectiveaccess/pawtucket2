@@ -525,16 +525,16 @@ a.browseRemoveFacet img {
 .browseHeadernav{
 	font-size:11px;
 }
-.filterMenureults {
-	/*float:left; */
+.filterMenuResults {
 	padding-top:2px;
-	/*margin-right:-15px; */
-	/*margin-left:12px;*/
-	max-height:250px;
-	overflow:auto;
 }
 
-.mainfacet {
+.filterMenuResults div div.row {
+	overflow:auto;
+	max-height:325px;
+}
+
+.mainFacet {
 	color:#262626;
 	min-height:30px;
 	line-height:28px;
@@ -542,27 +542,27 @@ a.browseRemoveFacet img {
 	margin-top:-5px;
 	padding-top:2px;
 }		
-.mainfacet	ul{
+.mainFacet	ul{
 	list-style-type:none;
 	margin:0px !important;
 	padding:0px !important;
 }
-.mainfacet	li{
+.mainFacet	li{
 	list-style-type:none;
 	margin:0px 30px 0px 0px !important;
 	padding:0px !important;
 	float:none;
 }
 @media (min-width: 768px) {
-	.mainfacet	li{
+	.mainFacet	li{
 		float:left;
 	}
 }
-.mainfacet	li .active a{
+.mainFacet	li .active a{
 	color:#000;
 
 }	
-.mainfacet	li a:hover{
+.mainFacet	li a:hover{
 	color:#000;
 	text-decoration:none;
 	/*border-bottom:1px solid #000;*/
@@ -630,6 +630,14 @@ a.browseRemoveFacet img {
 
 .nav .dropdown .dropdown-menu {
     overflow: auto;
+}
+
+.detailBrowseFacet {
+	border: 1px solid #dddddd;
+	height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: none;
 }
 
 
