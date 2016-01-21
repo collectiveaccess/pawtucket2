@@ -100,7 +100,8 @@
 				
 					# Borrower Name
 				
-					$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+					$vn_borrower_entity_id = $qr_rels->get("ca_entities.entity_id");
+					if (!$vn_borrower_entity_id) { continue; }
 					$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
 					$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
 					$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
@@ -684,7 +685,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
@@ -699,12 +700,10 @@
 				fullWidth: true,
 				// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
 				axisX: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 				axisY: {
-					onlyInteger: true,
-					offset: 10
+					onlyInteger: true
 				},
 			};
 			
