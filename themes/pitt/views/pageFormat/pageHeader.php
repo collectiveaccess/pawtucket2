@@ -152,24 +152,24 @@
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
-					print "<li>".caNavLink($this->request, 'Current Exhibitions', '', '', 'About', 'current')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Upcoming Exhibitions', '', '', 'About', 'upcoming')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Past Exhibitions', '', '', 'About', 'past')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Lobby Exhibitions', '', '', 'About', 'lobby')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Current Exhibitions', '', '', 'Listing', 'current')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Upcoming Exhibitions', '', '', 'Listing', 'upcoming')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Past Exhibitions', '', '', 'Listing', 'past')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Lobby Exhibitions', '', '', 'Listing', 'lobby')."</li>\n"; 					
 					print "</ul></li>";	
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Collections <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Overview', '', '', 'About', 'overview')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Search the collections', '', '', 'Search', 'advanced/objects')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Browse the collections', '', '', 'Browse', 'objects')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Browse the collections', '', '', 'About', 'browse')."</li>\n"; 					
 					print "</ul></li>";	
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Education <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Artlabs', '', '', 'About', 'artlabs')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Museums Studies Program', '', '', 'Search', 'museum')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Jobs and Internships', '', '', 'Browse', 'jobs')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Museums Studies Program', '', '', 'About', 'museums')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Jobs and Internships', '', '', 'About', 'jobs')."</li>\n"; 					
 					print "</ul></li>";																			
 ?>					
 					<li ><?php print caNavLink($this->request, _t("Online Exhibitions"), "", "", "Gallery", "Index"); ?></li>
@@ -177,7 +177,7 @@
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Support <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Conservation', '', '', 'About', 'conservation')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Give to the UAG', '', '', 'Search', 'give')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Give to the UAG', '', '', 'About', 'give')."</li>\n"; 					
 					print "</ul></li>";					
 
 					#print $this->render("pageFormat/browseMenu.php");
@@ -188,3 +188,6 @@
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		
+		
+	

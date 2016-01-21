@@ -37,7 +37,7 @@
 				
 				{{{<ifcount min="1" code="ca_objects.dimensions">
 				<h6>Dimensions</h6>
-				<unit>
+				<unit relativeTo="ca_objects" delimiter="<br/>">
 					<ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_length,ca_objects.dimensions.dimensions_width"> x </ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef>

@@ -54,12 +54,15 @@
 			Type:<br/>
 			{{{ca_objects.type}}}
 		</div>
+		<div style='width:400px;height:80px;'>		
+			<br style="clear: both;"/>
+	
+			<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
+			<div style="float: right;">{{{submit%label=Search}}}</div>
+		</div>		
 	</div>	
 	
-	<br style="clear: both;"/>
-	
-	<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-	<div style="float: right;">{{{submit%label=Search}}}</div>
+
 {{{/form}}}
 
 		</div>
