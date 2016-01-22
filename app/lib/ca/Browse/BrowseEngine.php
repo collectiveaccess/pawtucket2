@@ -1963,6 +1963,7 @@
 							if (!is_array($va_browse_source_ids) || !sizeof($va_browse_source_ids)) { $va_browse_source_ids = null; }
 							
 							$va_results = [];
+							$va_parents = [];
 							while($qr_exp->nextHit()) {
 								if ($vn_parent_id = $qr_exp->get('parent_id')) {
 									if (
@@ -1970,14 +1971,14 @@
 										&&
 										((!$va_browse_source_ids) || (in_array($qr_exp->get($this->ops_browse_table_name.'.parent.source_id'), $va_browse_source_ids)))
 									) { 
-										$va_results[] = $vn_parent_id;
+										$va_parents[$vn_parent_id] = 1;
 									}
 								}
 								if (($va_browse_type_ids) && (!in_array($qr_exp->get('type_id'), $va_browse_type_ids))) { continue; }
 								if (($va_browse_source_ids) && (!in_array($qr_exp->get('source_id'), $va_browse_source_ids))) { continue; }
 								$va_results[] = $qr_exp->getPrimaryKey();
-								
 							}
+							$va_results = array_merge($va_results, array_keys($va_parents));
 						}
 
 						$this->opo_ca_browse_cache->setResults($va_results);
