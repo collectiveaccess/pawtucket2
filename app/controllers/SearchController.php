@@ -273,7 +273,7 @@
 			}
 			
 			
-			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => !$vb_is_advanced)));
+			$o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced)));
 		
 			//
 			// Facets

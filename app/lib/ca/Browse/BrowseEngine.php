@@ -1925,11 +1925,15 @@
 
 						if (($va_browse_type_ids = $this->getTypeRestrictionList()) && sizeof($va_browse_type_ids)) {
 							$t_subject = $this->getSubjectInstance();
-							$va_wheres[] = '('.$this->ops_browse_table_name.'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).')'.($t_subject->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$this->ops_browse_table_name.'.'.$t_subject->getTypeFieldName()." IS NULL)" : '').')';
+							if (!$pa_options['expandToIncludeParents']) {
+								$va_wheres[] = '('.$this->ops_browse_table_name.'.'.$t_subject->getTypeFieldName().' IN ('.join(', ', $va_browse_type_ids).')'.($t_subject->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$this->ops_browse_table_name.'.'.$t_subject->getTypeFieldName()." IS NULL)" : '').')';
+							}
 						}
 
 						if (is_array($va_browse_source_ids) && sizeof($va_browse_source_ids)) {
-							$va_wheres[] = '('.$this->ops_browse_table_name.'.'.$t_subject->getSourceFieldName().' IN ('.join(', ', $va_browse_source_ids).') OR ('.$this->ops_browse_table_name.'.'.$t_subject->getSourceFieldName().' IS NULL))';
+							if (!$pa_options['expandToIncludeParents']) {
+								$va_wheres[] = '('.$this->ops_browse_table_name.'.'.$t_subject->getSourceFieldName().' IN ('.join(', ', $va_browse_source_ids).') OR ('.$this->ops_browse_table_name.'.'.$t_subject->getSourceFieldName().' IS NULL))';
+							}
 						}
 
 						$vs_filter_where_sql = "WHERE (".$this->ops_browse_table_name.".".$t_item->primaryKey()." IN (?)) ";
@@ -1951,6 +1955,29 @@
 
 						if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_config->get('perform_item_level_access_checking') && method_exists($t_item, "supportsACL") && $t_item->supportsACL()) {
 							$va_results = $this->filterHitsByACL($va_results, $this->opn_browse_table_num, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
+						}
+						
+						if ($pa_options['expandToIncludeParents']) {
+							$qr_exp = caMakeSearchResult($this->opn_browse_table_num, $va_results);
+							if (!is_array($va_browse_type_ids) || !sizeof($va_browse_type_ids)) { $va_browse_type_ids = null; }
+							if (!is_array($va_browse_source_ids) || !sizeof($va_browse_source_ids)) { $va_browse_source_ids = null; }
+							
+							$va_results = [];
+							while($qr_exp->nextHit()) {
+								if ($vn_parent_id = $qr_exp->get('parent_id')) {
+									if (
+										((!$va_browse_type_ids) || (in_array($qr_exp->get($this->ops_browse_table_name.'.parent.type_id'), $va_browse_type_ids)))
+										&&
+										((!$va_browse_source_ids) || (in_array($qr_exp->get($this->ops_browse_table_name.'.parent.source_id'), $va_browse_source_ids)))
+									) { 
+										$va_results[] = $vn_parent_id;
+									}
+								}
+								if (($va_browse_type_ids) && (!in_array($qr_exp->get('type_id'), $va_browse_type_ids))) { continue; }
+								if (($va_browse_source_ids) && (!in_array($qr_exp->get('source_id'), $va_browse_source_ids))) { continue; }
+								$va_results[] = $qr_exp->getPrimaryKey();
+								
+							}
 						}
 
 						$this->opo_ca_browse_cache->setResults($va_results);
