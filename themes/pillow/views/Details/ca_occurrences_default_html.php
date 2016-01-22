@@ -24,7 +24,7 @@
 					{{{<ifdef code="ca_occurrences.premiere"><H6>Premiere</H6>^ca_occurrences.premiere<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.venue"><H6>Venue</H6>^ca_occurrences.venue<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.productionDate"><H6>Dates</H6>^ca_occurrences.productionDate<br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.creationDate"><H6>Creation Date</H6>^ca_occurrences.productionDate<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.creationDate"><H6>Creation Date</H6>^ca_occurrences.creationDate<br/></ifdef>}}}
 				
 					{{{<ifdef code="ca_occurrences.description"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}  
 	

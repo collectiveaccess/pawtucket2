@@ -60,15 +60,7 @@
 					if ($vs_provenance = $t_item->get('ca_collections.provenance')) {
 						$va_anchors[] = "<a href='#provenance'>Provenance</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='provenance'>Provenance</a></h3>".$vs_provenance."</div>";
-					}
-					if ($vs_origin = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('origin')))) {
-						$va_anchors[] = "<a href='#origin'>Origin of Acquisition</a>";
-						$vs_finding_aid.= "<div class='unit'><h3><a name='origin'>Origin of Acquisition</a></h3>".$vs_origin."</div>";
-					}					
-					if ($vs_accessioned = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('accession')))) {
-						$va_anchors[] = "<a href='#accessioned'>Accessioned by</a>";
-						$vs_finding_aid.= "<div class='unit'><h3><a name='accessioned'>Accessioned by</a></h3>".$vs_accessioned."</div>";
-					}	
+					}						
 					if ($va_acc_method = $t_item->get('ca_collections.acquisition_method', array('convertCodesToDisplayText' => true))){
 						$va_anchors[] = "<a href='#acquisition'>Acquisition method</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='acquisition'>Acquisition method</a></h3>".$va_acc_method."</div>";
