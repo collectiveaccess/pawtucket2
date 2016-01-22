@@ -100,7 +100,8 @@
 				
 					# Borrower Name
 				
-					$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+					$vn_borrower_entity_id = $qr_rels->get("ca_entities.entity_id");
+					if (!$vn_borrower_entity_id) { continue; }
 					$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
 					$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
 					$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");

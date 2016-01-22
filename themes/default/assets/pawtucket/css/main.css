@@ -762,23 +762,28 @@ a.browseRemoveFacet img {
 	padding:0px;
 	margin:0px;
 }
+.sets H1 .btn-group {
+	font-size:16px;
+	padding-top: 5px;
+    margin-bottom: 0px;
+}
 .sets .setsBack{
 	margin:0px 5px 0px 0px;
-	background-color:#EBEBEB;
+	background-color:#ffffff;
 	text-transform:uppercase;
 	padding:0px 5px 3px 5px;
 	text-align:center;
 	float:left;
 }
 .sets .setsBack a{
-	color:#8e8985;
+	color:#000000;
 	line-height:.3em;
 	font-size:14px;
 	text-decoration:none;
 }
 .sets .setsBack a .small{
 	font-size:7px;
-	color:#ababab;
+	color:#000000;
 	padding-top:0px;
 	padding-bottom:5px;
 }
@@ -806,8 +811,10 @@ a.browseRemoveFacet img {
 	position:relative;
 }
 .lbSetCount {
-	font-size:16px;
+	font-size:13px;
 	color:#858585;
+	text-transform:capitalize;
+	vertical-align:middle;
 }
 .lbSet{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
