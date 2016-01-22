@@ -83,6 +83,7 @@
  			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
  			
+ 			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
  			
  			if ($vb_is_advanced) {
