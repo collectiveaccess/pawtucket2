@@ -3142,7 +3142,7 @@
 						$vs_controller = array_pop($va_tmp);
 						$vs_module_path = join("/", $va_tmp);
 						foreach($va_actions as $vs_action => $vn_ttl) {
-							if ($vs_url = caNavUrl($o_request, $vs_module_path, $vs_controller, $vs_action)) {
+							if ($vs_url = caNavUrl($o_request, $vs_module_path, $vs_controller, $vs_action, array('noCache' => 1))) {
 							
 								CLIUtils::addMessage(_t("Preloading from %1::%2", $vs_controller, $vs_action), array('color' => 'bold_blue'));
 								$vs_url = $vs_site_protocol."://".$vs_site_hostname.$vs_url;
@@ -3173,7 +3173,7 @@
 									if (is_array($va_ids) && sizeof($va_ids)) {
 										foreach($va_ids as $vn_id) {
 											CLIUtils::addMessage(_t("Preloading from %1::%2 (%3)", $vs_controller, $vs_action, $vn_id), array('color' => 'bold_blue'));
-											file_get_contents($vs_site_protocol."://".$vs_site_hostname.$vs_url."/$vn_id");
+											file_get_contents($vs_site_protocol."://".$vs_site_hostname.$vs_url."/$vn_id?noCache=1");
 										}
 									}
 								}
