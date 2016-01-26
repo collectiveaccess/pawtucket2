@@ -11,7 +11,7 @@
 			An inaugural opening reception marks the start of each exhibition.
 		</p>
 		<p>
-			Gallery Hours: Tuesday, Wednesday & Thursday, 11am - 5pm; Saturday, 11am - 3pm; and by appointment.
+			Gallery Hours: Tuesday, Wednesday & Thursday, 11am-5pm and by appointment.
 		</p>
 	</div>
 	<div class="col-sm-4 col-md-3 col-md-offset-1">

@@ -18,7 +18,7 @@
 		<!--<a href='#' class='advancedSearchSelected'>Search Books</a> | -->
 		<?php print caNavLink($this->request, 'Search People & Organizations', '', '', 'Search', 'advanced/entities');?> | 
 		<?php print caNavLink($this->request, 'Search Borrowing History', '', '', 'Search', 'advanced/borrowing');?> | 
-		<?php print caNavLink($this->request, 'Search Documents', '', '', 'Search', 'advanced/docs');?>
+		<?php print caNavLink($this->request, 'Search Digital Collections', '', '', 'Search', 'advanced/docs');?>
 		</small></h4>
 
 
@@ -53,7 +53,7 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Printer/Publisher:<br/>
-						{{{ca_entities.preferred_labels.displayname%width=220px&restrictToRelationshipTypes=printer;publisher&label=Printer/Publisher}}}
+						{{{ca_objects.printing_pub_details%width=220px&label=Printer/Publisher}}}
 					</div>				
 					<div class="advancedSearchField">
 						Publication Date<i> (e.g. 1650-1750)</i>: <br/>
@@ -91,9 +91,7 @@
 				<div class='advancedUnit'>
 					<div class="advancedSearchField">
 						Current Subjects: <i class="fa fa-info-circle" id='subjects'></i><br/>
-<?php
-						TooltipManager::add('#subjects', "Keyword search for books classified according to today's subject headings from the <a href='http://authorities.loc.gov' target='_blank'>Library of Congress</a>."); 
-?>						
+					
 						{{{ca_objects.LCSH%width=200px&height=1&label=Current+subjects}}}
 					</div>
 					<div class="advancedSearchField">

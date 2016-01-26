@@ -145,6 +145,11 @@ div.captionSlideshow{
 	padding-left:35px !important;
 	padding-right:35px !important;
 }
+.captionAvailable{
+	color: red;
+	font-size:6px;
+	padding-left:5px;
+}
 /* ------Nav Styles------------ */
 .navbar-brand {
 	padding:15px 0 0 0;
@@ -532,6 +537,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 .footernav{
 	display:none;
+	line-height:2em;
 }
 @media (min-width: 993px) {
 	.footernavphone{
@@ -558,6 +564,16 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	opacity:0.5;
 	filter:alpha(opacity=50); /* For IE8 and earlier */
 }
+a.footerButton{
+	background-color:#ababab;
+	color:#FFF !important;
+	padding:4px 7px 4px 7px;
+	font-weight:bold;
+}
+a.footerButton:hover{
+	text-decoration:none;
+	background-color:#979696;
+}
 @media (max-width: 992px) {
 	.socialicon img, .socialiconDibs img{
 		width:28px;
@@ -570,4 +586,27 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 		width:17px;
 		height:17px;
 	}
+}
+/* Newsletter signup */
+#mc_embed_signup{
+	background:#fff; 
+	clear:left; 
+	font:11px GillSansMTStd-Light, Helvetica, Arial, sans-serif;
+	color: #4D4D4D;
+}
+#mc_embed_signup label{
+	font-weight:bold !important;
+}
+#mc_embed_signup input{
+	border: 1px solid #CCC !important;
+}
+#mc_embed_signup form{
+	padding-left:0px !important;
+	margin-left:0px !important;
+}
+#mc_embed_signup .mc-field-group{
+	width:100% !Important;
+}
+#mc-embedded-subscribe{
+	margin-left:0px !Important;
 }

@@ -38,6 +38,7 @@
 	$vb_is_nav = 			(bool)$this->getVar('isNav');
 	$vn_start =				$this->getVar('start');
 	$vn_items_per_page =	$this->getVar('limit');
+	$vn_facet_size =		$this->getVar('facet_size');
 	
 	$va_letter_bar = array();
 	$vs_order_by = $va_facet_info["order_by_label_fields"][0];
@@ -58,14 +59,20 @@
 			
 			if ($vn_c >= $vn_items_per_page) { break; }
 		}
-		print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), '', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 's' => $vn_start + $vn_items_per_page));
+		
+		if ($vn_facet_size >= ($vn_start + $vn_items_per_page)) {
+			print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), 'caNextPage', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 's' => $vn_start + $vn_items_per_page));
+		}
 		if ($vn_start == 0) {
 ?>
 			</div>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#panel_<?php print $vs_facet_name; ?>").jscroll({
-						loadingHtml: "<div class='browseFacetItem col-sm-4 col-md-3'><a href='#'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>"
+						loadingHtml: "<div class='browseFacetItem col-sm-4 col-md-3'><a href='#'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>",
+						padding: 1000,
+						nextSelector: '.caNextPage',
+						debug: true
 					});
 				});	
 			</script>

@@ -5,8 +5,8 @@
 	if(!$ps_view){
 		$ps_view = "works";
 	}
-	# --- rep id of related image to cue slideshow to
-	$pn_representation_id = $this->request->getParameter("id", pInteger);
+	# --- object id of related image to cue slideshow to
+	$pn_object_id = $this->request->getParameter("id", pInteger);
 	# --- get related object_ids in array
 	$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	$va_object_ids = array();
@@ -103,7 +103,7 @@
 						$vs_image = "";
 						$vs_image = $q_objects->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values));
 						if($vs_image){
-							$va_images[] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
+							$va_images[$q_objects->get("ca_objects.object_id")] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
 						}
 					}
 ?>
@@ -113,9 +113,9 @@
 							<ul>
 <?php
 							$vn_i = 1;
-							foreach($va_images as $va_image){
+							foreach($va_images as $vn_image_object_id => $va_image){
 ?>
-								<li id="slide<?php print $q_objects->get("object_id"); ?>">
+								<li id="slide<?php print $vn_image_object_id; ?>">
 									<div class="thumbnail">
 										<?php print $va_image["image"]; ?>
 										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?></div>
@@ -210,7 +210,9 @@
 				$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 				if($q_objects->numHits()){
 					while($q_objects->nextHit()){
-						print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "images", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						if($q_objects->get("ca_object_representations.media.thumbnail300square")){
+							print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						}
 					}
 				}
 ?>

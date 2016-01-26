@@ -80,17 +80,24 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
  			
- 			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 			if ($vb_is_advanced) {
+ 				if (!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
+					// invalid browse type – throw error
+					throw new ApplicationException("Invalid advanced search type $ps_function");
+				}
+			} elseif (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
- 			$vs_class = $va_browse_info['table'];
+ 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
- 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
- 			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			$this->opo_result_context->setAsLastFind(true);
@@ -118,10 +125,9 @@
  			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
-				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array());
+				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
 			} else {
-				$va_views['pdf'] = array();
-				$va_views['timelineData'] = array();
+				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
 			if(!in_array($ps_view, array_keys($va_views))) {
 				$ps_view = array_shift(array_keys($va_views));
@@ -258,6 +264,9 @@
 			if ($va_restrict_to_fields = caGetOption('restrictSearchToFields', $va_browse_info, null)) {
 				$va_options['restrictSearchToFields'] = $va_restrict_to_fields;
 			}
+			if ($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $va_browse_info, null)) {
+				$va_options['excludeFieldsFromSearch'] = $va_exclude_fields_from_search;
+			}
 			
 			
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
@@ -265,7 +274,7 @@
 			}
 			
 			
-			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => !$vb_is_advanced)));
+			$o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced)));
 		
 			//
 			// Facets
