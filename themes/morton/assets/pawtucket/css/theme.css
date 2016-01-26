@@ -648,3 +648,6 @@ a.faDownload:hover {
 	background-color: #ddd;
 }
 
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar{
+	right: 0;
+}
