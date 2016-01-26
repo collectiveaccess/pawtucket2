@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -55,10 +55,10 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			// merge displays with drop-in print templates
-			$va_export_options = caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$va_export_options = (bool)$po_request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
 			
 			// add Excel/PowerPoint export options configured in app.conf
-			$va_export_config = $po_request->config->getAssoc('export_formats');
+			$va_export_config = (bool)$po_request->config->get('disable_export_output') ? array() : $po_request->config->getAssoc('export_formats');
 	
 			if(is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename])) {
 				foreach($va_export_config[$this->ops_tablename] as $vs_export_code => $va_export_option) {
@@ -399,9 +399,10 @@
 			$this->view->setVar('criteria_summary', $ps_criteria_summary);
 			
 			$vs_type = null;
-			if (substr($ps_template, 0, 5) === '_pdf_') {
+			if (!(bool)$po_request->config->get('disable_pdf_output') && substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
-			} elseif (substr($ps_template, 0, 9) === '_display_') {
+				$vs_type = 'pdf';
+			} elseif (!(bool)$po_request->config->get('disable_pdf_output') && (substr($ps_template, 0, 9) === '_display_')) {
 				$vn_display_id = substr($ps_template, 9);
 				$t_display = new ca_bundle_displays($vn_display_id);
 				
@@ -433,7 +434,7 @@
 				}
 				$va_template_info = caGetPrintTemplateDetails('results', 'display');
 				$vs_type = 'pdf';
-			} else {
+			} elseif(!(bool)$po_request->config->get('disable_export_output')) {
 				// Look it up in app.conf export_formats
 				$va_export_config = $this->request->config->getAssoc('export_formats');
 				if (is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename]) && is_array($va_export_config[$this->ops_tablename][$ps_template])) {
@@ -451,6 +452,8 @@
 					return;
 				}
 			}
+			
+			if(!$vs_type) { throw new ApplicationException(_t('Invalid export type')); }
 			
 			switch($vs_type) {
 				case 'xlsx':
@@ -680,7 +683,6 @@
 					$o_writer->save('php://output');
 					exit;
 					break;
-				default:
 				case 'pdf':
 					//
 					// PDF output
