@@ -279,7 +279,7 @@ class SearchEngine extends SearchBase {
 				$va_hits = $o_res->getPrimaryKeyValues($vn_limit);
 				
 										
-				if ($pa_options['expandToIncludeParents']) {
+				if ($pa_options['expandToIncludeParents'] && sizeof($va_hits)) {
 					$qr_exp = caMakeSearchResult($this->opn_tablenum, $va_hits);
 					if (!is_array($va_type_ids) || !sizeof($va_type_ids)) { $va_type_ids = null; }
 					
