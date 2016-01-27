@@ -61,7 +61,7 @@
 					}
 				}
 				$qr_list->seek(0);
-				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
 			if(sizeof($va_years) > 1){		
 				#arsort($va_years);
