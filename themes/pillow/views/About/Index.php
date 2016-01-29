@@ -1,9 +1,11 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
-<H1><?php print _t("About"); ?></H1>
+
 <div class="row">
-	<div class="col-sm-12">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-10">
+		<H1><?php print _t("About"); ?></H1>
 		<h2>About the Collection</h2>
 		
 		<p>The Jacob’s Pillow Archives document dance companies and artists who have played an important role in the rich history of our Festival and School, with special emphasis on Ted Shawn, Denishawn, and Ted Shawn’s Men Dancers. The collection includes correspondence, photographs, performance programs, board minutes, books, costumes, posters, films, videos, sound recordings, and scrapbooks. In our Reading Room, the public has access to our extensive book and periodicals collection – also with a strong focus on dance and the performing arts.</p>
@@ -43,4 +45,5 @@
 		<p>In 2015, the Archives revamped our online database, cataloging and digitization efforts with generous support from the Andrew W. Mellon Foundation. Users can now search and browse all archival records, as well as view select digital content included printed performance programs and photographs. Stay tuned for additional content and more exhibits!</p>
 		
 	</div>
+	<div class="col-sm-1"></div>
 </div>

@@ -165,14 +165,14 @@
 							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event')))) {
 								print "<h6>Related events</h6>".$va_related_events;
 							}
-							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
 							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
 								print "<h6>Related Storage Locations</h6>".$va_related_storage;
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
-								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement">Statement: ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/>Rights Holder: ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/>Rights Notes: ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
+								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
 									print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
 								}	
 							}																

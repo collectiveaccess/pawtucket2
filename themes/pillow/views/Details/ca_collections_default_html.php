@@ -4,7 +4,8 @@
 	$vn_id = $t_item->get('ca_collections.collection_id');
 ?>
 <div class="row">
-	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+	<div class="col-sm-1"></div>
+	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">				
 <?php
@@ -136,6 +137,7 @@
 						$vs_finding_aid.= "<div class='unit'><h3><a name='subjects'>Subject - keywords and LC headings</a></h3>".join("<br/>", $va_subjects_list)."</div>";
 					}	
 					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true));
+					
 					if ($va_top_level) {
 						$vs_buf.= "<h3><a name='contents'>Collection Contents</a></h3>";
 						$va_anchors[] = "<a href='#contents'>Collection Contents</a>";
@@ -154,7 +156,7 @@
 				
 								#$va_subseries_level = $t_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true));
 								$va_subseries_level = $t_series_level->getHierarchyChildren(null, array("idsOnly" => true));
-				
+							
 								$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>";
 								$vs_buf.= "<div class='subseriesLevel".$va_series_level_id."' style='margin-left:40px;'>";
 				
@@ -231,4 +233,5 @@
 </ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
+	<div class="col-sm-1"></div>
 </div><!-- end row -->

@@ -1,9 +1,11 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
-<H1><?php print _t("Contact Us"); ?></H1>
+
 <div class="row">
-	<div class="col-sm-12">
+	<div class="col-sm-1"></div>
+	<div class="col-sm-10">
+		<H1><?php print _t("Contact Us"); ?></H1>
 		<h2>Jacob’s Pillow Preservation Staff</h2><br/>
 		
 		<p>Norton Owen, Director of Preservation </p>
@@ -28,4 +30,5 @@
 		<p>Phone number:</p>		
 		
 	</div>
+	<div class="col-sm-1"></div>
 </div>
