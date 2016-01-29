@@ -43,7 +43,7 @@
 			$va_ids[] = $qr_list->get("occurrence_id");	
 		}
 		$qr_list->seek(0);
-		#$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("logo"), 'checkAccess' => $va_access_values));
+		#$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("logo"), 'checkAccess' => $va_access_values, 'dontShowPrimary' => true));
 		$vn_col = 1;
 		while($qr_list->nextHit()) {
 			if($vn_col == 1){

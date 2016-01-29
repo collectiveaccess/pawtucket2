@@ -8,7 +8,7 @@
 	# --- object id of related image to cue slideshow to
 	$pn_object_id = $this->request->getParameter("id", pInteger);
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -20,7 +20,7 @@
 	<div class="row contentbody_sub">
 
 		<div class="col-sm-3 subnav">
-			<H5><?php print $t_item->get("ca_entity_labels.displayname"); ?></H5>	
+			<H5><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H5>	
 			<ul>
 				<li<?php print ($ps_view == "works") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Selected Works"), '', 'ca_entities', $t_item->get("entity_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 				<li<?php print ($ps_view == "exhibitions") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Exhibitions"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "exhibitions"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
@@ -42,7 +42,7 @@
 				</div><!-- end col -->
 				<div class="col-sm-4 col-sm-offset-1">
 <?php
-				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
 					$t_featured_object = new ca_objects($va_object["object_id"]);
 ?>
@@ -62,7 +62,7 @@
 			<div class="row">
 				<div class="col-sm-7">
 <?php
-				$va_exhibitions = $t_item->get("ca_occurrences", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("exhibited"), "sort" => array("ca_occurrences.opening_closing"), "sortDirection" => "desc"));
+				$va_exhibitions = $t_item->get("ca_occurrences", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("exhibited"), "sort" => array("ca_occurrences.opening_closing"), "sortDirection" => "desc"));
 				$t_occurrence = new ca_occurrences();
 				if(sizeof($va_exhibitions) > 0){
 					foreach($va_exhibitions as $va_exhibition){
@@ -79,7 +79,7 @@
 				</div><!-- end col -->
 				<div class="col-sm-4 col-sm-offset-1">
 <?php
-				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
 					$t_featured_object = new ca_objects($va_object["object_id"]);
 ?>
@@ -236,7 +236,7 @@
 		</div><!--end col-sm-9-->
 		<div class="row">
 			<div class="col-sm-3 btmsubnav">
-				<H5><?php print $t_item->get("ca_entity_labels.displayname"); ?></H5>	
+				<H5><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H5>	
 				<ul>
 					<li<?php print ($ps_view == "works") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Selected Works"), '', 'ca_entities', $t_item->get("entity_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 					<li<?php print ($ps_view == "exhibitions") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Exhibitions"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "exhibitions"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
