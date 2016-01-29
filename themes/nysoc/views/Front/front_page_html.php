@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
  
- 	MetaTagManager::setWindowTitle("");
+ 	//MetaTagManager::setWindowTitle("");
 
 ?>
 	<div class="container">
