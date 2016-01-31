@@ -70,6 +70,7 @@ h7 {
 	border:0px;
 	border-radius:4px;
 }
+
 .mainfacet {
 	margin-bottom:10px;
 	padding-top:10px;
@@ -107,10 +108,17 @@ h7 {
 		width: 100px;
 	}
 }
-@media (max-width: 897px) {
+@media (max-width: 1023px) {
 	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 		padding-right:10px;
 		padding-left:10px;
+	}
+}
+@media (max-width: 890px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		padding-right:5px;
+		padding-left:5px;
+		font-size: 12px;
 	}
 }
 

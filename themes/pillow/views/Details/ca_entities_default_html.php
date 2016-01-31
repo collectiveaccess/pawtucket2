@@ -29,7 +29,7 @@
 					{{{<ifdef code="ca_entities.biography_source"><H6>Source of Biography</H6>^ca_entities.biography_source<br/></ifdef>}}}
 					{{{<ifdef code="ca_entities.pillow_significance"><H6>Pillow Significance</H6>^ca_entities.pillow_significance<br/></ifdef>}}}
 					
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
+					<!-- {{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}-->
 
 					
 				</div><!-- end col -->

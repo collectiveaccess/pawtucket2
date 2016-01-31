@@ -69,9 +69,10 @@
 				if ($va_videographer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('videographer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Videographer/Filmmaker</h6>".$va_videographer."</div>";
 				}				
-?>				
-				{{{<ifcount min="1" code="ca_objects.date"><div class='unit'><H6>Date:</H6><unit delimiter='<br/>'>^ca_objects.date</unit></div></ifcount>}}}				
-<?php
+
+				if ($va_date = $t_object->get('ca_objects.date')) {
+					print "<div class='unit'><H6>Date:</H6>".$va_date."</div>";
+				}
 
 				if ($va_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Publisher</h6>".$va_publisher."</div>";
@@ -149,9 +150,9 @@
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							{{{<ifcount code="ca_entities.preferred_labels" min="1">
+							{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="author,videographer" min="1">
 								<h6>Related Entities</h6>
-								<unit relativeTo="ca_objects_x_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit> </unit>
+								<unit relativeTo="ca_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
 							</ifcount>}}}
 
 <?php
