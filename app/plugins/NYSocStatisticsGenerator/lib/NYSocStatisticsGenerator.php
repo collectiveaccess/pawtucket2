@@ -350,7 +350,7 @@ if(true) {
 				// get readers
 				$dates_in = $qr_entities->get('ca_objects_x_entities.date_in', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'rawDate' => true]);
 				$dates_out = $qr_entities->get('ca_objects_x_entities.date_out', ['restrictToRelationshipTypes' => ['reader'], 'returnAsArray' => true, 'rawDate' => true]);
-					print_R($dates_in);
+			
 				if (is_array($dates_in)) {
 					foreach($dates_in as $i => $date_in) {
 						if ((int)$dates_out[$i]['start'] < 1780) { continue; }

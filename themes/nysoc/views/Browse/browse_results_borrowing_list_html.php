@@ -94,61 +94,6 @@
 						</tr><!-- end row -->
 					</thead>
 					<tbody>
-<?php
-			$va_books = $qr_res->getAllFieldValues('ca_objects_x_entities.object_id');
-			$qr_res->seek($vn_start);
-			$qr_books = caMakeSearchResult('ca_objects', array_unique($va_books));
-			
-			$va_authors = $va_authors_sort = array();
-			while($qr_books->nextHit()) {
-				$vn_object_id = $qr_books->get('ca_objects.object_id');
-				
-				$va_labels = $qr_books->get('ca_entities.preferred_labels', array('returnAsArray' => true, 'assumeDisplayField' => false, 'restrictToRelationshipTypes' => array('author')));
-				foreach($va_labels as $va_label) {
-					$va_authors[$vn_object_id] = (($va_authors[$vn_object_id]) ? "; " : "").caNavLink($this->request, $va_label['displayname'], '', '', 'Detail', 'entities/'.$va_label['entity_id']);
-					$va_authors_sort[$vn_object_id] = (($va_authors[$vn_object_id]) ? "; " : "").addslashes($va_label['surname'].', '.$va_label['forename']);
-				}
-			}
-			
-			while($qr_res->nextHit()) { // && ($vn_c < $vn_hits_per_block)) {
-				
-				if ($vs_title = $qr_res->get('ca_objects.parent.preferred_labels.name', array('returnAsLink' => true))) {
-					$vs_title_sort = addslashes($qr_res->get('ca_objects.parent.preferred_labels.name_sort'));
-					$vs_volume = $qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
-					$vs_volume_sort = addslashes($qr_res->get('ca_objects.preferred_labels.name_sort'));
-				} else {
-					$vs_title = $qr_res->get('ca_objects.preferred_labels.name', array('returnAsLink' => true));
-					$vs_title_sort = addslashes($qr_res->get('ca_objects.preferred_labels.name_sort'));
-					$vs_volume = $vs_volume_sort = '';
-				}
-				$vs_trans_title = "<br/>Transcribed: ".$qr_res->get('ca_objects_x_entities.book_title');
-				if ($qr_res->get("ca_objects_x_entities.see_original", array('convertCodesToDisplayText' => true)) == "Yes"){
-					$vs_uncertain = "&nbsp;".caNavLink($this->request, "<i class='fa fa-exclamation-triangle'></i>", '', '', 'Detail', 'objects/'.$qr_res->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)));
-					TooltipManager::add('.fa-exclamation-triangle', "Uncertain transcription. See scanned image."); 						
-				} else { $vs_uncertain = null; }			
-				$vs_author = $va_authors[$qr_res->get("ca_objects_x_entities.object_id")];
-				$vs_author_sort = $va_authors_sort[$qr_res->get("ca_objects_x_entities.object_id")];
-				$vs_borrower = $qr_res->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
-				$vs_borrower_sort = $qr_res->get('ca_entities.preferred_labels.surname').", ".$qr_res->get('ca_entities.preferred_labels.forename');
-				$vs_date_out = $qr_res->get('ca_objects_x_entities.date_out');
-				//$vs_date_out_sort = $qr_res->get('ca_objects_x_entities.date_out', array('getDirectDate' => true));
-				$vs_date_in = $qr_res->get('ca_objects_x_entities.date_in');
-				//$vs_date_in_sort = $qr_res->get('ca_objects_x_entities.date_in', array('getDirectDate' => true));
-				
-				print "<tr class='ledgerRow detail'>";
-				print "<td><span title='{$vs_borrower_sort}'></span>{$vs_borrower}</td>";
-				print "<td><span title='{$vs_author_sort}'></span>{$vs_author}</td>";
-				print "<td><div class='bookTitle'><span title='{$vs_title_sort}'></span>{$vs_title}{$vs_trans_title}{$vs_uncertain}</div></td>";
-				print "<td><span title='{$vs_volume_sort}'>{$vs_volume}</span></td>";
-				print "<td>{$vs_date_out}</td>";
-				print "<td>{$vs_date_in}</td>";
-				print "<td>".$qr_res->get('ca_objects_x_entities.fine')."</td>";
-				print "<td class='detail'>".caNavLink($this->request, '<i class="fa fa-file-text"></i>', '', '', 'Detail', 'objects/'.$qr_res->get("ca_objects_x_entities.see_original_link", array('idsOnly' => true)))."</td>";
-				print "</tr>\n";
-			//	if ($vn_c > 10)  break;
-				$vn_c++;
-			}
-?>
 					</tbody>
 				</table><!-- end table -->
 			</div><!-- end circTab -->
@@ -161,13 +106,16 @@
 			$(".bSetsSelectMultiple").show();
 		}
 		$('#circTable').dataTable({
-    		"order": [[ 4, "asc" ]],
-    		columnDefs: [{ 
-       			type: 'title-string', targets: [0,1]
-       		}, { 
-       			type: 'natural', targets: [2,5,6] 
-    		}],
-     		paging: false
+			paging: true,
+			serverSide: true,
+			searching: false,
+			lengthChange: false,
+			ajax: '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'jsonData', '_advanced' => 1)); ?>',
+    		//order: [[ 4, "asc" ]],
+    		columnDefs: [
+    			{ type: 'natural', orderable: false, targets: [1,3,7] }, 
+    			{ type: 'natural', targets: [0,2,5,6] }
+    		]
     	});		
 	});
 </script>

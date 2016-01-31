@@ -45,7 +45,7 @@
 		if(!$qr_list) { continue; }
 	
 		while($qr_list->nextHit()) {					
-			print "<div class='listRow row'>".$qr_list->getWithTemplate('<div class="listLeft col-xs-3 col-md-2 col-lg-2"><unit relativeTo="ca_objects" length="1"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.iconlarge</unit></unit></div><div class="listRight col-xs-9 col-md-10 col-lg-10"><p><l>^ca_occurrences.preferred_labels.name</l></p><ifcount min="1" code="ca_entities.preferred_labels" restrictToRelationshipTypes="curator"><p>Curated By: <unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="curator">^ca_entities.preferred_labels</p></unit></ifcount><p>^ca_occurrences.exh_dates</p><p>^ca_occurrences.exh_location</p></div>')."</div>";
+			print "<div class='listRow row'>".$qr_list->getWithTemplate('<div class="listLeft col-xs-3 col-md-2 col-lg-2"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.iconlarge</unit></div><div class="listRight col-xs-9 col-md-10 col-lg-10"><p><l>^ca_occurrences.preferred_labels.name</l></p><ifcount min="1" code="ca_entities.preferred_labels" restrictToRelationshipTypes="curator"><p>Curated By: <unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="curator">^ca_entities.preferred_labels</p></unit></ifcount><p>^ca_occurrences.exh_dates</p><p>^ca_occurrences.exh_location</p></div>')."</div>";
 					
 		}
 	}

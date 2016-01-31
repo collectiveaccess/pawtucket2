@@ -44,7 +44,7 @@
 			$va_ids[] = $qr_list->get("entity_id");	
 		}
 		$qr_list->seek(0);
-		$va_images = caGetDisplayImagesForAuthorityItems("ca_entities", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("creator_website"), 'checkAccess' => $va_access_values));
+		$va_images = caGetDisplayImagesForAuthorityItems("ca_entities", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("creator_website"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 		while($qr_list->nextHit()) {
 			print "<div class='col-sm-4 artistListing'>".caDetailLink($this->request, $va_images[$qr_list->get("entity_id")], '', 'ca_entities', $qr_list->get("entity_id"))."<h2>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>', null, null, array("type_id" => $qr_list->get("type_id")))."</h2></div>\n";	
 		}

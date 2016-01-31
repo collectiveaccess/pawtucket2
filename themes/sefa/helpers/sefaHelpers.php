@@ -42,7 +42,8 @@
 		$va_caption_parts = array();
 		if(is_object($o_object) && $o_object->get("object_id")){
 			$vs_name = $vs_title = $vs_year = $vs_medium = $vs_dimensions = "";
-			if($vs_name = $o_object->getWithTemplate("^ca_entities.preferred_labels.display_name", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "checkAccess" => $va_access_values))){
+			#if($vs_name = $o_object->getWithTemplate("^ca_entities.preferred_labels.display_name", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "checkAccess" => $va_access_values))){
+			if($vs_name = $o_object->get("ca_entities", array("restrictToRelationshipTypes" => array("creator", "creator_website", "creator_hidden")))){
 				$va_caption_parts[] = $vs_name;
 			}
 			if($o_object->get("ca_objects.preferred_labels.name")){
@@ -59,75 +60,51 @@
 				$va_caption_parts[] = $o_object->get("materials_notes");
 			}else{
 				if($o_object->get("sculpture_material", array('convertCodesToDisplayText' => true)) && $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["sculpture_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true)) && $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["mixed_media_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("photography_material", array('convertCodesToDisplayText' => true)) && $o_object->get("photography_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["photography_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["works_paper_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
 				}elseif($o_object->get("painting_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("painting_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["painting_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
 					if($o_object->get("painting_material", array('convertCodesToDisplayText' => true)) && $o_object->get("painting_material", array('convertCodesToDisplayText' => true)) != " "){
 						$vs_medium .= " on ".$o_object->get("painting_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}
 				}elseif($o_object->get("print_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("print_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["print_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
-					if($o_object->get("print_material")){
+					if($o_object->get("print_material", array('convertCodesToDisplayText' => true)) && ($o_object->get("print_material", array('convertCodesToDisplayText' => true)) != " ")){
 						$vs_medium .= " on ".$o_object->get("print_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}
 				}
@@ -139,7 +116,12 @@
 			if($vs_dimensions = $o_object->get("ca_objects.dimensions.display_dimensions")){
 				$va_caption_parts[] = $vs_dimensions;
 			}
-			return implode(", ", $va_caption_parts);
+			# --- availability
+			$vs_available = "";
+			if(($o_object->get("type_id") != 27) && ($o_object->get("availability", array('convertCodesToDisplayText' => true)) == "sold")){
+				$vs_available = " <span class='captionAvailable'><i class='fa fa-circle'></i></span>";
+			}
+			return implode(", ", $va_caption_parts).$vs_available;
 		}else{
 			return null;
 		}

@@ -9,8 +9,8 @@
 
 {{{form}}}
 	
-	<div class='advancedContainer'>
-	<div class='col-sm-12 col-md-12 col-lg-12'>	
+	<div class='advancedContainer row'>
+	<div class='col-sm-12 col-md-12 col-lg-12' style='height:60px;'>	
 		<div class="advancedSearchField">
 			Title:<br/>
 			{{{ca_objects.preferred_labels.name%width=380px}}}
@@ -19,14 +19,14 @@
 	<div class='col-sm-12 col-md-12 col-lg-12'>		
 		<div class="advancedSearchFieldTall">
 			Entity <br/>
-			{{{ca_entities.preferred_labels.displayname%width=200px&height=90px}}}
-			{{{ca_entities.preferred_labels.displayname:relationshipTypes%width=180px&height=90px&multiple=1}}}
+			{{{ca_entities.preferred_labels.displayname%width=380px&height=90px}}}
+			<!-- {{{ca_entities.preferred_labels.displayname:relationshipTypes%width=180px&height=90px&multiple=1}}} -->
 			<br style='clear: both;'/>
 		</div>
 	</div>		
 	<div class='col-sm-12 col-md-12 col-lg-12'>			
 		<div class="advancedSearchField">
-			Identifier:<br/>
+			Object Identifier:<br/>
 			{{{ca_objects.idno%width=53}}}
 		</div>
 	</div>
@@ -44,7 +44,13 @@
 	</div>
 	<div class='col-sm-12 col-md-12 col-lg-12'>		
 		<div class="advancedSearchField">
-			Date range <i>(e.g. 1970-1979)</i><br/>
+			Keyword<br/>
+			{{{_fulltext%width=380px&height=25px}}}
+		</div>
+	</div>	
+	<div class='col-sm-12 col-md-12 col-lg-12'>		
+		<div class="advancedSearchField">
+			Date or Date range <i>(e.g. 1970-1979)</i><br/>
 			{{{ca_objects.date%width=380px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>
@@ -54,12 +60,7 @@
 			{{{ca_objects.venue%width=380px&height=40px0}}}
 		</div>
 	</div>						
-	<div class='col-sm-12 col-md-12 col-lg-12'>		
-		<div class="advancedSearchField">
-			Keyword<br/>
-			{{{_fulltext%width=380px&height=25px}}}
-		</div>
-	</div>	
+	
 
 	
 

@@ -95,7 +95,7 @@
 				$vs_typecode = "";
 								$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'iconlarge', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				$vs_info = null;
-				if ($va_date = $qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))) {
+				if ($va_date = $qr_res->get('ca_objects.date_created', array('delimiter' => ', '))) {
 					$vs_info.= "<b>Date: </b>".$va_date;
 				}
 				if ($va_creator = $qr_res->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))) {
