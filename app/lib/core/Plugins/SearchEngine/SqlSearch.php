@@ -1012,51 +1012,100 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 														}
 														$vs_raw_term = join(' ', $va_raw_terms);
 														
-														$vb_exact = ($vs_raw_term{0} == "#") ? true : false;	// dates prepended by "#" are considered "exact" or "contained - the matched dates must be wholly contained by the search term
-														if ($vb_exact) {
-															$vs_raw_term = substr($vs_raw_term, 1);
-															if ($this->opo_tep->parse($vs_raw_term)) {
-																$va_dates = $this->opo_tep->getHistoricTimestamps();
-																$vs_direct_sql_query = "
-																	SELECT ca.row_id, 1
-																	FROM ca_attribute_values cav
-																	INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
-																	^JOIN
-																	WHERE
-																		(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
-																		AND
-																		(
-																			(cav.value_decimal1 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+														$vs_eq = '';
+														switch($vs_raw_term{0}) {
+															case '#':
+																$vs_raw_term = substr($vs_raw_term, 1);
+																if ($this->opo_tep->parse($vs_raw_term)) {
+																	$va_dates = $this->opo_tep->getHistoricTimestamps();
+																	$vs_direct_sql_query = "
+																		SELECT ca.row_id, 1
+																		FROM ca_attribute_values cav
+																		INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+																		^JOIN
+																		WHERE
+																			(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
 																			AND
-																			(cav.value_decimal2 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-																		)
+																			(
+																				(cav.value_decimal1 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+																				AND
+																				(cav.value_decimal2 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+																			)
 																	
-																";
-																$vn_direct_sql_target_table_num = $vs_table_num; 
-															}
-														} else {
-															if ($this->opo_tep->parse($vs_raw_term)) {
-																$va_dates = $this->opo_tep->getHistoricTimestamps();
-																$vs_direct_sql_query = "
-																	SELECT ca.row_id, 1
-																	FROM ca_attribute_values cav
-																	INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
-																	^JOIN
-																	WHERE
-																		(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
-																		AND
-																		(
-																			(cav.value_decimal1 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-																			OR
-																			(cav.value_decimal2 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-																			OR
-																			(cav.value_decimal1 <= ".floatval($va_dates['start'])." AND cav.value_decimal2 >= ".floatval($va_dates['end']).")	
-																		)
+																	";
+																	$vn_direct_sql_target_table_num = $vs_table_num; 
+																}
+																break;
+															case '<':
+																$vs_raw_term = substr($vs_raw_term, 1);
+																if ($vs_raw_term{0} == '=') {
+																	$vs_raw_term = substr($vs_raw_term, 1);
+																	$vs_eq = '=';
+																}
+																if ($this->opo_tep->parse($vs_raw_term)) {
+																	$va_dates = $this->opo_tep->getHistoricTimestamps();
+																	$vs_direct_sql_query = "
+																		SELECT ca.row_id, 1
+																		FROM ca_attribute_values cav
+																		INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+																		^JOIN
+																		WHERE
+																			(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
+																			AND
+																			(
+																				(cav.value_decimal2 <{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['end']) : floatval($va_dates['start'])).")
+																			)
+																	";
+																	$vn_direct_sql_target_table_num = $vs_table_num; 
+																}
+																break;
+															case '>':
+																$vs_raw_term = substr($vs_raw_term, 1);
+																if ($vs_raw_term{0} == '=') {
+																	$vs_raw_term = substr($vs_raw_term, 1);
+																	$vs_eq = '=';
+																}
+																if ($this->opo_tep->parse($vs_raw_term)) {
+																	$va_dates = $this->opo_tep->getHistoricTimestamps();
+																	$vs_direct_sql_query = "
+																		SELECT ca.row_id, 1
+																		FROM ca_attribute_values cav
+																		INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+																		^JOIN
+																		WHERE
+																			(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
+																			AND
+																			(
+																				(cav.value_decimal1 >{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['start']) : floatval($va_dates['end'])).")
+																			)
+																	";
+																	$vn_direct_sql_target_table_num = $vs_table_num; 
+																}
+																break;
+															default:
+																if ($this->opo_tep->parse($vs_raw_term)) {
+																	$va_dates = $this->opo_tep->getHistoricTimestamps();
+																	$vs_direct_sql_query = "
+																		SELECT ca.row_id, 1
+																		FROM ca_attribute_values cav
+																		INNER JOIN ca_attributes AS ca ON ca.attribute_id = cav.attribute_id
+																		^JOIN
+																		WHERE
+																			(cav.element_id = {$vn_fld_num}) AND (ca.table_num = ?)
+																			AND
+																			(
+																				(cav.value_decimal1 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+																				OR
+																				(cav.value_decimal2 BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+																				OR
+																				(cav.value_decimal1 <= ".floatval($va_dates['start'])." AND cav.value_decimal2 >= ".floatval($va_dates['end']).")	
+																			)
 																	
-																";
+																	";
 																
-																$vn_direct_sql_target_table_num = $vs_table_num; 
-															}
+																	$vn_direct_sql_target_table_num = $vs_table_num; 
+																}
+																break;
 														}
 														break;
 													case __CA_ATTRIBUTE_VALUE_GEOCODE__:
@@ -1243,43 +1292,89 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									$vs_date_end_fld = $t_table->getFieldInfo($vs_intrinsic_field_name, 'END');
 								
 									$vs_raw_term = join(' ', $va_raw_terms);
-									$vb_exact = ($vs_raw_term{0} == "#") ? true : false;	// dates prepended by "#" are considered "exact" or "contained - the matched dates must be wholly contained by the search term
-									if ($vb_exact) {
-										$vs_raw_term = substr($vs_raw_term, 1);
-										if ($this->opo_tep->parse($vs_raw_term)) {
-											$va_dates = $this->opo_tep->getHistoricTimestamps();
-											$vs_direct_sql_query = "
-												SELECT ".$t_table->primaryKey().", 1
-												FROM ".$t_table->tableName()."
-												^JOIN
-												WHERE
-													(
-														({$vs_date_start_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-														AND
-														({$vs_date_end_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-													)
+									
+									switch($vs_raw_term{0}) {
+										case '#':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getHistoricTimestamps();
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey().", 1
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_date_start_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+															AND
+															({$vs_date_end_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+														)
 												
-											";
-										}
-									} else {
-										if ($this->opo_tep->parse($vs_raw_term)) {
-											$va_dates = $this->opo_tep->getHistoricTimestamps();
-											$vs_direct_sql_query = "
-												SELECT ".$t_table->primaryKey().", 1
-												FROM ".$t_table->tableName()."
-												^JOIN
-												WHERE
-													(
-														({$vs_date_start_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-														OR
-														({$vs_date_end_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
-														OR
-														({$vs_date_start_fld} <= ".floatval($va_dates['start'])." AND {$vs_date_end_fld} >= ".floatval($va_dates['end']).")	
-													)
+												";
+											}
+											break;
+										case '<':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($vs_raw_term{0} == '=') {
+												$vs_raw_term = substr($vs_raw_term, 1);
+												$vs_eq = '=';
+											}
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getHistoricTimestamps();
 												
-											";
-										}
-									}	
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey().", 1
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_date_end_fld} <{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['end']) : floatval($va_dates['start'])).")
+														)
+												
+												";
+											}
+											break;
+										case '>':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($vs_raw_term{0} == '=') {
+												$vs_raw_term = substr($vs_raw_term, 1);
+												$vs_eq = '=';
+											}
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getHistoricTimestamps();
+												
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey().", 1
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_date_start_fld} >{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['start']) : floatval($va_dates['end'])).")
+														)
+												
+												";
+											}
+											break;
+										default:
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getHistoricTimestamps();
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey().", 1
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_date_start_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+															OR
+															({$vs_date_end_fld} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+															OR
+															({$vs_date_start_fld} <= ".floatval($va_dates['start'])." AND {$vs_date_end_fld} >= ".floatval($va_dates['end']).")	
+														)
+												
+												";
+											}
+											break;
+									}
+
 									$pa_direct_sql_query_params = array();
 								}
 							}
@@ -1403,34 +1498,19 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$pa_direct_sql_query_params = array(($vn_direct_sql_target_table_num != $pn_subject_tablenum) ? $vn_direct_sql_target_table_num : (int)$pn_subject_tablenum);
 							}
 						} else {
-							if ($vb_is_blank_search || $vb_is_not_blank_search) {
-								$vs_sql = "
-									INSERT IGNORE INTO {$ps_dest_table}
-									SELECT DISTINCT swi.row_id, 1
-									FROM ca_sql_search_word_index swi
-									INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
-									WHERE
-										{$vs_sql_where}
-										AND
-										swi.table_num = ?
-										{$vs_rel_type_id_sql}
-										".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
-								";
-							} else {
-								$vs_sql = "
-									INSERT IGNORE INTO {$ps_dest_table}
-									SELECT swi.row_id, SUM(swi.boost)
-									FROM ca_sql_search_word_index swi
-									".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
-									WHERE
-										{$vs_sql_where}
-										AND
-										swi.table_num = ?
-										{$vs_rel_type_id_sql}
-										".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
-									GROUP BY swi.row_id
-								";
-							}
+							$vs_sql = "
+								INSERT IGNORE INTO {$ps_dest_table}
+								SELECT swi.row_id, SUM(swi.boost)
+								FROM ca_sql_search_word_index swi
+								".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
+								WHERE
+									{$vs_sql_where}
+									AND
+									swi.table_num = ?
+									{$vs_rel_type_id_sql}
+									".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '')."
+								GROUP BY swi.row_id
+							";
 							$pa_direct_sql_query_params = array((int)$pn_subject_tablenum);
 						}
 
@@ -1440,8 +1520,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 						}
 						
 						$t = new Timer();
-						
-						$this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array());
+						$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array();
+						if(strpos($vs_sql, '?') === false) { $pa_direct_sql_query_params = array(); }
+						$this->opo_db->query($vs_sql, $pa_direct_sql_query_params);
+
 						$vn_i++;
 						if ($this->debug) { Debug::msg('FIRST: '.$vs_sql." [$pn_subject_tablenum] ".$t->GetTime(4)); }
 					} else {
@@ -1462,7 +1544,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$vs_sql = ($vs_direct_sql_query) ? "{$vs_direct_sql_query}" : "
 									SELECT swi.row_id
 									FROM ca_sql_search_word_index swi
-									INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
+									".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
 									WHERE
 										{$vs_sql_where}
 										AND
@@ -1477,7 +1559,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								}
 							
 								$t = new Timer();
-								$qr_res = $this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum));
+								
+								$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum);
+								if(strpos($vs_sql, '?') === false) { $pa_direct_sql_query_params = array(); }
+								$qr_res = $this->opo_db->query($vs_sql, $pa_direct_sql_query_params);
 								
 								if ($this->debug) { Debug::msg('AND: '.$vs_sql. ' '.$t->GetTime(4). ' '.$qr_res->numRows()); }
 						
@@ -1499,15 +1584,17 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								}
 								
 								$vs_sql = "
-									SELECT row_id
-									FROM ca_sql_search_words sw
-									INNER JOIN ca_sql_search_word_index AS swi ON sw.word_id = swi.word_id
+									SELECT swi.row_id
+									FROM ca_sql_search_word_index swi
+									".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
 									WHERE 
 										".($vs_sql_where ? "{$vs_sql_where} AND " : "")." swi.table_num = ? 
 										{$vs_rel_type_id_sql}
 										".($this->getOption('omitPrivateIndexing') ? " AND swi.access = 0" : '');
 								
-								$qr_res = $this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum));
+								$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum);
+								if(strpos($vs_sql, '?') === false) { $pa_direct_sql_query_params = array(); }
+								$qr_res = $this->opo_db->query($vs_sql, $pa_direct_sql_query_params);
 								$va_ids = $qr_res->getAllFieldValues(($vs_direct_sql_query && ($vn_direct_sql_target_table_num != $pn_subject_tablenum)) ? $this->opo_datamodel->primaryKey($pn_subject_tablenum) : 'row_id');
 								
 								if (sizeof($va_ids) > 0) {
@@ -1532,7 +1619,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									INSERT IGNORE INTO {$ps_dest_table}
 									SELECT swi.row_id, SUM(swi.boost)
 									FROM ca_sql_search_word_index swi
-									INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
+									".((!$vb_is_blank_search && !$vb_is_not_blank_search) ? "INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id" : '')."
 									WHERE
 										{$vs_sql_where}
 										AND
@@ -1546,7 +1633,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								if ($this->debug) { Debug::msg('OR '.$vs_sql); }
 								
 								$vn_i++;
-								$qr_res = $this->opo_db->query($vs_sql, is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum));
+								
+								$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum);
+								if(strpos($vs_sql, '?') === false) { $pa_direct_sql_query_params = array(); }
+								$qr_res = $this->opo_db->query($vs_sql, $pa_direct_sql_query_params);
 								break;
 						}
 					}
