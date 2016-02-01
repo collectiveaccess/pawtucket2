@@ -148,13 +148,13 @@
 							while($qr_top_level->nextHit()) {
 			
 								$va_series_level = $qr_top_level->get('ca_collections.children.collection_id', array('returnAsArray' => true));
-								if ($qr_series_level = caMakeSearchResult('ca_collections', $va_series_level, array('sort' => ['ca_objects.preferred_labels.name_sort']))) {
+								if ($qr_series_level = caMakeSearchResult('ca_collections', $va_series_level, array('sort' => ['ca_collections.preferred_labels.name_sort']))) {
 									$vs_buf.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>1").caNavLink($this->request, $qr_top_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$qr_top_level->get('ca_collections.collection_id'))."</div>";
 									$vs_buf.= "<div class='seriesLevel".$va_top_level_id."' style='margin-left:20px;'>";
 			
 									while($qr_series_level->nextHit()) {
 										$va_subseries_level = $qr_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true));
-										if ($qr_subseries_level = caMakeSearchResult('ca_collections', $va_subseries_level, array('sort' => ['ca_objects.preferred_labels.name_sort']))) {
+										if ($qr_subseries_level = caMakeSearchResult('ca_collections', $va_subseries_level, array('sort' => ['ca_collections.preferred_labels.name_sort']))) {
 								
 											$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $qr_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$qr_series_level->get('ca_collections.collection_id'))."</div>";
 											$vs_buf.= "<div class='subseriesLevel".$va_series_level_id."' style='margin-left:40px;'>";
@@ -165,7 +165,7 @@
 												$vs_buf.= "<div class='boxLevel".$va_subseries_level_id."' style='margin-left:60px;'>";
 									
 												if(is_array($va_box_levels)) { 
-													if ($qr_box_level = caMakeSearchResult('ca_collections', $va_box_levels, array('sort' => ['ca_objects.preferred_labels.name_sort']))) {
+													if ($qr_box_level = caMakeSearchResult('ca_collections', $va_box_levels, array('sort' => ['ca_collections.preferred_labels.name_sort']))) {
 														while($qr_box_level->nextHit()) {
 															$vs_buf.= "<div><span class='colspacer'></span>".caNavLink($this->request, $qr_box_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$qr_box_level->get('ca_collections.collection_id'))."</div>";
 														}
