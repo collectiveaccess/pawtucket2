@@ -536,10 +536,12 @@
 				// Perform sort in-memory
 				//
 				$va_sort_buffer = array();
+				$va_empties = array();
 				
 				foreach($pa_hits as $vn_hit) {
 					$vs_key = '';
 					foreach($pa_sortable_values as $vn_i => $va_sortable_values) {
+						if (($vn_i == 0) && (!strlen($va_sortable_values[$vn_hit]))) { $va_empties[] = $vn_hit; continue(2); }
 						$vs_v = preg_replace("![^\w_]+!", " ", $va_sortable_values[$vn_hit]);
 						
 						$vs_key .= str_pad(substr($vs_v,0,150), 150, ' ', is_numeric($vs_v) ? STR_PAD_LEFT : STR_PAD_RIGHT);
@@ -548,7 +550,7 @@
 				}
 				
 				ksort($va_sort_buffer, SORT_FLAG_CASE | SORT_NATURAL);
-				$va_sort_buffer = array_values($va_sort_buffer);
+				$va_sort_buffer = array_merge(array_values($va_sort_buffer), $va_empties);
 				if ($ps_direction == 'desc') { $va_sort_buffer = array_reverse($va_sort_buffer); }
 				return $va_sort_buffer;
 			} else {
@@ -559,7 +561,7 @@
 				$vs_sql = "
 					SELECT row_id
 					FROM {$vs_sort_tmp_table}
-					ORDER BY sort_key1 {$ps_direction}, sort_key2 {$ps_direction}, sort_key3 {$ps_direction}, row_id
+					ORDER BY (CASE WHEN sort_key1 = '' then 1 ELSE 0 END), sort_key1 {$ps_direction}, sort_key2 {$ps_direction}, sort_key3 {$ps_direction}, row_id
 				";
 				$qr_sort = $this->opo_db->query($vs_sql, array());
 				$va_sorted_rows = $qr_sort->getAllFieldValues('row_id');

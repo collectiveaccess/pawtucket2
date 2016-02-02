@@ -69,9 +69,11 @@
 				if ($va_videographer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('videographer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Videographer/Filmmaker</h6>".$va_videographer."</div>";
 				}				
-?>				
-				{{{<ifcount min="1" code="ca_objects.date"><div class='unit'><H6>Date:</H6><unit delimiter='<br/>'>^ca_objects.date</unit></div></ifcount>}}}				
-<?php
+
+				if ($va_date = $t_object->get('ca_objects.date')) {
+					print "<div class='unit'><H6>Date:</H6>".$va_date."</div>";
+				}
+
 				if ($va_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Publisher</h6>".$va_publisher."</div>";
 				}
@@ -107,7 +109,9 @@
 <?php
 				if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Photograph') {
 					if ($vs_taken = $t_object->get('ca_objects.at_pillow', array('convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><h6>Taken at Jacob's Pillow</h6>".$vs_taken."</div>";
+						if ($vs_taken == 'yes') {
+							print "<div class='unit'><h6>Taken at Jacob's Pillow</h6></div>";
+						}
 					}
 				}
 				if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Periodical') {
@@ -131,7 +135,9 @@
 						print "<div class='unit'><h6>Master Format</h6>".$vs_master."</div>";
 					}
 					if ($vs_duration = $t_object->get('ca_objects.duration')) {
-						print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
+						if ($vs_duration != "0.0s") {
+							print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
+						}
 					}
 					if ($vs_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Camera</h6>".$vs_camera."</div>";
@@ -143,11 +149,14 @@
 ?>				
 				<hr></hr>
 					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities.preferred_labels" min="1"><h6>Related Entities</h6><unit relativeTo="ca_objects_x_entities" delimiter=', ' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
-
+						<div class="col-sm-12">		
+							{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="author,videographer" min="1">
+								<h6>Related Entities</h6>
+								<unit relativeTo="ca_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+							</ifcount>}}}
 
 <?php
+
 							if ($va_related_occurrences = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production')))) {
 								print "<h6>Related productions</h6>".$va_related_occurrences;
 							}
@@ -157,14 +166,14 @@
 							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event')))) {
 								print "<h6>Related events</h6>".$va_related_events;
 							}
-							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
 							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
 								print "<h6>Related Storage Locations</h6>".$va_related_storage;
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
-								if ($va_rights = $t_object->getWithTemplate('<unit>Statement: ^ca_objects.rights.rightsStatement<br/>Rights Holder: ^ca_objects.rights.rightsHolder<br/>Rights Notes: ^ca_objects.rights.rightsNotes</unit>')) {
+								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
 									print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
 								}	
 							}																
@@ -194,9 +203,6 @@
 							}
 ?>							
 						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
 					</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

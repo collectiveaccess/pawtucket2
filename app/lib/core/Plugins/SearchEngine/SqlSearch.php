@@ -458,7 +458,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		$this->opo_db->query("DROP TABLE IF EXISTS {$ps_name}");
 		$this->opo_db->query("
 			CREATE TEMPORARY TABLE {$ps_name} (
-				row_id int unsigned not null,
+				row_id int unsigned not null primary key,
 				boost int not null default 1
 			) engine=memory;
 		");

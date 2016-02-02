@@ -31,75 +31,76 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
+				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
 ?>			
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+				<H4><i>{{{ca_objects.preferred_labels.name}}}</i></H4> 
 				<HR>
 <?php
+					if ($vs_identifier = $t_object->get('ca_objects.idno')){
+						print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
+					}
 					if ($vs_pub_description = $t_object->get('ca_objects.publication_description')){
 						print "<div class='unit'><h6>Publication Information</h6>".$vs_pub_description."</div>";
 					}
 					$va_format_buf = null;
 					if ($t_object->get('ca_objects.format')) {
-						$va_format_buf .= "<div class='unit'><b>Format: </b>".$t_object->get('ca_objects.format')."</div>";
+						$va_format_buf .= "<div class='unit'><h6>Format</h6>".$t_object->get('ca_objects.format')."</div>";
 					}
 					if (($t_object->get('ca_objects.digitization_info.digital_status') != "-") && $t_object->get('ca_objects.digitization_info.digital_status')) {
-						$va_format_buf .= "<div class='unit'><b>Digitization Status: </b>".$t_object->get('ca_objects.digitization_info.digital_status', array('convertCodesToDisplayText' => true))."</div>";
+						$va_format_buf .= "<div class='unit'><h6>Digitization Status</h6>".$t_object->get('ca_objects.digitization_info.digital_status', array('convertCodesToDisplayText' => true))."</div>";
 					}
 					if ($t_object->get('ca_objects.reproduction')) {
-						$va_format_buf .= "<div class='unit'><b>Reproduction: </b>".$t_object->get('ca_objects.reproduction', array('convertCodesToDisplayText' => true))."</div>";
+						$va_format_buf .= "<div class='unit'><h6>Reproduction: </h6>".$t_object->get('ca_objects.reproduction', array('convertCodesToDisplayText' => true, 'delimiter' => '<br/>'))."</div>";
 					}
 					$va_dims_buf = null;
 					if ($t_object->get('ca_objects.dimensions')) {
-						$va_dimensions_list = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true));
+						$va_dimensions_list = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
 						$va_dims = array();
 						foreach ($va_dimensions_list as $va_dims_key => $va_dimensions) {
 							foreach ($va_dimensions as $va_dim => $va_dimension) {
-								if ($va_dimension['dimensions_length']) {
-									$va_dims[] = $va_dimension['dimensions_length']." L";
-								}
-								if ($va_dimension['dimensions_width']) {
-									$va_dims[] = $va_dimension['dimensions_width']." W";
-								}
-								if ($va_dimension['dimensions_height']) {
-									$va_dims[] = $va_dimension['dimensions_height']." H";
-								}
-								if ($va_dimension['dimensions_weight']) {
-									$va_dims[] = $va_dimension['dimensions_weight']." Weight";
-								}
-								$va_dims_buf .= join(' x ', $va_dims)."<br/>";
-								#if ($va_dimension['measurement_notes']) {
-								#	$va_dims_buf .= "<b>Notes: </b>".$va_dimension['measurement_notes']."<br/>";
-								#}
-								#if ($va_dimension['measurement_type']) {
-								#	$va_dims_buf .= "<b>Dimensions type: </b>".$va_dimension['measurement_type'];
-								#}																																								
+								if ($va_dimension['is_primary'] == 'yes'){
+									if ($va_dimension['dimensions_length']) {
+										$va_dims[] = $va_dimension['dimensions_length']." L";
+									}
+									if ($va_dimension['dimensions_width']) {
+										$va_dims[] = $va_dimension['dimensions_width']." W";
+									}
+									if ($va_dimension['dimensions_height']) {
+										$va_dims[] = $va_dimension['dimensions_height']." H";
+									}
+									if ($va_dimension['dimensions_weight']) {
+										$va_dims[] = $va_dimension['dimensions_weight']." Weight";
+									}
+									$va_dims_buf .= join(' x ', $va_dims)."<br/>";
+									#if ($va_dimension['measurement_notes']) {
+									#	$va_dims_buf .= "<b>Notes: </b>".$va_dimension['measurement_notes']."<br/>";
+									#}
+									#if ($va_dimension['measurement_type']) {
+									#	$va_dims_buf .= "<b>Dimensions type: </b>".$va_dimension['measurement_type'];
+									#}
+								}																																								
 							}
 						}
-						$va_format_buf .= "<div class='unit'><b>Dimensions: </b>".$va_dims_buf."</div>";
+						$va_format_buf .= "<div class='unit'><h6>Dimensions</h6>".$va_dims_buf."</div>";
 					}
 					if ($t_object->get('ca_objects.scale')) {
-						 $va_format_buf .= "<div class='unit'><b>Scale: </b>".$t_object->get('ca_objects.scale')."</div>";
+						 $va_format_buf .= "<div class='unit'><h6>Scale</h6>".$t_object->get('ca_objects.scale')."</div>";
 					}
 					if ($vs_extent = $t_object->get('ca_objects.extent_text')) {
 						$va_format_buf .= "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					}																				
 					if ($va_format_buf) {
-						print "<div class='unit'><h3>Format and extent</h3>".$va_format_buf."</div>";
-					}
-					if ($vs_identifier = $t_object->get('ca_objects.idno')){
-						print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
+						print "<div class='unit'>".$va_format_buf."</div>";
 					}					
 					#if ($vs_coll_identifier = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true))){
 					#	print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
 					#}					
 					if ($t_object->get('ca_objects.type_id')) {
 						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
+					}								
+					if ($vs_date = $t_object->get('ca_objects.date_created')){
+						print "<div class='unit'><h6>Date created</h6>".$vs_date."</div>";
 					}
-					if ($t_object->get('ca_objects.date.date_value')) {
-						$vs_date = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.date.date_types =~ /Date created/">^ca_objects.date.date_value<br/><ifdef code="ca_objects.date.date_notes"><br/>^ca_objects.date.date_notes</ifdef></if></unit>');
-						print "<div class='unit'><h6>Date Created</h6>".$vs_date."</div>";
-					}										
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
 						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 					}
@@ -137,7 +138,7 @@
 					<div class="row">
 						<div class="col-sm-12">		
 <?php
-							if ($va_related_entities = $t_object->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))) {
+							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>')) {
 								print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
 							}
 							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
@@ -146,21 +147,15 @@
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
 								print "<div class='unit'><h6>Related Collections</h6>".$va_related_collections."</div>";
 							}
-					
-							$vs_coverage_buf = null;
-							
 							if ($t_object->get('ca_objects.coverageSpatial')) {
-								$vs_coverage_buf.= "<div class='unit'><b>Spatial Coverage: </b>".$t_object->get('ca_objects.coverageSpatial')."</div>";
+								print "<div class='unit'><h6>Spatial Coverage</h6>".$t_object->get('ca_objects.coverageSpatial')."</div>";
 							}
 							if ($t_object->get('ca_objects.coverageDates')) {
-								$vs_coverage_buf.= "<div class='unit'><b>Coverage dates: </b>".$t_object->get('ca_objects.coverageDates')."</div>";
+								print "<div class='unit'><h6>Coverage dates</h6>".$t_object->get('ca_objects.coverageDates')."</div>";
 							}	
 							if ($t_object->get('ca_objects.coverageNotes')) {
-								$vs_coverage_buf.= "<div class='unit'><b>Coverage notes: </b>".$t_object->get('ca_objects.coverageNotes')."</div>";
-							}
-							if ($vs_coverage_buf) {
-								print "<div class='unit'><h6>Coverage - time and place</h6>".$vs_coverage_buf."</div>";
-							}													
+								print "<div class='unit'><h6>Coverage notes</h6>".$t_object->get('ca_objects.coverageNotes')."</div>";
+							}					
 							if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
 								print "<div class='unit'><h6>Language</h6>".$vs_language."</div>";
 							}
