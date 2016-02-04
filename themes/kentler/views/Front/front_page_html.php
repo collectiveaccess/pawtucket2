@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	#if ($this->request->session->getVar('visited') != 'has_visited') {		
+	if ($this->request->session->getVar('visited') != 'has_visited') {		
 ?>	
 		<div id="homePanel">
 			<div class="titleLine1">Kentler</div>
@@ -53,12 +53,28 @@
 			jQuery(document).ready(function() {
 				setTimeout(function() {
 					$('#homePanel').slideUp('slow');
-				}, 4000); // <-- time in milliseconds
+				}, 3000); // <-- time in milliseconds
 			});
 		</script>
 
 <?php
-	#}
+	}
+	# --- check if there is a current exhibition
+	$o_ent_search = caGetSearchInstance("ca_entities");
+	$qr_featured_artist = $o_ent_search->search("ca_entities.entity_category:\"flatfile artist\"", array("checkAccess" => $va_access_values));
+	$vn_featured_artist_id = null;
+	$va_featured_artist_info = array();
+	$va_featured_artist_ids = array();
+	if($qr_featured_artist->numHits()){
+		while($qr_featured_artist->nextHit()){
+			$va_featured_artist_info[$qr_featured_artist->get("entity_id")] = array("name" => $qr_featured_artist->get("ca_entities.preferred_labels.displayname"), "id" => $qr_featured_artist->get("entity_id"));
+			$va_featured_artist_ids[] = $qr_featured_artist->get("entity_id");
+		}
+		$va_featured_artist_images = caGetDisplayImagesForAuthorityItems('ca_entities', $va_featured_artist_ids, array('version' => 'iconlarge', 'relationshipTypes' => array('artist'), 'checkAccess' => $va_access_values));
+	}
+	if(is_array($va_featured_artist_images) && sizeof($va_featured_artist_images)){
+		$vn_featured_artist_id = array_rand($va_featured_artist_images);
+	}
 ?>
 
 <?php
@@ -70,80 +86,59 @@
 	<div class="row" style="margin-top:20px;">
 		<div class="col-sm-3">
 			<div class='contentBox'>
-				<?php print caGetThemeGraphic($this->request, 'artist.jpg');?>
-				<div class='contentCaptionOver turqBg'>
-					<div class="openSansBold">FROM THE FLATFILES</div>
-					<div class="openSansReg">Jane Smith</div>
+<?php
+			if($vn_featured_artist_id){
+				print $va_featured_artist_images[$vn_featured_artist_id];
+?>
+				<div class='contentCaptionOver'>
+					<?php print caDetailLink($this->request, '<div class="openSansBold">FROM THE FLATFILES</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
 				</div>
+<?php
+			}else{
+				print caGetThemeGraphic($this->request, 'artist.jpg');
+?>
+				<div class='contentCaptionOver'>
+					<?php print caNavLink($this->request, '<div class="openSansBold">EXPLORE THE FLATFILES</div>', '', '', 'Listing', 'flatfileArtists'); ?>
+				</div>
+<?php
+			}
+?>
 			</div>
 		</div><!--end col-sm-3-->
 		<div class="col-sm-3">
 			<div class='contentBox'>
-				<?php print caGetThemeGraphic($this->request, 'exhibition.jpg');?>
-				<div class='contentCaptionOver yellowBg'>
-					<div class="openSansBold">ON VIEW</div>
-					<div class="openSansReg">
-						ORLANDO RICHARDS<br/>In Bold Colors
-					</div>
+				<?php print caGetThemeGraphic($this->request, 'events.jpg');?>
+				<div class='contentCaptionOver'>
+					<a href="#">
+						<div class="openSansBold">OUTREACH</div>
+						<div class="openSansReg">
+							K.I.D.S Art Education Program
+						</div>
+					</a>
 				</div>
 			</div>		
 		</div> <!--end col-sm-3-->	
 		<div class="col-sm-3">
 			<div class='contentBox'>
-				<?php print caGetThemeGraphic($this->request, 'donate.jpg');?>
-				<div class='contentCaptionOver redBg'>
-					<div class="openSansBold">SUPPORT</div>
+				<?php print caGetThemeGraphic($this->request, 'exhibition.jpg');?>
+				<div class='contentCaptionOver'>
+					<div class="openSansBold">VISIT</div>
 					<div class="openSansReg">
-						Volunteer or Donate!
+						Come to Red Hook!
 					</div>
 				</div>
 			</div>		
 		</div> <!--end col-sm-3-->
 		<div class="col-sm-3">
 			<div class='contentBox'>
-				<?php print caGetThemeGraphic($this->request, 'events.jpg');?>
-				<div class='contentCaptionOver greenBg'>
-					<div class="openSansBold">OUTREACH</div>
+				<?php print caGetThemeGraphic($this->request, 'donate.jpg');?>
+				<div class='contentCaptionOver'>
+					<div class="openSansBold">SUPPORT</div>
 					<div class="openSansReg">
-						K.I.D.S Art Education Program
+						Volunteer or Donate!
 					</div>
 				</div>
 			</div>		
 		</div> <!--end col-sm-3-->					
 	</div><!-- end row -->
 </div> <!--end container-->
-
-
-<!--<div class="container">
-	
-	<div class="row" style="margin-top:50px;">
-		<div class="col-sm-3">
-			<div class='contentBox'>
-				<div class='contentBanner turqText'>Featured Artist</div>
-				<?php print caGetThemeGraphic($this->request, 'artist.jpg');?>
-				<div class='contentCaption'>Jane Smith</div>
-			</div>
-		</div>
-		<div class="col-sm-3">
-			<div class='contentBox'>
-				<div class='contentBanner yellowText'>Current Exhibition</div>
-				<?php print caGetThemeGraphic($this->request, 'exhibition.jpg');?>
-				<div class='contentCaption'>Annual Benefit Exhibition</div>
-			</div>		
-		</div>
-		<div class="col-sm-3">
-			<div class='contentBox'>
-				<div class='contentBanner pinkText'>Support</div>
-				<?php print caGetThemeGraphic($this->request, 'donate.jpg');?>
-				<div class='contentCaption'>Volunteer or Donate!</div>
-			</div>		
-		</div>
-		<div class="col-sm-3">
-			<div class='contentBox'>
-				<div class='contentBanner greenText'>Events</div>
-				<?php print caGetThemeGraphic($this->request, 'events.jpg');?>
-				<div class='contentCaption'>Upcoming: Artist Talk</div>
-			</div>		
-		</div>				
-	</div>
-</div> -->
