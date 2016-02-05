@@ -168,7 +168,7 @@ a:hover {
 }
 .nav > li.dropdown > a.userIcon {
 	padding-top: 15px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
     font-size:20px;
     padding-left: 10px;
     padding-right: 10px;
@@ -190,7 +190,7 @@ a:hover {
 	background-color:#262626;
 	font-size:28px;
 	border-radius:0px;
-    padding: 5px 11px 5px 13px;
+    padding: 10px 11px 0px 13px;
 	border-right:4px solid #000;		
 }
 .formOutline .btn-search:active, .formOutline .navSearchButtonHighlight {
@@ -446,6 +446,9 @@ body {
 	padding-top:20px;
 	opacity: 1;
 }
+.front .attributeMediaThumbnail {
+	text-align:center;
+}
 /* Detail */
 .detail .unit a{
 	font-family: "News Gothic Roman";
@@ -489,6 +492,10 @@ body {
 }
 .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
 	font-size:12px;
+}
+.detail .detailMediaToolbar a:hover {
+	text-decoration:none;
+	color:transparent;
 }
 .sets .setsBack {
 	background-color: #fff;
@@ -857,7 +864,7 @@ a.faDownload:hover {
 #collectionLoad a:hover {
 	text-decoration:none;
 }
-#collectionLoad a .fa{
+#collectionLoad a .fa, #collectionLoad a .icon-box, #collectionLoad a .icon-folder{
 	color: #737373;
 }
 .findingAidContainer a.openCollection.active {
@@ -945,6 +952,9 @@ li[role=presentation] {
 	font-size:20px;
 	margin-top: -20px;
     display: inline-block;	
+}
+#caFormOverlay .alert {
+	margin: 0px -15px 10px -15px;
 }
 .form-horizontal .control-label, .form-horizontal .radio, .form-horizontal .checkbox, .form-horizontal .radio-inline, .form-horizontal .checkbox-inline {
 	color: #000;
@@ -1167,6 +1177,34 @@ p.linkInfo {
 	color: #00cfb7;
 	width:18px;
 	display:inline-block;
+}
+
+/* Ipad Styles */
+
+@media (max-width: 768px) {
+	.navbar-form .form-group {
+		width: 90px;
+	}
+	.navbar-default .navbar-nav > li > a {
+		padding-left:8px;
+		padding-right:8px;
+	}
+	#user-navbar .dropdown {
+		border-right:0px !important;
+		margin-right:-15px;
+	}
+	.detailOverlayImg img {
+		width: 100%;
+		height: auto;
+		max-height: 550px;
+	}
+}
+@media (max-width: 1024px) {
+	.detailOverlayImg img {
+		width: 100%;
+		height: auto;
+		max-height: 550px;
+	}
 }
 
 

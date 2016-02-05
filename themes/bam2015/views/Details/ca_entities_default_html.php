@@ -76,6 +76,13 @@
 						#}
 						$vb_output = true;
 					}
+					if ($va_works = $t_item->get('ca_occurrences.preferred_labels', array('restrictToTypes' => 'work', 'delimiter' => ', '))) {
+						print "<div class='unit trimText'><span class='label'>Works performed at BAM </span>".$va_works."</div>"; 
+						#if(sizeof($va_rel_occ) < 6){
+						#	print "<hr class='divide'/>";
+						#}
+						$vb_output = true;
+					}					
 					#if ($va_affiliation_source = $t_item->get('ca_entities.bamAffiliation.affiliation_source')) {
 					#	print "<div class='unit'><span class='label'>Source: </span>".$va_affiliation_source."</div>";
 					#}	
@@ -216,7 +223,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 134
+		  maxHeight: 134,
+		  moreLink: '<div class="expandBio"><a href="#">More <i class="fa fa-caret-down"></i></a></div>',
+          lessLink: '<div class="expandBio"><a href="#">Close <i class="fa fa-caret-up"></i></a></div>'		  
 		});		
 	});
 	jQuery(document).ready(function() {

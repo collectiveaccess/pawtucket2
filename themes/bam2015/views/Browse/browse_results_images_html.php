@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+	require_once(__CA_MODELS_DIR__."/ca_sets.php");
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -52,10 +52,36 @@
 	
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
+	# --- if this is an object result AND user is logged in - get all set objects for user so can show filled heart if item is already in a set
+	$va_set_items = array();
+	if($this->request->isLoggedIn()){
+		$t_set = new ca_sets();
+		$va_set_items = array();
+		$va_set_ids = $t_set->getSets(array("user_id" => $this->request->user->get("user_id"), "setIDsOnly" => true));
+		if(is_array($va_set_ids) && sizeof($va_set_ids)){
+			foreach($va_set_ids as $vn_set_id){
+				$t_set->load($vn_set_id);
+				$va_set_items = array_merge($va_set_items, array_keys($t_set->getItems(array("user_id" => $this->request->user->get("user_id"), "returnRowIdsOnly" => true))));
+			}
+		}
+	}
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	switch($vs_table){
+		case "ca_entities":
+			$vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon_entity");
+		break;
+		# ----------------------
+		case "ca_occurrences":
+			$vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon_occ");
+		break;
+		# ----------------------
+		default:
+			$vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon");
+		break;
+		# ----------------------
+	}
+	if(!$vs_default_placeholder){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
@@ -153,7 +179,12 @@
 					}
 					$vs_add_to_set_link = "";
 					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a></div>";
+						if(in_array($vn_id, $va_set_items)){
+							$vs_ligthbox_icon = "<span class='icon-heart-filled'></span>";
+						}else{
+							$vs_ligthbox_icon = $va_add_to_set_link_info["icon"];
+						}
+						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$vs_ligthbox_icon."</a></div>";
 					}				
 				} else {
 					if($va_images[$vn_id] || $va_images_2[$vn_id]){

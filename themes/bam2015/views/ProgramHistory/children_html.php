@@ -3,13 +3,13 @@
 	$q_children = $this->getVar("children");
 	$vs_parent_type = $this->getVar("parent_type");
 	$vs_description = $this->getVar("parent_description");
-	$vs_description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus porttitor lorem sed sapien vulputate luctus. Mauris sed bibendum tellus, et scelerisque tellus. Proin nec erat quis lacus pulvinar volutpat. Aliquam ut arcu id purus vestibulum facilisis. Suspendisse potenti.</p><p>Donec non aliquam arcu. Curabitur eu metus accumsan, congue metus a, laoreet orci. Vestibulum laoreet ante at ante gravida pellentesque. Nam eget lobortis metus. Curabitur ullamcorper velit nec lorem consectetur, vitae pulvinar eros hendrerit.</p>";
+	#$vs_description = "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus porttitor lorem sed sapien vulputate luctus. Mauris sed bibendum tellus, et scelerisque tellus. Proin nec erat quis lacus pulvinar volutpat. Aliquam ut arcu id purus vestibulum facilisis. Suspendisse potenti.</p><p>Donec non aliquam arcu. Curabitur eu metus accumsan, congue metus a, laoreet orci. Vestibulum laoreet ante at ante gravida pellentesque. Nam eget lobortis metus. Curabitur ullamcorper velit nec lorem consectetur, vitae pulvinar eros hendrerit.</p>";
 	if($q_children && $q_children->numHits()){
 ?>
 	<div class="row">
 <?php
 		# --- is there description text for the series
-		if($vs_parent_type == "series"){
+		if(($vs_parent_type == "series") && $vs_description){
 ?>
 			<div class='col-xs-4 leftPadding'>
 				<div class='leader'>

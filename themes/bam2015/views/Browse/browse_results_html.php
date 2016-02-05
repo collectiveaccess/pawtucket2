@@ -158,7 +158,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 
 ?>
 		<div class="container"><div class="row bNavOptions detailBrowse" style="clear:both; position:relative;">
-		<div class="col-xs-12 col-sm-<?php print ($vs_table == "ca_occurrences") ? "4" : "3"; ?>">FILTER BY 
+		<div class="col-xs-12 col-sm-<?php print ($vs_table == "ca_occurrences") ? "5" : "3"; ?> col-md-4">FILTER BY 
 <?php
 		if($vs_entity_role || (sizeof($va_criteria) > 1)){
 			if(sizeof($va_criteria) > 1){
@@ -208,7 +208,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 		}
 ?>
 		</div><!-- end col -->
-		<div class="col-xs-12 col-sm-3 text-left">SORT BY 
+		<div class="col-xs-12 col-sm-5 col-md-4 text-left">SORT BY 
 			<div class="btn-group filter">
 				<a href="#" data-toggle="dropdown"><highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
 				<ul class="dropdown-menu" role="menu">
@@ -233,8 +233,8 @@ if($this->request->getParameter("detailNav", pInteger)){
 				</ul>
 			</div><!-- end btn-group -->
 		</div><!-- end col -->
-		<div class="col-xs-12 col-sm-<?php print ($vs_table == "ca_occurrences") ? "3" : "4"; ?>"></div>
-		<div class="col-xs-12 col-sm-2">
+		<div class="col-xs-12 col-sm-<?php print ($vs_table == "ca_occurrences") ? "1" : "4"; ?> col-md-2 blankSpace"></div>
+		<div class="col-xs-12 col-sm-2 col-md-2">
 <?php
 			print _t("View");
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -272,19 +272,19 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="container">
 <div class="row bNavOptions fullBrowse" style="clear:both; position:relative;">
-	<div class="col-xs-12 col-sm-4">
+	<div class="col-xs-12 col-sm-3 col-md-4">
 <?php
 	print $va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
 ?>
 	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-3">
+	<div class="col-xs-12 col-sm-3 col-md-3">
 		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within" <?php print ($vs_search) ? "value='".$vs_search."'" : ""; ?>" name="search">
 			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 			<input type="hidden" name="facet" value="_search">-->
 		</form>
 	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-3">
+	<div class="col-xs-12 col-sm-3 col-md-3">
 		<div class="btn-group">
 			<a href="#" data-toggle="dropdown">SORT BY <highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
 			<ul class="dropdown-menu" role="menu">
@@ -309,7 +309,7 @@ if (!$vb_ajax) {	// !ajax
 			</ul>
 		</div><!-- end btn-group -->
 	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-2">
+	<div class="col-xs-12 col-sm-3 col-md-2">
 <?php
 		print _t("View");
 		if(is_array($va_views) && (sizeof($va_views) > 1)){

@@ -8,42 +8,6 @@
 	lighter gray:#f9f9f9
 */
 
-/*@font-face {
-	font-family: 'News Gothic';
-	src:url('../fonts/news_gothic/newsgoth-bt-roman-webfont.ttf');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'News Gothic';
-	src:url('../fonts/news_gothic/newsgoth-bt-bold-webfont.ttf');
-	font-weight: bold;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'News Gothic';
-	src:url('../fonts/news_gothic/newsgoth-lt-bt-light-webfont.ttf');
-	font-weight: lighter;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'News Gothic Condensed';
-	src:url('../fonts/news_gothic/news_gothic_condensed_bt-webfont.ttf');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'News Gothic Condensed';
-	src:url('../fonts/news_gothic/news_gothic_bold-extra-condensed_bt-webfont.ttf');
-	font-weight: bold;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'News Gothic XCN';
-	src:url('../fonts/news_gothic/newsgoth-xcn-bt-webfont.ttf');
-	font-weight: normal;
-	font-style: normal;
-}*/
 input:focus{
 	border-color:#00cfb7 !important;
 }
@@ -89,6 +53,9 @@ input:focus{
 	font-family: "News Gothic Condensed";
 }
 /* image results */
+.icon-heart-filled{
+	color: #00cfb7 !Important;
+}
 .bBAMResultItemImg a:hover{
 	text-decoration:none;
 }
@@ -180,14 +147,24 @@ input:focus{
 	margin-bottom:20px;
 	position:relative;
 }
+.bBAMResultItemOccCircle a:hover {
+	text-decoration:none;
+	color: transparent;
+}
 .bBAMResultItemImgContainerOccCircle{
 	text-align:center;
 	overflow:hidden;
+
+}
+.bBAMResultItemImgContainerOccCircle img {
 	border-radius:50%;
 }
 .bBAMResultItemImgContainerOccCircle img{
 	width:100%;
 	height:auto;
+}
+.detail .bBAMResultItemOccCircle .icon-stage{
+	font-size:50px !important;
 }
 .bBAMResultItemImgContainerOccCircleLabel{
 	padding-bottom:5px;
@@ -253,7 +230,7 @@ h1.detailResults{
 	line-height:5px;
 }
 .bNavOptions a .icon-menu2{
-	font-size:25px;
+	font-size:22px;
 	position:relative;
 	top:2px !important;
 }
@@ -292,6 +269,7 @@ h1.detailResults{
     border-bottom: 2px solid #DDDDDD;
     border-top: 0px;	
     right: -17px;
+    left:-17px;
 }
 .bNavOptions .dropdown-menu{
 	box-shadow:none;
@@ -312,7 +290,7 @@ h1.detailResults{
 	font-weight:bold;
 	font-size:14px;
 	color: #000000 !important;
-	width:90%;
+	width:85%;
 }
 .bNavOptions input::-webkit-input-placeholder{
 	color: #000000 !important;
@@ -332,8 +310,8 @@ h1.detailResults{
 }
 .bNavOptions .btn-search {
 	padding:0px 0px 0px 0px !important;
-	margin:-8px 0px 0px 0px !important;
-	font-size:24px;
+	margin:-3px 0px 0px 0px !important;
+	font-size:18px;
 	line-height:1em;
 	height:auto;
 	border-radius:0px;
@@ -406,13 +384,23 @@ h1.detailResults{
 	font-size:14px;
 }
 .bResultItemImgPlaceholder {
-    background-color: #b5b5b5;
+    background-color: #dedede;
     border: 0px;
     color: #FFFFFF !important;
     width:200px;
+    padding-top:55px;
+    padding-bottom:55px;
+    border-radius: 100px;
 }
 .bResultItemImgPlaceholder span, .bResultItemImgPlaceholder i{
 	color: #FFFFFF !important;
+}
+.bBAMResultItemOccCircle .bResultItemImgPlaceholder {
+	background-color: transparent;
+	background-image: url('../graphics/bgcircle.jpg');
+	background-size:contain;
+	background-repeat: no-repeat;
+	width:100%;
 }
 #bRefine{
 	background-color:#FFF;
@@ -433,6 +421,9 @@ h1.detailResults{
 	font-weight:bold;
 	font-size:14px;
 	color:#7c7c7c;
+}
+#bRefine .icon-folder-download {
+	font-size: 22px;
 }
 #bRefine a{
 	color: #00cfb7;
@@ -651,6 +642,16 @@ h1.detailResults{
 	min-height:500px;
 	padding-top:20px;
 }
+.children .introText {
+	margin-top:20px;
+	margin-left:60px;
+	margin-right:60px;
+}
+.children .toStart {
+	margin-top:30px;
+	margin-bottom:50px;
+	font-weight:bold;
+}
 .program .leader{
 	margin-right:-30px;
 	border-bottom: 2px solid #DDDDDD;
@@ -659,7 +660,7 @@ h1.detailResults{
 .program .leader.lastLeader{
 	margin-right:0px;
 }
-.phSeasonsList, .phChildrenList{
+.phSeasonsList, .phChildrenList, .phSeriesDescription{
 	max-height:500px;
 	overflow-y:auto;
 }
@@ -697,4 +698,105 @@ h1.detailResults{
 }
 a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	color:#000 !important;
+}
+
+/* Ipad Styles */
+
+/* ipad portrait */
+
+@media (max-width: 768px) {
+	.bNavOptions input.bSearchWithin {
+		padding-left:10px !important;
+		padding-right:5px !important;
+		width:80%;
+	}
+	.bNavOptions > div:last-child {
+		text-align:center;
+	}	
+	.bNavOptions .btn-search {
+		padding-top:2px !important;
+	}
+	.bNavOptions div {
+		padding-right:10px;
+		padding-left:10px;
+	}
+	.bNavOptions div.blankSpace {
+		display:none;
+	}
+	.bNavOptions > div a:first-child span, .bNavOptions .fa {
+		margin-left:5px;
+	}
+	.results button.bCriteria {
+		margin-top:5px;
+	}
+	.results button.bCriteria span {
+		font-size: 24px;
+	}	
+	.bNavOptions.detailBrowse .btn-group.filter, .bNavOptions.detailBrowse .btn-group.filter { 
+		padding-left:5px;
+	}
+	.bBAMResultItemOccCircle {
+		height:250px;
+	}
+	.bBAMResultItemOccCircle .bBAMResultItemText {
+		height:9em;
+		max-height:9em;
+	}
+	.bBAMResultItemOccCircle .bResultItemImgPlaceholder {
+		height:90px;
+		width:100%;
+		padding-top:28px;
+		padding-bottom:30px;
+		margin-bottom:0px;	
+	}
+	.detail .bBAMResultItemOccCircle .icon-stage{
+		font-size:40px !important;
+	}	
+	.results button.bCriteria span {
+		padding-top:0px;
+		margin-top: 0px;  
+	}
+	.detail .bBAMResultItemImg img{
+		width: 100%;
+		height:auto;
+	}
+}
+/* ipad landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+	.bNavOptions input.bSearchWithin {
+		width:75%;
+		padding-right:5px !important;
+	}
+	.bNavOptions .btn-search {
+		padding-top:4px !important;
+	}	
+	.bNavOptions > div:last-child {
+		text-align:center;
+	}	
+	.results button.bCriteria span {
+		font-size: 24px;
+	}	
+	.results button.bCriteria {
+		padding-top:8px;
+	}
+	.results button.bCriteria span {
+		padding-top:0px;
+		margin-top: -4px;  
+	}
+	.detail .bBAMResultItemImg img{
+		width: 100%;
+		height:auto;
+	}
+	.detail .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
+	    padding-top: 31px;
+	}
+	.detail .bBAMResultItemOccCircle .icon-stage {
+		font-size:35px !important;
+	}	
+}
+@media (min-width: 876px) and (max-width: 1024px) { 
+	.detail .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
+	    padding-top: 42px;
+	}
+
 }

@@ -17,9 +17,9 @@ if ($vn_collection_id) {
 			
 			$vs_type = $t_item_level_2->get('ca_collections.type_id', array('convertCodesToDisplayText' => true));
 			if ($vs_type == 'Box') {
-				$vs_icon = "<i class='fa fa-archive'></i>&nbsp;";
+				$vs_icon = "<span class='icon-box'></span>&nbsp;";
 			} else if ($vs_type == 'Folder') {
-				$vs_icon = "<i class='fa fa-folder'></i>&nbsp;";
+				$vs_icon = "<span class='icon-folder'></span>&nbsp;";
 			} else {
 				$vs_icon = null;
 			}
@@ -33,9 +33,9 @@ if ($vn_collection_id) {
 					$t_item_level_3 = new ca_collections($va_collection_level_three_id);
 					$vs_type = $t_item_level_3->get('ca_collections.type_id', array('convertCodesToDisplayText' => true));
 					if ($vs_type == 'Box') {
-						$vs_icon = "<i class='fa fa-archive'></i>&nbsp;";
+						$vs_icon = "<span class='icon-box'></span>&nbsp;";
 					} else if ($vs_type == 'Folder') {
-						$vs_icon = "<i class='fa fa-folder'></i>&nbsp;";
+						$vs_icon = "<span class='icon-folder'></span>&nbsp;";
 					} else {
 						$vs_icon = null;
 					}
@@ -49,9 +49,9 @@ if ($vn_collection_id) {
 							$t_item_level_4 = new ca_collections($va_collection_level_four_id);
 							$vs_type = $t_item_level_4->get('ca_collections.type_id', array('convertCodesToDisplayText' => true));
 							if ($vs_type == 'Box') {
-								$vs_icon = "<i class='fa fa-archive'></i>&nbsp;";
+								$vs_icon = "<span class='icon-box'></span>&nbsp;";
 							} else if ($vs_type == 'Folder') {
-								$vs_icon = "<i class='fa fa-folder'></i>&nbsp;";
+								$vs_icon = "<span class='icon-folder'></span>&nbsp;";
 							} else {
 								$vs_icon = null;
 							}							

@@ -71,7 +71,7 @@ if($vs_display_type == 'media_overlay'){
 	<div class="caMediaOverlayControls">
 		<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close"><i class="icon-cross"></i></a></div>
 <?php
-			if(caObjectsDisplayDownloadLink($this->request) && $this->request->user->canDoAction('can_download_media')){
+			if(caObjectsDisplayDownloadLink($this->request, (int)$t_object->getPrimaryKey()) && $this->request->user->canDoAction('can_download_media')){
 ?>
 				<div class='download'>
 <?php 
