@@ -2624,7 +2624,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	/**
 	 *
 	 */
-	function caObjectsDisplayDownloadLink($po_request) {
+	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
 		$o_config = Configuration::load();
 		$vn_can_download = false;
 		if($o_config->get('allow_ca_objects_representation_download')){
@@ -2645,6 +2645,15 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					}
 				break;
 				# ------------------------------------------
+			}
+		}
+		if($pn_object_id && $vn_can_download && is_array($o_config->get('allow_ca_objects_representation_download_types')) && sizeof($o_config->get('allow_ca_objects_representation_download_types'))){
+			# --- see if current object's type is in the confirgured array
+			$t_object = new ca_objects($pn_object_id);
+			$t_list_item = new ca_list_items($t_object->get("type_id"));
+			$va_object_type_code = $t_list_item->get("idno");
+			if(!in_array($va_object_type_code, $o_config->get('allow_ca_objects_representation_download_types'))){
+				$vn_can_download = false;
 			}
 		}
 		return $vn_can_download;

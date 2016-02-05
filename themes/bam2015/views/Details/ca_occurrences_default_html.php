@@ -20,7 +20,7 @@
 <?php
 					print "<div class='leader'>".$t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					print "<h2>".$t_item->get('ca_occurrences.preferred_labels')."</h2>";
-					if ($va_event_date = $t_item->get('ca_occurrences.productionDate', array('delimiter' => ', '))) {
+					if ($va_event_date = str_replace("-", "&mdash;", $t_item->get('ca_occurrences.productionDate', array('delimiter' => ', ')))) {
 						print "<h3>".$va_event_date."</h3>";
 					}					
 ?>			
@@ -78,13 +78,29 @@
 							print "<div class='unit'><span class='label'>Venue</span>".caNavLink($this->request, $vs_venue, '', '', '', 'Search/objects/search/"'.$vs_venue.'"')."</div>";
 						}
 					}
+					if ($va_related_works = $t_item->get('ca_occurrences.related.occurrence_id', array('restrictToTypes' => array('work'), 'returnAsArray' => true))) {
+						foreach ($va_related_works as $va_key => $va_related_work) {
+							$t_work = new ca_occurrences($va_related_work);
+							
+							if ($va_related_entities = $t_work->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'excludeRelationshipTypes' => array('principal_artist')))) {
+								$va_entity_list = array();
+								foreach ($va_related_entities as $va_entity_id => $va_related_entity) {
+									$va_entity_list[$va_related_entity['relationship_typename']][$va_related_entity['entity_id']][] = caNavLink($this->request, $va_related_entity['displayname'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id']);
+								}
+							}							
+							
+						}
+					}					
 					if ($va_related_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'excludeRelationshipTypes' => array('principal_artist')))) {
-						$va_entity_list = array();
 						foreach ($va_related_entities as $va_entity_id => $va_related_entity) {
 							$va_entity_list[$va_related_entity['relationship_typename']][$va_related_entity['entity_id']][] = caNavLink($this->request, $va_related_entity['displayname'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id']);
 						}
-						
+					}
+					if ($va_entity_list) {
 						foreach ($va_entity_list as $va_role => $va_entity) {
+							if (($va_entity_list['choreographer'] == $va_entity_list['original choreographer']) && ($va_role == 'original choreographer')) {
+								continue;
+							}
 							print "<div class='unit'><span class='label'>".$va_role."</span>";
 							$va_entity_links = array();
 							foreach($va_entity as $va_entity_role => $va_entity_link) {
@@ -95,13 +111,19 @@
 							print join(', ', $va_entity_links);
 							print "</div>";
 						}
-					}									
+					}
+
+					# --- is there a related work?
+					#$vn_work = $t_item->get("ca_occurrences.related.occurrence_id", array("restrictToTypes" => "work", "limit" => 1, "checkAccess" => $va_access_values));
+					#if($vn_work){
+					#	print caNavLink($this->request, _t('See other productions of this work'), '',  '', 'Search', 'occurrences', array('search' => 'ca_occurrences.related.occurrence_id:'.$vn_work));									
+					#}
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
 
 {{{<ifcount code="ca_objects" min="1">
-			<hr class="divide" style="margin-bottom:0px;"/>
+			<hr class="divide" />
 			<div class="container"><div class="row">
 				
 				<div id="browseResultsContainer">
