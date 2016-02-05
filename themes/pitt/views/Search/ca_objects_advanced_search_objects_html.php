@@ -23,6 +23,10 @@
 			{{{ca_objects.culture%width=400px&height=25px}}}
 		</div>
 		<div class="advancedSearchField">
+			Creator<br/>
+			{{{ca_entities.preferred_labels.displayname/creator%width=400px&height=25px}}}
+		</div>		
+		<div class="advancedSearchField">
 			Date<br/>
 			{{{ca_objects.dates.date_value%width=400px&height=25px&useDatePicker=0}}}
 		</div>	
@@ -52,14 +56,17 @@
 		</div>											
 		<div class="advancedSearchField">
 			Type:<br/>
-			{{{ca_objects.type_id}}}
+			{{{ca_objects.type}}}
 		</div>
+		<div style='width:400px;height:80px;'>		
+			<br style="clear: both;"/>
+	
+			<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
+			<div style="float: right;">{{{submit%label=Search}}}</div>
+		</div>		
 	</div>	
 	
-	<br style="clear: both;"/>
-	
-	<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-	<div style="float: right;">{{{submit%label=Search}}}</div>
+
 {{{/form}}}
 
 		</div>
