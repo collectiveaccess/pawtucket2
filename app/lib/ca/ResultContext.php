@@ -632,6 +632,7 @@
 			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load((defined('__CA_THEME_DIR__') ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
+
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
@@ -662,6 +663,7 @@
 			$va_tmp = explode('/', $vs_last_find);
 			
 			$o_find_navigation = Configuration::load((defined('__CA_THEME_DIR__') ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
+
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }

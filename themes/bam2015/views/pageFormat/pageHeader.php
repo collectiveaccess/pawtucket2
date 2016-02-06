@@ -86,7 +86,7 @@
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<?php print ($this->request->isLoggedIn()) ? "<span class='icon-user-heart'></span>" : "<span class='icon-user'></span>"; ?>
 				</button>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
@@ -114,7 +114,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown"  style="position:relative;border-right:4px solid #000;">
-						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><span class="icon-user"></span></a>
+						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? "<span class='icon-user-heart'></span>" : "<span class='icon-user'></span>"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -126,16 +126,17 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search" name="search" id="navSearch">
 						</div>
-						<button type="submit" class="btn-search"><span class="fa fa-search"></span></button>
+						<button type="submit" class="btn-search" id="navSearchButton"><span class="icon-magnifier"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 <?php
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Productions & Events', 'last', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Programming History', 'last', '', 'ProgramHistory', 'Index')."</li>\n"; 
 					print "</ul></li>";
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
@@ -150,6 +151,17 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$( "#navSearch" ).focus(function() {
+		  $("#navSearchButton").addClass("navSearchButtonHighlight");
+		});
+		
+		$( "#navSearch" ).focusout(function() {
+		  $("#navSearchButton").removeClass("navSearchButtonHighlight");
+		});
+	});
+</script>
 <?php
 	if($this->request->getController() != "Front"){
 ?>
