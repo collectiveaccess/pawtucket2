@@ -922,8 +922,9 @@
 	function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids, $pa_options=null) {
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
-
-		if (method_exists($t_instance, "getPrimaryMediaForIDs")) {
+		if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) { return array(); }
+		
+		if ((!caGetOption("useRelatedObjectRepresentations", $pa_options, array())) && method_exists($t_instance, "getPrimaryMediaForIDs")) {
 			// Use directly related media if defined
 			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
 			$va_media_by_id = array();

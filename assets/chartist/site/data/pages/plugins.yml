@@ -97,6 +97,37 @@ sections:
 
       - type: sub-section
         data:
+          title: Tooltip Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The tooltip plugin makes it super simple to add tooltips to most of your charts which can often
+                        increase it's usability.
+            - type: text
+              data:
+                text: >
+                        By simply including this plugin with default configurations you will already make your charts
+                        get some tooltips showing.
+            - type: live-example
+              data:
+                id: example-plugin-tooltip
+                classes: ct-golden-section
+                intro: >
+                         Creating a simple line chart showing how the tooltips work.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Markus Padourek
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/Globegitter/chartist-plugin-tooltip" target="_blank">chartist-plugin-tooltip</a>'
+
+      - type: sub-section
+        data:
           title: Point Label Plugin
           level: 4
           items:
@@ -148,6 +179,105 @@ sections:
                   -
                     - '<strong>Link:</strong>'
                     - '<a href="https://github.com/gionkunz/chartist-plugin-sketchy" target="_blank">chartist-plugin-sketchy</a>'
+      - type: sub-section
+        data:
+          title: Axis Title Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The axis title plugin allows you to add simple titles to your axes.
+            - type: live-example
+              data:
+                id: example-plugin-axistitle
+                classes: ct-golden-section
+                intro: >
+                          While not a core functionality, this plugin makes it absolutely easy to add axis titles to your chart.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Alex Stanbury
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/alexstanbury/chartist-plugin-axistitle" target="_blank">chartist-plugin-axistitle</a>'
+      - type: sub-section
+        data:
+          title: Threshold Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        This Chartist plugin can be used to divide your Line or Bar chart with a threshold.
+            - type: live-example
+              data:
+                id: example-plugin-threshold
+                classes: ct-golden-section
+                intro: >
+                          Everything above and below the
+                          threshold will be tagged with a special class, in order for your to apply different styling where appropriate.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Gion Kunz
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
+      - type: sub-section
+        data:
+          title: FillDonut Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        Let animated donuts look filled and provide options for append labels and html to the donut chart.
+                        This plugin draw the donut a second time but without delay and animation, so it animation will overlaps and looks like the fill the donut.
+                        Also your a possible to add multiple html-labels to the donut on different positions.
+            - type: live-example
+              data:
+                id: example-plugin-fill-donut
+                classes: ct-golden-section
+                intro: >
+                          Let animated donuts look filled and provide options for append labels and html to the donut chart.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Moxx
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/gionkunz/chartist-plugin-threshold" target="_blank">chartist-plugin-threshold</a>'
+      - type: sub-section
+        data:
+          title: Zoom Plugin
+          level: 4
+          items:
+            - type: text
+              data:
+                text: >
+                        The zoom plugin allows you to zoom into charts.
+            - type: live-example
+              data:
+                id: example-plugin-zoom
+                classes: ct-golden-section
+                intro: >
+                          Use the left mouse button to drag a zoom box. The plugin provides a callback that can be used to reset the zoom.
+            - type: table
+              data:
+                rows:
+                  -
+                    - '<strong>Author:</strong>'
+                    - Hannes Kamecke
+                  -
+                    - '<strong>Link:</strong>'
+                    - '<a href="https://github.com/hansmaad/chartist-plugin-zoom" target="_blank">chartist-plugin-zoom</a>'
   - title: Develop a plugin
     level: 3
     items:

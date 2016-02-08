@@ -46,7 +46,7 @@
 	} else {	
 		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li>".caNavLink($this->request, _t("Why Register?"), "", "", "About", "WhyRegister")."</li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "About", "WhyRegister")."\"); return false;'>"._t("Why Register?")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -134,6 +134,7 @@
 						print $this->render("pageFormat/browseMenu.php");
 ?>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/publications/lessons-in-conservation"><?php print _t("Our Journal"); ?></a></li>
+					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training"><?php print _t("Training & Events"); ?></a></li>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep"><?php print _t("About NCEP"); ?></a></li>
 <?php
 	if ($vb_has_user_links) {

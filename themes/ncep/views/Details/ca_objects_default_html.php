@@ -26,6 +26,8 @@
 				$va_component_info["name"] = $q_components->get("ca_objects.preferred_labels.name");
 				$va_component_info["type"] = $q_components->get("ca_objects.type_id", array("convertCodesToDisplayText" => true));
 				$va_component_info["author"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("author"), "checkAccess" => $va_access_values));
+				$va_component_info["translator"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("translator"), "checkAccess" => $va_access_values));
+				$va_component_info["adapter"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("adapter"), "checkAccess" => $va_access_values));
 				$va_component_info["abstract"] = $q_components->get("ca_objects.abstract");
 				$va_component_info["source"] = $q_components->get("ca_objects.source");
 				$va_component_info["usage"] = $q_components->get("usage_license");
@@ -38,11 +40,12 @@
 						$va_component_info["rep_ids"] = $va_rep_ids;
 					}
 				}
+				$va_component_info["num_files"] = sizeof($va_rep_ids);
 				#print $q_components->get("object_id")." - ".$va_component_info["rep_id"];
 				if($va_component_info["rep_id"] || $va_component_info["rep_ids"]){
 					$vb_files = 1;
 					# --- does this resource require you to be logged in to download?
-					if(!in_array($q_components->get("ca_objects.type_id"), $va_requires_login) || (in_array($q_components->get("ca_objects.type_id"), $va_requires_login) && $this->request->isLoggedIn())){
+					if(!in_array($q_components->get("ca_objects.type_id"), $va_requires_login) || (in_array($q_components->get("ca_objects.type_id"), $va_requires_login) && ($this->request->isLoggedIn() && $this->request->user->getPreference("user_profile_classroom_role") == "EDUCATOR"))){
 						if($va_component_info["rep_id"]){
 							$t_representation->load($va_component_info["rep_id"]);
 							$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
@@ -51,12 +54,16 @@
 							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}elseif(is_array($va_component_info["rep_ids"]) && sizeof($va_component_info["rep_ids"])){
 							#download the all reps for the component
-							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
+							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "exclude_ancestors" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
 							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $va_component_info["rep_ids"][0], 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}
 					}else{
-						# --- provide a login link instead
-						$va_component_info["download"] = "<a class='btn-default btn-orange' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login to download")."</a>";
+						# --- if not logged in provide a login link instead
+						if(!$this->request->isLoggedIn()){
+							$va_component_info["download"] = "<a class='btn-default btn-orange' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login to download")."</a>";
+						}elseif($this->request->user->getPreference("user_profile_classroom_role") != "EDUCATOR"){
+							$va_component_info["download"] = "<H6>* You must be registered as an educator to download this resource</H6>";
+						}
 						$vb_files_require_login = 1;
 					}
 				}
@@ -102,12 +109,23 @@
 					
 			<div class="row">
 <?php
+				# --- is this object in a gallery/featured set?
+				$t_set = new ca_sets();
+				$va_sets = caExtractValuesByUserLocale($t_set->getSets(array("table" => "ca_objects", "row_id" => $t_object->get("ca_objects.object_id"), "setType" => "public_presentation", "checkAccess" => $va_access_values)));
 				$vs_translations = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='<br/>' restrictToRelationshipTypes='translation'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.language)</unit>");
-				if($t_object->get("ca_objects.abstract") || $vs_translations){
+				if($t_object->get("ca_objects.abstract") || $vs_translations || (is_array($va_sets) && sizeof($va_sets))){
 					print "<div class='col-xs-12 col-sm-8'>";
 					print ($t_object->get("ca_objects.abstract")) ? "<p>".$t_object->get("ca_objects.abstract")."</p>" : "";
 					if($vs_translations){
 						print "<p><b>View this module in other languages:</b><br/>".$vs_translations."</p>";
+					}
+					if(is_array($va_sets) && sizeof($va_sets)){
+						print "<p><b>Featured in:</b> ";
+						$va_feature_links = array();
+						foreach($va_sets as $va_set){
+							$va_feature_links[] = caNavLink($this->request, $va_set["name"], "", "", "Gallery", $va_set["set_id"]);
+						}
+						print join(", ", $va_feature_links);
 					}
 					print "</div>";
 				}
@@ -117,9 +135,10 @@
 						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToRelationshipTypes="related"><l>^ca_objects.preferred_labels.name</l></unit>
 					</p></ifcount>}}}
 <?php
+					$t_list_items = new ca_list_items();
+							
 					if($va_themes = $t_object->get("ca_objects.themes", array("returnWithStructure" => true))){
 						if(is_array($va_themes) && sizeof($va_themes)){
-							$t_list_items = new ca_list_items();
 							$va_themes = array_pop($va_themes);
 							print "<p><b>Theme".((sizeof($va_themes) > 1) ? "s" : "")."</b>: ";
 							$va_theme_links = array();
@@ -131,10 +150,32 @@
 							print "</p>";
 						}
 					}
-?>
-					{{{<ifdef code="ca_objects.language"><p><b>Language:</b> ^ca_objects.language%delimiter=,_</p></ifdef>}}}
-					{{{<ifdef code="ca_objects.regions"><p><b>Region:</b> ^ca_objects.regions%delimiter=,_</p></ifdef>}}}
-<?php
+					if($va_languages = $t_object->get("ca_objects.language", array("returnWithStructure" => true))){
+						if(is_array($va_languages) && sizeof($va_languages)){
+							$va_languages = array_pop($va_languages);
+							print "<p><b>Language".((sizeof($va_languages) > 1) ? "s" : "")."</b>: ";
+							$va_language_links = array();
+							foreach($va_languages as $vn_key => $va_language){
+								$t_list_items->load($va_language["language"]);
+								$va_language_links[] = caNavLink($this->request, $t_list_items->get("ca_list_items.preferred_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "language", "id" => $va_language["language"]));					
+							}
+							print join(", ", $va_language_links);
+							print "</p>";
+						}
+					}
+					if($va_regions = $t_object->get("ca_objects.regions", array("returnWithStructure" => true))){
+						if(is_array($va_regions) && sizeof($va_regions)){
+							$va_regions = array_pop($va_regions);
+							print "<p><b>Region".((sizeof($va_regions) > 1) ? "s" : "")."</b>: ";
+							$va_region_links = array();
+							foreach($va_regions as $vn_key => $va_region){
+								$t_list_items->load($va_region["regions"]);
+								$va_region_links[] = caNavLink($this->request, $t_list_items->get("ca_list_items.preferred_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "region", "id" => $va_region["regions"]));					
+							}
+							print join(", ", $va_region_links);
+							print "</p>";
+						}
+					}
 				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("keywords")))){
 					if(is_array($va_subjects) && sizeof($va_subjects)){
 						print "<p><b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "").":</b> ";
@@ -153,7 +194,7 @@
 					if($vb_files){
 						print "<p class='componentButtonCol'>".caNavLink($this->request, "Download All&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
 						if($vb_files_require_login){
-							print "<br/><small>* Login to download all files</small>";
+							print "<br/><small>* Educators must login to download all files</small>";
 						}
 						print "</p>";
 					}
@@ -235,9 +276,11 @@
 						print "</a>";
 					}
 ?>
+				<a href="#" onClick="clickTab('connect'); return false;">
 				<div class="compTab connect">
-					<a href="#" onClick="clickTab('connect'); return false;"><?php print "<div class='imgContainer'>".caGetThemeGraphic($this->request, 'icon_connect.png', array('title' => _t('Connect'))); ?></div><span>Connect</span></a>
+					<?php print "<div class='imgContainer'>".caGetThemeGraphic($this->request, 'icon_connect.png', array('title' => _t('Connect'))); ?></div><span>Connect</span>
 				</div>
+				</a>
 			</div><!-- end col-3 -->
 			<div class='col-xs-12 col-sm-9'>
 				<div class="detailBox bottom">
@@ -252,13 +295,31 @@
 							print "<H1>".$vs_section."</H1>";
 							foreach($va_section_components as $va_section_component){
 								if($va_section_component["download"] || $va_section_component["preview"]){
-									print "<div class='row'><div class='col-sm-8 col-xs-12'>";
+									print "<div class='row'><div class='col-sm-10 col-xs-12'>";
 								}
 								print "<H2>".(($va_section_component["resource_link"]) ? "<a href='".$va_section_component["resource_link"]."' target='_blank'>".$va_section_component["type"].": ".$va_section_component["name"]."</a>" : $va_section_component["type"].": ".$va_section_component["name"])."</H2>";
-								print ($va_section_component["author"]) ? "<p>"._t("Author").": ".$va_section_component["author"]."</p>" : "";
+								if($va_section_component["num_files"] > 1){
+									print "<p>".$va_section_component["num_files"]." files</p>";
+								}
+								$va_author_credits = array();
+								if($va_section_component["author"]){
+									$va_author_credits[] = _t("Author").": ".$va_section_component["author"];
+								}
+								if($va_section_component["adapter"]){
+									$va_author_credits[] = _t("Adapted by").": ".$va_section_component["adapter"];
+								}
+								if($va_section_component["translator"]){
+									$va_author_credits[] = _t("Translator").": ".$va_section_component["translator"];
+								}
+								
+								if(sizeof($va_author_credits)){
+									print "<p>";
+									print join("<br/>", $va_author_credits);
+									print "</p>";
+								}
 								print ($va_section_component["source"]) ? "<p>"._t("Source").": ".$va_section_component["source"]."</p>" : "";
 								if($va_section_component["download"] || $va_section_component["preview"]){
-									print "</div><div class='col-sm-4 col-xs-12 componentButtonCol'>";
+									print "</div><div class='col-sm-2 col-xs-12 componentButtonCol'>";
 									if($va_section_component["preview"]){
 										print $va_section_component["preview"]."&nbsp;&nbsp;&nbsp;";
 									}

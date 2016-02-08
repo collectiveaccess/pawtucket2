@@ -93,7 +93,7 @@
 		var options = {
 			fullWidth: true,
 			// As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
-			axisY: {
+			axisX: {
 				onlyInteger: true,
 				offset: 20
 			},
@@ -121,7 +121,7 @@
 		});
 
 		$chart.on('mousemove', function(event) {
-			 var l = ((event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX) - $graphToolTip.width() / 2 - 10;
+			var l = ((event.originalEvent.layerX >= 0) ? event.originalEvent.layerX : event.offsetX) - $graphToolTip.width() / 2 - 10;
 			var t = ((event.originalEvent.layerY >= 0) ? event.originalEvent.layerY : event.offsetY) - $graphToolTip.height() - 40;
 			if (l < 5) { l = 5; }
 			if (t < 5) { t = 5; }

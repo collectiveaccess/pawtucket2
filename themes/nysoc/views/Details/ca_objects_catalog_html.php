@@ -180,7 +180,7 @@
 				foreach ($vs_subjects_1813 as $va_key => $vs_subjects_1813_t) {
 					foreach ($vs_subjects_1813_t as $vs_subjects_1813) {
 						if (($vs_subjects_1813['subjects_1813'] != 528) && ($vs_subjects_1813['subjects_1813'])) {
-							$vs_1813[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1813['subjects_1813']), '', '', 'Search', 'objects/search/ca_objects.subjects_1813:'.$vs_subjects_1813['subjects_1813']);
+							$vs_1813[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1813['subjects_1813']), '', '', 'Search', 'objects/search/ca_objects.subjects_1813:"'.$vs_subjects_1813['subjects_1813'].'"');
 						}
 					}
 				}
@@ -195,7 +195,7 @@
 				foreach ($vs_subjects_1838 as $va_key => $vs_subjects_1838_t) {
 					foreach ($vs_subjects_1838_t as $vs_subjects_1838) {
 						if (($vs_subjects_1838['subjects_1838'] != 235) && ($vs_subjects_1838['subjects_1838'])) {
-							$vs_1838[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1838['subjects_1838']), '', '', 'Search', 'objects/search/ca_objects.subjects_1838:'.$vs_subjects_1838['subjects_1838']);
+							$vs_1838[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1838['subjects_1838']), '', '', 'Search', 'objects/search/ca_objects.subjects_1838:"'.$vs_subjects_1838['subjects_1838'].'"');
 						}
 					}
 				}
@@ -204,13 +204,13 @@
 					$vs_subj_buf.= join(', ', $vs_1838);
 					$vs_subj_buf.= "</div>";
 				}
-			}								
-			if ($vs_subjects_1850 = $t_object->get('ca_objects.subjects_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => true))) {
+			}						
+			if ($vs_subjects_1850 = $t_object->get('ca_objects.Analytical_Catalog_1850', array('returnWithStructure' => 'true', 'convertCodesToDisplayText' => false))) {
 				$vs_1850 = array();
 				foreach ($vs_subjects_1850 as $va_key => $vs_subjects_1850_t) {
 					foreach ($vs_subjects_1850_t as $vs_subjects_1850) {
-						if (($vs_subjects_1850['subjects_1850'] != 964) && ($vs_subjects_1850['subjects_1850'])) {
-							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['subjects_1850']), '', '', 'Search', 'objects/search/ca_objects.subjects_1850:'.$vs_subjects_1850['subjects_1850']);
+						if (($vs_subjects_1850['Analytical_Catalog_1850'] != 964) && ($vs_subjects_1850['Analytical_Catalog_1850'])) {
+							$vs_1850[] = caNavLink($this->request, $t_list->getItemForDisplayByItemID($vs_subjects_1850['Analytical_Catalog_1850']), '', '', 'Search', 'objects/search/ca_objects.Analytical_Catalog_1850:"'.$vs_subjects_1850['Analytical_Catalog_1850'].'"');
 						}
 					}
 				}
@@ -230,19 +230,19 @@
 					foreach ($vs_subject_lcsh_r as $va_key => $vs_subject_lcsh_s) {
 						foreach ($vs_subject_lcsh_s as $vs_subject_lcsh) {
 							$va_subject = explode(' [', $vs_subject_lcsh);
-							$vs_curr_buf.= caNavLink($this->request, $va_subject[0], '', '', 'Search', 'objects/search/'.$vs_subject_lcsh)."<br/>";
-						}
+							$vs_curr_buf.= caNavLink($this->request, $va_subject[0], '', 'Browse', 'docs', 'facet/LC_subject/id/'.urlencode(str_replace('/', '&#47;', $vs_subject_lcsh)))."<br/>";
+						} 
 					}
 				}
 			}
 			if ($va_local = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true))) {
 				foreach ($va_local as $va_local_subject) {
-					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_local_subject), '', 'Browse', 'document', 'facet/local_subject/id/'.$va_local_subject)."<br/>";
+					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_local_subject), '', 'Browse', 'docs', 'facet/local_subject/id/'.$va_local_subject)."<br/>";
 				}
 			}
 			if ($va_genres = $t_object->get('ca_objects.document_type', array('returnAsArray' => true))) {
 				foreach ($va_genres as $va_genre) {
-					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_genre), '', 'Browse', 'document', 'facet/document_type/id/'.$va_genre)."<br/>";
+					$vs_curr_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_genre), '', 'Browse', 'docs', 'facet/document_type/id/'.$va_genre)."<br/>";
 				}
 			}
 			if ($vs_curr_buf) {

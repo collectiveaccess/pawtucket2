@@ -69,6 +69,9 @@ H6, h6{
 	padding-bottom:0px;
 	margin:10px 0px 0px 0px;
 }
+.form-control:focus {
+    border-color: #000000;
+}
 .btn-default, .detail .btn-default {
     background-color: #EC7923;
     border-color: none;
@@ -160,7 +163,7 @@ H6, h6{
     font-size: 19px;
     text-transform: capitalize;
     padding:18px 0px 18px 0px;
-	font-family:'thesans6';
+	font-family:'thesans5';
 	width:100%;
 	display:inline-block;
 	text-align:center;
@@ -319,12 +322,27 @@ nav, .navbar, .navbar-default{
 }
 @media (min-width: 768px) {
 	.nav li a{
-		padding:0px 22px 0px 22px;
+		font-size:14px !important;
+		padding:0px 20px 0px 20px;
 		margin:0px 0px 0px 0px;
 		border-left: 1px solid #C0BFA5;
 	}
 	.nav li:last-child a{
 		border-right: 1px solid #C0BFA5;
+	}
+}
+@media (min-width: 960px) {
+	.nav li a{
+		padding:0px 29px 0px 29px;
+		font-size:17px !important;
+	}	
+	ul.nav {
+		border-right: 1px solid #C0BFA5;
+		width:100%;
+	}
+	.nav li:last-child a{
+		border-right: 0px;
+		padding-right:30px;
 	}
 }
 .navbar{
@@ -336,7 +354,7 @@ nav, .navbar, .navbar-default{
 	border-radius: 0px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.176);
 }
-.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > li > a:hover {
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > li > a:hover, .navbar .navbar-nav > li:hover {
   	background-color: #D6D6B9;
     color: #585832;
 }
@@ -440,6 +458,7 @@ nav, .navbar, .navbar-default{
 }
 h2#hpSectionText{
 	min-height:110px;
+	font-size:17px;
 }
 @media (min-width: 768px) {
 	.front H1 {
@@ -548,12 +567,12 @@ h2#hpSectionText{
 }
 #bRefine div, #bRefine div a{
 	font-family:'thesans5';
-	font-size:14px;
+	font-size:15px;
 	color:#2E536E;
 }
 .results H1 {
 	font-size:22px;
-	font-family:'thesans6';
+	font-family:'thesans5';
 	text-transform:capitalize;
 }
 .bResItem{
@@ -597,17 +616,25 @@ h2#hpSectionText{
 }
 .detailBox a{
 	color:#626801;
-	text-decoration:underline;
+	text-decoration:none;
 }
 .detailBox b{
 	color:#2E536E;
 	font-weight:normal;
 }
+@media (max-width: 768px) {
+	.gallery .detailBoxTop{
+		margin-top:20px !important;
+	}
+}
 .detail H1{
 	font-size:20px;
-	font-family: 'thesans7';
+	font-family: 'thesans6';
 	text-transform:capitalize;
 }
+/*.detail .detailBoxTop H1{
+	font-family: 'thesans5';
+}*/
 @media (min-width: 768px) {
 	.detail H1{
 		font-size:24px;
@@ -615,7 +642,7 @@ h2#hpSectionText{
 }
 .detail H2{
 	color:#2E536E;
-	font-family: 'thesans7';
+	font-family: 'thesans6';
 	margin-bottom:0px;
 }
 .detail H2 a{
@@ -677,18 +704,18 @@ h2#hpSectionText{
 	}
 }
 .detail .compViewAll{
-	padding:8px 0px 15px 17px;
+	padding:8px 0px 15px 24px;
 }
 .detail .compViewAll a{
 	color: #2E536E;
 	font-size:20px;
-	font-family:'thesans7';
+	font-family:'thesans5';
 }
 .detail .compViewAll a:hover{
 	text-decoration:none;
 }
 .detail .compViewAll a i{
-	padding-right:18px;
+	padding-right:31px;
 	font-size:40px;
 	position:relative;
 	top:5px;
@@ -699,7 +726,7 @@ h2#hpSectionText{
 	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	border-top-left-radius: 9px;
 	border-bottom-left-radius: 9px;
-	font-family:'thesans7';
+	font-family:'thesans5';
 	color:#FFF;
 	font-size:22px;
 	margin:0px 0px 20px 0px;
@@ -708,14 +735,13 @@ h2#hpSectionText{
 	opacity:.4;
 }
 .detail .compTab.highlightTab{
-	margin-right:-3px;
+	margin-right:-8px;
 	z-index:10;
 	position:relative;
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 	-webkit-box-shadow:0 2px 6px rgba(0, 0, 0, 0.6);
 	box-shadow:0 2px 6px rgba(0, 0, 0, 0.6);
-	text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
 }
 .detail a .compTab, .detail .compTab a{
 	color:#FFF;
@@ -755,6 +781,42 @@ h2#hpSectionText{
 .connect{
 	background-color: #626801;
 }
+
+/*  Gallery */
+.galleryBackLink a{
+	font-size:24px;
+	color:#2E536E;
+	text-decoration:none;
+	float:left;
+	margin-right:5px;
+	margin-top:-5px;
+}
+@media (min-width: 768px) {
+	.galleryBackLink{
+		float:right;
+		margin:0px;
+	}
+}
+.galleryIcon {
+	text-align:center;
+}
+.galleryIcon img{
+	width:100%;
+	max-width:200px;
+	height:auto;
+}
+.galleryIconDetail{
+	margin:0px 0px 10px 0px;	
+}
+@media (min-width: 768px) {
+	.galleryIconDetail{
+		float:left;
+		margin:0px 20px 10px 0px;
+	}
+}
+.gallery .bResItem a .fa-download{
+	font-size:30px !important;
+}
 #caFormOverlay H1{
 	background-color:#2E536E;
 	color:#FFF;
@@ -787,4 +849,15 @@ h2#hpSectionText{
 }
 label{
 	text-transform:none;
+	font-weight:normal;
+	font-size:15px;
+}
+#caFormOverlay H1{
+	font-family:'thesans5';
+}
+#caFormOverlay{
+	font-size:15px;
+}
+.form-control {
+    font-size: 14px;
 }

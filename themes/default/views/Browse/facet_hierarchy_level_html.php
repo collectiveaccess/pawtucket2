@@ -43,7 +43,7 @@
 				$vs_buf = "<div ".($vb_is_nav ? "class='browseFacetItem browseFacetHierarchyItem col-sm-6 col-md-4'" : "").">";
 				if($vs_link_to == "morePanel"){
 					if((int)$va_children["children"] > 0){
-						$vs_buf .= '<a href="#" title=\''._t('View sub-items').'\' onclick="jQuery(\'#bMorePanel\').load(\''.caNavUrl($this->request, '*', '*', $vs_browse_type, array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'>".$vs_name."</a>";
+						$vs_buf .= "<a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'>{$vs_name}</a>";
 					}else{
 						$vs_buf .= caNavLink($this->request, $vs_name, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
 					}
@@ -65,3 +65,17 @@
 		print join($va_links, "\n");
 	}
 	if ($vb_is_nav) { print "</div>\n"; }
+?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery(".caSubItem<?php print $vs_facet_name; ?>").bind('click', function(e) {
+			jQuery('#bMorePanel').load('<?php print caNavUrl($this->request, '*', '*', $vs_browse_type); ?>', { getFacet: 1, facet: '<?php print $vs_facet_name; ?>', view: '<?php print $vs_view; ?>', key: '<?php print $vs_key; ?>', browseType: '<?php print $vs_browse_type; ?>', id: jQuery(this).data('item_id'), isNav: <?php print $vb_is_nav ? 1 : 0; ?>}, 
+				function(){jQuery("#bMorePanel").show(); 
+				jQuery("#bMorePanel").mouseleave(function(){
+					jQuery("#bMorePanel").hide();
+				});
+			}); 
+			return false;
+		});
+	});
+</script>

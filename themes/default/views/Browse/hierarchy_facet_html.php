@@ -54,7 +54,7 @@
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery("#bHierarchyListMorePanel_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => $vn_id)); ?>");
-		jQuery("#bAncestorList").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => $this->request->getParameter('id', pInteger))); ?>");
+		jQuery("#bHierarchyListMorePanel_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$vn_id)); ?>");
+		jQuery("#bAncestorList").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$vn_id)); ?>");
 	});
 </script>

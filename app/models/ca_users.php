@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2015 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -144,7 +144,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 				'BOUNDS_VALUE' => array(0,1)
 		),
 		'registered_on' => array(
-				'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_OMIT, 
+				'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_OMIT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => true, 
 				'DEFAULT' => '',
@@ -2328,7 +2328,7 @@ class ca_users extends BaseModel {
 	
 	public function loadUserPrefDefs($pb_force_reload=false) {
 		if (!$this->_user_pref_defs || $pb_force_reload) {
-			if ($vs_user_pref_def_path = __CA_THEME_DIR__."/user_pref_defs.conf") {
+			if ($vs_user_pref_def_path = __CA_CONF_DIR__."/user_pref_defs.conf") {
 				$this->_user_pref_defs = Configuration::load($vs_user_pref_def_path, $pb_force_reload);
 				return true;
 			}
