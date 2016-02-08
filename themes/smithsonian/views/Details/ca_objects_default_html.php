@@ -60,7 +60,6 @@
 			}							
 ?>
 
-				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'><unit delimiter='; '>^ca_objects.color</unit></span></div></ifdef></unit>}}}
 
 					
