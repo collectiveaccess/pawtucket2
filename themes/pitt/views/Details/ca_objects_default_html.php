@@ -37,7 +37,7 @@
 				
 				{{{<ifcount min="1" code="ca_objects.dimensions">
 				<h6>Dimensions</h6>
-				<unit relativeTo="ca_objects" delimiter="<br/>">
+				<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
 					<ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_length,ca_objects.dimensions.dimensions_width"> x </ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef>
@@ -55,6 +55,9 @@
 				{{{<ifdef code="ca_objects.description">
 					<h6>Description</h6><span class="trimText">^ca_objects.description</span>
 				</ifdef>}}}
+				{{{<ifdef code="ca_objects.exhibition_label">
+					<h6>Exhibition Label</h6><span class="trimText">^ca_objects.exhibition_label</span>
+				</ifdef>}}}
 				{{{<ifdef code="ca_objects.object_status"><h6>Status</h6>^ca_objects.object_status</ifdef>}}}
 				{{{<ifdef code="ca_objects.provenance"><h6>Provenance</h6>^ca_objects.provenance</ifdef>}}}
 				{{{<ifdef code="ca_objects.publication_notes"><h6>Bibliography</h6>^ca_objects.publication_notes</ifdef>}}}
@@ -63,7 +66,7 @@
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							{{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" min="1"><H6>Related people</H6><unit relativeTo="ca_objects_x_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>}}}
+							<!-- {{{<ifcount relativeTo="ca_entities" code="ca_entities.preferred_labels" min="1"><H6>Related people</H6><unit relativeTo="ca_objects_x_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>}}}-->
 							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}

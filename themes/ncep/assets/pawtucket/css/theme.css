@@ -814,6 +814,9 @@ h2#hpSectionText{
 		margin:0px 20px 10px 0px;
 	}
 }
+.gallery .bResItem a .fa-download{
+	font-size:30px !important;
+}
 #caFormOverlay H1{
 	background-color:#2E536E;
 	color:#FFF;

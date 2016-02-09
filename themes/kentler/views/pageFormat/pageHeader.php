@@ -98,7 +98,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caGetThemeGraphic($this->request, 'door.png');
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'door2.jpg'), "", "", "","");
 				print caNavLink($this->request, "<div class='line1'>"._t("Kentler")."</div><div class='line2'>"._t("International")."</div><div class='line3'>"._t("Drawing Space")."</div>", "navbar-brand", "", "","");
 ?>
 			</div>
@@ -134,21 +134,21 @@
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search pinkText"></span></button>
+						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search redText"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
-							<li><a href="#">Current</a></li>
-							<li><a href="#">Upcoming</a></li>
-							<li><a href="#">Past</a></li>
+							<li><?php print caNavLink($this->request, _t("Current/Upcoming"), "", "", "Listing", "upcoming_exhibitions"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Past"), "", "", "Listing", "past_exhibitions"); ?></li>
 							<li><a href="#">Proposals</a></li>
 						</ul>
 					</li>
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Flatfiles <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
 							<li><?php print caNavLink($this->request, _t("Flatfiles Digital Archive"), "", "", "Listing", "flatfileArtists"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Browse Flatfile Artworks"), "", "", "Browse", "objects"); ?></li>
 							<li><a href="#">Traveling Shows</a></li>
 							<li><a href="#">Red Hook Archives</a></li>
 							<li><a href="#">Visit the Flatfiles</a></li>
@@ -165,12 +165,13 @@
 							<li><a href="#">K.I.D.S. Blog</a></li>
 						</ul>					
 					</li>
-					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Events <span class='caret'></span></a>
+					<li><li class='dropdown' style='position:relative;'><?php print caNavLink($this->request, _t("Events"), "", "", "Listing", "events"); ?></li>
+					<!--<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Events <span class='caret'></span></a>
 						<ul class='dropdown-menu'>
 							<li><a href="#">Upcoming</a></li>
 							<li><a href="#">Past</a></li>
-						</ul>					
-					</li>															
+						</ul>				
+					</li>	-->															
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
 							<li><a href="#">Mission & History</a></li>

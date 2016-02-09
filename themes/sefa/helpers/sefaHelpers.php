@@ -60,75 +60,51 @@
 				$va_caption_parts[] = $o_object->get("materials_notes");
 			}else{
 				if($o_object->get("sculpture_material", array('convertCodesToDisplayText' => true)) && $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["sculpture_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("sculpture_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true)) && $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["mixed_media_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("mixed_media_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("photography_material", array('convertCodesToDisplayText' => true)) && $o_object->get("photography_material", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["photography_material"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("photography_material", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}	
 				}elseif($o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["works_paper_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("works_paper_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
 				}elseif($o_object->get("painting_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("painting_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["painting_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("painting_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
 					if($o_object->get("painting_material", array('convertCodesToDisplayText' => true)) && $o_object->get("painting_material", array('convertCodesToDisplayText' => true)) != " "){
 						$vs_medium .= " on ".$o_object->get("painting_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}
 				}elseif($o_object->get("print_medium", array('convertCodesToDisplayText' => true)) && $o_object->get("print_medium", array('convertCodesToDisplayText' => true)) != " "){
-					$va_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'returnAsArray' => true));
-					$va_tmp = array();
-					foreach($va_medium as $va_media){
-						$va_tmp[] = $va_media["print_medium"];
-					}
-					if(sizeof($va_medium) == 2){
-						$vs_medium = implode(" and ", $va_tmp);
+					$va_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+					if(sizeof($va_medium) > 2){
+						$vs_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}else{
-						$vs_medium = implode(", ", $va_tmp);
+						$vs_medium = $o_object->get("print_medium", array('convertCodesToDisplayText' => true, 'delimiter' => ' and '));
 					}
-					if($o_object->get("print_material")){
+					if($o_object->get("print_material", array('convertCodesToDisplayText' => true)) && ($o_object->get("print_material", array('convertCodesToDisplayText' => true)) != " ")){
 						$vs_medium .= " on ".$o_object->get("print_material", array('convertCodesToDisplayText' => true, 'delimiter' => ', '));
 					}
 				}
