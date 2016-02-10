@@ -96,7 +96,7 @@ class SearchResult extends BaseObject {
 
 	# ------------------------------------------------------------------
 	private $opb_disable_get_with_template_prefetch = false;
-	static $s_template_prefetch_cache;
+	private $opa_template_prefetch_cache = array();
 	# ------------------------------------------------------------------
 
 	public static function clearCaches() {
@@ -111,7 +111,6 @@ class SearchResult extends BaseObject {
 		self::$opa_hierarchy_children_prefetch_cache_index = array();
 		self::$opa_hierarchy_siblings_prefetch_cache = array();
 		self::$opa_hierarchy_siblings_prefetch_cache_index = array();
-		self::$s_template_prefetch_cache = array();
 	}
 
 	public function __construct($po_engine_result=null, $pa_tables=null) {
@@ -159,7 +158,7 @@ class SearchResult extends BaseObject {
 		
 		$this->opo_tep = $GLOBALS["_DbResult_time_expression_parser"];
 		
-		if (!is_array(self::$s_template_prefetch_cache)) { self::$s_template_prefetch_cache = array(); }
+		$this->opa_template_prefetch_cache = array();
 	}
 	# ------------------------------------------------------------------
 	public function cloneInit() {
@@ -714,7 +713,7 @@ class SearchResult extends BaseObject {
 		$vs_md5 = caMakeCacheKeyFromOptions($pa_options);
 		
 		$va_criteria = is_array($this->opa_tables[$ps_tablename]) ? $this->opa_tables[$ps_tablename]['criteria'] : null;
-		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, array_merge($pa_options, array('row_ids' => $va_row_ids, 'limit' => caGetOption('limit', $pa_options, 100000), 'criteria' => $va_criteria)));		// if there are more than 100,000 then we have a problem
+		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, array_merge($pa_options, array('row_ids' => $va_row_ids, 'limit' => 100000, 'criteria' => $va_criteria)));		// if there are more than 100,000 then we have a problem
 		
 		if (!is_array($va_rel_items) || !sizeof($va_rel_items)) { return; }
 		
@@ -852,8 +851,7 @@ class SearchResult extends BaseObject {
 	 *			returnURL = When fetching intrinsic value of type FT_MEDIA return URL to media rather than HTML tag. [Default is false]
 	 *			returnPath = When fetching intrinsic value of type FT_MEDIA return path to media rather than HTML tag. [Default is false] 
 	 *			unserialize = When fetching intrinsic value of type FT_VARS (serialized variables) return unserialized value. [Default is false]
- 	 *			limit = Maximum number of items to return. [Default is 100000]
- 	 *			
+	 *			
 	 *		[Formatting options for strings and arrays]
 	 *			template = Display template use when formatting return values. @see http://docs.collectiveaccess.org/wiki/Display_Templates. [Default is null]
 	 *			delimiter = Characters to place in between repeating values when returning a string
@@ -924,9 +922,7 @@ class SearchResult extends BaseObject {
 		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
 		
 		$vb_use_locale_codes 				= isset($pa_options['useLocaleCodes']) ? (bool)$pa_options['useLocaleCodes'] : false;
-		$vb_assume_display_field 			= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
-		
-		$vn_limit				 			= isset($pa_options['limit']) ? (int)$pa_options['limit'] : 100000;
+		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
 		
 		if (!($vs_output = (isset($pa_options['output']) ? (string)$pa_options['output'] : null))) {
 			if ($vb_convert_codes_to_display_text) { $vs_output = "text"; }
@@ -964,8 +960,7 @@ class SearchResult extends BaseObject {
 			'convertCodesToIdno' => $vb_convert_codes_to_idno,
 			'checkAccess' => $va_check_access,
 			'template' => $vs_template,
-			'useLocaleCodes' => $vb_use_locale_codes,
-			'limit' => $vn_limit
+			'useLocaleCodes' => $vb_use_locale_codes
 		));
 		
 		
@@ -2167,11 +2162,11 @@ class SearchResult extends BaseObject {
 		// the assumption is that if you run getWithTemplate for the current row, you'll probably run it for the next bunch of rows too
 		// since running caProcessTemplateForIDs for every single row is slow, we prefetch a set number of rows here
 		$vs_cache_base_key = $this->getCacheKeyForGetWithTemplate($ps_template, $pa_options);
-		if(!isset(self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row = $this->opo_engine_result->currentRow()])) {
+		if(!isset($this->opa_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row = $this->opo_engine_result->currentRow()])) {
 			$this->prefetchForGetWithTemplate($ps_template, $pa_options);
 		}
 
-		return self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row];
+		return $this->opa_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row];
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -2186,23 +2181,16 @@ class SearchResult extends BaseObject {
 
 		// if we're at the first hit, we don't need to offset the cache keys, so we can use $va_vals as-is
 		if(($vn_cur_row = $this->opo_engine_result->currentRow()) == 0) {
-			self::$s_template_prefetch_cache[$vs_cache_base_key] = array_values($va_vals);
+			$this->opa_template_prefetch_cache[$vs_cache_base_key] = array_values($va_vals);
 		} else {
 			// this is kind of slow but we hope that users usually pull when the ptr is still at the first result
 			// I tried messing around with array_walk instead of this loop but that doesn't gain us much, and this is way easier to read
 			$vn_i = 0;
 			foreach($va_vals as $vs_val) {
-				self::$s_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row + $vn_i] = $vs_val;
+				$this->opa_template_prefetch_cache[$vs_cache_base_key][$vn_cur_row + $vn_i] = $vs_val;
 				$vn_i++;
 			}
 		}
-	}
-	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function clearGetWithTemplatePrefetch() {
-		self::$s_template_prefetch_cache = array();
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -2797,7 +2785,8 @@ class SearchResult extends BaseObject {
 			$vs_table_name = $t_instance->getSubjectTableName();
 			$vs_subfield_name = $vs_field_name;
 			$vs_field_name = "preferred_labels";
-			$vb_is_related = false;
+			$va_tmp = array($vs_table_name, $vs_field_name, $vs_subfield_name);
+			$vb_is_related = ($vs_table_name !== $this->ops_table_name);
 		}
 		
 		return SearchResult::$s_parsed_field_component_cache[$this->ops_table_name.'/'.$ps_path] = array(
