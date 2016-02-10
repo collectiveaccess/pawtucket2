@@ -11,6 +11,8 @@
 		$vs_hierarchy_style = "style='display:none;'";
 	}
 ?>
+<div class="col-sm-1"></div>
+<div class="col-sm-10">
 	<h1><?php print $vs_page_title; ?></h1>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
@@ -61,3 +63,5 @@
 	}
 ?>
 	</div>
+</div>	
+<div class="col-sm-1"></div>	

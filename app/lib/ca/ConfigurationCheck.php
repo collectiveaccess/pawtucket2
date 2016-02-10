@@ -192,7 +192,7 @@ final class ConfigurationCheck {
 	# Quick configuration check functions
 	# -------------------------------------------------------
 	/**
-	 * Check for innodb availabiliy
+	 * Check for innodb availability
 	 */
 	public static function DBInnoDBQuickCheck() {
 		$va_mysql_errors = array();
@@ -322,6 +322,10 @@ final class ConfigurationCheck {
 	# -------------------------------------------------------
 	public static function caUrlRootQuickCheck() {
 		$vs_script_name = str_replace("\\", "/", $_SERVER["SCRIPT_NAME"]);
+		$va_script_name_parts = explode("/",$vs_script_name);
+		$vs_script_called = $va_script_name_parts[sizeof($va_script_name_parts)-1]; // index.php or service.php
+		$vs_probably_correct_urlroot = str_replace("/{$vs_script_called}", "", $vs_script_name);
+		
 		$vs_probably_correct_urlroot = str_replace("/index.php", "", $vs_script_name);
 		
 		if (caGetOSFamily() === OS_WIN32) {	// Windows paths are case insensitive
@@ -341,7 +345,9 @@ final class ConfigurationCheck {
 	 */
 	public static function caBaseDirQuickCheck() {
 		$vs_script_filename = str_replace("\\", "/", $_SERVER["SCRIPT_FILENAME"]);
-		$vs_probably_correct_base = str_replace("/index.php", "", $vs_script_filename);
+		$va_script_name_parts = explode("/",$vs_script_filename);
+		$vs_script_called = $va_script_name_parts[sizeof($va_script_name_parts)-1]; // index.php or service.php
+		$vs_probably_correct_base = str_replace("/{$vs_script_called}", "", $vs_script_filename);
 
 		if (caGetOSFamily() === OS_WIN32) {	// Windows paths are case insensitive
 			if(strcasecmp($vs_probably_correct_base, __CA_BASE_DIR__) != 0) {

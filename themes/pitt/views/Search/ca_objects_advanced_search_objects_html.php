@@ -23,6 +23,10 @@
 			{{{ca_objects.culture%width=400px&height=25px}}}
 		</div>
 		<div class="advancedSearchField">
+			Creator<br/>
+			{{{ca_entities.preferred_labels.displayname/creator%width=400px&height=25px}}}
+		</div>		
+		<div class="advancedSearchField">
 			Date<br/>
 			{{{ca_objects.dates.date_value%width=400px&height=25px&useDatePicker=0}}}
 		</div>	
