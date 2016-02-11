@@ -371,6 +371,8 @@
  			//
  			// share link
  			//
+ 			$this->view->setVar('shareEnabled', (bool)$va_options['enableShare']);
+ 			
  			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>Share</a>");
 
  			// find view
