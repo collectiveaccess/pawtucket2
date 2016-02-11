@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,7 +39,7 @@
  			
  			$va_error_messages = $this->notification->getNotifications();
  			if ((!is_array($va_error_messages) || (sizeof($va_error_messages) == 0)) && is_array($va_nums)) {
- 				$o_err = new Error(0, '', '', '', false, false);
+ 				$o_err = new ApplicationError(0, '', '', '', false, false);
  				foreach($va_nums as $vn_error_number) {
  					$o_err->setError($vn_error_number, '', '', false, false);
  					$va_error_messages[] = $o_err->getErrorMessage();
