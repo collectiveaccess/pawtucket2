@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+	$va_access_values = $this->getVar("access_values");
 	if ($this->request->session->getVar('visited') != 'has_visited') {		
 ?>	
 		<div id="homePanel">
@@ -91,7 +92,7 @@
 				print $va_featured_artist_images[$vn_featured_artist_id];
 ?>
 				<div class='contentCaptionOver'>
-					<?php print caDetailLink($this->request, '<div class="openSansBold">FROM THE FLATFILES</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
+					<?php print caDetailLink($this->request, '<div class="openSansBold">FEATURED FLATFILE ARTIST</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
 				</div>
 <?php
 			}else{

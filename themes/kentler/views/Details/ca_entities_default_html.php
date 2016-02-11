@@ -8,7 +8,10 @@
 	<div class='col-xs-12 col-sm-12'>
 			<div class="row">
 				<div class='col-sm-10'>
-					<H1><span class="ltgrayText">Flatfile Artist</span><br/>{{{^ca_entities.preferred_labels.displayname}}}</H1>
+					<H1>
+					<?php print caNavLink($this->request, "<i class='fa fa-arrow-left'></i> View all Flatfile Artists", "", "", "Listing", "flatfileArtists"); ?>
+					<br/><span class="ltgrayText">Flatfile Artist</span>
+					<br/>{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					{{{<ifdef code="ca_entities.url"><H5><a href="^ca_entities.url" target="_blank">^ca_entities.url</a> <i class="fa fa-external-link"></i></H5></ifdef>}}}
 				</div><!-- end col -->
 				<div class='navLeftRight col-sm-2'>
@@ -42,7 +45,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id', 'detailembed' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailembed' => 1, 'search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

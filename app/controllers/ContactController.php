@@ -103,22 +103,6 @@
 						$this->view->setVar("errors", $va_errors);
 						$this->form();
 					}
-					# --- kutxateka -> log message in db
-					//insertar en bbdd
-					$db = new Db();
-
-					#$log_file_contacta= DIR_LOG."contacta.log";
-
-					#error_log(date('d/m/Y - H:i:s')." A insertar en BBDD\n",3,$log_file_contacta);
-
-					$sql = "insert into ib_contact_msg (nombre,email,tfno,asunto,texto,status) values ('".$this->request->getParameter("name", pString)."','".$this->request->getParameter("email", pString)."','".$this->request->getParameter("telephone", pString)."','".$this->request->getParameter("tema", pString)."','".$this->request->getParameter("message", pString)."',1)";
-					$db->query($sql);
-					if($db->numErrors()){
-					   print_r($db->getErrors());
-					   return;
-					}
-					#error_log(date('d/m/Y - H:i:s')." Mensaje insertado en BBDD\n",3,$log_file_contacta);
-
  			}else{
  				$this->view->setVar("errors", $va_errors);
  				$this->form();
