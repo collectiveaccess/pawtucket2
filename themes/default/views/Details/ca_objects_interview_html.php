@@ -1,6 +1,9 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+		
 	# --- what media should be shown on the page?
 	# --- first check for a video
 	$va_videos = $t_object->representationsWithMimeType(array("video/x-flv", "video/mpeg", "audio/x-realaudio", "video/quicktime", "video/x-ms-asf", "video/x-ms-wmv", "application/x-shockwave-flash", "video/x-matroska"), array("versions" => array(), "checkAccess" => $this->getVar("access_values")));
@@ -149,11 +152,23 @@
 <div class="row">
 	<div class='col-sm-5 col-md-5 col-lg-5 col-sm-offset-1 col-md-offset-1 col-lg-offset-1' style='border-right:1px solid #dedede;'>
 		{{{<ifdef code="ca_objects.description"><span class="trimText">^ca_objects.description</span></ifdef>}}}
-		<div id="detailTools">
-			<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-			<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-			<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-		</div><!-- end detailTools -->
+<?php
+		# Comment and Share Tools
+		if ($vn_comments_enabled | $vn_share_enabled) {
+				
+			print '<div id="detailTools">';
+			if ($vn_comments_enabled) {
+?>				
+				<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+				<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+			}
+			if ($vn_share_enabled) {
+				print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+			}
+			print '</div><!-- end detailTools -->';
+		}				
+?>
 	</div><!-- end col -->
 	<div class='col-sm-5 col-md-5 col-lg-5'>
 		{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
