@@ -714,7 +714,7 @@ class SearchResult extends BaseObject {
 		$vs_md5 = caMakeCacheKeyFromOptions($pa_options);
 		
 		$va_criteria = is_array($this->opa_tables[$ps_tablename]) ? $this->opa_tables[$ps_tablename]['criteria'] : null;
-		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, array_merge($pa_options, array('row_ids' => $va_row_ids, 'limit' => 100000, 'criteria' => $va_criteria)));		// if there are more than 100,000 then we have a problem
+		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, array_merge($pa_options, array('row_ids' => $va_row_ids, 'limit' => caGetOption('limit', $pa_options, 100000), 'criteria' => $va_criteria)));		// if there are more than 100,000 then we have a problem
 		
 		if (!is_array($va_rel_items) || !sizeof($va_rel_items)) { return; }
 		
@@ -852,7 +852,8 @@ class SearchResult extends BaseObject {
 	 *			returnURL = When fetching intrinsic value of type FT_MEDIA return URL to media rather than HTML tag. [Default is false]
 	 *			returnPath = When fetching intrinsic value of type FT_MEDIA return path to media rather than HTML tag. [Default is false] 
 	 *			unserialize = When fetching intrinsic value of type FT_VARS (serialized variables) return unserialized value. [Default is false]
-	 *			
+ 	 *			limit = Maximum number of items to return. [Default is 100000]
+ 	 *			
 	 *		[Formatting options for strings and arrays]
 	 *			template = Display template use when formatting return values. @see http://docs.collectiveaccess.org/wiki/Display_Templates. [Default is null]
 	 *			delimiter = Characters to place in between repeating values when returning a string
@@ -923,7 +924,9 @@ class SearchResult extends BaseObject {
 		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
 		
 		$vb_use_locale_codes 				= isset($pa_options['useLocaleCodes']) ? (bool)$pa_options['useLocaleCodes'] : false;
-		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_assume_display_field 			= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		
+		$vn_limit				 			= isset($pa_options['limit']) ? (int)$pa_options['limit'] : 100000;
 		
 		if (!($vs_output = (isset($pa_options['output']) ? (string)$pa_options['output'] : null))) {
 			if ($vb_convert_codes_to_display_text) { $vs_output = "text"; }
@@ -961,7 +964,8 @@ class SearchResult extends BaseObject {
 			'convertCodesToIdno' => $vb_convert_codes_to_idno,
 			'checkAccess' => $va_check_access,
 			'template' => $vs_template,
-			'useLocaleCodes' => $vb_use_locale_codes
+			'useLocaleCodes' => $vb_use_locale_codes,
+			'limit' => $vn_limit
 		));
 		
 		
