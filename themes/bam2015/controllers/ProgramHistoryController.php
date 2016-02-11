@@ -60,18 +60,18 @@
  				# --- start with seasons
  				# --- get the top of the hierarchy
  				$o_search = caGetSearchInstance("ca_occurrences");
- 				$o_search->addResultFilter('ca_occurrences.type_id', '=', $vn_season_type_id);
+ 				#$o_search->addResultFilter('ca_occurrences.type_id', '=', $vn_season_type_id);
  				# --- not checking access cause they aren't set right
- 				$qr_res = $o_search->search("*", array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
+ 				$qr_res = $o_search->search("ca_occurrences.type_id:".$vn_season_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
 				$va_series = array();
 				if($qr_res->numHits()){
 					$va_seasons = array();
 					while($qr_res->nextHit()){
 						$vs_season_sort = "";
 						$o_search_series = caGetSearchInstance("ca_occurrences");
- 						$o_search_series->addResultFilter('ca_occurrences.type_id', '=', $vn_event_series_type_id);
+ 						#$o_search_series->addResultFilter('ca_occurrences.type_id', '=', $vn_event_series_type_id);
  						$o_search_series->addResultFilter('ca_occurrences.parent_id', '=', $qr_res->get("ca_occurrences.occurrence_id"));
- 						$qr_res_series = $o_search_series->search("*", array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
+ 						$qr_res_series = $o_search_series->search("ca_occurrences.type_id:".$vn_event_series_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
 						$va_children = array();
 						if($qr_res_series->numHits()){
 							while($qr_res_series->nextHit()){
@@ -101,7 +101,6 @@
 				
 				$this->render("ProgramHistory/index_html.php");
  			}else{
- 			# –℠
  				$vs_description = "";
  				$pn_id = $this->request->getParameter("id", pInteger);
  				$t_occurrence = new ca_occurrences($pn_id);
@@ -135,6 +134,25 @@
  					}elseif(strpos($vs_parent_name_lower, 'chelsea') !== false){
  						# --- Chelsea Theater spring and fall
  						$vs_description = "<p>The Chelsea Theater Center was established in NYC in 1965, and in 1968 became the resident company at BAM. Company repertoire was an eclectic mix of new plays, lesser known classics, neglected plays, groundbreaking British and European plays, and plays by writers better known in other genres. One production, Hal Prince's environmental staging of Leonard Bernstein's <i>Candide</i>, moved to Broadway where it ran for two years. The Chelsea Theater attracted many talented actors, often at the dawn of their careers, including Glenn Close, Meryl Street, Frank Langella, and Des McAnuff. In 1978, after a decade at BAM, the Chelsea Theater was struggling for survival and was forced to end its residency.</p>";
+ 					}elseif(strpos($vs_parent_name_lower, 'bam spring') !== false){
+ 						# --- BAM Spring
+ 						$vs_description = "<p>The Next Wave programming in the fall is anchored by an equally strong spring season, showcasing theater, dance, and opera, with bookings of local artists as well as major international companies reflecting BAM's global relationships. These include prominent British and other international theater companies such as the Royal Shakespeare Company, Royal Dramatic Theatre of Sweden, Young Vic, Chichester Festival Theatre, and Propeller, presenting new takes on the classics. Dance companies range from the classical Mariinsky to the contemporary Batsheva, and opera includes frequent visits from Les Arts Florissants.</p>
+											<p>One outstanding highlight of the spring season has been The Bridge Project, a three-year transatlantic partnership involving BAM, the Old Vic, and Neal Street Productions, that showcased distinguished theater artists from New York and London. Launched in 2009, and running for three years (2009-2012), the partnership produced five international productions of classic works, directed by Sam Mendes: <i>The Winter's Tale, The Cherry Orchard, As You Like It, The Tempest,</i> and in the final year, <i>Richard III</i> with Kevin Spacey in the title role.</p>";
+ 					}elseif(strpos($vs_parent_name_lower, 'presents') !== false){
+ 						# --- BAM Presents
+ 						$vs_description = "<p>BAM Presents is a series programmed separately from Next Wave or BAM Spring. It typically includes widely popular talks, music, or comedy that sell out the Opera House as one-night-only events.</p>";
+  					}elseif(strpos($vs_parent_name_lower, 'bam fall') !== false){
+ 						# --- BAM Fall
+ 						$vs_description = "<p>Events listed under the BAM Fall umbrella are ones scheduled for fall season but not programmed under the rubric of the Next Wave Festival. These events, dependent on opportunity and booked individually, have included fall engagements by American Ballet Theatre and Les Arts Florissants, and the 2009 Sydney Theatre Company production of <i>A Streetcar Named Desire</i> that starred Cate Blanchett.</p>";
+ 					}elseif(strpos($vs_parent_name_lower, 'sundance') !== false){
+ 						# --- Sundance Institute at BAM
+ 						$vs_description = "<p>The Sundance Institute at BAM was presented during the spring seasons of 2006, 2007, and 2008. It presented independent feature films and shorts straight from the Sundance Film Festival, and showcased their dynamic emerging filmmakers. Other programming included panel discussions with the artists, musical performances by Sundance composers, and theater events developed through Sundance Institute's Theatre Program.</p>";
+ 					}elseif(strpos($vs_parent_name_lower, 'philharmonic') !== false){
+ 						# --- Brooklyn Philharmonic Fall & Spring
+ 						$vs_description = "<p>The Brooklyn Philharmonic Orchestra (BPO), originally called the Brooklyn Philharmonia, was founded in 1954, and had its first home at BAM. Though the two institutions legally separated in 1971, BPO continued to perform at BAM as well as other venues. BPO built its strong reputation by presenting innovative programming and championing new music. Significant conductors and artistic directors have included founding conductor Siegfried Landau, American composer Lukas Foss who presented a well-known “Meet the Moderns” series, and Robert Spano. BPO dissolved in 2013 after struggling with financial difficulties.</p>";
+ 					}elseif(strpos($vs_parent_name_lower, '651 arts') !== false){
+ 						# --- 651 Arts
+ 						$vs_description = "<p>Founded in 1988, 651 ARTS took its name from Fulton Street address of the BAM Majestic Theater (now the BAM Harvey Theater), where it was originally headquartered. Committed to developing, producing, and presenting contemporary African-American arts programming in theater, dance, humanities, and music, it was established to provide programs and services that connect meaningfully with Brooklyn's cultural communities.</p>";
  					}
  				}
  				$this->view->setVar("parent_description", $vs_description);
