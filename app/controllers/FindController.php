@@ -722,7 +722,7 @@
  		 *
  		 * @return string Summary of current search expression or browse criteria ready for display
  		 */
- 		public function getCriteriaForDisplay() {
+ 		public function getCriteriaForDisplay($po_browse=null) {
  			return $this->opo_result_context ? $this->opo_result_context->getSearchExpression() : '';		// just give back the search expression verbatim; works ok for simple searches	
  		}
  		# -------------------------------------------------------

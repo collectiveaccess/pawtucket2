@@ -378,10 +378,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	function caBusyIndicatorIcon($po_request, $pa_attributes=null) {
 		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
 		
-		if (!isset($pa_attributes['alt'])) {
-			$pa_attributes['alt'] = $vs_img_name;
-		}
-		return caGetThemeGraphic($po_request, 'indicator.gif', $pa_attributes);
+		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
+		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
+	
+		return $vs_button;
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -728,7 +728,11 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 							$va_display_flag_buf[] = $t_item->getWithTemplate("{$vs_display_flag}");
 						}
 					}
-					if (sizeof($va_display_flag_buf) > 0) { $vs_buf .= join("; ", $va_display_flag_buf); }
+
+					if(!($vs_display_flag_delim = $po_view->request->config->get("{$vs_table_name}_inspector_display_flags_delimiter"))) {
+						$vs_display_flag_delim = '; ';
+					}
+					if (sizeof($va_display_flag_buf) > 0) { $vs_buf .= join($vs_display_flag_delim, $va_display_flag_buf); }
 				}
 				
 				$vs_label = '';
@@ -1976,20 +1980,6 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			$va_tags = $va_matches[1];
 		}
 		
-		if (caGetOption('stripOptions', $pa_options, false)) {
-			foreach($va_tags as $vn_i => $vs_tag) {
-				$va_opts = caParseTagOptions($vs_tag);
-				
-				$va_tags[$vn_i] = $va_opts['tag'];
-			}
-		} elseif (caGetOption('parseOptions', $pa_options, false)) {
-			foreach($va_tags as $vn_i => $vs_tag) {
-				$va_opts = caParseTagOptions($vs_tag);
-				
-				$va_tags[$vn_i] = array_merge(array('originalTag' => $vs_tag), $va_opts);
-			}
-		}
-		
 		return $va_tags;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -2030,7 +2020,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			
 			if ($t_instance && ($vs_gotten_val = $t_instance->get($vs_proc_tag, $pa_options))) {
 				$vs_gotten_val = caProcessTemplateTagDirectives($vs_gotten_val, $va_tmp);
-				$ps_template = str_replace('^'.$vs_tag, $vs_gotten_val, $ps_template);
+				
+				$ps_template = preg_replace("/\^".preg_quote($vs_tag, '/')."(?![A-Za-z0-9]+)/", $vs_gotten_val, $ps_template);
 			} else {
 				if (is_array($vs_val = isset($pa_values[$vs_proc_tag]) ? $pa_values[$vs_proc_tag] : '')) {
 					// If value is an array try to make a string of it
@@ -2633,7 +2624,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	/**
 	 *
 	 */
-	function caObjectsDisplayDownloadLink($po_request) {
+	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
 		$o_config = Configuration::load();
 		$vn_can_download = false;
 		if($o_config->get('allow_ca_objects_representation_download')){
@@ -2654,6 +2645,15 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					}
 				break;
 				# ------------------------------------------
+			}
+		}
+		if($pn_object_id && $vn_can_download && is_array($o_config->get('allow_ca_objects_representation_download_types')) && sizeof($o_config->get('allow_ca_objects_representation_download_types'))){
+			# --- see if current object's type is in the confirgured array
+			$t_object = new ca_objects($pn_object_id);
+			$t_list_item = new ca_list_items($t_object->get("type_id"));
+			$va_object_type_code = $t_list_item->get("idno");
+			if(!in_array($va_object_type_code, $o_config->get('allow_ca_objects_representation_download_types'))){
+				$vn_can_download = false;
 			}
 		}
 		return $vn_can_download;

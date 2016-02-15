@@ -369,6 +369,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_objects'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects'));
+		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects table'));
 		$this->BUNDLES['ca_entities'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities'));
 		$this->BUNDLES['ca_places'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places'));
 		$this->BUNDLES['ca_occurrences'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related occurrences'));
@@ -377,7 +378,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		$this->BUNDLES['ca_representation_annotations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related annotations'));
 		$this->BUNDLES['ca_user_representation_annotations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related user-generated annotations'));
 		$this->BUNDLES['ca_list_items'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related vocabulary terms'));
-		$this->BUNDLES['ca_sets'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));	
+		$this->BUNDLES['ca_sets'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related sets'));
+		$this->BUNDLES['ca_sets_checklist'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));	
 		$this->BUNDLES['ca_loans'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related loans'));
 		$this->BUNDLES['ca_movements'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related movements'));
 		$this->BUNDLES['ca_object_lots'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related lot'));
@@ -498,7 +500,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	 **/
 	public function mediaIsEmpty() {
 		if (!($vs_media_path = $this->getMediaPath('media', 'original'))) {
-			$vs_media_path = $this->get('media');
+			$vs_media_path = array_shift($this->get('media', array('returnWithStructure' => true)));
 		}
 		if ($vs_media_path) {
 			if (file_exists($vs_media_path) && (abs(filesize($vs_media_path)) > 0)) {
@@ -675,6 +677,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$vn_start = caGetOption('start', $pa_options, 0, array('castTo' => 'int'));
  		$vn_max = caGetOption('max', $pa_options, 100, array('castTo' => 'int'));
  		
+ 		$va_rep_props = $this->getMediaInfo('media', 'original');
+ 		$vn_timecode_offset = isset($va_rep_props['PROPERTIES']['timecode_offset']) ? (float)$va_rep_props['PROPERTIES']['timecode_offset'] : 0;
+ 		
  		while($qr_annotations->nextRow()) {
  			$va_tmp = $qr_annotations->getRow();
  			$va_annotation_ids[] = $va_tmp['annotation_id'];
@@ -684,8 +689,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  			foreach($o_coder->getPropertyList() as $vs_property) {
  				$va_tmp[$vs_property] = $o_coder->getProperty($vs_property);
  				$va_tmp[$vs_property.'_raw'] = $o_coder->getProperty($vs_property, true);
- 				//if ($va_tmp[$vs_property] == $va_tmp[$vs_property.'_raw']) { unset($va_tmp[$vs_property.'_raw']); }
  			}
+ 			
+ 			$va_tmp['timecodeOffset'] = $vn_timecode_offset;
  			
  			if (!($vs_sort_key = $va_tmp[$vs_sort_by_property])) {
  				$vs_sort_key = '_default_';

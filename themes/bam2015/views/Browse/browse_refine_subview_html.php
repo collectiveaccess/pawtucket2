@@ -42,7 +42,7 @@ if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && 
 		print "<div id='bRefine'>";
 		print "<H3>"._t("Filter");
 			
-		print caNavLink($this->request, "<i class='icon-folder-download' style='float:right'></i>", "", "*", "*", "*", array("view" => "xlsx", "download" => true, "export_format" => "basic_excel", "key" => $vs_key));	
+		print caNavLink($this->request, "<i class='icon-folder-download' style='float:right'></i>", "", "*", "*", "*", array("view" => "xlsx", "download" => true, "export_format" => "basic_excel", "key" => $vs_key), array("title" => _t("Export results as spreadsheet")));	
 			
 		print "</H3>";	
 		if (sizeof($va_criteria) > 0) {

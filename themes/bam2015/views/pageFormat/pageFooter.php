@@ -53,7 +53,6 @@
 					More Information
 				</div>
 				<ul class="footer-links">
-					<li><?php print caNavLink($this->request, "For Researchers", '', '', 'Search', 'advanced/objects');?></li>
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
 					<li><a href="#">Contact BAM Hamm Archives</a></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
