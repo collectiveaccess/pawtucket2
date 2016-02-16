@@ -48,7 +48,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/DisplayTemplateParser.php');
  * More about bundle display templates here: http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates
  */
 
-define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/\:]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/:]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/:]+)/");
+define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}[\&\%]{1}[^ ]+|ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}|[0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)/");
 	
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -378,10 +378,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	function caBusyIndicatorIcon($po_request, $pa_attributes=null) {
 		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
 		
-		if (!isset($pa_attributes['alt'])) {
-			$pa_attributes['alt'] = $vs_img_name;
-		}
-		return caGetThemeGraphic($po_request, 'indicator.gif', $pa_attributes);
+		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
+		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
+	
+		return $vs_button;
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -649,7 +649,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		if ($vs_type_name == "list item") {
 			$vs_style = "style='height:auto;'";
 		}
-		if (($vn_item_id) | ($po_view->request->getAction() === 'Delete')) {
+		if (($vn_item_id) || ($po_view->request->getAction() === 'Delete')) {
 			$vs_buf = '<h3 class="nextPrevious" '.$vs_style.'>'.caEditorFindResultNavigation($po_view->request, $t_item, $o_result_context, $pa_options)."</h3>\n";
 		}
 		
@@ -728,7 +728,11 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 							$va_display_flag_buf[] = $t_item->getWithTemplate("{$vs_display_flag}");
 						}
 					}
-					if (sizeof($va_display_flag_buf) > 0) { $vs_buf .= join("; ", $va_display_flag_buf); }
+
+					if(!($vs_display_flag_delim = $po_view->request->config->get("{$vs_table_name}_inspector_display_flags_delimiter"))) {
+						$vs_display_flag_delim = '; ';
+					}
+					if (sizeof($va_display_flag_buf) > 0) { $vs_buf .= join($vs_display_flag_delim, $va_display_flag_buf); }
 				}
 				
 				$vs_label = '';
@@ -2030,7 +2034,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			
 			if ($t_instance && ($vs_gotten_val = $t_instance->get($vs_proc_tag, $pa_options))) {
 				$vs_gotten_val = caProcessTemplateTagDirectives($vs_gotten_val, $va_tmp);
-				$ps_template = str_replace('^'.$vs_tag, $vs_gotten_val, $ps_template);
+				
+				$ps_template = preg_replace("/\^".preg_quote($vs_tag, '/')."(?![A-Za-z0-9]+)/", $vs_gotten_val, $ps_template);
 			} else {
 				if (is_array($vs_val = isset($pa_values[$vs_proc_tag]) ? $pa_values[$vs_proc_tag] : '')) {
 					// If value is an array try to make a string of it
@@ -2633,7 +2638,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 	/**
 	 *
 	 */
-	function caObjectsDisplayDownloadLink($po_request) {
+	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
 		$o_config = Configuration::load();
 		$vn_can_download = false;
 		if($o_config->get('allow_ca_objects_representation_download')){
@@ -2654,6 +2659,15 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 					}
 				break;
 				# ------------------------------------------
+			}
+		}
+		if($pn_object_id && $vn_can_download && is_array($o_config->get('allow_ca_objects_representation_download_types')) && sizeof($o_config->get('allow_ca_objects_representation_download_types'))){
+			# --- see if current object's type is in the confirgured array
+			$t_object = new ca_objects($pn_object_id);
+			$t_list_item = new ca_list_items($t_object->get("type_id"));
+			$va_object_type_code = $t_list_item->get("idno");
+			if(!in_array($va_object_type_code, $o_config->get('allow_ca_objects_representation_download_types'))){
+				$vn_can_download = false;
 			}
 		}
 		return $vn_can_download;
@@ -2750,7 +2764,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				} else {
 					switch(__CA_APP_TYPE__) {
 						case 'PROVIDENCE':
-							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
+							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()))) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
 							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
