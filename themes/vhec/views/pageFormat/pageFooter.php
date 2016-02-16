@@ -29,19 +29,21 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
 			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
+				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></div>
 			</ul>
-			<div>
-				Footer text here
-			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+			<div class="list-inline pull-left">
+				<div class='footerLeft'>
+					<p>50 - 950 West 41st Ave, </p>
+					<p>Vancouver BC, V5Z 2N7 </p>
+					<p>Canada</p>
+				</div>
+				<div class='footerRight'>
+					<p>P: 604.264.0499 </p>
+					<p>F: 604.264.0497  </p>
+					<p>E: <a href='mailto:info@vhec.org'>info@vhec.org</a></p>
+				</div>
+			</div>	
+			<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end footer -->
 <?php
 	//

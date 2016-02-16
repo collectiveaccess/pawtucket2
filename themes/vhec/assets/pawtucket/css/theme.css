@@ -1,0 +1,259 @@
+/*@import url("//hello.myfonts.net/count/2c209b");*/
+ 
+@font-face {font-family: 'Futura';src: url('fonts/2C209B_0_0.eot');src: url('fonts/2C209B_0_0.eot?#iefix') format('embedded-opentype'),url('fonts/2C209B_0_0.woff') format('woff'),url('fonts/2C209B_0_0.ttf') format('truetype');}
+ 
+body {
+	font-family:"futura", "sans serif";
+	color: #4C4C4E;
+}
+h1, h2, h3, h4, h5, h6 {
+	color: #33450D;
+	font-family:"futura", "sans serif";
+}
+h1 {
+	margin-top:25px;
+	margin-bottom:15px;
+}
+h3 {
+	font-size: 18px;
+}
+h6 {
+	font-size: 16px;
+	text-transform:none;
+	margin-bottom:10px;
+}
+a {
+	color: #778459;
+}
+.navbar {
+	min-width:958px;
+}	
+.divide {
+	border-top: 1px solid #e3e3e3;
+}
+#pageArea {
+	margin-top:20px;
+}
+.highlight {
+	background-color: #f7f7f7;
+	padding:5px 15px 5px 15px;
+}
+.green {
+	color: #33450D;
+}
+.lightgreen {
+	color: #778459;
+}
+.grey {
+	color: #4C4C4E;
+}
+.navbar {
+	margin-bottom:0px;
+}
+.navbar-brand {
+	width: 240px;
+	padding-bottom:0px;
+	padding-top:10px;
+}
+.navbar .formOutline {
+	border-radius:2px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family:"futura", "sans serif";
+	padding-top: 20px;
+	color: #4C4C4E;
+}
+.navbar-form {
+	margin-bottom:0px;
+}
+.nav > li.dropdown > a.icon {
+	padding-bottom:5px;
+	padding-right:5px;
+	padding-left:10px;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+	background-color:#fff;
+}
+.dropdown-menu > li > a {
+	font-size: 12px;
+	font-weight:bold;
+	color: #4C4C4E;
+	padding-top:7px;
+	padding-bottom: 7px;
+	letter-spacing:1px;
+	text-transform:uppercase;
+	padding-left:15px;
+}
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+	background-color: #fff;
+	color: #000;
+}
+@media (max-width:1097px) {
+	.navbar-brand {
+		width: 220px;
+	}
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		font-size:13px;
+		padding-left:10px;
+	}
+	.navbar .formOutline {
+		margin-left:0px;
+	}
+}
+@media (max-width:1000px) {
+	.navbar-form .form-group {
+		width:100px;
+	}
+}
+
+/* submenus */
+
+.submenu {
+	background-color:#f7f7f7;
+}
+.submenu .nav > li > a {
+	padding-top:5px;
+	padding-bottom:5px;
+	color: #33450D;
+	font-weight:bold;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 2px;	
+}
+.submenu .caret {
+	border-top-color: #33450D;
+	border-bottom-color: #33450D;
+}
+.submenu ul.dropdown-menu {
+	background-color: #eee;
+	border-top:0px;
+}
+.submenu ul.dropdown-menu li a {
+
+}
+.submenu .dropdown-menu > li > a:hover, .submenu .dropdown-menu > li > a:focus, .submenu .dropdown-menu > .active > a, .submenu .dropdown-menu > .active > a:hover, .submenu .dropdown-menu > .active > a:focus {
+	background-color: #eee;
+	color: #33450D;
+}
+
+/* Footer */
+
+#footer {
+	line-height: 1.4em;
+	font-size:11px;
+	margin-bottom:25px;
+}
+#footer ul.social {
+	line-height: 1.4em;
+	font-size:11px;	
+	margin-top:20px;
+	padding-top:0px;
+}
+.footerLeft {
+	float:left;
+	width:180px;
+	margin-top:20px;
+}
+.footerRight {
+	float:left;
+	width:180px;
+	margin-top:20px;
+}
+#footer p {
+	margin-bottom: 2px;
+}
+#footer a, #footer ul a {
+	color: #778459;
+}
+
+/* Museum Landing */
+
+.timeline {
+	background-color: #fff;
+	border:1px solid #eee;
+	text-align:center;
+	min-height:400px;
+	padding-top:100px;
+	margin-bottom:15px;
+}
+.featuredObj {
+	margin-top:15px;
+	background-color: #f7f7f7;
+	padding:15px 15px 10px 15px;
+}
+.featuredObj img {
+	width:100%;
+	height:auto;
+}
+.featuredObj .caption {
+	color: #33450D;
+	font-size:14px;
+	margin-top:10px;
+	min-height:80px;
+}
+.advSearch {
+	float:right;
+	clear:right;
+	line-height:10px;
+	margin-bottom:5px;
+	margin-top:2px;
+}
+.advSearch a {
+	font-size:10px;
+	color: #33450D;
+}
+
+
+/* Browse */
+
+#bRefine {
+	background-color: #f9f9f9;
+}
+#bRefine a{
+	letter-spacing:1px;
+}
+#bRefine H5 {
+	font-size:13px;
+	letter-spacing: 1px;
+	font-weight:bold;
+	margin-bottom:5px;
+}
+.results h1 {
+	font-size:16px;
+}
+.results h1 i {
+	padding-bottom:5px;
+}
+.bResultItem .bResultItemImg {
+	min-height: 170px;
+}
+.bResultItem .bResultItemText {
+	font-size:12px;
+}
+
+/* Map */
+
+.mapPin {
+	max-width:300px;
+}
+.mapImage {
+	text-align:center;
+	margin-bottom:10px;
+}
+.mapPin p a {
+	font-family:"futura", "sans serif";
+	font-weight:bold;
+	margin-top:10px;
+}
+
+/* Timeline */
+
+.vco-storyjs, .vco-storyjs p, .vco-storyjs blockquote, .vco-storyjs blockquote p, .vco-storyjs .twitter blockquote p, .vco-storyjs .vco-feature h1, .vco-storyjs .vco-feature h2, .vco-storyjs .vco-feature h3, .vco-storyjs .vco-feature h4, .vco-storyjs .vco-feature h5, .vco-storyjs .vco-feature h6 {
+	font-family:"futura", "sans serif" !important;
+}
+.vco-timeline .vco-navigation .timenav .content .marker.active .flag .flag-content h3, .vco-timeline .vco-navigation .timenav .content .marker.active .flag-small .flag-content h3 {
+	color: #33450D !important;
+}
+.vco-timeline .vco-navigation .timenav-background .timenav-line, .vco-timeline .vco-navigation .timenav .content .marker.active .dot {
+	background-color: #33450D !important;
+}
