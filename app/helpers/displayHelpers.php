@@ -48,7 +48,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/DisplayTemplateParser.php');
  * More about bundle display templates here: http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates
  */
 
-define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/\:]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/:]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/:]+)/");
+define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}[\&\%]{1}[^ ]+|ca_[A-Za-z]+[A-Za-z0-9_\-\.]+[A-Za-z0-9]{1}|[0-9]+(?=[.,;])|[\/A-Za-z0-9]+\[[\@\[\]\=\'A-Za-z0-9\.\-\/]+|[A-Za-z0-9_\.:\/]+[%]{1}[^ \^\t\r\n\"\'<>\(\)\{\}\/]*|[A-Za-z0-9_\.\/]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+[~]{1}[A-Za-z0-9]+[:]{1}[A-Za-z0-9_\.\/]+|[A-Za-z0-9_\.\/]+)/");
 	
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -649,7 +649,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 		if ($vs_type_name == "list item") {
 			$vs_style = "style='height:auto;'";
 		}
-		if (($vn_item_id) | ($po_view->request->getAction() === 'Delete')) {
+		if (($vn_item_id) || ($po_view->request->getAction() === 'Delete')) {
 			$vs_buf = '<h3 class="nextPrevious" '.$vs_style.'>'.caEditorFindResultNavigation($po_view->request, $t_item, $o_result_context, $pa_options)."</h3>\n";
 		}
 		
@@ -1980,6 +1980,20 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 			$va_tags = $va_matches[1];
 		}
 		
+		if (caGetOption('stripOptions', $pa_options, false)) {
+			foreach($va_tags as $vn_i => $vs_tag) {
+				$va_opts = caParseTagOptions($vs_tag);
+				
+				$va_tags[$vn_i] = $va_opts['tag'];
+			}
+		} elseif (caGetOption('parseOptions', $pa_options, false)) {
+			foreach($va_tags as $vn_i => $vs_tag) {
+				$va_opts = caParseTagOptions($vs_tag);
+				
+				$va_tags[$vn_i] = array_merge(array('originalTag' => $vs_tag), $va_opts);
+			}
+		}
+		
 		return $va_tags;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -2750,7 +2764,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^([0-9]+(?=[.,;])|[\/A-Za-
 				} else {
 					switch(__CA_APP_TYPE__) {
 						case 'PROVIDENCE':
-							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
+							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()))) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
 							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
