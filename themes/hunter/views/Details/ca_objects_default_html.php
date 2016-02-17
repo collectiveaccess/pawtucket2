@@ -52,6 +52,9 @@
 ?>
 				{{{<ifdef code="ca_objects.description.description_text">
 					<p>^ca_objects.description.description_text</p>
+				</ifdef>}}}	
+				{{{<ifdef code="ca_objects.alt_description.alt_description_text">
+					<p>^ca_objects.alt_description.alt_description_text</p>
 				</ifdef>}}}				
 				<HR/>
 <?php
