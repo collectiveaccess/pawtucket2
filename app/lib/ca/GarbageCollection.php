@@ -55,7 +55,9 @@ final class GarbageCollection {
 
 		$va_list = caGetDirectoryContentsAsList($vs_cache_dir);
 		foreach($va_list as $vs_file) {
-			$r = fopen($vs_file, "r");
+			$r = @fopen($vs_file, "r");
+
+			if(!is_resource($r)) { continue; } // skip if for some reason the file couldn't be opened
 
 			if (false !== ($vs_line = fgets($r))) {
 				$vn_lifetime = (integer) $vs_line;
@@ -64,6 +66,16 @@ final class GarbageCollection {
 					fclose($r);
 					@unlink($vs_file);
 				}
+			}
+		}
+
+		$va_dir_list = caGetSubDirectoryList($vs_cache_dir);
+		// note we're explicitly reversing the array here so that
+		// the order is /foo/bar/foobar, then /foo/bar and then /foo
+		// that way we don't need recursion because we just work our way up the directory tree
+		foreach(array_reverse($va_dir_list) as $vs_dir => $vn_c) {
+			if(caDirectoryIsEmpty($vs_dir)) {
+				@rmdir($vs_dir);
 			}
 		}
 

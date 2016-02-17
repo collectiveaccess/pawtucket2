@@ -96,18 +96,20 @@
 				if ((int)$qr_rels->get('ca_objects_x_entities.type_id') !== 100) {
 					continue;
 				}
-				$vs_buf.= "<tr class='ledgerRow'>";
 				
 					# Borrower Name
 				
-					$vn_borrower_entity_id = $qr_rels->get("ca_objects_x_entities.entity_id");
+					$vn_borrower_entity_id = $qr_rels->get("ca_entities.entity_id");
+					if (!$vn_borrower_entity_id) { continue; }
+					
+				$vs_buf.= "<tr class='ledgerRow'>";
 					$vs_borrower_forename = $va_entities[$vn_borrower_entity_id]['forename']; //$qr_rels->get("ca_entities.preferred_labels.forename");
 					$vs_borrower_surname = $va_entities[$vn_borrower_entity_id]['surname']; //$qr_rels->get("ca_entities.preferred_labels.surname");
 					$vs_borrower_displayname = $va_entities[$vn_borrower_entity_id]['displayname']; //$qr_rels->get("ca_entities.preferred_labels.displayname");
 					$vs_borrower_displayname_with_link = $va_entities[$vn_borrower_entity_id]['displayname_with_link']; //$qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
 	
 					$vs_buf.= "<td id='entity".$vn_i."'>";
-					$vs_buf.= "<span title='{$vs_borrower_surname}, {$vs_borrower_forename}'><span>";
+					$vs_buf.= "<span title='{$vs_borrower_surname}, {$vs_borrower_forename}'></span>";
 					$vs_buf.= $vs_borrower_displayname_with_link;
 					$vs_buf.= "</td>";
 			
@@ -466,7 +468,7 @@
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<!-- open/close -->
 								<div class="overlay overlay-corner">
-									<div ><!--Circulation Activity for <?php print caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels'), 120); ?>-->
+									<div >
 										<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
 									</div>
 									
@@ -684,7 +686,7 @@
 	
 	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
 	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
-	if($stat_bib_checkout_distribution) {
+	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">
 			var dataForCheckoutDistribution = {
@@ -967,16 +969,14 @@
     	$('#circTable').dataTable({
     		"order": [[ 2, "asc" ]],
     		columnDefs: [{ 
-       			type: 'title-string', targets: 0
+       			type: 'title-string', targets: [0]
        		}, { 
        			type: 'natural', targets: [1,4,5] 
     		}],
      		paging: false
     	});
 	});
-</script>
-
-<script>
+	
 	$('a[href^="#"]').on('click', function(event) {
 
 		var target = $( $(this).attr('href') );

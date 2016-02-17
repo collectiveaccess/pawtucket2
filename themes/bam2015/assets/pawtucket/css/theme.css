@@ -68,6 +68,9 @@ h3 {
 a {
 	color: #00cfb7;
 }
+a:hover {
+	color: #00cfb7;
+}
 .notificationMessage, .notificationInfo, .notificationError, .notificationWarning {
     left: 40%;
     top: 200px;
@@ -95,7 +98,7 @@ a {
 	clear:both;
 }
 .highlight{
-	color:#33d9c5;
+	color:#00cfb7;
 }
 .grayText{
 	color:#7c7c7c;
@@ -165,7 +168,7 @@ a {
 }
 .nav > li.dropdown > a.userIcon {
 	padding-top: 15px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
     font-size:20px;
     padding-left: 10px;
     padding-right: 10px;
@@ -187,12 +190,12 @@ a {
 	background-color:#262626;
 	font-size:28px;
 	border-radius:0px;
-    padding: 5px 11px 5px 13px;
+    padding: 10px 11px 0px 13px;
 	border-right:4px solid #000;		
 }
-.formOutline .btn-search:active {
-	background-color: #00cfb7;
-	color: #fff;
+.formOutline .btn-search:active, .formOutline .navSearchButtonHighlight {
+	background-color: #00cfb7 !Important;
+	color: #fff !Important;
 }
 .navbar .form-control {
 	font-family:"News Gothic";
@@ -287,6 +290,12 @@ a {
 	font-weight:normal;
 	opacity: 1;
 }
+.yamm .nav.navbar-right .dropdown-menu > li > a.first {
+	padding-top:8px;
+}
+.yamm .nav.navbar-right .dropdown-menu > li > a.last {
+	padding-bottom:8px;
+}
 .yamm .nav.navbar-right .dropdown-menu > li > a:hover {
 	color: #fff;
 	background-color: #00cfb7;
@@ -324,11 +333,12 @@ input:-webkit-autofill {
 	padding-right:15px;
 	padding-top:5px;
 	padding-bottom:5px;
-	border-top:0px;
+	border:0px;
 	display: block;
     opacity: 0;
     visibility:hidden;
     padding: 0px;
+    margin:0px;
     background-color:fff;
 
     -moz-transition:    all 333ms ease;
@@ -347,11 +357,14 @@ input:-webkit-autofill {
     display: block;
     opacity: 1;
     visibility:visible;
-    padding-top:5px;
-    padding-bottom:5px;
 }
 .frontNav .open .dropdown-menu {
 	opacity: .95;
+	margin:0px;
+	border:0px;
+}
+.frontNav .dropdown-menu a.first {
+	padding-top:8px;
 }
 /*.bNavOptions .dropdown-menu li, #bRefineContainer .col-xs-12, .frontNav .dropdown-menu li {
 	display:none;
@@ -410,11 +423,12 @@ body {
 /* Homepage */
 
 #homePanel {
-	position:absolute;
+	margin-top:-20px;
+	background-color:#f1f2f2;
+	/*position:absolute;
 	width:100%;
 	top: 0px;
-	background-color:#f1f2f2;
-	z-index:30000;
+	z-index:30000;*/
 }
 #homePanel .leftSide {
 	text-align:right;
@@ -432,6 +446,9 @@ body {
 	padding-top:20px;
 	opacity: 1;
 }
+.front .attributeMediaThumbnail {
+	text-align:center;
+}
 /* Detail */
 .detail .unit a{
 	font-family: "News Gothic Roman";
@@ -448,9 +465,10 @@ body {
 	font-size:16px;
 	margin-bottom:10px;
 }
-.detail a {
+.detail a, .detail a:hover, .detail .unit a, .detail .unit a:hover {
 	color: #00cfb7;
 }
+
 .detail HR, .findingaid hr, .staticPage hr {
 	border-top:2px solid #dddddd;
 	margin-bottom: 20px;
@@ -474,6 +492,10 @@ body {
 }
 .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
 	font-size:12px;
+}
+.detail .detailMediaToolbar a:hover {
+	text-decoration:none;
+	color:transparent;
 }
 .sets .setsBack {
 	background-color: #fff;
@@ -559,6 +581,16 @@ a.readmore-js-toggle {
 	height:auto;
 	
 }
+.expandBio{
+	border-top:1px solid #00cfb7;
+	text-align:right;
+	padding:10px 0px 10px 0px;
+}
+.expandBio a, .expandBio a:hover{
+	font-size:16px;
+	color: #00cfb7;
+}
+
 .closeToggle {
 	color: #00cfb7;
 	padding:5px 10px;
@@ -631,6 +663,7 @@ a.readmore-js-toggle {
 .detailOverlayImg span.detailOverlayImgOverlayContainer{
 	position:relative;
 }
+/*
 .detailOverlayImgOverlay{
 	display:none;
 	position:absolute;
@@ -655,14 +688,31 @@ a.readmore-js-toggle {
 .detailOverlayImg span:hover .detailOverlayImgOverlay{
 	display:block;
 }
+*/
 .detailOverlayImgCaption{
 	border-bottom:2px solid #DDDDDD;
 	padding:10px 0px 10px 0px;
 	text-align:left;
+	font-size:14px;
+	position:absolute;
+	left:0px;
+	right:0px;
 }
-a .detailOverlayImgCaption, .detailOverlayImgCaption a, a:hover .detailOverlayImgCaption, .detailOverlayImgCaption a:hover{
+.detailOverlayImgCaptionVert{
+	padding-left:25px;
+	padding-top:25%;
+}
+.detailOverlayImgCaption a, .detailOverlayImgCaption a:hover{
 	color:#000;
 	text-decoration:none;
+}
+.detailOverlayImgCaption a .typeLabel{
+	text-transform:uppercase;
+	font-family: "News Gothic";
+	font-weight: bold;
+}
+.detailOverlayImgCaption .text-right a{
+	color: #00cfb7;
 }
 /* Media Viewer */
 
@@ -714,17 +764,22 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	font-size:18px;
 	color: #00cfb7;
 }
+.collectionDescription {
+	margin-bottom:30px;
+}
 .collectionGraphic {
 	text-align:center;
 	width: 100px;
+	height: 100px;
 	overflow:hidden;
 	border-radius:100px;
 	padding-left:0px;
 	padding-right:0px;
+	margin:5px auto 30px auto;
 }
 .collectionGraphic img {	
-	height:100px;
-	
+	height:auto;
+	width:110px;
 }
 .collection-form {
 	text-align:right;
@@ -802,20 +857,19 @@ a.faDownload:hover {
 }
 #collectionLoad {
 	float:left;	
-	padding:20px 10px 10px 10px;
+	padding:20px 10px 10px 20px;
 	height: 500px;
 	overflow-y: scroll;
-	background-color: #f9f9f9;
-	box-shadow: -5px 0px 5px 0px #ccc;
+	border-left:2px solid #ddd;
 }
 #collectionLoad a {
-	padding:5px;
+	padding:5px 0px 5px 0px;
 	display:inline-block;
 }
 #collectionLoad a:hover {
 	text-decoration:none;
 }
-#collectionLoad a .fa{
+#collectionLoad a .fa, #collectionLoad a .icon-box, #collectionLoad a .icon-folder{
 	color: #737373;
 }
 .findingAidContainer a.openCollection.active {
@@ -904,6 +958,9 @@ li[role=presentation] {
 	margin-top: -20px;
     display: inline-block;	
 }
+#caFormOverlay .alert {
+	margin: 0px -15px 10px -15px;
+}
 .form-horizontal .control-label, .form-horizontal .radio, .form-horizontal .checkbox, .form-horizontal .radio-inline, .form-horizontal .checkbox-inline {
 	color: #000;
 	font-size:14px;
@@ -921,8 +978,15 @@ li[role=presentation] {
 }
 .btn-default:hover {
 	background-color: #00cfb7;
-	color: #fff;
-	text-decoration:none;
+	color: #fff !important;
+	text-decoration:none !important;
+}
+.btn-default:active {
+	background-color: #00cfb7;
+	color: #fff !important;
+	text-decoration:none !important;
+	-webkit-box-shadow:none;
+	box-shadow:none;
 }
 #caFormOverlay h1, .loginreg h1 {
     font-size: 30px;
@@ -1118,6 +1182,34 @@ p.linkInfo {
 	color: #00cfb7;
 	width:18px;
 	display:inline-block;
+}
+
+/* Ipad Styles */
+
+@media (max-width: 768px) {
+	.navbar-form .form-group {
+		width: 90px;
+	}
+	.navbar-default .navbar-nav > li > a {
+		padding-left:8px;
+		padding-right:8px;
+	}
+	#user-navbar .dropdown {
+		border-right:0px !important;
+		margin-right:-15px;
+	}
+	.detailOverlayImg img {
+		width: 100%;
+		height: auto;
+		max-height: 550px;
+	}
+}
+@media (max-width: 1024px) {
+	.detailOverlayImg img {
+		width: 100%;
+		height: auto;
+		max-height: 550px;
+	}
 }
 
 

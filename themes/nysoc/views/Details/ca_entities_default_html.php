@@ -407,7 +407,7 @@
 	<?php	
 									$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
 									$stat_avg_entity_checkout_distribution = CompositeCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
-									if($stat_entity_checkout_distribution) {
+									if(is_array($stat_entity_checkout_distribution) && is_array($stat_avg_entity_checkout_distribution)) {
 	?>
 
 									<div class='vizTitle'>Circulation Activity <button  type="button"><i class="fa fa-external-link"></i></button></div>
