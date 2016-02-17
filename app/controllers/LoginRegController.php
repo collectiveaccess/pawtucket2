@@ -382,6 +382,7 @@ class LoginRegController extends ActionController {
 				# -------------
 			}
 		}
+		$t_user->set("registered_on","now");
 
 		// Save user profile responses
 		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {

@@ -103,7 +103,6 @@
 						$this->view->setVar("errors", $va_errors);
 						$this->form();
 					}
-
  			}else{
  				$this->view->setVar("errors", $va_errors);
  				$this->form();

@@ -46,7 +46,7 @@ if($q_modules->numHits()){
 		print "
 		<div class='row'><div class='col-xs-12'>
 			<div class='bResItem'>
-				<div class='pull-right'>".caDetailLink($this->request, "<i class='fa fa-arrow-circle-right'></i>", "", "ca_objects", $q_modules->get("object_id"))."</div>
+				<div class='pull-right'>".caNavLink($this->request, "<i class='fa fa-download'></i>", '', 'Detail', 'DownloadMedia', '', array("object_id" => $q_modules->get("object_id"), "download" => 1), array("title" => ($this->request->isLoggedIn()) ? _t("Download All") : _("Educators please login to download all components"))).caDetailLink($this->request, "<i class='fa fa-arrow-circle-right'></i>", "", "ca_objects", $q_modules->get("object_id"), null, array("title" => _t("View Module")))."</div>
 				<H1>".caDetailLink($this->request, $q_modules->get("ca_objects.preferred_labels"), "", "ca_objects", $q_modules->get("object_id"))."<H1>
 				<div class='bResContent'>".
 					$q_modules->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))

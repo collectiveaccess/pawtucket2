@@ -52,6 +52,7 @@
 				</div>
 				<div id="libInfo" class="col4">
 					<div>
+						<h3>The Library Will Be Closed</h3><div>Sunday, February 14 and</div><div>Monday, February 15 for</div><div>President's Day</div>
 						<div><p><span style="line-height: 1.538em;">All areas except Circulation close 15 minutes prior to building closing time.</span></p></div>
 					</div>
 				</div>

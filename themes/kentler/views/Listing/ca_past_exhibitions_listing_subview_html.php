@@ -72,7 +72,7 @@
 		$qr_list->seek(0);
 	}
 	if(sizeof($va_years) > 1){		
-		#arsort($va_years);
+		arsort($va_years);
 		foreach($va_years as $vs_year){
 			print "<li class='yearBar yearBar".$vs_year."'><a href='#' onClick='$(\".yearBar\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(\".yearTab\").hide(); $(\"#yearTab".$vs_year."\").show(); return false;'>".$vs_year."</a></li>";
 		}
