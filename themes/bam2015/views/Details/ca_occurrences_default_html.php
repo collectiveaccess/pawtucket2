@@ -35,38 +35,39 @@
 			
 			<div class="row" id="dataPanel">
 			<hr class="divide"/>			
-				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
+					$vs_col_1 = "";
 					if ($vs_non_preferred = $t_item->get('ca_occurrences.nonpreferred_labels', array('delimiter' => ', '))) {
-						print "<div class='unit'><span class='label'>Alternate Title </span>".$vs_non_preferred."</div>";
+						$vs_col_1 .= "<div class='unit'><span class='label'>Alternate Title </span>".$vs_non_preferred."</div>";
 					}
 					if ($vs_premiere = $t_item->get('ca_occurrences.premiere', array('convertCodesToDisplayText' => true))) {
 						if ($vs_premiere != " ") {
-							print "<div class='unit'><span class='label'>Premiere </span>".$vs_premiere."</div>";
+							$vs_col_1 .= "<div class='unit'><span class='label'>Premiere </span>".$vs_premiere."</div>";
 						}
 					}
 					if (($vs_language = $t_item->get('ca_occurrences.productionLanguage', array('convertCodesToDisplayText' => true))) != "null") {
-						print "<div class='unit'><span class='label'>Production Language </span>".$vs_language."</div>";
+						$vs_col_1 .= "<div class='unit'><span class='label'>Production Language </span>".$vs_language."</div>";
 					}	
 					if ($vs_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						print "<div class='unit'><span class='label'>Country of Origin </span>".$vs_country."</div>";
+						$vs_col_1 .= "<div class='unit'><span class='label'>Country of Origin </span>".$vs_country."</div>";
 					}
 					if ($va_description = $t_item->get('ca_occurrences.productionDescription.prodesc_text')) {
-						print "<div class='unit'><span class='label'>Description </span>".$va_description."</div>";
+						$vs_col_1 .= "<div class='unit'><span class='label'>Description </span>".$va_description."</div>";
 					}
-					#if ($va_description_source = $t_item->get('ca_occurrences.productionDescription.prodesc_source')) {
-					#	print "<div class='unit'><span class='label'>Description source: </span>".$va_description_source."</div>";
-					#}																				
+					if($vs_col_1){
 ?>
-					<!--<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div>
-						<div id='detailComments'>{{{itemComments}}}</div>
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div>
-					</div> -->
-					
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+<?php
+						print $vs_col_1;
+?>
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
+					}else{
+?>
+				<div class='col-sm-12 col-md-12 col-lg-12'>
+<?php
+					}																			
 					if ($vn_parent_id = $t_item->get('ca_occurrences.parent.occurrence_id', array('checkAccess' => $va_access_values))) {
 						$t_parent = new ca_occurrences($vn_parent_id);
 						if ($vs_season = $t_parent->get('ca_occurrences.parent.preferred_labels')) {

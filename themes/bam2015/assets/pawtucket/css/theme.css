@@ -764,17 +764,22 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	font-size:18px;
 	color: #00cfb7;
 }
+.collectionDescription {
+	margin-bottom:30px;
+}
 .collectionGraphic {
 	text-align:center;
 	width: 100px;
+	height: 100px;
 	overflow:hidden;
 	border-radius:100px;
 	padding-left:0px;
 	padding-right:0px;
+	margin:5px auto 30px auto;
 }
 .collectionGraphic img {	
-	height:100px;
-	
+	height:auto;
+	width:110px;
 }
 .collection-form {
 	text-align:right;
