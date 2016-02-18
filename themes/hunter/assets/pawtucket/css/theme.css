@@ -94,7 +94,7 @@ nav{
 }
 .navCa{
 	height:auto;
-	min-height:auto;
+	min-height:20px;
 }
 .navCa li > a{
 	color:#FFF !important;
@@ -150,8 +150,8 @@ ul.dropdown-menu a{
 	margin-left:20px !important;
 }
 /* browse nav panel */
-.filterMenuFacetList li a:hover, .filterMenuFacetList li a{
-	background-color:#FFF !important;
+.filterMenuFacetList li a:hover, .filterMenuFacetList li a, .filterMenuFacetList li a:focus, .filterMenuFacetList li a:visited{
+	background-color:#FFFFFF !important;
 	color: #4d4d4d !important;
 }
 .filterMenuFacetList li.active{
@@ -162,6 +162,9 @@ ul.dropdown-menu a{
 	height:auto;
 	padding-top:0px !important;
 	padding-bottom:0px !important;
+}
+.filterMenuFacetList li.active a{
+	color:#FFFFFF !important;
 }
 /* footer */
 #footer, #footer .container{

@@ -525,7 +525,7 @@ class WLPlugGeographicMapOpenLayers Extends BaseGeographicMapPlugIn Implements I
 		map_{$vs_id}_delete_button.activate();
 		
 		// Grab current map coordinates from input
-		var map_{$vs_id}_loc_str = '{".$pa_element_info['element_id']."}';
+		var map_{$vs_id}_loc_str = '{{".$pa_element_info['element_id']."}}';
 		var map_{$vs_id}_loc_features = map_{$vs_id}_loc_str.match(/\[([\d\,\-\.\:\;]+)\]/)
 		if (map_{$vs_id}_loc_features && (map_{$vs_id}_loc_features.length > 1)) {
 			map_{$vs_id}_loc_features = map_{$vs_id}_loc_features[1].split(/:/);

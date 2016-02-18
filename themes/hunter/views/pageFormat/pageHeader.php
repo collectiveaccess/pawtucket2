@@ -80,7 +80,7 @@
 <body>
 	<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">
 		<div class="navbar-header">
-			<a class="logo navbar-btn pull-left" href="/igicom4_1/" title="Home">
+			<a class="logo navbar-btn pull-left" href="#" title="Home">
 				<?php print caGetThemeGraphic($this->request, 'Centro_logo_small.png'); ?>
 			</a>
 		</div>

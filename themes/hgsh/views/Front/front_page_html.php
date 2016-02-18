@@ -36,12 +36,12 @@
 			<div class="row">
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/organisations.jpg')."<div class='hpBrowseTitle'>Organisations</div>", "", "", "Browse", "organisations"); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History</div>", "", "", "Detail", "collections/id%3A64"); ?>
 				</div>
-			</div>
+			</div>			
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people"); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/organisations.jpg')."<div class='hpBrowseTitle'>Organisations</div>", "", "", "Browse", "organisations"); ?>
 				</div>
 			</div>
 			</div>
@@ -62,14 +62,21 @@
 	<div class="row">
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people"); ?>
+			</div>
+		</div>	
+		<div class="col-xs-6 col-sm-3">
+			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/places.jpg')."<div class='hpBrowseTitle'>Places</div>", "", "", "Browse", "places"); ?>
 			</div>
 		</div>
+<!--	
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/objects.jpg')."<div class='hpBrowseTitle'>Objects</div>", "", "", "Browse", "objects"); ?>
+				<?php #print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/objects.jpg')."<div class='hpBrowseTitle'>Objects</div>", "", "", "Browse", "objects"); ?>
 			</div>
 		</div>
+-->		
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/collections.jpg')."<div class='hpBrowseTitle'>Collections</div>", "", "", "Browse", "collections"); ?>
