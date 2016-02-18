@@ -98,7 +98,7 @@
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
 						$t_list_item->load($qr_res->get("type_id"));
-						$vs_typecode = $t_list_item->get("idno");
+						#$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
