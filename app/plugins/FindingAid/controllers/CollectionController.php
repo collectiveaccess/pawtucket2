@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php"); 
+	require_once(__CA_LIB_DIR__."/core/ApplicationError.php"); 
 	require_once(__CA_LIB_DIR__."/ca/BasePluginController.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_LIB_DIR__.'/ca/Search/CollectionSearch.php');

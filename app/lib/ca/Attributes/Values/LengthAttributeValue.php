@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -127,7 +127,7 @@
 		'displayDelimiter' => array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
-			'default' => ',',
+			'default' => '; ',
 			'width' => 10, 'height' => 1,
 			'label' => _t('Value delimiter'),
 			'validForRootOnly' => 1,
@@ -152,25 +152,28 @@
  				$this->ops_text_value = '';
  				return;
  			}
- 			
- 			switch($g_ui_units_pref) {
- 				case 'metric':
- 					$vo_measurement = new Zend_Measure_Length((float)$pa_value_array['value_decimal1'], 'METER', $g_ui_locale);
- 					$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Length::METER, 4);
- 					break;
- 				case 'english':
- 					$vo_measurement = new Zend_Measure_Length((float)$pa_value_array['value_decimal1'], 'METER', $g_ui_locale);
- 					$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Length::FEET, 4);
- 					break;
- 				default: // show value in unit entered, but adjusted for the UI locale
-					try {
-						$vo_measurement = new Zend_Measure_Length((float)$pa_value_array['value_decimal1'], 'METER', $g_ui_locale);
-						$this->ops_text_value = $vo_measurement->convertTo($pa_value_array['value_longtext2']);
-					} catch (Exception $e) { // derp
-						$this->ops_text_value = $pa_value_array['value_longtext1'];
-					}
- 					break;
- 			}	
+
+			try {
+				$vo_measurement = new Zend_Measure_Length((float)$pa_value_array['value_decimal1'], 'METER', $g_ui_locale);
+
+				switch($g_ui_units_pref) {
+					case 'metric':
+						$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Length::METER, 4);
+						break;
+					case 'english':
+						$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Length::FEET, 4);
+						break;
+					case 'fractions':
+						$this->ops_text_value = caLengthToFractions($vo_measurement->convertTo(Zend_Measure_Length::INCH, 8), 16);
+						break;
+					default: // show value in unit entered, but adjusted for the UI locale
+						$this->ops_text_value = $vo_measurement->convertTo($pa_value_array['value_longtext2'], 4);
+						break;
+				}
+			} catch (Exception $e) { // derp
+				$this->ops_text_value = $pa_value_array['value_longtext1'];
+			}
+
  			$this->opn_decimal_value = $pa_value_array['value_decimal1'];
  		}
  		# ------------------------------------------------------------------

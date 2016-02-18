@@ -110,7 +110,7 @@ $o_config = $this->getVar("config");
 							$q_featured_collections = caMakeSearchResult('ca_collections', $va_featured_collection_ids);
 							print '<H2 class="rokkit-reg">Featured Collections</H2>';
 							while($q_featured_collections->nextHit()){
-								print "<div class='row frontFeaturedRow'><div class='col-sm-12'>".caNavLink($this->request, $q_featured_collections->get('ca_collections.preferred_labels.name'), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $q_featured_collections->get("collection_id")))."</div></div>";
+								print "<div class='row frontFeaturedRow'><div class='col-sm-12'>".$q_featured_collections->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."</div></div>";
 							}
 						}
 					}
