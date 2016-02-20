@@ -166,27 +166,37 @@
 							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event')))) {
 								print "<h6>Related events</h6>".$va_related_events;
 							}
+							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+								print "<h6>Related Objects</h6>".$va_related_objects;
+							}							
 							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
 							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
-								print "<h6>Related Storage Locations</h6>".$va_related_storage;
+								print "<h6>Related Storage Locations</h6>".caNavLink($this->request, $va_related_storage, '', '', 'Search', 'objects', array('search' =>'ca_storage_locations:'.$va_related_storage));
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
 								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
 									print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
 								}	
 							}																
-?>								
+
+							if ($va_terms = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+								print "<div class='unit'><h6>Related Terms</h6>";
+								foreach ($va_terms as $va_key => $va_term) {
+									print "<p>".caNavLink($this->request, $va_term, '', '', 'MultiSearch', 'Index', array('search' => 'ca_list_items.preferred_labels:"'.$va_term.'"'))."</p>";
+								}
+								print "</div>";
+							}
 							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
-							
-							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
-							
-<?php
+							if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+								print "<div class='unit'><h6>LCSH Terms</h6>";
+								foreach ($va_lcsh_terms as $va_key => $va_lcsh_term) {
+									$va_lcsh_term_name = explode('[',$va_lcsh_term);
+									print "<p>".caNavLink($this->request, $va_lcsh_term_name[0], '', '', 'MultiSearch', 'Index', array('search' => "ca_objects.lcsh_terms:".$va_lcsh_term_name[0]))."</p>";
+								}
+								print "</div>";
+							}
 							if ($t_object->get('ca_objects.external_link.url_entry')) {
 								$va_external_links = $t_object->get('ca_objects.external_link', array('returnWithStructure' => true));
 								print "<div class='unit'><h6>Links</h6>";

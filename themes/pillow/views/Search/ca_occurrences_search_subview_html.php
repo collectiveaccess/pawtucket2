@@ -58,17 +58,17 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($qr_results->get('ca_occurrences.creationDate')) {
-				$vs_creation_date = "<p>".$qr_results->get('ca_occurrences.creationDate')."</p>";
+				$vs_creation_date = "<p>".$qr_results->get('ca_occurrences.creationDate', array('delimiter' => '; '))."</p>";
 			} else {
 				$vs_creation_date = null;
 			}
 			if ($qr_results->get('ca_occurrences.productionDate')) {
-				$vs_production_date = "<p>".$qr_results->get('ca_occurrences.productionDate')."</p>";
+				$vs_production_date = "<p>".$qr_results->get('ca_occurrences.productionDate', array('delimiter' => '; '))."</p>";
 			} else {
 				$vs_production_date = null;
 			}			
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true; }
-				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true)).$vs_creation_date.$vs_production_date."</div>";
+				print "<div class='{{{block}}}Result authorityResult'><b>".$qr_results->get('ca_occurrences.preferred_labels.name', array('returnAsLink' => true))."</b>".$vs_creation_date.$vs_production_date."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

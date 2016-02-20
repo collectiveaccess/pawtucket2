@@ -17,7 +17,7 @@
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
 				</div><!-- end col -->
-			</div><!-- end row -->
+			</div><!-- end row --> 
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.notes"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}
