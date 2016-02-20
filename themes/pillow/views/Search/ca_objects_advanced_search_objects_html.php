@@ -17,9 +17,9 @@
 		</div>
 	</div>	
 	<div class='col-sm-12 col-md-12 col-lg-12'>		
-		<div class="advancedSearchFieldTall">
+		<div class="advancedSearchField">
 			Entity <br/>
-			{{{ca_entities.preferred_labels.displayname%width=380px&height=90px}}}
+			{{{ca_entities.preferred_labels.displayname%width=380px&height=25px}}}
 			<!-- {{{ca_entities.preferred_labels.displayname:relationshipTypes%width=180px&height=90px&multiple=1}}} -->
 			<br style='clear: both;'/>
 		</div>
@@ -62,14 +62,14 @@
 	</div>						
 	
 
-	
-
-	</div>	
-	
 	<br style="clear: both;"/>
 	
 	<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-	<div style="float: right;">{{{submit%label=Search}}}</div>
+	<div style="float: right;">{{{submit%label=Search}}}</div>	
+
+	</div>	
+	
+
 {{{/form}}}
 
 		</div>
