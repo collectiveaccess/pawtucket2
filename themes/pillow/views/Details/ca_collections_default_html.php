@@ -68,8 +68,9 @@
 					}
 					$vs_finding_aid.= "</div>";
 					$vs_finding_aid.= "<div class='col-sm-6'>";
-					$vs_finding_aid.= $this->getVar('representationViewer');
-					if ($va_rep = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="depicts"><unit relativeTo="ca_object_representations">^ca_object_representations.media.large</unit></unit>')) {
+					if ($va_rep = $t_item->get('ca_object_representations.media.large')) {
+						$vs_finding_aid.= "<div class='collectionRep'>".$va_rep."</div>";
+					} elseif ($va_rep = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="depicts"><unit relativeTo="ca_object_representations">^ca_object_representations.media.large</unit></unit>')) {
 						$vs_finding_aid.= "<div class='collectionRep'>".$va_rep."</div>";
 					}
 					$vs_finding_aid.= "</div></div><!-- end row -->";
@@ -251,11 +252,11 @@
 
 					
 				
-				<div class='col-sm-3 col-md-3 col-lg-3'>
+				<div class='col-sm-3 col-md-3 col-lg-3 contentsTable'>
 <?php
 				if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Collection") {
 ?>				
-					<div class='contentsTable'>
+					<div >
 						<h3>Table of Contents</h3>
 <?php
 					print join('<br/>', $va_anchors);

@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 ?>
@@ -41,12 +40,23 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
+				
+<?php 
+			if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+				$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+				$t_representation->load($pn_representation_id);
+				
+			} 
+			#$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+
+
+	print 	caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object); 
+?>				
 				
 				
-				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				
+				<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
@@ -139,9 +149,11 @@
 							print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
 						}
 					}
-					if ($vs_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><h6>Camera</h6>".$vs_camera."</div>";
+
+					if (($va_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true)))&&($va_camera != "-")) {
+						print "<div class='unit'><h6>Camera</h6>".$va_camera."</div>";
 					}
+						
 					if ($vs_tech_notes = $t_object->get('ca_objects.technical_notes')) {
 						print "<div class='unit'><h6>Technical Notes</h6>".$vs_tech_notes."</div>";
 					}																				

@@ -304,6 +304,11 @@ div.advancedSearchField {
 .collHeader a {
 	font-family: Tahoma;
 }
+.contentsTable {
+	background-color: #f7f7f7;
+	padding-bottom:30px;
+	min-height:200px;
+}
 
 /* Detail */
 
