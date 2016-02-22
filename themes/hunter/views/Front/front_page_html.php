@@ -39,7 +39,7 @@ $o_config = $this->getVar("config");
 		<div class="col-sm-12">
 			<H1>Digital Collection</H1>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget sapien non lectus vehicula semper. Aenean nec quam non dolor euismod rhoncus consequat nec nulla. Ut ut augue urna. Praesent semper sed turpis eget elementum. Ut a massa nec tortor tincidunt pellentesque ac dapibus nunc.
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget sapien non lectus vehicula semper.
 			</p>
 		</div>
 	</div>

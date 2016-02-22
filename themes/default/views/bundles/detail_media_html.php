@@ -67,11 +67,11 @@
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSliderepresentation_ids[i], function(e) {
 						// update carousel height with current slide height after ajax load
-						$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+						$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id + " img").height());
 					});
 				} else {
 					// update carousel height with current slide height
-					$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+					$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id + " img").height());
 				}
 			}
 <?php

@@ -389,7 +389,7 @@
 										'additionalTableWheres' => array('('.$vs_label_table_name.'.is_preferred = 1 OR '.$vs_label_table_name.'.is_preferred IS NULL)')
 										)));
 					}
-					if ($vn_hierarchies_in_use <= 1) {
+					if (($vn_hierarchies_in_use <= 1) && ($t_item->getHierarchyType() != __CA_HIER_TYPE_ADHOC_MONO__)) {
 						array_shift($va_ancestors);
 					}
 					break;

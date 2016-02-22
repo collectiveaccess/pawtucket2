@@ -58,15 +58,13 @@
 				</ifdef>}}}				
 				<HR/>
 <?php
-		#if(in_array($t_object->get("ca_objects.type_id"), $va_video_audio_type_ids)){
-		# --- need to add in alternate description here when field is added 
-				#print_r($t_object->get("ca_objects.date", array("returnWithStructure" => true))); 
-				if($t_object->get("ca_objects.date.date") || $t_object->get("ca_objects.date.dates_value")){
+				#if($t_object->get("ca_objects.date.date") || $t_object->get("ca_objects.date.dates_value")){
+				if($t_object->get("ca_objects.date.dates_value")){
 					print "<H6>Date</H6>";
 					$va_date_parts = array();
-					if($t_object->get("ca_objects.date.date")){
-						$va_date_parts[] = $t_object->get("ca_objects.date.date");
-					}
+					#if($t_object->get("ca_objects.date.date")){
+					#	$va_date_parts[] = $t_object->get("ca_objects.date.date");
+					#} removed this when Julia cleaned up date configuration in feb 2016
 					if($t_object->get("ca_objects.date.dates_value")){
 						$va_date_parts[] = $t_object->get("ca_objects.date.dates_value");
 					}
@@ -88,6 +86,7 @@
 					print $t_object->getWithTemplate('<ifdef code="ca_objects.duration"><H6>Duration</H6>^ca_objects.duration</ifdef>');
 					
 					print $t_object->getWithTemplate('<ifdef code="ca_objects.georeference.coverageNotes"><H6>Location of Interview</H6>^ca_objects.georeference.coverageNotes</ifdef>');
+					print $t_object->getWithTemplate('<ifdef code="ca_objects.tgn"><H6>Places Mentioned</H6>^ca_objects.tgn%delimiter=,_</ifdef>');
 
 				}else{
 
