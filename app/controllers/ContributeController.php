@@ -466,7 +466,7 @@
           					$va_rel_config = caGetOption('ca_places', $va_related_form_item_config, array());
           					foreach($va_content_by_table as $vn_index => $va_rel) {
           						foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, null, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);

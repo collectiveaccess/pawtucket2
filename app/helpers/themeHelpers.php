@@ -440,14 +440,16 @@
 			
 			$qr_reps->seek(0);
 			if (!($vs_template = $va_detail_config['options']['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
- 			
+ 		
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
 				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
 
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				
-				$vn_index = ($vn_rep_id != $vn_primary_id) ? $qr_reps->get('ca_objects_x_object_representations.rank') : 0; 
+				if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank') : 0)) {
+					$vn_index = $qr_reps->get('ca_object_representations.representation_id');
+				}
 				
 				$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar.$vs_caption."</div></div>");
 				
@@ -467,6 +469,7 @@
 						}
 					}
 				}
+				
 				$va_rep_info[$vn_index]['annotationList'] = $va_annotation_list;
 			}
 
@@ -475,13 +478,17 @@
 			$vn_count = 0;
 			
 			foreach($va_rep_info as $vn_order => $va_rep){
-				if(sizeof($va_rep_ids) > 1){ $vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; }
+				if(sizeof($va_rep_ids) > 1){ 
+					$vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; 
+				}
 				$vs_slides .= ($vn_count == 0) ? "<div id='slideContent{$va_rep['rep_id']}'>".$va_rep["tag"]."</div>" : "<div id='slideContent{$va_rep['rep_id']}'></div>";	// only load first one initially
 				
-				if (true && is_array($va_rep['annotationList'])) {
+				if (is_array($va_rep['annotationList'])) {
 					$vs_slides .= join("<br/>\n", $va_rep['annotationList']);
 				}
-				if(sizeof($va_rep_ids) > 1) { $vs_slides .= "</li>"; }
+				if(sizeof($va_rep_ids) > 1) { 
+					$vs_slides .= "</li>"; 
+				}
 				
 				$vn_count++;
 			}
@@ -509,7 +516,7 @@
 		
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
-			
+		
 		return $o_view->render("bundles/detail_media_html.php");
 	}
 	# ---------------------------------------
@@ -533,7 +540,7 @@
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
-		if(caObjectsDisplayDownloadLink($po_request)){
+		if(caObjectsDisplayDownloadLink($po_request, $pn_object_id)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = $va_download_display_info['display_version'];

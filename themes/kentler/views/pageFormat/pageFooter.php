@@ -40,7 +40,7 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<h3>
-							353 Van Brunt Street<br/>RED HOOK &middot; Brooklyn
+							353 Van Brunt Street<br/>RED HOOK<br/>Brooklyn &middot; NY &middot; 11231
 						</h3>
 					</div><!-- end col -->
 					<div class="col-sm-6">

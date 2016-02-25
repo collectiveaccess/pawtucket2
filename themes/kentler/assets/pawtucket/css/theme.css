@@ -175,7 +175,7 @@ a.navbar-brand .line3{
 	font-weight:800;
 	text-transform:uppercase;
 	font-size:14px;
-}
+} 
 .nav > li > a {
 	color:#FFF !important;
 }
@@ -270,12 +270,45 @@ a.navbar-brand .line3{
   font-weight:600;
 }
 
+@media (max-width: 1120px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		padding: 15px 10px 12px 10px;
+	}
+	.navbar-brand {
+		width: 135px;
+	}
+}
+@media (max-width: 912px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		font-size: 12px;
+		padding: 18px 5px 12px 5px;
+	}
+
+}
+@media (max-width: 792px) {
+	a.navbar-brand .line1 {
+		font-size:20px;
+		margin-top: 10px;
+	}
+	a.navbar-brand .line2, a.navbar-brand .line3 {
+		font-size:10px;
+	}
+	.navbar-brand {
+		width: 105px;
+	}
+}
+@media (max-width: 767px) {
+	.navbar-default .navbar-brand {
+		margin-left:-15px;
+	}
+}
+
 
 /* FOOTER */
 #footer{
 	border-top: 0px;
 	font-size:12px;
-	color: #FFF;
+	color: #999999;
 	background-color: #000;
 	position: absolute;
 	bottom: 0px;
@@ -285,15 +318,17 @@ a.navbar-brand .line3{
 	margin:0px;
 	line-height:1.2em;
 	padding-top:20px;
+	box-shadow: 0px -1px 3px rgba(0, 0, 0, 0.3);
 }
 #footer a{
-	color:#FFFFFF !important;
+	color:#999999 !important;
 }
 #footer h3, #footer h5{
-	color:#FFF;
+	color:#999999;
 }
 #footer h3{
-	margin-top:13px;
+	margin-top:7px;
+	font-size:14px;
 }
 #footer h5{
 	font-size:12px;
@@ -503,6 +538,11 @@ a.navbar-brand .line3{
 }
 .detail H1{
 	line-height:1.3em;
+}
+.detail H1 a{
+	font-size:11px;
+	color:#b5b5b5;
+	text-transform:none;
 }
 .detail H5{
 	padding:0px;

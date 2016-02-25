@@ -24,7 +24,7 @@
 			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
 
-		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration|ca_objects.technicalNotes">
+		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.recorder_model|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration|ca_objects.technicalNotes|ca_objects.notes">
 		    	<div>
 		    		<span class='metaTitle'>Technical Specs</span>
 		    		<div class='meta'>
@@ -34,7 +34,9 @@
 		    				<p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p>
 		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p>
 		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p>
-		    				<p><ifdef code="ca_objects.technicalNotes">Technical Notes: ^ca_objects.technicalNotes</ifdef></p>
+		    				<p><ifdef code="ca_objects.recorder_model">Recorder Model: ^ca_objects.recorder_model</ifdef></p> 
+							<p><ifdef code="ca_objects.technicalNotes">Technical Notes: ^ca_objects.technicalNotes</ifdef></p>
+							<p><ifdef code="ca_objects.technicalNotes">Technical Notes: ^ca_objects.notes</ifdef></p>
 		    			</unit> 
 		    		</div>
 		    	</div> 
@@ -52,10 +54,12 @@
 			}
 			if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}				
+			}
+			if (($vs_val = trim($t_object->get('ca_objects.item_format_digital', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}							
 ?>
 
-				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
 				{{{<unit><ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'><unit delimiter='; '>^ca_objects.color</unit></span></div></ifdef></unit>}}}
 
 					

@@ -439,7 +439,7 @@
  		 *
  		 * @return string Summary of current browse criteria ready for display
  		 */
- 		public function getCriteriaForDisplay($po_browse) {
+ 		public function getCriteriaForDisplay($po_browse=null) {
  			$va_criteria = $po_browse->getCriteriaWithLabels();
  			if (!sizeof($va_criteria)) { return ''; }
  			$va_criteria_info = $po_browse->getInfoForFacets();

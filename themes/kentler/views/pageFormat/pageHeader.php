@@ -142,27 +142,27 @@
 						<ul class='dropdown-menu'> 
 							<li><?php print caNavLink($this->request, _t("Current/Upcoming"), "", "", "Listing", "upcoming_exhibitions"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Past"), "", "", "Listing", "past_exhibitions"); ?></li>
-							<li><a href="#">Proposals</a></li>
+							<li><a href="/news/index.php/proposals">Proposals</a></li>
 						</ul>
 					</li>
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Flatfiles <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
 							<li><?php print caNavLink($this->request, _t("Flatfiles Digital Archive"), "", "", "Listing", "flatfileArtists"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Browse Flatfile Artworks"), "", "", "Browse", "objects"); ?></li>
-							<li><a href="#">Traveling Shows</a></li>
-							<li><a href="#">Red Hook Archives</a></li>
-							<li><a href="#">Visit the Flatfiles</a></li>
-							<li><a href="#">Proposals</a></li>
+							<li><a href="/news/index.php/traveling-shows">Traveling Shows</a></li>
+							<li><a href="/news/index.php/red-hook">Red Hook Archives</a></li>
+							<li><a href="/news/index.php/visit">Visit the Flatfiles</a></li>
+							<li><a href="/news/index.php/proposals">Proposals</a></li>
 						</ul>					
 					</li>
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Education <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
-							<li><a href="#">School Programs</a></li>
-							<li><a href="#">After School Programs</a></li>
-							<li><a href="#">Drawing Together</a></li>
-							<li><a href="#">Residency Programs</a></li>
-							<li><a href="#">Partner with K.I.D.S. Art Education</a><li>
-							<li><a href="#">K.I.D.S. Blog</a></li>
+							<li><a href="/news/index.php/school-programs">School Programs</a></li>
+							<li><a href="/news/index.php/after-school-programs">After School Programs</a></li>
+							<li><a href="/news/index.php/drawing-together">Drawing Together</a></li>
+							<li><a href="/news/index.php/residency-programs">Residency Programs</a></li>
+							<li><a href="/news/index.php/partner-with">Partner with K.I.D.S. Art Education</a><li>
+							<li><a href="http://kidsarteducation.blogspot.com/">K.I.D.S. Ed Blog</a></li>
 						</ul>					
 					</li>
 					<li><li class='dropdown' style='position:relative;'><?php print caNavLink($this->request, _t("Events"), "", "", "Listing", "events"); ?></li>
@@ -174,20 +174,20 @@
 					</li>	-->															
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
-							<li><a href="#">Mission & History</a></li>
-							<li><a href="#">Staff & Boards</a></li>
-							<li><a href="#">Press</a></li>
-							<li><a href="#">Contact Us</a></li>
-							<li><a href="#">Visit</a></li>
+							<li><a href="/news/index.php/mission">Mission & History</a></li>
+							<li><a href="/news/index.php/staff">Staff & Boards</a></li>
+							<li><a href="/news/index.php/press">Press</a></li>
+							<li><a href="/news/index.php/contact">Contact Us</a></li>
+							<li><a href="/news/index.php/visit-us">Visit</a></li>
 						</ul>					
 					</li>
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Support <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
-							<li><a href="#">Donate</a></li>
-							<li><a href="#">Volunteer</a></li>
-							<li><a href="#">Internships</a></li>
-							<li><a href="#">Fundraisers</a></li>
-							<li><a href="#">Supporters</a></li> 
+							<li><a href="/news/index.php/donate">Donate</a></li>
+							<li><a href="/news/index.php/volunteer">Volunteer</a></li>
+							<li><a href="/news/index.php/internships">Internships</a></li>
+							<li><a href="/news/index.php/fundraisers">Fundraisers</a></li>
+							<li><a href="/news/index.php/supporters">Supporters</a></li> 
 						</ul>					
 					</li>					
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	

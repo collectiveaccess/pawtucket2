@@ -78,16 +78,14 @@
 	<link href='https://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">
-		<div class="navbar-header">
-			<a class="logo navbar-btn pull-left" href="/igicom4_1/" title="Home">
-				<?php print caGetThemeGraphic($this->request, 'Centro_logo_small.png'); ?>
+	<div class="bg-white">
+		<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">			
+			<a class="logo navbar-btn pull-left" href="#" title="Home">
+				<?php print caGetThemeGraphic($this->request, 'centroLogo.png'); ?>
 			</a>
-		</div>
-		<p class="pull-right"><small>Understanding, Preserving, Sharing<br/>the Puerto Rican Experience</small></p>
-		<br/><br/><br/>
-		<i class="icon glyphicon glyphicon-search pull-right" aria-hidden="true" data-toggle="modal" data-target="#myModal"></i>
-	</header>
+			<div class="headerSubTitle">Understanding, Preserving, Sharing the<br/>Puerto Rican Experience</div>
+		</header>
+	</div>
 	<nav class="navbar bg-dk-gray navHunter" role="navigation">
 		<div class="container bg-dk-gray">
 			<div class="navbar-header">
@@ -113,11 +111,11 @@
 				</button>
 			</div>
 
-			<div class="collapse navbar-collapse bg-dk-gray" id="bs-main-navbar-collapse-2">
+			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-2">
 				<ul class="nav navbar-nav">
-					<li><a href="#">Events & Culture</a></li>
+					<li><a href="#">Events & News</a></li>
 					<li><a href="#">Collections</a></li>
-					<li><a href="#">Library and Publications</a></li>
+					<li><a href="#">Library & Publications</a></li>
 					<li><a href="#">Research & Education</a></li>
 				</ul>			
 			</div>
