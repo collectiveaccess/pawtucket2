@@ -19,7 +19,7 @@
 						}
 					}
 					if ($vs_desc = $t_item->get('ca_collections.description.description_text', array('delimiter' => '<br/>'))) {
-						$vs_finding_aid.= "<div class='unit'><h3>Description</h3>".$vs_desc."</div>";
+						$vs_finding_aid.= "<div class='unit'><h3>Description</h3>".$vs_desc."</div>"; 
 					}	
 					if ($t_item->get('ca_collections.unitdate.date_value')) {
 						if ($vs_date = $t_item->get('ca_collections.unitdate', array('delimiter' => '<br/>', 'template' => '<unit>^ca_collections.unitdate.date_value ^ca_collections.unitdate.date_types</unit>', 'convertCodesToDisplayText' => true))) {
@@ -147,6 +147,10 @@
 						$va_anchors[] = "<a href='#bibliography'>Publication note</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='bibliography'>Publication note</a></h3>".$vs_bibliography."</div>";
 					}
+					if ($vs_processing = $t_item->getWithTemplate('<ifdef code="ca_collections.processInfo.createdBy">Finding Aid Created By: ^ca_collections.processInfo.createdBy<br/></ifdef><ifdef code="ca_collections.processInfo.dateCreated">Date Created: ^ca_collections.processInfo.dateCreated<br/></ifdef><ifdef code="ca_collections.processInfo.information">Information: ^ca_collections.processInfo.information</ifdef>')) {
+						$va_anchors[] = "<a href='#processing'>Processing Information</a>";
+						$vs_finding_aid.= "<div class='unit'><h3><a name='processing'>Processing Information</a></h3>".$vs_processing."</div>";
+					}					
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true))) {
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
@@ -193,7 +197,7 @@
 					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true));
 					
 					if ($va_top_level) {
-						if ($qr_top_level = caMakeSearchResult('ca_collections', $va_top_level, array('sort' => ['ca_collections.preferred_labels.name_sort']))) {
+						if ($qr_top_level = caMakeSearchResult('ca_collections', $va_top_level, array('sort' => ['ca_collections.collection_id']))) {
 							$vs_buf.= "<h3><a name='contents'>Collection Contents</a></h3>";
 							$va_anchors[] = "<a href='#contents'>Collection Contents</a>";
 							$vs_buf.= "<div class='colContents'>";
@@ -252,20 +256,24 @@
 
 					
 				
-				<div class='col-sm-3 col-md-3 col-lg-3 contentsTable'>
+				
 <?php
 				if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Collection") {
-?>				
-					<div >
-						<h3>Table of Contents</h3>
+?>					
+					<div class='col-sm-3 col-md-3 col-lg-3 contentsTable'>
+						<div >
+							<h3>Table of Contents</h3>
 <?php
-					print join('<br/>', $va_anchors);
+							print join('<br/>', $va_anchors);
 ?>
+						</div><!-- end col -->
 					</div><!-- end contentsTable-->
 <?php
+				} else {
+					print "<div class='col-sm-3 col-md-3 col-lg-3'></div>";
 				}
 ?>					
-				</div><!-- end col -->
+				
 				<div class='col-sm-9 col-md-9 col-lg-9'>
 <?php
 					#print caNavLink($this->request, 'Download Finding Aid <i class="fa fa-chevron-right"></i>', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
@@ -277,11 +285,7 @@
 						print $vs_finding_aid;
 				if (($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Collection")) {
 ?>	
-					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar('itemComments'); ?></div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span><?php print $this->getVar('shareLink'); ?></div><!-- end detailTool -->
-					</div><!-- end detailTools -->	
+	
 <?php
 				}
 ?>								

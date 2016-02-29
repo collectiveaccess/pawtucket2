@@ -86,13 +86,14 @@
 			}
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
-<?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.preview', array("checkAccess" => $va_access_values));
+<?php 			$va_has_access = 0;
+				if ($vs_image = $qr_results->get('ca_object_representations.media.preview', array("checkAccess" => $va_access_values))) {
+					$va_has_access = 1;
+				}
 				$va_rep_info = $qr_results->getMediaInfo("ca_object_representations.media", "preview");
 				#print 'width'.$va_rep_info["WIDTH"];
-				if ($va_rep_info["HEIGHT"] > 112) {
+				if (($va_rep_info["HEIGHT"] > 112) && $va_has_access == 1) {
 					$vs_image = "<img style='max-height:112px; width:auto;' src='".$qr_results->getMediaUrl("ca_object_representations.media", "preview")."'>";
-					
 				}
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));

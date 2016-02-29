@@ -18,7 +18,7 @@
 					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
 				</div><!-- end col -->
 			</div><!-- end row --> 
-			<div class="row">			
+			<div class="row">			 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.notes"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.premiere"><H6>Premiere</H6>^ca_occurrences.premiere<br/></ifdef>}}}
@@ -43,11 +43,7 @@
 					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" min="1"><h6>Related Performers</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					
-					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
+
 					
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>

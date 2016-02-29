@@ -277,6 +277,43 @@ h7 {
     margin-left: 10px;
     font-size: 12px;	
 }
+.bResultListItem .bResultListItemText {
+	line-height: 1.1em;
+}
+.bResultListItem .bResultListItemText a {
+	font-size:12px;
+	color: #454545;
+	font-weight:bold;
+	padding-bottom:2px;
+	display:inline-block;
+}
+.bResultListItemContent {
+	height:62px;
+}
+.bResultItem .bResultItemText {
+	font-size:12px;
+}
+.bResultListItemCol {
+	height:92px;
+}
+.bResultListItem:hover {
+	height:92px;
+}
+.bResultListItemExpandedInfo {
+	margin-top:-10px;
+}
+.bResultItemImgPlaceholder {
+	margin-bottom:0px;
+}
+.bResultItem .bResultItemText h7 {
+	margin-bottom:2px;
+}
+.bResultItem .bResultItemText a {
+	font-size:12px;
+	font-weight:bold;
+	color: #454545;
+}
+
 
 
 /* Advanced Search */
@@ -309,10 +346,22 @@ div.advancedSearchField {
 	padding-bottom:30px;
 	min-height:200px;
 }
+.collHeader {
+    margin-left: 0px;
+    background-color: #f5f5f5;
+    padding: 15px 15px 5px 5px;
+    margin-bottom: 20px;
+}
 
 /* Detail */
 
 .collectionRep img{
 	width:100%;
 	height:auto;
+}
+.detailMediaToolbar .dlButton {
+	display:none;
+}
+.detail .detailMediaToolbar {
+	padding-right:10px;
 }

@@ -26,7 +26,9 @@
  * ----------------------------------------------------------------------
  */
 	$t_object = 			$this->getVar("item");
+	$t_representation = 	$this->getVar("t_representation");
 	$va_comments = 			$this->getVar("comments");
+	$va_options = 			$this->getVar("config_options");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -40,28 +42,41 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+<?php
+				switch($t_object->get("ca_objects.rights.image_rights")){
+					case "788": #own/manage download
+						$vs_display_type = "detail";
+						$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."'>Download Image</a>";
+					break;
+					# ------------------------------
+					case "789": #own/manage no download
+						$vs_display_type = "detail";
+						$vs_download_link = null;
+						
+					break;
+					# ------------------------------
+					case "790": #public domain
+						$vs_display_type = "detail";
+						$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."'>Download Large</a><br/><a href='".$t_representation->getMediaUrl("ca_object_representations.media", "small")."'>Download Small</a>";						
+					break;
+					# ------------------------------					
+					case "791": #do not own
+						$vs_display_type = "detailSmall";
+						$vs_download_link = null;
+					break;
+					# ------------------------------										
+					default:
+						$vs_display_type = "detailSmall";
+						$vs_download_link = null;
+					break;
+					# ------------------------------
+				}
+				print caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object, array_merge(array("display" => $vs_display_type, "showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false))));
+				print $vs_download_link;
+?>
+				<div id="detailAnnotations"></div>
 				
-<?php 
-			if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
-				$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
-				$t_representation->load($pn_representation_id);
-				
-			} 
-			#$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-
-
-	print 	caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object); 
-?>				
-				
-				
-				
-				
-				<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-				</div><!-- end detailTools -->
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 			
 			</div><!-- end col -->
 			

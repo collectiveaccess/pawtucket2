@@ -19,7 +19,7 @@
 
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">			
+			<div class="row">	 		
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					<H6>{{{^ca_entities.type_id}}}</H6>
 					{{{<ifcount min="1" code="ca_entities.nonpreferred_labels"><h6>Alternate Names: </h6><unit>^ca_entities.nonpreferred_labels.displayname</unit></ifcount>}}}
