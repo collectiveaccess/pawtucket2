@@ -382,7 +382,8 @@
 	 *		primaryOnly - true/false, show only the primary rep, default false
 	 *		dontShowPlaceholder - true/false, default false
 	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
-	 *		captionTemplate = formatted caption to display under media defined in detail.conf	
+	 *		captionTemplate = formatted caption to display under media defined in detail.conf
+	 *		display = media_display.conf display version to use
 	 * @return string HTML output
 	 */
 	function caObjectDetailMedia($po_request, $pn_object_id, $pt_representation, $pt_object, $pa_options=null) {
@@ -390,6 +391,7 @@
 		
 		
 		$o_view = new View($po_request, array($po_request->getViewsDirectoryPath()));
+		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'detail';	
 		
 		// Get detail config
 		$va_detail_config = caGetDetailTypeConfig('objects');
@@ -434,7 +436,7 @@
 		// Fetch representations for display
 		if(sizeof($va_rep_ids) > 0){
 			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
-			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
+			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => $vs_display_type, 'object_id' => $pn_object_id, 'containerID' => 'cont'));
 
 			$va_rep_info = array();
 			
@@ -443,7 +445,7 @@
  		
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
-				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
+				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id, array("display" => $vs_display_type));
 
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				
@@ -526,11 +528,14 @@
 	 * @param RequestHTTP $po_request
 	 * @param ca_object_representations $pt_representation  Representation instance
 	 * @param int $pn_object_id  object_id for ca_objects row representation is attached to 
+	 * @param $pa_options array includes:
+	 *			display = media_display.conf display version to use
 	 * @return string HTML output
 	 */
-	function caRepToolbar($po_request, $pt_representation, $pn_object_id){
+	function caRepToolbar($po_request, $pt_representation, $pn_object_id, $pa_options=null){
 		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
-		$va_rep_display_info = caGetMediaDisplayInfo('detail', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'detail';	
+		$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";

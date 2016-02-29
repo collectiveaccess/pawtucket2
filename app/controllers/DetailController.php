@@ -147,7 +147,7 @@
  			$t_subject->registerItemView();
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
- 			
+ 			$this->view->setVar("config_options", $va_options);
  			
  			if (!caGetOption('disableExport', $va_options, false)) {
 				// Exportables/printables
