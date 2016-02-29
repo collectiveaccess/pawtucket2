@@ -196,6 +196,9 @@ ul.dropdown-menu a{
 	padding-top:0px !important;
 	padding-bottom:0px !important;
 }
+#browse-menu .glyphicon{
+	color:#666;
+}
 .filterMenuFacetList li.active a{
 	color:#FFFFFF !important;
 }
@@ -309,8 +312,22 @@ ul.dropdown-menu a{
 	width:100%;
 	height:auto;
 }
+.gallery #browseResultsContainer{
+	margin-top:0px;
+}
+.gallery .setDescriptionBG{
+	background-color:#f4f4f4;
+	padding-top:10px;
+	padding-bottom:10px;
+}
 
-
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+    line-height: .3em !important;
+    font-size: 18px !important;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	height: 120px !important;
+}
 /*
 .frontSlide img{
 	height:150px;
