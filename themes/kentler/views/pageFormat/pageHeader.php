@@ -98,7 +98,6 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'door2.jpg'), "", "", "","");
 				print caNavLink($this->request, "<div class='line1'>"._t("Kentler")."</div><div class='line2'>"._t("International")."</div><div class='line3'>"._t("Drawing Space")."</div>", "navbar-brand", "", "","");
 ?>
 			</div>
