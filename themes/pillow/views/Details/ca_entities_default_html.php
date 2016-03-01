@@ -16,12 +16,12 @@
 			<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-12'>
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H6>{{{^ca_entities.type_id}}}</H6>
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-
+					<H6>{{{^ca_entities.type_id}}}</H6>
 					{{{<ifcount min="1" code="ca_entities.nonpreferred_labels"><h6>Alternate Names: </h6><unit>^ca_entities.nonpreferred_labels.displayname</unit></ifcount>}}}
 					{{{<ifcount min="1" code="ca_entities.entity_date"><ifdef code="ca_entities.entity_date.ent_date_value"><h6>Dates</h6><unit delimiter="<br/>">^ca_entities.entity_date.ent_date_value ^ca_entities.entity_date.ent_dates_types</unit></ifdef></ifcount>}}}
 					
@@ -30,18 +30,6 @@
 					{{{<ifdef code="ca_entities.pillow_significance"><H6>Pillow Significance</H6>^ca_entities.pillow_significance<br/></ifdef>}}}
 					
 					<!-- {{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}-->
-
-					
-				</div><!-- end col -->
-				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit>}}}
-					
 					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="production">
 						<H6>Related Productions</H6>
 						<div class='trimText'>
@@ -50,6 +38,18 @@
 							</unit>
 						</div>
 					</ifcount>}}}
+					
+				</div><!-- end col -->
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
+<?php
+					if ($va_related_entity = $t_item->get('ca_entities.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+						print "<div class='unit'><h6>Related Entities</h6>".$va_related_entity."</div>";
+					}
+?>
+
 					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="work">
 						<H6>Related Works</H6>
 						<div class='trimText'>
@@ -68,7 +68,7 @@
 					</ifcount>}}}										
 					
 			
-				</div><!-- end col -->
+				</div><!-- end col --> 
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">

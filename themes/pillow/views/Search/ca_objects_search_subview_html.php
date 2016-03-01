@@ -53,24 +53,47 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, _t('View All').'&nbsp;&nbsp;<span class="icon-arrow-up-right"></span>', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
 <?php
 				}
 ?>
+				
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				{{{sortDirectionControl}}}
 			</small>
-			<H3><?php print $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits()." Results)</span>"; ?></H3>
-			<div id='browseResultsContainer' >
+<?php
+			if(in_array($vs_block, $va_browse_types)){
+?>
+				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+<?php
+			}else{
+?>
+				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+<?php
+			}
+?>
+			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id='{{{block}}}Results' class='multiSearchResults'>
+					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
+		$vn_row = 0;
 		$t_list_item = new ca_list_items();
-		
 		while($qr_results->nextHit()) {
+			if ($vn_row == 0) {
+				print "<div class='objectSet'>";
+			}
 ?>
-		<div class="col-sm-3">
 			<div class='{{{block}}}Result multisearchResult'>
 <?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				$vs_image = $qr_results->get('ca_object_representations.media.preview', array("checkAccess" => $va_access_values));
+				$va_rep_info = $qr_results->getMediaInfo("ca_object_representations.media", "preview");
+				#print 'width'.$va_rep_info["WIDTH"];
+				if ($va_rep_info["HEIGHT"] > 112) {
+					$vs_image = "<img style='max-height:112px; width:auto;' src='".$qr_results->getMediaUrl("ca_object_representations.media", "preview")."'>";
+					
+				}
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
@@ -89,29 +112,71 @@
 				if ($qr_results->get('ca_objects.date')) {
 					print "<p>".$qr_results->get('ca_objects.date')."</p>";
 				}
-			print "</div><!-- end blockResult -->";
-?>	
-			</div>
-<?php	
+				if ($va_camera = $qr_results->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
+					print "<p>Camera angle: ".$va_camera."</p>";
+				} else {$va_camera = null;}
+?>				
+			</div><!-- end blockResult -->
+<?php
 			$vn_count++;
-			if ($vn_count == $vn_hits_per_block) {break;}
-		}
-		print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $this->getVar("cacheKey"), 'block' => $vs_block, 'search'=> $vs_search));
+			$vn_row++;
+			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		
+			if ($vn_row == 3) {
+				print "</div><!-- end objectSet -->";
+				$vn_row = 0;
+			}
+		}
+		if ($vn_row != 0) {
+			print "</div><!-- end objectSet -->";
+		}	
 		if (!$this->request->isAjax()) {
 ?>
-					</div><!-- end browseResultsContainer -->
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 60,
-			nextSelector: 'a.jscroll-next'
-		});
-	});
-
-</script><?php
+					</div><!-- end blockResultsScroller -->
+				</div>
+			</div><!-- end blockResults -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery('#{{{block}}}Results').hscroll({
+						name: '{{{block}}}',
+						itemCount: <?php print $qr_results->numHits(); ?>,
+						preloadCount: <?php print $vn_count; ?>,
+						
+						itemsPerColumn: 3,
+						itemWidth: jQuery('.objectSet').outerWidth(true),
+						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
+						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
+						itemContainerSelector: '.blockResultsScroller',
+						
+						sortParameter: '{{{block}}}Sort',
+						sortControlSelector: '#{{{block}}}_sort',
+						
+						sortDirection: '{{{sortDirection}}}',
+						sortDirectionParameter: '{{{block}}}SortDirection',
+						sortDirectionSelector: '#{{{block}}}_sort_direction',
+						
+						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
+						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
+						cacheKey: '{{{cacheKey}}}'
+					});
+				});
+			</script>
+<?php
+		}else{
+			# --- need to change sort direction to catch default setting for direction when sort order has changed
+			if($this->getVar("sortDirection") == "desc"){
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+				</script>
+<?php
+			}else{
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+				</script>
+<?php
+			}
 		}
 	}
 	

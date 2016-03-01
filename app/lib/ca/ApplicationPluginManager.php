@@ -42,7 +42,7 @@
 		 /** 
 		  * @var Global flag indicating whether we've required() plugins yet
 		  */
-		 static $s_application_plugin_manager_did_do_plugin_init = false;
+		static $s_application_plugin_manager_did_do_plugin_init = false;
 		
 		/** 
 		  * 
@@ -136,19 +136,20 @@
 		/**
 		 * Returns names of all application plugins
 		 */
-		public static function getPluginNames($pa_plugin_locations) {
+		public static function getPluginNames() {
+			$o_config = Configuration::load();
+			if (!($vs_app_plugin_dir = $o_config->get('application_plugins'))) { return array(); }
+			
 			$va_app_plugin_dirs = array();
-			foreach($pa_plugin_locations as $vs_app_plugin_dir) {
-				if (is_resource($r_dir = opendir($vs_app_plugin_dir))) {
-					while (($vs_plugin_dir = readdir($r_dir)) !== false) {
-						if (is_dir($vs_app_plugin_dir.'/'.$vs_plugin_dir) && preg_match("/^[A-Za-z_]+[A-Za-z0-9_]*$/", $vs_plugin_dir) && !in_array($vs_plugin_dir, $va_app_plugin_dirs)) {
-							$va_app_plugin_dirs[] = $vs_plugin_dir;
-						}
+			if (is_resource($r_dir = opendir($vs_app_plugin_dir))) {
+				while (($vs_plugin_dir = readdir($r_dir)) !== false) {
+					if (is_dir($vs_app_plugin_dir.'/'.$vs_plugin_dir) && preg_match("/^[A-Za-z_]+[A-Za-z0-9_]*$/", $vs_plugin_dir)) {
+						$va_app_plugin_dirs[] = $vs_plugin_dir;
 					}
 				}
-			
-				sort($va_app_plugin_dirs);
 			}
+			
+			sort($va_app_plugin_dirs);
 			
 			return $va_app_plugin_dirs;
 		}

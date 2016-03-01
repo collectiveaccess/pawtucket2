@@ -73,6 +73,11 @@ if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
 	require_once(__CA_MODELS_DIR__."/ca_acl.php");
 	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 	
+	require_once(__CA_LIB_DIR__.'/core/Cache/ExternalCache.php');
+	require_once(__CA_LIB_DIR__.'/core/Cache/CompositeCache.php');
+
+	require_once(__CA_APP_DIR__.'/lib/ca/GarbageCollection.php');
+	
 	// initialize Tooltip manager
 	TooltipManager::init();
 	
@@ -92,6 +97,3 @@ if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
 			}
 		}
 	}
-
-
-?>
