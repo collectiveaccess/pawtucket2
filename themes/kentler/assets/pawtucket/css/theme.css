@@ -17,9 +17,9 @@ body{
 	font-family: 'Open Sans', sans-serif;
 	font-weight:400;
 	/* Margin top fixed nav */
-	margin-top:70px;
+	margin-top:69px;
 	/* Margin bottom by footer height */
-	margin-bottom: 140px; /* must accommodate height of footer */
+	margin-bottom: 180px; /* must accommodate height of footer */
 	color:#000000;
 	font-size:13px;
 }
@@ -327,12 +327,13 @@ a.navbar-brand .line3{
 	color:#999999;
 }
 #footer h3{
-	margin-top:7px;
+	margin-top:25px;
 	font-size:14px;
+	clear:none;
 }
 #footer h5{
 	font-size:12px;
-	margin-top:4px;
+	margin-top:25px;
 }
 @media (min-width: 768px) {
 	#footer h5{
@@ -347,6 +348,14 @@ a.navbar-brand .line3{
 #footer .list-inline{
 	width:100%;
 	text-align:center;
+}
+#footer .kentlerLogo{
+	float:left;
+	margin:0px 20px 20px 0px;
+}
+#footer .kentlerLogo img{
+	height:100px;
+	width:auto;
 }
 /* FRONT */
 #homePanel{
