@@ -1,6 +1,7 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -45,7 +46,7 @@
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
 <?php
-					if ($va_related_entity = $t_item->get('ca_entities.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+					if ($va_related_entity = $t_item->get('ca_entities.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 						print "<div class='unit'><h6>Related Entities</h6>".$va_related_entity."</div>";
 					}
 ?>

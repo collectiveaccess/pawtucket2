@@ -29,6 +29,7 @@
 	$t_representation = 	$this->getVar("t_representation");
 	$va_comments = 			$this->getVar("comments");
 	$va_options = 			$this->getVar("config_options");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -72,7 +73,9 @@
 					# ------------------------------
 				}
 				print caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object, array_merge(array("display" => $vs_display_type, "showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false))));
-				print $vs_download_link;
+				if ($t_representation->getMediaInfo('media', 'original', 'MIMETYPE') != "application/pdf") {
+					print $vs_download_link;
+				}
 ?>
 				<div id="detailAnnotations"></div>
 				
@@ -184,22 +187,22 @@
 
 <?php
 
-							if ($va_related_occurrences = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production')))) {
+							if ($va_related_occurrences = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related productions</h6>".$va_related_occurrences;
 							}
-							if ($va_related_works = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('work')))) {
+							if ($va_related_works = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('work'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related works</h6>".$va_related_works;
 							}
-							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event')))) {
+							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related events</h6>".$va_related_events;
 							}
-							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 								print "<h6>Related Objects</h6>".$va_related_objects;
 							}							
-							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true))) {
+							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
-							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
+							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 								print "<h6>Related Storage Locations</h6>".caNavLink($this->request, $va_related_storage, '', '', 'Search', 'objects', array('search' =>'ca_storage_locations:'.$va_related_storage));
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
@@ -208,7 +211,7 @@
 								}	
 							}																
 
-							if ($va_terms = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+							if ($va_terms = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 								print "<div class='unit'><h6>Related Terms</h6>";
 								foreach ($va_terms as $va_key => $va_term) {
 									print "<p>".caNavLink($this->request, $va_term, '', '', 'MultiSearch', 'Index', array('search' => 'ca_list_items.preferred_labels:"'.$va_term.'"'))."</p>";

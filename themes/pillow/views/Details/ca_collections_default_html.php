@@ -194,10 +194,10 @@
 						}																	
 					}
 					$vs_finding_aid.= "</div></div><!-- end row -->";
-					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true));
+					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => ['ca_collections.collection_id']));
 					
 					if ($va_top_level) {
-						if ($qr_top_level = caMakeSearchResult('ca_collections', $va_top_level, array('sort' => ['ca_collections.collection_id']))) {
+						if ($qr_top_level = caMakeSearchResult('ca_collections', $va_top_level, array('sort' => ['ca_collections.preferred_labels']))) {
 							$vs_buf.= "<h3><a name='contents'>Collection Contents</a></h3>";
 							$va_anchors[] = "<a href='#contents'>Collection Contents</a>";
 							$vs_buf.= "<div class='colContents'>";
@@ -299,7 +299,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id/part_of'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>", {'search': 'ca_collections.collection_id:^ca_collections.collection_id'}, function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

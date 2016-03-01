@@ -364,4 +364,10 @@ div.advancedSearchField {
 }
 .detail .detailMediaToolbar {
 	padding-right:10px;
+	padding-left:10px;
+	padding-top:5px;
+}
+.detail .repViewerCont img {
+	width:auto;
+	max-width:100%;
 }
