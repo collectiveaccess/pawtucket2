@@ -396,18 +396,6 @@
 ?>
 	</div>
 </div>
-<!--
-				{{{<if rule="(length(^ca_objects.abstract) > 0) or (length(^ca_objects.related%restrictToRelationshipTypes=translation) > 0)">
-				<div class="col-xs-12 col-sm-6" style="border:1px solid #333;">xxxx
-					<ifdef code="ca_objects.abstract"><p>^ca_objects.abstract</p></ifdef>
-					<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="translation">
-						<p><b>View this module in other languages:</b><br/>
-						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToRelationshipTypes="translation"><l>^ca_objects.preferred_labels.name</l> (^ca_objects.language)</unit>
-						</p>
-					</ifcount>
-				</div>
-				</if>}}}
--->
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('.componentSection').hide();

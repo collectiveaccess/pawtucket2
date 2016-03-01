@@ -32,16 +32,14 @@
 				if($va_component["abstract"]){
 					print "<br/>".$va_component["abstract"]."<br/>";
 				}
-				if($va_component["rep_ids"]){
-					foreach($va_component["rep_ids"] as $vn_rep_id){
+				if(is_array($va_component["reps"]) && sizeof($va_component["reps"])){
+					foreach($va_component["reps"] as $vn_rep_id => $va_rep_info){
 						print "<br/>";
-						$t_rep->load($vn_rep_id);
-						$va_rep_info = $t_rep->getMediaInfo('media');
 						print "<div class='authorComponentButtonCol'>";
-						print caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $vn_rep_id, "object_id" => $vn_component_id, "download" => 1, "version" => "original"), array("title" => _t("Download")));
-						print "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_component_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+						print caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Author', 'DownloadRepresentation', '', array('representation_id' => $vn_rep_id, "object_id" => $vn_component_id, "download" => 1, "version" => "original"), array("title" => _t("Download")));
+						print "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Author', 'GetRepresentationInfo', array('object_id' => $vn_component_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						print "</div>";
-						print $va_rep_info["ORIGINAL_FILENAME"]."<br/><small>".$va_rep_info["original"]["PROPERTIES"]["typename"].", (".$va_rep_info["original"]["PROPERTIES"]["mimetype"].")</small><br/>";
+						print $va_rep_info["original_filename"]."<br/><small>".$va_rep_info["info"]["original"]["PROPERTIES"]["typename"].", (".$va_rep_info["mimetype"].")</small><br/>";
 						print "<div style='clear:both;'></div>";
 					}
 				}
