@@ -659,9 +659,9 @@
 					//
 					// Perform metadata embedding
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					//if (!($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version))) {
+					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
-					//}
+					}
 					$va_file_paths[$vs_path] = $vs_file_name;
 					
 					$vn_c++;
@@ -767,11 +767,11 @@
 			
 			//
 			// Perform metadata embedding
-			//if ($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version)) {
-			//	$this->view->setVar('version_path', $vs_path);
-			//} else {
+			if ($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
+				$this->view->setVar('version_path', $vs_path);
+			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
-			//}
+			}
 			$this->response->sendHeaders();
 			$vn_rc = $this->render('Details/object_representation_download_binary.php');
 			$this->response->sendContent();
