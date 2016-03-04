@@ -92,7 +92,7 @@
 						<div class='clearfix'></div>					
 					
 <?php					
-						print "<div class='unit row' style='margin-bottom:0px;'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr></div><div class='col-sm-4 col-md-4 col-lg-4'><div class='findingAidContainer'><div class='label collection'>Collection Contents </div>";
+						print "<div class='unit row' style='margin-bottom:0px;'><div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr></div><div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'><div class='findingAidContainer'><div class='label collection'>Collection Contents </div>";
 						foreach ($va_collection_children as $col_key => $vn_collection_id) {
 							$t_collection_series = new ca_collections($vn_collection_id);
 							$vs_collection_label = $t_collection_series->get('ca_collections.preferred_labels');
@@ -117,7 +117,7 @@
 <?php								
 						}
 						print "</div><!-- end findingAidContainer --></div><!-- end col -->";
-						print "<div id='collectionLoad' class='col-sm-8 col-md-8 col-lg-8'><i class='fa fa-arrow-left'></i> Click a Collection container to the left to see its contents.</div>";
+						print "<div id='collectionLoad' class='col-xs-8 col-sm-8 col-md-8 col-lg-8'><i class='fa fa-arrow-left'></i> Click a Collection container to the left to see its contents.</div>";
 						print "</div><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px;'></hr></div></div>";
 						print "</div><!-- end unit -->";
 						

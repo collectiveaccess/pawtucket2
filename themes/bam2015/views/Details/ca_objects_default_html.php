@@ -19,16 +19,21 @@
 		$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 		
 		$t_rep = $this->getVar("t_representation");
-		$va_opts = array('display' => 'realted_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
+		if($t_rep && (!in_array($va_rep_type, array('audio/mpeg')))){
+			$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
+			$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		}else{
+			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		}
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-12 detailOverlayClose">
+				<div class="col-xs-12 detailOverlayClose">
 					<div class="pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="icon-cross"></span></div>
 				</div>
 			</div><!-- end row -->
 			<div class="row">
-				<div class="col-sm-2 detailOverlayNav text-right">
+				<div class="col-xs-2 detailOverlayNav text-right">
 <?php
 					if($this->getVar("previousID")){
 ?>
@@ -37,24 +42,24 @@
 					}
 ?>
 				</div>
-				<div class="col-sm-8 detailOverlayImg text-center">
+				<div class="col-xs-8 detailOverlayImg text-center">
 <?php
-				if($va_rep_width > $va_rep_height){
+				if(($va_rep_width > $va_rep_height) || !$t_rep){
 ?>
 					<span>
 						<span class="detailOverlayImgOverlayContainer">
 <?php	
-							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+							print $vs_detail_link;
 ?>
 						
 							<div class='detailOverlayImgCaption'>
 								<div class="row">
-									<div class="col-sm-9">
+									<div class="col-xs-9">
 <?php
 										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
 ?>							
 									</div>
-									<div class="col-sm-3 text-right">
+									<div class="col-xs-3 text-right">
 <?php
 										print caDetailLink($this->request, "Full Details&nbsp;&nbsp;<span class='icon-arrow-up-right'></span>", "full", "ca_objects", $t_object->get("ca_objects.object_id"));
 ?>							
@@ -67,12 +72,12 @@
 				}else{
 ?>
 					<div class="row">
-						<div class="col-sm-8 text-right">
+						<div class="col-xs-8 text-right">
 <?php	
-							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+							print $vs_detail_link;
 ?>						
 						</div>
-						<div class="col-sm-4 text-left detailOverlayImgCaptionVert">
+						<div class="col-xs-4 text-left detailOverlayImgCaptionVert">
 							<div class='detailOverlayImgCaption'>
 <?php
 										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
@@ -90,7 +95,7 @@
 				}
 ?>
 				</div>
-				<div class="col-sm-2 detailOverlayNav text-left">
+				<div class="col-xs-2 detailOverlayNav text-left">
 <?php
 					if($this->getVar("nextID")){
 ?>
@@ -110,12 +115,12 @@
 	</div><!-- end detailTop -->
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container"><div class="row"">
-			<div class='col-sm-1 col-md-1 col-lg-1'>	
+			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>	
 				<div class="detailNavBgLeft">
 					{{{previousLink}}}{{{resultsLink}}}
 				</div><!-- end detailNavBgLeft -->
 			</div><!-- end col -->		
-			<div class='col-sm-10 col-md-10 col-lg-10'>
+			<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 				<div class="detailHead">
 <?php
 				$vn_show_label_as_title = false;
@@ -193,7 +198,7 @@
 				
 				</div><!-- end detailHead -->
 			</div><!-- end col -->
-			<div class='col-sm-1 col-md-1 col-lg-1'>	
+			<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>	
 				<div class="detailNavBgRight">
 					{{{nextLink}}}
 				</div><!-- end detailNavBgLeft -->

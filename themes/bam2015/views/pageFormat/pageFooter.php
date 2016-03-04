@@ -54,9 +54,8 @@
 				</div>
 				<ul class="footer-links">
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
-					<li><a href="#">Contact BAM Hamm Archives</a></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
-					<li><a href="#">Privacy Policy</a></li>
+					<li><a href="http://www.bam.org/about/privacy-policy">Privacy Policy</a></li>
 				</ul>
 			</div><!-- end container -->
 		</div><!-- end footer -->
