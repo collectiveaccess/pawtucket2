@@ -112,9 +112,16 @@ a:hover {
 	box-shadow:none;
 }
 .navbar-brand {
-	width: 305px;
-	padding-bottom:0px;
-	margin-top:8px;
+	width: 200px !important;
+	padding-bottom:0px !important;
+	margin-top:20px !important;
+}
+@media (min-width: 768px) {
+	.navbar-brand {
+		width: 305px !important;
+		padding-bottom:0px !important;
+		margin-top:8px !important;
+	}
 }
 .navbar-nav > li, .navbar-default .navbar-nav > li:hover {
 	background-color:#262626;
@@ -177,6 +184,7 @@ a:hover {
 	padding-bottom:0px;
 	margin-top:0px;
 	margin-bottom:0px;
+	box-shadow:none;
 }
 .navbar-form {
 	padding-right:0px;
@@ -187,11 +195,22 @@ a:hover {
 }
 .formOutline .btn-search {
 	color: #7c7c7c;
-	background-color:#262626;
+	background-color:#000000;
 	font-size:28px;
 	border-radius:0px;
-    padding: 10px 11px 0px 13px;
-	border-right:4px solid #000;		
+	padding: 10px 11px 0px 13px;
+	border-right:0px solid #000;
+}
+@media (min-width: 768px) {
+	.formOutline .btn-search {
+		background-color:#262626;
+		border-right:4px solid #000;		
+	}
+}
+@media (max-width: 767px) {
+	.btn-search {
+		top:-4px;
+	}
 }
 .formOutline .btn-search:active, .formOutline .navSearchButtonHighlight {
 	background-color: #00cfb7 !Important;
@@ -419,7 +438,11 @@ body {
 	margin:0px;
 	padding:0px;
 }
-
+@media (min-width: 450px) {
+	#footer .copyright{
+		float:right;
+	}
+}
 /* Homepage */
 
 #homePanel {
@@ -926,10 +949,14 @@ a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
 }
 .frontNav .dropdown-menu > li > a {
 	text-transform:none;
-	font-size:22px;
 	padding-top:6px;
 	padding-bottom:8px;
 	font-family: "News Gothic Light";
+}
+@media (min-width: 768px) {
+	.frontNav .dropdown-menu > li > a {
+		font-size:22px;
+	}
 }
 .frontNav .dropdown-menu > li > a:active {
 	color: #00cfb7;

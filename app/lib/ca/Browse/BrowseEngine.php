@@ -343,27 +343,15 @@
 				if (!($va_facet_info = $this->getInfoForFacet($ps_facet_name))) { return false; }
 				if (!$this->isValidFacetName($ps_facet_name)) { return false; }
 			}
+
 			$va_criteria = $this->opo_ca_browse_cache->getParameter('criteria');
 			$va_criteria_display_strings = $this->opo_ca_browse_cache->getParameter('criteria_display_strings');
-print_r($pa_row_ids);
-
-print "<br/>criteria: ";
-print_r($va_criteria);
-print "<br/>criteria display strings: ";
-print_r($va_criteria_display_strings);
-
 			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
 			foreach($pa_row_ids as $vn_i => $vn_row_id) {
 				$va_criteria[$ps_facet_name][urldecode($vn_row_id)] = true;
 				
 				if (isset($pa_display_strings[$vn_i])) { $va_criteria_display_strings[$ps_facet_name][urldecode($vn_row_id)] = $pa_display_strings[$vn_i]; }
 			}
-print "<br/>-----------<br/>";
-print "criteria: ";
-print_r($va_criteria);
-print "<br/>criteria display strings: ";
-print_r($va_criteria_display_strings);
-
 			$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
 			$this->opo_ca_browse_cache->setParameter('criteria_display_strings', $va_criteria_display_strings);
 			$this->opo_ca_browse_cache->setParameter('sort', null);

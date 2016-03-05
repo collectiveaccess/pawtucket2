@@ -46,7 +46,7 @@
 ?>	
 		<div id="footer">
 			<div class="container">
-				<ul class="list-inline pull-right">
+				<ul class="list-inline copyright">
 					&#169; 2015 Brooklyn Academy of Music
 				</ul>
 				<div class='footerHeader'>

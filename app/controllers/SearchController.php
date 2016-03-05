@@ -173,7 +173,9 @@
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
 				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
-				$this->opo_result_context->getSearchExpression("");
+				if($vs_remove_criterion == "_search"){
+					$this->opo_result_context->setSearchExpression("*");
+				}
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -217,7 +219,7 @@
 				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
 			if ($vs_search_refine = $this->request->getParameter('search_refine', pString)) {
-				$o_browse->addCriteria('_search', array($vs_search_refine));
+				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			}
