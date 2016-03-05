@@ -101,13 +101,17 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">					
 <?php
-							print $vs_user_links;
+	if ($vb_has_user_links) {
 ?>
+			<div class="collapse navbar-collapse" id="user-navbar-toggle">
+				<ul class="nav navbar-nav">
+					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
+<?php
+	}
+?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 <?php
 	if ($vb_has_user_links) {

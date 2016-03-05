@@ -350,7 +350,7 @@ if (!$vb_ajax) {    // !ajax
             }
             print "</div>";
 
-			print $this->render("Browse/browse_refine_subview_html.php");
+			#print $this->render("Browse/browse_refine_subview_html.php");
 
 ?>
 		</div><!-- end col -->

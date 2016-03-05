@@ -20,8 +20,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">	
+	<div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">	
 		<p class='staticTitle'>BAM, BROOKLYN, AND THE ARTS</p>
 		<p>
 			The BAM Hamm Archives tell the story of the 150+ year history of BAM, and also of the communities—civic and artistic—that helped build the institution. 
@@ -38,7 +37,7 @@
 			The need for a formal BAM Archives was identified in 1995 when a search for records, photographs and other materials revealed that items of historical value had become scattered in various BAM buildings and throughout New York City. BAM had lost parts of its archive materials in the 1903 fire that destroyed BAM's original building in Brooklyn Heights, and more to a flood in 1977, but the remaining collection and documentation of ongoing programs was consolidated in 2005, and these materials are now housed in the BAM Hamm Archives Center, a state-of-the-art facility located separately from the BAM campus. The digitization of significant swaths of the collection now enables researchers to search and view materials online. 
 		</p>
 	</div>
-	<div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
+	<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
 		<p class='staticTitle'>CONTACT THE ARCHIVES</p>
 		<address>BAM Hamm Archives<br/>
 		1000 Dean Street, #317<br/>
@@ -48,5 +47,4 @@
 		<p class='linkInfo'><i class="icon icon-envelope"></i> <a href="mailto:bamarchive@bam.org">bamarchive@bam.org</a></p>
 		</address>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
 </div>

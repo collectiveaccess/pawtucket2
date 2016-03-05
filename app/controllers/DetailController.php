@@ -147,7 +147,7 @@
  			$t_subject->registerItemView();
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
- 			
+ 			$this->view->setVar("config_options", $va_options);
  			
  			if (!caGetOption('disableExport', $va_options, false)) {
 				// Exportables/printables
@@ -659,7 +659,7 @@
 					//
 					// Perform metadata embedding
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					if (!($vs_path = caEmbedMetadataIntoRepresentation($t_child_object, $t_rep, $ps_version))) {
+					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
 					}
 					$va_file_paths[$vs_path] = $vs_file_name;
@@ -767,7 +767,7 @@
 			
 			//
 			// Perform metadata embedding
-			if ($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version)) {
+			if ($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
 				$this->view->setVar('version_path', $vs_path);
 			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
