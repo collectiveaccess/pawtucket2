@@ -876,6 +876,9 @@ h2#hpSectionText{
 	#caFormOverlay{
 		margin:10% auto 0px auto;
 	}
+	#caFormOverlay.regOverlay{
+		width:900px;
+	}
 }
 label{
 	text-transform:none;
@@ -889,5 +892,5 @@ label{
 	font-size:15px;
 }
 .form-control {
-    font-size: 14px;
+    font-size: 13px;
 }
