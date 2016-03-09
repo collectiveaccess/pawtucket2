@@ -4,3 +4,4 @@ Disallow: /index.php/Detail/*/Download*
 Disallow: /index.php/Detail/GetRepresentationInfo*
 Disallow: /index.php/Detail/GetRepresentationInfo*
 Disallow: /index.php/Search/*/download/*
+Disallow: /index.php/Browse/*/images/*
