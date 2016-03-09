@@ -34,6 +34,7 @@
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
 	$va_export_formats = $this->getVar('export_formats');
+	$qr_res 			= $this->getVar('result');
 	
 	$vn_facet_display_length_initial = 12;
 	$vn_facet_display_length_maximum = 60;
@@ -42,15 +43,16 @@ if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && 
 		print "<div id='bRefine'>";
 		print "<H3>"._t("Filter");
 			
-		print caNavLink($this->request, "<i class='icon-folder-download' style='float:right'></i>", "", "*", "*", "*", array("view" => "xlsx", "download" => true, "export_format" => "basic_excel", "key" => $vs_key), array("title" => _t("Export results as spreadsheet")));	
-			
+		if($qr_res->numHits()){
+			print caNavLink($this->request, "<i class='icon-folder-download' style='float:right'></i>", "", "*", "*", "*", array("view" => "xlsx", "download" => true, "export_format" => "basic_excel", "key" => $vs_key), array("title" => _t("Export results as spreadsheet")));	
+		}	
 		print "</H3>";	
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				if ($va_criterion['facet_name'] != '_search') {
+				#if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn-default bCriteria"><span class="icon-cross pull-right"></span>'.$va_criterion['facet'].": ".$va_criterion['value'].'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_view, 'key' => $vs_key));
-				}
+				#}
 				$i++;
 				if($i < sizeof($va_criteria)){
 					print "<br/>";
@@ -120,6 +122,9 @@ if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && 
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
 				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
 				var panelWidth = jQuery('#bRefine').width();
+				jQuery(window).resize(function () {
+					jQuery('#bRefine').width(panelWidth);
+				}
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
 					// check the visible top of the browser

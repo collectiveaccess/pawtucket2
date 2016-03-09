@@ -91,7 +91,7 @@
 		$vs_version = 'icon';
 		#$vs_version = 'iconlarge';
 		# --- what is the entity_id?  is was extracted from the search term in browse_results_html.php and passed here
-		$vn_entity_id = $this->getVar("entity_id");
+		$vn_entity_id = $this->getVar("search_id");
 		$va_entity_roles_by_occurrence = array();
 		$va_entity_roles_by_occurrence = $this->getVar("entity_roles_by_occurrence");
 	}
@@ -203,7 +203,7 @@
 				if(($this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_table == 'ca_occurrences')){
 					# different image result layout for productions on entity detail page
 					print "
-		<div class='col-xs-12 col-sm-2'>
+		<div class='col-xs-6 col-sm-2'>
 			<div class='bBAMResultItemOccCircle'>
 				<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
 				<div class='bBAMResultItemText'>
@@ -231,7 +231,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger)));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
 		}
 ?>
 <script type="text/javascript">

@@ -383,14 +383,35 @@ h1.detailResults{
 .results strong, .sets H5 strong {
 	font-size:14px;
 }
+
 .bResultItemImgPlaceholder {
-    background-color: #dedede;
-    border: 0px;
-    color: #FFFFFF !important;
-    width:200px;
-    padding-top:55px;
-    padding-bottom:55px;
-    border-radius: 100px;
+	border: 0px;
+    background-color: transparent;
+    background-image: url('../graphics/bgcircle.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+    padding-top:65px;
+    background-position:center;
+}
+.bBAMResultItemImg span {
+	/*display:block !important;*/
+}
+.bResultItemImgPlaceholder .icon-stage {
+	font-size:80px !important;
+}
+.bResultItemImgPlaceholder i, .bResultItemImgPlaceholder span {
+	padding:40px;
+}
+.bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
+	padding:15px;
+	display:table-cell;
+}
+.bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder span {
+	display:table-cell;
+	padding:35px;
+	text-align:center;
+	padding-top:50px;
 }
 .bResultItemImgPlaceholder span, .bResultItemImgPlaceholder i{
 	color: #FFFFFF !important;
@@ -401,6 +422,10 @@ h1.detailResults{
 	background-size:contain;
 	background-repeat: no-repeat;
 	width:100%;
+	background-position:center;
+	padding:0px;
+	/* make dynamic */
+	height:145px;
 }
 #bRefine{
 	background-color:#FFF;
@@ -714,7 +739,7 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 		text-align:center;
 	}	
 	.bNavOptions .btn-search {
-		padding-top:2px !important;
+		padding-top:14px !important;
 	}
 	.bNavOptions div {
 		padding-right:10px;
@@ -737,6 +762,10 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	}
 	.bBAMResultItemOccCircle {
 		height:250px;
+		display:table-cell;
+	}
+	.detail .entityRep.portraitRepContainer img {
+		max-height:none;
 	}
 	.bBAMResultItemOccCircle .bBAMResultItemText {
 		height:9em;
@@ -764,8 +793,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 /* ipad landscape */
 @media (min-width: 769px) and (max-width: 1024px) {
 	.bNavOptions input.bSearchWithin {
-		width:75%;
+		width:85%;
 		padding-right:5px !important;
+		padding-left:0px !important;
 	}
 	.bNavOptions .btn-search {
 		padding-top:4px !important;
@@ -799,4 +829,131 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	    padding-top: 42px;
 	}
 
+
 }
+@media (min-width: 876px) and (max-width: 1200px) { 
+	.lbSet {
+		height: 350px;;
+	}
+}
+
+/* Other Responsive Styles */
+
+.bBAMResultItemImg img {
+	width: 100%;
+    height: auto;
+}
+.detail .navTop {
+	display:none;
+}
+@media (max-width: 405px) {
+	.navbar-brand {
+		width:290px;
+		margin-top:10px;
+	}
+}
+@media (max-width: 475px) {
+	.front .hpOverWhite .detailHead H2 {
+		font-size:22px;
+	}
+	.front .detailHead p.subtitle {
+		font-size:14px;
+	}
+	.hpOverWhite .col-sm-12 {
+		bottom:40px;
+	}
+	.multisearch .btn-default {
+		font-size:11px;
+		padding-top:3px;
+		padding-bottom:2px;
+		display: inline-block;
+    	margin-top: -5px;
+   		margin-bottom: 10px;
+	}
+	.detailOverlayNav {
+		font-size:50px;
+	}
+	.detailOverlayClose {
+		font-size:60px; 
+	}
+	#caAdvancedSearch  .identifier textarea.form-control {
+		width: 350px;
+	}
+	#caAdvancedSearch textarea.form-control, #caAdvancedSearch  input.form-control, #caAdvancedSearch  select.form-control {
+		width: 350px !important;
+	}
+	.searchSubmitButtons {
+		width: 350px !important;
+		height:50px;
+	}
+}
+@media (max-width: 767px) {
+	.frontNav > div {
+		border-right:0px;
+	}
+	.frontNav .col-sm-5 {
+		display:none;
+	}
+	.detail .portraitRepContainer .repViewerCont img {
+		max-height:none;
+	}
+	.landscapeRepContainer, .portraitRepContainer {
+		margin-bottom:20px;
+	}
+	.bBAMResultItem {
+		max-width:300px;
+		margin-right:auto;
+		margin-left:auto;
+	}	
+	.bBAMResultItem .bBAMResultItemImgContainer .bBAMResultItemImg {
+		/*display:block;*/
+	}
+	.lbSet {
+		height: 350px;
+	}
+}
+@media (max-width: 848px) {
+	.navbar-form .form-group {
+		width: 90px;
+	}
+	.navbar-default .navbar-nav > li > a {
+		padding-left:8px;
+		padding-right:8px;
+	}
+	#user-navbar .dropdown {
+		border-right:0px !important;
+		margin-right:-15px;
+	}
+	.bNavOptions > div a:first-child span {
+		margin-left:10px;
+	}		
+}
+@media (max-width: 991px) {
+	.entities.detail .blankSpace {
+		display:none;
+	}
+	.bNavOptions div.blankSpace {
+		display:none;
+	}
+	.bResultItemImgPlaceholder {
+		padding-top:75px;
+	}
+	.bResultItemImgPlaceholder .icon-stage {
+		font-size:70px !important;
+	}
+	.bResultItemImgPlaceholder i, .bResultItemImgPlaceholder span {
+		padding:30px;
+	}	
+}
+@media (max-width: 1238px) {
+	.multisearch .scrollButtonNext {
+		padding-left:0px;
+	}
+	.multisearch .scrollButtonPrevious {
+		padding-right:0px;
+	}	
+}
+
+	#lbViewButtons {
+		display:none;
+	}

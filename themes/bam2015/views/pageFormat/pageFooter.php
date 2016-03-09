@@ -46,7 +46,7 @@
 ?>	
 		<div id="footer">
 			<div class="container">
-				<ul class="list-inline pull-right">
+				<ul class="list-inline copyright">
 					&#169; 2015 Brooklyn Academy of Music
 				</ul>
 				<div class='footerHeader'>
@@ -54,9 +54,8 @@
 				</div>
 				<ul class="footer-links">
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
-					<li><a href="#">Contact BAM Hamm Archives</a></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
-					<li><a href="#">Privacy Policy</a></li>
+					<li><a href="http://www.bam.org/about/privacy-policy">Privacy Policy</a></li>
 				</ul>
 			</div><!-- end container -->
 		</div><!-- end footer -->

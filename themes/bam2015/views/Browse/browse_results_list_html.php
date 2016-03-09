@@ -70,10 +70,11 @@
 				if($vs_table == 'ca_occurrences'){
 					$vn_str_len_date = 0;
 					$vs_pro_date = $qr_res->get("ca_occurrences.productionDate");
-					if($vs_pro_date){
-						$vn_str_len_date = mb_strlen($vs_pro_date);
-					}
-					$vn_chop_len = 100 - $vn_str_len_date;
+					#if($vs_pro_date){
+					#	$vn_str_len_date = mb_strlen($vs_pro_date);
+					#}
+					#$vn_chop_len = 100 - $vn_str_len_date;
+					$vn_chop_len = 100;
 					$vs_date_conjunction = ", ";
 					$vs_series_info = "";
 					if($qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true))){
