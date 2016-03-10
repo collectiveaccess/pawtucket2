@@ -136,7 +136,17 @@
 							$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
 						}
 						$va_role = array();
-						$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];						
+						if($va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")]){
+							$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];
+						}else{
+							$va_related_occ_ids = $qr_res->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => 1));
+							foreach($va_related_occ_ids as $vn_related_occ_id){
+								if($va_entity_roles_by_occurrence[$vn_related_occ_id]){
+									$va_role = $va_entity_roles_by_occurrence[$vn_related_occ_id];
+									break;
+								}
+							}
+						}					
 					}else{
 						# --- this is occurrence browse results
 						$vn_chop_len = 90;

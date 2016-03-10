@@ -108,13 +108,14 @@ if($this->request->getParameter("openResultsInOverlay", pInteger)){
 			$t_list = new ca_lists();
  			$vn_event_id = $t_list->getItemIDFromList('occurrence_types', 'special_event');
  			$vn_production_id = $t_list->getItemIDFromList('occurrence_types', 'production');
+ 			$vn_work_id = $t_list->getItemIDFromList('occurrence_types', 'work');
 			$o_db = new Db();
 			$q_rel_type_ids = $o_db->query("
 											SELECT exo.entity_id, exo.occurrence_id, exo.type_id 
 											FROM ca_entities_x_occurrences exo 
 											INNER JOIN ca_occurrences AS o ON exo.occurrence_id = o.occurrence_id
 											WHERE exo.entity_id = ? AND o.type_id IN (".$vn_event_id.", ".$vn_production_id.") AND o.access IN (".join(", ", $va_access_values).") AND o.deleted = 0
-											", $vn_search_id);
+											", $vn_search_id); // (removed , ".$vn_work_id." from the o.type_id list)
 			if($q_rel_type_ids->numRows()){
 				while($q_rel_type_ids->nextRow()){
 					if($q_rel_type_ids->get("type_id") != $vn_principal_artist_type_id){
@@ -132,12 +133,17 @@ if($this->request->getParameter("detailNav", pInteger)){
 	$vs_search_target = ""; # objects, occurrences --- used to construct links properly --- all nav links must target the container they were ajax loaded in and return the correct type of results
 	$vs_load_function = ""; # js function name changes based on target to allow results for both objects and occurrences to be loaded on the same page...can't use the same function anme twice
 	$vs_search_string = ""; # what are we searching by, entities of occurrences depending on what detail page we're on
-	$vn_end_pos = strpos($vs_search, ":");
+	$vn_end_pos = strpos($vs_search, "/");
 	if($vn_end_pos){
 		$vs_search_string = substr($vs_search, 0, $vn_end_pos);
 		$this->setVar("search_string", $vs_search_string); # --- pass through to results
-	}
-	
+	}else{
+		$vn_end_pos = strpos($vs_search, ":");
+		if($vn_end_pos){
+			$vs_search_string = substr($vs_search, 0, $vn_end_pos);
+			$this->setVar("search_string", $vs_search_string); # --- pass through to results
+		}
+	}	
 	print "<H1 class='detailResults'>";
 	switch($vs_table){
 		case "ca_objects":

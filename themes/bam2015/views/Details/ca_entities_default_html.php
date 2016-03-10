@@ -171,7 +171,7 @@
 			
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainerOcc").load("<?php print caNavUrl($this->request, '', 'Search', 'occurrences', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => 'images', 'search' => 'ca_entities.entity_id:'.$t_item->get('entity_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainerOcc").load("<?php print caNavUrl($this->request, '', 'Search', 'occurrences', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => 'images', 'search' => 'entity_id:'.$t_item->get('entity_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery("#browseResultsContainerOcc").jscroll({
 								autoTrigger: true,
 								loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
