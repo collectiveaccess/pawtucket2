@@ -86,8 +86,7 @@
 					print $t_object->getWithTemplate('<ifdef code="ca_objects.duration"><H6>Duration</H6>^ca_objects.duration</ifdef>');
 					
 					print $t_object->getWithTemplate('<ifdef code="ca_objects.georeference.coverageNotes"><H6>Location of Interview</H6>^ca_objects.georeference.coverageNotes</ifdef>');
-					print $t_object->getWithTemplate('<ifdef code="ca_objects.tgn"><H6>Places Mentioned</H6>^ca_objects.tgn%delimiter=,_</ifdef>');
-
+					
 				}else{
 
 					$t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><H6>Creator</H6></ifcount>');
@@ -147,13 +146,18 @@
 				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>Library of Congress Subject Headings</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 				
-				{{{<ifdef code="ca_objects.NameIndivMent"><H6>Individuals or Organizations mentioned</H6>^ca_objects.NameIndivMent%delimiter=,_</ifdef>}}}
-				{{{<ifdef code="ca_objects.unitDate"><H6>Dates mentioned</H6><unit delimiter="<br/>">^ca_objects.unitDate.date_value, ^ca_objects.unitDate.dates_types</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.unitDate"><H6>Dates Mentioned</H6><unit delimiter="<br/>">^ca_objects.unitDate.date_value, ^ca_objects.unitDate.dates_types</unit></ifdef>}}}
 					
-<?php
+<?php			
+				print $t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="subject"><H6>Individuals or Organizations Mentioned</H6></ifcount>');
+				print $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="subject"><l>^ca_entities.preferred_labels.displayname</l></unit>');
+					
 				
 ?>
-				
+				{{{<ifdef code="ca_objects.time_period"><H6>Dates Mentioned</H6><unit delimiter="<br/>">^ca_objects.time_period</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.tgn"><H6>Places Mentioned</H6><unit delimiter=", ">^ca_objects.tgn</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.related"><H6>Related Items</H6><unit relativeto="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifdef>}}}
+			
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
