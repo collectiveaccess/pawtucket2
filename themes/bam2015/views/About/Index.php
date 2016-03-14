@@ -2,21 +2,20 @@
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
 
+<div class="container">
 <div class="row">
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-	<div class="col-xs-10 col-sm-10 col-md-10 col-lg-10">
+	<div class="col-xs-12 col-sm-10 col-sm-offset-1">
 		<div class='detailHead'>
 			<div class='leader'>About</div>
 			<h2>The BAM Hamm Archives</h2>
 			<p style="margin-top:15px;">The BAM Hamm Archives tell the story of the 150+ year history of BAM, and also of the communities – civic and artistic – that helped build the institution. Watch the video below to learn more about how the archives are assembled, both the digital archives represented on this website and our physical archives headquartered in Brooklyn, New York. Or schedule a time to visit us.</p>
 		</div>
 	</div>
-	<div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
 </div>
 <div class="row">
 	<hr class="divide">	
-	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div style='width:700px; height:400px; margin: 25px auto;background-color:#000;text-align:center;'><i class="fa fa-play" style='color:#fff;font-size:40px;margin-top:180px;'></i></div>
+	<div class="col-xs-12 text-center">
+		<div style='max-width:700px; height:400px; margin: 25px auto;background-color:#000;text-align:center;'><i class="fa fa-play" style='color:#fff;font-size:40px;margin-top:180px;'></i></div>
 	</div>
 </div>
 <div class="row">
@@ -47,4 +46,5 @@
 		<p class='linkInfo'><i class="icon icon-envelope"></i> <a href="mailto:bamarchive@bam.org">bamarchive@bam.org</a></p>
 		</address>
 	</div>
+</div>
 </div>

@@ -138,15 +138,16 @@
 						$va_role = array();
 						if($va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")]){
 							$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];
-						}else{
-							$va_related_occ_ids = $qr_res->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => 1));
+						}
+						$va_related_occ_ids = $qr_res->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => 1));
+						if(is_array($va_related_occ_ids) && sizeof($va_related_occ_ids)){
 							foreach($va_related_occ_ids as $vn_related_occ_id){
 								if($va_entity_roles_by_occurrence[$vn_related_occ_id]){
-									$va_role = $va_entity_roles_by_occurrence[$vn_related_occ_id];
-									break;
+									$va_role = array_merge($va_role, $va_entity_roles_by_occurrence[$vn_related_occ_id]);
 								}
 							}
-						}					
+						}
+						$va_role = array_unique($va_role);				
 					}else{
 						# --- this is occurrence browse results
 						$vn_chop_len = 90;
@@ -213,7 +214,7 @@
 				if(($this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_table == 'ca_occurrences')){
 					# different image result layout for productions on entity detail page
 					print "
-		<div class='col-xs-6 col-sm-2'>
+		<div class='col-xs-12 col-sm-3 col-md-2'>
 			<div class='bBAMResultItemOccCircle'>
 				<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
 				<div class='bBAMResultItemText'>

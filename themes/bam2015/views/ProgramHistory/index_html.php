@@ -11,7 +11,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class='col-xs-2'>
+	<div class='col-xs-12 col-sm-2'>
 		<br/><div class="leader">Season</div>
 		<div class="phSeasonsList">
 <?php	
@@ -32,9 +32,9 @@
 ?>
 		</div>
 	</div>
-	<div class='col-xs-10 children'>
-		<div class='leader'>&nbsp;</div>
-		<div class='toStart'><i class='fa fa-arrow-left' style='margin-left:60px;'></i> Choose a season to start navigating BAM Programming History</div>
+	<div class='col-xs-12 col-sm-10 children'>
+		<div class='leader lastLeader'>&nbsp;</div>
+		<div class='toStart'><i class='fa fa-arrow-left'></i> Choose a season to start navigating BAM Programming History</div>
 		<div class="introText">
 			<p>Founded in 1861, BAM has a long history of varied programming. Originally intended as a venue for music, early programming of classical music and opera was extensive and impressive. Programming soon expanded to include theater, with popular performances of Shakespearian and other plays, and audiences were treated to the most famous actors of the day. </p>
 			<p>The Academy also served a civic function as an important lecture hall, hosting important politicians, writers, explorers, and activists. Throughout the early 20th century, programming continued to be robust, with concerts and recitals by important artists.</p>

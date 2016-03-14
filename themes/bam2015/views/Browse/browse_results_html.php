@@ -69,6 +69,19 @@
 		}
 		reset($va_criteria);
 	}
+
+if($vs_table == "ca_collections"){
+	if($qr_res->numHits()== 0){
+?>
+		<H1>Your search found no results.</H1>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#collectionSearch').delay(1000).slideUp();
+			});
+		</script>	
+<?php
+	}
+}
 if($this->request->getParameter("openResultsInOverlay", pInteger)){
 	$vn_search_id = "";  # entity_id or occurrence_id passed through to search from entity/occurrence detail pages.  It can be extracted from the search term
 	# --- get the search_id from the search string
@@ -114,7 +127,7 @@ if($this->request->getParameter("openResultsInOverlay", pInteger)){
 											SELECT exo.entity_id, exo.occurrence_id, exo.type_id 
 											FROM ca_entities_x_occurrences exo 
 											INNER JOIN ca_occurrences AS o ON exo.occurrence_id = o.occurrence_id
-											WHERE exo.entity_id = ? AND o.type_id IN (".$vn_event_id.", ".$vn_production_id.") AND o.access IN (".join(", ", $va_access_values).") AND o.deleted = 0
+											WHERE exo.entity_id = ? AND o.type_id IN (".$vn_event_id.", ".$vn_production_id.", ".$vn_work_id.") AND o.access IN (".join(", ", $va_access_values).") AND o.deleted = 0
 											", $vn_search_id); // (removed , ".$vn_work_id." from the o.type_id list)
 			if($q_rel_type_ids->numRows()){
 				while($q_rel_type_ids->nextRow()){
@@ -161,13 +174,13 @@ if($this->request->getParameter("detailNav", pInteger)){
 	print "</H1>";
 	print "<div class='resultsLeader'>".$qr_res->numHits()." Result".(($qr_res->numHits() == 1) ? "" : "s")."</div>";
 	# --- if there are 6 or less related occ's on the entity detail page, do not show the filter navigation, only the title
-	if(($vs_table == "ca_occurrences") && ($qr_res->numHits() < 7)){
+	if(($vs_table == "ca_occurrences") && ($qr_res->numHits() < 7) && (sizeof($va_criteria) > 2)){
 		print "<hr class='divide'/><br/>";
 	}else{
 
 ?>
 		<div class="container"><div class="row bNavOptions detailBrowse" style="clear:both; position:relative;">
-		<div class="col-xs-4 col-sm-<?php print ($vs_table == "ca_occurrences") ? "5" : "3"; ?> col-md-4">FILTER BY 
+		<div class="col-xs-12 col-sm-5 col-md-5 col-lg-4">FILTER BY 
 <?php
 		if($vs_entity_role || (sizeof($va_criteria) > 1)){
 			if(sizeof($va_criteria) > 1){
@@ -217,7 +230,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 		}
 ?>
 		</div><!-- end col -->
-		<div class="col-xs-5 col-sm-5 col-md-4 text-left">SORT BY 
+		<div class="col-xs-7 col-sm-5 col-md-4 text-left">SORT BY 
 			<div class="btn-group filter">
 				<a href="#" data-toggle="dropdown"><highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
 				<ul class="dropdown-menu" role="menu">
@@ -242,8 +255,8 @@ if($this->request->getParameter("detailNav", pInteger)){
 				</ul>
 			</div><!-- end btn-group -->
 		</div><!-- end col -->
-		<div class="col-xs-2 col-sm-<?php print ($vs_table == "ca_occurrences") ? "1" : "4"; ?> col-md-2 blankSpace"></div>
-		<div class="col-xs-3 col-sm-2 col-md-2">
+		<div class="col-xs-0 col-sm-0 col-md-0 col-lg-2 blankSpace"></div>
+		<div class="col-xs-5 col-sm-2 col-md-3 col-lg-2">
 <?php
 			print _t("View");
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -281,18 +294,18 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="container">
 <div class="row bNavOptions fullBrowse" style="clear:both; position:relative;">
-	<div class="col-xs-3 col-sm-3 col-md-4">
+	<div class="col-xs-12 col-sm-12 col-md-4">
 <?php
 	print $va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
 ?>
 	</div><!-- end col -->
-	<div class="col-xs-3 col-sm-3 col-md-3">
+	<div class="col-xs-12 col-sm-5 col-md-3">
 		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within" <?php #print ($vs_search) ? "value='".$vs_search."'" : ""; ?> name="search_refine">
 			<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 		</form>
 	</div><!-- end col -->
-	<div class="col-xs-3 col-sm-3 col-md-3">
+	<div class="col-xs-7 col-sm-4 col-md-3">
 		<div class="btn-group">
 			<a href="#" data-toggle="dropdown">SORT BY <highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
 			<ul class="dropdown-menu" role="menu">
@@ -317,7 +330,7 @@ if (!$vb_ajax) {	// !ajax
 			</ul>
 		</div><!-- end btn-group -->
 	</div><!-- end col -->
-	<div class="col-xs-3 col-sm-3 col-md-2">
+	<div class="col-xs-5 col-sm-3 col-md-2">
 <?php
 		print _t("View");
 		if(is_array($va_views) && (sizeof($va_views) > 1)){

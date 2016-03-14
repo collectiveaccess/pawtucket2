@@ -117,7 +117,7 @@
 	if ($vb_has_user_links) {
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown"  style="position:relative;border-right:4px solid #000;">
+					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? "<span class='icon-user-heart'></span>" : "<span class='icon-user'></span>"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
