@@ -338,6 +338,9 @@ ul.dropdown-menu a{
 	padding-top:10px;
 	padding-bottom:10px;
 }
+.gallery #galleryDetailImageArea{
+	height:450px;
+}
 
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a {
     line-height: .3em !important;
@@ -345,6 +348,9 @@ ul.dropdown-menu a{
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	height: 120px !important;
+}
+.ca_places #detailTools{
+	margin-top:0px;
 }
 /*
 .frontSlide img{

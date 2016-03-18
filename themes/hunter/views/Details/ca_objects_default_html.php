@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$t_lists = new ca_lists();
 	$va_video_audio_type_ids = $t_lists->getItemIDsFromList("Root node for object_types", array("moving_image", "sound"));
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -85,7 +86,9 @@
 					
 					print $t_object->getWithTemplate('<ifdef code="ca_objects.duration"><H6>Duration</H6>^ca_objects.duration</ifdef>');
 					
-					print $t_object->getWithTemplate('<ifdef code="ca_objects.georeference.coverageNotes"><H6>Location of Interview</H6>^ca_objects.georeference.coverageNotes</ifdef>');
+					#print $t_object->getWithTemplate('<ifdef code="ca_objects.georeference.coverageNotes"><H6>Location of Interview</H6>^ca_objects.georeference.coverageNotes</ifdef>');
+					print $t_object->getWithTemplate('<ifcount code="ca_places" min="1" restrictToRelationshipTypes="interview_location"><H6>Location of Interview</H6></ifcount>');
+					print $t_object->getWithTemplate('<unit relativeTo="ca_places" delimiter=", " restrictToRelationshipTypes="interview_location"><l>^ca_places.preferred_labels.name</l></unit>');
 					
 				}else{
 
@@ -155,9 +158,25 @@
 				
 ?>
 				{{{<ifdef code="ca_objects.time_period"><H6>Dates Mentioned</H6><unit delimiter="<br/>">^ca_objects.time_period</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.tgn"><H6>Places Mentioned</H6><unit delimiter=", ">^ca_objects.tgn</unit></ifdef>}}}
+<?php
+				if(in_array($t_object->get("ca_objects.type_id"), $va_video_audio_type_ids)){
+					print $t_object->getWithTemplate('<ifcount code="ca_places" min="1" restrictToRelationshipTypes="is_referenced"><H6>Places Mentioned</H6></ifcount>');
+					print $t_object->getWithTemplate('<unit relativeTo="ca_places" delimiter=", " restrictToRelationshipTypes="is_referenced"><l>^ca_places.preferred_labels.name</l></unit>');
+					
+				}else{
+					$vs_related_places = $t_object->getWithTemplate("<unit relativeto='ca_places'><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>", array("checkAccess" => $va_access_values, "delimiter" => ", "));
+					if($vs_related_places){
+						print "<H6>Related Places</H6>".$vs_related_places;
+					}
+				}
+?>
 				{{{<ifdef code="ca_objects.related"><H6>Related Items</H6><unit relativeto="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifdef>}}}
-			
+<?php
+				if($t_object->get("external_link")){
+					print "<H6>Related Links</H6>";
+					print $t_object->getWithTemplate("<unit><a href='^ca_objects.external_link.url_entry' target='_blank'>^ca_objects.external_link.url_source</a></unit>", array("delimiter" => "<br/>"));
+				}
+?>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
