@@ -123,14 +123,14 @@ if((is_array($va_criteria) && sizeof($va_criteria)) || (is_array($va_facets) && 
 				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
 				var panelWidth = jQuery('#bRefine').width();
 				jQuery(window).resize(function () {
-					jQuery('#bRefine').width(panelWidth);
-				}
-				jQuery(window).scroll(function () {
+					jQuery('#bRefine').width(jQuery('#bRefine').parent().width() -30);
+				});
+				jQuery(window).scroll(function() {
 					var scrollTop = $(window).scrollTop();
 					// check the visible top of the browser
 					if (offset.top<scrollTop) {
 						jQuery('#bRefine').addClass('fixed');
-						jQuery('#bRefine').width(panelWidth);
+						jQuery('#bRefine').width(jQuery('#bRefine').parent().width() -30);
 					} else {
 						jQuery('#bRefine').removeClass('fixed');
 					}
