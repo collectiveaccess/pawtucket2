@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -392,7 +392,7 @@
  		 *
  		 * @return string Summary of current browse criteria ready for display
  		 */
- 		public function getCriteriaForDisplay($po_browse) {
+ 		public function getCriteriaForDisplay($po_browse=null) {
  			$va_criteria = $po_browse->getCriteriaWithLabels();
  			if (!sizeof($va_criteria)) { return ''; }
  			$va_criteria_info = $po_browse->getInfoForFacets();

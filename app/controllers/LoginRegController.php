@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 
-require_once(__CA_LIB_DIR__."/core/Error.php");
+require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 require_once(__CA_MODELS_DIR__."/ca_users.php");
 require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
@@ -382,6 +382,7 @@ class LoginRegController extends ActionController {
 				# -------------
 			}
 		}
+		$t_user->set("registered_on","now");
 
 		// Save user profile responses
 		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {

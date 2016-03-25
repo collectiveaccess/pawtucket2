@@ -67,12 +67,25 @@
 				}
 			}
 		}
-	print "<br/><p>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "event_facet", "id" => $t_item->get("occurrence_id")))."</p>";
+	print "<br/><p class='viewAll'>".caNavLink($this->request, _t("View all related objects"), "btn btn-default", "", "Browse", "objects", array("facet" => "event_facet", "id" => $t_item->get("occurrence_id")))."</p>";
 ?>		
 </div><!-- end col -->
 <div class='col-sm-4'>
 	<div class="detailTitle">{{{^ca_occurrences.preferred_labels.name}}}</div>
 <?php
+	if ($va_links = $t_item->get('ca_objects.external_link', array('returnWithStructure' => true))) {
+		print "<div class='btn btn-default'>Related links</div><div>";
+		foreach ($va_links as $va_key => $va_link_t) {
+			foreach ($va_link_t as $va_key2 => $va_link) {
+				if ($va_link['url_entry'] && $va_link['url_source']) {
+					print "<p class='detailRelatedTitle'><a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_source']."</a></p>";
+				} elseif ($va_link['url_entry']) {
+					print "<p class='detailRelatedTitle'><a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_entry']."</a></p>";
+				}
+			}
+		}
+		print "</div>";
+	}
 	$t_object_thumb = new ca_objects();
 	$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_entities)){

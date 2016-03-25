@@ -1,6 +1,7 @@
 <?php
 	$pa_set_items = $this->getVar("set_items");
 	$pn_set_id = $this->getVar("set_id");
+	$t_set = $this->getVar("set");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");

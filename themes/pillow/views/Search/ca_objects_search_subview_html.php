@@ -78,12 +78,23 @@
 <?php
 		}
 		$vn_count = 0;
+		$vn_row = 0;
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
+			if ($vn_row == 0) {
+				print "<div class='objectSet'>";
+			}
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
-<?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+<?php 			$va_has_access = 0;
+				if ($vs_image = $qr_results->get('ca_object_representations.media.preview', array("checkAccess" => $va_access_values))) {
+					$va_has_access = 1;
+				}
+				$va_rep_info = $qr_results->getMediaInfo("ca_object_representations.media", "preview");
+				#print 'width'.$va_rep_info["WIDTH"];
+				if (($va_rep_info["HEIGHT"] > 112) && $va_has_access == 1) {
+					$vs_image = "<img style='max-height:112px; width:auto;' src='".$qr_results->getMediaUrl("ca_object_representations.media", "preview")."'>";
+				}
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
@@ -102,12 +113,24 @@
 				if ($qr_results->get('ca_objects.date')) {
 					print "<p>".$qr_results->get('ca_objects.date')."</p>";
 				}
-			print "</div><!-- end blockResult -->";
-
+				if ($va_camera = $qr_results->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
+					print "<p>Camera angle: ".$va_camera."</p>";
+				} else {$va_camera = null;}
+?>				
+			</div><!-- end blockResult -->
+<?php
 			$vn_count++;
+			$vn_row++;
 			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
+		
+			if ($vn_row == 3) {
+				print "</div><!-- end objectSet -->";
+				$vn_row = 0;
+			}
 		}
-	
+		if ($vn_row != 0) {
+			print "</div><!-- end objectSet -->";
+		}	
 		if (!$this->request->isAjax()) {
 ?>
 					</div><!-- end blockResultsScroller -->
@@ -120,7 +143,8 @@
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
 						
-						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
+						itemsPerColumn: 3,
+						itemWidth: jQuery('.objectSet').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',

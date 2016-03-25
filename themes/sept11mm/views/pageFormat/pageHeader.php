@@ -40,7 +40,7 @@
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Log In")."</a></li>"; }
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 
@@ -81,7 +81,7 @@
 <body>
 	<nav class="navbar navbar-default navbarTop" role="navigation">
 		<div class="container subTitleSmall">
-			<div class="subTitle"><?php print _t("Public Collection"); ?></div>
+			<div class="subTitle"><?php print _t("Inside the Collection"); ?></div>
 		</div>
 		<div class="container" id="topSubNavBar">
 			<ul class="nav navbar-nav navbar-left">
@@ -89,7 +89,7 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right" id="user-navbar">
 				<li class="dropdown" style="position:relative;">
-					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? '<span class="glyphicon glyphicon-user"></span>' : _t('Log In'); ?></a>
+					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? '<span class="glyphicon glyphicon-user"></span>' : _t('My Collection'); ?></a>
 					<ul class="dropdown-menu">
 	<?php
 						print $vs_user_links;
@@ -122,7 +122,7 @@
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.png'), "navbar-brand", "", "","");
 ?>
 			</div>
-			<div class="subTitle"><?php print _t("Public Collection"); ?></div>
+			<div class="subTitle"><?php print _t("Inside the Collection"); ?></div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
 			

@@ -55,6 +55,36 @@
 		if($vn_gallery_set_type_id){
 			$va_featured_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
 		}
+		$t_list = new ca_lists();
+ 		$vn_template_over = $t_list->getItemIDFromList('hp_template', 'title_over_white'); 			
+ 				
+	if ($this->request->session->getVar('visited') != 'has_visited') {		
+?>	
+		<div id="homePanel">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-0 col-sm-4 col-md-4 col-lg-4 leftSide">
+<?php
+						print caGetThemeGraphic($this->request, 'homelogo.png');
+?>					
+					</div>
+					<div class="col-xs-10 col-sm-6 col-md-6 col-lg-6 rightSide">			
+						<h1>Welcome to the BAM Leon Levy Digital Archive</h1>
+						<p>Please search the archive above or watch this informative video which outlines the basic structure and functionality of the archive.</p>
+						<p>Looking for tickets to an upcoming event at BAM?  <a href='http://www.bam.org'>Click here</a>, you're close but in the wrong place.</p>
+					</div>	
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+						<div class="close">
+<?php
+							print "<a href='#' onclick='$(\"#homePanel\").fadeOut(400);'>".caGetThemeGraphic($this->request, 'homex.png')."</a>";
+?>	
+						</div>			
+					</div>
+				</div><!-- end row -->
+			</div> <!--end container-->	
+		</div>	<!--end homePanel-->
+<?php
+	}
 ?>
 		<div class="container">
 			<div class="row frontNav">
@@ -63,6 +93,7 @@
 				</div>
 <?php
 				if(is_array($va_featured_sets) && sizeof($va_featured_sets)){
+				$vn_i = 0;
 ?>
 				<div class="col-sm-7">
 					<div class="btn-group">
@@ -70,7 +101,9 @@
 						<ul class="dropdown-menu" role="menu">
 <?php
 						foreach($va_featured_sets as $vn_set_id => $va_set){
-							print "<li>".caNavLink($this->request, $va_set["name"], "", "", "Front", "Index", array("featured_set_id" => $vn_set_id))."</li>\n";
+							if ($vn_i == 0) {$vs_link_class = "first";} else { $vs_link_class = null;}
+							print "<li>".caNavLink($this->request, $va_set["name"], $vs_link_class, "", "Front", "Index", array("featured_set_id" => $vn_set_id))."</li>\n";
+							$vn_i++;
 						}
 						$vs_set_list .= "</ul>\n";
 ?>
@@ -89,7 +122,7 @@
 ?>	
 		</div>
 <?php
-		if($t_set->get("hp_template") == 905){
+		if($t_set->get("hp_template") == $vn_template_over){
 ?>
 			<div class="container hpOverWhite">
 				<div class='col-sm-12'>
@@ -157,7 +190,7 @@
 		</div><!-- end container -->
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'set:'.$t_set->get('set_code'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
+				jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
 					jQuery('#browseResultsContainer').jscroll({
 						autoTrigger: true,
 						loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
@@ -169,33 +202,6 @@
 				
 			});
 		</script>
-<?php
-	}
-	if ($this->request->session->getVar('visited') != 'has_visited') {		
-?>	
-		<div id="homePanel">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-4 col-md-4 col-lg-4 leftSide">
-<?php
-						print caGetThemeGraphic($this->request, 'homelogo.png');
-?>					
-					</div>
-					<div class="col-sm-6 col-md-6 col-lg-6 rightSide">			
-						<h1>Welcome to the BAM Leon Levy Digital Archive</h1>
-						<p>Please search the archive above or watch this informative video which outlines the basic structure and functionality of the archive.</p>
-						<p>Looking for tickets to an upcoming event at BAM?  <a href='http://www.bam.org'>Click here</a>, you're close but in the wrong place.</p>
-					</div>	
-					<div class="col-sm-2 col-md-2 col-lg-2">
-						<div class="close">
-<?php
-							print "<a href='#' onclick='$(\"#homePanel\").fadeOut(400);'>".caGetThemeGraphic($this->request, 'homex.png')."</a>";
-?>	
-						</div>			
-					</div>
-				</div><!-- end row -->
-			</div> <!--end container-->	
-		</div>	<!--end homePanel-->
 <?php
 	}
 ?>
