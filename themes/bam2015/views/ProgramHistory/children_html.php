@@ -11,7 +11,7 @@
 		# --- is there description text for the series
 		if(($vs_parent_type == "series") && $vs_description){
 ?>
-			<div class='col-xs-4 leftPadding'>
+			<div class='col-xs-12 col-sm-4 leftPadding'>
 				<div class='leader'>
 					About the Program
 				</div>
@@ -19,7 +19,7 @@
 					<?php print $vs_description; ?>
 				</div>
 			</div>
-			<div class='col-xs-8 leftPadding'>
+			<div class='col-xs-12 col-sm-8 leftPadding'>
 <?php
 		}else{
 ?>

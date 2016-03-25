@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+	$vs_centro_url = "http://centropr.hunter.cuny.edu";
+	
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
@@ -80,9 +82,9 @@
 <body>
 	<div class="bg-white">
 		<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">			
-			<a class="logo navbar-btn pull-left" href="#" title="Home">
-				<?php print caGetThemeGraphic($this->request, 'centroLogo.png'); ?>
-			</a>
+			<div class="logo navbar-btn pull-left">
+				<a href="<?php print $vs_centro_url; ?>" title="Home"><?php print caGetThemeGraphic($this->request, 'Centro_logo_1.png'); ?></a>
+			</div>
 			<div class="headerSubTitle">Understanding, Preserving, Sharing the<br/>Puerto Rican Experience</div>
 		</header>
 	</div>
@@ -113,10 +115,10 @@
 
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-2">
 				<ul class="nav navbar-nav">
-					<li><a href="#">Events & News</a></li>
-					<li><a href="#">Collections</a></li>
-					<li><a href="#">Library & Publications</a></li>
-					<li><a href="#">Research & Education</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/events-news">Events & News</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/collections">Collections</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/library-publications">Library & Publications</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/research-education">Research & Education</a></li>
 				</ul>			
 			</div>
 		</div>
@@ -162,7 +164,6 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask an Archivist"), "", "", "Contact", "Form"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Copyright"), "", "", "About", "copyright"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
