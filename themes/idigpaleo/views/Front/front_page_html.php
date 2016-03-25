@@ -42,21 +42,23 @@
 			<H1>News</H1>
 <?php
 		use Guzzle\Http\Client;
-	
-		$client = new Client('http://fossilinsects.colorado.edu/');
 		
-		$client = new Client();
-		$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
-		$va_news = json_decode(json_encode($response->xml()),TRUE);
-		if(is_array($va_news)){
-			$va_first_item = $va_news["channel"]["item"][0];
-			print "<H2>";
-			if($va_first_item["link"]){
-				print "<a href='".$va_first_item["link"]."' target='_blank'>".$va_first_item["title"]."</a>";
-			}else{
-				print $va_first_item["title"];
+		try {	
+			$client = new Client();
+			$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
+			$va_news = json_decode(json_encode($response->xml()),TRUE);
+			if(is_array($va_news)){
+				$va_first_item = $va_news["channel"]["item"][0];
+				print "<H2>";
+				if($va_first_item["link"]){
+					print "<a href='".$va_first_item["link"]."' target='_blank'>".$va_first_item["title"]."</a>";
+				}else{
+					print $va_first_item["title"];
+				}
+				print "</H2>";	
 			}
-			print "</H2>";	
+		} catch (Exception $e) {
+			print "<h2>No news</h2>";
 		}
 ?>
 			<H3 class="text-right"><?php print caNavLink($this->request, _t("More"), "", "", "About", "News"); ?></H3>
