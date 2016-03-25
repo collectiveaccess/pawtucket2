@@ -63,7 +63,7 @@
 		<div id="homePanel">
 			<div class="container">
 				<div class="row">
-					<div class="col-xs-0 col-sm-4 col-md-4 col-lg-4 leftSide">
+					<div class="col-sm-4 col-md-4 col-lg-4 leftSide">
 <?php
 						print caGetThemeGraphic($this->request, 'homelogo.png');
 ?>					
