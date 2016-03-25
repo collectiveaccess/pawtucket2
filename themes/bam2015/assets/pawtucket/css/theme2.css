@@ -808,6 +808,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	#collectionLoad {
 		border-left:0px;
 	}
+	.detail .portraitRepContainer img{
+		max-width:320px;
+	}
 }
 
 /* Ipad Styles */

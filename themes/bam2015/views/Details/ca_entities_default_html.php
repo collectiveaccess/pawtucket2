@@ -44,19 +44,19 @@
 			$vb_output = false;
 			if ($va_objects = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 				$t_object = new ca_objects($va_objects[0]);
-				if ($va_entity_rep = $t_object->get('ca_object_representations.media.large')) {
-					$va_rep = $t_object->getPrimaryRepresentation(array('large'), null, array('return_with_access' => $va_access_values));
-					$va_rep_width = $va_rep['info']['large']['WIDTH'];
-					$va_rep_height = $va_rep['info']['large']['HEIGHT'];
+				if ($va_entity_rep = $t_object->get('ca_object_representations.media.bamlarge')) {
+					$va_rep = $t_object->getPrimaryRepresentation(array('bamlarge'), null, array('return_with_access' => $va_access_values));
+					$va_rep_width = $va_rep['info']['bamlarge']['WIDTH'];
+					$va_rep_height = $va_rep['info']['bamlarge']['HEIGHT'];
 					$vs_orientation = ($va_rep_width > $va_rep_height) ? "landscape" : "portrait";
 ?>
-					<div class='col-sm-6 <?php print ($vs_orientation == "portrait") ? "col-md-3 col-md-offset-2" : "col-md-3 col-md-offset-2"; ?>'>
+					<div class='<?php print ($vs_orientation == "portrait") ? "col-sm-3 col-sm-offset-2 col-md-3 col-md-offset-2" : "col-sm-6 col-md-3 col-md-offset-2"; ?>'>
 						<div class="entityRep <?php print $vs_orientation; ?>RepContainer">
 <?php
 							$va_rep_id = $t_object->get('ca_object_representations.representation_id', array('checkAccess' => $va_access_values));
 							print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetRepresentationInfo/object_id/".$va_objects[0]."/representation_id/".$va_rep_id."/overlay/1\"); return false;'>".$va_entity_rep."</a>";
 							$vs_creator = $t_object->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => array('creator'), 'checkAccess' => $va_access_values));
-							print "<small>".$t_object->get("type_id", array("convertCodesToDisplayText" => true)).", &copy; ".(($vs_creator) ? $vs_creator : "BAM")."</small>";
+							print "<br/><small>".$t_object->get("type_id", array("convertCodesToDisplayText" => true)).", &copy; ".(($vs_creator) ? $vs_creator : "BAM")."</small>";
 ?>
 						</div><!-- end entityRep -->				
 					</div><!-- end col -->			

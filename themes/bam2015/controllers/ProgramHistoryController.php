@@ -42,7 +42,7 @@
  		 	$this->opa_access_values = $va_access_values;
  			$this->view->setVar("access_values", $va_access_values);
  			caSetPageCSSClasses(array("program"));
- 			MetaTagManager::setWindowTitle(_t("Programing History"));
+ 			MetaTagManager::setWindowTitle(_t("Programming History"));
  				
  		}
  		# -------------------------------------------------------
