@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,12 +26,14 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
-	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
- 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
  	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+ 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
+ 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	
- 	class DetailController extends ActionController {
+ 	class DetailController extends FindController {
  		# -------------------------------------------------------
  		/**
  		 *
@@ -42,6 +44,11 @@
  		 *
  		 */
  		protected $config = null;
+ 		
+ 		/**
+ 		 *
+ 		 */
+ 		protected $ops_view_prefix = 'Details';
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
@@ -81,6 +88,43 @@
  			AssetLoadManager::register("readmore");
  			AssetLoadManager::register("maps");
  			
+ 			//
+			// Return facet content
+			//	
+			if(($ps_facet = $this->request->getParameter('facet', pString)) || ($ps_remove_facet = $this->request->getParameter('removeCriterion', pString))) {
+				$vs_browse_type = $this->request->getParameter('browseType', pString);
+				if (
+					($vs_browse_table = ((isset($this->opa_detail_types[$vs_browse_type]) && isset($this->opa_detail_types[$vs_browse_type]['table']))) ? $this->opa_detail_types[$vs_browse_type]['table'] : null)
+					&&
+					($o_browse = caGetBrowseInstance($vs_browse_table))
+				) {
+					if (!($this->request->getParameter('getFacet', pInteger))) {
+						if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+							$o_browse->reload($ps_cache_key);
+						}
+						
+						if ($ps_facet) { 
+							$o_browse->addCriteria($ps_facet, array($this->request->getParameter('id', pString))); 
+						} else {
+							$o_browse->removeCriteria($ps_remove_facet, array($this->request->getParameter('removeID', pString)));
+						}
+						$o_browse->execute();
+						$ps_cache_key = $o_browse->getBrowseID();
+						$this->request->setParameter('key', $ps_cache_key);
+					} else {
+						$vs_class = 'ca_objects';
+						$o_browse = caGetBrowseInstance($vs_class);
+						if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+							$o_browse->reload($ps_cache_key);
+						} else {
+							$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+							$o_browse->execute();
+						}
+						return $this->getFacet($o_browse);
+					}
+				}
+			}
+			
  			$ps_function = strtolower($ps_function);
  			$ps_id = urldecode($this->request->getActionExtra()); 
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
@@ -103,7 +147,7 @@
  			$t_subject->registerItemView();
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
- 			
+ 			$this->view->setVar("config_options", $va_options);
  			
  			if (!caGetOption('disableExport', $va_options, false)) {
 				// Exportables/printables
@@ -210,6 +254,68 @@
 				}
 			}
 			
+			// Filtering of related items
+			if ($t_subject->tableName() != 'ca_objects') {
+				$vs_class = 'ca_objects';
+				$o_browse = caGetBrowseInstance($vs_class);
+				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+					$o_browse->reload($ps_cache_key);
+				} else {
+					$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+					$ps_cache_key = $o_browse->getBrowseID();
+				}
+				$o_browse->execute();
+				
+				$this->view->setVar('key', $o_browse->getBrowseID());
+				$this->view->setVar('browse', $o_browse);
+				//
+				// Facets
+				//
+				if ($vs_facet_group = caGetOption('facetGroup', $va_browse_info, null)) {
+					$o_browse->setFacetGroup($vs_facet_group);
+				}
+			
+				$o_browse->execute();
+				$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
+				$va_facets = $o_browse->getInfoForAvailableFacets();
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
+				}
+				$this->view->setVar('facets', $va_facets);
+		
+				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
+			
+				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			
+			
+				// remove base criteria from display list
+				if (is_array($va_base_criteria)) {
+					foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
+						unset($va_criteria[$vs_base_facet]);
+					}
+				}
+				$va_criteria = $o_browse->getCriteriaWithLabels();
+			
+				$va_criteria_for_display = array();
+				foreach($va_criteria as $vs_facet_name => $va_criterion) {
+					$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
+					foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+						$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+					}
+				}
+				$this->view->setVar('criteria', $va_criteria_for_display);
+				
+				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $ps_function);
+				$o_rel_context->setParameter('key', $vs_key);
+				$o_rel_context->setAsLastFind(true);
+				
+				$qr_rel_res = $o_browse->getResults();
+				$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				
+				$o_rel_context->saveContext();
+			}
+			
  			//
  			// comments, tags, rank
  			//
@@ -258,11 +364,15 @@
 				$this->view->setVar('tags', implode(", ", $va_tags));
 			
 				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $va_comments, $va_tags));
+			} else {
+				$this->view->setVar("itemComments", '');
 			}
  			
  			//
  			// share link
  			//
+ 			$this->view->setVar('shareEnabled', (bool)$va_options['enableShare']);
+ 			
  			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>Share</a>");
 
  			// find view
@@ -320,7 +430,7 @@
  			$pn_item_id 			= $this->request->getParameter('item_id', pInteger);
  			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
  			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
- 			$va_detail_options = (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			$va_detail_options 		= (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
  			
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
@@ -331,17 +441,63 @@
  			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'item_id' => $pn_item_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
  			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
 
-			$vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false);
-			$vs_caption = "";
-			if($vs_caption_template){
-				$vs_caption = $t_rep->getWithTemplate($vs_caption_template);
-			}
+			$vs_caption = ($vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false)) ? $t_rep->getWithTemplate($vs_caption_template) : '';
+			
 			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
 			if ($this->request->getParameter('include_tool_bar', pInteger)) {
 				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id).$vs_caption."</div></div>";
 			}
 
  			$this->response->addContent($vs_output);
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * Returns list of *timebased* (audio/video) annotations to display
+ 		 *
+ 		 * Expects the following request parameters: 
+ 		 *		object_id = the id of the ca_objects record to display
+ 		 *		representation_id = the id of the ca_object_representations record to display; the representation must belong to the specified object
+ 		 *
+ 		 *	Optional request parameters:
+ 		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
+ 		 *
+ 		 */ 
+ 		public function GetTimebasedRepresentationAnnotationList() {
+ 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
+ 			$ps_detail_type			= $this->request->getParameter('detail_type', pString);
+ 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			
+ 			if(!$pn_object_id) { $pn_object_id = 0; }
+ 			$t_rep = new ca_object_representations($pn_representation_id);
+ 			if (!$t_rep->getPrimaryKey()) { 
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
+ 				return;
+ 			}
+ 			
+ 			if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
+ 			
+ 			$va_props = $t_rep->getMediaInfo('media', 'original', 'PROPERTIES');
+ 			$va_annotation_list = $va_annotation_times = array();
+ 			if (
+				is_array($va_annotations = $t_rep->getAnnotations(array('idsOnly' => true))) //$t_rep->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
+				&& 
+				sizeof($va_annotations)
+				&&
+				($qr_annotations = caMakeSearchResult('ca_representation_annotations', $va_annotations))
+			) {
+				while($qr_annotations->nextHit()) {
+					if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
+					$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
+					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$va_props['timecode_offset']);
+				}
+			}
+			
+			$this->view->setVar('representation_id', $pn_representation_id);
+			$this->view->setVar('annotation_list', $va_annotation_list);
+			$this->view->setVar('annotation_times', $va_annotation_times);
+ 			
+			$this->render('Details/annotations_html.php');
  		}
 		# -------------------------------------------------------
  		/**
@@ -401,35 +557,49 @@
  		# -------------------------------------------------------
 		/**
 		 * Download all media attached to specified object (not necessarily open for editing)
-		 * Includes all representation media attached to the specified object + any media attached to oter
+		 * Includes all representation media attached to the specified object + any media attached to other
 		 * objects in the same object hierarchy as the specified object. Used by the book viewer interfacce to 
 		 * initiate a download.
+		 *
+		 * TODO: make configurable 
 		 */ 
 		public function DownloadMedia() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
+			
+			$o_app_plugin_manager = new ApplicationPluginManager();
+			
 			$pn_object_id = $this->request->getParameter('object_id', pInteger);
+			$pb_exclude_ancestors = $this->request->getParameter('exclude_ancestors', pInteger);
 			$pn_value_id = $this->request->getParameter('value_id', pInteger);
 			if ($pn_value_id) {
  				return $this->DownloadAttributeMedia();
  			}
 			$t_object = new ca_objects($pn_object_id);
 			if (!($vn_object_id = $t_object->getPrimaryKey())) { return; }
+			if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
+  				return;
+ 			}
 			
 			$ps_version = $this->request->getParameter('version', pString);
 			
 			if (!$ps_version) { $ps_version = 'original'; }
 			$this->view->setVar('version', $ps_version);
 			
-			$va_ancestor_ids = $t_object->getHierarchyAncestors(null, array('idsOnly' => true, 'includeSelf' => true));
-			if ($vn_parent_id = array_pop($va_ancestor_ids)) {
-				$t_object->load($vn_parent_id);
-				array_unshift($va_ancestor_ids, $vn_parent_id);
-			}
-			
-			$va_child_ids = $t_object->getHierarchyChildren(null, array('idsOnly' => true));
+			if($pb_exclude_ancestors){
+				$va_ancestor_ids = array($pn_object_id);
+			}else{
+				$va_ancestor_ids = $t_object->getHierarchyAncestors(null, array('idsOnly' => true, 'includeSelf' => true));
+				if ($vn_parent_id = array_pop($va_ancestor_ids)) {
+					$t_object->load($vn_parent_id);
+					if(!sizeof($this->opa_access_values) || (in_array($t_object->get("access"), $this->opa_access_values))){
+						array_unshift($va_ancestor_ids, $vn_parent_id);
+					}
+				}
+			}			
+			$va_child_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $this->opa_access_values));
 			
 			foreach($va_ancestor_ids as $vn_id) {
 				array_unshift($va_child_ids, $vn_id);
@@ -439,12 +609,15 @@
 			$va_file_names = array();
 			$va_file_paths = array();
 			
+			// Allow plugins to modify object_id list
+			$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
+			
 			foreach($va_child_ids as $vn_object_id) {
-				$t_object = new ca_objects($vn_object_id);
-				if (!$t_object->getPrimaryKey()) { continue; }
+				$t_child_object = new ca_objects($vn_object_id);
+				if (!$t_child_object->getPrimaryKey()) { continue; }
 				
-				$va_reps = $t_object->getRepresentations(array($ps_version));
-				$vs_idno = $t_object->get('idno');
+				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
+				$vs_idno = $t_child_object->get('idno');
 				
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
@@ -486,7 +659,7 @@
 					//
 					// Perform metadata embedding
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					if (!($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version))) {
+					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
 					}
 					$va_file_paths[$vs_path] = $vs_file_name;
@@ -494,6 +667,9 @@
 					$vn_c++;
 				}
 			}
+			
+			// Allow plugins to modify file path list
+			$va_file_paths = $o_app_plugin_manager->hookDetailDownloadMediaFilePaths($va_file_paths);
 			
 			if (sizeof($va_file_paths) > 1) {
 				if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
@@ -525,6 +701,8 @@
 		# -------------------------------------------------------
 		/**
 		 * Download single representation from currently open object
+		 *
+		 * TODO: remove and route all references to DownloadMedia()
 		 */ 
 		public function DownloadRepresentation() {
 			if (!caObjectsDisplayDownloadLink($this->request)) {
@@ -533,11 +711,17 @@
 			}
 			$vn_object_id = $this->request->getParameter('object_id', pInteger);
 			$t_object = new ca_objects($vn_object_id);
+			if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
+  				return;
+ 			}
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 			$ps_version = $this->request->getParameter('version', pString);
 			
 			$this->view->setVar('representation_id', $pn_representation_id);
 			$t_rep = new ca_object_representations($pn_representation_id);
+			if(sizeof($this->opa_access_values) && (!in_array($t_rep->get("access"), $this->opa_access_values))){
+  				return;
+ 			}
 			$this->view->setVar('t_object_representation', $t_rep);
 			
 			$va_versions = $t_rep->getMediaVersions('media');
@@ -583,7 +767,7 @@
 			
 			//
 			// Perform metadata embedding
-			if ($vs_path = caEmbedMetadataIntoRepresentation($t_object, $t_rep, $ps_version)) {
+			if ($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
 				$this->view->setVar('version_path', $vs_path);
 			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
@@ -641,11 +825,7 @@
  				if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
  
  				$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, $va_opts));
- 			} else {
- 				//
  			}
- 			//$pn_value_id 	= $this->request->getParameter('value_id', pInteger);
- 			//$this->response->addContent(caGetMediaViewerHTMLBundle($this->request, array('display' => 'media_overlay', 't_attribute_value' => $pn_value_id, 'containerID' => 'caMediaPanelContentArea')));
  		}
 		# ------------------------------------------------------
 		/**
@@ -1226,25 +1406,27 @@
 			$va_annotations_raw = $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger)));
 			$va_annotations = array();
 
-			foreach($va_annotations_raw as $vn_annotation_id => $va_annotation) {
-				$va_annotations[] = array(
-					'annotation_id' => $va_annotation['annotation_id'],
-					'x' => 				caGetOption('x', $va_annotation, 0, array('castTo' => 'float')),
-					'y' => 				caGetOption('y', $va_annotation, 0, array('castTo' => 'float')),
-					'w' => 				caGetOption('w', $va_annotation, 0, array('castTo' => 'float')),
-					'h' => 				caGetOption('h', $va_annotation, 0, array('castTo' => 'float')),
-					'tx' => 			caGetOption('tx', $va_annotation, 0, array('castTo' => 'float')),
-					'ty' => 			caGetOption('ty', $va_annotation, 0, array('castTo' => 'float')),
-					'tw' => 			caGetOption('tw', $va_annotation, 0, array('castTo' => 'float')),
-					'th' => 			caGetOption('th', $va_annotation, 0, array('castTo' => 'float')),
-					'points' => 		caGetOption('points', $va_annotation, array(), array('castTo' => 'array')),
-					'label' => 			caGetOption('label', $va_annotation, '', array('castTo' => 'string')),
-					'description' => 	caGetOption('description', $va_annotation, '', array('castTo' => 'string')),
-					'type' => 			caGetOption('type', $va_annotation, 'rect', array('castTo' => 'string')),
-					'locked' => 		caGetOption('locked', $va_annotation, '0', array('castTo' => 'string')),
-					'options' => 		caGetOption('options', $va_annotation, array(), array('castTo' => 'array')),
-					'key' =>			caGetOption('key', $va_annotation, null)
-				);
+			if (is_array($va_annotations_raw)) {
+				foreach($va_annotations_raw as $vn_annotation_id => $va_annotation) {
+					$va_annotations[] = array(
+						'annotation_id' => $va_annotation['annotation_id'],
+						'x' => 				caGetOption('x', $va_annotation, 0, array('castTo' => 'float')),
+						'y' => 				caGetOption('y', $va_annotation, 0, array('castTo' => 'float')),
+						'w' => 				caGetOption('w', $va_annotation, 0, array('castTo' => 'float')),
+						'h' => 				caGetOption('h', $va_annotation, 0, array('castTo' => 'float')),
+						'tx' => 			caGetOption('tx', $va_annotation, 0, array('castTo' => 'float')),
+						'ty' => 			caGetOption('ty', $va_annotation, 0, array('castTo' => 'float')),
+						'tw' => 			caGetOption('tw', $va_annotation, 0, array('castTo' => 'float')),
+						'th' => 			caGetOption('th', $va_annotation, 0, array('castTo' => 'float')),
+						'points' => 		caGetOption('points', $va_annotation, array(), array('castTo' => 'array')),
+						'label' => 			caGetOption('label', $va_annotation, '', array('castTo' => 'string')),
+						'description' => 	caGetOption('description', $va_annotation, '', array('castTo' => 'string')),
+						'type' => 			caGetOption('type', $va_annotation, 'rect', array('castTo' => 'string')),
+						'locked' => 		caGetOption('locked', $va_annotation, '0', array('castTo' => 'string')),
+						'options' => 		caGetOption('options', $va_annotation, array(), array('castTo' => 'array')),
+						'key' =>			caGetOption('key', $va_annotation, null)
+					);
+				}
 			}
 
 			if (is_array($va_media_scale = $t_rep->getMediaScale('media'))) {
@@ -1309,13 +1491,11 @@
 				&&
 				(strlen($vn_height = $this->request->getParameter('height', pFloat)))
 			) {
-				if (is_array($va_m = caParseMeasurement($vs_measurement))) {
-					$vn_theta = atan($vn_height/$vn_width);
-					$vn_value_x = $va_m['value'] * cos($vn_theta);
-					
-					$t_rep->setMediaScale('media', $vn_value_x.$va_m['units'], $vn_width);
-					$va_annotations = array_merge($va_annotations, $t_rep->getMediaScale('media'));
-				}
+				$t_rep = new ca_object_representations($pn_representation_id);
+				$vn_image_width = (int)$t_rep->getMediaInfo('media', 'original', 'WIDTH');
+				$vn_image_height = (int)$t_rep->getMediaInfo('media', 'original', 'HEIGHT');
+				$t_rep->setMediaScale('media', $vs_measurement, sqrt(pow($vn_width * $vn_image_width, 2) + pow($vn_height * $vn_image_height, 2))/$vn_image_width);
+				$va_annotations = array_merge($va_annotations, $t_rep->getMediaScale('media'));
 			}
 
 			$this->view->setVar('annotations', $va_annotations);
@@ -1328,5 +1508,21 @@
 		public function ViewerHelp() {
 			$this->render('Details/viewer_help_html.php');
 		}
+		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link from a browse result item
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Detail',
+ 				'action' => $po_request->getAction(),
+ 				'params' => array(
+ 					'key'
+ 				)
+ 			);
+			return $va_ret;
+ 		}
  		# -------------------------------------------------------
 	}

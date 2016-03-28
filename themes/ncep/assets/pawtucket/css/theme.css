@@ -27,6 +27,7 @@
 body{
 	background-color: #F5F5E9;
 	font-family: 'thesans5';
+	font-size:13px;
 }
 a{
 	color: #366791;
@@ -68,6 +69,9 @@ H6, h6{
 	padding-bottom:0px;
 	margin:10px 0px 0px 0px;
 }
+.form-control:focus {
+    border-color: #000000;
+}
 .btn-default, .detail .btn-default {
     background-color: #EC7923;
     border-color: none;
@@ -79,7 +83,7 @@ H6, h6{
 	-webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	border-radius: 9px;
-	font-family:'thesans5';
+	font-family:'thesans6';
 	display:inline-block;
 	text-align:center;
 	line-height:1em;
@@ -113,6 +117,28 @@ H6, h6{
 	margin-top:-10px;
 	top:5px;
 }
+.componentButtonCol .btn-default i, .componentButtonCol .detail .btn-default i, .authorComponentButtonCol .btn-default i{
+	margin-left:0px;
+	font-size:16px;
+	line-height:1em;
+	margin-top:0px;
+	top:0px;
+}
+.componentButtonCol .btn-default span, .authorComponentButtonCol .btn-default span{
+	margin-left:5px;
+}
+.componentButtonCol .btn-default, .authorComponentButtonCol .btn-default{
+	padding:8px !important;
+	font-size:16px;
+	line-height:1em;
+}
+.authorComponentButtonCol .btn-default{
+	margin-right:10px;
+}
+.authorComponentButtonCol{
+	float:left;
+	margin-right:15px;
+}
 .btn-default:hover, .detail .btn-default:hover{
 	color:#F5F5E9;
 	text-decoration:none;
@@ -141,10 +167,10 @@ H6, h6{
 .tab, #bRefine H3{
     background-color:#2E536E;
     color:#FFF;
-    font-size: 22px;
+    font-size: 19px;
     text-transform: capitalize;
-    padding:20px 0px 20px 0px;
-	font-family:'thesans7';
+    padding:18px 0px 18px 0px;
+	font-family:'thesans5';
 	width:100%;
 	display:inline-block;
 	text-align:center;
@@ -303,12 +329,27 @@ nav, .navbar, .navbar-default{
 }
 @media (min-width: 768px) {
 	.nav li a{
-		padding:0px 22px 0px 22px;
+		font-size:14px !important;
+		padding:0px 20px 0px 20px;
 		margin:0px 0px 0px 0px;
 		border-left: 1px solid #C0BFA5;
 	}
 	.nav li:last-child a{
 		border-right: 1px solid #C0BFA5;
+	}
+}
+@media (min-width: 960px) {
+	.nav li a{
+		padding:0px 29px 0px 29px;
+		font-size:17px !important;
+	}	
+	ul.nav {
+		border-right: 1px solid #C0BFA5;
+		width:100%;
+	}
+	.nav li:last-child a{
+		border-right: 0px;
+		padding-right:30px;
 	}
 }
 .navbar{
@@ -320,7 +361,7 @@ nav, .navbar, .navbar-default{
 	border-radius: 0px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.176);
 }
-.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > li > a:hover {
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > li > a:hover, .navbar .navbar-nav > li:hover {
   	background-color: #D6D6B9;
     color: #585832;
 }
@@ -418,9 +459,13 @@ nav, .navbar, .navbar-default{
 	line-height:1.3em;
 	text-transform:none;
 	padding:10px 0px 10px 0px;
-	font-size:15px;
+	font-size:16px;
 	text-align:left;
 	font-family: 'thesans5';
+}
+h2#hpSectionText{
+	min-height:110px;
+	font-size:17px;
 }
 @media (min-width: 768px) {
 	.front H1 {
@@ -430,11 +475,54 @@ nav, .navbar, .navbar-default{
 }
 .hp_icons{
 	text-align:center;
+	position:relative;
+	max-width:750px;
+	margin:0px auto 0px auto;
 }
 .hp_icons img{
 	height:auto;
 	width:100%;
 	max-width:750px;
+}
+.hp_icons .learnSlice{
+	width:23%;
+	height:65%;
+	position:absolute;
+	z-index:5;
+	top:35%;
+	left:0px;
+}
+.hp_icons .exploreSlice{
+	width:17%;
+	height:65%;
+	position:absolute;
+	z-index:5;
+	top:0px;
+	left:23%;
+}
+.hp_icons .practiceSlice{
+	width:20%;
+	height:65%;
+	position:absolute;
+	z-index:5;
+	top:35%;
+	left:40%;
+}
+.hp_icons .teachSlice{
+	width:17%;
+	height:65%;
+	position:absolute;
+	z-index:5;
+	top:0px;
+	left:60%;
+}
+.hp_icons .connectSlice{
+	width:20%;
+	height:65%;
+	position:absolute;
+	z-index:5;
+	top:35%;
+	left:77%;
 }
 .frontFormGroup{
 	background-color:#FFF;
@@ -467,6 +555,9 @@ nav, .navbar, .navbar-default{
 	}
 }
 /* BROWSE */
+#bRefine{
+	padding-bottom:20px;
+}
 #bRefine H3{
 	padding:15px 0px 15px 0px;
 }
@@ -477,18 +568,18 @@ nav, .navbar, .navbar-default{
 }
 #bRefine H5{
 	text-transform:capitalize;
-	font-family:'thesans7';
-	font-size:20px;
+	font-family:'thesans6';
+	font-size:18px;
 	margin-top:35px;
 }
 #bRefine div, #bRefine div a{
 	font-family:'thesans5';
-	font-size:14px;
+	font-size:15px;
 	color:#2E536E;
 }
 .results H1 {
-	font-size:24px;
-	font-family:'thesans7';
+	font-size:22px;
+	font-family:'thesans5';
 	text-transform:capitalize;
 }
 .bResItem{
@@ -521,36 +612,44 @@ nav, .navbar, .navbar-default{
 	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	padding:25px;
 	margin:0px 0px 40px 1px;
-	font-size:14px;
+	font-size:15px;
 }
 .detailBoxTop{
 	margin:-20px 0px 40px 1px !important;
 }
 .detailBox p{
-	line-height:1.3em;
+	line-height:1.5em;
 	padding-bottom:5px;
 }
 .detailBox a{
 	color:#626801;
-	text-decoration:underline;
+	text-decoration:none;
 }
 .detailBox b{
 	color:#2E536E;
 	font-weight:normal;
 }
+@media (max-width: 768px) {
+	.gallery .detailBoxTop{
+		margin-top:20px !important;
+	}
+}
 .detail H1{
-	font-size:24px;
-	font-family: 'thesans7';
+	font-size:20px;
+	font-family: 'thesans6';
 	text-transform:capitalize;
 }
+/*.detail .detailBoxTop H1{
+	font-family: 'thesans5';
+}*/
 @media (min-width: 768px) {
 	.detail H1{
-		font-size:31px;
+		font-size:24px;
 	}
 }
 .detail H2{
 	color:#2E536E;
-	font-family: 'thesans7';
+	font-family: 'thesans6';
 	margin-bottom:0px;
 }
 .detail H2 a{
@@ -602,6 +701,9 @@ nav, .navbar, .navbar-default{
 	.detail .componentButtonCol{
 		text-align:right;
 	}
+	.detail .detailBoxTop .componentButtonCol{
+		text-align:left;
+	}
 }
 @media (max-width:767px){
 	.detail .compTab{
@@ -609,18 +711,18 @@ nav, .navbar, .navbar-default{
 	}
 }
 .detail .compViewAll{
-	padding:8px 0px 15px 17px;
+	padding:8px 0px 15px 24px;
 }
 .detail .compViewAll a{
 	color: #2E536E;
 	font-size:20px;
-	font-family:'thesans7';
+	font-family:'thesans5';
 }
 .detail .compViewAll a:hover{
 	text-decoration:none;
 }
 .detail .compViewAll a i{
-	padding-right:18px;
+	padding-right:31px;
 	font-size:40px;
 	position:relative;
 	top:5px;
@@ -631,7 +733,7 @@ nav, .navbar, .navbar-default{
 	box-shadow:0 1px 4px rgba(0, 0, 0, 0.3);
 	border-top-left-radius: 9px;
 	border-bottom-left-radius: 9px;
-	font-family:'thesans7';
+	font-family:'thesans5';
 	color:#FFF;
 	font-size:22px;
 	margin:0px 0px 20px 0px;
@@ -639,15 +741,26 @@ nav, .navbar, .navbar-default{
 .detail .compTab.inactiveTab{
 	opacity:.4;
 }
-.detail .compTab a{
+.detail .compTab.highlightTab{
+	margin-right:-8px;
+	z-index:10;
+	position:relative;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+	-webkit-box-shadow:0 2px 6px rgba(0, 0, 0, 0.6);
+	box-shadow:0 2px 6px rgba(0, 0, 0, 0.6);
+}
+.detail a .compTab, .detail .compTab a{
 	color:#FFF;
 }
-.detail .compTab a:hover{
+.detail a:hover .compTab, .detail .compTab a:hover{
 	color:#FFF;
 }
 .detail .compTab .imgContainer{
 	float:left;
-	padding-right:20px;
+	margin-right:20px;
+	width:60px;
+	text-align:center;
 }
 .detail .compTab .imgContainer img{
 	max-height:62px;
@@ -661,7 +774,7 @@ nav, .navbar, .navbar-default{
 	display:inline-block;
 }
 .teach{
-	background-color:#2E536E;
+	background-color:#475622;
 }
 .practice{
 	background-color: #294C3E;
@@ -670,10 +783,69 @@ nav, .navbar, .navbar-default{
 	margin-top:-5px;
 }
 .explore{
-	background-color: #475622;
+	background-color: #2E536E;
 }
 .connect{
 	background-color: #626801;
+}
+
+/*  Gallery */
+.galleryBackLink a{
+	font-size:24px;
+	color:#2E536E;
+	text-decoration:none;
+	float:left;
+	margin-right:5px;
+	margin-top:-5px;
+}
+@media (min-width: 768px) {
+	.galleryBackLink{
+		float:right;
+		margin:0px;
+	}
+}
+.galleryIcon {
+	text-align:center;
+}
+.galleryIcon img{
+	width:100%;
+	max-width:200px;
+	height:auto;
+}
+.galleryIconDetail{
+	margin:0px 0px 10px 0px;	
+}
+@media (min-width: 768px) {
+	.galleryIconDetail{
+		float:left;
+		margin:0px 20px 10px 0px;
+	}
+}
+.gallery .bResItem a.blueButton .fa{
+	font-size:40px;
+	color:#2E536E;
+	padding:5px 15px 15px 15px;
+}
+.gallery .bResItem .btn-default {
+    padding: 8px !important;
+    font-size: 16px;
+    line-height: 1em;
+    position:relative;
+    top:-8px;
+}
+.gallery .bResItem .btn-default i {
+    margin-left: 0px !important;
+    font-size: 16px;
+    line-height: 1em;
+    margin-top: 0px;
+    top: 0px;
+    color:#FFF;
+	padding:0px !important;
+}
+.gallery .galleryLoginMessage{
+	float:right;
+	font-size:13px;
+	padding-top:5px;
 }
 #caFormOverlay H1{
 	background-color:#2E536E;
@@ -704,7 +876,21 @@ nav, .navbar, .navbar-default{
 	#caFormOverlay{
 		margin:10% auto 0px auto;
 	}
+	#caFormOverlay.regOverlay{
+		width:900px;
+	}
 }
 label{
 	text-transform:none;
+	font-weight:normal;
+	font-size:15px;
+}
+#caFormOverlay H1{
+	font-family:'thesans5';
+}
+#caFormOverlay{
+	font-size:15px;
+}
+.form-control {
+    font-size: 13px;
 }

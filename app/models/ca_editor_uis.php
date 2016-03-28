@@ -347,7 +347,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		$t_ui = new ca_editor_uis();
 		
 		// If table supports null types take type_id=null to be  "none" rather than a signal to allow any type of editor
-		if (!$vn_type_id && (bool)$t_instance->getFieldInfo($t_instance->getTypeFieldName(), 'IS_NULL')) {
+		if (!$vn_type_id && method_exists($t_instance, "getTypeFieldName") && (bool)$t_instance->getFieldInfo($t_instance->getTypeFieldName(), 'IS_NULL')) {
 			$vn_type_id = '_NONE_';
 		}
 		
@@ -520,6 +520,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			$t_ui = ca_editor_uis::find(array('editor_code' => $pm_ui_id), array('returnAs' => 'firstModelInstance'));
 		}
 		if (!$t_ui) { return null; }
+		if ($t_ui->get('is_system_ui')) { return __CA_BUNDLE_ACCESS_EDIT__; }
 		$vn_ui_id = $t_ui->getPrimaryKey();
 		
 		if ($vn_user_id = $po_request->getUserID()) {

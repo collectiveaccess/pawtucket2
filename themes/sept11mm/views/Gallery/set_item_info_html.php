@@ -22,15 +22,19 @@
 		print "<div class='unit'><b>Credit Line:</b> <i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
 	}
 	if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
-		if(is_array($va_subjects) && sizeof($va_subjects)){
-			print "<div class='unit'>";
-			print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
-			foreach($va_subjects as $va_subject){
-				print caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]))."<br/>";
-			}
-			print "</div>";
+	if(is_array($va_subjects) && sizeof($va_subjects)){
+		# --- loop through to order alphebeticaly
+		$va_subjects_sorted = array();
+		foreach($va_subjects as $va_subject){
+			$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]));
 		}
+		ksort($va_subjects_sorted);
+		print "<div class='unit'>";
+		print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
+		print join($va_subjects_sorted, "<br/>");
+		print "</div>";
 	}
+}
 ?>
 	{{{<ifdef code="ca_objects.public_description"><div class="unit"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
 

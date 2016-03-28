@@ -525,16 +525,16 @@ a.browseRemoveFacet img {
 .browseHeadernav{
 	font-size:11px;
 }
-.filterMenureults {
-	/*float:left; */
+.filterMenuResults {
 	padding-top:2px;
-	/*margin-right:-15px; */
-	/*margin-left:12px;*/
-	max-height:250px;
-	overflow:auto;
 }
 
-.mainfacet {
+.filterMenuResults div div.row {
+	overflow:auto;
+	max-height:325px;
+}
+
+.mainFacet {
 	color:#262626;
 	min-height:30px;
 	line-height:28px;
@@ -542,27 +542,27 @@ a.browseRemoveFacet img {
 	margin-top:-5px;
 	padding-top:2px;
 }		
-.mainfacet	ul{
+.mainFacet	ul{
 	list-style-type:none;
 	margin:0px !important;
 	padding:0px !important;
 }
-.mainfacet	li{
+.mainFacet	li{
 	list-style-type:none;
 	margin:0px 30px 0px 0px !important;
 	padding:0px !important;
 	float:none;
 }
 @media (min-width: 768px) {
-	.mainfacet	li{
+	.mainFacet	li{
 		float:left;
 	}
 }
-.mainfacet	li .active a{
+.mainFacet	li .active a{
 	color:#000;
 
 }	
-.mainfacet	li a:hover{
+.mainFacet	li a:hover{
 	color:#000;
 	text-decoration:none;
 	/*border-bottom:1px solid #000;*/
@@ -630,6 +630,14 @@ a.browseRemoveFacet img {
 
 .nav .dropdown .dropdown-menu {
     overflow: auto;
+}
+
+.detailBrowseFacet {
+	border: 1px solid #dddddd;
+	height: 200px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	display: none;
 }
 
 
@@ -754,23 +762,28 @@ a.browseRemoveFacet img {
 	padding:0px;
 	margin:0px;
 }
+.sets H1 .btn-group {
+	font-size:16px;
+	padding-top: 5px;
+    margin-bottom: 0px;
+}
 .sets .setsBack{
 	margin:0px 5px 0px 0px;
-	background-color:#EBEBEB;
+	background-color:#ffffff;
 	text-transform:uppercase;
 	padding:0px 5px 3px 5px;
 	text-align:center;
 	float:left;
 }
 .sets .setsBack a{
-	color:#8e8985;
+	color:#000000;
 	line-height:.3em;
 	font-size:14px;
 	text-decoration:none;
 }
 .sets .setsBack a .small{
 	font-size:7px;
-	color:#ababab;
+	color:#000000;
 	padding-top:0px;
 	padding-bottom:5px;
 }
@@ -798,8 +811,10 @@ a.browseRemoveFacet img {
 	position:relative;
 }
 .lbSetCount {
-	font-size:16px;
+	font-size:13px;
 	color:#858585;
+	text-transform:capitalize;
+	vertical-align:middle;
 }
 .lbSet{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -1393,7 +1408,7 @@ a.browseRemoveFacet img {
 .detail a:hover{
 	color:#737373;
 	text-decoration:underline;
-	}
+}
 	
 .detail H4 {
 	padding:0px;
@@ -1618,43 +1633,46 @@ a.browseRemoveFacet img {
 	height:auto;
 	margin-bottom:5px;
 }
-.detail #detailAnnotations{
+.detail #detailAnnotations {
 	margin:20px 0px 30px 0px;
 }
-.detail .detailAnnotation{
-	height:80px;
-	width:200px;
-	padding:10px;
+
+.detail #detailAnnotations .detailAnnotationList {
+	max-height: 150px;
+	overflow: auto;
+}
+
+.detail #detailAnnotations ul {
+	margin: 0;
+    padding: 0;
+	list-style-type: none;
+	list-style-position:inside;
+	border-top: 1px #ccc solid;
+	border-left: 1px #ccc solid;
+	border-right: 1px #ccc solid;
+}
+
+.detail #detailAnnotations li {
+    margin: 0;
+    padding: 5px;
+	border-bottom: 1px #ccc solid;
 	background-color:#F5F5F5;
-	margin:0px 2px 0px 2px;
-	position:relative;
 }
-.detail .detailAnnotation:hover{
+
+.detail #detailAnnotations li.active {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.detail #detailAnnotations ul li:hover{
 	background-color:#ABABAB;
-	color:#FFFFFF;
+	cursor: pointer;
 }
-.detail .detailAnnotation:hover a{
-	background-color:#ABABAB;
-	color:#FFFFFF;
+
+.detail #detailAnnotations ul li.detailAnnotation a {
+	text-decoration: none;
 }
-.detail .detailAnnotation .annotationControls{
-	position:absolute;
-	right:0px;
-	bottom:0px;
-	padding:5px;
-}
-.detail .detailAnnotation .annotationControls a{
-	color:#929292;
-	font-size:14px;
-}
-.detail .detailAnnotation:hover .annotationControls a, .detail .detailAnnotation:hover .annotationControls a:hover{
-	color:#F5F5F5;
-}
-.detail #detailAnnotations #detailScrollButtonNext, .detail #detailAnnotations #detailScrollButtonPrevious{
-	margin: 0px;
-	height:80px;
-	padding-top:30px;
-}
+
 #detailRepresentationThumbnails a img{
 	border: 1px solid #dddddd;
     height: auto;

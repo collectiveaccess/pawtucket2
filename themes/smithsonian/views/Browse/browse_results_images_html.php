@@ -51,7 +51,8 @@
 	
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
-		$vn_col_span_sm = 2;
+		$vn_col_span_sm = 6;
+		$vn_col_span_xs = 6;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;

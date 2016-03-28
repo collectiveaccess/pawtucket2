@@ -28,8 +28,10 @@
  
 	$va_browse_types = caGetBrowseTypes(array('forMenuBar' => true));
 	$o_config = caGetBrowseConfig();
+	
 	if(sizeof($va_browse_types)){
-		switch($o_config->get("browseMenuFormat")){
+		if (!($vs_format = $o_config->get("browseMenuFormat"))) { $vs_format = $o_config->get("browse_menu_format"); }
+		switch($vs_format){
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>
@@ -48,7 +50,7 @@
 					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, ($o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse")), "", "", "Browse", key($va_browse_types)); ?></li>
 <?php
 				}
-			break;
+				break;
 			# ------------------------------------------------
 			default:
 				$vs_first_browse = null;
@@ -67,7 +69,7 @@
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
+												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
 												if(!$vs_first_browse){
 													$vs_first_browse = $vs_browse_name;
 												}
@@ -90,11 +92,11 @@
 					<script type="text/javascript">
 						jQuery('.dropdown-toggle').dropdown()
 						jQuery(document).ready(function() {		
-							jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse)); ?>");
+							jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse)); ?>");
 						});
 					</script>
 <?php
-			break;
+				break;
+			# ------------------------------------------------
 		}
 	}
-?>

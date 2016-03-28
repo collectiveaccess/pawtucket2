@@ -33,7 +33,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12">
-				<H1>Highlights From The Collection</H1>
+				<H1>Collection Highlights</H1>
 			</div>
 		</div>
 	</div>

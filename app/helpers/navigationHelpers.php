@@ -119,7 +119,8 @@
 	 */
 	function caNavLink($po_request, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
-			return "<strong>Error: no url for navigation</strong>";
+			//return "<strong>Error: no url for navigation</strong>";
+			$vs_url = '/';
 		}
 		
 		$vs_tag = "<a href='".$vs_url."'";
@@ -144,7 +145,7 @@
 	function caNavButton($po_request, $pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if ($ps_module_path && $ps_controller && $ps_action) {
 			if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
-				return "<strong>Error: no url for navigation</strong>";
+				return '';//<strong>Error: no url for navigation</strong>";
 			}
 		} else {
 			$vs_url = '';
@@ -224,7 +225,7 @@
 	 */
 	function caNavHeaderButton($po_request, $pn_type, $ps_content, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
-			return "<strong>Error: no url for navigation</strong>";
+			return ''; //<strong>Error: no url for navigation</strong>";
 		}
 		
 		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_BUTTON_ICON_POS_LEFT__;
@@ -303,9 +304,15 @@
 		}
 		
 		if ($ps_module_and_controller_path) {
-			$vs_action = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
+			$vs_action = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) ?
+				$po_request->getBaseUrlPath().'/'.$ps_module_and_controller_path.'/'.$ps_action
+				:					
+				$po_request->getBaseUrlPath().'/'.$po_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
 		} else {
-			$vs_action = $po_request->getControllerUrl().'/'.$ps_action;
+			$vs_action = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__)) ?
+				str_replace("/".$po_request->getScriptName(), "", $po_request->getControllerUrl()).'/'.$ps_action
+				:
+				$po_request->getControllerUrl().'/'.$ps_action;
 		}
 		
 		$vs_buf = "<form action='".$vs_action."' method='".$ps_method."' id='".$ps_id."' $vs_target enctype='".$ps_enctype."'>\n<input type='hidden' name='_formName' value='{$ps_id}'/>\n";
@@ -702,7 +709,7 @@
 	 * Returns an HTML to edit an item in the appropriate bundle-based editor. If no specified item is specified (eg. no id value is set)
 	 * the a link to create a new item of the specfied type is returned.
 	 *
-	 * @param HTTPRequest $po_request The current request object
+	 * @param RequestHTTP $po_request The current request object
 	 * @param string $ps_content The displayed content of the link
 	 * @param string $ps_classname CSS classname(s) to apply to the link
 	 * @param string $ps_table The name or table_num of the edited items table
@@ -711,6 +718,7 @@
 	 * @param array $pa_attributes Optional array of attributes to set on the link's <a> tag. You can use this to set the id of the link, as well as any other <a> parameter.
 	 * @param array $pa_options Optional array of options. Supported options are:
 	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
+	 * @return string The <a> tag as string
 	 */
 	function caEditorLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
 		if (!($vs_url = caEditorUrl($po_request, $ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
@@ -1142,5 +1150,18 @@
 			'idno' => caNavUrl($po_request, $vs_module, $vs_controller, 'IDNo', $pa_attributes),
 			'intrinsic' => caNavUrl($po_request, $vs_module, $vs_controller, 'intrinsic', $pa_attributes)
 		);
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 * Redirect to given url
+	 * @param string $ps_url
+	 * @return bool success state
+	 */
+	function caSetRedirect($ps_url) {
+		global $g_response;
+		if(!($g_response instanceof ResponseHTTP)) { return false; }
+
+		$g_response->setRedirect($ps_url);
+		return true;
 	}
 	# ------------------------------------------------------------------------------------------------

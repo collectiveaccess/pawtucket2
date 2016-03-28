@@ -52,11 +52,12 @@
 				</div>
 				<div id="libInfo" class="col4">
 					<div>
+						<h3>The Library Will Be Closed</h3><div>Sunday, March 27</div><div>For Easter</div>
 						<div><p><span style="line-height: 1.538em;">All areas except Circulation close 15 minutes prior to building closing time.</span></p></div>
 					</div>
 				</div>
 				<div id="libLinks" class="col5">
-					<div class="footerItems"><a href="/about/map"> MAP</a> <br> <a href="/about/directions"> DIRECTIONS</a> <br> <a href="https://www.facebook.com/nysoclib" target="_blank" class="sbIcon facebook"> Facebook </a> <a href="https://twitter.com/nysoclib" target="_blank" class="sbIcon twitter"> Twitter</a></div>
+					<div class="footerItems"><a href="http://nysoclib.org/about/map"> MAP</a> <br> <a href="http://nysoclib.org/about/directions"> DIRECTIONS</a> <br> <a href="https://www.facebook.com/nysoclib" target="_blank" class="sbIcon facebook"> Facebook </a> <a href="https://twitter.com/nysoclib" target="_blank" class="sbIcon twitter"> Twitter</a></div>
 				</div>
 				<div class="clear">&nbsp;</div>
 				<div id="footerCopyright">
@@ -102,5 +103,6 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
+		<script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-39467259-1', 'auto'); ga('send', 'pageview'); </script>
 	</body>
 </html>

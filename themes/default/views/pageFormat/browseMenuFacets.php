@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,7 +39,7 @@
 		</ul>
 	</div>
 		
-	<div class="filterMenureults col-sm-10">
+	<div class="filterMenuResults col-sm-10">
 		<div class='browseMenuFacet'> </div>	
 	</div>	
 	<div class="browsedivider">&nbsp;</div>
@@ -56,9 +56,7 @@
 	</div><!--end container-->	
 <?php
 	} else {
-?>
-		No facets available
-<?php
+		print _t('No facets available');
 	}
 ?>
 

@@ -97,7 +97,10 @@ if (!$vb_ajax) {	// !ajax
 ?>
 				
 			<div id="searchOptions" >
-				<h3>Search Options</h3>
+<?php
+		print "<h3>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h3>";	
+
+?>
 				<div class='row'>	
 					<div class='col-sm-3 col-md-3 col-lg-3 btn-group'>
 					<a href='#' data-toggle="dropdown">Sort By: <span class='btn'><?php print $vs_current_sort;?><b class="caret"></b></span></a>
@@ -123,7 +126,7 @@ if (!$vb_ajax) {	// !ajax
 							$vs_sort_label = "descending";
 						}
 	?>				
-						<a href='#' data-toggle="dropdown">Sort Order: <span class='btn'><?php print $vs_sort_dir;?><b class="caret"></b></span></a>
+						<a href='#' data-toggle="dropdown">Sort Order: <span class='btn'><?php print ucfirst($vs_sort_label);?><b class="caret"></b></span></a>
 						<ul class="dropdown-menu" role="menu">
 	<?php	
 							if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -212,8 +215,8 @@ if (!$vb_ajax) {	// !ajax
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
-?>
-		
+
+?>	
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
