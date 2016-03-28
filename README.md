@@ -3,6 +3,10 @@ CollectiveAccess Pawtucket README
 
 Thanks for downloading CollectiveAccess Pawtucket version 2.0!
 
+This version of Pawtucket is compatible with Providence versions up to and including 1.6. 
+If you are running the development (currently 1.7) version of Providence you should use the
+develop branch of Pawtucket 2.0.
+
 Pawtucket is general purpose public-access publishing tool for
 CollectiveAccess. It provides an easy way to create web sites around data
 entered into CollectiveAccess using the Providence cataloguing tool. Pawtucket
