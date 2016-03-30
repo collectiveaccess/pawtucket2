@@ -54,7 +54,7 @@
 							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}elseif(is_array($va_component_info["rep_ids"]) && sizeof($va_component_info["rep_ids"])){
 							#download the all reps for the component
-							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
+							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "exclude_ancestors" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
 							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_object->get("object_id"), 'representation_id' => $va_component_info["rep_ids"][0], 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}
 					}else{
@@ -396,18 +396,6 @@
 ?>
 	</div>
 </div>
-<!--
-				{{{<if rule="(length(^ca_objects.abstract) > 0) or (length(^ca_objects.related%restrictToRelationshipTypes=translation) > 0)">
-				<div class="col-xs-12 col-sm-6" style="border:1px solid #333;">xxxx
-					<ifdef code="ca_objects.abstract"><p>^ca_objects.abstract</p></ifdef>
-					<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="translation">
-						<p><b>View this module in other languages:</b><br/>
-						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToRelationshipTypes="translation"><l>^ca_objects.preferred_labels.name</l> (^ca_objects.language)</unit>
-						</p>
-					</ifcount>
-				</div>
-				</if>}}}
--->
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('.componentSection').hide();

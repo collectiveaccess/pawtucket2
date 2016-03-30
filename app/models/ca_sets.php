@@ -410,20 +410,20 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			// quickly delete attribute values
 			$this->getDb()->query('
 				DELETE FROM ca_attribute_values WHERE attribute_id IN
-				(SELECT attribute_id FROM ca_attributes WHERE table_num=? and row_id IN (SELECT item_id FROM ca_set_items WHERE set_id=7))
-			', $this->tableNum(), $this->getPrimaryKey());
+				(SELECT attribute_id FROM ca_attributes WHERE table_num=? and row_id IN (SELECT item_id FROM ca_set_items WHERE set_id = ?))
+			', array($this->tableNum(), $this->getPrimaryKey()));
 
 			// quickly delete attributes
 			$this->getDb()->query('
-				DELETE FROM ca_attributes WHERE table_num=? and row_id IN (SELECT item_id FROM ca_set_items WHERE set_id=7)
-			', $this->tableNum(), $this->getPrimaryKey());
+				DELETE FROM ca_attributes WHERE table_num=? and row_id IN (SELECT item_id FROM ca_set_items WHERE set_id = ?)
+			', array($this->tableNum(), $this->getPrimaryKey()));
 
 			// get list of set item ids
-			$qr_items = $this->getDb()->query('SELECT item_id FROM ca_set_items WHERE set_id=?', $this->getPrimaryKey());
+			$qr_items = $this->getDb()->query('SELECT item_id FROM ca_set_items WHERE set_id = ?', array($this->getPrimaryKey()));
 			$va_item_ids = $qr_items->getAllFieldValues('item_id');
 
 			// nuke set items
-			$this->getDb()->query('DELETE FROM ca_set_items WHERE set_id=?', $this->getPrimaryKey());
+			$this->getDb()->query('DELETE FROM ca_set_items WHERE set_id = ?', array($this->getPrimaryKey()));
 
 			// remove search indexing for deleted set items
 			foreach($va_item_ids as $vn_item_id) {
@@ -435,8 +435,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			if(!caGetOption('hard', $pa_options, false)) { // only applies if we don't hard-delete
 				$vb_we_set_transaction = false;
 				if (!$this->inTransaction()) {
-					$o_t = new Transaction($this->getDb());
-					$this->setTransaction($o_t);
+					$this->setTransaction($o_t = new Transaction($this->getDb()));
 					$vb_we_set_transaction = true;
 				}
 				$this->set('set_code', $this->get('set_code') . '_' . time());
@@ -574,6 +573,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$ps_set_name = isset($pa_options['name']) ? $pa_options['name'] : null;
 		
 		$pn_row_id = (isset($pa_options['row_id']) && ((int)$pa_options['row_id'])) ? (int)$pa_options['row_id'] : null;
+
+		$ps_sort = caGetOption('sort', $pa_options, null);
+		$ps_sort_direction = caGetOption('sortDirection', $pa_options, null);
 		
 		$pa_public_access = isset($pa_options['checkAccess']) ? $pa_options['checkAccess'] : null;
 		if ($pa_public_access && is_numeric($pa_public_access) && !is_array($pa_public_access)) {
@@ -679,6 +681,26 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$va_sql_wheres[] = "(cs.type_id = ?)";
 					$va_sql_params[] = (int)$vn_type_id;
 				}
+			}
+		}
+
+		if($va_restrict_to_types = caGetOption('restrict_to_types', $pa_options, false)) {
+			$va_restrict_to_type_ids = array();
+			foreach($va_restrict_to_types as $vm_type) {
+				if(is_numeric($vm_type)){
+					$va_restrict_to_type_ids[] = (int)$vm_type;
+				} else {
+					# --- look up code of set type
+					$vn_type_id = caGetListItemID('set_types', $pm_type);
+					if($vn_type_id){
+						$va_restrict_to_type_ids[] = (int) $vn_type_id;
+					}
+				}
+			}
+
+			if(sizeof($va_restrict_to_type_ids)) {
+				$va_sql_wheres[] = "(cs.type_id IN (?))";
+				$va_sql_params[] = $va_restrict_to_type_ids;
 			}
 		}
 		
@@ -801,6 +823,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					
 					$va_sets[$qr_res->get('set_id')][$qr_res->get('locale_id')] = array_merge($qr_res->getRow(), array('item_count' => intval($va_item_counts[$qr_res->get('set_id')]), 'set_content_type' => $vs_set_type, 'set_type' => $vs_type));
 				}
+
 				return $va_sets;
 			}
 			
@@ -978,7 +1001,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		// If user is admin or has set admin privs allow them access to the set
 		//
 		$t_user = new ca_users();
-		if ($t_user->load($pn_user_id) && ($t_user->canDoAction('is_administrator') || $t_user->canDoAction('can_administrate_sets'))) { 
+		if ($t_user->load($pn_user_id) && ($t_user->canDoAction('is_administrator') || $t_user->canDoAction('can_administrate_sets'))) {
 			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true;
 		}
 		
@@ -1120,7 +1143,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		if (!$this->inTransaction()) {
 			$o_trans = new Transaction($this->getDb());
-			$vb_web_set_transaction = true;
+			$vb_we_set_transaction = true;
 		} else {
 			$o_trans = $this->getTransaction();
 		}
@@ -1150,6 +1173,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		if ($t_item->numErrors()) {
 			$this->errors = $t_item->errors;
+			if ($vb_we_set_transaction) { $o_trans->rollback();}
 			return false;
 		}
 		
@@ -1161,6 +1185,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				);
 				if ($t_item->numErrors()) {
 					$this->errors = $t_item->errors;
+					
+					if ($vb_we_set_transaction) { $o_trans->rollback();}
 					return false;
 				}
 			}
@@ -1175,9 +1201,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			if ($t_item->numErrors()) {
 				$t_item->delete();
 				$this->errors = $t_item->errors;
+				
+				if ($vb_we_set_transaction) { $o_trans->rollback();}
 				return false;
 			}
 		}
+		
+		if ($vb_we_set_transaction) { $o_trans->commit();}
 		return (int)$t_item->getPrimaryKey();
 	}
 	# ------------------------------------------------------
@@ -1387,10 +1417,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$va_row_ranks = $this->getRowIDRanks($pa_options);	// get current ranks
 		$vn_i = 0;
 		
-		$vb_web_set_transaction = false;
+		$vb_we_set_transaction = false;
 		if (!$this->inTransaction()) {
 			$o_trans = new Transaction($this->getDb());
-			$vb_web_set_transaction = true;
+			$vb_we_set_transaction = true;
 		} else {
 			$o_trans = $this->getTransaction();
 		}
@@ -1471,9 +1501,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		
 		if(sizeof($va_errors)) {
-			if ($vb_web_set_transaction) { $o_trans->rollback(); }
+			if ($vb_we_set_transaction) { $o_trans->rollback(); }
 		} else {
-			if ($vb_web_set_transaction) { $o_trans->commit(); }
+			if ($vb_we_set_transaction) { $o_trans->commit(); }
 		}
 		
 		return $va_errors;
@@ -1514,6 +1544,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			returnItemAttributes = A list of attribute element codes for the ca_set_item record to return values for.
 	 *			idsOnly = Return a simple numerically indexed array of row_ids
 	 * 			template =
+	 *			item_ids = array of set item_ids to limit results to -> used by getPrimaryItemsFromSets so don't have to replicate all the functionality in this function
 	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
 	 *			simple list of ids. The full return array is key'ed on ca_set_items.item_id and then on locale_id. The values are arrays with keys set to a number of fields including:
@@ -1552,6 +1583,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$vs_limit_sql = '';
 		if (isset($pa_options['limit']) && ($pa_options['limit'] > 0)) {
 			$vs_limit_sql = "LIMIT ".$pa_options['limit'];
+		}
+		$vs_item_ids_sql = '';
+		if (isset($pa_options['item_ids']) && (is_array($pa_options['item_ids'])) && (sizeof($pa_options['item_ids']) > 0)) {
+			$vs_item_ids_sql = " AND casi.item_id IN (".join(", ", $pa_options['item_ids']).") ";
 		}
 		// get set items
 		$vs_access_sql = '';
@@ -1602,7 +1637,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			INNER JOIN ".$t_rel_table->tableName()." AS rel ON rel.".$t_rel_table->primaryKey()." = casi.row_id
 			{$vs_label_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql}
+				casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql}
 			ORDER BY 
 				casi.rank ASC
 			{$vs_limit_sql}
@@ -1650,7 +1685,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			{$vs_label_join_sql}
 			{$vs_rep_join_sql}
 			WHERE
-				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql}
+				casi.set_id = ? {$vs_rep_where_sql} {$vs_access_sql} {$vs_deleted_sql} {$vs_item_ids_sql}
 			ORDER BY 
 				casi.rank ASC
 			{$vs_limit_sql}
@@ -1956,7 +1991,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
  		
  		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
  		
-		return $o_view->render('ca_sets.php');
+		return $o_view->render('ca_sets_checklist.php');
 	}
 	# ------------------------------------------------------
 	# Utilities
@@ -2001,6 +2036,80 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		}
 		
 		return $va_items;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns the primary items from each set listed in $pa_set_ids.  If no primary item is selected, default to first item in set
+	 *
+	 * @param array $pa_set_ids The set_ids (*not* set codes) for which the first item should be fetched
+	 * @param array $pa_options And optional array of options. Supported values include:
+	 *			version = the media version to include with returned set items, when media is available
+	 *			primary_attribute = md attribute used to indicate set item is primary; default = set_item_is_primary
+	 *			primary_list = list for primary attribute; default = set_item_is_primary
+	 *			primary_value = list item value for primary items; default = is_primary
+	 *
+	 * @return array A list of items; the keys of the array are set_ids while the values are associative arrays containing the latest information.
+	 */
+	public static function getPrimaryItemsFromSets($pa_set_ids, $pa_options=null) {
+		if (!is_array($pa_options)) { $pa_options = array(); }
+		$vs_version = (isset($pa_options['version']) && $pa_options['version']) ? $pa_options['version'] : 'thumbnail';
+		$pa_options["thumbnailVersion"] = $vs_version;
+		$vs_primary_attribute = (isset($pa_options['primary_attribute']) && $pa_options['primary_attribute']) ? $pa_options['primary_attribute'] : 'set_item_is_primary';
+		$vs_primary_list = (isset($pa_options['primary_list']) && $pa_options['primary_list']) ? $pa_options['primary_list'] : 'set_item_is_primary';
+		$vs_primary_value = (isset($pa_options['primary_value']) && $pa_options['primary_value']) ? $pa_options['primary_value'] : 'is_primary';
+		
+		
+		#$pa_options["limit"] = 1;
+		$t_set_item = new ca_set_items();
+		$va_items = array();
+		$o_db = new Db();
+		$qr_element = $o_db->query("
+			select element_id from ca_metadata_elements where element_code = ?
+		", array($vs_primary_attribute));
+		$va_primary_set_item_ids_for_set = array();
+		if($qr_element->numRows()){
+			$qr_element->nextRow();
+			$vn_element_id = $qr_element->get("element_id");
+			$t_lists = new ca_lists();
+			$vn_is_primary_item_id = $t_lists->getItemIDFromList($vs_primary_list, $vs_primary_value);
+			if($vn_is_primary_item_id){
+				foreach($pa_set_ids as $vn_set_id) {					
+					# --- query for set items based on attribute value of primary_attribute
+					$qr_primary_items = $o_db->query("
+						SELECT si.item_id, si.row_id
+						FROM ca_attribute_values av
+						INNER JOIN ca_attributes as a ON av.attribute_id = a.attribute_id
+						INNER JOIN ca_set_items as si ON si.item_id = a.row_id
+						WHERE a.table_num = ? AND av.item_id = ? AND si.set_id = ?					
+						", array($t_set_item->tableNum(), $vn_is_primary_item_id, $vn_set_id));
+					if($qr_primary_items->numRows()){
+						$va_tmp = array();
+						while($qr_primary_items->nextRow()){
+							$va_tmp[] = $qr_primary_items->get("item_id");
+						}
+						$va_primary_set_item_ids_for_set[$vn_set_id] = $va_tmp;
+					}					
+				}			
+			}
+		}
+		$t_set = new ca_sets();
+		foreach($pa_set_ids as $vn_set_id) {
+			if ($t_set->load($vn_set_id)) {
+				if(is_array($va_primary_set_item_ids_for_set[$vn_set_id])){
+					$pa_options["item_ids"] = $va_primary_set_item_ids_for_set[$vn_set_id];
+					$pa_options["limit"] = null;
+				}else{
+					$pa_options["limit"] = 1;
+				}
+				$va_item_list = caExtractValuesByUserLocale($t_set->getItems($pa_options));
+				$va_items[$vn_set_id] = $va_item_list;	
+			}
+		}
+		
+		return $va_items;		
+
+		
+		return true;
 	}
 	# ------------------------------------------------------
 	/**
@@ -2449,6 +2558,116 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		}
 		return $va_set_ids;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Check if currently loaded row is save-able
+	 *
+	 * @param RequestHTTP $po_request
+	 * @param string $ps_bundle_name Optional bundle name to test write-ability on. If omitted write-ability is considered for the item as a whole.
+	 * @return bool True if record can be saved, false if not
+	 */
+	public function isSaveable($po_request, $ps_bundle_name=null) {
+		// Check type restrictions
+		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
+			$vn_type_access = $po_request->user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
+			if ($vn_type_access != __CA_BUNDLE_ACCESS_EDIT__) {
+				return false;
+			}
+		}
+
+		// Check source restrictions
+		if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
+			$vn_source_access = $po_request->user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
+			if ($vn_source_access < __CA_BUNDLE_ACCESS_EDIT__) {
+				return false;
+			}
+		}
+
+		// Check item level restrictions
+		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
+			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
+			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
+				return false;
+			}
+		}
+
+		// Check actions
+		if (!$this->getPrimaryKey() && !$po_request->user->canDoAction('can_create_sets')) {
+			return false;
+		}
+		if ($this->getPrimaryKey() && !$po_request->user->canDoAction('can_edit_sets')) {
+			return false;
+		}
+
+		if ($ps_bundle_name) {
+			if ($po_request->user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) < __CA_BUNDLE_ACCESS_EDIT__) { return false; }
+		}
+
+		return true;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Duplicate all items in this set
+	 * @param int $pn_user_id
+	 * @param array $pa_options
+	 * @return ca_sets|bool
+	 */
+	public function duplicateItemsInSet($pn_user_id, $pa_options=array()) {
+		if(!$this->getPrimaryKey()) { return false; }
+		if($this->getItemCount() < 1) { return false; }
+		$t_user = new ca_users($pn_user_id);
+		if(!$t_user->getPrimaryKey()) { return false; } // we need a user for duplication
+		global $g_ui_locale_id;
+
+		if(caGetOption('addToCurrentSet', $pa_options, false)) {
+			$t_set_to_add_dupes_to = $this;
+		} else { // create new set for dupes
+			$t_set_to_add_dupes_to = new ca_sets();
+			$t_set_to_add_dupes_to->set('type_id', $this->get('type_id'));
+			$t_set_to_add_dupes_to->set('table_num', $this->get('table_num'));
+			$t_set_to_add_dupes_to->set('user_id', $this->get('user_id'));
+			$t_set_to_add_dupes_to->set('set_code', $this->get('set_code').'-'._t('dupes'));
+			$t_set_to_add_dupes_to->setMode(ACCESS_WRITE);
+			$t_set_to_add_dupes_to->insert();
+			if(!$t_set_to_add_dupes_to->getPrimaryKey()) {
+				$this->errors = $t_set_to_add_dupes_to->errors;
+				return false;
+			}
+
+			$t_set_to_add_dupes_to->addLabel(array('name' => $this->getLabelForDisplay().' '._t('[Duplicates]')),$g_ui_locale_id, null, true);
+		}
+
+		$va_items = array_keys($this->getItemRowIDs());
+		$va_dupes = array();
+
+		foreach($va_items as $vn_row_id) {
+			/** @var BundlableLabelableBaseModelWithAttributes $t_instance */
+			$t_instance = $this->getAppDatamodel()->getInstance($this->get('table_num'));
+			if(!$t_user->canDoAction('can_duplicate_' . $t_instance->tableName())) {
+				$this->postError(2580, _t('You do not have permission to duplicate these items'), 'ca_sets->duplicateItemsInSet()');
+				return false;
+			}
+			if(!$t_instance->load($vn_row_id)) { continue; }
+
+			// let's dupe
+			$t_dupe = $t_instance->duplicate(array(
+				'user_id' => $pn_user_id,
+				'duplicate_nonpreferred_labels' => $t_user->getPreference($t_instance->tableName().'_duplicate_nonpreferred_labels'),
+				'duplicate_attributes' => $t_user->getPreference($t_instance->tableName().'_duplicate_attributes'),
+				'duplicate_relationships' => $t_user->getPreference($t_instance->tableName().'_duplicate_relationships'),
+				'duplicate_media' => $t_user->getPreference($t_instance->tableName().'_duplicate_media'),
+				'duplicate_subitems' => $t_user->getPreference($t_instance->tableName().'_duplicate_subitems')
+			));
+
+			if($t_dupe instanceof BaseModel) {
+				$va_dupes[] = $t_dupe->getPrimaryKey();
+			}
+		}
+
+		$t_set_to_add_dupes_to->addItems($va_dupes);
+
+		return $t_set_to_add_dupes_to;
 	}
 	# ---------------------------------------------------------------
 }

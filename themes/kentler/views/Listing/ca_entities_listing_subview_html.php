@@ -37,7 +37,7 @@
 ?>
 	<div class="row artistList">
 		<div class="col-sm-12">
-			<div class="leader turqBg">
+			<div class="leader ltGrayBg">
 				<H1><?php print _t("Flatfile Digital Archives"); ?></H1>
 				<p>
 					Etiam pharetra, elit ac fermentum accumsan, ex lectus lacinia nisi, consequat auctor nulla urna ac enim. Vivamus feugiat massa sem, sed fringilla magna cursus sed. Cras laoreet est vitae arcu finibus, id volutpat elit vehicula.
@@ -56,7 +56,7 @@
 		$va_letters = array();
 		while($qr_list->nextHit()) {
 			$va_ids[] = $qr_list->get("entity_id");
-			$va_letters[mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1)] = mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1);	
+			$va_letters[strtoupper(mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1))] = strtoupper(mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1));	
 		}
 		if(is_array($va_letters) && sizeof($va_letters)){
 			print "<div class='row'><div class='col-sm-12 artistListLetterBar'>";
@@ -69,9 +69,9 @@
 		$qr_list->seek(0);
 		#$va_images = caGetDisplayImagesForAuthorityItems("ca_entities", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("creator_website"), 'checkAccess' => $va_access_values));
 		while($qr_list->nextHit()) {
-			$vs_letter = mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1);
+			$vs_letter = strtoupper(mb_substr($qr_list->get("ca_entities.preferred_labels.surname"),0,1));
 			if($vs_letter != $vs_last_letter){
-				print "<div class='col-sm-12 artistListLetterSection'><a name='artistLetter".$vs_letter."' ></a><span class='artistListLetter turqBg openSansBold'>".$vs_letter."</span></div>";
+				print "<div class='col-sm-12 artistListLetterSection'><a name='artistLetter".$vs_letter."' ></a><span class='artistListLetter redBg openSansBold'>".$vs_letter."</span></div>";
 			}
 			print "<div class='col-sm-3 artistListing'>".caDetailLink($this->request, $va_images[$qr_list->get("entity_id")], '', 'ca_entities', $qr_list->get("entity_id"))."<h2>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>', null, null, array("type_id" => $qr_list->get("type_id")))."</h2></div>\n";	
 			$vs_last_letter = $vs_letter;
