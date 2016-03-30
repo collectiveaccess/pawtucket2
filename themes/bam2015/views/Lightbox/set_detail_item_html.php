@@ -33,6 +33,7 @@
     $vb_write_access = $this->getVar('write_access');
     $vs_view = $this->getVar('view');
     $vn_item_id = $this->getVar('item_id');
+    $vn_set_id = $this->getVar('set_id');
     $vn_object_id = $this->getVar('object_id');
 
     $vs_caption = $this->getVar('caption');

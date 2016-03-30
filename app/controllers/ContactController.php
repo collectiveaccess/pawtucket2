@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
  
  	class ContactController extends ActionController {
  		# -------------------------------------------------------
@@ -103,7 +103,6 @@
 						$this->view->setVar("errors", $va_errors);
 						$this->form();
 					}
-
  			}else{
  				$this->view->setVar("errors", $va_errors);
  				$this->form();

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -75,7 +75,6 @@
  		public function __call($ps_function, $pa_args) {
 			$o_search_config = caGetSearchConfig();
 			$pa_options = array_shift($pa_args);
- 						
  			
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
@@ -83,6 +82,7 @@
  			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
  			
+ 			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
  			
  			if ($vb_is_advanced) {
@@ -99,6 +99,14 @@
  			
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
+ 			
+ 			$ps_view = $this->request->getParameter('view', pString);
+ 			if ($ps_view == 'jsonData') {
+ 				$this->view->setVar('context', $this->opo_result_context);
+ 				$this->render("Browse/browse_results_data_json.php");
+ 				return;
+ 			}
+ 			
  			$this->opo_result_context->setAsLastFind(true);
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
@@ -121,7 +129,6 @@
 			
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
@@ -166,6 +173,9 @@
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
 				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
+				if($vs_remove_criterion == "_search"){
+					$this->opo_result_context->setSearchExpression("*");
+				}
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -208,7 +218,9 @@
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
-			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+			if ($vs_search_refine = $this->request->getParameter('search_refine', pString)) {
+				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
+			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			}
 			
@@ -273,7 +285,7 @@
 			}
 			
 			
-			$o_browse->execute(array_merge($va_options, array('strictPhraseSearching' => !$vb_is_advanced)));
+			$o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced)));
 		
 			//
 			// Facets
@@ -306,7 +318,7 @@
 			//
 			$va_criteria = $o_browse->getCriteriaWithLabels();
 			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-				unset($va_criteria['_search']);
+				unset($va_criteria['_search']['*']);
 			}
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
@@ -315,7 +327,6 @@
 					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
 				}
 			}
-			
 			$this->view->setVar('criteria', $va_criteria_for_display);
 		
 			// 
@@ -339,8 +350,8 @@
 			
 			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(10000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(10000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();
@@ -432,7 +443,7 @@
  		 *
  		 * @return string Summary of current browse criteria ready for display
  		 */
- 		public function getCriteriaForDisplay($po_browse) {
+ 		public function getCriteriaForDisplay($po_browse=null) {
  			$va_criteria = $po_browse->getCriteriaWithLabels();
  			if (!sizeof($va_criteria)) { return ''; }
  			$va_criteria_info = $po_browse->getInfoForFacets();

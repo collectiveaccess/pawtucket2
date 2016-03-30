@@ -1,0 +1,1751 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CollectiveAccess\n"
+"POT-Creation-Date: 2016-02-05 15:53-0500\n"
+"PO-Revision-Date: 2016-02-05 15:53-0500\n"
+"Last-Translator: \n"
+"Language-Team: Whirl-i-Gig <seth@whirl-i-gig.com>\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.6\n"
+"X-Poedit-Basepath: ../../../web/kutxateka\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: _t\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: data\n"
+"X-Poedit-SearchPathExcluded-2: support\n"
+"X-Poedit-SearchPathExcluded-3: vendor\n"
+"X-Poedit-SearchPathExcluded-4: viewers\n"
+"X-Poedit-SearchPathExcluded-5: app\n"
+
+#: themes/default/views/About/Index.php:4
+#: themes/default/views/pageFormat/pageHeader.php:139
+msgid "About"
+msgstr "Sobre nosotros"
+
+#: themes/default/views/Browse/browse_refine_subview_html.php:43
+msgid "Filter by"
+msgstr "Filtrar por"
+
+#: themes/default/views/Browse/browse_refine_subview_html.php:54
+#: themes/default/views/Browse/browse_results_html.php:214
+#: themes/default/views/Browse/hierarchy_facet_html.php:50
+#: themes/default/views/Browse/list_facet_html.php:72
+#: themes/default/views/Details/ca_collections_default_html.php:54
+#: themes/default/views/Details/ca_collections_default_html.php:62
+#: themes/default/views/Details/ca_entities_default_html.php:54
+#: themes/default/views/Details/ca_entities_default_html.php:62
+#: themes/default/views/Details/ca_occurrences_default_html.php:54
+#: themes/default/views/Details/ca_occurrences_default_html.php:62
+#: themes/default/views/Details/ca_places_default_html.php:54
+#: themes/default/views/Details/ca_places_default_html.php:62
+#: themes/default/views/Details/list_facet_html.php:65
+msgid "Loading..."
+msgstr "Cargando..."
+
+#: themes/default/views/Browse/browse_refine_subview_html.php:80
+#: themes/default/views/Browse/browse_refine_subview_html.php:84
+msgid "and %1 more"
+msgstr "y %1 más"
+
+#: themes/default/views/Browse/browse_refine_subview_html.php:81
+#: themes/default/views/Lightbox/ajax_comments.php:42
+msgid "close"
+msgstr "cerrar"
+
+#: themes/default/views/Browse/browse_results_html.php:71
+#: themes/default/views/Browse/browse_results_html.php:104
+#: themes/default/views/Classroom/set_detail_html.php:77
+#: themes/default/views/Classroom/set_detail_html.php:117
+#: themes/default/views/Lightbox/set_detail_html.php:74
+#: themes/default/views/Lightbox/set_detail_html.php:106
+msgid "Sort by:"
+msgstr "Ordenar por:"
+
+#: themes/default/views/Browse/browse_results_html.php:84
+#: themes/default/views/Classroom/set_detail_html.php:90
+#: themes/default/views/Lightbox/set_detail_html.php:87
+msgid "desc"
+msgstr "desc"
+
+#: themes/default/views/Browse/browse_results_html.php:84
+#: themes/default/views/Classroom/set_detail_html.php:90
+#: themes/default/views/Lightbox/set_detail_html.php:87
+msgid "asc"
+msgstr "asc"
+
+#: themes/default/views/Browse/browse_results_html.php:91
+msgid "Result"
+msgstr "Resultado"
+
+#: themes/default/views/Browse/browse_results_html.php:91
+msgid "Results"
+msgstr "Resultados"
+
+#: themes/default/views/Browse/browse_results_html.php:91
+msgid "%1 %2 %3"
+msgstr "%1 %2 %3"
+
+#: themes/default/views/Browse/browse_results_html.php:98
+msgid "Add all results to %1"
+msgstr "Añadir todos los resultados a %1"
+
+#: themes/default/views/Browse/browse_results_html.php:99
+msgid "Select results to add to %1"
+msgstr "Selecciona los resultados que añadir a %1"
+
+#: themes/default/views/Browse/browse_results_html.php:113
+#: themes/default/views/Classroom/set_detail_html.php:139
+#: themes/default/views/Lightbox/set_detail_html.php:128
+msgid "Sort order:"
+msgstr "Orden:"
+
+#: themes/default/views/Browse/browse_results_html.php:114
+#: themes/default/views/Classroom/set_detail_html.php:140
+#: themes/default/views/Lightbox/set_detail_html.php:129
+msgid "Ascending"
+msgstr "Ascendente"
+
+#: themes/default/views/Browse/browse_results_html.php:115
+#: themes/default/views/Classroom/set_detail_html.php:141
+#: themes/default/views/Lightbox/set_detail_html.php:130
+msgid "Descending"
+msgstr "Descendente"
+
+#: themes/default/views/Browse/browse_results_html.php:125
+#: themes/default/views/Lightbox/set_detail_html.php:180
+msgid "Start Over"
+msgstr "Volver a empezar"
+
+#: themes/default/views/Browse/browse_results_html.php:130
+msgid "Download results as:"
+msgstr "Descargar resultados como:"
+
+#: themes/default/views/Browse/browse_results_html.php:140
+msgid "Add selected results to %1"
+msgstr "Añadir los resultados seleccionados a %1"
+
+#: themes/default/views/Browse/browse_results_images_html.php:145
+#: themes/default/views/Browse/browse_results_list_html.php:139
+#: themes/default/views/Classroom/set_detail_html.php:308
+#: themes/default/views/Lightbox/set_detail_html.php:291
+msgid "Next %1"
+msgstr "Siguientes %1"
+
+#: themes/default/views/Browse/facet_hierarchy_ancestors_html.php:40
+msgid "Top"
+msgstr "Arriba"
+
+#: themes/default/views/Browse/facet_hierarchy_level_html.php:46
+#: themes/default/views/Browse/facet_hierarchy_level_html.php:53
+msgid "View sub-items"
+msgstr "Ver sub-elementos"
+
+#: themes/default/views/Browse/list_facet_html.php:64
+#: themes/default/views/Details/list_facet_html.php:58
+msgid "Loading"
+msgstr "Cargando"
+
+#: themes/default/views/Classroom/form_set_info_html.php:43
+msgid "Response Information"
+msgstr "Información de respuesta"
+
+#: themes/default/views/Classroom/form_set_info_html.php:43
+#: themes/default/views/Lightbox/form_set_info_html.php:39
+msgid "%1 Information"
+msgstr "Información de %1"
+
+#: themes/default/views/Classroom/form_set_info_html.php:54
+#: themes/default/views/Lightbox/form_add_set_item_html.php:58
+#: themes/default/views/Lightbox/form_set_info_html.php:50
+#: themes/default/views/Lightbox/form_user_group_html.php:47
+msgid "Name"
+msgstr "Nombre"
+
+#: themes/default/views/Classroom/form_set_info_html.php:58
+#: themes/default/views/Classroom/list_html.php:158
+#: themes/default/views/Lightbox/form_add_set_item_html.php:60
+#: themes/default/views/Lightbox/form_set_info_html.php:54
+#: themes/default/views/Lightbox/form_user_group_html.php:51
+#: themes/default/views/Lightbox/user_group_list_html.php:45
+msgid "Description"
+msgstr "Descripción"
+
+#: themes/default/views/Classroom/form_set_info_html.php:62
+#: themes/default/views/Classroom/set_detail_html.php:383
+#: themes/default/views/Lightbox/form_set_info_html.php:58
+#: themes/default/views/Lightbox/set_detail_html.php:329
+#: themes/kutxateka/views/Details/form_comments_html.php:23
+msgid "Save"
+msgstr "Guardar"
+
+#: themes/default/views/Classroom/list_html.php:129
+#: themes/default/views/Classroom/list_html.php:134
+msgid "You have no %1."
+msgstr "No tiene %1."
+
+#: themes/default/views/Classroom/list_html.php:131
+#: themes/default/views/Classroom/list_html.php:144
+#: themes/default/views/Classroom/set_detail_html.php:173
+#: themes/default/views/Lightbox/set_detail_html.php:157
+#: themes/default/views/Lightbox/set_list_html.php:51
+msgid "New %1"
+msgstr "Nuevo %1"
+
+#: themes/default/views/Classroom/list_html.php:148
+msgid "New Group"
+msgstr "Nuevo grupo"
+
+#: themes/default/views/Classroom/list_html.php:152
+msgid "%1 members"
+msgstr "%1 miembros"
+
+#: themes/default/views/Classroom/list_html.php:160
+#: themes/default/views/Lightbox/user_group_list_html.php:47
+msgid "Url to join group"
+msgstr "URL para unirse al grupo"
+
+#: themes/default/views/Classroom/list_html.php:161
+msgid "Members"
+msgstr "Miembros"
+
+#: themes/default/views/Classroom/list_html.php:169
+#: themes/default/views/Lightbox/user_group_list_html.php:55
+msgid "Group has no users"
+msgstr "El grupo no tiene usuarios"
+
+#: themes/default/views/Classroom/list_html.php:191
+#: themes/default/views/Classroom/set_detail_html.php:420
+#: themes/default/views/Lightbox/set_list_html.php:192
+msgid "Delete"
+msgstr "Eliminar"
+
+#: themes/default/views/Classroom/list_html.php:192
+#: themes/default/views/Classroom/set_detail_html.php:421
+#: themes/default/views/Lightbox/set_list_html.php:193
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: themes/default/views/Classroom/list_html.php:203
+#: themes/default/views/Classroom/set_detail_html.php:433
+#: themes/default/views/Lightbox/set_list_html.php:204
+msgid ""
+"Really delete <strong><em>%1</em></strong>? This action cannot be undone."
+msgstr ""
+"¿Realmente quieres eliminar <strong><em>%1</em></strong>? Esta acción no es reversible."
+
+#: themes/default/views/Classroom/set_access_html.php:40
+#: themes/default/views/Lightbox/set_access_html.php:39
+msgid "%1 Access"
+msgstr "Acceso a %1"
+
+#: themes/default/views/Classroom/set_access_html.php:49
+msgid "Groups"
+msgstr "Grupos"
+
+#: themes/default/views/Classroom/set_access_html.php:52
+#: themes/default/views/Classroom/set_access_html.php:63
+#: themes/default/views/Lightbox/set_access_html.php:51
+#: themes/default/views/Lightbox/set_access_html.php:64
+msgid "remove access"
+msgstr "eliminar acceso"
+
+#: themes/default/views/Classroom/set_access_html.php:58
+#: themes/default/views/Lightbox/set_access_html.php:59
+#: themes/default/views/Lightbox/user_group_list_html.php:49
+msgid "Users"
+msgstr "Usuarios"
+
+#: themes/default/views/Classroom/set_access_html.php:65
+#: themes/default/views/Lightbox/set_access_html.php:66
+msgid "Owner"
+msgstr "Propietario"
+
+#: themes/default/views/Classroom/set_detail_html.php:127
+#: themes/default/views/Lightbox/set_detail_html.php:116
+msgid "Refine sort by:"
+msgstr "Refinar orden por:"
+
+#: themes/default/views/Classroom/set_detail_html.php:145
+#: themes/default/views/Lightbox/set_detail_html.php:134
+msgid "All %1"
+msgstr "Todos los %1"
+
+#: themes/default/views/Classroom/set_detail_html.php:150
+#: themes/default/views/Lightbox/set_detail_html.php:139
+msgid "Edit Name/Description"
+msgstr "Editar Nombre/Descripción"
+
+#: themes/default/views/Classroom/set_detail_html.php:154
+#: themes/default/views/Lightbox/form_share_set_html.php:37
+#: themes/default/views/Lightbox/set_detail_html.php:140
+msgid "Share %1"
+msgstr "Compartir %1"
+
+#: themes/default/views/Classroom/set_detail_html.php:155
+#: themes/default/views/Lightbox/set_detail_html.php:141
+msgid "Manage %1 Access"
+msgstr "Gestionar acceso a %1"
+
+#: themes/default/views/Classroom/set_detail_html.php:160
+#: themes/default/views/Lightbox/set_detail_html.php:145
+msgid "Start presentation"
+msgstr "Empezar la presentación"
+
+#: themes/default/views/Classroom/set_detail_html.php:165
+#: themes/default/views/Lightbox/set_detail_html.php:150
+msgid "Download as:"
+msgstr "Descargar como:"
+
+#: themes/default/views/Classroom/set_detail_html.php:175
+#: themes/default/views/Lightbox/set_detail_html.php:159
+#: themes/default/views/Lightbox/set_list_html.php:53
+msgid "New User Group"
+msgstr "Nuevo grupo de usuarios"
+
+#: themes/default/views/Classroom/set_detail_html.php:179
+#: themes/default/views/Lightbox/set_detail_html.php:163
+#: themes/default/views/Lightbox/set_list_html.php:57
+msgid "Manage Your User Groups"
+msgstr "Gestionar tu grupo de usuarios"
+
+#: themes/default/views/Classroom/set_detail_html.php:213
+msgid "Created by"
+msgstr "Creado por"
+
+#: themes/default/views/Classroom/set_detail_html.php:229
+#: themes/default/views/Lightbox/set_detail_html.php:213
+msgid ""
+"Displaying %1 view because required data is not available to generate a %1 "
+"view"
+msgstr ""
+"Mostrando una vista %1 porque los datos necesarios para generar una vista %1 "
+"no están disponibles"
+
+#: themes/default/views/Classroom/set_detail_html.php:313
+#: themes/default/views/Lightbox/set_detail_html.php:296
+msgid "Click the %1 near items throughout the site to add items to this %2."
+msgstr "Pulsa el icono %1 que acompaña a objetos a través del sitio para añadirlos a este %2."
+
+#: themes/default/views/Classroom/set_detail_html.php:353
+msgid "Respond"
+msgstr "Responder"
+
+#: themes/default/views/Classroom/set_detail_html.php:359
+# XXX No, this does not work for many languages...
+msgid "%1 Response%2" 
+msgstr "% respuesta%2"
+
+#: themes/default/views/Classroom/set_detail_html.php:375
+msgid "Comments"
+msgstr "Comentarios"
+
+#: themes/default/views/Classroom/set_detail_html.php:379
+#: themes/default/views/Lightbox/set_detail_html.php:324
+msgid "add your comment"
+msgstr "añade tu comentario"
+
+#: themes/default/views/Contact/form_html.php:7
+#: themes/default/views/Contact/success_html.php:1
+#: themes/default/views/pageFormat/pageHeader.php:143
+#: themes/kutxateka/views/Contact/form_html.php:13
+#: themes/kutxateka/views/Contact/success_html.php:3
+msgid "Contact"
+msgstr "Contacto"
+
+#: themes/default/views/Contact/success_html.php:2
+msgid "Your message has been sent."
+msgstr "Tu mensaje ha sido enviado."
+
+#: themes/default/views/Contribute/spam_check_html.php:40
+msgid "Simple Math Quiz (to prevent SPAMbots)"
+msgstr "Test sencillo de matemáticas (para evitar SPAM)"
+
+#: themes/default/views/Contribute/spam_check_html.php:55
+msgid "Please correctly answer the security question."
+msgstr "Por favor contesta la pregunta de seguridad."
+
+#: themes/default/views/Contribute/terms_and_conditions_check_html.php:38
+msgid "Terms and conditions"
+msgstr "Términos y condiciones"
+
+#: themes/default/views/Contribute/terms_and_conditions_check_html.php:42
+msgid "I agree to the Terms and Conditions set out herein"
+msgstr "Accepto los términos y condiciones aquí establecidos"
+
+#: themes/default/views/Contribute/terms_and_conditions_check_html.php:52
+msgid "You must agree to the terms and conditions before proceeding."
+msgstr "Tienes que dar tu acuerdo a los términos y condiciones antes de seguir."
+
+#: themes/default/views/Details/annotations_html.php:34
+msgid "Featured clips (%1)"
+msgstr "Clips disponibles (%1)"
+
+#: themes/default/views/Details/form_comments_html.php:5
+msgid "Add your tags and comment"
+msgstr "Añade tus etiquetas y comentarios"
+
+#: themes/default/views/Details/form_comments_html.php:13
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: themes/default/views/Details/form_comments_html.php:13
+msgid "tags separated by commas"
+msgstr "etiquetas separadas por comas"
+
+#: themes/default/views/Details/form_comments_html.php:14
+#: themes/kutxateka/views/Details/form_comments_html.php:21
+msgid "Comment"
+msgstr "Comentario"
+
+#: themes/default/views/Details/form_share_html.php:23
+msgid "Share this item"
+msgstr "Comparte este elemento"
+
+#: themes/default/views/Details/form_share_html.php:34
+msgid "To e-mail address"
+msgstr "Dirección electrónica destinatario"
+
+#: themes/default/views/Details/form_share_html.php:34
+msgid "Enter multiple addresses separated by commas"
+msgstr "Puede introducir múltiples direcciones separadas por comas"
+
+#: themes/default/views/Details/form_share_html.php:38
+msgid "Your name"
+msgstr "Tu nombre"
+
+#: themes/default/views/Details/form_share_html.php:42
+msgid "Your email address"
+msgstr "Tu dirección de correo electrónico"
+
+#: themes/default/views/Details/form_share_html.php:52
+#: themes/default/views/LoginReg/form_register_html.php:46
+msgid "Security Question"
+msgstr "Pregunta de seguridad"
+
+#: themes/default/views/Details/form_share_html.php:68
+msgid "Subject"
+msgstr "Asunto"
+
+#: themes/default/views/Details/form_share_html.php:72
+msgid "Message"
+msgstr "Mensaje"
+
+#: themes/default/views/Details/viewer_help_html.php:3
+msgid "How to use the image viewer"
+msgstr "Cómo usar el visor de imágenes"
+
+#: themes/default/views/Details/viewer_help_html.php:6
+msgid ""
+"Click and drag with the mouse to pan across the image. You can use the "
+"mousewheel or trackpad to zoom in or out of the image. \n"
+"\tThe <code>+</code> and <code>-</code> buttons and zoom slider bar at the "
+"top of viewer may also be used. The viewer displays the image at full "
+"resolution, loading \n"
+"\tdetail as you zoom. The more you zoom the more detail will be visible.\n"
+"\t"
+msgstr ""
+"Haz clic y arrastra con el ratón para desplazarte por la imagen. "
+"Puedes usar la rueda del ratón para acercarte o alejarte (zoom). \n"
+"\tTambién puedes usar los botones <code>+</code> y <code>-</code> "
+"y la barra corredera de encima del visor.\n\tEl visor muestra la imagen "
+"en su más alta resolución, cargando el detalle según vas acercándote.\n"
+"\tCuanto mayor el zoom, más detalles serán visibles.\n"
+"\t"
+
+#: themes/default/views/Details/viewer_help_html.php:12
+msgid ""
+"You may add text annotations to the image. Each annotation is associated "
+"with a point, rectangular or polygon area on the image. To create an "
+"annotation\n"
+"\tselect the point (line icon), rectangle or polygon tool from the tool bar, "
+"then click on the location you wish to annotate. "
+msgstr ""
+"Puedes añadir anotaciones en la imagen. Cada anotación es un texto asociado "
+"a un punto, área rectangular o área poligonal de la imagen. Para crear una anotación\n"
+"\tselecciona la herramienta de punto, rectángulo or polígono de la barra de herramientas, "
+"y haz clic en la posición que quieres anotar."
+
+#: themes/default/views/Details/viewer_help_html.php:16
+msgid ""
+"For point annotations a line will appear connecting the location with a text "
+"box. The location will also be highlighted with a red translucent circle. "
+"You may drag both the point of the line and the text box to adjust position."
+msgstr ""
+"Para anotaciones en un punto, una línea aparecerá conectando la posición "
+"con una caja de texto. La posición también será marcada con un círculo "
+"translúcido rojo. Puedes arrastrar tanto el punto como la caja de texto "
+"para ajustar sus posiciones."
+
+#: themes/default/views/Details/viewer_help_html.php:19
+msgid ""
+"For rectangular annotations a rectangle will appear with a text box below "
+"and adjacent. Drag on the edges at the highlighted locations to resize the "
+"rectangle. Drag the rectangle on its interior to reposition it."
+msgstr ""
+"Para anotaciones en forma de rectángulo un rectángulo aparecerá con una caja "
+"de texto debajo y adyacente. Arrastra los lados del área marcada para "
+"cambiar el tamaño del rectángulo. Arrastra el rectángulo desde su interior "
+"para reposicionarlo."
+
+#: themes/default/views/Details/viewer_help_html.php:22
+msgid ""
+"For polygon annotations click \n"
+"\trepeatedly on the image to establish line segments at various locations "
+"for the polygon shape. The shape may have any number of points, and "
+"consequently sides. To complete the shape double-click\n"
+"\twhen placing the final point or click on the pan, rectangle or point "
+"tools. You can adjust the shape by clicking and dragging on any point. To "
+"move the shape, click and drag on the outline,\n"
+"\taway from any point. To remove a point click on it while holding down the "
+"option key. To add a point click on the outline, away from any point, while "
+"holding down the option key.\n"
+"\t"
+msgstr ""
+"Para anotaciones en forma de polígono haz clic\n"
+"\trepetidamente en la imagen para establecer los vértices del área poligonal."
+"El área puede tener el número de vértices, y por tanto de lados, que desees.\n"
+"\tPara competar la forma haz doble-clic al colocar el último vértice, o "
+"selecciona la herramienta de desplazamiento, punto, rectángulo o polígono.\n"
+"\tPuedes ajustar la forma haciendo clic en cualquier vértice y arrastrándolo. "
+"Para mover el polígono, haz clic en su perímetro lejos de los vértices, "
+"y arrastra.\n\tPara eliminar un vértice haz clic sobre él mientras mantienes "
+"pulsada la tecla opción. Para añadir un vértice haz clic en cualquier punto "
+"del perímetro (que no sea un vértice existente) mientras mantienes pulsada "
+"la tecla opción.\n\t"
+
+#: themes/default/views/Details/viewer_help_html.php:29
+msgid ""
+"You may also drag the text box into position. Click on the text box to add "
+"text. All changes to annotations are saved automatically as you work."
+msgstr ""
+"También puedes arrastrar la caja de texto para colocarla. Haz clic en la "
+"caja de texto para cambiar el texto. Todos los cambios a las anotaciones "
+"serán guardados automáticamente según los vayas haciendo."
+
+#: themes/default/views/Details/viewer_help_html.php:32
+msgid "Keyboard shortcuts"
+msgstr "Teclas de acceso rápido"
+
+#: themes/default/views/Details/viewer_help_html.php:35
+msgid ""
+"Single-key shortcuts are available for common actions. Pressing the key is "
+"equivalent to the corresponding mouse action."
+msgstr ""
+"Hay disponibles teclas de acceso rápido. Pulsar la tecla es "
+"equivalente a la acción correspondiente con el ratón."
+
+#: themes/default/views/Details/viewer_help_html.php:38
+msgid "%1 to activate image panning"
+msgstr "%1 para activar el desplazamiento en la imagen"
+
+#: themes/default/views/Details/viewer_help_html.php:39
+msgid "%1 to select the rectangle annotation tool"
+msgstr "%1 para seleccionar la herramienta de anotación en forma de rectángulo"
+
+#: themes/default/views/Details/viewer_help_html.php:40
+msgid "%1 to select the point annotation tool"
+msgstr "%1 para seleccionar la herramienta de anotación en un punto"
+
+#: themes/default/views/Details/viewer_help_html.php:41
+msgid "%1 to select the polygon annotation tool"
+msgstr "%1 para seleccionar la herramienta de anotación en forma de polígono"
+
+#: themes/default/views/Details/viewer_help_html.php:42
+msgid "%1 to delete the selected annotation"
+msgstr "%1 para eliminar la anotación seleccionada"
+
+#: themes/default/views/Details/viewer_help_html.php:43
+msgid "%1 to toggle visibility of the image overview"
+msgstr "%1 para cambiar la visibilidad de la vista previa de imagen"
+
+#: themes/default/views/Details/viewer_help_html.php:44
+msgid "%1 to return the image to the centered, zoomed out \"home\" position"
+msgstr "%1 para volver a la posición inicial centrada, sin zoom"
+
+#: themes/default/views/Details/viewer_help_html.php:45
+msgid "%1 to toggle visibility of viewer controls"
+msgstr "%1 para cambiar la visibilidad de los controles de visualización"
+
+#: themes/default/views/Details/viewer_help_html.php:46
+msgid "%1 to hide controls and labels"
+msgstr "%1 para esconder controles y etiquetas"
+
+#: themes/default/views/Details/viewer_help_html.php:47
+msgid "%1 or %2 to zoom in in small increments"
+msgstr "%1 o %2 para acercar (zoom) en pequeños incrementos"
+
+#: themes/default/views/Details/viewer_help_html.php:48
+msgid "%1 or %2 to zoom out in small increments"
+msgstr "%1 o %2 para alejarse (zoom) en pequeños incrementos"
+
+#: themes/default/views/Details/viewer_help_html.php:49
+msgid "%1, %2, %3 or %4 to pan the image in small increments"
+msgstr "%1, %2, %3 o %4 para desplazarse en pequeños incrementos"
+
+#: themes/default/views/Gallery/detail_html.php:51
+msgid "more"
+msgstr "más"
+
+#: themes/default/views/Gallery/index_html.php:37
+#: themes/default/views/Gallery/set_info_html.php:12
+msgid "item"
+msgstr "elemento"
+
+#: themes/default/views/Gallery/index_html.php:37
+#: themes/default/views/Gallery/set_info_html.php:12
+msgid "items"
+msgstr "elementos"
+
+#: themes/default/views/Gallery/set_info_html.php:15
+msgid "view %1"
+msgstr "ver %1"
+
+#: themes/default/views/Gallery/set_item_info_html.php:13
+msgid "VIEW RECORD"
+msgstr "VER FICHA"
+
+#: themes/default/views/Lightbox/ajax_comments.php:44
+msgid "comment"
+msgstr "comentario"
+
+#: themes/default/views/Lightbox/ajax_comments.php:44
+msgid "comments"
+msgstr "comentarios"
+
+#: themes/default/views/Lightbox/exportTemplates/ca_objects_sets_pdf_html.php:53
+msgid "%1 item"
+msgstr "%1 elemento"
+
+#: themes/default/views/Lightbox/exportTemplates/ca_objects_sets_pdf_html.php:53
+msgid "%1 items"
+msgstr "%1 elementos"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:38
+msgid "Add item to %1"
+msgstr "Añadir elemento a %1"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:49
+msgid "Select a %1"
+msgstr "Seleccionar %1"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:56
+msgid "OR<br/>Create a New %1"
+msgstr "O<br />Crear %1"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:58
+msgid "Your %1"
+msgstr "Tu %1"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:52
+msgid "Select a group"
+msgstr "Selecciona un grupo"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:53
+msgid "Select a user group"
+msgstr "Selecciona un grupo de usuarios"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:63
+msgid "OR enter a user"
+msgstr "O introduce un usuario"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:63
+msgid "Enter a user"
+msgstr "Introduce un usuario"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:63
+msgid "email address or multiple addresses separated by comma"
+msgstr "dirección electrónica o varias separadas por coma"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:68
+msgid "Access"
+msgstr "Acceso"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:69
+msgid "Can read"
+msgstr "Puede leer"
+
+#: themes/default/views/Lightbox/form_share_set_html.php:70
+msgid "Can edit"
+msgstr "Puede editar"
+
+#: themes/default/views/Lightbox/present_html.php:64
+msgid "Back to %1"
+msgstr "Vuelta a %1"
+
+#: themes/default/views/Lightbox/set_access_html.php:48
+msgid "User Groups"
+msgstr "Grupos de usuarios"
+
+#: themes/default/views/Lightbox/set_access_html.php:51
+#: themes/default/views/Lightbox/set_access_html.php:64
+msgid "change access"
+msgstr "cambio de acceso"
+
+#: themes/default/views/Lightbox/set_access_html.php:52
+#: themes/default/views/Lightbox/set_access_html.php:66
+msgid "write access"
+msgstr "acceso en escritura"
+
+#: themes/default/views/Lightbox/set_access_html.php:52
+#: themes/default/views/Lightbox/set_access_html.php:66
+msgid "read access"
+msgstr "acceso en lectura"
+
+#: themes/default/views/Lightbox/set_access_html.php:53
+#: themes/default/views/Lightbox/set_access_html.php:67
+msgid "Change to read access"
+msgstr "Cambiar a acceso en lectura"
+
+#: themes/default/views/Lightbox/set_access_html.php:53
+#: themes/default/views/Lightbox/set_access_html.php:67
+msgid "Change to write access"
+msgstr "Cambiar a acceso en escritura"
+
+#: themes/default/views/Lightbox/set_comment_html.php:37
+msgid "Remove comment"
+msgstr "Eliminar comentario"
+
+#: themes/default/views/Lightbox/set_detail_html.php:298
+msgid "There are no items in this %1"
+msgstr "No hay objetos en este %1"
+
+#: themes/default/views/Lightbox/set_detail_html.php:313
+msgid "You may not edit this set, you have read only access."
+msgstr "No puedes editar este conjunto, sólo tienes acceso en lectura."
+
+#: themes/default/views/Lightbox/set_detail_item_html.php:58
+msgid "View Item Detail"
+msgstr "Ver ficha del objeto"
+
+#: themes/default/views/Lightbox/set_detail_item_html.php:61
+msgid "Enlarge Image"
+msgstr "Ampliar imagen"
+
+#: themes/default/views/Lightbox/set_list_html.php:99
+msgid "Activity stream"
+msgstr "Flujo de actividad"
+
+#: themes/default/views/Lightbox/set_list_html.php:111
+msgid "added an item to %1"
+msgstr "añadió un objeto a %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:115
+msgid "changed an item in %1"
+msgstr "cambió un objeto en %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:119
+# XXX typo in source: "and" -> "an"
+msgid "removed and item from %1"
+msgstr "eliminó un objeto de %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:129
+msgid "shared %1 with %2"
+msgstr "compartió %1 con %2"
+
+#: themes/default/views/Lightbox/set_list_html.php:133
+msgid "changed how they share %1 with %2"
+msgstr "cambió cómo se comparte %1 con %2"
+
+#: themes/default/views/Lightbox/set_list_html.php:137
+msgid "unshared %1 with %2"
+msgstr "dejó de compartir %1 con %2"
+
+#: themes/default/views/Lightbox/set_list_html.php:145
+msgid "commented on %1"
+msgstr "comentó sobre %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:147
+msgid "commented on an item in %1"
+msgstr "comentó sobre un objeto en %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:155
+msgid "made %1"
+msgstr "creó %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:159
+msgid "edited %1"
+msgstr "editó %1"
+
+#: themes/default/views/Lightbox/set_list_html.php:163
+msgid "deleted %1"
+msgstr "eliminó %1"
+
+#: themes/default/views/Lightbox/set_list_item_placeholder_html.php:33
+msgid "Create your first %1"
+msgstr "Crea tu primer %1"
+
+#: themes/default/views/Lightbox/user_group_list_html.php:36
+msgid "Your User Groups"
+msgstr "Tus grupos de usuarios"
+
+#: themes/default/views/Lightbox/user_group_list_html.php:61
+msgid "You have made no user groups"
+msgstr "No has creado grupos de usuarios"
+
+#: themes/default/views/LoginReg/form_login_html.php:10
+#: themes/default/views/pageFormat/pageHeader.php:47
+#: themes/kutxateka/views/LoginReg/form_login_html.php:9
+msgid "Login"
+msgstr "Iniciar sesión"
+
+#: themes/default/views/LoginReg/form_login_html.php:18
+msgid "E-mail address"
+msgstr "Dirección de correo electrónico"
+
+#: themes/default/views/LoginReg/form_login_html.php:24
+msgid "Password"
+msgstr "Contraseña"
+
+#: themes/default/views/LoginReg/form_login_html.php:41
+#: themes/default/views/LoginReg/form_login_html.php:50
+msgid "Click here to register"
+msgstr "Pulsa aquí para registrarte"
+
+#: themes/default/views/LoginReg/form_login_html.php:46
+#: themes/default/views/LoginReg/form_login_html.php:52
+msgid "Forgot your password?"
+msgstr "¿Se te ha olvidado la contraseña?"
+
+#: themes/default/views/LoginReg/form_profile_html.php:15
+msgid "Profile"
+msgstr "Perfil"
+
+#: themes/default/views/LoginReg/form_profile_html.php:43
+msgid "Reset Password"
+msgstr "Resetear contraseña"
+
+#: themes/default/views/LoginReg/form_profile_html.php:44
+msgid "Only enter if you would like to change your current password"
+msgstr "Complétalo sólo si quieres cambiar tu contraseña actual"
+
+#: themes/default/views/LoginReg/form_profile_html.php:47
+#: themes/default/views/LoginReg/form_register_html.php:64
+msgid "Re-Type password"
+msgstr "Confirma la contraseña"
+
+#: themes/default/views/LoginReg/form_register_html.php:16
+#: themes/default/views/pageFormat/pageHeader.php:48
+msgid "Register"
+msgstr "Registro"
+
+#: themes/default/views/LoginReg/form_reset_html.php:8
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:8
+msgid "Reset Your Password"
+msgstr "Resetear tu contraseña"
+
+#: themes/default/views/LoginReg/form_reset_html.php:17
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:17
+msgid "Instructions have been sent to the e-mail address you provided."
+msgstr "Se han enviado instrucciones a la dirección de correo electrónico que ha indicado."
+
+#: themes/default/views/LoginReg/form_reset_html.php:20
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:20
+msgid ""
+"You should receive the instructions within the hour. If you do not, contact "
+"us for assistance at "
+msgstr ""
+"Debería recibir las instrucciones durante la hora siguiente. Si no, "
+"póngase en contacto con nosotros en "
+
+#: themes/default/views/LoginReg/form_reset_html.php:29
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:29
+msgid "Your password has been reset!"
+msgstr "Tu contraseña ha sido reseteada"
+
+#: themes/default/views/LoginReg/form_reset_html.php:31
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:31
+msgid "You may now"
+msgstr "Ahora puede"
+
+#: themes/default/views/LoginReg/form_reset_html.php:31
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:31
+msgid "login"
+msgstr "iniciar sesión"
+
+#: themes/default/views/LoginReg/form_reset_html.php:40
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:40
+msgid ""
+"Please confirm you have copied the provided link properly.  If you continue "
+"to have difficulty, contact us for assistance,"
+msgstr ""
+"Por favor asegúrate de que has copiado correctamente el enlace proporcionado. "
+"Si a pesar de todo sigues teniendo dificultades, ponte en contacto con nosotros, "
+
+#: themes/default/views/LoginReg/form_reset_html.php:48
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:48
+msgid "Please enter your new password."
+msgstr "Por favor introduce tu nueva contraseña."
+
+#: themes/default/views/LoginReg/form_reset_html.php:53
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:53
+msgid "New password"
+msgstr "Nueva contraseña"
+
+#: themes/default/views/LoginReg/form_reset_html.php:59
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:59
+msgid "Confirm new password"
+msgstr "Confirma la nueva contraseña"
+
+#: themes/default/views/LoginReg/form_reset_html.php:78
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:78
+msgid ""
+"To reset your password enter the e-mail address you used to register below. "
+"A message will be sent to the address with instructions on how to reset your "
+"password."
+msgstr ""
+"Para resetear tu contraseña introduce la dirección de correo electrónico que "
+"usaste para registrarte. Enviaremos un mensaje a esa dirección con instrucciones "
+"para completar la operación."
+
+#: themes/default/views/LoginReg/form_reset_html.php:81
+#: themes/kutxateka/views/LoginReg/form_register_html.php:33
+#: themes/kutxateka/views/LoginReg/form_reset_html.php:81
+msgid "E-mail"
+msgstr "Correo electrónico"
+
+#: themes/default/views/Search/ca_collections_search_subview_html.php:55
+#: themes/default/views/Search/ca_entities_search_subview_html.php:49
+#: themes/default/views/Search/ca_objects_search_subview_html.php:56
+#: themes/default/views/Search/ca_occurrences_search_subview_html.php:49
+#: themes/default/views/Search/ca_places_search_subview_html.php:49
+#: themes/kutxateka/views/Search/ca_objects_search_subview_html.php:42
+msgid "Full results"
+msgstr "Resultados completos"
+
+#: themes/default/views/Search/ca_collections_search_subview_html.php:59
+#: themes/default/views/Search/ca_entities_search_subview_html.php:53
+#: themes/default/views/Search/ca_objects_search_subview_html.php:61
+#: themes/default/views/Search/ca_occurrences_search_subview_html.php:53
+#: themes/default/views/Search/ca_places_search_subview_html.php:53
+msgid "sort by:"
+msgstr "ordenar por:"
+
+#: themes/default/views/Search/multisearch_results_html.php:19
+msgid "Search results for %1"
+msgstr "Resultados de búsqueda para %1"
+
+#: themes/default/views/Search/multisearch_results_html.php:33
+msgid "Your search for %1 returned no results"
+msgstr "Tu búsqueda para %1 no ha encontrado resultados"
+
+#: themes/default/views/bundles/attribute_media_viewer_html.php:116
+#: themes/default/views/bundles/representation_viewer_html.php:65
+msgid "Page %1"
+msgstr "Página %1"
+
+#: themes/default/views/bundles/attribute_media_viewer_html.php:362
+#: themes/default/views/bundles/attribute_media_viewer_html.php:422
+#: themes/default/views/bundles/media_attribute_viewer_html.php:261
+msgid "Download media"
+msgstr "Descargar"
+
+#: themes/default/views/bundles/attribute_media_viewer_html.php:390
+#: themes/default/views/bundles/attribute_media_viewer_html.php:450
+#: themes/default/views/bundles/mediaviewer_html.php:104
+msgid "%1 of %2"
+msgstr "%1 de %2"
+
+#: themes/default/views/bundles/attribute_media_viewer_html.php:548
+msgid "Edit annotation"
+msgstr "Editar anotación"
+
+#: themes/default/views/bundles/bookviewer_html.php:48
+msgid ""
+"The BookReader requires JavaScript to be enabled. Please check that your "
+"browser supports JavaScript and that it is enabled in the browser settings."
+msgstr ""
+"El lector BookReader sólo funciona si JavaScript está habilitado. Por favor comprueba "
+"que tu navegador incluye JavaScript y que está configurado para usarlo."
+
+#: themes/default/views/bundles/bookviewer_html.php:62
+#: themes/default/views/bundles/bookviewer_html.php:77
+msgid "Close"
+msgstr "Cerrar"
+
+#: themes/default/views/bundles/bookviewer_html.php:63
+#: themes/default/views/bundles/bookviewer_html.php:78
+msgid "Edit"
+msgstr "Editar"
+
+#: themes/default/views/bundles/bookviewer_html.php:64
+#: themes/default/views/bundles/bookviewer_html.php:79
+msgid "Download"
+msgstr "Descargar"
+
+#: themes/default/views/bundles/ca_search_form_attributes.php:52
+#: themes/default/views/bundles/ca_simple_form_attributes.php:52
+msgid "Locale "
+msgstr "Locale"
+
+#: themes/default/views/bundles/detail_media_html.php:44
+msgid "Previous"
+msgstr "Anterior"
+
+#: themes/default/views/bundles/detail_media_html.php:45
+msgid "Next"
+msgstr "Siguiente"
+
+#: themes/default/views/pageFormat/browseMenu.php:38
+#: themes/default/views/pageFormat/browseMenu.php:50
+#: themes/default/views/pageFormat/browseMenu.php:59
+msgid "Browse"
+msgstr "Explorar"
+
+#: themes/default/views/pageFormat/browseMenuFacets.php:36
+msgid "Browse by:"
+msgstr "Explorar por:"
+
+#: themes/default/views/pageFormat/browseMenuFacets.php:49
+msgid "Filter facet"
+msgstr "Filtrar faceta"
+
+#: themes/default/views/pageFormat/browseMenuFacets.php:53
+msgid ""
+"Browse all %1 &nbsp;<span class=\"glyphicon glyphicon-arrow-right\"></span>"
+msgstr ""
+"Explorar todos los %1 &nbsp;<span class=\"glyphicon glyphicon-arrow-right\"></span>"
+
+#: themes/default/views/pageFormat/browseMenuFacets.php:59
+msgid "No facets available"
+msgstr "No hay facetas disponibles"
+
+#: themes/default/views/pageFormat/pageHeader.php:44
+msgid "User Profile"
+msgstr "Perfil de usuario"
+
+#: themes/default/views/pageFormat/pageHeader.php:45
+msgid "Logout"
+msgstr "Desconexión"
+
+#: themes/default/views/pageFormat/pageHeader.php:141
+msgid "Advanced Search"
+msgstr "Búsqueda avanzada"
+
+#: themes/default/views/pageFormat/pageHeader.php:142
+msgid "Gallery"
+msgstr "Galería"
+
+#: themes/default/views/system/configuration_error_install_html.php:36
+msgid ""
+"<div class='error'>An error in your system configuration has been detected</"
+"div>\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?"
+"title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at "
+"the messages below."
+msgstr ""
+"<div class='error'>Se ha detectado un error en la configuración del sistema"
+"</div>\n"
+"\t    Puedes encontrar instrucciones generales de instalación\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?"
+"title=Installation_(Pawtucket)' target='_blank'>aquí</a>.\n"
+"\t    Lee los mensajes que siguen, que dan pistas más específicas "
+"sobre los problemas encontrados."
+
+#: themes/kutxateka/views/Browse/browse_refine_subview_html.php:47
+msgid "Añade otros filtros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:57
+msgid "con tus filtros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:76
+msgid "%1 elemento encontrado corresponde a %2"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:78
+msgid "%1 elementos encontrados corresponden a %2"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:99
+msgid "Ordenar por"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:109
+msgid "ordenar en iconos"
+msgstr "mostrar como cuadrícula de imágenes"
+# ES XXX
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:110
+msgid "ordenar en lista"
+msgstr "mostrar como imágenes y títulos"
+# ES XXX
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:115
+msgid "página"
+msgstr "Página"
+# ES XXX
+
+#: themes/kutxateka/views/Browse/browse_results_html.php:115
+msgid "de"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_images_html.php:120
+#: themes/kutxateka/views/Browse/browse_results_list_html.php:117
+msgid "No media available"
+msgstr "No hay imagen"
+
+#: themes/kutxateka/views/Browse/browse_results_images_html.php:151
+#: themes/kutxateka/views/Browse/browse_results_list_html.php:147
+#: themes/kutxateka/views/Front/front_page_html.php:499
+msgid "Autor"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Browse/browse_results_images_html.php:166
+#: themes/kutxateka/views/Browse/browse_results_list_html.php:161
+msgid "Right"
+msgstr "Derecha"
+
+#: themes/kutxateka/views/Browse/browse_results_images_html.php:169
+#: themes/kutxateka/views/Browse/browse_results_list_html.php:164
+msgid "Left"
+msgstr "Izquierda"
+
+#: themes/kutxateka/views/Contact/form_html.php:16
+msgid ""
+"Si quieres dejarnos un mensaje, rellena los campos del siguiente formulario:"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:18
+msgid "*Nombre"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:18
+msgid "*Introduce un nombre de usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:20
+msgid "*E-mail"
+msgstr "*Dirección de correo electrónico"
+
+#: themes/kutxateka/views/Contact/form_html.php:20
+msgid "*Introduce una dirección de e-mail válida"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:22
+msgid "Teléfono"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:24
+msgid "*Tema"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:24
+msgid "*Introduce un tema"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:26
+msgid "*Mensaje"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:28
+msgid "*Introduce un mensaje"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:29
+#: themes/kutxateka/views/LoginReg/form_register_html.php:58
+msgid "Verificación"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:33
+msgid "Responde a la pregunta de seguridad"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:37
+msgid "Enviar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:46
+#: themes/kutxateka/views/Contact/success_html.php:11
+msgid "¿Aún no estás registrado?"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:48
+#: themes/kutxateka/views/Contact/success_html.php:13
+msgid ""
+"Estar registrado tiene muchas ventajas como valorar los reportajes y "
+"fotografías, así como añadir comentarios a los mismos."
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/form_html.php:50
+#: themes/kutxateka/views/Contact/success_html.php:15
+msgid "Registrarse"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Contact/success_html.php:5
+msgid "Your message has been sent"
+msgstr "Tu mensaje ha sido enviado"
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:54
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:84
+msgid "Volver a la búsqueda"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:70
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:335
+msgid "Valoraciones"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:80
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:345
+msgid "¿quieres puntuar este %1?"
+msgstr "¿Quieres valorar este objeto?"
+# ES XXX punt on %1, gender issues
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:82
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:84
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:96
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:98
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:347
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:349
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:361
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:363
+msgid "pulsa aquí"
+msgstr "Pulsa aquí"
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:91
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:356
+msgid "Últimos comentarios"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:94
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:359
+msgid "¿quieres comentar este %1?"
+msgstr "¿Quieres añadir un comentario?"
+# ES XXX punt on %1, gender issues
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:137
+msgid "Artículos de esta colección"
+msgstr "Objetos de esta colección"
+# ES XXX
+
+#: themes/kutxateka/views/Details/ca_collections_default_html.php:205
+msgid "Ver todos los artículos de esta colección"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:86
+msgid "Volver al reportaje"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:107
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:115
+msgid "Colección"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:225
+msgid "Lugares"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:287
+msgid "Exhibit"
+msgstr "Exposición"
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:306
+msgid "Documentos referenciados"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:404
+msgid "Comprar fotografía"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:404
+msgid "Descarga en HD"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:405
+msgid "Licencia Creative Commons"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:405
+msgid "Descarga normal"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:406
+msgid "Acercar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:410
+msgid "Girar a la izquierda"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:410
+msgid "Girar a la derecha"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:421
+msgid "izquierda"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:421
+msgid "derecha"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:484
+msgid "Diaporama"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:485
+msgid "%1 Fotografías más pertenencen a este reportaje"
+msgstr "Otras %1 fotografías pertenecen a este reportaje"
+# ES XXX
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:489
+msgid "Otra foto del reportaje"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:617
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:654
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:664
+msgid "Obras relacionadas"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/ca_objects_default_html.php:627
+msgid "Más trabajos del %1 %2"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Details/form_comments_html.php:6
+msgid "Add your comment/ rank"
+msgstr "Añade tu comentario/valoración"
+
+#: themes/kutxateka/views/Details/form_comments_html.php:13
+msgid "Rank"
+msgstr "Valoración"
+
+#: themes/kutxateka/views/Front/front_page_html.php:105
+#: themes/kutxateka/views/pageFormat/pageFooter.php:55
+#: themes/kutxateka/views/pageFormat/pageHeader.php:64
+msgid "Colecciones"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:108
+#: themes/kutxateka/views/pageFormat/pageHeader.php:67
+msgid "Patrimonio Artístico"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:109
+#: themes/kutxateka/views/Front/front_page_html.php:115
+#: themes/kutxateka/views/pageFormat/pageHeader.php:68
+#: themes/kutxateka/views/pageFormat/pageHeader.php:74
+msgid "Presentación"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:110
+#: themes/kutxateka/views/pageFormat/pageHeader.php:69
+msgid "Obras de Arte"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:111
+#: themes/kutxateka/views/Front/front_page_html.php:324
+#: themes/kutxateka/views/Front/front_page_html.php:329
+#: themes/kutxateka/views/pageFormat/pageFooter.php:59
+#: themes/kutxateka/views/pageFormat/pageHeader.php:70
+msgid "Libros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:112
+#: themes/kutxateka/views/Front/front_page_html.php:132
+#: themes/kutxateka/views/Front/front_page_html.php:139
+#: themes/kutxateka/views/Front/front_page_html.php:146
+#: themes/kutxateka/views/pageFormat/pageFooter.php:70
+#: themes/kutxateka/views/pageFormat/pageFooter.php:77
+#: themes/kutxateka/views/pageFormat/pageFooter.php:84
+#: themes/kutxateka/views/pageFormat/pageHeader.php:71
+#: themes/kutxateka/views/pageFormat/pageHeader.php:91
+#: themes/kutxateka/views/pageFormat/pageHeader.php:98
+#: themes/kutxateka/views/pageFormat/pageHeader.php:105
+msgid "Biblioteca Dr. Camino"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:113
+#: themes/kutxateka/views/pageFormat/pageHeader.php:72
+msgid "Boletines digitalizados"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:114
+#: themes/kutxateka/views/pageFormat/pageHeader.php:73
+msgid "Fototeka"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:116
+#: themes/kutxateka/views/pageFormat/pageHeader.php:75
+msgid "Colecciones digitalizadas"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:125
+#: themes/kutxateka/views/pageFormat/pageHeader.php:84
+msgid "Salas"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:131
+#: themes/kutxateka/views/Front/front_page_html.php:138
+#: themes/kutxateka/views/Front/front_page_html.php:145
+#: themes/kutxateka/views/pageFormat/pageFooter.php:69
+#: themes/kutxateka/views/pageFormat/pageFooter.php:76
+#: themes/kutxateka/views/pageFormat/pageFooter.php:83
+#: themes/kutxateka/views/pageFormat/pageHeader.php:90
+#: themes/kutxateka/views/pageFormat/pageHeader.php:97
+#: themes/kutxateka/views/pageFormat/pageHeader.php:104
+msgid "Kubo-Kutxa"
+msgstr "kubo-kutxa"
+
+#: themes/kutxateka/views/Front/front_page_html.php:159
+#: themes/kutxateka/views/pageFormat/pageHeader.php:118
+msgid "Exposiciones"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:165
+#: themes/kutxateka/views/Front/front_page_html.php:172
+#: themes/kutxateka/views/Front/front_page_html.php:179
+#: themes/kutxateka/views/pageFormat/pageHeader.php:124
+#: themes/kutxateka/views/pageFormat/pageHeader.php:131
+#: themes/kutxateka/views/pageFormat/pageHeader.php:138
+msgid "En Sala kubo-kutxa"
+msgstr "En kubo-kutxa"
+
+#: themes/kutxateka/views/Front/front_page_html.php:166
+#: themes/kutxateka/views/Front/front_page_html.php:173
+#: themes/kutxateka/views/Front/front_page_html.php:180
+msgid "En kutxa kultur artegunea"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:190
+#: themes/kutxateka/views/pageFormat/pageFooter.php:96
+#: themes/kutxateka/views/pageFormat/pageHeader.php:149
+msgid "Actualidad"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:201
+msgid "Carrito"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:202
+msgid "Mi cuenta"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:203
+msgid "Alta nuevo usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:205
+msgid "Idioma"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:218
+msgid "750.000 fotografías libros y obras de arte"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:219
+msgid "Escribe aquí tu búsqueda"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:219
+#: themes/kutxateka/views/pageFormat/pageHeader.php:173
+msgid "Buscar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:237
+msgid "Visita la web"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:294
+#: themes/kutxateka/views/Front/front_page_html.php:299
+#: themes/kutxateka/views/pageFormat/pageFooter.php:57
+msgid "Fotografías"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:301
+#: themes/kutxateka/views/Front/front_page_html.php:316
+#: themes/kutxateka/views/Front/front_page_html.php:331
+msgid "explorar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:302
+#: themes/kutxateka/views/Front/front_page_html.php:317
+#: themes/kutxateka/views/Front/front_page_html.php:332
+msgid "más información"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:309
+#: themes/kutxateka/views/Front/front_page_html.php:314
+msgid "Arte"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Front/front_page_html.php:400
+msgid "ver más noticias"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:9
+msgid "Ya estás registrado"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:16
+msgid "Nombre de usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:17
+msgid "Contraseña"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:18
+msgid "Entrar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:21
+msgid "¿Has olvidado tu nombre de usuario y/o contraseña?"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_login_html.php:21
+msgid "Pulsa aquí"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:11
+msgid "Formulario de registro"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:18
+msgid "Alta de nuevo usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:19
+msgid "Login/register to ...."
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:25
+msgid "Primer nombre de usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:29
+msgid "Apellido de usuario"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:45
+#: themes/kutxateka/views/LoginReg/form_register_html.php:52
+msgid "Confirmar contraseña"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/LoginReg/form_register_html.php:67
+msgid "Continuar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/Search/multisearch_results_html.php:8
+msgid "También corresponden a %1"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:40
+msgid "facebook"
+msgstr ""
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:41
+msgid "twitter"
+msgstr ""
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:42
+msgid "google plus"
+msgstr ""
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:46
+msgid "Nosotros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:48
+msgid "Sobre Nosotros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:49
+msgid "Contacto"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:50
+msgid "Condiciones"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:51
+msgid "Legal"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:58
+msgid "Obras de arte"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:63
+msgid "Salas y<br />Servicios públicos"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:93
+msgid "Otros"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:95
+msgid "Tienda"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:100
+msgid "Enlaces de interés"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:102
+msgid "Kutxa Social"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:103
+msgid "Kutxa"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageFooter.php:104
+msgid "Kutxabank"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:50
+msgid ""
+"Para mejorar tu experiencia de usuario nuestra web utiliza cookies propias y "
+"de terceros, si continúas navegnado entendemos que aceptas nuestra <a "
+"class='txtPolCookies' href='#'>Política de Cookies</a>."
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:60
+msgid "Home"
+msgstr "Inicio"
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:125
+#: themes/kutxateka/views/pageFormat/pageHeader.php:132
+#: themes/kutxateka/views/pageFormat/pageHeader.php:139
+msgid "En Sala Boulevard"
+msgstr "XXXXXX"
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:150
+msgid "compras"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:150
+msgid "elementos"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:151
+msgid "comprar"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:159
+msgid "salir"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:161
+msgid "Login/Registrar"
+msgstr "Entrar/Registrarse"
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:168
+msgid "Menú"
+msgstr ""
+# ES
+
+#: themes/kutxateka/views/pageFormat/pageHeader.php:173
+msgid "Nueva búsqueda"
+msgstr ""
+# ES

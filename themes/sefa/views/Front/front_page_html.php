@@ -59,7 +59,7 @@
 	}else{
 		if($t_exhibition->get("occurrence_id")){
 			# --- use the featured image from the show
-			$va_objects = $t_exhibition->get('ca_objects', array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website"), "returnAsArray" => true));
+			$va_objects = $t_exhibition->get('ca_objects', array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website"), "returnWithStructure" => true));
 			if(is_array($va_objects) && sizeof($va_objects)){
 				$va_object = array_pop($va_objects);
 				$t_object = new ca_objects($va_object["object_id"]);

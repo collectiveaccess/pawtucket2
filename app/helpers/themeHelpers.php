@@ -382,7 +382,8 @@
 	 *		primaryOnly - true/false, show only the primary rep, default false
 	 *		dontShowPlaceholder - true/false, default false
 	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
-	 *		captionTemplate = formatted caption to display under media defined in detail.conf	
+	 *		captionTemplate = formatted caption to display under media defined in detail.conf
+	 *		display = media_display.conf display version to use
 	 * @return string HTML output
 	 */
 	function caObjectDetailMedia($po_request, $pn_object_id, $pt_representation, $pt_object, $pa_options=null) {
@@ -390,6 +391,7 @@
 		
 		
 		$o_view = new View($po_request, array($po_request->getViewsDirectoryPath()));
+		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'detail';	
 		
 		// Get detail config
 		$va_detail_config = caGetDetailTypeConfig('objects');
@@ -434,20 +436,22 @@
 		// Fetch representations for display
 		if(sizeof($va_rep_ids) > 0){
 			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
-			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
+			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => $vs_display_type, 'object_id' => $pn_object_id, 'containerID' => 'cont'));
 
 			$va_rep_info = array();
 			
 			$qr_reps->seek(0);
 			if (!($vs_template = $va_detail_config['options']['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
- 			
+ 		
 			while($qr_reps->nextHit()) {
 				$vn_rep_id = $qr_reps->get('representation_id');
-				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
+				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id, array("display" => $vs_display_type));
 
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				
-				$vn_index = ($vn_rep_id != $vn_primary_id) ? $qr_reps->get('ca_objects_x_object_representations.rank') : 0; 
+				if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank') : 0)) {
+					$vn_index = $qr_reps->get('ca_object_representations.representation_id');
+				}
 				
 				$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar.$vs_caption."</div></div>");
 				
@@ -467,6 +471,7 @@
 						}
 					}
 				}
+				
 				$va_rep_info[$vn_index]['annotationList'] = $va_annotation_list;
 			}
 
@@ -475,13 +480,17 @@
 			$vn_count = 0;
 			
 			foreach($va_rep_info as $vn_order => $va_rep){
-				if(sizeof($va_rep_ids) > 1){ $vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; }
+				if(sizeof($va_rep_ids) > 1){ 
+					$vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; 
+				}
 				$vs_slides .= ($vn_count == 0) ? "<div id='slideContent{$va_rep['rep_id']}'>".$va_rep["tag"]."</div>" : "<div id='slideContent{$va_rep['rep_id']}'></div>";	// only load first one initially
 				
-				if (true && is_array($va_rep['annotationList'])) {
+				if (is_array($va_rep['annotationList'])) {
 					$vs_slides .= join("<br/>\n", $va_rep['annotationList']);
 				}
-				if(sizeof($va_rep_ids) > 1) { $vs_slides .= "</li>"; }
+				if(sizeof($va_rep_ids) > 1) { 
+					$vs_slides .= "</li>"; 
+				}
 				
 				$vn_count++;
 			}
@@ -509,7 +518,7 @@
 		
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
-			
+		
 		return $o_view->render("bundles/detail_media_html.php");
 	}
 	# ---------------------------------------
@@ -519,11 +528,14 @@
 	 * @param RequestHTTP $po_request
 	 * @param ca_object_representations $pt_representation  Representation instance
 	 * @param int $pn_object_id  object_id for ca_objects row representation is attached to 
+	 * @param $pa_options array includes:
+	 *			display = media_display.conf display version to use
 	 * @return string HTML output
 	 */
-	function caRepToolbar($po_request, $pt_representation, $pn_object_id){
+	function caRepToolbar($po_request, $pt_representation, $pn_object_id, $pa_options=null){
 		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
-		$va_rep_display_info = caGetMediaDisplayInfo('detail', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'detail';	
+		$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";
@@ -533,7 +545,7 @@
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
-		if(caObjectsDisplayDownloadLink($po_request)){
+		if(caObjectsDisplayDownloadLink($po_request, $pn_object_id)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = $va_download_display_info['display_version'];
@@ -924,7 +936,7 @@
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) { return array(); }
 		
-		if (method_exists($t_instance, "getPrimaryMediaForIDs")) {
+		if ((!caGetOption("useRelatedObjectRepresentations", $pa_options, array())) && method_exists($t_instance, "getPrimaryMediaForIDs")) {
 			// Use directly related media if defined
 			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
 			$va_media_by_id = array();
