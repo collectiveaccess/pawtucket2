@@ -62,22 +62,34 @@ h2 {
 .multisearch .blockResults {
 	height:250px;
 }
+.multisearch #objectsBlock .blockResults {
+	height:470px;
+}
 .multisearch .multisearchResult img {
 	margin-bottom: 10px;
     border: 1px solid #ddd;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
-	height:225px;
-	padding-top:100px;
+	height:360px;
+	padding-top:160px;
 }
 .multisearch .authoritySet {
-	height:220px;
+	height:440px;
 }
+.authoritySet p {
+	margin-bottom:5px;
+	font-size:12px;
+}
+.multisearch .objectsListResult.authorityResult {
+	height: 100px;
+}
+
+
 /* Browse */
 #bRefine {
 	background-color:#fff;
 	border:2px solid #000;
-	height:275px;
+	height:290px;
 	padding:10px;
 	min-width:735px;
 }
@@ -91,10 +103,16 @@ h2 {
 }
 .facetList {
 	float:left;
-	height:320px;
+	height:220px;
 	width: 12%;
 	padding-right:5px;
 }
 .advSearchField {
 	height:50px;
+}
+
+/* Detail */
+
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+	font-size:18px;
 }
