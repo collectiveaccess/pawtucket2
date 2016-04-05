@@ -75,7 +75,8 @@
 	}
 ?>
 </head>
-<body oncontextmenu="return false">
+<body  >
+<!--oncontextmenu="return false"-->
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -97,7 +98,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pillow_logo.gif'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pillow_logo.jpg'), "navbar-brand", "", "","");
 ?>
 			</div>
 
