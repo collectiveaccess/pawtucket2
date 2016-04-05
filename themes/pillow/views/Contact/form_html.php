@@ -6,9 +6,9 @@
 ?>
 <div class="row">
 	<div class="col-sm-1"></div>
-	<div class="col-sm-10">
+	<div class="col-sm-10 staticPageArea">
 	
-<H1><?php print _t("Contact Us"); ?></H1>
+<H4><?php print _t("Contact Us"); ?></H4>
 
 
 		<h2>Jacob’s Pillow Preservation Staff</h2><br/>
@@ -18,13 +18,14 @@
 		<p>413.243.9919 ext. 150</p>
 		<br>	
 		
-		<p>Brittany Austin, Librarian/Archives Specialist</p>
+		<p>Brittany Austin, Associate Archivist & Librarian</p>
 		<p><a href='mailto:baustin@jacobspillow.org'>baustin@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 154</p>
 		<br>	
 		
 		<p>Nel Shelby, Videographer (summer only)</p>
 		<p><a href='mailto:nshelby@jacobspillow.org'>nshelby@jacobspillow.org</a></p>		
+		<p>413.243.9919 ext. 155</p>
 		<br>	
 		
 		<h2>Ask an Archivist</h2>
