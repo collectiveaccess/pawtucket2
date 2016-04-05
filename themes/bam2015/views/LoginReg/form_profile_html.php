@@ -12,7 +12,7 @@
 	caUI.initUtils();
 
 </script>
-<div class="row"><div class="col-sm-4"><H1<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Profile"); ?></H1></div></div>
+<div class="row"><div class="col-sm-4"><H1 class="profileForm"><?php print _t("Profile"); ?></H1></div></div>
 
 <?php
 	if($va_errors["general"]){
@@ -21,11 +21,6 @@
 ?>
 	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" role="form" method="POST">
 <?php
-		if($t_user->getPreference("user_profile_classroom_role") == "STUDENT"){
-			print "<div class='row'><div class='col-sm-8 col-sm-offset-4'><b>You are registered as a student.</b>  You will not be able to download some materials geared towards educators.  If you are an educator please contact <a href='mailto:ncep@amnh.org'>ncep@amnh.org</a> to have your account status changed.<br/><br/></div></div>";
-		}else{
-			print "<div class='row'><div class='col-sm-8 col-sm-offset-4'><b>You are registered as an educator.</b>  As such you have full access to download all materials on this site.<br/><br/></div></div>";
-		}
 		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
 				print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
@@ -35,16 +30,12 @@
 		$va_profile_settings = $this->getVar("profile_settings");
 		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
 			foreach($va_profile_settings as $vs_field => $va_profile_element){
-				if($vs_field == "user_profile_classroom_role"){
-					print "<input type='hidden' name='pref_user_profile_classroom_role' value='".$t_user->getPreference("user_profile_classroom_role")."'>";
-				}else{
-					if($va_errors[$vs_field]){
-						print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
-					}
-					print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
-					print $va_profile_element["bs_formatted_element"];
-					print "</div><!-- end form-group -->";
+				if($va_errors[$vs_field]){
+					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
+				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
+				print $va_profile_element["bs_formatted_element"];
+				print "</div><!-- end form-group -->";
 			}
 		}
 ?>

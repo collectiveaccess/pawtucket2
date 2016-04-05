@@ -66,7 +66,7 @@
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 4;
+			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -87,7 +87,6 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -96,7 +95,7 @@
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
@@ -104,6 +103,10 @@
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
+					}
+					$vs_info = null;
+					if ($qr_res->get('ca_objects.date.dates_value')) {
+						$vs_date = "<p>".$qr_res->get('ca_objects.date.dates_value')."</p>";
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
@@ -114,20 +117,26 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
+				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-					$vs_add_to_set_link = "<a href='#' class='addToLightbox' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
-				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='itemResultContainer col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='text-center'>{$vs_rep_detail_link}</div>
+	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : $vs_add_to_set_link)."
-					{$vs_label_detail_link}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}
 				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+				<hr>
+				{$vs_expanded_info}{$vs_add_to_set_link}
+			</div><!-- bResultItemExpandedInfo -->
+		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;

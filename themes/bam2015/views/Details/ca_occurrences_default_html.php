@@ -7,15 +7,16 @@
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
-	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-		<div class="container">
+</div>
+<div class="row">
+	<div class='col-xs-12'>
 			<div class="row">
-				<div class='col-sm-1 col-md-1 col-lg-1'>
+				<div class='col-sm-1 navLeftRight'>
 					<div class="detailNavBgLeft">
 						{{{previousLink}}}{{{resultsLink}}}
 					</div><!-- end detailNavBgLeft -->
 				</div>
-				<div class='col-sm-10 col-md-10 col-lg-10'>
+				<div class='col-xs-12 col-sm-10'>
 					<div class="detailHead">
 <?php
 					print "<div class='leader'>".$t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))."</div>";
@@ -24,17 +25,16 @@
 						print "<h3>".$va_event_date."</h3>";
 					}					
 ?>			
-				</div><!-- end detailHead -->
+				</div><!-- end detailHead --> 
 				</div><!-- end col -->
-				<div class='col-sm-1 col-md-1 col-lg-1'>
+				<div class='col-sm-1 navLeftRight'>
 					<div class="detailNavBgRight">
 						{{{nextLink}}}
 					</div><!-- end detailNavBgLeft -->
 				</div>				
 			</div><!-- end row -->
-			
-			<div class="row" id="dataPanel">
-			<hr class="divide"/>			
+			<hr class="divide"/>
+			<div class="row" id="dataPanel">			
 <?php
 					$vs_col_1 = "";
 					if ($vs_non_preferred = $t_item->get('ca_occurrences.nonpreferred_labels', array('delimiter' => ', '))) {
@@ -145,6 +145,6 @@
 					
 				});
 			</script>
-</ifcount>}}}		</div><!-- end container -->
+</ifcount>}}}
 	</div><!-- end col -->
 </div><!-- end row -->

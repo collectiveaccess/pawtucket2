@@ -6,14 +6,13 @@
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<?php print caNavLink($this->request, "<i class='icon-undo2'></i><div class='small'>Back</div>", '', '', 'FindingAid', 'Collection/Index'); ?>
 	</div><!-- end detailTop -->
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-		<div class="container">
 			<div class="row">
-				<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+				<div class='col-sm-1 navLeftRight'>
 					<div class="detailNavBgLeft">
-						{{{previousLink}}}{{{resultsLink}}}
+						<?php print caNavLink($this->request, "<i class='icon-undo2'></i><div class='small'>Back</div>", '', '', 'FindingAid', 'Collection/Index'); ?>
 					</div><!-- end detailNavBgLeft -->
 				</div><!-- end col -->			
 				<div class='col-sm-10 col-md-10 col-lg-10'>
@@ -25,10 +24,8 @@
 ?>
 					</div><!-- end detailHead -->
 				</div><!-- end col -->
-				<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-					<div class="detailNavBgRight">
-						{{{nextLink}}}
-					</div><!-- end detailNavBgLeft -->
+				<div class='col-sm-1 navLeftRight'>
+					<div class="detailNavBgRight"></div><!-- end detailNavBgLeft -->
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">		
@@ -54,7 +51,7 @@
 					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 ?>
 						<div class="collection-form"  >
-							<div class="formOutline">
+							<div class="formOutline" style="position:relative;">
 								<div class="form-group">
 									<input type="text" id="searchfield" class="form-control" placeholder="Search within this collection" >
 								</div>
@@ -91,8 +88,14 @@
 						</script>
 						<div class='clearfix'></div>					
 					
-<?php					
-						print "<div class='unit row' style='margin-bottom:0px;'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr></div><div class='col-sm-4 col-md-4 col-lg-4'><div class='findingAidContainer'><div class='label collection'>Collection Contents </div>";
+					
+						<div class='unit row' style='margin-bottom:0px;'>
+							<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+								<hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr>
+							</div>
+							<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4'>
+								<div class='findingAidContainer'><div class='label collection'>Collection Contents </div>
+<?php
 						foreach ($va_collection_children as $col_key => $vn_collection_id) {
 							$t_collection_series = new ca_collections($vn_collection_id);
 							$vs_collection_label = $t_collection_series->get('ca_collections.preferred_labels');
@@ -116,19 +119,17 @@
 						</script>						
 <?php								
 						}
-						print "</div><!-- end findingAidContainer --></div><!-- end col -->";
-						print "<div id='collectionLoad' class='col-sm-8 col-md-8 col-lg-8'><i class='fa fa-arrow-left'></i> Click a Collection container to the left to see its contents.</div>";
-						print "</div><div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px;'></hr></div></div>";
-						print "</div><!-- end unit -->";
-						
+?>
+								</div><!-- end findingAidContainer -->
+							</div><!-- end col -->
+							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
+								<i class='fa fa-arrow-left'></i> Click a Collection container to the left to see its contents.
+							</div>
+							<div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px;'></hr></div>
+						</div><!-- end row unit -->
+<?php						
 					}										
 ?>				
-					<!--<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div>
-						<div id='detailComments'>{{{itemComments}}}</div>
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div>
-					</div>-->
-					
 				</div><!-- end col -->
 
 			</div><!-- end row -->
@@ -164,6 +165,5 @@
 				});
 			</script>			
 </ifcount>}}}
-		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->

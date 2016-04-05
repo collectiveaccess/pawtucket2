@@ -613,11 +613,11 @@
 			$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
 			
 			foreach($va_child_ids as $vn_object_id) {
-				$t_object = new ca_objects($vn_object_id);
-				if (!$t_object->getPrimaryKey()) { continue; }
+				$t_child_object = new ca_objects($vn_object_id);
+				if (!$t_child_object->getPrimaryKey()) { continue; }
 				
-				$va_reps = $t_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
-				$vs_idno = $t_object->get('idno');
+				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
+				$vs_idno = $t_child_object->get('idno');
 				
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
@@ -659,7 +659,7 @@
 					//
 					// Perform metadata embedding
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
 					}
 					$va_file_paths[$vs_path] = $vs_file_name;
