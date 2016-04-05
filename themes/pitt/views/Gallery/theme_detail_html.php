@@ -48,7 +48,7 @@
 					$t_set_item = new ca_set_items($pa_set_item['item_id']);
 					$va_themes = $t_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true));
 					foreach ($va_themes as $va_key => $va_theme) {
-						$va_theme_list[] = $va_theme;
+						$va_theme_list[$va_theme] = caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme));
 					}
 				}
 				print join('<br/>', $va_theme_list);
@@ -58,11 +58,11 @@
 				$va_creators_list = array();
 				foreach ($pa_set_items as $va_key => $pa_set_item) {
 					$t_set_item = new ca_set_items($pa_set_item['item_id']);
-					$t_object = $t_set_item->getItemInstance();
-					$va_creators = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true));
-					foreach ($va_creators as $va_key => $va_creator) {
-						$va_creators_list[] = $va_creator;
-					}
+					#$t_object = $t_set_item->getItemInstance();
+					#$va_creators = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true));
+					#foreach ($va_creators as $va_key => $va_creator) {
+					#	$va_creators_list[] = $va_creator;
+					#}
 				}
 				print join('<br/>', $va_creators_list);
 ?>			
