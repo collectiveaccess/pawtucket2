@@ -112,6 +112,9 @@
 				case "list":
 				default:
 					$this->view->setVar('facet_content', $po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
+					if($vb_is_nav && $vn_limit){
+						$this->view->setVar('facet_size', sizeof($po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values))));					
+					}
 					$this->render($this->ops_view_prefix."/list_facet_html.php");
 					break;
 				case "hierarchical":
@@ -771,9 +774,9 @@
 				throw new ApplicationException("Invalid view");
 			}
             
-			$vs_content_template = $va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
+			$vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
 			
- 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br/>")));
+ 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
          	$this->render("Browse/ajax_map_item_html.php");   
         }

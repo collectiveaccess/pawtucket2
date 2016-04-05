@@ -70,10 +70,11 @@
 				if($vs_table == 'ca_occurrences'){
 					$vn_str_len_date = 0;
 					$vs_pro_date = $qr_res->get("ca_occurrences.productionDate");
-					if($vs_pro_date){
-						$vn_str_len_date = mb_strlen($vs_pro_date);
-					}
-					$vn_chop_len = 100 - $vn_str_len_date;
+					#if($vs_pro_date){
+					#	$vn_str_len_date = mb_strlen($vs_pro_date);
+					#}
+					#$vn_chop_len = 100 - $vn_str_len_date;
+					$vn_chop_len = 100;
 					$vs_date_conjunction = ", ";
 					$vs_series_info = "";
 					if($qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true))){
@@ -117,7 +118,7 @@
 					}
 				} 
 				$vs_detail_link = "";
-				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table = "ca_occurrences")){
+				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table == "ca_occurrences")){
 					$vs_detail_link	= caDetailLink($this->request, $vs_collection_parent.$vs_link_text, '', $vs_table, $vn_id);
 				}else{
 					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";

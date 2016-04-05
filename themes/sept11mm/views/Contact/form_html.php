@@ -48,7 +48,7 @@
 		<div class="row">
 			<div class="col-sm-10">
 				<div class="form-group<?php print (($va_errors["feedback"]) ? " has-error" : ""); ?>">
-					<label for="feedback">Your message*</label>
+					<label for="feedback">Your message</label>
 					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5"><?php print $this->getVar("feedback");?></textarea>
 				</div>
 			</div><!-- end col -->
@@ -60,7 +60,7 @@
 		<div class="row">
 			<div class="col-sm-10">
 				<div class="form-group<?php print (($va_errors["information"]) ? " has-error" : ""); ?>">
-					<label for="information">What information are you seeking?*</label>
+					<label for="information">What information are you seeking?</label>
 					<textarea class="form-control input-sm" id="information" name="information" rows="5"><?php print $this->getVar("information");?></textarea>
 				</div>
 			</div><!-- end col -->

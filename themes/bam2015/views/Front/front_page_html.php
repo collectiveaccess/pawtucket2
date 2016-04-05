@@ -68,12 +68,12 @@
 						print caGetThemeGraphic($this->request, 'homelogo.png');
 ?>					
 					</div>
-					<div class="col-sm-6 col-md-6 col-lg-6 rightSide">			
+					<div class="col-xs-10 col-sm-6 col-md-6 col-lg-6 rightSide">			
 						<h1>Welcome to the BAM Leon Levy Digital Archive</h1>
 						<p>Please search the archive above or watch this informative video which outlines the basic structure and functionality of the archive.</p>
 						<p>Looking for tickets to an upcoming event at BAM?  <a href='http://www.bam.org'>Click here</a>, you're close but in the wrong place.</p>
 					</div>	
-					<div class="col-sm-2 col-md-2 col-lg-2">
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 						<div class="close">
 <?php
 							print "<a href='#' onclick='$(\"#homePanel\").fadeOut(400);'>".caGetThemeGraphic($this->request, 'homex.png')."</a>";

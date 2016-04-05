@@ -65,8 +65,8 @@
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
-			$vn_col_span_sm = 6;
+			$vn_col_span = 4;
+			$vn_col_span_sm = 4;
 			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
@@ -92,9 +92,16 @@
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
-				$vs_typecode = "<h7>".$qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true))."</h7>";
+				if ($vs_table === 'ca_objects') {
+					$vs_typecode = "<h7>".$qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true))."</h7>";
+					$vs_date = "<p class='occName'>".$qr_res->get('ca_objects.date', array('delimiter' => ', '))."</p>";
+				}	elseif (($qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true) == "Production")) | ($qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true) == "Work"))) {
+					$vs_date = "<p class='occName'>".$qr_res->get('ca_occurrences.productionDate', array('delimiter' => ', '))."</p>";
+				} else {
+					$vs_date = null;
+				}
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
+
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
 						$t_list_item->load($qr_res->get("type_id"));
@@ -121,9 +128,10 @@
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-				<div class='bResultListItemText'>
-					{$vs_typecode}{$vs_label_detail_link}
+			<div class='bResultListItemContent'>";
+			#<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+			print "<div class='bResultListItemText'>
+					{$vs_typecode}{$vs_label_detail_link}{$vs_date}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

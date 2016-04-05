@@ -21,10 +21,9 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H2>{{{<ifdef code="ca_objects.preferred_labels">^ca_objects.preferred_labels<br/></ifdef>}}}</H2>
 <?php
-				print "<h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h6>";
+				print "<h6>".$t_object->get('ca_objects.project_type', array('convertCodesToDisplayText' => true))."</h6>";
 ?>				<HR>				
 				
-				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
 				
 				
 				{{{<ifdef code="ca_objects.abstract">
@@ -36,16 +35,16 @@
 				{{{<ifdef code="ca_objects.graduation_year"><H6>Graduation Year:</H6>^ca_objects.graduation_year<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.graduation_semester"><H6>Graduation Semester:</H6>^ca_objects.graduation_semester<br/></ifdef>}}}
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Student</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related Student</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Student</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><H6>Students</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="student"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Reader</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related Readers</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Reader</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><H6>Readers</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="first_reader;second_reader;third_reader"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 				
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Board Of Study</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><H6>Related Boards of Study</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Board Of Study</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="2"><H6>Boards of Study</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit><br/><br/>}}}
 				
 			</div><!-- end col -->

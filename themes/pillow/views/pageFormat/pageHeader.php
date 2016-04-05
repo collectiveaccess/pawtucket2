@@ -75,7 +75,7 @@
 	}
 ?>
 </head>
-<body>
+<body oncontextmenu="return false">
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->

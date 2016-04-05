@@ -39,12 +39,19 @@ header{
 }
 header .logo{
 	float:left;
-	margin-left:15px;
+	margin-left:29px;
 }
 header .headerSubTitle{
 	float:right;
 	padding:15px 45px 0px 0px;
 	font-size:12px;
+}
+@media (max-width: 600px) {
+	header .headerSubTitle{
+		max-width:150px;
+		padding:30px 10px 0px 10px;
+	
+	}
 }
 a{
 	color: #0685bf;
@@ -196,6 +203,9 @@ ul.dropdown-menu a{
 	padding-top:0px !important;
 	padding-bottom:0px !important;
 }
+#browse-menu .glyphicon{
+	color:#666;
+}
 .filterMenuFacetList li.active a{
 	color:#FFFFFF !important;
 }
@@ -220,6 +230,7 @@ ul.dropdown-menu a{
 	font-size:15px;
 	margin-top:0px;
 	font-family: 'Lato', sans-serif !important;
+	line-height:1.3em;
 }
 #footer ul{
 	list-style-type:none;
@@ -291,10 +302,20 @@ ul.dropdown-menu a{
 .front .jcarousel-pagination{
 	margin-bottom:20px;
 }
+.front .jcarousel-control-next, .front .jcarousel-control-prev{
+	padding-top:5px;
+}
 .front .frontBox{
 	border:1px solid #DEDEDE;
 	padding:15px;
 	min-height:285px;
+	max-height:285px;
+	overflow:hidden;
+}
+.front .frontBox .frontBoxScroll{
+	overflow:auto;
+	max-height:210px;
+	overflow-x:hidden;
 }
 .front .frontBox H2{
 	margin-top:0px;
@@ -309,8 +330,28 @@ ul.dropdown-menu a{
 	width:100%;
 	height:auto;
 }
+.gallery #browseResultsContainer{
+	margin-top:0px;
+}
+.gallery .setDescriptionBG{
+	background-color:#f4f4f4;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+.gallery #galleryDetailImageArea{
+	height:450px;
+}
 
-
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+    line-height: .3em !important;
+    font-size: 18px !important;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	height: 120px !important;
+}
+.ca_places #detailTools{
+	margin-top:0px;
+}
 /*
 .frontSlide img{
 	height:150px;
@@ -333,3 +374,20 @@ ul.dropdown-menu a{
 	}
 }
 */
+.form-control:focus{
+	border:1px solid #000;
+}
+.vco-storyjs p, .vco-storyjs h3, .vco-storyjs h3 a {
+	font-size: 12px;
+    line-height:1.1em !important;
+}
+.vco-storyjs .container{
+	padding:0px 5px 0px 10px !important;
+}
+.vco-slider .slider-item .content .content-container .text .container p {
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+    word-wrap: normal;
+}

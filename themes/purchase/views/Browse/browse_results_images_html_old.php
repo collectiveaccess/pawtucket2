@@ -102,6 +102,9 @@
 				if ($qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('student'), 'delimiter' => ', '))) {
 					$vs_item_title.= ", ".$qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('student'), 'delimiter' => ', '));
 				}
+				if ($va_major = $qr_res->get('ca_occurrences.preferred_labels', array('delimiter' => ', '))) {
+					$vs_item_title.= "<br/>".$va_major;
+				}				
 				$vs_label_detail_link 	= caDetailLink($this->request, $vs_item_title, '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
