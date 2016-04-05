@@ -155,7 +155,6 @@
 					print "<li>".caNavLink($this->request, 'Current Exhibitions', '', '', 'Listing', 'current')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Upcoming Exhibitions', '', '', 'Listing', 'upcoming')."</li>\n"; 					
 					print "<li>".caNavLink($this->request, 'Past Exhibitions', '', '', 'Listing', 'past')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Lobby Exhibitions', '', '', 'Listing', 'lobby')."</li>\n"; 					
 					print "</ul></li>";	
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Collections <span class='caret'></span></a>\n";
