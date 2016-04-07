@@ -7,13 +7,37 @@
 ?>
 <div class='container'>
 <H1><?php print _t("Museum Collections"); ?></H1>
+<div class='row'>
+
+<?php	
+	if ($qr_res) {
+		while($qr_res->nextHit()) {		
+			print "<div class='col-sm-3'>";
+			print "<div class='featuredObj'>";
+			print caNavLink($this->request, $qr_res->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'));
+			print "<span class='caption'>".$qr_res->get('ca_objects.preferred_labels').": </span>";
+			print "<span>".$qr_res->get('ca_objects.description')."</span>";
+			print "</div>";
+			print "</div>";
+		}
+	}
+?>
+			
+</div>	
+<hr class='divide'>
 <div class="row">
 	<div class="col-sm-12">
-		<div class='timeline'>
-			Timeline placeholder
-		</div>
+		<h6>Featured Objects</h6>
+		<p>
+<?php				
+		print $t_set->get('ca_sets.description');
+?>					
+		</p>
+
+
 	</div>
-</div>	
+</div>
+<hr class='divide'>
 <div class="row">
 	<div class="col-sm-8">
 		<h6>About the Museum Collection</h6>
@@ -27,32 +51,7 @@
 		</div>
 	</div>
 </div>
-<hr class='divide'>
-<div class="row">
-	<div class="col-sm-12">
-		<h6>Featured Objects</h6>
-		<p>
-<?php				
-		print $t_set->get('ca_sets.description');
-?>					
-		</p>
 
+	
 
-	</div>
-</div>	
-<div class='row'>
-
-<?php	
-	while($qr_res->nextHit()) {		
-		print "<div class='col-sm-3'>";
-		print "<div class='featuredObj'>";
-		print $qr_res->get('ca_object_representations.media.iconlarge');
-		print "<div class='caption'><p>".$qr_res->get('ca_objects.preferred_labels')."</p>";
-		print "<p>".$qr_res->get('ca_objects.displayDate')."</p></div>";
-		print "</div>";
-		print "</div>";
-	}
-?>
-			
-</div>
 </div>

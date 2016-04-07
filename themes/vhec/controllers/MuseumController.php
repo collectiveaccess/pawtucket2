@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php");
+	#require_once(__CA_LIB_DIR__."/core/Error.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
 	
@@ -64,7 +64,7 @@
  			$va_featured_ids = array();
  			if($vs_set_code = $this->config->get("museum_set_code")){
  				$t_set = new ca_sets();
- 				$t_set->load(array('set_code' => $vs_set_code));
+ 				$t_set->load(array('set_code' => $vs_set_code)); 
 
 				# Enforce access control on set
 				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){

@@ -108,6 +108,9 @@
 					if ($qr_res->get('ca_objects.displayDate')) {
 						$vs_date = "<p>".$qr_res->get('ca_objects.displayDate')."</p>";
 					}
+					if ($va_entity = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer')))) {
+						$vs_creator = "<p>".$va_entity."</p>";
+					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
 					if($va_images[$vn_id]){
@@ -119,17 +122,19 @@
 				}
 				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+					$vs_add_to_set_link = "<a class='addToSetLink' href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
+				$vs_expanded_info = "<p class='resultType'>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
+				if ($va_collection = $qr_res->get('ca_collections.preferred_labels')) {
+					$vs_expanded_info.= "<p class='collectionInfo'>".$va_collection.": ".$qr_res->get('ca_objects.idno')."<p>";
+				}
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_detail_link}{$vs_date}
+					{$vs_label_detail_link}{$vs_date}{$vs_creator}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
