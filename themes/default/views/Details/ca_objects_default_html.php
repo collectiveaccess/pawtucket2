@@ -67,7 +67,7 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}				
-?>			
+?>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>

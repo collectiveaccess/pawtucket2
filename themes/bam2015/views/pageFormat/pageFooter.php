@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,17 +46,16 @@
 ?>	
 		<div id="footer">
 			<div class="container">
-				<ul class="list-inline pull-right">
-					&#169; 2015 Brooklyn Academy of Music
+				<ul class="list-inline copyright">
+					&#169; 2016 Brooklyn Academy of Music
 				</ul>
 				<div class='footerHeader'>
 					More Information
 				</div>
 				<ul class="footer-links">
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
-					<li><a href="#">Contact BAM Hamm Archives</a></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
-					<li><a href="#">Privacy Policy</a></li>
+					<li><a href="http://www.bam.org/about/privacy-policy">Privacy Policy</a></li>
 				</ul>
 			</div><!-- end container -->
 		</div><!-- end footer -->

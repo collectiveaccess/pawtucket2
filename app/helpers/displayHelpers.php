@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2015 Whirl-i-Gig
+ * Copyright 2009-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -379,8 +379,11 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
 		
 		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
-	
+		if(file_exists($po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif")){
+			$vs_button = "<img src='".$po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";	
+		}else{
+			$vs_button = "<img src='".$po_request->getDefaultThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";
+		}
 		return $vs_button;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -2045,7 +2048,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				$vs_val = caProcessTemplateTagDirectives($vs_val, $va_tmp);
 				
 				if ($pb_quote) { $vs_val = '"'.addslashes($vs_val).'"'; }
-				$ps_template = preg_replace("!\^(?={$vs_tag}[^A-Za-z0-9]+|{$vs_tag}$){$vs_tag}!", str_replace("$", "\\$", $vs_val), $ps_template);	// escape "$" to prevent interpretation as backreferences
+				$vs_tag_proc = preg_quote($vs_tag, '!');
+				$ps_template = preg_replace("!\^(?={$vs_tag_proc}[^A-Za-z0-9]+|{$vs_tag_proc}$){$vs_tag_proc}!", str_replace("$", "\\$", $vs_val), $ps_template);	// escape "$" to prevent interpretation as backreferences
 			}
 		}
 		return $ps_template;

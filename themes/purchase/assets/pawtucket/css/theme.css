@@ -51,11 +51,45 @@ h2 {
   display: inline-block;
   margin-top: 35px;
 }
+.advSearchField select, .advSearchField .attributeListItem, .advSearchField input, .advSearchField textarea {
+	width:100% !important;
+}
+.multisearch .multisearchResult {
+	width:200px;
+	height:220px;
+	font-size:12px;
+}
+.multisearch .blockResults {
+	height:250px;
+}
+.multisearch #objectsBlock .blockResults {
+	height:470px;
+}
+.multisearch .multisearchResult img {
+	margin-bottom: 10px;
+    border: 1px solid #ddd;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
+	height:360px;
+	padding-top:160px;
+}
+.multisearch .authoritySet {
+	height:440px;
+}
+.authoritySet p {
+	margin-bottom:5px;
+	font-size:12px;
+}
+.multisearch .objectsListResult.authorityResult {
+	height: 100px;
+}
+
+
 /* Browse */
 #bRefine {
 	background-color:#fff;
 	border:2px solid #000;
-	height:275px;
+	height:290px;
 	padding:10px;
 	min-width:735px;
 }
@@ -69,10 +103,16 @@ h2 {
 }
 .facetList {
 	float:left;
-	height:200px;
-	width: 20%;
+	height:220px;
+	width: 12%;
 	padding-right:5px;
 }
 .advSearchField {
 	height:50px;
+}
+
+/* Detail */
+
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+	font-size:18px;
 }

@@ -39,6 +39,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-6">
+						<div class="kentlerLogo"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'KentlerLogo.jpg'), "", "", "",""); ?></div>
 						<h3>
 							353 Van Brunt Street<br/>RED HOOK<br/>Brooklyn &middot; NY &middot; 11231
 						</h3>

@@ -139,7 +139,7 @@
 			$i++;
 		}
 	}
-	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	$va_collections = $t_item->get("ca_collections.related", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_collections)){
 		print "<div class='btn btn-default'>Related collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
 		$t_rel_collection = new ca_collections();
@@ -157,7 +157,7 @@
 			if($vs_brief_description = $t_rel_collection->get("ca_collections.brief_description")){
 				print $vs_brief_description;
 			}
-			print "</div></div><!-- end row -->";
+			print "</div></div><!-- end row -->"; 
 			$i++;
 		}
 	}

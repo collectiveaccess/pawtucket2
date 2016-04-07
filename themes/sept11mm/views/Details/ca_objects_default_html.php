@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$vs_pop_over_attributes = "data-container = 'body' data-toggle = 'popover' data-placement = 'auto' data-html = 'true' data-trigger='hover'";
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -32,9 +33,12 @@
 		<div class='repDisplay'>
 			{{{representationViewer}}}
 		</div>		
+<?php
+ # could do tooltips with field level descriptions like this, or hand code them, or make a helper/popover class to handle it
+ #print ($t_object->getDisplayDescription("ca_objects.idno")) ? "data-content = '".$t_object->getDisplayDescription("ca_objects.idno")."' ".$vs_pop_over_attributes : "";
+?>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}			
 <?php
 				$va_dimensions_fields = array("dimensions_height", "dimensions_width", "dimensions_depth", "Dimensions_Length");
 				$va_dimensions_informations = array_pop($t_object->get("ca_objects.dimensions", array("returnWithStructure" => true)));
@@ -87,12 +91,23 @@
 				$va_list_ids = array();
 				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
 					if(is_array($va_subjects) && sizeof($va_subjects)){
-						print "<div class='unit'>";
-						print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
+						# --- loop through to order alphebeticaly
+						$va_subjects_sorted = array();
+						$t_list_item = new ca_list_items();
 						foreach($va_subjects as $va_subject){
-							print caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]))."<br/>";
+							$t_list_item->load($va_subject["item_id"]);
+							$va_popover = array();
+							if($t_list_item->get("ca_list_item_labels.description")){
+								#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
+								$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
+							}
+							$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
 							$va_list_ids[] = $va_subject["item_id"];
 						}
+						ksort($va_subjects_sorted);
+						print "<div class='unit'>";
+						print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
+						print join($va_subjects_sorted, "<br/>");
 						print "</div>";
 					}
 				}
@@ -112,7 +127,7 @@
 <?php
 				if($t_object->get("ca_objects.curators_comment")){
 ?>
-					<div class="detailTool"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comments</a></div><!-- end detailTool -->
+					<div class="detailTool"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comment</a></div><!-- end detailTool -->
 <?php
 				}
 ?>
