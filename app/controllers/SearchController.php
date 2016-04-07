@@ -398,6 +398,8 @@
  				// invalid advanced search type – throw error
  				throw new ApplicationException("Invalid advanced search type");
  			}
+ 			caSetPageCSSClasses(array("search results advancedSearch"));
+
  			$vs_class = $va_search_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
  			
