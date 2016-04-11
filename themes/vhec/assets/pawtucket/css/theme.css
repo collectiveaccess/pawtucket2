@@ -52,6 +52,13 @@ h8 {
 	text-transform:uppercase;
 	display:block;
 }
+h9 {
+	margin-top:5px;
+	margin-bottom:5px;
+	text-decoration:underline;
+	display:block;
+	font-weight:bold;
+}
 a {
 	color: #778459;
 }
@@ -638,6 +645,12 @@ a.readmore-js-toggle {
 .detail #detailAnnotations {
 	margin:0px;
 }
+.detail .unit.document img {
+	border:1px solid #ddd;
+}
+.detail .map {
+	margin-top:15px;
+}
 #relationshipTable.ui-tabs {
 	padding:0px;
 	min-height:201px;
@@ -683,19 +696,26 @@ a.readmore-js-toggle {
 	background-color:#f5f5f5;
 	height:75px;
 	padding:10px;
+	margin-bottom:15px;
 }
 .detail .entityThumb a{
 	color: #333;
 }
 .relatedThumb {
-	background-color:#f5f5f5;
-	padding:10px 10px 15px 10px;
-	font-size:12px;
+    background-color: #f5f5f5;
+    padding: 10px 10px 15px 10px;
+    font-size: 12px;
+    height: 200px;
+    margin-bottom: 20px;
 }
 .relatedThumb img{
 	width:100%;
 	height:auto;
 	margin-bottom:10px;
+}
+.relatedThumb a{
+	color: #333;
+	line-height:1em;
 }
 .subjectBlock {
 	background-color:#f5f5f5;
@@ -725,6 +745,7 @@ a.readmore-js-toggle {
 a.components  {
 	color:#000;
 }	
+
 
 
 /* Gallery */
