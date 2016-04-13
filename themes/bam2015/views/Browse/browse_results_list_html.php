@@ -118,7 +118,7 @@
 					}
 				} 
 				$vs_detail_link = "";
-				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table = "ca_occurrences")){
+				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table == "ca_occurrences")){
 					$vs_detail_link	= caDetailLink($this->request, $vs_collection_parent.$vs_link_text, '', $vs_table, $vn_id);
 				}else{
 					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";

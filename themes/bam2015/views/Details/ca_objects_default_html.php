@@ -6,9 +6,9 @@
 	$pn_digi_photo_object_type_id = $t_list->getItemIDFromList("object_types", "born_digital_photograph");
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$va_rep = $t_object->getPrimaryRepresentation(array('large'), null, array('return_with_access' => $va_access_values));
-	$va_rep_width = $va_rep['info']['large']['WIDTH'];
-	$va_rep_height = $va_rep['info']['large']['HEIGHT'];
+	$va_rep = $t_object->getPrimaryRepresentation(array('bamlarge'), null, array('return_with_access' => $va_access_values));
+	$va_rep_width = $va_rep['info']['bamlarge']['WIDTH'];
+	$va_rep_height = $va_rep['info']['bamlarge']['HEIGHT'];
 	$va_rep_type = $va_rep['mimetype'];
 	
 	if($this->request->isAjax()){
@@ -116,7 +116,7 @@
 </div>
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-		<div class="row"">
+		<div class="row">
 			<div class='col-sm-1 navLeftRight'>
 				<div class="detailNavBgLeft">
 					{{{previousLink}}}{{{resultsLink}}}
@@ -217,7 +217,7 @@
 ?>			
 		<div class="row" style='margin-bottom:30px;'>
 			<div class='col-sm-12 col-md-8 col-md-offset-2'>
-				<div class="landscapeRepContainer">
+				<div class="landscapeRepContainer" style="max-width:<?php print $va_rep_width; ?>px;">
 				<?php print $this->getVar("representationViewer");?>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>			
@@ -249,7 +249,7 @@
 ?>				
 		<div class="row" style='margin-bottom:30px;'>
 			<div class='col-sm-6 col-md-5 col-md-offset-1'>
-				<div class="portraitRepContainer">
+				<div class="portraitRepContainer" style="max-width:<?php print $va_rep_width; ?>px;">
 <?php
 					print $this->getVar("representationViewer");
 				

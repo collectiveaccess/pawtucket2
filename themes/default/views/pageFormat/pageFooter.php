@@ -41,7 +41,7 @@
 				<li><a href="#">Link 2</a></li>
 				<li><a href="#">Link 3</a></li>
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
 		</div><!-- end footer -->
 <?php
 	//

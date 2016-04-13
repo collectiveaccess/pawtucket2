@@ -68,7 +68,7 @@ h3 {
 a {
 	color: #00cfb7;
 }
-a:hover {
+a:hover, a:focus, a:visited {
 	color: #00cfb7;
 }
 .notificationMessage, .notificationInfo, .notificationError, .notificationWarning {
@@ -449,6 +449,8 @@ body {
 #homePanel {
 	margin-top:-20px;
 	background-color:#f1f2f2;
+	position:relative;
+	z-index:100;
 }
 .front #homePanel H1 {
     font-size: 28px;
@@ -462,9 +464,6 @@ body {
 #homePanel .leftSide img{
 	height:435px;
 	width:auto;
-}
-#homePanel .rightSide {
-
 }
 #homePanel .close {
 	padding-right:20px;
@@ -671,9 +670,10 @@ a.readmore-js-toggle {
 
 .landscapeRepContainer, .portraitRepContainer{
 	text-align:center;
+	margin:0px auto 0px auto;
 }
 .landscapeRepContainer{
-	max-width:640px;
+	text-align:center;
 	height:auto;
 	margin:0px auto 0px auto;
 }
@@ -945,7 +945,7 @@ a.faDownload:hover {
 #collectionLoad a:hover {
 	text-decoration:none;
 }
-#collectionLoad a .fa, #collectionLoad a .icon-box, #collectionLoad a .icon-folder{
+#collectionLoad a .fa, #collectionLoad .fa, #collectionLoad a .icon-box, #collectionLoad .icon-box, #collectionLoad a .icon-folder, #collectionLoad .icon-folder{
 	color: #737373;
 }
 .findingAidContainer a.openCollection.active {

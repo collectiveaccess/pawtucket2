@@ -88,8 +88,8 @@
 	$vs_version = "small";
 	if(($vs_table == 'ca_occurrences') && ($this->request->getParameter("openResultsInOverlay", pInteger))){
 		# --- this is the iconic artist page occurrence results
-		$vs_version = 'icon';
-		#$vs_version = 'iconlarge';
+		#$vs_version = 'icon';
+		$vs_version = 'iconlarge';
 		# --- what is the entity_id?  is was extracted from the search term in browse_results_html.php and passed here
 		$vn_entity_id = $this->getVar("search_id");
 		$va_entity_roles_by_occurrence = array();

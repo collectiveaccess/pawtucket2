@@ -24,7 +24,7 @@
 		</div>
 		<div class="form-group">
 			Date range <i>(e.g. 1970-1979)</i><br/>
-			{{{ca_objects.sourceDate%width=100%&height=35px&useDatePicker=0&class=form-control}}}
+			{{{ca_objects.sourceDate%height=35px&width=100%&useDatePicker=0&class=form-control}}}
 		</div>
 	
 	<br style="clear: both;"/>
