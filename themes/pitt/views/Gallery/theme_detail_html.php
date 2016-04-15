@@ -9,32 +9,40 @@
 
 ?>
 
-<div class='exName'><?php print $this->getVar("label")."</div>"; ?></div>
+<div class='exName'><?php print $this->getVar("label"); ?></div>
 <div class='container setTheme'>
 	<div class='row'>
-		<div class='col-sm-7'>
-			<div class='setDescription'><?php print $t_set->get('ca_sets.set_description') ?></div>
-		</div><!-- end col -->
-		<div class='col-sm-1'></div><!-- end col -->
-		<div class='col-sm-4'>
-			
+		<div class='col-sm-12'>
+			<div class='setDescription'>		
 <?php
 			if ($vs_credits = $t_set->get('ca_sets.credits_team')) {
-				print "<h3>Credits and Team</h3>";
+				print "<div class='creditsTeam'>";
+				print "<h3>Credits</h3>";
 				print $vs_credits;
+				print "</div>";
 			}
-?>			
+			
+?>
+			<?php print $t_set->get('ca_sets.set_description') ?>		
+			</div>		
 		</div>	<!-- end col -->	
 	</div><!-- end row -->
+	<hr>
 	<div class='row'>
 		<div class='col-sm-8'>
 			<div class='container'><div class='row'>
-<?php		
+<?php	
+		$vn_i = 1;	
 		foreach ($pa_set_items as $va_key => $pa_set_item) {
-			print "<div class='col-sm-3 item'>";
-			print caNavLink($this->request, $pa_set_item['representation_tag_iconlarge'], '', '', 'Gallery', $pn_set_id);
-			print $pa_set_item['set_item_label'];
+			print "<div class='col-sm-4 item'>";
+			print caNavLink($this->request, $pa_set_item['representation_tag_iconlarge'], '', '', 'Gallery', $pn_set_id, array('theme_item' => true, 'set_item_id' => $pa_set_item['item_id']));
+			print "<div class='setItemCaption'>".caNavLink($this->request, $pa_set_item['set_item_label'], '', '', 'Gallery', $pn_set_id, array('theme_item' => true, 'set_item_id' => $pa_set_item['item_id']))."</div>";
 			print "</div>";
+			if ($vn_i == 3) {
+				print "</div><div class='row'>";
+				$vn_i = 0;
+			}
+			$vn_i++;
 		}
 ?>		
 			</div></div>	
@@ -42,30 +50,44 @@
 		<div class='col-sm-4'>
 			<div class='themes'>
 				<h3>Related themes</h3>
+				<div class='row'>
 <?php				
 				$va_theme_list = array();
 				foreach ($pa_set_items as $va_key => $pa_set_item) {
 					$t_set_item = new ca_set_items($pa_set_item['item_id']);
 					$va_themes = $t_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true));
 					foreach ($va_themes as $va_key => $va_theme) {
-						$va_theme_list[$va_theme] = caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme));
+						$va_theme_list[$va_theme] = "<div class='galleryItem'>".caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme))."</div>";
 					}
 				}
-				print join('<br/>', $va_theme_list);
-?>				
+				foreach ($va_theme_list as $s_key => $va_theme_list_link) {
+					print "<div class='col-sm-6'>".$va_theme_list_link."</div>";
+				}
+?>		
+				</div>
+			</div>
+			<div class='creators'>			
 				<h3>Browse Creators</h3>
+				<div class='row'>
 <?php				
 				$va_creators_list = array();
 				foreach ($pa_set_items as $va_key => $pa_set_item) {
 					$t_set_item = new ca_set_items($pa_set_item['item_id']);
-					#$t_object = $t_set_item->getItemInstance();
-					#$va_creators = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true));
-					#foreach ($va_creators as $va_key => $va_creator) {
-					#	$va_creators_list[] = $va_creator;
-					#}
+					$t_object = $t_set_item->getItemInstance();
+					$va_creators = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'restrictToRelationshipTypes' => array('creator')));
+					foreach ($va_creators as $va_key => $va_creator) {
+						$t_entity = new ca_entities();
+						$va_entity_names = $t_entity->getPreferredDisplayLabelsForIDs(array($va_creator));
+						foreach ($va_entity_names as $va_entity_id => $va_entity_name) {
+							$va_creators_list[$va_entity_id] = "<div class='galleryItem'>".caNavLink($this->request, $va_entity_name, '', '', 'Gallery', $pn_set_id, array('entity_id' => $va_entity_id))."</div>";
+						}
+					}
 				}
-				print join('<br/>', $va_creators_list);
+				foreach ($va_creators_list as $v_key => $va_creators_list_link) {
+					print "<div class='col-sm-6'>".$va_creators_list_link."</div>";
+				}
 ?>			
+				</div><!-- end row -->
 			</div>
 		</div><!-- end col -->
 	</div><!-- end row -->

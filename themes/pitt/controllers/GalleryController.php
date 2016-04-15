@@ -74,6 +74,10 @@
  			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
  			$t_set = new ca_sets();
  			$vs_use_theme = $this->request->getParameter('theme', pInteger);
+ 			$vs_is_theme_item = $this->request->getParameter('theme_item', pInteger);
+ 			$vs_set_item_id = $this->request->getParameter('set_item_id', pInteger);
+ 			$vs_theme_id = $this->request->getParameter('theme_id', pInteger);
+ 			$vs_entity_id = $this->request->getParameter('entity_id', pInteger);
  			if(($ps_function != "index")&&($vs_use_theme)){
  				$ps_set_id = $ps_function;
  				$this->view->setVar("set_id", $ps_set_id);
@@ -89,10 +93,68 @@
  				$this->view->setVar("set_item_id", $pn_set_item_id);
  				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
  				$this->render("Gallery/theme_detail_html.php");
+ 			} elseif(($ps_function != "index") && ($vs_theme_id)){
+  				$ps_set_id = $ps_function;
+ 				$this->view->setVar("set_id", $ps_set_id);
+ 				$t_set->load($ps_set_id);
+ 				$this->view->setVar("set", $t_set);
+ 				$this->view->setVar("label", $t_set->getLabelForDisplay());
+ 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+  				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+ 				
+ 				$this->view->setVar("set_items", $va_set_items);
+ 				
+ 				$this->view->setVar("theme_id", $vs_theme_id); 				
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+ 				$this->render("Gallery/topic_detail_html.php"); 
+ 			} elseif(($ps_function != "index") && ($vs_entity_id)){
+  				$ps_set_id = $ps_function;
+ 				$this->view->setVar("set_id", $ps_set_id);
+ 				$t_set->load($ps_set_id);
+ 				$this->view->setVar("set", $t_set);
+ 				$this->view->setVar("label", $t_set->getLabelForDisplay());
+ 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+  				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+ 				
+ 				$this->view->setVar("set_items", $va_set_items);
+ 				
+ 				$this->view->setVar("entity_id", $vs_entity_id);				
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+ 				$this->render("Gallery/entity_detail_html.php"); 								
+ 			} elseif(($ps_function != "index") && ($vs_set_item_id) && ($vs_is_theme_item)){
+  				$ps_set_id = $ps_function;
+ 				$this->view->setVar("set_id", $ps_set_id);
+ 				$t_set->load($ps_set_id);
+ 				$this->view->setVar("set", $t_set);
+ 				$this->view->setVar("label", $t_set->getLabelForDisplay());
+ 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+  				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+ 				
+ 				$this->view->setVar("set_items", $va_set_items);
+ 				
+ 				$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
+ 			#	if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs()))){
+ 			#		$pn_set_item_id = "";	
+ 			#	}
+ 				$this->view->setVar("set_item_id", $pn_set_item_id);
+				$pn_previous_id = 0;
+				$pn_next_id = 0;
+				$va_set_item_ids = array_keys($va_set_items);
+				$vn_current_index = array_search($pn_set_item_id, $va_set_item_ids);
+				if($va_set_item_ids[$vn_current_index - 1]){
+					$pn_previous_id = $va_set_item_ids[$vn_current_index - 1];
+				}
+				if($va_set_item_ids[$vn_current_index + 1]){
+					$pn_next_id = $va_set_item_ids[$vn_current_index + 1];
+				}
+				$this->view->setVar("next_item_id", $pn_next_id);
+				$this->view->setVar("previous_item_id", $pn_previous_id); 				
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+ 				$this->render("Gallery/theme_item_detail_html.php");			
  			} elseif($ps_function == "index"){
  				if($vn_gallery_set_type_id){
 					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
-					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');

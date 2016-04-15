@@ -13,7 +13,11 @@
 <?php
 		print "<H4>".$this->getVar("label")."</H4>";
 		print "<p><small class='uppercase'>".$this->getVar("num_items")." ".(($this->getVar("num_items") == 1) ? _t("item") : _t("items"))."</small></p>";
-		print "<div class='setItemDescriptionWrapper'><p class='galleryDescription'>".$this->getVar("description")."</p></div>";
+		if ($va_set_teaser = $t_set->get('ca_sets.set_teaser')) {
+			print "<div class='setItemDescription background'>".$va_set_teaser."</div>";
+		}
+		print "<div class='setItemDescriptionWrapper'>";
+		print "<p class='galleryDescription'>".$this->getVar("description")."</p></div>";
 		if ($vs_set_theme == "Theme guided slideshow") {
 			print "<br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large'></span>", "", "", "Gallery", $this->getVar("set_id"))."&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("view %1", $this->getVar("section_item_name")), "", "", "Gallery", $this->getVar("set_id"), array('theme' => 1));		
 		} else {

@@ -7,6 +7,8 @@
 	$rep_width = $this->getVar("rep_height");
 	$rep_height = $this->getVar("rep_width");
 	$t_object = new ca_objects($pn_object_id);
+	$vs_rep_id = $this->getVar("representation_id");
+	$t_representation = new ca_object_representations($vs_rep_id);
 	
 	$t_set_item = new ca_set_items($pn_set_item_id);
 	$vs_title = $t_set_item->get('ca_set_items.preferred_labels');
@@ -51,9 +53,12 @@
 	} elseif ($t_set_item->get('ca_set_items.set_item_template', array('convertCodesToDisplayText' => true)) == 'Object Record') {
 		print "<div class='container objectSlide'><div class='row'><div class='col-sm-9' style='margin-left:-15px;'>";
 	
-		print "<div id='galleryDetailImageWrapper'>".$this->getVar("rep")."</div>";	
+		print "<div id='galleryDetailImageWrapper'>";
+		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+		print caObjectDetailMedia($this->request, $object_id, $t_representation, $t_object, array_merge($va_media_display_info, array("primaryOnly" => true)));		
+		print "</div>";	
 		print "<div class='galleryThumbnail'>";
-		print "<div class='image'>".$t_object->get('ca_object_representations.media.icon')."</div>";
+		#print "<div class='image'>".$t_object->get('ca_object_representations.media.icon')."</div>";
 		print "<div class='text'>";
 		print "<p>".$t_object->get('ca_objects.preferred_labels')."</p>";
 		print "<p>".$t_object->get('ca_objects.description')."</p>";
