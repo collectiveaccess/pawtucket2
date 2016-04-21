@@ -843,6 +843,16 @@ a.addToLightbox, a.addToLightbox i{
 #bRefine em:hover{
 	text-decoration:none;
 }
+H1#bScrollListLabel a.keywordDef{
+	font-size:12px;
+	color:#21B1E7 !important;
+	float:right;
+	padding:3px 20px 0px 0px;
+	font-weight:bold;
+}
+H1#bScrollListLabel a.keywordDef .fa{
+	color:#21B1E7 !important;
+}
 /* --------------------- */
 /* --- lightbox --- */
 /* --------------------- */

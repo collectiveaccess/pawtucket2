@@ -37,7 +37,6 @@
  # could do tooltips with field level descriptions like this, or hand code them, or make a helper/popover class to handle it
  #print ($t_object->getDisplayDescription("ca_objects.idno")) ? "data-content = '".$t_object->getDisplayDescription("ca_objects.idno")."' ".$vs_pop_over_attributes : "";
 ?>
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
 				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}			
 <?php
 				$va_dimensions_fields = array("dimensions_height", "dimensions_width", "dimensions_depth", "Dimensions_Length");
@@ -71,23 +70,6 @@
 					}
 					print "</div>";
 				}
-				$vn_source_id = null;
-				if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
-					if(is_array($va_sources) && sizeof($va_sources)){
-						print "<div class='unit'>";
-						print "<b>Source".((sizeof($va_sources) > 1) ? "s" : "").":</b> ";
-						$va_source_display = array();
-						foreach($va_sources as $va_source){
-							$va_source_display[] = caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]));
-						}
-						print implode(", ", $va_source_display)."</div>";
-						$vn_source_id = $va_source["entity_id"];
-					}
-
-				}
-				if($t_object->get("ca_object_lots.credit_line")){
-					print "<div class='unit'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
-				}
 				$va_list_ids = array();
 				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
 					if(is_array($va_subjects) && sizeof($va_subjects)){
@@ -118,11 +100,33 @@
 					</div>
 				</div>
 				<div style='clear:left;'></div>
+
+				{{{<ifdef code="ca_objects.public_description"><div class="unit unitExternalLinks"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit unitExternalLinks"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
+<?php				
+				$vn_source_id = null;
+				if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
+					if(is_array($va_sources) && sizeof($va_sources)){
+						print "<div class='unit'>";
+						print "<b>Source".((sizeof($va_sources) > 1) ? "s" : "").":</b> ";
+						$va_source_display = array();
+						foreach($va_sources as $va_source){
+							$va_source_display[] = caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]));
+						}
+						print implode(", ", $va_source_display)."</div>";
+						$vn_source_id = $va_source["entity_id"];
+					}
+
+				}
+				if($t_object->get("ca_object_lots.credit_line")){
+					print "<div class='unit unitExternalLinks'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+				}
 				
-				{{{<ifdef code="ca_objects.public_description"><div class="unit"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.curators_comment"><div class="unit" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment</unit></ifdef>}}}
+?>
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
 				
+				{{{<ifdef code="ca_objects.curators_comment"><div class="unit unitExternalLinks" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment</unit></ifdef>}}}
+
 				<div id="detailTools" style="clear:none;">
 <?php
 				if($t_object->get("ca_objects.curators_comment")){
@@ -191,3 +195,8 @@ if(sizeof($va_search)){
 	}
 }
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('.unitExternalLinks a').attr('target','_blank');
+	});
+</script>

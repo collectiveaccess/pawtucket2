@@ -379,11 +379,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
 		
 		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		if(file_exists($po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif")){
-			$vs_button = "<img src='".$po_request->getThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";	
-		}else{
-			$vs_button = "<img src='".$po_request->getDefaultThemeUrlPath()."/assets/pawtucket/graphics/indicator.gif' border='0' {$vs_attr}/> ";
-		}
+		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
+	
 		return $vs_button;
 	}
 	# ------------------------------------------------------------------------------------------------
