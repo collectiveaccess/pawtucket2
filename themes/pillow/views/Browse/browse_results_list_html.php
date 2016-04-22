@@ -95,7 +95,7 @@
 				if ($vs_table === 'ca_objects') {
 					$vs_typecode = "<h7>".$qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true))."</h7>";
 					$vs_date = "<p class='occName'>".$qr_res->get('ca_objects.date', array('delimiter' => ', '))."</p>";
-				}	elseif (($qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true) == "Production")) | ($qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true) == "Work"))) {
+				}	elseif ($vs_table === 'ca_occurrences') {
 					$vs_date = "<p class='occName'>".$qr_res->get('ca_occurrences.productionDate', array('delimiter' => ', '))."</p>";
 				} else {
 					$vs_date = null;

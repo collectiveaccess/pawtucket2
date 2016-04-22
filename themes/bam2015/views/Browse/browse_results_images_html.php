@@ -88,8 +88,8 @@
 	$vs_version = "small";
 	if(($vs_table == 'ca_occurrences') && ($this->request->getParameter("openResultsInOverlay", pInteger))){
 		# --- this is the iconic artist page occurrence results
-		$vs_version = 'icon';
-		#$vs_version = 'iconlarge';
+		#$vs_version = 'icon';
+		$vs_version = 'iconlarge';
 		# --- what is the entity_id?  is was extracted from the search term in browse_results_html.php and passed here
 		$vn_entity_id = $this->getVar("search_id");
 		$va_entity_roles_by_occurrence = array();
@@ -136,7 +136,18 @@
 							$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
 						}
 						$va_role = array();
-						$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];						
+						if($va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")]){
+							$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];
+						}
+						$va_related_occ_ids = $qr_res->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => 1));
+						if(is_array($va_related_occ_ids) && sizeof($va_related_occ_ids)){
+							foreach($va_related_occ_ids as $vn_related_occ_id){
+								if($va_entity_roles_by_occurrence[$vn_related_occ_id]){
+									$va_role = array_merge($va_role, $va_entity_roles_by_occurrence[$vn_related_occ_id]);
+								}
+							}
+						}
+						$va_role = array_unique($va_role);				
 					}else{
 						# --- this is occurrence browse results
 						$vn_chop_len = 90;
@@ -203,7 +214,7 @@
 				if(($this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_table == 'ca_occurrences')){
 					# different image result layout for productions on entity detail page
 					print "
-		<div class='col-xs-6 col-sm-2'>
+		<div class='col-xs-12 col-sm-3 col-md-2'>
 			<div class='bBAMResultItemOccCircle'>
 				<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
 				<div class='bBAMResultItemText'>

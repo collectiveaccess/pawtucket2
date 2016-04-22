@@ -5,6 +5,8 @@
 ?>
 	<div class="col-sm-1"></div>
 	<div class="col-sm-10">
+		<h4 style='margin-bottom:30px; letter-spacing:1px;'><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h4>
+	
 		<small class='pull-right'>
 <?php
 		$i = 0;
@@ -12,13 +14,12 @@
 			if ($va_results[$vs_block]['count'] == 0) { continue; }
 			$i++;
 			if($i > 1){
-				print " | ";
+#				print " | ";
 			}
-			print "<a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
+#			print "<a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
 		}
 ?>
 		</small>
-		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
 <?php
 		// 
 		// Print out block content (results for each type of search)
@@ -32,7 +33,7 @@
 <?php
 		} 
 	} else {
-		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
+		print "<H3>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H3>";
 	}
 ?>
 	</div>

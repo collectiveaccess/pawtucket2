@@ -68,7 +68,7 @@ h3 {
 a {
 	color: #00cfb7;
 }
-a:hover {
+a:hover, a:focus, a:visited {
 	color: #00cfb7;
 }
 .notificationMessage, .notificationInfo, .notificationError, .notificationWarning {
@@ -208,7 +208,7 @@ a:hover {
 	}
 }
 @media (max-width: 767px) {
-	.btn-search {
+	.formOutline .btn-search {
 		top:-4px;
 	}
 }
@@ -412,7 +412,8 @@ body {
 
 #footer {
 	background-color: #000000;
-	padding:25px;
+	padding-top:25px;
+	padding-bottom:25px;
 	font-family: "News Gothic";	
 	position: absolute;
   	bottom: 0;
@@ -448,10 +449,14 @@ body {
 #homePanel {
 	margin-top:-20px;
 	background-color:#f1f2f2;
-	/*position:absolute;
-	width:100%;
-	top: 0px;
-	z-index:30000;*/
+	position:relative;
+	z-index:100;
+}
+.front #homePanel H1 {
+    font-size: 28px;
+    padding-left: 0px;
+    padding-right: 0px;
+    color:#000;
 }
 #homePanel .leftSide {
 	text-align:right;
@@ -460,14 +465,27 @@ body {
 	height:435px;
 	width:auto;
 }
-#homePanel .rightSide {
-
-}
 #homePanel .close {
-	float:right;
 	padding-right:20px;
 	padding-top:20px;
 	opacity: 1;
+}
+#homePanel .close img {
+	width:100%;
+	height:auto;
+	max-width:45px;
+}
+
+@media (max-width:767px){
+	#homePanel .leftSide {
+		display:none;
+	}
+	#homePanel .close {
+		padding-right:0px;
+	}
+	.front #homePanel H1 {
+		padding-top:10px;
+	}
 }
 .front .attributeMediaThumbnail {
 	text-align:center;
@@ -502,19 +520,37 @@ body {
 	color: #000;
 	padding-top: 16px;
 	padding-bottom:0px;
+	position:relative;
+	width:100%;
 }
-.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small,
-.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+.detail .detailNavBgRight {
+	text-align:right;
+}
+.detail .detailNavBgLeft {
+	text-align:left;
+}
+.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .navTop a .small,
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .navTop a {
 	color: #000;
 	font-family: "News Gothic";
 	font-weight: bold;
 	padding-bottom:5px;
+	background-color:#FFF;
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a  {
 	font-size:24px;
 }
 .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
 	font-size:12px;
+}
+.detail .navTop a:hover{
+	text-decoration:none;
+}
+.detail .navTop a  {
+	font-size:18px;
+}
+.detail .navTop a .small {
+	font-size:8px;
 }
 .detail .detailMediaToolbar a:hover {
 	text-decoration:none;
@@ -634,9 +670,10 @@ a.readmore-js-toggle {
 
 .landscapeRepContainer, .portraitRepContainer{
 	text-align:center;
+	margin:0px auto 0px auto;
 }
 .landscapeRepContainer{
-	max-width:640px;
+	text-align:center;
 	height:auto;
 	margin:0px auto 0px auto;
 }
@@ -827,7 +864,10 @@ p.tileviewerHelpText, div.tileviewerHelpText, .tileviewerHelpList {
 	border-radius:0px;
 	padding: 12px 10px 3px 5px;
 	border-right:0;
-	display:inline-block;		
+	display:inline-block;	
+	position:relative !important;
+	margin-left:5px;
+	top:0px;	
 }
 .collection-form .form-group {
 	width:200px;
@@ -905,7 +945,7 @@ a.faDownload:hover {
 #collectionLoad a:hover {
 	text-decoration:none;
 }
-#collectionLoad a .fa, #collectionLoad a .icon-box, #collectionLoad a .icon-folder{
+#collectionLoad a .fa, #collectionLoad .fa, #collectionLoad a .icon-box, #collectionLoad .icon-box, #collectionLoad a .icon-folder, #collectionLoad .icon-folder{
 	color: #737373;
 }
 .findingAidContainer a.openCollection.active {
@@ -916,17 +956,13 @@ a.faDownload:hover {
 
 /* Advanced Search */
 
-div.advancedSearchField {
-	width: 100%;
-	float:none;
-}
 .caAdvancedSearchFormSubmit, .caAdvancedSearchFormReset {
 	color: #00cfb7;
 	padding:5px 10px;
 	font-weight:bold;
 	text-transform:uppercase;
 	border: 2px solid #00cfb7;
-    margin: 20px auto 20px auto;
+    margin: 20px auto 40px auto;
     width: 60px;	
 }
 a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
@@ -936,6 +972,9 @@ a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
 }
 .identifier textarea.form-control {
     width: 400px;
+}
+.searchSubmitButtons{
+	margin-bottom:40px;
 }
 
 /* Forms */
@@ -977,6 +1016,7 @@ a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
 }
 #user-navbar .dropdown {
 	font-family: "news gothic";
+	border-right:0px;
 }
 li[role=presentation] {
 	text-transform:none;
@@ -1033,6 +1073,10 @@ li[role=presentation] {
     color: #fff;
     margin-top: 5px;
     margin-bottom: 10px;
+}
+h1.profileForm{
+	color:#000;
+	text-align:right;
 }
 .formHeader {
     background-color: #000;
@@ -1100,9 +1144,6 @@ li[role=presentation] {
 .lbItem:hover .lbItemImg {
     max-height: 200px;
 }
-.lbItemContainer .lbItem:hover .lbItemContent {
-	height: 250px;
-}
 .lbItemContent {
 	margin-bottom:15px;
 }
@@ -1151,12 +1192,15 @@ li[role=presentation] {
 	border: 1px solid #00cfb7;
 }
 .lbSet {
-	height:300px;
+	min-height:300px;
 	box-shadow:none;
 	border-bottom: 2px solid #ddd;
 }
 .lbSet:hover {
-	height:325px;
+	height:auto;
+	position:relative;
+	margin:0px;
+	width:100%;
 }
 .lbSet h5 {
 	height:auto;

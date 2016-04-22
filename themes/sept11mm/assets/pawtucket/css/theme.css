@@ -843,6 +843,16 @@ a.addToLightbox, a.addToLightbox i{
 #bRefine em:hover{
 	text-decoration:none;
 }
+H1#bScrollListLabel a.keywordDef{
+	font-size:12px;
+	color:#21B1E7 !important;
+	float:right;
+	padding:3px 20px 0px 0px;
+	font-weight:bold;
+}
+H1#bScrollListLabel a.keywordDef .fa{
+	color:#21B1E7 !important;
+}
 /* --------------------- */
 /* --- lightbox --- */
 /* --------------------- */
@@ -933,6 +943,16 @@ a.addToLightbox, a.addToLightbox i{
 }
 .lbItemContent .caption{
 	color:#000 !important;
+}
+.lbSetItemComment .lbComments {
+    max-height: 100px;
+}
+.lbItemContainer .lbItem:hover .lbItemContent{
+	min-height:270px;
+	height:auto;
+}
+.lbSetItemComment .lbComment hr{
+	margin:5px 0px 0px 0px !important;
 }
 
 /* ----------------------- */

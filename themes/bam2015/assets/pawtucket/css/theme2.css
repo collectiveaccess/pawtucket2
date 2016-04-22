@@ -125,6 +125,10 @@ input:focus{
 	bottom:10px;
 	width:100%;
 }
+#occHeight{
+	max-height:430px;
+	overflow:hidden;
+}
 .bBAMResultItemOccCircle .bBAMResultItemText{
 	height:6em;
 	max-height:6em;
@@ -146,6 +150,9 @@ input:focus{
 	height:280px;
 	margin-bottom:20px;
 	position:relative;
+	max-width:240px;
+	margin-left:auto;
+	margin-right:auto;
 }
 .bBAMResultItemOccCircle a:hover {
 	text-decoration:none;
@@ -162,9 +169,7 @@ input:focus{
 .bBAMResultItemImgContainerOccCircle img{
 	width:100%;
 	height:auto;
-}
-.detail .bBAMResultItemOccCircle .icon-stage{
-	font-size:50px !important;
+	max-width:170px;
 }
 .bBAMResultItemImgContainerOccCircleLabel{
 	padding-bottom:5px;
@@ -388,44 +393,43 @@ h1.detailResults{
 	border: 0px;
     background-color: transparent;
     background-image: url('../graphics/bgcircle.jpg');
-    background-size: contain;
+    background-size: 100%;
     background-repeat: no-repeat;
     width: 100%;
-    padding-top:65px;
-    background-position:center;
-}
-.bBAMResultItemImg span {
-	/*display:block !important;*/
-}
-.bResultItemImgPlaceholder .icon-stage {
-	font-size:80px !important;
+    background-position:top;
+	padding:0px;
+	margin:0px;
+	position: relative;
+    height: 0px;
+    padding-top:0px;
+    padding-bottom: 100%;
+	margin-left:auto;
+	margin-right:auto;
 }
 .bResultItemImgPlaceholder i, .bResultItemImgPlaceholder span {
-	padding:40px;
+	margin:40px;
+	display:inline-block;
+	font-size:80px !important;
+}
+.detail .bBAMResultItemOccCircle .icon-stage, .bResultItemImgPlaceholder .icon-stage{
+	font-size:50px !important;
+}
+.bResultItemImgPlaceholder .icon-stage{
+	margin-top:50px;
 }
 .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
-	padding:15px;
-	display:table-cell;
+	max-width:170px;
 }
 .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder span {
-	display:table-cell;
-	padding:35px;
-	text-align:center;
-	padding-top:50px;
+	position:absolute;
+	width:100%;
+	top:35%;
+	left:0px;
+	padding:0px;
+	margin:0px;
 }
 .bResultItemImgPlaceholder span, .bResultItemImgPlaceholder i{
 	color: #FFFFFF !important;
-}
-.bBAMResultItemOccCircle .bResultItemImgPlaceholder {
-	background-color: transparent;
-	background-image: url('../graphics/bgcircle.jpg');
-	background-size:contain;
-	background-repeat: no-repeat;
-	width:100%;
-	background-position:center;
-	padding:0px;
-	/* make dynamic */
-	height:145px;
 }
 #bRefine{
 	background-color:#FFF;
@@ -677,6 +681,9 @@ h1.detailResults{
 	margin-bottom:50px;
 	font-weight:bold;
 }
+.children .toStart .fa{
+	margin-left:60px;
+}
 .program .leader{
 	margin-right:-30px;
 	border-bottom: 2px solid #DDDDDD;
@@ -725,25 +732,97 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	color:#000 !important;
 }
 
-/* Ipad Styles */
+/* iPhone Styles */
 
-/* ipad portrait */
-
-@media (max-width: 768px) {
-	.bNavOptions input.bSearchWithin {
-		padding-left:10px !important;
-		padding-right:5px !important;
-		width:80%;
+@media (max-width: 767px) {
+	.bNavOptions > div{
+		border-right:0px;
+		font-size:12px;
+		padding:10px 0px 10px 0px;
+		min-height:0px;
+		text-align:left;
 	}
-	.bNavOptions > div:last-child {
-		text-align:center;
-	}	
+	.bNavOptions.fullBrowse .dropdown-menu{
+		margin-left:15px;
+		top:25.5px;
+	}
+	#bRefine{
+		display:none;
+	}
+	.bNavOptions input.bSearchWithin{
+		font-size:12px;
+		padding-left:0px !important;
+	}
 	.bNavOptions .btn-search {
 		padding-top:14px !important;
 	}
-	.bNavOptions div {
-		padding-right:10px;
-		padding-left:10px;
+	.bNavOptions div.blankSpace {
+		display:none;
+	}
+	.bNavOptions.detailBrowse .dropdown-menu{
+		top:25px;
+	}
+	h1.detailResults{
+		font-size:24px;
+	}
+	#occHeight{
+		max-height:460px;
+	}
+	.bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder span {
+    	top: 25%;
+    }
+    .detailOverlayImgCaption .text-right{
+    	text-align:left;
+    	margin-top:5px;
+    }
+    h1.profileForm{
+    	text-align:left;
+    }
+    /*  program history */
+    .phSeasonsList{
+		max-height:140px;
+		border-bottom: 2px solid #DDDDDD;
+	}
+	.children .introText {
+		margin-top:20px;
+		margin-left:0px;
+		margin-right:0px;
+	}
+	.children .toStart {
+		margin-top:0px;
+		margin-bottom:15px;
+	}
+	.children .toStart .fa{
+		margin-left:0px;
+	}
+	.program .leader.lastLeader{
+		border:0px;
+	}
+	.program .leader{
+		margin-right:0px;
+	}
+	.findingAidContainer {
+		height:200px;
+		border-bottom:2px solid #DDD;
+	}
+	#collectionLoad {
+		border-left:0px;
+	}
+	.detail .portraitRepContainer img{
+		max-width:320px;
+	}
+}
+
+/* Ipad Styles */
+/* ipad portrait */
+@media (min-width: 768px) AND (max-width:991px) {
+	
+	.bNavOptions.fullBrowse > div:first-child {
+		border-right:0px !important;		
+	}
+	.bNavOptions.fullBrowse > div:last-child {
+		text-align:center;
+		padding-right:15px;
 	}
 	.bNavOptions div.blankSpace {
 		display:none;
@@ -760,26 +839,11 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	.bNavOptions.detailBrowse .btn-group.filter, .bNavOptions.detailBrowse .btn-group.filter { 
 		padding-left:5px;
 	}
-	.bBAMResultItemOccCircle {
-		height:250px;
-		display:table-cell;
-	}
 	.detail .entityRep.portraitRepContainer img {
 		max-height:none;
 	}
-	.bBAMResultItemOccCircle .bBAMResultItemText {
-		height:9em;
-		max-height:9em;
-	}
-	.bBAMResultItemOccCircle .bResultItemImgPlaceholder {
-		height:90px;
-		width:100%;
-		padding-top:28px;
-		padding-bottom:30px;
-		margin-bottom:0px;	
-	}
-	.detail .bBAMResultItemOccCircle .icon-stage{
-		font-size:40px !important;
+	#occHeight{
+		max-height:460px;
 	}	
 	.results button.bCriteria span {
 		padding-top:0px;
@@ -791,17 +855,12 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	}
 }
 /* ipad landscape */
-@media (min-width: 769px) and (max-width: 1024px) {
-	.bNavOptions input.bSearchWithin {
-		width:85%;
-		padding-right:5px !important;
-		padding-left:0px !important;
-	}
-	.bNavOptions .btn-search {
-		padding-top:4px !important;
-	}	
-	.bNavOptions > div:last-child {
+@media (min-width:992px) AND (max-width:1199px) {
+	.bNavOptions.fullBrowse > div:last-child {
 		text-align:center;
+	}
+	.bNavOptions div.blankSpace {
+		display:none;
 	}	
 	.results button.bCriteria span {
 		font-size: 24px;
@@ -817,23 +876,8 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 		width: 100%;
 		height:auto;
 	}
-	.detail .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
-	    padding-top: 31px;
-	}
-	.detail .bBAMResultItemOccCircle .icon-stage {
-		font-size:35px !important;
-	}	
-}
-@media (min-width: 876px) and (max-width: 1024px) { 
-	.detail .bBAMResultItemImgContainerOccCircle .bResultItemImgPlaceholder {
-	    padding-top: 42px;
-	}
-
-
-}
-@media (min-width: 876px) and (max-width: 1200px) { 
-	.lbSet {
-		height: 350px;;
+	.bBAMResultItemOccCircle{
+		height:265px;
 	}
 }
 
@@ -842,9 +886,6 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 .bBAMResultItemImg img {
 	width: 100%;
     height: auto;
-}
-.detail .navTop {
-	display:none;
 }
 @media (max-width: 405px) {
 	.navbar-brand {
@@ -871,20 +912,10 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
    		margin-bottom: 10px;
 	}
 	.detailOverlayNav {
-		font-size:50px;
+		font-size:30px;
 	}
 	.detailOverlayClose {
-		font-size:60px; 
-	}
-	#caAdvancedSearch  .identifier textarea.form-control {
-		width: 350px;
-	}
-	#caAdvancedSearch textarea.form-control, #caAdvancedSearch  input.form-control, #caAdvancedSearch  select.form-control {
-		width: 350px !important;
-	}
-	.searchSubmitButtons {
-		width: 350px !important;
-		height:50px;
+		font-size:30px; 
 	}
 }
 @media (max-width: 767px) {
@@ -907,9 +938,6 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	}	
 	.bBAMResultItem .bBAMResultItemImgContainer .bBAMResultItemImg {
 		/*display:block;*/
-	}
-	.lbSet {
-		height: 350px;
 	}
 }
 @media (max-width: 848px) {
@@ -935,15 +963,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	.bNavOptions div.blankSpace {
 		display:none;
 	}
-	.bResultItemImgPlaceholder {
-		padding-top:75px;
-	}
-	.bResultItemImgPlaceholder .icon-stage {
-		font-size:70px !important;
-	}
-	.bResultItemImgPlaceholder i, .bResultItemImgPlaceholder span {
+/*	.bResultItemImgPlaceholder i, .bResultItemImgPlaceholder span {
 		padding:30px;
-	}	
+	}	*/
 }
 @media (max-width: 1238px) {
 	.multisearch .scrollButtonNext {
