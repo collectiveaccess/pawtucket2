@@ -5,7 +5,8 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_tags = $this->getVar("tags_array");
 	$vb_files_require_login = $vb_files = false;
-	$va_component_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	# --- filter out internal files and workspace
+	$va_component_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("Synthesis", "CaseStudies", "Exercise", "Presentation", "EvaluationTool", "Solutions", "TeachingNotes", "Resource")));
 		if(sizeof($va_component_ids)){
 			$va_components = array("learn" => array(), "explore" => array(), "practice" => array(), "teach" => array());
 			$t_list = new ca_lists();
@@ -31,6 +32,7 @@
 				$va_component_info["abstract"] = $q_components->get("ca_objects.abstract");
 				$va_component_info["source"] = $q_components->get("ca_objects.source");
 				$va_component_info["usage"] = $q_components->get("usage_license");
+				$va_component_info["date"] = $q_components->getWithTemplate("<ifdef code='ca_objects.date.dates_value'><unit relativeTo='ca_objects.date' delimiter=', '>^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</unit></ifdef>");
 				$va_rep_ids = array();
 				$va_rep_ids = $q_components->get('ca_object_representations.representation_id', array("checkAccess" => $va_access_values, "returnWithStructure" => true));
 				if(sizeof($va_rep_ids) > 0){
@@ -113,7 +115,8 @@
 				$t_set = new ca_sets();
 				$va_sets = caExtractValuesByUserLocale($t_set->getSets(array("table" => "ca_objects", "row_id" => $t_object->get("ca_objects.object_id"), "setType" => "public_presentation", "checkAccess" => $va_access_values)));
 				$vs_translations = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='<br/>' restrictToRelationshipTypes='translation'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.language)</unit>");
-				if($t_object->get("ca_objects.abstract") || $vs_translations || (is_array($va_sets) && sizeof($va_sets))){
+				$vs_see_also = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='<br/>' restrictToRelationshipTypes='related'><l>^ca_objects.preferred_labels.name</l></unit>");
+				if($t_object->get("ca_objects.abstract") || $vs_translations || $vs_see_also || (is_array($va_sets) && sizeof($va_sets))){
 					print "<div class='col-xs-12 col-sm-8'>";
 					print ($t_object->get("ca_objects.abstract")) ? "<p>".$t_object->get("ca_objects.abstract")."</p>" : "";
 					if($vs_translations){
@@ -127,13 +130,13 @@
 						}
 						print join(", ", $va_feature_links);
 					}
+					if($vs_see_also){
+						print "<p><b>See also:</b><br/>".$vs_see_also."</p>";
+					}
 					print "</div>";
 				}
 ?>
 				<div class='col-xs-12 col-sm-4'>
-					{{{<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="related"><p><b>See Also:</b><br/>
-						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToRelationshipTypes="related"><l>^ca_objects.preferred_labels.name</l></unit>
-					</p></ifcount>}}}
 <?php
 					$t_list_items = new ca_list_items();
 							
@@ -188,7 +191,6 @@
 					}
 				}
 ?>
-					{{{<ifdef code="ca_objects.date"><p><b>Date:</b> <unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</unit></p></ifdef>}}}
 					<p><b>Components:</b> <?php print sizeof($va_component_ids); ?></p>
 <?php
 					if($vb_files){
@@ -301,20 +303,23 @@
 								if($va_section_component["num_files"] > 1){
 									print "<p>".$va_section_component["num_files"]." files</p>";
 								}
-								$va_author_credits = array();
+								$va_comp_md = array();
 								if($va_section_component["author"]){
-									$va_author_credits[] = _t("Author").": ".$va_section_component["author"];
+									$va_comp_md[] = _t("Author").": ".$va_section_component["author"];
 								}
 								if($va_section_component["adapter"]){
-									$va_author_credits[] = _t("Adapted by").": ".$va_section_component["adapter"];
+									$va_comp_md[] = _t("Adapted by").": ".$va_section_component["adapter"];
 								}
 								if($va_section_component["translator"]){
-									$va_author_credits[] = _t("Translator").": ".$va_section_component["translator"];
+									$va_comp_md[] = _t("Translator").": ".$va_section_component["translator"];
 								}
 								
-								if(sizeof($va_author_credits)){
+								if($va_component_info["date"]){
+									$va_comp_md[] = _t("Date").": ".$va_component_info["date"];
+								}
+								if(sizeof($va_comp_md)){
 									print "<p>";
-									print join("<br/>", $va_author_credits);
+									print join("<br/>", $va_comp_md);
 									print "</p>";
 								}
 								print ($va_section_component["source"]) ? "<p>"._t("Source").": ".$va_section_component["source"]."</p>" : "";
