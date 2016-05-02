@@ -94,7 +94,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pitt_logo.gif'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'uag_logo.jpg'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -140,14 +140,15 @@
 					print "<li>".caNavLink($this->request, 'Mission and Vision Statements', '', '', 'About', 'mission')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'History', '', '', 'About', 'history')."</li>\n"; 					
 					print "<li>".caNavLink($this->request, 'Rights and Reproductions', '', '', 'About', 'rights')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'UAG in the Media', '', '', 'About', 'media')."</li>\n"; 										
 					print "</ul></li>";	
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Visit <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Contact', '', '', 'About', 'contact')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Hours of operation', '', '', 'About', 'hours')."</li>\n"; 					
 					print "<li>".caNavLink($this->request, 'Location', '', '', 'About', 'location')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Staff', '', '', 'About', 'staff')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Reservations', '', '', 'About', 'reservations')."</li>\n"; 										
+					print "<li>".caNavLink($this->request, 'Hours of operation', '', '', 'About', 'hours')."</li>\n"; 					
 					print "</ul></li>";	
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>\n";
