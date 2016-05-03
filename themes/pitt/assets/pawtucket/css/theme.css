@@ -58,8 +58,9 @@ textarea {
     margin-right: -15px;
 }
 .navbar-brand {
-	width: 260px;
+	width: 350px;
 	padding-bottom: 5px;
+	padding-top:10px;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     color: #000;
@@ -612,4 +613,18 @@ a.readmore-js-toggle {
 	background-image:none !important;
 }	
 
+
+@media (max-width: 450px) {
+	.navbar-brand {
+		width:200px;
+		padding-top:18px;
+	}
+	.frontSlide img {
+		height: 180px;
+		width: auto;
+	}
+	.jcarousel-control-prev, .jcarousel-control-next {
+		top:100px;
+	}	
+}
 	
