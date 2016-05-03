@@ -44,7 +44,8 @@
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H5><a href='#' onclick='$(\"#facet".$vs_facet_name."\").toggle(200);return false;'>".$va_facet_info['label_singular']."</a></H5>";
+				print "<div style='display:none;' id='facet".$vs_facet_name."'>"; 
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -53,6 +54,7 @@
 					</script>
 					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 <?php
+				print "</div><!--end {$vs_facet_name} -->";
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				print "<H5><a href='#' onclick='$(\"#facet".$vs_facet_name."\").toggle(200);return false;'>".$va_facet_info['label_singular']."</a></H5>";
@@ -76,7 +78,7 @@
 #							}
 						}
 						if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-							print "</div>\n";
+#							print "</div>\n";
 						
 #							$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
 #							$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
@@ -87,7 +89,7 @@
 					break;
 					# ---------------------------------------------
 				}
-				print "</div>";
+				print "</div><!--end {$vs_facet_name} -->";
 			}
 		}
 		print "</div><!-- end bRefine -->\n";

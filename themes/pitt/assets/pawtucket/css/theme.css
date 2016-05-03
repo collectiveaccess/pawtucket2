@@ -613,4 +613,18 @@ a.readmore-js-toggle {
 	background-image:none !important;
 }	
 
+
+@media (max-width: 450px) {
+	.navbar-brand {
+		width:200px;
+		padding-top:18px;
+	}
+	.frontSlide img {
+		height: 180px;
+		width: auto;
+	}
+	.jcarousel-control-prev, .jcarousel-control-next {
+		top:100px;
+	}	
+}
 	

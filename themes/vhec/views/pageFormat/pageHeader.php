@@ -99,6 +99,7 @@
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'vhec2.png'), "navbar-brand", "", "","");
 ?>
+				<div class='collectionsLogo'>Collections</div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -127,11 +128,9 @@
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-info-sign"></span></a>
 						<ul class="dropdown-menu">
 <?php						
-							print "<li><a href='http://www.vhec.org/' target='_blank'>The VHEC</a></li>\n";
-							print "<li>".caNavLink($this->request, 'The Collections', '', '', 'About', 'Index')."</li>\n"; 
+							print "<li>".caNavLink($this->request, 'About The Collections', '', '', 'About', 'Index')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'Plan a Research Visit', '', '', 'About', 'Index')."</li>\n"; 							
-							print "<li>".caNavLink($this->request, 'Ask Us', '', '', 'About', 'Index')."</li>\n"; 
-							print "<li>".caNavLink($this->request, 'Donating to the Collections', '', '', 'About', 'donate')."</li>\n"; 													
+							print "<li>".caNavLink($this->request, 'Connect With Us', '', '', 'About', 'Index')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'User Guides', '', '', 'About', 'userguide')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'Project Funding', '', '', 'About', 'funding')."</li>\n";
 ?>						
@@ -145,7 +144,7 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search the Collections" name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
@@ -159,7 +158,7 @@
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Collections <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li>".caNavLink($this->request, 'Archives', 'first', '', 'Browse', 'entities')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Archives', 'first', '', 'Archives', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Library', '', '', 'Browse', 'occurrences')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Museum', '', '', 'Museum', 'Index')."</li>\n";
 					print "<li>".caNavLink($this->request, 'Testimony', '', '', 'Browse', 'occurrences')."</li>\n";
@@ -167,10 +166,14 @@
 					print "</li>";	
 								
 					#print $this->render("pageFormat/browseMenu.php"); 	
-					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Education <span class='caret'></span></a>\n";
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Resources <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li>".caNavLink($this->request, 'Resources for Educators', 'first', '', 'About', 'Index')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Resources for Students', 'first', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'For Educators', 'first', '', 'About', 'Index')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'For Students', '', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'For Researchers', '', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'CIC', 'first', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Research Guides', '', '', 'About', 'Index')."</li>\n"; 
+					
 					print "</ul>";
 					print "</li>";	
 					
@@ -185,8 +188,14 @@
 					print "</ul>";
 					print "</li>";	
 								
-					print "<li><a href='www.vhecblog.org' target='_blank'>Blog</a></li>";				
-														
+					print "<li><a href='http://www.vhecblog.org' target='_blank'>Blog</a></li>";				
+					
+					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Contribute <span class='caret'></span></a>\n";
+					print "<ul class='dropdown-menu'>\n";
+					print "<li><a href='https://www.canadahelps.org/dn/15211' target='_blank'>Support the VHEC</a></li>\n";
+					print "<li>".caNavLink($this->request, 'Donate Materials', '', '', 'About', 'Index')."</li>\n"; 
+					print "</ul>";
+					print "</li>";														
 					
 					  
 ?>					
@@ -229,6 +238,43 @@
 		print "<li>".caNavLink($this->request, 'The Museum Collection', 'first', '', 'About', 'Index')."</li>\n";
 		print "<li>".caNavLink($this->request, 'Donating to the Collection', '', '', 'About', 'Index')."</li>\n"; 
 		print "<li>".caNavLink($this->request, 'Acknowledgements', 'last', '', 'About', 'Index')."</li>\n"; 
+		print "</ul>";
+		print "</li>";	
+				
+		print "</ul>";
+		print "</div>";
+		print "</div></div>";
+	} 	elseif ($this->request->getController() == "Archives") {
+		print "<div class='container submenu museum '><div class='row'>";
+		print "<div class='col-sm-12'>";
+		print "<ul class='nav navbar-nav navbar-left'>";
+		
+		print "<li>".caNavLink($this->request, _t("Explore"), "", "", "Browse", "archives")."</li>";				
+
+		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About the Collection <span class='caret'></span></a>\n";
+		print "<ul class='dropdown-menu'>\n";
+		print "<li>".caNavLink($this->request, 'The Archives', 'first', '', 'About', 'Index')."</li>\n";
+		print "<li>".caNavLink($this->request, 'Donating to the Archives', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Acknowledgements', 'last', '', 'About', 'Index')."</li>\n"; 
+		print "</ul>";
+		print "</li>";
+
+		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Research <span class='caret'></span></a>\n";
+		print "<ul class='dropdown-menu'>\n";
+		print "<li>".caNavLink($this->request, 'Plan a research visit', 'first', '', 'About', 'Index')."</li>\n";
+		print "<li>".caNavLink($this->request, 'Research Requests', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Archives Use and Licensing', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Archives User Guide', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Citing the Collection', 'last', '', 'About', 'Index')."</li>\n"; 
+		print "</ul>";
+		print "</li>";
+		
+		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Learn <span class='caret'></span></a>\n";
+		print "<ul class='dropdown-menu'>\n";
+		print "<li>".caNavLink($this->request, 'External link to pedagogical CIC site', 'first', '', 'About', 'Index')."</li>\n";
+		print "<li>".caNavLink($this->request, 'Resources for Educators', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Subject Guides', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Recommended Links', 'last', '', 'About', 'Index')."</li>\n"; 
 		print "</ul>";
 		print "</li>";	
 				

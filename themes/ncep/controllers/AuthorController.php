@@ -67,7 +67,7 @@
  		 * List user's components
  		 */
  		public function Index() {
- 			$va_objects = $this->opt_entity->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("author")));
+ 			$va_objects = $this->opt_entity->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("author"), "restrictToTypes" => array("Synthesis", "CaseStudies", "Exercise", "Presentation", "EvaluationTool", "Solutions", "TeachingNotes", "Resource", "Workspace")));
  			$va_modules = array();
  			$va_module_titles = array();
  			if(sizeof($va_objects)){
@@ -107,6 +107,19 @@
  		# -------------------------------------------------------
  		/**
  		 * generate form
+ 		 */
+ 		public function FormComment() {
+ 			$vn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$this->view->setVar("representation_id", $vn_representation_id);
+ 			$t_rep = new ca_object_representations();
+ 			$t_rep->load($vn_representation_id);
+ 			$vs_rep_title = $t_rep->get("ca_object_representations.preferred_labels.name");
+ 			$this->view->setVar("rep_name", $t_rep->get("ca_objects.related.preferred_labels.name").(($vs_rep_title) ? ": ".$vs_rep_title : ""));
+ 			$this->render("Author/form_comment_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * save upload form
  		 */
  		public function SaveForm() {
  			global $g_ui_locale_id; // current locale_id for user
@@ -160,6 +173,59 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/author_submission_conf.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/author_submission_conf_html.tpl");
+					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+
+				}
+				
+			}else{
+				$this->notification->addNotification(_t('There were errors: ').join(", ", $va_errors), __NOTIFICATION_TYPE_ERROR__);        	
+			}
+ 			
+ 			$this->Index();
+ 		}
+  		# -------------------------------------------------------
+ 		/**
+ 		 * save upload form
+ 		 */
+ 		public function SaveFormComment() {
+ 			global $g_ui_locale_id; // current locale_id for user
+ 			$va_errors = array();
+ 			$vn_representation_id = $this->request->getParameter('representation_id', pInteger);
+ 			$this->view->setVar("representation_id", $vn_representation_id);
+ 			$t_rep = new ca_object_representations();
+ 			$t_rep->load($vn_representation_id);
+ 			$vs_rep_title = $t_rep->get("ca_object_representations.preferred_labels.name");
+ 			$vs_rep_name = $t_rep->get("ca_objects.related.preferred_labels.name").(($vs_rep_title) ? ": ".$vs_rep_title : "");
+ 			$this->view->setVar("rep_name", $vs_rep_name);
+ 			
+ 			# --- check params
+ 			# comment
+ 			if(!($ps_comment = $this->purifier->purify($this->request->getParameter('comment', pString)))){
+ 				$va_errors["comment"] = _t("Please enter a comment");
+ 			}
+ 			$this->view->setVar("comment", $ps_comment);
+ 			
+ 			if(sizeof($va_errors) == 0){
+				$t_rep->setMode(ACCESS_WRITE);
+				$t_rep->addAttribute(array("comment_text" => $ps_comment, "comment_date" => "now", "commenter" => $this->opt_entity->get("entity_id")), 'comments');
+				$t_rep->update();
+				if ($t_rep->numErrors()) {
+					$va_errors["general"] = join("; ", $t_rep->getErrors());
+					$this->notification->addNotification(_t('There were errors: ').join(", ", $va_errors), __NOTIFICATION_TYPE_ERROR__);
+					$this->Index(); 
+				} else {
+					$this->notification->addNotification(_t('Added comment'), __NOTIFICATION_TYPE_ERROR__); 
+					# --- send email notification to admin
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+					$o_view->setVar("rep_name", $vs_rep_name);
+					$o_view->setVar("author_name", $this->request->user->get("fname")." ".$this->request->user->get("lname"));
+					
+					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/author_comment_subject.tpl");
+
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/author_comment_message.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/author_comment_message_html.tpl");
 					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 
 				}
