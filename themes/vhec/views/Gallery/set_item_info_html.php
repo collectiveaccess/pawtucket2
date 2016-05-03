@@ -1,6 +1,8 @@
 <?php 
 $vn_set_item_id = $this->getVar("item_id");
+$vn_set_id = $this->getVar("item_id");
 $t_set_item = new ca_set_items($vn_set_item_id);
+$t_set = new ca_set_items($vn_set_id);
 
 	print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; 
 
