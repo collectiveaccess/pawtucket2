@@ -52,6 +52,13 @@ h8 {
 	text-transform:uppercase;
 	display:block;
 }
+h9 {
+	margin-top:5px;
+	margin-bottom:5px;
+	text-decoration:underline;
+	display:block;
+	font-weight:bold;
+}
 a {
 	color: #778459;
 }
@@ -118,8 +125,8 @@ textarea {
 	font-family:"futura", "sans serif";
 	padding-top: 18px;
 	color: #4C4C4E;
-	padding-right:10px;
-	padding-left:25px;
+	padding-right:15px;
+	padding-left:20px;
 	font-size:13px;
 }
 .navbar-form {
@@ -140,6 +147,16 @@ textarea {
 }
 .navbar .navbar-collapse .dropdown.open .dropdown-toggle, .navbar .navbar-collapse .dropdown.open .dropdown-menu {
 	background-color: #f5f5f5;
+}
+.collapse.navbar-collapse {
+	clear:both;
+}
+.collectionsLogo {
+    text-transform: uppercase;
+    color: #000;
+    font-weight: bold;
+    top: 67px;
+    position: absolute;
 }
 .dropdown-menu > li > a {
 	font-size: 12px;
@@ -300,7 +317,7 @@ textarea {
 }
 .featuredHome {
 	background-color: rgba(51, 69, 13, 0.5);
-	max-height:250px;
+	max-height:270px;
 	overflow:hidden;
 }
 .featuredHome h1 {
@@ -326,6 +343,10 @@ textarea {
     font-weight: bold;
     background-color: #f5f5f5;
     padding:10px;
+    height:90px;
+}
+.homeTile.large p {
+	height:120px;
 }
 .homeTile .strongCaption {
 	text-transform:uppercase;
@@ -334,6 +355,18 @@ textarea {
 	color: #33450D;
 	font-family:"futura bold";
 	font-size:14px;
+}
+.homeTile a:hover, .homeTile a:active, .homeTile a:focus {
+	color:#778459;
+}
+.jcarousel .frontSlide img{
+	opacity:.3;
+}
+.jcarousel li.activeSlide .frontSlide img{
+	opacity:1;
+}
+.front .jcarousel {
+	background-color:#000;
 }
 
 /* Alt Front Page */
@@ -456,6 +489,12 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 }
 .results h1 i {
 	padding-bottom:5px;
+}
+.bResultItemCol {
+	height:340px;
+}
+.bResultItemContent {
+	height: 290px;
 }
 .bResultItem .bResultItemImg {
 	min-height: 140px;
@@ -638,6 +677,19 @@ a.readmore-js-toggle {
 .detail #detailAnnotations {
 	margin:0px;
 }
+.detail .unit.document img {
+	border:1px solid #ddd;
+}
+.detail .map {
+	margin-top:15px;
+	width:100%;
+}
+.places.detail .map {
+	margin-top:0px;
+}
+.detail .map #map {
+	width:100% !important;
+}
 #relationshipTable.ui-tabs {
 	padding:0px;
 	min-height:201px;
@@ -683,19 +735,26 @@ a.readmore-js-toggle {
 	background-color:#f5f5f5;
 	height:75px;
 	padding:10px;
+	margin-bottom:15px;
 }
 .detail .entityThumb a{
 	color: #333;
 }
 .relatedThumb {
-	background-color:#f5f5f5;
-	padding:10px 10px 15px 10px;
-	font-size:12px;
+    background-color: #f5f5f5;
+    padding: 10px 10px 15px 10px;
+    font-size: 12px;
+    height: 200px;
+    margin-bottom: 20px;
 }
 .relatedThumb img{
 	width:100%;
 	height:auto;
 	margin-bottom:10px;
+}
+.relatedThumb a{
+	color: #333;
+	line-height:1em;
 }
 .subjectBlock {
 	background-color:#f5f5f5;
@@ -727,11 +786,15 @@ a.components  {
 }	
 
 
+
 /* Gallery */
 
 .gallery .galleryItem {
 	box-shadow:none;
 	background-color: #f5f5f5;
+}
+.gallery #galleryDetailImageArea {
+    height: 454px;
 }
 
 /* Static contents */

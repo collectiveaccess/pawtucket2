@@ -29,16 +29,13 @@
 			foreach($va_components as $vn_component_id => $va_component){
 				print "<H2>".$va_component["type"].": ".$va_component["title"]."</H2>";
 				print "<b>"._t("Author(s)").":</b> ".$va_component["authors"]."<br/>";
-				if($va_component["abstract"]){
-					print "<br/><b>"._t("Abstract").":</b> ".$va_component["abstract"]."<br/>";
-				}
 				print "<br/>";
 				if(is_array($va_component["rep_ids"]) && sizeof($va_component["rep_ids"])){
 					$q_reps = caMakeSearchResult("ca_object_representations", $va_component["rep_ids"]);
 					$va_rep_attributes = array();
 					if($q_reps->numHits()){
 						while($q_reps->nextHit()){
-							$va_rep_attributes[$q_reps->get("representation_id")] = array("rep_title" => $q_reps->get("ca_object_representations.preferred_labels.name"), "date" => $q_reps->get("ca_object_representations.date.dates_value"), "comment_text" => $q_reps->get("ca_object_representations.comments.comment_text"), "comment" => $q_reps->getWithTemplate("^ca_object_representations.comments.comment_text<br/><small>&nbsp;&nbsp;&nbsp;&nbsp; - ^ca_object_representations.comments.commenter, ^ca_object_representations.comments.comment_date</small>", array("delimiter" => "<br/><br/>")));
+							$va_rep_attributes[$q_reps->get("representation_id")] = array("rep_title" => $q_reps->get("ca_object_representations.preferred_labels.name"), "date" => $q_reps->get("ca_object_representations.date.dates_value"), "comment_text" => $q_reps->get("ca_object_representations.comments.comment_text"), "comment" => $q_reps->getWithTemplate("<unit>^ca_object_representations.comments.comment_text<br/><small>&nbsp;&nbsp;&nbsp;&nbsp; - ^ca_object_representations.comments.commenter, ^ca_object_representations.comments.comment_date</small></unit>", array("delimiter" => "<br/><br/>")));
 						}
 					}
 				}
@@ -59,7 +56,9 @@
 							print "<b>"._t("Comment(s)").":</b><br/>";
 							print $va_rep_attributes[$vn_rep_id]["comment"]."";
 						}
-						print "<div style='clear:both;'></div></div><!-- end col --></div><!-- end row --><br/><hr/><br/>";
+						print "<div style='clear:both;'></div>";
+						print "<br/><div class='authorComponentButtonCol'><a href='#' class='btn-default btn-small btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Author', 'formComment', array('representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Add comment")."'><small>"._t("Add comment")."&nbsp;<i class='fa fa-comment'></i></small></a></div>";
+						print "</div><!-- end col --></div><!-- end row --><br/><hr/><br/>";
 					}
 				}
 				print "<div class='authorComponentButtonCol'><a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Author', 'form', array('object_id' => $vn_component_id, 'overlay' => 1))."\"); return false;' title='"._t("Upload component file")."'>Upload File &nbsp;<i class='fa fa-upload'></i></a></div>";

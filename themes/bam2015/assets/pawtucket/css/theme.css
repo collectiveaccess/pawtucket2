@@ -174,11 +174,11 @@ a:hover, a:focus, a:visited {
 	padding-bottom: 10px;
 }
 .nav > li.dropdown > a.userIcon {
-	padding-top: 15px;
-    padding-bottom: 8px;
-    font-size:20px;
-    padding-left: 10px;
-    padding-right: 10px;
+	padding-top: 14px;
+    padding-bottom: 6px;
+    font-size: 23px;
+    padding-left: 14px;
+    padding-right: 14px;
 }
 .navbar-default .navbar-form {
 	padding-bottom:0px;

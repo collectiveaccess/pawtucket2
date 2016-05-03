@@ -36,7 +36,7 @@
 	$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
 
 	if ($vs_type == "Survivor Testimony") {
-		$vs_type_link = caNavLink($this->request, 'Testimony', '', '', 'Testimony', 'Index');
+		$vs_type_link = caNavLink($this->request, 'Holocaust Testimony', '', '', 'Testimony', 'Index');
 	}			
 	$vs_title 	= caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);	
 	
@@ -94,6 +94,7 @@
 <?php
 				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					$vn_subject = 1;
+					asort($va_local_subjects);
 					print "<div class='subjectBlock'>";
 					print "<h8 style='margin-bottom:10px;'>Access Points</h8>";
 					foreach ($va_local_subjects as $va_key => $va_local_subject) {
@@ -120,10 +121,9 @@
 					$vs_rights_text.= "<h8>Conditions on Access</h8>";
 					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
 				}
-				if ($vs_licensing = $t_object->get('ca_objects.licensing')) {
+				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Licensing</h8>";
-					$vs_rights_text.= "<div>".$vs_licensing."</div>";
+					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 				}
 				if ($vs_rights_statement = $t_object->get('ca_objects.dc_rights')) {
 					$vs_rights = true;
@@ -146,7 +146,7 @@
 			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-					<H5>{{{<unit>^ca_objects.type_id</unit>}}}</H5>
+					<H5>Holocaust Testimony</H5>
 					<HR>
 	<?php
 	
@@ -187,20 +187,21 @@
 						if ($va_language_note = $t_object->get('ca_objects.language_note')) {
 							print "<div class='unit'><h8>Language Note</h8>".$va_language_note."</div>";
 						}
-						print "<hr>";
 						if ($va_summary = $t_object->get('ca_objects.MARC_summary')) {
 							print "<div class='unit trimText'><h8>Synopsis</h8>".$va_summary."</div>";
 						}
 						if ($va_general_note = $t_object->get('ca_objects.MARC_generalNote')) {
 							print "<div class='unit trimText'><h8>Note</h8>".$va_general_note."</div>";
 						}
-						if ($va_related_entities = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" excludeRelationshipTypes="interviewer, interviewee, creator"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+						if ($va_related_entities = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" excludeRelationshipTypes="interviewer, interviewee, creator, receiver"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
 							print "<div class='unit trimText'><h8>Related Entities</h8>".$va_related_entities."</div>";
 						}	
-						print "<hr>";
 						if ($va_test_project = $t_object->get('ca_objects.testimony_project_notes')) {
 							print "<div class='unit trimText'><h8>Testimony Project</h8>".$va_test_project."</div>";
 						}
+						if ($va_other_holding = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" restrictToRelationshipTypes="receiver"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+							print "<div class='unit trimText'><h8>Other Holding Institutions</h8>".$va_other_holding."</div>";
+						}						
 						if ($va_funding_note = $t_object->get('ca_objects.funding_note')) {
 							print "<div class='unit'><h8>Funding Note</h8>".$va_funding_note."</div>";
 						}																																																																																																																																																																						
@@ -216,7 +217,7 @@
 			if ($va_related_testimony_objects = $t_object->get('ca_objects.related.object_id', array('returnWithStructure' => true, 'restrictToTypes' => array('survivor'), 'checkAccess' => $va_access_values))) {
 				foreach ($va_related_testimony_objects as $va_key => $va_related_testimony_object_id) {				
 					$t_testimony = new ca_objects($va_related_testimony_object_id);
-					$vs_related_testimony.= "<div class='col-sm-4'>";
+					$vs_related_testimony.= "<div class='col-sm-3'>";
 					$vs_related_testimony.= "<div class='relatedThumb'>".caNavLink($this->request, $t_testimony->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_testimony_object_id);
 					$vs_related_testimony.= "<div>".caNavLink($this->request, $t_testimony->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_testimony_object_id)."</div>";
 					$vs_related_testimony.= "</div></div>";					
@@ -227,7 +228,7 @@
 			if ($va_related_museum_objects = $t_object->get('ca_objects.related.object_id', array('returnWithStructure' => true, 'restrictToTypes' => array('work', 'archival', 'library'), 'checkAccess' => $va_access_values))) {
 				foreach ($va_related_museum_objects as $va_key => $va_related_museum_object_id) {				
 					$t_museum = new ca_objects($va_related_museum_object_id);
-					$vs_related_museum.= "<div class='col-sm-4'>";
+					$vs_related_museum.= "<div class='col-sm-3'>";
 					$vs_related_museum.= "<div class='relatedThumb'>".caNavLink($this->request, $t_museum->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_museum_object_id);
 					$vs_related_museum.= "<div>".caNavLink($this->request, $t_museum->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_museum_object_id)."</div>";
 					$vs_related_museum.= "</div></div>";					
@@ -282,7 +283,7 @@
 			<hr>	
 			<div class='row'>
 				<div class='col-sm-12'>
-					<h4 style='font-size:16px;'>Relationships</h4>
+					<h4 style='font-size:16px;'>Related</h4>
 					<div class='container' id='relationshipTable'>
 						<ul class='row'>
 <?php	

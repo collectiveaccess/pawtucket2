@@ -126,7 +126,7 @@
 				}
 				$vs_expanded_info = "<p class='resultType'>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>";
 				if ($va_collection = $qr_res->get('ca_collections.preferred_labels')) {
-					$vs_expanded_info.= "<p class='collectionInfo'>".$va_collection.": ".$qr_res->get('ca_objects.idno')."<p>";
+					$vs_expanded_info.= "<p class='collectionInfo'>".$va_collection."<p>";
 				}
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
