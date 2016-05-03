@@ -399,10 +399,10 @@
 			$this->view->setVar('criteria_summary', $ps_criteria_summary);
 			
 			$vs_type = null;
-			if (!(bool)$po_request->config->get('disable_pdf_output') && substr($ps_template, 0, 5) === '_pdf_') {
+			if (!(bool)$this->request->config->get('disable_pdf_output') && substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
 				$vs_type = 'pdf';
-			} elseif (!(bool)$po_request->config->get('disable_pdf_output') && (substr($ps_template, 0, 9) === '_display_')) {
+			} elseif (!(bool)$this->request->config->get('disable_pdf_output') && (substr($ps_template, 0, 9) === '_display_')) {
 				$vn_display_id = substr($ps_template, 9);
 				$t_display = new ca_bundle_displays($vn_display_id);
 				
@@ -434,7 +434,7 @@
 				}
 				$va_template_info = caGetPrintTemplateDetails('results', 'display');
 				$vs_type = 'pdf';
-			} elseif(!(bool)$po_request->config->get('disable_export_output')) {
+			} elseif(!(bool)$this->request->config->get('disable_export_output')) {
 				// Look it up in app.conf export_formats
 				$va_export_config = $this->request->config->getAssoc('export_formats');
 				if (is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename]) && is_array($va_export_config[$this->ops_tablename][$ps_template])) {
