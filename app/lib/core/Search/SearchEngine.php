@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2015 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -180,8 +180,8 @@ class SearchEngine extends SearchBase {
 		if($vn_cache_timeout == 0) { $vb_no_cache = true; } // don't try to cache if cache timeout is 0 (0 means disabled)
 		
 		$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
-		
-		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList($pa_options), true));
+		$vs_cache_key = md5($ps_search."/".serialize($this->getTypeRestrictionList($pa_options))."/".serialize($this->opa_result_filters));
+
 		$o_cache = new SearchCache();
 		$vb_from_cache = false;
 
@@ -200,7 +200,7 @@ class SearchEngine extends SearchBase {
 				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
 				$vb_from_cache = true;
 			} else {
-				Debug::msg('cache expire for '.$vs_cache_key);
+				Debug::msg('SEARCH cache expire for '.$vs_cache_key);
 				$o_cache->remove();
 			}
 		}
@@ -517,8 +517,12 @@ class SearchEngine extends SearchBase {
 		$vs_fld = $po_term->getTerm()->field;
 		if (sizeof($va_access_points = $this->getAccessPoints($this->opn_tablenum))) {
 			// if field is access point then do rewrite
+			$va_fld_tmp = explode("/", mb_strtolower($vs_fld));
+			$vs_fld_lc = $va_fld_tmp[0];
+			$vs_rel_types = isset($va_fld_tmp[1]) ? $va_fld_tmp[1] : null;
+			
 			if (
-				isset($va_access_points[$vs_fld_lc = mb_strtolower($vs_fld)]) 
+				isset($va_access_points[$vs_fld_lc]) 
 				&&
 				($va_ap_info = $va_access_points[$vs_fld_lc])
 			) {
@@ -549,7 +553,7 @@ class SearchEngine extends SearchBase {
 					if(isset($va_ap_info['options']) && ($va_ap_info['options']['DONT_STEM'] || in_array('DONT_STEM', $va_ap_info['options']))) {
 						$vs_term .= '|';
 					}
-					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
+					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field.($vs_rel_types ? "/{$vs_rel_types}" : ''));
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
 					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}

@@ -1,7 +1,13 @@
 <div class="container">
 	<div class="row">
+		<div class="col-sm-1 "></div>
+		<div class="col-sm-10 staticPageArea">
+			<div class="container">
+				<div class="row">
+				
+				
 		<div class="col-sm-8 ">
-			<h1>Objects Advanced Search</h1>
+			<h4>Objects Advanced Search</h4>
 
 <?php			
 	print "<p>Enter your search terms in the fields below.</p>";
@@ -17,9 +23,9 @@
 		</div>
 	</div>	
 	<div class='col-sm-12 col-md-12 col-lg-12'>		
-		<div class="advancedSearchFieldTall">
+		<div class="advancedSearchField">
 			Entity <br/>
-			{{{ca_entities.preferred_labels.displayname%width=380px&height=90px}}}
+			{{{ca_entities.preferred_labels.displayname%width=380px&height=25px}}}
 			<!-- {{{ca_entities.preferred_labels.displayname:relationshipTypes%width=180px&height=90px&multiple=1}}} -->
 			<br style='clear: both;'/>
 		</div>
@@ -62,20 +68,24 @@
 	</div>						
 	
 
-	
-
-	</div>	
-	
 	<br style="clear: both;"/>
 	
 	<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-	<div style="float: right;">{{{submit%label=Search}}}</div>
+	<div style="float: right;">{{{submit%label=Search}}}</div>	
+
+	</div>	
+	
+
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
-			<h1>Helpful Links</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4" style='border-left:1px solid #ddd; min-height:650px;'>
+			<h2 style='margin-top:60px; margin-bottom:30px;'>Helpful Links</h2>
+			<p><a href='http://danceinteractive.jacobspillow.org/' target='_blank'>Jacob’s Pillow Dance Interactive</a></p>
+			<p><a href='http://jacobspillow.org/' target='_blank'>Jacob’s Pillow Home</a></p>
 		</div><!-- end col -->
+			</div></div>
+			</div>
+		<div class='col-sm-1'></div>
 	</div><!-- end row -->
 </div><!-- end container -->

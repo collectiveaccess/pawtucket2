@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010 Whirl-i-Gig
+ * Copyright 2010-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,9 +23,17 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * @package CollectiveAccess
+ * @subpackage Configuration
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
  * ----------------------------------------------------------------------
  */
 
+ /**
+  *
+  */
+  
 require_once(__CA_LIB_DIR__."/core/Configuration.php");
 
 final class ConfigurationCheck {
@@ -102,6 +110,26 @@ final class ConfigurationCheck {
 	# Quick configuration check functions
 	# -------------------------------------------------------
 	/**
+	 * Check for innodb availability
+	 */
+	public static function DBInnoDBQuickCheck() {
+		$va_mysql_errors = array();
+		$qr_engines = self::$opo_db->query("SHOW ENGINES");
+		$vb_innodb_available = false;
+		while($qr_engines->nextRow()){
+			if (!in_array($qr_engines->get('Support'), array('YES', 'DEFAULT'))) { continue; }
+			if(strtolower($qr_engines->get("Engine"))=="innodb"){
+				$vb_innodb_available = true;
+			}
+		}
+		if(!$vb_innodb_available){
+			self::addError(_t("Your MySQL installation doesn't support the InnoDB storage engine which is required by CollectiveAccess. For more information also see %1.","<a href='http://dev.mysql.com/doc/refman/5.1/en/innodb.html' target='_blank'>http://dev.mysql.com/doc/refman/5.1/en/innodb.html</a>"));
+		}
+
+		return true;
+	}
+	# -------------------------------------------------------
+	/**
 	 * Check if database login works okay
 	 */
 	public static function DBLoginQuickCheck() {
@@ -132,7 +160,7 @@ final class ConfigurationCheck {
 	 */
 	public static function DBOutOfDateQuickCheck() {
 		if (!in_array('ca_schema_updates', self::$opo_db->getTables())) {
-			self::addError(_t("Your database is out-of-date. Please all install database migrations starting with migration #1. See <a href=\"http://wiki.collectiveaccess.org/index.php?title=Upgrade\">http://wiki.collectiveaccess.org/index.php?title=Upgrade</a> for migration instructions."));
+			self::addError(_t("Your database is extremely out-of-date. Please install all database migrations starting with migration #1 or contact support@collectiveaccess.org for assistance. See the <a href=\"http://docs.collectiveaccess.org/wiki/Applying_Database_Updates\">update HOW-TO</a> for instructions on applying database updates manually."));
 		} else if (($vn_schema_revision = self::getSchemaVersion()) < __CollectiveAccess_Schema_Rev__) {
 			self::addError(_t("Your database is out-of-date. Please install all schema migrations starting with migration #%1. See <a href=\"http://wiki.collectiveaccess.org/index.php?title=Upgrade\">http://wiki.collectiveaccess.org/index.php?title=Upgrade</a> for migration instructions.",($vn_schema_revision + 1)));
 		}
@@ -144,8 +172,8 @@ final class ConfigurationCheck {
 	 */
 	public static function PHPVersionQuickCheck() {
 		$va_php_version = caGetPHPVersion();
-		if($va_php_version["versionInt"]<50106){
-			self::addError(_t("CollectiveAccess requires PHP version 5.1.6 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
+		if($va_php_version["versionInt"]<50400){
+			self::addError(_t("CollectiveAccess requires PHP version 5.4 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
 		}
 		return true;
 	}
@@ -157,12 +185,31 @@ final class ConfigurationCheck {
 		if(!file_exists(__CA_APP_DIR__."/tmp") || !is_writable(__CA_APP_DIR__."/tmp")){
 			self::addError(_t("It looks like the directory for temporary files is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write this directory.",__CA_APP_DIR__."/tmp"));
 		}
+
+		if(!defined('__CA_CACHE_BACKEND__')) {
+			define('__CA_CACHE_BACKEND__', 'file');
+		}
+
+		if(!defined('__CA_CACHE_FILEPATH__')) {
+			define('__CA_CACHE_FILEPATH__', __CA_APP_DIR__.DIRECTORY_SEPARATOR.'tmp');
+		}
+
+
+		if(__CA_CACHE_BACKEND__ == 'file') {
+			if(
+				file_exists(__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache') && // if it doesn't exist, it can be probably be created or the above check would fail
+				!is_writable(__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache')
+			) {
+				self::addError(_t("It looks like the cache directory is not writable by the webserver. Please change the permissions of %1 and enable the user which runs the webserver to write this directory.",__CA_CACHE_FILEPATH__.DIRECTORY_SEPARATOR.__CA_APP_NAME__.'Cache'));
+			}
+		}
+
 		return true;
 	}
 	# -------------------------------------------------------
 	public static function mediaDirQuickCheck() {
 		$vs_media_root = self::$opo_config->get("ca_media_root_dir");
-		if(!file_exists($vs_media_root)){
+		if(!file_exists($vs_media_root) || !is_writable($vs_media_root)){
 			self::addError(_t("It looks like the media directory is not writable by the webserver. Please change the permissions of %1 (or create it if it doesn't exist already) and enable the user which runs the webserver to write this directory.",$vs_media_root));
 		}
 		return true;
@@ -232,8 +279,8 @@ final class ConfigurationCheck {
 		if (!function_exists("iconv")) {
 			self::addError(_t("PHP iconv module is required for CollectiveAccess to run. Please install it."));
 		}
-		if (!function_exists("mysql_query")) {
-			self::addError(_t("PHP mysql module is required for CollectiveAccess to run. Please install it."));
+		if (!function_exists("mysql_query") && !function_exists("mysqli_query")) {
+			self::addError(_t("PHP mysql or mysqli module is required for CollectiveAccess to run. Please install it."));
 		}
 		if (!function_exists("gzcompress")){
 			self::addError(_t("PHP zlib module is required for CollectiveAccess to run. Please install it."));
@@ -243,6 +290,21 @@ final class ConfigurationCheck {
 		}
 		if (!class_exists("DOMDocument")){
 			self::addError(_t("PHP Document Object Model (DOM) module is required for CollectiveAccess to run. Please install it."));
+		}
+		if (!function_exists('mcrypt_create_iv') && !function_exists('openssl_random_pseudo_bytes')){
+			self::addError(_t("Either the mcrypt or openssl module are required for CollectiveAccess to run. Please install one of them (or both)."));
+		}
+		if (!function_exists('hash_hmac')){
+			self::addError(_t("The PHP Message Digest (hash) engine is required for CollectiveAccess to run. Please install it."));
+		}
+		if (!in_array('sha256', hash_algos())){
+			self::addError(_t("Your PHP installation doesn't seem to have support for the sha256 hashing algorithm. Please install a newer version of either PHP or the hash module."));
+		}
+		if (!class_exists('PharData')) {
+			self::addError(_t("The PHP phar module is required for CollectiveAccess to run. Please install it."));
+		}
+		if (!function_exists("curl_exec")){
+			self::addError(_t("The PHP cURL module is required for CollectiveAccess to run. Please install it."));
 		}
 		
 		if (@preg_match('/\p{L}/u', 'a') != 1) {
@@ -265,6 +327,20 @@ final class ConfigurationCheck {
 	# These are not executed on every page refresh and should be used for more "expensive" checks.
 	# They appear in the "configuration check" screen under manage -> system configuration.
 	# -------------------------------------------------------
+	public static function mediaDirRecursiveExpensiveCheck() {
+		$va_dirs = self::getSubdirectoriesAsArray(self::$opo_config->get("ca_media_root_dir"));
+		$i = 0;
+		foreach($va_dirs as $vs_dir){
+			if(!file_exists($vs_dir) || !is_writable($vs_dir)){
+				if($i++==10){ // we don't want to spam houndreds of directories. I guess the admin will get the pattern after a few.
+					return;
+				}
+				self::addError(_t("It looks like a subdirectory in the media directory is not writable by the webserver. Please change the permissions for %1 and enable the user which runs the webserver to write this directory.",$vs_dir));
+			}
+		}
+		return true;
+	}
+	# -------------------------------------------------------
 	/**
 	 * Now this check clearly isn't expensive but we don't want it to have the
 	 * application die in case it fails as it only breaks display of media
@@ -282,6 +358,79 @@ final class ConfigurationCheck {
 				"'localhost' or a feature like /etc/hosts on UNIX-based operating systems) so you have to be ".
 				"very careful when editing this.",$_SERVER["HTTP_HOST"]
 			));
+		}
+		return true;
+	}
+	# -------------------------------------------------------
+	public static function memoryLimitExpensiveCheck() {
+		$vs_memory_limit = ini_get("memory_limit");
+		if($vs_memory_limit == "-1"){ // unlimited memory for php processes -> everything's fine
+			return true;
+		}
+		$vn_memory_limit = self::returnValueInBytes($vs_memory_limit);
+		if($vn_memory_limit < 134217728){
+			self::addError(_t(
+				'The memory limit for your PHP installation may not be sufficient to run CollectiveAccess correctly. '.
+				'Please consider adjusting the "memory_limit" variable in your PHP configuration (usually a file named) '.
+				'&quot;php.ini&quot;. See <a href="http://us.php.net/manual/en/ini.core.php#ini.memory-limit" target="_blank">http://us.php.net/manual/en/ini.core.php</a> '.
+				'for more details. The value in your config is &quot;%1&quot;, the recommended value is &quot;128M&quot; or higher.'
+			,$vs_memory_limit));
+		}
+		return true;
+	}
+	# -------------------------------------------------------
+	public static function uploadLimitExpensiveCheck() {
+		$vn_post_max_size = self::returnValueInBytes(ini_get("post_max_size"));
+		$vn_upload_max_filesize = self::returnValueInBytes(ini_get("upload_max_filesize"));
+
+		if($vn_post_max_size != $vn_upload_max_filesize){
+			self::addError(_t(
+				'It looks like the PHP configuration variables "post_max_size" and "upload_max_filesize" '.
+				'are set to different values. Note that the lowest of both values limits the size of the '.
+				'files you can upload to CollectiveAccess. Your values: upload_max_filesize=%1 and post_max_size=%2.'
+			,ini_get("upload_max_filesize"),ini_get("post_max_size")));
+		}
+
+		if(($vn_post_max_size > 0 && $vn_post_max_size < 5242880) || ($vn_upload_max_filesize > 0 && $vn_upload_max_filesize < 5242880)){
+			self::addError(_t(
+				'It looks like at least one of the PHP configuration variables "post_max_size" and "upload_max_filesize" '.
+				'is set to a very low value. Note that the lowest of both values limits the size of the '.
+				'files you can upload to CollectiveAccess. We recommend values greater than "5M" but in general you should set '.
+				'them to values greater than the largest file you will upload to CollectiveAccess. '.
+				'Your values: upload_max_filesize=%1 and post_max_size=%2.'
+			,ini_get("upload_max_filesize"),ini_get("post_max_size")));
+		}
+		return true;
+	}
+	# -------------------------------------------------------
+	public static function suhoshinExpensiveCheck(){
+		$vs_post_max_name_length = ini_get("suhosin.post.max_name_length");
+		if($vs_post_max_name_length && intval($vs_post_max_name_length)<256){
+			self::addError(
+				_t('It looks like you have the PHP Suhoshin extension installed which introduces some default constraints than can prevent CA from saving information entered into forms.').
+				_t('In particular, you have to set the configuration value "suhosin.post.max_name_length" to 256 or higher to ensure that CA works correctly. Your value is %1',$vs_post_max_name_length)
+			);
+		}
+		$vs_request_max_varname_length = ini_get("suhosin.request.max_varname_length");
+		if($vs_request_max_varname_length && intval($vs_request_max_varname_length)<256){
+			self::addError(
+				_t('It looks like you have the PHP Suhoshin extension installed which introduces some default constraints than can prevent CA from saving information entered into forms.').
+				_t('In particular, you have to set the configuration value "suhosin.request.max_varname_length" to 256 or higher to ensure that CA works correctly. Your value is %1',$vs_request_max_varname_length)
+			);
+		}
+		$vs_post_max_totalname_length = ini_get("suhosin.post.max_totalname_length");
+		if($vs_post_max_totalname_length && intval($vs_post_max_totalname_length)<5012){
+			self::addError(
+				_t('It looks like you have the PHP Suhoshin extension installed which introduces some default constraints than can prevent CA from saving information entered into forms.').
+				_t('In particular, you have to set the configuration value "suhosin.post.max_totalname_length" to 5012 or higher to ensure that CA works correctly. Your value is %1',$vs_post_max_totalname_length)
+			);
+		}
+		$vs_request_max_totalname_length = ini_get("suhosin.request.max_totalname_length");
+		if($vs_request_max_totalname_length && intval($vs_request_max_totalname_length)<5012){
+			self::addError(
+				_t('It looks like you have the PHP Suhoshin extension installed which introduces some default constraints than can prevent CA from saving information entered into forms.').
+				_t('In particular, you have to set the configuration value "suhosin.request.max_totalname_length" to 5012 or higher to ensure that CA works correctly. Your value is %1',$vs_request_max_totalname_length)
+			);
 		}
 		return true;
 	}
@@ -308,13 +457,37 @@ final class ConfigurationCheck {
 	/**
 	 * Returns number of currently loaded schema version
 	 */
-	private static function getSchemaVersion() {
+	public static function getSchemaVersion() {
+		if(!self::$opo_db) { self::$opo_db = new Db(); }
 		$qr_res = self::$opo_db->query('
 			SELECT max(version_num) n
 			FROM ca_schema_updates
 		');
 		if ($qr_res->nextRow()) {
 			return $qr_res->get('n');
+		}
+		return null;
+	}
+	# -------------------------------------------------------
+	private static function returnValueInBytes($vs_val) {
+		$vs_val = trim($vs_val);
+		$vs_last = strtolower($vs_val[strlen($vs_val)-1]);
+		switch($vs_last) {
+			case 'g':
+				$vs_val *= 1024;
+			case 'm':
+				$vs_val *= 1024;
+			case 'k':
+				$vs_val *= 1024;
+		}
+		return $vs_val;
+	}
+	# -------------------------------------------------------
+	private static function getVersionUpdateInstance($pn_version) {
+		$vs_classname = "VersionUpdate{$pn_version}";
+		if (file_exists(__CA_BASE_DIR__."/support/sql/migrations/{$vs_classname}.php")) {
+			require_once(__CA_BASE_DIR__."/support/sql/migrations/{$vs_classname}.php");
+			return new $vs_classname();
 		}
 		return null;
 	}

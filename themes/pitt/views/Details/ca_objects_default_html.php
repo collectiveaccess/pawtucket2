@@ -45,7 +45,7 @@
 					<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_depth"> x </ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef>
-					<ifdef code="ca_objects.dimensions.measurement_type">(^ca_objects.dimensions.measurement_type)</ifdef>					
+					<ifdef code="ca_objects.dimensions.measurement_type">(^ca_objects.dimensions.measurement_type%useSingular=1)</ifdef>	 				
 					<ifdef code="ca_objects.dimensions.measurement_notes"><br/>Notes: ^ca_objects.dimensions.measurement_notes</ifdef>
 				</unit>
 				</ifcount>}}}

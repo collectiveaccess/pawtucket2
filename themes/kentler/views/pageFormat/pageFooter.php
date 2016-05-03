@@ -38,21 +38,24 @@
 		<div id="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-12">
-						<h5 class="pull-right">
+					<div class="col-sm-6">
+						<div class="kentlerLogo"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'KentlerLogo.jpg'), "", "", "",""); ?></div>
+						<h3>
+							353 Van Brunt Street<br/>RED HOOK<br/>Brooklyn &middot; NY &middot; 11231
+						</h3>
+					</div><!-- end col -->
+					<div class="col-sm-6">
+						<h5>
 							<span class="openSansBold">HOURS</span>&nbsp;&nbsp; Thurs-Sun <span class="openSansBold">&middot;</span> 12-5PM<br/>
 							<span class="openSansBold">PHONE</span>&nbsp;&nbsp; 718<span class="openSansBold">&middot;</span>875<span class="openSansBold">&middot;</span>2098
 							<br/><ul class="list-inline pull-right social">
 								<li><i class="fa fa-twitter"></i></li>
 								<li><i class="fa fa-facebook-square"></i></li>
+								<li><i class="fa fa-instagram"></i></li>
 								<li><a href="mailto:info@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
 							</ul>
 						</h5>
-					
-						<h3>
-							353 Van Brunt Street<br/>RED HOOK &middot; Brooklyn<br/>New York &middot; NY &middot; <span style="letter-spacing:1px">11231</span>
-						</h3>
-					</div><!-- end col -->
+					</div>
 				</div><!-- end row -->
 			</div><!-- end container -->
 		</div><!-- end footer -->

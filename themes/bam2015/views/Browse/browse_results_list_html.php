@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2015-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -70,10 +70,11 @@
 				if($vs_table == 'ca_occurrences'){
 					$vn_str_len_date = 0;
 					$vs_pro_date = $qr_res->get("ca_occurrences.productionDate");
-					if($vs_pro_date){
-						$vn_str_len_date = mb_strlen($vs_pro_date);
-					}
-					$vn_chop_len = 100 - $vn_str_len_date;
+					#if($vs_pro_date){
+					#	$vn_str_len_date = mb_strlen($vs_pro_date);
+					#}
+					#$vn_chop_len = 100 - $vn_str_len_date;
+					$vn_chop_len = 100;
 					$vs_date_conjunction = ", ";
 					$vs_series_info = "";
 					if($qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true))){
@@ -90,12 +91,12 @@
 					#}
 					#$vs_link_text = $vs_series_info.$vs_link_text;
 					if($vs_pro_date || $vs_series_info){
-						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.$qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.str_replace("-", "&mdash;", $qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", ")));
 					}
 					# --- if sort is date, get the date as a year so you can display a year heading
 					$vs_start_year = "";
 					$vb_show_year = false;
-					if($vs_current_sort == "Date"){
+					if((!$this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_current_sort == "Date")){
 						$va_pro_date_raw = $qr_res->get("ca_occurrences.productionDate", array("returnWithStructure" => true, "rawDate" => true));
 						if(is_array($va_pro_date_raw) && sizeof($va_pro_date_raw)){
 							$va_pro_date_raw = array_shift($va_pro_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
@@ -117,23 +118,27 @@
 					}
 				} 
 				$vs_detail_link = "";
-				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
+				if(!$this->request->getParameter("openResultsInOverlay", pInteger) || ($this->request->getParameter("openResultsInOverlay", pInteger) && $vs_table == "ca_occurrences")){
 					$vs_detail_link	= caDetailLink($this->request, $vs_collection_parent.$vs_link_text, '', $vs_table, $vn_id);
 				}else{
 					$vs_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_link_text."</a>";
 				}
 				$vs_cols = "";
 				$vs_occ_class = "";
-				if($this->request->getParameter("openResultsInOverlay", pInteger)){
-					$vs_cols = 4;
-				}elseif($vs_table == 'ca_occurrences'){
-					$vs_cols = 12;
+				if($vs_table == 'ca_occurrences'){
 					$vs_occ_class = " occItem";
+					if($this->request->getParameter("openResultsInOverlay", pInteger)){
+						$vs_cols = 4;
+					}else{
+						$vs_cols = 12;
+					}
+				}elseif($this->request->getParameter("openResultsInOverlay", pInteger)){
+					$vs_cols = 4;
 				}else{
 					$vs_cols = 6;
 				}
 				if($vb_show_year){
-					print "<div class='col-xs-12'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
 				}
 				print "
 	<div class='col-xs-12 col-sm-".$vs_cols."'>
@@ -146,7 +151,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => $this->request->getParameter("openResultsInOverlay", pInteger)));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger)));
 		}
 ?>
 <script type="text/javascript">

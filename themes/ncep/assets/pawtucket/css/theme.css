@@ -117,20 +117,27 @@ H6, h6{
 	margin-top:-10px;
 	top:5px;
 }
-.componentButtonCol .btn-default i, .componentButtonCol .detail .btn-default i{
+.componentButtonCol .btn-default i, .componentButtonCol .detail .btn-default i, .authorComponentButtonCol .btn-default i{
 	margin-left:0px;
 	font-size:16px;
 	line-height:1em;
 	margin-top:0px;
 	top:0px;
 }
-.componentButtonCol .btn-default span{
+.componentButtonCol .btn-default span, .authorComponentButtonCol .btn-default span{
 	margin-left:5px;
 }
-.componentButtonCol .btn-default{
+.componentButtonCol .btn-default, .authorComponentButtonCol .btn-default{
 	padding:8px !important;
 	font-size:16px;
 	line-height:1em;
+}
+.authorComponentButtonCol .btn-default{
+	margin-right:10px;
+}
+.authorComponentButtonCol{
+	float:left;
+	margin-right:15px;
 }
 .btn-default:hover, .detail .btn-default:hover{
 	color:#F5F5E9;
@@ -570,6 +577,17 @@ h2#hpSectionText{
 	font-size:15px;
 	color:#2E536E;
 }
+.browse .btn, .sets .btn{
+	font-size:15px;
+	font-weight:normal;
+}
+.browseRemoveFacet .glyphicon{
+	top:2px;
+}
+.browse .btn-sm {
+	padding:2px 10px 0px 10px;
+	font-family:'thesans5';
+}
 .results H1 {
 	font-size:22px;
 	font-family:'thesans5';
@@ -814,6 +832,32 @@ h2#hpSectionText{
 		margin:0px 20px 10px 0px;
 	}
 }
+.gallery .bResItem a.blueButton .fa{
+	font-size:40px;
+	color:#2E536E;
+	padding:5px 15px 15px 15px;
+}
+.gallery .bResItem .btn-default {
+    padding: 8px !important;
+    font-size: 16px;
+    line-height: 1em;
+    position:relative;
+    top:-8px;
+}
+.gallery .bResItem .btn-default i {
+    margin-left: 0px !important;
+    font-size: 16px;
+    line-height: 1em;
+    margin-top: 0px;
+    top: 0px;
+    color:#FFF;
+	padding:0px !important;
+}
+.gallery .galleryLoginMessage{
+	float:right;
+	font-size:13px;
+	padding-top:5px;
+}
 #caFormOverlay H1{
 	background-color:#2E536E;
 	color:#FFF;
@@ -843,6 +887,9 @@ h2#hpSectionText{
 	#caFormOverlay{
 		margin:10% auto 0px auto;
 	}
+	#caFormOverlay.regOverlay{
+		width:900px;
+	}
 }
 label{
 	text-transform:none;
@@ -856,5 +903,5 @@ label{
 	font-size:15px;
 }
 .form-control {
-    font-size: 14px;
+    font-size: 13px;
 }

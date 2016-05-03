@@ -41,6 +41,9 @@
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
+		if($this->request->user->hasUserRole("author")){
+			$va_user_links[] = "<li>".caNavLink($this->request, _t('Author Dashboard'), '', '', 'Author', 'Index', array())."</li>";
+		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	

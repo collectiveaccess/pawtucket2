@@ -82,18 +82,28 @@
 				}
 				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template, array('checkAccess' => caGetUserAccessValues($this->request)));
-
+				$vs_tmp = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' restrictToTypes='Synthesis,CaseStudies,Exercise,Presentation' aggregateUnique='1' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => "~", "checkAccess" => caGetUserAccessValues($this->request)));
+				$va_authors = array();
+				$vs_authors = "";
+				if($vs_tmp){
+					$va_authors = explode("~", $vs_tmp);
+				}
+				if(sizeof($va_authors) > 5){
+					$va_authors = array_slice($va_authors, 0, 5);
+					$va_authors[] = "et al.";
+				}
+				if(sizeof($va_authors)){
+					$vs_authors = _t("Authors").": ".join(", ", $va_authors);
+				}
 				print "
 	<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResItem'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='pull-right'>{$vs_arrow_link}</div>
-			<H1>{$vs_label_detail_link}<H1>
+			<H1>{$vs_label_detail_link}</H1>
 			<div class='bResContent'>".
 				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
-			."<br/>"._t("Authors").": ".
-				$qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' restrictToTypes='Synthesis,CaseStudies,Exercise,Presentation' aggregateUnique='1' unique='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author'>^ca_entities.preferred_labels.displayname</unit></unit>", array("delimiter" => ", ", 'checkAccess' => caGetUserAccessValues($this->request)))
-			."</div><!-- end bResContent -->
+			."<br/>".$vs_authors."</div><!-- end bResContent -->
 		</div><!-- end bResItem -->
 	</div><!-- end col -->";
 				

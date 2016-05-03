@@ -65,6 +65,12 @@ a.btn-default{
     color:#E6EFF6 !important;
     text-decoration:none !important;
 }
+.viewAll .btn-default, .viewAll .btn-default:hover, .viewAll .btn-default:active, .viewAll .btn-default:visited {
+    background-color:transparent;
+    border: 0px;
+    color:#717B67 !important;
+    text-decoration:underline;
+}
 div.btn-default:hover {
 	color:#FFF !important;
 	background-color:#717B67;
@@ -254,6 +260,9 @@ nav, .navbar, .navbar-default{
 	padding:5px 0 5px 0;
 	border-radius: 0px;
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.176);
+}
+.nav .dropdown-menu li.objects {
+	display:none;
 }
 .navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover, .navbar .navbar-nav > li > a:hover {
   	background-color: #717B67;

@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$vs_pop_over_attributes = "data-container = 'body' data-toggle = 'popover' data-placement = 'auto' data-html = 'true' data-trigger='hover'";
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -32,9 +33,11 @@
 		<div class='repDisplay'>
 			{{{representationViewer}}}
 		</div>		
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
-				
+<?php
+ # could do tooltips with field level descriptions like this, or hand code them, or make a helper/popover class to handle it
+ #print ($t_object->getDisplayDescription("ca_objects.idno")) ? "data-content = '".$t_object->getDisplayDescription("ca_objects.idno")."' ".$vs_pop_over_attributes : "";
+?>
+				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}			
 <?php
 				$va_dimensions_fields = array("dimensions_height", "dimensions_width", "dimensions_depth", "Dimensions_Length");
 				$va_dimensions_informations = array_pop($t_object->get("ca_objects.dimensions", array("returnWithStructure" => true)));
@@ -67,6 +70,40 @@
 					}
 					print "</div>";
 				}
+				$va_list_ids = array();
+				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
+					if(is_array($va_subjects) && sizeof($va_subjects)){
+						# --- loop through to order alphebeticaly
+						$va_subjects_sorted = array();
+						$t_list_item = new ca_list_items();
+						foreach($va_subjects as $va_subject){
+							$t_list_item->load($va_subject["item_id"]);
+							$va_popover = array();
+							if($t_list_item->get("ca_list_item_labels.description")){
+								#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
+								$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
+							}
+							$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
+							$va_list_ids[] = $va_subject["item_id"];
+						}
+						ksort($va_subjects_sorted);
+						print "<div class='unit'>";
+						print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
+						print join($va_subjects_sorted, "<br/>");
+						print "</div>";
+					}
+				}
+?>
+				<div class="row objRepThumbs">
+					<div class='col-sm-6 col-xs-12'>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4 unit", "version" => "iconlarge")); ?>
+					</div>
+				</div>
+				<div style='clear:left;'></div>
+
+				{{{<ifdef code="ca_objects.public_description"><div class="unit unitExternalLinks"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit unitExternalLinks"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
+<?php				
 				$vn_source_id = null;
 				if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
 					if(is_array($va_sources) && sizeof($va_sources)){
@@ -82,37 +119,19 @@
 
 				}
 				if($t_object->get("ca_object_lots.credit_line")){
-					print "<div class='unit'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+					print "<div class='unit unitExternalLinks'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
 				}
-				$va_list_ids = array();
-				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
-					if(is_array($va_subjects) && sizeof($va_subjects)){
-						print "<div class='unit'>";
-						print "<b>Keyword".((sizeof($va_subjects) > 1) ? "s" : "")."</b><br/>";
-						foreach($va_subjects as $va_subject){
-							print caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]))."<br/>";
-							$va_list_ids[] = $va_subject["item_id"];
-						}
-						print "</div>";
-					}
-				}
+				
 ?>
-				<div class="row objRepThumbs">
-					<div class='col-sm-6 col-xs-12'>
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4 unit", "version" => "iconlarge")); ?>
-					</div>
-				</div>
-				<div style='clear:left;'></div>
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><b>Accession Number:</b> ^ca_objects.idno</unit></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.public_description"><div class="unit"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.curators_comment"><div class="unit" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment</unit></ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.curators_comment"><div class="unit unitExternalLinks" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment</unit></ifdef>}}}
+
 				<div id="detailTools" style="clear:none;">
 <?php
 				if($t_object->get("ca_objects.curators_comment")){
 ?>
-					<div class="detailTool"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comments</a></div><!-- end detailTool -->
+					<div class="detailTool"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comment</a></div><!-- end detailTool -->
 <?php
 				}
 ?>
@@ -176,3 +195,8 @@ if(sizeof($va_search)){
 	}
 }
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		jQuery('.unitExternalLinks a').attr('target','_blank');
+	});
+</script>
