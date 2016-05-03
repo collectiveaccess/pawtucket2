@@ -58,8 +58,9 @@ textarea {
     margin-right: -15px;
 }
 .navbar-brand {
-	width: 260px;
+	width: 350px;
 	padding-bottom: 5px;
+	padding-top:10px;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
     color: #000;
