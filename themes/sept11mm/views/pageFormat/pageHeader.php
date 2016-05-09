@@ -79,30 +79,9 @@
 ?>
 </head>
 <body>
-	<nav class="navbar navbar-default navbarTop" role="navigation">
-		<div class="container subTitleSmall">
-			<div class="subTitle"><?php print _t("Inside the Collection"); ?></div>
-		</div>
-		<div class="container" id="topSubNavBar">
-			<ul class="nav navbar-nav navbar-left">
-				<li><a href="#">&laquo; Museum Home</a></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right" id="user-navbar">
-				<li class="dropdown" style="position:relative;">
-					<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? '<span class="glyphicon glyphicon-user"></span>' : _t('My Collection'); ?></a>
-					<ul class="dropdown-menu">
-	<?php
-						print $vs_user_links;
-	?>
-					</ul>
-				</li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li <?php print ($this->request->getController() == "FAQ") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "faq"); ?></li>
-				<li <?php print (($this->request->getController() == "Contact") && ($this->request->getParameter("contactType", pString) == "reference")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form", array("contactType" => "reference")); ?></li>
-			</ul>	
-		</div>
-	</nav>
+	<div class="container subTitleSmall">
+		<div class="subTitle"><?php print caNavLink($this->request, _t("Inside the Collection"), "", "", "",""); ?></div>
+	</div>
 	<nav class="navbar navbar-default navbarMain yamm" role="navigation">
 		<div class="container">
 
@@ -119,10 +98,10 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.png'), "navbar-brand", "", "","");
+				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png')."</a>";
 ?>
 			</div>
-			<div class="subTitle"><?php print _t("Inside the Collection"); ?></div>
+			<div class="subTitle"><?php print caNavLink($this->request, _t("Inside the Collection"), "", "", "",""); ?></div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
 			
@@ -146,9 +125,17 @@
 				<ul class="nav navbar-nav navbar-right">
 <?php
 						print $this->render("pageFormat/browseMenu.php");
-						print $this->render("pageFormat/advancedSearchMenu.php");
+						#print $this->render("pageFormat/advancedSearchMenu.php");
 ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t('My Collection'); ?></a>
+						<ul class="dropdown-menu">
+<?php
+							print $vs_user_links;
+?>
+						</ul>
+					</li>
 					<li class="navBarExtras<?php print ($this->request->getController() == "FAQ") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
 					<li class="navBarExtras<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>
 					<li class="navBarExtras"><a href="#">Museum Home</a></li>

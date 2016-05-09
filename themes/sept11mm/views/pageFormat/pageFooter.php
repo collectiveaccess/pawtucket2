@@ -31,8 +31,10 @@
 	<div id="footer">
 		<div class="container">
 			<ul class="list-inline">
+				<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+				<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "faq"); ?></li>
 				<li><a href="#">Contact Us</a></li>
-				<li><a href="#">Terms of Use / Privacy Policy</a></li>
+				<li><?php print caNavLink($this->request, _t("Terms of Use / Privacy Policy"), "", "", "About", "terms"); ?></li>
 			</ul>
 			<div>
 				&copy; 2015 National September 11 Memorial & Museum.<br/>

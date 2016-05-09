@@ -22,6 +22,27 @@
 	font-weight:normal;
 	font-style:normal;
 }
+html{
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 130px;
+}
+#footer{
+	position: absolute;
+  	bottom: 0px;
+  	width: 100%;
+  	/* Set the fixed height of the footer here */
+  	min-height: 80px;
+}
+@media (max-width: 768px) {
+	body {
+	  /* Margin bottom by footer height */
+	  margin-bottom: 180px;
+	}
+}
 
 .container{
 	max-width:970px;
@@ -58,7 +79,7 @@ H1, h1{
 	padding-bottom:50px;
 	min-height:500px;
 }
-#pageArea.results, #pageArea.contact, #pageArea.detail, #pageArea.sets, #pageArea.staticPage, #pageArea.loginreg{
+#pageArea.results, #pageArea.contact, #pageArea.detail, #pageArea.sets, #pageArea.staticPage, #pageArea.loginreg, #pageArea.front{
 	padding-left:20px;
 	padding-right:20px;
 }
@@ -118,8 +139,11 @@ H1, h1{
 	color:#000000;
 	line-height:1em;
 	text-transform:none;
-	padding:25px 0px 17px 10px;
-	font-size:24px;
+	padding:25px 0px 17px 0px !important;
+	margin:0px;
+	font-size:20px !important;
+	text-align:left;
+	color:#009AD9;
 }
 .front H2{
 	color:#000000;
@@ -128,6 +152,90 @@ H1, h1{
 	padding:0px 0px 17px 0px;
 	font-size:20px;
 }
+.bgDarkBlue{
+	background-color:#003F69;
+}
+.hpBox{
+	position:relative;
+	margin-bottom:15px;
+}
+.hpBox img{
+	width:100%;
+	height:auto;
+}
+.hpBox H2 {
+	color:#FFF;
+	font-size:25px !Important;
+	font-family: 'gotham-book' !Important;
+	line-height:1.2em !Important;
+	font-weight:normal !Important;
+	text-transform:uppercase;
+	position:absolute;
+	top:0px;
+	left:0px;
+	margin:0px;
+	padding:10px !important;
+}
+.hpBox H2 a{
+	color:#FFF;
+	font-size:25px !Important;
+	font-family: 'gotham-book' !Important;
+	line-height:1.2em !Important;
+	font-weight:normal !Important;
+	text-transform:uppercase;
+}
+.hpBox H2 a:hover{
+	color:#FDB813;
+	text-decoration:none;
+}
+.hpBox a.hpMore{	
+	color:#FFF;
+	font-size:23px !Important;
+	font-family: 'gotham-book' !Important;
+	font-weight:normal !Important;
+	text-transform:uppercase;
+	position:absolute;
+	top:0px;
+	left:0px;
+	margin:0px;
+	padding:10px !important;
+}
+.hpBox a.hpMore:hover{
+	color:#FDB813;
+	text-decoration:none;
+}
+.hpSetTitle{
+	background-color:#21B1E7;
+	padding:4px 10px 5px 10px;
+	margin-top:5px;	
+	font-size:14px;
+	font-family: 'gotham-medium';
+	line-height:1.5em;
+	max-height:2.1em;
+	overflow:hidden;
+}
+.hpSetTitle:hover{
+	background-color:#003F69;
+}
+.hpSetTitle a{	
+	color:#FFF;
+	text-decoration:none !important;
+	font-size:14px;
+	font-family: 'gotham-medium';
+	line-height:1em;
+}
+.hpSetTitle a:hover{
+	text-decoration:none !important;
+}
+.front .jcarousel-wrapper{
+	margin:0px !important;
+}
+
+
+
+
+
+/* old front page styles */
 @media (min-width: 768px) {
 	.front H1 {
 		font-size:28px;
@@ -224,7 +332,7 @@ H1, h1{
 		float:left;
 	}
 }
-
+/* end old front page sytyles */
 
 /* --------------------------------- */
 /* nav */
@@ -264,10 +372,23 @@ nav, .navbar, .navbar-default, .navbarTop{
 	color:#000000;
 	font-weight:normal;
 }
-.navbarTop .nav > li > a, .navbarTop .nav > li > a:hover, .navbarTop .nav > li > a:focus, .navbarTop #user-navbar ul.dropdown-menu > li > a {
+.navbarTop .nav > li > a, .navbarTop .nav > li > a:hover, .navbarTop .nav > li > a:focus, .navbarTop #user-navbar ul.dropdown-menu > li > a, ul.dropdown-menu > li > a {
 	font-family: gotham-medium;
 	font-size:11px;
 	text-transform:uppercase;
+}
+.navbar-right ul.dropdown-menu{
+	margin-top:20px !important;
+	padding-left:10px;
+	left:20px !important;
+	border:0px;
+}
+.navbar-right ul.dropdown-menu > li > a {
+	padding: 5px !important;
+}
+.navbar-right ul.dropdown-menu > li > a:hover{
+	background-color:#FFF;
+	color:#FDB813;
 }
 .navbarTop .nav > li > a{
 	color: #555555;
@@ -328,7 +449,7 @@ nav, .navbar-nav{
 }
 .navbarMain{
 	padding-bottom:18px;
-	padding-top:25px;
+	padding-top:20px;
 }
 .navbarMain .subTitle, .subTitleSmall .subTitle{
 	float:right;
@@ -337,6 +458,15 @@ nav, .navbar-nav{
 	text-transform:uppercase;
 	color:#009AD9;
 	padding-top:10px;
+}
+.navbarMain .subTitle a, .subTitleSmall .subTitle a{	
+	font-size:23px;
+	text-transform:uppercase;
+	color:#009AD9;
+}
+.navbarMain .subTitle a:hover{
+	text-decoration:none;
+	color:#FDB813;
 }
 @media (max-width: 768px) {
 	.navbarMain{
@@ -353,6 +483,9 @@ nav, .navbar-nav{
 		text-align:center;
 		padding-top:5px;
 		padding-bottom:5px;
+		font-size:18px;
+	}
+	.subTitleSmall .subTitle a{
 		font-size:18px;
 	}
 	/*.navbarMain{
@@ -679,11 +812,25 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	.detail .repDisplay{
 		float:right;
 		width:47%;
-		margin-left:3%
+		margin-left:3%;
+		margin-bottom:15px;
 	}
 }
 .detail .unit{
 	margin-bottom:20px;
+}
+.detail .mdCallOut{
+	margin:10px 0px 0px 0px;
+	background-color: #F0F4F6;
+	padding:5px 10px 10px 10px;
+}
+@media (max-width: 768px) {
+	.detail .mdCallOut{
+		margin-bottom:10px;
+	}
+}
+.detail .mdCallOut .unit{
+	margin-bottom:0px;
 }
 .detail .objRepThumbs:after{
 	clear:none;
@@ -691,14 +838,21 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 .detail .unit a {
 	color:#21B1E7;
 }
+.detail .unit b a {
+	color:#000;
+}
 .detail #detailRepNav a{
 	color:#21B1E7;
 }
 .detail #curatorComments{
 	display:none;
 }
-.detail #detailTools .detailButtons span{	
-	color:#21B1E7;
+.detail .commentHide{
+	color: #21B1E7;
+	font-size: 12px;
+    text-transform: uppercase; 
+	font-family:'gotham-medium';
+	text-decoration:none;
 }
 .detail #detailTools{
 	clear:both;
@@ -709,20 +863,29 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	color: #21B1E7;
 	font-size: 12px;
     padding: 0px;
-    margin-right:22px;
+    margin-right:0px;
     text-transform: uppercase; 
 	font-family:'gotham-medium'; 
-	margin-bottom:10px; 
+	margin-bottom:0px; 
 	text-decoration:none;
 }
 .detail .detailTool span{
 	color:#21B1E7;
 	margin-right:5px;
 }
+.detail #detailTools .detailButtons span{	
+	color:#21B1E7;
+}
 @media (min-width: 768px) {
+	.detail #detailTools{
+		margin-top:10px;
+	}
 	.detailTool{
 		float:left;
-		margin-bottom:0px;
+		margin-right:50px !important;
+	}
+	.detailTool.last{
+		margin-right:50px !important;
 	}
 }
 .detail .detailRelatedItems{
@@ -765,6 +928,23 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	font-size:22px;
 	padding:25px 0px 0px 0px;
 	text-transform: capitalize;
+}
+.bAdvancedLink{
+	text-align:center;
+	padding:5px 0px 0px 0px;
+}
+.bAdvancedLink a{
+	color: #21B1E7;
+	font-size: 14px;
+    padding: 0px;
+    margin-right:0px;
+    text-transform: uppercase; 
+	font-family:'gotham-medium';
+}
+.bAdvancedLink a span{
+	color: #21B1E7 !important;
+	padding-left:5px;
+	font-size: 12px;
 }
 .itemResultContainer{
 	height:150px;
@@ -958,17 +1138,28 @@ H1#bScrollListLabel a.keywordDef .fa{
 /* ----------------------- */
 /* --- advanced search --- */
 /* ----------------------- */
-#advancedSearch-menu{
+#advancedSearch-menu, #advancedSearchFormCont{
 	margin-top:5px;
-	border:5px solid #009AD9;
+	border:5px solid #21B1E7;
 	-webkit-box-shadow:none;
   	box-shadow:none;
   	max-height:auto;
   	min-height:250px;
   	padding:20px;
 }
+#advancedSearchFormCont{
+	position:absolute;
+	background-color:#FFFFFF;
+	top:-10px;
+	right:-5px;
+	display:none;
+	z-index:100;
+	width:500px;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.176);
+}
+
 @media (min-width: 768px){
-	#advancedSearch-menu select, #advancedSearch-menu .form-control{
+	#advancedSearch-menu select, #advancedSearch-menu .form-control, #advancedSearchFormCont select, #advancedSearchFormCont .form-control{
 		width:100% !important;
 	}
 }
@@ -990,6 +1181,7 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 .caAdvancedSearchFormReset:hover, .caAdvancedSearchFormSubmit:hover{
 	background-color:#003F69;
     color:#FFF;
+    text-decoration:none;
 }
 /* --------------------- */
 /* --- form overlay --- */
