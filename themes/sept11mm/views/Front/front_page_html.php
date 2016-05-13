@@ -38,16 +38,8 @@
 ?>
 	
 		<div class="row">
-			<div class="col-xs-12">
-				<H1>Explore artifact selections from the 9/11 Memorial Museum Collection.</H1>
-			</div>
-		</div>
-	
-		<div class="row">
 			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
-				<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
-				<div class='hpSetTitle' style='visibility: hidden;'>A</div>
-				<H2><?php print caNavLink($this->request, _t("Collection Highlights")." &raquo;", "", "", "Gallery", "Index"); ?></H2>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png')."<div class='hpSetTitle' style='visibility: hidden;'>A</div><H2>"._t("Inside the Collection")."</H2>", "", "", "Gallery", "Index"); ?>
 			</div></div>
 <?php
 			# --- loop through all the features
@@ -86,7 +78,7 @@
 					print '<div class="jcarousel-wrapper"><div class="jcarousel box'.$vn_c.'"><ul>';
 					foreach($va_set_items as $va_set_item_info){
 						if($va_set_item_info["representation_tag"]){
-							print "<li>".$va_set_item_info["representation_tag"]."</li>";
+							print "<li>".caNavLink($this->request, $va_set_item_info["representation_tag"], "", "", "Gallery", $vn_set_id)."</li>";
 						}
 					}
 					print "</ul></div></div>";
@@ -103,9 +95,9 @@
 
 ?>			
 			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
-				<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), "", "", "Browse", "objects"); ?>
 				<div class='hpSetTitle' style='visibility: hidden;'>A</div>
-				<?php print caNavLink($this->request, _t("Learn More")."  &raquo;", "hpMore", "", "About", "Index"); ?>
+				<?php print caNavLink($this->request, _t("View All")." &raquo;", "hpMore", "", "Browse", "objects"); ?>
 			</div></div>
 		</div>
 		<script type='text/javascript'>
