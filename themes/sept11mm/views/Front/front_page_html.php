@@ -65,6 +65,7 @@
 				#$va_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("checkAccess" => $va_access_values, "version" => "iconlarge"));
 				$vn_c = 1;
 				$va_boxes = array();
+				$i = 1;
 				foreach($va_sets as $vn_set_id => $va_set){
 					$t_set->load($vn_set_id);
 					$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $va_access_values, "thumbnailVersion" => "iconlarge", "limit" => 3)));
@@ -82,10 +83,11 @@
 						}
 					}
 					print "</ul></div></div>";
-					print "<div class='hpSetTitle'>".caNavLink($this->request, $va_set["name"]."  &raquo;", "", "", "Gallery", $vn_set_id)."</div>\n";
+					print "<div class='hpSetTitle ".(($i == 1) ? "onView" : "")."'>".caNavLink($this->request, $va_set["name"]."  &raquo;", "", "", "Gallery", $vn_set_id)."</div>\n";
 					$va_boxes[] = "box".$vn_c;
 					$vn_c++;
 					print "</div></div>";
+					$i++;
 				}
 				if($vn_limit > $vn_c){
 					$vn_limit = $vn_c;

@@ -291,8 +291,14 @@ H1, h1{
 	max-height:2.1em;
 	overflow:hidden;
 }
+.hpSetTitle.onView{
+	background-color:#003F69;
+}
 .hpSetTitle:hover{
 	background-color:#003F69;
+}
+.hpSetTitle.onView:hover{
+	background-color:#21B1E7;
 }
 .hpSetTitle a{	
 	color:#FFF;
@@ -999,7 +1005,7 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 /* gallery */
 /*------------------------------------------*/
 .gallery {
-	font-size:11px;
+	font-size:13px;
 }
 .gallery H4 {
 	padding-top:0px;
@@ -1011,13 +1017,17 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 .gallery h5 {
 	text-transform:none;
 	color:#21B1E7;
-	font-size:12px;
+	font-size:13px;
 	padding:5px 0px 0px 0px;
 	margin:0px !important;
 	line-height:1.1em;
 }
-.gallery .galleryItem:hover h5, .gallery h5:hover {
+.gallery .galleryLinks a{
+	text-decoration:none !important;
+}
+.gallery a:hover .galleryItem h5, .gallery h5:hover {
 	color:#FDB813;
+	text-decoration:none !important;
 }
 .gallery #gallerySetInfo a{
 	color:#21B1E7;
@@ -1033,7 +1043,7 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
   	background-color: #F0F4F6;
   	height:54px;
 }
-.gallery .galleryItem a{
+.gallery a .galleryItem{
 	text-decoration:none;
 	color:#000;
 }
