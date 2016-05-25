@@ -32,7 +32,12 @@
 				$va_component_info["abstract"] = $q_components->get("ca_objects.abstract");
 				$va_component_info["source"] = $q_components->get("ca_objects.source");
 				$va_component_info["usage"] = $q_components->get("usage_license");
-				$va_component_info["date"] = $q_components->getWithTemplate("<ifdef code='ca_objects.date.dates_value'><unit relativeTo='ca_objects.date' delimiter=', '>^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</unit></ifdef>");
+				$vs_date = $q_components->getWithTemplate("<ifdef code='ca_objects.date.dates_value'><unit relativeTo='ca_objects.date' delimiter='; ' sort='ca_objects.date.dates_value' sortDirection='DESC' limit='1'>^ca_objects.date.dc_dates_types: ^ca_objects.date.dates_value</unit></ifdef>");
+				$vn_multidates = strpos($vs_date, "; ");
+				if($vn_multidates){
+					$vs_date = substr($vs_date, 0, $vn_multidates);
+				}
+				$va_component_info["date"] = $vs_date;
 				$va_rep_ids = array();
 				$va_rep_ids = $q_components->get('ca_object_representations.representation_id', array("checkAccess" => $va_access_values, "returnWithStructure" => true));
 				if(sizeof($va_rep_ids) > 0){
@@ -196,7 +201,7 @@
 					if($vb_files){
 						print "<p class='componentButtonCol'>".caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
 						if($vb_files_require_login){
-							print "<br/><small>* Educators must login to download all files</small>";
+							print "<br/><small>* Login to access educator-only files</small>";
 						}
 						print "</p>";
 					}
@@ -314,8 +319,8 @@
 									$va_comp_md[] = _t("Translator").": ".$va_section_component["translator"];
 								}
 								
-								if($va_component_info["date"]){
-									$va_comp_md[] = _t("Date").": ".$va_component_info["date"];
+								if($va_section_component["date"]){
+									$va_comp_md[] = $va_section_component["date"];
 								}
 								if(sizeof($va_comp_md)){
 									print "<p>";
