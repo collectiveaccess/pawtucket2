@@ -14,7 +14,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" id="routeMapSliderContainer">
 		<div class="col-sm-1">
 			<span id="routeMapYearSliderStart"></span> 
 		</div>
@@ -83,16 +83,20 @@
 				});
 			});
 			
-			if (map.entityMarkers && (Object.keys(map.entityMarkers).length> 0)) {
+			if (map.entityMarkers && (Object.keys(map.entityMarkers).length> 1)) {
+				jQuery("#routeMapSliderContainer").show();
 				var allMarkers = L.featureGroup();
 				for(i in map.entityMarkers) {
 					map.entityMarkers[i].addTo(allMarkers);
 				}
 				map.l.fitBounds(allMarkers.getBounds());
+			} else {
+				jQuery("#routeMapSliderContainer").hide();
 			}
 		};
 		map.setMapSlider = function(map) {
 			
+			if (!map.startYear || !map.startYear) { return; }
 			jQuery('#routeMapYearSliderStart').html(map.startYear);
 			jQuery('#routeMapYearSliderEnd').html(map.endYear);
 			
@@ -103,8 +107,12 @@
 
 		// Load map data
 		jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'GetMapData'); ?>', function(d) {
+		
+			if (d.length == 0) {
+				d = {l: null, data: null, entityMarkers: {}, baseLayer: null, startYear: null, endYear: null};
+			}
 			map.data = d;
-			map.l = L.map('routeMap').setView([51.505, -0.09], 13);
+			map.l = L.map('routeMap').setView([51.505, -0.09], 2);
 			map.baseLayer = L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.{ext}', {
 				maxZoom: 18, 
 				ext: 'png'

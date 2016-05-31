@@ -323,7 +323,7 @@ div.travelerCardContent .travelerCardImageSource {
 }
 
 .travelerChronologyTrackInfo .trackImage{
-	margin: 0 0 0 -7px;
+	margin: 0 0 0 10px;
 }
 
 
@@ -388,4 +388,15 @@ div.travelerCardContent .travelerCardImageSource {
 
 #intineraChronologyNoEntities {
 	display: block;
+}
+
+.travelerListSectionHeading {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.travelerListSpacer {
+	border-top: 1px dotted #ccc;
+	padding-top: 10px;
+	margin-top: 10px;
 }

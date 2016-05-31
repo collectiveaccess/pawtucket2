@@ -20,16 +20,36 @@ if (sizeof($va_entity_list)) {
 	
 		$this->setVar('entity_id', $vn_entity_id);
 		$this->setVar('entity_name', $vs_entity_name);
-		$this->setVar('entity_image', $qr_entities->get('ca_entities.agentMedia', array('version' => 'icon')));
+		$this->setVar('entity_image', $qr_entities->get('ca_entities.agentMedia', array('return' => 'tag', 'version' => 'icon')));
 		
 		$this->setVar('stops', $va_stops);
 	
 		print $this->render('Chronology/get_chronology_track_html.php');
 	
 	}
-?>
 
-<?php
+	$va_object_list = $this->getVar('object_list');
+
+	if (sizeof($va_object_list)) {
+		$qr_objects = caMakeSearchResult('ca_objects', array_values($va_object_list));
+
+		while($qr_objects->nextHit()) {
+			$vn_object_id = $qr_objects->get('ca_objects.object_id');
+			$vs_object_name = $qr_objects->get('ca_objects.preferred_labels.name');
+	
+			$va_stops = $qr_objects->get('ca_tour_stops.stop_id', ['returnAsArray' => true]);
+	
+			$this->setVar('entity_id', null);
+			$this->setVar('object_id', $vn_object_id);
+			$this->setVar('object_name', $vs_object_name);
+			$this->setVar('object_image', $qr_objects->get('ca_object_representations.media.icon'));
+		
+			$this->setVar('stops', $va_stops);
+	
+			print $this->render('Chronology/get_chronology_track_html.php');
+	
+		}
+	}
 }
 ?>
 </div>

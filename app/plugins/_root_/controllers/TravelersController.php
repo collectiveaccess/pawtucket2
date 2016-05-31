@@ -28,6 +28,7 @@
  
  	require_once(__CA_APP_DIR__."/plugins/_root_/controllers/BaseItineraController.php");
  	require_once(__CA_THEME_DIR__."/helpers/dataHelpers.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  
  	class TravelersController extends BaseItineraController {
@@ -42,9 +43,14 @@
  		 *
  		 */
  		function Index() {
- 			if (!($pn_entity_id = $this->request->getParameter('id', pInteger))) { $pn_entity_id = itineraGetRandomTravelerID(); }
+ 			$pn_entity_id = null;
+ 			if (!($pn_object_id = $this->request->getParameter('object_id', pIntger))) {
+ 				$pn_entity_id = $this->request->getParameter('id', pInteger);
+ 			}
+ 			if (!$pn_object_id && !$pn_entity_id) { $pn_entity_id = itineraGetRandomTravelerID(); }
  			
 			$this->view->setVar('entity_id', $pn_entity_id);
+			$this->view->setVar('object_id', $pn_object_id);
 			
  			$this->render('Travelers/index_html.php');
  		}
@@ -61,17 +67,24 @@
  		 *
  		 */
  		function GetData() {
- 			$pn_entity_id = $this->request->getParameter('id', pInteger);
- 			$t_entity = new ca_entities($pn_entity_id);
+ 			if (!($pn_object_id = $this->request->getParameter('object_id', pInteger))) {
+ 				$pn_entity_id = $this->request->getParameter('id', pInteger);
+ 				$t_entity = new ca_entities($pn_entity_id);
 			
-			$this->view->setVar('entity_id', $pn_entity_id);
-			$this->view->setVar('t_entity', $t_entity);
+				$this->view->setVar('entity_id', $pn_entity_id);
+				$this->view->setVar('t_entity', $t_entity);
+			} else {
+ 				$t_object = new ca_objects($pn_object_id);
+			
+				$this->view->setVar('object_id', $pn_object_id);
+				$this->view->setVar('t_object', $t_object);
+			}
 			$this->view->setVar('levels', 1);
  			$this->render('Travelers/get_data_json.php');
  		}
  		# -------------------------------------------------------
  		/**
- 		 *
+ 		 * Entities only (for now)
  		 */
  		function GetCard() {
  			$pn_entity_id = $this->request->getParameter('id', pInteger);
@@ -81,4 +94,5 @@
 			$this->view->setVar('t_entity', $t_entity);
  			$this->render('Travelers/get_card_html.php');
  		}
+ 		# -------------------------------------------------------
  	}
