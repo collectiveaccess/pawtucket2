@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,9 +38,10 @@ require_once(__CA_LIB_DIR__."/ca/BundlableLabelableBaseModelWithAttributes.php")
 require_once(__CA_MODELS_DIR__."/ca_object_representation_labels.php");
 require_once(__CA_MODELS_DIR__."/ca_representation_annotations.php");
 require_once(__CA_MODELS_DIR__."/ca_representation_annotation_labels.php");
+require_once(__CA_MODELS_DIR__."/ca_user_representation_annotations.php");
+require_once(__CA_MODELS_DIR__."/ca_user_representation_annotation_labels.php");
 require_once(__CA_MODELS_DIR__."/ca_object_representation_multifiles.php");
 require_once(__CA_MODELS_DIR__."/ca_object_representation_captions.php");
-require_once(__CA_MODELS_DIR__."/ca_commerce_order_items.php");
 require_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
 
 
@@ -215,6 +216,13 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => 'Source information', 'DESCRIPTION' => 'Serialized array used to store source information for object representation information retrieved via web services [NOT IMPLEMENTED YET].'
+		),
+		'view_count' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
 		)
  	)
 );
@@ -340,6 +348,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	# ------------------------------------------------------
 	protected $SUPPORTS_ACL = true;
 	
+	
+	protected $ANNOTATION_MODE = 'cataloguer'; 
+	
 	# ------------------------------------------------------
 	# --- Constructor
 	#
@@ -358,18 +369,25 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_objects'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects'));
+		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects table'));
 		$this->BUNDLES['ca_entities'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities'));
 		$this->BUNDLES['ca_places'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places'));
 		$this->BUNDLES['ca_occurrences'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related occurrences'));
+		$this->BUNDLES['ca_collections'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related collections'));
+		$this->BUNDLES['ca_storage_locations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related storage locations'));
 		$this->BUNDLES['ca_representation_annotations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related annotations'));
+		$this->BUNDLES['ca_user_representation_annotations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related user-generated annotations'));
 		$this->BUNDLES['ca_list_items'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related vocabulary terms'));
-		$this->BUNDLES['ca_sets'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));	
+		$this->BUNDLES['ca_sets'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related sets'));
+		$this->BUNDLES['ca_sets_checklist'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));	
 		$this->BUNDLES['ca_loans'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related loans'));
 		$this->BUNDLES['ca_movements'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related movements'));
 		$this->BUNDLES['ca_object_lots'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related lot'));
 		
 		$this->BUNDLES['ca_object_representations_media_display'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Media and preview images'));
 		$this->BUNDLES['ca_object_representation_captions'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Captions/subtitles'));
+		
+		$this->BUNDLES['authority_references_list'] = array('type' => 'special', 'repeating' => false, 'label' => _t('References'));
 	}
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
@@ -393,6 +411,15 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));
 			
 			$vn_rc = parent::update();
+
+			// Trigger automatic replication
+			$va_auto_targets = $this->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $this->get('access')));
+			if(is_array($va_auto_targets)) {
+				foreach($va_auto_targets as $vs_target => $va_target_info) {
+					$this->replicateMedia('media', $vs_target);
+				}
+			}
+
 		}
 		
 		return $vn_rc;
@@ -473,7 +500,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	 **/
 	public function mediaIsEmpty() {
 		if (!($vs_media_path = $this->getMediaPath('media', 'original'))) {
-			$vs_media_path = $this->get('media');
+			$vs_media_path = array_shift($this->get('media', array('returnWithStructure' => true)));
 		}
 		if ($vs_media_path) {
 			if (file_exists($vs_media_path) && (abs(filesize($vs_media_path)) > 0)) {
@@ -487,6 +514,14 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			}
 		}
 		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * The media field is mandatory for representations
+	 * @return array
+	 */
+	public function getMandatoryFields() {
+		return array_merge(parent::getMandatoryFields(), array('media'));
 	}
 	# ------------------------------------------------------
 	# Annotations
@@ -503,6 +538,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			$t_rep = $this;
 		} else {
 			$t_rep = new ca_object_representations($pn_representation_id);
+			if($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction()); }
 		}
  		
  		$va_media_info = $t_rep->getMediaInfo('media');
@@ -511,7 +547,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		$vs_mimetype = $va_media_info['INPUT']['MIMETYPE'];
  		
- 		$o_type_config = Configuration::load($this->getAppConfig()->get('annotation_type_config'));
+ 		$o_type_config = Configuration::load(__CA_CONF_DIR__.'/annotation_types.conf');
  		$va_mappings = $o_type_config->getAssoc('mappings');
  		
  		return $va_mappings[$vs_mimetype];
@@ -519,6 +555,28 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	# ------------------------------------------------------
  	public function getAnnotationPropertyCoderInstance($ps_type) {
  		return ca_representation_annotations::getPropertiesCoderInstance($ps_type);
+ 	}
+ 	# ------------------------------------------------------
+ 	/**
+ 	 *
+ 	 */
+ 	public function annotationMode($ps_mode=null) {
+ 		if ($ps_mode) { $this->ANNOTATION_MODE = (strtolower($ps_mode) == 'user') ? 'user' : 'cataloguer'; }
+ 		return $this->ANNOTATION_MODE;
+ 	}
+ 	# ------------------------------------------------------
+ 	/**
+ 	 *
+ 	 */
+ 	protected function annotationTable() {
+ 		return ($this->ANNOTATION_MODE == 'user') ? 'ca_user_representation_annotations' : 'ca_representation_annotations';
+ 	}
+ 	# ------------------------------------------------------
+ 	/**
+ 	 *
+ 	 */
+ 	protected function annotationLabelTable() {
+ 		return ($this->ANNOTATION_MODE == 'user') ? 'ca_user_representation_annotation_labels' : 'ca_representation_annotation_labels';
  	}
  	# ------------------------------------------------------
  	/**
@@ -547,7 +605,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		$qr_annotations = $o_db->query("
  			SELECT 	cra.annotation_id, cra.locale_id, cra.props, cra.representation_id, cra.user_id, cra.type_code, cra.access, cra.status
- 			FROM ca_representation_annotations cra
+ 			FROM ".$this->annotationTable()." cra
  			WHERE
  				cra.representation_id = ? {$vs_access_sql}
  		", (int)$vn_representation_id);
@@ -563,6 +621,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 *			start =
  	 *			max = 
  	 *			labelsOnly =
+ 	 *			idsOnly = 
+ 	 *			user_id = 
+ 	 *			item_id =
  	 * @return array List of annotations attached to the current representation, key'ed on annotation_id. Value is an array will all values; annotation labels are returned in the current locale.
  	 */
  	public function getAnnotations($pa_options=null) {
@@ -570,23 +631,45 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		if (!is_array($pa_options)) { $pa_options = array(); }
  		
+ 		$pn_user_id = caGetOption('user_id', $pa_options, null);
+ 		$pn_item_id = caGetOption('item_id', $pa_options, null);
+ 		$pb_ids_only = caGetOption('idsOnly', $pa_options, false);
+ 		$pb_labels_only = caGetOption('labelsOnly', $pa_options, false);
+ 		
  		if (!($o_coder = $this->getAnnotationPropertyCoderInstance($this->getAnnotationType()))) {
  			// does not support annotations
  			return null;
  		}
+ 		
+ 		$va_params = array((int)$vn_representation_id);
+ 		
  		$o_db = $this->getDb();
+ 		
+ 		$vs_annotation_table = $this->annotationTable(); 		
+ 		$vs_annotation_label_table = $this->annotationLabelTable();
  		
  		$vs_access_sql = '';
  		if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
 			$vs_access_sql = ' AND cra.access IN ('.join(',', $pa_options['checkAccess']).')';
 		}
+		
+		$vs_limit_sql = '';
+ 		if ($pn_user_id) {
+			$vs_limit_sql = ' AND cra.user_id = ?';
+			$va_params[] = $pn_user_id;
+		}
+		
+ 		if ($pn_item_id) {
+			$vs_limit_sql .= ' AND cra.item_id = ?';
+			$va_params[] = $pn_item_id;
+		}
  		
  		$qr_annotations = $o_db->query("
  			SELECT 	cra.annotation_id, cra.locale_id, cra.props, cra.representation_id, cra.user_id, cra.type_code, cra.access, cra.status
- 			FROM ca_representation_annotations cra
+ 			FROM {$vs_annotation_table} cra
  			WHERE
- 				cra.representation_id = ? {$vs_access_sql}
- 		", (int)$vn_representation_id);
+ 				cra.representation_id = ? {$vs_access_sql} {$vs_limit_sql}
+ 		", $va_params);
  		
  		$vs_sort_by_property = $this->getAnnotationSortProperty();
  		$va_annotations = array();
@@ -594,51 +677,93 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$vn_start = caGetOption('start', $pa_options, 0, array('castTo' => 'int'));
  		$vn_max = caGetOption('max', $pa_options, 100, array('castTo' => 'int'));
  		
+ 		$va_rep_props = $this->getMediaInfo('media', 'original');
+ 		$vn_timecode_offset = isset($va_rep_props['PROPERTIES']['timecode_offset']) ? (float)$va_rep_props['PROPERTIES']['timecode_offset'] : 0;
+ 		
  		while($qr_annotations->nextRow()) {
  			$va_tmp = $qr_annotations->getRow();
+ 			$va_annotation_ids[] = $va_tmp['annotation_id'];
+ 			
  			unset($va_tmp['props']);
  			$o_coder->setPropertyValues($qr_annotations->getVars('props'));
  			foreach($o_coder->getPropertyList() as $vs_property) {
  				$va_tmp[$vs_property] = $o_coder->getProperty($vs_property);
  				$va_tmp[$vs_property.'_raw'] = $o_coder->getProperty($vs_property, true);
- 				if ($va_tmp[$vs_property] == $va_tmp[$vs_property.'_raw']) { unset($va_tmp[$vs_property.'_raw']); }
  			}
+ 			
+ 			$va_tmp['timecodeOffset'] = $vn_timecode_offset;
  			
  			if (!($vs_sort_key = $va_tmp[$vs_sort_by_property])) {
  				$vs_sort_key = '_default_';
  			}
  			
- 			$va_annotations[$vs_sort_key][$qr_annotations->get('annotation_id')] = $va_tmp;
+ 			$va_annotations[$vs_sort_key][$va_tmp['annotation_id']] = $va_tmp;
  		}
+ 		if (!sizeof($va_annotation_ids)) { return array(); }
  		
  		ksort($va_annotations, SORT_NUMERIC);
  		
  		// get annotation labels
- 		$qr_annotation_labels = $o_db->query("
- 			SELECT 	cral.annotation_id, cral.locale_id, cral.name, cral.label_id
- 			FROM ca_representation_annotation_labels cral
- 			INNER JOIN ca_representation_annotations AS cra ON cra.annotation_id = cral.annotation_id
- 			WHERE
- 				cra.representation_id = ? AND cral.is_preferred = 1
- 		", (int)$vn_representation_id);
+ 		$qr_annotations = caMakeSearchResult($vs_annotation_table, $va_annotation_ids);
+ 		$va_labels = $va_annotation_classes = array();
  		
- 		$va_labels = array();
- 		while($qr_annotation_labels->nextRow()) {
- 			$va_labels[$qr_annotation_labels->get('annotation_id')][$qr_annotation_labels->get('locale_id')][] = $qr_annotation_labels->get('name');
+ 		// Check if "class" element is configured, exists and is a list element
+ 		if ($vs_class_element = $this->getAppConfig()->get('annotation_class_element')) {
+ 			$t_anno = new ca_representation_annotations();
+ 			if (!$t_anno->hasElement($vs_class_element)) { 
+ 				$vs_class_element = null; 
+ 			} elseif($t_anno->_getElementDatatype($vs_class_element) != __CA_ATTRIBUTE_VALUE_LIST__)  {
+ 				// not a list element
+ 				$vs_class_element = null; 
+ 			}
  		}
  		
+ 		while($qr_annotations->nextHit()) {
+ 			$va_labels[$vn_annotation_id = $qr_annotations->get("{$vs_annotation_table}.annotation_id")][$qr_annotations->get("{$vs_annotation_label_table}.locale_id")][] = $qr_annotations->get("{$vs_annotation_table}.preferred_labels.name");
+ 			
+ 			if ($vs_class_element) { 
+ 				$va_annotation_classes[$vn_annotation_id] = $qr_annotations->get("{$vs_annotation_table}.{$vs_class_element}", array('returnAsArray' => true));
+ 			}
+ 		}
  		$va_labels_for_locale = caExtractValuesByUserLocale($va_labels);
+ 		if ($pb_labels_only) { return $va_labels_for_locale; }
  		
+ 		$va_annotation_classes_flattened = array();
+ 		foreach($va_annotation_classes as $vn_annotation_id => $va_classes) {
+ 			$va_annotation_classes_flattened[$vn_annotation_id] = array_shift($va_classes);
+ 		}
  		
+ 		$va_key = array();
+ 		if ($qr_list_items = caMakeSearchResult('ca_list_items', array_values($va_annotation_classes_flattened))) {
+ 			while($qr_list_items->nextHit()) {
+ 				$va_key[$qr_list_items->get('item_id')] = array(
+ 					'name' => $qr_list_items->get('ca_list_items.preferred_labels.name_plural'),
+ 					'idno' => $qr_list_items->get('ca_list_items.idno'),
+ 					'color' => $qr_list_items->get('ca_list_items.color'),
+ 				);
+ 			}
+ 		}
+ 
  		$va_sorted_annotations = array();
  		foreach($va_annotations as $vs_key => $va_values) {
  			foreach($va_values as $va_val) {
+ 				$vn_annotation_id = $va_val['annotation_id'];	
  				$vs_label = is_array($va_labels_for_locale[$va_val['annotation_id']]) ? array_shift($va_labels_for_locale[$va_val['annotation_id']]) : '';
- 				$va_val['labels'] = $va_labels[$va_val['annotation_id']] ? $va_labels[$va_val['annotation_id']] : array();
- 				$va_val['label'] = $vs_label;
- 				$va_sorted_annotations[$va_val['annotation_id']] = $va_val;
+ 				
+ 				if ($pb_ids_only) {
+ 					$va_val = $vn_annotation_id;
+ 				} elseif ($pb_labels_only) { 
+ 					$va_val = $vs_label;
+ 				} else {
+					$va_val['labels'] = $va_labels[$vn_annotation_id] ? $va_labels[$vn_annotation_id] : array();
+					$va_val['label'] = $vs_label;
+					$va_val['key'] = $va_key[$va_annotation_classes_flattened[$vn_annotation_id]];
+				}
+ 				$va_sorted_annotations[$vn_annotation_id] = $va_val;
  			}
  		}
+ 		if ($pb_ids_only || $pb_labels_only) { return array_values($va_sorted_annotations); }
+ 		
  		
  		if (($vn_start > 0) || ($vn_max > 0)) {
  			if ($vn_max > 0) {
@@ -647,7 +772,6 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  				$va_sorted_annotations = array_slice($va_sorted_annotations, $vn_start);
  			}
  		}
- 		
  		return $va_sorted_annotations;
  	} 
  	# ------------------------------------------------------
@@ -675,13 +799,19 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			return false;
 		}
 		
- 		$t_annotation = new ca_representation_annotations();
+ 		$vs_annotation_table = $this->annotationTable(); 		
+ 		
+ 		$t_annotation = new $vs_annotation_table();
+ 		if($this->inTransaction()) { $t_annotation->setTransaction($this->getTransaction()); }
  		$t_annotation->setMode(ACCESS_WRITE);
  		
  		$t_annotation->set('representation_id', $vn_representation_id);
  		$t_annotation->set('type_code', $o_coder->getType());
  		$t_annotation->set('locale_id', $pn_locale_id);
  		$t_annotation->set('user_id', $pn_user_id);
+ 		
+ 		// TODO: verify that item_id exists and is accessible by user
+ 		$t_annotation->set('item_id', caGetOption('item_id', $pa_options, null));
  		$t_annotation->set('status', $pn_status);
  		$t_annotation->set('access', $pn_access);
  		
@@ -766,7 +896,10 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			return false;
 		}
 		
- 		$t_annotation = new ca_representation_annotations($pn_annotation_id);
+ 		$vs_annotation_table = $this->annotationTable(); 		
+ 		
+ 		$t_annotation = new $vs_annotation_table($pn_annotation_id);
+ 		if($this->inTransaction()) { $t_annotation->setTransaction($this->getTransaction()); }
  		if ($t_annotation->getPrimaryKey() && ($t_annotation->get('representation_id') == $vn_representation_id)) {
  			foreach($o_coder->getPropertyList() as $vs_property) {
  				$t_annotation->setPropertyValue($vs_property, $o_coder->getProperty($vs_property));
@@ -776,6 +909,11 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
 			$t_annotation->set('type_code', $o_coder->getType());
 			$t_annotation->set('locale_id', $pn_locale_id);
+			
+			// TODO: verify that item_id exists and is accessible by user
+			if (isset($pa_options['item_id'])) {
+ 				$t_annotation->set('item_id', caGetOption('item_id', $pa_options, null));
+ 			}
 			$t_annotation->set('status', $pn_status);
 			$t_annotation->set('access', $pn_access);
 			
@@ -829,7 +967,10 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	public function removeAnnotation($pn_annotation_id) {
  		if (!($vn_representation_id = $this->getPrimaryKey())) { return null; }
  		
- 		$t_annotation = new ca_representation_annotations($pn_annotation_id);
+ 		$vs_annotation_table = $this->annotationTable(); 		
+ 		
+ 		$t_annotation = new $vs_annotation_table($pn_annotation_id);
+ 		if($this->inTransaction()) { $t_annotation->setTransaction($this->getTransaction()); }
  		if ($t_annotation->get('representation_id') == $vn_representation_id) {
  			$t_annotation->setMode(ACCESS_WRITE);
  			$t_annotation->delete(true);
@@ -883,8 +1024,14 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		//if (!$this->getAnnotationType()) { return; }	// don't show bundle if this representation doesn't support annotations
 		
 		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
-		$t_item = new ca_representation_annotations();
-		$t_item_label = new ca_representation_annotation_labels();
+		
+ 		$vs_annotation_table = $this->annotationTable(); 		
+ 		$vs_annotation_label_table = $this->annotationLabelTable();
+ 		
+		$t_item = new $vs_annotation_table();
+		if($this->inTransaction()) { $t_item->setTransaction($this->getTransaction()); }
+		$t_item_label = new $vs_annotation_label_table();
+		if($this->inTransaction()) { $t_item_label->setTransaction($this->getTransaction()); }
 		
 		$o_view->setVar('id_prefix', $ps_form_name);
 		$o_view->setVar('placement_code', $ps_placement_code);		// pass placement code
@@ -897,7 +1044,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		
 		$va_inital_values = array();
 		if (sizeof($va_items = $this->getAnnotations())) {
-			$t_rel = $this->getAppDatamodel()->getInstanceByTableName('ca_representation_annotations', true);
+			$t_rel = $this->getAppDatamodel()->getInstanceByTableName("{$vs_annotation_table}", true);
 			$vs_rel_pk = $t_rel->primaryKey();
 			foreach ($va_items as $vn_id => $va_item) {
 				if (!($vs_label = $va_item['label'])) { $vs_label = ''; }
@@ -907,7 +1054,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		
 		$o_view->setVar('initialValues', $va_inital_values);
 		
-		return $o_view->render('ca_representation_annotations.php');
+		return $o_view->render("{$vs_annotation_table}.php");
 	}	
  	# ------------------------------------------------------
  	/**
@@ -917,27 +1064,30 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		$va_rel_items = $this->getAnnotations();
 		$o_coder = $this->getAnnotationPropertyCoderInstance($this->getAnnotationType());
 		
+ 		$vs_annotation_table = $this->annotationTable(); 	
+ 		
 		$vn_c = 0;
 		foreach($va_rel_items as $vn_id => $va_rel_item) {
 			$this->clearErrors();
-			if (strlen($vn_status = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_status_'.$va_rel_item['annotation_id'], pString))) {
-				$vn_access = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_access_'.$va_rel_item['annotation_id'], pInteger);
-				$vn_locale_id = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_locale_id_'.$va_rel_item['annotation_id'], pInteger);
+			if (strlen($vn_status = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_status_'.$va_rel_item['annotation_id'], pString))) {
+				$vn_access = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_access_'.$va_rel_item['annotation_id'], pInteger);
+				$vn_locale_id = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_locale_id_'.$va_rel_item['annotation_id'], pInteger);
 				
 				$va_properties = array();
 				foreach($o_coder->getPropertyList() as $vs_property) {
-					$va_properties[$vs_property] = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_'.$vs_property.'_'.$va_rel_item['annotation_id'], pString);
+					$va_properties[$vs_property] = $po_request->getParameter($x=$ps_placement_code.$ps_form_prefix.'_'.$vs_property.'_'.$va_rel_item['annotation_id'], pString);
 				}
 
 				// edit annotation
 				$this->editAnnotation($va_rel_item['annotation_id'], $vn_locale_id, $va_properties, $vn_status, $vn_access);
 			
 				if ($this->numErrors()) {
-					$po_request->addActionErrors($this->errors(), 'ca_representation_annotations', $va_rel_item['annotation_id']);
+					$po_request->addActionErrors($this->errors(), $vs_annotation_table, $va_rel_item['annotation_id']);
 				} else {
 					// try to add/edit label
-					if ($vs_label = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_label_'.$va_rel_item['annotation_id'], pString)) {
-						$t_annotation = new ca_representation_annotations($va_rel_item['annotation_id']);
+					if ($vs_label = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_label_'.$va_rel_item['annotation_id'], pString)) {
+						$t_annotation = new $vs_annotation_table($va_rel_item['annotation_id']);
+						if($this->inTransaction()) { $t_annotation->setTransaction($this->getTransaction()); }
 						if ($t_annotation->getPrimaryKey()) {
 							$t_annotation->setMode(ACCESS_WRITE);
 							
@@ -956,7 +1106,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 							}
 							
 							if ($t_annotation->numErrors()) {
-								$po_request->addActionErrors($t_annotation->errors(), 'ca_representation_annotations', 'new_'.$vn_c);
+								$po_request->addActionErrors($t_annotation->errors(), $vs_annotation_table, 'new_'.$vn_c);
 								$vn_c++;
 							}
 						}
@@ -965,11 +1115,11 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			} else {
 				// is it a delete key?
 				$this->clearErrors();
-				if (($po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_'.$va_rel_item['annotation_id'].'_delete', pInteger)) > 0) {
+				if (($po_request->getParameter($ps_placement_code.$ps_form_prefix.'_'.$va_rel_item['annotation_id'].'_delete', pInteger)) > 0) {
 					// delete!
 					$this->removeAnnotation($va_rel_item['annotation_id']);
 					if ($this->numErrors()) {
-						$po_request->addActionErrors($this->errors(), 'ca_representation_annotations', $va_rel_item['annotation_id']);
+						$po_request->addActionErrors($this->errors(), $vs_annotation_table, $va_rel_item['annotation_id']);
 					}
 				}
 			}
@@ -977,23 +1127,23 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		
  		// check for new annotations to add
  		foreach($_REQUEST as $vs_key => $vs_value ) {
-			if (!preg_match('/^'.$ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_status_new_([\d]+)/', $vs_key, $va_matches)) { continue; }
+			if (!preg_match('/^'.$ps_placement_code.$ps_form_prefix.'_status_new_([\d]+)/', $vs_key, $va_matches)) { continue; }
 			$vn_c = intval($va_matches[1]);
-			if (strlen($vn_status = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_status_new_'.$vn_c, pString)) > 0) {
-				$vn_access = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_access_new_'.$vn_c, pInteger);
-				$vn_locale_id = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_locale_id_new_'.$vn_c, pInteger);
+			if (strlen($vn_status = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_status_new_'.$vn_c, pString)) > 0) {
+				$vn_access = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_access_new_'.$vn_c, pInteger);
+				$vn_locale_id = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_locale_id_new_'.$vn_c, pInteger);
 				
 				$va_properties = array();
 				foreach($o_coder->getPropertyList() as $vs_property) {
-					$va_properties[$vs_property] = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_'.$vs_property.'_new_'.$vn_c, pString);
+					$va_properties[$vs_property] = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_'.$vs_property.'_new_'.$vn_c, pString);
 				}
 				
 				// create annotation
-				$vs_label = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_ca_representation_annotations_label_new_'.$vn_c, pString);
+				$vs_label = $po_request->getParameter($ps_placement_code.$ps_form_prefix.'_label_new_'.$vn_c, pString);
 				$vn_annotation_id = $this->addAnnotation($vs_label, $vn_locale_id, $po_request->getUserID(), $va_properties, $vn_status, $vn_access);
 				
 				if ($this->numErrors()) {
-					$po_request->addActionErrors($this->errors(), 'ca_representation_annotations', 'new_'.$vn_c);
+					$po_request->addActionErrors($this->errors(), $vs_annotation_table, 'new_'.$vn_c);
 				} 
 			}
 		}
@@ -1047,6 +1197,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if (!trim($ps_resource_path)) { $ps_resource_path = '/'; }
  		
  		$t_multifile = new ca_object_representation_multifiles();
+ 		if($this->inTransaction()) { $t_multifile->setTransaction($this->getTransaction()); }
  		if (!$pb_allow_duplicates) {
  			if ($t_multifile->load(array('resource_path' => $ps_resource_path, 'representation_id' => $this->getPrimaryKey()))) {
  				return null;
@@ -1074,6 +1225,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if(!$this->getPrimaryKey()) { return null; }
  		
  		$t_multifile = new ca_object_representation_multifiles($pn_multifile_id);
+ 		if($this->inTransaction()) { $t_multifile->setTransaction($this->getTransaction()); }
  		
  		if ($t_multifile->get('representation_id') == $this->getPrimaryKey()) {
  			$t_multifile->setMode(ACCESS_WRITE);
@@ -1180,6 +1332,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if(!$this->getPrimaryKey()) { return null; }
  	
  		$t_multifile = new ca_object_representation_multifiles($pn_multifile_id);
+ 		if($this->inTransaction()) { $t_multifile->setTransaction($this->getTransaction()); }
  		
  		if ($t_multifile->get('representation_id') == $this->getPrimaryKey()) {
  			return $t_multifile;
@@ -1220,6 +1373,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if(!$this->getPrimaryKey()) { return null; }
  		
  		$t_caption = new ca_object_representation_captions();
+ 		if($this->inTransaction()) { $t_caption->setTransaction($this->getTransaction()); }
  		if ($t_caption->load(array('representation_id' => $this->getPrimaryKey(), 'locale_id' => $pn_locale_id))) {
  			return null;
  		}
@@ -1247,6 +1401,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if(!$this->getPrimaryKey()) { return null; }
  		
  		$t_caption = new ca_object_representation_captions($pn_caption_id);
+ 		if($this->inTransaction()) { $t_caption->setTransaction($this->getTransaction()); }
  		
  		if ($t_caption->get('representation_id') == $this->getPrimaryKey()) {
  			$t_caption->setMode(ACCESS_WRITE);
@@ -1344,7 +1499,9 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  			
  			$va_files[$vn_caption_id]['path'] = $qr_res->getFilePath('caption_file');
  			$va_files[$vn_caption_id]['url'] = $qr_res->getFileUrl('caption_file');
- 			$va_files[$vn_caption_id]['filesize'] = caFormatFileSize(filesize($va_files[$vn_caption_id]['path']));
+			if(file_exists($va_files[$vn_caption_id]['path'])) {
+				$va_files[$vn_caption_id]['filesize'] = caFormatFileSize(filesize($va_files[$vn_caption_id]['path']));
+			}
  			$va_files[$vn_caption_id]['caption_id'] = $vn_caption_id;
  			$va_files[$vn_caption_id]['locale_id'] = $vn_locale_id;
  			$va_files[$vn_caption_id]['locale'] = $t_locale->localeIDToName($vn_locale_id);
@@ -1360,6 +1517,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  		if(!$this->getPrimaryKey()) { return null; }
  	
  		$t_caption = new ca_object_representation_captions($pn_caption_id);
+ 		if($this->inTransaction()) { $t_caption->setTransaction($this->getTransaction()); }
  		
  		if ($t_caption->get('representation_id') == $this->getPrimaryKey()) {
  			return $t_caption;

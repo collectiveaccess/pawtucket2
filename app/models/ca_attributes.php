@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -163,7 +163,7 @@ class ca_attributes extends BaseModel {
 		)
 	);
 	
-	static $s_attribute_cache_size = 8192;
+	static $s_attribute_cache_size = 65535;
 	static $s_get_attributes_cache = array();
 	static $s_ca_attributes_element_instance_cache = array();
 	
@@ -185,6 +185,7 @@ class ca_attributes extends BaseModel {
 	#
 	# ------------------------------------------------------
 	public function __construct($pn_id=null) {
+		require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 		parent::__construct($pn_id);	# call superclass constructor
 	}
 	# ------------------------------------------------------
@@ -517,13 +518,16 @@ class ca_attributes extends BaseModel {
 			$vs_errors = '';
 		}
 
-		$ps_formatted_element = str_replace("^LABEL", "<span id='_attribute_value_".$pa_element_info['element_code']."'>{$vs_label}</span>", $ps_format);
+		$ps_formatted_element = str_replace("^LABEL", "<span class='_attribute_value_".$pa_element_info['element_code']."'>{$vs_label}</span>", $ps_format);
 		$ps_formatted_element = str_replace("^ELEMENT", $vs_element, $ps_formatted_element);
 		$ps_formatted_element = str_replace("^DESCRIPTION", "", $ps_formatted_element);
 		$ps_formatted_element = str_replace("^EXTRA", "", $ps_formatted_element);
 	
 		if ($vs_description) {
-			TooltipManager::add('#_attribute_value_'.$pa_element_info['element_code'], "<h3>".$vs_label."</h3>".$vs_description);
+			// don't use TooltipManager to make sure the tooltip is also displayed when this element is added dynamically (via "add" button)
+			//TooltipManager::add('#_attribute_value_'.$pa_element_info['element_code'], "<h3>".$vs_label."</h3>".$vs_description);
+
+			$ps_formatted_element .= "\n".caGetTooltipJS(array('._attribute_value_'.$pa_element_info['element_code'] => $vs_description));
 		}
 		return $ps_formatted_element;
 	}
@@ -560,10 +564,9 @@ class ca_attributes extends BaseModel {
 				caa.attribute_id, caa.locale_id, caa.element_id element_set_id, caa.row_id,
 				caav.value_id, caav.item_id, caav.value_longtext1, caav.value_longtext2,
 				caav.value_decimal1, caav.value_decimal2, caav.value_integer1, caav.value_blob,
-				cme.element_id, cme.datatype, cme.settings, cme.element_code
+				caav.element_id
 			FROM ca_attributes caa
 			INNER JOIN ca_attribute_values AS caav ON caa.attribute_id = caav.attribute_id
-			INNER JOIN ca_metadata_elements AS cme ON cme.element_id = caav.element_id
 			WHERE
 				(caa.table_num = ?) AND (caa.row_id IN (?)) AND (caa.element_id IN (?))
 			ORDER BY
@@ -580,6 +583,10 @@ class ca_attributes extends BaseModel {
 		$o_attr = $vn_last_element_id = null; 
 		while($qr_attrs->nextRow()) {
 			$va_raw_row = $qr_attrs->getRow();
+			
+			$va_raw_row['element_code'] = ca_metadata_elements::getElementCode($va_raw_row['element_id']);
+			$va_raw_row['datatype'] = ca_metadata_elements::getElementDatatype($va_raw_row['element_id']);
+			
 			if ($vn_last_attribute_id != $va_raw_row['attribute_id']) {
 				if ($vn_last_attribute_id && $vn_last_row_id) {
 					$va_attrs[$vn_last_row_id][$vn_last_element_id][] = $o_attr;
@@ -723,10 +730,12 @@ class ca_attributes extends BaseModel {
 	 */
 	static public function getAttributeCount($po_db, $pn_table_num, $pn_row_id, $pn_element_id) {
 		$qr_attrs = $po_db->query("
-			SELECT count(*) c
-			FROM ca_attributes caa
+			SELECT count(distinct caa.attribute_id) c
+			FROM ca_attributes caa, ca_attribute_values cav
 			WHERE
-				(caa.table_num = ?) AND (caa.row_id = ?) AND (caa.element_id = ?)
+				(cav.attribute_id = caa.attribute_id) AND
+				(caa.table_num = ?) AND (caa.row_id = ?) AND (caa.element_id = ?) AND
+				(cav.item_id IS NOT NULL OR cav.value_longtext1 IS NOT NULL OR cav.value_decimal1 IS NOT NULL OR cav.value_integer1 IS NOT NULL OR cav.value_blob IS NOT NULL)
 		", (int)$pn_table_num, (int)$pn_row_id, (int)$pn_element_id);
 		if ($po_db->numErrors()) {
 			//$this->errors = $po_db->errors;
@@ -852,4 +861,3 @@ class ca_attributes extends BaseModel {
 	}
 	# ------------------------------------------------------
 }
-?>

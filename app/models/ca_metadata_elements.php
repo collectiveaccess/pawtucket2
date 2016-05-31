@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2013 Whirl-i-Gig
+ * Copyright 2008-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -255,6 +255,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public function insert($pa_options=null) {
 		$this->set('settings', MemoryCache::fetch('no_key', 'ElementSettings'));
 		if ($vn_rc =  parent::insert($pa_options)) {
+			$this->flushElementSetCache();
 			MemoryCache::save($this->getPrimaryKey(), MemoryCache::fetch('no_key', 'ElementSettings'), 'ElementSettings');
 		}
 		return $vn_rc;
@@ -262,15 +263,57 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	# ------------------------------------------------------
 	public function update($pa_options=null) {
 		$this->set('settings', MemoryCache::fetch($this->getPrimaryKey(), 'ElementSettings'));
+		$this->flushElementSetCache();
 		return parent::update($pa_options);
 	}
 	# ------------------------------------------------------
 	public function delete($pb_delete_related = false, $pa_options = NULL, $pa_fields = NULL, $pa_table_list = NULL) {
 		$vn_id = $this->getPrimaryKey();
+		$this->flushElementSetCache();
 		if ($vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) {
 			MemoryCache::delete($vn_id, 'ElementSettings');
 		}
 		return $vn_rc;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function elementCodesToIDs($pa_element_codes, $pa_options=null) {
+		$o_db = caGetOption('db', $pa_options, new Db());
+		
+		$qr_res = $o_db->query("
+			SELECT element_id, element_code
+			FROM ca_metadata_elements
+			WHERE
+				element_code IN (?)
+		", array($pa_element_codes));
+		
+		$va_element_ids = array();
+		while($qr_res->nextRow()) {
+			$va_element_ids[$qr_res->get('element_code')] = $qr_res->get('element_id');
+		}
+		return $va_element_ids;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Flushes the element set cache for current record, its parent and the whole element set
+	 */
+	private function flushElementSetCache() {
+		if(!$this->getPrimaryKey()) { return; }
+
+		if($vn_parent_id = $this->get('parent_id')) {
+			CompositeCache::delete($vn_parent_id, 'ElementSetIds');
+			CompositeCache::delete($vn_parent_id, 'ElementSets');
+		}
+
+		if($vn_hier_element_id = $this->get('hier_element_id')) {
+			CompositeCache::delete($vn_hier_element_id, 'ElementSetIds');
+			CompositeCache::delete($vn_hier_element_id, 'ElementSets');
+		}
+
+		CompositeCache::delete($this->getPrimaryKey(), 'ElementSetIds');
+		CompositeCache::delete($this->getPrimaryKey(), 'ElementSets');
 	}
 	# ------------------------------------------------------
 	# Element set methods
@@ -301,8 +344,6 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		}
 		CompositeCache::save($pn_element_id, $va_element_ids, 'ElementSetIds');
 		
-		if (caGetOption('idsOnly', $pa_options, false)) { return $va_element_ids; }
-		
 		// Get labels
 		$va_labels = $this->getPreferredDisplayLabelsForIDs($va_element_ids);
 		
@@ -321,6 +362,8 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		array_unshift($va_tmp, $va_root);
 
 		CompositeCache::save($pn_element_id, $va_tmp, 'ElementSets');
+		
+		if (caGetOption('idsOnly', $pa_options, false)) { return $va_element_ids; }
 		return $va_tmp;
 	}
 	# ------------------------------------------------------
@@ -349,7 +392,9 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	 */
 	public function getAvailableSettings() {
 		$t_attr_val = Attribute::getValueInstance((int)$this->get('datatype'));
-		return $t_attr_val ? $t_attr_val->getAvailableSettings($this->getSettings()) : null;
+		$va_element_info = $this->getFieldValuesArray();
+		$va_element_info['settings'] = $this->getSettings();
+		return $t_attr_val ? $t_attr_val->getAvailableSettings($va_element_info) : null;
 	}
 	# ------------------------------------------------------
 	/**
@@ -511,8 +556,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	# Static
 	# ------------------------------------------------------
 	public static function getAttributeTypes() {
-		$o_config = Configuration::load();
-		$o_types = Configuration::load($o_config->get('attribute_type_config'));
+		$o_types = Configuration::load(__CA_CONF_DIR__."/attribute_types.conf");
 		
 		$va_types = $o_types->getList('types');
 		foreach($va_types as $vn_i => $vs_typename) {
@@ -763,6 +807,15 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		return $va_sortable_elements;
 	}
 	# ------------------------------------------------------
+	public static function getDataTypeForElementCode($ps_element_code) {
+		$t_element = new ca_metadata_elements();
+		if($t_element->load(array('element_code' => $ps_element_code))) {
+			return (int) $t_element->get('datatype');
+		} else {
+			return false;
+		}
+	}
+	# ------------------------------------------------------
 	/**
 	 * Returns list of user interfaces that reference the currently loaded metadata element
 	 *
@@ -897,8 +950,27 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	 * 
 	 */
 	static public function getElementDatatype($pm_element_code_or_id) {
+		if(MemoryCache::contains($pm_element_code_or_id, 'ElementDataTypes2')) {
+			return MemoryCache::fetch($pm_element_code_or_id, 'ElementDataTypes2');
+		}
 		if ($t_element = ca_metadata_elements::getInstance($pm_element_code_or_id)) {
-			return $t_element->get('datatype');
+			MemoryCache::save($pm_element_code_or_id, $vn_datatype = (int)$t_element->get('datatype'), 'ElementDataTypes2');
+			return $vn_datatype;
+		}
+		
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 */
+	static public function getElementCode($pn_element_id) {
+		if(MemoryCache::contains($pn_element_id, 'ElementCodes')) {
+			return MemoryCache::fetch($pn_element_id, 'ElementCodes');
+		}
+		if ($t_element = ca_metadata_elements::getInstance($pn_element_id)) {
+			MemoryCache::save($pn_element_id, $vs_element_code = (string)$t_element->get('element_code'), 'ElementCodes');
+			return $vs_element_code;
 		}
 		
 		return null;
@@ -924,6 +996,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		} else {
 			MemoryCache::save($vn_element_id, $t_element, 'ElementInstances');
 			MemoryCache::save($t_element->get('element_code'), $t_element, 'ElementInstances');
+			MemoryCache::save($t_element->get('datatype'), $t_element, 'ElementDataTypes');
 			return $t_element;
 		}
 		return null;
@@ -1150,7 +1223,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public function getPresetsAsHTMLFormElement($pa_options=null) {
 		if (!($vn_element_id = $this->getPrimaryKey())) { return null; }		// element must be loaded
 	
-		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attribute_presets.conf");
+		$o_presets = Configuration::load(__CA_CONF_DIR__."/attribute_presets.conf");
 		
 		if ($va_presets = $o_presets->getAssoc($this->get('element_code'))) {
 			$vs_form_element_name = caGetOption('name', $pa_options, "{fieldNamePrefix}_presets_{n}");
@@ -1179,7 +1252,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	public function getPresetsJavascript($ps_field_prefix, $pa_options=null) {
 		if (!($vn_element_id = $this->getPrimaryKey())) { return null; }		// element must be loaded
 	
-		$o_presets = Configuration::load(__CA_APP_DIR__."/conf/attribute_presets.conf");
+		$o_presets = Configuration::load(__CA_CONF_DIR__."/attribute_presets.conf");
 		
 		if ($va_presets = $o_presets->getAssoc($this->get('element_code'))) {
 			$va_elements = $this->getElementsInSet();
@@ -1222,4 +1295,3 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	}
 	# ------------------------------------------------------
 }
-?>

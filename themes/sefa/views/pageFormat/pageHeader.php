@@ -45,6 +45,8 @@
 		$qr_res->nextHit();
 		$vn_current_exhibition = $qr_res->get("ca_occurrences.occurrence_id");
 		$this->request->session->setVar("current_exhibition_id", $vn_current_exhibition);
+	}else{
+		$this->request->session->setVar("current_exhibition_id", "");
 	}
 
 ?><!DOCTYPE html>
@@ -59,7 +61,9 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
-	
+	<meta name="description" content="The official site for Susan Eley Fine Art, a salon-style gallery showcasing contemporary artists, located in a Landmarked Upper West Side townhouse in Manhattan.">
+	<meta name="keywords" content="Gallery, Art, Contemporary, New York, Salon, Paintings, Photographs">
+
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
@@ -85,12 +89,12 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print (mb_strtolower($this->request->getAction()) == exhibitions) ? 'class="active"' : ''; ?>><?php print ($vn_current_exhibition) ? caDetailLink($this->request, _t("Exhibitions"), '', 'ca_occurrences', $vn_current_exhibition, null, null, array("action" => "exhibitions")) : caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "Exhibitions"); ?></li>
+					<li <?php print (in_array(mb_strtolower($this->request->getAction()), array("exhibitions", "past_exhibitions", "upcoming_exhibitions"))) ? 'class="active"' : ''; ?>><?php print ($vn_current_exhibition) ? caDetailLink($this->request, _t("Exhibitions"), '', 'ca_occurrences', $vn_current_exhibition, null, null, array("action" => "exhibitions")) : caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "past_exhibitions"); ?></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "artists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Listing", "Artists"); ?></li>
-					<li><a href="/news/?m=<?php print date("Y"); ?>">News</a></li>
+					<li><a href="/news/?m=<?php print date("Y"); ?>">Blog</a></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "fairs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Fairs"), "", "", "Listing", "Fairs"); ?></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "publications") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Publications"), "", "", "Listing", "Publications"); ?></li>
-					<li <?php print (mb_strtolower($this->request->getAction()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "About", "Gallery"); ?></li>
+					<li <?php print ((mb_strtolower($this->request->getController()) == "about") && (mb_strtolower($this->request->getAction()) != "mailinglist")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Gallery"); ?></li>
 					<li <?php print (mb_strtolower($this->request->getController()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

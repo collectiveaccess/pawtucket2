@@ -379,8 +379,6 @@
           		}	
           	}
           	
-          	//print_R($va_content_tree); die;
-          	
           	// Set type and idno (from config or tree) and insert
           	// 		Configured values are always used in preference
           	
@@ -468,7 +466,7 @@
           					$va_rel_config = caGetOption('ca_places', $va_related_form_item_config, array());
           					foreach($va_content_by_table as $vn_index => $va_rel) {
           						foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, null, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -572,12 +570,12 @@
  		private function _checkForm($ps_form) {
  			if (!($va_form_info = caGetInfoForContributeFormType($ps_form))) {
  				// invalid form type (shouldn't happen unless misconfigured)
- 				die("Invalid contribute form type");
+ 				throw new ApplicationException("Invalid contribute form type");
  			}
  			
  			if (!($this->pt_subject = $this->request->datamodel->getInstanceByTableName($va_form_info['table']))) {
  				// invalid form table (shouldn't happen unless misconfigured)
- 				die("Invalid contribute table setting");
+ 				throw new ApplicationException("Invalid contribute table setting");
  			}
  			
  			// Does form require login?

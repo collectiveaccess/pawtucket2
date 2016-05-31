@@ -30,7 +30,7 @@
 	if($this->request->isLoggedIn()){
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
@@ -40,11 +40,9 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
-	<title>Milton Glaser Design Study Center And Archives</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	<link href="http://www.glaserarchives.org/style.css" rel="stylesheet" type="text/css">
-	<link rel="shortcut icon" href="http://www.glaserarchives.org/favicon.png" />
+	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 
 	<?php print MetaTagManager::getHTML(); ?>
@@ -67,47 +65,92 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
-		<style type="text/css" id="mti_stylesheet_08d66479-d029-4b18-b2e5-1459df4ebe21">h1{font-family:'Bodoni W01 Roman';}</style>
-		<script type="text/javascript" src="http://fast.fonts.com/jsapi/08d66479-d029-4b18-b2e5-1459df4ebe21.js"></script>
-		<style type="text/css" id="mti_fontface_08d66479-d029-4b18-b2e5-1459df4ebe21">@font-face{
-		font-family:"Bodoni W01 Roman";
-		src:url("http://fast.fonts.net/dv2/3/cd77f8b9-e937-4ea5-a635-19a0db457df1.woff?d44f19a684109620e484157ca690e818629213b3c1b3910625d8216115a5a5131ffbf0feeffd5f43fd8aa743fe1afe927e55a2988a6f60ba8228d62b654775b4bd4e0c8352362cb34d52a3662b7fb75a170967e150703065ad24520f8ac5b711f9123633e58205a66d235ba2d0c2de3c20093c45abc2c3824cf72f531131a1728e77ca9ccac5e952719baf1bb472710aa685be871b840b&projectId=08d66479-d029-4b18-b2e5-1459df4ebe21") format('woff');}
-		</style>
-		<link id="MonoTypeFontApiFontTracker" type="text/css" rel="stylesheet" href="http://fast.fonts.net/t/1.css?apiType=js&amp;projectid=08d66479-d029-4b18-b2e5-1459df4ebe21">		
 </head>
-<body style='background-image: url("http://www.glaserarchives.org/bg/0.jpg");'>
-
-<div id="container">
-
-	<div id="tabs"><img src="http://www.glaserarchives.org/images/design-tab.png"><a href="http://www.svaarchives.org/"><img src="http://www.glaserarchives.org/images/sva-tab.png"></a><a href="http://containerlist.glaserarchives.org/"><img src="http://www.glaserarchives.org/images/blog-tab.png"></a></div>
-	<div id="header">
-		<div id="home">
-			<a href="http://www.glaserarchives.org/index.html"><img src="http://www.glaserarchives.org/mast.gif" alt="Milton Glaser Design Archive and Study Center"></a>
-			<div class='clearfix'></div>
-		</div>
-	</div>
-	
-	<div id="main" <?php print caGetPageCSSClasses(); ?>>
-
-		<div id="navigation">
-			<ul>
-				<li style="border: 0"><a href="http://www.glaserarchives.org/">ABOUT</a></li>
-				<li><a href="http://www.glaserarchives.org/holdings.html">COLLECTIONS</a></li>
-				<li class="active"><?php print caNavLink($this->request, 'DIGITAL ARCHIVE', '', '', '', '');?></a></li>
-			</ul>
-		</div>
-<?php		
-		if (($this->request->getController() != "Front") && ($this->request->getController() != "AdvancedSearch")) {
-?>		
-		<div id="search"><form class="svasearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-			<div class="">
-				<div class="">
-					<input type="text" class="svaform" placeholder="" name="search">
-				</div>
-				<button type="submit" class="btn-search"><!--<span class="glyphicon glyphicon-search"></span>--></button>
-			</div>
-		</form></div>
+<body>
+	<nav class="navbar navbar-default yamm" role="navigation">
+		<div class="container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
+					<span class="sr-only">User Options</span>
+					<span class="glyphicon glyphicon-user"></span>
+				</button>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
 <?php
-		}
-?>		
+				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
+?>
+			<span class='navbar-brand'><?php print caNavLink($this->request, "School of Visual Arts <span class='red'>Exhibition Archive</span>", '', '', '', '');?></span>
+			</div>
 
+		<!-- Collect the nav links, forms, and other content for toggling -->
+			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+			<div class="collapse navbar-collapse" id="user-navbar-toggle">
+				<ul class="nav navbar-nav">					
+<?php
+							print $vs_user_links;
+?>
+				</ul>
+			</div>
+			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right" id="user-navbar">
+					<li class="dropdown" style="position:relative; display: none">
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<ul class="dropdown-menu">
+<?php
+							print $vs_user_links;
+?>
+						</ul>
+					</li>
+					<li>
+						<?php print caNavLink($this->request, "<i class='fa fa-ellipsis-h'></i>", "", "", "Search/advanced", "objects"); ?>
+					</li>
+				</ul>
+
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+					<div class="formOutline">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="search">
+						</div>
+						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+					</div>
+				</form>
+
+			</div><!-- /.navbar-collapse -->
+		</div><!-- end container -->
+	</nav>
+	<div class="container">
+		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+			<div class="row">
+				<div class="col-sm-8">
+				<ul class='svaMenu'>
+				<li>BROWSE...<li>
+				<li <?php print ($this->request->getAction() == 'objects' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?>
+				</li>
+				<li <?php print ($this->request->getAction() == 'entities' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "People", "", "", "Browse", "entities"); ?>
+				</li>
+				<li <?php print ($this->request->getAction() == 'departments' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Departments", "", "", "Browse", "departments"); ?>
+				</li>	
+				<li <?php print ($this->request->getAction() == 'exhibitions' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Exhibitions", "", "", "Browse", "exhibitions"); ?>
+				</li>
+				<li <?php print ($this->request->getController() == 'Collection' ? 'class="active"': ""); ?>>
+					<?php print caNavLink($this->request, "Finding Aid", "", "FindingAid", "Collection", "Index"); ?>
+				</li>							
+<?php
+						#print $this->render("pageFormat/browseMenu.php");
+?>	
+
+				</ul>	
+				</div>
+				<div class="col-sm-3 col-sm-offset-1">
+							<h2 class='about'><?php print caNavLink($this->request, _t("About the archives"), "", "", "About", "Index"); ?></h2>
+				</div>
+			</div><!-- end row -->

@@ -51,14 +51,14 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	$o_lightbox_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
-	$va_lightbox_display_name = caGetSetDisplayName($o_set_config);
-	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
-	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
+	$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
+	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
+	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -94,7 +94,7 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_displayname));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -106,13 +106,13 @@
 					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 					}
-					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Volume" || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Bib") {
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Volume" || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Bib"  || $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Page") {
 						$vs_label_detail_link 	= caDetailLink($this->request,$qr_res->get("ca_objects.parent.preferred_labels.name")." ".$qr_res->get("ca_objects.preferred_labels.name"), '', $vs_table, $vn_id);
 						$vs_label_detail_link.= "<br/>".$qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author')))."<br/>".$qr_res->get('ca_entities.publication_date');
 					}
@@ -148,7 +148,7 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 				if (($qr_res->get('ca_entities.biography.biography_text')) && ($vs_table != 'ca_objects')) {
 					$vs_expanded_info = $qr_res->get('ca_entities.biography.biography_text');
 				} else {
@@ -167,7 +167,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_lightbox"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";

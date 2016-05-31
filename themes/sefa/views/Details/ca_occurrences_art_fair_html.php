@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -26,14 +26,14 @@
 		}
 	}
 	# --- representations related with type depicts are installation shots
-	$va_rep_install_ids = $t_item->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("depicts"), "returnAsArray" => true));
+	$va_rep_install_ids = $t_item->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("depicts"), "returnWithStructure" => true));
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_array($va_rep_install_ids) && sizeof($va_rep_install_ids)){
 			$o_representations = $t_item->getRepresentationsAsSearchResult(array("checkAccess" => $va_access_values));
 			if($o_representations->numHits()){
 				while($o_representations->nextHit()){
 					if(in_array($o_representations->get("representation_id"), $va_rep_install_ids)){
-						$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => $o_representations->get("ca_object_representations.preferred_labels.name"));
+						$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 					}
 				}
 			}
@@ -71,19 +71,20 @@
 		switch($ps_view){	
 			case "info":
 			default:
+				$vs_image = $t_item->get("ca_object_representations.media.medium", array("restrictToRelationshipTypes" => array("logo")));
+				if($vs_image){
 ?>		
 			
 			<div class="thumbnail thumbnailImgLeft">
-				{{{<ifcount code="ca_object_representations" min="1">
-					<unit relativeTo="ca_object_representations" delimiter=" " restrictToRelationshipTypes="logo">
-						^ca_object_representations.media.small
-					</unit>
-				</ifcount>}}}
+				<?php print $vs_image; ?>
 			</div> <!--end thumbnail-->
+<?php
+				}
+?>
 				<p>
 <?php
 					if($t_item->get("ca_occurrences.art_fair_location")){
-						print $t_item->get("ca_occurrences.art_fair_location", array("convertLineBreaks" => true));
+						print caConvertLineBreaks($t_item->get("ca_occurrences.art_fair_location"));
 					}
 ?>
 					<h4>{{{^ca_occurrences.opening_closing}}}</h4>
@@ -102,7 +103,7 @@
 					<br/>Artist pages: 
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1">
-					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entity_labels.displayname</l></unit>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
 				</ifcount>}}}
 				</strong>
 <?php

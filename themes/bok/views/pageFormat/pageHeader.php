@@ -44,7 +44,7 @@
 	if($this->request->isLoggedIn()){
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Sets', 'Index', array())."</li>";
+		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		$vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
@@ -101,7 +101,7 @@
 						<ul class="nav navbar-nav navbar-right navbar-top">
 							<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Tools<br/>Overview"), "", "", "", ""); ?></li>
 							<li <?php print ($this->request->getController() == "CompetenceStandards") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Competence<br/>Standards"), "", "", "CompetenceStandards", "About"); ?></li>
-							<li <?php print (in_array(mb_strtolower($this->request->getController()), array("search", "browse", "detail", "sets", "gallery", "contribute", "bodyofknowledge"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Body of<br/>Knowledge"), "", "", "BodyOfKnowledge", "About"); ?></li>
+							<li <?php print (in_array(mb_strtolower($this->request->getController()), array("search", "browse", "detail", "lightbox", "gallery", "contribute", "bodyofknowledge"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Body of<br/>Knowledge"), "", "", "BodyOfKnowledge", "About"); ?></li>
 							<li <?php print ($this->request->getController() == "AssessmentCertification") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Performance Assessment <br/>& Certification Guidelines"), "", "", "AssessmentCertification", "About"); ?></li>
 							<li <?php print ($this->request->getController() == "SupportingInitiatives") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Supporting<br/>Initiatives"), "", "", "SupportingInitiatives", "About"); ?></li>
 						</ul>

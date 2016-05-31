@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website", "used")));
+	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website", "used")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -30,7 +30,7 @@
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
@@ -81,7 +81,7 @@
 			
 			<div class="thumbnail thumbnailImgLeft">
 <?php
-				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
 					$t_object = new ca_objects($va_object["object_id"]);
 					print $t_object->get("ca_object_representations.media.mediumlarge");
@@ -107,7 +107,7 @@
 					Artist: 
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
-					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entity_labels.displayname</l></unit>
+					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
 				</ifcount>}}}
 				</strong>
 <?php

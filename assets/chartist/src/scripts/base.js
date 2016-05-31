@@ -44,7 +44,7 @@
 
     // Only re-created the chart if it has been initialized yet
     if(!this.initializeTimeoutId) {
-      this.createChart(this.optionsProvider.currentOptions);
+      this.createChart(this.optionsProvider.getCurrentOptions());
     }
 
     // Return a reference to the chart object to chain up calls
@@ -57,8 +57,15 @@
    * @memberof Chartist.Base
    */
   function detach() {
-    window.removeEventListener('resize', this.resizeListener);
-    this.optionsProvider.removeMediaQueryListeners();
+    // Only detach if initialization already occurred on this chart. If this chart still hasn't initialized (therefore
+    // the initializationTimeoutId is still a valid timeout reference, we will clear the timeout
+    if(!this.initializeTimeoutId) {
+      window.removeEventListener('resize', this.resizeListener);
+      this.optionsProvider.removeMediaQueryListeners();
+    } else {
+      window.clearTimeout(this.initializeTimeoutId);
+    }
+
     return this;
   }
 
@@ -117,7 +124,7 @@
     });
 
     // Create the first chart
-    this.createChart(this.optionsProvider.currentOptions);
+    this.createChart(this.optionsProvider.getCurrentOptions());
 
     // As chart is initialized from the event loop now we can reset our timeout reference
     // This is important if the chart gets initialized on the same element twice
@@ -150,14 +157,7 @@
     if(this.container) {
       // If chartist was already initialized in this container we are detaching all event listeners first
       if(this.container.__chartist__) {
-        if(this.container.__chartist__.initializeTimeoutId) {
-          // If the initializeTimeoutId is still set we can safely assume that the initialization function has not
-          // been called yet from the event loop. Therefore we should cancel the timeout and don't need to detach
-          window.clearTimeout(this.container.__chartist__.initializeTimeoutId);
-        } else {
-          // The timeout reference has already been reset which means we need to detach the old chart first
-          this.container.__chartist__.detach();
-        }
+        this.container.__chartist__.detach();
       }
 
       this.container.__chartist__ = this;

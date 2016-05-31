@@ -29,39 +29,22 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-<div class='marginLeft'>
-</div>
-<div class='marginRight'>
+ 
+ 	//MetaTagManager::setWindowTitle("");
 
-<div class="container">
-	<div class="row">
-		<div class="col-sm-12">
+?>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12" style='padding-left:0px; padding-right:0px;'>
 <?php
-		print $this->render("Front/featured_set_slideshow_html.php");
+			print $this->render("Front/featured_set_slideshow_html.php");
 ?>		
-		</div>
-	</div>	
-	<div class="row">
-		<div class="col-sm-8">
-			<h1>Circulation Records 1789-1792</h1>
-			<h4>The book borrowing history recorded in our earliest surviving charging ledger is now available to browse and search online. Our first ledger is an invaluable resource as a window into the reading habits of over 500 18th-century Library members, including many of our nation's founders.</H4>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-		<h3>Some Notable Borrowers</h3>
-<?php
-			print "<p>".caNavLink($this->request, 'George Washington', '', '', 'Detail', 'entities/1288')."</p>";
-			print "<p>".caNavLink($this->request, 'John Adams', '', '', 'Detail', 'entities/11')."</p>";
-			print "<p>".caNavLink($this->request, 'Alexander Hamilton', '', '', 'Detail', 'entities/458')."</p>";
-			print "<p>".caNavLink($this->request, 'Aaron Burr', '', '', 'Detail', 'entities/164')."</p>";
-			print "<p>".caNavLink($this->request, 'Baron Steuben', '', '', 'Detail', 'entities/1126')."</p>";
-			print "<p>".caNavLink($this->request, 'John Jay', '', '', 'Detail', 'entities/563')."</p>";
-			print "<p>".caNavLink($this->request, 'DeWitt Clinton', '', '', 'Detail', 'entities/215')."</p>";
-			print "<p>".caNavLink($this->request, 'Anthony L Bleecker', '', '', 'Detail', 'entities/102')."</p>";
-			print "<p>".caNavLink($this->request, 'William Livingston', '', '', 'Detail', 'entities/701')."</p>";
-
-?>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
-</div> <!--end container-->
-</div>
+			</div>
+		</div>	
+		<div class="row">
+			<div class="col-sm-12">
+				<h4 style="text-align:center; font-style:italic;">Explore more than 100,000 records of books, readers, and borrowing history from the New York Society Library's Special Collections.</H4>
+			</div><!--end col-sm-8-->	
+		</div><!-- end row -->
+	</div> <!--end container-->
+			

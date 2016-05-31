@@ -31,7 +31,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	font-weight: 400;
 	font-style: normal;
 }
-H1, H1{
+H1, H1, H2, h2{
 	color: #DFA800;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
@@ -189,7 +189,7 @@ hr{
 	padding:10px 20px 10px 10px;
 }
 .front .frontComments{
-	min-height:350px;
+	min-height:375px;
 }
 .front .frontComments .quote{
 	margin:20px 0px 20px 0px;
@@ -226,5 +226,23 @@ hr{
 .detail HR{
 	height:1px;
 	background-color:#999;
+	border:0px;
+}
+
+h5.headingVernacularName {
+	margin: 0 0 10px 0;
+	padding: 0px;
+	font-size: 14px;
+}
+/* --- classroom --- */
+.classroom a:hover, .classroom a:active, .classroom a:focus{
+	color:#DFA800;
+}
+.lbSetImgPlaceholder{
+	padding:30px 5px 32px 5px;
+}
+.classroom HR, .classroom hr{
+	height:1px;
+	background-color:#dedede;
 	border:0px;
 }

@@ -26,14 +26,18 @@
  * ----------------------------------------------------------------------
  */
  
-	$va_browse_types = caGetBrowseTypes();
+	$va_browse_types = caGetBrowseTypes(array('forMenuBar' => true));
 	$o_config = caGetBrowseConfig();
+	
+	$vb_dont_preload_browse_menu = (bool)$o_config->get('dontPreloadBrowseMenu');
+	
 	if(sizeof($va_browse_types)){
-		switch($o_config->get("browse_menu_format")){
+		switch($o_config->get("browseMenuFormat")){
+			# ------------------------------------------------
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>
-				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+				<li class="item dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;" id="menuId-3"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Search & Browse"); ?></a>
 					<ul class="dropdown-menu">
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
@@ -53,7 +57,7 @@
 			default:
 				$vs_first_browse = null;
 ?>
-				 <li class="dropdown yamm-fw<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"> <!-- add class yamm-fw for full width-->
+				 <li id="menuId-3" class="item dropdown yamm-fw<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>"> <!-- add class yamm-fw for full width-->
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
 					<ul class="dropdown-menu" id="browse-menu">
 						<li class="browseNavFacet">			
@@ -66,7 +70,7 @@
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
+												print "<li><div class='browseHeadernav caps".((!$vb_dont_preload_browse_menu && !$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '*', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
 												if(!$vs_first_browse){
 													$vs_first_browse = $vs_browse_name;
 												}
@@ -85,6 +89,9 @@
 						</li><!-- end browseNavFacet -->
 					</ul> <!--end dropdown-browse-menu -->	
 				 </li><!-- end dropdown -->
+<?php
+	if (!$vb_dont_preload_browse_menu) {
+?>
 					<script type="text/javascript">
 						jQuery('.dropdown-toggle').dropdown()
 						jQuery(document).ready(function() {		
@@ -92,7 +99,8 @@
 						});
 					</script>
 <?php
+	}
 			break;
+			# ------------------------------------------------
 		}
 	}
-?>

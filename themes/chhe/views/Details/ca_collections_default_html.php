@@ -14,7 +14,7 @@
 			</div><!-- end detailNavBgLeft -->
 		</div><!-- end col -->
 		<div class="col-sm-10 col-md-10">
-			<H3>{{{^ca_collections.preferred_labels.displayname}}}</H3>
+			<H3>{{{^ca_collections.preferred_labels}}}</H3>
 			
 			{{{<ifcount code="ca_objects" min="1">
 			<div id="detailRelatedObjects">
@@ -115,7 +115,7 @@
 				{{{<ifcount code="ca_collections.related" min="1">
 				<ifcount code="ca_collections.related" min="1" max="1"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collection</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
 				<ifcount code="ca_collections.related" min="2"><?php print caGetThemeGraphic($this->request, "objheader_ornleft.png"); ?><strong>Related collections</strong><?php print caGetThemeGraphic($this->request, "objheader_ornright.png"); ?><br/></ifcount>
-				<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.displayname</l></unit><br/><br/>
+				<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit><br/><br/>
 				</ifcount>}}}
 			</div><!-- graybordered -->
 		</div><!--end col2-->

@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/Error.php");
+	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_MODELS_DIR__."/ca_sets.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
@@ -60,11 +60,15 @@
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
+ 				$vn_shuffle = 0;
+ 				if($this->config->get("front_page_set_random")){
+ 					$vn_shuffle = 1;
+ 				}
 				# Enforce access control on set
 				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 					$this->view->setVar('featured_set', $t_set);
-					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
 					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
 					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
 				}
@@ -90,11 +94,11 @@
  			//
  			$ps_function = preg_replace("![^A-Za-z0-9_\-]+!", "", $ps_function);
  			$vs_path = "Front/{$ps_function}_html.php";
- 			if (file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
- 				$this->render($vs_path);
- 			} else {
- 				$this->render("Front/front_page_html.php");
+ 			if (!file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
+ 				$vs_path = "Front/front_page_html.php";
  			}
+ 			
+ 			$this->render($vs_path);
  		}
  		# -------------------------------------------------------
 		/** 

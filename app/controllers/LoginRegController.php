@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 
-require_once(__CA_LIB_DIR__."/core/Error.php");
+require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 require_once(__CA_MODELS_DIR__."/ca_users.php");
 require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
@@ -38,6 +38,9 @@ class LoginRegController extends ActionController {
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 		parent::__construct($po_request, $po_response, $pa_view_paths);
 
+        if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+            throw new ApplicationException('Login/registration not allowed');
+        }
 		caSetPageCSSClasses(array("loginreg"));
 	}
 	# -------------------------------------------------------
@@ -116,10 +119,11 @@ class LoginRegController extends ActionController {
 		}
 		MetaTagManager::setWindowTitle(_t("User Profile"));
 		$t_user = $this->request->user;
+		$t_user->purify(true);
 		
-		$ps_email = strip_tags($this->request->getParameter("email", pString));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
 		$ps_password = $this->request->getParameter("password", pString);
 		$ps_password2 = $this->request->getParameter("password2", pString);
 		$ps_security = $this->request->getParameter("security", pString);
@@ -264,11 +268,12 @@ class LoginRegController extends ActionController {
 		$this->request->deauthenticate();
 
 		$t_user = new ca_users();
+		$t_user->purify(true);
 
 		# --- process incoming registration attempt
-		$ps_email = strip_tags($this->request->getParameter("email", pString));
-		$ps_fname = strip_tags($this->request->getParameter("fname", pString));
-		$ps_lname = strip_tags($this->request->getParameter("lname", pString));
+		$ps_email = $this->request->getParameter("email", pString);
+		$ps_fname = $this->request->getParameter("fname", pString);
+		$ps_lname = $this->request->getParameter("lname", pString);
 		$ps_password = $this->request->getParameter("password", pString);
 		$ps_password2 = $this->request->getParameter("password2", pString);
 		$ps_security = $this->request->getParameter("security", pString);
@@ -377,6 +382,7 @@ class LoginRegController extends ActionController {
 				# -------------
 			}
 		}
+		$t_user->set("registered_on","now");
 
 		// Save user profile responses
 		if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -440,7 +446,7 @@ class LoginRegController extends ActionController {
 					caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 				}
 
-				$t_user = new ca_users();
+				#$t_user = new ca_users();
 				$vs_action = $vs_controller = $vs_module_path = '';
 				if ($vs_default_action = $this->request->config->get('default_action')) {
 					$va_tmp = explode('/', $vs_default_action);
@@ -470,15 +476,22 @@ class LoginRegController extends ActionController {
 					}
 				}else{
 					# --- registration needs approval
-					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-					$this->response->setRedirect($vs_url);
+					if($this->request->isAjax()){
+						$this->view->setVar("message", _t('Thank you for registering!  Your account will be activated after review.').$vs_group_message);
+						$this->render("Form/reload_html.php");
+						return;
+					}else{
+						$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+						$this->response->setRedirect($vs_url);
+					}
 				}
 			}
-		}else{
+		}
+
+		if(sizeof($va_errors) > 0) {
 			$this->view->setVar('errors', $va_errors);
 			$this->registerForm($t_user);
 		}
-
 	}
 	# -------------------------------------------------------
 	function joinGroup() {
@@ -495,7 +508,10 @@ class LoginRegController extends ActionController {
 					$vs_group_message = _t("You are already a member of the group");
 				}
 				$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
-				$this->response->setRedirect(caNavUrl($this->request, "", "Sets", "Index"));
+				if(!$vs_controller = $this->request->getParameter("section", pString)){
+					$vs_controller = "Lightbox";
+				}
+				$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 			}else{
 				$t_user_group->load($pn_group_id);
 				$this->request->session->setVar("join_user_group_id", $pn_group_id);
@@ -597,6 +613,7 @@ class LoginRegController extends ActionController {
 						break;
 					}
 					$t_user = new ca_users();
+					$t_user->purify(true);
 					$t_user->load($vs_user_id);
 					# verify user exists with this e-mail address
 					if ($t_user->getPrimaryKey()) {

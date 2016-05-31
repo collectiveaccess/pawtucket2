@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2015 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -142,7 +142,8 @@ class SearchEngine extends SearchBase {
 			$ps_search .= $vs_append_to_search;
 		}
 		
-		$ps_search = str_replace("[BLANK]", '"[BLANK]"', $ps_search);	// the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\[BLANK\](?!")/i', '"[BLANK]"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\[SET\](?!")/i', '"[SET]"', $ps_search); // the special [SET] search term, which returns records that have *any* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		if(($vn_limit = caGetOption('limit', $pa_options, null, array('castTo' => 'int'))) < 0) { $vn_limit = null; }
@@ -179,8 +180,8 @@ class SearchEngine extends SearchBase {
 		if($vn_cache_timeout == 0) { $vb_no_cache = true; } // don't try to cache if cache timeout is 0 (0 means disabled)
 		
 		$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
-		
-		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList(), true));
+		$vs_cache_key = md5($ps_search."/".serialize($this->getTypeRestrictionList($pa_options))."/".serialize($this->opa_result_filters));
+
 		$o_cache = new SearchCache();
 		$vb_from_cache = false;
 
@@ -199,7 +200,7 @@ class SearchEngine extends SearchBase {
 				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
 				$vb_from_cache = true;
 			} else {
-				Debug::msg('cache expire for '.$vs_cache_key);
+				Debug::msg('SEARCH cache expire for '.$vs_cache_key);
 				$o_cache->remove();
 			}
 		}
@@ -239,13 +240,13 @@ class SearchEngine extends SearchBase {
 				}
 			}
 			
-			if (isset($pa_options['checkAccess']) && (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']))) {
+			if (isset($pa_options['checkAccess']) && (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) && $t_table->hasField('access')) {
 				$va_access_values = $pa_options['checkAccess'];
 				$this->addResultFilter($this->ops_tablename.'.access', 'IN', join(",",$va_access_values));
 			} 
 			
 			$vb_no_types = false;	
-			if (is_array($va_type_ids = $this->getTypeRestrictionList()) && (sizeof($va_type_ids) > 0)) {
+			if (!$pa_options['expandToIncludeParents'] && is_array($va_type_ids = $this->getTypeRestrictionList()) && (sizeof($va_type_ids) > 0) && $t_table->hasField('type_id')) {
 				if ($t_table->getFieldInfo('type_id', 'IS_NULL')) {
 					$va_type_ids[] = 'NULL';
 				}
@@ -267,14 +268,39 @@ class SearchEngine extends SearchBase {
 				if (is_array($va_restrict_to_fields = caGetOption('restrictSearchToFields', $pa_options, null)) && $this->opo_engine->can('restrict_to_fields')) {
 					$this->opo_engine->setOption('restrictSearchToFields', $va_restrict_to_fields);
 				}
-			
+				if (is_array($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $pa_options, null)) && $this->opo_engine->can('restrict_to_fields')) {
+					$this->opo_engine->setOption('excludeFieldsFromSearch', $va_exclude_fields_from_search);
+				}
+				
+
 				$o_res =  $this->opo_engine->search($this->opn_tablenum, $vs_search, $this->opa_result_filters, $o_rewritten_query);
 			
 				// cache the results
 				$va_hits = $o_res->getPrimaryKeyValues($vn_limit);
+				
+										
+				if ($pa_options['expandToIncludeParents'] && sizeof($va_hits)) {
+					$qr_exp = caMakeSearchResult($this->opn_tablenum, $va_hits);
+					if (!is_array($va_type_ids) || !sizeof($va_type_ids)) { $va_type_ids = null; }
+					
+					$va_results = [];
+					$va_parents = [];
+					while($qr_exp->nextHit()) {
+						if ($vn_parent_id = $qr_exp->get('parent_id')) {
+							if (
+								((!$va_type_ids) || (in_array($qr_exp->get($this->opn_tablenum.'.parent.type_id'), $va_type_ids)))
+							) { 
+								$va_parents[$vn_parent_id] = 1;
+							}
+						}
+						if (($va_type_ids) && (!in_array($qr_exp->get('type_id'), $va_type_ids))) { continue; }
+						$va_results[] = $qr_exp->getPrimaryKey();
+					}
+					$va_hits = array_merge($va_hits, array_keys($va_parents));
+				}
 				$o_res->seek(0);
 			} else {
-				$va_hits = array();			
+				$va_hits = array();
 			}
 
 			if (isset($pa_options['sets']) && $pa_options['sets']) {
@@ -286,7 +312,7 @@ class SearchEngine extends SearchBase {
 				$va_hits = $this->filterHitsByACL($va_hits, $this->opn_tablenum, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 			}
 			
-			if ($vs_sort != '_natural') {
+			if ($vs_sort && ($vs_sort !== '_natural')) {
 				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
 			} elseif (($vs_sort == '_natural') && ($vs_sort_direction == 'desc')) {
 				$va_hits = array_reverse($va_hits);
@@ -456,7 +482,13 @@ class SearchEngine extends SearchBase {
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Boolean':
 					$va_tmp = $this->_rewriteQuery($o_term);
-					$va_terms[] = new Zend_Search_Lucene_Search_Query_Boolean($va_tmp['terms'], $va_tmp['signs']);
+					// don't wrap 1-term query in unnecessary extra boolean subquery. apparently the engines can't handle the extra parentheses
+					if(sizeof($va_tmp['terms']) == 1) {
+						$va_terms[] = array_shift($va_tmp['terms']);
+					} else {
+						$va_terms[] = new Zend_Search_Lucene_Search_Query_Boolean($va_tmp['terms'], $va_tmp['signs']);
+					}
+
 					$va_signs[] = $va_old_signs[$vn_i];
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Range':
@@ -470,7 +502,6 @@ class SearchEngine extends SearchBase {
 			
 			$vn_i++;
 		}
-		
 		return array(
 			'terms' => $va_terms,
 			'signs' => $va_signs
@@ -484,11 +515,14 @@ class SearchEngine extends SearchBase {
 	 */
 	private function _rewriteTerm($po_term, $pb_sign) {
 		$vs_fld = $po_term->getTerm()->field;
-			
 		if (sizeof($va_access_points = $this->getAccessPoints($this->opn_tablenum))) {
 			// if field is access point then do rewrite
+			$va_fld_tmp = explode("/", mb_strtolower($vs_fld));
+			$vs_fld_lc = $va_fld_tmp[0];
+			$vs_rel_types = isset($va_fld_tmp[1]) ? $va_fld_tmp[1] : null;
+			
 			if (
-				isset($va_access_points[$vs_fld_lc = mb_strtolower($vs_fld)]) 
+				isset($va_access_points[$vs_fld_lc]) 
 				&&
 				($va_ap_info = $va_access_points[$vs_fld_lc])
 			) {
@@ -519,7 +553,7 @@ class SearchEngine extends SearchBase {
 					if(isset($va_ap_info['options']) && ($va_ap_info['options']['DONT_STEM'] || in_array('DONT_STEM', $va_ap_info['options']))) {
 						$vs_term .= '|';
 					}
-					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
+					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field.($vs_rel_types ? "/{$vs_rel_types}" : ''));
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
 					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}
@@ -808,6 +842,8 @@ class SearchEngine extends SearchBase {
 					$va_ids = $t_item->getHierarchyChildren(null, array('idsOnly' => true));
 					$va_ids[] = $vn_type_id;
 					$this->opa_search_type_ids = array_merge($this->opa_search_type_ids, $va_ids);
+				} else {
+					$this->opa_search_type_ids[] = $vn_type_id;
 				}
 			}
 		}
@@ -820,9 +856,9 @@ class SearchEngine extends SearchBase {
 	 *
 	 * @return array List of type_id values to restrict search to.
 	 */
-	public function getTypeRestrictionList() {
+	public function getTypeRestrictionList($pa_options=null) {
 		if (function_exists("caGetTypeRestrictionsForUser")) {
-			$va_pervasive_types = caGetTypeRestrictionsForUser($this->ops_tablename);	// restrictions set in app.conf or by associated user role
+			$va_pervasive_types = caGetTypeRestrictionsForUser($this->ops_tablename, $pa_options);	// restrictions set in app.conf or by associated user role
 			if (!is_array($va_pervasive_types) || !sizeof($va_pervasive_types)) { return $this->opa_search_type_ids; }
 				
 			if (is_array($this->opa_search_type_ids) && sizeof($this->opa_search_type_ids)) {

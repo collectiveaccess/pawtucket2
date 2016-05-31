@@ -51,8 +51,8 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_set_config = caGetSetsConfig();
-	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
+	$o_lightbox_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
@@ -103,7 +103,7 @@
 					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
@@ -123,7 +123,7 @@
 				$va_fine =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities">^ca_objects_x_entities.fine</unit>');
 				$va_ledger =  $qr_res->getWithTemplate('<unit relativeTo="ca_objects_x_entities" >^ca_objects.preferred_labels</unit>', array('restrictToTypes' => array('ledger')));
 
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -64,10 +64,8 @@
 		# --------------------------------------------------------------------------------
 		static function init() {
 			global $g_asset_config, $g_asset_load_list;
-			
 			$o_config = Configuration::load();
- 			
-			$g_asset_config = Configuration::load($o_config->get('assets_config'));
+			$g_asset_config = Configuration::load(__CA_CONF_DIR__.'/assets.conf');
 			$g_asset_load_list = array();
 			
 			$vb_used_minified = !$o_config->get('debug') && $o_config->get('minification') && $g_asset_config->get('minification');
@@ -169,8 +167,8 @@
 		/**
 		 * Causes the specified code to be loaded.
 		 *
-		 * @param $ps_scriptcontent (string) script content to load
-		 * @return (bool) - false if empty code, true if load succeeded
+		 * @param string|null $ps_content script content to load
+		 * @return bool - false if empty code, true if load succeeded
 		 */
 		static function addComplementaryScript($ps_content=null) {
 			global $g_asset_config, $g_asset_load_list, $g_asset_complementary;			

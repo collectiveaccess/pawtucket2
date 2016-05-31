@@ -24,7 +24,7 @@
 			<br/><strong>Artist: </strong>
 		</ifcount>}}}
 		{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="related">
-			<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="related"><l>^ca_entity_labels.displayname</l></unit>
+			<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="related"><l>^ca_entities.preferred_labels.displayname</l></unit>
 		</ifcount>}}}
 		
 		{{{<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="related">

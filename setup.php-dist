@@ -215,22 +215,12 @@ define("__CA_URL_ROOT__", str_replace($_SERVER['DOCUMENT_ROOT'], '', __CA_BASE_D
 define("__CA_SITE_HOSTNAME__", $_SERVER['HTTP_HOST']);
 
 
-#
-# If you use PayPal for e-commerce payments then you can set your account information 
-# below by uncommenting the __CA_PAYPAL* lines and assigning them appropriate values
-#
-#define("__CA_PAYPAL_API_USERNAME__", "your_paypal_api_username");
-#define("__CA_PAYPAL_API_PASSWORD__", "your_paypal_api_password");
-#define("__CA_PAYPAL_API_SIGNATURE__", "your_paypal_api_signature");
-#define("__CA_PAYPAL_API_ENVIRONMENT__", "sandbox");		// "sandbox" for testing or "live" for production use
-
-
 # --------------------------------------------------------------------------------------------
 # IT IS VERY UNLIKELY THAT YOU WILL NEED TO CHANGE ANYTHING UNDER THIS LINE
 # --------------------------------------------------------------------------------------------
 
-# Only MySQL databases are currently supported so leave this set to 'mysql'!
-define("__CA_DB_TYPE__", 'mysql');
+# mysql = old mysql drive, mysqli = "new" driver, pdo_mysql = PDO driver_version; mysqli is recommended
+define("__CA_DB_TYPE__", 'mysqli');
 
 # Path to CollectiveAccess 'app' directory 
 define("__CA_APP_DIR__", __CA_BASE_DIR__."/app");
@@ -295,8 +285,8 @@ define('__CA_APP_CONFIG__', $_CA_CONFIG_PATH);
 # The default file-based caching should work fine in most setups
 # but if you want to use memcached or php APC instead, configure them here
 
-# Backend to use. Available options are: 'file', 'memcached' and 'apc'
-# Note that both memcached and apc require PHP extensions that are not
+# Backend to use. Available options are: 'file', 'memcached', 'redis', and 'apc'
+# Note that memcached, redis and apc require PHP extensions that are not
 # part of the standard CollectiveAccess configuration check. If you do
 # configure them here and your setup doesn't have the extension, you
 # may see critical errors.
@@ -306,13 +296,20 @@ define('__CA_CACHE_BACKEND__', 'file');
 # to the fastest available storage (in terms of random access time), like an SSD
 define('__CA_CACHE_FILEPATH__', __CA_APP_DIR__.DIRECTORY_SEPARATOR.'tmp');
 
-# Time-to-live for on-disk cache items
+# Time-to-live for cache items
 define('__CA_CACHE_TTL__', 3600);
 
 # Host and port for memcached
 define('__CA_MEMCACHED_HOST__', 'localhost');
 define('__CA_MEMCACHED_PORT__', 11211);
+
+# Host and port for redis
+define('__CA_REDIS_HOST__', 'localhost');
+define('__CA_REDIS_PORT__', 6379);
 # --------------------------------------------------------------------------------------------
+
+# let libraries know what application we're in
+define("__CA_APP_TYPE__", "PAWTUCKET");	
 
 # include version number
 require_once(__CA_APP_DIR__.'/version.php');

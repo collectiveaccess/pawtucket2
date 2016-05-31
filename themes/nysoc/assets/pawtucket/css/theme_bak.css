@@ -1,0 +1,557 @@
+body {
+	font-size:12px;
+	background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/filagree-bg@2x.png') no-repeat center -5px;
+  	background-size: 2020px 1000px;
+  	font-family: 'Gudea', sans-serif;
+  	margin-top:-5px;
+}
+#mainContent {
+	width:1024px;
+	margin:0px auto 0px auto;
+	position:relative;
+	left:-8px;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Gudea', sans-serif;
+}
+h1 {
+	color: #d6742a;
+}
+h6 {
+	padding-bottom:5px;
+}
+a {
+	color:#333;
+}
+
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: 'Gudea', sans-serif;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-right:10px;
+	padding-left:5px;
+	font-size:13px;
+}
+.nav > li.dropdown > a.icon {
+	padding:5px 0px 0px 5px;
+}
+.navbar-form {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.navbar {
+	-webkit-box-shadow: none;
+	box-shadow:none;
+	clear:both;
+	margin-bottom:0px;
+	background-color:transparent;
+}
+.navbar .form-control {
+	height:24px;
+}
+.navbar .formOutline {
+	border-radius:0px;
+}
+.navbar .btn-search {
+	padding:3px 5px 3px 5px;
+	color:#333;
+}
+#topMenu {
+  position: absolute;
+  top: 95px;
+  z-index: 100000;
+  width: 830px;
+  height: 24px;
+  background: rgb(255,255,255);
+  background: transparent;
+  -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCFFFFFF,endColorstr=#CCFFFFFF)";
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#CCFFFFFF,endColorstr=#CCFFFFFF);
+  zoom: 1;
+  background: rgba(255,255,255,0.8);
+  display: block;
+  clear: both;
+  overflow: hidden;
+}
+ul#mainMenu {
+  width: 830px;
+  height: 24px;
+  overflow: hidden;
+  padding-left:0px;
+}
+ul.menu {
+  border: none;
+  list-style: none;
+  text-align: left;
+}
+ul#mainMenu li#menuId-1 {
+  width: 95px;
+}
+ul#mainMenu li#menuId-2 {
+  width: 104px;
+}
+ul#mainMenu li#menuId-3 {
+  width: 129px;
+}
+ul#mainMenu li#menuId-4 {
+  width: 113px;
+}
+ul#mainMenu li#menuId-5 {
+  width: 123px;
+}
+ul#mainMenu li#menuId-6 {
+  width: 120px;
+}
+ul#mainMenu li#menuId-7 {
+  width: 140px;
+  margin-right: 0px;
+}
+ul#mainMenu li, div#headAlert, div#pageTitle, div.breadcrumb, div.selectors, div.selectors label, li.tabItem, table.fc-header {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+ul#mainMenu li a:hover, ul#mainMenu li.active a {
+  background: #d6742a;
+  color: #fff;
+  text-decoration: none;
+}
+ul#mainMenu li {
+  float: left;
+  margin-right: 1px;
+}
+ul.menu li {
+  margin: 0;
+}
+ul#mainMenu li a {
+  font-family: 'Gudea',sans-serif;
+  line-height: 24px;
+  font-size: 13px;
+  color: #747060;
+  display: block;
+  text-align: center;
+}
+#topMenu a{
+  text-decoration: none;
+}
+#topSection {
+  background: url('../graphics/banner_image2.jpg') no-repeat scroll 0 0 transparent;
+  display: block;
+  height: 355px;
+  width: 830px;
+  position: relative;
+  padding-top: 24px;
+  height:130px;
+}
+#pageTitle {
+  position: absolute;
+  padding: 20px;
+}
+#pageTitle h1 {
+  color: #fff;
+  font-size: 38px;
+  line-height: 18px;
+  font-weight: 400;
+  text-transform:none;
+}
+#pageTitle div.breadcrumb {
+  font-size: 12px;
+  color: #fff;
+  background-color:transparent;
+}
+#pageTitle div.breadcrumb a, #pageTitle div.breadcrumb span.sep, div#toolArea h1 {
+  color: #79d9ec;
+}
+#logoArea {
+  width: 194px;
+  height: 190px;
+  float:left;
+}
+#site-filagree {
+  background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/logo-bg-collection@2x.png') no-repeat;
+  background-size: 97px 190px;
+  float: left;
+  width: 97px;
+  height:190px;
+}
+#site-logo {
+  float: left;
+  width: 97px;
+  height: 190px;
+}
+#logo1 {
+  display: block;
+  height: 95px;
+}
+#logoMain a {
+  display: block;
+  text-indent: -9999px;
+  width: 97px;
+  height: 95px;
+  background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/nysoclib-logo@2x.png') no-repeat;
+  background-size: 97px 95px;
+}
+#columnRight {
+  float: right;
+  width: 830px;
+  height: auto;
+}
+.marginLeft {
+	width:190px;
+	float:left;
+	min-height:400px;
+}
+.marginRight {
+	width:830px;
+	float:right;
+}
+.topMain {
+  width: 830px;
+  height: 95px;
+  display: block;
+}
+div#searchArea {
+  width: 218px;
+}
+div.searchArea {
+  float: right;
+  margin: 18px 0px 0 0;
+  color: #d6742a;
+  font-size: 11px;
+}
+div#searchArea div.globalLinks {
+  width: 210px;
+  display: block;
+  margin-bottom: 6px;
+}
+div.globalLinks {
+  margin: 0 0 1px 2px;
+  position: relative;
+  color: #747060;
+}
+div.globalLinks a {
+  text-decoration: none;
+  color: #747060;
+}
+
+/* Browse Menu */
+
+.filterMenuFacetList li.active {
+	background-color:#a8d9e2; 
+}
+.filterMenuFacetList li {
+	padding-left:5px;
+}
+/* Front Page */
+
+.front H1 {
+	padding-left:0px;
+}
+
+/* Search Results */
+
+.blockResultsScroller.publication {
+	height:250px;
+}
+.blockResults.publication {
+	height:250px;
+}
+.multisearch .pubSet {
+	height:250px;
+}
+.multisearch  .pubResult {
+	height: 70px; 
+	font-style:italic
+}
+.multisearch  .pubResult p{
+	padding-top:3px;
+	font-style:normal;
+}
+.multisearch .authorityResult {
+	background-color:#fff;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); 
+	border-right: 1px solid #eee;
+	border-left: 1px solid #eee;
+}
+.vco-slider .slider-item .content .content-container .text .container h2.date {
+	display:none !important;
+}
+.vco-slider .slider-item .content .content-container .text .container p {
+	margin-bottom:0px !important;
+}
+/* Detail pages */
+@media (min-width: 768px) {
+	.detail .navTop {
+	  display: block;
+	} 
+}
+.prevLink, .resLink, .nextLink {
+	display:inline-block;
+}
+.detail .navTop {
+	text-align:left;
+	margin-top:-33px;
+	margin-left:-1px;
+	width: 300px;
+  	z-index: 1000000;
+}
+.metaTitle {
+	font-family: 'Gudea', sans-serif;	
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	margin-top:-10px;
+}
+.detail .unit {
+	padding: 2px 0px 2px 0px;
+}
+.detail #detailTools {
+	margin-top:0px;
+}
+.detail #detailTools a, .detail .detailTool span{ 
+	color:#000;
+}
+.visualize {
+	font-size:16px;
+	font-family: 'Gudea', sans-serif;
+	background-color:#f7f7f7;
+	border-radius:4px;
+	padding:5px;
+	width:100px;
+	margin-top:10px;
+	float:right;
+}
+.time {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#5e9eaa;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+	margin-bottom:10px;
+}
+.checkouts {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#d77421;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+	margin-bottom:10px;
+}
+.readers {
+	font-family: 'Gudea', sans-serif;
+	color:#fff;
+	font-size:14px;
+	background-color:#666;
+	border-radius:4px;
+	padding:5px;
+	text-align:center;
+	width:150px;
+}
+.partial {
+	display:inline-block;
+}
+.full {
+	display:inline-block;
+	margin-left:20px;
+}
+.checkouts .count, .readers .count, .time .count {
+	font-size:20px;
+}
+.closeBut {
+	text-align:right;
+}
+.ct-chart .ct-label, .ct-chart .ct-label.ct-horizontal {
+	font-size:.9em !important;
+	color:#333 !important;
+	fill:#333 !important;
+}
+.ct-chart {
+	overflow:visible !important;
+	margin-top:-45px;
+}
+svg:not(:root) {
+	overflow:visible !important;
+}
+.color1 {
+	fill: #666;
+}
+.color2 {
+	fill: #d77421;
+}
+.color3 {
+	fill: #5e9eaa;
+}
+.color4 {
+	fill: #cccccc;
+}
+.color5 {
+	fill: #FAEE68;
+}
+.color6 {
+	fill: #a3a547;
+}
+.color7 {
+	fill: #679282;
+}
+.color8 {
+	fill: #f5f5f5;
+}
+.color9 {
+	fill: #b2a87f;
+}
+.color10 {
+	fill: #774969;
+}
+.color11 {
+	fill: #566d9d;
+}
+.color12 {
+	fill: #000000;
+}
+.readerRow {
+	border-bottom:1px solid #ccc;
+	padding-bottom:10px;
+	padding-top:10px;
+}
+.titleBar {
+	font-family: 'Gudea', sans-serif;	
+	color: #d6742a;
+	font-weight:bold;
+	padding-bottom:10px;
+}
+.entityThumb img{
+	width:100%;
+	height:auto;
+}
+.ledgerRow {
+	padding-bottom:5px;
+	border-top: 1px solid #ccc;
+	padding-top:5px;
+}
+.ledgerImage img {
+	width:100%;
+	height:auto;
+}
+.ledgerImage {
+	margin-bottom:20px;
+}
+
+.tooltip {
+	position: absolute;
+	z-index: 3000;
+	border: 1px solid #cccccc;
+	background-color: #FFFFFF;
+	padding: 5px 10px 10px 10px;
+	opacity: 1 !important; 
+	text-align: left;
+	margin-left:250px;
+	margin-top:27px;
+	font-size:12px;
+	width:400px;
+}
+.tooltipImage {
+	float:left;
+	margin-right:10px;
+}
+
+/* Footer */
+
+#footerArea {
+  width: 830px;
+  height: 209px;
+  background: url('../graphics/footerbg.png') no-repeat;
+  padding: 20px 17px 20px 17px;
+  font-size: 10px;
+  color: #747060;
+  line-height: 15px;
+  font-family:"Gudea";
+  float:right;
+  margin-top:70px;
+}
+#footerArea .col1 {
+  float: left;
+  width: 146px;
+  margin: 0 17px 0 0px;
+}
+#footerArea .col2 {
+  float: left;
+  width: 94px;
+  margin: 0 17px 0 0;
+}
+#footerArea .col3 {
+  float: left;
+  width: 155px;
+  margin-right: 17px;
+}
+#footerArea .col4 {
+  float: left;
+  width: 190px;
+  margin-right: 16px;
+}
+#footerArea .col5 {
+  float: left;
+  width: 110px;
+}
+#footerCopyright {
+  margin-top: 0px;
+  font-size: 10px;
+}
+#footerDesigner {
+  display: none;
+}
+#footerArea h3 {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin:0px;
+  color: #747060;
+}
+.footerItems {
+  position: relative;
+}
+.footerItems a {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #747060;
+  text-decoration: underline;
+  line-height: 15px;
+}
+#footer a {
+	color: #747060;
+}
+div.footerArea a {
+  color: #747060;
+}
+a.sbIcon {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/socialBK-bg.png') no-repeat;
+  text-indent: -99999px;
+  margin: 0;
+  padding: 0px;
+}
+div.footerItems a.sbIcon.facebook {
+  position: relative;
+  margin: 9px 3px 0 0;
+}
+a.sbIcon.facebook {
+  background-position: 0px 0px;
+}
+div.footerItems a.sbIcon.twitter {
+  position: relative;
+  margin-top: 9px;
+}
+a.sbIcon.twitter {
+  background-position: -25px 0px;
+}
+.clear {
+	clear:both;
+}

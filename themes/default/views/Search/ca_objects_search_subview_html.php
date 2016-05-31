@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2014 Whirl-i-Gig
+ * Copyright 2013-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -87,7 +87,7 @@
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = getPlaceholder($vs_typecode, "placeholder_media_icon")){
+					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
 						$vs_image = $vs_default_placeholder_tag;
@@ -96,6 +96,7 @@
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
 				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<?php print $qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
