@@ -68,7 +68,7 @@ h3 {
 a {
 	color: #00cfb7;
 }
-a:hover {
+a:hover, a:focus, a:visited {
 	color: #00cfb7;
 }
 .notificationMessage, .notificationInfo, .notificationError, .notificationWarning {
@@ -174,11 +174,11 @@ a:hover {
 	padding-bottom: 10px;
 }
 .nav > li.dropdown > a.userIcon {
-	padding-top: 15px;
-    padding-bottom: 8px;
-    font-size:20px;
-    padding-left: 10px;
-    padding-right: 10px;
+	padding-top: 14px;
+    padding-bottom: 6px;
+    font-size: 23px;
+    padding-left: 14px;
+    padding-right: 14px;
 }
 .navbar-default .navbar-form {
 	padding-bottom:0px;
@@ -325,6 +325,24 @@ a:hover {
 /*.yamm .nav.navbar-right .dropdown-menu > li > a.last {
 	padding-bottom:10px;
 }*/
+.navbar-header button{
+	border:0px;
+	background-color: #262626;
+	border-right: 4px solid #000000 !important;
+	color: #7c7c7c;
+	font-size: 22px;
+	border-radius: 0px;
+	padding: 12px 15px 5px 15px;
+	margin:0px;
+}
+.navbar-header button.navbar-toggle-user{
+	font-size: 20px;
+	padding: 15px 13px 5px 13px;
+}
+.navbar-header button:hover{
+	color:#FFF;
+	background-color: #00cfb7 !important;
+}
 input:-webkit-autofill {
 	color: #7c7c7c;
 	background-color:#262626;
@@ -449,6 +467,8 @@ body {
 #homePanel {
 	margin-top:-20px;
 	background-color:#f1f2f2;
+	position:relative;
+	z-index:100;
 }
 .front #homePanel H1 {
     font-size: 28px;
@@ -462,9 +482,6 @@ body {
 #homePanel .leftSide img{
 	height:435px;
 	width:auto;
-}
-#homePanel .rightSide {
-
 }
 #homePanel .close {
 	padding-right:20px;
@@ -671,9 +688,10 @@ a.readmore-js-toggle {
 
 .landscapeRepContainer, .portraitRepContainer{
 	text-align:center;
+	margin:0px auto 0px auto;
 }
 .landscapeRepContainer{
-	max-width:640px;
+	text-align:center;
 	height:auto;
 	margin:0px auto 0px auto;
 }
@@ -945,7 +963,7 @@ a.faDownload:hover {
 #collectionLoad a:hover {
 	text-decoration:none;
 }
-#collectionLoad a .fa, #collectionLoad a .icon-box, #collectionLoad a .icon-folder{
+#collectionLoad a .fa, #collectionLoad .fa, #collectionLoad a .icon-box, #collectionLoad .icon-box, #collectionLoad a .icon-folder, #collectionLoad .icon-folder{
 	color: #737373;
 }
 .findingAidContainer a.openCollection.active {
@@ -1259,6 +1277,10 @@ h1.profileForm{
     font-weight: bold;
     color: #000;
 }
+.staticPage{
+	font-size:18px;
+}
+
 p.linkInfo {
 	margin-bottom:5px;
 }

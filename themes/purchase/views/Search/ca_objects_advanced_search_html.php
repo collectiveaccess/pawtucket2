@@ -16,7 +16,7 @@ include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 						</div>
 						<div class="col-sm-6 col-md-6 col-lg-6 advSearchField">
 							Project Type:<br/>
-							{{{ca_objects.project_types%width=220px}}} 
+							{{{ca_objects.project_type%width=220px}}}  
 						</div>
 						<div class="col-sm-6 col-md-6 col-lg-6 advSearchField">
 							Reader:<br/>

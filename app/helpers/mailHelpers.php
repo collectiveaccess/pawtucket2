@@ -177,10 +177,10 @@
 			}
 			$o_mail->send($vo_tr);
 			
-			$o_log->log(array('CODE' => 'SYS', 'SOURCE' => 'Registration', 'MESSAGE' => _t('Registration confirmation email was sent to %1', join(';', array_keys($pa_to)))));
+			$o_log->log(array('CODE' => 'SYS', 'SOURCE' => 'Registration', 'MESSAGE' => _t('Registration confirmation email was sent to %1', join(';', array_values($pa_to)))));
 			return true;
 		} catch (Exception $e) {
-			$o_log->log(array('CODE' => 'ERR', 'SOURCE' => 'Registration',  'MESSAGE' => _t('Could not send registration confirmation email to %1: %2', join(';', array_keys($pa_to)), $e->getMessage())));
+			$o_log->log(array('CODE' => 'ERR', 'SOURCE' => 'Registration',  'MESSAGE' => _t('Could not send registration confirmation email to %1: %2', join(';', array_values($pa_to)), $e->getMessage())));
 			return false;
 		}
 	}

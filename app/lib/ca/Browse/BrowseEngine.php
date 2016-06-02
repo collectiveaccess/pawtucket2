@@ -2780,13 +2780,21 @@
 
 						return ((int)$qr_res->numRows() > 0) ? true : false;
 					} else {
+						$va_ordering_fields_to_fetch = (isset($va_facet_info['order_by_label_fields']) && is_array($va_facet_info['order_by_label_fields'])) ? $va_facet_info['order_by_label_fields'] : array($vs_label_display_field);
+						
+						foreach($va_ordering_fields_to_fetch as $vn_i => $vs_label_field) {
+							if (!$t_label->hasField($vs_label_field)) { unset($va_ordering_fields_to_fetch[$vn_i]); continue; }
+							$va_ordering_fields_to_fetch[$vn_i] = "l.".$va_ordering_fields_to_fetch[$vn_i];
+						}
+						if (!sizeof($va_ordering_fields_to_fetch)) { $va_ordering_fields_to_fetch = ["l.{$vs_label_display_field}"]; }
+						
 						$vs_parent_fld = $t_item->getProperty('HIERARCHY_PARENT_ID_FLD');
 						$vs_sql = "
 							SELECT  l.* ".(($vs_parent_fld) ? ", ".$vs_browse_table_name.".".$vs_parent_fld : '')."
 							FROM {$vs_label_table_name} l
 								{$vs_join_sql}
 								{$vs_where_sql}
-							ORDER BY l.{$vs_label_display_field}
+							ORDER BY ".join(", ", $va_ordering_fields_to_fetch)."
 						";
 
 						$qr_res = $this->opo_db->query($vs_sql);

@@ -36,7 +36,7 @@
 			<div class="row">
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History</div>", "", "", "Detail", "collections/id%3A64"); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History</div>", "", "", "Detail", "collections/64"); ?>
 				</div>
 			</div>			
 			<div class="col-xs-6">

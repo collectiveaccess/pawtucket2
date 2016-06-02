@@ -6,7 +6,8 @@ $vn_collection_id = $this->request->getParameter('collection_id', pString);
 
 if ($vn_collection_id) {
 	$t_item = new ca_collections($vn_collection_id);
-	print "<div class='colContainer label'>".caNavLink($this->request, $t_item->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_item->get('ca_collections.collection_id'))."</div>";
+	$vs_type = $t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true));
+	print "<div class='colContainer label'>".(($vs_type != 'Folder') ? caNavLink($this->request, $t_item->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_item->get('ca_collections.collection_id')) : $t_item->get('ca_collections.preferred_labels'))."</div>";
 	if ($vs_scope_content = $t_item->get('ca_collections.scopeContent')) {
 		print "<p>".$vs_scope_content."</p>";
 	}
@@ -23,7 +24,7 @@ if ($vn_collection_id) {
 			} else {
 				$vs_icon = null;
 			}
-			print "<div>".caNavLink($this->request, $vs_icon.$t_item_level_2->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_children_id)."</div>";
+			print "<div>".(($vs_type != 'Folder') ? caNavLink($this->request, $vs_icon.$t_item_level_2->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_children_id) : $vs_icon.$t_item_level_2->get('ca_collections.preferred_labels'))."</div>";
 			if ($vs_scope_content_leveltwo = $t_item_level_2->get('ca_collections.scopeContent')) {
 				print "<p>".$vs_scope_content_leveltwo."</p>";
 			}
@@ -39,7 +40,7 @@ if ($vn_collection_id) {
 					} else {
 						$vs_icon = null;
 					}
-					print "<div style='margin-left:30px;'>".caNavLink($this->request, $vs_icon.$t_item_level_3->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_level_three_id)."</div>";
+					print "<div style='margin-left:30px;'>".(($vs_type != 'Folder') ? caNavLink($this->request, $vs_icon.$t_item_level_3->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_level_three_id) : $vs_icon.$t_item_level_3->get('ca_collections.preferred_labels'))."</div>";
 					if ($vs_scope_content_levelthree = $t_item_level_3->get('ca_collections.scopeContent')) {
 						print "<p style='margin-left:30px;'>".$vs_scope_content_levelthree."</p>";
 					}
@@ -56,7 +57,7 @@ if ($vn_collection_id) {
 								$vs_icon = null;
 							}							
 							
-							print "<div style='margin-left:60px;'>".caNavLink($this->request, $vs_icon.$t_item_level_4->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_level_four_id)."</div>";
+							print "<div style='margin-left:60px;'>".(($vs_type != 'Folder') ? caNavLink($this->request, $vs_icon.$t_item_level_4->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_collection_level_four_id) : $vs_icon.$t_item_level_4->get('ca_collections.preferred_labels'))."</div>";
 							if ($vs_scope_content_levelfour = $t_item_level_4->get('ca_collections.scopeContent')) {
 								print "<p style='margin-left:60px;'>".$vs_scope_content_levelfour."</p>";
 							}						

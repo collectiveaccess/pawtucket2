@@ -5,15 +5,15 @@
 	$vs_intro_text = $this->getVar('intro_text');
 	$va_open_by_default = $this->getVar('open_by_default');
 	
-	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.preferred_labels', 'checkAccess' => caGetUserAccessValues($this->request)));
 	
 	if (!$va_open_by_default) {
 		$vs_hierarchy_style = "style='display:none;'";
 	}
 ?>
 <div class="col-sm-1"></div>
-<div class="col-sm-10">
-	<h1><?php print $vs_page_title; ?></h1>
+<div class="col-sm-10 staticPageArea">
+	<h4><?php print $vs_page_title; ?></h4>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
 <?php	
@@ -28,7 +28,7 @@
 				if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
 					print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
 				} elseif ($va_hierarchy_item['level'] == 0) {
-					print "<i class='fa fa-square-o finding-aid' {$va_opacity}></i>";
+					print "<span style='width:30px; display:inline-block;float:left;height:10px;'></span>";
 				} else {
 					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
 					print "<i class='fa fa-angle-right finding-aid' {$va_opacity}></i>";

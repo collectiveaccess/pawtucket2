@@ -13,6 +13,10 @@ input:focus{
 }
 /*  RESULTS */
 /* list results */
+#browseResultsContainer h4{
+	font-size:36px;
+	color:#262626;
+}
 .bBAMResultListItem{
 	font-size:12px;
 	line-height:1em;
@@ -36,21 +40,32 @@ input:focus{
 .bBAMResultListItem.occItem a{
 	height:2.5em;
 	line-height:1.2em;
+	color:#33D9C5;
+	font-size:14px;
+}
+#browseResultsContainer .bBAMResultListItem.occItem a{
+	font-size:20px;
 }
 .bBAMResultListItem span{
 	color:#00cfb7 !important;
+}
+.bBAMResultListItem.occItem span{
+	font-size:14px;
+	margin-top:3px;
 }
 .bBAMResultListItem a:hover{
 	color:#00cfb7; 
 	text-decoration:none;
 }
 .bBAMResultListItem span.series{
-	text-transform:uppercase;
 	color:#999999 !important;
 	font-size:14px;
 	padding-top:4px;
 	display:inline-block;
-	font-family: "News Gothic Condensed";
+}
+.bBAMResultListItem span.date{
+	color:#555555 !important;
+	font-size:14px;
 }
 /* image results */
 .icon-heart-filled{
@@ -495,6 +510,9 @@ h1.detailResults{
 	padding-bottom:10px;
 	
 }
+.front .detailHead{
+	font-size:22px;
+}
 .hero{
 	margin-top:-20px;
 	max-height:380px;
@@ -552,7 +570,7 @@ h1.detailResults{
 	width:100%;
 }
 .front .detailHead {
-	max-width:900px;
+	max-width:700px;
 	margin-left:auto;
 	margin-right:auto;
 }
@@ -611,7 +629,7 @@ h1.detailResults{
 	margin-bottom:0px !important;
 }
 .multisearch .multisearchFullResults a{
-	color:#000000;
+	color:#00cfb7;
 	font-family: 'News Gothic' !important;
 	text-transform:uppercase;
 	font-weight:bold;
@@ -665,6 +683,10 @@ h1.detailResults{
 	margin-top:15px;
 	font-size:18px;
 }
+.program .bBAMResultListItem a{
+	line-height: 1.2em;
+	height: 2.4em;
+}
 .children{	
 	color:#454545;
 	font-size:16px;
@@ -693,7 +715,7 @@ h1.detailResults{
 	margin-right:0px;
 }
 .phSeasonsList, .phChildrenList, .phSeriesDescription{
-	max-height:500px;
+	/*max-height:500px;*/
 	overflow-y:auto;
 }
 .phChildrenList{
@@ -808,6 +830,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	#collectionLoad {
 		border-left:0px;
 	}
+	.detail .portraitRepContainer img{
+		max-width:320px;
+	}
 }
 
 /* Ipad Styles */
@@ -891,6 +916,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	}
 }
 @media (max-width: 475px) {
+	.front .detailHead {
+		font-size:16px;
+	}
 	.front .hpOverWhite .detailHead H2 {
 		font-size:22px;
 	}

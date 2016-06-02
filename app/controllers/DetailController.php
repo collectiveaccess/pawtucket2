@@ -384,7 +384,7 @@
  	
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
- 					$this->_genExport($t_subject, $this->request->getParameter("export_format", pString), 'Detail', 'Detail');
+ 					$this->_genExport($t_subject, $this->request->getParameter("export_format", pString), ((caGetOption('pdfExportTitle', $va_options, false)) ? $t_subject->getLabelForDisplay() : null), 'Detail');
  					break;
  				default:
  					//
@@ -1261,7 +1261,12 @@
 				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
 				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('summary'));
 				$o_dompdf->render();
-				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
+				if($ps_output_filename){
+					$ps_output_filename = preg_replace('![^A-Za-z0-9_\-]+!', '_', $ps_output_filename);
+				}else{
+					$ps_output_filename = 'export_results';
+				}
+				$o_dompdf->stream(caGetOption('filename', $va_template_info, $ps_output_filename.'.pdf'));
 
 				$vb_printed_properly = true;
 			} catch (Exception $e) {
