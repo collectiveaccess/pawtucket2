@@ -97,9 +97,9 @@
 
 				print "<div class='travelerMapListArtistRoles'>".join(", " , $va_entity_roles)."</div>";
 
-				if(is_array($va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnAsArray' => true)))) {
+				if(is_array($va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnWithStructure' => true, 'returnAsArray' => true)))) {
 					$va_date_set = array();
-					foreach ($va_dates_array as $va_dates) {
+					foreach (array_shift($va_dates_array) as $va_dates) {
 						$va_date_set[] = $va_dates['agentLifeDisplayDate'];
 					}
 					print "<div class='travelerMapListArtistDates'>".join($va_date_set, ' - ')."</div>";

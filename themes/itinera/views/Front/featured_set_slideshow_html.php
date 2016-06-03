@@ -72,8 +72,9 @@
 				
 							print "<p class='frontSlideArtistRoles'>".join(", " , $va_entity_roles)."</p>";
  
-							$va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnAsArray' => true));
-							foreach ($va_dates_array as $va_dates) {
+							$va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnWithStructure' => true, 'returnAsArray' => true));
+					
+							foreach (array_shift($va_dates_array) as $va_dates) {
 								$va_date_set[] = $va_dates['agentLifeDisplayDate'];
 							}
 							print "<p>".join($va_date_set, ' - ')."</p>";
