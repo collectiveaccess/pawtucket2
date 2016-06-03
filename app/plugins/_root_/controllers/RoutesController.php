@@ -178,15 +178,15 @@
  					if (is_array($va_stop_ids = $qr_res->get('ca_tour_stops.stop_id', array('returnAsArray' => true))) && sizeof($va_stop_ids)) {
  						$qr_stops = caMakeSearchResult('ca_tour_stops', $va_stop_ids);
  						while($qr_stops->nextHit()) {
- 							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnAsArray' => true));
- 							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnAsArray' => true, 'rawDate' => true));
+ 							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnWithStructure' => true,'returnAsArray' => true));
+ 							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnWithStructure' => true, 'returnAsArray' => true, 'rawDate' => true));
  							$vn_start = $vn_end = null;
- 							foreach($va_dates as $va_date) {
+ 							foreach(array_shift($va_dates) as $va_date) {
  								$vn_start = $va_date['start'];
  								$vn_end = $va_date['end'];
  								break;
  							}
- 							foreach($va_georefs as $vn_i => $va_coord) {
+ 							foreach(array_shift($va_georefs) as $vn_i => $va_coord) {
  								//$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
  								if(preg_match('!\[([^\]]+)\]!', $va_coord['georeference'], $va_matches)) {
  									$vs_coord_proc = $va_matches[1];
