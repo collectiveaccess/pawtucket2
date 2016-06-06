@@ -16,13 +16,17 @@
 		<?php print caNavLink($this->request, 'About the Museum Collection <i class="fa fa-chevron-right"></i>', '', '', 'About', 'Index'); ?>
 	</div>
 	<div class='col-sm-6 spotlight'>
-
+		<div class="cycle-prev" id="prev"><i class="fa fa-angle-left"></i></div>
+    	<div class="cycle-next" id="next"><i class="fa fa-angle-right"></i></div>
 		<div class="cycle-slideshow" 
 			data-cycle-fx=scrollHorz
 			data-cycle-timeout=0
 			data-cycle-pager=".example-pager"
 			data-cycle-slides="> div"
+			data-cycle-prev="#prev"
+        	data-cycle-next="#next"
 			>
+
 
 <?php	
 			if ($qr_res) {
@@ -46,10 +50,10 @@
 		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "In Focus") {
 			$va_in_focus[] = $qr_sets->get('ca_sets.set_id');
 		} 
-		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Thematic Guides") {
+		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Thematic Guide") {
 			$va_thematic[] = $qr_sets->get('ca_sets.set_id');
 		} 
-		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Timelines") {
+		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Timeline") {
 			$va_timeline[] = $qr_sets->get('ca_sets.set_id');
 		}
 	}

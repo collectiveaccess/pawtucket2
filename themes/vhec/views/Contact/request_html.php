@@ -25,6 +25,7 @@
 <?php
 					$vs_request = "";
 					$vs_request.= "<div class='requestInfo'><p>".$t_object->get('ca_objects.parent.preferred_labels')."</p>";
+					$vs_request.= "<p>(".$t_object->get('ca_objects.preferred_labels').")</p>";
 					$vs_request.= "<p>".$t_parent->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author', 'contributor'), 'delimiter' => ', '))."</p>";
 					$vs_request.= "<p>".$t_parent->get('ca_objects.MARC_pubPlace')."</p></div>";
 					print $vs_request;
