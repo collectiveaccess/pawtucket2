@@ -45,7 +45,7 @@
 <?php				
 				}else{
 ?>
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", key($va_browse_types)); ?></li>
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse")."<span>/</span>", "", "", "Browse", key($va_browse_types)); ?></li>
 <?php
 				}
 			break;

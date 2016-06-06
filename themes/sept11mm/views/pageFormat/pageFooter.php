@@ -28,19 +28,85 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	<div id="footer-top">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-4">
+					<?php print caGetThemeGraphic($this->request, 'families.png'); ?>
+					<p class="textBlock">
+						A dedicated section for the loved ones of those killed in the 2001 and 1993 attacks. Stay informed and plan your visit.
+					</p>
+					<a href="https://www.911memorial.org/information-911-family-members">More Information »</a>
+				</div><!-- end col -->
+				<div class="col-sm-4">
+					<?php print caGetThemeGraphic($this->request, 'give.png'); ?>
+					<p class="textBlock">
+						The National September 11 Memorial & Museum is only possible because of your support.
+					</p>
+					<a href="https://www.911memorial.org/make-monetary-donation-now">All donations are tax deductible »</a>
+				</div><!-- end col -->
+				<div class="col-sm-4">
+					<?php print caGetThemeGraphic($this->request, 'updates.png'); ?>
+					<p class="textBlock">
+						Stay informed about news and events by subscribing to our newsletter.
+					</p>
+					<br/>
+					<a href="https://www.911memorial.org/sign-911-memorial-news">Sign up here »</a>
+				</div><!-- end col -->
+			</div><!-- end row -->
+		</div>
+	</div><!-- end footer-top-->
+	<div id="footer-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6">
+					<h4>National September 11 Memorial & Museum</h4>
+					Administrative Office
+					<br/>200 Liberty Street, 16th Floor
+					<br/>New York, NY 10281
+					<br/>(212) 312-8800
+				</div><!-- end col -->
+				<div class="col-sm-3 centerCol">
+					<a href="https://www.911memorial.org/contact-us">Contact Us</a>
+					<br/><a href="https://www.911memorial.org/privacy-policy">Terms of Use / Privacy Policy</a>
+					<br/><a href="https://www.911memorial.org/financial-and-legal-information">Financial & Legal Information</a>
+					<br/><a href="https://secure.ethicspoint.com/domain/en/report_custom.asp?clientid=19476">Ethics Point Hotline</a>
+					<br/><a href="https://www.911memorial.org/node/1019876">Feedback</a>
+				</div><!-- end col -->
+				<div class="col-sm-3">
+					<a href="https://www.facebook.com/911memorial">Facebook</a>
+					<br/><a href="https://twitter.com/sept11memorial">Twitter</a>
+					<br/><a href="https://instagram.com/911memorial/">Instagram</a>
+					<br/><a href="https://plus.google.com/+911Memorial/posts">Google +</a>
+					<br/><a href="https://pinterest.com/911memorial/">Pinterest</a>
+					<br/><a href="https://www.youtube.com/user/911memorial">YouTube</a>
+					<br/><a href="http://911memorialmuseum.tumblr.com/">Tumblr</a>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-4 copyright">
+					&copy; 2016 National September 11 Memorial & Museum 9/11 MEMORIAL is a registered trademark of the National September 11 Memorial & Museum. 
+				</div><!-- end col -->
+			</div><!-- end row -->
+		</div>
+	</div><!-- end footer-bottom-->
+<!--	
 	<div id="footer">
 		<div class="container">
 			<ul class="list-inline">
+				<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+				<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "faq"); ?></li>
 				<li><a href="#">Contact Us</a></li>
-				<li><a href="#">Terms of Use / Privacy Policy</a></li>
+				<li><?php print caNavLink($this->request, _t("Terms of Use / Privacy Policy"), "", "", "About", "terms"); ?></li>
 			</ul>
 			<div>
 				&copy; 2015 National September 11 Memorial & Museum.<br/>
 				9/11 MEMORIAL is a registered trademark of the National<br/>
 				September 11 Memorial & Museum
 			</div>
-		</div><!-- end container -->
-	</div><!-- end footer -->
+		</div>
+	</div>
+-->
 <?php
 	//
 	// Output HTML for debug bar

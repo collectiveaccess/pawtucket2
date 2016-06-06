@@ -6,7 +6,6 @@
 	# --- if this is not a collection, get the id of the collection this record is part of -> this is used for downloading the top level finding aid
 	$t_list = new ca_lists();
  	$vn_collection_type_id = $t_list->getItemIDFromList('collection_types', 'collection');
- 	print "type_id: ".$t_item->get("type_id");
  	if($t_item->get("type_id") == $vn_collection_type_id){
  		$vn_collection_id = $t_item->get('ca_collections.collection_id');
  	}else{
@@ -53,9 +52,9 @@
 					if ($va_extent = $t_item->getWithTemplate('<ifdef code="^ca_collections.extent.extent_value"><unit delimiter=", ">^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</unit></ifdef>')) {
 						print "<div class='unit'><span class='label'>Extent: </span>".$va_extent."</div>";
 					}					
-					if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('special_event', 'production'), 'delimiter' => ', '))) {
-						print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
-					}
+					#if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('special_event', 'production'), 'delimiter' => ', '))) {
+					#	print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
+					#}
 					
 					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 ?>

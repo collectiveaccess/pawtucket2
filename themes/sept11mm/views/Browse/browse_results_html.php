@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -221,6 +220,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
 <?php
+		print "<div class='bAdvancedLink'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Search', 'Advanced', 'objects')."\"); return false;' >"._t("Advanced Search")."<span class='glyphicon glyphicon-search'></span></a></div>";
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
@@ -248,7 +248,6 @@ if (!$vb_ajax) {	// !ajax
 			return false;
 		});
 	});
-
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');
