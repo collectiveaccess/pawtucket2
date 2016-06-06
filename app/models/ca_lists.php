@@ -406,6 +406,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 *		labelsOnly = 	if true only labels in the current locale are returns in an array key'ed on item_id
 	 *		start = 		offset to start returning records from [default=0; no offset]
 	 *		limit = 		maximum number of records to return [default=null; no limit]
+	 *		checkAccess =	
 	 *
 	 * @return array List of items indexed first on item_id and then on locale_id of label
 	 */
@@ -420,6 +421,9 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		
 		$pb_omit_root = caGetOption('omitRoot', $pa_options, false);
 		$vb_enabled_only = caGetOption('enabledOnly', $pa_options, false);
+		
+		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
+		if(!is_array($pa_check_access) && $pa_check_access) { $va_check_access = array($va_check_access); }
 	
 		$vb_labels_only = false;
 		if (isset($pa_options['labelsOnly']) && $pa_options['labelsOnly']) {
@@ -472,6 +476,8 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					break;
 			}
 			
+			$va_params = [(int)$vn_list_id];
+			
 			if ($vs_order_by) {
 				$vs_order_by = "ORDER BY {$vs_order_by}";
 			}
@@ -489,17 +495,24 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			if ($pn_limit > 0) {
 				$vs_limit_sql = ($pn_start > 0) ? "LIMIT {$pn_start}, {$pn_limit}" : "LIMIT {$pn_limit}";
 			} 
+			
+			$vs_check_access_sql = '';
+			if (is_array($pa_check_access) && sizeof($pa_check_access)) {
+				$vs_check_access_sql = " AND (cli.access in (?))";
+				$va_params[] = $pa_check_access;
+			}
+			
 			$vs_sql = "
 				SELECT clil.*, cli.*
 				FROM ca_list_items cli
 				LEFT JOIN ca_list_item_labels AS clil ON cli.item_id = clil.item_id
 				WHERE
-					(cli.deleted = 0) AND ((clil.is_preferred = 1) OR (clil.is_preferred IS NULL)) AND (cli.list_id = ?) {$vs_type_sql} {$vs_direct_children_sql} {$vs_hier_sql} {$vs_enabled_sql}
+					(cli.deleted = 0) AND ((clil.is_preferred = 1) OR (clil.is_preferred IS NULL)) AND (cli.list_id = ?) {$vs_type_sql} {$vs_direct_children_sql} {$vs_hier_sql} {$vs_enabled_sql} {$vs_check_access_sql}
 				{$vs_order_by}
 				{$vs_limit_sql}
 			";
 			//print $vs_sql;
-			$qr_res = $o_db->query($vs_sql, (int)$vn_list_id);
+			$qr_res = $o_db->query($vs_sql, $va_params);
 			
 			$va_seen_locales = array();
 			$va_items = array();
