@@ -236,9 +236,27 @@
 						if ($va_local_call = $t_object->get('ca_objects.MARC_localNo')) {
 							print "<div class='unit'><h8>Call Number</h8>".$va_local_call."</div>";
 						}
+						print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
+						print "<div class='hiddenComponents' style='display:none;'>";
+						if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
+							$vn_item_id = $t_object->get('ca_objects.object_id');
+							$t_item_checkout = new ca_object_checkouts($vn_item_id);
+							$va_item_checkout_info = $t_item_checkout->objectIsOut($vn_item_id);
+							print "<div class='component'>";
+							print "<div>".$t_object->get('ca_objects.preferred_labels')."<br/>";
+							print "<b>Call No: </b>".$t_object->get('ca_objects.MARC_localNo')."</div>";
+							if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
+								if ($va_item_checkout_info['due_date']) {
+									print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Find or request this item'>Due ".date('j F Y', $va_item_checkout_info['due_date'])."</a></div>";
+								} else {
+									print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Find or request this item'><i class='fa fa-check-circle'></i> ".$t_object->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true))."</a></div>";
+								}
+							}
+							print "<div class='clearfix'></div>";
+							print "<hr/>";
+							print "</div>";							
+						}
 						if ($va_components = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true))) {
-							print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
-							print "<div class='hiddenComponents' style='display:none;'>";
 							foreach ($va_components as $va_key => $va_component) {
 								$t_child = new ca_objects($va_component);
 								$t_checkout = new ca_object_checkouts();
@@ -250,17 +268,18 @@
 									if ($va_checkout_info['due_date']) {
 										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Find or request this item'>Due ".date('j F Y', $va_checkout_info['due_date'])."</a></div>";
 									} else {
-										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Find or request this item'><i class='fa fa-check-circle'></i> Available</a></div>";
+										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Find or request this item'><i class='fa fa-check-circle'></i> ".$t_child->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true))."</a></div>";
 									}
 								}
 								print "<div class='clearfix'></div>";
 								print "<hr/>";
 								print "</div>";
-								
+							
 							}
-							print "</div>";
-							print "</div>";
-						}											
+						}
+						print "</div>";
+						print "</div>";
+																	
 						$va_date_line = array();
 						if ($va_publication_date = $t_object->get('ca_objects.displayDate')) {
 							$va_date_line[] = $va_publication_date;
