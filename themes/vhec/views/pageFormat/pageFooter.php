@@ -27,6 +27,8 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+
 		<div id="footer">
 			<ul class="list-inline pull-right social">
 				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></div>
@@ -53,7 +55,6 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
@@ -84,3 +85,4 @@
 		</script>
 	</body>
 </html>
+

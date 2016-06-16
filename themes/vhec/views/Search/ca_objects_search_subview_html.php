@@ -85,7 +85,7 @@
 <?php 
 				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
 				if(!$vs_image){
-					$t_list_item->load($qr_results->get("type_id"));
+					$t_list_item->load($qr_results->get("ca_objects.resource_type"));
 					$vs_typecode = $t_list_item->get("idno");
 					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";

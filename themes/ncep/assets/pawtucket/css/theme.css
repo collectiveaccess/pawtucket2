@@ -577,6 +577,17 @@ h2#hpSectionText{
 	font-size:15px;
 	color:#2E536E;
 }
+.browse .btn, .sets .btn{
+	font-size:15px;
+	font-weight:normal;
+}
+.browseRemoveFacet .glyphicon{
+	top:2px;
+}
+.browse .btn-sm {
+	padding:2px 10px 0px 10px;
+	font-family:'thesans5';
+}
 .results H1 {
 	font-size:22px;
 	font-family:'thesans5';

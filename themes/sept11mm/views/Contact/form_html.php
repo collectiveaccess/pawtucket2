@@ -49,7 +49,7 @@
 			<div class="col-sm-10">
 				<div class="form-group<?php print (($va_errors["feedback"]) ? " has-error" : ""); ?>">
 					<label for="feedback">Your message</label>
-					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5"><?php print $this->getVar("feedback");?></textarea>
+					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5" maxlength="500"><?php print $this->getVar("feedback");?></textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
