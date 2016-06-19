@@ -34,11 +34,6 @@
         /**
          * @var array
          */
- 		 protected $opa_access_values;
-
-        /**
-         * @var array
-         */
  		 protected $opa_user_groups;
 
         /**
@@ -87,9 +82,6 @@
                 $this->opb_is_login_redirect = true;
                 return;
             }
-
- 			$this->opa_access_values = caGetUserAccessValues($this->request);
- 			$this->view->setVar("access_values", $this->opa_access_values);
 
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());

@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/DefaultController.php
+ * app/lib/pawtucket/BasePawtucketController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,26 +25,22 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
- 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
- 
- 	class DefaultController extends BasePawtucketController {
- 		# -------------------------------------------------------
- 		 
+ 	
+ 	class BasePawtucketController extends ActionController {
+ 		# ------------------------------------------------------- 	
+        /**
+         * @var array
+         */
+ 		 protected $opa_access_values;
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			caSetPageCSSClasses(array("staticPage"));
+ 			if (($this->request->getController() !== 'LoginReg') && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
+				$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            
+ 			$this->opa_access_values = caGetUserAccessValues($po_request);
+ 		 	$this->view->setVar("access_values", $this->opa_access_values);
  		}
  		# -------------------------------------------------------
- 		public function __call($ps_method, $pa_path) {
- 			array_unshift($pa_path[0], $ps_method);
- 			
- 			$this->view->setVar('response', $this->response);
- 			
- 			$this->render(join("/", $pa_path[0]).".php", false);
- 		}
- 		# ------------------------------------------------------
- 	}
+	}
