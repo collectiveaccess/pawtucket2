@@ -434,12 +434,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	 * Returns HTML <img> tag displaying spinning "I'm doing something" icon
 	 */
 	function caBusyIndicatorIcon($po_request, $pa_attributes=null) {
-		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
-		
-		$vs_attr = _caHTMLMakeAttributeString($pa_attributes);
-		$vs_button = "<img src='".$po_request->getThemeUrlPath()."/graphics/icons/indicator.gif' border='0' {$vs_attr}/> ";
-	
-		return $vs_button;
+		return caNavIcon(__CA_NAV_ICON_SPINNER__, 1, $pa_attributes);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
