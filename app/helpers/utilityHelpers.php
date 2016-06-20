@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2015 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,6 +40,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ZipFile.php');
 require_once(__CA_LIB_DIR__.'/core/Logging/Eventlog.php');
 require_once(__CA_LIB_DIR__.'/core/Utils/Encoding.php');
 require_once(__CA_LIB_DIR__.'/core/Zend/Measure/Length.php');
+require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 
 # ----------------------------------------------------------------------
 # String localization functions (getText)
@@ -475,7 +476,11 @@ function caFileIsIncludable($ps_file) {
 		// strip quotes from path if present since they'll cause file_exists() to fail
 		$ps_path = preg_replace("!^\"!", "", $ps_path);
 		$ps_path = preg_replace("!\"$!", "", $ps_path);
-		if (!$ps_path || (preg_match("/[^\/A-Za-z0-9\.:\ _\(\)\\\-]+/", $ps_path)) || !@file_exists($ps_path)) { return false; }	// hide basedir warnings
+		if (!$ps_path || (preg_match("/[^\/A-Za-z0-9\.:\ _\(\)\\\-]+/", $ps_path))) { return false; }
+
+		if(!ini_get('open_basedir') && !@is_readable($ps_path)) { // open_basedir and is_readable() have some weird interactions
+			return false;
+		}
 
 		return true;
 	}
@@ -571,12 +576,22 @@ function caFileIsIncludable($ps_file) {
 		}
 	}
 	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caEscapeSearchForURL($ps_search) {
+		return rawurlencode(str_replace('/', '&#47;', $ps_search)); // encode slashes as html entities to avoid Apache considering it a directory separator
+	}
+	# ----------------------------------------
 	function caSanitizeStringForJsonEncode($ps_text) {
 		// Remove invalid UTF-8
 		mb_substitute_character(0xFFFD);
 		$ps_text = mb_convert_encoding($ps_text, 'UTF-8', 'UTF-8');
+
+		return strip_tags($ps_text);
+
 		// @see http://php.net/manual/en/regexp.reference.unicode.php
-		return preg_replace("/[^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{N}\p{P}\p{Zp}\p{Zs}\p{S}]|➔/", '', strip_tags($ps_text));
+		//return preg_replace("/[^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{N}\p{P}\p{Zp}\p{Zs}\p{S}]|➔/", '', strip_tags($ps_text));
 	}
 	# ----------------------------------------
 	/**
@@ -707,6 +722,22 @@ function caFileIsIncludable($ps_file) {
 			// proc_close in order to avoid a deadlock
 			$pn_return_val = proc_close($r_proc);
 			return true;
+		}
+	}
+	# ----------------------------------------
+	/**
+	 * Check if mod_rewrite web server module is available 
+	 *
+	 * @return bool
+	 */
+	$g_mod_write_is_available = null;
+	function caModRewriteIsAvailable() {
+		global $g_mod_write_is_available;
+		if (is_bool($g_mod_write_is_available)) { return $g_mod_write_is_available; }
+		if (function_exists('apache_get_modules')) {
+			return $g_mod_write_is_available = (bool)in_array('mod_rewrite', apache_get_modules());
+		} else {
+			return $g_mod_write_is_available = (bool)((getenv('HTTP_MOD_REWRITE') == 'On') ? true : false);
 		}
 	}
 	# ----------------------------------------
@@ -1214,6 +1245,25 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
+	 * Remove all HTML tags and their contents 
+	 *
+	 * @param string $ps_string The string to process
+	 * @return string $ps_string with HTML tags and associated content removed
+	 */
+	function caStripTagsAndContent($ps_string) {
+		$o_doc = str_get_dom($ps_string);	
+		foreach($o_doc("*") as $o_node) {
+			if ($o_node->tag != '~text~') {
+				$o_node->delete();
+			}
+		}
+		$vs_proc_string = $o_doc->html();
+		$vs_proc_string = str_replace("<~root~>", "", $vs_proc_string);
+		$vs_proc_string = str_replace("</~root~>", "", $vs_proc_string);
+		return trim($vs_proc_string);
+	}
+	# ---------------------------------------
+	/**
 	  *
 	  */
 	function caGetCacheObject($ps_prefix, $pn_lifetime=86400, $ps_cache_dir=null, $pn_cleaning_factor=100) {
@@ -1496,6 +1546,17 @@ function caFileIsIncludable($ps_file) {
 			return isset($va_date['start']) ? $va_date['start'] : null;
 		}
 		return null;
+	}
+	# ---------------------------------------
+	/**
+	  * Determine if date expression can be parsed 
+	  *
+	  * @param string $ps_date_expression A date/time expression as described in http://docs.collectiveaccess.org/wiki/Date_and_Time_Formats
+	  * @return bool True if expression can be parsed
+	  */
+	function caIsValidDate($ps_date_expression) {
+		$o_tep = new TimeExpressionParser();
+		return $o_tep->parse($ps_date_expression);
 	}
 	# ---------------------------------------
 	/**
@@ -2859,6 +2920,75 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Parses and normalizes length exprssions in the form <dimension1> <delimiter> <dimension2> <delimiter> <dimension3> ... (Ex. 4" x 5")
+	 * into an array of normalized dimension string. When no units are specified default units are specified (Ex. 4x6 is returned as ["4 in", "6 in"]).
+	 * When units are specified for some, but not all, quantities then the first specified unit in the expression in applied to all unit-less quantities 
+	 * (Ex. 4x6cm is returned as ["4 cm", "6 cm"] no matter what default units are set to). When units are specified that are always used for the quantity they
+	 * apply to (Ex. 4 x 6cm x 8" is returned as ["4 cm", "6 cm", "8 in"])
+	 *
+	 * @param string $ps_expression Expression to parse
+	 * @param null|array $pa_options Options include:
+	 *		delimiter = Delimiter string between dimensions. Delimiter will be processed case-insensitively. [Default is 'x']
+	 *		units = Units to use as default for quantities that lack a specification. [Default is inches]
+	 *		returnExtractedMeasurements = return an array of arrays, each of which includes the numeric quantity, units and display string as separate values. [Default is false]
+	 * @return array An array of parsed and normalized length dimensions, parseable by caParseLengthDimension() or Zend_Measure
+	 */
+	function caParseLengthExpression($ps_expression, $pa_options=null) {
+		$va_extracted_measurements = [];
+		$vs_specified_units = $vs_extracted_units = null;
+		
+		$ps_units = caGetOption('units', $pa_options, 'in');
+		$pb_return_extracted_measurements = caGetOption('returnExtractedMeasurements', $pa_options, false);
+		
+		if ($ps_delimiter = caGetOption('delimiter', $pa_options, 'x')) {
+			$va_measurements = explode(strtolower($ps_delimiter), strtolower($ps_expression));
+		} else {
+			$ps_delimiter = '';
+			$va_measurements = array($pm_value);
+		}
+		
+		foreach($va_measurements as $vn_i => $vs_measurement) {
+			$vs_measurement = trim(preg_replace("![ ]+!", " ", $vs_measurement));
+			
+			$vs_extracted_units = $vs_measurement_units = null;
+			try {
+				if (!($vo_parsed_measurement = caParseLengthDimension($vs_measurement))) {
+					throw new Exception("Missing or invalid dimensions");
+				} else {
+					$vs_measurement = trim($vo_parsed_measurement->toString());
+					$vs_extracted_units = caGetLengthUnitType($vo_parsed_measurement->getType(), ['short' => true]);
+					if (!$vs_specified_units) { $vs_specified_units = $vs_extracted_units; }
+				}
+			} catch(Exception $e) {
+				if (preg_match("!^([\d]+)!", $vs_measurement, $va_matches)) {
+					$vs_measurement = $va_matches[0]." {$ps_units}";
+				} else {
+					continue;
+				}
+			}
+			$va_extracted_measurements[] = ['quantity' => preg_replace("![^\d]+!", "", $vs_measurement), 'string' => $vs_measurement, 'units' => $vs_extracted_units];
+		}
+		if ($pb_return_extracted_measurements) { return $va_extracted_measurements; }
+		
+		$vn_set_count = 0;
+		
+		$va_return = [];
+		foreach($va_extracted_measurements as $vn_i => $va_measurement) {
+			
+			if ($va_measurement['units']) {
+				$vs_measurement = $va_measurement['quantity']." ".$va_measurement['units'];
+			} elseif ($vs_specified_units) {
+				$vs_measurement = $va_measurement['quantity']." {$vs_specified_units}";
+			} else {
+				$vs_measurement = $va_measurement['quantity']." {$ps_units}";
+			}
+			$va_return[] = $vs_measurement;
+		}
+		
+		return $va_return;
+	}
+	# ----------------------------------------
+	/**
 	 * Generate a GUID 
 	 */
 	function caGenerateGUID(){
@@ -3133,5 +3263,48 @@ function caFileIsIncludable($ps_file) {
 			}
 		}
 		return $vs_display_value;
+	}
+	# ----------------------------------------
+	/**
+	 * Get list of (enabled) primary tables as table_num => table_name mappings
+	 * @return array
+	 */
+	function caGetPrimaryTables() {
+		$o_conf = Configuration::load();
+		$va_ret = [];
+		foreach([
+			'ca_objects' => 57,
+			'ca_object_lots' => 51,
+			'ca_entities' => 20,
+			'ca_places' => 72,
+			'ca_occurrences' => 67,
+			'ca_collections' => 13,
+			'ca_storage_locations' => 89,
+			'ca_object_representations' => 56,
+			'ca_loans' => 133,
+			'ca_movements' => 137,
+			'ca_list_items' => 33,
+			'ca_tours' => 153,
+			'ca_tour_stops' => 155
+		] as $vs_table_name => $vn_table_num) {
+			if(!$o_conf->get($vs_table_name.'_disable')) {
+				$va_ret[$vn_table_num] = $vs_table_name;
+			}
+		}
+		return $va_ret;
+	}
+	# ----------------------------------------
+	/**
+	 * Get CA primary tables (objects, entities, etc.) for HTML select, i.e. as Display Name => Table Num mapping
+	 * @return array
+	 */
+	function caGetPrimaryTablesForHTMLSelect() {
+		$va_tables = caGetPrimaryTables();
+		$o_dm = Datamodel::load();
+		$va_ret = [];
+		foreach($va_tables as $vn_table_num => $vs_table) {
+			$va_ret[$o_dm->getInstance($vn_table_num, true)->getProperty('NAME_PLURAL')] = $vn_table_num;
+		}
+		return $va_ret;
 	}
 	# ----------------------------------------
