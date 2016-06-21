@@ -1231,13 +1231,19 @@
 					} else {
 						$va_opts['asArrayElement'] = true;
 						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
-							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+							$va_opts['restrictToTypes'] = preg_split("![,;]+!", $va_opts['restrictToTypes']);
 						}
 						
 						// Relationship type restrictions
 						if (isset($va_opts['restrictToRelationshipTypes']) && $va_opts['restrictToRelationshipTypes'] && !is_array($va_opts['restrictToRelationshipTypes'])) { 
-							$va_opts['restrictToRelationshipTypes'] = explode(";", $va_opts['restrictToRelationshipTypes']);
+							$va_opts['restrictToRelationshipTypes'] = preg_split("![,;]+!", $va_opts['restrictToRelationshipTypes']);
 						}
+						
+						// Exclude values
+						if (isset($va_opts['exclude']) && $va_opts['exclude'] && !is_array($va_opts['exclude'])) { 
+							$va_opts['exclude'] = preg_split("![,;]+!", $va_opts['exclude']);
+						}
+						
 						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $va_opts, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			
 						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {

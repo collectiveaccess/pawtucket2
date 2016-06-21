@@ -8,8 +8,24 @@
 	$vs_home = caNavLink($this->request, "Home", '', '', '', '');			
 	$vs_title 	= caTruncateStringWithEllipsis($t_item->get('ca_collections.preferred_labels.name'), 60);	
 	$vs_archives_link = caNavLink($this->request, 'Archives', '', '', 'Archives', 'Index');
-	$vs_finding_aid = caNavLink($this->request, 'Finding Aids', '', 'FindingAid', 'Collection', 'Index');
-	$breadcrumb_link = $vs_home." > ".$vs_archives_link." > ".$vs_finding_aid." > ".$vs_title;		
+	
+	if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) != "Fonds / Archival Collection") {
+		$va_hierarchy_ids = $t_item->get('ca_collections.hierarchy.collection_id', array('returnAsArray' => true));
+		$va_hierarchy_path = array();
+		foreach ($va_hierarchy_ids as $va_key => $va_hierarchy_id) {
+			$t_collection = new ca_collections($va_hierarchy_id);
+			$va_hierarchy_path[] = caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_hierarchy_id); 
+		}
+		array_pop($va_hierarchy_path);
+		$vs_hierarchy = " > ".join(' > ', $va_hierarchy_path);
+	}
+
+	if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Collection") {
+		$breadcrumb_link = $vs_home." > ".$vs_title;
+	} else {
+		$breadcrumb_link = $vs_home." > ".$vs_archives_link.$vs_hierarchy." > ".$vs_title;
+	}	
+	
 ?>
 <div class="row">
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -60,12 +76,16 @@
 				</div><!-- end col -->
 				<div class='col-sm-6 col-lg-6'>
 <?php
-					print caNavLink($this->request, 'Download <i class="fa fa-download"></i>', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
-
+					if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => 'true')) == "Fonds / Archival Collection") {
+						print caNavLink($this->request, 'Download <i class="fa fa-download"></i>', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
+					}
 ?>								
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 					<H5>{{{^ca_collections.type_id}}}</H5>
 <?php	
+					if ($va_identifier = $t_item->get('ca_collections.collection_identifier')) {
+						print "<div class='unit'><h8>Identifier</h8>".$va_identifier."</div>";
+					}
 					if ($va_extent = $t_item->get('ca_collections.RAD_extent')) {
 						print "<div class='unit'><h8>Extent & Medium</h8>".$va_extent."</div>";
 					}

@@ -40,7 +40,7 @@
 			<div class="advancedSearchField">
 				Type<br/>
 				{{{ca_objects.type_id:boolean}}}
-				{{{ca_objects.type_id}}}
+				{{{ca_objects.type_id%exclude=negative,slide}}}
 			</div>
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
@@ -52,7 +52,7 @@
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
-				Has Media<br/>
+				Has Media (image, video, audio, etc.)<br/>
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
 		</div>
