@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -109,23 +110,23 @@
 						print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."</div>";
 					}
 					$va_subjects_list = array();
-					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
 							$va_subject_term_list = explode('[', $va_subject_term);
 							$va_subjects_list[] = ucfirst($va_subject_term_list[0]);
 						}
 					}
-					if ($va_subject_terms_text = $t_object->get('ca_objects.lcsh_terms_text', array('returnAsArray' => true))) {
+					if ($va_subject_terms_text = $t_object->get('ca_objects.lcsh_terms_text', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms_text as $va_text => $va_subject_term_text) {
 							$va_subjects_list[] = ucfirst($va_subject_term_text);
 						}
 					}
-					if ($va_subject_genres = $t_object->get('ca_objects.lcsh_genres', array('returnAsArray' => true))) {
+					if ($va_subject_genres = $t_object->get('ca_objects.lcsh_genres', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
 							$va_subjects_list[] = ucfirst($va_subject_genre);
 						}
 					}
-					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_keywords as $va_text => $va_subject_keyword) {
 							$va_subjects_list[] = ucfirst($va_subject_keyword);
 						}
