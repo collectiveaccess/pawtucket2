@@ -421,3 +421,9 @@
 
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+			<div class="header-social">
+				<a class="fb" href="https://www.facebook.com/911memorial" target="_blank"></a>
+				<a class="twit" href="https://twitter.com/sept11memorial" target="_blank"></a>
+				<a class="instagram" href="https://instagram.com/911memorial/" target="_blank"></a>
+				<a class="gplus" href="https://plus.google.com/+911Memorial/posts" target="_blank"></a>
+        	</div>

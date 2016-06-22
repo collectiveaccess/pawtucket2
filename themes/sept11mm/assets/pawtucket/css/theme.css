@@ -72,6 +72,46 @@ H1, h1{
 	padding-left:5px;
 	padding-right:5px;
 }
+.header-social{
+	position:absolute;
+	left:105%;
+	top:0px;
+}
+.header-social a{
+	display:block;
+	width:28px;
+	height:28px;
+	margin-top:1px;
+	background:url(../graphics/social-sprite-2.png) 0 0 no-repeat;
+	overflow:hidden;
+}
+.header-social a:hover{
+	text-decoration:none;
+}
+.header-social a.fb{
+	background-position:0 0;
+}
+.header-social a.fb:hover{
+	background-position:-29px 0;
+}
+.header-social a.twit{
+	background-position:0 -29px;
+}
+.header-social a.twit:hover{
+	background-position:-29px -29px;
+}
+.header-social a.instagram{
+	background-position:0 -58px;
+}
+.header-social a.instagram:hover{
+	background-position:-29px  -58px;
+}
+.header-social a.gplus{
+	background-position:0 -87px;
+}
+.header-social a.gplus:hover{
+	background-position:-29px -87px;
+}
 /* --- FOOTER --- */
 #footer-top {
     font: 12px/24px arial,sans-serif;
@@ -1198,10 +1238,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	}
 	.detailTool{
 		float:left;
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 	.detailTool.last{
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 }
 .detail .detailRelatedItems{
