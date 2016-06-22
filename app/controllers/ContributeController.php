@@ -29,8 +29,9 @@
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 	require_once(__CA_APP_DIR__."/helpers/contributeHelpers.php");
 	require_once(__CA_LIB_DIR__."/ca/Utils/DataMigrationUtils.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	class ContributeController extends ActionController {
+ 	class ContributeController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 * Instance for record being contributed
@@ -46,10 +47,6 @@
             	$this->notification->addNotification(_t('Contribute form is not enabled'), __NOTIFICATION_TYPE_ERROR__);
 				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
 				return;
-            }
-            
-            if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             
  			caSetPageCSSClasses(array("contribute"));

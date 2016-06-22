@@ -62,7 +62,7 @@
 
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-
+	$vs_description_attribute 		= $this->getVar("description_attribute");
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -312,7 +312,7 @@ if (!$vb_ajax) {    // !ajax
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get("description")) {
+            if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
 ?>
