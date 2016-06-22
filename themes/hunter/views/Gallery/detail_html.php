@@ -45,7 +45,7 @@
 			</div><!-- end col --></div><!-- end row --></div><!-- end container -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery('#browseResultsContainer').load('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$pn_set_id, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>', function() {
+					jQuery('#browseResultsContainer').load('<?php print caNavUrl($this->request, '', 'Search', 'gallery', array('search' => 'ca_sets.set_id:'.$pn_set_id, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>', function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '',

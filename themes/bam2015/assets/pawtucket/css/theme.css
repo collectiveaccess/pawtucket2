@@ -325,6 +325,24 @@ a:hover, a:focus, a:visited {
 /*.yamm .nav.navbar-right .dropdown-menu > li > a.last {
 	padding-bottom:10px;
 }*/
+.navbar-header button{
+	border:0px;
+	background-color: #262626;
+	border-right: 4px solid #000000 !important;
+	color: #7c7c7c;
+	font-size: 22px;
+	border-radius: 0px;
+	padding: 12px 15px 5px 15px;
+	margin:0px;
+}
+.navbar-header button.navbar-toggle-user{
+	font-size: 20px;
+	padding: 15px 13px 5px 13px;
+}
+.navbar-header button:hover{
+	color:#FFF;
+	background-color: #00cfb7 !important;
+}
 input:-webkit-autofill {
 	color: #7c7c7c;
 	background-color:#262626;
@@ -1259,6 +1277,10 @@ h1.profileForm{
     font-weight: bold;
     color: #000;
 }
+.staticPage{
+	font-size:18px;
+}
+
 p.linkInfo {
 	margin-bottom:5px;
 }

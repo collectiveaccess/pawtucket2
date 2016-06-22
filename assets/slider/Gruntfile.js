@@ -3,7 +3,6 @@ module.exports = function(grunt) {
 
   var packageJSON = grunt.file.readJSON('package.json');
   var bumpFiles = ["package.json", "bower.json", "composer.json"];
-  var commitFiles = bumpFiles.concat(["./dist/*"]);
 
   // Project configuration.
   grunt.initConfig({
@@ -144,7 +143,7 @@ module.exports = function(grunt) {
         tasks: ['jshint:spec', 'jasmine:src']
       },
       css : {
-        files: ['<%= pkg.gruntConfig.less.slider %>', '<%= pkg.gruntConfig.less.rules %>', '<%= pkg.gruntConfig.less.variables %>'],
+        files: '<%= pkg.gruntConfig.less.slider %>',
         tasks: ['less:development']
       },
       index : {
@@ -197,11 +196,11 @@ module.exports = function(grunt) {
         updateConfigs: [],
         commit: true,
         commitMessage: 'Release v%VERSION%',
-        commitFiles: commitFiles,
+        commitFiles: bumpFiles,
         createTag: true,
         tagName: 'v%VERSION%',
         tagMessage: 'Version %VERSION%',
-        push: false,
+        push: true,
         pushTo: 'origin'
       }
     }

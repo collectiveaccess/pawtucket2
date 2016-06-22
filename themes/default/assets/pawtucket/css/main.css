@@ -2203,7 +2203,78 @@ a.readmore-js-toggle{
 .multisearch .authorityResult:hover{
 	background-color:#ebebeb;
 }
-
+/* ---------------------------- */
+/* Collections/Finding Aid */
+/* ---------------------------- */
+.collectionsList a{
+	font-size:15px;
+	font-weight:bold;
+}
+.collectionsList p{
+	margin-bottom:20px;
+}
+#collectionHierarchy HR{
+	border-top:2px solid #454545 !important;
+}
+.collectionsContainer {
+	float:left;
+	max-height:500px;
+	width:100%;
+	overflow-y: scroll;
+	padding:20px 10px 10px 10px;
+	font-size:14px;
+}
+#collectionLoad div a, #collectionLoad div .nonLinkedCollection{
+	font-size:14px;
+}
+#collectionLoad .label a{
+	font-size: 19px;
+}
+.collectionsContainer .label, #collectionLoad .label{
+	font-size: 19px;
+	color:#000;
+	padding-left:5px;
+	white-space: normal !important;
+}
+#collectionLoad .label{
+	padding-left:0px;
+}
+.collectionsContainer a, .collectionsContainer .listItem{
+	width:100%;
+	display:inline-block;
+	padding: 5px;
+	font-size:14px;
+}
+.collectionsContainer a.openCollection.active {
+	color:#fff;
+	background-color: #858585;
+}
+.collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa{
+	color: #858585;
+}
+.collectionsContainer a:hover {
+	text-decoration:none;
+	background-color: #f9f9f9;
+}
+.collectionsContainer small{
+	color:#858585;
+}
+.collectionsContainer p{
+	font-size:12px;
+}
+#collectionLoad {
+	float:left;	
+	padding:20px 20px 10px 20px;
+	height: 500px;
+	overflow-y: scroll;
+	border-left:2px solid #454545;
+}
+#collectionLoad p{
+	font-size:12px;
+}
+#collectionLoad div{
+	margin-bottom:10px;
+}
 /* ------------------------------------------*/
 /* gallery */
 /*------------------------------------------*/

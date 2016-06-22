@@ -40,7 +40,7 @@
 </div>		
 <div class="row">
 	<div class='col-xs-12'>
-		<?php print ($this->request->isLoggedIn()) ? "" : "<div class='galleryLoginMessage'>* "._("Educators please login to download all components")."</div>"; ?>
+		<?php print ($this->request->isLoggedIn()) ? "" : "<div class='galleryLoginMessage'>* "._("Login to access educator-only files")."</div>"; ?>
 		<H1><?php print sizeof($va_set_objects)." Modules"; ?></H1>
 	</div>
 </div>
@@ -63,7 +63,7 @@ if(is_array($va_set_objects) && sizeof($va_set_objects) && $q_modules->numHits()
 		print "
 		<div class='row'><div class='col-xs-12'>
 			<div class='bResItem'>
-				<div class='pull-right'>".caNavLink($this->request, _t("Download All".(!$this->request->isLoggedIn() ? "*" : ""))."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_modules->get("object_id"), "download" => 1), array("title" => ($this->request->isLoggedIn()) ? _t("Download All") : _("Educators please login to download all components"))).caDetailLink($this->request, "<i class='fa fa-arrow-circle-right'></i>", "blueButton", "ca_objects", $q_modules->get("object_id"), null, array("title" => _t("View Module")))."</div>
+				<div class='pull-right'>".caNavLink($this->request, _t("Download All".(!$this->request->isLoggedIn() ? "*" : ""))."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_modules->get("object_id"), "download" => 1), array("title" => ($this->request->isLoggedIn()) ? _t("Download All") : _("Login to access educator-only files"))).caDetailLink($this->request, "<i class='fa fa-arrow-circle-right'></i>", "blueButton", "ca_objects", $q_modules->get("object_id"), null, array("title" => _t("View Module")))."</div>
 				<H1>".caDetailLink($this->request, $q_modules->get("ca_objects.preferred_labels"), "", "ca_objects", $q_modules->get("object_id"))."<H1>
 				<div class='bResContent'>".
 					$q_modules->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
