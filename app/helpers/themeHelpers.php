@@ -202,12 +202,21 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific finding-aid section configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCollectionsConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/collections.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Get theme-specific icon configuration
 	 *
 	 * @return Configuration
 	 */
 	function caGetIconsConfig() {
-		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
+		if(file_exists(__CA_THEME_DIR__.'/conf/icons.conf')){
 			return Configuration::load(__CA_THEME_DIR__.'/conf/icons.conf');
 		}else{
 			return Configuration::load(__CA_THEMES_DIR__.'/default/conf/icons.conf');

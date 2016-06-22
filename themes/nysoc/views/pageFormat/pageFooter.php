@@ -52,7 +52,7 @@
 				</div>
 				<div id="libInfo" class="col4">
 					<div>
-						<h3>The Library Will Be Closed</h3><div>Sunday, March 27</div><div>For Easter</div>
+						<h3>The Library Will Be Closed</h3><div>Saturday May 28, Sunday May 29 and Monday May 30</div><div>For Memorial Day</div>
 						<div><p><span style="line-height: 1.538em;">All areas except Circulation close 15 minutes prior to building closing time.</span></p></div>
 					</div>
 				</div>
