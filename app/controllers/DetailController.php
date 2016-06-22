@@ -28,6 +28,8 @@
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
  	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
  	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+ 	require_once(__CA_LIB_DIR__.'/core/Media/MediaViewerManager.php');
+ 	
  	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
@@ -418,28 +420,72 @@
  		public function GetRepresentationInfo() {
  			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
- 			$pn_item_id 			= $this->request->getParameter('item_id', pInteger);
- 			if (!$ps_display_type 	= trim($this->request->getParameter('display_type', pString))) { $ps_display_type = 'media_overlay'; }
- 			if (!$ps_containerID 	= trim($this->request->getParameter('containerID', pString))) { $ps_containerID = 'caMediaPanelContentArea'; }
- 			$va_detail_options 		= (isset($this->opa_detail_types['objects']['options']) && is_array($this->opa_detail_types['objects']['options'])) ? $this->opa_detail_types['objects']['options'] : array();
  			
- 			if(!$pn_object_id) { $pn_object_id = 0; }
- 			$t_rep = new ca_object_representations($pn_representation_id);
- 			if (!$t_rep->getPrimaryKey()) { 
- 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
- 				return;
- 			}
- 			$va_opts = array('display' => $ps_display_type, 'object_id' => $pn_object_id, 'representation_id' => $pn_representation_id, 'item_id' => $pn_item_id, 'containerID' => $ps_containerID, 'access' => caGetUserAccessValues($this->request));
- 			if (strlen($vs_use_book_viewer = $this->request->getParameter('use_book_viewer', pInteger))) { $va_opts['use_book_viewer'] = (bool)$vs_use_book_viewer; }
-
-			$vs_caption = ($vs_caption_template = caGetOption('representationViewerCaptionTemplate', $va_detail_options, false)) ? $t_rep->getWithTemplate($vs_caption_template) : '';
-			
-			$vs_output = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
-			if ($this->request->getParameter('include_tool_bar', pInteger)) {
-				$vs_output = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_output.caRepToolbar($this->request, $t_rep, $pn_object_id).$vs_caption."</div></div>";
+ 			
+ 			$t_subject = new ca_objects($vn_subject_id = $pn_object_id);
+	
+			if (!$t_subject->isReadable($this->request)) { 
+				throw new ApplicationException(_t('Cannot view media'));
 			}
+			
+			if ($pn_value_id = $this->request->getParameter('value_id', pInteger)) {
+				//
+				// View FT_MEDIA attribute media 
+				//
+				$t_instance = new ca_attribute_values($pn_value_id);
+				$t_instance->useBlobAsMediaField(true);
+				$t_attr = new ca_attributes($t_instance->get('attribute_id'));
+				$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+				$t_subject->load($t_attr->get('row_id'));
 
- 			$this->response->addContent($vs_output);
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+
+				$this->response->addContent($vs_viewer_name::getViewerHTML(
+					$this->request, 
+					"attribute:{$pn_value_id}", 
+					['context' => 'media_overlay', 't_instance' => $t_instance, 't_subject' => $t_subject, 'display' => caGetMediaDisplayInfo('media_overlay', $vs_mimetype)])
+				);
+			} elseif ($pn_representation_id = $this->request->getParameter('representation_id', pInteger)) {
+				//
+				// View object representation
+				//
+				$t_instance = new ca_object_representations($pn_representation_id);
+			
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+			
+				$va_display_info = caGetMediaDisplayInfo('media_overlay', $vs_mimetype);
+				if ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null)) {
+					$vn_image_count = $t_subject->numberOfRepresentationsOfClass('image');
+					$vn_rep_count = $t_subject->getRepresentationCount();
+				
+					// Are there enough representations? Are all representations images? 
+					if (($vn_image_count == $vn_rep_count) && ($vn_image_count >= $vn_use_universal_viewer_for_image_list_length)) {
+						$va_display_info['viewer'] = $vs_viewer_name = 'UniversalViewer';
+					}
+				}
+			
+				if(!$vn_subject_id) {
+					if (is_array($va_subject_ids = $t_instance->get($t_subject->tableName().'.'.$t_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
+						$vn_subject_id = array_shift($va_subject_ids);
+					} else {
+						$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+						return;
+					}
+				}
+
+				$this->response->addContent($vs_viewer_name::getViewerHTML(
+					$this->request, 
+					"representation:{$pn_representation_id}", 
+					['context' => 'media_overlay', 't_instance' => $t_instance, 't_subject' => $t_subject, 'display' => $va_display_info])
+				);
+			} else {
+				throw new ApplicationException(_t('Invalid id'));
+			}
+ 			
  		}
  		# -------------------------------------------------------
  		/**
@@ -489,48 +535,6 @@
 			$this->view->setVar('annotation_times', $va_annotation_times);
  			
 			$this->render('Details/annotations_html.php');
- 		}
-		# -------------------------------------------------------
- 		/**
- 		 * 
- 		 */ 
- 		public function GetPageListAsJSON() {
- 			if (!($vs_table = $this->request->getActionExtra())) { $vs_table = 'ca_objects'; }
- 			if (!($t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true))) { 
- 				$this->postError(1100, _t('Invalid table'), 'DetailController->GetPage');
- 				return;
- 			}
- 			$pn_subject_id = $this->request->getParameter($t_subject->primaryKey(), pInteger);
- 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
- 			$pn_value_id = $this->request->getParameter('value_id', pInteger);
- 			$ps_content_mode = $this->request->getParameter('content_mode', pString);
- 			
- 			$t_subject->load($pn_subject_id);
- 			
- 			$vs_page_cache_key = md5($pn_subject_id.'/'.$pn_representation_id.'/'.$pn_value_id);
- 			
- 			$this->view->setVar('page_cache_key', $vs_page_cache_key);
- 			$this->view->setVar('t_subject', $t_subject);
- 			$this->view->setVar('t_representation', new ca_object_representations($pn_representation_id));
- 			$this->view->setVar('t_attribute_value', new ca_attribute_values($pn_value_id));
- 			$this->view->setVar('content_mode', $ps_content_mode);
- 			
- 			$va_page_list_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
- 			
- 			$va_pages = $va_page_list_cache[$vs_page_cache_key];
- 			if (!isset($va_pages)) {
- 				// Page cache not set?
- 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetPage');
- 				return;
- 			}
- 			
- 			$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
- 			$this->view->setVar('pages', $va_pages);
- 			$this->view->setVar('sections', $va_section_cache[$vs_page_cache_key]);
- 			
- 			$this->view->setVar('is_searchable', MediaContentLocationIndexer::hasIndexing('ca_object_representations', $pn_representation_id));
- 			
- 			$this->render('bundles/media_page_list_json.php');
  		}
  		# -------------------------------------------------------
  		/**
