@@ -82,7 +82,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png'), "navbar-brand", "", "","");
+				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'sefaLogo10Years.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
