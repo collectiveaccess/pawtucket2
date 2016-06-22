@@ -23,25 +23,13 @@ describe("Slider with ticks tests", function() {
 		expect(numTicks).toBe(5);
 	});
 
-	it("Should be at the default positions", function() {
+	it("Should have the number of tick marks you specify", function() {
 		testSlider = $("#testSlider1").slider({
 			ticks: [100, 200, 300, 400, 500]
 		});
 
 		$("#testSlider1").siblings('div.slider').find('.slider-tick').each(function(i) {
 			expect(this.style.left).toBe(100 * i / 4.0 + '%');
-		});
-	});
-
-	it("Should be at the positions you specify", function() {
-		var tickPositions = [0, 10, 20, 30, 100];
-		testSlider = $("#testSlider1").slider({
-			ticks: [100, 200, 300, 400, 500],
-			ticks_positions: tickPositions
-		});
-
-		$("#testSlider1").siblings('div.slider').find('.slider-tick').each(function(i) {
-			expect(this.style.left).toBe(tickPositions[i] + '%');
 		});
 	});
 
@@ -97,23 +85,6 @@ describe("Slider with ticks tests", function() {
 		}
 	});
 
-	it("Should show the correct tick marks as 'in-selection', according to the `selection` property", function() {
-		var options = {
-			ticks: [100, 200, 300, 400, 500],
-			value: 250,
-			selection: 'after'
-		},
-		$el = $("#testSlider1");
-
-		testSlider = $el.slider(options);
-		expect($el.siblings('div.slider').find('.in-selection').length).toBe(3);
-
-		testSlider.slider('destroy');
-
-		options.selection = 'before';
-		testSlider = $el.slider(options);
-		expect($el.siblings('div.slider').find('.in-selection').length).toBe(2);
-});
 
 	afterEach(function() {
 	    if(testSlider) {

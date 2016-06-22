@@ -33,9 +33,11 @@
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPPowerPoint/Autoloader.php');
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+	
 	\PhpOffice\PhpPowerpoint\Autoloader::register();
  	
- 	class FindController extends ActionController {
+ 	class FindController extends BasePawtucketController {
  		# -------------------------------------------------------
         /**
          * @var Configuration
@@ -70,8 +72,6 @@
 				}
 			}
 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
- 			
- 			
 			$this->view->setVar('export_formats', $va_export_options);
 			
 			$va_options = array();

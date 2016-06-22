@@ -10,12 +10,12 @@
 	$va_rep_width = $va_rep['info']['bamlarge']['WIDTH'];
 	$va_rep_height = $va_rep['info']['bamlarge']['HEIGHT'];
 	$va_rep_type = $va_rep['mimetype'];
+	$t_list_item = new ca_list_items();
+	$t_list_item->load($t_object->get("type_id"));
+	$vs_typecode = $t_list_item->get("idno");
 	
 	if($this->request->isAjax()){
 		$o_icons_conf = caGetIconsConfig();
-		$t_list_item = new ca_list_items();
-		$t_list_item->load($t_object->get("type_id"));
-		$vs_typecode = $t_list_item->get("idno");
 		$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 		
 		$t_rep = $this->getVar("t_representation");
@@ -80,7 +80,14 @@
 						<div class="col-sm-4 text-left detailOverlayImgCaptionVert">
 							<div class='detailOverlayImgCaption'>
 <?php
-										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+										$vs_type = "";
+										if($vs_typecode == "promotional"){
+											$vs_type = $t_object->get("ca_objects.promotionalSubtypes", array('convertCodesToDisplayText' => true));
+										}
+										if(!$vs_type){
+											$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+										}
+										print caDetailLink($this->request, "<span class='typeLabel'>".$vs_type."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
 ?>							
 									<div class="text-right">
 <?php
@@ -127,7 +134,14 @@
 <?php
 				$vn_show_label_as_title = false;
 				$vs_page_title = "";
-				print "<div class='leader'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
+				$vs_type = "";
+				if($vs_typecode == "promotional"){
+					$vs_type = $t_object->get("ca_objects.promotionalSubtypes", array('convertCodesToDisplayText' => true));
+				}
+				if(!$vs_type){
+					$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+				}
+				print "<div class='leader'>".$vs_type."</div>";
 				if(($pn_photo_object_type_id == $t_object->get('ca_objects.type_id')) | ($pn_digi_photo_object_type_id == $t_object->get('ca_objects.type_id'))){
 					if ($va_production_title = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('production'), 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
 						$vs_page_title = "<h2>".$va_production_title."</h2>";
@@ -143,7 +157,7 @@
 				}
 				if($vn_show_label_as_title){
 					print $vs_page_title;					
-					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+					if ($va_source_date = str_replace(" - ", "&mdash;", $t_object->get('ca_objects.sourceDate'))) {
 						print "<h3>".$va_source_date."</h3>";
 					}
 				}else{
@@ -158,7 +172,7 @@
 					}
 				}
 				if(!$vn_show_label_as_title){
-					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+					if ($va_source_date = str_replace(" - ", "&mdash;", $t_object->get('ca_objects.sourceDate'))) {
 						$vs_buf.= "<div class='unit'><span class='label'>Date</span>".$va_source_date."</div>";
 					}
 				}

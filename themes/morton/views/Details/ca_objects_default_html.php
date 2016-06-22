@@ -58,7 +58,7 @@
 						$va_dims = array();
 						foreach ($va_dimensions_list as $va_dims_key => $va_dimensions) {
 							foreach ($va_dimensions as $va_dim => $va_dimension) {
-								if ($va_dimension['is_primary'] == 'yes'){
+								#if ($va_dimension['is_primary'] == 'yes'){
 									if ($va_dimension['dimensions_length']) {
 										$va_dims[] = $va_dimension['dimensions_length']." L";
 									}
@@ -71,14 +71,15 @@
 									if ($va_dimension['dimensions_weight']) {
 										$va_dims[] = $va_dimension['dimensions_weight']." Weight";
 									}
-									$va_dims_buf .= join(' x ', $va_dims)."<br/>";
+									$va_dims_buf .= join(' x ', $va_dims);
 									#if ($va_dimension['measurement_notes']) {
 									#	$va_dims_buf .= "<b>Notes: </b>".$va_dimension['measurement_notes']."<br/>";
 									#}
-									#if ($va_dimension['measurement_type']) {
-									#	$va_dims_buf .= "<b>Dimensions type: </b>".$va_dimension['measurement_type'];
-									#}
-								}																																								
+									if ($va_dimension['measurement_type']) {
+										$va_dims_buf .= " (".$va_dimension['measurement_type'].")";
+									}
+									$va_dims_buf .= "<br/>"; 
+								#}																																								
 							}
 						}
 						$va_format_buf .= "<div class='unit'><h6>Dimensions</h6>".$va_dims_buf."</div>";
@@ -141,7 +142,7 @@
 							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>')) {
 								print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
 							}
-							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('appears')))) {
 								print "<div class='unit'><h6>Related Objects</h6>".$va_related_objects."</div>";
 							}
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
@@ -192,9 +193,9 @@
 									print "Public Domain";
 								}								
 							}
-							if (($vs_appeared = $t_object->get('ca_objects.appeared_in')) | ($va_appears = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('appears'))))) {
-								print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."<br/>".$va_appears."</div>";
-							}
+							#if (($vs_appeared = $t_object->get('ca_objects.appeared_in')) | ($va_appears = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('appears'))))) {
+							#	print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."<br/>".$va_appears."</div>";
+							#}
 ?>
 						
 						</div>
