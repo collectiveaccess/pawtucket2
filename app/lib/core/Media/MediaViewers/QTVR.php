@@ -48,7 +48,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				$o_view->setVar('viewer', 'QTVR');
@@ -85,7 +85,7 @@
 					$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $vs_version, $va_viewer_opts));
 				}
 				
-				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data);
+				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
 			}
 			
 			return _t("Could not load viewer");
@@ -94,7 +94,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerData($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			return _t("No data");
 		}
 		# -------------------------------------------------------

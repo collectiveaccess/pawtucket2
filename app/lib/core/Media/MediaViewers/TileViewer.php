@@ -48,7 +48,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				$o_view->setVar('viewer', 'TileViewer');
@@ -63,7 +63,7 @@
 				}
 				if (is_a($t_instance, "ca_object_representations")) {
 					$va_viewer_opts = [
-						'id' => 'caMediaOverlayTileViewer',
+						'id' => ($vs_version == 'tilepic') ? 'caMediaOverlayTileViewer' : 'caMediaOverlayViewer',
 						'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 						'viewer_base_url' => $po_request->getBaseUrlPath(),
 						'annotation_load_url' => caNavUrl($po_request, '*', '*', 'GetAnnotations', array('representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
@@ -100,7 +100,7 @@
 				}
 				
 					
-				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data);
+				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
 			}
 			
 			return _t("Could not load viewer");
@@ -109,7 +109,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerData($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			return _t("No data");
 		}
 		# -------------------------------------------------------

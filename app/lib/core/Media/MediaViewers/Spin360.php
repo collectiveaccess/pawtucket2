@@ -48,7 +48,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				$o_view->setVar('viewer', 'Spin360');
@@ -84,7 +84,7 @@
 				
 				$o_view->setVar('images', $t_instance->getFileList(null, null, null, ['original']));
 					
-				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data);
+				return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
 			}
 			
 			return _t("Could not load viewer");
@@ -93,7 +93,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerData($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				if ($t_instance = caGetOption('t_instance', $pa_data, null)) {
 					if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {

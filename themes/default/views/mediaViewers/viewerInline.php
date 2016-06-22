@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/views/mediaViewers/TileViewer.php :
+ * themes/default/views/mediaViewers/viewerInline.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	
-	print $this->getVar('viewerHTML');
 ?>
+<div id="caMediaViewer">
+	<?php print $this->render($this->getVar('viewer').".php"); ?>
+</div>	

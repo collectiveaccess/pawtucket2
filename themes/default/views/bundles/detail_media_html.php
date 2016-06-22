@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -65,7 +65,7 @@
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
 					// load media via ajax
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
-					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSliderepresentation_ids[i], function(e) {
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaOverlay', array('object_id' => $vn_object_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/include_tool_bar/1/display_type/detail/containerID/slide' + caSliderepresentation_ids[i], function(e) {
 						// update carousel height with current slide height after ajax load
 						jQuery(this).find('img').bind('load', function() {
 							jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
@@ -73,7 +73,8 @@
 					});
 				} else {
 					// update carousel height with current slide height
-					$('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+					var h = $('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height();
+					if (h > 0) $('.jcarousel').height(h);
 				}
 			}
 <?php

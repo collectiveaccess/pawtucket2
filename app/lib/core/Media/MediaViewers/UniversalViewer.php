@@ -48,7 +48,7 @@
 		/**
 		 *
 		 */
-		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				
@@ -59,15 +59,17 @@
 				
 				$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', 'GetMediaData', $va_params, ['absolute' => true]));
 				$o_view->setVar('viewer', 'UniversalViewer');
+				$o_view->setVar('width', caGetOption('width', $pa_data['display'], null));
+				$o_view->setVar('height', caGetOption('height', $pa_data['display'], null));
 			}
 			
-			return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data);
+			return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function getViewerData($po_request, $ps_identifier, $pa_data=null) {
+		public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				if ($t_instance = caGetOption('t_instance', $pa_data, null)) {
 				

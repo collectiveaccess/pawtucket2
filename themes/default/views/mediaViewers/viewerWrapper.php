@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 ?>
-<div id="caMediaOverlayContent">
+<div id="caMediaOverlayContent" >
 	<?php print $this->render($this->getVar('viewer').".php"); ?>
 </div>	
 <div class="caMediaOverlayControls">
