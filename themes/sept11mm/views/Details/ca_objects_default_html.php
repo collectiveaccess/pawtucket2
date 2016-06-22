@@ -127,17 +127,16 @@
 				{{{<ifdef code="ca_objects.public_historical_notes"><div class="unit unitExternalLinks"><b>Historical Notes</b><br/>^ca_objects.public_historical_notes</unit></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.curators_comment"><div class="unit unitExternalLinks" id="curatorComments"><b>Curator's Comment</b><br/>^ca_objects.curators_comment<br/><a href="#" onclick='jQuery("#curatorComments").slideToggle(); jQuery("#curatorCommentsLink").slideToggle(); return false;' class='commentHide'><span class="glyphicon glyphicon-chevron-up"></span> HIDE</a></unit></ifdef>}}}
+			<div id="detailTools" style="clear:none;">
 <?php
 		if($t_object->get("ca_objects.curators_comment")){
 ?>
-			<div class="detailTool" style="float:none; margin:0px;" id="curatorCommentsLink"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); jQuery("#curatorCommentsLink").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comment</a></div><!-- end detailTool -->
+			<div class="detailTool" id="curatorCommentsLink"><a href='#' onclick='jQuery("#curatorComments").slideToggle(); jQuery("#curatorCommentsLink").slideToggle(); return false;'><span class="glyphicon glyphicon-align-justify"></span>Curator's Comment</a></div><!-- end detailTool -->
 <?php
 		}
 ?>
-			<div id="detailTools" style="clear:none;">
 				<div class="detailTool"><span class="glyphicon glyphicon-book"></span><?php print caNavLink($this->request, _t("Ask a Question"), "", "", "Contact", "Form", array("contactType" => "reference")); ?></div><!-- end detailTool -->
 				<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id"))); ?></div><!-- end detailTool -->
-				<div class="detailTool last"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->	
 			</div><!-- end detailTools -->	
 			<div style='clear:both;'></div>
 	</div><!-- end col -->
