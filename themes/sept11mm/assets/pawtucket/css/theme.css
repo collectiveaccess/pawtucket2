@@ -1177,6 +1177,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 		margin-bottom:15px;
 	}
 }
+.detail .repViewerCont img{
+	max-height: 550px;
+	object-fit: contain;
+}
 .detail .unit{
 	margin-bottom:20px;
 }
