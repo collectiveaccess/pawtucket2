@@ -98,7 +98,7 @@
 				if ($t_instance = caGetOption('t_instance', $pa_data, null)) {
 					if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {
 						// error: invalid identifier
-						die("Invalid identifier $ps_identifier");
+						throw new ApplicationException(_t('Invalid identifier %1', $ps_identifier));
 					}
 					
 					if (($vn_page = ($va_identifier['page']) - 1) >= 0) {

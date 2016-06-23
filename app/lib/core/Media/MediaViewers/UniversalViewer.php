@@ -55,9 +55,9 @@
 				$va_params = ['identifier' => $ps_identifier];
 				
 				// Pass subject key when getting viewer data
-				if ($pa_data['t_subject']) { $va_params[$pa_data['t_subject']->primaryKey()] = $pa_data['t_subject']->getPrimaryKey(); }
+				if ($pa_data['t_subject']) { $va_params['id'] = $pa_data['t_subject']->getPrimaryKey(); }
 				
-				$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', 'GetMediaData', $va_params, ['absolute' => true]));
+				$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', $po_request->getAction().'/GetMediaData', $va_params, ['absolute' => true]));
 				$o_view->setVar('viewer', 'UniversalViewer');
 				$o_view->setVar('width', caGetOption('width', $pa_data['display'], null));
 				$o_view->setVar('height', caGetOption('height', $pa_data['display'], null));
@@ -108,7 +108,7 @@
 					}
 					
 					
-					$o_view->setVar('request', caGetOption('request', $pa_data, null));
+					$o_view->setVar('request', $po_request);
 					$o_view->setVar('identifier', $ps_identifier);
 					$o_view->setVar('data', $pa_data);
 					

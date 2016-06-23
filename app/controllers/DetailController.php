@@ -82,6 +82,19 @@
  			AssetLoadManager::register("maps");
  			
  			//
+ 			// Media viewer
+ 			//
+ 			if ($this->request->getActionExtra() == 'GetMediaInline') {
+ 				return $this->GetMediaInline();
+ 			}
+ 			if ($this->request->getActionExtra() == 'GetMediaOverlay') {
+ 				return $this->GetMediaOverlay();
+ 			}
+ 			if ($this->request->getActionExtra() == 'GetMediaData') {
+ 				return $this->GetMediaData();
+ 			}
+ 			
+ 			//
 			// Return facet content
 			//	
 			if(($ps_facet = $this->request->getParameter('facet', pString)) || ($ps_remove_facet = $this->request->getParameter('removeCriterion', pString))) {
@@ -1374,149 +1387,57 @@
 		/**
 		 * Returns content for overlay containing details for object representation or attribute values of type "media"
 		 *
-		 * Expects the following request parameters:
-		 *		representation_id = the id of the ca_object_representations record to display; the representation must belong to the specified object
-		 *		value_id =
-		 *
 		 *	Optional request parameters:
-		 *		version = The version of the representation to display. If omitted the display version configured in media_display.conf is used
-		 *
+		 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 		 */
-		public function GetMediaOverlay() {
-			//list($vn_subject_id, $t_subject) = $this->_initView();
-			$vn_subject_id = $this->request->getParameter('object_id', pInteger);
-			$t_subject = new ca_objects($vn_subject_id);
+		public function GetMediaOverlay($pa_options=null) {
+			$o_dm = Datamodel::load();
+			$pn_subject_id = $this->request->getParameter('id', pInteger);
+			$vs_subject = $this->opa_detail_types[$this->request->getAction()]['table'];
+			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $this->opa_detail_types[$this->request->getAction()]['table']))) {
+				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+			}
+			if (!$pt_subject->load($pn_subject_id)) { 
+				throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+			}
 			
-			if (!($vs_display_type = $this->request->getParameter('display', pString))) { $vs_display_type = 'media_overlay'; }
+			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+			$pa_options['display'] = $ps_display_type;
 			
-			
-			if (!$t_subject->isReadable($this->request)) { 
+			if (!$pt_subject->isReadable($this->request)) { 
 				throw new ApplicationException(_t('Cannot view media'));
 			}
-			
-			if ($pn_value_id = $this->request->getParameter('value_id', pInteger)) {
-				//
-				// View FT_MEDIA attribute media 
-				//
-				$t_instance = new ca_attribute_values($pn_value_id);
-				$t_instance->useBlobAsMediaField(true);
-				$t_attr = new ca_attributes($t_instance->get('attribute_id'));
-				$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
-				$t_subject->load($t_attr->get('row_id'));
-
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($vs_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
-				}
-
-				$this->response->addContent($vs_viewer_name::getViewerHTML(
-					$this->request, 
-					"attribute:{$pn_value_id}", 
-					['context' => $vs_display_type, 't_instance' => $t_instance, 't_subject' => $t_subject, 'display' => caGetMediaDisplayInfo($vs_display_type, $vs_mimetype)])
-				);
-			} elseif ($pn_representation_id = $this->request->getParameter('representation_id', pInteger)) {
-				//
-				// View object representation
-				//
-				$t_instance = new ca_object_representations($pn_representation_id);
-			
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($vs_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
-				}
-			
-				$va_display_info = caGetMediaDisplayInfo($vs_display_type, $vs_mimetype);
-				if ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null)) {
-					$vn_image_count = $t_subject->numberOfRepresentationsOfClass('image');
-					$vn_rep_count = $t_subject->getRepresentationCount();
-				
-					// Are there enough representations? Are all representations images? 
-					if (($vn_image_count == $vn_rep_count) && ($vn_image_count >= $vn_use_universal_viewer_for_image_list_length)) {
-						$va_display_info['viewer'] = $vs_viewer_name = 'UniversalViewer';
-					}
-				}
-			
-				if(!$vn_subject_id) {
-					if (is_array($va_subject_ids = $t_instance->get($t_subject->tableName().'.'.$t_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
-						$vn_subject_id = array_shift($va_subject_ids);
-					} else {
-						$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
-						return;
-					}
-				}
-
-				$this->response->addContent($vs_viewer_name::getViewerHTML(
-					$this->request, 
-					"representation:{$pn_representation_id}", 
-					['context' => $vs_display_type, 't_instance' => $t_instance, 't_subject' => $t_subject, 'display' => $va_display_info],
-					['viewerWrapper' => $this->request->getParameter('inline', pInteger) ? 'viewerInline' : null]
-				));
-			} else {
-				throw new ApplicationException(_t('Invalid id'));
-			}
+		
+			$this->response->addContent(caGetMediaViewerHTML(caGetMediaIdentifier($this->request), $this->request, $pt_subject, $pa_options));
+		}
+		# -------------------------------------------------------
+		/** 
+		 * Return media viewer HTML for use inline on a detail.
+		 */
+		public function GetMediaInline() {
+			$this->GetMediaOverlay(['inline' => true]);
 		}
 		# -------------------------------------------------------
 		/**
-		 *
+		 * Return media viewer data via AJAX callback for viewers that require it.
 		 */
 		public function GetMediaData() {
-			//list($vn_subject_id, $t_subject) = $this->_initView();
+			$o_dm = Datamodel::load();
+			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+			$pn_subject_id = $this->request->getParameter('id', pInteger);
+			$vs_subject = $this->opa_detail_types[$this->request->getAction()]['table'];
+			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $this->opa_detail_types[$this->request->getAction()]['table']))) {
+				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+			}
+			if (!$pt_subject->load($pn_subject_id)) { 
+				throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+			}
 			
-			if (!($vs_display_type = $this->request->getParameter('display', pString))) { $vs_display_type = 'media_overlay'; }
-			
-			$vn_subject_id = $this->request->getParameter('object_id', pInteger);
-			$t_subject = new ca_objects($vn_subject_id);
-			
-		
-			if (!$t_subject->isReadable($this->request)) { 
+			if (!$pt_subject->isReadable($this->request)) { 
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$ps_identifier = $this->request->getParameter('identifier', pString);
-			if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {
-				throw new ApplicationException(_t('Invalid identifier %1', $ps_identifier));
-			}
-		
-			$app = AppController::getInstance();
-			$app->removeAllPlugins();
-		
-			switch($va_identifier['type']) {
-				case 'representation':
-					$t_instance = new ca_object_representations($va_identifier['id']);
-				
-					if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($vs_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-						throw new ApplicationException(_t('Invalid viewer'));
-					}
-				
-					$va_display_info = caGetMediaDisplayInfo($vs_display_type, $vs_mimetype);
-					if ($t_subject && ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null))) {
-						$vn_image_count = $t_subject->numberOfRepresentationsOfClass('image');
-						$vn_rep_count = $t_subject->getRepresentationCount();
-				
-						// Are there enough representations? Are all representations images? 
-						if (($vn_image_count == $vn_rep_count) && ($vn_image_count >= $vn_use_universal_viewer_for_image_list_length)) {
-							$va_display_info['viewer'] = $vs_viewer_name = 'UniversalViewer';
-						}
-					}
-				
-					$this->response->addContent($vs_viewer_name::getViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => $va_display_info]));
-					return;
-					break;
-				case 'attribute':
-					$t_instance = new ca_attribute_values($va_identifier['id']);
-					$t_instance->useBlobAsMediaField(true);
-					$t_attr = new ca_attributes($t_instance->get('attribute_id'));
-					$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
-					$t_subject->load($t_attr->get('row_id'));
-				
-					if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($vs_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
-						throw new ApplicationException(_t('Invalid viewer'));
-					}
-				
-					$this->response->addContent($vs_viewer_name::getViewerData($this->request, $ps_identifier, ['request' => $this->request, 't_subject' => $t_subject, 't_instance' => $t_instance, 'display' => caGetMediaDisplayInfo($vs_display_type, $vs_mimetype)]));
-					return;
-					break;
-			}
-		
-			throw new ApplicationException(_t('Invalid type'));
+			$this->response->addContent(caGetMediaViewerData(caGetMediaIdentifier($this->request), $this->request, $pt_subject, ['display' => $ps_display_type]));
 		}
  		# -------------------------------------------------------
 	}

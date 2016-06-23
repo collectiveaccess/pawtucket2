@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/views/mediaViewers/MediaElement.php :
+/* ----------------------------------------------------------------------
+ * app/service/views/json_error.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2012 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,10 +23,19 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Media
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
-	print $this->getVar('viewerHTML');
+
+	header('Content-type: application/json');
+
+	$va_return = array(
+		"ok" => false,
+		"errors" => $this->getVar('errors'),
+	);
+
+	if($this->getVar('pretty_print')){
+		print caFormatJson(json_encode($va_return));
+	} else {
+		print json_encode($va_return);
+	}
+?>

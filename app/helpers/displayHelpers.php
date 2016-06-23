@@ -3246,13 +3246,23 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	
 	# ------------------------------------------------------------------
 	/**
- 	 * 
+ 	 * Returns media presentation viewer HTML for one or more records. This is the entry point when rendering media
+ 	 * using per-mimetype settings in media_display.conf. Renders HTML using  views/bundles/representation_viewer_html.php.
+ 	 * This will render media viewers for many items. To render a viewer for a specific item see caGetMediaViewerHTML()
  	 *
- 	 * @param RequestHTTP $po_request
- 	 * @param BaseModel|SearchResult $po_data
- 	 * @param array $pa_options
+ 	 * @param RequestHTTP $po_request The current request
+ 	 * @param BaseModel|SearchResult $po_data A model instance (ca_object_representations or a model inheriting from RepresentableBaseModel) or a search result (for a RepresentableBaseModel table) for which to render the viewer. 
+ 	 * @param array $pa_options Options include:
+ 	 *		primaryOnly = return only primary representations. [Default is false]
+ 	 *		t_subject = the subject
+ 	 *		subject = 
+ 	 * 		subject_id =
+ 	 *		currentRepClass = CSS class to apply to thumbnail of currently visible representation. [Default is "active"]
+ 	 *		dontShowPlaceholder = Don't use placeholder when no representation is available. [Default is false]
  	 *
  	 * @return string HTML output
+ 	 *
+ 	 * @see caGetMediaViewerHTML
  	 */
  	function caRepresentationViewer($po_request, $po_data, $pa_options=null) {
  		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
@@ -3261,7 +3271,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		$va_access_values = caGetUserAccessValues($po_request);
 		
  		// options
- 			$pb_primary_only = caGetOption('primaryOnly', $pa_options, false);
+ 		$pb_primary_only = caGetOption('primaryOnly', $pa_options, false);
+ 		$ps_active_representation_class = caGetOption('currentRepClass', $pa_options, 'active');
+ 		$pt_subject = caGetOption('t_subject', $pa_options, null);
+ 		$pb_dont_show_placeholder = caGetOption('dontShowPlaceholder', $pa_options, false);
  		
  		$t_instance = $o_dm->getInstanceByTableName($po_data->tableName(), true);
  		$vo_data = null;
@@ -3294,15 +3307,15 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				}
 			}
 	
+			$o_view->setVar('representation_id', $vn_representation_id);
 			$o_view->setVar('representation_count', sizeof($va_rep_ids));
 			$o_view->setVar('representation_ids', $va_rep_ids);
 			
-			$o_view->setVar('t_subject', $t_subject = caGetOption('t_subject', $pa_options, null));
-			$o_view->setVar('subject', caGetOption('subject', $pa_options, null));
-			$o_view->setVar('subject_id', $vn_subject_id = caGetOption('subject_id', $pa_options, null));
-			$o_view->setVar($t_subject->primaryKey(), caGetOption('subject_id', $pa_options, null));
-			$o_view->setVar('representation_id', $vn_representation_id);
-			$o_view->setVar('active_representation_class', caGetOption('currentRepClass', $pa_options, 'active'));
+			$o_view->setVar('t_subject', $pt_subject);
+			$o_view->setVar('subject', $pt_subject->tableName());
+			$o_view->setVar('subject_id', $vn_subject_id = $pt_subject->getPrimaryKey());
+			$o_view->setVar($pt_subject->primaryKey(), $vn_subject_id);
+			$o_view->setVar('active_representation_class', $ps_active_representation_class);
  			
  			// Fetch representations for display
 			if(sizeof($va_rep_ids) > 0){
@@ -3316,15 +3329,12 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		
 				while($qr_reps->nextHit()) {
 					$vn_rep_id = $qr_reps->get('representation_id');
-					$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $vn_subject_id, array("display" => $vs_display_type));
-
-					$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
-				
+					
 					if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($qr_reps->tableName()).'.rank') : 0)) {
 						$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 					}
 				
-					$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar.$vs_caption."</div></div>");
+					$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => $va_rep_tags[$vn_rep_id]);
 				
 					$va_annotation_list = array();
 					if ($vs_show_annotations === 'viewer') {		// when annotations are configured
@@ -3365,7 +3375,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				
 					$vn_count++;
 				}
-			} elseif(!caGetOption('dontShowPlaceholder', $pa_options, false)) {
+			} elseif(!$pb_dont_show_placeholder) {
 				if(!$po_request->config->get("disable_lightbox")){
 					$o_lightbox_config = caGetLightboxConfig();
 				
@@ -3395,7 +3405,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  	}
 	# ------------------------------------------------------------------
 	/**
-	 *
+	 * Returns an array of representations rendered as slide
 	 */
  	function caRepresentationViewerHTMLBundles($po_request, $po_data, $pa_options=null) {
  		$ps_display_type = caGetOption('display', $pa_options, null);
@@ -3426,33 +3436,36 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				if (is_array($va_subject_ids = $t_instance->get($t_subject->tableName().'.'.$t_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
 					$vn_subject_id = array_shift($va_subject_ids);
 				} else {
-					//$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
 					throw new ApplicationException(_t('invalid object/representation'));
 					return;
 				}
 			}
+			
+			$vs_tool_bar = caRepToolbar($po_request, $po_data, $pn_subject_id, array("display" => $ps_display_type));
 
-			$va_reps[$po_data->get('ca_object_representations.representation_id')] = $vs_viewer_name::getViewerHTML(
+			$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
+			
+			$va_reps[$vn_rep_id = $po_data->get('ca_object_representations.representation_id')] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_viewer_name::getViewerHTML(
 				$po_request, 
 				"representation:{$vn_representation_id}", 
-				['context' => $ps_display_type , 't_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info],
+				['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info],
 				['viewerWrapper' => 'viewerInline']
-			);
+			).$vs_tool_bar.$vs_caption."</div></div>";
  		}
  		return $va_reps;
  	}
  	# ---------------------------------------
 	/*
-	 * Toolbar for representation when displayed on detail pages and in gallery
+	 * Toolbar for representation when displayed on object detail pages and in gallery
 	 *
-	 * @param RequestHTTP $po_request
-	 * @param ca_object_representations $pt_representation  Representation instance
-	 * @param int $pn_object_id  object_id for ca_objects row representation is attached to 
+	 * @param RequestHTTP $po_request The current request
+	 * @param ca_object_representations $pt_representation  A ca_object_representations instance to render the toolbar for
+	 * @param int $pn_subject_id  The id of the subject record to which the object representation is linked to
 	 * @param $pa_options array includes:
 	 *			display = media_display.conf display version to use
 	 * @return string HTML output
 	 */
-	function caRepToolbar($po_request, $pt_representation, $pn_object_id, $pa_options=null){
+	function caRepToolbar($po_request, $pt_representation, $pn_subject_id, $pa_options=null){
 		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
 		$vs_display_type = (isset($pa_options['display']) && $pa_options['display']) ? $pa_options['display'] : 'detail';	
 		$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
@@ -3460,20 +3473,189 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 
 		$vs_tool_bar = "<div class='detailMediaToolbar'>";
 		if(!$va_rep_display_info["no_overlay"]){
-			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('object_id' => $pn_object_id, 'representation_id' => $pt_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail',  $po_request->getAction().'/GetMediaOverlay', array('id' => $pn_subject_id, 'representation_id' => $pt_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
+			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("id" => $pn_subject_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
-		if(caObjectsDisplayDownloadLink($po_request, $pn_object_id)){
+		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = $va_download_display_info['display_version'];
-			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $pt_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', $po_request->getAction().'/DownloadRepresentation', '', array('representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 		}
 		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 		
 		return $vs_tool_bar;
+	}
+	# ---------------------------------------
+	/**
+	 * Extract and IIIF service-style media identifier from the current request. First checks for a "identifier" parameter, which is
+	 * assumed to be an IIIF service-style media identifier (Ex. representation:114; attribute:29341). If 
+	 * that is not defined the numeric representation_id or value_id parameters are converted into representation and attribute IIIF identifiers respectively.
+	 *
+	 * @param RequestHTTP $po_request The current request
+	 * @return string IIIF service-style media identifier or null if no identifier is found
+	 */
+	function caGetMediaIdentifier($po_request) {		
+		if (!($ps_identifier = $po_request->getParameter('identifier', pString))) {
+			if($pn_representation_id = $po_request->getParameter('representation_id', pInteger)) { 
+				$ps_identifier = "representation:{$pn_representation_id}";
+			} elseif($pn_value_id = $po_request->getParameter('value_id', pInteger)) {
+				$ps_identifier = "attribute:{$pn_value_id}";
+			}
+		}
+		return $ps_identifier ? $ps_identifier : null;
+	}
+	# ---------------------------------------
+	/*
+	 * Return a  
+	 *
+	 */
+	function caGetMediaViewerHTML($ps_identifier, $po_request, $pt_subject, $pa_options=null) {
+		if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {
+			throw new ApplicationException(_t('Invalid identifier %1', $ps_identifier));
+		}
+		
+		$ps_display_type = caGetOption('display', $pa_options, 'media_overlay');
+		$pb_inline = (bool)caGetOption('inline', $pa_options, false);
+		
+		$vs_caption = $vs_tool_bar = '';
+		if ($pb_inline) {
+			$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $pt_subject->getWithTemplate($vs_template) : '';
+		}
+				
+		switch($va_identifier['type']) {
+			case 'representation':
+				//
+				// View object representation
+				//
+				$pn_representation_id = (int)$va_identifier['id'];
+				$t_instance = new ca_object_representations($pn_representation_id);
+			
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+			
+				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
+				if ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null)) {
+					$vn_image_count = $pt_subject->numberOfRepresentationsOfClass('image');
+					$vn_rep_count = $pt_subject->getRepresentationCount();
+				
+					// Are there enough representations? Are all representations images? 
+					if (($vn_image_count == $vn_rep_count) && ($vn_image_count >= $vn_use_universal_viewer_for_image_list_length)) {
+						$va_display_info['viewer'] = $vs_viewer_name = 'UniversalViewer';
+					}
+				}
+			
+				if(!$pn_subject_id) {
+					if (is_array($va_subject_ids = $t_instance->get($pt_subject->tableName().'.'.$pt_subject->primaryKey(), array('returnAsArray' => true))) && sizeof($va_subject_ids)) {
+						$pn_subject_id = array_shift($va_subject_ids);
+					} else {
+						//$this->postError(1100, _t('Invalid object/representation'), 'ObjectEditorController->GetRepresentationInfo');
+						return;
+					}
+				}
+			
+				$vs_viewer = $vs_viewer_name::getViewerHTML(
+					$po_request, 
+					"representation:{$pn_representation_id}", 
+					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info],
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null]
+				);
+				
+				if ($pb_inline) {	
+					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject->getPrimaryKey(), array("display" => $ps_display_type));
+					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
+				}
+				
+				return $vs_viewer;
+				break;
+			case 'attribute':
+				//
+				// View FT_MEDIA attribute media 
+				//
+				$pn_value_id = (int)$va_identifier['id'];
+				$t_instance = new ca_attribute_values($pn_value_id);
+				$t_instance->useBlobAsMediaField(true);
+				$t_attr = new ca_attributes($t_instance->get('attribute_id'));
+				
+				$o_dm = Datamodel::load();
+				
+				$pt_subject = $o_dm->getInstanceByTableNum($t_attr->get('table_num'), true);
+				$pt_subject->load($t_attr->get('row_id'));
+
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+
+				$vs_viewer = $vs_viewer_name::getViewerHTML(
+					$po_request, 
+					"attribute:{$pn_value_id}", 
+					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => caGetMediaDisplayInfo($ps_display_type, $vs_mimetype)],
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null]
+				);
+				
+				if ($pb_inline) {
+					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject->getPrimaryKey(), array("display" => $ps_display_type));
+					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}{$vs_tool_bar}</div></div>";
+				}
+				
+				return $vs_viewer;
+				break;
+		}
+		
+		throw new ApplicationException(_t('Invalid identifier', $ps_identifier));
+	}
+	# ---------------------------------------
+	/*
+	 * Returns data for  
+	 *
+	 */
+	function caGetMediaViewerData($ps_identifier, $po_request, $pt_subject, $pa_options=null) {
+		if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {
+			throw new ApplicationException(_t('Invalid identifier %1', $ps_identifier));
+		}
+		
+		$ps_display_type = caGetOption('display', $pa_options, 'media_overlay');
+		
+		switch($va_identifier['type']) {
+			case 'representation':
+				$t_instance = new ca_object_representations($va_identifier['id']);
+			
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+			
+				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
+				if ($pt_subject && ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null))) {
+					$vn_image_count = $pt_subject->numberOfRepresentationsOfClass('image');
+					$vn_rep_count = $pt_subject->getRepresentationCount();
+			
+					// Are there enough representations? Are all representations images? 
+					if (($vn_image_count == $vn_rep_count) && ($vn_image_count >= $vn_use_universal_viewer_for_image_list_length)) {
+						$va_display_info['viewer'] = $vs_viewer_name = 'UniversalViewer';
+					}
+				}
+			
+				return $vs_viewer_name::getViewerData($po_request, $ps_identifier, ['t_subject' => $pt_subject, 't_instance' => $t_instance, 'display' => $va_display_info]);
+				break;
+			case 'attribute':
+				$t_instance = new ca_attribute_values($va_identifier['id']);
+				$t_instance->useBlobAsMediaField(true);
+				$t_attr = new ca_attributes($t_instance->get('attribute_id'));
+				$pt_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+				$pt_subject->load($t_attr->get('row_id'));
+			
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
+					throw new ApplicationException(_t('Invalid viewer'));
+				}
+			
+				return $vs_viewer_name::getViewerData($po_request, $ps_identifier, ['t_subject' => $pt_subject, 't_instance' => $t_instance, 'display' => caGetMediaDisplayInfo($ps_display_type, $vs_mimetype)]);
+				break;
+		}
+		
+		throw new ApplicationException(_t('Invalid identifier', $ps_identifier));
 	}
 	# ------------------------------------------------------------------
 	/**
