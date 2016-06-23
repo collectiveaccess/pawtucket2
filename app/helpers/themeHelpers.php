@@ -800,7 +800,7 @@
 			$va_params[] = $pa_ids;
 		}
 
-		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
+		$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
 			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
@@ -808,7 +808,6 @@
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
 				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
-			GROUP BY {$vs_table}.{$vs_pk}
 		";
 
 		$o_db = $t_instance->getDb();
