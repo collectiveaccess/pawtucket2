@@ -458,7 +458,9 @@
 
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				
-				if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank') : 0)) {
+				if($vn_rep_id == $vn_primary_id){
+					$vn_index = 0;
+				}elseif(!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank'))){
 					$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 				}
 				
