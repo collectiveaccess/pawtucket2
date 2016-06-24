@@ -1127,7 +1127,8 @@ a.thumbControl:hover {
 .colContents a {
 	color:#000;
 	font-size: 12px;
-    text-decoration: underline;
+    text-decoration: none;
+    margin-left:-5px;
 }
 .colContents div {
 	margin-bottom:10px;
@@ -1144,10 +1145,32 @@ a.faDownload:hover {
 	background-color:#333;
 	color:#fff;
 }
+.borderlevel {
+	border-left:1px solid #333;
+}
+.borderlevel .fa {
+	font-size: 15px;
+    margin-left: -21px;
+    vertical-align: bottom;
+    display: inline-block;
+    line-height: 1.1em;
+}
+.borderlevel a {
+	padding-left:10px;
+	margin-left:5px;
+}
 .collLevels a.readmore-js-toggle {
 	text-align:right;
 	font-size:12px;
 	margin-top:-10px;
+}
+.colspacer {
+    width: 5px;
+    display: inline-block;
+}
+.showme {
+    background-color: #ddd;
+    padding: 5px 15px 5px 15px;
 }
 
 
