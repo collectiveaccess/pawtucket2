@@ -52,7 +52,7 @@
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				
-				$va_params = ['identifier' => $ps_identifier, 'content' => $po_request->getAction()];
+				$va_params = ['identifier' => $ps_identifier, 'context' => caGetOption('context', $pa_options, $po_request->getAction())];
 				
 				// Pass subject key when getting viewer data
 				if ($pa_data['t_subject']) { $va_params['id'] = $pa_data['t_subject']->getPrimaryKey(); }

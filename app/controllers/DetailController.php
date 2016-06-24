@@ -1408,6 +1408,7 @@
 			
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
 			$pa_options['display'] = $ps_display_type;
+			$pa_options['context'] = $this->request->getParameter('context', pString);
 			
 			if (!$pt_subject->isReadable($this->request)) { 
 				throw new ApplicationException(_t('Cannot view media'));
@@ -1446,7 +1447,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type]));
+			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
 		}
  		# -------------------------------------------------------
 	}
