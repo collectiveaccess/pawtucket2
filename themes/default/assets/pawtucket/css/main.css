@@ -1700,7 +1700,7 @@ a.readmore-js-toggle{
 	font-weight:normal;
 }	
 .results a .glyphicon, .results a .fa {
-	color:#ababab;
+	color:#ababab !important;
 }
 .results a.active .glyphicon {
 	color:#454545;
@@ -1848,6 +1848,7 @@ a.readmore-js-toggle{
     position: relative;
     z-index: 10;
     overflow-y: auto;
+    display:block;
 }
 #bRefine H3 {
 	margin:0px;
@@ -1870,12 +1871,43 @@ a.readmore-js-toggle{
 #bRefine div {
 	margin-bottom:5px;
 }
-
-#bRefine.fixed {    
-    position: fixed;     
-    top: 0px; 
-    margin-top:0px;
-} 
+@media (min-width: 768px) {
+	#bRefine.fixed {    
+		position: fixed;     
+		top: 0px; 
+		margin-top:0px;
+	} 
+}
+#bRefineButton, #bRefineClose{
+	display:none;
+}
+@media (max-width: 767px) {
+	#bRefine {
+		display:none;
+		position: fixed; 
+		z-index:10000;    
+		top: 0px; 
+		left:0px;
+		right:0px;
+		margin-top:0px;
+		overflow:auto !important;
+		height:100% !important;
+		margin:0px;
+		width:100%
+	}
+	#bRefineButton{
+		display:inline;
+	}
+	#bRefineButton .fa{
+		color:#666 !important;
+		top:-2px;
+		position:relative;
+	}
+	#bRefineClose{
+		display:block;
+		font-size:20px !Important;
+	}
+}
 
 #bMorePanel{
 	position:fixed;
@@ -1887,7 +1919,7 @@ a.readmore-js-toggle{
 	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
 	padding:10px;
 	display:none;
-	z-index:10000;
+	z-index:10001;
 	min-width:450px;
 }
 #bMorePanel .bFilterCount{
@@ -1948,6 +1980,21 @@ a.readmore-js-toggle{
 #bMorePanel #bLetterBar a{
 	text-decoration:none;
 	font-weight:bold;
+}
+#bMorePanelClose{
+	display:none;
+}
+@media (max-width: 767px) {
+	#bMorePanel{
+		min-width:100px;
+		left:0px;
+	}
+	#bMorePanel #bScrollList{
+		width:200px;
+	}
+	#bMorePanelClose{
+		display:inline;
+	}
 }
 
 /* search/browse results: list mode */
