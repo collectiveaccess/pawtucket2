@@ -52,12 +52,12 @@
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				$o_view->setVar('identifier', $ps_identifier);
 				
-				$va_params = ['identifier' => $ps_identifier];
+				$va_params = ['identifier' => $ps_identifier, 'content' => $po_request->getAction()];
 				
 				// Pass subject key when getting viewer data
 				if ($pa_data['t_subject']) { $va_params['id'] = $pa_data['t_subject']->getPrimaryKey(); }
 				
-				$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', $po_request->getAction().'/GetMediaData', $va_params, ['absolute' => true]));
+				$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', 'GetMediaData', $va_params, ['absolute' => true]));
 				$o_view->setVar('viewer', 'UniversalViewer');
 				$o_view->setVar('width', caGetOption('width', $pa_data['display'], null));
 				$o_view->setVar('height', caGetOption('height', $pa_data['display'], null));
@@ -86,6 +86,8 @@
 					$pa_data['width'] = $t_instance->getMediaInfo($vs_media_fld, 'original', 'WIDTH');
 					$pa_data['height'] = $t_instance->getMediaInfo($vs_media_fld, 'original', 'HEIGHT');
 					
+					$o_view->setVar('id', 'caMediaOverlayUniversalViewer_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
+				
 					if ((($vs_display_version = caGetOption('display_version', $pa_data['display'], 'tilepic')) == 'tilepic')) {
 						$pa_data['resources'] = $t_instance->getFileList();
 					} else {

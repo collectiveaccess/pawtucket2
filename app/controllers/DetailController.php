@@ -232,20 +232,20 @@
 					$t_representation = $this->getAppDatamodel()->getInstanceByTableName("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
-				$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+				
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
 						$t_subject, 
+						$t_subject,
 						array_merge($va_media_display_info, 
 							array(
 								'display' => 'detail',
 								'showAnnotations' => true, 
 								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
 								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
-								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false),
-								'subject' => $t_subject->tableName(), 't_subject' => $t_subject, 'subject_id' => $t_subject->getPrimaryKey(), 
-								'containerID' => 'cont'
+								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
 							)
 						)
 					)
@@ -1387,14 +1387,19 @@
 		/**
 		 * Returns content for overlay containing details for object representation or attribute values of type "media"
 		 *
-		 *	Optional request parameters:
+		 *	Optional parameters:
 		 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 		 */
 		public function GetMediaOverlay($pa_options=null) {
 			$o_dm = Datamodel::load();
 			$pn_subject_id = $this->request->getParameter('id', pInteger);
-			$vs_subject = $this->opa_detail_types[$this->request->getAction()]['table'];
-			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $this->opa_detail_types[$this->request->getAction()]['table']))) {
+			
+			$pn_subject_id = $this->request->getParameter('id', pInteger);
+			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+				throw new ApplicationException(_t('Invalid context'));
+			}
+			
+			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
 			if (!$pt_subject->load($pn_subject_id)) { 
@@ -1408,7 +1413,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML(caGetMediaIdentifier($this->request), $this->request, $pt_subject, $pa_options));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($pa_options, ['showAnnotations' => true])));
 		}
 		# -------------------------------------------------------
 		/** 
@@ -1425,8 +1430,12 @@
 			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
 			$pn_subject_id = $this->request->getParameter('id', pInteger);
-			$vs_subject = $this->opa_detail_types[$this->request->getAction()]['table'];
-			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $this->opa_detail_types[$this->request->getAction()]['table']))) {
+			
+			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+				throw new ApplicationException(_t('Invalid context'));
+			}
+			
+			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
 			if (!$pt_subject->load($pn_subject_id)) { 
@@ -1437,7 +1446,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerData(caGetMediaIdentifier($this->request), $this->request, $pt_subject, ['display' => $ps_display_type]));
+			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type]));
 		}
  		# -------------------------------------------------------
 	}

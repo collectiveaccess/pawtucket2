@@ -56,9 +56,11 @@
 				$t_instance = $pa_data['t_instance'];
 				$t_subject = $pa_data['t_subject'];
 				
+				$o_view->setVar('id', 'caMediaOverlayThreeJS_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
+				
 				if (is_a($t_instance, "ca_object_representations")) {
 					$va_viewer_opts = [
-						'id' => 'caMediaOverlayThreeJS', 'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%')
+						'id' => $vs_id, 'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%')
 					];
 					
 					if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {
