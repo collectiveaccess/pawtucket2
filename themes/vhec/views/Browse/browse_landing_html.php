@@ -7,8 +7,8 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 ?>
 	<div id='browseTable'>
 		<ul >
-			<li>Browse By: </li>
-			<li><a href="#typeTab">Resource Type</a></li>		
+			<li>Browse: </li>
+			<li><a href="#typeTab">Resource Types</a></li>		
 			<li><a href="#genreTab">Primary Sources</a></li>																				
 		</ul>
 		<div id='typeTab'>	

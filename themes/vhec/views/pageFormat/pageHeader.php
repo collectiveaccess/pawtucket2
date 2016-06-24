@@ -131,6 +131,7 @@
 <?php						
 							print "<li>".caNavLink($this->request, 'About The Collections', '', '', 'About', 'Index')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'Plan a Research Visit', '', '', 'About', 'Index')."</li>\n"; 							
+							print "<li>".caNavLink($this->request, 'Use and Licensing', '', '', 'About', 'Index')."</li>\n"; 							
 							print "<li>".caNavLink($this->request, 'Connect With Us', '', '', 'About', 'Index')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'User Guides', '', '', 'About', 'userguide')."</li>\n"; 
 							print "<li>".caNavLink($this->request, 'Project Funding', '', '', 'About', 'funding')."</li>\n";
@@ -173,6 +174,7 @@
 					print "<li>".caNavLink($this->request, 'For Students', '', '', 'About', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'For Researchers', '', '', 'About', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'CIC', 'first', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Finding Aids', 'first', 'FindingAid', 'Collection', 'Index')."</li>\n";
 					print "<li>".caNavLink($this->request, 'Research Guides', '', '', 'About', 'researchguide')."</li>\n"; 
 					
 					print "</ul>";
@@ -271,9 +273,7 @@
 		
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Research <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
-		print "<li>".caNavLink($this->request, 'Guide to Using the Archives', 'first', '', 'About', 'Index')."</li>\n";
-		print "<li>".caNavLink($this->request, 'Research Request', '', '', 'About', 'Index')."</li>\n"; 
-		print "<li>".caNavLink($this->request, 'Use and Licensing', '', '', 'About', 'Index')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Using the Archives', 'first', '', 'About', 'Index')."</li>\n";
 		print "<li>".caNavLink($this->request, 'Reseach Guides', 'last', '', 'About', 'researchguide/#archives')."</li>\n"; 
 		print "</ul>";
 		print "</li>";			

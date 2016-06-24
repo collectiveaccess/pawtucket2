@@ -18,7 +18,7 @@ body {
 	font-size: 13px;
 	letter-spacing:1px;
 	line-height:1.5em;
-	margin-bottom:75px;
+	margin-bottom:125px;
 	height:100%;
 }
 h1, h2, h3, h4, h5, h6 {
@@ -423,7 +423,7 @@ textarea {
 	margin-top:15px;
 	background-color: #f5f5f5;
 	padding:15px 15px 10px 15px;
-	min-height:400px;
+	min-height:350px;
 	font-weight:bold;
 	letter-spacing:1px;
 }
