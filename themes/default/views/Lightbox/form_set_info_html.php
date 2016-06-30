@@ -34,6 +34,8 @@
 	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
 	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$vs_description_attribute 		= $this->getVar("description_attribute");
+
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("%1 Information", ucfirst($vs_lightbox_displayname)); ?></H1>
@@ -51,7 +53,7 @@
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='description' class='form-control' rows='3'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">

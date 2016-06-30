@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,25 +28,16 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
- 	class GalleryController extends ActionController {
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 *
- 		 */
- 		
+ 	class GalleryController extends BasePawtucketController {
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            }
-            
+ 			
  			$this->config = caGetGalleryConfig();
  			$this->opo_datamodel = Datamodel::load();
- 			$va_access_values = caGetUserAccessValues($this->request);
- 		 	$this->opa_access_values = $va_access_values;
+ 			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
  				$vs_section_name = _t("Featured Galleries");
@@ -63,7 +54,6 @@
  			AssetLoadManager::register("carousel");
  		}
  		# -------------------------------------------------------
- 		
  		/**
  		 *
  		 */ 
@@ -201,4 +191,3 @@
  		}
  		# -------------------------------------------------------
 	}
- ?>

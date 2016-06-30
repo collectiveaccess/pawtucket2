@@ -72,6 +72,51 @@ H1, h1{
 	padding-left:5px;
 	padding-right:5px;
 }
+@media (max-width: 767px) {
+	.header-social{
+		display:none;
+	}
+}
+.header-social{
+	position:absolute;
+	left:105%;
+	top:0px;
+}
+.header-social a{
+	display:block;
+	width:28px;
+	height:28px;
+	margin-top:1px;
+	background:url(../graphics/social-sprite-2.png) 0 0 no-repeat;
+	overflow:hidden;
+}
+.header-social a:hover{
+	text-decoration:none;
+}
+.header-social a.fb{
+	background-position:0 0;
+}
+.header-social a.fb:hover{
+	background-position:-29px 0;
+}
+.header-social a.twit{
+	background-position:0 -29px;
+}
+.header-social a.twit:hover{
+	background-position:-29px -29px;
+}
+.header-social a.instagram{
+	background-position:0 -58px;
+}
+.header-social a.instagram:hover{
+	background-position:-29px  -58px;
+}
+.header-social a.gplus{
+	background-position:0 -87px;
+}
+.header-social a.gplus:hover{
+	background-position:-29px -87px;
+}
 /* --- FOOTER --- */
 #footer-top {
     font: 12px/24px arial,sans-serif;
@@ -291,8 +336,14 @@ H1, h1{
 	max-height:2.1em;
 	overflow:hidden;
 }
+.hpSetTitle.onView{
+	background-color:#003F69;
+}
 .hpSetTitle:hover{
 	background-color:#003F69;
+}
+.hpSetTitle.onView:hover{
+	background-color:#21B1E7;
 }
 .hpSetTitle a{	
 	color:#FFF;
@@ -999,7 +1050,7 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 /* gallery */
 /*------------------------------------------*/
 .gallery {
-	font-size:11px;
+	font-size:13px;
 }
 .gallery H4 {
 	padding-top:0px;
@@ -1011,13 +1062,17 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 .gallery h5 {
 	text-transform:none;
 	color:#21B1E7;
-	font-size:12px;
+	font-size:13px;
 	padding:5px 0px 0px 0px;
 	margin:0px !important;
 	line-height:1.1em;
 }
-.gallery .galleryItem:hover h5, .gallery h5:hover {
+.gallery .galleryLinks a{
+	text-decoration:none !important;
+}
+.gallery a:hover .galleryItem h5, .gallery h5:hover {
 	color:#FDB813;
+	text-decoration:none !important;
 }
 .gallery #gallerySetInfo a{
 	color:#21B1E7;
@@ -1033,7 +1088,7 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
   	background-color: #F0F4F6;
   	height:54px;
 }
-.gallery .galleryItem a{
+.gallery a .galleryItem{
 	text-decoration:none;
 	color:#000;
 }
@@ -1122,6 +1177,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 		margin-bottom:15px;
 	}
 }
+.detail .repViewerCont img{
+	max-height: 550px;
+	object-fit: contain;
+}
 .detail .unit{
 	margin-bottom:20px;
 }
@@ -1188,10 +1247,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	}
 	.detailTool{
 		float:left;
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 	.detailTool.last{
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 }
 .detail .detailRelatedItems{
@@ -1288,8 +1347,8 @@ a.addToLightbox, a.addToLightbox i{
     text-align: center;
     width: 100%;
 }
-.results .bGear {
-	color:#21B1E7;
+.results .bGear, .results #bRefineButton .fa {
+	color:#21B1E7 !important;
 }
 .results .btn-default {
     background-color:#F0F4F6;
@@ -1497,4 +1556,8 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 		width:450px;
 		margin:7% auto 0px auto;
 	}
+}
+
+.notificationMessage, .notificationError, .notificationInfo, .notificationWarning {
+	margin-top:20px;
 }

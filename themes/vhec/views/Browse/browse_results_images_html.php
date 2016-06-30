@@ -90,13 +90,14 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+				$vs_label_detail_link 	= caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 80 ? substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 77)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
-						$t_list_item->load($qr_res->get("type_id"));
+						
+						$t_list_item->load($qr_res->get("ca_objects.resource_type"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
@@ -105,11 +106,15 @@
 						}
 					}
 					$vs_info = null;
-					if ($qr_res->get('ca_objects.displayDate')) {
-						$vs_date = "<p>".$qr_res->get('ca_objects.displayDate')."</p>";
+					if ($vs_date_value = $qr_res->get('ca_objects.displayDate')) {
+						$vs_date = "<p>".$vs_date_value."</p>";
+					} else {
+						$vs_date = null;
 					}
-					if ($va_entity = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer')))) {
+					if ($va_entity = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer'), 'delimiter' => '; '))) {
 						$vs_creator = "<p>".$va_entity."</p>";
+					} else { 
+						$vs_creator = null; 
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
