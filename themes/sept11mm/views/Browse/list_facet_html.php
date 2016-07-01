@@ -95,6 +95,7 @@
 			$vn_c++;
 		}
 		print "<H1 id='bScrollListLabel'>";		
+		print "<a href='#' class='pull-right' id='bMorePanelClose' onclick='jQuery(\"#bMorePanel\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		if($vs_facet_name == "term_facet"){
 			print caNavLink($this->request, _t("Keyword Definitions")." <i class='fa fa-angle-double-right'></i>", "keywordDef", "", "About", "keywords");
 		}

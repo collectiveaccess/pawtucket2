@@ -11,9 +11,9 @@
 	</div>
 </div>
 <div class="row">
-	<div class='col-xs-12 col-sm-2'>
+	<div class='col-xs-12 col-sm-3'>
 		<br/><div class="leader">Season</div>
-		<div class="phSeasonsList">
+		<div class="phSeasonsList phScrollHeight">
 <?php	
 	if(is_array($va_seasons) && sizeof($va_seasons)){
 		foreach($va_seasons as $va_season){
@@ -32,7 +32,7 @@
 ?>
 		</div>
 	</div>
-	<div class='col-xs-12 col-sm-10 children'>
+	<div class='col-xs-12 col-sm-9 children'>
 		<div class='leader lastLeader'>&nbsp;</div>
 		<div class='toStart'><i class='fa fa-arrow-left'></i> Choose a season to start navigating BAM Programming History</div>
 		<div class="introText">
@@ -43,3 +43,8 @@
 		</div>	
 	</div>
 </div><!-- end row -->
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$(".phScrollHeight").height(($(window).height() - $(".phScrollHeight").offset().top) + "px");
+	});
+</script>

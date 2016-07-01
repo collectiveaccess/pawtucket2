@@ -53,10 +53,6 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 		 	
- 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            }
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
@@ -69,11 +65,6 @@
  					}
  				}
  			}
- 			
- 			$this->opo_datamodel = Datamodel::load();
- 			$va_access_values = caGetUserAccessValues($this->request);
- 		 	$this->opa_access_values = $va_access_values;
- 		 	$this->view->setVar("access_values", $va_access_values);
  		 	
  			caSetPageCSSClasses(array("detail"));
  		}
@@ -132,7 +123,7 @@
  				throw new ApplicationException("Invalid detail type");
  			}
  			
- 			$t_subject = $this->opo_datamodel->getInstanceByTableName($vs_table, true);
+ 			$t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true);
  			if (($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
  				$ps_id = (int)$va_tmp[1];
@@ -214,7 +205,7 @@
  			//
  			if (method_exists($t_subject, 'getPrimaryRepresentationInstance')) {
  				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
- 					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+ 					$t_representation = $this->getAppDatamodel()->getInstanceByTableName("ca_object_representations", true);
  					$t_representation->load($pn_representation_id);
  				}else{
  					$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
@@ -223,7 +214,7 @@
 					$this->view->setVar("t_representation", $t_representation);
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 				}else{
-					$t_representation = $this->opo_datamodel->getInstanceByTableName("ca_object_representations", true);
+					$t_representation = $this->getAppDatamodel()->getInstanceByTableName("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
 				$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
@@ -505,7 +496,7 @@
  		 */ 
  		public function GetPageListAsJSON() {
  			if (!($vs_table = $this->request->getActionExtra())) { $vs_table = 'ca_objects'; }
- 			if (!($t_subject = $this->opo_datamodel->getInstanceByTableName($vs_table, true))) { 
+ 			if (!($t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true))) { 
  				$this->postError(1100, _t('Invalid table'), 'DetailController->GetPage');
  				return;
  			}
@@ -799,7 +790,7 @@
  				
  				$t_attr_val = new ca_attribute_values($pn_value_id);
  				$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
- 				$t_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+ 				$t_subject = $this->getAppDatamodel()->getInstanceByTableNum($t_attr->get('table_num'), true);
  				$t_subject->load($t_attr->get('row_id'));
  				
 				$va_rep_display_info = caGetMediaDisplayInfo('media_overlay', $t_attr_val->getMediaInfo('value_blob', 'INPUT', 'MIMETYPE'));
@@ -887,7 +878,7 @@
  		public function SaveCommentTagging() {
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
-			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
+			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
  				throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
  			}
 			$ps_table = $this->request->getParameter("tablename", pString);
@@ -1022,7 +1013,7 @@
  		function ShareForm() {
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
-			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
+			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($ps_tablename, true)) {
  				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
@@ -1042,7 +1033,7 @@
  			$va_errors = array();
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
-			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($ps_tablename, true)) {
+			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($ps_tablename, true)) {
  				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
@@ -1291,13 +1282,13 @@
  			if (!$t_attr_val->getPrimaryKey()) { return; }
  			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
  		
- 			$vn_table_num = $this->opo_datamodel->getTableNum($this->ops_table_name);
+ 			$vn_table_num = $this->getAppDatamodel()->getTableNum($this->ops_table_name);
  			if ($t_attr->get('table_num') !=  $vn_table_num) { 
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
  				return;
  			}
  			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
- 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			$this->request->setParameter($this->getAppDatamodel()->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
  			
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			$ps_version = $this->request->getParameter('version', pString);
@@ -1346,7 +1337,7 @@
  			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
  		
  			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
- 			$this->request->setParameter($this->opo_datamodel->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			$this->request->setParameter($this->getAppDatamodel()->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
  			
  			$vn_subject_id = $this->request->getParameter("subject_id", pInteger);
  			//list($vn_subject_id, $t_subject) = $this->_initView($pa_options);

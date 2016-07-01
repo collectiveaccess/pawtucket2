@@ -38,16 +38,8 @@
 ?>
 	
 		<div class="row">
-			<div class="col-xs-12">
-				<H1>Explore artifact selections from the 9/11 Memorial Museum Collection.</H1>
-			</div>
-		</div>
-	
-		<div class="row">
 			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
-				<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
-				<div class='hpSetTitle' style='visibility: hidden;'>A</div>
-				<H2><?php print caNavLink($this->request, _t("Collection Highlights")." &raquo;", "", "", "Gallery", "Index"); ?></H2>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png')."<div class='hpSetTitle' style='visibility: hidden;'>A</div><H2>"._t("Inside the Collection")."</H2>", "", "", "Gallery", "Index"); ?>
 			</div></div>
 <?php
 			# --- loop through all the features
@@ -73,6 +65,7 @@
 				#$va_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("checkAccess" => $va_access_values, "version" => "iconlarge"));
 				$vn_c = 1;
 				$va_boxes = array();
+				$i = 1;
 				foreach($va_sets as $vn_set_id => $va_set){
 					$t_set->load($vn_set_id);
 					$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $va_access_values, "thumbnailVersion" => "iconlarge", "limit" => 3)));
@@ -86,14 +79,15 @@
 					print '<div class="jcarousel-wrapper"><div class="jcarousel box'.$vn_c.'"><ul>';
 					foreach($va_set_items as $va_set_item_info){
 						if($va_set_item_info["representation_tag"]){
-							print "<li>".$va_set_item_info["representation_tag"]."</li>";
+							print "<li>".caNavLink($this->request, $va_set_item_info["representation_tag"], "", "", "Gallery", $vn_set_id)."</li>";
 						}
 					}
 					print "</ul></div></div>";
-					print "<div class='hpSetTitle'>".caNavLink($this->request, $va_set["name"]."  &raquo;", "", "", "Gallery", $vn_set_id)."</div>\n";
+					print "<div class='hpSetTitle ".(($i == 1) ? "onView" : "")."'>".caNavLink($this->request, $va_set["name"]."  &raquo;", "", "", "Gallery", $vn_set_id)."</div>\n";
 					$va_boxes[] = "box".$vn_c;
 					$vn_c++;
 					print "</div></div>";
+					$i++;
 				}
 				if($vn_limit > $vn_c){
 					$vn_limit = $vn_c;
@@ -103,9 +97,9 @@
 
 ?>			
 			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
-				<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), "", "", "Browse", "objects"); ?>
 				<div class='hpSetTitle' style='visibility: hidden;'>A</div>
-				<?php print caNavLink($this->request, _t("Learn More")."  &raquo;", "hpMore", "", "About", "Index"); ?>
+				<?php print caNavLink($this->request, _t("View All")." &raquo;", "hpMore", "", "Browse", "objects"); ?>
 			</div></div>
 		</div>
 		<script type='text/javascript'>

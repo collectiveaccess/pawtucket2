@@ -89,16 +89,17 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
+					jQuery("#browseResultsContainer").load(
+						"<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>", 
+						{'search': 'ca_entity_labels.entity_id/author,2ndauthor,3rdauthor,collected,contributor,creator,depicted,engraver,client,draftsmen_surveyor,lithographer,proprietor,source,interviewee,interviewer,about,related,manufacturer,photographer,presented,previous_owner,publisher,recipient,recorded:^ca_entities.entity_id'},					
+						function() {
+							jQuery('#browseResultsContainer').jscroll({
+								autoTrigger: true,
+								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+								padding: 20,
+								nextSelector: 'a.jscroll-next'
+							});
+						});	
 				});
 			</script>
 </ifcount>}}}
