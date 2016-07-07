@@ -50,6 +50,10 @@
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 				$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
  			$this->opa_access_values = caGetUserAccessValues($po_request);
  			caSetPageCSSClasses(array("listing"));
  		}

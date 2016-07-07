@@ -57,7 +57,28 @@
  		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
-            
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	if (($this->request->getParameter('object_id', pInteger)) && ($this->request->getAction() == "GetRepresentationInfo")) {
+            		$ps_id = $this->request->getParameter('object_id', pInteger);
+            	} else {
+            		$ps_id = urldecode($this->request->getActionExtra());
+            	}
+            	$t_set_list = new ca_sets();
+            	$t_set = new ca_sets();
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+				$va_user_has_access = false;
+				if (sizeof($va_sets) > 0) {
+					foreach ($va_sets as $va_key => $va_set) {
+						if($t_set->isInSet('ca_objects', $ps_id, $va_set['set_id'])) {
+							$va_user_has_access = true;
+						}
+					}
+				}
+				if ($va_user_has_access == false) {
+            		print "You do not have access to view this page.";
+            		die;
+            	}
+            }
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  			

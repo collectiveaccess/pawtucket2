@@ -87,6 +87,10 @@
                 $this->opb_is_login_redirect = true;
                 return;
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
 
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar("access_values", $this->opa_access_values);
