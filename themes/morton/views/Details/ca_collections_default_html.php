@@ -143,7 +143,7 @@
 						$va_anchors[] = "<a href='#subjects'>Subject - keywords and LC headings</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='subjects'>Subject - keywords and LC headings</a></h3>".join("<br/>", $va_subjects_list)."</div>";
 					}	
-					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true));
+					$va_top_level = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 					if ($va_top_level) {
 						$vs_buf.= "<h3><a name='contents'>Collection Contents</a></h3>";
 						$va_anchors[] = "<a href='#contents'>Collection Contents</a>";
@@ -152,7 +152,7 @@
 						foreach($va_top_level as $vn_i => $va_top_level_id) {
 							$t_top_collection = new ca_collections($va_top_level_id);
 			
-							$va_series_level = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true));
+							$va_series_level = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 
 							$vs_buf.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_top_collection->get('ca_collections.collection_id'))."</div>";
 							$vs_buf.= "<div class='seriesLevel".$va_top_level_id."' style='margin-left:20px;'>";
@@ -160,15 +160,16 @@
 							foreach($va_series_level as $vn_i2 => $va_series_level_id) {
 								$t_series_level = new ca_collections($va_series_level_id);
 				
-								#$va_subseries_level = $t_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true));
-								$va_subseries_level = $t_series_level->getHierarchyChildren(null, array("idsOnly" => true));
+								$va_subseries_level = $t_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
+								#$va_subseries_level = $t_series_level->getHierarchyChildren(null, array("idsOnly" => true));
 				
 								$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>";
 								$vs_buf.= "<div class='subseriesLevel".$va_series_level_id."' style='margin-left:40px;'>";
 				
 								foreach($va_subseries_level as $vn_i3 => $va_subseries_level_id) {
 									$t_subseries_level = new ca_collections($va_subseries_level_id);
-									$va_box_levels = $t_subseries_level->getHierarchyChildren(null, array("idsOnly" => true));
+									#$va_box_levels = $t_subseries_level->getHierarchyChildren(null, array("idsOnly" => true));
+									$va_box_levels = $t_subseries_level->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 
 									$vs_buf.= "<div>".(sizeof($va_box_levels) > 0 ? "<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_subseries_level->get('ca_collections.collection_id'))."</div>";
 									$vs_buf.= "<div class='boxLevel".$va_subseries_level_id."' style='margin-left:60px;'>";
@@ -219,7 +220,7 @@
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row">
 				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					<h3>Loading</h3>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
@@ -227,7 +228,7 @@
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							loadingHtml: '<h3>Loading</h3>',
 							padding: 20,
 							nextSelector: 'a.jscroll-next'
 						});

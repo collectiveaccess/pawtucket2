@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,6 +44,7 @@
             	print "You do not have access to view this page.";
             	die;
             }			
+            
  			caSetPageCSSClasses(array("multisearch"));
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search").": ".$this->request->getParameter('search', pString));
  		}

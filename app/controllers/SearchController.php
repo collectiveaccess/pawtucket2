@@ -44,11 +44,6 @@
  		/**
  		 *
  		 */
- 		protected $opa_access_values = array();
- 		
- 		/**
- 		 *
- 		 */
  		protected $ops_view_prefix = 'Search';
  		
  		# -------------------------------------------------------
@@ -57,6 +52,7 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
@@ -67,8 +63,6 @@
             
             $this->opo_config = caGetBrowseConfig();
             
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
- 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("find_type", $this->ops_find_type);
  			caSetPageCSSClasses(array("search", "results"));
  		}

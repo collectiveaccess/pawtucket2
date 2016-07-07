@@ -26,8 +26,9 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_APP_DIR__."/helpers/listingHelpers.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
- 	class ListingController extends ActionController {
+ 	class ListingController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 *
@@ -38,11 +39,6 @@
  		 *
  		 */
  		private $opo_result_context = null;
- 		
- 		/**
- 		 *
- 		 */
- 		private $opa_access_values = null;
  		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
@@ -58,7 +54,6 @@
  			caSetPageCSSClasses(array("listing"));
  		}
  		# -------------------------------------------------------
- 		
  		/**
  		 *
  		 */ 

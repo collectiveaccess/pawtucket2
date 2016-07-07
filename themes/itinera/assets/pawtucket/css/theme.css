@@ -1,3 +1,18 @@
+html, body {
+  height:100%;
+  width:100%;
+  padding:0px;
+  margin:0px;
+} 
+
+.navbar {
+	margin-bottom: 0px;
+}
+
+.topSpacer {
+	margin-top: 20px;
+}
+
 /* Itinera */
 p.frontText {
 	font-family: latoregular;
@@ -81,7 +96,13 @@ div#travelerList {
 	top: 4px;
 	right: 10px;
 	font-family: latoregular;
+	font-weight: bold;
+	color: #cc0000;
 	font-size: 18px;
+}
+
+#travelerListToggle:hover {
+	cursor: pointer;
 }
 
 #travelerListContent {
@@ -112,6 +133,11 @@ div.travelerListLetterBar .activeLetter {
 	color: #cc0000;
 	margin: 0 10px 0 0;
 }
+
+div#travelerContentContainer {
+	padding: 0px;
+}
+
 div#travelerContent {
 	border: 1px solid #eee;
 	height: 700px;
@@ -178,5 +204,199 @@ div.travelerCardContent .travelerCardImageSource {
 .link {
   fill: none;
   stroke: #ccc;
-  stroke-width: 1.5px;
+}
+
+/* Route map */
+#routeMap {
+	width: 83.33%;
+	height: 600px;
+}
+
+#routeMapYearSlider {
+	width: 100%;
+}
+
+/* Route map artist list */
+.travelerMapList {
+	background-color: #DEF0E7;
+	font-family: latoregular;
+	color: #6e6e6e;
+	margin: 0 0 0 0;
+	padding: 5px;
+	position: relative;
+	
+	border-bottom: 1px dotted #999;
+}
+
+.travelerMapListImage {
+	float: left;
+	margin: 0 5px 0 0;
+}
+
+.travelerMapListImagePlaceholder {
+	float: left;
+	margin: 0 5px 0 0;
+	width: 72px;
+	height: 72px;
+	background-color: #eee;
+}
+
+.travelerMapListRemove {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.travelerMapListRemove:hover {
+	cursor: pointer;
+}
+
+.travelerMapListArtistName {
+	font-size: 12px;
+}
+
+.travelerMapListArtistRoles {
+	font-size: 10px;
+}
+
+.travelerMapListColorKey {
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 1px solid #000;
+	bottom: 5px;
+	right: 5px;
+	border-radius: 3px;
+}
+
+.travelerMapListArtistDates {
+	font-size: 10px;
+	font-style: italic;
+}
+
+.travelerMapListArtistPopupImage {
+	float: left; 
+	margin: 0 5px 0 0;
+}
+
+
+
+/* CHRONOLOGY classes */
+
+.travelerChronology{
+
+}
+
+.travelerChronologyTrack{
+	height: 198px;
+	margin: 8px 0 8px 0;
+	clear:both;
+}
+
+.travelerChronologyTrackContainer {
+	height:176px;
+	
+	background-color:#ededed;
+	margin: 0px;
+	padding: 0px;
+}
+
+.travelerChronologyTrackInfo {
+	position:relative;
+	float:left;
+	
+	height: 100%;
+	
+	background-color:#dedede;
+	
+	margin: 0px;
+	padding: 0px;
+}
+
+.travelerChronologyTrackInfo div {
+	margin:10px 10px 0px 10px;
+}
+.travelerChronologyTrackInfo .trackTitle{
+	font-size: 14px;
+	font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
+	font-weight:bold;
+}
+
+.travelerChronologyTrackInfo .trackImage{
+	margin: 0 0 0 10px;
+}
+
+
+.travelerChronologyCarousel {
+	position: relative;
+}
+
+.travelerChronologyTrackSliderContainer {
+	height: 22px;
+	background-color:#ededed;
+	padding: 0px;
+	margin: 0px;
+}
+
+.travelerChronologyCarouselSlider {
+	margin: 0px;
+}
+
+.travelerChronologyTrackSliderOffset {
+	height: 22px;
+	background-color:#dedede;
+	padding: 0px;
+	margin: 0px;
+	position: relative;
+}
+
+.travelerChronologyItem {
+	width: 190px;
+	height: 160px;
+	background-color: #fff;
+	padding: 5px;
+	margin: 5px 0 5px 5px;
+}
+.travelerChronologyItemText {
+	height: 45px;
+}
+.travelerChronologyItemName {
+	font-size: 10px;
+	font-style: italic;
+}
+
+.travelerChronologyItemDate {
+	font-size: 12px;
+}
+
+.travelerChronologyItemRemove {
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	cursor: pointer;
+}
+
+.travelerChronologySyncContainer {
+	position: absolute;
+	bottom: 5px;
+	right: 5px;
+}
+
+.travelerChronologySync {
+	cursor: pointer;
+}
+
+#intineraChronologyNoEntities {
+	display: block;
+}
+
+.travelerListSectionHeading {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.travelerListSpacer {
+	border-top: 1px dotted #ccc;
+	padding-top: 10px;
+	margin-top: 10px;
 }

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,8 +29,9 @@
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 	require_once(__CA_APP_DIR__."/helpers/contributeHelpers.php");
 	require_once(__CA_LIB_DIR__."/ca/Utils/DataMigrationUtils.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	class ContributeController extends ActionController {
+ 	class ContributeController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 * Instance for record being contributed
@@ -79,6 +80,24 @@
  			// Format to wrap field-level error messages in
  			$vs_error_format = caGetOption('errorFormat', $va_form_info, '<div class="error">^ERRORS</div>');
  			
+ 			// Move errors for fields not in form to "general" errors list
+ 			if (is_array($va_response_data['errors']) && is_array($va_tags)) {
+ 				$va_tag_list = [];
+ 				foreach($va_tags as $vs_tag){ 
+ 					$va_tag_info = caParseTagOptions($vs_tag);
+ 					$va_tag_list[$va_tag_info['tag']] = true;
+ 				}
+ 				
+ 				if(!is_array($va_response_data['errors']['_general_'])) { $va_response_data['errors']['_general_'] = []; }
+ 				foreach($va_response_data['errors'] as $vs_field => $va_errors_for_field) {
+ 					if (!isset($va_tag_list[$vs_field])) { 
+ 						foreach($va_errors_for_field as $vn_i => $vs_error_for_field) {
+ 							$va_errors_for_field[$vn_i] = "<strong>{$vs_field}</strong>: {$vs_error_for_field}";
+ 						}
+ 						$va_response_data['errors']['_general_'] = array_merge($va_response_data['errors']['_general_'], $va_errors_for_field);
+ 					}	
+ 				}
+ 			}
  			$this->view->setVar('errors', is_array($va_response_data['errors']['_general_']) ? join("; ", $va_response_data['errors']['_general_']) : "");
  			
  			foreach($va_tags as $vs_tag) {
