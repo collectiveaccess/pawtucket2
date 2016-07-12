@@ -50,8 +50,12 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				
+<?php
+				$va_book_title = explode(" ", $t_object->get('ca_objects.preferred_labels'));
+				$va_book_title = join('%20',$va_book_title);
 
+?>				
+				<div class='requestButton'><a href='mailto:contact@comediassueltasusa.com?Subject=Contribution%20to%20the%20Comedias%20Sueltas%20Project&body=Hi,%0A%0AI%20have%20more%20information%20about%20<?php print $va_book_title; ?>%0A%0AThank%20you%0A%0A%0A'>Have more information or a correction for this record? Contact a researcher by clicking here.</a></div>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -60,13 +64,18 @@
 				<HR>
 <?php
 				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Institution</h6>".$vs_institution."</div>";
+					print "<div class='unit'><h6>Holding Institution</h6>".$vs_institution."</div>";
 				}
 				if ($vs_call_no = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call_no."</div>";
 				}
 				if ($vs_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Author</h6>".$vs_author."</div>";
+				}
+				if ($va_attribution = $t_object->get('ca_objects.attribution_issues', array('convertCodesToDisplayText' => true)) == "Yes") {
+					print "<div class='unit warning'><i class='fa fa-warning'></i> Attribution issues<br/>";
+					print $t_object->get('ca_objects.attribution_notes');
+					print "</div>";
 				}
 				if ($vs_title = $t_object->get('ca_objects.preferred_labels')) {
 					print "<div class='unit'><h6>Title</h6>".$vs_title."</div>";
@@ -83,9 +92,6 @@
 				if ($vs_caption_title = $t_object->get('ca_objects.caption_title')) {
 					print "<div class='unit'><h6>Caption Title</h6>".$vs_caption_title."</div>";
 				}
-				if ($vs_place_as_text = $t_object->get('ca_objects.260a_place')) {
-					print "<div class='unit'><h6>Place (as text)</h6>".$vs_place_as_text."</div>";
-				}
 				if ($vs_place = $t_object->get('ca_places.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Place</h6>".$vs_place."</div>";
 				}
@@ -93,7 +99,7 @@
 					print "<div class='unit'><h6>Printer, Publisher, Bookseller</h6>".$vs_printer."</div>";
 				}
 				if ($vs_date = $t_object->get('ca_objects.display_date', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Display Date</h6>".$vs_date."</div>";
+					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 				}
 				if ($vs_pagination = $t_object->get('ca_objects.pagination')) {
 					print "<div class='unit'><h6>Pagination</h6>".$vs_pagination."</div>";
@@ -175,6 +181,10 @@
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+
+							{{{<ifcount code="ca_collections" min="1"><H6>Locate This Copy</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
+							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><br/>^ca_collections.description</unit>}}}			
 							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}

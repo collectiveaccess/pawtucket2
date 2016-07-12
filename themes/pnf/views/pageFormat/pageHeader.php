@@ -82,8 +82,8 @@
 		<div class="responsive-top clearfix">
 			<a href="" class="logo">Comedias Sueltas</a>			
 			<ul class="qtranxs_language_chooser" id="qtranslate-chooser">
-				<li class="lang-en active"><a href="/en/lists/about-these-lists/" hreflang="en" title="English" class="qtranxs_text qtranxs_text_en"><span>ENG</span></a></li>
-				<li class="lang-es"><a href="/es/lists/about-these-lists/" hreflang="es" title="Español" class="qtranxs_text qtranxs_text_es"><span>ESP</span></a></li>
+				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>ENG</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
+				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>ESP</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
 			</ul>
 			<div class="qtranxs_widget_end"></div>
 		</div>
@@ -127,13 +127,13 @@ $( document ).ready(function() {
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-453"><?php print caNavLink($this->request, 'Database', '', '', '', '');?></a></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Resources</a>
 						<ul class="sub-menu">
-							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists current-menu-item menu-item-410"><a href="/lists/about-these-lists/">About these lists</a></li>
-							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, 'Playwrights, translators, and adaptors', '', '', '', 'Listing/playwrights');?></li>
-							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, 'Printers, publishers, booksellers, and bookstores', '', '', '', 'Listing/printers');?></li>
+							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists current-menu-item menu-item-410"><a href="/lists/about-these-lists/">About these resources</a></li>
+							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/">Playwrights, translators, and adaptors</a></li>
+							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/">Printers, publishers, booksellers, and bookstores</a></li>
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'Institutions', '', '', 'Search', 'collections/search/*');?></li>							
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/">US Catalogs of Spanish Drama/Comedias Sueltas Collections</a></li>
-							<li id="menu-item-412" class="menu-item menu-item-type-post_type menu-item-object-bibliographies menu-item-412"><a href="/bibliographies/about-these-bibliographies/">About these Bibliographies</a></li>
-							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><?php print caNavLink($this->request, 'Comprehensive sources of comedias sueltas', '', '', '', 'Listing/sources');?></li>
-							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><?php print caNavLink($this->request, 'Studies related specifically to comedias sueltas', '', '', '', 'Listing/studies');?></li>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/">Comprehensive sources of comedias sueltas</a></li>
+							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/">Studies related specifically to comedias sueltas</a></li>
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/">Essays</a></li>
@@ -148,15 +148,15 @@ $( document ).ready(function() {
 		<div class="site_banner" style="background:url(/wp-content/uploads/Comedias-Sueltas_01.jpg) no-repeat center center fixed;"></div>
 		<div class="language_selector">	
 			<ul class="qtranxs_language_chooser" id="qtranslate-chooser">
-				<li class="lang-en active"><a href="/en/lists/about-these-lists/" hreflang="en" title="English" class="qtranxs_text qtranxs_text_en"><span>ENG</span></a></li>
-				<li class="lang-es"><a href="/es/lists/about-these-lists/" hreflang="es" title="Español" class="qtranxs_text qtranxs_text_es"><span>ESP</span></a></li>
+				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>ENG</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
+				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>ESP</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
 			</ul>
 			<div class="qtranxs_widget_end"></div>
 		</div>
 		<div class="logo_container">
 			<div class="logo_positioner">
 				<div class="logo">
-					<?php print caNavLink($this->request, '<img src="/wp-content/themes/twentyfifteen-child-01/img/sidebarimg.jpg" scale="0" style="border-width: 0px;"></a>', '', '', '', ''); ?>
+					<a href="/"><div class="homeLink">HOME</div><img src="/wp-content/themes/twentyfifteen-child-01/img/sidebarimg.jpg" scale="0" style="border-width: 0px;"></a>
 				</div>
 				<div class="tagline"></div>
 			</div>

@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+		
 ?>
 <div class="container">
 	<div class="row">
@@ -41,3 +41,7 @@
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->
 </div> <!--end container-->
+<hr>
+<?php
+	print $this->render("Front/featured_set_slideshow_html.php");
+?>

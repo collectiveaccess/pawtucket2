@@ -43,13 +43,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right">
-<?php
-				if(in_array($vs_block, $va_browse_types)){
-?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
-<?php
-				}
-?>
+
 				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}
 			</small>

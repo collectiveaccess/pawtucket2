@@ -38,7 +38,7 @@ a {
 
 #head .main_menu {
 	border-left:0px solid #fff;
-	height:99px;
+	height:69px;
 	width: calc(85% - 95px);
 	z-index:1000;
 }
@@ -64,7 +64,7 @@ a {
 	}	
 }
 .navbar {
-	top: 98px;
+	top: 69px;
     left: 15%;
     width: calc(85% - 95px);
     position: fixed;
@@ -89,6 +89,12 @@ a {
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#f7f7f7;
 }
+.homeLink {
+	margin-top:1px;
+}
+#head .logo_container .logo_positioner .logo img {
+	width:80px;
+}
 
 /* Browse Panel */
 
@@ -96,7 +102,7 @@ a {
 	font-family: 'Lusitana', serif;
 	font-size:16px;
 	text-transform:none;
-	color:#000;
+	color: #7f4539;
 }
 .filterMenuFacetList li.active {
     background-color: #f5f5f5;
@@ -108,9 +114,13 @@ a {
 }
 .filterMenuFacetList li a {
 	color:#666;
+	font-family: 'Lusitana', serif;
+	font-size: 13px;
 }
 div.browseFacetItem a {
 	text-decoration:none;
+	font-family: 'Lusitana', serif;
+	font-size:13px;
 }
 .browseMenuBrowseSearch .form-control, .browseMenuBrowseSearch .form-control:active, .browseMenuBrowseSearch .form-control:focus {
 	border-radius:0px;
@@ -138,6 +148,29 @@ div.browseFacetItem a {
     width: calc(85% - 95px);
     margin-left: 15%;
 }
+#browse-menu .mainfacet {
+	display:none;
+}
+div.browseFacetItem a {
+    font-size: 13px;
+    line-height: 1.6em;
+}
+div.browseFacetItem {
+    background-color: #fff;
+    border-left: 4px solid #fff;
+    border-top: 0px solid #fff;
+    border-bottom: 1px solid #ddd;
+    padding-top: 3px;
+    font-size: 13px;
+    font-family: lusitana;
+}
+div.browseFacetItem:hover {
+    background-color: #f5f5f5;
+}
+.filterMenuResults {
+    padding-top: 2px;
+    border-left: #ddd 1px solid;
+}
 
 /* Front */
 
@@ -160,6 +193,12 @@ div.browseFacetItem a {
     margin-left: -15px;
     margin-top: -13px;
 }
+.frontSlide img {
+	height:300px;
+}
+.front .jcarousel-control-next, .front .jcarousel-control-prev {
+	margin-top:-70px;
+}
 
 /* MultiSearch */
 
@@ -181,7 +220,7 @@ div.browseFacetItem a {
     width: 200px;
     height: 245px;
     line-height:1.5em;
-
+	font-size:13px;
 }
 .multisearch .multisearchResult a{
 	font-size:13px;
@@ -197,6 +236,7 @@ div.browseFacetItem a {
 .multisearch .multisearchResult .title a {
 	color: #7f4539;
 }
+
 
 /* Browse */
 
@@ -270,6 +310,56 @@ div.browseFacetItem a {
 }
 .bResultListItem .bResultListItemImg {
 	margin-right:10px;
+	width: 72px;
+}
+.bResultListItem .bResultListItemText {
+	float:left;
+	width:70%;
+}
+#browseResultsContainer.collectionsBrowse {
+	margin-top:-10px;
+}
+.results h5 {
+    color: #7f4539;
+    font-weight: bold;
+}
+#searchOptions a {
+	text-decoration:none;
+}	
+#searchOptions .btn {
+    color: #7f4539;
+    text-transform: none;
+    font-weight: 600;
+    font-size: 14px;
+    margin: 0px 0px 0px 0px;
+    padding: 5px 8px;
+    background-color: #fafafa;
+    border: 1px solid #ccc;
+    width: auto;
+    display: inline-block;
+    text-align: left;
+}
+#searchOptions .btn .caret {
+	margin-left:5px;
+}
+#searchOptions .dropdown-menu {
+	left:70px;
+}
+#searchOptions .dropdown-menu > li > a:hover, #searchOptions .dropdown-menu > li > a:focus, #searchOptions .dropdown-menu > .active > a, #searchOptions .dropdown-menu > .active > a:hover, #searchOptions .dropdown-menu > .active > a:focus {
+	background-color: #f5f5f5;
+	color:#000;
+}
+#searchOptions .dropdown-menu em{
+	font-weight:bold;
+	color: #7f4539;
+}
+#searchOptions .dropdown-menu {
+	box-shadow:none;
+	border:1px solid #7f4539;
+}
+.mapInfo {
+	color: #7f4539;
+	padding:10px 15px;
 }
 
 /* Advanced Search */
@@ -279,7 +369,7 @@ div.browseFacetItem a {
 	margin-top:5px;
 }
 .advancedSearch .field {
-	height:55px;
+	height:45px;
 }
 .advancedSearch .field .attributeListItem {
 	width:100%;
@@ -300,6 +390,10 @@ div.browseFacetItem a {
 .caAdvancedSearchFormReset:hover, .caAdvancedSearchFormSubmit:hover {
 	color:#fff;
 }
+.advancedSearch hr {
+	margin-top:5px;
+	margin-bottom:10px;
+}
 
 /* Detail */
 
@@ -312,6 +406,7 @@ div.browseFacetItem a {
 	height: 115px;
 	padding-bottom:0px;
 } 
+
 .detail .detailNavBgLeft .fa, .detail .detailNavBgRight .fa {
 	color: #7f4539;
 	font-size:16px;
@@ -324,6 +419,28 @@ div.browseFacetItem a {
 }
 .detail .unit {
 	margin-bottom:12px;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls .objectInfo {
+	font-size:14px;
+}
+div.caMediaOverlayControls {
+	padding-bottom:20px;
+}
+.requestButton {
+	background-color:#f5f5f5;
+	padding:10px;
+	border-radius:5px;
+	margin-top:10px;
+	line-height:1.3em;
+}
+.requestButton a {
+	text-decoration:none;
+}
+.unit.warning {
+	background-color:#f5f5f5;
+	padding:10px;
+	border-radius:5px;
+	line-height:1.3em;
 }
 
 /* Listing */
@@ -350,7 +467,7 @@ div.browseFacetItem a {
 #toc_container {
     float: left;
     border-left: 1px solid #e7e7e7;
-    margin: 50px 20px 20px 0;
+    margin: 30px 20px 20px 0;
 }
 #toc_container ul {
     color: #666666;
@@ -364,7 +481,7 @@ div.browseFacetItem a {
     margin-left: .5em;
 }
 #toc_container #toc_content .tocListArrow.topArrow {
-	top:145px;
+	top:120px;
 }
 #toc_container #toc_content.arrow-scroll .tocListArrow {
 	background-color:transparent;
@@ -385,7 +502,18 @@ div.browseFacetItem a {
 	color:#222;
 }
 
-
+@media (min-width: 1025px) {
+	.detail .detailNavBgRight {
+		right: 93px;
+	}
+	.detail .detailNavBgLeft {
+		left: 15%;
+	}
+	.detail .detailNavBgLeft, .detail .detailNavBgRight {
+		position: fixed;
+		top: 146px;
+	}	
+}
 @media (max-width: 1025px) and (min-width: 1px) {
 	#pageArea {
 		margin-top:70px;
