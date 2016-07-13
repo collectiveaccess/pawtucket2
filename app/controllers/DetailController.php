@@ -1271,7 +1271,8 @@
 			try {
 				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
 				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-			
+				$this->view->setVar('PDFRenderer', 'domPDF');
+				
 				$vs_content = $this->render($va_template_info['path']);
 				$o_dompdf = new DOMPDF();
 				$o_dompdf->load_html($vs_content);
