@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/core/Plugins/Visualizer/WLPlugVisualizerTimelineJS.php : visualizes data as a timeline 
+ * app/lib/core/Plugins/Visualizer/WLPlugVisualizerStoryMapJS.php : visualizes data as a storymap
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,7 +24,7 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Geographic
+ * @subpackage Visualizer
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
@@ -32,25 +32,25 @@
 
   /**
     *
-    */ 
+    */
 include_once(__CA_LIB_DIR__."/core/Plugins/IWLPlugVisualizer.php");
 include_once(__CA_LIB_DIR__."/core/Plugins/Visualizer/BaseVisualizerPlugin.php");
 include_once(__CA_APP_DIR__."/helpers/gisHelpers.php");
 
-class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlugVisualizer {
+class WLPlugVisualizerStoryMapJS Extends BaseVisualizerPlugIn Implements IWLPlugVisualizer {
 	# ------------------------------------------------
 	/**
 	 *
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->info['NAME'] = 'TimelineJS';
-		
-		$this->description = _t('Visualizes data as a timeline using TimelineJS');
+		$this->info['NAME'] = 'StoryMapJS';
+
+		$this->description = _t('Visualizes data as a story map using StoryMapJS');
 	}
 	# ------------------------------------------------
 	/**
-	 * Generate timeline output in specified format
+	 * Generate storymap output in specified format
 	 *
 	 * @param array $pa_viz_settings Array of visualization settings taken from visualization.conf
 	 * @param string $ps_format Specifies format to generate output in. Currently only 'HTML' is supported.
@@ -62,14 +62,15 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 	 */
 	public function render($pa_viz_settings, $ps_format='HTML', $pa_options=null) {
 		if (!($vo_data = $this->getData())) { return null; }
+
 		$this->opn_num_items_rendered = 0;
-		
+
 		$po_request = (isset($pa_options['request']) && $pa_options['request']) ? $pa_options['request'] : null;
 		if (!$po_request) { return ''; }
-		
+
 		list($vs_width, $vs_height) = $this->_parseDimensions(caGetOption('width', $pa_options, 500), caGetOption('height', $pa_options, 500));
-		
-		// Calculate how many items will be rendered on the timeline
+
+		// Calculate how many items will be rendered on the storymap
 		// from the entire data set
 		$qr_res = $this->getData();
 		while($qr_res->nextHit()) {
@@ -79,20 +80,20 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 				}
 			}
 
-			if($this->opn_num_items_rendered >= 250) { break; }
+			if($this->opn_num_items_rendered >= 80) { break; }
 		}
 
 		$vs_buf = $this->getLocaleJSSrc($po_request)."
-	<div id='timeline-embed' style='width: {$vs_width}; height: {$vs_height};'></div>
+	<div id=\"storymap\" style=\"width: {$vs_width}; height: {$vs_height};\"></div>
     <script type='text/javascript'>
+    	var storymap_data = '".caNavUrl($po_request, '*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."';
+    	var storymap_options = {};
+
 		jQuery(document).ready(function() {
-			createStoryJS({
-				type:       'timeline',
-				width:      '{$vs_width}',
-				height:     '{$vs_height}',
-				source:     '".caNavUrl($po_request, '*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."',
-				embed_id:   'timeline-embed'
-			});
+			var storymap = new VCO.StoryMap('storymap', storymap_data, storymap_options);
+			window.onresize = function(event) {
+				storymap.updateDisplay(); // this isn't automatic
+			}
 		});
 	</script>
 ";
@@ -101,7 +102,7 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 	}
 	# ------------------------------------------------
 	/**
-	 * Generate timeline data feed
+	 * Generate storymap data feed
 	 *
 	 * @param array $pa_viz_settings Array of visualization settings taken from visualization.conf
 	 * @param array $pa_options Array of options to use when rendering output. Supported options are:
@@ -109,25 +110,29 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 	 * @return string
 	 */
 	public function getDataForVisualization($pa_viz_settings, $pa_options=null) {
-
 		// title slide
 		$va_data = [
-			'title' => [
-				'text' => [
-					'headline' => isset($pa_viz_settings['display']['headline']) ? $pa_viz_settings['display']['headline'] : '',
-					'text' => isset($pa_viz_settings['display']['introduction']) ? $pa_viz_settings['display']['introduction'] : '',
-				],
-				'media' => [
-					'url' => '',
-					'credit' => '',
-					'caption' => ''
-				]
+			'storymap' => [
+				'language' => 'en',
+				'map_type' => isset($pa_viz_settings['display']['map_type']) ? $pa_viz_settings['display']['map_type'] : 'stamen:toner-lite',
+				'map_as_image' => false,
+				'slides' => [[
+					'type' => 'overview',
+					'text' => [
+						'headline' => isset($pa_viz_settings['display']['headline']) ? $pa_viz_settings['display']['headline'] : '',
+						'text' => isset($pa_viz_settings['display']['introduction']) ? $pa_viz_settings['display']['introduction'] : '',
+					],
+					'media' => [
+						'url' => '',
+						'credit' => '',
+						'caption' => ''
+					]
+				]]
 			],
-			'scale' => 'human'
 		];
-        
+
         $po_request = caGetOption('request', $pa_options, null);
-		
+
 		$qr_res = $this->getData();
 		$vs_table_name = $qr_res->tableName();
 		$vs_pk = $qr_res->primaryKey();
@@ -136,34 +141,35 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 
 		while($qr_res->nextHit()) {
 			foreach($pa_viz_settings['sources'] as $vs_source_name => $va_source) {
-				$vs_dates = $qr_res->get($va_source['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
-				$va_dates = explode(";", $vs_dates);
-	
-				$va_date_list = explode("/", $va_dates[0]);
-				if (!$va_date_list[0] || !$va_date_list[1]) continue; 
-				$va_timeline_dates = caGetDateRangeForTimelineJS($va_date_list);
-		
+				$va_locations = $qr_res->get($va_source['data'], array('coordinates'=> true, 'returnAsArray' => true));
+
+				$va_location = array_shift($va_locations);
+
+				$vn_latitude = (float) $va_location['latitude'];
+				$vn_longitude = (float) $va_location['longitude'];
+
 				$vn_row_id = $qr_res->get("{$vs_table_name}.{$vs_pk}");
 				$vs_title = $qr_res->getWithTemplate($va_source['display']['title_template']);
 
-				$va_data['events'][] = [
+				$va_data['storymap']['slides'][] = [
 					'text' => [
 						'headline' => $po_request ? caEditorLink($po_request, $vs_title, '', $vs_table_name, $vn_row_id) : $vs_title,
 						'text' => $qr_res->getWithTemplate($va_source['display']['description_template']),
 					],
 					'media' => [
 						'url' => $qr_res->getWithTemplate($va_source['display']['image'], array('returnURL' => true)),
-						'thumbnail' => $qr_res->getWithTemplate($va_source['display']['icon'], array('returnURL' => true)),
 						'credit' => $qr_res->getWithTemplate($va_source['display']['credit_template']),
 						'caption' => $qr_res->getWithTemplate($va_source['display']['caption_template'])
 					],
-					'start_date' => $va_timeline_dates['start_date'],
-					'end_date' => $va_timeline_dates['end_date'],
+					'location' => [
+						'lat' => $vn_latitude,
+						'lon' => $vn_longitude,
+					]
 				];
 			}
 
 			$vn_c++;
-			if ($vn_c >= 250) { break; }
+			if ($vn_c >= 80) { break; }
 		}
 
 		return json_encode($va_data);
@@ -181,9 +187,9 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 		$vn_cur_pos = $po_data->currentIndex();
 		if ($vn_cur_pos < 0) { $vn_cur_pos = 0; }
 		$po_data->seek(0);
-		
+
 		$o_dm = Datamodel::load();
-		
+
 		//
 		// Make sure sources actually exist
 		//
@@ -191,10 +197,10 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 		foreach($va_sources as $vs_source_code => $va_source_info) {
 			$va_tmp = explode('.', $va_source_info['data']);
 			$t_instance = $o_dm->getInstanceByTableName($va_tmp[0], true);
-			if (!($t_instance = $o_dm->getInstanceByTableName($va_tmp[0], true))) { unset($va_sources[$vs_source_code]); continue; } 
+			if (!($t_instance = $o_dm->getInstanceByTableName($va_tmp[0], true))) { unset($va_sources[$vs_source_code]); continue; }
 			if (!$t_instance->hasField($va_tmp[1]) && (!$t_instance->hasElement($va_tmp[1]))) { unset($va_sources[$vs_source_code]); }
 		}
-		
+
 		$vn_c = 0;
 		//
 		// Only check the first 10,000 returned rows before giving up, to avoid timeouts
@@ -215,10 +221,10 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 	/**
 	 * Register any required javascript and CSS for loading
 	 *
-	 * @return void 
+	 * @return array
 	 */
 	public function registerDependencies() {
-		$va_packages = array("timelineJS");
+		$va_packages = array("storymapJS");
 		foreach($va_packages as $vs_package) { AssetLoadManager::register($vs_package); }
 		return $va_packages;
 	}
@@ -227,8 +233,8 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 		// try to include locale file
 		global $g_ui_locale; $va_matches = array();
 		preg_match("/^([a-z]{2,3})\_[A-Z]{2,3}$/", $g_ui_locale, $va_matches);
-		if(isset($va_matches[1]) && file_exists(__CA_BASE_DIR__.'/assets/timelinejs/js/locale/'.$va_matches[1].'.js')) {
-			return "<script src='".$po_request->getBaseUrlPath()."/assets/timelinejs/js/locale/".$va_matches[1].".js' type='text/javascript'></script>";
+		if(isset($va_matches[1]) && file_exists(__CA_BASE_DIR__.'/assets/storymapjs/js/locale/'.$va_matches[1].'.js')) {
+			return "<script src='".$po_request->getBaseUrlPath()."/assets/storymapjs/js/locale/".$va_matches[1].".js' type='text/javascript'></script>";
 		}
 		return '';
 	}
