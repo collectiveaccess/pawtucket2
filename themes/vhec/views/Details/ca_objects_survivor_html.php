@@ -123,30 +123,31 @@
 				}
 				$vs_rights = false;
 				$vs_rights_text = "";
+				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<h8>Conditions on Access</h8>";
+					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
+				}		
 				if ($vs_conditions_use = $t_object->get('ca_objects.RAD_useRepro')) {
 					$vs_rights = true;
 					$vs_rights_text.= "<h8>Conditions on Use</h8>";
 					$vs_rights_text.= "<div>".$vs_conditions_use."</div>";
 				}
-				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
+				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_usePub')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Access</h8>";
-					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
+					$vs_rights_text.= "<h8>Conditions on Reproduction and Publications </h8>";
+					$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
 				}
+				if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<h8>Rights Holder</h8>";
+					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
+				}	
 				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) {
 					$vs_rights = true;
 					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 				}
-				if ($vs_rights_statement = $t_object->get('ca_objects.dc_rights')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<h8>Rights Holder</h8>";
-					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
-				}
-				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_useRepro')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<h8>Terms governing reproduction</h8>";
-					$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
-				}				
+							
 				if ($vs_rights == true) {
 					print "<div class='rightsBlock'>";
 					print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
@@ -205,16 +206,30 @@
 						}
 						if ($va_general_note = $t_object->get('ca_objects.MARC_generalNote')) {
 							print "<div class='unit trimText'><h8>Note</h8>".$va_general_note."</div>";
-						}
-						if ($va_related_entities = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" excludeRelationshipTypes="interviewer, interviewee, creator, receiver"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
-							print "<div class='unit trimText'><h8>Related Entities</h8>".$va_related_entities."</div>";
 						}	
 						if ($va_test_project = $t_object->get('ca_objects.testimony_project_notes')) {
 							print "<div class='unit trimText'><h8>Testimony Project</h8>".$va_test_project."</div>";
 						}
-						if ($va_other_holding = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" restrictToRelationshipTypes="receiver"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
-							print "<div class='unit trimText'><h8>Other Holding Institutions</h8>".$va_other_holding."</div>";
-						}						
+						if ($va_other_holding = $t_object->getWithTemplate('<unit delimiter=", " relativeTo="ca_entities" restrictToRelationshipTypes="repository"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+							print "<div class='unit'><h8>Other Holding Institutions</h8>".$va_other_holding."</div>";
+						}
+						if ($t_object->get('ca_objects.transcript.transcript_media')){
+							$va_assoc_materials_pdf = $t_object->get('ca_objects.transcript', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 							
+							$o_db = new Db();
+							$vn_media_element_id = $t_object->_getElementID('transcript_media');
+							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
+								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
+									if ($vn_assoc_materials_pdf_image['transcript_supress'] == "No") {
+										print "<div class='unit document'><h8>Time-Coded narrative </h8>";
+										$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_assoc_materials_pdf_id, $vn_media_element_id)) ;
+										if ($qr_res->nextRow()) {
+											print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['upload_type'])."</a></p>";
+										}
+										print "</div>";
+									}
+								}
+							}
+						}												
 						if ($va_funding_note = $t_object->get('ca_objects.funding_note')) {
 							print "<div class='unit'><h8>Funding Note</h8>".$va_funding_note."</div>";
 						}

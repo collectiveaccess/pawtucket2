@@ -679,7 +679,7 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	display:inline-block;
 	float:none;
 }
-#browseTable .ui-state-default a, #browseTable .ui-state-default a:link, #browseTable .ui-state-default a:visited {
+#browseTable .ui-state-default a, #browseTable .ui-state-default a:link, #browseTable .ui-state-default a:visited, #browseTable .ui-tabs-nav div a {
 	color:#999;
 	padding-top:0px;
 	padding-bottom:0px;
@@ -687,6 +687,12 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	border-bottom:2px solid #f5f5f5;
 	margin-bottom:-5px;
 
+}
+#browseTable .ui-tabs-nav div {
+	display:inline-block;
+	vertical-align: top;
+    padding-top: 1px;
+    padding-left:10px;
 }
 #browseTable .ui-state-active a, #browseTable .ui-state-active a:link, #browseTable .ui-state-active a:visited {
 	color:#333;
@@ -1059,6 +1065,9 @@ a.thumbControl:hover {
 	background-color:#f5f5f5;
 	padding:10px;
 	margin-bottom:10px;
+}
+.status.unavailable {
+	color: red;
 }
 
 /* Gallery */

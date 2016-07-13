@@ -146,7 +146,7 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search the Collections" name="search">
+							<input type="text" class="form-control" placeholder="Search all collections" name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
@@ -170,9 +170,7 @@
 					#print $this->render("pageFormat/browseMenu.php"); 	
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Resources <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li>".caNavLink($this->request, 'For Educators', 'first', '', 'About', 'Index')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'For Students', '', '', 'About', 'Index')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'For Researchers', '', '', 'About', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Researchers and Educators', 'first', '', 'About', 'Index')."</li>\n"; 					
 					print "<li>".caNavLink($this->request, 'CIC', 'first', '', 'About', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Finding Aids', 'first', 'FindingAid', 'Collection', 'Index')."</li>\n";
 					print "<li>".caNavLink($this->request, 'Research Guides', '', '', 'About', 'researchguide')."</li>\n"; 
@@ -185,8 +183,8 @@
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
 					print "<li><a href='http://www.vhec.org/currentexhibits.html' target='_blank'>Current</a></li>\n";
-					print "<li>".caNavLink($this->request, 'Past', '', '', 'About', 'Index')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Online', '', '', 'Gallery', 'Index')."</li>\n"; 
+					print "<li><a href='http://www.vhec.org/pastexhibits.html' target='_blank'>Past</a></li>\n";
+					print "<li><a href='http://www.vhec.org/multimedia.html' target='_blank'>Online</a></li>\n";
 					print "</ul>";
 					print "</li>";	
 								

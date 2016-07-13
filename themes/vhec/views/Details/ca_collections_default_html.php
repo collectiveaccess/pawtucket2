@@ -67,6 +67,40 @@
 						print $vs_access_point;
 						print "</div>";
 					}
+					
+					$vs_rights = false;
+					$vs_rights_text = "";
+					if ($vs_conditions_access = $t_item->get('ca_collections.govAccess')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<h8>Conditions on Access</h8>";
+						$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
+					}		
+					if ($vs_conditions_use = $t_item->get('ca_collections.RAD_useRepro')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<h8>Conditions on Use</h8>";
+						$vs_rights_text.= "<div>".$vs_conditions_use."</div>";
+					}
+					if ($vs_rights_reproduction = $t_item->get('ca_collections.RAD_usePub')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<h8>Conditions on Reproduction and Publications </h8>";
+						$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
+					}
+					if ($vs_rights_statement = $t_item->get('ca_collections.rights_holder')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<h8>Rights Holder</h8>";
+						$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
+					}	
+					if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
+					}
+							
+					if ($vs_rights == true) {
+						print "<div class='rightsBlock'>";
+						print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
+						print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
+						print "</div>";
+					}					
 ?>				
 					<div class='map'>{{{map}}}</div>
 <?php
@@ -209,7 +243,7 @@
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row">
 				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					<?php print "Loading..."; ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
@@ -217,7 +251,7 @@
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							loadingHtml: '<?php print "Loading..."; ?>',
 							padding: 20,
 							nextSelector: 'a.jscroll-next' 
 						});
