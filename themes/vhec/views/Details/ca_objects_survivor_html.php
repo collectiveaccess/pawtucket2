@@ -269,7 +269,7 @@
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_holdings.= "<div class='col-sm-3'>";
 					$vs_related_holdings.= "<div class='relatedThumb'>";
-					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_collection_id)."</p></div>";
+					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_collection_id)."</p></div>";
 					$vs_related_holdings.= "</div>";					
 				}
 			}					

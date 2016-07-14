@@ -499,7 +499,7 @@ textarea {
 /* Advanced Search */
 
 .advancedContainer {
-	width: 300px;
+	width: 100%;
 }
 .advSearch {
 	float:right;
@@ -528,6 +528,9 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	background-color: #f1f1f1;
 	padding:10px;
 	margin-bottom:30px;
+}
+.advancedSearch textarea, .advancedSearch input, .advancedSearch table{
+	width:100% !important;
 }
 
 
@@ -760,23 +763,24 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	color: #778459;
 }
 .multisearch .blockResults {
-	height: 200px;
+	height: 220px;
 	margin-bottom:25px;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
-    height: 195px;
+    height: 210px;
     padding: 75px 10px 0px 10px;
     font-size: 25px;
 }
 .multisearch .multisearchResult {
-	width: 200px;
-	height: 188px;
-	font-size:13px;
+	width: 220px;
+	height: 210px;
+	font-size:11px;
+	line-height:1.3em;
 	background-color:#f5f5f5;
 	box-shadow:none;
 }
 .multisearch .multisearchResult img {
-	margin-bottom:10px;
+	margin-bottom:5px;
 }
 .multisearch .authoritySet {
 	height:220px;
@@ -791,8 +795,8 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	border:0px;
 	background-color: #fbfbfb;
 	color: #ddd;
-	padding: 30px 20px;
-	margin-bottom:10px;
+	padding: 38px 20px;
+	margin-bottom:5px;
 }
 .multisearchImgPlaceholder .fa-2x {
 	font-size:4em;
@@ -802,7 +806,7 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	letter-spacing:1px;
 	color: #33450D;
 	font-size:11px;
-	margin-bottom:5px;
+	margin-bottom:3px;
 }
 
 
@@ -815,15 +819,14 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 .detail .unit {
 	margin-bottom:12px;
 }
-.detail .unit.trimText {
-	margin-bottom:0px;
-}
+
 a.readmore-js-toggle {
 	padding-top:0px;
 	color:#000;
 	text-transform:lowercase;
 	text-decoration:underline;
 	padding-bottom:12px;
+	margin-top:-12px;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	background-color: #f5f5f5;
@@ -882,6 +885,9 @@ a.readmore-js-toggle {
 }
 .detail HR {
 	clear:both;
+}
+.jscroll-next {
+	display:none;
 }
 #relationshipTable.ui-tabs {
 	padding:0px;

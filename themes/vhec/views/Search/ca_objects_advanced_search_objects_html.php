@@ -11,31 +11,65 @@
 	
 	<div class='advancedContainer'>
 		<div class="advancedSearchField">
+			All Fields<br/>
+			{{{_fulltext%width=300px&height=25px}}}
+		</div>
+		<div class="advancedSearchField">
+			Genre:<br/>
+			{{{ca_objects.cdwa_work_type%width=300px}}}
+		</div>
+		<div class="advancedSearchField">
+			Object ID:<br/>
+			{{{ca_objects.altID%width=300px&height=23px}}}
+		</div>						
+		<div class="advancedSearchField">
 			Title:<br/>
 			{{{ca_objects.preferred_labels.name%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
-			Accession number:<br/>
-			{{{ca_objects.idno%width=260px}}}
+			Date of Creation <i>(e.g. 1970-1979)</i><br/>
+			{{{ca_objects.indexingDatesSet%width=300px&height=25px&useDatePicker=0}}}
 		</div>
 		<div class="advancedSearchField">
-			Keyword<br/>
-			{{{_fulltext%width=300px&height=25px}}}
+			Creator <br/>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator;artist;photographer%width=420px}}}
 		</div>
 		<div class="advancedSearchField">
-			Type:<br/>
-			{{{ca_objects.type_id%width=300px}}}
+			Places <br/>
+			{{{ca_places.preferred_labels%width=300px}}}
+		</div>				
+		<div class="advancedSearchField">
+			Provenance:<br/>
+			{{{ca_objects.dc_provenance%width=300px&height=23px}}}
 		</div>
 		<div class="advancedSearchField">
-			Date range <i>(e.g. 1970-1979)</i><br/>
-			{{{ca_objects.displayDate%width=300px&height=25px&useDatePicker=0}}}
+			Classification:<br/>
+			{{{ca_objects.classification%width=300px&height=23px&render=checklist}}}
 		</div>
-		
 		<div class="advancedSearchField">
-			Collection <br/>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=420px}}}
+			Materials/Techniques:<br/>
+			{{{ca_objects.cdwa_displayMaterialsTech%width=300px&height=23px}}}
 		</div>
-
+		<div class="advancedSearchField">
+			Language:<br/>
+			{{{ca_objects.language%width=300px&height=23px}}}
+		</div>	
+		<div class="advancedSearchField">
+			Funding Note:<br/>
+			{{{ca_objects.funding_note%width=300px&height=23px}}}
+		</div>
+		<div class="advancedSearchField">
+			Access Points:<br/>
+			{{{ca_objects.local_subject%width=300px&height=23px}}}
+		</div>
+		<div class="advancedSearchField">
+			Subject - People & Organizations:<br/>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=23px}}}
+		</div>	
+		<div class="advancedSearchField">
+			Only Digital Collections:<br/>
+			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
+		</div>											
 		<br style="clear: both;"/>
 	
 		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>

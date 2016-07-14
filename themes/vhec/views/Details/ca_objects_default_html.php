@@ -381,9 +381,9 @@
 						}	
 																																																																																															
 					} else {
-						if ($va_level_description = $t_object->get('ca_objects.level_desription', array('convertCodesToDisplayText' => true))) {
-							print "<div class='unit'><h8>Level of Description</h8>".$va_level_description."</div>";
-						}
+						#if ($va_level_description = $t_object->get('ca_objects.level_desription', array('convertCodesToDisplayText' => true))) {
+						#	print "<div class='unit'><h8>Level of Description</h8>".$va_level_description."</div>";
+						#}
 						if ($va_resource_type = $t_object->get('ca_objects.dc_type', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h8>Resource Type</h8>".$va_resource_type."</div>";
 						}
@@ -422,7 +422,10 @@
 						}
 						if ($va_extent = $t_object->get('ca_objects.RAD_extent')) {
 							print "<div class='unit'><h8>Extent & Medium</h8>".$va_extent."</div>";
-						}															
+						}
+						if ($va_scope = $t_object->get('ca_objects.ISADG_scope')) {
+							print "<div class='unit'><h8>Scope & Content</h8>".$va_scope."</div>";
+						}																					
 						if ($va_place = $t_object->get('ca_objects.creation_place')) {
 							print "<div class='unit'><h8>Place of Creation</h8>".$va_place."</div>";
 						}
@@ -468,7 +471,7 @@
 							print "<div class='unit'><h8>Classification</h8>".$va_classification."</div>";
 						}
 						if ($va_provenance_legal = $t_object->get('ca_objects.cdwa_ownership.ownership_legal')) {
-							print "<div class='unit'><h8>Status</h8>".$va_provenance_legal."</div>";
+							print "<div class='unit'><h8>Legal Status</h8>".$va_provenance_legal."</div>";
 						}
 						if ($va_provenance_credit = $t_object->get('ca_objects.cdwa_ownership.ownership_credit')) {
 							print "<div class='unit'><h8>Credit Line</h8>".$va_provenance_credit."</div>";
@@ -549,7 +552,7 @@
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_holdings.= "<div class='col-sm-3'>";
 					$vs_related_holdings.= "<div class='relatedThumb'>";
-					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_collection_id)."</p></div>";
+					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_collection_id)."</p></div>";
 					$vs_related_holdings.= "</div>";					
 				}
 			}					

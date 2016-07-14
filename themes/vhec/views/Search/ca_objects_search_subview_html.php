@@ -96,8 +96,10 @@
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
 				<div class='objType'><?php print $qr_results->get('ca_objects.resource_type', array('convertCodesToDisplayText' => true));?></div>
-				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
-				<?php print $qr_results->get('ca_objects.displayDate', array('delimiter' => ', ')); ?>
+				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."<br/>"; ?>
+				<?php print $qr_results->get('ca_objects.indexingDatesSet', array('delimiter' => ', '))."<br/>"; ?>
+				<?php print $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ')); ?>
+			
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

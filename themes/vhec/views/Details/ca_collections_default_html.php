@@ -144,7 +144,7 @@
 					if ($va_accruals = $t_item->get('ca_collections.RAD_accruals')) {
 						print "<div class='unit'><h8>Accruals</h8>".$va_accruals."</div>";
 					}
-					if ($va_language = $t_item->get('ca_collections.RAD_langMaterial')) {
+					if ($va_language = $t_item->get('ca_collections.RAD_langMaterial', array('delimiter' => ', '))) {
 						print "<div class='unit'><h8>Language</h8>".$va_language."</div>";
 					}
 					if ($va_note = $t_item->get('ca_collections.RAD_generalNote')) {
@@ -165,6 +165,12 @@
 					if ($va_rules = $t_item->get('ca_collections.ISADG_rules')) {
 						print "<div class='unit'><h8>Rules or Conventions</h8>".$va_rules."</div>";
 					}
+					if ($va_arch_note = $t_item->get('ca_collections.ISADG_archNote')) {
+						print "<div class='unit'><h8>Archivist's Note</h8>".$va_arch_note."</div>";
+					}
+					if ($va_date_desc = $t_item->get('ca_collections.dateDescript')) { 
+						print "<div class='unit'><h8>Date of Description</h8>".$va_date_desc."</div>";
+					}					
 /*																																																				
 					if ($va_description = $t_item->get('ca_collections.description')) {
 						print "<div class='unit'><h8>Description</h8>".$va_description."</div>";
@@ -199,7 +205,7 @@
 						$vn_i = 0;
 						#foreach($va_top_level as $vn_i => $va_top_level_id) {
 							( $va_top_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
-							$vs_buf.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels')." (".$t_top_collection->get('ca_collections.idno').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_top_level_id)."</div>".($t_top_collection->get('ca_collections.ISADG_scope') ? "<div style='margin-left:20px;' class='trimText'>".$t_top_collection->get('ca_collections.ISADG_scope')."</div>" : "");
+							$vs_buf.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels')." (".$t_top_collection->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_top_level_id)."</div>".($t_top_collection->get('ca_collections.ISADG_scope') ? "<div style='margin-left:20px;' class='trimText'>".$t_top_collection->get('ca_collections.ISADG_scope')."</div>" : "");
 							$vs_buf.= "<div class='seriesLevel".$va_top_level_id." ' >";
 			
 							foreach($va_series_level as $vn_i2 => $va_series_level_id) {
@@ -208,7 +214,7 @@
 								#$va_subseries_level = $t_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true));
 								$va_subseries_level = $t_series_level->getHierarchyChildren(null, array("idsOnly" => true));
 								( $va_series_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
-								$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "&mdash;<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels')." (".$t_series_level->get('ca_collections.idno').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_series_level_id)."</div>";
+								$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "&mdash;<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels')." (".$t_series_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_series_level_id)."</div>";
 								$vs_buf.= "<div class='subseriesLevel".$va_series_level_id." borderlevel' style='margin-left:40px;'>";
 				
 								foreach($va_subseries_level as $vn_i3 => $va_subseries_level_id) {
@@ -216,13 +222,13 @@
 									$va_box_levels = $t_subseries_level->getHierarchyChildren(null, array("idsOnly" => true));
 									( $va_subseries_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
 
-									$vs_buf.= "<div>".(sizeof($va_box_levels) > 0 ? "&mdash;<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels')." (".$t_subseries_level->get('ca_collections.idno').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_subseries_level_id)."</div>";
+									$vs_buf.= "<div>".(sizeof($va_box_levels) > 0 ? "&mdash;<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels')." (".$t_subseries_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_subseries_level_id)."</div>";
 									$vs_buf.= "<div class='boxLevel".$va_subseries_level_id." borderlevel' style='margin-left:60px;'>";
 									foreach ($va_box_levels as $vn_i4 => $va_box_level_id) {
 										$t_box_level = new ca_collections($va_box_level_id);
 										( $va_box_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
 
-										$vs_buf.= "<div>&mdash;".caNavLink($this->request, $t_box_level->get('ca_collections.preferred_labels')." (".$t_box_level->get('ca_collections.idno').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_box_level_id)."</div>";
+										$vs_buf.= "<div>&mdash;".caNavLink($this->request, $t_box_level->get('ca_collections.preferred_labels')." (".$t_box_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$va_box_level_id)."</div>";
 									}
 									$vs_buf.= "</div><!-- end boxlevel -->";
 								}
@@ -242,13 +248,19 @@
 			
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row">
+				<div class="col-sm-12"><h4 style='font-size:16px;'>Items</h4></div>
+			</div>
+			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print "Loading..."; ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load(
+						"<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>", 
+						{'search': 'ca_collection_labels.collection_id/part_of:^ca_collections.collection_id'}, 
+					function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print "Loading..."; ?>',
