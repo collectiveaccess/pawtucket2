@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Sets/set_detail_timeline_html.php : 
+ * themes/default/views/Gallery/set_detail_timeline_html.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
