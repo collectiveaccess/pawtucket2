@@ -529,7 +529,7 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	padding:10px;
 	margin-bottom:30px;
 }
-.advancedSearch textarea, .advancedSearch input, .advancedSearch table{
+.advancedSearch textarea, .advancedSearch input, .advancedSearch table, .advancedSearch select{
 	width:100% !important;
 }
 

@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8 ">
+		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 			<h1>Advanced Search</h1>
 
 <?php			
@@ -11,65 +11,71 @@
 	
 	<div class='advancedContainer'>
 		<div class="advancedSearchField">
-			All Fields<br/>
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Keyword search of all fields."
+			>All Fields:</span><br/>
 			{{{_fulltext%width=300px&height=25px}}}
 		</div>
+		
 		<div class="advancedSearchField">
-			Genre:<br/>
-			{{{ca_objects.cdwa_work_type%width=300px}}}
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Search one of the VHEC’s four collections."
+			>Collection Type:</span><br/>
+			{{{ca_objects.type_id%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
-			Object ID:<br/>
-			{{{ca_objects.altID%width=300px&height=23px}}}
-		</div>						
+			Resource Type:<br/>
+			{{{ca_objects.resource_type%width=300px}}}
+		</div>	
 		<div class="advancedSearchField">
-			Title:<br/>
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a record. For the Archives this is the Identifier, Museum and Testimony collections this is the Object Identifier. For the library is the Barcode or Call Number."
+			>Object ID:</span><br/>
+			{{{ca_objects.altID%width=300px&height=23px}}}
+		</div>
+		<div class="advancedSearchField">
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="The title of the record assigned by the creator or cataloguer."
+			>Title:</span><br/>
 			{{{ca_objects.preferred_labels.name%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
-			Date of Creation <i>(e.g. 1970-1979)</i><br/>
-			{{{ca_objects.indexingDatesSet%width=300px&height=25px&useDatePicker=0}}}
-		</div>
-		<div class="advancedSearchField">
-			Creator <br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator;artist;photographer%width=420px}}}
-		</div>
-		<div class="advancedSearchField">
-			Places <br/>
-			{{{ca_places.preferred_labels%width=300px}}}
-		</div>				
-		<div class="advancedSearchField">
-			Provenance:<br/>
-			{{{ca_objects.dc_provenance%width=300px&height=23px}}}
-		</div>
-		<div class="advancedSearchField">
-			Classification:<br/>
-			{{{ca_objects.classification%width=300px&height=23px&render=checklist}}}
-		</div>
-		<div class="advancedSearchField">
-			Materials/Techniques:<br/>
-			{{{ca_objects.cdwa_displayMaterialsTech%width=300px&height=23px}}}
-		</div>
-		<div class="advancedSearchField">
-			Language:<br/>
-			{{{ca_objects.language%width=300px&height=23px}}}
-		</div>	
-		<div class="advancedSearchField">
-			Funding Note:<br/>
-			{{{ca_objects.funding_note%width=300px&height=23px}}}
-		</div>
-		<div class="advancedSearchField">
-			Access Points:<br/>
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe the subject and content of the item."
+			>Subject:</span><br/>
 			{{{ca_objects.local_subject%width=300px&height=23px}}}
 		</div>
 		<div class="advancedSearchField">
-			Subject - People & Organizations:<br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=23px}}}
-		</div>	
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="The particular kind of object described in a record. This is a curated list that reflects the contents of the VHEC’s collection."
+			>Genre:</span><br/>
+			{{{ca_objects.cdwa_work_type%width=300px}}}
+		</div>
 		<div class="advancedSearchField">
-			Only Digital Collections:<br/>
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item."
+			>People & Organizations:</span><br/>
+			{{{ca_entities.preferred_labels%width=420px}}}
+		</div>
+		<div class="advancedSearchField">
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Language(s) associated with an item."
+			>Language:</span><br/>
+			{{{ca_objects.language%width=300px&height=23px}}}
+		</div>
+		<div class="advancedSearchField">
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Places associated with an item; including both contemporary geographic locations and historical places, such as camps and ghettos."
+			>Place:</span> <br/>
+			{{{ca_places.preferred_labels%width=300px}}}
+		</div>																				
+		<div class="advancedSearchField">
+			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records with media."
+			>Only Digital Collections:</span><br/>
 			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
-		</div>											
+		</div>
+															
 		<br style="clear: both;"/>
 	
 		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
@@ -81,9 +87,15 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
+		<div class="col-sm-4" >
 			<h1>Helpful Hints</h1>
 			<p>Include some helpful info for your users here.</p>
 		</div><!-- end col -->
 	</div><!-- end row -->
 </div><!-- end container -->
+<script>
+	jQuery(document).ready(function() {
+		$('.advancedSearchField span').popover(); 
+	});
+	
+</script>
