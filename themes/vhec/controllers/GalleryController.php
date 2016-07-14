@@ -40,13 +40,13 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+ 			if ($this->getRequest()->config->get('pawtucket_requires_login')&&!($this->getRequest()->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->getRequest(), "", "LoginReg", "LoginForm"));
             }
             
  			$this->config = caGetGalleryConfig();
  			$this->opo_datamodel = Datamodel::load();
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues($this->getRequest());
  		 	$this->opa_access_values = $va_access_values;
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
@@ -70,13 +70,14 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			$ps_function = strtolower($ps_function);
- 			$pn_set_theme = $this->request->getParameter('theme', pInteger);
+ 			$pn_set_theme = $this->getRequest()->getParameter('theme', pInteger);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
- 			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
+ 			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type'));
+			$va_access_values = caGetUserAccessValues($this->getRequest());
  			$t_set = new ca_sets();
 
- 			if($ps_function == "index"){
+ 			if($ps_function == "index") { // set category overview
  				if($vn_gallery_set_type_id){
 					$o_set_search = new SetSearch();
 					$qr_sets = $o_set_search->search("ca_sets.lightbox_cats:".$pn_set_theme, array("checkAccess" => $va_access_values)); 				
@@ -103,42 +104,55 @@
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+				MetaTagManager::setWindowTitle($this->getRequest()->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
  				$this->render("Gallery/index_html.php");
- 			}else{
+ 			} else { // set detail
  				$ps_set_id = $ps_function;
- 				$this->view->setVar("set_id", $ps_set_id);
+ 				$this->getView()->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);
- 				$this->view->setVar("set", $t_set);
- 				$this->view->setVar("label", $t_set->getLabelForDisplay());
- 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
- 				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
- 				$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
+
+ 				$this->getView()->setVar("set", $t_set);
+ 				$this->getView()->setVar("label", $t_set->getLabelForDisplay());
+ 				$this->getView()->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+ 				$this->getView()->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => caGetUserAccessValues($this->getRequest())))));
+ 				$pn_set_item_id = $this->getRequest()->getParameter('set_item_id', pInteger);
  				if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs()))){
  					$pn_set_item_id = "";	
  				}
- 				$this->view->setVar("set_item_id", $pn_set_item_id);
- 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
- 				$this->render("Gallery/detail_html.php");
+ 				$this->getView()->setVar("set_item_id", $pn_set_item_id);
+ 				MetaTagManager::setWindowTitle($this->getRequest()->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+
+				// determine render mode
+				switch($t_set->get('ca_sets.lightbox_cats', ['convertCodesToIdno' => true])) {
+					case 'timeline':
+						$this->render('Gallery/set_detail_timeline_html.php');
+						break;
+					case 'storymap':
+						// @todo
+						break;
+					default:
+						$this->render("Gallery/detail_html.php");
+						break;
+				}
  			}
  		}
  		# -------------------------------------------------------
  		 public function featured() {
  		 
- 			$va_access_values = caGetUserAccessValues($this->request);
- 			$this->view->setVar('access_values', $va_access_values);
+ 			$va_access_values = caGetUserAccessValues($this->getRequest());
+ 			$this->getView()->setVar('access_values', $va_access_values);
 
  			#
  			# --- if there is a set configured to show on the front page, load it now
- 			#		 
- 		 
+ 			#
 			$this->render("Gallery/featured.php");
- 		} 		
+ 		}
+		# -------------------------------------------------------
  		/**
  		 *
  		 */ 
  		public function getSetInfo() {
- 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
  			$this->view->setVar("set", $t_set);
@@ -151,21 +165,47 @@
  			
  			$this->render("Gallery/set_info_html.php");
  		}
+		# -------------------------------------------------------
+		public function getSetInfoAsJSON() {
+			$ps_mode = $this->getRequest()->getParameter('mode', pString);
+			if(!$ps_mode) { $ps_mode = 'timeline'; }
+
+			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
+			$t_set = new ca_sets($pn_set_id);
+			$this->getView()->setVar('set', $t_set);
+
+			$this->getView()->setVar('views', $this->config->get('views'));
+
+			$o_res = caMakeSearchResult(
+				$t_set->get('table_num'),
+				array_keys($t_set->getItemRowIDs()),
+				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+			);
+
+			$this->getView()->setVar('result', $o_res);
+
+			switch($ps_mode) {
+				case 'timeline':
+				default:
+					$this->getView()->setVar('view', 'timeline');
+					$this->render('Gallery/set_detail_timeline_json.php');
+			}
+		}
  		# -------------------------------------------------------
  		public function getSetItemRep(){
- 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
  			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
- 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 			$pn_item_id = $this->getRequest()->getParameter('item_id', pInteger);
  			$this->view->setVar("set_item_id", $pn_item_id); 
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->getRequest(), $t_rep, $va_set_items[$pn_item_id]["row_id"]));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
@@ -184,8 +224,8 @@
  		}
  		# -------------------------------------------------------
  		public function getSetItemInfo(){
- 			$pn_item_id = $this->request->getParameter('item_id', pInteger);
- 			$pn_set_id = $this->request->getParameter('set_id', pInteger);
+ 			$pn_item_id = $this->getRequest()->getParameter('item_id', pInteger);
+ 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
  			$t_object = new ca_objects($t_set_item->get("row_id"));
