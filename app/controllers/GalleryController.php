@@ -126,7 +126,33 @@
  			
  			$this->render("Gallery/set_info_html.php");
  		}
- 		# -------------------------------------------------------
+		# -------------------------------------------------------
+		public function getSetInfoAsJSON() {
+			$ps_mode = $this->getRequest()->getParameter('mode', pString);
+			if(!$ps_mode) { $ps_mode = 'timeline'; }
+
+			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
+			$t_set = new ca_sets($pn_set_id);
+			$this->getView()->setVar('set', $t_set);
+
+			$this->getView()->setVar('views', $this->config->get('views'));
+
+			$o_res = caMakeSearchResult(
+				$t_set->get('table_num'),
+				array_keys($t_set->getItemRowIDs()),
+				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+			);
+
+			$this->getView()->setVar('result', $o_res);
+
+			switch($ps_mode) {
+				case 'timeline':
+				default:
+					$this->getView()->setVar('view', 'timeline');
+					$this->render('Gallery/set_detail_timeline_json.php');
+			}
+		}
+		# -------------------------------------------------------
  		public function getSetItemRep(){
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
