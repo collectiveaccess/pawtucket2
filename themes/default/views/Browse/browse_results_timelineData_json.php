@@ -54,20 +54,24 @@
 	$va_view_info = $va_views[$vs_current_view];
 	
 
-	$va_data = array(		
-		"headline" => "",
-		"type" => "default",
-		"text" => "",
-		"asset" => array(
-			"media" => "",
-			"credit" => "",
-			"caption" => ""
-		)
-	);
+	// title slide
+	$va_data = [
+		'title' => [
+			'text' => [
+				'headline' => '',
+				'text' => '',
+			],
+			'media' => [
+				'url' => '',
+				'credit' => '',
+				'caption' => ''
+			]
+		],
+		'scale' => 'human'
+	];
 	
 	$vn_c = 0;
 	$qr_res->seek($vn_start);
-	$va_results = array();
 	while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 		$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
 		$va_dates = explode(";", $vs_dates);
@@ -75,27 +79,25 @@
 		$va_date_list = explode("/", $va_dates[0]);
 		if (!$va_date_list[0] || !$va_date_list[1]) continue; 
 		$va_timeline_dates = caGetDateRangeForTimelineJS($va_date_list);
-		
-	
-		$va_data['date'][] = array(
-			"startDate" => $va_timeline_dates['start'],
-			"endDate" => $va_timeline_dates['end'],
-			"headline" => $qr_res->getWithTemplate(caGetOption('title_template', $va_view_info['display'], null)),
-			"text" => $qr_res->getWithTemplate(caGetOption('description_template', $va_view_info['display'], null)),
-			"tag" => '',
-			"classname" => '',
-			"displayDate" => $qr_res->get($va_view_info['data']),
-			"asset" => array(
-				"media" => $qr_res->getWithTemplate(caGetOption('image', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
+
+		$va_data['events'][] = [
+			'text' => [
+				'headline' => $qr_res->getWithTemplate(caGetOption('title_template', $va_view_info['display'], null)),
+				'text' => $qr_res->getWithTemplate(caGetOption('description_template', $va_view_info['display'], null)),
+			],
+			'media' => [
+				"url" => $qr_res->getWithTemplate(caGetOption('image', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				"thumbnail" => $qr_res->getWithTemplate(caGetOption('icon', $va_view_info['display'], null), array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				"credit" => $qr_res->getWithTemplate(caGetOption('credit_template', $va_view_info['display'], null)),
 				"caption" => $qr_res->getWithTemplate(caGetOption('caption_template', $va_view_info['display'], null))
-			)
-		);
-		
+			],
+			"display_date" => $qr_res->get($va_view_info['data']),
+			'start_date' => $va_timeline_dates['start_date'],
+			'end_date' => $va_timeline_dates['end_date'],
+		];
+
 		$vn_c++;
-		if ($vn_c > 2000) { break; }
+		if ($vn_c >= 250) { break; }
 	}
-			
-	print json_encode(array('timeline' => $va_data));
-?>
+
+	print json_encode($va_data);
