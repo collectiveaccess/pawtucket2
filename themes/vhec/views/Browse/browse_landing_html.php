@@ -8,8 +8,10 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 	<div id='browseTable'>
 		<ul >
 			<li>Browse: </li>
-			<li><a href="#typeTab">Resource Types</a></li>		
-			<li><a href="#genreTab">Primary Sources</a></li>																				
+			<li><a href="#typeTab">Resource Type</a></li>		
+			<li><a href="#genreTab">Primary Source</a></li>
+			<li><?php print caNavLink($this->request, 'Finding Aid', '', 'FindingAid', 'Collection', 'Index');?></li>		
+			<div><?php print caNavLink($this->request, 'All', '', '', 'Browse', 'objects');?></div>																							
 		</ul>
 		<div id='typeTab'>	
 			<div class='container'>

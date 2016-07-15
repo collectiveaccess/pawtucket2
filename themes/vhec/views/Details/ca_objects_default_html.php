@@ -167,15 +167,17 @@
 					print "<h8 style='margin-bottom:10px;'>Access Points</h8>";
 					if (($vs_type == "Library Item") | ($vn_num_subjects > 0) ) {
 						if ($vs_access_point_local != "") {
-							print "<h9>Library of Congress Subject Heading(s)</h9>";
+							print "<h9>Library of Congress Subject Headings</h9>";
 							print $vs_access_point_local;
 						}
-						if ($vs_access_point_entity != "") {
-							print "<h9>Subject(s) - People and Organizations</h9>";
-							print $vs_access_point_entity;
-						}
+						#if ($vs_access_point_entity != "") {
+						#	print "<h9>Subject(s) - People and Organizations</h9>";
+						#	print $vs_access_point_entity;
+						#}
 						if ($vs_access_point_subject != "") {
-							print "<h9>Local Subject Headings</h9>";
+							if ($vs_type == "Library Component") {
+								print "<h9>Local Subject Headings</h9>";
+							}
 							print $vs_access_point_subject;
 						}
 					} else {
@@ -188,28 +190,31 @@
 				
 				$vs_rights = false;
 				$vs_rights_text = "";
+				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<h8>Conditions on Access</h8>";
+					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
+				}		
 				if ($vs_conditions_use = $t_object->get('ca_objects.RAD_useRepro')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<div class='unit'><h8>Conditions on Use</h8>".$vs_conditions_use."</div>";
+					$vs_rights_text.= "<h8>Conditions on Use</h8>";
+					$vs_rights_text.= "<div>".$vs_conditions_use."</div>";
 				}
-				if (($vs_conditions_access = $t_object->get('ca_objects.govAccess')) | ($vs_conditions_phys = $t_object->get('ca_objects.MARC_physical_access'))) {
+				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_usePub')) {
 					$vs_rights = true;
-					if ($vs_conditions_access && $vs_conditions_phys) {$vs_space = "<br/>";}
-					$vs_rights_text.= "<div class='unit'><h8>Conditions on Access</h8>".$vs_conditions_access.$vs_space.$vs_conditions_phys."</div>";
+					$vs_rights_text.= "<h8>Conditions on Reproduction and Publications </h8>";
+					$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
 				}
-				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) {
+				if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<h8>Rights Holder</h8>";
+					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
+				}	
+				if (($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) && (($vs_type != "Library Item"))) {
 					$vs_rights = true;
 					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 				}
-				if ($vs_rights_statement = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('rights_holder'), 'delimiter' => ', ', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
-					$vs_rights = true;
-					$vs_rights_text.= "<div class='unit'><h8>Rights Holder</h8>".$vs_rights_statement."</div>";
-				}
-				#if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_useRepro')) {
-				#	$vs_rights = true;
-				#	$vs_rights_text.= "<h8>Terms governing reproduction</h8>";
-				#	$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
-				#}				
+							
 				if ($vs_rights == true) {
 					print "<div class='rightsBlock'>";
 					print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
@@ -236,50 +241,59 @@
 						if ($va_local_call = $t_object->get('ca_objects.MARC_localNo')) {
 							print "<div class='unit'><h8>Call Number</h8>".$va_local_call."</div>";
 						}
-						print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
-						print "<div class='hiddenComponents' style='display:none;'>";
-						if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
-							$vn_item_id = $t_object->get('ca_objects.object_id');
-							$t_item_checkout = new ca_object_checkouts($vn_item_id);
-							$va_item_checkout_info = $t_item_checkout->objectIsOut($vn_item_id);
-							print "<div class='component'>";
-							print "<div>".$t_object->get('ca_objects.preferred_labels')."<br/>";
-							print "<b>Call No: </b>".$t_object->get('ca_objects.MARC_localNo')."</div>";
+						if ($vs_type != "Library Component")  {
+							print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
+							print "<div class='hiddenComponents' style='display:none;'>";
+						
 							if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
-								if ($va_item_checkout_info['due_date']) {
-									print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Find or request this item'>Due ".date('j F Y', $va_item_checkout_info['due_date'])."</a></div>";
-								} else {
-									print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Find or request this item'><i class='fa fa-check-circle'></i> ".$t_object->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true))."</a></div>";
-								}
-							}
-							print "<div class='clearfix'></div>";
-							print "<hr/>";
-							print "</div>";							
-						}
-						if ($va_components = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true))) {
-							foreach ($va_components as $va_key => $va_component) {
-								$t_child = new ca_objects($va_component);
-								$t_checkout = new ca_object_checkouts();
-								$va_checkout_info = $t_checkout->objectIsOut($va_component);
+								$vn_item_id = $t_object->get('ca_objects.object_id');
+								$t_item_checkout = new ca_object_checkouts($vn_item_id);
+								$va_item_checkout_info = $t_item_checkout->objectIsOut($vn_item_id);
+								$vs_library_status = $t_object->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true));
 								print "<div class='component'>";
-								print "<div>".$t_child->get('ca_objects.preferred_labels', array('returnAsLink' => true))."<br/>";
-								print "<b>Call No: </b>".$t_child->get('ca_objects.MARC_localNo')."</div>";
-								if (ucfirst(substr($t_child->get('ca_objects.alt_id'), 0, 1)) != "F") {
-									if ($va_checkout_info['due_date']) {
-										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Find or request this item'>Due ".date('j F Y', $va_checkout_info['due_date'])."</a></div>";
+								print "<div>".$t_object->get('ca_objects.preferred_labels')."<br/>";
+								print "<b>Call No: </b>".$t_object->get('ca_objects.MARC_localNo')."</div>";
+								if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
+									if ($va_item_checkout_info['due_date']) {
+										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'>Due ".date('j F Y', $va_item_checkout_info['due_date'])."</a></div>";
+									} elseif ($vs_library_status == "Unavailable") {
+										print "<div class='status unavailable'><i class='fa fa-close'></i> ".$vs_library_status."</div>";
 									} else {
-										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Find or request this item'><i class='fa fa-check-circle'></i> ".$t_child->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true))."</a></div>";
+										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'><i class='fa fa-check-circle'></i> ".$vs_library_status."</a></div>";
 									}
 								}
 								print "<div class='clearfix'></div>";
 								print "<hr/>";
-								print "</div>";
+								print "</div>";							
+							}						
+							if ($va_components = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+								foreach ($va_components as $va_key => $va_component) {
+									$t_child = new ca_objects($va_component);
+									$t_checkout = new ca_object_checkouts();
+									$va_checkout_info = $t_checkout->objectIsOut($va_component);
+									$vs_library_status = $t_child->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true));
 							
+									print "<div class='component'>";
+									print "<div>".$t_child->get('ca_objects.preferred_labels', array('returnAsLink' => true))."<br/>";
+									print "<b>Call No: </b>".$t_child->get('ca_objects.MARC_localNo')."</div>";
+									if (ucfirst(substr($t_child->get('ca_objects.alt_id'), 0, 1)) != "F") {
+										if ($va_checkout_info['due_date']) {
+											print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Request this item'>Due ".date('j F Y', $va_checkout_info['due_date'])."</a></div>";
+										} elseif ($vs_library_status == "Unavailable") {
+											print "<div class='status unavailable'><i class='fa fa-close'></i> ".$vs_library_status."</div>";
+										} else {
+											print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $va_component))."\"); return false;' title='Request this item'><i class='fa fa-check-circle'></i> ".$vs_library_status."</a></div>";
+										}
+									}
+									print "<div class='clearfix'></div>";
+									print "<hr/>";
+									print "</div>";
+							
+								}
 							}
-						}
-						print "</div>";
-						print "</div>";
-																	
+							print "</div>";
+							print "</div>";
+						}											
 						$va_date_line = array();
 						if ($va_publication_date = $t_object->get('ca_objects.displayDate')) {
 							$va_date_line[] = $va_publication_date;
@@ -294,7 +308,7 @@
 							print "<div class='unit'><h8>Statement of Responsibility</h8>".$va_responsibility."</div>";
 						}
 
-						if (($va_creator = $t_object->getWithTemplate('<unit restrictToTypes="ind" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_orgs = $t_object->getWithTemplate('<unit restrictToTypes="org" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>'))) {
+						if (($va_creator = $t_object->getWithTemplate('<unit restrictToTypes="ind" excludeRelationshipTypes="donor" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_orgs = $t_object->getWithTemplate('<unit restrictToTypes="org" excludeRelationshipTypes="donor" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>'))) {
 							print "<div class='unit'><h8>Creators & Contributors</h8>".$va_creator."<br/>".$va_orgs."</div>";
 						}
 
@@ -308,7 +322,7 @@
 							print "<div class='unit'><h8>Physical Description </h8>".$va_physical_desc."</div>";
 						}
 						$va_carrier = array();
-						if ($va_carrier_type = $t_object->get('ca_objects.carrier_type_library', array('convertCodesToDisplayText' => true))) {
+						if (($va_carrier_type = $t_object->get('ca_objects.carrier_type_library', array('convertCodesToDisplayText' => true))) != "-") {
 							$va_carrier[] = $va_carrier_type;
 						}
 						if ($va_carrier_note = $t_object->get('ca_objects.carrier_type_note')) {
@@ -318,7 +332,7 @@
 							print "<div class='unit'><h8>Carrier Type</h8>".join(', ', $va_carrier)."</div>"; 
 						}
 						$va_language = array();
-						if ($va_language_value = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
+						if ($va_language_value = $t_object->get('ca_objects.MARC_language', array('convertCodesToDisplayText' => true))) {
 							$va_language[] = $va_language_value;
 						}
 						if ($va_language_note = $t_object->get('ca_objects.language_note')) {
@@ -338,7 +352,7 @@
 						}	
 						if ($va_series = $t_object->get('ca_objects.MARC_series')) {
 							$va_series_and_volume = explode('; ', $va_series);
-							print "<div class='unit'><h8>Edition</h8>".caNavLink($this->request, $va_series_and_volume[0], '', '', 'Search', 'library', array('search' => "'".$va_series_and_volume[0]."'"))."; ".$va_series_and_volume[1]."</div>";
+							print "<div class='unit'><h8>Series</h8>".caNavLink($this->request, $va_series_and_volume[0], '', '', 'Search', 'library', array('search' => "'".$va_series_and_volume[0]."'")).( $va_series_and_volume[1] ? "; ".$va_series_and_volume[1] : "")."</div>";
 						}
 						if ($va_dc_note = $t_object->get('ca_objects.MARC_generalNote')) {
 							print "<div class='unit trimText'><h8>Notes</h8>".$va_dc_note."</div>";
@@ -347,7 +361,7 @@
 							print "<div class='unit'><h8>Audience</h8>".$va_target."</div>";
 						}
 						if ($va_recognition = $t_object->get('ca_objects.MARC_sourceAcq')) {
-							print "<div class='unit'><h8>Recognition</h8>".$va_recognition."</div>";
+							print "<br/><div class='unit'><h8>Recognition</h8>".$va_recognition."</div>";
 						}
 						$va_elec_location = array();
 						if ($va_electronic_location = $t_object->get('ca_objects.MARC_electronicLocation')) {
@@ -367,9 +381,9 @@
 						}	
 																																																																																															
 					} else {
-						if ($va_level_description = $t_object->get('ca_objects.level_desription', array('convertCodesToDisplayText' => true))) {
-							print "<div class='unit'><h8>Level of Description</h8>".$va_level_description."</div>";
-						}
+						#if ($va_level_description = $t_object->get('ca_objects.level_desription', array('convertCodesToDisplayText' => true))) {
+						#	print "<div class='unit'><h8>Level of Description</h8>".$va_level_description."</div>";
+						#}
 						if ($va_resource_type = $t_object->get('ca_objects.dc_type', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h8>Resource Type</h8>".$va_resource_type."</div>";
 						}
@@ -408,7 +422,10 @@
 						}
 						if ($va_extent = $t_object->get('ca_objects.RAD_extent')) {
 							print "<div class='unit'><h8>Extent & Medium</h8>".$va_extent."</div>";
-						}															
+						}
+						if ($va_scope = $t_object->get('ca_objects.ISADG_scope')) {
+							print "<div class='unit'><h8>Scope & Content</h8>".$va_scope."</div>";
+						}																					
 						if ($va_place = $t_object->get('ca_objects.creation_place')) {
 							print "<div class='unit'><h8>Place of Creation</h8>".$va_place."</div>";
 						}
@@ -454,7 +471,7 @@
 							print "<div class='unit'><h8>Classification</h8>".$va_classification."</div>";
 						}
 						if ($va_provenance_legal = $t_object->get('ca_objects.cdwa_ownership.ownership_legal')) {
-							print "<div class='unit'><h8>Status</h8>".$va_provenance_legal."</div>";
+							print "<div class='unit'><h8>Legal Status</h8>".$va_provenance_legal."</div>";
 						}
 						if ($va_provenance_credit = $t_object->get('ca_objects.cdwa_ownership.ownership_credit')) {
 							print "<div class='unit'><h8>Credit Line</h8>".$va_provenance_credit."</div>";
@@ -535,7 +552,7 @@
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_holdings.= "<div class='col-sm-3'>";
 					$vs_related_holdings.= "<div class='relatedThumb'>";
-					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_collection_id)."</p></div>";
+					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_collection_id)."</p></div>";
 					$vs_related_holdings.= "</div>";					
 				}
 			}					

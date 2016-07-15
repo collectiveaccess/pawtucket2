@@ -55,7 +55,7 @@
 		while ($qr_sets->nextHit()) {
 			$t_set = new ca_sets($qr_sets->get('ca_sets.set_id'));
 			$va_featured_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values)));
-			print "<div class='col-sm-12'><h6>Highlights From the Collection</h6></div>";
+			print "<div class='col-sm-12'><h6>".$t_set->get('ca_sets.preferred_labels')."</h6></div>";
 			foreach ($va_featured_ids as $vn_id => $va_featured_id) {
 				$t_object = new ca_objects($va_featured_id);
 				print "<div class='col-sm-3'><div class='featuredObj'>";
