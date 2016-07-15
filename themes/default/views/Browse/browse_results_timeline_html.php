@@ -61,7 +61,7 @@
 			createStoryJS({
 				type:       'timeline',
 				width:      '100%',
-				height:     jQuery('#lbTimelineContainer').height(),
+				height:     '100%',
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed'
 			});
