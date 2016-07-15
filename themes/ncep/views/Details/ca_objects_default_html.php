@@ -199,9 +199,15 @@
 					<p><b>Components:</b> <?php print sizeof($va_component_ids); ?></p>
 <?php
 					if($vb_files){
-						print "<p class='componentButtonCol'>".caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
-						if($vb_files_require_login){
+						print "<p class='componentButtonCol'>";
+						if(!$this->request->isLoggedIn() && $vb_files_require_login){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "About", "DownloadAll", array("object_id" => $t_object->get("ca_objects.object_id")))."\"); return false;' title='"._t("Download All")."' class='btn-default btn-orange btn-icon'>Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i></a>";
 							print "<br/><small>* Login to access educator-only files</small>";
+						}else{
+							print caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
+							if($vb_files_require_login){
+								print "<br/><small>* Login as educator to access educator-only files</small>";
+							}
 						}
 						print "</p>";
 					}
@@ -407,7 +413,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
+/*	jQuery(document).ready(function() {
 		jQuery('.componentSection').hide();
 		jQuery('.sectionHR').hide();
 <?php
@@ -423,6 +429,7 @@
 ?>
 		jQuery('.<?php print $vs_first_section; ?>').addClass('highlightTab');
 	});
+	*/
 	function clickTab(tabname){
 		$('.componentSection').hide();
 		$('.sectionHR').hide();

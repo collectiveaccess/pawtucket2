@@ -1131,3 +1131,21 @@
 		return $ps_view;
 	}
 	# ---------------------------------------
+	/**
+	 * Generate link to change current locale.
+	 *
+	 * @param RequestHTTP $po_request The current request.
+	 * @param string $ps_locale ISO locale code (Ex. en_US) to change to.
+	 * @param string $ps_classname CSS class name(s) to include in <a> tag.
+	 * @param array $pa_attributes Optional attributes to include in <a> tag. [Default is null]
+	 * @param array $pa_options Options to be passed to caNavLink(). [Default is null]
+	 * @return string 
+	 *
+	 * @seealso caNavLink()
+	 */
+	function caChangeLocaleLink($po_request, $ps_locale, $ps_content, $ps_classname, $pa_attributes=null, $pa_options=null) {
+		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
+		$va_params['lang'] = $ps_locale;
+		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
+	}
+	# ---------------------------------------
