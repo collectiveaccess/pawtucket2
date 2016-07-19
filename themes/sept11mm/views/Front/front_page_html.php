@@ -33,8 +33,17 @@
 		$va_access_values = caGetUserAccessValues($this->request);
  		$t_list = new ca_lists();
  		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 	
- 		$vn_on_view_set_id = $this->getVar("featured_set_id");	
- 		$va_sets = array();
+ 		$vn_on_view_set_id = $this->getVar("featured_set_id");
+ 		$vn_most_recent_set_id = "";
+ 		$o_front_config = caGetfrontConfig();
+ 		# --- most recent set
+ 		if($vs_set_code_most_recent = $o_front_config->get("front_page_set_code2")){
+			$t_set = new ca_sets();
+			$t_set->load(array('set_code' => $vs_set_code_most_recent));
+			if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+				$vn_most_recent_set_id = $t_set->get("set_id");
+			}
+		}
 ?>
 	
 		<div class="row">
@@ -50,23 +59,30 @@
 			shuffle($va_set_ids); 
 			# --- add the on view set to the beginning if it's set
 			if($vn_on_view_set_id){
-				unset($va_set_ids[$vn_on_view_set_id]);
+				unset($va_set_ids[array_search($vn_on_view_set_id, $va_set_ids)]);
 				array_unshift($va_set_ids, $vn_on_view_set_id);
+			}
+			if($vn_most_recent_set_id){
+				unset($va_set_ids[array_search($vn_most_recent_set_id, $va_set_ids)]);
+				$vn_limit = 9;
+			}else{
+				$vn_limit = 10;
+			}
+			$va_set_ids = array_slice($va_set_ids,0,$vn_limit,true);
+			if($vn_most_recent_set_id){
+				$va_set_ids[] = $vn_most_recent_set_id;
 			}
 			$va_randomized = array(); 
 			foreach ($va_set_ids as $vn_set_id) { 
 				$va_randomized[$vn_set_id] = $va_sets[$vn_set_id]; 
 			}
-			$vn_limit = 10;
-			$va_sets = array_slice($va_randomized,0,$vn_limit,true);
-			
-			if(sizeof($va_sets)){
+			if(sizeof($va_randomized)){
 				# --- get first items from set
 				#$va_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("checkAccess" => $va_access_values, "version" => "iconlarge"));
 				$vn_c = 1;
 				$va_boxes = array();
 				$i = 1;
-				foreach($va_sets as $vn_set_id => $va_set){
+				foreach($va_randomized as $vn_set_id => $va_set){
 					$t_set->load($vn_set_id);
 					$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $va_access_values, "thumbnailVersion" => "iconlarge", "limit" => 3)));
 					$vs_image = "";
