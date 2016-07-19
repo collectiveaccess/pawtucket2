@@ -1419,9 +1419,7 @@
 		 */
 		public function GetMediaOverlay($pa_options=null) {
 			$o_dm = Datamodel::load();
-			$pn_subject_id = $this->request->getParameter('id', pInteger);
 			
-			$pn_subject_id = $this->request->getParameter('id', pInteger);
 			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
@@ -1429,6 +1427,7 @@
 			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
+			if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
 			if (!$pt_subject->load($pn_subject_id)) { 
 				throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
 			}
@@ -1457,7 +1456,6 @@
 		public function GetMediaData() {
 			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
-			$pn_subject_id = $this->request->getParameter('id', pInteger);
 			
 			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
 				throw new ApplicationException(_t('Invalid context'));
@@ -1466,6 +1464,8 @@
 			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
+			
+			if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
 			if (!$pt_subject->load($pn_subject_id)) { 
 				throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
 			}
