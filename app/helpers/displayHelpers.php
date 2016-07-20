@@ -3403,7 +3403,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		$ps_display_type 		= caGetOption('display', $pa_options, 'detail');
 		$ps_context 			= caGetOption('context', $pa_options, null);
 		
-		$pn_subject_id = $pt_subject->getPrimaryKey();
+		$pn_subject_id = is_object($pt_subject) ? $pt_subject->getPrimaryKey() : (int)$pt_subject;
 		
 		$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
