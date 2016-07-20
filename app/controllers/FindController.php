@@ -425,7 +425,8 @@
 			}
 			
 			$this->view->setVar('criteria_summary', $ps_criteria_summary);
-			
+			$this->view->setVar('display', new ca_bundle_displays());
+				
 			$vs_type = null;
 			if (!(bool)$this->request->config->get('disable_pdf_output') && substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
