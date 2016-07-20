@@ -3391,7 +3391,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	 *
 	 * @param RequestHTTP $po_request The current request
 	 * @param ca_object_representations $pt_representation  A ca_object_representations instance to render the toolbar for
-	 * @param RepresentableBaseModel $pt_subject = A model instance loaded with the subject (the record the media is shown in the context of. Eg. if a representation is shown for an object this is an instance for that object record)
+	 * @param RepresentableBaseModel|int $pt_subject = A model instance loaded with the subject (the record the media is shown in the context of. Eg. if a representation is shown for an object this is an instance for that object record) or an integer object_id
  	 
 	 * @param $pa_options array includes:
 	 *			display = media_display.conf display version to use. [Default is 'detail']
