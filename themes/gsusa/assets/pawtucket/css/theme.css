@@ -25,6 +25,9 @@ body {
 .black{
 	color:#000;
 }
+.green{
+	color:#00AE58;
+}
 i.trefoilPlaceholder{
 	display: inline-block;
 	background-image:url("../graphics/trefoilPlaceholder.png");
@@ -311,7 +314,7 @@ h1 {
 .front H1{
 	color:#222222;
 	font-family: "Open Sans", Arial, sans-serif;
-	font-size: 2.75rem;
+	font-size: 1.6rem;
 	padding:0px !important;
 }
 .front .nav-pills > li > a {
@@ -410,4 +413,9 @@ h1 {
 }
 .detail.collections .detailTool{
 	padding-left:0px;
+}
+
+/* About */
+address{
+	font-size:13px;
 }
