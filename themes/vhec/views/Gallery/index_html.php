@@ -1,12 +1,17 @@
 <?php
  	$vs_set_theme = $this->request->getParameter('theme', pInteger);
+ 	$vs_page_type = caGetListItemByIDForDisplay($vs_set_theme, array('return_plural' => 1));
+ 	$vs_featured_home = caNavLink($this->request, "Featured Galleries", '', '', 'Gallery', 'featured');
+	$vs_home = caNavLink($this->request, "Home", '', '', '', '');
+	$breadcrumb_link = $vs_home." > ".$vs_featured_home." > ".$vs_page_type;
 
 ?>
 
 <div>
 	<div class='container'>
 		<div class='row'><div class='col-sm-12'>
-	<H1><?php print caGetListItemByIDForDisplay($vs_set_theme, array('return_plural' => 1)); ?></H1>
+			<div class="breadcrumb"><?php print $breadcrumb_link; ?></div>
+			<H1><?php print $vs_page_type; ?></H1>
 		</div></div>
 	</div>
 <?php

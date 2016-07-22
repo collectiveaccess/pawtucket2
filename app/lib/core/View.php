@@ -170,7 +170,8 @@ class View extends BaseObject {
 	 *
 	 */
 	public function isCompiled($ps_filepath) {
-		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath);
+		global $g_ui_locale;
+		$vs_compiled_path = __CA_APP_DIR__."/tmp/caCompiledView".md5($ps_filepath.$g_ui_locale);
 		if (!file_exists($vs_compiled_path)) { return false; }
 		if (filesize($vs_compiled_path) === 0) { return false; }
 		
