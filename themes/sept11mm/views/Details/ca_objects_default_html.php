@@ -156,7 +156,6 @@
 # related to same victim
 # if less than 4, broaden to:
 # object name-  ca_objects.preferred_label: 
-# shared sets
 # --- build the search terms
 $va_search = array();
 # --- check for a lot
@@ -196,14 +195,6 @@ if(sizeof($va_related_ids) < 4){
 $va_search2 = array();
 if($t_object->get("ca_objects.preferred_labels.name")){
 	$va_search2[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
-}
-# --- is this object in a gallery/featured set?
-$t_set = new ca_sets();
-$va_sets = caExtractValuesByUserLocale($t_set->getSets(array("table" => "ca_objects", "row_id" => $t_object->get("ca_objects.object_id"), "setType" => "web_gallery", "checkAccess" => $va_access_values)));
-if(sizeof($va_sets)){
-	foreach(array_keys($va_sets) as $vn_set_id){
-		$va_search2[] = "ca_sets.set_id:".$vn_set_id;
-	}
 }
 if($vb_search_again){
 	$vs_search_term = join(" OR ", $va_search2);
