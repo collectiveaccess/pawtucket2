@@ -123,6 +123,10 @@
 			</div>
 		</div>
 		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				$('body').on('contextmenu', 'img', function(e){ return false; });
+				$('#caMediaPanelContentArea').on('contextmenu', 'img', function(e){ return false; });
+			});
 			/*
 				Set up the "caMediaPanel" panel that will be triggered by links in object detail
 				Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php

@@ -349,7 +349,7 @@ H1, h1{
 	color:#FFF;
 	text-decoration:none !important;
 	font-size:14px;
-	font-family: 'gotham-medium';
+	font-family: 'gotham-book';
 	line-height:1em;
 }
 .hpSetTitle a:hover{
@@ -1067,6 +1067,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	margin:0px !important;
 	line-height:1.1em;
 }
+.gallery .galleryLinks{
+	max-height:475px;
+	overflow-y:scroll;
+}
 .gallery .galleryLinks a{
 	text-decoration:none !important;
 }
@@ -1108,6 +1112,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 .gallery .galleryDetailNext, .gallery .galleryDetailPrevious{
 	background-color: #F0F4F6;
     color: #21B1E7;
+}
+.gallery #galleryDetailImageGrid, .gallery .setDescription{
+	max-height:600px;
+	overflow-y:scroll;
 }
 .gallery #galleryDetailImageGrid img{
 	width:100%;
@@ -1178,7 +1186,7 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	}
 }
 .detail .repViewerCont img{
-	max-height: 550px;
+	max-height: 500px;
 	object-fit: contain;
 }
 .detail .unit{
