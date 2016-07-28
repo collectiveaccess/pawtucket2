@@ -43,8 +43,14 @@
 		}
 
 	}
-	if($t_object->get("ca_object_lots.credit_line")){
-		print "<div class='unit unitExternalLinks'><b>Credit Line:</b> <i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+	$vs_credit_line = "";
+	if($t_object->get("ca_objects.credit_line")){
+		$vs_credit_line = $t_object->get("ca_objects.credit_line");
+	}elseif($t_object->get("ca_object_lots.credit_line")){
+		$vs_credit_line = $t_object->get("ca_object_lots.credit_line");
+	}
+	if($vs_credit_line){
+		print "<div class='unit unitExternalLinks'><b>Credit Line:</b> <i>".$vs_credit_line."</i></div>";
 	}
 
 ?>
