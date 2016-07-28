@@ -2,7 +2,7 @@
 	$t_object = $this->getVar("object");
 ?>
 	<H2>{{{ca_objects.preferred_labels.name}}}</H2>
-	{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
+	{{{<ifdef code="ca_objects.public_title"><div class="unit"><i>^ca_objects.public_title</i></unit></ifdef>}}}
 				
 <?php
 	$va_list_ids = array();
