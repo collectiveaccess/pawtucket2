@@ -68,7 +68,12 @@
 						print "</div>";
 					}		
 				$vn_source_id = null;
-				if(strpos(strtolower($t_object->get("ca_object_lots.credit_line")), "anonymous") === false){
+				if($t_object->get("ca_objects.credit_line")){
+					$vs_credit_line = $t_object->get("ca_objects.credit_line");
+				}else{
+					$vs_credit_line = $t_object->get("ca_object_lots.credit_line");
+				}
+				if(strpos(strtolower($vs_credit_line), "anonymous") === false){
 					if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
 						if(is_array($va_sources) && sizeof($va_sources)){
 							print "<div class='unit'>";
@@ -83,8 +88,8 @@
 
 					}
 				}
-				if($t_object->get("ca_object_lots.credit_line")){
-					print "<div class='unit unitExternalLinks'><b>Credit Line: </b><i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+				if($vs_credit_line){
+					print "<div class='unit unitExternalLinks'><b>Credit Line: </b><i>".$vs_credit_line."</i></div>";
 				}		
 ?>
 			</div><!-- end mdCallOut -->
@@ -93,7 +98,7 @@
  # could do tooltips with field level descriptions like this, or hand code them, or make a helper/popover class to handle it
  #print ($t_object->getDisplayDescription("ca_objects.idno")) ? "data-content = '".$t_object->getDisplayDescription("ca_objects.idno")."' ".$vs_pop_over_attributes : "";
 ?>
-				{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}			
+				{{{<ifdef code="ca_objects.public_title"><div class="unit"><i>^ca_objects.public_title</i></unit></ifdef>}}}			
 <?php
 				$va_list_ids = array();
 				if($va_subjects = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("voc_6"), "checkAccess" => caGetUserAccessValues($this->request)))){
@@ -149,8 +154,8 @@
 # source- entity_id:
 # same lot
 # related to same victim
+# if less than 4, broaden to:
 # object name-  ca_objects.preferred_label: 
-# keyword- list_item_id:
 # --- build the search terms
 $va_search = array();
 # --- check for a lot
@@ -167,42 +172,65 @@ if(sizeof($va_rel_entities)){
 }
 # --- do the search and see if there are decent results....otherwise broaden it
 $vn_hits = 0;
+$va_related_ids = array();
 if(sizeof($va_search)){
 	$vs_search_term = join(" OR ", $va_search);
 	$o_search = caGetSearchInstance("ca_objects");
 	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
-	$vn_hits = $qr_res->numHits();
-}
-#if($vn_hits < 4){
-#	# broaden search and do it again
-#	if($t_object->get("ca_objects.preferred_labels.name")){
-#		$va_search[] = "ca_objects.preferred_label:'".$t_object->get("ca_objects.preferred_labels.name")."'";
-#	}
-#	if(sizeof($va_list_ids)){
-#		foreach($va_list_ids as $vn_list_id){
-#			$va_search[] = "list_item_id:".$vn_list_id;
-#		}
-#	}
-#	if(sizeof($va_search)){
-#		$vs_search_term = join(" OR ", $va_search);
-#		$o_search = caGetSearchInstance("ca_objects");
-#		$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
-#		$vn_hits = $qr_res->numHits();
-#	}
-#}
-if($vn_hits){
-	if($qr_res->numHits() > 5){
-		$vn_seek_to = rand(0,$qr_res->numHits()-4);
-		$qr_res->seek($vn_seek_to);
+	if($qr_res->numHits()){
+		while($qr_res->nextHit()){
+			if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
+				$va_related_ids[] = $qr_res->get("ca_objects.object_id");
+			}
+		}
+		shuffle($va_related_ids);
+		$va_related_ids = array_slice($va_related_ids, 0, 4);
 	}
+}
+$vb_search_again = false;
+if(sizeof($va_related_ids) < 4){
+	$vb_search_again = true;
+}
+# add more search terms for broadening and more link
+$va_search2 = array();
+if($t_object->get("ca_objects.preferred_labels.name")){
+	$va_search2[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
+}
+if($vb_search_again){
+	$vs_search_term = join(" OR ", $va_search2);
+	$o_search = caGetSearchInstance("ca_objects");
+	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
+	$va_related_more = array();
+	if($qr_res->numHits()){
+		while($qr_res->nextHit()){
+			if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
+				$va_related_more[] = $qr_res->get("ca_objects.object_id");
+			}
+		}
+		shuffle($va_related_more);
+		if(is_array($va_related_ids) && sizeof($va_related_ids)){
+			$va_related_ids = array_merge($va_related_ids, $va_related_more);
+		}else{
+			$va_related_ids = $va_related_more;
+		}
+	}
+}
+
+if(sizeof($va_related_ids)){
+	#if($qr_res->numHits() > 5){
+	#	$vn_seek_to = rand(0,$qr_res->numHits()-4);
+	#	$qr_res->seek($vn_seek_to);
+	#}
 	$i = 0;
-	if($qr_res->numHits() > 1){
+	if(sizeof($va_related_ids)){
+		$qr_res = caMakeSearchResult("ca_objects", $va_related_ids);
 ?>
 <div class="row">
 	<div class='col-xs-12'>
 		<H1>
 <?php
-		if($qr_res->numHits() > 5){
+		if($qr_res->numHits() >= 4){
+			$vs_search_term = join(" OR ", array_merge($va_search, $va_search2));
 			print caNavLink($this->request, _t("More"), "moreRelatedItems", "", "Search", "objects", array("search" => $vs_search_term));
 		}
 ?>
