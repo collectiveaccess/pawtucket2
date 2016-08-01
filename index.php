@@ -81,6 +81,7 @@
 		if (!in_array($g_ui_locale, $va_ui_locales)) {
 			$g_ui_locale = $va_ui_locales[0];
 		}
+		
 		$t_locale = new ca_locales();
 		$g_ui_locale_id = $t_locale->localeCodeToID($g_ui_locale);		// get current UI locale as locale_id	  (available as global)
 		$_ = array();

@@ -46,68 +46,29 @@
 <?php
 	$o_set_search = new SetSearch();
 	$qr_sets = $o_set_search->search("ca_sets.homepage_displays:'Museum Homepage'", array("checkAccess" => $va_access_values));
-	while($qr_sets->nextHit()) {
-		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "In Focus") {
-			$va_in_focus[] = $qr_sets->get('ca_sets.set_id');
-		} 
-		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Thematic Guide") {
-			$va_thematic[] = $qr_sets->get('ca_sets.set_id');
-		} 
-		if ($qr_sets->get('ca_sets.lightbox_cats', array('convertCodesToDisplayText' => true)) == "Timeline") {
-			$va_timeline[] = $qr_sets->get('ca_sets.set_id');
-		}
-	}
+
 ?>
 <div class="row">
 
 <?php	
-	if (sizeof($va_timeline) > 0) {
-		$va_timeline_first_items = $t_set->getPrimaryItemsFromSets($va_thematic, array("version" => "iconlarge", "checkAccess" => $va_access_values));
-
-		print "<div class='col-sm-4'>
-			<div class='featuredObj'>
-				<h6>Timeline</h6>";
-				foreach ($va_timeline_first_items as $va_timeline_set_id => $va_timeline_first_item_t) {
-					foreach ($va_timeline_first_item_t as $va_key => $va_timeline_first_item) {
-						print caNavLink($this->request, $va_timeline_first_item['representation_tag'], '', '', 'Gallery', $va_timeline_set_id);
-					}
-					break;
-				}
-		print "	</div>
-		</div>";
+	if (sizeof($qr_sets) > 0) {
+		while ($qr_sets->nextHit()) {
+			$t_set = new ca_sets($qr_sets->get('ca_sets.set_id'));
+			$va_featured_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values)));
+			print "<div class='col-sm-12'><h6>".$t_set->get('ca_sets.preferred_labels')."</h6></div>";
+			foreach ($va_featured_ids as $vn_id => $va_featured_id) {
+				$t_object = new ca_objects($va_featured_id);
+				print "<div class='col-sm-3'><div class='featuredObj'>";
+				print caNavLink($this->request, $t_object->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_featured_id);								
+				print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_featured_id)."</div>";								
+				print "<p>".$t_object->get('ca_objects.displayDate')."</p>";
+				print "	</div></div>"; 			
+			}
+		}	
 	}
-	if (sizeof($va_in_focus) > 0) {
-		
-		$va_set_first_items = $t_set->getPrimaryItemsFromSets($va_in_focus, array("version" => "iconlarge", "checkAccess" => $va_access_values));
 
-		print "<div class='col-sm-4'>
-			<div class='featuredObj'>
-				<h6>In Focus</h6>";
-				foreach ($va_set_first_items as $va_set_id => $va_set_first_item_t) {
-					foreach ($va_set_first_item_t as $va_key => $va_set_first_item) {
-						print caNavLink($this->request, $va_set_first_item['representation_tag'], '', '', 'Gallery', $va_set_id);
-					}
-					break;
-				}
-		print "	</div>
-		</div>";
-	}
 	
-	if (sizeof($va_thematic) > 0) {
-		$va_thematic_first_items = $t_set->getPrimaryItemsFromSets($va_thematic, array("version" => "iconlarge", "checkAccess" => $va_access_values));
 
-		print "<div class='col-sm-4'>
-			<div class='featuredObj'>
-				<h6>Thematic Guide</h6>";
-				foreach ($va_thematic_first_items as $va_thematic_set_id => $va_thematic_first_item_t) {
-					foreach ($va_thematic_first_item_t as $va_key => $va_thematic_first_item) {
-						print caNavLink($this->request, $va_thematic_first_item['representation_tag'], '', '', 'Gallery', $va_thematic_set_id);
-					}
-					break;
-				}
-		print "	</div>
-		</div>";
-	}
 ?>			
 
 </div>

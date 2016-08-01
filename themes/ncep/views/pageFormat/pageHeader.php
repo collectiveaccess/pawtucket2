@@ -140,7 +140,12 @@
 						</ul>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/publications/lessons-in-conservation"><?php print _t("Our Journal"); ?></a></li>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training"><?php print _t("Training & Events"); ?></a></li>
-					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep"><?php print _t("About NCEP"); ?></a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About NCEP"); ?></a>
+						<ul class="dropdown-menu">
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep"><?php print _t("NCEP Home"); ?></a></li>
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/faq"><?php print _t("FAQ"); ?></a></li>
+						</ul>
+					</li>
 <?php
 	if ($vb_has_user_links) {
 ?>

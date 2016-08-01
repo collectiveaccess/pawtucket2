@@ -82,6 +82,10 @@
                 $this->opb_is_login_redirect = true;
                 return;
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
 
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
