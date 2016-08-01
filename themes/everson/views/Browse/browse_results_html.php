@@ -64,7 +64,7 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-9"; ?>'>
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -124,14 +124,14 @@ if (!$vb_ajax) {	// !ajax
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
 						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
-					if(is_array($va_export_formats) && sizeof($va_export_formats)){
-						// Export as PDF links
-						print "<li class='divider'></li>\n";
-						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
-						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
-						}
-					}
+					#if(is_array($va_export_formats) && sizeof($va_export_formats)){
+					#	// Export as PDF links
+					#	print "<li class='divider'></li>\n";
+					#	print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
+					#	foreach($va_export_formats as $va_export_format){
+					#		print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+					#	}
+					#}
 ?>
 				</ul>
 			</div><!-- end btn-group -->
@@ -202,7 +202,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-4 col-lg-4"; ?>">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){

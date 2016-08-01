@@ -190,7 +190,7 @@
 <?php
 			if ($this->request->getController() != "Front") {
 				print '<div class="page-title-container clearfix">
-    						<h1 class="page-title">American Ceramics & Ceramic National Archive</h1>
+    						<h1 class="page-title">American Ceramics & Ceramic National Exhibition Archive</h1>
 						</div>';
 ?>						
 	<nav class="navbar navbar-default yamm" role="navigation">
