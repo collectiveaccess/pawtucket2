@@ -156,10 +156,15 @@
 			$this->opo_ca_browse_config = Configuration::load(__CA_CONF_DIR__.'/browse.conf');
 			$this->opa_browse_settings = $this->opo_ca_browse_config->getAssoc($this->ops_browse_table_name);
 
-			// Add "virtual" search facet - allows one to seed a browse with a search
+			// Add "virtual" search facet - allows seeding of a browse with a search
 			$this->opa_browse_settings['facets']['_search'] = array(
 				'label_singular' => _t('Search'),
 				'label_plural' => _t('Searches')
+			);
+			// Add "virtual" relationship types facet - allows filtering of a browse by relationship types in a specific relationships (Eg. only return records that have at least one relationship with one of the specified types)
+			$this->opa_browse_settings['facets']['_reltypes'] = array(
+				'label_singular' => _t('Relationship type'),
+				'label_plural' => _t('Relationship types')
 			);
 			$this->_processBrowseSettings();
 
@@ -339,7 +344,7 @@
 		public function addCriteria($ps_facet_name, $pa_row_ids, $pa_display_strings=null) {
 			if (is_null($pa_row_ids)) { return null;}
 			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
-			if ($ps_facet_name !== '_search') {
+			if (!in_array($ps_facet_name, ['_search', '_reltypes'])) {
 				if (!($va_facet_info = $this->getInfoForFacet($ps_facet_name))) { return false; }
 				if (!$this->isValidFacetName($ps_facet_name)) { return false; }
 			}
@@ -356,7 +361,7 @@
 			$this->opo_ca_browse_cache->setParameter('criteria_display_strings', $va_criteria_display_strings);
 			$this->opo_ca_browse_cache->setParameter('sort', null);
 			$this->opo_ca_browse_cache->setParameter('facet_html', null);
-			$this->opo_ca_browse_cache->save();
+
 			$this->opb_criteria_have_changed = true;
 			return true;
 		}
@@ -391,7 +396,7 @@
 			$this->opo_ca_browse_cache->setParameter('criteria_display_strings', $va_criteria_display_strings);
 			$this->opo_ca_browse_cache->setParameter('sort', null);
 			$this->opo_ca_browse_cache->setParameter('facet_html', null);
-			$this->opo_ca_browse_cache->save();
+
 			$this->opb_criteria_have_changed = true;
 
 			return true;
@@ -447,7 +452,6 @@
 			$this->opo_ca_browse_cache->setParameter('criteria', $va_criteria);
 			$this->opo_ca_browse_cache->setParameter('criteria_display_strings', $va_criteria_display_strings);
 			$this->opo_ca_browse_cache->setParameter('facet_html', null);
-			$this->opo_ca_browse_cache->save();
 
 			$this->opb_criteria_have_changed = true;
 
@@ -731,7 +735,7 @@
 					break;
 				# -----------------------------------------------------
 				default:
-					if ($ps_facet_name == '_search') { return $pn_row_id; }
+					if (in_array($ps_facet_name, ['_search', '_reltypes'])) { return $pn_row_id; }
 					return 'Invalid type';
 					break;
 				# -----------------------------------------------------
@@ -1290,6 +1294,10 @@
 											$vs_target_browse_table_pk = $va_relative_execute_sql_data['target_table_pk'];
 										}
 									}
+									
+									if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
+									$va_restrict_to_types = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_item));
+
 
 									// TODO: check that it is a *single-value* (ie. no hierarchical ca_metadata_elements) Text or Number attribute
 									// (do we support other types as well?)
@@ -1303,6 +1311,10 @@
 										$va_attr_sql = array();
 										$va_attr_values = array(intval($vs_target_browse_table_num), $vn_element_id);
 
+										if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_item, "getTypeList")) {
+											$va_attr_sql[] = "(".$this->ops_browse_table_name.".type_id IN (".join(", ", $va_restrict_to_types)."))";
+										}
+										
 										if (is_array($va_value)) {
 											foreach($va_value as $vs_f => $vs_v) {
 												if ($vn_datatype == __CA_ATTRIBUTE_VALUE_LIST__) {
@@ -1662,15 +1674,21 @@
 									foreach($va_row_ids as $vn_row_id) {
 										$vn_row_id = urldecode($vn_row_id);
 										$va_row_tmp = explode(":", $vn_row_id);
-										if ($vn_i == 0) {
+										
+										if ($va_row_tmp[0] == 119) { // ca_objects_x_storage_locations
+											$t_loc = new ca_storage_locations();
+											
+											if (!is_array($va_loc_ids = $t_loc->getHierarchy($va_row_tmp[2], ['returnAsArray' => true, 'includeSelf' => true, 'idsOnly' => true])) || !sizeof($va_loc_ids)) { continue; }
+											$va_row_tmp[2] = array_values($va_loc_ids);
+											
 											$vs_sql = "
 												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 												FROM ".$this->ops_browse_table_name."
 												WHERE
 													({$this->ops_browse_table_name}.current_loc_class = ?)"
 														.((sizeof($va_row_tmp) > 1) ? " AND ({$this->ops_browse_table_name}.current_loc_subclass = ?)" : "")
-														.((sizeof($va_row_tmp) > 2) ? " AND ({$this->ops_browse_table_name}.current_loc_id = ?)" : "");
-
+														.((sizeof($va_row_tmp) > 2) ? " AND ({$this->ops_browse_table_name}.current_loc_id IN (?))" : "");
+													
 											$qr_res = $this->opo_db->query($vs_sql, $va_row_tmp);
 										} else {
 											$vs_sql = "
@@ -1680,10 +1698,10 @@
 													({$this->ops_browse_table_name}.current_loc_class = ?)"
 														.((sizeof($va_row_tmp) > 1) ? " AND ({$this->ops_browse_table_name}.current_loc_subclass = ?)" : "")
 														.((sizeof($va_row_tmp) > 2) ? " AND ({$this->ops_browse_table_name}.current_loc_id = ?)" : "");
-
 											$qr_res = $this->opo_db->query($vs_sql, $va_row_tmp);
-
 										}
+										
+									
 										$va_acc[$vn_i] = $qr_res->getAllFieldValues($this->ops_browse_table_name.'.'.$t_item->primaryKey());
 
 										$vn_i++;
@@ -1852,35 +1870,57 @@
 								break;
 							# -----------------------------------------------------
 							default:
-								// handle "search" criteria - search engine queries that can be browsed
-								if ($vs_facet_name === '_search') {
-									if (!($o_search = caGetSearchInstance($this->ops_browse_table_name))) {
-										$this->postError(2900, _t("Invalid search type"), "BrowseEngine->execute()");
+								switch($vs_facet_name) {
+									case '_search':
+										// handle "search" criteria - search engine queries that can be browsed
+										if (!($o_search = caGetSearchInstance($this->ops_browse_table_name))) {
+											$this->postError(2900, _t("Invalid search type"), "BrowseEngine->execute()");
+											break;
+										}
+
+										if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
+											$o_search->setTypeRestrictions($va_type_ids);
+										}
+										if (is_array($va_source_ids = $this->getSourceRestrictionList()) && sizeof($va_source_ids)) {
+											$o_search->setSourceRestrictions($va_source_ids);
+										}
+										$va_options = $pa_options;
+										unset($va_options['sort']);					// browse engine takes care of sort so there is no reason to waste time having the search engine do so
+										$va_options['filterNonPrimaryRepresentations'] = true;	// filter out non-primary representations in ca_objects results to save (a bit) of time
+
+										$o_search->setOption('strictPhraseSearching', caGetOption('strictPhraseSearching', $va_options, true));
+										
+										if (sizeof($va_row_ids) > 1) {
+											// only allow singleton wildcards without other searches, otherwise we're wasting our time
+											$va_row_ids = array_filter($va_row_ids, function($a) { return !($a === '*'); });
+										}
+										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
+
+										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
+										$vn_i++;
 										break;
-									}
-
-									if (is_array($va_type_ids = $this->getTypeRestrictionList()) && sizeof($va_type_ids)) {
-										$o_search->setTypeRestrictions($va_type_ids);
-									}
-									if (is_array($va_source_ids = $this->getSourceRestrictionList()) && sizeof($va_source_ids)) {
-										$o_search->setSourceRestrictions($va_source_ids);
-									}
-									$va_options = $pa_options;
-									unset($va_options['sort']);					// browse engine takes care of sort so there is no reason to waste time having the search engine do so
-									$va_options['filterNonPrimaryRepresentations'] = true;	// filter out non-primary representations in ca_objects results to save (a bit) of time
-
-									$o_search->setOption('strictPhraseSearching', caGetOption('strictPhraseSearching', $va_options, true));
-									#$qr_res = $o_search->search($va_row_ids[0], $va_options);
-									if (sizeof($va_row_ids) > 1) {
-										// only allow singleton wildcards without other searches, otherwise we're wasting our time
-										$va_row_ids = array_filter($va_row_ids, function($a) { return !($a === '*'); });
-									}
-									$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
-
-									$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
-									$vn_i++;
-								} else {
-									$this->postError(2900, _t("Invalid criteria type"), "BrowseEngine->execute()");
+									case '_reltypes':
+										$va_acc[$vn_i] = [];
+										foreach($va_row_ids as $vs_tmp) {
+											$va_tmp = explode(":", $vs_tmp);
+											if (!($t_target = $this->opo_datamodel->getInstanceByTableName($va_tmp[0], true))) { break; }
+											
+											$va_path_to_target = array_keys($this->opo_datamodel->getPath($vs_target_browse_table_name, $t_target->tableName()));
+											
+											if (is_array($va_path_to_target) && (sizeof($va_path_to_target) == 3)) {
+												if (!($t_target_rel = $this->opo_datamodel->getInstanceByTableName($va_path_to_target[1], true)) || !$t_target_rel->isRelationship() || !$t_target_rel->hasField('type_id')) { break; }
+												$va_ids_from_rel = array_unique($this->_getRelationshipTypeIDs(explode(",", $va_tmp[1]), $va_path_to_target[1]));
+												if (is_array($va_ids_from_rel) && (sizeof($va_ids_from_rel) > 0)) {
+													$qr_res = $this->opo_db->query("SELECT DISTINCT {$vs_target_browse_table_pk} FROM ".$va_path_to_target[1]." WHERE type_id IN (?)", [$va_ids_from_rel]);
+													$va_acc[$vn_i] = array_merge($va_acc[$vn_i], $qr_res->getAllFieldValues($vs_target_browse_table_pk));
+												}
+											}
+										}
+										$vn_i++;
+										break;
+									default:
+										$this->postError(2900, _t("Invalid criteria type"), "BrowseEngine->execute()");
+										break;
 								}
 								break;
 							# -----------------------------------------------------
@@ -1907,8 +1947,8 @@
 							$va_res[$vn_row_id] = true;
 						}
 					}
+					
 					if (sizeof($va_res)) {
-
 						$vs_filter_join_sql = $vs_filter_where_sql = '';
 						$va_wheres = array();
 						$va_joins = array();
@@ -2994,6 +3034,7 @@
 
 									if($qr_ancestors) {
 										while($qr_ancestors->nextHit()) {
+											if ($qr_ancestors->get('deleted')) { continue; }
 											$vn_parent_type_id = $qr_ancestors->get('type_id');
 											if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
 											if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
@@ -3204,13 +3245,10 @@
 						foreach($va_values_by_table as $vs_loc_class => $va_loc_id_by_subclass) {
 							foreach($va_loc_id_by_subclass as $vs_loc_subclass => $va_loc_ids) {
 								if(sizeof($va_tmp = array_keys($va_loc_ids))) {
-									$vs_loc_table_name = $this->opo_datamodel->getTableName($vs_loc_class);
-									if (($vs_table_name = $vs_loc_table_name) == 'ca_objects_x_storage_locations') {
-										$vs_table_name = 'ca_storage_locations';
-									}
+									$vs_table_name = $vs_loc_table_name = $this->opo_datamodel->getTableName($vs_loc_class);
+									$vs_hier_table_name = (($vs_loc_table_name) == 'ca_objects_x_storage_locations') ? 'ca_storage_locations' : $vs_loc_table_name;
 
-									$qr_res = caMakeSearchResult($vs_table_name, $va_tmp);
-
+									$qr_res = caMakeSearchResult($vs_hier_table_name, $va_tmp);
 
 									if (isset($va_collapse_map[$vs_table_name]) && isset($va_collapse_map[$vs_table_name]['*']) && $va_collapse_map[$vs_table_name]['*']) {
 										$va_values[$vs_id = "{$vs_loc_class}"] = array(
@@ -3219,24 +3257,48 @@
 										);
 										continue;
 									}
+									
+									$va_config = ca_objects::getConfigurationForCurrentLocationType($vs_table_name, $vs_loc_subclass, array('facet' => isset($va_facet_info['display']) ? $va_facet_info['display'] : null));
 
+									if ($vs_hier_table_name == 'ca_storage_locations') {
+										
+										if (!($vn_max_browse_depth = caGetOption('maximumBrowseDepth', $va_facet_info, null))) {
+											$vn_max_browse_depth = caGetOption('maximumBrowseDepth', $va_config, null);
+										}
+										if (!$vn_max_browse_depth) { $vn_max_browse_depth = null; } else { $vn_max_browse_depth++; }	// add one to account for invisible root
+										
+										$vs_hier_pk = $this->opo_datamodel->getTablePrimaryKeyName($vs_hier_table_name, true);
+									
+										$va_hier_ids = [];
+										while($qr_res->nextHit()) {
+											if (is_array($va_ids = $qr_res->get("{$vs_hier_table_name}.hierarchy.{$vs_hier_pk}", ['returnAsArray' => true, 'maxLevelsFromBottom' => $vn_max_browse_depth]))) {
+												foreach($va_ids as $vn_id) {
+													$va_hier_ids[$vn_id] = true;
+												}
+											}
+										}	
+										$va_hier_ids = array_keys($va_hier_ids);
+										$qr_res = caMakeSearchResult($vs_hier_table_name, $va_hier_ids);
+									}
+									
 									while($qr_res->nextHit()) {
 										$vn_id = $qr_res->getPrimaryKey();
-
-										$va_config = ca_objects::getConfigurationForCurrentLocationType($vs_table_name, $vs_loc_subclass, array('facet' => isset($va_facet_info['display']) ? $va_facet_info['display'] : null));
 
 										$vs_template = isset($va_config['template']) ? $va_config['template'] : "^{$vs_table_name}.preferred_labels";
 
 										if (isset($va_collapse_map[$vs_table_name]) && isset($va_collapse_map[$vs_table_name][$vs_loc_subclass]) && $va_collapse_map[$vs_table_name][$vs_loc_subclass]) {
+											if (!($vs_label = $va_collapse_map[$vs_table_name][$vs_loc_subclass])) { continue; }
 											$va_values[$vs_id = "{$vs_loc_class}:{$vs_loc_subclass}"] = array(
 												'id' => $vs_id,
-												'label' => $va_collapse_map[$vs_table_name][$vs_loc_subclass]
+												'label' => $vs_label
 											);
 											continue;
 										}
+										
+										if (!$vn_id || !($vs_label = $qr_res->getWithTemplate($vs_template, $va_config))) { continue; }
 										$va_values[$vs_id = "{$vs_loc_class}:{$vs_loc_subclass}:{$vn_id}"] = array(
 											'id' => $vs_id,
-											'label' => $qr_res->getWithTemplate($vs_template, $va_config)
+											'label' => $vs_label
 										);
 									}
 								}
@@ -3366,7 +3428,7 @@
 
 							$vs_order_by = (sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
 							$vs_sql = "
-								SELECT DISTINCT lil.item_id, lil.name_singular, lil.name_plural, lil.locale_id
+								SELECT DISTINCT lil.item_id, lil.name_singular, lil.name_plural, lil.locale_id, li.rank, li.idno_sort
 								FROM ca_list_items li
 								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = li.item_id
 								{$vs_join_sql}
@@ -4704,8 +4766,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 					if ($va_facet_info['relative_to']) {
 						// TODO: do this everywhere
-						$va_restrict_to_relationship_types = array();
-						$vs_browse_type_limit_sql = '';
+						//$va_restrict_to_relationship_types = array();
+						//$vs_browse_type_limit_sql = '';
 
 						if ($t_subject->hasField('deleted')) {
 							$va_wheres[] = "(".$t_subject->tableName().".deleted = 0)";
@@ -4865,6 +4927,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 						if($qr_ancestors) {
 							while($qr_ancestors->nextHit()) {
+								if ($qr_ancestors->get('deleted')) { continue; }
 								$vn_parent_type_id = $qr_ancestors->get('type_id');
 								if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
 								if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }

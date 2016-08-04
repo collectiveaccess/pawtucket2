@@ -21,8 +21,15 @@
 ?>
 		</div>
 <?php
+	if ($qr_travelers) {
 		// Output traveler list
 		$vn_i = 0;
+?>
+	<div class="row">
+		<div class="col-md-2 travelerListSectionHeading">Travelers</div>
+		<div class="col-md-10">
+			<div class="row">
+<?php
 		while($qr_travelers->nextHit()) {
 ?>
 			<div class="col-sm-4">
@@ -39,6 +46,45 @@
 				$vn_i = 0;
 			}
 		}
+?>
+			</div>
+		</div>
+	</div>
+<?php
+	}
+		
+	$qr_objects = itineraGetObjects($ps_letter);
+	if ($qr_objects) {
+?>
+	<div class="row <?php print ($qr_travelers) ? 'travelerListSpacer' : ''; ?>">
+		<div class="col-md-2 travelerListSectionHeading">Objects</div>
+		<div class="col-md-10">
+			<div class="row">
+<?php
+		// Output object list
+		$vn_i = 0;
+		while($qr_objects->nextHit()) {
+?>
+			<div class="col-sm-4">
+				<a href='#' class='travelerListEntry' data-object_id='<?php print $qr_objects->get('ca_objects.object_id'); ?>'><?php print $qr_objects->get('ca_objects.preferred_labels.name'); ?></a>
+			</div><!--end col-sm-4-->
+<?php
+			$vn_i++;
+		
+			if ($vn_i >= 3) {
+?>
+			</div>
+			<div class="row">
+<?php	
+				$vn_i = 0;
+			}
+		}
+?>
+			</div>
+		</div>
+	</div>
+<?php
+	}
 ?>	
 		</div><!-- end row -->
 	</div> <!--end container-->
@@ -50,7 +96,25 @@
 		jQuery("#travelerList").load('<?php print caNavUrl($this->request, '*', '*', 'TravelerIndex'); ?>/l/' + jQuery(this).text());
 	});
 	jQuery(".travelerListEntry").bind('click', function() {
-		jQuery("#travelerContent").load('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/id/' + jQuery(this).data('entity_id'));
+		var id, idname;
+		if (id = jQuery(this).data('entity_id')) { 
+			idname = 'id'; 
+		} else {
+			if (id = jQuery(this).data('object_id')) { idname = 'object_id'; }
+		}
+<?php
+	if ($this->request->getController() == 'Chronology') {
+?>
+		jQuery.get('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/' + idname + '/' + id, function(d){ 
+	  		jQuery(d).appendTo("#travelerContent");
+		});
+<?php
+	} else {
+?>
+		jQuery("#travelerContent").load('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/' + idname + '/' + id);
+<?php
+	}
+?>
 	});
 	jQuery("#travelerListToggle").bind('click', function() { 
 		jQuery('#travelerListContent:visible').animate({opacity: 'toggle', height: 'toggle'}, 250); 

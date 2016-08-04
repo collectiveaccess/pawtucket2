@@ -46,7 +46,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, _t('View All').'&nbsp;&nbsp;<span class="icon-arrow-up-right"></span>', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, _t('View All'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
 <?php
 				}
 ?>
@@ -70,7 +70,7 @@
 					$vs_label = mb_substr($vs_label, 0, 50)."...";
 				}						
 				if($qr_results->get("ca_occurrences.productionDate")){
-					$vs_label = $vs_label.", ".$qr_results->get("ca_occurrences.productionDate", array("delimiter" => ", "));
+					$vs_label = $vs_label.", ".str_replace(" - ", "&mdash;", $qr_results->get("ca_occurrences.productionDate", array("delimiter" => ", ")));
 				}
 				print caDetailLink($this->request, $vs_label, '', 'ca_occurrences', $qr_results->get("ca_occurrences.occurrence_id"));
 				print "</div>";

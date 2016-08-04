@@ -126,7 +126,8 @@
 ?>	
 					<li <?php print ($this->request->getController() == "Travelers") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Travelers"), "", "", "Travelers", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Routes") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Routes"), "", "", "Routes", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "Chronology") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Chronology"), "", "", "Chronology", "Index"); ?></li>
+				<!--	<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?> --> </li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -112,8 +112,8 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					$vs_type = "<h7>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
-					if ($qr_res->get('ca_objects.date.date_value')){
-						$vs_date = "<br/>".$qr_res->get('ca_objects.date.date_value', array('delimiter' => ', '))."<br/>";
+					if ($qr_res->get('ca_objects.creation_date')){
+						$vs_date = "<br/>".$qr_res->get('ca_objects.creation_date', array('delimiter' => ', '))."<br/>";
 					} else {
 						$vs_date = null;
 					}
