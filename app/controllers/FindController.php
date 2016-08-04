@@ -33,9 +33,11 @@
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPPowerPoint/Autoloader.php');
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+	
 	\PhpOffice\PhpPowerpoint\Autoloader::register();
  	
- 	class FindController extends ActionController {
+ 	class FindController extends BasePawtucketController {
  		# -------------------------------------------------------
         /**
          * @var Configuration
@@ -70,8 +72,6 @@
 				}
 			}
 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
- 			
- 			
 			$this->view->setVar('export_formats', $va_export_options);
 			
 			$va_options = array();
@@ -425,7 +425,8 @@
 			}
 			
 			$this->view->setVar('criteria_summary', $ps_criteria_summary);
-			
+			$this->view->setVar('display', new ca_bundle_displays());
+				
 			$vs_type = null;
 			if (!(bool)$this->request->config->get('disable_pdf_output') && substr($ps_template, 0, 5) === '_pdf_') {
 				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
@@ -776,7 +777,7 @@
             
 			$vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
 			
- 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, 'ca_objects', $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
+			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
          	$this->render("Browse/ajax_map_item_html.php");   
         }

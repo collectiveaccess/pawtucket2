@@ -42,7 +42,7 @@
  		 	$this->opa_access_values = $va_access_values;
  			$this->view->setVar("access_values", $va_access_values);
  			caSetPageCSSClasses(array("program"));
- 			MetaTagManager::setWindowTitle(_t("Programing History"));
+ 			MetaTagManager::setWindowTitle(_t("Programming History"));
  				
  		}
  		# -------------------------------------------------------
@@ -60,9 +60,7 @@
  				# --- start with seasons
  				# --- get the top of the hierarchy
  				$o_search = caGetSearchInstance("ca_occurrences");
- 				#$o_search->addResultFilter('ca_occurrences.type_id', '=', $vn_season_type_id);
- 				# --- not checking access cause they aren't set right
- 				$qr_res = $o_search->search("ca_occurrences.type_id:".$vn_season_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
+ 				$qr_res = $o_search->search("ca_occurrences.type_id:".$vn_season_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc", "checkAccess" => $this->opa_access_values));
 				$va_series = array();
 				if($qr_res->numHits()){
 					$va_seasons = array();

@@ -53,7 +53,7 @@
 							</ul>
 						</div>
 						<div class="col-xs-12 col-md-6">
-							<ul>
+							<ul style="margin-left:9px;">
 								<li><a href="#">Opportunities at Centro</a></li>
 								<ul>
 									<li><a href="#">Jobs</a></li>
@@ -132,7 +132,7 @@
 					<small><strong>Center for Puerto Rican Studies</strong> | Hunter College | 695 Park Avenue | Room E1429 | New York, NY 10065<br/>c 2015 Centro Center for Puerto Rican Studies Privacy Policy | Disclaimer</small>
 				</div>
 				<div class="col-sm-4 text-right">
-					<?php print caGetThemeGraphic($this->request, 'hunterLogo.png'); ?>
+					<a href="http://hunter.cuny.edu"><?php print caGetThemeGraphic($this->request, 'hunterLogo.png'); ?></a>
 				</div>
 			</div>
 		</div></div>

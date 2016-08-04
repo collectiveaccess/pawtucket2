@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2014 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -71,7 +71,10 @@
  	define('__CA_NAV_BUTTON_ICON_POS_BOTTOM__', 3);
 	# ------------------------------------------------------------------------------------------------
 	/**
+	 * @param array $pa_options Options include:
+	 *		absolute = return absolute URL. [Default is to return relative URL]
 	 *
+	 * @return string
 	 */
 	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
 
@@ -82,7 +85,12 @@
 		}
 		if ($ps_module_path == '*') { $ps_module_path = $po_request->getModulePath(); }
 		if ($ps_controller == '*') { $ps_controller = $po_request->getController(); }
-		if ($ps_action == '*') { $ps_action = $po_request->getAction(); }
+		if ($ps_action == '*') { 
+			$ps_action = $po_request->getAction(); 
+			if ($vs_action_extra =  $po_request->getActionExtra()) { 
+				$ps_action .= "/{$vs_action_extra}";
+			}
+		}
 		
 		if ($ps_module_path) {
 			$vs_url .= '/'.$ps_module_path;
@@ -111,6 +119,12 @@
 				$vs_url .= "/".join("/", $pa_other_params);
 			}
 		}
+		
+		if (caGetOption('absolute', $pa_options, false)) {
+			$o_config = Configuration::load();
+			$vs_url = $o_config->get('site_host').$o_config->get('ca_url_root').$vs_url;
+		}
+		
 		return $vs_url;
 	}
 	# ------------------------------------------------------------------------------------------------

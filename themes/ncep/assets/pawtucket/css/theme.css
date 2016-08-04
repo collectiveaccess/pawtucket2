@@ -28,6 +28,21 @@ body{
 	background-color: #F5F5E9;
 	font-family: 'thesans5';
 	font-size:13px;
+	position: relative;
+  	min-height: 100%;
+}
+/* sticky footer */
+#pageArea {
+  /* Margin bottom by footer height */
+  margin-bottom: 70px;
+}
+#footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 40px;
+  background-color: #f5f5f5;
 }
 a{
 	color: #366791;
@@ -577,6 +592,17 @@ h2#hpSectionText{
 	font-size:15px;
 	color:#2E536E;
 }
+.browse .btn, .sets .btn{
+	font-size:15px;
+	font-weight:normal;
+}
+.browseRemoveFacet .glyphicon{
+	top:2px;
+}
+.browse .btn-sm {
+	padding:2px 10px 0px 10px;
+	font-family:'thesans5';
+}
 .results H1 {
 	font-size:22px;
 	font-family:'thesans5';
@@ -876,6 +902,9 @@ h2#hpSectionText{
 	#caFormOverlay{
 		margin:10% auto 0px auto;
 	}
+	#caFormOverlay.regOverlay{
+		width:900px;
+	}
 }
 label{
 	text-transform:none;
@@ -889,5 +918,5 @@ label{
 	font-size:15px;
 }
 .form-control {
-    font-size: 14px;
+    font-size: 13px;
 }

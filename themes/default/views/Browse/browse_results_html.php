@@ -136,6 +136,11 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			if(is_array($va_facets) && sizeof($va_facets)){
+?>
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+<?php
+			}
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
@@ -151,6 +156,7 @@ if (!$vb_ajax) {	// !ajax
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					print ' '.$va_criterion['value'];
+					$vs_search = $va_criterion['value'];
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -175,6 +181,22 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
+		if($vb_is_search && !$qr_res->numHits() && $vs_search){
+			# --- try to display did you mean results if available
+			$o_search = caGetSearchInstance($vs_table);
+			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
+				$va_suggest_links = array();
+				foreach($va_suggestions as $vs_suggestion){
+					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
+				}
+				
+				if (sizeof($va_suggest_links) > 1) {
+					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
+				} else {
+					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
+				}
+			}
+		}
 } // !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			

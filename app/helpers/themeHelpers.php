@@ -202,12 +202,21 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific finding-aid section configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCollectionsConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/collections.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Get theme-specific icon configuration
 	 *
 	 * @return Configuration
 	 */
 	function caGetIconsConfig() {
-		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
+		if(file_exists(__CA_THEME_DIR__.'/conf/icons.conf')){
 			return Configuration::load(__CA_THEME_DIR__.'/conf/icons.conf');
 		}else{
 			return Configuration::load(__CA_THEMES_DIR__.'/default/conf/icons.conf');
@@ -449,7 +458,9 @@
 
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
 				
-				if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank') : 0)) {
+				if($vn_rep_id == $vn_primary_id){
+					$vn_index = 0;
+				}elseif(!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_object->tableName()).'.rank'))){
 					$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 				}
 				
@@ -979,7 +990,7 @@
 			$va_params[] = $pa_ids;
 		}
 
-		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
+		$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
 			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
@@ -987,7 +998,6 @@
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
 				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
-			GROUP BY {$vs_table}.{$vs_pk}
 		";
 
 		$o_db = $t_instance->getDb();
@@ -1222,13 +1232,19 @@
 					} else {
 						$va_opts['asArrayElement'] = true;
 						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
-							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+							$va_opts['restrictToTypes'] = preg_split("![,;]+!", $va_opts['restrictToTypes']);
 						}
 						
 						// Relationship type restrictions
 						if (isset($va_opts['restrictToRelationshipTypes']) && $va_opts['restrictToRelationshipTypes'] && !is_array($va_opts['restrictToRelationshipTypes'])) { 
-							$va_opts['restrictToRelationshipTypes'] = explode(";", $va_opts['restrictToRelationshipTypes']);
+							$va_opts['restrictToRelationshipTypes'] = preg_split("![,;]+!", $va_opts['restrictToRelationshipTypes']);
 						}
+						
+						// Exclude values
+						if (isset($va_opts['exclude']) && $va_opts['exclude'] && !is_array($va_opts['exclude'])) { 
+							$va_opts['exclude'] = preg_split("![,;]+!", $va_opts['exclude']);
+						}
+						
 						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $va_opts, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			
 						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
@@ -1303,5 +1319,23 @@
 			$ps_view = caGetOption('default', $pa_options, 'thumbnail');
 		}
 		return $ps_view;
+	}
+	# ---------------------------------------
+	/**
+	 * Generate link to change current locale.
+	 *
+	 * @param RequestHTTP $po_request The current request.
+	 * @param string $ps_locale ISO locale code (Ex. en_US) to change to.
+	 * @param string $ps_classname CSS class name(s) to include in <a> tag.
+	 * @param array $pa_attributes Optional attributes to include in <a> tag. [Default is null]
+	 * @param array $pa_options Options to be passed to caNavLink(). [Default is null]
+	 * @return string 
+	 *
+	 * @seealso caNavLink()
+	 */
+	function caChangeLocaleLink($po_request, $ps_locale, $ps_content, $ps_classname, $pa_attributes=null, $pa_options=null) {
+		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
+		$va_params['lang'] = $ps_locale;
+		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
 	}
 	# ---------------------------------------

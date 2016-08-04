@@ -431,10 +431,13 @@ div.browseFacetItem a {
 	height:185px;
 	padding-top: 70px;
 	font-size:30px;
+	opacity: .7 !important;
 }
 .multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
+	opacity: .7 !important;
 	height:690px;
 	padding-top:200px;
+  
 }
 .multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet, .multisearch .collectionsSet.authoritySet {
 	width: 230px;
@@ -794,7 +797,6 @@ div.advancedSearchField {
     font-size: 16px;
 }
 
-
 /* Detail */
 
 .detail {
@@ -968,4 +970,32 @@ a.readmore-js-toggle {
 .dropdown-menu > li > a:hover {
 	color: #482b11;
 
+}
+.DV-downloadLabel, .DV-download {
+	display:none !important; 
+}
+
+@media (max-width: 1050px) {
+	.featuredSidebar {
+		height:550px;
+	} 
+	.hpContainer .largeHome {
+    	height: 550px;
+    }
+}
+@media (max-width: 790px) {
+	.featuredSidebar {
+		height:600px;
+	} 
+	.hpContainer .largeHome {
+    	height: 600px;
+    }
+}
+@media (max-width: 700px) {
+	.featuredSidebar {
+		height:720px;
+	} 
+	.hpContainer .largeHome {
+    	height: 720px;
+    }
 }

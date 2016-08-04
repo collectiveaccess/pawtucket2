@@ -15,6 +15,7 @@
 			<li>use its permanent collection and temporary exhibitions to design pedagogical projects in conjunction with departments and curricula from across the university; </li>
 			<li>partner with local museums and arts institutions to expand the collections the Gallery can draw upon and to create new networks for experiential learning and research;</li>
 			<li>provide a highly visible showcase space for the intellectual and creative work of the university, aimed at the local community, the region, and beyond.</li>
+			
 		</ul>
 	</div>
 	<div class="col-sm-1"></div>

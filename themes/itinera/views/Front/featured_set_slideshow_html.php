@@ -40,7 +40,7 @@
 	//}
 	
 	$o_entity_search = new EntitySearch();
-	$qr_res = $o_entity_search->search("ca_entities.tour_yn:957", array('sort' => 'ca_entities.preferred_labels.surname', 'sort_direction' => 'asc', 'checkAccess' => array(1)));
+	$qr_res = $o_entity_search->search("ca_entities.tour_yn:957", array('limit' => 100,'sort' => 'ca_entities.preferred_labels.surname', 'sort_direction' => 'asc', 'checkAccess' => array(1)));
 
 	if($qr_res && $qr_res->numHits()){
 ?>   
@@ -50,13 +50,14 @@
 				<ul>
 <?php
 
+					$vn_c = 0;
 					while ($qr_res->nextHit()) {
 						$vs_image_tag = $qr_res->get('ca_entities.agentMedia', array('version' => 'mediumlarge'));
 						$vn_entity_id = $qr_res->get('ca_entities.entity_id');
-						
+						if (!$vn_entity_id || !$vs_image_tag) { continue; }
 						print "<li class='frontSlide'><div class='frontSlide'>";
 						print "<div style='margin:10px;' class='clearfix'><div class='frontSlideImage'>";
-						print caNavLink($this->request, $vs_image_tag, '', 'Itinera', 'Tours', 'Index', array('id' => $vn_entity_id));
+						print caNavLink($this->request, $vs_image_tag, '', '', 'Travelers', 'Index', array('id' => $vn_entity_id));
 							
 						if (!empty($vs_image_source = $qr_res->get('ca_entities.sourceUrlSet.sourceURL_URL'))) {
 							print "<a href='{$vs_image_source}' class='frontSlideImageSource'>Source</a>";
@@ -71,8 +72,9 @@
 				
 							print "<p class='frontSlideArtistRoles'>".join(", " , $va_entity_roles)."</p>";
  
-							$va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnAsArray' => true));
-							foreach ($va_dates_array as $va_dates) {
+							$va_dates_array = $qr_res->get('ca_entities.agentLifeDateSet', array('returnWithStructure' => true, 'returnAsArray' => true));
+					
+							foreach (array_shift($va_dates_array) as $va_dates) {
 								$va_date_set[] = $va_dates['agentLifeDisplayDate'];
 							}
 							print "<p>".join($va_date_set, ' - ')."</p>";
@@ -94,6 +96,9 @@
 						print "</div></li>";
 						
 						$vb_item_output = true;
+						
+						$vn_c++;
+						if ($vn_c >= 50) { break; }
 					}
 ?>
 				</ul>

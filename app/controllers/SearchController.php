@@ -44,11 +44,6 @@
  		/**
  		 *
  		 */
- 		protected $opa_access_values = array();
- 		
- 		/**
- 		 *
- 		 */
  		protected $ops_view_prefix = 'Search';
  		
  		# -------------------------------------------------------
@@ -57,14 +52,17 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }	
             
             $this->opo_config = caGetBrowseConfig();
             
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
- 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("find_type", $this->ops_find_type);
  			caSetPageCSSClasses(array("search", "results"));
  		}
@@ -173,6 +171,9 @@
 			
 			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
 				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
+				if($vs_remove_criterion == "_search"){
+					$this->opo_result_context->setSearchExpression("*");
+				}
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -215,7 +216,9 @@
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
-			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+			if ($vs_search_refine = $this->request->getParameter('search_refine', pString)) {
+				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
+			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			}
 			
@@ -313,7 +316,7 @@
 			//
 			$va_criteria = $o_browse->getCriteriaWithLabels();
 			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-				unset($va_criteria['_search']);
+				unset($va_criteria['_search']['*']);
 			}
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
@@ -322,7 +325,6 @@
 					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
 				}
 			}
-			
 			$this->view->setVar('criteria', $va_criteria_for_display);
 		
 			// 
@@ -398,6 +400,8 @@
  				// invalid advanced search type – throw error
  				throw new ApplicationException("Invalid advanced search type");
  			}
+ 			caSetPageCSSClasses(array("search results advancedSearch"));
+
  			$vs_class = $va_search_info['table'];
  			$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
  			
