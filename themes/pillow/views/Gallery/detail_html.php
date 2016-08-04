@@ -6,6 +6,7 @@
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 ?>
+<div class='galleryDetailPageArea'>
 <H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
 <div class="container">
 	<div class="row">
@@ -68,6 +69,7 @@
 		</div><!-- end col -->
 	</div><!-- end row -->
 </div><!-- end container -->
+</div>
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
 			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");

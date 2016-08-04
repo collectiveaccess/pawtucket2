@@ -360,6 +360,7 @@ div.browseFacetItem a {
     padding: 0px;
     font-family: 'futura bold';
     text-transform: uppercase;
+    text-decoration:underline;
 }
 .multisearch h3 a {
 	color: #482b11;
@@ -421,23 +422,18 @@ div.browseFacetItem a {
 }
 .multisearch .authorityResult p {
 	font-size:12px;
-	font-weight:normal;
 }
 .multisearch .multisearchResult p {
 	margin-bottom:4px;
-	font-weight:normal;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
 	height:185px;
-	padding-top: 70px;
+	padding-top: 80px;
 	font-size:30px;
-	opacity: .7 !important;
 }
 .multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
-	opacity: .7 !important;
 	height:690px;
 	padding-top:200px;
-  
 }
 .multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet, .multisearch .collectionsSet.authoritySet {
 	width: 230px;
@@ -971,33 +967,4 @@ a.readmore-js-toggle {
 .dropdown-menu > li > a:hover {
 	color: #482b11;
 
-}
-
-.DV-downloadLabel, .DV-download {
-	display:none !important; 
-}
-
-@media (max-width: 1050px) {
-	.featuredSidebar {
-		height:550px;
-	} 
-	.hpContainer .largeHome {
-    	height: 550px;
-    }
-}
-@media (max-width: 790px) {
-	.featuredSidebar {
-		height:600px;
-	} 
-	.hpContainer .largeHome {
-    	height: 600px;
-    }
-}
-@media (max-width: 700px) {
-	.featuredSidebar {
-		height:720px;
-	} 
-	.hpContainer .largeHome {
-    	height: 720px;
-    }
 }
