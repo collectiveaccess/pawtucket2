@@ -117,7 +117,7 @@
 		$o_purifier = new HTMLPurifier();
 		$pa_params = array();
 		foreach($_REQUEST as $vs_k => $vm_val) {
-			$pa_params[$o_purifier->purify($vs_k)] = $o_purifier->purify($vm_val);
+			$pa_params[$o_purifier->purify($vs_k)] = $o_purifier->purify(is_array($vm_val) ? "<pre>".print_r($vm_val,true)."</pre>" : (string)$vm_val);
 		}
 
 		return $pa_params;
