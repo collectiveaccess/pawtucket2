@@ -360,6 +360,7 @@ div.browseFacetItem a {
     padding: 0px;
     font-family: 'futura bold';
     text-transform: uppercase;
+    text-decoration:underline;
 }
 .multisearch h3 a {
 	color: #482b11;
@@ -421,11 +422,9 @@ div.browseFacetItem a {
 }
 .multisearch .authorityResult p {
 	font-size:12px;
-	font-weight:normal;
 }
 .multisearch .multisearchResult p {
 	margin-bottom:4px;
-	font-weight:normal;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
 	height:185px;

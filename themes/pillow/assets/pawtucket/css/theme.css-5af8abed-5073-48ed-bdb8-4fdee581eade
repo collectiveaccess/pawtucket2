@@ -360,6 +360,7 @@ div.browseFacetItem a {
     padding: 0px;
     font-family: 'futura bold';
     text-transform: uppercase;
+    text-decoration:underline;
 }
 .multisearch h3 a {
 	color: #482b11;
@@ -376,15 +377,8 @@ div.browseFacetItem a {
 .multisearch #worksBlock .blockResults {
 	height:200px;
 }
-.multisearch #collectionsBlock .blockResults {
-	height:260px;
-}
 .multisearch #objectsBlock .blockResults {
 	height:700px;
-}
-.multisearch #collectionsBlock .scrollButtonNext, .multisearch #collectionsBlock .scrollButtonPrevious {
-	height:250px;
-	padding-top:110px;
 }
 .multisearch .multisearchResult {
 	height:180px;
@@ -410,10 +404,10 @@ div.browseFacetItem a {
 	letter-spacing:1px;
 	line-height:1.5em;
 }
-.multisearch .entitiesResult.authorityResult:hover, .multisearch .productionsResult.authorityResult:hover, .multisearch .worksResult.authorityResult:hover, .multisearch .collectionsResult.authorityResult:hover {
+.multisearch .entitiesResult.authorityResult:hover, .multisearch .productionsResult.authorityResult:hover, .multisearch .worksResult.authorityResult:hover {
 	background-color: #f7f7f7;
 }
-.multisearch .entitiesResult.authorityResult:hover a, .multisearch .productionsResult.authorityResult:hover a, .multisearch .worksResult.authorityResult:hover a, .multisearch .collectionsResult.authorityResult:hover a {
+.multisearch .entitiesResult.authorityResult:hover a, .multisearch .productionsResult.authorityResult:hover a, .multisearch .worksResult.authorityResult:hover a {
 	text-decoration:none;
 }
 .multisearch .authorityResult {
@@ -421,22 +415,19 @@ div.browseFacetItem a {
 }
 .multisearch .authorityResult p {
 	font-size:12px;
-	font-weight:normal;
 }
 .multisearch .multisearchResult p {
 	margin-bottom:4px;
-	font-weight:normal;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
 	height:185px;
-	padding-top: 70px;
-	font-size:30px;
+	padding-top: 80px;
 }
 .multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
 	height:690px;
 	padding-top:200px;
 }
-.multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet, .multisearch .collectionsSet.authoritySet {
+.multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet {
 	width: 230px;
     margin-right: 0px;
     border: 1px solid #f5f5f5;
@@ -444,10 +435,7 @@ div.browseFacetItem a {
     border-bottom: 0px;
     padding-top: 0px;
 }
-.multisearch .collectionsSet.authoritySet {
-	height:400px;
-}
-.multisearch .entitiesResult.authorityResult, .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult, .multisearch .collectionsResult.authorityResult {
+.multisearch .entitiesResult.authorityResult, .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult {
     background-color: #fff;
     height: 40px;
     font-weight: bold;
@@ -456,12 +444,6 @@ div.browseFacetItem a {
 }
 .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult {
 	height:66px;
-}
-.multisearch .collectionsResult.authorityResult {
-	height:86px;
-}
-.multisearch .collectionsResult.authorityResult p{
-	margin-bottom:2px;
 }
 .multisearch .multisearchResult {
 	text-align:center;

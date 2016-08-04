@@ -421,7 +421,6 @@ div.browseFacetItem a {
 }
 .multisearch .authorityResult p {
 	font-size:12px;
-	font-weight:normal;
 }
 .multisearch .multisearchResult p {
 	margin-bottom:4px;

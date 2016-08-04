@@ -5,7 +5,9 @@
 ?>
 	<div class="col-sm-1"></div>
 	<div class="col-sm-10">
-		<small class='pull-right'>
+		<h4 style='margin-bottom:10px; letter-spacing:1px;float:left;'><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h4>
+	
+		<small class='pull-right' style='margin-top:20px;margin-bottom:10px;'>
 <?php
 		$i = 0;
 		foreach($this->getVar('blockNames') as $vs_block) {
@@ -18,7 +20,6 @@
 		}
 ?>
 		</small>
-		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
 <?php
 		// 
 		// Print out block content (results for each type of search)
@@ -32,7 +33,7 @@
 <?php
 		} 
 	} else {
-		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
+		print "<H3>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H3>";
 	}
 ?>
 	</div>

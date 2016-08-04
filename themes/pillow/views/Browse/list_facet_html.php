@@ -50,7 +50,7 @@
 	if($vb_is_nav){
 		if ($vn_start == 0) {
 ?>
-			<div id="panel_<?php print $vs_facet_name; ?>" class="row">
+			<div id="panel_<?php print $vs_facet_name; ?>" class="row facetResults">
 <?php
 		}
 		if ($vs_facet_name == "manu_label") {

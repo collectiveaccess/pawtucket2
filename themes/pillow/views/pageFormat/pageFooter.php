@@ -28,18 +28,23 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<li><a href='https://twitter.com/JacobsPillow' target="_blank"><i class="fa fa-twitter"></i></a></li>
-				<li><a href='https://www.facebook.com/jacobspillowdance' target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-				<li><a href='https://www.youtube.com/user/JacobsPillow' target="_blank"><i class="fa fa-youtube-play"></i></a></li>
-			</ul>
-			<div>
-				©1933-2016 Jacob's Pillow Dance. All rights reserved. 358 George Carter Road, Becket MA, 01223 USA 413.243.9919
-			</div>
-			<ul class="list-inline">
-				<li><a href="mailto:INFO@JACOBSPILLOW.ORG">info@jacobspillow.org</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
+			<div class='row'>
+				<div class='col-sm-6'>
+					<div>
+						©1933-2016 Jacob's Pillow Dance. All rights reserved. <br/>358 George Carter Road, Becket MA, 01223 USA 413.243.9919 x154
+					</div>
+					<div>
+						<a href="mailto:INFO@JACOBSPILLOW.ORG">info@jacobspillow.org</a>
+					</div>
+				</div>
+				<div class='col-sm-6'>
+					<ul class="list-inline pull-right social">
+						<li><a href='https://twitter.com/JacobsPillow' target="_blank"><i class="fa fa-twitter"></i></a></li>
+						<li><a href='https://www.facebook.com/jacobspillowdance' target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href='https://www.youtube.com/user/JacobsPillow' target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+					</ul>
+				</div>
+			</div><!-- end row -->
 		</div><!-- end footer -->
 <?php
 	//
@@ -78,7 +83,8 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
-		<script language="javascript">
+		
+<!--		<script language="javascript">
 			document.onmousedown=disableclick;
 			status="Right Click Disabled";
 			function disableclick(event){
@@ -87,6 +93,6 @@
 					return false;    
 		   		}
 			}
-		</script>		
+		</script>	-->	
 	</body>
 </html>

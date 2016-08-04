@@ -2,6 +2,7 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_id = $t_item->get('ca_collections.collection_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class="col-sm-1"></div>
@@ -11,7 +12,7 @@
 <?php
 					#$vs_finding_aid = array();
 					$va_anchors = array();
-					$vs_finding_aid= "<div class='row'><div class='col-sm-6'>";
+					$vs_finding_aid= "<div class='row'><div class='col-sm-12'>";
 					if ($t_item->get('ca_collections.repository.repositoryName')) {
 						if ($vs_repository = $t_item->get('ca_collections.repository', array('template' => '<ifdef code="ca_collections.repository.repositoryName"><b>Repository Name: </b></ifdef> ^ca_collections.repository.repositoryName <ifdef code="ca_collections.repository.repositoryLocation"><br/><b>Repository Location: </b></ifdef> ^ca_collections.repository.repositoryLocation', 'delimiter' => '<br/>'))) {
 							$va_anchors[] = "<a href='#repository'>Repository</a>";
@@ -22,7 +23,7 @@
 						$vs_finding_aid.= "<div class='unit'><h3>Description</h3>".$vs_desc."</div>"; 
 					}	
 					if ($t_item->get('ca_collections.unitdate.date_value')) {
-						if ($vs_date = $t_item->get('ca_collections.unitdate', array('delimiter' => '<br/>', 'template' => '<unit>^ca_collections.unitdate.date_value ^ca_collections.unitdate.date_types</unit>', 'convertCodesToDisplayText' => true))) {
+						if ($vs_date = $t_item->getWithTemplate('<unit delimiter="<br/>">^ca_collections.unitdate.date_value (^ca_collections.unitdate.dates_types)</unit>')) {
 							$va_anchors[] = "<a href='#date'>Date</a>";
 							$vs_finding_aid.= "<div class='unit'><h3><a name='date'>Date</a></h3>".$vs_date."</div>";
 						}
@@ -54,10 +55,10 @@
 						$va_anchors[] = "<a href='#extent'>Extent</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='extent'>Extent</a></h3>".$vs_extent."</div>";
 					}
-					#if ($vs_creator = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels</l> ^relationship_type</unit>')) {
-					#	$va_anchors[] = "<a href='#creator'>Creator</a>";
-					#	$vs_finding_aid.= "<div class='unit'><h3><a name='creator'>Creator</a></h3>".$vs_creator."</div>";
-					#}
+					if ($vs_creator = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+						$va_anchors[] = "<a href='#creator'>Related Entities</a>";
+						$vs_finding_aid.= "<div class='unit'><h3><a name='creator'>Related Entities</a></h3>".$vs_creator."</div>";
+					}
 					if ($vs_agency = $t_item->get('ca_collections.agencyHistory')) {
 						$va_anchors[] = "<a href='#history'>Agency History</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a href='agency'>Agency History</a></h3>".$vs_agency."</div>";
@@ -67,13 +68,8 @@
 						$vs_finding_aid.= "<div class='unit'><h3><a name='abstract'>Abstract</a></h3>".$vs_abstract."</div>";
 					}
 					$vs_finding_aid.= "</div>";
-					$vs_finding_aid.= "<div class='col-sm-6'>";
-					if ($va_rep = $t_item->get('ca_object_representations.media.large')) {
-						$vs_finding_aid.= "<div class='collectionRep'>".$va_rep."</div>";
-					} elseif ($va_rep = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="depicts"><unit relativeTo="ca_object_representations">^ca_object_representations.media.large</unit></unit>')) {
-						$vs_finding_aid.= "<div class='collectionRep'>".$va_rep."</div>";
-					}
-					$vs_finding_aid.= "</div></div><!-- end row -->";
+
+					$vs_finding_aid.= "</div><!-- end row -->";
 					$vs_finding_aid.= "<div class='row'><div class='col-sm-12'>";
 					if ($vs_citation = $t_item->get('ca_collections.preferCite')) {
 						$va_anchors[] = "<a href='#citation'>Preferred Citation</a>";
@@ -150,22 +146,33 @@
 					if ($vs_processing = $t_item->getWithTemplate('<ifdef code="ca_collections.processInfo.createdBy">Finding Aid Created By: ^ca_collections.processInfo.createdBy<br/></ifdef><ifdef code="ca_collections.processInfo.dateCreated">Date Created: ^ca_collections.processInfo.dateCreated<br/></ifdef><ifdef code="ca_collections.processInfo.information">Information: ^ca_collections.processInfo.information</ifdef>')) {
 						$va_anchors[] = "<a href='#processing'>Processing Information</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='processing'>Processing Information</a></h3>".$vs_processing."</div>";
-					}					
+					}
+					if ($va_related_storage = $t_item->get('ca_storage_locations.preferred_labels', array('returnAsArray' => true))) {
+						$va_anchors[] = "<a href='#processing'>Storage Location</a>";
+						$vs_finding_aid.= "<div class='unit'><h3><a name='processing'>Storage Location</a></h3>";
+						foreach ($va_related_storage as $va_key => $va_storage) {
+							$vs_finding_aid.= caNavLink($this->request, $va_storage, '', '', 'Search', 'objects', array('search' => "ca_storage_locations.preferred_labels:'".$va_storage."'"))."<br/>";
+						}
+						$vs_finding_aid.= "</div>";
+					}										
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true))) {
+						print_r($va_subject_terms);
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
 							$va_subject_term_list = explode('[', $va_subject_term);
-							$va_subjects_list[] = ucfirst($va_subject_term_list[0]);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.lcsh_terms:'".$va_subject_term_list[0]."'"));
 						}
 					}
-					if ($va_subject_terms_text = $t_item->get('ca_collections.lcsh_terms_text', array('returnAsArray' => true))) {
+					if ($va_subject_terms_text = $t_item->get('ca_collections.LcshNames', array('returnAsArray' => true))) {
 						foreach ($va_subject_terms_text as $va_text => $va_subject_term_text) {
-							$va_subjects_list[] = ucfirst($va_subject_term_text);
+							$va_subject_text_list = explode('[', $va_subject_term_text);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_text_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.LcshNames:'".$va_subject_text_list[0]."'"));
 						}
 					}
-					if ($va_subject_genres = $t_item->get('ca_collections.lcsh_genres', array('returnAsArray' => true))) {
+					if ($va_subject_genres = $t_item->get('ca_collections.LcshTopical', array('returnAsArray' => true))) {
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
-							$va_subjects_list[] = ucfirst($va_subject_genre);
+							$va_subject_genre_list = explode('[', $va_subject_genre);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_genre_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.LcshTopical:'".$va_subject_genre_list[0]."'"));
 						}
 					}											
 					asort($va_subjects_list);
@@ -257,22 +264,30 @@
 					
 				
 				
-<?php
-				if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Collection") {
-?>					
+				
 					<div class='col-sm-3 col-md-3 col-lg-3 contentsTable'>
-						<div >
+						<div style='margin-bottom:20px;'>
 							<h3>Table of Contents</h3>
 <?php
 							print join('<br/>', $va_anchors);
 ?>
 						</div><!-- end col -->
+<?php						
+					
+					if ($va_rep = $t_item->get('ca_object_representations.media.large')) {
+						print "<div class='collectionRep'>".$va_rep."</div>";
+					} elseif ($va_rep = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="depicts"><unit relativeTo="ca_object_representations">^ca_object_representations.media.large</unit></unit>')) {
+						if ($va_reps = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('depicts'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+							foreach ($va_reps as $va_key => $va_rep) {
+								$t_object = new ca_objects($va_rep);
+								print "<div class='collectionRep'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.small'), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.object_id'))."</div>";
+							}
+						}
+					}
+						
+?>					 					
 					</div><!-- end contentsTable-->
-<?php
-				} else {
-					print "<div class='col-sm-3 col-md-3 col-lg-3'></div>";
-				}
-?>					
+					
 				
 				<div class='col-sm-9 col-md-9 col-lg-9'>
 <?php
