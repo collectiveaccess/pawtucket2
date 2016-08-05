@@ -78,8 +78,9 @@ var caUI = caUI || {};
 			if (options && options.icon) { opts['icon'] = options.icon; }
 			var marker = new google.maps.Marker(opts);
 			
-			google.maps.event.addListener(marker, 'click', function(e) { that.openMarkerInfoWindow(marker); });
-			
+			if(label || content || ajaxContentUrl){
+				google.maps.event.addListener(marker, 'click', function(e) { that.openMarkerInfoWindow(marker); });
+			}
 			return marker;
 		};
 		// --------------------------------------------------------------------------------

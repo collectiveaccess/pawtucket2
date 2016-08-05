@@ -145,3 +145,8 @@ if($vs_display_type == 'media_overlay'){
 	}
 ?>
 	</div><!-- end caMediaOverlayContent/ caMediaDisplayContent -->
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$('#caMediaOverlayContent').on('contextmenu', 'canvas', function(e){ return false; });
+	});
+</script>

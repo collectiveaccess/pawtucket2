@@ -26,13 +26,17 @@
 {{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 
 
-<?php print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); ?>
+<?php
+	if ($t_set_item->get('ca_set_items.hide_view_record', array('convertCodesToDisplayText' => true)) == "yes") { 
+		print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); 
+	}
+?>
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 160
+		  maxHeight: 166
 		});		
 	});
 </script>

@@ -48,7 +48,7 @@
 					if (($vs_language = $t_item->get('ca_occurrences.productionLanguage', array('convertCodesToDisplayText' => true))) != "null") {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Production Language </span>".$vs_language."</div>";
 					}	
-					if ($vs_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
+					if ($vs_country = $t_item->get('ca_occurrences.country_origin_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Country of Origin </span>".$vs_country."</div>";
 					}
 					if ($va_description = $t_item->get('ca_occurrences.productionDescription.prodesc_text')) {

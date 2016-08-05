@@ -54,6 +54,32 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	if (($this->request->getParameter('object_id', pInteger)) && ($this->request->getAction() == "GetRepresentationInfo")) {
+            		$ps_id = $this->request->getParameter('object_id', pInteger);
+            	} else {
+            		$ps_id = urldecode($this->request->getActionExtra());
+            	}
+            	$t_set_list = new ca_sets();
+            	$t_set = new ca_sets();
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+				$va_user_has_access = false;
+				if (sizeof($va_sets) > 0) {
+					foreach ($va_sets as $va_key => $va_set) {
+						if($t_set->isInSet('ca_objects', $ps_id, $va_set['set_id'])) {
+							$va_user_has_access = true;
+						}
+					}
+				}
+				if ($va_user_has_access == false) {
+            		print "You do not have access to view this page.";
+            		die;
+            	}
+            }
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
@@ -236,7 +262,7 @@
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
 					if ($t_subject->get($vs_map_attribute)){
-						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute);
+						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
 						$vn_mapped_count += $va_ret['items'];
 					}
 				}
@@ -1265,7 +1291,9 @@
 			try {
 				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
 				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-			
+				$this->view->setVar('PDFRenderer', 'domPDF');
+				$this->view->setVar('display', new ca_bundle_displays());
+				
 				$vs_content = $this->render($va_template_info['path']);
 				$o_dompdf = new DOMPDF();
 				$o_dompdf->load_html($vs_content);
