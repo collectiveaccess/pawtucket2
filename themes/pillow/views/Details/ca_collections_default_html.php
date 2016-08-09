@@ -2,6 +2,7 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_id = $t_item->get('ca_collections.collection_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class="col-sm-1"></div>
@@ -54,10 +55,10 @@
 						$va_anchors[] = "<a href='#extent'>Extent</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='extent'>Extent</a></h3>".$vs_extent."</div>";
 					}
-					#if ($vs_creator = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels</l> ^relationship_type</unit>')) {
-					#	$va_anchors[] = "<a href='#creator'>Creator</a>";
-					#	$vs_finding_aid.= "<div class='unit'><h3><a name='creator'>Creator</a></h3>".$vs_creator."</div>";
-					#}
+					if ($vs_creator = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+						$va_anchors[] = "<a href='#creator'>Related Entities</a>";
+						$vs_finding_aid.= "<div class='unit'><h3><a name='creator'>Related Entities</a></h3>".$vs_creator."</div>";
+					}
 					if ($vs_agency = $t_item->get('ca_collections.agencyHistory')) {
 						$va_anchors[] = "<a href='#history'>Agency History</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a href='agency'>Agency History</a></h3>".$vs_agency."</div>";
@@ -156,19 +157,22 @@
 					}										
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true))) {
+						print_r($va_subject_terms);
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
 							$va_subject_term_list = explode('[', $va_subject_term);
-							$va_subjects_list[] = ucfirst($va_subject_term_list[0]);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.lcsh_terms:'".$va_subject_term_list[0]."'"));
 						}
 					}
-					if ($va_subject_terms_text = $t_item->get('ca_collections.lcsh_terms_text', array('returnAsArray' => true))) {
+					if ($va_subject_terms_text = $t_item->get('ca_collections.LcshNames', array('returnAsArray' => true))) {
 						foreach ($va_subject_terms_text as $va_text => $va_subject_term_text) {
-							$va_subjects_list[] = ucfirst($va_subject_term_text);
+							$va_subject_text_list = explode('[', $va_subject_term_text);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_text_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.LcshNames:'".$va_subject_text_list[0]."'"));
 						}
 					}
-					if ($va_subject_genres = $t_item->get('ca_collections.lcsh_genres', array('returnAsArray' => true))) {
+					if ($va_subject_genres = $t_item->get('ca_collections.LcshTopical', array('returnAsArray' => true))) {
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
-							$va_subjects_list[] = ucfirst($va_subject_genre);
+							$va_subject_genre_list = explode('[', $va_subject_genre);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_genre_list[0]), '', '', 'MultiSearch', 'Index', array('search' => "ca_collections.LcshTopical:'".$va_subject_genre_list[0]."'"));
 						}
 					}											
 					asort($va_subjects_list);
@@ -273,7 +277,12 @@
 					if ($va_rep = $t_item->get('ca_object_representations.media.large')) {
 						print "<div class='collectionRep'>".$va_rep."</div>";
 					} elseif ($va_rep = $t_item->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="depicts"><unit relativeTo="ca_object_representations">^ca_object_representations.media.large</unit></unit>')) {
-						print "<div class='collectionRep'>".$va_rep."</div>";
+						if ($va_reps = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('depicts'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+							foreach ($va_reps as $va_key => $va_rep) {
+								$t_object = new ca_objects($va_rep);
+								print "<div class='collectionRep'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.small'), '', '', 'Detail', 'objects/'.$t_object->get('ca_objects.object_id'))."</div>";
+							}
+						}
 					}
 						
 ?>					 					

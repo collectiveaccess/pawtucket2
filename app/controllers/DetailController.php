@@ -32,6 +32,7 @@
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
  	
  	class DetailController extends FindController {
  		# -------------------------------------------------------
@@ -53,6 +54,32 @@
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 		 	
+ 		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	if (($this->request->getParameter('object_id', pInteger)) && ($this->request->getAction() == "GetRepresentationInfo")) {
+            		$ps_id = $this->request->getParameter('object_id', pInteger);
+            	} else {
+            		$ps_id = urldecode($this->request->getActionExtra());
+            	}
+            	$t_set_list = new ca_sets();
+            	$t_set = new ca_sets();
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+				$va_user_has_access = false;
+				if (sizeof($va_sets) > 0) {
+					foreach ($va_sets as $va_key => $va_set) {
+						if($t_set->isInSet('ca_objects', $ps_id, $va_set['set_id'])) {
+							$va_user_has_access = true;
+						}
+					}
+				}
+				if ($va_user_has_access == false) {
+            		print "You do not have access to view this page.";
+            		die;
+            	}
+            }
             
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
@@ -235,7 +262,7 @@
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
 					if ($t_subject->get($vs_map_attribute)){
-						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute);
+						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
 						$vn_mapped_count += $va_ret['items'];
 					}
 				}
@@ -602,11 +629,20 @@
 			
 			// Allow plugins to modify object_id list
 			$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
-			
+			$va_child_ids = array_unique($va_child_ids);
+			$t_download_log = new Downloadlog();
 			foreach($va_child_ids as $vn_object_id) {
 				$t_child_object = new ca_objects($vn_object_id);
 				if (!$t_child_object->getPrimaryKey()) { continue; }
 				
+				$t_download_log->log(array(
+						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"table_num" => $t_object->TableNum(), 
+						"row_id" => $vn_object_id, 
+						"representation_id" => null, 
+						"download_source" => "pawtucket"
+				));
 				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
 				$vs_idno = $t_child_object->get('idno');
 				
@@ -715,6 +751,16 @@
  			}
 			$this->view->setVar('t_object_representation', $t_rep);
 			
+			$t_download_log = new Downloadlog();
+			$t_download_log->log(array(
+					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+					"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+					"table_num" => $t_object->TableNum(), 
+					"row_id" => $vn_object_id, 
+					"representation_id" => $pn_representation_id, 
+					"download_source" => "pawtucket"
+			));
+				
 			$va_versions = $t_rep->getMediaVersions('media');
 			
 			if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
@@ -1245,7 +1291,9 @@
 			try {
 				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
 				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-			
+				$this->view->setVar('PDFRenderer', 'domPDF');
+				$this->view->setVar('display', new ca_bundle_displays());
+				
 				$vs_content = $this->render($va_template_info['path']);
 				$o_dompdf = new DOMPDF();
 				$o_dompdf->load_html($vs_content);
@@ -1313,8 +1361,7 @@
  			// check that value is a file attribute
  			if ($t_element->get('datatype') != 15) { 	// 15=file
  				return;
- 			}
- 			
+ 			} 
  			$o_view->setVar('file_path', $t_attr_val->getFilePath('value_blob'));
  			$o_view->setVar('file_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
  			

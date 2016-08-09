@@ -2,7 +2,7 @@
 	$t_object = $this->getVar("object");
 ?>
 	<H2>{{{ca_objects.preferred_labels.name}}}</H2>
-	{{{<ifdef code="ca_objects.public_title"><div class="unit"><b>Title:</b> ^ca_objects.public_title</unit></ifdef>}}}
+	{{{<ifdef code="ca_objects.public_title"><div class="unit"><i>^ca_objects.public_title</i></unit></ifdef>}}}
 				
 <?php
 	$va_list_ids = array();
@@ -43,8 +43,14 @@
 		}
 
 	}
-	if($t_object->get("ca_object_lots.credit_line")){
-		print "<div class='unit unitExternalLinks'><b>Credit Line:</b> <i>".$t_object->get("ca_object_lots.credit_line")."</i></div>";
+	$vs_credit_line = "";
+	if($t_object->get("ca_objects.credit_line")){
+		$vs_credit_line = $t_object->get("ca_objects.credit_line");
+	}elseif($t_object->get("ca_object_lots.credit_line")){
+		$vs_credit_line = $t_object->get("ca_object_lots.credit_line");
+	}
+	if($vs_credit_line){
+		print "<div class='unit unitExternalLinks'><b>Credit Line:</b> <i>".$vs_credit_line."</i></div>";
 	}
 
 ?>
