@@ -52,7 +52,7 @@
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchField">
-				Has Media<br/>
+				Has Media (image, video, audio, etc.)<br/>
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
 		</div>
