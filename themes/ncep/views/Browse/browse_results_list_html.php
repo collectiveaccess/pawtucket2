@@ -95,6 +95,9 @@
 				if(sizeof($va_authors)){
 					$vs_authors = _t("Authors").": ".join(", ", $va_authors);
 				}
+				# --- translations
+				$vs_tmp_translation = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToRelationshipTypes='translation'><l>^ca_objects.language</l></unit>", array("delimiter" => ", ", "checkAccess" => caGetUserAccessValues($this->request)));
+				
 				print "
 	<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResItem'>
@@ -103,6 +106,7 @@
 			<H1>{$vs_label_detail_link}</H1>
 			<div class='bResContent'>".
 				$qr_res->getWithTemplate("<ifdef code='ca_objects.language'>"._t("Language").": ^ca_objects.language%delimiter=,_</ifdef>", array("convertCodesToDisplayText" =>true, 'checkAccess' => caGetUserAccessValues($this->request)))
+			.(($vs_tmp_translation) ? "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Also Available in: ".$vs_tmp_translation : "")
 			."<br/>".$vs_authors."</div><!-- end bResContent -->
 		</div><!-- end bResItem -->
 	</div><!-- end col -->";
