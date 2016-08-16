@@ -13,8 +13,8 @@
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Keyword search of all fields."
-			>All Fields:</span><br/>
-			{{{_fulltext%width=300px&height=25px}}}
+			>Keyword (All Fields):</span><br/>
+			{{{_fulltext%width=300px&height=1}}}
 		</div>
 		
 		<div class="advancedSearchField">
@@ -30,8 +30,8 @@
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a record. For the Archives this is the Identifier, Museum and Testimony collections this is the Object Identifier. For the library is the Barcode or Call Number."
-			>Object ID:</span><br/>
-			{{{ca_objects.altID%width=300px&height=23px}}}
+			>Unique Identifier:</span><br/>
+			{{{ca_objects.identifier%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -41,27 +41,33 @@
 		</div>
 		<div class="advancedSearchField">
 			<span 
+				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item."
+			>Creator/Contributor:</span><br/>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator;contributor}}}
+		</div>		
+		<div class="advancedSearchField">
+			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe the subject and content of the item."
 			>Subject:</span><br/>
-			{{{ca_objects.local_subject%width=300px&height=23px}}}
+			{{{ca_objects.local_subject%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The particular kind of object described in a record. This is a curated list that reflects the contents of the VHEC’s collection."
 			>Genre:</span><br/>
-			{{{ca_objects.cdwa_work_type%width=300px}}}
+			{{{ca_objects.genre%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item."
 			>People & Organizations:</span><br/>
-			{{{ca_entities.preferred_labels%width=420px}}}
+			{{{ca_entities.preferred_labels%width=420px&excludeRelationshipTypes=creator;contributor}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Language(s) associated with an item."
 			>Language:</span><br/>
-			{{{ca_objects.language%width=300px&height=23px}}}
+			{{{ca_objects.language%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -72,7 +78,7 @@
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records with media."
-			>Only Digital Collections:</span><br/>
+			>Digital Content:</span><br/> 
 			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
 		</div>
 															

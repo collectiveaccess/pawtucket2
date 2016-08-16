@@ -492,7 +492,7 @@
 							$va_assoc_materials_pdf = $t_object->get('ca_objects.alternate_text', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 
 							print "<div class='unit document'><h8>Auxiliary Document</h8>";
 							$o_db = new Db();
-							$vn_media_element_id = $t_object->_getElementID('alternate_desc_upload');
+#							$vn_media_element_id = $t_object->_getElementID('alternate_desc_upload');
 							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
 								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
 									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_assoc_materials_pdf_id, $vn_media_element_id)) ;
@@ -585,7 +585,7 @@
 					$vs_place_name = $t_place->get('ca_places.preferred_labels');
 					$vs_related_places.= "<div class='col-sm-3'>";
 					$vs_related_places.= "<div class='entityThumb'>";
-					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Search', 'objects', array('search' => 'ca_places.preferred_labels:"'.$vs_place_name.'"'))."</p></div>";
+					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Detail', 'places/'.$va_related_place_id )."</p></div>";
 					$vs_related_places.= "</div>";					
 				}
 			}

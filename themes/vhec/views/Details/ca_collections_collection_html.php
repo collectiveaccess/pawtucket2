@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_access_values = 	$this->getVar('access_values');	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -16,47 +17,48 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_entities.preferred_labels.displayname}}}
-<?php
-						if ($va_entity_dates = $t_item->get('ca_entities.entity_date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
-							foreach ($va_entity_dates as $va_key => $va_entity_date_t) {
-								foreach ($va_entity_date_t as $va_key => $va_entity_date) {
-									if ($va_entity_date['entity_date_supress'] == "No") {
-										print " (".$va_entity_date['entity_date_value'].")";
-									}
-								}
-							}
-						}	
-?>										
-					</H4>
-					<H5>{{{<ifdef code='ca_entities.nonpreferred_labels'><span>Also known as: </span>^ca_entities.nonpreferred_labels.displayname</ifdef>}}}</H5>
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
 				<div class='col-sm-6'>
+				
+				{{{representationViewer}}}
+				
 <?php
-					if ($va_birthplace = $t_item->get('ca_places.preferred_labels', array('restrictToRelationshipTypes' => array('birthplace')))) {
-						print "<div class='unit'><h8>Birthplace</h8>".$va_birthplace."</div>";
+				$vs_access_point = "";				
+				#Local Subject
+				$va_local_subjects = $t_item->get('ca_occurrences.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+				if (sizeof($va_local_subjects) >= 1) {
+					$vn_subject = 1;
+					#$vs_access_point.= "<h9>Local Access Points </h9>";
+					foreach ($va_local_subjects as $va_key => $va_local_subject) {
+						if ($va_local_subject == '-') { continue; }
+						if ($vn_subject > 3) {
+							$vs_subject_style = "class='subjectHidden'";
+						}
+						$vs_access_point.= "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "'".$va_local_subject."'"))."</div>";
+						
+						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
+							$vs_access_point.= "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
+						}
+						$vn_subject++;
 					}
-					if ($va_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h8>Biography</h8>".$va_bio."</div>";
-					}
-					if ($va_admin_hist = $t_item->get('ca_entities.administrative_history')) {
-						print "<div class='unit'><h8>Administrative History</h8>".$va_admin_hist."</div>";
-					}						
-					if ($va_public_notes = $t_item->get('ca_entities.public_notes')) {
-						print "<div class='unit'><h8>Notes</h8>".$va_public_notes."</div>";
-					}
-					if ($va_website = $t_item->get('ca_entities.entity_website')) {
-						print "<div class='unit'><h8>Website</h8><a href='".$va_website."' target='_blank'>".$va_website."</a></div>";
-					}
-?>
-					
+				}
+				if ($vs_access_point != "") {
+					print "<div class='subjectBlock'>";
+					print "<h8 style='margin-bottom:10px;'>Access Points</h8>";
+					print $vs_access_point;
+					print "</div>";
+				}
+?>	
+				<div class='map'>{{{map}}}</div>				
 				</div><!-- end col -->
 				<div class='col-sm-6'>
-					{{{map}}}
-				</div><!-- end col -->
+				<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
+				<hr>
+<?php
+				if ($va_description = $t_item->get('ca_collections.description')) {
+					print "<div class='unit'><h6>Description</h6>".$va_description."</div>";
+				}																		
+?>					
+				</div>
 			</div><!-- end row -->
 			
 <?php
@@ -82,7 +84,7 @@
 				}				
 				
 			}
-			if ($va_related_collections = $t_item->get('ca_collections.collection_id', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('fonds', 'series', 'sub_series', 'file')))) {
+			if ($va_related_collections = $t_item->get('ca_collections.related.collection_id', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('fonds', 'series', 'sub_series', 'file')))) {
 				foreach ($va_related_collections as $va_key => $va_related_collection_id) {				
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_holdings.= "<div class='col-sm-3'>";
@@ -94,7 +96,7 @@
 			#Entities
 			$vs_related_entities = "";
 			$va_ents_by_type = array();
-			if ($va_related_entities = $t_item->get('ca_entities.related', array('checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+			if ($va_related_entities = $t_item->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('curator')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
 					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}
@@ -126,7 +128,7 @@
 			}
 			#Collections
 			$vs_related_collections = "";
-			if ($va_related_collections = $t_item->get('ca_collections.collection_id', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('collection')))) {
+			if ($va_related_collections = $t_item->get('ca_collections.related.collection_id', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('collection')))) {
 				foreach ($va_related_collections as $va_key => $va_related_collection_id) {				
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_collections.= "<div class='col-sm-3'>";
@@ -135,9 +137,9 @@
 					$vs_related_collections.= "</div>";					
 				}
 			}
-			#Events 
+			#Events
 			$vs_related_events = "";
-			if ($va_related_events = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+			if ($va_related_events = $t_item->get('ca_occurrences.related', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 				foreach ($va_related_events as $va_key => $va_related_event) {
 					$va_events_by_type[$va_related_event['item_type_id']][$va_related_event['occurrence_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_event['label'], '', '', 'Detail', 'occurrences/'.$va_related_event['occurrence_id'])." (".$va_related_event['relationship_typename'].")</p></div></div>";
 				}
@@ -190,8 +192,9 @@
 <?php
 			}
 ?>						
+				
 			
-			
+
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -200,10 +203,10 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
-							loadingHtml: '<?php print "Loading...";?>',
+							loadingHtml: '<?php print "Loading..."; ?>',
 							padding: 20,
 							nextSelector: 'a.jscroll-next'
 						});
@@ -212,8 +215,7 @@
 					
 				});
 			</script>
-</ifcount>}}}
-		</div><!-- end container -->
+</ifcount>}}}		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
@@ -221,9 +223,8 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
-
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('#relationshipTable').tabs();
 	});
-</script>
+</script>	

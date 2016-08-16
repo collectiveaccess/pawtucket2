@@ -532,6 +532,9 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 .advancedSearch textarea, .advancedSearch input, .advancedSearch table, .advancedSearch select{
 	width:100% !important;
 }
+.advancedContainer textarea {
+	height:23px !important;
+}
 
 
 /* Browse */

@@ -66,30 +66,33 @@
 				if ($va_event = $t_item->get('ca_occurrences.occurrence_dates')) {
 					print "<div class='unit'><h8>Event Date</h8>".$va_event."</div>";
 				}
-				if ($va_venue = $t_item->getWithTemplate('<unit delimiter="<br/>">^ca_occurrences.venue.venue_institution (^ca_occurrences.venue.venue_dates)</unit>')) {
+				if ($va_venue = $t_item->getWithTemplate('<unit delimiter="<br/>">^ca_occurrences.venue.venue_institution</unit>')) {
 					print "<div class='unit'><h8>Venue</h8>".$va_venue."</div>";
 				}	
 				if ($va_description = $t_item->get('ca_occurrences.occurrence_description')) {
 					print "<div class='unit'><h8>Description</h8>".$va_description."</div>";
 				}
+				if ($va_venue_description = $t_item->get('ca_occurrences.venue_description')) {
+					print "<div class='unit'><h8>Description</h8>".$va_venue_description."</div>";
+				}				
 				if ($va_catalogue = $t_item->get('ca_objects.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('library')))) {
 					print "<div class='unit'><h8>Catalogue</h8>".$va_catalogue."</div>";
 				}
 				if ($va_online = $t_item->get('ca_occurrences.online_exhibition')) {
 					print "<div class='unit'><h8>Online Exhibition</h8><a href='".$va_online."' target='_blank'>".$va_online."</a></div>";
 				}
-				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
-					print "<div class='unit'><h8>Related Entities</h8>".$va_entities."</div>";
-				}
-				if ($va_places = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_places"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>')) {
-					print "<div class='unit'><h8>Related Places</h8>".$va_places."</div>";
-				}
-				if ($va_collections = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit>')) {
-					print "<div class='unit'><h8>Related Collections</h8>".$va_collections."</div>";
-				}
-				if ($va_events = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels</l></unit>')) {
-					print "<div class='unit'><h8>Related Events</h8>".$va_events."</div>";
-				}																			
+				#if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+				#	print "<div class='unit'><h8>Related Entities</h8>".$va_entities."</div>";
+				#}
+				#if ($va_places = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_places"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>')) {
+				#	print "<div class='unit'><h8>Related Places</h8>".$va_places."</div>";
+				#}
+				#if ($va_collections = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit>')) {
+				#	print "<div class='unit'><h8>Related Collections</h8>".$va_collections."</div>";
+				#}
+				#if ($va_events = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels</l></unit>')) {
+				#	print "<div class='unit'><h8>Related Events</h8>".$va_events."</div>";
+				#}																			
 ?>					
 				</div>
 			</div><!-- end row -->
@@ -129,7 +132,7 @@
 			#Entities
 			$vs_related_entities = "";
 			$va_ents_by_type = array();
-			if ($va_related_entities = $t_item->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+			if ($va_related_entities = $t_item->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('curator')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
 					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}
@@ -155,7 +158,7 @@
 					$vs_place_name = $t_place->get('ca_places.preferred_labels');
 					$vs_related_places.= "<div class='col-sm-3'>";
 					$vs_related_places.= "<div class='entityThumb'>";
-					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Search', 'objects', array('search' => 'ca_places.preferred_labels:"'.$vs_place_name.'"'))."</p></div>";
+					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Detail', 'places/'.$va_related_place_id)."</p></div>";
 					$vs_related_places.= "</div>";					
 				}
 			}

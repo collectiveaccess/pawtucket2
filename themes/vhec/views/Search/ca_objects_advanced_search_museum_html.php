@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
-			<h1>Advanced Search</h1>
+			<h1>Museum Advanced Search</h1>
 
 <?php			
 	print "<p>Enter your search terms in the fields below.</p>";
@@ -13,20 +13,20 @@
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Keyword search of all record fields."
-			>All Fields:</span><br/>
-			{{{_fulltext%width=300px&height=25px}}}
+			>Keyword (All Fields):</span><br/>
+			{{{_fulltext%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The particular kind of object described in a record. This is a curated list that reflects the contents of the VHEC’s collection."
 			>Genre:</span><br/>
-			{{{ca_objects.cdwa_work_type%width=300px}}}
+			{{{ca_objects.genre%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a work. Traditionally an accession number, Museum Works are assigned a barcode identifier."
 			>Object ID:</span><br/>
-			{{{ca_objects.altID%width=300px&height=23px}}}
+			{{{ca_objects.altID%width=300px&height=1}}}
 		</div>						
 		<div class="advancedSearchField">
 			<span 
@@ -56,7 +56,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search terms associated with the work’s ownership history."
 			>Provenance:</span><br/>
-			{{{ca_objects.dc_provenance%width=300px&height=23px}}}
+			{{{ca_objects.cdwa_ownership.ownership_provenance%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -68,37 +68,37 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Materials used in the creation of the work as well as a description of any particular methods or techniques applied by the creator."
 			>Materials/Techniques:</span><br/>
-			{{{ca_objects.cdwa_displayMaterialsTech%width=300px&height=23px}}}
+			{{{ca_objects.cdwa_displayMaterialsTech%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Language of the work, where applicable."
 			>Language:</span><br/>
-			{{{ca_objects.language%width=300px&height=23px}}}
+			{{{ca_objects.language%width=300px&height=1}}}
 		</div>	
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search objects by associated donor funding."
 			>Funding Note:</span><br/>
-			{{{ca_objects.funding_note%width=300px&height=23px}}}
+			{{{ca_objects.funding_note%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe Local thesaurus terms used to describe the subject and content of the work."
 			>Access Points:</span><br/>
-			{{{ca_objects.local_subject%width=300px&height=23px}}}
+			{{{ca_objects.local_subject%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search for individuals who are the subject of a work. "
 			>Subject - People & Organizations:</span><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=23px}}}
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=1}}}
 		</div>	
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have digital images."
-			>Only Digital Collections:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
+			>Digital Content:</span><br/>
+			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
 		</div>											
 		<br style="clear: both;"/>
 	
