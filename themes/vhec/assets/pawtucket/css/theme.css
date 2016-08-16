@@ -377,7 +377,7 @@ textarea {
 	color:#778459;
 }
 .jcarousel .frontSlide img{
-	opacity:.5;
+	/*opacity:.5;*/
 }
 .jcarousel li.activeSlide .frontSlide img{
 	opacity:1;
@@ -418,9 +418,11 @@ textarea {
 
 /* Museum Landing */
 
-
+.featuredLanding h6 {
+	margin-top:5px;
+	margin-bottom:15px;
+}
 .featuredObj {
-	margin-top:15px;
 	background-color: #f5f5f5;
 	padding:15px 15px 10px 15px;
 	min-height:350px;
@@ -550,6 +552,20 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	letter-spacing: 1px;
 	font-weight:bold;
 	margin-bottom:5px;
+}
+.dropdown-menu.browseOptions > li > a{
+	font-weight:normal;
+	font-family: futura;
+}
+.dropdown-menu.browseOptions > li > a em{
+	font-style:normal;
+	font-family:"futura bold";
+}
+.dropdown-menu.browseOptions .dropdown-header{
+	color:#000;
+	font-size:14px;
+	text-transform:uppercase;
+	padding-left:15px;
 }
 .results h1 {
 	font-size:16px;

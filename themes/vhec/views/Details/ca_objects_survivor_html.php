@@ -63,21 +63,18 @@
 				
 				
 					<div id="detailAnnotations"></div>
-				
-			<div class="jcarousel-wrapper-thumb">
-                <div class="jcarousel-thumb" data-jcarousel="true">
-                  
-						<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel")); ?>
-                   
-                </div>
+<?php
+		if ($va_image_thumbnails = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel"))) {				
+			print '<div class="jcarousel-wrapper-thumb">
+                <div class="jcarousel-thumb" data-jcarousel="true">';
+            print $va_image_thumbnails;     
+			print '</div>
 
                 <a href="#" class="jcarousel-control-prev-thumb thumbControl" data-jcarouselcontrol="true">‹</a>
                 <a href="#" class="jcarousel-control-next-thumb thumbControl" data-jcarouselcontrol="true">›</a>
 
-            </div>
-            
-				
-	<?php
+            </div>';
+         }   
 					# Comment and Share Tools
 					if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -113,7 +110,7 @@
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "'".$va_local_subject."'"))."</div>";
+						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject."'"))."</div>";
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							print "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}

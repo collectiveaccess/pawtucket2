@@ -48,13 +48,15 @@
 	$qr_sets = $o_set_search->search("ca_sets.homepage_displays:'Museum Homepage'", array("checkAccess" => $va_access_values));
 
 ?>
-<div class="row">
+
 
 <?php	
+	$vn_i = 0;
 	if (sizeof($qr_sets) > 0) {
 		while ($qr_sets->nextHit()) {
 			$t_set = new ca_sets($qr_sets->get('ca_sets.set_id'));
 			$va_featured_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values)));
+			print '<div class="row featuredLanding">';
 			print "<div class='col-sm-12'><h6>".$t_set->get('ca_sets.preferred_labels')."</h6></div>";
 			foreach ($va_featured_ids as $vn_id => $va_featured_id) {
 				$t_object = new ca_objects($va_featured_id);
@@ -64,6 +66,11 @@
 				print "<p>".$t_object->get('ca_objects.displayDate')."</p>";
 				print "	</div></div>"; 			
 			}
+			print "</div><!--end row-->";
+			$vn_i++;
+			if ($vn_i != $qr_sets->numHits()) {
+				print "<hr class='divide'>";
+			}
 		}	
 	}
 
@@ -71,7 +78,7 @@
 
 ?>			
 
-</div>
+
 
 	
 

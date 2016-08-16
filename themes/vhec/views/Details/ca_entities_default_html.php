@@ -30,7 +30,7 @@
 						}	
 ?>										
 					</H4>
-					<H5>{{{<ifdef code='ca_entities.nonpreferred_labels'><span>Also known as: </span>^ca_entities.nonpreferred_labels.displayname</ifdef>}}}</H5>
+					<H5>{{{<ifcount min="1" code='ca_entities.nonpreferred_labels'><span>Also known as: </span><unit delimiter=', '>^ca_entities.nonpreferred_labels.displayname</unit></ifcount>}}}</H5>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -40,10 +40,10 @@
 						print "<div class='unit'><h8>Birthplace</h8>".$va_birthplace."</div>";
 					}
 					if ($va_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h8>Biography</h8>".$va_bio."</div>";
+						print "<div class='unit trimText'><h8>Biography</h8>".$va_bio."</div>";
 					}
 					if ($va_admin_hist = $t_item->get('ca_entities.administrative_history')) {
-						print "<div class='unit'><h8>Administrative History</h8>".$va_admin_hist."</div>";
+						print "<div class='unit trimText'><h8>Administrative History</h8>".$va_admin_hist."</div>";
 					}						
 					if ($va_public_notes = $t_item->get('ca_entities.public_notes')) {
 						print "<div class='unit'><h8>Notes</h8>".$va_public_notes."</div>";
@@ -191,28 +191,7 @@
 			}
 ?>						
 			
-			
-{{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print "Loading..."; ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print "Loading...";?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -224,6 +203,10 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 97
+		});	
 		$('#relationshipTable').tabs();
 	});
 </script>
