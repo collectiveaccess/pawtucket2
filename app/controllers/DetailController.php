@@ -32,6 +32,7 @@
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
  	
  	class DetailController extends FindController {
  		# -------------------------------------------------------
@@ -628,11 +629,20 @@
 			
 			// Allow plugins to modify object_id list
 			$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
-			
+			$va_child_ids = array_unique($va_child_ids);
+			$t_download_log = new Downloadlog();
 			foreach($va_child_ids as $vn_object_id) {
 				$t_child_object = new ca_objects($vn_object_id);
 				if (!$t_child_object->getPrimaryKey()) { continue; }
 				
+				$t_download_log->log(array(
+						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"table_num" => $t_object->TableNum(), 
+						"row_id" => $vn_object_id, 
+						"representation_id" => null, 
+						"download_source" => "pawtucket"
+				));
 				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
 				$vs_idno = $t_child_object->get('idno');
 				
@@ -741,6 +751,16 @@
  			}
 			$this->view->setVar('t_object_representation', $t_rep);
 			
+			$t_download_log = new Downloadlog();
+			$t_download_log->log(array(
+					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+					"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+					"table_num" => $t_object->TableNum(), 
+					"row_id" => $vn_object_id, 
+					"representation_id" => $pn_representation_id, 
+					"download_source" => "pawtucket"
+			));
+				
 			$va_versions = $t_rep->getMediaVersions('media');
 			
 			if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
@@ -1341,8 +1361,7 @@
  			// check that value is a file attribute
  			if ($t_element->get('datatype') != 15) { 	// 15=file
  				return;
- 			}
- 			
+ 			} 
  			$o_view->setVar('file_path', $t_attr_val->getFilePath('value_blob'));
  			$o_view->setVar('file_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
  			
