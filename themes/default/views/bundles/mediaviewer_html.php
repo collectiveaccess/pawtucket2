@@ -45,8 +45,8 @@ if($vs_display_type == 'media_overlay'){
 			$vn_num_cols = 2;
 		}
 		if(sizeof($va_reps) > 14){
-			$va_reps = $t_object->getRepresentations(array('tinyicon'), null, array("return_with_access" => $va_access_values));
-			$vs_version = "tinyicon";
+			$va_reps = $t_object->getRepresentations(array('icon'), null, array("return_with_access" => $va_access_values));
+			$vs_version = "icon";
 			$vn_num_cols = 2;
 		}
 		
