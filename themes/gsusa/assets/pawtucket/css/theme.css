@@ -365,6 +365,12 @@ h1 {
 .detail HR {
 	border-top:1px solid #222;
 }
+.detail .component{
+	margin-bottom:10px;
+}
+.detail .componentDescSpacer{
+	margin-top:5px !important;
+}
 .navLeftRight{
 	text-align:right;
 	margin-top:-20px;
