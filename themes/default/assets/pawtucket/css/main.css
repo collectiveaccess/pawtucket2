@@ -4,13 +4,14 @@
 /* GENERAL */
 /* --------------------------------- */
 
-/*for testing */
-/*.container {border:1px solid #000;}
-div {border:1px solid red;}*/
-
+html {
+    position: relative;
+    min-height: 100%;
+}
 body {
 	font-family: arial;
 	color:#454545;
+	margin-bottom:80px; 
 }
 a {
 	color:#19bed1;
@@ -220,8 +221,12 @@ h1 i {
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.176);
 }
 .navbar .navbar-nav > .active > a {
-  	 background-color: #E7E7E7;
-    color: #555555;
+  	background-color: #f5f5f5;
+    color: #000000;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    background-color: #f5f5f5;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: DIN17SBOP-Regular;
@@ -240,9 +245,10 @@ h1 i {
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
-  background-color: #c9c9c9;
+  background-color: #f5f5f5;
   background-image: none;
   filter: none;
+  color:#000;
 }
 .navbar-default .navbar-nav > li > a {
   color: #000000;
@@ -373,14 +379,25 @@ h1 i {
 }
 
 .btn-default {
-    background:none;
-    border-color: #CCCCCC;
-    color:#666;
+    background: none;
+    border: 0px;
+    color: #666;
     text-shadow: 0 0px 0 #FFFFFF;
-     font-size: 11px;
+    font-size: 13px;
     text-transform: uppercase;
-    padding:3px 5px;
+    padding: 6px 7px 5px 7px;
     box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+    background-color: #19bed1;
+    border-radius: 0px;
+    letter-spacing: 1px;
+    color: #fff;
+}
+.btn-default a{
+	color: #fff;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+	background-color: #19bed1;
+	color: #fff;
 }
 
 .nav-pills > li > a, .nav-pills > li > a:hover {
@@ -392,8 +409,8 @@ h1 i {
 /* ----------------------------------------- */
 .browseMenuFacet {
 	clear: both;
-    margin-bottom: 20px;
-    padding-bottom: 40px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
 }
 
 .filterMenuFacetList {
@@ -418,11 +435,11 @@ h1 i {
 }
 
 .filterMenuFacetList li.active{
-	background-color:#bff2f8;
+	background-color:#777;
 }
 
 .filterMenuFacetList li.active a{
-	color:#000;
+	color:#fff;
 }	
 
 .filterMenuFacetList li a{
@@ -435,15 +452,16 @@ h1 i {
 }	
 
 .filterMenuFacetList li a:hover{
-	text-decoration:underline;
-	}
+	text-decoration:none;
+}
 
 .filterbylabel {
-	color: #666666;
-    font-size: 10px;
-    font-weight: normal;
+	color: #666;
+    font-size: 12px;
+    font-weight: bold;
     padding-bottom: 3px;
     text-transform: uppercase;
+    padding-left: 4px;
 }
 
 ul.browseMenuFacetList {
@@ -523,7 +541,9 @@ a.browseRemoveFacet img {
 }
 
 .browseHeadernav{
-	font-size:11px;
+	font-size:12px;
+	padding:5px;
+	border-right: 3px solid #fff;
 }
 .filterMenuResults {
 	padding-top:2px;
@@ -604,7 +624,7 @@ div.browseMenuBrowseSearch input {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     color: #555555;
     display: block;
-    font-size: 11px;
+    font-size: 13px;
     height: 24px;
     line-height: 1.42857;
     padding: 6px 12px;
@@ -621,13 +641,16 @@ div.browseMenuBrowseSearch input {
 	font-size:11px;
 }	
 .browseHeadernav a{
-	color:#999;
+	color:#666;
+	font-weight:bold;
 }
 a.browseRemoveFacet img {
 	margin-bottom: 3px;	
 }
-
-
+.mainfacet {
+    background-color: #f5f5f5;
+    margin-top: -5px;
+}
 .nav .dropdown .dropdown-menu {
     overflow: auto;
 }
@@ -700,7 +723,7 @@ a.browseRemoveFacet img {
 }
 @media (min-width: 768px){
 	#caFormOverlay{
-		width:400px;
+		width:500px;
 		margin:15% auto 0px auto;
 	}
 }
@@ -727,11 +750,16 @@ a.browseRemoveFacet img {
 	font-size:12px;
 	color: #ababab;
 	line-height:2.2em;
+	position:absolute;
+	bottom:0;
+	width:100%;
+	height:80px;
+	padding: 0px 15px 0px 15px;
 }
 @media (min-width: 768px) {
 	#footer {
 		/*margin:40px 25px 65px 25px;*/
-		margin:20px 0 20px 0;
+		margin:20px 0 0 0;
 	}
 }
 #footer a{
@@ -1337,21 +1365,21 @@ a.browseRemoveFacet img {
     text-decoration:none;
 }
 .front .nav-pills > li > a {
-    background-color:#ababab;
-    padding:10px;
-    color:#FFF;
-    font-size: 11px;
+    background-color: #f5f5f5;
+    padding: 12px 10px 10px 10px;
+    color: #333;
+    font-size: 14px;
     text-decoration: none !important;
-    text-transform:uppercase;
+    text-transform: none;
 }
 .front .nav-pills > li > a:hover {
     font-weight:normal;
-    font-size:11px;
-     color:#858585;
+    color:#333;
+    background-color:#f5f5f5;
 }
 .front .nav-pills > li:hover > a {
-     background-color:#dedede;
-     color:#858585;
+     background-color:#f5f5f5;
+     color:#333;
 }
 .frontSlide{
 	position:relative;
@@ -1706,7 +1734,7 @@ a.readmore-js-toggle{
 	color:#454545;
 }
 .results H1 {
-	margin:0px;
+	margin:0px 0px 10px 0px;
 	padding:0px;
 }
 .results H5{
@@ -2326,7 +2354,7 @@ a.readmore-js-toggle{
 /* gallery */
 /*------------------------------------------*/
 .gallery {
-	font-size:11px;
+	font-size:12px;
 }
 .gallery H4 {
 	padding-top:5px;
@@ -2848,9 +2876,46 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 
 /* Advanced Search */
 
-div.advancedSearchField {
-	float: left;
-	width: 250px;
+.advancedContainer {
+	margin-top:10px;
+}
+.advancedSearchField {
+	margin-bottom:10px;
+}
+.advancedSearchField .formLabel {
+	text-transform:uppercase;
+	color:#454545;
+	font-size:11px;
+	font-weight:bold;
+}
+.advancedFormSubmit {
+	margin-bottom:20px;
+	margin-right:20px;
+	text-align:right;
+}
+.advancedFormSubmit a:hover {
+	text-decoration:none;
+	color: #19bed1;
+}
+.advancedFormSubmit span {
+	display: inline-block;
+}
+.advancedSearchField input, .advancedSearchField textarea, .advancedSearchField select {
+	width:100% !important;
+	resize:none;
+	line-height: 1.5;
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; 
+    font-size: 12px;   
+    padding: 5px 10px;
+    color: #555555;
+} 
+.advancedSearchField select {
+	height:30px;
 }
 
 /* Finding Aid */
