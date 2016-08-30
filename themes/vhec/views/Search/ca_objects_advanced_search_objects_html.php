@@ -31,7 +31,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a record. For the Archives this is the Identifier, Museum and Testimony collections this is the Object Identifier. For the library is the Barcode or Call Number."
 			>Unique Identifier:</span><br/>
-			{{{ca_objects.identifier%width=300px&height=1}}}
+			{{{identifier%width=300px&height=1}}} 
 		</div>
 		<div class="advancedSearchField">
 			<span 
