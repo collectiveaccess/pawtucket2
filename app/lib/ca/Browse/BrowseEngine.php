@@ -3072,13 +3072,15 @@
 									if($qr_ancestors) {
 										while($qr_ancestors->nextHit()) {
 											if ($qr_ancestors->get('deleted')) { continue; }
+											$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}");
 											$vn_parent_type_id = $qr_ancestors->get('type_id');
+											if (is_array($va_suppress_values) && (in_array($vn_ancestor_id, $va_suppress_values))) { continue; }
 											if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
 											if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
 											if ($vb_check_ancestor_access && !in_array($qr_ancestors->get('access'), $pa_options['checkAccess'])) { continue; }
 											if (!($vn_parent_id = $qr_ancestors->get("parent_id"))) { continue; }
 											
-											$va_facet_list[$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}")] = array(
+											$va_facet_list[$vn_ancestor_id] = array(
 												'id' => $vn_ancestor_id,
 												'label' => ($vs_label = $qr_ancestors->get('ca_list_items.preferred_labels.name_plural')) ? $vs_label : _t('[BLANK]'),
 												'parent_id' => $vn_parent_id,
