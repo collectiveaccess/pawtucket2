@@ -72,13 +72,14 @@
 	<div class='container'>
 <?php
 	$o_set_search = new SetSearch();
-	$qr_res = $o_set_search->search("ca_sets.show_homepage:yes", array('sort' => 'ca_sets.preferred_labels', 'sort_direction' => 'asc', "checkAccess" => $va_access_values));
+	$qr_res = $o_set_search->search("ca_sets.show_homepage:yes", array('sort' => 'ca_sets.rank', 'sort_direction' => 'asc', "checkAccess" => $va_access_values));
 
 		if ($qr_res && $qr_res->numHits()) {
 			$vn_i = 0;
 			while($qr_res->nextHit()){ 
 				$t_set = new ca_sets($qr_res->get('ca_sets.set_id'));
 				$va_set_name = $qr_res->get('ca_sets.preferred_labels');
+				$va_set_description = $qr_res->get('ca_sets.set_description');
 				$va_set_items = $t_set->getItems();
 				foreach ($va_set_items as $va_key => $va_set_item) {
 					foreach ($va_set_item as $va_key => $va_set_item_id) {
@@ -86,8 +87,8 @@
 						if ($t_set_item->get('ca_set_items.set_item_is_primary', array('convertCodesToDisplayText' => true)) == "Is primary"){
 							$t_object = $t_set_item->getItemInstance();
 							$vs_object_name = "<p>".$t_object->get('ca_objects.preferred_labels')."</p>";
-							$vs_icon_large = "<div class='largeHome'>".$t_object->get('ca_object_representations.media.large')."</div>";
-							$vs_icon_iconlarge = "<p>".$t_object->get('ca_object_representations.media.widepreview')."</p>";
+							$vs_icon_large = "<div class='largeHome'>".$t_object->get('ca_object_representations.media.widepreviewlarge')."</div>";
+							$vs_icon_iconlarge = "<p>".$t_object->get('ca_object_representations.media.widepreviewlarge')."</p>";
 							$vs_item_name = "<p>".$t_set_item->get('ca_set_items.preferred_labels')."</p>";
 						}	
 					}
@@ -95,7 +96,7 @@
 				$vs_see_more_link =  "<p class='seeMore'>".caNavLink($this->request, "See More", '', '', 'Gallery', $qr_res->get('ca_sets.set_id'))."</p>";				
 				if ($vn_i == 0) {
 					print "<div class='row firstFeatured'>";
-					print "<div class='col-sm-8' style='margin-right:-15px;'>";
+					print "<div class='col-sm-8' style='margin-right:-15px;margin-left:-15px;'>";
 					print $vs_icon_large;
 					print "<div class='homeCaption'>".$vs_object_name."</div>";
 					print "</div>";
@@ -103,6 +104,7 @@
 					print "<h4 class='white'>Featured From the Archives</h4>";
 					print "<h5>".$va_set_name."</h5>";
 					print $vs_item_name;
+					print "<p>".$va_set_description."</p>";
 					print $vs_see_more_link;
 					print "</div>";					
 					print "</div>";
