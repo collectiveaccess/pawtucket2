@@ -175,7 +175,7 @@
 						#	print $vs_access_point_entity;
 						#}
 						if ($vs_access_point_subject != "") {
-							if ($vs_type == "Library Component") {
+							if ($vs_type == "Library Item") {
 								print "<h9>Local Subject Headings</h9>";
 							}
 							print $vs_access_point_subject;
@@ -308,8 +308,11 @@
 							print "<div class='unit'><h8>Statement of Responsibility</h8>".$va_responsibility."</div>";
 						}
 
-						if (($va_creator = $t_object->getWithTemplate('<unit restrictToTypes="ind" excludeRelationshipTypes="donor" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_orgs = $t_object->getWithTemplate('<unit restrictToTypes="org" excludeRelationshipTypes="donor" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>'))) {
-							print "<div class='unit'><h8>Creators & Contributors</h8>".$va_creator."<br/>".$va_orgs."</div>";
+						if (($va_creator = $t_object->getWithTemplate('<unit restrictToTypes="ind" excludeRelationshipTypes="donor,subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_orgs = $t_object->getWithTemplate('<unit restrictToTypes="org" excludeRelationshipTypes="donor,subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_subject_entity = $t_object->getWithTemplate('<unit restrictToRelationshipTypes="subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) ) {
+							print "<div class='unit'><h8>Creators & Contributors</h8>".$va_creator;
+							if ($va_orgs) { print "<br/>".$va_orgs; }
+							if ($va_subject_entity) { print "<br/>".$va_subject_entity; }
+							print "</div>";
 						}
 
 						if ($va_summary = $t_object->get('ca_objects.MARC_summary')) {
