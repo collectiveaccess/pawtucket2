@@ -134,6 +134,7 @@ h7 {
 }
 .nav > li.dropdown > a.icon {
 	padding-top: 28px;
+	padding-bottom:10px;
 }
 .navbar-default .navbar-form {
 	margin-bottom:0px;
@@ -168,6 +169,9 @@ div.browseFacetItem {
 }
 .filterMenuResults {
 	border-left:2px solid #f7f7f7;
+}
+div.browseMenuBrowseAll {
+	bottom:0px;
 }
 div.browseFacetItem:hover {
 	background-color: #f7f7f7;
@@ -216,19 +220,35 @@ div.browseFacetItem a {
 		width: 100px;
 	}
 }
-@media (max-width: 1023px) {
+@media (max-width: 1086px) { 
+	.menuList {
+		float:left !important;
+		clear:left;
+	}
+	.navbar .navbar-nav > .active > a, .navbar-nav > li > a, .navbar-nav > li > a:focus {
+		padding-top:5px;
+	}
+}
+/*
+@media (max-width: 1086px) {
 	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 		padding-right:10px;
 		padding-left:10px;
 	}
 }
-@media (max-width: 890px) {
+@media (max-width: 1086px) {
 	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 		padding-right:5px;
 		padding-left:5px;
-		font-size: 12px;
+		font-size: 11px;
 	}
 }
+@media (max-width: 894px) {
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		font-size:10px;
+	}
+}
+*/
 
 /* Homepage */
 
@@ -266,13 +286,19 @@ div.browseFacetItem a {
 	width:100%;
 	height:auto;
 }
+
 .row.firstFeatured {
 	margin-bottom:30px;
 }
 .smallFeatured {
 	background-color:#fff;
-	height:340px;
+	height:380px;
 	margin-bottom:40px;
+}
+@media (min-width:1280px) {
+	.smallFeatured {
+		height:460px;
+	}
 }
 .smallCaption {
 	padding:10px;
@@ -288,14 +314,17 @@ div.browseFacetItem a {
 .hpContainer .largeHome {
 	height:450px;
 	overflow:hidden;
+	background-color: #281e15;
 }
 .hpContainer .homeCaption {
 	position:absolute;
-	bottom:5px;
+	bottom:0px;
 	color:#fff;
-	left:50px;
+	left:15px;
+	padding: 10px 15px 0px 20px;
 	letter-spacing:2px;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+	background-color: rgba(0, 0, 0, 0.5);
 }
 .featuredSidebar {
 	background-color:#281e15; 
@@ -347,8 +376,15 @@ div.browseFacetItem a {
 .multisearch #worksBlock .blockResults {
 	height:200px;
 }
+.multisearch #collectionsBlock .blockResults {
+	height:260px;
+}
 .multisearch #objectsBlock .blockResults {
 	height:700px;
+}
+.multisearch #collectionsBlock .scrollButtonNext, .multisearch #collectionsBlock .scrollButtonPrevious {
+	height:250px;
+	padding-top:110px;
 }
 .multisearch .multisearchResult {
 	height:180px;
@@ -374,10 +410,10 @@ div.browseFacetItem a {
 	letter-spacing:1px;
 	line-height:1.5em;
 }
-.multisearch .entitiesResult.authorityResult:hover, .multisearch .productionsResult.authorityResult:hover, .multisearch .worksResult.authorityResult:hover {
+.multisearch .entitiesResult.authorityResult:hover, .multisearch .productionsResult.authorityResult:hover, .multisearch .worksResult.authorityResult:hover, .multisearch .collectionsResult.authorityResult:hover {
 	background-color: #f7f7f7;
 }
-.multisearch .entitiesResult.authorityResult:hover a, .multisearch .productionsResult.authorityResult:hover a, .multisearch .worksResult.authorityResult:hover a {
+.multisearch .entitiesResult.authorityResult:hover a, .multisearch .productionsResult.authorityResult:hover a, .multisearch .worksResult.authorityResult:hover a, .multisearch .collectionsResult.authorityResult:hover a {
 	text-decoration:none;
 }
 .multisearch .authorityResult {
@@ -385,19 +421,25 @@ div.browseFacetItem a {
 }
 .multisearch .authorityResult p {
 	font-size:12px;
+	font-weight:normal;
 }
 .multisearch .multisearchResult p {
 	margin-bottom:4px;
+	font-weight:normal;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
 	height:185px;
-	padding-top: 80px;
+	padding-top: 70px;
+	font-size:30px;
+	opacity: .7 !important;
 }
 .multisearch #objectsBlock .scrollButtonNext, .multisearch #objectsBlock .scrollButtonPrevious {
+	opacity: .7 !important;
 	height:690px;
 	padding-top:200px;
+  
 }
-.multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet {
+.multisearch .entitiesSet.authoritySet, .multisearch .productionsSet.authoritySet, .multisearch .worksSet.authoritySet, .multisearch .collectionsSet.authoritySet {
 	width: 230px;
     margin-right: 0px;
     border: 1px solid #f5f5f5;
@@ -405,7 +447,10 @@ div.browseFacetItem a {
     border-bottom: 0px;
     padding-top: 0px;
 }
-.multisearch .entitiesResult.authorityResult, .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult {
+.multisearch .collectionsSet.authoritySet {
+	height:400px;
+}
+.multisearch .entitiesResult.authorityResult, .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult, .multisearch .collectionsResult.authorityResult {
     background-color: #fff;
     height: 40px;
     font-weight: bold;
@@ -414,6 +459,12 @@ div.browseFacetItem a {
 }
 .multisearch .productionsResult.authorityResult, .multisearch .worksResult.authorityResult {
 	height:66px;
+}
+.multisearch .collectionsResult.authorityResult {
+	height:86px;
+}
+.multisearch .collectionsResult.authorityResult p{
+	margin-bottom:2px;
 }
 .multisearch .multisearchResult {
 	text-align:center;
@@ -543,7 +594,15 @@ div.browseFacetItem a {
     font-size: 12px;	
 }
 .bResultListItem .bResultListItemText {
-	line-height: 1.1em;
+	line-height: 1.5em;
+}
+.bResultListItem .bResultListItemText a {
+	line-height:1.5em;
+}
+.bResultListItemText h7{
+	margin-bottom: 2px;
+    font-family: "futura bold";
+    font-size: 13px;
 }
 .bResultListItem .bResultListItemText a {
 	font-size:12px;
@@ -611,6 +670,7 @@ strong.facetName {
     font-family: "futura bold";
     font-size: 14px;
     margin-bottom: 10px;
+    letter-spacing:2px;
 }
 #bRefine a {
 	color: #482b11;
@@ -630,6 +690,9 @@ strong.facetName {
 }
 .results a .glyphicon, .results a .fa {
 	color: #0d58d2;
+}
+.results a .bResultItemImgPlaceholder .fa {
+	color:#666;
 }
 .bResultItemExpandedInfo .fa {
 	font-size:16px;
@@ -699,6 +762,23 @@ div.advancedSearchField {
 .fa.fa-angle-right.finding-aid {
 	margin-top:5px;
 }
+.imageCaption, .imageCaption a {
+	position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 15px;
+    color: #FFF;
+    width: 100%;
+    z-index: 100;
+    font-weight: bold;
+	bottom:0px;
+    font-size:12px;
+    line-height:1em;
+}
+.detail.collection h3 a {
+	color: #482b11;
+	font-family: "futura bold";
+	font-size: 15px;
+}
 
 /* About */
 
@@ -765,6 +845,7 @@ div.advancedSearchField {
 }
 .imageTools {
 	margin-top:5px;
+	display:inline;
 }
 
 /* Gallery */
@@ -789,9 +870,14 @@ div.advancedSearchField {
     color: white;
     padding-top: 5px;
     position: absolute;
-    bottom: 10px;
-    left: 30px;
-	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);   
+    bottom: 0px;
+    padding-bottom:10px;
+    padding-top:10px;
+    left: 15px;
+    padding-left:15px;
+    padding-right:15px;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);  
+	background-color: rgba(0, 0, 0, 0.5); 
 }
 .gallery #gallerySetInfo {
 	background-color: #fff;
@@ -828,6 +914,24 @@ div.advancedSearchField {
 .gallery #gallerySetInfo a {
     color: #482b11;
 }
+a.readmore-js-toggle {
+    color: #0d58d2;
+    padding-bottom:15px;
+}
+.gallery {
+	font-size:12px;
+}
+.gallery .setDescription {
+	font-weight:normal
+}
+.galleryDetailPageArea {
+	background-color: #f9f4e8;
+	padding-top:20px;
+}
+.gallery #galleryDetailImageGrid img, .gallery #galleryDetailImageGrid .galleryIconActive img {
+	border:0px;
+	background-color:#fff;
+}
 
 /* Contact */
 
@@ -836,4 +940,64 @@ div.advancedSearchField {
 }
 .contact .form-control:focus {
 	border-color: #0d58d2;
+}
+
+/* Lightbox */
+
+.lbSet h5 { 
+	letter-spacing:1px;
+	color: #482b11;
+	font-size:14px;
+	font-family: "futura bold";
+}
+.lbSet h5 a, .lbItemContainer a, .lbItemContainer .lbExpandedInfo, .lbSetExpandedInfo, .lbSet a {
+	color: #482b11;
+}
+.lbSetThumbPlaceholder {
+	background-color:#f5f5f5;
+	border:2px solid #f5f5f5;
+}
+.lbItemContent .caption {
+	color: #482b11;
+	font-size:12px;
+}
+.lbItemContent .caption p {
+	padding-top:3px;
+}
+.lightbox h1 .dropdown-menu {
+	font-family:futura;
+	
+}
+.dropdown-menu > li > a:hover {
+	color: #482b11;
+
+}
+
+.DV-downloadLabel, .DV-download {
+	display:none !important; 
+}
+
+@media (max-width: 1050px) {
+	.featuredSidebar {
+		height:550px;
+	} 
+	.hpContainer .largeHome {
+    	height: 550px;
+    }
+}
+@media (max-width: 790px) {
+	.featuredSidebar {
+		height:600px;
+	} 
+	.hpContainer .largeHome {
+    	height: 600px;
+    }
+}
+@media (max-width: 700px) {
+	.featuredSidebar {
+		height:720px;
+	} 
+	.hpContainer .largeHome {
+    	height: 720px;
+    }
 }

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2015 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -369,7 +369,18 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_objects'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects'));
-		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects table'));
+		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects list'));
+		$this->BUNDLES['ca_objects_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects list'));
+		$this->BUNDLES['ca_object_representations_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related object representations list'));
+		$this->BUNDLES['ca_entities_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities list'));
+		$this->BUNDLES['ca_places_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places list'));
+		$this->BUNDLES['ca_occurrences_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related occurrences list'));
+		$this->BUNDLES['ca_collections_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related collections list'));
+		$this->BUNDLES['ca_list_items_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related list items list'));
+		$this->BUNDLES['ca_storage_locations_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related storage locations list'));
+		$this->BUNDLES['ca_loans_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related loans list'));
+		$this->BUNDLES['ca_movements_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related movements list'));
+		$this->BUNDLES['ca_object_lots_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related object lots list'));
 		$this->BUNDLES['ca_entities'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities'));
 		$this->BUNDLES['ca_places'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places'));
 		$this->BUNDLES['ca_occurrences'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related occurrences'));
@@ -443,6 +454,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			$vn_rc = parent::update($pa_options);
 		}
 		
+		CompositeCache::delete('representation:'.$this->getPrimaryKey(), 'IIIFMediaInfo');
+		CompositeCache::delete('representation:'.$this->getPrimaryKey(), 'IIIFTileCounts');
 		return $vn_rc;
 	}
 	# ------------------------------------------------------
@@ -492,6 +505,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			}
 		}
 
+		CompositeCache::delete('representation:'.$vn_representation_id, 'IIIFMediaInfo');
+		CompositeCache::delete('representation:'.$this->getPrimaryKey(), 'IIIFTileCounts');
 		return parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
 	}
 	# ------------------------------------------------------
@@ -512,6 +527,13 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			if  (isURL($vs_media_path)) {
 				return false;
 			}
+		}
+		// is it a userMedia?
+		if (!is_writeable($vs_tmp_directory = $this->getAppConfig()->get('ajax_media_upload_tmp_directory'))) {
+			$vs_tmp_directory = caGetTempDirPath();
+		}
+		if(preg_match("!^userMedia[\d]+/!", $vs_media_path) && file_exists("{$vs_tmp_directory}/{$vs_media_path}")) {
+			return false;
 		}
 		return true;
 	}
@@ -712,7 +734,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  			$t_anno = new ca_representation_annotations();
  			if (!$t_anno->hasElement($vs_class_element)) { 
  				$vs_class_element = null; 
- 			} elseif($t_anno->_getElementDatatype($vs_class_element) != __CA_ATTRIBUTE_VALUE_LIST__)  {
+ 			} elseif(ca_metadata_elements::getElementDatatype($vs_class_element) != __CA_ATTRIBUTE_VALUE_LIST__)  {
  				// not a list element
  				$vs_class_element = null; 
  			}
@@ -1853,6 +1875,101 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		}
 		
 		return false;
+	}	
+	# ------------------------------------------------------
+	/**
+	 * Returns number of representations attached to the current item of the specified class. 
+	 * Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param string $ps_class The class of representation to return a count for. Valid classes are "image", "audio", "video" and "document"
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return int Number of representations
+	 */
+	public function numberOfRepresentationsOfClass($ps_class, $pa_options=null) {
+		return sizeof($this->representationsOfClass($ps_class, $pa_options));
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns number of representations attached to the current item with the specified mimetype. 
+	 * Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param string $ps_mimetype The mimetype to return a count for. 
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return int Number of representations
+	 */
+	public function numberOfRepresentationsWithMimeType($ps_mimetype, $pa_options=null) {
+		return sizeof($this->representationsWithMimeType($ps_mimetype, $pa_options));
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns information for representations of the specified class attached to the current item. 
+	 * Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param string $ps_class The class of representation to return information for. Valid classes are "image", "audio", "video" and "document"
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return array An array of representation_ids, or null if there is no match
+	 */
+	public function representationsOfClass($ps_class, $pa_options=null) {
+		if (!($vs_mimetypes_regex = caGetMimetypesForClass($ps_class, array('returnAsRegex' => true)))) { return array(); }
+	
+		$vs_mimetype = $this->getMediaInfo('media', 'MIMETYPE');
+		if (preg_match("!{$vs_mimetypes_regex}!", $vs_mimetype)) {	
+			return [$this->getPrimaryKey()];
+		}
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns information for representations attached to the current item with the specified mimetype. 
+	 * Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param array $pa_mimetypes List of mimetypes to return representations for. 
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return array An array of representation_ids, or null if there is no match
+	 */
+	public function representationsWithMimeType($pa_mimetypes, $pa_options=null) {
+		if (!$pa_mimetypes) { return array(); }
+		if (!is_array($pa_mimetypes) && $pa_mimetypes) { $pa_mimetypes = array($pa_mimetypes); }
+		
+		$vs_mimetype = $this->getMediaInfo('media', 'MIMETYPE');
+		if (in_array($vs_mimetype, $pa_mimetypes)) {	
+			return [$this->getPrimaryKey()];
+		}
+
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns information for representation attached to the current item with the specified MD5 hash. 
+	 # Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param string $ps_md5 The MD5 hash to return representation info for. 
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return array An array of representation_ids, or null if there is no match
+	 */
+	public function representationWithMD5($ps_md5, $pa_options=null) {
+		$va_rep_list = array();
+		
+		if ($this->get('md5') == $ps_md5) {
+			return [$this->getPrimaryKey];
+		}
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Returns number of representations (always 1). Provided interface compatibility with RepresentableBaseModel classes.
+	 *
+	 * @param array $pa_options No options are currently supported
+	 *
+	 * @return integer The number of representations
+	 */
+	public function getRepresentationCount($pa_options=null) {
+		return 1;
 	}
 	# ------------------------------------------------------
 }

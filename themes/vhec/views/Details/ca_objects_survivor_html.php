@@ -63,21 +63,18 @@
 				
 				
 					<div id="detailAnnotations"></div>
-				
-			<div class="jcarousel-wrapper-thumb">
-                <div class="jcarousel-thumb" data-jcarousel="true">
-                  
-						<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel")); ?>
-                   
-                </div>
+<?php
+		if ($va_image_thumbnails = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel"))) {				
+			print '<div class="jcarousel-wrapper-thumb">
+                <div class="jcarousel-thumb" data-jcarousel="true">';
+            print $va_image_thumbnails;     
+			print '</div>
 
                 <a href="#" class="jcarousel-control-prev-thumb thumbControl" data-jcarouselcontrol="true">‹</a>
                 <a href="#" class="jcarousel-control-next-thumb thumbControl" data-jcarouselcontrol="true">›</a>
 
-            </div>
-            
-				
-	<?php
+            </div>';
+         }   
 					# Comment and Share Tools
 					if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -113,7 +110,7 @@
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "'".$va_local_subject."'"))."</div>";
+						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject."'"))."</div>";
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							print "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}
@@ -216,7 +213,7 @@
 						if ($t_object->get('ca_objects.transcript.transcript_media')){
 							$va_assoc_materials_pdf = $t_object->get('ca_objects.transcript', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 							
 							$o_db = new Db();
-							$vn_media_element_id = $t_object->_getElementID('transcript_media');
+							#$vn_media_element_id = $t_object->_getElementID('transcript_media');
 							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
 								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
 									if ($vn_assoc_materials_pdf_image['transcript_supress'] == "No") {
@@ -302,7 +299,7 @@
 					$vs_place_name = $t_place->get('ca_places.preferred_labels');
 					$vs_related_places.= "<div class='col-sm-3'>";
 					$vs_related_places.= "<div class='entityThumb'>";
-					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Search', 'objects', array('search' => 'ca_places.preferred_labels:"'.$vs_place_name.'"'))."</p></div>";
+					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Detail', 'places/'.$va_related_place_id)."</p></div>";
 					$vs_related_places.= "</div>";					
 				}
 			}
