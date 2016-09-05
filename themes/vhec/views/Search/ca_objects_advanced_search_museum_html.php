@@ -62,7 +62,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Classification terms are applied from the Getty’s Art & Architecture Thesaurus®"
 			>Classification:</span><br/>
-			{{{ca_objects.classification%width=300px&height=23px&render=checklist}}}
+			{{{ca_objects.classification%width=300px}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 

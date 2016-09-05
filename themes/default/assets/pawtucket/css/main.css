@@ -3011,3 +3011,8 @@ div.advancedSearchField {
   padding-top: 200px;
 }
 
+
+input[type='text'].ui-autocomplete-loading {
+    background: white url('../graphics/indicator.gif') right center no-repeat;
+}
+
