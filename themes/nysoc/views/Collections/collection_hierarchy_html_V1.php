@@ -23,19 +23,13 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
 				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
 					<div class='col-sm-12'>
 					
 					
 						<div class='unit row'>
-							<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-								<hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr>
-							</div>
-						</div>
-						<div class='unit row'>
 							<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
-								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+								<div class='collectionsContainer'><H6><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H6>
 <?php
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
@@ -47,6 +41,13 @@
 							# --- link open in panel or to detail
 							$va_grand_children_type_ids = $qr_collection_children->get("ca_collections.children.type_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 							$vb_link_sublist = false;
+							#if($va_grand_children_type_ids){
+							#	foreach($va_grand_children_type_ids as $vn_grand_child_type_id){
+							#		if(!in_array($vn_grand_child_type_id, $va_exclude_collection_type_ids)){
+							#			$vb_link_sublist = true;
+							#		}
+							#	}
+							#}
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
@@ -106,9 +107,9 @@
 					}
 ?>
 						</div><!--end row -->	
-						<div class='unit row'>
+						<!--<div class='unit row'>
 							<div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px; margin-bottom:25px;'></hr></div>
-						</div><!-- end row -->
+						</div>--><!-- end row -->
 				
 					</div><!-- end col -->
 				</div><!-- end row -->						
