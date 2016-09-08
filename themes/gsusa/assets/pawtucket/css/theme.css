@@ -394,7 +394,9 @@ h1 {
 }
 
 
-
+a.readmore-js-toggle{
+	padding-top:0px;
+}
 /* Collections/Finding Aid */
 .collectionsList a{
 	font-size:16px;

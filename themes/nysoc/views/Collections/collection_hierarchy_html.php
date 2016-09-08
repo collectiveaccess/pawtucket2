@@ -23,19 +23,7 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
-				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
-					<div class='col-sm-12'>
-					
-					
-						<div class='unit row'>
-							<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-								<hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr>
-							</div>
-						</div>
-						<div class='unit row'>
-							<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
-								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+				<div class='collectionsContainer'><H5><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H5>
 <?php
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
@@ -81,6 +69,7 @@
 								<script>
 									$(document).ready(function(){
 										$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').click(function(){
+											$('#findingTable').tabs('option', 'active', 1);
 											$('#collectionLoad').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
 											$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id"))); ?>");
 											$('.openCollection').removeClass('active');
@@ -94,24 +83,20 @@
 						}
 					}
 ?>
-								</div><!-- end findingAidContainer -->
-							</div><!-- end col -->
+				</div><!-- end findingAidContainer -->
 <?php
-					if($vb_has_grandchildren){
+					if(!$vb_has_grandchildren){
+						# --- hide the tab that shows collection contents since it's all listed in the side bar
 ?>
-							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-								<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
-							</div>
+						<script>
+							$(document).ready(function(){
+								$("#contTabLink").hide();
+							})
+						</script>
 <?php
 					}
 ?>
-						</div><!--end row -->	
-						<div class='unit row'>
-							<div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px; margin-bottom:25px;'></hr></div>
-						</div><!-- end row -->
-				
-					</div><!-- end col -->
-				</div><!-- end row -->						
+					
 <?php
 	}
 ?>			

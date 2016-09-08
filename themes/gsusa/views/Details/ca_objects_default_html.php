@@ -85,9 +85,9 @@
 				{{{<unit relativeTo="ca_objects.children" delimiter=" "><div class="component">^ca_objects.preferred_labels.name, <small>^ca_objects.idno</small><ifdef code="ca_objects.description"><div>^ca_objects.description</div></ifdef><ifdef code="ca_objects.content_description"><ifdef code="ca_objects.content_description,ca_objects.description"><div class="componentDescSpacer"></ifdef>^ca_objects.content_description<ifdef code="ca_objects.content_description,ca_objects.description"></div></ifdef></ifdef></div></unit>}}}
 				
 				<HR></HR>
-				{{{<ifdef code="ca_objects.description"><H6>Physical Description</H6>^ca_objects.description</ifdef>}}}
-				{{{<ifdef code="ca_objects.content_description"><H6>Description</H6>^ca_objects.content_description</ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.description"><H6>Physical Description</H6><span class="trimText">^ca_objects.description</span></ifdef>}}}
+				{{{<ifdef code="ca_objects.content_description"><H6>Description</H6><span class="trimText">^ca_objects.content_description</span></ifdef>}}}
+
 				<H6>Conditions Governing Access and Use</H6>
 <?php
 				if(trim($t_object->get("ca_objects.accessrestrict"))){
@@ -133,3 +133,11 @@
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 130
+		});
+	});
+</script>

@@ -335,7 +335,7 @@
 							print "<div class='unit'><h8>Carrier Type</h8>".join(', ', $va_carrier)."</div>"; 
 						}
 						$va_language = array();
-						if ($va_language_value = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
+						if ($va_language_value = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 							$va_language[] = $va_language_value;
 						}
 						if ($va_language_note = $t_object->get('ca_objects.language_note')) {
@@ -503,12 +503,13 @@
 							$va_assoc_materials_pdf = $t_object->get('ca_objects.alternate_text', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 
 							print "<div class='unit document'><h8>Auxiliary Document</h8>";
 							$o_db = new Db();
-#							$vn_media_element_id = $t_object->_getElementID('alternate_desc_upload');
+							$t_element = ca_attributes::getElementInstance('alternate_desc_upload');
+							$vn_media_element_id = $t_element->getElementID('alternate_desc_upload');							
 							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
 								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
 									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_assoc_materials_pdf_id, $vn_media_element_id)) ;
 									if ($qr_res->nextRow()) {
-										print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['alternate_text_type'])."</a></p>";
+										print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'object_id' => $vn_object_id, 'identifier' => 'attribute:'.$qr_res->get('value_id'), 'overlay' => 1))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['alternate_text_type'])."</a></p>";
 									}
 								}
 							}
