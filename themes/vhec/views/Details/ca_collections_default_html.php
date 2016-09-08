@@ -144,7 +144,7 @@
 					if ($va_accruals = $t_item->get('ca_collections.RAD_accruals')) {
 						print "<div class='unit'><h8>Accruals</h8>".$va_accruals."</div>";
 					}
-					if ($va_language = $t_item->get('ca_collections.RAD_langMaterial', array('delimiter' => ', '))) {
+					if ($va_language = $t_item->get('ca_collections.RAD_langMaterial', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h8>Language</h8>".$va_language."</div>";
 					}
 					if ($va_note = $t_item->get('ca_collections.RAD_generalNote')) {
