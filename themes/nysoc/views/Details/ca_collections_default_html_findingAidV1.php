@@ -100,9 +100,6 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
-			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
 				$vs_buf.= "<h3><a name='scope'>Scope & Content</a></h3><div class='unit'>".$vs_scope_content."</div>";
 				$va_anchors[] = "<a href='#scope' onclick='$(\"#findingTable\").tabs(\"option\", \"active\", 0);'>Scope & Content</a>";
@@ -149,9 +146,6 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
-			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
 				$vs_buf.= "<h3><a name='scope'>Scope & Content</a></h3><div class='unit'>".$vs_scope_content."</div>";
 				$va_anchors[] = "<a href='#scope' onclick='$(\"#findingTable\").tabs(\"option\", \"active\", 0);'>Scope & Content</a>";
@@ -184,12 +178,6 @@
 			if ($t_item->get('ca_collections.unitdate.date_value')) {
 				$vs_buf.= "<div class='unit'>".$t_item->get('ca_collections.unitdate', array('convertCodesToDisplayText' => true, 'template' => '<unit><span class="collectionLabel">^ca_collections.unitdate.dates_types:</span> ^ca_collections.unitdate.date_value', 'delimiter' => '<br/>'))."</div>";
 			}
-			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
-			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
-			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
 				$vs_buf.= "<h3><a name='scope'>Scope & Content</a></h3><div class='unit'>".$vs_scope_content."</div>";
 				$va_anchors[] = "<a href='#scope' onclick='$(\"#findingTable\").tabs(\"option\", \"active\", 0);'>Scope & Content</a>";
@@ -211,17 +199,8 @@
 			if ($t_item->get('ca_collections.unitdate.date_value')) {
 				$vs_buf.= "<div class='unit'>".$t_item->get('ca_collections.unitdate', array('convertCodesToDisplayText' => true, 'template' => '<unit><span class="collectionLabel">^ca_collections.unitdate.dates_types:</span> ^ca_collections.unitdate.date_value', 'delimiter' => '<br/>'))."</div>";
 			}
-			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
-			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
-			}
-			if ($vs_idno = $t_item->get('ca_collections.idno')) {
-				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Identifier: </span>".$vs_idno."</div>";
-			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
-				$vs_buf.= "<a name='scope'></a><div class='unit'>".$vs_scope_content."</div>";
+				$vs_buf.= "<h3><a name='scope'>Folder Note</a></h3><div class='unit'>".$vs_scope_content."</div>";
 				$va_anchors[] = "<a href='#scope' onclick='$(\"#findingTable\").tabs(\"option\", \"active\", 0);'>Folder Note</a>";
 			}			
 		break;
@@ -233,24 +212,10 @@
 	<div class="wrapper">
 		<div class="sidebar">
 			<div class='collectionNav'>
-<?php
-			if ($vb_show_hierarchy_viewer && $vb_has_children) {	
-?>
-					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-					<script>
-						$(document).ready(function(){
-							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-						})
-					</script>
-<?php				
-			}else{
-?>
-				
 				<h5>Table of Contents</h5>
 <?php 
-				foreach ($va_anchors as $va_key => $va_anchor) {
-					print "<div>".$va_anchor."</div>";
-				}
+			foreach ($va_anchors as $va_key => $va_anchor) {
+				print "<div>".$va_anchor."</div>";
 			}
 ?>	
 			</div>	
@@ -297,7 +262,7 @@
 <?php
 						if($vb_has_children){
 ?>
-							<li id="contTabLink"><a href="#contTab"><?php print $vs_collection_type; ?> Browser</a></li>
+							<li><a href="#contTab"><?php print $vs_collection_type; ?> Contents</a></li>
 <?php
 						}
 ?>
@@ -321,9 +286,12 @@
 						<div class='container'>
 							<div class='row'>
 								<div class='col-sm-12 col-md-12 col-lg-12'>
-									<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-										<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
-									</div>
+									<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+									<script>
+										$(document).ready(function(){
+											$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+										})
+									</script>
 								</div><!-- end col -->
 							</div><!-- end row -->
 						</div><!-- end container -->						
