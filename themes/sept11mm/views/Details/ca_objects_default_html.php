@@ -146,8 +146,8 @@
 <?php
 		}
 ?>
-				<div class="detailTool"><span class="glyphicon glyphicon-book"></span><?php print caNavLink($this->request, _t("Ask a Question"), "", "", "Contact", "Form", array("contactType" => "reference")); ?></div><!-- end detailTool -->
-				<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id"))); ?></div><!-- end detailTool -->
+				<div class="detailTool"><span class="glyphicon glyphicon-book"></span><?php print caNavLink($this->request, _t("Ask a Question"), "", "", "Contact", "Form", array("contactType" => "reference"), array("target" => "_blank")); ?></div><!-- end detailTool -->
+				<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id")), array("target" => "_blank")); ?></div><!-- end detailTool -->
 			</div><!-- end detailTools -->	
 			<div style='clear:both;'></div>
 	</div><!-- end col -->

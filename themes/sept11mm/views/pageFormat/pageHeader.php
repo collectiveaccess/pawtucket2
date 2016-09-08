@@ -401,7 +401,7 @@
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features")."<span>/</span>", "", "", "Gallery", "Index"); ?></li>
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t('My Collection'); ?></a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu collectionHeaderDD">
 <?php
 							print $vs_user_links;
 ?>
