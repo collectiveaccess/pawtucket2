@@ -132,7 +132,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png')."</a>";
+				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png', array('alt' => '911 Memorial'))."</a>";
 ?>
 			</div>
 			<div class="collapse navbar-collapse">
@@ -407,8 +407,8 @@
 ?>
 						</ul>
 					</li>
-					<li class="navBarExtras<?php print ($this->request->getController() == "FAQ") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
-					<li class="navBarExtras<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>
+					<!--<li class="navBarExtras<?php print ($this->request->getController() == "FAQ") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("FAQ"), "", "", "FAQ", "Index"); ?></li>
+					<li class="navBarExtras<?php print ($this->request->getController() == "Contact") ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Ask a Reference Question"), "", "", "Contact", "Form"); ?></li>-->
 					<li class="navBarExtras"><a href="#">Museum Home</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
@@ -421,3 +421,9 @@
 
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+			<div class="header-social">
+				<a class="fb" href="https://www.facebook.com/911memorial" target="_blank"></a>
+				<a class="twit" href="https://twitter.com/sept11memorial" target="_blank"></a>
+				<a class="instagram" href="https://instagram.com/911memorial/" target="_blank"></a>
+				<a class="gplus" href="https://plus.google.com/+911Memorial/posts" target="_blank"></a>
+        	</div>

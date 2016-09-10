@@ -67,6 +67,55 @@ input:focus{
 	color:#555555 !important;
 	font-size:14px;
 }
+#browseOccResultsContainer h4{
+	font-size:36px;
+	color:#262626;
+}
+.bBAMResultListItemOccHP{
+	font-size:14px;
+	line-height:1em;
+	padding:10px 0px 10px 0px;	
+	position:relative;
+}
+@media (min-width: 1000px) {
+	.bBAMResultListItemOccHP{
+		margin-top:40px;
+	}
+}
+.bBAMResultListItemOccHP a{
+	display:block;
+	color:#33D9C5 !important; 
+	text-decoration:none;
+	font-size:20px;
+	line-height:1.2em;
+	height:5em;
+	overflow:hidden;
+	font-family: "News Gothic Roman";
+}
+.bBAMResultListItemOccHP span{
+	font-size:14px;
+	line-height:1.4em !important;
+	display:inline-block;
+	margin-top:3px;
+}
+.bBAMResultListItemOccHP a:hover{
+	color:#00cfb7; 
+	text-decoration:none;
+}
+.bBAMResultListItemOccHP span.series{
+	color:#999999 !important;
+	font-size:14px;
+	margin-top:0px;
+}
+.bBAMResultListItemOccHP span.date{
+	color:#555555 !important;
+	font-size:14px;
+	margin-top:0px;
+}
+.bBAMResultItemOccCircle.OccHPCircleImage{
+	height:180px;
+	margin-bottom:30px;
+}
 /* image results */
 .icon-heart-filled{
 	color: #00cfb7 !Important;
@@ -875,6 +924,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 		width: 100%;
 		height:auto;
 	}
+	.bBAMResultItemOccCircle.OccHPCircleImage{
+		height:140px;
+	}
 }
 /* ipad landscape */
 @media (min-width:992px) AND (max-width:1199px) {
@@ -900,6 +952,9 @@ a.seasonLinkActive, a.seriesLinkActive, a.seasonLinkActiveTemp{
 	}
 	.bBAMResultItemOccCircle{
 		height:265px;
+	}
+	.bBAMResultItemOccCircle.OccHPCircleImage{
+		height:140px;
 	}
 }
 

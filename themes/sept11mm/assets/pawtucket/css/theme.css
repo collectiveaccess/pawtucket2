@@ -72,6 +72,51 @@ H1, h1{
 	padding-left:5px;
 	padding-right:5px;
 }
+@media (max-width: 767px) {
+	.header-social{
+		display:none;
+	}
+}
+.header-social{
+	position:absolute;
+	left:105%;
+	top:0px;
+}
+.header-social a{
+	display:block;
+	width:28px;
+	height:28px;
+	margin-top:1px;
+	background:url(../graphics/social-sprite-2.png) 0 0 no-repeat;
+	overflow:hidden;
+}
+.header-social a:hover{
+	text-decoration:none;
+}
+.header-social a.fb{
+	background-position:0 0;
+}
+.header-social a.fb:hover{
+	background-position:-29px 0;
+}
+.header-social a.twit{
+	background-position:0 -29px;
+}
+.header-social a.twit:hover{
+	background-position:-29px -29px;
+}
+.header-social a.instagram{
+	background-position:0 -58px;
+}
+.header-social a.instagram:hover{
+	background-position:-29px  -58px;
+}
+.header-social a.gplus{
+	background-position:0 -87px;
+}
+.header-social a.gplus:hover{
+	background-position:-29px -87px;
+}
 /* --- FOOTER --- */
 #footer-top {
     font: 12px/24px arial,sans-serif;
@@ -304,7 +349,7 @@ H1, h1{
 	color:#FFF;
 	text-decoration:none !important;
 	font-size:14px;
-	font-family: 'gotham-medium';
+	font-family: 'gotham-book';
 	line-height:1em;
 }
 .hpSetTitle a:hover{
@@ -1022,6 +1067,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	margin:0px !important;
 	line-height:1.1em;
 }
+.gallery .galleryLinks{
+	max-height:475px;
+	overflow-y:scroll;
+}
 .gallery .galleryLinks a{
 	text-decoration:none !important;
 }
@@ -1064,6 +1113,11 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	background-color: #F0F4F6;
     color: #21B1E7;
 }
+.gallery #galleryDetailImageGrid, .gallery .setDescription{
+	max-height:600px;
+	overflow-y:scroll;
+	color:#454545;
+}
 .gallery #galleryDetailImageGrid img{
 	width:100%;
 	height:auto;
@@ -1091,6 +1145,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 .gallery #galleryDetailObjectInfo .unit{
 	margin-bottom:10px;
 	line-height:1.4em;
+	color:#454545;
+}
+.gallery #galleryDetailObjectInfo H2{
+	color:#454545;
 }
 .galleryDetailBottom{
 	margin-top:10px;
@@ -1131,6 +1189,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 		margin-left:3%;
 		margin-bottom:15px;
 	}
+}
+.detail .repViewerCont img{
+	max-height: 500px;
+	object-fit: contain;
 }
 .detail .unit{
 	margin-bottom:20px;
@@ -1198,10 +1260,10 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	}
 	.detailTool{
 		float:left;
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 	.detailTool.last{
-		margin-right:50px !important;
+		margin-right:25px !important;
 	}
 }
 .detail .detailRelatedItems{
@@ -1298,8 +1360,8 @@ a.addToLightbox, a.addToLightbox i{
     text-align: center;
     width: 100%;
 }
-.results .bGear {
-	color:#21B1E7;
+.results .bGear, .results #bRefineButton .fa {
+	color:#21B1E7 !important;
 }
 .results .btn-default {
     background-color:#F0F4F6;
@@ -1507,4 +1569,8 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 		width:450px;
 		margin:7% auto 0px auto;
 	}
+}
+
+.notificationMessage, .notificationError, .notificationInfo, .notificationWarning {
+	margin-top:20px;
 }

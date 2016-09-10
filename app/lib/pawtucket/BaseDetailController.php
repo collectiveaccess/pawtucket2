@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/lib/ca/BaseBrowseController.php : base controller for search interface
+ * app/lib/pawtucket/BaseDetailController.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2012 Whirl-i- f
+ * Copyright 2009-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -32,8 +32,9 @@
 	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
 	require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
 	require_once(__CA_MODELS_DIR__."/ca_lists.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
-	class BaseDetailController extends ActionController {
+	class BaseDetailController extends BasePawtucketController {
 		# -------------------------------------------------------
  		protected $opo_datamodel;
  		protected $ops_context = '';
@@ -854,4 +855,3 @@
  		}
  		# -------------------------------------------------------
 	}
-?>

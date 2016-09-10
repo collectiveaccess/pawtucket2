@@ -28,6 +28,8 @@
  
 print _t("Thank you for registering on the NCEP website!
 
+Your account will become activated after review. Please allow up to 48 hours for review or contact us with questions.
+
 As a registered user, you can connect with other members by commenting on and tagging items on the site.
 
 If you registered as an educator, your account will be fully activated after review. 

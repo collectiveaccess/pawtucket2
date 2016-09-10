@@ -35,7 +35,15 @@
 					</div><!-- end row -->
 				</div><!-- end col -->
 				<div class='col-sm-4'>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris dolor purus, facilisis vitae orci at, egestas iaculis turpis. Aliquam ut vestibulum tellus. Nam nec nisi tellus. Phasellus imperdiet risus pulvinar, varius justo sed, egestas turpis. Integer porta tempus lobortis. Ut luctus ac est nec sagittis. Nam aliquam vel ante at blandit. Phasellus neque massa, vulputate a mattis eu, blandit convallis tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Ut dignissim dui quam. Duis interdum mauris eget augue scelerisque elementum. Etiam condimentum nibh eget mi rutrum condimentum.</p>
+					<p>
+						The collection houses more than 11,000 artifacts, including three-dimensional objects, ephemera, textiles, artwork, and books and manuscripts. On this site, examples of the Museum’s holdings include salvaged remnants of the World Trade Center buildings, personal effects and memorabilia, expressions of tribute and remembrance, and artifacts. 
+					</p>
+					<p>
+						The feature galleries on this page bring together objects based on a variety of themes, material type, exhibition area, and more.  Click on the features to explore more about a topic, browse through related objects in the Collection, or see what is currently on view in the Museum. 
+					</p>
+					<p>
+						Objects and features on this page are continually expanded to include a larger representation of the Museum’s holdings.  Check back frequently for recently added content.</p>
+					</p>
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->

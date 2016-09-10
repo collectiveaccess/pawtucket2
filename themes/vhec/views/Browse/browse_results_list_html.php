@@ -59,8 +59,8 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 12;
+		$vn_col_span_sm = 12;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
@@ -89,7 +89,7 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+				$vs_label_detail_link 	= "<p>".caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 100 ? substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 97)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id)."</p>";
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
@@ -97,16 +97,39 @@
 				
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
-						$t_list_item->load($qr_res->get("type_id"));
+						$t_list_item->load($qr_res->get("ca_objects.resource_type"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
 							$vs_image = $vs_default_placeholder_tag;
 						}
+
 					}else{
 						$vs_image = $vs_default_placeholder_tag;
 					}
+				}
+				if ($vs_table == 'ca_objects') {
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Library Item") {
+						$vs_dates = array();
+						if ($vs_publication_date = $qr_res->get('ca_objects.displayDate', array('delimiter' => ', '))) {
+							$vs_dates[] = $vs_publication_date;
+						}
+						if ($vs_copyright_date = $qr_res->get('ca_objects.MARC_copyrightDate', array('delimiter' => ', '))) {
+							$vs_dates[] = $vs_copyright_date;
+						}
+						$vs_date = '<p>'.join(', ',$vs_dates).'</p>';						
+					} else if ($vs_date_value = $qr_res->get('ca_objects.displayDate')) {
+						$vs_date = "<p>".$vs_date_value."</p>";
+					} else {
+						$vs_date = null;
+					}
+					
+					if ($va_entity = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer'), 'delimiter' => '; '))) {
+						$vs_creator = "<p>".$va_entity."</p>";
+					} else { 
+						$vs_creator = null; 
+					}	
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
@@ -123,7 +146,7 @@
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
-					{$vs_label_detail_link}
+					{$vs_label_detail_link}{$vs_date}{$vs_creator}
 					{$vs_add_to_set_link}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
