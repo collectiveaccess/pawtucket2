@@ -266,7 +266,7 @@
 						$this->request, 
 						$t_subject, 
 						$t_subject,
-						array_merge($va_media_display_info, 
+						array_merge($va_options, $va_media_display_info, 
 							array(
 								'display' => 'detail',
 								'showAnnotations' => true, 
@@ -507,7 +507,8 @@
 			$this->view->setVar('representation_id', $pn_representation_id);
 			$this->view->setVar('annotation_list', $va_annotation_list);
 			$this->view->setVar('annotation_times', $va_annotation_times);
- 			
+			$this->view->setVar('player_name', "caMediaOverlayTimebased_{$pn_representation_id}_detail");
+			
 			$this->render('Details/annotations_html.php');
  		}
  		# -------------------------------------------------------
@@ -1456,11 +1457,14 @@
 			$pa_options['display'] = $ps_display_type;
 			$pa_options['context'] = $this->request->getParameter('context', pString);
 			
+			$va_options = (isset($this->opa_detail_types[$pa_options['context']]['options']) && is_array($this->opa_detail_types[$pa_options['context']]['options'])) ? $this->opa_detail_types[$pa_options['context']]['options'] : array();
+			$pa_options['captionTemplate'] = caGetOption('representationViewerCaptionTemplate', $va_options, false);
+			
 			if (!$pt_subject->isReadable($this->request)) { 
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($pa_options, ['showAnnotations' => true])));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true])));
 		}
 		# -------------------------------------------------------
 		/** 
