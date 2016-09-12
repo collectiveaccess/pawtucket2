@@ -27,6 +27,7 @@
  */
 
 	print TooltipManager::getLoadHTML();
+	if(!in_array($this->request->getController(), array("Lightbox"))){
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -35,3 +36,6 @@
 			$('img:not([alt])').attr('alt', '');
 		});
 	</script>
+<?php
+	}
+?>
