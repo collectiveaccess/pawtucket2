@@ -110,7 +110,7 @@
 						<a class="addthis_button_tweet"></a>
 						<a class="addthis_counter addthis_pill_style"></a>
 					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
+					<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js"></script>
 				</div>	
 <?php
 				$vs_access_point_local = "";

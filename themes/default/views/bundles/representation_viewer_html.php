@@ -84,7 +84,7 @@
 	if ($vs_show_annotations_mode == 'div') {
 ?>
 			// load annotation list via ajax
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>'); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[0]); }
 <?php
 	}
 ?>
