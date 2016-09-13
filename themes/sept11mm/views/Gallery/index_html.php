@@ -36,13 +36,13 @@
 				</div><!-- end col -->
 				<div class='col-sm-4'>
 					<p>
-						The collection houses more than 11,000 artifacts, including three-dimensional objects, ephemera, textiles, artwork, and books and manuscripts. On this site, examples of the Museum’s holdings include salvaged remnants of the World Trade Center buildings, personal effects and memorabilia, expressions of tribute and remembrance, and artifacts. 
+						The collection houses more than 11,000 artifacts, including three-dimensional objects, ephemera, textiles, artwork, and books and manuscripts. On this site, examples of the Museum’s holdings include salvaged remnants of the World Trade Center buildings, personal effects and memorabilia, expressions of tribute and remembrance, and artifacts.
 					</p>
 					<p>
-						The feature galleries on this page bring together objects based on a variety of themes, material type, exhibition area, and more.  Click on the features to explore more about a topic, browse through related objects in the Collection, or see what is currently on view in the Museum. 
+						The feature galleries on this page bring together objects based on a variety of themes, material type, exhibition area, and more. Click on the features to explore more about a topic, browse through related objects in the collection, or see what is currently on view in the Museum.
 					</p>
 					<p>
-						Objects and features on this page are continually expanded to include a larger representation of the Museum’s holdings.  Check back frequently for recently added content.</p>
+						Features on this page are continually expanded to include a larger representation of the Museum’s holdings. Check back frequently for recently added content.
 					</p>
 				</div><!-- end col -->
 			</div><!-- end row -->
