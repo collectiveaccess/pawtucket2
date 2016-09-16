@@ -90,35 +90,16 @@
 			</div><!-- end row -->
 		</div>
 	</div><!-- end footer-bottom-->
-<!--	
-	<div id="footer">
-		<div class="container">
-			<ul class="list-inline">
-				<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-				<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "faq"); ?></li>
-				<li><a href="#">Contact Us</a></li>
-				<li><?php print caNavLink($this->request, _t("Terms of Use / Privacy Policy"), "", "", "About", "terms"); ?></li>
-			</ul>
-			<div>
-				&copy; 2015 National September 11 Memorial & Museum.<br/>
-				9/11 MEMORIAL is a registered trademark of the National<br/>
-				September 11 Memorial & Museum
-			</div>
-		</div>
-	</div>
--->
-<script type="text/javascript">
-var clicky_site_ids = clicky_site_ids || [];
-clicky_site_ids.push(100974929);
-(function() {
-  var s = document.createElement('script');
-  s.type = 'text/javascript';
-  s.async = true;
-  s.src = '//static.getclicky.com/js';
-  ( document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0] ).appendChild( s );
-})();
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ 
+  ga('create', 'UA-5638262-14', 'auto');
+  ga('send', 'pageview');
+ 
 </script>
-<noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/100974929ns.gif" /></p></noscript>
 <?php
 	//
 	// Output HTML for debug bar

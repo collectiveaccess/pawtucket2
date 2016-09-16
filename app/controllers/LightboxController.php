@@ -1219,6 +1219,7 @@
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
+						print sizeof($va_object_ids);
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							// check for those already in set
 							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
