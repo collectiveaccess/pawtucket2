@@ -98,8 +98,8 @@
 						<a class="addthis_button_tweet"></a>
 						<a class="addthis_counter addthis_pill_style"></a>
 					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
-				</div>	
+					<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js"></script>
+				</div>
 <?php
 				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					$vn_subject = 1;
@@ -213,14 +213,15 @@
 						if ($t_object->get('ca_objects.transcript.transcript_media')){
 							$va_assoc_materials_pdf = $t_object->get('ca_objects.transcript', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 							
 							$o_db = new Db();
-							#$vn_media_element_id = $t_object->_getElementID('transcript_media');
+							$t_element = ca_attributes::getElementInstance('transcript_media');
+							$vn_media_element_id = $t_element->getElementID('transcript_media'); 
 							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
 								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
 									if ($vn_assoc_materials_pdf_image['transcript_supress'] == "No") {
 										print "<div class='unit document'><h8>Time-Coded narrative </h8>";
 										$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_assoc_materials_pdf_id, $vn_media_element_id)) ;
 										if ($qr_res->nextRow()) {
-											print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaInfo', array('object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['upload_type'])."</a></p>";
+											print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'identifier' => 'attribute:'.$qr_res->get('value_id'), 'overlay' => 1))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['upload_type'])."</a></p>";
 										}
 										print "</div>";
 									}

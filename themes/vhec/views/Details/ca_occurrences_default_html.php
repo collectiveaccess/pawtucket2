@@ -70,10 +70,10 @@
 					print "<div class='unit'><h8>Venue</h8>".$va_venue."</div>";
 				}	
 				if ($va_description = $t_item->get('ca_occurrences.occurrence_description')) {
-					print "<div class='unit'><h8>Description</h8>".$va_description."</div>";
+					print "<div class='unit trimText'><h8>Description</h8>".$va_description."</div>";
 				}
 				if ($va_venue_description = $t_item->get('ca_occurrences.venue_description')) {
-					print "<div class='unit'><h8>Description</h8>".$va_venue_description."</div>";
+					print "<div class='unit trimText'><h8>Description</h8>".$va_venue_description."</div>";
 				}				
 				if ($va_catalogue = $t_item->get('ca_objects.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('library')))) {
 					print "<div class='unit'><h8>Catalogue</h8>".$va_catalogue."</div>";
@@ -241,6 +241,10 @@
 </div><!-- end row -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 97
+		});
 		$('#relationshipTable').tabs();
 	});
 </script>	

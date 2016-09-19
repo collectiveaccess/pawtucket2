@@ -3260,7 +3260,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  	 *		currentRepClass = CSS class to apply to thumbnail of currently visible representation. [Default is "active"]
  	 *		dontShowPlaceholder = Don't use placeholder when no representation is available. [Default is false]
  	 *		display = media_display.conf display version to use. [Default is 'detail']
-	 *		showAnnotations = Show list of annotations, if available, for time-based media
+	 *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
 	 *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
 	 *
  	 * @return string HTML output
@@ -3277,7 +3277,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  		$pb_primary_only 					= caGetOption('primaryOnly', $pa_options, false);
  		$ps_active_representation_class 	= caGetOption('currentRepClass', $pa_options, 'active');
  		$pb_dont_show_placeholder 			= caGetOption('dontShowPlaceholder', $pa_options, false);
- 		$pb_show_annotations	 			= caGetOption('showAnnotations', $pa_options, false);
+ 		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 		$ps_display_type		 			= caGetOption('display', $pa_options, false);
 				
@@ -3382,7 +3382,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  		
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
-		
+		$o_view->setVar('display_annotations', $ps_display_annotations);
 		return $o_view->render('representation_viewer_html.php');
  	}
  	# ---------------------------------------
@@ -3486,7 +3486,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	 *		display = media_display.conf display version to use. [Default is 'detail']
 	 *		context = viewer context value to pass in toolbar. For Pawtucket details this is the detail name. [Default is null]
 	 *		captionTemplate = Display template for caption to include with image. Caption is evalulated related to the subject ($pt_subject) instance. [Default is null]
-	 *		showAnnotations = Show list of annotations, if available, for time-based media
+	 *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
 	 *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
 	 *
 	 * @return string Viewer HTML
@@ -3501,13 +3501,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		$ps_display_type 					= caGetOption('display', $pa_options, 'media_overlay');
 		$pb_inline 							= (bool)caGetOption('inline', $pa_options, false);
 		$ps_context 						= caGetOption('context', $pa_options, $po_request->getParameter('context', pString));
-		$pb_show_annotations	 			= caGetOption('showAnnotations', $pa_options, false);
+		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 		
 		$vs_caption = $vs_tool_bar = '';
-		if ($pb_inline) {
-			$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $pt_subject->getWithTemplate($vs_template) : '';
-		}
 				
 		switch($va_identifier['type']) {
 			case 'representation':
@@ -3517,6 +3514,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				$pn_representation_id = (int)$va_identifier['id'];
 				$t_instance = new ca_object_representations($pn_representation_id);
 			
+				if ($pb_inline) {
+					$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $t_instance->getWithTemplate($vs_template) : '';
+				}
+				
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
 					throw new ApplicationException(_t('Invalid viewer'));
 				}
@@ -3561,7 +3562,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 				
-				if (($pb_show_annotations) && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
+				if (($ps_display_annotations) && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
 					$vs_viewer .= join("<br/>\n", $va_annotation_list);
 				}
 				return $vs_viewer;

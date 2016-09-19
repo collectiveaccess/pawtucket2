@@ -1265,8 +1265,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				return false;
 			}
 			
-			// Index the links
-			$this->getSearchIndexer()->reindexRows('ca_set_items', $va_item_ids, array('queueIndexing' => true));
+			// Index the links - don't queue, would delay items from showing up in lightbox
+			$this->getSearchIndexer()->reindexRows('ca_set_items', $va_item_ids, array('queueIndexing' => false));
 		}
 		
 		return sizeof($va_item_values);
