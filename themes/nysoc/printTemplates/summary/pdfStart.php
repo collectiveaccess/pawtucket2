@@ -37,7 +37,13 @@
 ?>
 <html>
 	<head>
-		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
+		<title><?php print _t('Finding Aid for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
+		<link href='http://fonts.googleapis.com/css?family=Gudea:400,700,400italic' rel='stylesheet' type='text/css'>
 		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+		
+		<script type="text/javascript">
+			var PhantomJSPrinting = {};
+		</script>
 	</head>
 	<body>

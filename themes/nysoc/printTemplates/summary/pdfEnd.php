@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/pdfStart.php : top-matter prepended to PDF templates
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,18 +26,11 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name PDF start
- * @type pageStart
+ * @name PDF end
+ * @type pageEnd
  *
  * ----------------------------------------------------------------------
  */
- 
- $t_item = $this->getVar('t_subject');
- 
 ?>
-<html>
-	<head>
-		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
-		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
-	</head>
-	<body>
+	</body>
+</html>

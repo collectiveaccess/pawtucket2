@@ -3752,6 +3752,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	# ------------------------------------------------------------------
 	/**
 	 * Get bundle preview for a relationship bundle
+	 *
 	 * @param array $pa_initial_values
 	 * @param string $ps_delimiter
 	 *
@@ -3773,5 +3774,61 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		}
 
 		return caEscapeForBundlePreview(join($ps_delimiter, $va_previews));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Perform tag substitution on a view. 
+	 *
+	 * Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
+	 * the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+	 * as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+	 * (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+	 * context of the item being detailed.
+	 *
+	 * @param View $po_view
+	 * @param string $ps_template_path
+	 * @param BaseModel|SearchResult $pm_subject
+	 * @param array $pa_options
+	 * 			render = 
+	 *			checkAccess = 
+	 *			clearVars = 
+	 *			barcodes = 
+	 *
+	 * @return string
+	 */
+	function caDoTemplateTagSubstitution($po_view, $pm_subject, $ps_template_path, $pa_options=null) {
+		$pa_access_values = caGetOption('checkAccess', $pa_options, null);
+		$pb_barcodes = caGetOption('barcodes', $pa_options, false);
+		
+		if (caGetOption('clearVars', $pa_options, false)) { $po_view->clearViewTagsVars($ps_template_path); }
+		
+		$va_defined_vars = array_keys($po_view->getAllVars());		// get list defined vars (we don't want to copy over them)
+		
+		$va_tag_list = $po_view->getTagList($ps_template_path);		// get list of tags in view
+		
+		$va_barcode_files_to_delete = [];
+		foreach($va_tag_list as $vs_tag) {
+			if (in_array($vs_tag, $va_defined_vars)) { continue; }
+			
+			if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
+				$va_barcode_files_to_delete[] = $vs_barcode_file;
+			} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
+				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('checkAccess' => $pa_access_values)));
+			} elseif (strpos($vs_tag, ".") !== false) {
+				$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
+			} else {
+				$po_view->setVar($vs_tag, "?{$vs_tag}");
+			}
+		}
+		
+		if (caGetOption('render', $pa_options, false)) {
+			return $po_view->render($ps_template_path);
+		}
+		
+		if ($pb_barcodes) {
+			return $va_barcode_files_to_delete;
+		}
+		
+		return true;
 	}
 	# ------------------------------------------------------------------
