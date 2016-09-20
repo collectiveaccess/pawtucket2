@@ -1,13 +1,13 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * app/templates/pdfStart.php : top-matter prepended to PDF templates
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,18 +26,46 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name PDF start
- * @type pageStart
+ * @name Header
+ * @type fragment
  *
  * ----------------------------------------------------------------------
  */
  
- $t_item = $this->getVar('t_subject');
- 
-?>
-<html>
+	if($this->request->config->get('summary_header_enabled')) {
+	
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
+?><!--BEGIN HEADER--><!DOCTYPE html><html>
 	<head>
-		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
 		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
 	</head>
-	<body>
+	<body style='margin:0;padding-bottom:0.1in;'><div id='header_wk'>
+<?php
+		if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+		}
+?>	
+		<div id="topSection">	
+			<div id="pageTitle">
+				<h1>City Readers <span class='headerSmall'>Digital Historic Collections at the New York Society Library</span></h1>
+			</div>
+		</div>
+	</div>
+	<br style="clear: both;"/>
+</body>
+</html><!--END HEADER-->
+<?php
+			break;
+		default:
+?><div id='header'>
+	<div id="topSection">
+		<div id="pageTitle">
+			<h1>City Readers <span class='headerSmall'>Digital Historic Collections at the New York Society Library</span></h1>
+		</div>
+	</div>
+</div>
+<?php
+			break;
+	}
+}

@@ -27,12 +27,12 @@
  */
  	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
  	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
- 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
  	require_once(__CA_LIB_DIR__.'/core/Media/MediaViewerManager.php');
  	
  	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+ 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
  	
@@ -430,33 +430,12 @@
  				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
  			}
  			
- 	
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
- 					$this->_genExport($t_subject, $this->request->getParameter("export_format", pString), ((caGetOption('pdfExportTitle', $va_options, false)) ? $t_subject->getLabelForDisplay() : null), 'Detail');
+ 					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), ((caGetOption('pdfExportTitle', $va_options, false)) ? $t_subject->getLabelForDisplay() : null), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
- 					//
-					// Tag substitution
-					//
-					// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
-					// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
-					// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
-					// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
-					// context of the item being detailed.
-					//
-					$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
-					$va_tag_list = $this->getTagListForView($vs_path);				// get list of tags in view
-					foreach($va_tag_list as $vs_tag) {
-						if (in_array($vs_tag, $va_defined_vars)) { continue; }
-						if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-							$this->view->setVar($vs_tag, $t_subject->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
-						} elseif (strpos($vs_tag, ".") !== false) {
-							$this->view->setVar($vs_tag, $t_subject->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
-						} else {
-							$this->view->setVar($vs_tag, "?{$vs_tag}");
-						}
-					}
+ 					caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
  					$this->render($vs_path);
  					break;
  			}
@@ -1073,110 +1052,6 @@
  				return;
  			}
  		}
- 		# -------------------------------------------------------
- 		/**
-		 * Generate  export file of current result
-		 */
-		protected function _genExport($pt_subject, $ps_template, $ps_output_filename, $ps_title=null) {
-			$this->view->setVar('t_subject', $pt_subject);
-			
-			if (substr($ps_template, 0, 5) === '_pdf_') {
-				$va_template_info = caGetPrintTemplateDetails('summary', substr($ps_template, 5));
-			} elseif (substr($ps_template, 0, 9) === '_display_') {
-				$vn_display_id = substr($ps_template, 9);
-				$t_display = new ca_bundle_displays($vn_display_id);
-				
-				if ($vn_display_id && ($t_display->haveAccessToDisplay($this->request->getUserID(), __CA_BUNDLE_DISPLAY_READ_ACCESS__))) {
-					$this->view->setVar('t_display', $t_display);
-					$this->view->setVar('display_id', $vn_display_id);
-				
-					$va_display_list = array();
-					$va_placements = $t_display->getPlacements(array('settingsOnly' => true));
-					foreach($va_placements as $vn_placement_id => $va_display_item) {
-						$va_settings = caUnserializeForDatabase($va_display_item['settings']);
-					
-						// get column header text
-						$vs_header = $va_display_item['display'];
-						if (isset($va_settings['label']) && is_array($va_settings['label'])) {
-							$va_tmp = caExtractValuesByUserLocale(array($va_settings['label']));
-							if ($vs_tmp = array_shift($va_tmp)) { $vs_header = $vs_tmp; }
-						}
-					
-						$va_display_list[$vn_placement_id] = array(
-							'placement_id' => $vn_placement_id,
-							'bundle_name' => $va_display_item['bundle_name'],
-							'display' => $vs_header,
-							'settings' => $va_settings
-						);
-					}
-					$this->view->setVar('placements', $va_display_list);
-				} else {
-					$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
-					return;
-				}
-				$va_template_info = caGetPrintTemplateDetails('summary', 'summary');
-			} else {
-				$this->postError(3100, _t("Invalid format %1", $ps_template),"DetailController->_genExport()");
-				return;
-			}
-			
-			//
-			// PDF output
-			//
-			if (!is_array($va_template_info)) {
-				$this->postError(3110, _t("Could not find view for PDF"),"DetailController->_genExport()");
-				return;
-			}
-			
-			//
-			// Tag substitution
-			//
-			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
-			// the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
-			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
-			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
-			// context of the item being detailed.
-			//
-			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
-			$va_tag_list = $this->getTagListForView($va_template_info['path']);				// get list of tags in view
-			foreach($va_tag_list as $vs_tag) {
-				if (in_array($vs_tag, $va_defined_vars)) { continue; }
-				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-					$this->view->setVar($vs_tag, $pt_subject->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
-				} elseif (strpos($vs_tag, ".") !== false) {
-					$this->view->setVar($vs_tag, $pt_subject->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
-				} else {
-					$this->view->setVar($vs_tag, "?{$vs_tag}");
-				}
-			}
-			
-			try {
-				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
-				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-				$this->view->setVar('PDFRenderer', 'domPDF');
-				$this->view->setVar('display', new ca_bundle_displays());
-				
-				$vs_content = $this->render($va_template_info['path']);
-				$o_dompdf = new DOMPDF();
-				$o_dompdf->load_html($vs_content);
-				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
-				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('summary'));
-				$o_dompdf->render();
-				if($ps_output_filename){
-					$ps_output_filename = preg_replace('![^A-Za-z0-9_\-]+!', '_', $ps_output_filename);
-				}else{
-					$ps_output_filename = 'export_results';
-				}
-				$o_dompdf->stream(caGetOption('filename', $va_template_info, $ps_output_filename.'.pdf'));
-
-				$vb_printed_properly = true;
-			} catch (Exception $e) {
-				$vb_printed_properly = false;
-				$this->postError(3100, _t("Could not generate PDF"),"DetailController->_genExport()");
-			}
-				
-			return;
-		}
 		# -------------------------------------------------------
  		# File attribute bundle download
  		# -------------------------------------------------------
@@ -1253,7 +1128,7 @@
  			$ps_version = $this->request->getParameter('version', pString);
  			
  			
- 			//if (!$this->_checkAccess($t_subject)) { return false; }
+ 			if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			
  			//
