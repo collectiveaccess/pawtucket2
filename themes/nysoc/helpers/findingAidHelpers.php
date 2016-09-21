@@ -1,5 +1,6 @@
 <?php
 function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $va_options = array()) {
+	#if ($vn_level > 3) { return; }
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
 		return;
 	}
@@ -61,7 +62,7 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_scope_content = $qr_collections->get('ca_collections.scopecontent')) {
@@ -97,7 +98,7 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_scope_content = $qr_collections->get('ca_collections.scopecontent')) {
@@ -125,7 +126,7 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_scope_content = $qr_collections->get('ca_collections.scopecontent')) {
@@ -144,7 +145,7 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_idno = $qr_collections->get('ca_collections.idno')) {
@@ -159,9 +160,11 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 			if($vs_additional_md){
 				$vs_additional_md = "<div class='collChildMd'>".$vs_additional_md."</div>";
 			}
-			$vs_output .= "<div style='margin-left:".(40*($vn_level - 1))."px;'>";
+			$vs_output .= "<div style='margin-left:".(30*($vn_level - 1))."px;'>";
 			if($vn_level == 1){
 				$vs_output .= "<h1>";
+			}else{
+				$vs_output .= "<h2>";
 			}
 			$vs_down_arrow = "";
 			if($vs_additional_md && ($vn_level > 1)){
@@ -175,13 +178,15 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 			}
 			if($vn_level == 1){
 				$vs_output .= "</h1>";
+			}else{
+				$vs_output .= "</h2>";
 			}
 			$vs_output .= $vs_additional_md."</div>";
 			if(sizeof($va_child_ids)) {
 				if($vn_level > 1){
-					$vs_output .=  "<div id='children".$qr_collections->get("ca_collections.collection_id")."'><h3 style='margin-left:".(40*($vn_level - 1))."px;'>".$vs_collection_type." Contents</h3>";
+					$vs_output .=  "<div id='children".$qr_collections->get("ca_collections.collection_id")."'><h3 style='margin-left:".(30*($vn_level - 1))."px;'>".$vs_collection_type." Contents</h3>";
 				}else{
-					$vs_output .=  "<h3 style='margin-left:".(40*($vn_level - 1))."px;'>".$vs_collection_type." Contents</h3>";
+					$vs_output .=  "<h3 style='margin-left:".(30*($vn_level - 1))."px;'>".$vs_collection_type." Contents</h3>";
 				}
 				$vs_output .=  printLevelPDF($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
 				if($vn_level > 1){

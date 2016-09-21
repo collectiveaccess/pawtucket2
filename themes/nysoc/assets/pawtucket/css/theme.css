@@ -665,6 +665,10 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 .multisearch small {
 	font-size:100%;
 }
+.multisearch .authorityResult.collectionsResult{
+	height:70px;
+	overflow-y:scroll;
+}
 .vco-slider .slider-item .content .content-container .text .container h2.date {
 	display:none !important;
 }
@@ -1544,6 +1548,9 @@ div.advancedSearchField {
 }
 #collectionLoad .collListItem .fa-chevron-right{
 	width:14px
+}
+.collectionLoadDefault{
+	font-size:16px;
 }
 
 /* Sets */

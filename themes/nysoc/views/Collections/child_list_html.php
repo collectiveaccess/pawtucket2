@@ -85,7 +85,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_scope_content = $qr_collections->get('ca_collections.scopecontent')) {
@@ -96,9 +96,6 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					}
 					if ($vs_arrangement = $qr_collections->get('ca_collections.arrangement')) {
 						$vs_additional_md.= "<h3>System of Arrangement</h3><div class='unit'>".$vs_arrangement."</div>";
-					}
-					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
-						$vs_additional_md.= "<h3>Container</h3><div class='unit'>".$vs_container."</div>";
 					} 
 					if (is_array($va_subject_list) && sizeof($va_subject_list)) {
 						$vs_additional_md.= "<h3>Subjects:</h3>";
@@ -116,7 +113,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_scope_content = $qr_collections->get('ca_collections.scopecontent')) {
@@ -124,9 +121,6 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					}
 					if ($vs_arrangement = $qr_collections->get('ca_collections.arrangement')) {
 						$vs_additional_md.= "<h3>System of Arrangement</h3><div class='unit'>".$vs_arrangement."</div>";
-					}
-					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
-						$vs_additional_md.= "<h3>Container</h3><div class='unit'>".$vs_container."</div>";
 					} 		
 				break;
 				# ---------------------------
@@ -139,7 +133,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					if ($vs_extent = $qr_collections->get('ca_collections.extentDACS')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 					}
-					if ($vs_container = $qr_collections->get('ca_collections.container')) {
+					if ($vs_container = $qr_collections->get('ca_collections.archival_container')) {
 						$vs_additional_md.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 					}
 					if ($vs_idno = $qr_collections->get('ca_collections.idno')) {
@@ -222,6 +216,16 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 if ($vn_collection_id) {
 	print printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collection_types" => $va_collection_types));
 }
-
+if($this->request->getParameter("expandAll", pInteger)){
+?>
+	<script>
+		$(document).ready(function(){
+			$(".collChildMd").show();
+			$(".collChildren").show();
+			$(".fa-chevron-right").switchClass("fa-chevron-right", "fa-chevron-down", 0);
+		});
+	</script>
+<?php
+}
 
 ?>
