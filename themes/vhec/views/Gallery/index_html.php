@@ -37,7 +37,7 @@
 						<div class="jcarousel"><ul>
 <?php
 							$i = 0;
-
+							arsort($va_sets);
 							foreach($va_sets as $vn_set_id => $va_set){
 								if(!$vn_first_set_id){
 									$vn_first_set_id = $vn_set_id;

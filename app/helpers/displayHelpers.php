@@ -2347,18 +2347,52 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		//if ($va_start['year'] < 0) { $va_start['year'] = 1900; }
 		if ($va_end['year'] >= 2000000) { $va_end['year'] = date("Y"); }
 
-		return [
-			'start_date' => [
-				'year' => $va_start['year'],
-				'month' => $va_start['month'],
-				'day' => $va_start['day']
-			],
-			'end_date' => [
-				'year' => $va_end['year'],
-				'month' => $va_end['month'],
-				'day' => $va_end['day']
-			],
-		];
+		if (
+			($va_start['year'] == $va_end['year'])
+			&&
+			($va_start['month'] == 1) && ($va_end['month'] == 12)
+			&&
+			($va_start['day'] == 1) && ($va_end['day'] == 31)
+		) {
+			return [
+				'start_date' => [
+					'year' => $va_start['year']
+				],
+				'end_date' => [
+					'year' => $va_end['year']
+				],
+			];
+		} elseif(
+			($va_start['year'] == $va_end['year'])
+			&&
+			($va_start['month'] == $va_end['month'])
+			&&
+			(($va_start['day'] == 1) && ($va_end['day'] == $o_tep->daysInMonth($va_end['end'])))
+		) {
+			return [
+				'start_date' => [
+					'year' => $va_start['year'],
+					'month' => $va_start['month']
+				],
+				'end_date' => [
+					'year' => $va_end['year'],
+					'month' => $va_end['month']
+				],
+			];
+		} else {
+			return [
+				'start_date' => [
+					'year' => $va_start['year'],
+					'month' => $va_start['month'],
+					'day' => $va_start['day']
+				],
+				'end_date' => [
+					'year' => $va_end['year'],
+					'month' => $va_end['month'],
+					'day' => $va_end['day']
+				],
+			];
+		}
 	}
 	# ------------------------------------------------------------------------------------------------
     /**
