@@ -32,21 +32,21 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'families.png'); ?>
+					<?php print caGetThemeGraphic($this->request, 'families.png', array('alt' => 'For 9/11 Families')); ?>
 					<p class="textBlock">
 						A dedicated section for the loved ones of those killed in the 2001 and 1993 attacks. Stay informed and plan your visit.
 					</p>
 					<a href="https://www.911memorial.org/information-911-family-members">More Information »</a>
 				</div><!-- end col -->
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'give.png'); ?>
+					<?php print caGetThemeGraphic($this->request, 'give.png', array('alt' => 'Give')); ?>
 					<p class="textBlock">
 						The National September 11 Memorial & Museum is only possible because of your support.
 					</p>
 					<a href="https://www.911memorial.org/make-monetary-donation-now">All donations are tax deductible »</a>
 				</div><!-- end col -->
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'updates.png'); ?>
+					<?php print caGetThemeGraphic($this->request, 'updates.png', array('alt' => 'Updates')); ?>
 					<p class="textBlock">
 						Stay informed about news and events by subscribing to our newsletter.
 					</p>
@@ -126,6 +126,7 @@
 			jQuery(document).ready(function() {
 				$('body').on('contextmenu', 'img', function(e){ return false; });
 				$('#caMediaPanelContentArea').on('contextmenu', 'img', function(e){ return false; });
+				$('img:not([alt])').attr('alt', '');
 			});
 			/*
 				Set up the "caMediaPanel" panel that will be triggered by links in object detail

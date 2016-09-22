@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+	$vs_player_name = 			$this->getVar('player_name');
 	$va_annotations = 			$this->getVar('annotation_list');
 	$va_annotation_times = 		$this->getVar('annotation_times');
 	$vn_representation_id = 	$this->getVar('representation_id');
@@ -50,11 +51,11 @@
 		jQuery('li.detailAnnotation').on('click', function(e) {
 			var i = jQuery('li.detailAnnotation').index(e.target); 
 			
-			caUI.mediaPlayerManager.seek('caMediaDisplayContentMedia_<?php print $vn_representation_id; ?>', detailAnnotationTimes[i][0]);
+			caUI.mediaPlayerManager.seek('<?php print $vs_player_name; ?>', detailAnnotationTimes[i][0]);
 		});
 		
-		caUI.mediaPlayerManager.onTimeUpdate('caMediaDisplayContentMedia_<?php print $vn_representation_id; ?>', function() {
-			var ct = caUI.mediaPlayerManager.currentTime('caMediaDisplayContentMedia_<?php print $vn_representation_id; ?>');
+		caUI.mediaPlayerManager.onTimeUpdate('<?php print $vs_player_name; ?>', function() {
+			var ct = caUI.mediaPlayerManager.currentTime('<?php print $vs_player_name; ?>');
 			
 			jQuery('li.detailAnnotation').removeClass('active');
 			jQuery.each(detailAnnotationTimes, function(i, v) {

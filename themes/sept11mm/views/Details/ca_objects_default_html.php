@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vs_pop_over_attributes = "data-container = 'body' data-toggle = 'popover' data-placement = 'auto' data-html = 'true' data-trigger='hover'";
 	$va_access_values = caGetUserAccessValues($this->request);
+	$vb_anon_donor = false;
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -87,6 +88,8 @@
 						}
 
 					}
+				}else{
+					$vb_anon_donor = true;
 				}
 				if($vs_credit_line){
 					print "<div class='unit unitExternalLinks'><b>Credit Line: </b><i>".$vs_credit_line."</i></div>";
@@ -111,7 +114,7 @@
 							$va_popover = array();
 							if($t_list_item->get("ca_list_item_labels.description")){
 								#$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-title" => $va_subject["name_singular"], "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");
-								$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "auto", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
+								$va_popover = array("data-container" => "body", "data-toggle" => "popover", "data-placement" => "right", "data-html" => "true", "data-content" => $t_list_item->get("ca_list_item_labels.description"),  "data-trigger" => "hover");							
 							}
 							$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]), $va_popover);
 							$va_list_ids[] = $va_subject["item_id"];
@@ -164,7 +167,12 @@ if($vn_lot_id){
 	$va_search[] = "ca_object_lots.lot_id:".$vn_lot_id;
 }
 # --- rel entities are victim and source
-$va_rel_entities = array_unique($t_object->get("ca_entities.entity_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+# --- need to exclude source for anonymous donors
+if($vb_anon_donor){
+	$va_rel_entities = array_unique($t_object->get("ca_entities.entity_id", array("returnAsArray" => true, "checkAccess" => $va_access_value, "excludeRelationshipTypes" => array("donor"))));
+}else{
+	$va_rel_entities = array_unique($t_object->get("ca_entities.entity_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+}
 if(sizeof($va_rel_entities)){
 	foreach($va_rel_entities as $vn_entity_id){
 		$va_search[] = "entity_id:".$vn_entity_id;
@@ -209,7 +217,7 @@ if($vb_search_again){
 		}
 		shuffle($va_related_more);
 		if(is_array($va_related_ids) && sizeof($va_related_ids)){
-			$va_related_ids = array_merge($va_related_ids, $va_related_more);
+			$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
 		}else{
 			$va_related_ids = $va_related_more;
 		}

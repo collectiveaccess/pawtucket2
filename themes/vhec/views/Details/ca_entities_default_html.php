@@ -17,8 +17,20 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H5>{{{<ifdef code='ca_entities.nonpreferred_labels'><span>Also known as: </span>^ca_entities.nonpreferred_labels.displayname</ifdef>}}}</H5>
+					<H4>{{{^ca_entities.preferred_labels.displayname}}}
+<?php
+						if ($va_entity_dates = $t_item->get('ca_entities.entity_date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+							foreach ($va_entity_dates as $va_key => $va_entity_date_t) {
+								foreach ($va_entity_date_t as $va_key => $va_entity_date) {
+									if ($va_entity_date['entity_date_supress'] == "No") {
+										print " (".$va_entity_date['entity_date_value'].")";
+									}
+								}
+							}
+						}	
+?>										
+					</H4>
+					<H5>{{{<ifcount min="1" code='ca_entities.nonpreferred_labels'><span>Also known as: </span><unit delimiter=', '>^ca_entities.nonpreferred_labels.displayname</unit></ifcount>}}}</H5>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -28,10 +40,10 @@
 						print "<div class='unit'><h8>Birthplace</h8>".$va_birthplace."</div>";
 					}
 					if ($va_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h8>Biography</h8>".$va_bio."</div>";
+						print "<div class='unit trimText'><h8>Biography</h8>".$va_bio."</div>";
 					}
 					if ($va_admin_hist = $t_item->get('ca_entities.administrative_history')) {
-						print "<div class='unit'><h8>Administrative History</h8>".$va_admin_hist."</div>";
+						print "<div class='unit trimText'><h8>Administrative History</h8>".$va_admin_hist."</div>";
 					}						
 					if ($va_public_notes = $t_item->get('ca_entities.public_notes')) {
 						print "<div class='unit'><h8>Notes</h8>".$va_public_notes."</div>";
@@ -108,7 +120,7 @@
 					$vs_place_name = $t_place->get('ca_places.preferred_labels');
 					$vs_related_places.= "<div class='col-sm-3'>";
 					$vs_related_places.= "<div class='entityThumb'>";
-					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Search', 'objects', array('search' => 'ca_places.preferred_labels:"'.$vs_place_name.'"'))."</p></div>";
+					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Detail', 'places/'.$va_related_place_id)."</p></div>";
 					$vs_related_places.= "</div>";					
 				}
 			}
@@ -179,28 +191,7 @@
 			}
 ?>						
 			
-			
-{{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print "Loading..."; ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print "Loading...";?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -212,6 +203,10 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 97
+		});	
 		$('#relationshipTable').tabs();
 	});
 </script>

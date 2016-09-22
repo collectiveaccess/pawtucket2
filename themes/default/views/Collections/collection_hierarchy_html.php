@@ -47,13 +47,6 @@
 							# --- link open in panel or to detail
 							$va_grand_children_type_ids = $qr_collection_children->get("ca_collections.children.type_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 							$vb_link_sublist = false;
-							#if($va_grand_children_type_ids){
-							#	foreach($va_grand_children_type_ids as $vn_grand_child_type_id){
-							#		if(!in_array($vn_grand_child_type_id, $va_exclude_collection_type_ids)){
-							#			$vb_link_sublist = true;
-							#		}
-							#	}
-							#}
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
