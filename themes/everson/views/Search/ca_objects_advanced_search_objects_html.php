@@ -37,11 +37,11 @@
 	</div>
 	<div class='row'>	
 		<div class="col-sm-6">
-			Object Date range <i>(e.g. 1970-1979)</i><br/>
+			Permanent Collection Object, Date range <i>(e.g. 1970-1979)</i><br/>
 			{{{ca_objects.date.dates_value%width=200px&height=40px&useDatePicker=0}}}
 		</div>	
 		<div class="col-sm-6">
-			Archival Date range <i>(e.g. 1970-1979)</i><br/>
+			Archive Object, Date range <i>(e.g. 1970-1979)</i><br/>
 			{{{ca_objects.archive_dates.archive_daterange%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>
