@@ -1342,7 +1342,7 @@ class ca_users extends BaseModel {
 		}
 		if (!$vb_got_group) {
 			if (!$t_group->load(array("name" => $ps_group))) {
-				if (!$t_group->load(array("name_short" => $ps_group))) {
+				if (!$t_group->load(array("code" => $ps_group))) {
 					return false;
 				}
 			}
@@ -1839,9 +1839,12 @@ class ca_users extends BaseModel {
 								}
 							}
 							
+							$va_restrict_to_ui_locales = $this->getAppConfig()->getList('restrict_to_ui_locales');
+							
 							$va_opts = array();
 							$t_locale = new ca_locales();
 							foreach($va_locales as $vs_code => $va_parts) {
+								if (is_array($va_restrict_to_ui_locales) && sizeof($va_restrict_to_ui_locales) && !in_array($vs_code, $va_restrict_to_ui_locales)) { continue; }
 								try {
 									$vs_lang_name = Zend_Locale::getTranslation(strtolower($va_parts[0]), 'language', strtolower($va_parts[0]));
 									$vs_country_name = Zend_Locale::getTranslation($va_parts[1], 'Country', $vs_code);
@@ -2662,7 +2665,14 @@ class ca_users extends BaseModel {
 			} else {
 				// We rely on the system clock here. That might not be the smartest thing to do but it'll work for now.
 				$vn_token_expiration_timestamp = time() + 15 * 60; // now plus 15 minutes
-				$vs_password_reset_token = hash('sha256', mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+
+				if(function_exists('mcrypt_create_iv')) {
+					$vs_password_reset_token = hash('sha256', mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+				} elseif(function_exists('openssl_random_pseudo_bytes')) {
+					$vs_password_reset_token = hash('sha256', openssl_random_pseudo_bytes(32));
+				} else {
+					throw new Exception('mcrypt or OpenSSL is required for CollectiveAccess to run');
+				}
 
 				$this->setVar("{$vs_app_name}_password_reset_token", $vs_password_reset_token);
 				$this->setVar("{$vs_app_name}_password_reset_expiration", $vn_token_expiration_timestamp);
