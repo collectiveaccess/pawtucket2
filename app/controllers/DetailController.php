@@ -61,11 +61,8 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	if (($this->request->getParameter('object_id', pInteger)) && ($this->request->getAction() == "GetRepresentationInfo")) {
-            		$ps_id = $this->request->getParameter('object_id', pInteger);
-            	} else {
-            		$ps_id = urldecode($this->request->getActionExtra());
-            	}
+            	$ps_id = urldecode($this->request->getActionExtra());
+            	
             	$t_set_list = new ca_sets();
             	$t_set = new ca_sets();
             	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
@@ -461,7 +458,7 @@
  			if(!$pn_object_id) { $pn_object_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
  			if (!$t_rep->getPrimaryKey()) { 
- 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetRepresentationInfo');
+ 				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetTimebasedRepresentationAnnotationList');
  				return;
  			}
  			
