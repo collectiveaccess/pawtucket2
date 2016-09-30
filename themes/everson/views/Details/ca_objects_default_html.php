@@ -36,9 +36,9 @@
 <div class="row" >
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-6 '>
+			<div class='col-sm-6 col-md-6 col-lg-6 ' style='min-height:600px;'>
 				{{{representationViewer}}}			
-				
+
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
