@@ -5059,14 +5059,18 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 								$va_orderbys = array();
 								foreach($va_ordering_fields_to_fetch as $vs_sort_by_field) {
-									if (!$t_rel_item_label->hasField($vs_sort_by_field)) { continue; }
-									$va_orderbys[] = $va_label_selects[] = $vs_label_table_name.'.'.$vs_sort_by_field;
+									if ($t_rel_item_label->hasField($vs_sort_by_field)) { 
+										$va_orderbys[] = $va_label_selects[] = $vs_label_table_name.'.'.$vs_sort_by_field;
+									} elseif($t_rel_item->hasField($vs_sort_by_field)) {
+										$va_orderbys[] = $va_label_selects[] = $t_rel_item->tableName().'.'.$vs_sort_by_field;
+									}
 								}
 
 								// get labels
 								$vs_sql = "
 									SELECT ".join(', ', $va_label_selects)."
-									FROM ".$vs_label_table_name."
+									FROM {$vs_label_table_name}
+									INNER JOIN ".$t_rel_item->tableName()." ON ".$t_rel_item->tableName().".{$vs_rel_pk} = {$vs_label_table_name}.{$vs_rel_pk}
 										".(sizeof($va_label_wheres) ? ' WHERE ' : '').join(" AND ", $va_label_wheres)."
 										".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '')."";
 								//print $vs_sql;
