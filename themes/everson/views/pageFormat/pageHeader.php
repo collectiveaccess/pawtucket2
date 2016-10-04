@@ -83,7 +83,7 @@
   <div class="wrapper">
 	<div class="sidebar">
 <?php
-		print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg'), "logo", "", "","");
+		print "<a href='http://www.everson.org'>".caGetThemeGraphic($this->request, 'logo.svg')."</a>";
 ?>
 		<span class="logo-description">Everson Museum of art</span>
 		
@@ -120,6 +120,8 @@
     						<li class="currentexhibitions"><a href="http://everson.org/explore/current-exhibitions" target="_self" class="currentexhibitions">CURRENT EXHIBITIONS</a></li>
     						<li class="policies"><a href="http://everson.org/explore/policies" target="_self" class="policies">Policies</a></li>
     						<li class="upcomingexhibitions"><a href="http://everson.org/explore/upcoming-exhibitions" target="_self" class="upcomingexhibitions">UPCOMING EXHIBITIONS</a></li>
+    		    			<li class="searchcollection"><?php print caNavLink($this->request, "Search Collection and Archive", "searchcollection", '', '', '');?></li>
+			
     					</ul>
     				</div>
     			</li>
@@ -190,7 +192,7 @@
 <?php
 			if ($this->request->getController() != "Front") {
 				print '<div class="page-title-container clearfix">
-    						<h1 class="page-title">American Ceramics & Ceramic National Exhibition Archive</h1>
+    						<h1 class="page-title">'.caNavLink($this->request, 'American Ceramics & Ceramic National Exhibition Archive', '', '', '', '').'</h1>
 						</div>';
 ?>						
 	<nav class="navbar navbar-default yamm" role="navigation">
@@ -252,6 +254,7 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
+					<li <?php print ($this->request->getController() == "Collection") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "FindingAid", "Collection", "Index"); ?></li>				
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
