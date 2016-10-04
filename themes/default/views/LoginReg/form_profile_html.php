@@ -38,6 +38,9 @@
 				print "</div><!-- end form-group -->";
 			}
 		}
+		if($va_errors["password"]){
+			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
+		}		
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password' class='col-sm-4 control-label'><?php print _t('Reset Password'); ?></label>

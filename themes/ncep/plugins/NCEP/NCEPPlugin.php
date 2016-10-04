@@ -57,7 +57,7 @@
 			if(is_array($pa_object_ids) && sizeof($pa_object_ids)){
 				$po_request = $this->getRequest();
 				$t_list = new ca_lists();
-				$va_component_types_for_public = array($t_list->getItemIDFromList("object_types", "Synthesis"), $t_list->getItemIDFromList("object_types", "CaseStudies"), $t_list->getItemIDFromList("object_types", "Exercise"), $t_list->getItemIDFromList("object_types", "Presentation"), $t_list->getItemIDFromList("object_types", "EvaluationTool"), $t_list->getItemIDFromList("object_types", "Solutions"), $t_list->getItemIDFromList("object_types", "TeachingNotes"), $t_list->getItemIDFromList("object_types", "Resource"));
+				$va_component_types_for_public = array($t_list->getItemIDFromList("object_types", "Module"), $t_list->getItemIDFromList("object_types", "Synthesis"), $t_list->getItemIDFromList("object_types", "CaseStudies"), $t_list->getItemIDFromList("object_types", "Exercise"), $t_list->getItemIDFromList("object_types", "Presentation"), $t_list->getItemIDFromList("object_types", "EvaluationTool"), $t_list->getItemIDFromList("object_types", "Solutions"), $t_list->getItemIDFromList("object_types", "TeachingNotes"), $t_list->getItemIDFromList("object_types", "Resource"));
 				
 				$va_verified_object_ids = array();
 				$q_objects = caMakeSearchResult("ca_objects", $pa_object_ids);

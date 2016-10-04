@@ -87,7 +87,7 @@
  		/**
  		 *
  		 */ 
- 		public function index() {
+ 		public function Index() {
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$this->opo_config->get("section_title"));
  			
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
@@ -100,7 +100,7 @@
  			$this->render("Collections/index_html.php");
  		}
  		# -------------------------------------------------------
- 		public function collectionHierarchy(){
+ 		public function CollectionHierarchy(){
  			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
  			if($vn_collection_id){
  				$t_item = new ca_collections($vn_collection_id);
@@ -112,7 +112,7 @@
  			$this->render("Collections/collection_hierarchy_html.php");
  		}
  		# -------------------------------------------------------
- 		public function childList(){
+ 		public function ChildList(){
  			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
  			if($vn_collection_id){
  				$t_item = new ca_collections($vn_collection_id);
