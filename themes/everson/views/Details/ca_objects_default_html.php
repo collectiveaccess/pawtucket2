@@ -36,10 +36,9 @@
 <div class="row" >
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-6 '>
-				{{{representationViewer}}}
-				
-				
+			<div class='col-sm-6 col-md-6 col-lg-6 ' style='min-height:600px;'>
+				{{{representationViewer}}}			
+
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
@@ -57,7 +56,7 @@
 				if ($va_entities = $t_object->getWithTemplate('<unit delimiter="<br/>" restrictToRelationshipTypes="creator,manufacturer" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
 					print "<div class='unit'><h6>Artist/Maker/Manufacturer</h6>".$va_entities."</div>";
 				}
-				if ($vs_date = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</unit>')) {
+				if ($vs_date = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.date.dates_value">^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</ifdef></unit>')) {
 					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 				}
 				if ($va_types = $t_object->get('ca_objects.object_type', array('returnAsArray' => true))) {
@@ -70,15 +69,22 @@
 				if ($va_extent = $t_object->get('ca_objects.extent')) {
 					print "<div class='unit'><h6>Extent</h6>".$va_extent."</div>";
 				}
+				if ($va_dig_extent = $t_object->get('ca_objects.dig_extent')) {
+					print "<div class='unit'><h6>Digital Extent</h6>".$va_dig_extent."</div>";
+				}				
 				if ($va_materials = $t_object->get('ca_objects.materials', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Materials</h6>";
+					$va_materials = array();
 					foreach ($va_materials as $va_key => $va_material ) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($va_material), '', '', 'Browse', 'objects/facet/material_facet/id/'.$va_material)."</div>";
+						$va_materials[] = "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($va_material), '', '', 'Browse', 'objects/facet/material_facet/id/'.$va_material)."</div>";
 					}
-					print "</div>";
+					if (sizeof($va_materials) > 0) {
+						print "<div class='unit'><h6>Materials</h6>";
+						print join(', ', $va_materials);
+						print "</div>";
+					}
 				}
 				if ($va_measurements = $t_object->get('ca_objects.measurements', array('returnWithStructure' => true))) {
-					print "<div class='unit'><h6>Measurements</h6>";
+					$vs_buf = "";
 					foreach ($va_measurements as $va_key => $va_measurement_t) {
 						
 						foreach ($va_measurement_t as $va_key => $va_measurement) {
@@ -101,13 +107,17 @@
 							if ($va_measurement['circumference']) {
 								$va_meas[] = $va_measurement['circumference']." circumference";
 							}	
-							print join($va_meas, ' x ');
+							$vs_buf.= join($va_meas, ' x ');
 							if ($va_measurement['dimension_remarks']) {
-								print "<b>Notes: </b>".$va_measurement['dimension_remarks'];
+								$vs_buf.= "<b>Notes: </b>".$va_measurement['dimension_remarks'];
 							}																											
 						}
 					}
-					print "</div>";
+					if ($vs_buf != "") {
+						print "<div class='unit'><h6>Measurements</h6>";
+						print $vs_buf;
+						print "</div>";
+					}
 				}								
 				if ($vs_description = $t_object->get('ca_objects.description')) {
 					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";

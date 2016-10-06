@@ -110,7 +110,7 @@
 					} else {
 						$vs_date = null;
 					}
-					if ($vs_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator')))) {
+					if ($vs_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator', 'artist')))) {
 						$vs_creator = "<p>".$vs_artist."</p>";
 					} else {
 						$vs_creator = null;

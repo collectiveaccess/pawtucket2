@@ -6,7 +6,7 @@
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
-	$vb_show_hierarchy_viewer = true;
+	$vb_show_hierarchy_viewer = false;
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
@@ -59,7 +59,7 @@
 					if ($va_arrangement = $t_item->get('ca_collections.arrangement')) {
 						print "<div class='unit'><h6>Arrangement</h6>".$va_arrangement."</div>";
 					}	
-					if ($va_terms = $t_item->getWithTemplate('<unit><b>Reproduction</b> ^ca_collections.reproRestrictions.reproduction <br/><b>Access</b> ^ca_collections.reproRestrictions.access_restrictions</unit>')) {
+					if ($va_terms = $t_item->getWithTemplate('<unit><ifdef code="ca_collections.reproRestrictions.reproduction"><b>Reproduction</b> ^ca_collections.reproRestrictions.reproduction <br/></ifdef><ifdef code="ca_collections.reproRestrictions.access_restrictions"><b>Access</b> ^ca_collections.reproRestrictions.access_restrictions</ifdef></unit>')) {
 						print "<div class='unit'><h6>Terms of Use</h6>".$va_terms."</div>";
 					}
 					if ($va_finding = $t_item->get('ca_collections.finding_aid')) {
