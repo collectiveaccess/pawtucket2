@@ -284,7 +284,7 @@
 				</div><!-- end col -->
 				<div class='col-sm-4 col-md-4 col-lg-4'>
 <?php
-					print "<div class='faDownload'>".caNavLink($this->request, '<i class="glyphicon glyphicon-download-alt"></i> Download Finding Aid', '', 'Detail', 'collections', $vn_collection_root.'/view/pdf/export_format/_pdf_ca_collections_summary')."</div>";
+					print "<div class='faDownload'>".((file_exists(__CA_BASE_DIR__.'/nysoclib_cityreaders_finding_aids.pdf')) ? "<a href='/nysoclib_cityreaders_finding_aids.pdf'><i class='glyphicon glyphicon-download-alt'></i> Download Finding Aid</a>" : caNavLink($this->request, '<i class="glyphicon glyphicon-download-alt"></i> Download Finding Aid', '', 'Detail', 'collections', $vn_collection_root.'/view/pdf/export_format/_pdf_ca_collections_summary'))."</div>";
 ?>					
 				</div>
 			</div><!-- end row -->
