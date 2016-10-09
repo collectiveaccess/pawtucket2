@@ -4,6 +4,7 @@ function printLevelPDF($po_request, $va_collection_ids, $o_config, $vn_level, $v
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
 		return;
 	}
+	$va_access_values = caGetUserAccessValues($po_request);
 	$vs_output = "";
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 	if($qr_collections->numHits()){

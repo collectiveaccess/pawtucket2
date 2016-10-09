@@ -39,10 +39,14 @@
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
-							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
+							$o_search = caGetSearchInstance("ca_objects");
+							$qr_res = $o_search->search("ca_collections.collection_id:".$qr_collection_children->get("collection_id"), array("sort" => "ca_object_labels.name", "sort_direction" => "desc", "checkAccess" => $va_access_values));
+							$vn_rel_object_count = $qr_res->numHits();
+							
+							#$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<br/><small>(".$vn_rel_object_count." digitized item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist){
 								#print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";

@@ -117,7 +117,7 @@
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active item"' : 'class="item"'; ?> id="menuId-4"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 			
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active item"' : 'class="item"'; ?> id="menuId-5"><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collection") ? 'class="active item"' : 'class="item"'; ?> id="menuId-6"><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections" || $this->request->getAction() == "collections") ? 'class="active item"' : 'class="item"'; ?> id="menuId-6"><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "Index"); ?></li>
 					
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active item"' : 'class="item"'; ?> id="menuId-7"><?php print caNavLink($this->request, _t("About this Project"), "", "", "About", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About")  && ($this->request->getAction() == "userguide"))? 'class="active item"' : 'class="item"'; ?> id="menuId-8"><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "userguide"); ?></li>

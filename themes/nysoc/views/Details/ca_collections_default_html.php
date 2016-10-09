@@ -300,8 +300,14 @@
 							<li id="contTabLink"><a href="#contTab"><?php print $vs_collection_type; ?> Browser</a></li>
 <?php
 						}
+						$o_search = caGetSearchInstance("ca_objects");
+						$qr_res = $o_search->search("ca_collections.collection_id:".$t_item->get("collection_id"), array("sort" => "ca_object_labels.name", "sort_direction" => "desc", "checkAccess" => $va_access_values));
+						$vn_rel_object_count = $qr_res->numHits();
+						if($vn_rel_object_count){
+							print '<li><a href="#relObjectsTab">Digitized Items</a></li>';
+						}
+							
 ?>
-						{{{<ifcount code="ca_objects" min="1"><li><a href="#relObjectsTab"><?php print $vs_collection_type; ?> Items</a></li></ifcount>}}}
 					</ul>
 					<div id="ovTab">
 						<div class='container'>
@@ -329,9 +335,10 @@
 						</div><!-- end container -->						
 					</div><!-- end contTab -->
 <?php				
-			}									
+			}	
+			if($vn_rel_object_count){								
 ?>				
-			{{{<ifcount code="ca_objects" min="1">
+
 				<div id="relObjectsTab">
 					<div class='container'>
 						<div class="row">
@@ -343,10 +350,10 @@
 				</div><!-- end relObjectsTab -->	
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'docs', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'docs', array('search' => 'collection_id:'.$t_item->get('collection_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
-								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+								loadingHtml: '<?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?>',
 								padding: 20,
 								nextSelector: 'a.jscroll-next'
 							});
@@ -355,7 +362,9 @@
 			
 					});
 				</script>
-			</ifcount>}}}				
+<?php
+			}
+?>				
 				</div><!-- end Finding Table -->								
 				</div><!-- end col -->
 			</div><!-- end row -->
