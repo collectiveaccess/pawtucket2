@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
-"POT-Creation-Date: 2016-10-10 22:52-0400\n"
-"PO-Revision-Date: 2016-10-10 23:20-0400\n"
+"POT-Creation-Date: 2016-10-10 23:51-0400\n"
+"PO-Revision-Date: 2016-10-10 23:52-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.9\n"
 "X-Poedit-Basepath: ../../views\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-KeywordsList: _t\n"
+"X-Poedit-KeywordsList: _t;_\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
@@ -133,11 +133,19 @@ msgstr ""
 #: Search/ca_objects_advanced_search_objects_html.php:4
 #: pageFormat/pageHeader.php:233
 msgid "Advanced Search"
-msgstr ""
+msgstr "Búsqueda avanzada"
 
 #: Search/ca_objects_advanced_search_objects_html.php:9
 msgid "Keyword"
 msgstr "Palabras clave"
+
+#: Search/ca_objects_advanced_search_objects_html.php:13
+msgid "Reset"
+msgstr "Reiniciar"
+
+#: Search/ca_objects_advanced_search_objects_html.php:14
+msgid "Search"
+msgstr "Buscar"
 
 #: Search/ca_objects_advanced_search_objects_html.php:20
 msgid "Author"
