@@ -10,7 +10,7 @@
 			{{{_fulltext%width=200px&height=1}}}
 		</div>
 		<div class="col-sm-4 field">
-			<div style="float: right; margin-top:20px; margin-left: 20px; margin-right:15px;">{{{resetTag}}}<?php print _t('Reset');?>{{{resetTag}}}</div>
+			<div style="float: right; margin-top:20px; margin-left: 20px; margin-right:15px;">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
 			<div style="float: right; margin-top:20px; ">{{{submitTag}}}<?php print _t('Search');?>{{{/submitTag}}}</div>
 		</div>			
 	</div>	
