@@ -38,6 +38,8 @@
    function initializeLocale($g_ui_locale) {
    		global $_, $_locale;
    		
+		MemoryCache::flush('translation');
+
    		$va_locale_paths = [];
    		if (file_exists($vs_locale_path = __CA_THEME_DIR__.'/locale/'.$g_ui_locale.'/messages.mo')) { $va_locale_paths[] = $vs_locale_path; }
    		if (file_exists($vs_locale_path = __CA_THEMES_DIR__.'/default/locale/'.$g_ui_locale.'/messages.mo')) { $va_locale_paths[] = $vs_locale_path; }
