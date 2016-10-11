@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-10-10 23:51-0400\n"
-"PO-Revision-Date: 2016-10-10 23:52-0400\n"
+"PO-Revision-Date: 2016-10-10 23:59-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: Browse/browse_refine_subview_html.php:81
 msgid "close"
-msgstr ""
+msgstr "abrir"
 
 #: Browse/browse_results_html.php:72
 msgid "Sort by:"
