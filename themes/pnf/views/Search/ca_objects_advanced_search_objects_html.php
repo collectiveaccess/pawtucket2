@@ -10,7 +10,7 @@
 			{{{_fulltext%width=200px&height=1}}}
 		</div>
 		<div class="col-sm-4 field">
-			<div style="float: right; margin-top:20px; margin-left: 20px; margin-right:15px;">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
+			<div style="float: right; margin-top:20px; margin-left: 20px;">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
 			<div style="float: right; margin-top:20px; ">{{{submitTag}}}<?php print _t('Search');?>{{{/submitTag}}}</div>
 		</div>			
 	</div>	
@@ -108,9 +108,9 @@
 			<?php print _t("Holding Institution Call Number"); ?><br/>
 			{{{ca_objects.idno%width=210px}}}
 		</div>	
-		<div class="col-sm-6 field">
-			<div style="float: right; margin-top:20px; margin-left: 20px; margin-right:15px;">{{{reset%label=Reset}}}</div>
-			<div style="float: right; margin-top:20px;">{{{submit%label=Search}}}</div>
+		<div class="col-sm-12 field">
+			<div style="float: right; margin-top:20px; margin-left: 20px; ">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
+			<div style="float: right; margin-top:20px;">{{{submitTag}}}<?php print _t('Search');?>{{{/submitTag}}}</div>
 		</div>						
 	</div>
 	

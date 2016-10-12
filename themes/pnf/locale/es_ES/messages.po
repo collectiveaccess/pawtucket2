@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-10-10 23:51-0400\n"
-"PO-Revision-Date: 2016-10-10 23:59-0400\n"
+"PO-Revision-Date: 2016-10-11 12:58-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -37,7 +37,7 @@ msgstr "abrir"
 
 #: Browse/browse_results_html.php:72
 msgid "Sort by:"
-msgstr ""
+msgstr "Ordenar por:"
 
 #: Browse/browse_results_html.php:85
 msgid "desc"
@@ -49,11 +49,11 @@ msgstr ""
 
 #: Browse/browse_results_html.php:152
 msgid "Ascending"
-msgstr ""
+msgstr "Ascendente"
 
 #: Browse/browse_results_html.php:153
 msgid "Descending"
-msgstr ""
+msgstr "Descendente"
 
 #: Browse/browse_results_html.php:203
 msgid "Did you mean one of these: %1?"
@@ -128,7 +128,7 @@ msgstr ""
 #: Search/ca_collections_search_subview_html.php:47
 #: Search/ca_objects_search_subview_html.php:61
 msgid "sort by:"
-msgstr ""
+msgstr "ordenar por:"
 
 #: Search/ca_objects_advanced_search_objects_html.php:4
 #: pageFormat/pageHeader.php:233
@@ -153,7 +153,7 @@ msgstr "Autor"
 
 #: Search/ca_objects_advanced_search_objects_html.php:24
 msgid "Place of Publication"
-msgstr ""
+msgstr "Lugar"
 
 #: Search/ca_objects_advanced_search_objects_html.php:32
 msgid "Title"
@@ -161,27 +161,27 @@ msgstr "Título"
 
 #: Search/ca_objects_advanced_search_objects_html.php:36
 msgid "Printer"
-msgstr ""
+msgstr "Impresor"
 
 #: Search/ca_objects_advanced_search_objects_html.php:43
 msgid "Translator"
-msgstr ""
+msgstr "Traductor"
 
 #: Search/ca_objects_advanced_search_objects_html.php:47
 msgid "Publisher"
-msgstr ""
+msgstr "Editor"
 
 #: Search/ca_objects_advanced_search_objects_html.php:53
 msgid "Language"
-msgstr ""
+msgstr "Lengua"
 
 #: Search/ca_objects_advanced_search_objects_html.php:57
 msgid "Bookseller"
-msgstr ""
+msgstr "Librero"
 
 #: Search/ca_objects_advanced_search_objects_html.php:64
 msgid "Date Range"
-msgstr ""
+msgstr "Fecha"
 
 #: Search/ca_objects_advanced_search_objects_html.php:71
 msgid "Caption Title"
@@ -189,7 +189,7 @@ msgstr ""
 
 #: Search/ca_objects_advanced_search_objects_html.php:75
 msgid "Holding Institution"
-msgstr ""
+msgstr "Institución"
 
 #: Search/ca_objects_advanced_search_objects_html.php:83
 msgid "Physical Description"
@@ -217,7 +217,7 @@ msgstr ""
 
 #: Search/ca_objects_advanced_search_objects_html.php:122
 msgid "User's guide"
-msgstr ""
+msgstr "Guía de usuario"
 
 #: Search/ca_objects_advanced_search_objects_html.php:124
 msgid "Enter your search terms in the fields to the left"
@@ -225,12 +225,12 @@ msgstr ""
 
 #: Search/ca_objects_search_subview_html.php:56
 msgid "Full results"
-msgstr ""
+msgstr "Resultados completos"
 
 #: pageFormat/browseMenu_alt.php:38 pageFormat/browseMenu_alt.php:50
 #: pageFormat/browseMenu_alt.php:59
 msgid "Browse"
-msgstr ""
+msgstr "Explorar"
 
 #: pageFormat/pageHeader.php:44
 msgid "User Profile"

@@ -60,7 +60,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
+				<H6><?php print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))?></H6>
 				<HR>
 <?php
 				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
