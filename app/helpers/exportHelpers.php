@@ -111,7 +111,9 @@
 			
 		caDoTemplateTagSubstitution($o_view, $pt_subject, $va_template_info['path'], ['checkAccess' => $pa_access_values, 'render' => false]);	
 		caExportViewAsPDF($o_view, $va_template_info, $ps_output_filename, []);
-	
+		$o_controller = AppController::getInstance();
+		$o_controller->removeAllPlugins();
+		
 		return true;
 	}
 	# ----------------------------------------
@@ -425,7 +427,9 @@
 				// PDF output
 				//
 				caExportViewAsPDF($o_view, $va_template_info, caGetOption('filename', $va_template_info, 'export_results.pdf'), []);
-			
+				$o_controller = AppController::getInstance();
+				$o_controller->removeAllPlugins();
+		
 				return;
 		}
 	}

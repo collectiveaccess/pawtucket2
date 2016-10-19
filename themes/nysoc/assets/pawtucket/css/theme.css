@@ -665,6 +665,10 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 .multisearch small {
 	font-size:100%;
 }
+.multisearch .authorityResult.collectionsResult{
+	height:70px;
+	overflow-y:scroll;
+}
 .vco-slider .slider-item .content .content-container .text .container h2.date {
 	display:none !important;
 }
@@ -1421,6 +1425,9 @@ div.advancedSearchField {
 	overflow-y: auto !important;
 	padding:0px !important;
 }
+.collectionsContainer a.openCollection.active small {
+    color: #fff;
+}
 #collectionLoad {
 	float:none !important;	
 	padding:15px 0px 0px 0px !important;
@@ -1544,6 +1551,15 @@ div.advancedSearchField {
 }
 #collectionLoad .collListItem .fa-chevron-right{
 	width:14px
+}
+.collectionLoadDefault{
+	font-size:16px;
+}
+#collectionLoad .fa-object-group{
+	color:#5e9eaa !important;
+}
+#collectionLoad .fa-object-group.orange{
+	color:#d77421 !important;
 }
 
 /* Sets */

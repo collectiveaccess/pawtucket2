@@ -58,7 +58,7 @@
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
-	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse";}
+	if ($vs_table == "ca_collections") { $vs_class = "collectionsBrowse col-sm-8";}
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -166,6 +166,28 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<form id="setsSelectMultiple">
 		<div class="row">
+<?php
+			if ($vs_table == "ca_collections") {
+				print "<div class='mapInfo'>Click on map pins for library addresses and websites</div>";
+			}
+			if ($this->request->getAction() == "collections") {
+				print "<div class='institutionList col-sm-4'>";
+				$qr_res->seek(0);
+				while($qr_res->nextHit()) {
+					print "<div class='institutionUnit'>";
+					print "<a href='#' onclick='$(\"#institutionMore".$qr_res->get('ca_collections.collection_id')."\").toggle(300);return false;'><i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels')."</a>";
+					print "<div id='institutionMore".$qr_res->get('ca_collections.collection_id')."' class='institutionMore'>"; 
+					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_address" min="1"><unit><ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef><ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef><ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef><ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef><ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef></unit></ifcount>');
+					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_website" min="1"><unit><ifdef code="ca_collections.collection_website"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.collection_website</a><br/></ifdef></unit><ifcount>');
+					print caNavLink($this->request, 'Sueltas in this collection', 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'));
+					print "</div>";
+					print "</div>";
+					print "<hr>";
+				}
+				$qr_res->seek(0);
+				print "</div>";
+			}
+?>		
 			<div id="browseResultsContainer" <?php print "class='".$vs_class."'";?> >
 <?php
 		if($vb_is_search && !$qr_res->numHits() && $vs_search){
@@ -185,9 +207,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 } // !ajax
-if ($vs_table == "ca_collections") {
-	print "<div class='mapInfo'>Click on map pins for library addresses and websites</div>";
-}
+
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
 if (!$vb_ajax) {	// !ajax

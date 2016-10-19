@@ -1,0 +1,260 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
+"POT-Creation-Date: 2016-10-10 23:51-0400\n"
+"PO-Revision-Date: 2016-10-11 12:58-0400\n"
+"Last-Translator: Seth <Seth@collectiveacess.org>\n"
+"Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.9\n"
+"X-Poedit-Basepath: ../../views\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _t;_\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: Browse/browse_refine_subview_html.php:43
+msgid "Filter by"
+msgstr ""
+
+#: Browse/browse_refine_subview_html.php:54 Browse/browse_results_html.php:245
+#: Details/ca_entities_default_html.php:72
+#: Details/ca_entities_default_html.php:80
+msgid "Loading..."
+msgstr ""
+
+#: Browse/browse_refine_subview_html.php:80
+#: Browse/browse_refine_subview_html.php:84
+msgid "and %1 more"
+msgstr ""
+
+#: Browse/browse_refine_subview_html.php:81
+msgid "close"
+msgstr "abrir"
+
+#: Browse/browse_results_html.php:72
+msgid "Sort by:"
+msgstr "Ordenar por:"
+
+#: Browse/browse_results_html.php:85
+msgid "desc"
+msgstr ""
+
+#: Browse/browse_results_html.php:85
+msgid "asc"
+msgstr ""
+
+#: Browse/browse_results_html.php:152
+msgid "Ascending"
+msgstr "Ascendente"
+
+#: Browse/browse_results_html.php:153
+msgid "Descending"
+msgstr "Descendente"
+
+#: Browse/browse_results_html.php:203
+msgid "Did you mean one of these: %1?"
+msgstr ""
+
+#: Browse/browse_results_html.php:205
+msgid "Did you mean %1?"
+msgstr ""
+
+#: Browse/browse_results_images_html.php:148
+#: Browse/browse_results_list_html.php:146
+msgid "Next %1"
+msgstr ""
+
+#: Details/viewer_help_html.php:3
+msgid "How to use the image viewer"
+msgstr ""
+
+#: Details/viewer_help_html.php:6
+msgid ""
+"Click and drag with the mouse to pan across the image. You can use the "
+"mousewheel or trackpad to zoom in or out of the image. \n"
+"\tThe <code>+</code> and <code>-</code> buttons and zoom slider bar at the "
+"top of viewer may also be used. The viewer displays the image at full "
+"resolution, loading \n"
+"\tdetail as you zoom. The more you zoom the more detail will be visible.\n"
+"\t"
+msgstr ""
+
+#: Details/viewer_help_html.php:12
+msgid "Keyboard shortcuts"
+msgstr ""
+
+#: Details/viewer_help_html.php:15
+msgid ""
+"Single-key shortcuts are available for common actions. Pressing the key is "
+"equivalent to the corresponding mouse action."
+msgstr ""
+
+#: Details/viewer_help_html.php:18
+msgid "%1 to activate image panning"
+msgstr ""
+
+#: Details/viewer_help_html.php:19
+msgid "%1 to toggle visibility of the image overview"
+msgstr ""
+
+#: Details/viewer_help_html.php:20
+msgid "%1 to return the image to the centered, zoomed out \"home\" position"
+msgstr ""
+
+#: Details/viewer_help_html.php:21
+msgid "%1 to toggle visibility of viewer controls"
+msgstr ""
+
+#: Details/viewer_help_html.php:22
+msgid "%1 to hide controls and labels"
+msgstr ""
+
+#: Details/viewer_help_html.php:23
+msgid "%1 or %2 to zoom in in small increments"
+msgstr ""
+
+#: Details/viewer_help_html.php:24
+msgid "%1 or %2 to zoom out in small increments"
+msgstr ""
+
+#: Details/viewer_help_html.php:25
+msgid "%1, %2, %3 or %4 to pan the image in small increments"
+msgstr ""
+
+#: Search/ca_collections_search_subview_html.php:47
+#: Search/ca_objects_search_subview_html.php:61
+msgid "sort by:"
+msgstr "ordenar por:"
+
+#: Search/ca_objects_advanced_search_objects_html.php:4
+#: pageFormat/pageHeader.php:233
+msgid "Advanced Search"
+msgstr "Búsqueda avanzada"
+
+#: Search/ca_objects_advanced_search_objects_html.php:9
+msgid "Keyword"
+msgstr "Palabras clave"
+
+#: Search/ca_objects_advanced_search_objects_html.php:13
+msgid "Reset"
+msgstr "Reiniciar"
+
+#: Search/ca_objects_advanced_search_objects_html.php:14
+msgid "Search"
+msgstr "Buscar"
+
+#: Search/ca_objects_advanced_search_objects_html.php:20
+msgid "Author"
+msgstr "Autor"
+
+#: Search/ca_objects_advanced_search_objects_html.php:24
+msgid "Place of Publication"
+msgstr "Lugar"
+
+#: Search/ca_objects_advanced_search_objects_html.php:32
+msgid "Title"
+msgstr "Título"
+
+#: Search/ca_objects_advanced_search_objects_html.php:36
+msgid "Printer"
+msgstr "Impresor"
+
+#: Search/ca_objects_advanced_search_objects_html.php:43
+msgid "Translator"
+msgstr "Traductor"
+
+#: Search/ca_objects_advanced_search_objects_html.php:47
+msgid "Publisher"
+msgstr "Editor"
+
+#: Search/ca_objects_advanced_search_objects_html.php:53
+msgid "Language"
+msgstr "Lengua"
+
+#: Search/ca_objects_advanced_search_objects_html.php:57
+msgid "Bookseller"
+msgstr "Librero"
+
+#: Search/ca_objects_advanced_search_objects_html.php:64
+msgid "Date Range"
+msgstr "Fecha"
+
+#: Search/ca_objects_advanced_search_objects_html.php:71
+msgid "Caption Title"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:75
+msgid "Holding Institution"
+msgstr "Institución"
+
+#: Search/ca_objects_advanced_search_objects_html.php:83
+msgid "Physical Description"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:87
+msgid "Presence of Ornament(s)"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:94
+msgid "Local Note(s)"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:98
+msgid "Attribution Issues"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:104
+msgid "Ownership"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:108
+msgid "Holding Institution Call Number"
+msgstr ""
+
+#: Search/ca_objects_advanced_search_objects_html.php:122
+msgid "User's guide"
+msgstr "Guía de usuario"
+
+#: Search/ca_objects_advanced_search_objects_html.php:124
+msgid "Enter your search terms in the fields to the left"
+msgstr ""
+
+#: Search/ca_objects_search_subview_html.php:56
+msgid "Full results"
+msgstr "Resultados completos"
+
+#: pageFormat/browseMenu_alt.php:38 pageFormat/browseMenu_alt.php:50
+#: pageFormat/browseMenu_alt.php:59
+msgid "Browse"
+msgstr "Explorar"
+
+#: pageFormat/pageHeader.php:44
+msgid "User Profile"
+msgstr ""
+
+#: pageFormat/pageHeader.php:45
+msgid "Logout"
+msgstr ""
+
+#: pageFormat/pageHeader.php:47
+msgid "Login"
+msgstr ""
+
+#: pageFormat/pageHeader.php:48
+msgid "Register"
+msgstr ""
+
+#: system/configuration_error_install_html.php:36
+msgid ""
+"<div class='error'>An error in your system configuration has been detected</"
+"div>\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?"
+"title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at "
+"the messages below."
+msgstr ""

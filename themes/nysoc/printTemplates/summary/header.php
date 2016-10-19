@@ -38,9 +38,10 @@
 		case 'wkhtmltopdf':
 ?><!--BEGIN HEADER--><!DOCTYPE html><html>
 	<head>
+		<link href='http://fonts.googleapis.com/css?family=Gudea:400,700,400italic' rel='stylesheet' type='text/css'>
 		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
 	</head>
-	<body style='margin:0;padding-bottom:0.1in;'><div id='header_wk'>
+	<body style='margin:0;padding:0px;'><div id='header_wk'>
 <?php
 		if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
 			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
