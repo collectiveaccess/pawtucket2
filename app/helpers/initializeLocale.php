@@ -58,7 +58,8 @@
 				'adapter' => 'gettext',
 				'content' => array_shift($va_locale_paths),
 				'locale'  => $_locale,
-				'tag'     => 'CA'
+				'tag'     => 'CA',
+				'disableNotices' => true
 			));
 			foreach($va_locale_paths as $vs_locale_path) {
 				$_->addTranslation([
