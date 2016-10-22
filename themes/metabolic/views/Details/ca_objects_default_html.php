@@ -59,10 +59,8 @@
 				print "<h3>"._t("Alternate ID")."</h3><p>".$va_alt_id."</p><!-- end unit -->";
 			}
 			#TODO fix alt names	
-			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))){
-				#print "<pre>";
-				#print_r($va_alt_name[$vn_object_id]);
-				#print "</pre>";
+			if($va_alt_name = $t_object->get('ca_objects.nonpreferred_labels', array('returnWithStructure' => true, 'assumeDisplayField' => false, 'convertCodesToDisplayText' => false))){
+
 				$va_alt_name = array_pop($va_alt_name);
 				if(sizeof($va_alt_name)){
 					print "<h3>"._t("Alternate Title%1", ((sizeof($va_alt_name) > 1) ? "s" : ""))."</h3>";
@@ -72,7 +70,6 @@
 					$vs_alternate = "";
 					$vs_use_for = "";
 					$vs_file_name = "";
-					$va_alt_name = array_pop($va_alt_name);
 					foreach($va_alt_name as $vn_x => $va_alt_title_info){
 						switch($va_alt_title_info["type_id"]){
 							case $vn_alternate_id:

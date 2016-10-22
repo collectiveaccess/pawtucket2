@@ -239,7 +239,7 @@ if (!$this->request->isAjax()) {
 		'entity_id' => $vn_entity_id
 	));
 	$this->setVar('columns', ($vn_rightColText) ? 4 : 6);
-	#print $this->render('related_objects_grid_carousel.php');
+	print $this->render('Details/related_objects_grid_carousel.php');
 	
 if (!$this->request->isAjax()) {
 ?>
@@ -248,7 +248,7 @@ if (!$this->request->isAjax()) {
 <?php
 	if(sizeof($va_actions)){
 ?>		
-				<H3 style="clear:both;"><?php print _t("Related Action%1", ($vn_num_actions > 1) ? "s" : ""); ?></H3><div class="jcarousel-wrapper"><div class="jcarousel" id="actionTimeline"><ul>
+				<H3 style="clear:both;padding-bottom:15px;"><?php print _t("Related Action%1", ($vn_num_actions > 1) ? "s" : ""); ?></H3><div class="jcarousel-wrapper"><div class="jcarousel" id="actionTimeline"><ul>
 <?php
 				$t_object = new ca_objects();
 				$va_siloIconToolTips = array();
@@ -276,16 +276,16 @@ if (!$this->request->isAjax()) {
 									$vs_bgColor = "#000000";
 									break;
 							}
-							print caNavLink($this->request, "<div class='actionSiloIcon siloIcon".$va_silo_info["collection_id"]."' style='background-color:".$vs_bgColor."'><!-- empty --></div>", '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_silo_info["collection_id"]), array("title" => $va_silo_info["label"]));
+							print caNavLink($this->request, "<div class='actionSiloIcon siloIcon".$va_silo_info["collection_id"]."' style='background-color:".$vs_bgColor."'><!-- empty --></div>", '', '', 'Detail', 'collections/'.$va_silo_info["collection_id"]);
 						}
 						print "</div>";
 					}
-					print "<div class='actionMoreInfo'>".caNavLink($this->request, _t("More Info >"), '', 'Detail', 'Occurrence', 'Show', array('occurrence_id' => $va_action["occurrence_id"]))."</div></div></li>\n"; // format used on load only
+					print "<div class='actionMoreInfo'>".caNavLink($this->request, _t("More Info >"), '', '', 'Detail', 'occurrences/'.$va_action["occurrence_id"])."</div></div></li>\n"; // format used on load only
 				}
 ?>
 				</ul>
 			</div><!-- end timelineContainer --></div>
-			<?php
+<?php
 				if($vn_num_actions > 5){
 ?>
 				<div class="sliderContainer">
