@@ -41,7 +41,7 @@
 			$va_timestamps = array_shift($qr_res->get('ca_occurrences.date.dates_value', array('rawDate' => true, 'returnWithStructure' => true)));
 			$va_actions[$vn_id = $qr_res->get('ca_occurrences.occurrence_id')] = array(
 				'occurrence_id' => $vn_id,
-				'label' => $qr_res->get('ca_occurrences.preferred_labels.name'),
+				'label' => $qr_res->get('ca_occurrences.preferred_labels.name', ['returnAsLink' => true]),
 				'idno' => $qr_res->get('ca_occurrences.idno'),
 				'date' => $vs_date,
 				'timestamp' => $va_timestamps['start'],
@@ -374,11 +374,11 @@ if (!$this->request->isAjax()) {
 		// TODO: fix to do proper ajax load with jCarousel 0.3
 		// (this is 0.2 code)
 		function loadActions(carousel, state) {
-			var entity_id = <?php print $vn_entity_id; ?>;
+			var collection_id = <?php print (int)$vn_collection_id; ?>;
 			for (var i = carousel.first; i <= (carousel.last + 6); i++) {
 				// Check if the item already exists
 				if (!carousel.has(i)) {
-					jQuery.getJSON('<?php print caNavUrl($this->request, 'Chronology', 'Show', 'GetActionsEntity'); ?>', {entity_id: entity_id, s: i, n: 10}, function(actions) {
+					jQuery.getJSON('<?php print caNavUrl($this->request, 'Chronology', 'Show', 'GetActionsCollection'); ?>', {collection_id: collection_id, s: i, n: 10}, function(actions) {
 						jQuery.each(actions, function(k, v) {
 							
 							// clip label text if too long

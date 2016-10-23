@@ -35,7 +35,7 @@
 			$va_timestamps = array_shift($qr_res->get('ca_occurrences.date.dates_value', array('rawDate' => true, 'returnWithStructure' => true)));
 			$va_actions[$vn_id = $qr_res->get('ca_occurrences.occurrence_id')] = array(
 				'occurrence_id' => $vn_id,
-				'label' => $qr_res->get('ca_occurrences.preferred_labels.name'),
+				'label' => $qr_res->get('ca_occurrences.preferred_labels.name', ['returnAsLink' => true]),
 				'idno' => $qr_res->get('ca_occurrences.idno'),
 				'date' => $vs_date,
 				'timestamp' => $va_timestamps['start'],
