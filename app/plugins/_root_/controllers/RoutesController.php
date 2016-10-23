@@ -180,11 +180,14 @@
  						while($qr_stops->nextHit()) {
  							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnWithStructure' => true,'returnAsArray' => true));
  							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnWithStructure' => true, 'returnAsArray' => true, 'rawDate' => true));
+ 							
  							$vn_start = $vn_end = null;
- 							foreach(array_shift($va_dates) as $va_date) {
- 								$vn_start = $va_date['start'];
- 								$vn_end = $va_date['end'];
- 								break;
+ 							foreach(array_shift($va_dates) as $va_date_by_id) {
+ 								foreach($va_date_by_id as $vn_id => $va_date) {
+ 									$vn_start = $va_date['start'];
+ 									$vn_end = $va_date['end'];
+ 									break(2);
+ 								}
  							}
  							foreach(array_shift($va_georefs) as $vn_i => $va_coord) {
  								//$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
@@ -243,12 +246,14 @@
  						$qr_stops = caMakeSearchResult('ca_tour_stops', $va_stop_ids);
  						while($qr_stops->nextHit()) {
  							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnAsArray' => true));
- 							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnAsArray' => true, 'rawDate' => true));
+ 							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnWithStructure' => true, 'returnAsArray' => true, 'rawDate' => true));
  							$vn_start = $vn_end = null;
- 							foreach($va_dates as $va_date) {
- 								$vn_start = $va_date['start'];
- 								$vn_end = $va_date['end'];
- 								break;
+ 							foreach(array_shift($va_dates) as $va_date_by_id) {
+ 								foreach($va_date_by_id as $vn_id => $va_date) {
+ 									$vn_start = $va_date['start'];
+ 									$vn_end = $va_date['end'];
+ 									break(2);
+ 								}
  							}
  							foreach($va_georefs as $vn_i => $va_coord) {
  								$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
