@@ -111,7 +111,7 @@
 			print caNavLink($this->request, _t("About"), "", "", "About", "Index");
 			print caNavLink($this->request, _t("Browse"), "", "", "About", "browse");
 			print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index");
-			print caNavLink($this->request, _t("Chronology"), "", "MetabolicChronology", "Show", "Index");
+			#print caNavLink($this->request, _t("Chronology"), "", "MetabolicChronology", "Show", "Index");
 			print caNavLink($this->request, _t("Collection"), "", "", "Gallery", "Index");
 			print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "archive");
 			if($this->request->isLoggedIn()){

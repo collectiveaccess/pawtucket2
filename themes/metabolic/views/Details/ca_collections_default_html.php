@@ -27,21 +27,21 @@
 
 	$va_actions = array();
 	$va_action_map = array();	
-	if($qr_res->numHits()){
+	if($qr_res->numHits() > 0){
 		$t_occ = new ca_occurrences();
 		$i = 0;
-		while($qr_res->nextHit() && $i <= 25) {
+		while($qr_res->nextHit()) { // && $i <= 25) {		// limit to 25 when ajax loading is reinstated
 			$va_silos = array();
 			$va_projects = array();
 			$t_occ->load($qr_res->get('ca_occurrences.occurrence_id'));
 			$va_silos = $t_occ->get("ca_collections", array("restrictToTypes" => array("silo"), "returnWithStructure" => 1, 'checkAccess' => $va_access_values));
 			$va_projects = $t_occ->get("ca_collections", array("restrictToTypes" => array("project"), "returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			if (!($vs_date = trim($qr_res->get('ca_occurrences.date.dates_value', array('dateFormat' => 'delimited'))))) { continue; }
+			if (!($vs_date = trim($qr_res->get('ca_occurrences.date.dates_value', array('dateFormat' => 'delimited', 'timeOmit' => true))))) { continue; }
 			if ($vs_date == 'present') { continue; }
 			$va_timestamps = array_shift($qr_res->get('ca_occurrences.date.dates_value', array('rawDate' => true, 'returnWithStructure' => true)));
 			$va_actions[$vn_id = $qr_res->get('ca_occurrences.occurrence_id')] = array(
 				'occurrence_id' => $vn_id,
-				'label' => $qr_res->get('ca_occurrences.preferred_labels.name'),
+				'label' => $qr_res->get('ca_occurrences.preferred_labels.name', ['returnAsLink' => true]),
 				'idno' => $qr_res->get('ca_occurrences.idno'),
 				'date' => $vs_date,
 				'timestamp' => $va_timestamps['start'],
@@ -267,26 +267,14 @@ if (!$this->request->isAjax()) {
 if (!$this->request->isAjax()) {
 ?>
 		</div><!-- end resultBox -->
-
-
-	</div><!-- end leftColCollection -->
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	</div><!-- end leftColCollection -->		
 <?php
 	if(sizeof($va_actions)){
 ?>		
-				<H3 style="clear:both;"><?php print _t("Related Action%1", ($vn_num_actions > 1) ? "s" : ""); ?></H3><div class="timelineContainer"><ul id="actionTimeline" class="jcarousel-skin-chronology">
+				<H3 style="clear:both;padding-bottom:15px;"><?php print _t("Related Action%1", ($vn_num_actions > 1) ? "s" : ""); ?></H3><div class="jcarousel-wrapper"><div class="jcarousel" id="actionTimeline"><ul>
 <?php
 				$t_object = new ca_objects();
+				$va_siloIconToolTips = array();
 				foreach($va_actions as $vn_action_id => $va_action) {
 					$vs_label = $va_action['label'];
 					if(strlen($va_action['label']) > 125){
@@ -296,19 +284,20 @@ if (!$this->request->isAjax()) {
 					if(is_array($va_action["silos"]) && sizeof($va_action["silos"]) > 0){
 						print "<div class='actionSiloIcons'>";
 						foreach($va_action["silos"] as $vn_i => $va_silo_info){
+						
 							$vs_bgColor = "";
 							switch($va_silo_info["collection_id"]){
 								case $this->request->config->get('silo_strawberry_flag'):
 									$vs_bgColor = $this->request->config->get('silo_strawberry_flag_bg');
-								break;
+									break;
 								# --------------------------------------
 								case $this->request->config->get('silo_silver_water'):
 									$vs_bgColor = $this->request->config->get('silo_silver_water_bg');
-								break;
+									break;
 								# --------------------------------------
 								default:
 									$vs_bgColor = "#000000";
-								break;
+									break;
 							}
 							print caNavLink($this->request, "<div class='actionSiloIcon siloIcon".$va_silo_info["collection_id"]."' style='background-color:".$vs_bgColor."'><!-- empty --></div>", '', '', 'Detail', 'collections/'.$va_silo_info["collection_id"], array("title" => $va_silo_info["label"]));
 						}
@@ -318,6 +307,7 @@ if (!$this->request->isAjax()) {
 				}
 ?>
 				</ul>
+			</div><!-- end timelineContainer --></div>	
 <?php
 				if($vn_num_actions > 5){
 ?>
@@ -328,42 +318,19 @@ if (!$this->request->isAjax()) {
 				</div><!-- end sliderContainer -->
 <?php
 				}
-?>
-			</div><!-- end timelineContainer -->
+?>			
 			<div style="clear:both;"><!-- empty --></div>	
 <?php
 	}
-?>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+?>	
 	
 </div><!-- end detailBody -->
-
 <?php
 }
 ?>
-
-	<script type="text/javascript">
-
-		jQuery('.scrollPane').jScrollPane({
-			
-			animateScroll: true,
-		});
-	</script>	
-	
-	
-	
+<script type="text/javascript">
+	jQuery('.scrollPane').jScrollPane({	animateScroll: true });
+</script>		
 	
 <?php
 	if(sizeof($va_actions)){
@@ -371,7 +338,7 @@ if (!$this->request->isAjax()) {
 
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery('#actionTimeline').jcarousel({size: <?php print (int)$vn_num_actions; ?><?php print ($vn_num_actions > 5) ? ",  itemLoadCallback:loadActions" : ""; ?>});
+			jQuery('#actionTimeline').jcarousel({size: <?php print (int)$vn_num_actions; ?>});
 			jQuery('#actionTimeline').data('actionmap', <?php print json_encode($va_action_map); ?>);
 			var actionmap = jQuery('#actionTimeline').data('actionmap');
 <?php
@@ -389,20 +356,25 @@ if (!$this->request->isAjax()) {
 					}, 10);
 				},
 				stop: function(event, ui) { 
+					console.log(ui, ui.value);
 					jQuery('#sliderPosInfo').css('display', 'none');
-					jQuery('#actionTimeline').data('jcarousel').scroll(ui.value, jQuery('#actionTimeline').data('jcarousel').has(ui.value));
+					jQuery('#actionTimeline').jcarousel('scroll', ui.value);
 				}
 			});
 <?php
 			}
 ?>
-
-		});
-		
-		
-
+			$('#actionTimeline').on('jcarousel:scrollend', function(event, carousel) {
+				//console.log("scroll", event, carousel, carousel.items(), jQuery(carousel.items()).index(carousel.last()));
+				
+				// TODO: call ajax load here
+			});
+		});	
+			
+		// TODO: fix to do proper ajax load with jCarousel 0.3
+		// (this is 0.2 code)
 		function loadActions(carousel, state) {
-			var collection_id = <?php print $vn_collection_id; ?>;
+			var collection_id = <?php print (int)$vn_collection_id; ?>;
 			for (var i = carousel.first; i <= (carousel.last + 6); i++) {
 				// Check if the item already exists
 				if (!carousel.has(i)) {
@@ -416,7 +388,7 @@ if (!$this->request->isAjax()) {
 								label = label.substr(0, 122) + "...";
 							}
 							
-							carousel.add(i, "<li><div class='action'><div class='actionDate'>" + v['date'] + "</div><div class='actionTitle'>" + label + "</div>" + v['silos_formatted'] + "<div class='actionMoreInfo'><a href='<?php print caNavUrl($this->request, 'Detail', 'Occurrence', 'Show'); ?>/occurrence_id/" + v['occurrence_id'] + "'><?php print _t("More Info"); ?> ></a></div></div></li>");	// format used when dynamically loading
+							carousel.add(i, "<li><div class='action'><div class='actionDate'>" + v['date'] + "</div><div class='actionTitle'>" + label + "</div>" + v['silos_formatted'] + "<div class='actionMoreInfo'><a href='<?php print caNavUrl($this->request, '', 'Detail', 'occurrences'); ?>/occurrence_id/" + v['occurrence_id'] + "'><?php print _t("More Info"); ?> ></a></div></div></li>");	// format used when dynamically loading
 							
 							i++;
 						});
@@ -429,7 +401,8 @@ if (!$this->request->isAjax()) {
 			// Update slider with current position
 			jQuery('#slider').slider("value", carousel.first);
 			
-		}
+		}		
+		
 	</script>
 <?php
 	}

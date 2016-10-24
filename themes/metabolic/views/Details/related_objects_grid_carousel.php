@@ -27,7 +27,7 @@
  */
  	$t_item = $this->getVar('item');
 	$vn_id 		= $t_item->getPrimaryKey();
-	$qr_hits = $this->getVar('browse_results');
+	$qr_hits = $t_item->getRelatedItems('ca_objects', ['returnAs' => 'searchResult']);
 	$vn_c = 0;
 	$vn_itemc = 0;
 	$vn_items_per_page = 12;
@@ -37,15 +37,21 @@
 	if(!$vn_numCols){
 		$vn_numCols = 4;
 	}
+	
 
-	if($qr_hits){
+if($qr_hits){
+	$vn_num_pages = ceil($qr_hits->numHits()/$vn_items_per_page);
 ?>
 	<div id="relatedObjectsContainer<?php print ($vn_numCols == 4) ? "Narrow" : ""; ?>">
-		<ul id="relatedObjectsCarousel" class="jcarousel-skin-relatedObjects"><li>
-	<table border="0" cellpadding="0px" cellspacing="0px" width="100%">
+		<div class="jcarousel-wrapper"><div class="jcarousel" id="relatedObjectsCarousel">
+			<ul class="jcarousel-skin-relatedObjects">
 <?php
-	while(($vn_itemc < 12) && ($qr_hits->nextHit())) {
-		if ($vn_c == 0) { print "<tr>\n"; }
+	$vn_itemc = $vn_c = 0;
+	
+	$va_slides = [];
+	$vs_buf = '';
+	
+	while(($qr_hits->nextHit())) {
 		$vn_object_id = $qr_hits->get('object_id');
 		$va_labels = $qr_hits->getDisplayLabels();
 		$vs_caption = "";
@@ -55,62 +61,63 @@
 		# --- get the height of the image so can calculate padding needed to center vertically
 		$va_media_info = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values));
 		$vn_padding_top = 0;
-		print "<td align='left' valign='top' class='searchResultTd'><div class='relatedThumbBg searchThumbnail".$vn_object_id."'>";
+		
+		$vs_buf .= "<div class='searchResultTd col-sm-3'><div class='relatedThumbBg searchThumbnail{$vn_object_id}'>";
+		
 		$vs_display = "";
 		if(!($vs_display = $qr_hits->getMediaTag('ca_object_representations.media', 'widethumbnail', array('checkAccess' => $va_access_values)))){
 			$vs_display = "<div class='textResult'>ID: ".$qr_hits->get("idno")."</div>";
 		}
-		print caNavLink($this->request, $vs_display, '', 'Detail', 'Object', 'Show', array('object_id' => $qr_hits->get('object_id')));
+		$vs_buf .= caNavLink($this->request, $vs_display, '', '', 'Detail', 'objects/'.$qr_hits->get('object_id'), []);
 		
 		// Get thumbnail caption
 		$this->setVar('object_id', $vn_object_id);
 		$this->setVar('caption_title', $vs_caption);
 		$this->setVar('caption_idno', $qr_hits->get('idno'));
 		
-		print "</div>";
-#		print "<div class='searchThumbCaption searchThumbnail".$vn_object_id."'>".$this->render('../Results/ca_objects_result_caption_html.php')."</div>";
-		print "</td>\n";
+		//$vs_buf .= "<div class='searchThumbCaption searchThumbnail{$vn_object_id}'>".$this->render('Details/ca_objects_result_caption_html.php')."</div>";
+		
+		$vs_buf .= "</div></div>";
 
 		
 		// set view vars for tooltip
-		$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
-		$this->setVar('tooltip_title', $vs_caption);
-		$this->setVar('tooltip_idno', $qr_hits->get('idno'));
+		//$this->setVar('tooltip_representation', $qr_hits->getMediaTag('ca_object_representations.media', 'small', array('checkAccess' => $va_access_values)));
+		//$this->setVar('tooltip_title', $vs_caption);
+		//$this->setVar('tooltip_idno', $qr_hits->get('ca_objects.idno'));
 		TooltipManager::add(
-			".searchThumbnail{$vn_object_id}", '' //$this->render('../Results/ca_objects_result_tooltip_html.php')
+			".searchThumbnail{$vn_object_id}", $vs_caption//$this->render('Details/ca_objects_result_tooltip_html.php')
 		);
 		
 		$vn_c++;
 		$vn_itemc++;
 		
-		if ($vn_c == $vn_numCols) {
-			print "</tr>\n";
+		
+		#$vs_buf .= "<div class='col-md-1'><!-- empty for spacing --></div>";
+			
+		if($vn_itemc >= 12) {
+			$vn_itemc = 0;
 			$vn_c = 0;
-		}else{
-			print "<td><!-- empty for spacing --></td>";
+			$va_slides[] = $vs_buf;
+			$vs_buf = '';
 		}
 	}
-	if(($vn_c > 0) && ($vn_c < $vn_numCols)){
-		while($vn_c < $vn_numCols){
-			print "<td class='searchResultTd'><!-- empty --></td>\n";
-			$vn_c++;
-			if($vn_c < $vn_numCols){
-				print "<td><!-- empty for spacing --></td>";
-			}
-		}
-		print "</tr>\n";
+	if ($vs_buf) { $va_slides[] = $vs_buf; }
+	
+	foreach($va_slides as $vs_slide) {
+		print '<li><div class="row" style="width: 600px;">'.$vs_slide.'</div></li>';
 	}
 ?>
-	</table></li></ul></div>
+	
+	</ul></div></div></div>
 <?php
-if($this->getVar('num_pages') > 1){
+if($vn_num_pages> 1) { 
 	$vn_num_results = $qr_hits->numHits();
 ?>
 	<div id='detailNavBar'>
 		<div class="nextPrevious">
 			<a href="#" id="carousel-prev" class="previous">&lsaquo; <?php print _t("Previous"); ?></a>
 <?php
-			print "<span id='pageCounterStart'>Page 1</span>/".ceil($vn_num_results/$this->getVar('items_per_page'));
+			#print "<span id='pageCounterStart'>Page 1</span>/".ceil($vn_num_results/$vn_items_per_page);
 ?>
 			<a href="#" id="carousel-next" class="next"><?php print _t("Next"); ?> &rsaquo;</a>
 		</div>
@@ -122,7 +129,7 @@ if($this->getVar('num_pages') > 1){
 <?php
 		print "Displaying ".$vn_num_results." item".(($vn_num_results == 1) ? "" : "s");
 		
-		#print "<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$this->getVar('items_per_page')."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
+		#print "<span id='imageCounterStart'>1</span>-<span id='imageCounterEnd'>".$vn_items_per_page."</span> of ".$vn_num_results."&nbsp;&nbsp;&nbsp;";
 		
 
 ?>	
@@ -134,39 +141,40 @@ if($this->getVar('num_pages') > 1){
 
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery('#relatedObjectsCarousel').jcarousel({size: <?php print (int)$this->getVar('num_pages'); ?>, scroll:1, buttonNextHTML:null, buttonPrevHTML: null, initCallback: carousel_initCallback, itemLoadCallback:loadRelatedObjects});
-		});
+			$('#relatedObjectsCarousel').on('jcarousel:createend', function(event, carousel) {
+				jQuery('#carousel-next').bind('click', function() {
+					$('#relatedObjectsCarousel').jcarousel('scroll', '+=1');
+					return false;
+				});
 		
-		function carousel_initCallback(carousel) {
-			jQuery('#carousel-next').bind('click', function() {
-				carousel.next();
-				return false;
-			});
-		
-			jQuery('#carousel-prev').bind('click', function() {
-				carousel.prev();
-				return false;
+				jQuery('#carousel-prev').bind('click', function() {
+					$('#relatedObjectsCarousel').jcarousel('scroll', '-=1');
+					return false;
+				});
+			
+				jQuery('#carouselJump').bind('click', function() { 
+						var page = parseInt(jQuery('#carouselJumpToPage').val()) - 1;
+						if (page < 0) { page = 0; }
+						
+						jQuery('#relatedObjectsCarousel').jcarousel('scroll', page);
+					
+						return false;
+					}
+				);
+
 			});
 			
-			jQuery('#carouselJump').bind('click', function() { 
-					var carousel = jQuery('#relatedObjectsCarousel').data('jcarousel');
-					var page = parseInt(jQuery('#carouselJumpToPage').val());
-					carousel.scroll(page, true);
-					
-					return false;
-				}
-			);
-
-		};
+			jQuery('#relatedObjectsCarousel').jcarousel({size: <?php print (int)$this->getVar('num_pages'); ?>});
+		});
 
 		function loadRelatedObjects(carousel, state) {
 			var id = <?php print $vn_id; ?>;
 			var numCols = <?php print $vn_numCols ?>;
-			var startImageCount = (carousel.first - 1) * <?php print $this->getVar('items_per_page'); ?> + 1;
+			var startImageCount = (carousel.first - 1) * <?php print $vn_items_per_page; ?> + 1;
 			jQuery('#pageCounterStart').html(carousel.first);
 			
 //			jQuery('#imageCounterStart').html(startImageCount);
-// 			var endImageCount = carousel.first * <?php print $this->getVar('items_per_page'); ?>;
+// 			var endImageCount = carousel.first * <?php print $vn_items_per_page; ?>;
 // 			if(endImageCount > <?php print $qr_hits->numHits(); ?>){
 // 				endImageCount = <?php print $qr_hits->numHits(); ?>;
 // 			}

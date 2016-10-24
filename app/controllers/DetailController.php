@@ -665,8 +665,11 @@
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
-			$vn_object_id = $this->request->getParameter('object_id', pInteger);
+			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) { $vn_object_id = $this->request->getParameter('id', pInteger); }
 			$t_object = new ca_objects($vn_object_id);
+			if (!$t_object->isLoaded()) {
+				throw new ApplicationException(_t('Cannot download media'));
+			}
 			if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
   				return;
  			}
@@ -1310,7 +1313,13 @@
 		public function GetMediaOverlay($pa_options=null) {
 			$o_dm = Datamodel::load();
 			
-			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+			$ps_context = $this->request->getParameter('context', pString);
+			
+			if ($ps_context == 'gallery') {
+				$va_context = [
+					'table' => 'ca_objects'
+				];
+			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
@@ -1350,7 +1359,11 @@
 			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
 			
-			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+			if ($ps_context == 'gallery') {
+				$va_context = [
+					'table' => 'ca_objects'
+				];
+			} elseif (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
