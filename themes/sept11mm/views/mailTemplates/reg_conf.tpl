@@ -29,10 +29,10 @@
 if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("Your account will be activated after review.");
 }
-print _t("Thank you for registering for \"%1\". ".$vs_active_message."
-
-As a member you can create your own sets from the collection and share your slide-shows with friends and colleagues.
-
+print _t("Thank you for registering on Inside the Collection, the online collection website for the National September 11th Memorial & Museum. ".$vs_active_message."
+ 
+As a member you can create your own sets from the collection and share them with friends and colleagues.
+ 
 Regards,
 the Staff
 

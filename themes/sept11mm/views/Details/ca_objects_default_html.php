@@ -146,8 +146,8 @@
 <?php
 		}
 ?>
-				<div class="detailTool"><span class="glyphicon glyphicon-book"></span><?php print caNavLink($this->request, _t("Ask a Question"), "", "", "Contact", "Form", array("contactType" => "reference"), array("target" => "_blank")); ?></div><!-- end detailTool -->
-				<div class="detailTool"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id")), array("target" => "_blank")); ?></div><!-- end detailTool -->
+				<div class="detailTool detailToolBlack"><span class="glyphicon glyphicon-book"></span><?php print caNavLink($this->request, _t("Ask a Question"), "", "", "Contact", "Form", array("contactType" => "reference"), array("target" => "_blank")); ?></div><!-- end detailTool -->
+				<div class="detailTool detailToolBlack"><span class="glyphicon glyphicon-comment"></span><?php print caNavLink($this->request, _t("Feedback"), "", "", "Contact", "Form", array("contactType" => "feedback", "object_id" => $t_object->get("object_id")), array("target" => "_blank")); ?></div><!-- end detailTool -->
 			</div><!-- end detailTools -->	
 			<div style='clear:both;'></div>
 	</div><!-- end col -->
@@ -201,25 +201,23 @@ if(sizeof($va_related_ids) < 4){
 }
 # add more search terms for broadening and more link
 $va_search2 = array();
-if($t_object->get("ca_objects.preferred_labels.name")){
-	$va_search2[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
-}
 if($vb_search_again){
-	$vs_search_term = join(" OR ", $va_search2);
-	$o_search = caGetSearchInstance("ca_objects");
-	$qr_res = $o_search->search($vs_search_term, array("checkAccess" => caGetUserAccessValues($this->request), "sort" => "_rand"));
-	$va_related_more = array();
-	if($qr_res->numHits()){
-		while($qr_res->nextHit()){
-			if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
-				$va_related_more[] = $qr_res->get("ca_objects.object_id");
+	if($t_object->get("ca_objects.preferred_labels.name")){
+		$va_search2[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
+		$qr_res_more = ca_objects::find(['preferred_labels' => ['name' => trim($t_object->get("ca_objects.preferred_labels.name"))]], ['returnAs' => 'searchResult']);
+		$va_related_more = array();
+		if($qr_res_more->numHits()){
+			while($qr_res_more->nextHit()){
+				if(($t_object->get("object_id") != $qr_res_more->get("object_id")) && in_array($qr_res_more->get("access"), $va_access_values)){
+					$va_related_more[] = $qr_res_more->get("object_id");
+				}
 			}
-		}
-		shuffle($va_related_more);
-		if(is_array($va_related_ids) && sizeof($va_related_ids)){
-			$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
-		}else{
-			$va_related_ids = $va_related_more;
+			shuffle($va_related_more);
+			if(is_array($va_related_ids) && sizeof($va_related_ids)){
+				$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
+			}else{
+				$va_related_ids = $va_related_more;
+			}
 		}
 	}
 }

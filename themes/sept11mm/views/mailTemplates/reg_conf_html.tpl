@@ -29,14 +29,14 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
 }
 
-print _t("<p>Thank you for registering for \"%1\". ".$vs_active_message."</p>
-
-<p>As a member you can create your own sets from the collection and share your slide-shows with friends and colleagues.</p>
-
+print _t("<p>Thank you for registering on <i>Inside the Collection</i>, the online collection website for the National September 11th Memorial & Museum.</p>".$vs_active_message."
+ 
+<p>As a member you can create your own sets from the collection and share them with friends and colleagues.</p>
+ 
 <p>Regards,<br/>
-the Staff</p>
+<img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'logo2.jpg', array('alt' => '911 Memorial'))."' border='0' width='152px' height='99px'></p>
 
-", $this->request->config->get("app_display_name"));
+");
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
+	print "<br/><p>".$this->request->config->get("site_host")."</p>";
 ?>

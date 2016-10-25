@@ -58,6 +58,9 @@ H1, h1{
 		font-size:28px;
 	}
 }
+.turqText{
+	color: #21B1E7;
+}
 #pageArea{
 	background-color:#FFFFFF;
 	border-top:5px solid #21B1E7;
@@ -202,55 +205,6 @@ H1, h1{
 
 
 
-
-
-
-
-/*
-#footer{
-	font-family:arial;
-	font-weight:normal;
-	margin:40px 0px 0px 0px !important;
-	padding: 20px 0px 20px 0px;
-	border-top: 0px;
-	font-size:10px;
-	color: #FFF;
-	line-height:1.3em;
-	background-color:#003F69;
-	width:100%;
-	text-align:center;
-}
-#footer a{
-	font-family:arial;
-	text-decoration:none;
-	color:#FFF;
-}
-#footer ul a{
-	font-family:arial;
-	color: #FFF;
-	text-decoration:none;
-}
-#footer ul li{
-	padding:0px 15px 0px 15px;
-}
-#footer ul{
-	margin:13px 0px 25px 0px;
-	float:none;
-}
-@media (min-width: 768px) {
-	#footer {
-		margin:20px 0 20px 0;
-		text-align:left;
-	}
-	#footer ul{
-		float:right;
-		margin-bottom:0px;
-	}
-	#footer ul li{
-		padding:0px 0px 0px 35px;
-	}
-}
-*/
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
@@ -533,7 +487,7 @@ nav, .navbar, .navbar-default, .navbarTop{
 	margin-bottom:0px;
 }
 .navbarMain .navbar-collapse .navbar-nav.navbar-right:last-child {
-    margin-right: 0px;
+    margin-right: 23px;
 }
 .navbarMain .navbar-nav li{
 	margin-top:54px;
@@ -613,9 +567,13 @@ nav, .navbar-nav{
 	background-color:#FFFFFF;
 }
 .navbar-brand {
-	width:auto;
+	width:167px;
 	padding-top:3px;
 	padding-bottom:0px;
+}
+.navbar-brand img{
+	width:100%;
+	height:auto;
 }
 .navbarMain{
 	padding-bottom:24px;
@@ -1250,9 +1208,15 @@ div.browseFacetItem:hover a, div.browseFacetItem a:hover{
 	margin-bottom:0px; 
 	text-decoration:none;
 }
+.detail .detailTool.detailToolBlack a {
+	color:#000;
+}
 .detail .detailTool span{
 	color:#21B1E7;
 	margin-right:5px;
+}
+.detail .detailToolBlack span{
+	color:#000000;
 }
 .detail #detailTools .detailButtons span{	
 	color:#21B1E7;

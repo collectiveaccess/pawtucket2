@@ -26,6 +26,7 @@
  * ----------------------------------------------------------------------
  */
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_section_heading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$vs_lightbox_displayname = ucFirst($va_lightboxDisplayName["singular"]);
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 
@@ -35,7 +36,7 @@
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
 		if(!$this->request->config->get("disable_lightbox")){
-			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_displayname, '', '', 'Lightbox', 'Index', array())."</li>";
+			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_section_heading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
@@ -132,7 +133,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png', array('alt' => '911 Memorial'))."</a>";
+				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo2.jpg', array('alt' => '911 Memorial'))."</a>";
 ?>
 			</div>
 			<div class="collapse navbar-collapse">
