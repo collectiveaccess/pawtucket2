@@ -89,8 +89,8 @@
 		
 		<nav>
     		<ul class="navigation">
-    			<li class="home"><a href="http://everson.org/" target="_self" class="home">Home</a></li>
-    			<!--<li class="about"><a href="http://everson.org/about" target="_self" class="about">About</a> 
+    			<!--<li class="home"><a href="http://everson.org/" target="_self" class="home">Home</a></li>
+    			<li class="about"><a href="http://everson.org/about" target="_self" class="about">About</a> 
     				<div class="sub-menu"> <i> </i>
 						<ul class="left-links">
 							<li class="about"><a href="http://everson.org/about" target="_self" class="about">About</a></li>
