@@ -150,6 +150,9 @@ div.browseFacetItem a {
     font-size: 14px;
     padding-top: 4px;	
 }
+div.browseMenuBrowseAll {
+	display:none;
+}	
 #browse-menu.dropdown-menu {
 	border-top:0px;
 	margin-top:-1px;
@@ -264,6 +267,7 @@ div.browseFacetItem:hover {
 }
 #bRefine.fixed {
 	top:155px;
+	padding-bottom:165px;
 }
 #bRefine H3 {
 	color: #000;
