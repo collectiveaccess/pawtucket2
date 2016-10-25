@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,6 +35,11 @@
 <html>
 	<head>
 		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
-		<link type="text/css" href="pdf.css" rel="stylesheet" />
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+		
+		<script type="text/javascript">
+			var PhantomJSPrinting = {};
+		</script>
 	</head>
 	<body>

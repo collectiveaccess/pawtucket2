@@ -12,6 +12,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
 		return;
 	}
+	$va_access_values = caGetUserAccessValues($po_request);
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template");
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);

@@ -2347,18 +2347,52 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		//if ($va_start['year'] < 0) { $va_start['year'] = 1900; }
 		if ($va_end['year'] >= 2000000) { $va_end['year'] = date("Y"); }
 
-		return [
-			'start_date' => [
-				'year' => $va_start['year'],
-				'month' => $va_start['month'],
-				'day' => $va_start['day']
-			],
-			'end_date' => [
-				'year' => $va_end['year'],
-				'month' => $va_end['month'],
-				'day' => $va_end['day']
-			],
-		];
+		if (
+			($va_start['year'] == $va_end['year'])
+			&&
+			($va_start['month'] == 1) && ($va_end['month'] == 12)
+			&&
+			($va_start['day'] == 1) && ($va_end['day'] == 31)
+		) {
+			return [
+				'start_date' => [
+					'year' => $va_start['year']
+				],
+				'end_date' => [
+					'year' => $va_end['year']
+				],
+			];
+		} elseif(
+			($va_start['year'] == $va_end['year'])
+			&&
+			($va_start['month'] == $va_end['month'])
+			&&
+			(($va_start['day'] == 1) && ($va_end['day'] == $o_tep->daysInMonth($va_end['end'])))
+		) {
+			return [
+				'start_date' => [
+					'year' => $va_start['year'],
+					'month' => $va_start['month']
+				],
+				'end_date' => [
+					'year' => $va_end['year'],
+					'month' => $va_end['month']
+				],
+			];
+		} else {
+			return [
+				'start_date' => [
+					'year' => $va_start['year'],
+					'month' => $va_start['month'],
+					'day' => $va_start['day']
+				],
+				'end_date' => [
+					'year' => $va_end['year'],
+					'month' => $va_end['month'],
+					'day' => $va_end['day']
+				],
+			];
+		}
 	}
 	# ------------------------------------------------------------------------------------------------
     /**
@@ -3260,7 +3294,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  	 *		currentRepClass = CSS class to apply to thumbnail of currently visible representation. [Default is "active"]
  	 *		dontShowPlaceholder = Don't use placeholder when no representation is available. [Default is false]
  	 *		display = media_display.conf display version to use. [Default is 'detail']
-	 *		showAnnotations = Show list of annotations, if available, for time-based media
+	 *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
 	 *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
 	 *
  	 * @return string HTML output
@@ -3277,7 +3311,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  		$pb_primary_only 					= caGetOption('primaryOnly', $pa_options, false);
  		$ps_active_representation_class 	= caGetOption('currentRepClass', $pa_options, 'active');
  		$pb_dont_show_placeholder 			= caGetOption('dontShowPlaceholder', $pa_options, false);
- 		$pb_show_annotations	 			= caGetOption('showAnnotations', $pa_options, false);
+ 		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 		$ps_display_type		 			= caGetOption('display', $pa_options, false);
 				
@@ -3382,7 +3416,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
  		
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
-		
+		$o_view->setVar('display_annotations', $ps_display_annotations);
 		return $o_view->render('representation_viewer_html.php');
  	}
  	# ---------------------------------------
@@ -3486,7 +3520,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	 *		display = media_display.conf display version to use. [Default is 'detail']
 	 *		context = viewer context value to pass in toolbar. For Pawtucket details this is the detail name. [Default is null]
 	 *		captionTemplate = Display template for caption to include with image. Caption is evalulated related to the subject ($pt_subject) instance. [Default is null]
-	 *		showAnnotations = Show list of annotations, if available, for time-based media
+	 *		displayAnnotations = Mode of display for annotations on representation. Valid values are: viewer (in viewer), div (in external div with class #detailAnnotations), none (no display) [Default is none]
 	 *		displayAnnotationTemplate = Template to use when formatting list of annotations [Default is the annotation title (^ca_representation_annotations.preferred_labels.name)]
 	 *
 	 * @return string Viewer HTML
@@ -3501,13 +3535,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		$ps_display_type 					= caGetOption('display', $pa_options, 'media_overlay');
 		$pb_inline 							= (bool)caGetOption('inline', $pa_options, false);
 		$ps_context 						= caGetOption('context', $pa_options, $po_request->getParameter('context', pString));
-		$pb_show_annotations	 			= caGetOption('showAnnotations', $pa_options, false);
+		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 		
 		$vs_caption = $vs_tool_bar = '';
-		if ($pb_inline) {
-			$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $pt_subject->getWithTemplate($vs_template) : '';
-		}
 				
 		switch($va_identifier['type']) {
 			case 'representation':
@@ -3517,6 +3548,10 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				$pn_representation_id = (int)$va_identifier['id'];
 				$t_instance = new ca_object_representations($pn_representation_id);
 			
+				if ($pb_inline) {
+					$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $t_instance->getWithTemplate($vs_template) : '';
+				}
+				
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
 					throw new ApplicationException(_t('Invalid viewer'));
 				}
@@ -3561,7 +3596,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 				
-				if (($pb_show_annotations) && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
+				if (($ps_display_annotations) && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
 					$vs_viewer .= join("<br/>\n", $va_annotation_list);
 				}
 				return $vs_viewer;
@@ -3655,7 +3690,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 				$t_instance = new ca_attribute_values($va_identifier['id']);
 				$t_instance->useBlobAsMediaField(true);
 				$t_attr = new ca_attributes($t_instance->get('attribute_id'));
-				$pt_subject = $this->opo_datamodel->getInstanceByTableNum($t_attr->get('table_num'), true);
+				$o_dm = Datamodel::load();
+				$pt_subject = $o_dm->getInstanceByTableNum($t_attr->get('table_num'), true);
 				$pt_subject->load($t_attr->get('row_id'));
 			
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
@@ -3752,6 +3788,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 	# ------------------------------------------------------------------
 	/**
 	 * Get bundle preview for a relationship bundle
+	 *
 	 * @param array $pa_initial_values
 	 * @param string $ps_delimiter
 	 *
@@ -3773,5 +3810,61 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		}
 
 		return caEscapeForBundlePreview(join($ps_delimiter, $va_previews));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Perform tag substitution on a view. 
+	 *
+	 * Views can contain tags in the form {{{tagname}}}. Some tags, such as "itemType" and "detailType" are defined by
+	 * the detail controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+	 * as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+	 * (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+	 * context of the item being detailed.
+	 *
+	 * @param View $po_view
+	 * @param string $ps_template_path
+	 * @param BaseModel|SearchResult $pm_subject
+	 * @param array $pa_options
+	 * 			render = 
+	 *			checkAccess = 
+	 *			clearVars = 
+	 *			barcodes = 
+	 *
+	 * @return string
+	 */
+	function caDoTemplateTagSubstitution($po_view, $pm_subject, $ps_template_path, $pa_options=null) {
+		$pa_access_values = caGetOption('checkAccess', $pa_options, null);
+		$pb_barcodes = caGetOption('barcodes', $pa_options, false);
+		
+		if (caGetOption('clearVars', $pa_options, false)) { $po_view->clearViewTagsVars($ps_template_path); }
+		
+		$va_defined_vars = array_keys($po_view->getAllVars());		// get list defined vars (we don't want to copy over them)
+		
+		$va_tag_list = $po_view->getTagList($ps_template_path);		// get list of tags in view
+		
+		$va_barcode_files_to_delete = [];
+		foreach($va_tag_list as $vs_tag) {
+			if (in_array($vs_tag, $va_defined_vars)) { continue; }
+			
+			if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
+				$va_barcode_files_to_delete[] = $vs_barcode_file;
+			} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
+				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('checkAccess' => $pa_access_values)));
+			} elseif (strpos($vs_tag, ".") !== false) {
+				$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
+			} else {
+				$po_view->setVar($vs_tag, "?{$vs_tag}");
+			}
+		}
+		
+		if (caGetOption('render', $pa_options, false)) {
+			return $po_view->render($ps_template_path);
+		}
+		
+		if ($pb_barcodes) {
+			return $va_barcode_files_to_delete;
+		}
+		
+		return true;
 	}
 	# ------------------------------------------------------------------

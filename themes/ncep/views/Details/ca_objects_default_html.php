@@ -56,13 +56,13 @@
 						if($va_component_info["rep_id"]){
 							$t_representation->load($va_component_info["rep_id"]);
 							$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-							$vs_download_version = $va_download_display_info['display_version'];
+							$vs_download_version = $va_download_display_info['download_version'];
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$t_representation->getPrimaryKey(), 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}elseif(is_array($va_component_info["rep_ids"]) && sizeof($va_component_info["rep_ids"])){
 							#download the all reps for the component
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "exclude_ancestors" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $va_component_info["rep_ids"][0], 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$va_component_info["rep_ids"][0], 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}
 					}else{
 						# --- if not logged in provide a login link instead

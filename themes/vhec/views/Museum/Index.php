@@ -31,7 +31,7 @@
 <?php	
 			if ($qr_res) {
 				while($qr_res->nextHit()) {		
-					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.medium'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.large'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
 				}
 			}
 ?>

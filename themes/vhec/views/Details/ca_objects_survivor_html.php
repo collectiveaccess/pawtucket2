@@ -98,8 +98,8 @@
 						<a class="addthis_button_tweet"></a>
 						<a class="addthis_counter addthis_pill_style"></a>
 					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
-				</div>	
+					<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js"></script>
+				</div>
 <?php
 				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					$vn_subject = 1;
@@ -110,7 +110,7 @@
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject."'"))."</div>";
+						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:\"".$va_local_subject."\""))."</div>";
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							print "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}

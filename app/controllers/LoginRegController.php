@@ -148,7 +148,11 @@
 			if ($ps_password) {
 				if($ps_password != $ps_password2){
 					$va_errors["password"] = _t("Passwords do not match");
-				}else{
+				}
+				if(strlen($ps_password) < 4){
+					$va_errors["password"] = _t("Password must be at least 4 characters long");
+				}
+				if(!$va_errors["password"]){
 					$t_user->set("password", $ps_password);
 				}
 			}
@@ -299,7 +303,11 @@
 			}else{
 				if($ps_password != $ps_password2){
 					$va_errors["password"] = _t("Passwords do not match");
-				}else{
+				}
+				if(strlen($ps_password) < 4){
+					$va_errors["password"] = _t("Password must be at least 4 characters long");
+				}
+				if(!$va_errors["password"]){
 					$t_user->set("password", $ps_password);
 				}
 			}
@@ -608,6 +616,12 @@
 						}
 						if ($ps_password != $ps_password_confirm) {
 							$this->view->setVar("message", _t("Passwords do not match. Please try again."));
+							$ps_action = "reset";
+							break;
+						}
+						
+						if(strlen($ps_password) < 4){
+							$this->view->setVar("message", _t("Password must be at least 4 characters long."));
 							$ps_action = "reset";
 							break;
 						}
