@@ -95,6 +95,12 @@
  				$this->view->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
+ 				
+ 				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
+ 				$o_context->setAsLastFind();
+ 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_context->saveContext();
+ 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
@@ -222,6 +228,20 @@
  			}
  			
  			$this->render("Gallery/set_item_info_html.php");
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Gallery',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
  		}
  		# -------------------------------------------------------
 	}
