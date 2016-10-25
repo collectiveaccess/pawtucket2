@@ -89,7 +89,7 @@
 		
 		<nav>
     		<ul class="navigation">
-    			<li class="home"><a href="http://everson.org/" target="_self" class="home">Home</a></li>
+    			<!--<li class="home"><a href="http://everson.org/" target="_self" class="home">Home</a></li>
     			<li class="about"><a href="http://everson.org/about" target="_self" class="about">About</a> 
     				<div class="sub-menu"> <i> </i>
 						<ul class="left-links">
@@ -176,7 +176,7 @@
     						<li class="oursponsors"><a href="http://everson.org/support/sponsors" target="_self" class="oursponsors">Our Sponsors</a></li>
     					</ul>
     				</div>
-    			</li>
+    			</li>-->
     		</ul>
     	</nav>		
 		

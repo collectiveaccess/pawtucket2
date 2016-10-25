@@ -125,10 +125,10 @@
 				if ($vs_credit_line = $t_object->get('ca_objects.credit_line')) {
 					print "<div class='unit'><h6>Credit Line</h6>".$vs_credit_line."</div>";
 				}
-				if ($va_series_name = $t_object->getWithTemplate('<unit delimiter="<br/>"><b>Series Name</b> ^ca_objects.series_name.series_name <br/><b>Series Number</b> ^ca_objects.series_name.series_number</unit>')) {
+				if ($va_series_name = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.series_name.series_name"><b>Series Name</b> ^ca_objects.series_name.series_name <br/><b>Series Number</b> ^ca_objects.series_name.series_number</ifdef></unit>')) {
 					print "<div class='unit'><h6>Series</h6>".$va_series_name."</div>";
 				}			
-				if ($va_subseries_name = $t_object->getWithTemplate('<unit delimiter="<br/>"><b>Subseries Name</b> ^ca_objects.subseries_name.subseries_name <br/><b>Subseries Number</b> ^ca_objects.subseries_name.subseries_number</unit>')) {
+				if ($va_subseries_name = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.subseries_name.subseries_name"><b>Subseries Name</b> ^ca_objects.subseries_name.subseries_name <br/><b>Subseries Number</b> ^ca_objects.subseries_name.subseries_number</ifdef></unit>')) {
 					print "<div class='unit'><h6>Subseries</h6>".$va_subseries_name."</div>";
 				}
 				if ($vs_arrangement = $t_object->get('ca_objects.arrangement')) {
