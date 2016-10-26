@@ -2,14 +2,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-10-26 14:32-0400\n"
-"PO-Revision-Date: 2016-10-26 14:32-0400\n"
+"PO-Revision-Date: 2016-10-26 16:04-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 1.8.9\n"
 "X-Poedit-Basepath: ../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-KeywordsList: _t;_\n"
@@ -258,7 +258,7 @@ msgstr "Fecha"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:71
 msgid "Caption Title"
-msgstr ""
+msgstr "Título de partida"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:75
 msgid "Holding Institution"
@@ -266,27 +266,27 @@ msgstr "Institución"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:83
 msgid "Physical Description"
-msgstr ""
+msgstr "Descripción física"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:87
 msgid "Presence of Ornament(s)"
-msgstr ""
+msgstr "Presencia de ornamentos"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:94
 msgid "Local Note(s)"
-msgstr ""
+msgstr "Nota(s) local(es)"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:98
 msgid "Attribution Issues"
-msgstr ""
+msgstr "Problemas de atribución"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:104
 msgid "Ownership"
-msgstr ""
+msgstr "Propiedad y custodia"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:108
 msgid "Holding Institution Call Number"
-msgstr ""
+msgstr "Número de catálogo"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:122
 msgid "User's guide"
@@ -392,11 +392,11 @@ msgstr ""
 
 #: views/pageFormat/pageHeader.php:225
 msgid "Search Sueltas"
-msgstr ""
+msgstr "Buscar: sueltas"
 
 #: views/pageFormat/pageHeader.php:230
 msgid "Search The Database"
-msgstr ""
+msgstr "Buscar en la base de datos"
 
 #: views/system/configuration_error_install_html.php:36
 msgid ""
@@ -419,11 +419,11 @@ msgstr ""
 
 #: conf/browse.conf:57 conf/browse.conf:323
 msgid "institution"
-msgstr ""
+msgstr "institucion"
 
 #: conf/browse.conf:58 conf/browse.conf:324
 msgid "institutions"
-msgstr ""
+msgstr "instituciones"
 
 #: conf/browse.conf:95
 msgid "Objects"
@@ -446,11 +446,11 @@ msgstr ""
 
 #: conf/browse.conf:116
 msgid "author"
-msgstr ""
+msgstr "autor"
 
 #: conf/browse.conf:117
 msgid "authors"
-msgstr ""
+msgstr "autores"
 
 #: conf/browse.conf:118 conf/browse.conf:151 conf/browse.conf:174
 #: conf/browse.conf:197
@@ -461,11 +461,11 @@ msgstr ""
 
 #: conf/browse.conf:126
 msgid "title"
-msgstr ""
+msgstr "título"
 
 #: conf/browse.conf:127
 msgid "titles"
-msgstr ""
+msgstr "títulos"
 
 #: conf/browse.conf:128 conf/browse.conf:269 conf/browse.conf:280
 #: conf/browse.conf:291
@@ -476,19 +476,19 @@ msgstr ""
 
 #: conf/browse.conf:149
 msgid "printer"
-msgstr ""
+msgstr "impresor"
 
 #: conf/browse.conf:150
 msgid "printers"
-msgstr ""
+msgstr "impresores"
 
 #: conf/browse.conf:172
 msgid "publisher"
-msgstr ""
+msgstr "editor"
 
 #: conf/browse.conf:173
 msgid "publishers"
-msgstr ""
+msgstr "editores"
 
 #: conf/browse.conf:195
 msgid "bookseller"
@@ -500,11 +500,11 @@ msgstr ""
 
 #: conf/browse.conf:227
 msgid "place"
-msgstr ""
+msgstr "lugar"
 
 #: conf/browse.conf:228
 msgid "places"
-msgstr ""
+msgstr "lugares"
 
 #: conf/browse.conf:229
 msgid ""
@@ -537,11 +537,11 @@ msgstr ""
 
 #: conf/browse.conf:278
 msgid "date"
-msgstr ""
+msgstr "fecha"
 
 #: conf/browse.conf:279
 msgid "dates"
-msgstr ""
+msgstr "fechas"
 
 #: conf/browse.conf:289
 msgid "year"
@@ -584,7 +584,7 @@ msgstr ""
 
 #: conf/browse.conf:340 conf/browse.conf:341
 msgid "has image(s)"
-msgstr ""
+msgstr "Tiene imágen(es)"
 
 #: conf/browse.conf:342
 msgid "Find objects that have associated media."
