@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
-"POT-Creation-Date: 2016-10-26 14:32-0400\n"
-"PO-Revision-Date: 2016-10-27 11:24-0400\n"
+"POT-Creation-Date: 2016-10-27 13:36-0400\n"
+"PO-Revision-Date: 2016-10-27 14:44-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -22,7 +22,7 @@ msgid "Filter by"
 msgstr ""
 
 #: views/Browse/browse_refine_subview_html.php:54
-#: views/Browse/browse_results_html.php:245
+#: views/Browse/browse_results_html.php:247
 #: views/Details/ca_entities_default_html.php:72
 #: views/Details/ca_entities_default_html.php:80
 #: views/Details/ca_occurrences_default_html.php:52
@@ -59,11 +59,11 @@ msgstr "Ascendente"
 msgid "Descending"
 msgstr "Descendente"
 
-#: views/Browse/browse_results_html.php:203
+#: views/Browse/browse_results_html.php:205
 msgid "Did you mean one of these: %1?"
 msgstr ""
 
-#: views/Browse/browse_results_html.php:205
+#: views/Browse/browse_results_html.php:207
 msgid "Did you mean %1?"
 msgstr ""
 
@@ -590,10 +590,33 @@ msgstr "Tiene imágen(es)"
 msgid "Find objects that have associated media."
 msgstr ""
 
+#: conf/classroom.conf:6 conf/lightbox.conf:4 conf/media_display.conf:4
+msgid "_ |  _|"
+msgstr ""
+
 #: conf/contact.conf:12
 msgid "Email address"
 msgstr ""
 
 #: conf/contact.conf:14
 msgid "Message"
+msgstr ""
+
+#: conf/detail.conf:20 conf/detail.conf:48 conf/detail.conf:63
+#: conf/detail.conf:75 conf/detail.conf:87 conf/detail.conf:100
+msgid "Next"
+msgstr "próx"
+
+#: conf/detail.conf:21 conf/detail.conf:49 conf/detail.conf:64
+#: conf/detail.conf:76 conf/detail.conf:88 conf/detail.conf:101
+msgid "Prev"
+msgstr "ant"
+
+#: conf/detail.conf:22 conf/detail.conf:50 conf/detail.conf:65
+#: conf/detail.conf:77 conf/detail.conf:89 conf/detail.conf:102
+msgid "Back"
+msgstr "volver"
+
+#: conf/lightbox.conf:4
+msgid "_ | __| "
 msgstr ""
