@@ -5,7 +5,7 @@
 	$vs_intro_text = $this->getVar('intro_text');
 	$va_open_by_default = $this->getVar('open_by_default');
 	
-	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.rank'));
 	
 	if (!$va_open_by_default) {
 		$vs_hierarchy_style = "style='display:none;'";
@@ -20,7 +20,7 @@
 			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id');
 			//print $qr_top_level_collections->get('ca_collections.preferred_labels.name')."<br>\n";
 		
-			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id));
+			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id, 'sort' => 'ca_collections.rank'));
 			foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 				print "<div class='collHeader' style='margin-left: ".($va_hierarchy_item['level'] * 35)."px'>";
 				if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
