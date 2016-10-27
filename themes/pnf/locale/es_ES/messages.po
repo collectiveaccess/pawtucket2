@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-10-26 14:32-0400\n"
-"PO-Revision-Date: 2016-10-26 16:04-0400\n"
+"PO-Revision-Date: 2016-10-27 11:24-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -324,47 +324,47 @@ msgstr ""
 
 #: views/pageFormat/pageHeader.php:127
 msgid "Database"
-msgstr ""
+msgstr "base de datos"
 
 #: views/pageFormat/pageHeader.php:128
 msgid "Ornaments"
-msgstr ""
+msgstr "ornamentos"
 
 #: views/pageFormat/pageHeader.php:129
 msgid "Resources"
-msgstr ""
+msgstr "Recursos"
 
 #: views/pageFormat/pageHeader.php:131
 msgid "About these resources"
-msgstr ""
+msgstr "Sobre estos recursos"
 
 #: views/pageFormat/pageHeader.php:132
 msgid "Playwrights, translators, and adaptors"
-msgstr ""
+msgstr "Autores, traductores y adaptadores"
 
 #: views/pageFormat/pageHeader.php:133
 msgid "Printers, publishers, booksellers, and bookstores"
-msgstr ""
+msgstr "Impresoras, editores, libreros y librerías"
 
 #: views/pageFormat/pageHeader.php:134
 msgid "Institutions"
-msgstr ""
+msgstr "Instituciones"
 
 #: views/pageFormat/pageHeader.php:135
 msgid "Comprehensive sources of comedias sueltas"
-msgstr ""
+msgstr "Fuentes generales sobre comedias sueltas"
 
 #: views/pageFormat/pageHeader.php:136
 msgid "Studies related specifically to comedias sueltas"
-msgstr ""
+msgstr "Estudios sobre comedias sueltas"
 
 #: views/pageFormat/pageHeader.php:137
 msgid "US Catalogs of Spanish Drama/Comedias Sueltas Collections"
-msgstr ""
+msgstr "Catálogos impresos de comedias sueltas en colecciones en EE.UU"
 
 #: views/pageFormat/pageHeader.php:140
 msgid "Essays"
-msgstr ""
+msgstr "Ensayos"
 
 #: views/pageFormat/pageHeader.php:141
 msgid "Zarzuela"
@@ -372,23 +372,23 @@ msgstr ""
 
 #: views/pageFormat/pageHeader.php:142
 msgid "About"
-msgstr ""
+msgstr "Sobre nosotros"
 
 #: views/pageFormat/pageHeader.php:144
 msgid "About this website"
-msgstr ""
+msgstr "Sobre este sitio web"
 
 #: views/pageFormat/pageHeader.php:145
 msgid "Participating Institutions"
-msgstr ""
+msgstr "instituciones que han colaborado"
 
 #: views/pageFormat/pageHeader.php:146
 msgid "Contributors and team"
-msgstr ""
+msgstr "Contribuidores y equipo"
 
 #: views/pageFormat/pageHeader.php:147
 msgid "Contact"
-msgstr ""
+msgstr "Contacto"
 
 #: views/pageFormat/pageHeader.php:225
 msgid "Search Sueltas"
