@@ -173,9 +173,10 @@ if (!$vb_ajax) {	// !ajax
 			if ($this->request->getAction() == "collections") {
 				print "<div class='institutionList col-sm-4'>";
 				$qr_res->seek(0);
+				$i = 0;
 				while($qr_res->nextHit()) {
 					print "<div class='institutionUnit'>";
-					print "<a href='#' onclick='$(\"#institutionMore".$qr_res->get('ca_collections.collection_id')."\").toggle(300);return false;'><i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels')."</a>";
+					print "<a href='#' onclick='$(\"#institutionMore".$qr_res->get('ca_collections.collection_id')."\").toggle(300); google.maps.event.trigger(caMap_map_markers[{$i}], \"click\"); return false;'><i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels')."</a>";
 					print "<div id='institutionMore".$qr_res->get('ca_collections.collection_id')."' class='institutionMore'>"; 
 					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_address" min="1"><unit><ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef><ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef><ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef><ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef><ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef></unit></ifcount>');
 					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_website" min="1"><unit><ifdef code="ca_collections.collection_website"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.collection_website</a><br/></ifdef></unit><ifcount>');
@@ -183,6 +184,7 @@ if (!$vb_ajax) {	// !ajax
 					print "</div>";
 					print "</div>";
 					print "<hr>";
+					$i++;
 				}
 				$qr_res->seek(0);
 				print "</div>";
