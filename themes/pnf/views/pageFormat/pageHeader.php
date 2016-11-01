@@ -125,7 +125,7 @@ $( document ).ready(function() {
 			<div class="menu-main-menu-container">
 				<ul id="menu-main-menu" class="menu">
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/lists/ornaments/"><?php print  _t('Ornaments');?></a></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
