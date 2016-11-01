@@ -38,7 +38,7 @@
 
 		<div id="filterByNameContainer">
 			<div>
-				<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('opacity', 1.0); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i></a>
+				<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i></a>
 			</div>
 		</div>
 <?php 
