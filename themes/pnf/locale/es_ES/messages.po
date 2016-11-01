@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-10-27 13:36-0400\n"
-"PO-Revision-Date: 2016-10-27 14:44-0400\n"
+"PO-Revision-Date: 2016-11-01 17:22-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -183,6 +183,13 @@ msgid ""
 "that person, including modern editions of his or her plays, which frequently "
 "discuss suelta editions."
 msgstr ""
+"“Fuentes generales” se refiere a bibliografías, catálogos e índices que "
+"incluyen comedias sueltas de varios dramaturgos y que no se limitan a un "
+"único autor. Para los propósitos de esta lista, se da por sentado que "
+"quienes estén investigando un dramaturgo concreto ya manejarán la "
+"bibliografía sobre esa persona, incluyendo ediciones modernas, las cuales a "
+"menudo presentan información sobre ediciones de sus comedias en pliego "
+"suelto."
 
 #: views/Listing/ca_objects_listing_subview_html.php:48
 msgid ""
@@ -191,6 +198,10 @@ msgid ""
 "appeared in the Bulletin of the Comediantes or that continues to be gathered "
 "in the MLA Bibliography."
 msgstr ""
+"Ésta es una bibliografía selectiva y enfocada en materiales relacionados con "
+"el estudio de las comedias sueltas. No pretende abarcar la vasta "
+"bibliografía general sobre comedias que antaño se recogía en Bulletin of the "
+"Comediantes y que sigue recopilándose en la MLA International Bibliography."
 
 #: views/Listing/ca_occurrences_listing_subview_html.php:41
 msgid "author, title and keyword search"
@@ -290,11 +301,11 @@ msgstr "Número de catálogo"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:122
 msgid "User's guide"
-msgstr "Guía de usuario"
+msgstr "Guía del usuario"
 
 #: views/Search/ca_objects_advanced_search_objects_html.php:124
 msgid "Enter your search terms in the fields to the left"
-msgstr ""
+msgstr "Introduzca en los campos a la izquierda los términos que desee buscar."
 
 #: views/Search/ca_objects_search_subview_html.php:56
 msgid "Full results"
@@ -324,7 +335,7 @@ msgstr ""
 
 #: views/pageFormat/pageHeader.php:127
 msgid "Database"
-msgstr "base de datos"
+msgstr "Catálogo"
 
 #: views/pageFormat/pageHeader.php:128
 msgid "Ornaments"
@@ -344,7 +355,7 @@ msgstr "Autores, traductores y adaptadores"
 
 #: views/pageFormat/pageHeader.php:133
 msgid "Printers, publishers, booksellers, and bookstores"
-msgstr "Impresoras, editores, libreros y librerías"
+msgstr "Impresores, editores, libreros y librerías"
 
 #: views/pageFormat/pageHeader.php:134
 msgid "Institutions"
@@ -372,7 +383,7 @@ msgstr ""
 
 #: views/pageFormat/pageHeader.php:142
 msgid "About"
-msgstr "Sobre nosotros"
+msgstr "Nosotros"
 
 #: views/pageFormat/pageHeader.php:144
 msgid "About this website"
