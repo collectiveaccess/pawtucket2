@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_id = $t_item->get('ca_collections.collection_id');
+	$va_access_values = 	$this->getVar('access_values');
 	
 	$vs_home = caNavLink($this->request, "Home", '', '', '', '');			
 	$vs_title 	= caTruncateStringWithEllipsis($t_item->get('ca_collections.preferred_labels.name'), 60);	
@@ -229,7 +230,7 @@
 									$vn_box_level_id = $qr_box_level->get('ca_collections.collection_id');
 									( $vn_box_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
 
-									$vs_buf.= "<div>&mdash;".caNavLink($this->request, 'xx'.$qr_box_level->get('ca_collections.preferred_labels')." (".$qr_box_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_box_level_id)."</div>";
+									$vs_buf.= "<div>&mdash;".caNavLink($this->request, $qr_box_level->get('ca_collections.preferred_labels')." (".$qr_box_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_box_level_id)."</div>";
 								}
 								$vs_buf.= "</div><!-- end boxlevel -->";
 							}
