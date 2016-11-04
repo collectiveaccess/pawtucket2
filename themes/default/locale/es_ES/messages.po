@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket Default Theme\n"
 "POT-Creation-Date: 2016-10-10 22:50-0400\n"
-"PO-Revision-Date: 2016-10-10 23:08-0400\n"
+"PO-Revision-Date: 2016-10-26 16:06-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -831,7 +831,7 @@ msgstr ""
 
 #: pageFormat/browseMenuFacets.php:36
 msgid "Browse by:"
-msgstr ""
+msgstr "Explorar según"
 
 #: pageFormat/browseMenuFacets.php:49
 msgid "Filter facet"
