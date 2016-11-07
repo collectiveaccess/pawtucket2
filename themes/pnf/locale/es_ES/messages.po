@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 PNF Theme\n"
 "POT-Creation-Date: 2016-11-02 10:33-0400\n"
-"PO-Revision-Date: 2016-11-04 16:52-0400\n"
+"PO-Revision-Date: 2016-11-07 09:30-0500\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: es_ES\n"
@@ -411,7 +411,7 @@ msgstr "Buscar en el catálogo"
 
 #: views/pageFormat/pageHeader.php:230
 msgid "Search The Database"
-msgstr "Buscar en la base de datos"
+msgstr "Buscar en el catálogo"
 
 #: views/system/configuration_error_install_html.php:36
 msgid ""
