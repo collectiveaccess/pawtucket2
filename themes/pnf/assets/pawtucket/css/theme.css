@@ -539,7 +539,7 @@ div.caMediaOverlayControls {
     font-weight:bold;
 }
 .listTitle a{
-	font-style:italic;
+	/*font-style:italic;*/
 	font-weight:bold;
 	color:#222;
 }
