@@ -742,6 +742,14 @@ a.readmore-js-toggle {
 .detailOverlayImg span.detailOverlayImgOverlayContainer{
 	position:relative;
 }
+.detailOverlayImgOverlayContainer .video-js{
+	min-width:200px !important;
+}
+@media (min-width: 400px) {
+	.detailOverlayImgOverlayContainer .video-js{
+		min-width:500px !important;
+	}
+}
 .detailOverlayItemImgPlaceholder{
 	background-color: #dedede;
     border: 0px;
