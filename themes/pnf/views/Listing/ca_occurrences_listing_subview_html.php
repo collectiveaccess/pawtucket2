@@ -66,7 +66,7 @@
 			$vs_first_letter = ucfirst(substr($qr_list->get('ca_occurrences.author'), 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$va_links_array[$vs_first_letter][$vn_id] = "<div class='listLink listEntry'><span class='listAuthor'>".$qr_list->get('ca_occurrences.author').".&nbsp;</span><span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span></div>\n";	
+			$va_links_array[$vs_first_letter][$vn_id] = "<div class='listLink listEntry'><span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."&nbsp;</span><span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span></div>\n";	
 		}
 		foreach ($va_links_array as $va_first_letter => $va_links) {
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
