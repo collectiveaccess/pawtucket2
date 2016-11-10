@@ -56,7 +56,7 @@
 					#	print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
 					#}
 					
-					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))) {
 ?>
 						<div class="collection-form"  >
 							<div class="formOutline" style="position:relative;">
