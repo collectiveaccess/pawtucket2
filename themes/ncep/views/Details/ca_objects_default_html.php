@@ -5,7 +5,8 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_tags = $this->getVar("tags_array");
 	$vb_files_require_login = $vb_files = false;
-	$va_component_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	# --- filter out internal files and workspace
+	$va_component_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("Synthesis", "CaseStudies", "Exercise", "Presentation", "EvaluationTool", "Solutions", "TeachingNotes", "Resource")));
 		if(sizeof($va_component_ids)){
 			$va_components = array("learn" => array(), "explore" => array(), "practice" => array(), "teach" => array());
 			$t_list = new ca_lists();
@@ -31,6 +32,12 @@
 				$va_component_info["abstract"] = $q_components->get("ca_objects.abstract");
 				$va_component_info["source"] = $q_components->get("ca_objects.source");
 				$va_component_info["usage"] = $q_components->get("usage_license");
+				$vs_date = $q_components->getWithTemplate("<ifdef code='ca_objects.date.dates_value'><unit relativeTo='ca_objects.date' delimiter='; ' sort='ca_objects.date.dates_value' sortDirection='DESC' limit='1'>^ca_objects.date.dc_dates_types: ^ca_objects.date.dates_value</unit></ifdef>");
+				$vn_multidates = strpos($vs_date, "; ");
+				if($vn_multidates){
+					$vs_date = substr($vs_date, 0, $vn_multidates);
+				}
+				$va_component_info["date"] = $vs_date;
 				$va_rep_ids = array();
 				$va_rep_ids = $q_components->get('ca_object_representations.representation_id', array("checkAccess" => $va_access_values, "returnWithStructure" => true));
 				if(sizeof($va_rep_ids) > 0){
@@ -49,13 +56,13 @@
 						if($va_component_info["rep_id"]){
 							$t_representation->load($va_component_info["rep_id"]);
 							$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-							$vs_download_version = $va_download_display_info['display_version'];
+							$vs_download_version = $va_download_display_info['download_version'];
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$t_representation->getPrimaryKey(), 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}elseif(is_array($va_component_info["rep_ids"]) && sizeof($va_component_info["rep_ids"])){
 							#download the all reps for the component
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "exclude_ancestors" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $va_component_info["rep_ids"][0], 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$va_component_info["rep_ids"][0], 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}
 					}else{
 						# --- if not logged in provide a login link instead
@@ -113,7 +120,8 @@
 				$t_set = new ca_sets();
 				$va_sets = caExtractValuesByUserLocale($t_set->getSets(array("table" => "ca_objects", "row_id" => $t_object->get("ca_objects.object_id"), "setType" => "public_presentation", "checkAccess" => $va_access_values)));
 				$vs_translations = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='<br/>' restrictToRelationshipTypes='translation'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.language)</unit>");
-				if($t_object->get("ca_objects.abstract") || $vs_translations || (is_array($va_sets) && sizeof($va_sets))){
+				$vs_see_also = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='<br/>' restrictToRelationshipTypes='related'><l>^ca_objects.preferred_labels.name</l></unit>");
+				if($t_object->get("ca_objects.abstract") || $vs_translations || $vs_see_also || (is_array($va_sets) && sizeof($va_sets))){
 					print "<div class='col-xs-12 col-sm-8'>";
 					print ($t_object->get("ca_objects.abstract")) ? "<p>".$t_object->get("ca_objects.abstract")."</p>" : "";
 					if($vs_translations){
@@ -127,13 +135,13 @@
 						}
 						print join(", ", $va_feature_links);
 					}
+					if($vs_see_also){
+						print "<p><b>See also:</b><br/>".$vs_see_also."</p>";
+					}
 					print "</div>";
 				}
 ?>
 				<div class='col-xs-12 col-sm-4'>
-					{{{<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="related"><p><b>See Also:</b><br/>
-						<unit relativeTo="ca_objects.related" delimiter="<br/>" restrictToRelationshipTypes="related"><l>^ca_objects.preferred_labels.name</l></unit>
-					</p></ifcount>}}}
 <?php
 					$t_list_items = new ca_list_items();
 							
@@ -188,13 +196,18 @@
 					}
 				}
 ?>
-					{{{<ifdef code="ca_objects.date"><p><b>Date:</b> <unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.dates_value (^ca_objects.date.dc_dates_types)</unit></p></ifdef>}}}
 					<p><b>Components:</b> <?php print sizeof($va_component_ids); ?></p>
 <?php
 					if($vb_files){
-						print "<p class='componentButtonCol'>".caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
-						if($vb_files_require_login){
-							print "<br/><small>* Educators must login to download all files</small>";
+						print "<p class='componentButtonCol'>";
+						if(!$this->request->isLoggedIn() && $vb_files_require_login){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "About", "DownloadAll", array("object_id" => $t_object->get("ca_objects.object_id")))."\"); return false;' title='"._t("Download All")."' class='btn-default btn-orange btn-icon'>Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i></a>";
+							print "<br/><small>* Login to access educator-only files</small>";
+						}else{
+							print caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
+							if($vb_files_require_login){
+								print "<br/><small>* Login as educator to access educator-only files</small>";
+							}
 						}
 						print "</p>";
 					}
@@ -301,20 +314,23 @@
 								if($va_section_component["num_files"] > 1){
 									print "<p>".$va_section_component["num_files"]." files</p>";
 								}
-								$va_author_credits = array();
+								$va_comp_md = array();
 								if($va_section_component["author"]){
-									$va_author_credits[] = _t("Author").": ".$va_section_component["author"];
+									$va_comp_md[] = _t("Author").": ".$va_section_component["author"];
 								}
 								if($va_section_component["adapter"]){
-									$va_author_credits[] = _t("Adapted by").": ".$va_section_component["adapter"];
+									$va_comp_md[] = _t("Adapted by").": ".$va_section_component["adapter"];
 								}
 								if($va_section_component["translator"]){
-									$va_author_credits[] = _t("Translator").": ".$va_section_component["translator"];
+									$va_comp_md[] = _t("Translator").": ".$va_section_component["translator"];
 								}
 								
-								if(sizeof($va_author_credits)){
+								if($va_section_component["date"]){
+									$va_comp_md[] = $va_section_component["date"];
+								}
+								if(sizeof($va_comp_md)){
 									print "<p>";
-									print join("<br/>", $va_author_credits);
+									print join("<br/>", $va_comp_md);
 									print "</p>";
 								}
 								print ($va_section_component["source"]) ? "<p>"._t("Source").": ".$va_section_component["source"]."</p>" : "";
@@ -397,7 +413,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
+/*	jQuery(document).ready(function() {
 		jQuery('.componentSection').hide();
 		jQuery('.sectionHR').hide();
 <?php
@@ -413,6 +429,7 @@
 ?>
 		jQuery('.<?php print $vs_first_section; ?>').addClass('highlightTab');
 	});
+	*/
 	function clickTab(tabname){
 		$('.componentSection').hide();
 		$('.sectionHR').hide();

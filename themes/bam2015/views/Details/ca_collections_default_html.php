@@ -3,6 +3,14 @@
 	$va_comments = $this->getVar("comments");
 	$vn_id = $t_item->get('ca_collections.collection_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	# --- if this is not a collection, get the id of the collection this record is part of -> this is used for downloading the top level finding aid
+	$t_list = new ca_lists();
+ 	$vn_collection_type_id = $t_list->getItemIDFromList('collection_types', 'collection');
+ 	if($t_item->get("type_id") == $vn_collection_type_id){
+ 		$vn_collection_id = $t_item->get('ca_collections.collection_id');
+ 	}else{
+ 		$vn_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+ 	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -33,7 +41,7 @@
 					<hr class="divide">	
 <?php
 
-					print caNavLink($this->request, 'Download Finding Aid', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
+					print caNavLink($this->request, 'Download Finding Aid', 'faDownload', 'Detail', 'collections', $vn_collection_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
 					print "<div class='clearfix'></div>";					
 					if ($vs_historical = $t_item->get('ca_collections.biogHist')) {
 						print "<div class='unit'><span class='label'>Historical Note: </span>".$vs_historical."</div>";
@@ -44,11 +52,11 @@
 					if ($va_extent = $t_item->getWithTemplate('<ifdef code="^ca_collections.extent.extent_value"><unit delimiter=", ">^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</unit></ifdef>')) {
 						print "<div class='unit'><span class='label'>Extent: </span>".$va_extent."</div>";
 					}					
-					if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('special_event', 'production'), 'delimiter' => ', '))) {
-						print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
-					}
+					#if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('special_event', 'production'), 'delimiter' => ', '))) {
+					#	print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
+					#}
 					
-					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))) {
 ?>
 						<div class="collection-form"  >
 							<div class="formOutline" style="position:relative;">

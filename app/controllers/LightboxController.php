@@ -78,6 +78,7 @@
  		 *
  		 */
  		protected $ops_view_prefix = 'Lightbox';
+ 		protected $ops_description_attribute;
         
  		# -------------------------------------------------------
         /**
@@ -98,10 +99,7 @@
                 $this->opb_is_login_redirect = true;
                 return;
             }
-
- 			$this->opa_access_values = caGetUserAccessValues($this->request);
- 			$this->view->setVar("access_values", $this->opa_access_values);
-
+            
  			$t_user_groups = new ca_user_groups();
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
@@ -114,6 +112,8 @@
  			
 			$this->ops_lightbox_display_name = $va_lightboxDisplayName["singular"];
 			$this->ops_lightbox_display_name_plural = $va_lightboxDisplayName["plural"];
+			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
+			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
 			$this->purifier = new HTMLPurifier();
  		}
@@ -375,7 +375,7 @@
 			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$o_context->saveContext();
@@ -419,7 +419,7 @@
 				if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 					// pass name and description to populate form
 					$this->view->setVar("name", $t_set->getLabelForDisplay());
-					$this->view->setVar("description", $t_set->get("description"));
+					$this->view->setVar("description", $t_set->get($this->ops_description_attribute));
 				}else{
 					throw new ApplicationException(_t("You do not have access to this lightbox"));
 				}
@@ -460,7 +460,7 @@
  			$this->view->setVar("name", $ps_name);
  			
  			// set description - optional
- 			$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
+ 			$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
  			$this->view->setVar("description", $ps_description);
 
  			$t_list = new ca_lists();
@@ -475,7 +475,7 @@
 				$t_set->set('access', 1);
 				if($t_set->get("set_id")){
 					// edit/add description
-					$t_set->replaceAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->update();
 				}else{
 					$t_set->set('table_num', $vn_object_table_num);
@@ -484,7 +484,7 @@
 					$t_set->set('set_code', $this->request->getUserID().'_'.time());
 					$t_set->set('parent_id', $this->request->getParameter('parent_id', pInteger));
 					// create new attribute
-					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->insert();
 					$vb_is_insert = true;
 				}
@@ -508,7 +508,7 @@
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
 					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
-					$vs_set_list_item_function = caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
+					$vs_set_list_item_function = (string) caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
 					$this->view->setVar('block', $vs_set_list_item_function($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
@@ -1149,7 +1149,7 @@
 					$ps_name = _t("Your %1", $vs_display_name);
 				}
 				// set description - optional
-				$ps_description =  $this->purifier->purify($this->request->getParameter('description', pString));
+				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
 	
 				$t_list = new ca_lists();
 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
@@ -1167,7 +1167,7 @@
 				$t_set->set('set_code', $this->request->getUserID().'_'.time());
 				// create new attribute
 				if($ps_description){
-					$t_set->addAttribute(array('description' => $ps_description, 'locale_id' => $g_ui_locale_id), 'description');
+					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 				}
 				$t_set->insert();
 				if($t_set->numErrors()) {
@@ -1185,7 +1185,7 @@
 			}
 			if($t_set){
 				$pn_item_id = null;
-				$pn_object_id = $this->request->getParameter('object_id', pInteger);
+				$pn_object_id = $this->request->getParameter('id', pInteger);
 				if($pn_object_id){
 					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
 						if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
@@ -1211,11 +1211,13 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
+					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString)) || ($pn_object_id = $this->request->getParameter('object_id', pInteger))){
 						if($pb_saveLastResults){
 							// get object ids from last result
 							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
 							$va_object_ids = $o_context->getResultList();
+						} elseif($pn_object_id) {
+							$va_object_ids = [$pn_object_id];
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
@@ -1252,7 +1254,11 @@
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
- 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
+ 			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
+ 				$this->view->setVar('object_id', $pn_object_id);
+ 				$this->view->setVar('object_ids', $pa_object_ids);
+ 				$this->view->setVar('saveLastResults', $pn_save_last_results);
+ 				
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

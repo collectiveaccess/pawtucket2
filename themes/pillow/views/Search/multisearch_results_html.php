@@ -5,18 +5,18 @@
 ?>
 	<div class="col-sm-1"></div>
 	<div class="col-sm-10">
-		<h4 style='margin-bottom:30px; letter-spacing:1px;'><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h4>
+		<h4 style='margin-bottom:10px; letter-spacing:1px;float:left;'><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h4>
 	
-		<small class='pull-right'>
+		<small class='pull-right' style='margin-top:20px;margin-bottom:10px;'>
 <?php
 		$i = 0;
 		foreach($this->getVar('blockNames') as $vs_block) {
 			if ($va_results[$vs_block]['count'] == 0) { continue; }
 			$i++;
 			if($i > 1){
-#				print " | ";
+				print " | ";
 			}
-#			print "<a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
+			print "<a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
 		}
 ?>
 		</small>

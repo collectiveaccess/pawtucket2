@@ -93,12 +93,29 @@ class SearchResult extends BaseObject {
 	
 	private $opb_use_identifiers_in_urls = false;
 	private $ops_subject_idno = false;
+	
+	/**
+	 * Maximum number of entries for each table in these caches:
+	 *		rel_prefetch_cache
+	 *		prefetch_cache
+	 *		hierarchy_parent_prefetch_cache
+	 *		hierarchy_parent_prefetch_cache_index
+	 *		hierarchy_siblings_prefetch_cache
+	 *		hierarchy_siblings_prefetch_cache_index
+	 *		hierarchy_children_prefetch_cache_index
+	 */
+	static $s_cache_size_limit = 256;
 
 	# ------------------------------------------------------------------
 	private $opb_disable_get_with_template_prefetch = false;
 	private $opa_template_prefetch_cache = array();
 	# ------------------------------------------------------------------
 
+	/**
+	 * Clear all internal caches
+	 *
+	 * @return void
+	 */ 
 	public static function clearCaches() {
 		self::$s_prefetch_cache = array();
 		self::$s_instance_cache = array();
@@ -112,6 +129,75 @@ class SearchResult extends BaseObject {
 		self::$opa_hierarchy_siblings_prefetch_cache = array();
 		self::$opa_hierarchy_siblings_prefetch_cache_index = array();
 	}
+	
+	/**
+	 * Get relative sizes of internal caches. The size is the strlen of the cache when serialized and
+	 * is only useful for relative size comparisons.
+	 *
+	 * @return array Array with keys set to cache name, values set to relative sizes
+	 */
+	public static function getCacheSizes() {
+		return [
+			'prefetch_cache' => strlen(serialize(self::$s_prefetch_cache)),
+			'instance_cache' => strlen(serialize(self::$s_instance_cache)),
+			'timestamp_cache' => strlen(serialize(self::$s_timestamp_cache)),
+			'rel_prefetch_cache' => strlen(serialize(self::$s_rel_prefetch_cache)),
+			'parsed_field_component_cache' => strlen(serialize(self::$s_parsed_field_component_cache)),
+			'hierarchy_parent_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache)),
+			'hierarchy_children_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_children_prefetch_cache)),
+			'hierarchy_parent_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_parent_prefetch_cache_index)),
+			'hierarchy_children_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_children_prefetch_cache_index)),
+			'hierarchy_siblings_prefetch_cache' => strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache)),
+			'hierarchy_siblings_prefetch_cache_index' => strlen(serialize(self::$opa_hierarchy_siblings_prefetch_cache_index))
+		];
+	}
+
+	/**
+	 * Checks size of volatile per-table caches and resets them if their size exceeds the threshold for the given table
+	 * as set in SearchResult::$s_cache_size_limit. Caches managed include:
+	 *
+	 *		rel_prefetch_cache
+	 *		prefetch_cache
+	 *		hierarchy_parent_prefetch_cache
+	 *		hierarchy_parent_prefetch_cache_index
+	 *		hierarchy_siblings_prefetch_cache
+	 *		hierarchy_siblings_prefetch_cache_index
+	 *		hierarchy_children_prefetch_cache_index
+	 * 
+	 * @param string Table name
+	 * @return void
+	 */ 
+	public static function checkCacheSizeLimit($ps_tablename) {
+		foreach ([
+			'prefetch_cache' => &self::$s_prefetch_cache,
+			'instance_cache' => &self::$s_instance_cache,
+			'timestamp_cache' => &self::$s_timestamp_cache,
+			'rel_prefetch_cache' => &self::$s_rel_prefetch_cache,
+			'parsed_field_component_cache' => &self::$s_parsed_field_component_cache,
+			'hierarchy_parent_prefetch_cache' => &self::$opa_hierarchy_parent_prefetch_cache,
+			'hierarchy_children_prefetch_cache' => &self::$opa_hierarchy_children_prefetch_cache,
+			'hierarchy_parent_prefetch_cache_index' => &self::$opa_hierarchy_parent_prefetch_cache_index,
+			'hierarchy_children_prefetch_cache_index' => &self::$opa_hierarchy_children_prefetch_cache_index,
+			'hierarchy_siblings_prefetch_cache' => &self::$opa_hierarchy_siblings_prefetch_cache,
+			'hierarchy_siblings_prefetch_cache_index' => &self::$opa_hierarchy_siblings_prefetch_cache_index
+		] as $vs_cache => &$va_cache) {
+			switch($vs_cache) {
+				case 'rel_prefetch_cache':
+				case 'prefetch_cache':
+				case 'hierarchy_parent_prefetch_cache':
+				case 'hierarchy_parent_prefetch_cache_index':
+				case 'hierarchy_siblings_prefetch_cache':
+				case 'hierarchy_siblings_prefetch_cache_index':
+				case 'hierarchy_children_prefetch_cache_index':
+					if (is_array($va_cache) && is_array($va_cache[$ps_tablename]) && (sizeof($va_cache[$ps_tablename]) > SearchResult::$s_cache_size_limit)) {
+						$va_cache[$ps_tablename] = [];
+					}
+					break;
+			}
+			
+		}
+	}
+
 
 	public function __construct($po_engine_result=null, $pa_tables=null) {
 		if (!SearchResult::$opo_datamodel) { SearchResult::$opo_datamodel = Datamodel::load(); }
@@ -298,6 +384,9 @@ class SearchResult extends BaseObject {
 	 */
 	public function prefetchHierarchyParents($ps_tablename, $pn_start, $pn_num_rows, $pa_options=null) {
 		if (!$ps_tablename ) { return; }
+		
+		SearchResult::checkCacheSizeLimit($ps_tablename);
+		
 		// get row_ids to fetch
 		if (isset($pa_options['row_ids']) && is_array($pa_options['row_ids'])) {
 			$va_row_ids = $pa_options['row_ids'];
@@ -338,12 +427,7 @@ class SearchResult extends BaseObject {
 				t.{$vs_pk} IN (?)".($t_rel_instance->hasField('deleted') ? " AND (t.deleted = 0)" : "")."
 				{$vs_type_sql}
 		";
-		
-		
-		// Make sure singletons get into the cache
-		foreach($va_row_ids as $vn_row_id) {
-			SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$vn_row_id][$vs_opt_md5][] = $va_row[$vn_row_id];
-		}
+
 		$va_row_id_map = null;
 		$vn_level = 0;
 		
@@ -356,20 +440,26 @@ class SearchResult extends BaseObject {
 				$va_row = $qr_rel->getRow();
 				if (!$va_row[$vs_parent_id_fld]) { continue; }
 				
-				if ($vn_level == 0) {
-					$va_row_id_map[$va_row[$vs_parent_id_fld]] = $va_row[$vs_pk];
-					SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$va_row[$vs_pk]][$vs_opt_md5] = array();
-				} else {
-					$va_row_id_map[$va_row[$vs_parent_id_fld]] = $va_row_id_map[$va_row[$vs_pk]];
-				}
-				if (!$va_row_id_map[$va_row[$vs_parent_id_fld]]) { continue; }
-				
-				SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$va_row_id_map[$va_row[$vs_parent_id_fld]]][$vs_opt_md5][] = $va_row[$vs_parent_id_fld];
+				$va_row_id_map[$va_row[$vs_pk]] = $va_row[$vs_parent_id_fld];		// list of ids indexed by parent_id
 			}
 			
-			$va_params[0] = $qr_rel->getAllFieldValues($vs_parent_id_fld);
+			$va_row_ids_in_current_level = $va_params[0] = $qr_rel->getAllFieldValues($vs_parent_id_fld);
 			
 			$vn_level++;
+		}
+		
+		foreach($va_row_ids as $vn_id) {
+			SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$vn_id][$vs_opt_md5] = [];
+			
+			$vn_key = $vn_id;
+			while(true) {
+				if (!isset($va_row_id_map[$vn_key]) || !$va_row_id_map[$vn_key]) { 
+					break; 
+				}
+				SearchResult::$opa_hierarchy_parent_prefetch_cache[$ps_tablename][$vn_id][$vs_opt_md5][] = $va_row_id_map[$vn_key];
+				
+				$vn_key = $va_row_id_map[$vn_key];
+			}
 		}
 	}
 	# ------------------------------------------------------------------
@@ -410,11 +500,7 @@ class SearchResult extends BaseObject {
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
 			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
 		}
-		
-		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
-			$vs_access_sql = " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
-		}
-		
+	
 		$vs_pk = $t_rel_instance->primaryKey();
 		$vs_parent_id_fld = $t_rel_instance->getProperty('HIERARCHY_PARENT_ID_FLD');
 		$vs_sql = "
@@ -533,10 +619,14 @@ class SearchResult extends BaseObject {
 	 */
 	private function _getRelatedIDsForPrefetch($ps_tablename, $pn_start, $pn_num_rows, &$pa_cache, $t_rel_instance, $va_row_ids, $pa_options) {
 		$this->prefetchRelated($ps_tablename, $pn_start, $pn_num_rows, $pa_options);
+		
+		SearchResult::checkCacheSizeLimit($ps_tablename);
 						
 		$va_base_row_ids = array();
 		$vs_opt_md5 = caMakeCacheKeyFromOptions($pa_options);
 		$va_related_ids = array();
+		
+		
 		foreach($va_row_ids as $vn_row_id) {
 			if(is_array($va_related_items = self::$s_rel_prefetch_cache[$this->ops_table_name][$vn_row_id][$ps_tablename][$vs_opt_md5])) {
 				$va_base_row_ids[$vn_row_id] = caExtractValuesFromArrayList($va_related_items, $t_rel_instance->primaryKey());
@@ -708,6 +798,8 @@ class SearchResult extends BaseObject {
 		unset($pa_options['request']);
 		if (sizeof($va_row_ids = $this->getRowIDsToPrefetch($pn_start, $pn_num_rows)) == 0) { return false; }
 		
+		SearchResult::checkCacheSizeLimit($this->ops_table_name);
+		
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 		
 		$vs_md5 = caMakeCacheKeyFromOptions($pa_options);
@@ -731,6 +823,7 @@ class SearchResult extends BaseObject {
 				'criteria' => array()
 			);
 		}
+		
 		
 		foreach($va_rel_items as $vs_key => $va_rel_item) {
 			self::$s_rel_prefetch_cache[$this->ops_table_name][(int)$va_rel_item['row_id']][$ps_tablename][$vs_md5][$va_rel_item[$va_rel_item['_key']]] = $va_rel_item;
@@ -837,6 +930,7 @@ class SearchResult extends BaseObject {
 	 *		[Options controlling type of return value]
 	 *			returnAsArray = return values in a one-dimensional, numerically indexed array. If not not a string is always returned. [Default is false]
 	 *			returnWithStructure = return values in a multi-dimensional array mirroring the internal storage structure of CollectiveAccess. [Default is false]
+	 *			returnAsSearchResult = 
 	 *
 	 *		[Options controlling scope of data in return value]
 	 *			returnAllLocales = Return values from all available locales, rather than just the most appropriate locale for the current user. For string and array return values, returnAllLocales will result in inclusion of additional values. For returnWithStructure, additional entries keys on locale_id or code will be added.  [Default is false]
@@ -894,12 +988,18 @@ class SearchResult extends BaseObject {
 	public function get($ps_field, $pa_options=null) {
 		$vb_return_as_array = isset($pa_options['returnAsArray']) ? (bool)$pa_options['returnAsArray'] : false;
 		$vb_return_with_structure = isset($pa_options['returnWithStructure']) ? (bool)$pa_options['returnWithStructure'] : false;
+		if ($vb_return_as_search_result = isset($pa_options['returnAsSearchResult']) ? (bool)$pa_options['returnAsSearchResult'] : false) {
+			$vb_return_as_array = true; 
+			$vb_return_with_structure = $vb_return_all_locales = false;
+			$pa_options['template'] = null;
+		}
+		
 		if ($vb_return_with_structure) { $pa_options['returnAsArray'] = $vb_return_as_array = true; } // returnWithStructure implies returnAsArray
 		
 		// Return primary key of primary table as quickly as possible
 		if (($ps_field == $this->ops_table_pk) || ($ps_field == $this->ops_table_name.'.'.$this->ops_table_pk)) {
 			$vn_id = $this->opo_engine_result->get($this->ops_table_pk);
-			return ($vb_return_as_array || $vb_return_with_structure) ? array($vn_id) : $vn_id;
+			return ($vb_return_as_array || $vb_return_with_structure) ? array($vn_id) : ($vb_return_as_search_result ? caMakeSearchResult($this->ops_table_name, [$vn_id], $pa_options) : $vn_id);
 		}
 		
 		if (isset($pa_options['template']) && $pa_options['template']) {
@@ -986,6 +1086,8 @@ class SearchResult extends BaseObject {
 				} else {
 					return array($vs_value);
 				}
+			} elseif($vb_return_as_search_result) {
+				return caMakeSearchResult($va_path_components['table_name'], [$vs_value], $pa_options);
 			} else {
 				return $vs_value;
 			}
@@ -1042,7 +1144,7 @@ class SearchResult extends BaseObject {
 						
 						$va_parent_ids = array_slice($va_parent_ids, 0, 1);
 					
-						if (!($qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], $va_parent_ids))) {
+						if (!($qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], $va_parent_ids, $pa_options))) {
 							return $pa_options['returnAsArray'] ? array() : null;
 						}
 			
@@ -1124,6 +1226,7 @@ class SearchResult extends BaseObject {
 									}
 								}
 								
+								if ($t_instance->getProperty('HIERARCHY_TYPE') == __CA_HIER_TYPE_MULTI_MONO__) { array_pop($va_hier_ids); }
 								if (!is_null($vn_max_levels_from_top)) {
 									$va_hier_ids = array_slice($va_hier_ids, 0, $vn_max_levels_from_top, true);
 								} elseif (!is_null($vn_max_levels_from_bottom)) {
@@ -1151,7 +1254,7 @@ class SearchResult extends BaseObject {
 								}
 						
 								$va_hier_item = array();
-								if ($qr_hier = caMakeSearchResult($va_path_components['table_name'], $va_ancestor_ids)) {
+								if ($qr_hier = caMakeSearchResult($va_path_components['table_name'], $va_ancestor_ids, $pa_options)) {
 							
 									while($qr_hier->nextHit()) {
 										$va_hier_item += $qr_hier->get($vs_field_spec, array('returnWithStructure' => true, 'returnAllLocales' => true, 'useLocaleCodes' => $pa_options['useLocaleCodes']));
@@ -1215,7 +1318,7 @@ class SearchResult extends BaseObject {
 						){ 
 							continue;
 						}
-						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5]);
+						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], SearchResult::$opa_hierarchy_children_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5], $pa_options);
 						
 						$va_tmp = array($va_path_components['table_name']);
 						if ($va_path_components['field_name']) { $va_tmp[] = $va_path_components['field_name']; }
@@ -1266,7 +1369,7 @@ class SearchResult extends BaseObject {
 						){ 
 							continue;
 						}
-						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], SearchResult::$opa_hierarchy_siblings_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5]);
+						$qr_hier = $t_instance->makeSearchResult($va_path_components['table_name'], SearchResult::$opa_hierarchy_siblings_prefetch_cache[$va_path_components['table_name']][$vn_id][$vs_opt_md5], $pa_options);
 						
 						$va_tmp = array($va_path_components['table_name']);
 						if ($va_path_components['field_name']) { $va_tmp[] = $va_path_components['field_name']; }
@@ -1332,7 +1435,7 @@ class SearchResult extends BaseObject {
 						goto filter;
 					} else {
 						$vs_subfield = $va_path_components['subfield_name'] ? $va_path_components['subfield_name'] : 'timestamp';
-						$vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id][$vs_subfield];
+						$vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id]['timestamp'];
 				
 						if ($vs_subfield == 'timestamp') {
 							$this->opo_tep->init();
@@ -1360,7 +1463,7 @@ class SearchResult extends BaseObject {
 						goto filter;
 					} else {
 						$vs_subfield = $va_path_components['subfield_name'] ? $va_path_components['subfield_name'] : 'timestamp';
-						$vm_val = self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id][$vs_subfield];
+						$vm_val = self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id]['timestamp'];
 				
 						if ($vs_subfield == 'timestamp') {
 							$this->opo_tep->init();
@@ -1409,7 +1512,7 @@ class SearchResult extends BaseObject {
 // [PRIMARY TABLE] Metadata attribute
 //				
 
-					if (($t_instance instanceof BaseModelWithAttributes) && isset($va_path_components['field_name']) && $va_path_components['field_name'] && $t_element = $t_instance->_getElementInstance($va_path_components['field_name'])) {
+					if (($t_instance instanceof BaseModelWithAttributes) && isset($va_path_components['field_name']) && $va_path_components['field_name'] && $t_element = ca_metadata_elements::getInstance($va_path_components['field_name'])) {
 						$vn_element_id = $t_element->getPrimaryKey();
 					} else {
 						return $pa_options['returnAsArray'] ? array() : null;
@@ -1449,12 +1552,12 @@ class SearchResult extends BaseObject {
 					
 					foreach($va_filter_vals as $vn_index => $vs_filter_val) {
 						// is value a list attribute idno?
-						if (!is_numeric($vs_filter_val) && (($t_element = $t_instance->_getElementInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
+						if (!is_numeric($vs_filter_val) && (($t_element = ca_metadata_elements::getInstance($vs_filter)) && ($t_element->get('datatype') == 3))) {
 							$va_filter_vals[$vn_index] = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
 						}
 					}
-				
-					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true, 'alwaysReturnItemID' => true));
+					
+					$va_filter_values = $this->get(join(".", $va_tmp).".{$vs_filter}", array('returnAsArray' => true, 'alwaysReturnItemID' => true, 'sort' => caGetOption('sort', $pa_options, null), 'sortDirection' => caGetOption('sortDirection', $pa_options, null)));
 			
 					if (is_array($va_filter_values)) {
 						foreach($va_filter_values as $vn_id => $vm_filtered_val) {
@@ -1472,8 +1575,13 @@ class SearchResult extends BaseObject {
 					if (!$vb_include) { continue; }
 					$va_filtered_vals[$vn_id] = $vm_val[$vn_id];
 				}
-				return $va_filtered_vals;
+				return array_values($va_filtered_vals);
 			}
+		}
+		
+		if ($vb_return_as_search_result) {
+			if (!is_array($vm_val) || !sizeof($vm_val)) { return null; }
+			return caMakeSearchResult($va_path_components['table_name'], $vm_val, $pa_options);
 		}
 		
 		return $vm_val;
@@ -1576,7 +1684,7 @@ class SearchResult extends BaseObject {
 
 		while($qr_rel->nextHit()) {
 			$vm_val = $qr_rel->get(join(".", $va_spec), $pa_options);
-			if (is_array($pa_check_access) && sizeof($pa_check_access) && !in_array($qr_rel->get($va_path_components['table_name'].".access"), $pa_check_access)) {
+			if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_rel_instance->hasField('access') && !in_array($qr_rel->get($va_path_components['table_name'].".access"), $pa_check_access)) {
 				continue;
 			}
 			
@@ -1616,7 +1724,12 @@ class SearchResult extends BaseObject {
 	 * @return array|string
 	 */
 	private function _getLabelValue($pa_value_list, $pt_instance, $pa_options) {
-		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_assume_display_field 			= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_convert_codes_to_display_text 	= isset($pa_options['convertCodesToDisplayText']) ? (bool)$pa_options['convertCodesToDisplayText'] : false;
+		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
+		
+		if ($vb_convert_codes_to_display_text) { $pa_options['output'] = 'text'; }
+		if ($vb_convert_codes_to_idno) { $pa_options['output'] = 'idno'; }
 		
 		$va_path_components			=& $pa_options['pathComponents'];
 		
@@ -1668,6 +1781,18 @@ class SearchResult extends BaseObject {
 					}
 					
 					if ($pa_options['returnWithStructure']) {
+						if (!$va_path_components['subfield_name'] && isset($va_label['type_id'])) {
+							$va_mod_path_components = array_merge($va_path_components, ['subfield_name' => 'type_id', 'num_components' => 3]);
+							$va_mod_path_components['components'][2] = 'type_id';
+							switch($pa_options['output']) {
+								case 'text':
+									$va_label['type_id'] = $this->_convertCodeToDisplayText($va_label['type_id'], $va_mod_path_components, $pt_instance->getLabelTableInstance(), $pa_options);
+									break;
+								case 'idno':
+									$va_label['type_id'] = $this->_convertCodeToIdno($va_label['type_id'], $va_mod_path_components, $pt_instance->getLabelTableInstance(), $pa_options);
+									break;
+							}
+						}
 						$va_return_values[$vn_id][$vm_locale_id][$va_label['label_id']] = $va_path_components['subfield_name'] ? array($va_path_components['subfield_name'] => $vs_val_proc) : $va_label;
 					} else {
 						$va_return_values[$vn_id][$vm_locale_id][$va_label['label_id']] = $va_path_components['subfield_name'] ? $vs_val_proc : $va_label;
@@ -1715,7 +1840,7 @@ class SearchResult extends BaseObject {
 		if (is_array($pa_value_list) && sizeof($pa_value_list)) {
 			$va_val_proc = array();
 			foreach($pa_value_list as $o_attribute) {
-				$t_attr_element = $pt_instance->_getElementInstance($o_attribute->getElementID());
+				$t_attr_element = ca_metadata_elements::getInstance($o_attribute->getElementID());
 				$vn_attr_type = $t_attr_element->get('datatype');
 				
 				$va_acc = array();
@@ -1771,7 +1896,7 @@ class SearchResult extends BaseObject {
 					if (is_null($vs_val_proc)) {
 						switch($o_value->getType()) {
 							case __CA_ATTRIBUTE_VALUE_LIST__:
-								$t_element = $pt_instance->_getElementInstance($o_value->getElementID());
+								$t_element = ca_metadata_elements::getInstance($o_value->getElementID());
 								$vn_list_id = $t_element->get('list_id');
 						
 								$vs_val_proc = $o_value->getDisplayValue(array_merge($pa_options, array('output' => $pa_options['output'], 'list_id' => $vn_list_id)));
@@ -2269,22 +2394,24 @@ class SearchResult extends BaseObject {
 		$vs_prop = $ps_prop;
 		
 		$vs_field_name = $pa_path_components['subfield_name'] ? $pa_path_components['subfield_name'] : $pa_path_components['field_name'];
+		$vb_convert_codes_to_display_text = ((isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText']) || ($pa_options['output'] == 'text'));
 		
 		$vs_table_name = $pa_path_components['table_name'];
-		if (method_exists($pt_instance, 'setLabelTypeList')) {
-			$pt_instance->setLabelTypeList($this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"));
+		if (method_exists($pt_instance, 'setLabelTypeList') && ($vs_label_list_name = $this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"))) {
+			$pt_instance->setLabelTypeList($vs_label_list_name);
 		}
-		if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
+		
+		if ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
 			$vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemID($vs_list_code, $vs_prop);
 		} else {
-			if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
+			if ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
 				$vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemValue($vs_list_code, $vs_prop);
 			} else {
-				if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
+				if ($vb_convert_codes_to_display_text && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
 					$t_locale = new ca_locales($vs_prop);
 					$vs_prop = $t_locale->getName();
 				} else {
-					if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
+					if ($vb_convert_codes_to_display_text && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
 						foreach($va_list as $vs_option => $vs_value) {
 							if ($vs_value == $vs_prop) {
 								$vs_prop = $vs_option;

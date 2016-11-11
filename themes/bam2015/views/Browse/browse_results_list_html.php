@@ -77,10 +77,25 @@
 					$vn_chop_len = 100;
 					$vs_date_conjunction = ", ";
 					$vs_series_info = "";
-					if($qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true))){
-						$vs_series_info = "<span class='series'><i class='fa fa-ticket'></i> ".$qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true, "delimiter" => ", "))."</span> ";
+					$va_series = $qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true, "returnAsArray" => true));
+					$va_series_filtered = array();
+					foreach($va_series as $vs_series){
+						if(trim($vs_series)){
+							$va_series_filtered[] = $vs_series;
+						}
+					}
+					if(sizeof($va_series_filtered)){
+						$vs_series_info = "<span class='series'><i class='fa fa-ticket'></i> ".join(", ", $va_series_filtered)."</span> ";
 					}elseif($qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true))){
-						$vs_series_info = "<span class='series'>".$qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true, "delimiter" => ", "))."</span> ";
+						$vs_minor_info = "";
+						$va_minor = $qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true, "returnAsArray" => true));
+						$va_minor_filtered = array();
+						foreach($va_minor as $vs_minor){
+							if(trim($vs_minor)){
+								$va_minor_filtered[] = $vs_minor;
+							}
+						}
+						$vs_series_info = "<span class='series'>".join(", ", $va_minor_filtered)."</span> ";
 					}
 					$vs_link_text = (($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno"));
 					if(mb_strlen($vs_link_text) > $vn_chop_len){
@@ -91,7 +106,7 @@
 					#}
 					#$vs_link_text = $vs_series_info.$vs_link_text;
 					if($vs_pro_date || $vs_series_info){
-						$vs_link_text = $vs_link_text."<br/>".$vs_series_info.str_replace("-", "&mdash;", $qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", ")));
+						$vs_link_text = $vs_link_text."<br/>".$vs_series_info."<span class='date'>".str_replace(" - ", "&mdash;", $qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", ")))."</span>";
 					}
 					# --- if sort is date, get the date as a year so you can display a year heading
 					$vs_start_year = "";

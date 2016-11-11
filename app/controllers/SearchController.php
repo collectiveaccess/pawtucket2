@@ -44,11 +44,6 @@
  		/**
  		 *
  		 */
- 		protected $opa_access_values = array();
- 		
- 		/**
- 		 *
- 		 */
  		protected $ops_view_prefix = 'Search';
  		
  		# -------------------------------------------------------
@@ -57,14 +52,17 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }	
             
             $this->opo_config = caGetBrowseConfig();
             
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
- 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("find_type", $this->ops_find_type);
  			caSetPageCSSClasses(array("search", "results"));
  		}
@@ -348,10 +346,10 @@
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(10000));
-			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(10000)); $o_block_result_context->saveContext();}
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();

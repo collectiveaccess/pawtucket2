@@ -3,10 +3,7 @@
 	$vn_entity_id = $this->request->getParameter('id', pInteger);
 	
 	$t_entity = new ca_entities($vn_entity_id);
-	//print "NAME=".$t_entity->get('ca_entities.preferred_labels.displayname');
-	//print join("<br>\n", ($t_entity->get('ca_tour_stops.preferred_labels.name', ['returnAsArray' => true])));
 ?>
-
 <div id="viz">
 
 </div>
@@ -42,6 +39,7 @@
 		
 		var link = linkSel.enter().append("path")
 			.attr("class", "link")
+			.attr("stroke-width", function(d) { return d['source']['weight'] + "px"; })
 			.attr("d", diagonal);
 			
 		linkSel.transition()
@@ -79,8 +77,15 @@
 			.attr("dy", ".31em")
 			.attr("text-anchor", function(d) { return (mode == 'circular') ? (d.x < 180 ? "start" : "end") : "start"; })
 			.attr("transform", function(d) { return (mode == 'circular') ? (d.x < 180 ? "translate(8)" : "rotate(180)translate(-8)") : "translate(8)"; })
+			.style("fill", function(d) { return (d.id == current_id) ? "#cc0000" : "#000"; })
 			.style("font-weight", function(d) { return (d.id == current_id) ? "bold" : "normal"; })
-			.text(function(d) { return d.name; });
+			.text(function(d) { return d.name; }).on('click', function(e) { 
+				current_id = e.id;
+				d3.json('<?php print caNavUrl($this->request, '*', '*', 'GetData', array('download' => 1)); ?>/id/' + current_id, draw);
+				jQuery('#travelerCard').fadeOut(250).load('<?php print caNavUrl($this->request, '*', '*', 'GetCard', array('download' => 1)); ?>/id/' + current_id, function() {
+					jQuery(this).fadeIn(250);
+				});
+			});;
 			
 		  
 	};
