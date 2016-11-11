@@ -94,7 +94,7 @@
 		);
 		
 		$vn_c++;
-		if ($vn_c > 2000) { break; }
+		if ($vn_c > 36) { break; }
 	}
 			
 	print json_encode(array('timeline' => $va_data));
