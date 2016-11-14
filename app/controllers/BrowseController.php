@@ -60,6 +60,10 @@
  			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
             $this->opo_config = caGetBrowseConfig();
             
  			$this->view->setVar("find_type", $this->ops_find_type);
@@ -270,7 +274,12 @@
 			// Results
 			//
 			
-			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
+			$vs_sort_fld = $va_sort_by[$ps_sort];
+			if ($ps_view == 'timelineData') {
+				$vs_sort_fld = $va_browse_info['views']['timeline']['data'];
+				$ps_sort_direction = 'asc';
+			}
+			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 			
 			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
 				$va_letters = array();
@@ -314,9 +323,9 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(500));
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
 				$qr_res->seek($vn_start);
 			}
 				

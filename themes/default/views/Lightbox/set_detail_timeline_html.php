@@ -31,40 +31,20 @@
 	$va_set_items = $this->getVar("set_items");
 	$t_set = $this->getVar("set");
 ?>
-	<div id="lbTimelineContainer"><div id="timeline-embed">
-
-	</div></div>
+	<div id="lbTimelineContainer">
+		<div id="timeline-embed"></div>
+	</div>
 	
 	<div style="clear:both;"><!-- empty --></div>
 	
     <script type="text/javascript">
-    	var tl;
-		$(document).ready(function() {
-			tl = new VMM.Timeline("#timeline-embed");
-			VMM.debug = false;
-			tl.init({
+		jQuery(document).ready(function() {
+			createStoryJS({
 				type:       'timeline',
 				width:      '100%',
-				height:     $('#lbTimelineContainer').height(),
+				height:     '100%',
 				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
-				embed_id:   'timeline-embed',
-				debug: false
+				embed_id:   'timeline-embed'
 			});
-			
-			VMM.bindEvent(jQuery(".vco-slider"), loadTL, "UPDATE");
-			VMM.bindEvent(jQuery(".vco-navigation"), loadTL, "UPDATE");
 		});
-		
-		var c = 36;
-		var s = c;
-		function loadTL(e) {
-			console.log("slide!", e, tl.getCurrentNumber());
-			
-			if (tl.getCurrentNumber() >= (c-2)) {
-				tl.reload(url ='<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"), 's' => '')); ?>' + s);
-				console.log("reload", url);
-				s+= c;
-			}
-		}
-		
 	</script>

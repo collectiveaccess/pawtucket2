@@ -86,6 +86,9 @@
 				if(!$vs_first_letter){
 					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
 				}
+				if(is_numeric($vs_first_letter)){
+					$vs_first_letter = "Numeral";
+				}
 				if(!in_array($vs_first_letter, $va_letter_bar)){
 					$va_letter_bar[$vs_first_letter] = $vs_first_letter;
 					$vs_facet_list .= "<div id='facetList".$vs_first_letter."'><strong>".$vs_first_letter."</strong></div>";

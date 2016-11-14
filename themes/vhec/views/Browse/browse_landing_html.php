@@ -7,9 +7,11 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 ?>
 	<div id='browseTable'>
 		<ul >
-			<li>Browse By: </li>
-			<li><a href="#typeTab">Resource Type</a></li>		
-			<li><a href="#genreTab">Primary Sources</a></li>																				
+			<li>Browse: </li>
+			<li><a href="#typeTab">Resource Types</a></li>		
+			<li><a href="#genreTab">Primary Sources</a></li>
+			<li><?php print caNavLink($this->request, 'Finding Aids', '', 'FindingAid', 'Collection', 'Index');?></li>		
+			<div><?php print caNavLink($this->request, 'All', '', '', 'Browse', 'objects');?></div>																							
 		</ul>
 		<div id='typeTab'>	
 			<div class='container'>
@@ -22,7 +24,7 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 					$t_list_item = new ca_list_items($va_list_item['item_id']);
 					if (($vs_title = $t_list_item->get('ca_list_items.preferred_labels')) != '-') {
 						print "<div class='col-sm-3'><div class='browseChoice'>";
-						print $t_list_item->get('ca_list_items.list_image', array('version' => 'iconlarge'));
+						print caNavLink($this->request, $t_list_item->get('ca_list_items.list_image', array('version' => 'iconlarge')), '', 'Browse', 'objects', 'facet/resource_type_facet/id/'.$va_list_item['item_id']);
 						print "<div class='title'>".caNavLink($this->request, $vs_title, '', 'Browse', 'objects', 'facet/resource_type_facet/id/'.$va_list_item['item_id'])."</div>";
 						print "</div></div><!-- end col -->"; 
 						$vn_i++;
@@ -49,8 +51,8 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 					$t_subject_item = new ca_list_items($va_subject_item['item_id']);
 					if (($vs_title = $t_subject_item->get('ca_list_items.preferred_labels')) != '-') {
 						print "<div class='col-sm-3'><div class='browseChoice'>";
-						print $t_subject_item->get('ca_list_items.list_image', array('version' => 'iconlarge'));
-						print "<div class='title'>".caNavLink($this->request, $vs_title, '', 'Browse', 'objects', 'facet/resource_type_facet/id/'.$va_subject_item['item_id'])."</div>";
+						print caNavLink($this->request, $t_subject_item->get('ca_list_items.list_image', array('version' => 'iconlarge')), '', 'Browse', 'objects', 'facet/genre_facet/id/'.$va_subject_item['item_id']);
+						print "<div class='title'>".caNavLink($this->request, $vs_title, '', 'Browse', 'objects', 'facet/genre_facet/id/'.$va_subject_item['item_id'])."</div>";
 						print "</div></div>"; 
 						$vn_i++;
 					}

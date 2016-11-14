@@ -59,8 +59,8 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 12;
+		$vn_col_span_sm = 12;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
@@ -110,11 +110,21 @@
 					}
 				}
 				if ($vs_table == 'ca_objects') {
-					if ($vs_date_value = $qr_res->get('ca_objects.displayDate')) {
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Library Item") {
+						$vs_dates = array();
+						if ($vs_publication_date = $qr_res->get('ca_objects.displayDate', array('delimiter' => ', '))) {
+							$vs_dates[] = $vs_publication_date;
+						}
+						if ($vs_copyright_date = $qr_res->get('ca_objects.MARC_copyrightDate', array('delimiter' => ', '))) {
+							$vs_dates[] = $vs_copyright_date;
+						}
+						$vs_date = '<p>'.join(', ',$vs_dates).'</p>';						
+					} else if ($vs_date_value = $qr_res->get('ca_objects.displayDate')) {
 						$vs_date = "<p>".$vs_date_value."</p>";
 					} else {
 						$vs_date = null;
 					}
+					
 					if ($va_entity = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer'), 'delimiter' => '; '))) {
 						$vs_creator = "<p>".$va_entity."</p>";
 					} else { 

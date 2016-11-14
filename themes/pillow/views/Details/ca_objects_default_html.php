@@ -47,7 +47,9 @@
 				switch($t_object->get("ca_objects.rights.image_rights")){
 					case "788": #own/manage download
 						$vs_display_type = "detail";
-						$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Image</a>";
+						if ($t_representation) {
+							$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Image</a>";
+						}
 					break;
 					# ------------------------------
 					case "789": #own/manage no download
@@ -58,7 +60,9 @@
 					# ------------------------------
 					case "790": #public domain
 						$vs_display_type = "detail";
-						$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Large</a><br/><a href='".$t_representation->getMediaUrl("ca_object_representations.media", "small")."' class='downloadLink'><i class='fa fa-download'></i> Download Small</a>";						
+						if ($t_representation) {
+							$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Large</a><br/><a href='".$t_representation->getMediaUrl("ca_object_representations.media", "small")."' class='downloadLink'><i class='fa fa-download'></i> Download Small</a>";						
+						}
 					break;
 					# ------------------------------					
 					case "791": #do not own
@@ -206,8 +210,12 @@
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
-							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
-								print "<h6>Related Storage Locations</h6>".caNavLink($this->request, $va_related_storage, '', '', 'Search', 'objects', array('search' =>'ca_storage_locations:'.$va_related_storage));
+							if ($va_related_storage_locations = $t_object->get('ca_storage_locations.location_id', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'returnAsArray' => true))) {
+								print "<h6>Related Storage Locations</h6>";
+								foreach ($va_related_storage_locations as $va_key => $va_related_storage_location) {
+									$t_storage_location = new ca_storage_locations($va_related_storage_location);
+									print caNavLink($this->request, $t_storage_location->get('ca_storage_locations.preferred_labels'), '', '', 'Search', 'objects', array('search' =>'ca_storage_locations.location_id:'.$va_related_storage_location));
+								}
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
 								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
