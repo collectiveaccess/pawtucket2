@@ -742,11 +742,11 @@ a.readmore-js-toggle {
 .detailOverlayImg span.detailOverlayImgOverlayContainer{
 	position:relative;
 }
-.detailOverlayImgOverlayContainer .video-js{
+.detailOverlayImgOverlayContainer .video-js, .detailOverlayImgOverlayContainer .caAudioPlayer{
 	min-width:200px !important;
 }
 @media (min-width: 400px) {
-	.detailOverlayImgOverlayContainer .video-js{
+	.detailOverlayImgOverlayContainer .video-js, .detailOverlayImgOverlayContainer .caAudioPlayer{
 		min-width:500px !important;
 	}
 }
