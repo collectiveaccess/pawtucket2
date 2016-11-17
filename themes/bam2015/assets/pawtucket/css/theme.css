@@ -751,16 +751,23 @@ a.readmore-js-toggle {
 	}
 }
 .detailOverlayItemImgPlaceholder{
-	background-color: #dedede;
+	background-color: #FFFFFF;
     border: 0px;
-    color: #FFFFFF !important;
-    min-width:550px;
-    padding-top:100px;
-    padding-bottom:100px;
+    color: #dedede !important;
+    min-width:200px;
+    padding-top:30px;
+    padding-bottom:30px;
     text-align:center;
 }
 .detailOverlayItemImgPlaceholder span{
     font-size:100px !important;
+}
+@media (min-width: 600px) {
+	.detailOverlayItemImgPlaceholder{
+	    min-width:550px;
+    	padding-top:100px;
+    	padding-bottom:100px;
+	}
 }
 /*
 .detailOverlayImgOverlay{
