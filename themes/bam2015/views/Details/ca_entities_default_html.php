@@ -54,7 +54,8 @@
 						<div class="entityRep <?php print $vs_orientation; ?>RepContainer">
 <?php
 							$va_rep_id = $t_object->get('ca_object_representations.representation_id', array('checkAccess' => $va_access_values));
-							print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetMediaOverlay/object_id/".$va_objects[0]."/identifier/representation:".$va_rep_id."/context/objects\"); return false;'>".$va_entity_rep."</a>";
+							#print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetRepresentationInfo/object_id/".$va_objects[0]."/representation_id/".$va_rep_id."/overlay/1\"); return false;'>".$va_entity_rep."</a>";
+							print $va_entity_rep;
 							$vs_creator = $t_object->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => array('creator'), 'checkAccess' => $va_access_values));
 							print "<br/><small>".$t_object->get("type_id", array("convertCodesToDisplayText" => true)).", &copy; ".(($vs_creator) ? $vs_creator : "BAM")."</small>";
 ?>
