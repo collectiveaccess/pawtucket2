@@ -487,14 +487,14 @@ nav, .navbar, .navbar-default, .navbarTop{
 	margin-bottom:0px;
 }
 .navbarMain .navbar-collapse .navbar-nav.navbar-right:last-child {
-    margin-right: 23px;
+    margin-right: 6px;
 }
 .navbarMain .navbar-nav li{
-	margin-top:54px;
+	margin-top:61px;
 }
 .navbarMain .navbar-nav li a{
 	line-height:1em;
-	padding:0px 0px 0px 23px;
+	padding:0px 0px 0px 25px;
 }
 .navbar .nav > li > a, .navbar .nav > li > a:hover, .navbar .nav > li > a:focus {
 	font-family: gotham-medium;
@@ -567,16 +567,17 @@ nav, .navbar-nav{
 	background-color:#FFFFFF;
 }
 .navbar-brand {
-	width:167px;
-	padding-top:3px;
-	padding-bottom:0px;
+	width: 140px;
+	padding-top: 3px;
+	padding-bottom: 0px;
+	padding-left: 24px !important;
 }
 .navbar-brand img{
 	width:100%;
 	height:auto;
 }
 .navbarMain{
-	padding-bottom:24px;
+	padding-bottom:23px;
 	padding-top:25px;
 }
 .navbarMain .subTitle, .subTitleSmall .subTitle{
@@ -640,7 +641,7 @@ nav, .navbar-nav{
 .navOverlay{
 	background-color:#E2EAED;
 	position:absolute !important;
-	top:-19px;
+	top:-12px;
 	left:-30px;
 	right:-30px;
 	display:none;
@@ -669,6 +670,8 @@ nav, .navbar-nav{
 	width:50%;
 	float:left;	
 	line-height: 26px;
+	padding-left:15px;
+	padding-left:15px;
 }
 .multiline{
 	line-height: 16px !important;
@@ -680,7 +683,7 @@ nav, .navbar-nav{
 	letter-spacing: 0;
 	color: #00aeef;
 	font-family: 'gotham-medium',arial,sans-serif;
-	padding-right:50px;
+	padding-right:20px;
 }
 .navOverlay .textCol div a:hover{
 	text-decoration:none;

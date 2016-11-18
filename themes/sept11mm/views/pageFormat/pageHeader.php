@@ -163,7 +163,7 @@
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/our-city-our-story-0"><?php print caGetThemeGraphic($this->request, 'deniro3.jpg'); ?><h3>Our City. Our Story. »</h3></a>
+							<a href="https://www.911memorial.org/our-city-our-story-0"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
 						</div>
 					</div>
 				</div>
@@ -191,7 +191,7 @@
 				<div class="imgSide">
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/1993-wtc-bombing-victims"><?php print caGetThemeGraphic($this->request, '1993panel.jpg'); ?><h3>1993 WTC Bombing Victims »</h3></a>
+							<a href="https://www.911memorial.org/1993-wtc-bombing-victims"><?php print caGetThemeGraphic($this->request, '1993panel.jpg'); ?><h3>1993 WTC Bombing<br/>Victims »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
@@ -244,17 +244,19 @@
 					<div>
 						<h3>Overview</h3>
 						<a href="https://www.911memorial.org/about-museum">About the Museum<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/museum-exhibitions">Exhibitions<span> »</span></a><br/>
+						<a href="https://www.911memorial.org/exhibitions">Exhibitions<span> »</span></a><br/>
+						<a href="https://www.911memorial.org/museum-space" title="The Museum Space">Museum Space<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/message-museum-director">Director's Message<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/museum-architects">The Architects<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/collection">About the Collection<span> »</span></a>
+						<a href="https://www.911memorial.org/our-partnerships" title="Our Partnerships">Our Partners<span> »</span></a>
 					</div>
 					<div>
-						<h3>Contribute</h3>
-						<a href="https://www.911memorial.org/help-build-collection">Help Build the Collection<span> »</span></a><br/>
+						<h3>Collections</h3>
+						<a href="https://www.911memorial.org/collection">About the Collection<span> »</span></a>
+						<a href="https://www.911memorial.org/contribute-collection" title="Contribute">Contribute to Collection<span> »</span></a>
 						<a href="https://www.911memorial.org/registries">Registries<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/registry">Artists Registry<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/oral-remembrances">Oral Remembrances<span> »</span></a>
+						<div class='multiline'><a href="http://collection.911memorial.org/" title="">Explore Online<span> »</span><br/>Collection</a></div>
 					</div>
 				</div>
 				<div style="clear:both;"></div>
@@ -321,7 +323,7 @@
 					<div>
 						<h3>Donate</h3>
 						<a href="https://www.911memorial.org/make-monetary-donation-now">Donate Now<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/sponsor-cobblestone-0">Sponsor a Cobblestone<span> »</span></a><br/>
+						<a href="https://www.911memorial.org/sponsor-cobblestone-0" style="white-space: nowrap;">Sponsor a Cobblestone<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/take-seat">Take a Seat<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/our-donors">Our Donors<span> »</span></a>
 					</div>
