@@ -95,8 +95,7 @@
 		</script>
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
-				$('body').on('contextmenu', 'img', function(e){ return false; }); 
-				$('#caMediaPanelContentArea').on('contextmenu', 'canvas', function(e){ return false; }); 
+				$('html').on('contextmenu', 'body', function(e){ return false; });
 			});
 		</script>
 	
