@@ -133,14 +133,14 @@ H1, h1{
 #footer-top {
     font: 12px/24px arial,sans-serif;
     background: #0b263b;
-    padding: 50px 0px 55px 0px;
+    padding: 45px 0px 60px 0px;
     color: #fff;
     font-size: 14px;
     line-height: 16px;
     margin-top:70px;
 }
 #footer-top .container{
-	padding-right:35px;
+	padding-right:25px;
 	padding-left:25px;
 }
 #footer-top img{
@@ -171,11 +171,13 @@ H1, h1{
 #footer-bottom {
 	font-family: gotham-narrow-light;
     background: #0d1a26;
-    padding: 0px 0px 60px 0px;
+    padding: 0px 0px 51px 0px;
     color: #fff;
     font-size: 16px;
-    line-height:1.5em;
-    color:#e2eaed;
+    line-height:1.6em;
+}
+#footer-bottom .container{
+	padding-left:25px;
 }
 #footer-bottom h4{
 	font-size: 18px;
@@ -186,18 +188,13 @@ H1, h1{
 	padding:0px;
 }
 #footer-bottom .container{
-	padding-right:58px;
+	padding-right:25px;
 }
 #footer-bottom .centerCol{
 	padding-top:50px;
 }
-@media (min-width: 768px) {
-	#footer-bottom .centerCol a{
-		padding-left:7px;
-	}
-}
 #footer-bottom a{
-	color:#e2eaed;
+	color:#fff;
 	font-size:13px !important;
 }
 #footer-bottom a:hover{
@@ -205,7 +202,7 @@ H1, h1{
 	text-decoration:none;
 }
 #footer-bottom .col-sm-3{
-	line-height:23px;
+	line-height:20px;
 }
 @media (min-width: 768px) {
 	#footer-bottom .col-sm-3{
@@ -216,12 +213,12 @@ H1, h1{
 	}
 }
 #footer-bottom .copyright{
-	color: #e2eaed;
+	color: #fff;
 	font-family: 'gotham-medium';
 	letter-spacing: 0.2px;
 	font-size:10px;
-	margin-top:47px;
-	line-height:13px;
+	margin-top:39px;
+	line-height:12px;
 }
 
 

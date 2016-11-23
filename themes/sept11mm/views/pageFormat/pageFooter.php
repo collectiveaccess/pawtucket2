@@ -60,7 +60,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6">
-					National September 11 Memorial & Museum<br/>
+					National September 11 Memorial Museum<br/>
 					Administrative Office
 					<br/>200 Liberty Street, 16th Floor
 					<br/>New York, NY 10281
@@ -85,7 +85,7 @@
 			</div><!-- end row -->
 			<div class="row">
 				<div class="col-sm-4 copyright">
-					&copy; 2016 National September 11 Memorial & Museum 9/11 MEMORIAL is a registered trademark of the National September 11 Memorial & Museum. 
+					&copy; 2016 National September 11 Memorial & Museum<br/>9/11 MEMORIAL is a registered trademark of the National September 11 Memorial & Museum. 
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div>
