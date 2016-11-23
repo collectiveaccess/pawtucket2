@@ -32,21 +32,21 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'families.png', array('alt' => 'For 9/11 Families')); ?>
+					<h2>For 9/11 Families</h2>
 					<p class="textBlock">
 						A dedicated section for the loved ones of those killed in the 2001 and 1993 attacks. Stay informed and plan your visit.
 					</p>
 					<a href="https://www.911memorial.org/information-911-family-members">More Information »</a>
 				</div><!-- end col -->
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'give.png', array('alt' => 'Give')); ?>
+					<h2>Give</h2>
 					<p class="textBlock">
 						The National September 11 Memorial & Museum is only possible because of your support.
 					</p>
 					<a href="https://www.911memorial.org/make-monetary-donation-now">All donations are tax deductible »</a>
 				</div><!-- end col -->
 				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'updates.png', array('alt' => 'Updates')); ?>
+					<h2>Updates</h2>
 					<p class="textBlock">
 						Stay informed about news and events by subscribing to our newsletter.
 					</p>
@@ -60,7 +60,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-6">
-					<h4>National September 11 Memorial & Museum</h4>
+					National September 11 Memorial & Museum<br/>
 					Administrative Office
 					<br/>200 Liberty Street, 16th Floor
 					<br/>New York, NY 10281

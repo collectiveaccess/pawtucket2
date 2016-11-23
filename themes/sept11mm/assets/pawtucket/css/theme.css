@@ -29,6 +29,13 @@
 	font-weight:normal;
 	font-style:normal;
 }
+@font-face{
+	font-family:'Nevis';
+	src:url(nevis-webfont.eot);
+	src:url(nevis-webfont.eot?#iefix) format('embedded-opentype'),url(nevis-webfont.woff) format('woff'),url(nevis-webfont.ttf) format('truetype');
+	font-weight:normal;
+	font-style:normal;
+}
 .container{
 	max-width:970px;
 }
@@ -82,15 +89,17 @@ H1, h1{
 }
 .header-social{
 	position:absolute;
-	left:105%;
-	top:0px;
+	left:104.8%;
+	top:-41.5px;
+	z-index:3000;
 }
 .header-social a{
 	display:block;
 	width:28px;
 	height:28px;
 	margin-top:1px;
-	background:url(../graphics/social-sprite-2.png) 0 0 no-repeat;
+	background:url(../graphics/social_sprite.png) 0 0 no-repeat;
+	background-size: 57px auto;
 	overflow:hidden;
 }
 .header-social a:hover{
@@ -124,14 +133,15 @@ H1, h1{
 #footer-top {
     font: 12px/24px arial,sans-serif;
     background: #0b263b;
-    padding: 0px 0px 70px 0px;
+    padding: 50px 0px 55px 0px;
     color: #fff;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 16px;
     margin-top:70px;
 }
 #footer-top .container{
-	padding-right:45px;
+	padding-right:35px;
+	padding-left:25px;
 }
 #footer-top img{
 	margin-top:60px;
@@ -149,6 +159,14 @@ H1, h1{
 #footer-top a:hover{
 	color:#21B1E7 !important;
 	text-decoration:none;
+}
+#footer-top h2{
+	color: #a6e0f5;
+	font-size: 20px !important;
+	font-size: 1.25rem;
+	font-family: 'Nevis',Verdana,sans-serif;
+	margin-top: 0;
+	padding-bottom:20px;
 }
 #footer-bottom {
 	font-family: gotham-narrow-light;
@@ -191,6 +209,9 @@ H1, h1{
 }
 @media (min-width: 768px) {
 	#footer-bottom .col-sm-3{
+		padding-top:50px;
+	}
+	#footer-bottom .col-sm-6{
 		padding-top:50px;
 	}
 }
@@ -718,7 +739,7 @@ nav, .navbar-nav{
 }
 .navOverlay .imgCol .imgBox a, .navOverlay .imgCol .imgBox h3{
 	font-size: 14px !important;
-	line-height: 22px;
+	line-height: 16px;
 	color: #21B1E7 !important;
 }
 .navOverlay .imgCol .imgBox h3{

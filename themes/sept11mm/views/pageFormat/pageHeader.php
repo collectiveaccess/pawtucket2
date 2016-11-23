@@ -89,13 +89,14 @@
 				<li><a href="https://membership.911memorial.org/user?destination=user">Log In</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="https://www.911memorial.org/dashboard">Members</a></li>
-				<li><a href="https://www.911memorial.org/national-september-11-memorial-museum">About</a></li>
-				<li><a href="https://www.911memorial.org/faq/general">FAQ</a></li>
-				<li><a href="https://www.911memorial.org/blog">Blog</a></li>
-				<li><a href="https://www.911memorial.org/media-center">Newsroom</a></li>
-				<li><a href="https://www.911memorial.org/interact">Interact</a></li>
-				<li><a href="https://www.911memorial.org/catalog">Museum Shop</a></li>
+				<li><a href="http://store.911memorial.org" title="Store">Store</a></li>
+				<li><a href="/media-center" title="Newsroom">Media Center</a></li>
+				<li><a href="/national-september-11-memorial-museum" title="About">About</a></li>
+				<li><a href="/interact" title="Interact">Interact</a></li>
+				<li><a href="/blog" title="Blog">Blog</a></li>
+				<li><a href="/events" title="">Calendar</a></li>
+				<li><a href="/dashboard" title="">Members</a></li>
+				<li><a href="/faq/general" title="">FAQ</a></li>
 				<li>
 					<div class="header-translate"><div id="google_translate_element"></div></div>
         <script type="text/javascript">
@@ -143,7 +144,7 @@
 					<li class='museumLink'><a href="https://www.911memorial.org/museum">Museum</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
 					<li class='learnLink'><a href="https://www.911memorial.org/teach-learn">Teach + Learn</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
 					<li class='involvedLink'><a href="https://www.911memorial.org/get-involved">Get Involved</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li><a href="https://www.911memorial.org/make-monetary-donation-now">Donate</a></li>
+					<li class='donateLink'><a href="https://www.911memorial.org/make-monetary-donation-now">Donate</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -163,7 +164,7 @@
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/our-city-our-story-0"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
+							<a href="https://www.911memorial.org/OCOS"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
 						</div>
 					</div>
 				</div>
@@ -226,17 +227,17 @@
 				<div class="imgSide">
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href=""><?php print caGetThemeGraphic($this->request, 'JL_911MUSEUM_COMM_13large.jpg'); ?><h3>360-Degree View of the Museum »</h3></a>
+							<a href="https://www.911memorial.org/contribute-memorial-exhibition"><?php print caGetThemeGraphic($this->request, 'museum3.jpg'); ?><h3>Contribute to the Memorial Exhibition »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href=""><?php print caGetThemeGraphic($this->request, 'MEMEX2_13crop.jpg'); ?><h3>Contribute to the Memorial Exhibition »</h3></a>
+							<a href="https://www.911memorial.org/exhibitions"><?php print caGetThemeGraphic($this->request, 'museum2.jpg'); ?><h3>Exhibitions »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href=""><?php print caGetThemeGraphic($this->request, 'JL_THINC_03HPCROP.jpg'); ?><h3>Visit the 9/11 Memorial Museum »</h3></a>
+							<a href="https://www.911memorial.org/interactive-museum-experience"><?php print caGetThemeGraphic($this->request, 'museum1.jpg'); ?><h3>Museum Virtual Tour »</h3></a>
 						</div>
 					</div>
 				</div>
@@ -310,7 +311,7 @@
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="http://www.911memorial.org/become-911-memorial-museum-member"><?php print caGetThemeGraphic($this->request, '_O9A2023.jpg'); ?><h3>Become a<br/>Museum<br/>Member »</h3></a>
+							<a href="http://www.911memorial.org/become-museum-member"><?php print caGetThemeGraphic($this->request, '_O9A2023.jpg'); ?><h3>Become a<br/>Museum<br/>Member »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
@@ -374,6 +375,11 @@
 			},function(){
 				$("#involvedPanel").hide();
 				$(".involvedLink .triangle").hide();
+			});
+			$(".donateLink").hover(function(){
+				$(".donateLink .triangle").show();
+			},function(){
+				$(".donateLink .triangle").hide();
 			});
 	});
 </script>
