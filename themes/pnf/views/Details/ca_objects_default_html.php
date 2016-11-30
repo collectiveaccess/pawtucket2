@@ -60,7 +60,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6><?php print $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))?></H6>
+				<?php #print "<H6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</H6>"; ?>
 				<HR>
 <?php
 				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
@@ -81,31 +81,29 @@
 					print "<div class='unit'><h6>Title</h6>".$vs_title."</div>";
 				}
 				if ($vs_subtitle = $t_object->get('ca_objects.subtitle')) {
-					print "<div class='unit'><h6>Subtitle</h6>".$vs_subtitle."</div>";
+					print "<div class='unit'>".$vs_subtitle."</div>";
 				}
 				if ($vs_added = $t_object->get('ca_objects.245c')) {
-					print "<div class='unit'><h6>One Added Author, Translator or Responsible Person</h6>".$vs_added."</div>";
+					print "<div class='unit'>".$vs_added."</div>";
 				}
 				if ($vs_nonpreferred = $t_object->get('ca_objects.nonpreferred_labels')) {
-					print "<div class='unit'><h6>Variation on a Title</h6>".$vs_nonpreferred."</div>";
+					print "<div class='unit'><h6>Variant Title(s)</h6>".$vs_nonpreferred."</div>";
 				}
 				if ($vs_caption_title = $t_object->get('ca_objects.caption_title')) {
 					print "<div class='unit'><h6>Caption Title</h6>".$vs_caption_title."</div>";
 				}
-				if ($vs_place = $t_object->get('ca_places.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Place</h6>".$vs_place."</div>";
+				if ($vs_place = $t_object->get('ca_objects.260a_place', array('delimiter' => ', '))) {
+					$vs_place = "<h6>Imprint</h6>".$vs_place;
 				}
 				if ($vs_printer = $t_object->get('ca_objects.publication_description')) {
-					print "<div class='unit'><h6>Printer, Publisher, Bookseller</h6>".$vs_printer."</div>";
+					$vs_place.= " ".$vs_printer;
 				}
 				if ($vs_date = $t_object->get('ca_objects.display_date', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+					$vs_place.=  " ".$vs_date;
 				}
-				if ($vs_pagination = $t_object->get('ca_objects.pagination')) {
-					print "<div class='unit'><h6>Pagination</h6>".$vs_pagination."</div>";
-				}
-				if ($vs_ornaments = $t_object->get('ca_objects.ornaments')) {
-					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
+				print "<div class='unit'>".$vs_place."</div>";
+				if (($vs_pagination = $t_object->get('ca_objects.pagination')) | ($vs_format = $t_object->get('ca_objects.format')) | ($vs_ornaments = $t_object->get('ca_objects.ornaments'))) {
+					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_ornaments." ".$vs_format."</div>";
 				}
 				if ($vs_ornaments = $t_object->get('ca_objects.ornaments')) {
 					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
@@ -113,11 +111,9 @@
 				if ($vs_related_ornaments = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Ornaments</h6>".$vs_related_ornaments."</div>";
 				}
-				if ($vs_format = $t_object->get('ca_objects.format')) {
-					print "<div class='unit'><h6>Format</h6>".$vs_format."</div>";
-				}
+
 				if ($vs_notes = $t_object->get('ca_objects.500_notes')) {
-					print "<div class='unit'><h6>General Notes; Collation; Physical Description; Performance Date</h6>".$vs_notes."</div>";
+					print "<div class='unit'><h6>General Notes</h6>".$vs_notes."</div>";
 				}
 				if ($vs_citation = $t_object->get('ca_objects.510_citation_reference')) {
 					print "<div class='unit'><h6>Citation Reference</h6>".$vs_citation."</div>";
@@ -181,11 +177,12 @@
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
-
-							{{{<ifcount code="ca_collections" min="1"><H6>Locate This Copy</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><br/>^ca_collections.description</unit>}}}			
-							
+			
+<?php
+							if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
+								print "<H6>Locate This Copy</H6>".$va_institutions;
+							}
+?>							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
