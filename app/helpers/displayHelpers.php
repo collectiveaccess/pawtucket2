@@ -3439,9 +3439,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		
 		$pn_subject_id = is_object($pt_subject) ? $pt_subject->getPrimaryKey() : (int)$pt_subject;
 		
-		$va_rep_display_info = caGetMediaDisplayInfo($vs_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		$va_rep_display_info = caGetMediaDisplayInfo($ps_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-
 
 		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
 		
@@ -3752,8 +3751,8 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 					}
 				}
 			
-				$vs_tool_bar = caRepToolbar($po_request, $po_data, $pt_subject, array('display' => $ps_display_type, 'context' => caGetOption('context', $pa_options, null)));
-
+				$vs_tool_bar = caGetOption('noToolBar', $pa_options, false) ? "" : caRepToolbar($po_request, $po_data, $pt_subject, array('display' => $ps_display_type, 'context' => caGetOption('context', $pa_options, null)));
+					
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $po_data->getWithTemplate($pa_options["captionTemplate"]) : "";
 			
 				$va_reps[$vn_rep_id = $po_data->get('ca_object_representations.representation_id')] = "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$vs_viewer_name::getViewerHTML(

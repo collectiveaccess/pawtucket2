@@ -807,7 +807,7 @@ class BaseModel extends BaseObject {
 								$va_sort = isset($pa_options['sort']) ? $pa_options['sort'] : null;
 								if (!is_array($va_sort) && $va_sort) { $va_sort = array($va_sort); }
 								if (!is_array($va_sort)) { $va_sort = array(); }
-							
+								
 								$vs_sort_direction = (isset($pa_options['sort_direction']) && in_array(strtolower($pa_options['sort_direction']), array('asc', 'desc'))) ? strtolower($pa_options['sort_direction']) : 'asc';
 							
 								unset($va_tmp[1]);					// remove 'children' from field path

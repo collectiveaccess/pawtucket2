@@ -58,7 +58,7 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."<p class='copyright'>copyright restricted</p></div>";
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 		
 
 		$vn_col_span = 3;
@@ -67,8 +67,8 @@
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 3;
-			$vn_col_span_sm = 3;
-			$vn_col_span_xs = 3;
+			$vn_col_span_sm = 6;
+			$vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -80,7 +80,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				#$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -89,7 +89,7 @@
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.altID"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
@@ -99,56 +99,12 @@
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."<p class='copyright'>copyright restricted</p></div>";
+							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 					}
 					$vs_info = null;
-					if ($qr_res->get('ca_objects.date')) {
-						$vs_date = "<p>".$qr_res->get('ca_objects.date')."</p>";
-					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-				} elseif ($vs_table == 'ca_collections') {
-					$vs_collection_style = "collections";
-					$vs_right_info = "<div class='bResultItemInfo'>";
-						if ($va_productions = $qr_res->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('productions'), 'returnAsLink' => true, 'delimiter' => ', '))) {
-							$vs_right_info.= "<div><b>Related Productions: </b>".$va_productions."</div>";
-						}
-						#if ($va_objects = $qr_res->get('ca_objects.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', '))) {
-						#	$vs_right_info.= "<div><b>Related Objects: </b>".$va_objects."</div>";
-						#}	
-						if ($va_date = $qr_res->get('ca_collections.inclusive_dates', array('delimiter' => ', '))) {
-							$vs_right_info.= "<div><b>Inclusive Dates: </b>".$va_date."</div>";
-						}						
-						if ($va_types = $qr_res->get('ca_collections.material_types', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
-							$vs_right_info.= "<div><b>Materials: </b>".$va_types."</div>";
-						}
-						if ($va_extent = $qr_res->getWithTemplate('<unit>^ca_collections.extent.extent_collection ^ca_collections.extent.type_collection</unit>')) {
-							$vs_right_info.= "<div><b>Extent: </b>".$va_extent."</div>";
-						}
-						$vn_i = 0;						
-						if ($va_contents = $qr_res->get('ca_collections.children.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'returnAsArray' => true))) {											
-							$vs_right_info.= "<div class='contents'><b>Contents</b>";
-							foreach($va_contents as $va_key => $va_content){
-								$vs_right_info.= "<div>".$va_content."</div>";
-								$vn_i++;
-								if ($vn_i == 5) {break;}
-							}
-							if (sizeof($va_contents) > 5) {
-								$vs_right_info.= "and ".(sizeof($va_contents) - 5)." more...";
-							}
-							$vs_right_info.= "</div>";
-						}
-					$vs_right_info.= "</div>";
-					$va_image_records = $qr_res->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('findingaid'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
-					$t_object = new ca_objects($va_image_records[0]);
-					$va_images = $t_object->get('ca_object_representations.media.small', array('checkAccess' => $va_access_values, 'returnAsArray' => true));
-					if($va_images[0]){
-						$vs_thumbnail = $va_images[0];
-					}else{
-						$vs_thumbnail = $vs_default_placeholder_tag;
-					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
 					if($va_images[$vn_id]){
@@ -161,23 +117,17 @@
 				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-					if ($vs_table == 'ca_collections') {
-						$vs_add_to_set_link.= "<div class='seeMore'>".caNavLink($this->request, 'See More', '', '', 'Detail', 'collections/'.$vn_id)."</div>";
-					}
 				}
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-		<div class='bResultItem {$vs_collection_style}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bResultItemContent'><div class='leftContent'><div class='bResultItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_detail_link}{$vs_date}
-				</div><!-- end bResultItemText -->			
-			</div>
-				{$vs_right_info}
-
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}
+				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>

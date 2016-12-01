@@ -479,6 +479,11 @@ form {
 
 /* Advanced Search */
 
+.advancedSearch h1 small a{
+	font-size:14px;
+	color:#333;
+	text-decoration:underline;
+}
 #caAdvancedSearchFormBorder {
     margin: 0px auto 15px auto;
     background-color: #fafae4;
@@ -511,7 +516,10 @@ div.advancedSearchField {
 	padding: 0px 15px 20px 15px;
 }
 .attributeListItem {
-	width:100%;
+
+}
+.advancedSearchField div {
+	float:left;
 }
 .advSearchLabel {
     font-family: ff-dagny-web-pro, 'Helvetica Neue', Arial, sans-serif;
@@ -546,13 +554,15 @@ div.advancedSearchField {
     -webkit-user-select: text;
     cursor: auto;
     resize:none;
-    width: 100% !Important;
 }
 .advancedSearch .formLabelText {
 	margin-top:20px;
 }
 .advancedSearch .formLabelText a {
 	color: #333;
+}
+.caAdvancedSearchBoolean {
+	float:right !important;
 }
 .browseTargetLabel {
 	font-size:13px;
@@ -607,6 +617,11 @@ div.advancedSearchField {
 .gallery #galleryDetailImageArea #galleryDetailImageWrapper {
 	padding-bottom:20px;
 }
+.popover {
+	max-width: 350px;
+	min-width:350px;
+}
+
 @media (min-width: 768px) {
 	.gallery #galleryDetailImageArea {
 		height: 460px;
