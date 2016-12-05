@@ -77,8 +77,6 @@
 				$vs_typecode = "";
 				$t_list_item->load($qr_results->get("type_id"));
 				$vs_typecode = $t_list_item->get("idno");
-				$vs_student = "<p><b>Name: </b>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('student'), 'delimiter' => ', '))."</p>";
-				$vs_major = "<p><b>Major: </b>".$qr_results->get('ca_occurrences.preferred_labels', array('delimiter' => ','))."</p>";
 				$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 				if(!($vs_thumbnail = $qr_results->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
 					if($vs_type_placeholder){
@@ -93,10 +91,8 @@
 				}else{
 					$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
 				}
-				$vs_add_to_set_link = "";
-				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-					$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a></div>";
-				}				
+				$vs_add_to_set_link = "<div class='addTo'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='Add to lightbox'><i class='fa fa-suitcase'></i></a></div>";
+				
 				$vs_rep_id = $qr_results->get("ca_object_representations.representation_id");
 				$vs_obj_id = $qr_results->get("ca_objects.object_id");
 				$vs_download_link = "";
@@ -108,7 +104,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

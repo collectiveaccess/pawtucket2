@@ -2281,6 +2281,20 @@ a.readmore-js-toggle{
 	font-size:11px;
 	overflow:hidden;
 }
+.objects .multisearchResult {
+	width:200px;
+	height: 185px;
+}
+.objects .blockResultsScroller {
+	height:210px;
+}
+.multisearch .objects.blockResults {
+	height:200px
+}
+.multisearch .objects .scrollButtonNext, .multisearch .objects .scrollButtonPrevious {
+	height:190px;
+	padding-top:85px;
+}
 .multisearch .multisearchResult a  {
 	color:#454545;
 }
@@ -2318,7 +2332,9 @@ a.readmore-js-toggle{
 /* ---------------------------- */
 .collectionsList a{
 	font-size:15px;
-	font-weight:bold;
+	font-weight:normal;
+	color:#333;
+	text-decoration:underline;
 }
 .collectionsList p{
 	margin-bottom:20px;

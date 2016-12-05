@@ -72,7 +72,7 @@
 <?php
 			}
 ?>
-			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+			<div class='blockResults objects'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
