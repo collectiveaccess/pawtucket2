@@ -144,6 +144,7 @@ define("__CA_DEFAULT_LOCALE__", "en_US");
 
 define("__CA_USE_CLEAN_URLS__", 0);
 
+
 # *** 
 # __   __          _                _                  
 # \ \ / /__  _   _( )_ __ ___    __| | ___  _ __   ___ 
@@ -162,6 +163,13 @@ define("__CA_USE_CLEAN_URLS__", 0);
 #
 # Most of the time you won't need to change anything below
 # --------------------------------------------------------------------------------------------
+
+
+#
+# __CA_GOOGLE_MAPS_KEY__ = GoogleMaps key to use for mapping (optional)
+#
+define("__CA_GOOGLE_MAPS_KEY__", "");
+
 
 #
 # __CA_QUEUE_ENABLED__ = enable background processing using the task queue

@@ -53,6 +53,11 @@
  		 */
  		protected $ops_view_prefix = 'Details';
  		
+ 		/**
+ 		 * Path to temporary download scratch file
+ 		 */
+ 		protected $ops_tmp_download_file_path = null;
+ 		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -614,7 +619,7 @@
 					//
 					// Perform metadata embedding
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					if (!($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
 					}
 					$va_file_paths[$vs_path] = $vs_file_name;
@@ -636,9 +641,7 @@
 				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
 				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 				
-				$this->response->sendHeaders();
 				$vn_rc = $this->render('Details/object_download_media_binary.php');
-				$this->response->sendContent();
 				
 				if ($vs_path) { unlink($vs_path); }
 			} else {
@@ -646,9 +649,7 @@
 					$this->view->setVar('archive_path', $vs_path);
 					$this->view->setVar('archive_name', $vs_name);
 				}
-				$this->response->sendHeaders();
 				$vn_rc = $this->render('Details/object_download_media_binary.php');
-				$this->response->sendContent();
 			}
 			
 			return $vn_rc;
@@ -664,8 +665,11 @@
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
-			$vn_object_id = $this->request->getParameter('object_id', pInteger);
+			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) { $vn_object_id = $this->request->getParameter('id', pInteger); }
 			$t_object = new ca_objects($vn_object_id);
+			if (!$t_object->isLoaded()) {
+				throw new ApplicationException(_t('Cannot download media'));
+			}
 			if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
   				return;
  			}
@@ -732,16 +736,12 @@
 			
 			//
 			// Perform metadata embedding
-			if ($vs_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
-				$this->view->setVar('version_path', $vs_path);
+			if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
+				$this->view->setVar('version_path', $this->ops_tmp_download_file_path);
 			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
 			}
-			$this->response->sendHeaders();
-			$vn_rc = $this->render('Details/object_representation_download_binary.php');
-			$this->response->sendContent();
-			if ($vs_path) { unlink($vs_path); }
-			return $vn_rc;
+			$this->render('Details/object_representation_download_binary.php', true);
 		}
  		# -------------------------------------------------------
  		# Tagging and commenting
@@ -1313,7 +1313,13 @@
 		public function GetMediaOverlay($pa_options=null) {
 			$o_dm = Datamodel::load();
 			
-			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+			$ps_context = $this->request->getParameter('context', pString);
+			
+			if ($ps_context == 'gallery') {
+				$va_context = [
+					'table' => 'ca_objects'
+				];
+			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
@@ -1353,7 +1359,11 @@
 			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
 			
-			if (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
+			if ($ps_context == 'gallery') {
+				$va_context = [
+					'table' => 'ca_objects'
+				];
+			} elseif (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
@@ -1371,6 +1381,13 @@
 			}
 		
 			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+		}
+		# -------------------------------------------------------
+		/**
+		 * Clean up tmp files
+		 */
+		public function __destruct() {
+			if($this->ops_tmp_download_file_path) { @unlink($this->ops_tmp_download_file_path); }
 		}
  		# -------------------------------------------------------
 	}

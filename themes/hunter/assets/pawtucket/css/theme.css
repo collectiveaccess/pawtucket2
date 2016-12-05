@@ -39,12 +39,13 @@ header{
 }
 header .logo{
 	float:left;
-	margin-left:29px;
+	margin-left:15px;
 }
 header .headerSubTitle{
 	float:right;
-	padding:15px 45px 0px 0px;
-	font-size:12px;
+	padding:10px 25px 0px 0px;
+	font-size:14px;
+	font-style:italic;
 }
 @media (max-width: 600px) {
 	header .headerSubTitle{
@@ -102,11 +103,11 @@ nav{
 	font-family: 'Lato', sans-serif !important;
 	font-weight:bold;
 	size:14px !important;
-	padding:8px 34px 8px 17px !important;
+	padding:8px 29px 8px 13px !important;
 	margin-right:0px !important;
 	text-transform:uppercase;
 	white-space: normal !important;
-	letter-spacing:-.2px;
+	letter-spacing:0px;
 }
 .navHunter a:hover{
 	color:#f58220 !important;
@@ -216,21 +217,29 @@ ul.dropdown-menu a{
 	border:0px;
 	background-color:#663190;
 }
+#footer .container{
+	padding-bottom:5px;
+}
 #footer{
-	padding:28px 0px 25px 0px;
+	padding:-5px 0px 15px 0px !important;
 	color: #FFF !important;
 	font-size:14px;
 }
 #footer a {
 	color:#FFF !important;
 	text-decoration:none;
+	line-height:1.4em !Important;
 }
-#footer H3{
+#footer H4{
+	margin-bottom:6px !important;
+}
+#footer H4 a{
 	color:#FFF;
-	font-size:15px;
+	font-size:18px;
 	margin-top:0px;
-	font-family: 'Lato', sans-serif !important;
-	line-height:1.3em;
+	line-height:1em !important;
+	font-family: 'Rokkitt' !important;
+	font-weight:normal;
 }
 #footer ul{
 	list-style-type:none;
@@ -241,22 +250,23 @@ ul.dropdown-menu a{
 	padding:1px 0px 0px 0px !important;
 }
 #footer ul li, #footer ul li a {
-    font-size: 12px;
-    line-height: 16px !important;
     color: #fff;
 	padding:0px !important;
 	margin:0px !important;
 }
-#footer ul > ul{
+#footer ul > ul, #footer ul > li> ul{
 	list-style-type:circle !important;
 	color:#FFF !important;	
-	padding:0px 0px 0px 40px !important;
+	padding:0px 0px 0px 15px !important;
 }
-#footer ul > ul > li{
+#footer ul > ul > li, #footer ul > li > ul > li{
 	padding-top:4px;	
 	list-style-type:circle !important;
 	list-style-position: outside !important;
 }
+
+
+
 #footer2, #footer2 .container{
 	margin-top:0px;
 	margin-bottom:0px;
@@ -264,8 +274,18 @@ ul.dropdown-menu a{
 	background-color:#c8c9cb;
 }
 #footer2{
-	padding-top:15px;
+	padding-top:17px;
 	padding-bottom:15px;
+	font-size:12px;
+	color:#333 !important;
+}
+#footer2 div{
+	line-height: 1.6em !Important;
+}
+#footer2 img{
+	top:-1.5px;
+	right:-.5px;
+	position:relative;
 }
 /* Front */
 #pageArea.front{

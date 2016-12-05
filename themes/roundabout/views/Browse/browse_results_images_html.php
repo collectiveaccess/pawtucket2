@@ -80,7 +80,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				#$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -141,8 +141,11 @@
 							$vs_right_info.= "</div>";
 						}
 					$vs_right_info.= "</div>";
-					if($va_images[$vn_id]){
-						$vs_thumbnail = $va_images[$vn_id];
+					$va_image_records = $qr_res->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('findingaid'), 'returnAsArray' => true, 'checkAccess' => $va_access_values));
+					$t_object = new ca_objects($va_image_records[0]);
+					$va_images = $t_object->get('ca_object_representations.media.small', array('checkAccess' => $va_access_values, 'returnAsArray' => true));
+					if($va_images[0]){
+						$vs_thumbnail = $va_images[0];
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}

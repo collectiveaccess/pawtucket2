@@ -16,6 +16,13 @@ h1 {
 	font-weight:bold;
 	text-transform:none;
 }
+h1 a, h1 a:active, h1 a:visited, h1 a:hover, .detail h1 a:hover {
+	color:#fff !important;
+	text-decoration:none;
+}
+.findingaid h1.page-title {
+	color:#fff;
+}
 h6 {
 	font-size:16px;
 	color:#000;
@@ -37,6 +44,7 @@ ul {
 .navbar {
 	box-shadow:none;
 	margin-bottom:20px;
+	background-color:#f3f3f3;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: 'Open Sans Condensed', sans-serif;
@@ -49,7 +57,8 @@ ul {
 }
 .navbar .formOutline {
 	border-radius:0px;
-	border:2px solid #000;
+	border:2px solid #808285;
+	background-color: #fff;
 }
 .navbar .form-control {
     font-weight: bold;
@@ -57,7 +66,7 @@ ul {
     font-size: 15px;
 }
 .navbar-form {
-	padding-right:0px;
+	padding-right:5px;
 }
 ::-webkit-input-placeholder {
    color: black;
@@ -156,6 +165,14 @@ footer {
     margin: 0px 0px 29px 0px;
     width: 100%;
     text-align: center;
+}
+.homelogo {
+	text-align:center;
+}
+.homelogo img{
+	text-align:center;
+	height:150px;
+	width:auto;
 }
 .navigation {
     list-style: none;
@@ -452,12 +469,13 @@ div.browseFacetItem a {
 }
 .browsedivider {
 	border-top: 2px solid #808285;
+	padding-bottom:30px;
 }
 #browse-menu {
 	font-weight:bold;
 	font-size:14px;
 	border:2px solid #808285;
-	box-shadow: none;
+	/*box-shadow: none;*/
 }
 .browseHeadernav {
 	font-size:14px;
@@ -477,6 +495,8 @@ div.browseFacetItem a {
 	border:2px solid #808285;
 	font-size:14px;
 	font-weight:bold;
+	height:32px;
+	margin-bottom:2px;
 }
 .browseMenuBrowseAll .btn-default {
 	color:#808285;
@@ -484,6 +504,10 @@ div.browseFacetItem a {
 	border:2px solid #808285;
 	font-size:14px;
 	font-weight:bold;	
+	padding: 5px 7px;
+}
+div.browseMenuBrowseAll {
+	bottom:5;
 }
 
 .filterMenuFacetList li a {
@@ -545,7 +569,17 @@ div.browseFacetItem a {
 	padding-left:0px;
 	padding-right:0px;
 	padding-top:0px;
-	padding-bottom:50px;
+	padding-bottom:0px;
+}
+.pageContentTitle {
+	font-weight:bold;
+	font-size:20px;
+	padding-bottom:10px;
+	padding-top:15px;
+}
+.pageContent ul li {
+	list-style-type:none;
+	padding-bottom:10px;
 }
 
 /* Search */
@@ -703,6 +737,9 @@ a.readmore-js-toggle {
 	font-weight:bold;
 	font-size:16px;
 }
+.results H1 {
+	margin-bottom:5px;
+}
 .results H5, .browse .btn, .sets .btn, .results strong, .sets H5 strong {
 	font-size:14px;
 }
@@ -710,6 +747,27 @@ a.readmore-js-toggle {
 	font-size:14px;
 	color:#000;
 	font-weight:bold;
+}
+
+/* Finding Aid */
+
+.findingaid H1 {
+    color: #000;
+    margin-bottom:5px;
+}
+.collectionTitle {
+	font-weight:bold;
+}
+
+.tileviewer div.viewerControls {
+	background-color: #000 !important;
+	opacity:1;
+}
+div.caMediaOverlayControls .objectInfo {
+	font-size:14px;
+}
+div.caMediaOverlayControls {
+	opacity:1;
 }
 
  

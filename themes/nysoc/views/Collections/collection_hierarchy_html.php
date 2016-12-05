@@ -21,6 +21,7 @@
 		}
 		$qr_collection_children->seek(0);
 	}
+	$pn_subcollection_id = $this->request->getParameter('subcollection_id', pInteger);
 	if($vb_has_children){
 ?>					
 				<div class='collectionsContainer'><H5><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H5>
@@ -38,13 +39,18 @@
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
-							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
+							$o_search = caGetSearchInstance("ca_objects");
+							$qr_res = $o_search->search("ca_collections.collection_id:".$qr_collection_children->get("collection_id"), array("sort" => "ca_object_labels.name", "sort_direction" => "desc", "checkAccess" => $va_access_values));
+							$vn_rel_object_count = $qr_res->numHits();
+							
+							#$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<br/><small>(".$vn_rel_object_count." digitized item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist){
-								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
+								#print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
+								print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count, 'openCollection'.(($pn_subcollection_id == $qr_collection_children->get("ca_collections.collection_id")) ? " active" : ""), 'ca_collections',  $t_item->get("ca_collections.collection_id"), array("subcollection_id" => $qr_collection_children->get("ca_collections.collection_id")));
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;
@@ -66,6 +72,7 @@
 							print "</div>";	
 							if($vb_link_sublist){
 ?>													
+<!-- 
 								<script>
 									$(document).ready(function(){
 										$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').click(function(){
@@ -76,8 +83,9 @@
 											$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').addClass('active');
 											return false;
 										}); 
-									})
-								</script>						
+									});
+								</script>
+ -->						
 <?php								
 							}
 						}
@@ -93,6 +101,17 @@
 								$("#contTabLink").hide();
 							})
 						</script>
+<?php
+					}
+					if($pn_subcollection_id){
+?>
+						<script>
+							$(document).ready(function(){
+								$('#collectionLoad').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+								$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $pn_subcollection_id, 'expandAll' => $this->request->getParameter('expandAll', pInteger))); ?>"); 
+								$('#findingTable').tabs('option', 'active', 1);
+							});
+						</script>						
 <?php
 					}
 ?>
