@@ -79,14 +79,15 @@
 					$va_ids = array_keys($t_subject->getRepresentationIDs());
 					$vn_rep_index = array_search($t_instance->getPrimaryKey(), $va_ids);
 				
+					$vs_context = $po_request->getParameter('context', pString);
 					if ($vn_rep_index > 0) { 
-						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index - 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey()))."\");'>←</a>";
+						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index - 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'context' => $vs_context))."\");'>←</a>";
 					}
 				
 					$vs_controls .=  ' '._t("%1 of %2", ($vn_rep_index + 1), $vn_num_media).' ';
 				
 					if ($vn_rep_index < ($vn_num_media - 1)) {
-						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index + 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey()))."\");'>→</a>";
+						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index + 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'context' => $vs_context))."\");'>→</a>";
 					}
 					$vs_controls .= "</div>";	
 					
