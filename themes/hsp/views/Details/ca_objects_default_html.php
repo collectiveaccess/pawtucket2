@@ -27,7 +27,7 @@
  */
  
 	$t_object = 			$this->getVar("item");
-	$vn_object_id = 		$t_object->get("ca_objects.object_id");
+	$vn_object_id = 		$t_object->get(" ca_objects.object_id");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -62,7 +62,7 @@
 				
 				{{{<ifdef code="ca_objects.call_number"><h6>Call Number</h6>^ca_objects.call_number<br/><hr/></ifdef>}}}
 				
-				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><h6>Collections</h6> <l>^ca_collections.preferred_labels.name</l> [^ca_collections.idno]<br/><hr/></unit>}}}
+				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><h6>Collection<ifcount code="ca_collections" min="2">s</ifcount></h6> <l>^ca_collections.preferred_labels.name</l> [^ca_collections.idno]<br/><hr/></unit>}}}
 				
 				{{{<ifdef code="ca_objects.box_number"><h6>Box/Case</h6>^ca_objects.Box_number<br/><hr/></ifdef>}}}
 				
@@ -76,7 +76,7 @@
 				
 				<?php
 					# This code will group entities by their relationship to the current object
-					$t_entities = $t_object->get('ca_entities', array('template' => '<unit relativeTo="ca_entities">^relationship_typename|^ca_entities.preferred_labels</unit>', excludeRelationshipTypes => array('mrk', 'trc')));
+					$t_entities = $t_object->get('ca_entities', array('template' => '<unit relativeTo="ca_entities" excludeRelationshipTypes="mrk, trc">^relationship_typename|^ca_entities.preferred_labels</unit>'));
 					if($t_entities){
 						$t_entities = explode(';', $t_entities);
 						$entity_array = array();
@@ -102,23 +102,46 @@
 				?>
 				<!--{{{<ifcount code="ca_entities" min="1"><unit relativeTo="ca_entities" delimiter="<hr/>"><h6>^relationship_typename</h6>^ca_entities.preferred_labels</unit><hr/></ifcount>}}}-->
 				
-				{{{<unit relativeTo="ca_objects.address"><ifdef code="ca_objects.address"><h6>Address</h6><ifdef code="ca_objects.address.address1">^ca_objects.address.address1<br/></ifdef><ifdef code="ca_objects.address.address2">^ca_objects.address.address2<br/></ifdef><ifdef code="ca_objects.address.city">^ca_objects.address.city, </ifdef><ifdef code="ca_objects.address.stateprovince">^ca_objects.address.stateprovince </ifdef><ifdef code="ca_objects.address.postalcode">^ca_objects.address.postalcode, </ifdef><ifdef code="ca_objects.address.country">^ca_objects.address.country</ifdef><hr/></ifdef></unit>}}}
+				{{{<unit relativeTo="ca_objects.address" delimiter=" "><ifdef code="ca_objects.address"><h6>Address</h6><ifdef code="ca_objects.address.address1">^ca_objects.address.address1<br/></ifdef><ifdef code="ca_objects.address.address2">^ca_objects.address.address2<br/></ifdef><ifdef code="ca_objects.address.city">^ca_objects.address.city, </ifdef><ifdef code="ca_objects.address.stateprovince">^ca_objects.address.stateprovince </ifdef><ifdef code="ca_objects.address.postalcode">^ca_objects.address.postalcode, </ifdef><ifdef code="ca_objects.address.country">^ca_objects.address.country</ifdef><hr/></ifdef></unit>}}}
 				
-				{{{<ifdef code="ca_objects.date_view"><h6>Date of Original</h6>^ca_objects.date_view<br/><hr/></ifdef>}}}
+				{{{<ifdef code="ca_objects.date_view"><h6>Date<ifcount code="ca_objects.date_view" min="2">s</ifcount> of Original</h6><unit relativeTo="ca_objects.date_view" delimiter="<br/>">^ca_objects.date_view</unit><br/><hr/></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.date_item"><h6>Date of Reproduction</h6>^ca_objects.date_item<br/><hr/></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.view_format"><h6>Original Format</h6><unit relativeTo="ca_objects.view_format" delimiter=', '>^ca_objects.view_format</unit><br/><hr/></ifdef>}}}
-				<?php print_r($t_object->get('ca_objects.hierarchy.view_format', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))); ?>
+				{{{<ifdef code="ca_objects.view_format"><h6>Original Format</h6><unit relativeTo="ca_objects.view_format.hierarchy" delimiter=' > '>^ca_objects.view_format.hierarchy.preferred_labels</unit><br/><hr/></ifdef>}}}
+				
 				{{{<ifdef code="ca_objects.item_format"><h6>Reproduction Format</h6><unit relativeTo="ca_objects.item_format" delimiter=", ">^ca_objects.item_format</unit><br/><hr/></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth"><h6>Dimensions</h6><ifdef code="ca_objects.dimensions.dimensions_phys">^ca_objects.dimensions.dimensions_phys: </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_height"> x ^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> x ^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><br/><hr/></ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth"><h6>Dimensions</h6><unit relativeTo="ca_objects.dimensions" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_phys">^ca_objects.dimensions.dimensions_phys: </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_height"> x ^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> x ^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef></unit><br/><hr/></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.inscription.inscription_text|ca_objects.inscription.inscription_location"><h6>Inscription</h6><ifdef code="ca_objects.inscription.inscription_text"><strong>Text: </strong>^ca_objects.inscription.inscription_text<br/></ifdef><ifdef code="ca_objects.inscription.inscription_location"><strong>Location: </strong>^ca_objects.inscription.inscription_location</ifdef><br/><hr/></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.image_description"><h6>Description</h6><span class="trimText">^ca_objects.image_description</span><hr/></ifdef>}}}
 				
-				{{{<h6>Part of</h6><unit relativeTo="ca_objects.parent">^ca_objects.parent.preferred_labels</unit><br/><hr/>}}}
+				<?php
+					# Get Parent Relationship, checking for access to avoid users getting re-directed to the homepage
+					if ($t_object->get('ca_objects.parent.access') == 1){
+						print'<h6>Part of</h6>'.$t_object->get('ca_objects.parent.preferred_labels.name', array('returnAsLink' => true));
+					}
+					
+					# Get Children objects and output them into a div that is hidden by default
+					$t_children = $t_object->get('ca_objects.children.preferred_labels', array('returnAsLink' => true, 'returnAsArray' => true));
+					if ($t_children){
+						print (sizeof($t_children) > 1)? "<h6>Parts</h6>" : "<h6>Part</h6>";
+						$counter = 0;
+						foreach ($t_children as $child){
+							print $child."<br/>";
+							$counter++;
+							if($counter == 5){
+								print '<div id="childrenLink"><a href="#" onClick="$(\'#moreChildren\').toggle(250); $(\'#childrenLink\').hide(); return flase;">MORE</a></div><div id="moreChildren">';
+							}
+							if($counter == sizeof($t_children)){
+								print "</div>";
+							}
+						}
+						print "<hr/>";
+					}
+				?>
 				
 				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Subject</H6></ifcount>}}}
 				{{{<ifcount code="ca_list_items" min="2"><H6>Subjects</H6></ifcount>}}}
@@ -158,7 +181,7 @@
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
 					<div class="row">
-						<div class="col-sm-6">		
+						<div class="col-sm-12">		
 							
 							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
@@ -168,7 +191,7 @@
 							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
+						<div class="col-sm-12">
 							{{{map}}}
 						</div>
 					</div><!-- end row -->

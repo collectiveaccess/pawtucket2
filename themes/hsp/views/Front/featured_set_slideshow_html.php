@@ -78,6 +78,11 @@
 				Carousel initialization
 				*/
 				$('.jcarousel')
+					.on('jcarousel:create jcarousel:reload', function(){
+						var element = $(this),
+							width = element.innerWidth();
+						element.jcarousel('items').css('width', width + 'px');
+					})
 					.jcarousel({
 						// Options go here
 						wrap:'circular'

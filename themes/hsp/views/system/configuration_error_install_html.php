@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/views/mediaViewers/UniversalViewer.php :
+ * themes/default/views/system/configuration_error_intstall_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,17 +24,29 @@
  * http://www.CollectiveAccess.org
  *
  * @package CollectiveAccess
- * @subpackage Media
+ * @subpackage Configuration
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
  */
- 
-	$vs_data_url = $this->getVar('data_url');
-	$vn_page = (int)$this->getVar('page');
-	
-	$vs_width = caParseElementDimension($this->getVar('width'), ['returnAsString' => true, 'default' => '100%']);
-	$vs_height = caParseElementDimension($this->getVar('height'), ['returnAsString' => true, 'default' => '100%']);
+		$va_tmp = explode("/", str_replace("\\", "/", $_SERVER['SCRIPT_NAME']));
+		array_pop($va_tmp);
+		$vs_path = join("/", $va_tmp);
 ?>
-<div class="uv" data-locale="en-GB:English (GB)" data-uri="<?php print $vs_data_url; ?>" data-collectionindex="0" data-manifestindex="0" data-sequenceindex="0" data-canvasindex="0" style="width:<?php print $vs_width; ?>; height:<?php print $vs_height; ?>; background-color: #000;" data-config="<?php print $this->request->getAssetsUrlPath(); ?>/universalviewer/config.json"></div>
-<script type="text/javascript" id="embedUV" src="<?php print $this->request->getAssetsUrlPath(); ?>/universalviewer/dist/uv/lib/embed.js"></script>
+<?php print _t("<div class='error'>An error in your system configuration has been detected</div>
+	    General installation instructions can be found
+	    <a href='http://wiki.collectiveaccess.org/index.php?title=Installation_(Pawtucket)' target='_blank'>here</a>.
+	    For more specific hints on the existing issues please have a look at the messages below."); ?>
+	<br/><br/>
+<?php
+foreach (self::$opa_error_messages as $vs_message):
+?>
+		<div class="permissionError">
+			<img src='<?php print $vs_path; ?>/graphics/vorsicht.gif' class="permissionErrorIcon"/>
+			<?php print $vs_message; ?>
+			<div style='clear:both; height:1px;'><!-- empty --></div>
+		</div>
+		<br/>
+<?php
+endforeach;
+?>
