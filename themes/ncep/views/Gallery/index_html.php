@@ -9,7 +9,10 @@
 				<div class='col-sm-4'>
 					<div class="detailBox">
 						<p>
-							Intro text here.  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque euismod lorem in dolor elementum, in commodo libero molestie. Nunc tempor leo eget porttitor molestie. Vivamus commodo nibh lacus, eget efficitur erat molestie id. Phasellus pretium dolor eu massa tristique tincidunt. Donec in ligula commodo, ornare massa id, auctor turpis. Duis sit amet lectus quis arcu accumsan interdum. Donec ultrices ante magna, eu rhoncus justo ultrices in. Fusce vestibulum, nisl vestibulum condimentum pulvinar, turpis leo placerat dolor, sed luctus tortor ligula vel tortor. Praesent pulvinar vitae neque quis hendrerit.						
+							Our "Network Picks" are sets of modules specially selected and annotated by the NCEP community—staff, experts, and educators like yourself! Sets may focus on a theme or type of module—for example, climate change or field-based exercises—or can simply be a collection of favorites. Set curators provide a brief overview of each module or component and how they can be used together in the classroom, or for curriculum development.
+						</p>
+ 						<p>
+							If you are interested in contributing to Network Picks, please email us at <a href="mailto:ncep@amnh.org">ncep@amnh.org</a>.
 						</p>
 					</div>
 				</div>
