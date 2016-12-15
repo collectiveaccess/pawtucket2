@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_centro_url = "http://centropr.hunter.cuny.edu";
+	$vs_centro_url = "https://centropr.hunter.cuny.edu";
 	
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
@@ -85,7 +85,7 @@
 			<div class="logo navbar-btn pull-left">
 				<a href="<?php print $vs_centro_url; ?>" title="Home"><?php print caGetThemeGraphic($this->request, 'Centro_logo_1.png'); ?></a>
 			</div>
-			<div class="headerSubTitle">Understanding, Preserving, Sharing the<br/>Puerto Rican Experience</div>
+			<div class="headerSubTitle">Understanding, Preserving, Sharing the Puerto Rican Experience</div>
 		</header>
 	</div>
 	<nav class="navbar bg-dk-gray navHunter" role="navigation">
@@ -115,6 +115,7 @@
 
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-2">
 				<ul class="nav navbar-nav">
+					<li><a href="<?php print $vs_centro_url; ?>/about">About Centro</a></li>
 					<li><a href="<?php print $vs_centro_url; ?>/events-news">Events & News</a></li>
 					<li><a href="<?php print $vs_centro_url; ?>/collections">Collections</a></li>
 					<li><a href="<?php print $vs_centro_url; ?>/library-publications">Library & Publications</a></li>

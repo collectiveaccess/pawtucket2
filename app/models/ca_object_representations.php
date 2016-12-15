@@ -1779,7 +1779,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 * @return string HTML output
  	 */
  	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
- 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
+ 		$va_object_ids = $this->get('ca_objects.object_id', ['returnAsArray' => true]);
+ 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), new ca_objects($va_object_ids[0]), array_merge(['noToolBar' => true], $pa_options)));
  	}
  	# ------------------------------------------------------
 	/** 
