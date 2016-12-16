@@ -30,7 +30,7 @@
 		<div id="footer">
 			<ul class="list-inline">
 				<li><a href="http://hsp.org">&copy; <?php print date('Y') ?> Historical Society of Pennsylvania</a></li>
-				<li><a href="http://hsp.org/default.aspx?id=135">Licensing Information</a></li>
+				<li><a href="http://hsp.org/collections/library-services/rights-and-reproductions">Licensing Information</a></li>
 				<li><?php print caNavLink($this->request, _t('Contact Us'), '', '', 'About', 'contact', array()) ?></li>
 			</ul>
 			<div class="footer_tag"><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>

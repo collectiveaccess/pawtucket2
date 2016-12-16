@@ -1862,14 +1862,16 @@ class SearchResult extends BaseObject {
 					$va_auth_spec = null; 
 					if (is_a($o_value, "AuthorityAttributeValue")) {
 						$va_auth_spec = $va_path_components['components'];
+						
 						if ($pt_instance->hasElement($va_path_components['subfield_name'], null, true, array('dontCache' => false))) {
 							array_shift($va_auth_spec); array_shift($va_auth_spec); array_shift($va_auth_spec);
 						} elseif ($pt_instance->hasElement($va_path_components['field_name'], null, true, array('dontCache' => false))) {
 							array_shift($va_auth_spec); array_shift($va_auth_spec); 
 							$va_path_components['subfield_name'] = null;
+						} else {
+							$va_auth_spec = ['preferred_labels'];
 						}
 					}
-					
 					if ($va_path_components['subfield_name'] && ($va_path_components['subfield_name'] !== $vs_element_code) && !($o_value instanceof InformationServiceAttributeValue)) {
 						$vb_dont_return_value = true;
 						if (!$pa_options['filter']) { continue; }
@@ -1877,12 +1879,14 @@ class SearchResult extends BaseObject {
 									
 					if (is_a($o_value, "AuthorityAttributeValue") && sizeof($va_auth_spec) > 0) {
 						array_unshift($va_auth_spec, $vs_auth_table_name = $o_value->tableName());
+				
 						if ($qr_res = caMakeSearchResult($vs_auth_table_name, array($o_value->getID()))) {
+							$va_options = $pa_options;
+							unset($va_options['returnWithStructure']);
+							$va_options['returnAsArray'] = true;
+							
 							if ($qr_res->nextHit()) {
-								unset($pa_options['returnWithStructure']);
-								$va_options['returnAsArray'] = true;
-								$va_val_proc = $qr_res->get(join(".", $va_auth_spec), $pa_options);
-						
+								$va_val_proc = $qr_res->get(join(".", $va_auth_spec), $va_options);
 								if(is_array($va_val_proc)) {
 									foreach($va_val_proc as $vn_i => $vs_v) {
 										$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()."_{$vn_i}"][$vs_element_code] = $vs_v;
