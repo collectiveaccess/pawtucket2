@@ -11218,6 +11218,24 @@ $pa_options["display_form_field_tips"] = true;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
+	 * Return IDNO for primary key value
+	 *
+	 * @param int $pn_id Primary key value
+	 * @return string idno value
+	 */
+	public static function getIdnoForID($pn_id) {
+		$o_dm = Datamodel::load();
+		if (($t_instance = $o_dm->getTableInstance(static::class, true) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD')))) {
+			$o_db = new Db();
+			$qr_res = $o_db->query("SELECT {$vs_idno_fld} FROM ".$t_instance->tableName()." WHERE ".$t_instance->primaryKey()." = ?", [(int)$pn_id]);
+			if ($qr_res->nextRow()) {
+				return $qr_res->get($vs_idno_fld);
+			}
+		}
+		return null;
+	}
+	# --------------------------------------------------------------------------------------------
+	/**
 	 * Find row(s) with fields having values matching specific values. 
 	 * Results can be returned as model instances, numeric ids or search results (when possible).
 	 *
