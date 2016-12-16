@@ -396,7 +396,7 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_label = $t_set->get('ca_sets.preferred_labels.name')), ['t_subject' => $t_set]), $vs_label);
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');

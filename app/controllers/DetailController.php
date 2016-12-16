@@ -434,7 +434,7 @@
  			
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
- 					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), ((caGetOption('pdfExportTitle', $va_options, false)) ? $t_subject->getLabelForDisplay() : null), ['checkAccess' => $this->opa_access_values]);
+ 					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
  					caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
