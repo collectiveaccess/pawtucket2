@@ -446,9 +446,9 @@
 		}
 		
 		# --- make sure the primary rep shows up first
-		$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
-		unset($va_links[$vn_primary_id]);
-		$va_links = $va_primary_link + $va_links;
+		//$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
+		//unset($va_links[$vn_primary_id]);
+		//$va_links = $va_primary_link + $va_links;
 		
 		# --- formatting
 		$vs_formatted_thumbs = "";
