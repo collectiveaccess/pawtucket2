@@ -68,28 +68,15 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 		 */
 		public function __construct($pa_settings=null, $ps_mode='CLI') {
 			$this->opa_available_settings = array(
-				'import_directory' => array(
-					'formatType' => FT_TEXT,
-					'displayType' => DT_FILE_BROWSER,
-					'width' => 100, 'height' => 1,
-					'takesLocale' => false,
-					'default' => '',
-					'label' => _t('Import directory'),
-					'description' => _t('Directory containing SIPS to import.')
-				),
-				'delete_after_import' => array(
-					'formatType' => FT_NUMBER,
-					'displayType' => DT_SELECT,
-					'width' => 40, 'height' => 1,
-					'takesLocale' => false,
-					'options' => array(
-						_t('Yes') => 1,
-						_t('No') => 0
-					),
-					'default' => '0',
-					'label' => _t('Delete after import?'),
-					'description' => _t('Set to delete SIP after it is imported.')
-				)
+				//'import_directory' => array(
+				//	'formatType' => FT_TEXT,
+				//	'displayType' => DT_FILE_BROWSER,
+				//	'width' => 100, 'height' => 1,
+				//	'takesLocale' => false,
+				//	'default' => '',
+				//	'label' => _t('Import directory'),
+				//	'description' => _t('Directory containing SIPS to import.')
+				//),
 			);
 			
 			parent::__construct($pa_settings, $ps_mode, __CA_APP_DIR__.'/plugins/NYSocStatisticsGenerator/conf/tool.conf');
@@ -113,6 +100,22 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 			return true;
 		}
 		# -------------------------------------------------------
+		/**
+		 * 
+		 */
+		public function commandGenerateFindingAidsPDF() {
+			if(!(($vs_hints = @file_get_contents(__CA_APP_DIR__."/tmp/server_config_hints.txt")) && is_array($va_hints = unserialize($vs_hints)))) {
+				$va_hints['HTTP_HOST'] = 'cityreaders.nysoclib.org';
+			}
+			
+			print "Getting PDF...\n";
+			$vs_pdf = file_get_contents("http://".$va_hints['HTTP_HOST']."/Detail/collections/1/view/pdf/export_format/_pdf_ca_collections_summary");
+			print "Writing PDF...\n";
+			file_put_contents($vs_path = __CA_BASE_DIR__."/nysoclib_cityreaders_finding_aids.pdf", $vs_pdf);
+			print "Wrote PDF to {$vs_path}\n";
+			return true;
+		}
+		# -------------------------------------------------------
 		# Help
 		# -------------------------------------------------------
 		/**
@@ -122,6 +125,9 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 		 */
 		public function getShortHelpText($ps_command) {
 			switch($ps_command) {
+				case 'GenerateFindingAidsPDF':
+					return _t('Pre-generate finding aids PDF.');
+					break;
 				case 'GenerateStatistics':
 				default:
 				return _t('Generate statistics for the New York Society Library Historic Reading Records project.');
@@ -136,6 +142,9 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 		 */
 		public function getHelpText($ps_command) {
 			switch($ps_command) {
+				case 'GenerateFindingAidsPDF':
+					return _t('Pre-generate finding aids PDF for download.');
+					break;
 				case 'GenerateStatistics':
 				default:
 				return _t('Generates statistics for the New York Society Library Historic Reading Records project front-end web site.');
@@ -144,4 +153,3 @@ require_once(__CA_MODELS_DIR__.'/ca_objects.php');
 		}
 		# -------------------------------------------------------
 	}
-?>

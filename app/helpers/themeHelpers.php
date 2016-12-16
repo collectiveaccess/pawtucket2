@@ -1022,9 +1022,21 @@
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
 					$vb_submit_or_reset_set = true;
 					break;
+				case 'submittag':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>");
+					$vb_submit_or_reset_set = true;
+					break;
 				case 'reset':
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
 					$vb_submit_or_reset_set = true;
+					break;
+				case 'resettag':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>");
+					$vb_submit_or_reset_set = true;
+					break;
+				case '/resettag':
+				case '/submittag':
+					$po_view->setVar($vs_tag, "</a>");
 					break;
 				default:
 					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {

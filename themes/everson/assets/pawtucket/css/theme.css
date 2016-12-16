@@ -17,7 +17,7 @@ h1 {
 	text-transform:none;
 }
 h1 a, h1 a:active, h1 a:visited, h1 a:hover, .detail h1 a:hover {
-	color:#fff;
+	color:#fff !important;
 	text-decoration:none;
 }
 .findingaid h1.page-title {
@@ -165,6 +165,14 @@ footer {
     margin: 0px 0px 29px 0px;
     width: 100%;
     text-align: center;
+}
+.homelogo {
+	text-align:center;
+}
+.homelogo img{
+	text-align:center;
+	height:150px;
+	width:auto;
 }
 .navigation {
     list-style: none;
