@@ -49,9 +49,9 @@
 							<span class="openSansBold">HOURS</span>&nbsp;&nbsp; Thurs-Sun <span class="openSansBold">&middot;</span> 12-5PM<br/>
 							<span class="openSansBold">PHONE</span>&nbsp;&nbsp; 718<span class="openSansBold">&middot;</span>875<span class="openSansBold">&middot;</span>2098
 							<br/><ul class="list-inline pull-right social">
-								<li><i class="fa fa-twitter"></i></li>
-								<li><i class="fa fa-facebook-square"></i></li>
-								<li><i class="fa fa-instagram"></i></li>
+								<li><a href="https://twitter.com/KentlerDrawing" target="_blank"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="https://www.facebook.com/kentlergallery/?fref=ts" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+								<li><a href="https://www.instagram.com/kentlerdrawing" target="_blank"><i class="fa fa-instagram"></i></a></li>
 								<li><a href="mailto:info@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
 							</ul>
 						</h5>
