@@ -93,7 +93,7 @@
  			}else{
  				$ps_set_id = $ps_function;
  				$this->view->setVar("set_id", $ps_set_id);
- 				$t_set->load($ps_set_id);
+ 				if (!($t_set->load($ps_set_id))) { throw new ApplicationException(_t('Invalid gallery')); }
  				$this->view->setVar("set", $t_set);
  				
  				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
