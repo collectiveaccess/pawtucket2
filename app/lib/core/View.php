@@ -82,7 +82,7 @@ class View extends BaseObject {
 		}
 		
 		if (caGetOption('includeDefaultThemePath', $pa_options, true)) {
-			$vs_default_theme_path = $po_request->getDefaultThemeDirectoryPath().'/views'.$vs_suffix;
+			$vs_default_theme_path = $po_request ? $po_request->getDefaultThemeDirectoryPath().'/views'.$vs_suffix : __CA_THEME_DIR__;
 			if (!in_array($vs_default_theme_path, $pm_path) && !in_array($vs_default_theme_path.'/', $pm_path)) {
 				array_unshift($pm_path, $vs_default_theme_path);
 			}
@@ -201,13 +201,13 @@ class View extends BaseObject {
 		
 		$vs_raw_buf = file_get_contents($ps_filepath);
 		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_raw_buf, $va_matches);
-		$va_tags += $va_matches[1];
+		$va_tags = array_merge($va_tags, $va_matches[1]);
 		$va_tags = array_unique($va_tags);
 		
 		if (!is_array($va_tags)) { $va_tags = array(); }
 		
 		if($vs_tags = json_encode($va_tags)) {
-			file_put_contents($vs_compiled_path, $vs_tags);
+			@file_put_contents($vs_compiled_path, $vs_tags);
 		} else {
 			@unlink($vs_compiled_path);
 		}
