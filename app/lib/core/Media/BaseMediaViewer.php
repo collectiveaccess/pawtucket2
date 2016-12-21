@@ -70,7 +70,8 @@
 			// Controls
 			$vs_controls = '';
 			if ($t_subject) {
-				$vs_controls .= "<div class='objectInfo'>".caTruncateStringWithEllipsis($t_subject->get($t_subject->tableName().'.preferred_labels'), 80)." (".$t_subject->get($t_subject->tableName().'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")</div>";
+				$vs_media_overlay_titlebar_text = ($vs_media_overlay_titlebar_template = $po_request->config->get('media_overlay_titlebar_template')) ? caProcessTemplateForIDs($vs_media_overlay_titlebar_template, $t_subject->tableName(), [$t_subject->getPrimaryKey()], $pa_options) : caTruncateStringWithEllipsis($t_subject->get($t_subject->tableName().'.preferred_labels'), 80)." (".$t_subject->get($t_subject->tableName().'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")";
+				$vs_controls .= "<div class='objectInfo'>{$vs_media_overlay_titlebar_text}</div>";
 			}
 			if ($t_subject && $t_instance && is_a($t_instance, 'ca_object_representations')) {
 				if (($vn_num_media = $t_subject->getRepresentationCount()) > 1) {
