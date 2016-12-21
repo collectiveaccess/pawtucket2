@@ -149,7 +149,9 @@
 					
 					
 				});
-			</script>
+			</script>			
+</ifcount>}}}
+
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					$('.trimText').readmore({
@@ -157,7 +159,6 @@
 					  maxHeight: 135
 					});		
 				});
-			</script>			
-</ifcount>}}}
+			</script>
 	</div><!-- end col -->
 </div><!-- end row -->

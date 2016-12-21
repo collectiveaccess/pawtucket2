@@ -201,6 +201,11 @@ class View extends BaseObject {
 		
 		$vs_raw_buf = file_get_contents($ps_filepath);
 		preg_match_all("!(?<=\{\{\{)(?s)(.*?)(?=\}\}\})!", $vs_raw_buf, $va_matches);
+		
+		// Remove any tag that has embedded PHP - we can't cache those
+		foreach($va_matches[1] as $vn_i => $vs_potential_tag) {
+			if (strpos($vs_potential_tag, "<?php") !== false) { unset($va_matches[1][$vn_i]); }
+		}
 		$va_tags = array_merge($va_tags, $va_matches[1]);
 		$va_tags = array_unique($va_tags);
 		
