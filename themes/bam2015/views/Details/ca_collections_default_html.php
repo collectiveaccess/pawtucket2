@@ -52,6 +52,9 @@
 
 					print caNavLink($this->request, 'Download Finding Aid', 'faDownload', 'Detail', 'collections', $vn_collection_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
 					print "<div class='clearfix'></div>";					
+?>
+					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><span class='label'>Part of: </span><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
+<?php
 					if ($vs_historical = $t_item->get('ca_collections.biogHist')) {
 						print "<div class='unit'><span class='label'>Historical Note: </span>".$vs_historical."</div>";
 					}
