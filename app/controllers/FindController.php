@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
  	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
@@ -46,11 +47,19 @@
          */
  		 protected $ops_view_prefix=null;
  		 
+ 		 /**
+ 		  * 
+ 		  */
+ 		  protected $opo_app_plugin_manager;
+ 		 
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			// Make application plugin manager available to superclasses
+ 			$this->opo_app_plugin_manager = new ApplicationPluginManager();
+ 			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			// merge displays with drop-in print templates
