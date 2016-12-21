@@ -82,7 +82,7 @@ class View extends BaseObject {
 		}
 		
 		if (caGetOption('includeDefaultThemePath', $pa_options, true)) {
-			$vs_default_theme_path = $po_request->getDefaultThemeDirectoryPath().'/views'.$vs_suffix;
+			$vs_default_theme_path = $po_request ? $po_request->getDefaultThemeDirectoryPath().'/views'.$vs_suffix : __CA_THEME_DIR__;
 			if (!in_array($vs_default_theme_path, $pm_path) && !in_array($vs_default_theme_path.'/', $pm_path)) {
 				array_unshift($pm_path, $vs_default_theme_path);
 			}
@@ -207,7 +207,7 @@ class View extends BaseObject {
 		if (!is_array($va_tags)) { $va_tags = array(); }
 		
 		if($vs_tags = json_encode($va_tags)) {
-			file_put_contents($vs_compiled_path, $vs_tags);
+			@file_put_contents($vs_compiled_path, $vs_tags);
 		} else {
 			@unlink($vs_compiled_path);
 		}
