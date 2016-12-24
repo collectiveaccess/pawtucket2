@@ -84,13 +84,24 @@
   			$o_view = new View(null, $vs_template_path);
   			$va_tags = $o_view->getTagList($vs_template_path);
   			
+  			$va_restricted_tag_names = ['page_title', 'page_description', 'page_path', 'page_access', 'page_keywords', 'page_view_count'];	// these are the names of the built-in tags
+  			$va_tags_with_info = [];
+  			$va_config = self::getTemplateConfig()->get('fields');
+  			foreach($va_tags as $vs_tag) {
+  				if (in_array($vs_tag, $va_restricted_tag_names)) { continue; }
+  				if (!is_array($va_tags_with_info[$vs_tag] = $va_config[$vs_tag])) {
+  					$va_tags_with_info[$vs_tag] = [];
+  				}
+  				$va_tags_with_info[$vs_tag]['code'] = $vs_tag;
+  			}
+  			
   			$t_template = new ca_site_templates();
   			
   			if ($t_template->load(['template_code' => $vs_template_name])) {
   				$t_template->setMode(ACCESS_WRITE);
   				$t_template->set([
   					'template' => $vs_template_content,
-  					'tags' => $va_tags,
+  					'tags' => $va_tags_with_info,
   					'deleted' => 0
   				]);
   				$t_template->update();
@@ -102,7 +113,7 @@
   					'title' => $vs_template_name,
   					'description' => '',
   					'template' => $vs_template_content,
-  					'tags' => $va_tags,
+  					'tags' => $va_tags_with_info,
   					'deleted' => 0
   				]);
   				$t_template->insert();
@@ -117,6 +128,11 @@
   		return ['insert' => $vn_template_insert_count, 'update' => $vn_template_update_count, 'errors' => $va_errors];
   	}
   	# -------------------------------------------------------
-  	
+  	/**
+  	 *
+  	 */
+  	static public function getTemplateConfig() {
+  		return Configuration::load(__CA_THEME_DIR__."/conf/templates.conf");	
+  	}
   	# -------------------------------------------------------
   }

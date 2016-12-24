@@ -199,11 +199,66 @@ class ca_site_templates extends BundlableLabelableBaseModelWithAttributes {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Generate list of available page templates as an HTML <select> element
+	 *
+	 * @param array $pa_options Options include:
+	 *		name = value used for HTML <select> "name" attribute. [Default is template_id]
+	 *		id = value used for HTML <select> "id" attribute. [Default is null]
+	 *		
+	 * @return string
+	 */
+	public static function getTemplateListAsHTMLSelect($pa_options=null) {
+		$va_rows = self::find(['deleted' => 0], ['returnAs' => 'arrays']);
+		if (!is_array($va_rows) || !sizeof($va_rows)) { return null; }
+		
+		$va_titles = caExtractValuesFromArrayList($va_rows, 'title');
+		$va_template_ids = caExtractValuesFromArrayList($va_rows, 'template_id');
+		
+		$va_options = [];
+		foreach($va_titles as $vn_i => $vs_title) {
+			$va_options[$vs_title] = $va_template_ids[$vn_i];
+		}
+		
+		return caHTMLSelect(caGetOption('name', $pa_options, 'template_id'), $va_options, ['id' => caGetOption('id', $pa_options, null)]);
+	}
+	# ------------------------------------------------------
+	/**
 	 *
 	 */
-	public static function getTemplateListAsHTMLSelect() {
-		$va_rows = self::find(['deleted' => 0], ['returnAs' => 'arrays']);
-		print_R($va_rows);
+	public function getHTMLFormElements($pa_values=null, $pa_options=null) {
+		if (!($vn_template_id = $this->get('template_id'))) { return null; }
+		
+		$o_config = Configuration::load();
+		$vs_form_element_format = $o_config->get('form_element_display_format');
+		$pb_include_tooltips = caGetOption('addTooltips', $pa_options, false);
+		
+		$vs_tagname_prefix = caGetOption('tagnamePrefix', $pa_options, 'page_field');
+	
+		if (!is_array($va_tags = $this->get('tags'))) { return []; }
+		$va_form_elements = [];
+		foreach($va_tags as $vs_tag => $va_tag_info) {
+			if(!trim($vs_tag)) { continue; }
+			
+			$va_form_elements[] = [
+				'code' => $vs_tag,
+				'label' => ($vs_label = trim($va_tag_info['label'])) ? $vs_label : $vs_tag,
+				'element' => caHTMLTextInput("{$vs_tagname_prefix}_{$vs_tag}", ['id' => "{$vs_tagname_prefix}_{$vs_tag}", 'value' => $pa_values[$vs_tag]], ['width' => caGetOption('width', $va_tag_info, '300px'), 'height' => caGetOption('height', $va_tag_info, '35px'), 'usewysiwygeditor' => caGetOption('usewysiwygeditor', $va_tag_info, false)]),
+				'value' => $pa_values[$vs_tag]
+			];
+			
+			if ($vs_form_element_format) {
+				$vn_partial_index = sizeof($va_form_elements)-1;
+				$va_form_elements[$vn_partial_index]['element_with_label'] = caProcessTemplate($vs_form_element_format, ["LABEL" => "<span id='{$vs_tagname_prefix}_{$vs_tag}_label'>".$va_form_elements[$vn_partial_index]['label']."</span>", "ELEMENT" => $va_form_elements[$vn_partial_index]['element'], "EXTRA" => '' ]);
+							
+				if($pb_include_tooltips && $va_tag_info['label']) {
+					TooltipManager::add("#{$vs_tagname_prefix}_{$vs_tag}_label", "<strong>".$va_tag_info['label']."</strong><br/>".$va_tag_info['description']);
+				}
+			} elseif($pb_include_tooltips && $va_tag_info['label']) {
+				TooltipManager::add("#{$vs_tagname_prefix}_{$vs_tag}", "<strong>".$va_tag_info['label']."</strong><br/>".$va_tag_info['description']);
+			}
+			
+		}
+		return $va_form_elements;
 	}
 	# ------------------------------------------------------
 }
