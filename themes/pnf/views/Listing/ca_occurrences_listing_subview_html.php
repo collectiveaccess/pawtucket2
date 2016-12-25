@@ -38,7 +38,7 @@
 
 		<div id="filterByNameContainer">
 			<div>
-				<input type="text" name="filterByName" id="filterByName" placeholder="author, title and keyword search" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('opacity', 1.0); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i></a>
+				<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> clear search</a>
 			</div>
 		</div>
 <?php 
@@ -49,9 +49,9 @@
 		if(!$qr_list) { continue; }
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
 		if ($va_listing_info['id'] == "sources") {
-			print '<p>"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.</p>';	
+			print '<p>'._t('"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.').'</p>';	
 		} else {
-			print '<p>This is a selective and narrowly focused bibliography of materials related to suelta studies. It does not reproduce the vast area of drama that once appeared in the Bulletin of the Comediantes or that continues to be gathered in the MLA Bibliography.</p>';	
+			print '<p>'._t('This is a selective and narrowly focused bibliography of materials related to suelta studies. It does not reproduce the vast area of drama that once appeared in the Bulletin of the Comediantes or that continues to be gathered in the MLA Bibliography').'</p>';	
 		}	
 		while($qr_list->nextHit()) {
 			$vs_first_letter = ucfirst(substr($qr_list->get('ca_occurrences.author'), 0, 1));

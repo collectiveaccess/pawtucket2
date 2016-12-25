@@ -292,9 +292,9 @@
 			<hr>
 			
 			
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div class="col-sm-12"><h4 style='font-size:16px;'>Items</h4></div>
+				<div class="col-sm-12"><h4 style='font-size:16px;'>Digitized Items</h4></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">

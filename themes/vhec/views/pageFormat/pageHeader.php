@@ -272,7 +272,7 @@
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Research <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
 		print "<li>".caNavLink($this->request, 'Using the Archives', 'first', '', 'About', 'Index')."</li>\n";
-		print "<li>".caNavLink($this->request, 'Reseach Guides', 'last', '', 'About', 'researchguide/#archives')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Research Guides', 'last', '', 'About', 'researchguide/#archives')."</li>\n"; 
 		print "</ul>";
 		print "</li>";			
 				
@@ -308,7 +308,7 @@
 		print "<ul class='dropdown-menu'>\n";
 		print "<li>".caNavLink($this->request, 'Guide to Using the Library', 'first', '', 'About', 'Index')."</li>\n";
 		print "<li>".caNavLink($this->request, 'Research Request', '', '', 'About', 'Index')."</li>\n"; 
-		print "<li>".caNavLink($this->request, 'Reseach Guides', 'last', '', 'About', 'researchguide/#library')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Research Guides', 'last', '', 'About', 'researchguide/#library')."</li>\n"; 
 		print "</ul>";
 		print "</li>";			
 				
@@ -346,7 +346,7 @@
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Research <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
 		print "<li>".caNavLink($this->request, 'Using the Testimonies', 'first', '', 'About', 'Index')."</li>\n";
-		print "<li>".caNavLink($this->request, 'Testimony Reseach Guides', 'last', '', 'About', 'researchguide/#testimony')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Testimony Research Guides', 'last', '', 'About', 'researchguide/#testimony')."</li>\n"; 
 		print "</ul>";
 		print "</li>";			
 				

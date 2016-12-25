@@ -1166,6 +1166,12 @@ a.thumbControl:hover {
     font-family: "futura bold";
     letter-spacing: 2px;
 }
+.collectionsBlock {
+	margin-bottom:20px;
+}
+.collectionsBlock a.readmore-js-toggle {
+	margin-top:0px;
+}
 .collHeader a {
 	font-family: futura;
 	color:#000;

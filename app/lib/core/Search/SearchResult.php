@@ -1728,7 +1728,12 @@ class SearchResult extends BaseObject {
 	 * @return array|string
 	 */
 	private function _getLabelValue($pa_value_list, $pt_instance, $pa_options) {
-		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_assume_display_field 			= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_convert_codes_to_display_text 	= isset($pa_options['convertCodesToDisplayText']) ? (bool)$pa_options['convertCodesToDisplayText'] : false;
+		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
+		
+		if ($vb_convert_codes_to_display_text) { $pa_options['output'] = 'text'; }
+		if ($vb_convert_codes_to_idno) { $pa_options['output'] = 'idno'; }
 		
 		$va_path_components			=& $pa_options['pathComponents'];
 		
@@ -1780,6 +1785,18 @@ class SearchResult extends BaseObject {
 					}
 					
 					if ($pa_options['returnWithStructure']) {
+						if (!$va_path_components['subfield_name'] && isset($va_label['type_id'])) {
+							$va_mod_path_components = array_merge($va_path_components, ['subfield_name' => 'type_id', 'num_components' => 3]);
+							$va_mod_path_components['components'][2] = 'type_id';
+							switch($pa_options['output']) {
+								case 'text':
+									$va_label['type_id'] = $this->_convertCodeToDisplayText($va_label['type_id'], $va_mod_path_components, $pt_instance->getLabelTableInstance(), $pa_options);
+									break;
+								case 'idno':
+									$va_label['type_id'] = $this->_convertCodeToIdno($va_label['type_id'], $va_mod_path_components, $pt_instance->getLabelTableInstance(), $pa_options);
+									break;
+							}
+						}
 						$va_return_values[$vn_id][$vm_locale_id][$va_label['label_id']] = $va_path_components['subfield_name'] ? array($va_path_components['subfield_name'] => $vs_val_proc) : $va_label;
 					} else {
 						$va_return_values[$vn_id][$vm_locale_id][$va_label['label_id']] = $va_path_components['subfield_name'] ? $vs_val_proc : $va_label;
@@ -2381,22 +2398,24 @@ class SearchResult extends BaseObject {
 		$vs_prop = $ps_prop;
 		
 		$vs_field_name = $pa_path_components['subfield_name'] ? $pa_path_components['subfield_name'] : $pa_path_components['field_name'];
+		$vb_convert_codes_to_display_text = ((isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText']) || ($pa_options['output'] == 'text'));
 		
 		$vs_table_name = $pa_path_components['table_name'];
-		if (method_exists($pt_instance, 'setLabelTypeList')) {
-			$pt_instance->setLabelTypeList($this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"));
+		if (method_exists($pt_instance, 'setLabelTypeList') && ($vs_label_list_name = $this->opo_subject_instance->getAppConfig()->get(($pa_path_components['field_name'] == 'nonpreferred_labels') ? "{$vs_table_name}_nonpreferred_label_type_list" : "{$vs_table_name}_preferred_label_type_list"))) {
+			$pt_instance->setLabelTypeList($vs_label_list_name);
 		}
-		if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
+		
+		if ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST_CODE"))) {
 			$vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemID($vs_list_code, $vs_prop);
 		} else {
-			if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
+			if ($vb_convert_codes_to_display_text && ($vs_list_code = $pt_instance->getFieldInfo($vs_field_name,"LIST"))) {
 				$vs_prop = SearchResult::$opt_list->getItemFromListForDisplayByItemValue($vs_list_code, $vs_prop);
 			} else {
-				if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
+				if ($vb_convert_codes_to_display_text && ($vs_field_name === 'locale_id') && ((int)$vs_prop > 0)) {
 					$t_locale = new ca_locales($vs_prop);
 					$vs_prop = $t_locale->getName();
 				} else {
-					if (isset($pa_options['convertCodesToDisplayText']) && $pa_options['convertCodesToDisplayText'] && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
+					if ($vb_convert_codes_to_display_text && (is_array($va_list = $pt_instance->getFieldInfo($vs_field_name,"BOUNDS_CHOICE_LIST")))) {
 						foreach($va_list as $vs_option => $vs_value) {
 							if ($vs_value == $vs_prop) {
 								$vs_prop = $vs_option;
