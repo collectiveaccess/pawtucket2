@@ -93,7 +93,7 @@
 				print $va_featured_artist_images[$vn_featured_artist_id];
 ?>
 				<div class='contentCaptionOver'>
-					<?php print caDetailLink($this->request, '<div class="openSansBold">KENTLER FLATFILES ARTIST</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
+					<?php print caDetailLink($this->request, '<div class="openSansBold">FEATURED FLATFILES ARTIST</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
 				</div>
 <?php
 			}else{

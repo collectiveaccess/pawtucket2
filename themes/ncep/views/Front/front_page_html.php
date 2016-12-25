@@ -167,7 +167,7 @@ $t_object = new ca_objects();
 			}
 ?>
 						</ul>
-						<?php print caNavLink($this->request, "Explore all module sets <i class='fa fa-arrow-circle-right'></i>", "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, "Explore all Network Picks <i class='fa fa-arrow-circle-right'></i>", "", "", "Gallery", "Index"); ?>
 					</div>
 				</div>
 			</div>
