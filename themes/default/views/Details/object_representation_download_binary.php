@@ -28,14 +28,14 @@
 	$vs_show_version = $this->getVar('version');
 	$vs_file_path = $this->getVar('version_path');
 	
-	header("Content-type: application/octet-stream");
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	header("Cache-Control: no-store, no-cache, must-revalidate");
-	header("Cache-Control: post-check=0, pre-check=0", false);
-	header("Pragma: no-cache");
-	header("Cache-control: private");
+	if (!headers_sent()) {
+		header("Content-type: application/octet-stream");
+		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+		header("Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0");
+		header("Pragma: no-cache");
 	
-	header("Content-Disposition: attachment; filename=".$this->getVar('version_download_name'));
+		header("Content-Disposition: attachment; filename=".$this->getVar('version_download_name'));
+	}
 	
 	set_time_limit(0);
 	$o_fp = @fopen($vs_file_path,"rb");
