@@ -101,6 +101,7 @@ class Session {
 				if($this->getSessionID()) {
 					ExternalCache::delete($this->getSessionID(), 'SessionVars');
 				}
+				$this->opa_changed_vars['session_end_timestamp'] = true;
 				$this->opa_session_vars['session_end_timestamp'] = time() + $this->lifetime;
 			}
 
@@ -110,7 +111,7 @@ class Session {
 				||
 				(is_numeric($this->opa_session_vars['session_end_timestamp']) && (time() > $this->opa_session_vars['session_end_timestamp']))
 			) {
-				$this->opa_session_vars = array();
+				$this->opa_session_vars = $this->opa_changed_vars['session_end_timestamp'] = array();
 				ExternalCache::delete($this->getSessionID(), 'SessionVars');
 			}
 		}
@@ -243,6 +244,7 @@ class Session {
 	 * @param string $ps_key
 	 */
 	public function delete($ps_key) {
+		$this->opa_changed_vars[$ps_key] = true;
 		unset($this->opa_session_vars[$ps_key]);
 	}
 	# ----------------------------------------
