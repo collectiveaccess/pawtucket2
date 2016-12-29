@@ -85,6 +85,10 @@
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			// Now that table name is known we can set standard view vars
+ 			parent::setTableSpecificViewVars();
+ 			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);

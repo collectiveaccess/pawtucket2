@@ -92,6 +92,10 @@
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			// Now that table name is known we can set standard view vars
+ 			parent::setTableSpecificViewVars();
+ 			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
  			
