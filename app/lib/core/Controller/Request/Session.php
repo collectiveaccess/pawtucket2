@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2015 Whirl-i-Gig
+ * Copyright 2000-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -53,7 +53,13 @@ class Session {
 	 * In-memory session var storage
 	 * @var array
 	 */
-	private $opa_session_vars = array();
+	private $opa_session_vars = [];
+	
+	/**
+	 *
+	 *
+	 */
+	private $opa_changed_vars = [];
 	
 	# ----------------------------------------
 	# --- Constructor
@@ -115,12 +121,7 @@ class Session {
 	 */
 	public function __destruct() {
 		if($this->getSessionID() && is_array($this->opa_session_vars) && (sizeof($this->opa_session_vars) > 0)) {
-			if(isset($this->opa_session_vars['session_end_timestamp'])) {
-				$vn_session_lifetime = abs(((int) $this->opa_session_vars['session_end_timestamp']) - time());
-			} else {
-				$vn_session_lifetime = 24 * 60 * 60;
-			}
-			ExternalCache::save($this->getSessionID(), $this->opa_session_vars, 'SessionVars', $vn_session_lifetime);
+			$this->save();	
 		}
 	}
 	# ----------------------------------------
@@ -230,6 +231,7 @@ class Session {
 					$vm_val = $pm_val;
 				}
 			}
+			$this->opa_changed_vars[$ps_key] = true;
 			$this->opa_session_vars[$ps_key] = $vm_val;
 			return true;
 		}
@@ -258,6 +260,25 @@ class Session {
 	 */
 	public function getVarKeys() {
 		return is_array($this->opa_session_vars) ? array_keys($this->opa_session_vars) : array();
+	}
+	# ----------------------------------------
+	/**
+	 * Save changes to session variables to persistent storage
+	 */
+	public function save() {
+		if(isset($this->opa_session_vars['session_end_timestamp'])) {
+			$vn_session_lifetime = abs(((int) $this->opa_session_vars['session_end_timestamp']) - time());
+		} else {
+			$vn_session_lifetime = 24 * 60 * 60;
+		}
+		
+		// Get old vars
+		$va_current_values = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
+		foreach(array_keys($this->opa_changed_vars) as $vs_key) {
+			$va_current_values[$vs_key] = $this->opa_session_vars[$vs_key];
+		}
+		
+		ExternalCache::save($this->getSessionID(), $va_current_values, 'SessionVars', $vn_session_lifetime);
 	}
 	# ----------------------------------------
 	/**
