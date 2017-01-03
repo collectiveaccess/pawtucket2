@@ -545,13 +545,26 @@ a.navbar-brand .line3{
 	padding:0px !important;
 	margin:0px !important;
 }
+.detail .detailNavBgLeft a .fa, .detail .detailNavBgRight a .fa{
+	color:#f60707 !important;
+}
+.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small{
+	color:#000 !important;
+}
+.detail .detailNavBgLeft:hover, .detail .detailNavBgRight:hover{
+	background-color:#EDEDED;
+}
 .detail H1{
 	line-height:1.3em;
 }
 .detail H1 a{
-	font-size:11px;
-	color:#b5b5b5;
+	font-size:13px;
+	color:#000;
 	text-transform:none;
+	line-height:3em;
+}
+.detail H1 a .fa{
+	color:#f60707;
 }
 .detail H5{
 	padding:0px;
@@ -629,4 +642,48 @@ a.navbar-brand .line3{
 /* results */
 .results H1, #bRefine{
 	margin-top:20px;
+}
+.bResultItemImgPlaceholder{
+	background-color: #FFF;
+    border: 2px solid #EDEDED;
+    color: #858585;
+    margin-bottom: 10px;
+    padding: 10px 0px 10px 0px;
+    text-align: center;
+    width: 100%;
+}
+.bResultItemImgPlaceholder img{
+	width: 65%;
+	height:auto;
+	opacity:.6;
+}
+#bRefine div:last-child {
+	margin-bottom:100px; 
+} 
+@media (min-width: 768px) {
+	#bRefine.fixed {    
+		position: fixed;     
+		top: 70px;
+		margin-top:0px;
+		
+	}
+}
+.resultBlock .pull-right a{
+	color:#f60707 !important;
+}
+.resultBlock .pull-right .glyphicon{
+	font-size:14px;
+}
+.multisearchSort .selectedSort a{
+	font-weight:bold;
+}
+.caMediaOverlayControls .close .fa{
+	color: #f60707 !important;
+	text-shadow: none !important;
+	opacity:1;
+	font-size:20px !important;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
+	opacity:1.0 !important;
+	background-color:rgba(0,0,0,0.5) !important;
 }

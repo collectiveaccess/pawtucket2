@@ -34,9 +34,24 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1 class="entry-title">Database</h1>
+<?php
+			global $g_ui_locale;
+			if ($g_ui_locale == 'en_US'){			
+				print "<h1 class='entry-title'>Database</h1>";
+			} else {
+				print "<h1 class='entry-title'>Catálogo</h1>";
+			}
+?>		
+			
 			<p>
-				The Database portion of Comedias Sueltas USA is the heart of the website. This searchable union catalog is a comprehensive source of comedias sueltas held in US academic and research libraries. Scholars working in this specialized field will are able to locate individual copies or groups of comedias using an array of search fields in addition to author and title: translator, printer, publisher, bookseller, place and date of publication, thematic content, provenance, holding institution, and other useful categories. We have made public the first iteration of this growing database, initially representing major collections of comedias sueltas. Please check the “Zarzuela” link above for regular updates about the status of the site, and thank you for visiting!
+<?php
+			
+			if ($g_ui_locale == 'en_US'){			
+				print "The Database portion of ComediasSueltasUSA is the heart of the website. This searchable union catalog will eventually be a comprehensive source of comedias sueltas held in US academic and research libraries. It currently contains nearly 3500 records from five institutions, Smith College, Queens College (CUNY), Texas A&M University, the University of North Carolina at Chapel Hill, and the University of Texas at Austin. Researchers can search the database using the browse function and filtering the results, using a keyword search, or using the advanced search page for an array of search fields in addition to author and title: translator, printer, publisher, bookseller, place and date of publication, provenance, holding institution, and other useful categories. Please check the “Zarzuela” link above for regular updates about the status of the site.";
+			} else {
+				print "La base de datos de ComediasSueltasUSA es el centro neurálgico de nuestra web. Este catálogo colectivo digital será con el tiempo una fuente exhaustiva de comedias sueltas en bibliotecas académicas estadounidenses. Actualmente contiene casi 3500 registros bibliográficos de cinco instituciones, Smith College (Massachusetts), Queens College (City University of New York), la Universidad de Texas A&M, la Universidad de Carolina del Norte en Chapel Hill, y la Universidad de Texas en Austin. Los investigadores pueden explorar el catálogo según categorías generales, filtrando los resultados, y pueden hacer búsquedas con palabras clave o mediante la página de búsqueda avanzada, con un conjunto de campos que incluyen, además de autor y título, las categorías de traductor, impresor, editor, librero, año y lugar de publicación, procedencia, propietario institucional y otras igualmente útiles. Os invitamos a consultar nuestra página “Zarzuela” (cuyo enlace está en el menú arriba) para las últimas noticias sobre el estado de este sitio web.";
+			}
+?>			
 			</p>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->

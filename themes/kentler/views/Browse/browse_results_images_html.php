@@ -53,12 +53,12 @@
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
-	$o_icons_conf = caGetIconsConfig();
-	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	#$o_icons_conf = caGetIconsConfig();
+	#$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	#if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	#	$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	#}
+	#$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 	$vn_detail_embed = $this->request->getParameter("detailembed", pInteger);	
 
 		$vn_col_span = 2;
@@ -97,13 +97,13 @@
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
-						$t_list_item->load($qr_res->get("type_id"));
-						$vs_typecode = $t_list_item->get("idno");
-						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-						}else{
-							$vs_thumbnail = $vs_default_placeholder_tag;
-						}
+						#$t_list_item->load($qr_res->get("type_id"));
+						#$vs_typecode = $t_list_item->get("idno");
+						#if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+						#	$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						#}else{
+							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".caGetThemeGraphic($this->request, 'KentlerLogoWhiteBG.jpg')."</div>";
+						#}
 					}
 					$vs_caption = "";
 					if($vs_artist = $qr_res->get('ca_entities.preferred_labels.displayname', array("restrictToRelationshipTypes" => array("artist"), 'checkAccess' => $va_access_values))){

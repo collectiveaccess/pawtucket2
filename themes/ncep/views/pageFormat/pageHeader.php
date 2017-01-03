@@ -136,7 +136,7 @@
 					<li class="dropdown"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Module Collection"); ?></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("Browse All Modules"), "", "", "Browse", "objects"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Browse Module Sets"), "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Browse Network Picks"), "", "", "Gallery", "Index"); ?></li>
 						</ul>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/publications/lessons-in-conservation"><?php print _t("Our Journal"); ?></a></li>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training"><?php print _t("Training & Events"); ?></a></li>

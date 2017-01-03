@@ -119,7 +119,7 @@
 
 		</div>
 		<div class="col-sm-4" style='border-left:1px solid #ddd;min-height:500px;'>
-			<h2><?php print _t("User's guide"); ?></h2>
+			<h2><?php print _t("User&rsquo;s guide"); ?></h2>
 <?php			
 	print "<p>"._t("Enter your search terms in the fields to the left")."</p>";
 ?>

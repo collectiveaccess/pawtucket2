@@ -125,16 +125,16 @@ $( document ).ready(function() {
 			<div class="menu-main-menu-container">
 				<ul id="menu-main-menu" class="menu">
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
-					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Listing', 'ornaments');?></a></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/"><?php print _t('Playwrights, translators, and adaptors');?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/"><?php print _t('Printers, publishers, booksellers, and bookstores');?></a></li>
-							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Search', 'collections/search/*');?></li>							
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/"><?php print caNavLink($this->request, _t('Comprehensive sources of comedias sueltas'), '', '', 'Listing', 'sources');?></a></li>
 							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/"><?php print caNavLink($this->request, _t('Studies related specifically to comedias sueltas'), '', '', 'Listing', 'studies');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('US Catalogs of Spanish Drama/Comedias Sueltas Collections');?></a></li>						
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Search', 'collections/search/*');?></li>													
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
@@ -156,8 +156,8 @@ $( document ).ready(function() {
 		<div class="site_banner" style="background:url(/wp-content/uploads/Comedias-Sueltas_01.jpg) no-repeat center center fixed;"></div>
 		<div class="language_selector">	
 			<ul class="qtranxs_language_chooser" id="qtranslate-chooser">
-				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>ENG</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
-				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>ESP</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
+				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>English</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
+				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>Espa&ntilde;ol</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
 			</ul>
 			<div class="qtranxs_widget_end"></div>
 		</div>

@@ -29,107 +29,113 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		
-	<div id="footer">
-		<div class="container"><div class="container">
-			<div class="row">
-				<div class="col-xs-12 col-md-4">
-					<div class="row">
-						<div class="col-xs-12">
-							<a href="#"><h3>ABOUT CENTRO</h3></a>
-							<p>
-								The Centro Library & Archives has grown into a nationally esteemed organization for the preservation of the history of Puerto Ricans in diaspora and is the premier research resources on the diaspora.
-							</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-xs-12 col-md-6">
-							<ul>
-								<li><a href="#">Directors Corner</a></li>
-								<li><a href="#">Staff</a></li>
-								<li><a href="#">History</a></li>
-								<li><a href="#">Mission</a></li>
-								<li><a href="#">Contact Us</a></li>
-								<li><a href="#">FAQs</a></li>
-							</ul>
-						</div>
-						<div class="col-xs-12 col-md-6">
-							<ul style="margin-left:9px;">
-								<li><a href="#">Opportunities at Centro</a></li>
-								<ul>
-									<li><a href="#">Jobs</a></li>
-									<li><a href="#">Grants</a></li>
-									<li><a href="#">Donate</a></li>
-								</ul>
-								<li><a href="#">Give as a Gift</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-				<div class="col-xs-12 col-md-2">
-					<h3>EVENTS &amp; NEWS</h3>
-					<ul>
-						<li><a href="#">Calendar of Events</a></li>
-						<li><a href="#">Exhibits</a></li>
-						<li><a href="#">Conferences</a></li>
-						<li><a href="#">Research Seminar Series</a></li>
-						<li><a href="#">Forums</a></li>
-						<li><a href="#">Centro Voices</a></li>
-							<ul>
-								<li><a href="#">Current Affairs</a></li>
-								<li><a href="#">Chronicles</a></li>
-								<li><a href="#">Reviews</a></li>
-								<li><a href="#">Barrios</a></li>
-								<li><a href="#">Meet the Authors</a></li>
-							</ul>
-					</ul>
-				</div>
-				<div class="col-xs-12 col-md-2">
-					<h3>COLLECTIONS</h3>
-					<ul>
-						<li><a href="#">Oral Histories</a></li>
-						<li><a href="#">Galleries</a></li>
-						<li><a href="#">Virtual Exhibits</a></li>
-						<li><a href="#">Photos</a></li>
-						<li><a href="#">Personal Papers</a></li>
-						<li><a href="#">Organizational Records</a></li>
-					</ul>
-				</div>
-				<div class="col-xs-12 col-md-2">
-					<h3>LIBRARY &amp; PUBLICATIONS</h3>
-					<ul>
-						<li><a href="#">Centro Publications</a></li>
-						<li><a href="#">Briefs</a></li>
-						<li><a href="#">Centro Journals</a></li>
-						<li><a href="#">Books & Reviews</a></li>
-						<li><a href="#">Bibliographies</a></li>
-						<li><a href="#">Newspapers & Journals</a></li>
-						<li><a href="#">Microfilms</a></li>
-						<li><a href="#">Films & Video</a></li>
-						<li><a href="#">Finding Aids</a></li>
-					</ul>
-				</div>
-				<div class="col-xs-12 col-md-2">
-					<h3>RESEARCH &amp; EDUCATION</h3>
-					<ul>
-						<li><a href="#">Educational Products</a></li>
-						<li><a href="#">Teaching Guides</a></li>
-						<li><a href="#">Documentaries</a></li>
-						<li><a href="#">Data Center</a></li>
-						<li><a href="#">Research Opportunities</a></li>
-						<li><a href="#">Call for Papers</a></li>
-						<li><a href="#">Fellowships</a></li>
-						<li><a href="#">Frank Bonilla Fellowship</a></li>
-						<li><a href="#">Historical Preservation Grants</a></li>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<div id="footer">
+	<div class="container"><div class="container">
+		<div class="row">	
+			<div class="col-xs-12 col-md-2">
+				<div class="tab">
+					<h4><a href="<?php print $vs_centro_url; ?>/about">ABOUT CENTRO</a></h4>
+
+					<ul class="list-unstyled"><li><a href="<?php print $vs_centro_url; ?>/about/directors-corner">Directors Corner</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/centro-staff">Staff</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/mission-history">History</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/jobs">Jobs at Centro</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/grants-and-scholarships">Grants and Fellowships</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/support-centro">Support Centro</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>http://centropr.nationbuilder.com/join" target="_blank">Join Centro's Nation</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/about/contact-us">Contact Us</a></li>
 					</ul>
 				</div>
 			</div>
-		</div></div>
-	</div><!-- end footer -->
+			<div class="col-xs-12 col-md-2">
+				<div class="tab">
+					<h4><a href="<?php print $vs_centro_url; ?>/events-news">EVENTS &amp; NEWS</a></h4>
+					<ul class="list-unstyled">
+						<li><a href="<?php print $vs_centro_url; ?>/events-news/events">Events</a></li>
+							<ul><li><a href="<?php print $vs_centro_url; ?>/events-news/calendar-events">Calendar of Events</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/events-news/events/exhibits">Exhibits</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/events-news/events/conferences">Conferences</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/events-news/events/seminar-series">Seminar Series</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/events-news/events/forums">Forums</a></li>
+							</ul></li>
+						<li><a href="<?php print $vs_centro_url; ?>/events-news/news">News</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-2">
+				<div class="tab">
+					<h4><a href="<?php print $vs_centro_url; ?>/collections">COLLECTIONS</a></h4>
+					<ul class="list-unstyled">
+						<li><a href="<?php print $vs_centro_url; ?>/collections/about-collection">About the Collection</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/collections/collection-descriptions-1">Collection Descriptions</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/collections/art-program">Art Program</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/digitalarchive">Digital Collections</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>http://cent-wa3.hunter.cuny.edu/collections/archives-microfilm-collection">Microfilm Collection</a></li>
+						<li><a href="<?php print $vs_centro_url; ?>/collections/frequently-asked-questions-faq">FAQs</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3">
+				<div class="tab">
+					<h4><a href="<?php print $vs_centro_url; ?>/library-publications">LIBRARY &amp; PUBLICATIONS</a></h4>
+					<ul class="list-unstyled">
+						<li><a href="<?php print $vs_centro_url; ?>/library-publications/library">Library</a>
+							<ul><li><a href="<?php print $vs_centro_url; ?>/library-publications/library">About the Library</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/library-publications/library/bibliographies">Bibliographies</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/library-publications/library/newspapers-and-journals">Newspapers &amp; Journals</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/library-publications/library/film-and-video">Film &amp; Video</a></li>
+							</ul></li>
+						<li><a href="<?php print $vs_centro_url; ?>/library-publications/publications">Publications</a>
+							<ul><li><a href="<?php print $vs_centro_url; ?>/library-publications/publications">Centro Publications</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/library-publications/publications/centro-journal">Centro Journal</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/centrovoices">Centro Voices eMagazine</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/centrovoices/reviews">Book Reviews</a></li>
+							<li><a href="<?php print $vs_centro_url; ?>/events-news/news/call-papers">Call for Papers</a></li>
+						</ul></li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-3">
+				<div class="tab">
+				<h4><a href="<?php print $vs_centro_url; ?>/research-education">RESEARCH &amp; EDUCATION</a></h4>
+				<ul class="list-unstyled"><li><a href="<?php print $vs_centro_url; ?>/research-education/research">Research</a>
+				<ul><li><a href="<?php print $vs_centro_url; ?>/research-education/research/researchers-bios">Researchers Bios</a></li>
+				<li><a href="<?php print $vs_centro_url; ?>/research-education/research/data-center">Data Center</a></li>
+				<li><a href="<?php print $vs_centro_url; ?>/research-education/research/research-areas">Research Areas</a></li>
+				</ul></li>
+				<li><a href="<?php print $vs_centro_url; ?>/research-education/education">Education</a>
+				<ul><li><a href="<?php print $vs_centro_url; ?>/research-education/education/teaching-guides-documentaries">Teaching Guides &amp; Documentaries</a></li>
+				<li><a href="<?php print $vs_centro_url; ?>/research-education/education/open-courseware">Open Courseware</a></li>
+				<li><a href="<?php print $vs_centro_url; ?>/research-education/education/educational-tools">Educational Tools</a></li>
+				</ul></li>
+				</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div></div>
+	
+	
+	
+	
+	
+	
+	
+
 	<div id="footer2">
 		<div class="container"><div class="container">
 			<div class="row">
 				<div class="col-sm-8">
-					<small><strong>Center for Puerto Rican Studies</strong> | Hunter College | 695 Park Avenue | Room E1429 | New York, NY 10065<br/>c 2015 Centro Center for Puerto Rican Studies Privacy Policy | Disclaimer</small>
+					<strong>Center for Puerto Rican Studies</strong> | Hunter College | 695 Park Ave | New York, NY 10065<br/>c 2015 Center for Puerto Rican Studies | Privacy Policy | Disclaimer
 				</div>
 				<div class="col-sm-4 text-right">
 					<a href="http://hunter.cuny.edu"><?php print caGetThemeGraphic($this->request, 'hunterLogo.png'); ?></a>
