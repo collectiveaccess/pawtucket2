@@ -110,7 +110,7 @@
 					}
 
 			}
-			
+			$o_view->setVar('hideOverlayControls', caGetOption('hideOverlayControls', $pa_options, false));
 			$o_view->setVar('controls', $vs_controls);
 		
 			return $o_view->render(caGetOption('viewerWrapper', $pa_options, 'viewerWrapper').'.php');
