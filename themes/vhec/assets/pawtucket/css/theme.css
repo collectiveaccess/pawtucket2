@@ -1156,6 +1156,10 @@ a.thumbControl:hover {
 	color: #33450D;
 }
 
+.staticPage h6 a {
+	color: #33450D;
+}
+
 /* Finding Aids */
 
 .findingaid H1 {
