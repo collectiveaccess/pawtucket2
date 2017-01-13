@@ -1363,9 +1363,8 @@
 		
 			switch($ps_context) {
 				case 'gallery':
-					$va_context = ['table' => 'ca_objects'];
-					break;
 				case 'GetMediaInline':
+				case 'GetMediaOverlay':
 					$va_context = ['table' => 'ca_objects'];
 					break;
 				default:
