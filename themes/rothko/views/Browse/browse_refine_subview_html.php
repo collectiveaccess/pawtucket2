@@ -76,7 +76,7 @@
 								$vn_facet_size = sizeof($va_facet_info['content']);
 								$vn_c = 0;
 								foreach($va_facet_info['content'] as $va_item) {
-									print "<div class='col-sm-4'>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+									print "<div class='col-sm-4 facetItem'>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 									$vn_c++;
 									if ($vn_c == 3) {
 										print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";

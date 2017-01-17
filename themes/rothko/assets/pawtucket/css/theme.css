@@ -213,9 +213,10 @@ p {
 	margin:0px;
 }
 .bResultItem img {
-    height: auto;
+	height: auto;
     width: auto;
     max-height: 180px;
+    max-width: 100%;
 }
 .bResultItemCol {
     height: 340px;
@@ -400,6 +401,9 @@ a .fa.clearFacet {
     margin-left:5px;
     margin-right:5px;	
 }
+.btn-default.refine {
+	text-transform:none;
+}
 .browse .btn-default.clear,  .search.results .btn-default.clear{
 	text-transform:none;
 	margin-left:0px;
@@ -441,6 +445,16 @@ a .fa.clearFacet {
 .bResultListItemImg .bResultItemImgPlaceholder {
 	padding: 30px 20px;
 }
+.viewAll {
+	float:right;
+	margin-right:25px;
+	border-bottom:1px solid #464646;
+}
+.viewAll a, .viewAll a:hover {
+	text-decoration:none;
+	color:#333;
+}
+
 /* Filter panel */
 
 .filterLeader {
@@ -463,8 +477,8 @@ a .fa.clearFacet {
 	overflow:hidden
 }
 .facetGroup.panel .container {
-	overflow-y:scroll;
-	max-height:320px;
+	overflow-y:auto;
+	/*max-height:320px;*/
 }
 #bRefine .open .dropdown-toggle.btn-default, #bRefine .dropdown-toggle.btn-default {
 	background-color:transparent;
@@ -476,8 +490,11 @@ a .fa.clearFacet {
 	font-weight:800;
 	border-bottom:1px solid #333;
 }
-#bRefine .facetGroup li div {
+#bRefine .facetGroup li .facetItem {
     margin-bottom: 12px;
+}
+#bRefine .row, #bRefine .container {
+	margin-bottom:0px;
 }
 
 /* Detail */
@@ -628,6 +645,10 @@ a .fa.clearFacet {
 }
 .detail #detailRepNav {
 	font-size:20px;
+}
+.auctionDetails {
+	margin-left:10px;
+	font-size:12px;
 }
 
 /* Advanced Search */

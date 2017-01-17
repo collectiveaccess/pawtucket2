@@ -67,12 +67,14 @@
 	if ($va_date = $t_object->get('ca_objects.display_date')) {
 		print "<div class='unit'>Creation year - ".$va_date."</div>";
 	}
-	if ($va_medium = $t_object->get('ca_objects.medium.medium_list', array('returnAsArray' => true))) {
+	if ($va_medium = $t_object->get('ca_objects.medium.medium_list', array('returnAsArray' => true, 'excludeIdnos' => array('null')))) {
 		$va_media_links = array();
 		foreach ($va_medium as $va_key => $va_medium_id) {
-			$va_media_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_medium_id)), '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id);	
+			$va_media_links[] = caNavLink($this->request, strtolower(caGetListItemByIDForDisplay($va_medium_id)), '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id);	
 		}
-		print "<div class='unit'>Medium - ".join(', ', $va_media_links)."</div>";
+		if (sizeof($va_media_links) > 0) {
+			print "<div class='unit'>Medium - ".join(', ', $va_media_links)."</div>";
+		}
 	}
 	if ($va_paper = $t_parent->get('ca_objects.paper', array('returnAsArray' => true))) {
 		$va_paper_links = array();
@@ -81,14 +83,14 @@
 		}
 		print "<div class='unit'>Support - ".join(', ', $va_paper_links)."</div>";
 	}				
-	if ($va_mount = $t_parent->get('ca_objects.mount', array('returnAsArray' => true))) {
+	if ($va_mount = $t_parent->get('ca_objects.mount', array('returnAsArray' => true, 'excludeIdnos' => array('null')))) {
 		$va_mount_links = array();
-		foreach ($va_mount as $va_key => $va_mount_id) {
+		foreach ($va_mount as $va_key => $va_mount_id) { 
 			$va_mount_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_mount_id)), '', '', 'Browse', 'artworks/facet/mount_facet/id/'.$va_mount_id);	
 		}
-		print "<div class='unit'>Mounting - ".join(', ', $va_mount_links)."</div>";
+		print "<div class='unit'>Mount - ".join(', ', $va_mount_links)."</div>";
 	}
-	if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef> <ifdef code="ca_objects.dimensions.dimensions_notes">(^ca_objects.dimensions.dimensions_notes)</ifdef></unit>')) {
+	if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef></unit></ifcount>')) {
 		print "<div class='unit'>Dimensions - ".$vs_dimensions."</div>";
 	}
 	if ($va_collection = $t_parent->get('ca_objects_x_collections.relation_id', array('returnAsArray' => true))) {

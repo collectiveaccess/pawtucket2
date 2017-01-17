@@ -81,7 +81,6 @@ if($this->request->getParameter("detailNav", pInteger)){
 ?>
 	<div class="row" style="clear:both; position:relative;">
 		<div class="col-sm-12">
-
 			<div id="bViewButtons">
 <?php
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -97,7 +96,17 @@ if($this->request->getParameter("detailNav", pInteger)){
 			}
 ?>			
 			</div><!-- end bViewButtons -->		
-		
+			<div class="viewAll">
+<?php 	
+				$vs_string = null;
+				if ($vn_view_collection_id = $this->request->getParameter("collection_id", pInteger)) {
+					$vs_string = 'ca_collections.collection_id:'.$vn_view_collection_id;
+				} elseif ($vn_view_occurrence_id = $this->request->getParameter("occurrence_id", pInteger)) {
+					$vs_string = 'ca_occurrences.occurrence_id:'.$vn_view_occurrence_id;
+				}			
+				print caNavLink($this->request, 'View all', '', 'Search', 'artworks', array('search' => $vs_string)); 
+?>		
+			</div>		
 			<div class="btn-group sortResults">
 <?php
 				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
@@ -221,9 +230,9 @@ if (!$vb_ajax) {	// !ajax
 				foreach($va_criteria as $va_criterion) {
 					print "<strong class='criterion'>".strtolower($va_criterion['facet']).':</strong>';
 					if ($va_criterion['facet_name'] != '_search') {
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="fa fa-close clearFacet"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm refine">'.$va_criterion['value'].' <span class="fa fa-close clearFacet"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 					}else{
-						print ' <button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].'</button>';
+						print ' <button type="button" class="btn btn-default btn-sm refine">'.$va_criterion['value'].'</button>';
 						$vs_search = $va_criterion['value'];
 					}
 					$i++;

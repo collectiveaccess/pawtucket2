@@ -18,10 +18,16 @@
 		</div>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to exhibition titles only.">Title</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to exhibition titles only.">Exhibition Title</span>
 				{{{ca_occurrences.preferred_labels.name%width=220px&height=1}}}
 			</div>
 		</div>
+		<div class='row'>
+			<div class="advancedSearchField col-sm-12">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to related object titles only.">Object Title</span>
+				{{{ca_objects.preferred_labels.name%width=220px&height=1}}}
+			</div>
+		</div>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by exhibition venues.">Venue</span>
