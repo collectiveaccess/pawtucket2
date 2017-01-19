@@ -53,15 +53,22 @@
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-						print "<H5>".$va_facet_info['label_singular']."</H5>"; 
-		?>
+						print '<div class="dropdown">';
+						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroup{$vs_facet_name}'>"; 
+						print "<div class='filterLeader'>Filter by ".$va_facet_info['label_plural']."</div>";
+						print "<div class='filterDesc'>".$va_facet_info['description']."<hr/></div>";
+						print "<li><div class='container'><div class='row hierarchicalList'>"; 
+?>
+						
 							<script type="text/javascript">
 								jQuery(document).ready(function() {
 									jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
 								});
 							</script>
 							<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-		<?php
+<?php
+						print "</div><!-- end row --></div><!-- end container --></li></ul><!-- end facetGroup -->";
+						print "</div><!-- end dropdown -->";
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 						print '<div class="dropdown">';

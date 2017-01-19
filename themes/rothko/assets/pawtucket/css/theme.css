@@ -496,6 +496,39 @@ a .fa.clearFacet {
 #bRefine .row, #bRefine .container {
 	margin-bottom:0px;
 }
+#bRefine .row {
+	max-height:250px;
+	overflow-y:auto;
+	margin-bottom:10px;
+}
+#bRefine  #bHierarchyList_place_facet {
+	width:100%;
+	padding-left: 15px;
+}
+#bRefine li .hierarchicalList .facetItem {
+	margin-bottom: 22px;
+}
+#facetGroupplace_facet h1 {
+	display:none;
+}
+#bAncestorList {
+	font-weight:bold;
+	clear:both;
+}
+.bScrollListHierarchy {
+	clear:left;
+}
+#bAncestorList {
+	position:absolute;
+	height:20px;
+	background-color:#fff;
+	width:100%;
+	top: 40px;
+}
+.facetItem .glyphicon-chevron-down {
+	font-size:10px;
+}
+
 
 /* Detail */
 

@@ -121,7 +121,7 @@
 						$vs_info.= "<p>".$vs_date."</p>";
 					}
 					if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						$vs_info.= "<p>".$vs_medium."</p>";
+						$vs_info.= "<p>".caGetListItemByIDForDisplay($vs_medium)."</p>";
 					}
 					if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 						$vs_info.= "<p>".$va_collection."</p>";
