@@ -33,8 +33,11 @@
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
 	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-	$vn_is_advanced		 = (int)$this->getVar('is_advanced');	
-	
+	$vn_is_advanced		= (int)$this->getVar('is_advanced');
+	$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
+	$va_letter_bar		= $this->getVar('letterBar');	
+	$vs_letter			= $this->getVar('letter');
+	$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
 	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
@@ -176,6 +179,17 @@ if (!$vb_ajax) {	// !ajax
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
+
+		if($vb_showLetterBar){
+			print "<div id='bLetterBar'>";
+			foreach(array_keys($va_letter_bar) as $vs_l){
+				if(trim($vs_l)){
+					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
+				}
+			}
+			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
+			print "</div>";
+		}
 ?>
 		<form id="setsSelectMultiple">
 		<div class="row">
@@ -199,7 +213,16 @@ if (!$vb_ajax) {	// !ajax
 		}
 } // !ajax
 
-print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+# --- check if this result page has been cached
+# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
+$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+	print ExternalCache::fetch($vs_cache_key, 'browse_results');
+}else{
+	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
+	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
+	print $vs_result_page;
+}		
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -234,10 +257,17 @@ if (!$vb_ajax) {	// !ajax
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 20,
+			padding: 600,
 			nextSelector: 'a.jscroll-next'
 		});
 <?php
+		if($vn_row_id){
+?>
+			window.setTimeout(function() {
+				$("window,body,html").scrollTop( $("#row<?php print $vn_row_id; ?>").offset().top);
+			}, 0);
+<?php
+		}
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 ?>
 		jQuery('#setsSelectMultiple').submit(function(e){		

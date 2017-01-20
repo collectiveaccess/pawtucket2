@@ -113,13 +113,18 @@
 				$vs_download_link = "";
 				if ($vs_rep_id) {
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
-				}				
+				}	
+				
+				$vs_compare_link = $vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-th-large' aria-hidden='true'></i></a>" : '';			
 				print "
 	<div class='bResultItemCol col-xs-6 col-sm-3'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_catno}{$vs_label_detail_link}{$vs_link_text}
+					{$vs_catno}
+					{$vs_label_detail_link}
+					{$vs_compare_link}
+					{$vs_link_text}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 		</div><!-- end bResultItem -->

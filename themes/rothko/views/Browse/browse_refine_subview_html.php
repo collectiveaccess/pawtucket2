@@ -122,7 +122,7 @@
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
 					// check the visible top of the browser
-					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
+					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height() + 155) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
 					} else {
@@ -134,4 +134,3 @@
 	</script>
 <?php	
 	#}
-?>
