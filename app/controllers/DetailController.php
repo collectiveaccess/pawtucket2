@@ -434,7 +434,7 @@
  			
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
- 					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), ((caGetOption('pdfExportTitle', $va_options, false)) ? $t_subject->getLabelForDisplay() : null), ['checkAccess' => $this->opa_access_values]);
+ 					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
  					caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
@@ -1356,15 +1356,22 @@
 		 * Return media viewer data via AJAX callback for viewers that require it.
 		 */
 		public function GetMediaData() {
+			$ps_context = $this->request->getParameter('context', pString);
+			
 			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
-			
-			if ($ps_context == 'gallery') {
-				$va_context = [
-					'table' => 'ca_objects'
-				];
-			} elseif (!is_array($va_context = $this->opa_detail_types[$this->request->getParameter('context', pString)])) { 
-				throw new ApplicationException(_t('Invalid context'));
+		
+			switch($ps_context) {
+				case 'gallery':
+				case 'GetMediaInline':
+				case 'GetMediaOverlay':
+					$va_context = ['table' => 'ca_objects'];
+					break;
+				default:
+					if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+						throw new ApplicationException(_t('Invalid context'));
+					}
+					break;
 			}
 			
 			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {

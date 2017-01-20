@@ -808,6 +808,7 @@ class SearchResult extends BaseObject {
 		
 		$va_opts = array_merge($pa_options, array('row_ids' => $va_row_ids, 'criteria' => $va_criteria));
 		if (!isset($va_opts['limit'])) { $va_opts['limit'] = 100000; }
+	
 		$va_rel_items = $this->opo_subject_instance->getRelatedItems($ps_tablename, $va_opts);		// if there are more than 100,000 then we have a problem
 		
 		if (!is_array($va_rel_items) || !sizeof($va_rel_items)) { return; }
@@ -943,6 +944,8 @@ class SearchResult extends BaseObject {
  	 *			restrictToRelationshipType = Synonym for restrictToRelationshipTypes. [Default is null]
  	 *			excludeType = Synonym for excludeTypes. [Default is null]
  	 *			excludeRelationshipType = Synonym for excludeRelationshipTypes. [Default is null]
+ 	 *			excludeValues = An array of values to exclude if found. [Default is null; return all values]
+ 	 *			excludeIdnos = An array of idnos to exclude if found. Only relevant when pulling related records, either via a related get spec (Eg. ca_entities.preferred_labels from a ca_object instance) or an authority metadata element. [Default is null; return all values]
  	 *			filters = Array list of elements to filter returned values on. The element must be part of the container being fetched from. For example, when fetching a value from a container element (ex. ca_objects.dates.date_value) you can filter on any other subelement in that container by passing the name of the subelement and a value (ex. "date_type" => "copyright"). Pass only the name of the subelement, not the full path that includes the table and container element. You may filter on multiple subelements by passing each subelement as a key in the array. Only values that match all filters are returned. You can filter on multiple values for a subelement by passing an array of values rather than a scalar (Eg. "date_type" => array("copyright", "patent")). Values that match *any* of the values will be returned. Only simple equivalance is supported. NOTE: Filters are only available when returnAsArray or returnWithStructure are set. [Default is null]
  	 *			assumeDisplayField = For returnWithStructure, return display field for ambiguous preferred label specifiers (ex. ca_entities.preferred_labels => ca_entities.preferred_labels.displayname). If set to false an array with all label fields is returned. [Default is true]
 	 *			returnURL = When fetching intrinsic value of type FT_MEDIA return URL to media rather than HTML tag. [Default is false]
@@ -1026,8 +1029,12 @@ class SearchResult extends BaseObject {
 		$vb_convert_codes_to_display_text 	= isset($pa_options['convertCodesToDisplayText']) ? (bool)$pa_options['convertCodesToDisplayText'] : false;
 		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
 		
+		$va_exclude_values 					= (isset($pa_options['excludeValues']) && $pa_options['excludeValues']) ? is_array($pa_options['excludeValues']) ? $pa_options['excludeValues'] : [$pa_options['excludeValues']] : [];
+		$va_exclude_idnos					= (isset($pa_options['excludeIdnos']) && $pa_options['excludeIdnos']) ? is_array($pa_options['excludeIdnos']) ? $pa_options['excludeIdnos'] : [$pa_options['excludeIdnos']] : [];
+		
+		
 		$vb_use_locale_codes 				= isset($pa_options['useLocaleCodes']) ? (bool)$pa_options['useLocaleCodes'] : false;
-		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
+		$vb_assume_display_field 			= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
 		
 		if (!($vs_output = (isset($pa_options['output']) ? (string)$pa_options['output'] : null))) {
 			if ($vb_convert_codes_to_display_text) { $vs_output = "text"; }
@@ -1065,7 +1072,9 @@ class SearchResult extends BaseObject {
 			'convertCodesToIdno' => $vb_convert_codes_to_idno,
 			'checkAccess' => $va_check_access,
 			'template' => $vs_template,
-			'useLocaleCodes' => $vb_use_locale_codes
+			'useLocaleCodes' => $vb_use_locale_codes,
+			'excludeValues' => $va_exclude_values,
+			'excludeIdnos' => $va_exclude_idnos
 		));
 		
 		
@@ -1080,6 +1089,7 @@ class SearchResult extends BaseObject {
 		}
 		
 		if(!(($vs_value = $this->opo_engine_result->get($ps_field, $pa_options)) === false)) {
+			if (in_array($vs_value, $va_exclude_values)) { return $vb_return_as_array ? [] : null; }
 			if ($vb_return_as_array) {
 				if ($vb_return_all_locales) {
 					return array(1 => $vs_value);
@@ -1526,7 +1536,7 @@ class SearchResult extends BaseObject {
 					}
 					
 					$va_attributes = ca_attributes::getAttributes($this->opo_subject_instance->getDb(), $this->opn_table_num, $vn_row_id, array($vn_element_id), array());
-			
+
 					$vm_val = $this->_getAttributeValue($va_attributes[$vn_element_id], $t_instance, $va_val_opts);
 					goto filter;
 				}
@@ -1534,6 +1544,33 @@ class SearchResult extends BaseObject {
 		}
 		
 		filter:
+		
+		// process excludes 
+		if (sizeof($va_exclude_values) > 0) {
+			if ($vb_return_as_array && is_array($vm_val)) {
+				if ($vb_return_with_structure) {
+					if ($vb_return_all_locales) {
+						foreach($vm_val as $vn_locale_id => $va_by_locale) {
+							foreach($va_by_locale as $vn_i => $va_by_value) {
+								foreach($va_by_locale as $vs_subfield => $vs_val) {
+									if (in_array($vs_val, $va_exclude_values)) { unset($vm_val[$vn_locale_id][$vn_i]); }
+								}
+							}
+						}
+					} else {
+						foreach($vm_val as $vn_i => $va_by_value) {
+							foreach($va_by_value as $vs_subfield => $vs_val) {
+								if (in_array($vs_val, $va_exclude_values)) { unset($vm_val[$vn_i]); break; }
+							}
+						}
+					}
+				} else {
+					foreach($vm_val as $vn_i => $vs_val) {
+						if (in_array($vs_val, $va_exclude_values)) { unset($vm_val[$vn_i]); }
+					}
+				}
+			} elseif (in_array($vm_val, $va_exclude_values)) { $vm_val = null; } 
+		}
 		
 		if ($vb_return_as_array && sizeof($va_filters)) {
 			$va_tmp = explode(".", $ps_field);
@@ -1643,6 +1680,7 @@ class SearchResult extends BaseObject {
 		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
 		
 		$pa_check_access		= $pa_options['checkAccess'];
+		if (!is_array($pa_exclude_idnos	= $pa_options['excludeIdnos'])) { $pa_exclude_idnos = []; }
 		
 		if (!($t_rel_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']])) {
 			$t_rel_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']] = SearchResult::$opo_datamodel->getInstanceByTableName($va_path_components['table_name'], true);
@@ -1682,9 +1720,16 @@ class SearchResult extends BaseObject {
 			if ($va_path_components[$vs_f]) { $va_spec[] = $va_path_components[$vs_f]; }
 		}
 
+		$vs_idno_fld = $t_rel_instance->getProperty('ID_NUMBERING_ID_FIELD');
+		$vs_rel_table_name = $t_rel_instance->tableName();
+		
 		while($qr_rel->nextHit()) {
 			$vm_val = $qr_rel->get(join(".", $va_spec), $pa_options);
 			if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_rel_instance->hasField('access') && !in_array($qr_rel->get($va_path_components['table_name'].".access"), $pa_check_access)) {
+				continue;
+			}
+			
+			if (in_array($qr_rel->get("{$vs_rel_table_name}.{$vs_idno_fld}"), $pa_exclude_idnos)) {
 				continue;
 			}
 			
@@ -1833,6 +1878,8 @@ class SearchResult extends BaseObject {
 		$vs_delimiter				= isset($pa_options['delimiter']) ? $pa_options['delimiter'] : ';';
 		$va_return_values = array();
 		
+		$pa_exclude_idnos = caGetOption('excludeIdnos', $pa_options, []);
+		if (!is_array($pa_exclude_idnos) && $pa_exclude_idnos) { $pa_exclude_idnos = [$pa_exclude_idnos]; } 
 		
 		$vn_id = $this->get($pt_instance->primaryKey(true));
 		$vs_table_name = $pt_instance->tableName();
@@ -1886,6 +1933,11 @@ class SearchResult extends BaseObject {
 							$va_options['returnAsArray'] = true;
 							
 							if ($qr_res->nextHit()) {
+								if (($t_instance = $o_value->elementTypeToInstance($o_value->getType())) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD'))) {
+									if (in_array($qr_res->get($vs_auth_table_name.'.'.$vs_idno_fld), $pa_exclude_idnos)) {
+										continue;
+									}
+								}
 								$va_val_proc = $qr_res->get(join(".", $va_auth_spec), $va_options);
 								if(is_array($va_val_proc)) {
 									foreach($va_val_proc as $vn_i => $vs_v) {
@@ -1902,6 +1954,9 @@ class SearchResult extends BaseObject {
 							case __CA_ATTRIBUTE_VALUE_LIST__:
 								$t_element = ca_metadata_elements::getInstance($o_value->getElementID());
 								$vn_list_id = $t_element->get('list_id');
+								if (in_array($o_value->getDisplayValue(array('output' => 'idno', 'list_id' => $vn_list_id)), $pa_exclude_idnos)) {
+									continue(2);
+								}
 						
 								$vs_val_proc = $o_value->getDisplayValue(array_merge($pa_options, array('output' => $pa_options['output'], 'list_id' => $vn_list_id)));
 								break;
@@ -1930,6 +1985,9 @@ class SearchResult extends BaseObject {
 								}
 								continue(2);
 							default:
+								if (in_array($o_value->getDisplayValue(array('output' => 'idno')), $pa_exclude_idnos)) {
+									continue(2);
+								}
 								$vs_val_proc = $o_value->getDisplayValue(array_merge($pa_options, array('output' => $pa_options['output'])));
 								break;
 						}

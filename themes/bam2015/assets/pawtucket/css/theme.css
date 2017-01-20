@@ -945,6 +945,18 @@ a.faDownload:hover {
 	height:auto;
 	margin-bottom:25px;
 }
+#collectionHierarchy HR{
+	border-top:2px solid #dddddd !important;
+	margin-bottom:0px !important;
+	margin-top:0px !important;
+}
+#collectionLoad .label{
+	text-transform:none;
+}
+.collectionsContainer a.openCollection.active {
+    color: #fff;
+    background-color: #00cfb7;
+}
 .findingAidContainer {
 	float:left;
 	height:500px;
@@ -981,9 +993,12 @@ a.faDownload:hover {
 #collectionLoad a .fa, #collectionLoad .fa, #collectionLoad a .icon-box, #collectionLoad .icon-box, #collectionLoad a .icon-folder, #collectionLoad .icon-folder{
 	color: #737373;
 }
-.findingAidContainer a.openCollection.active {
+.collectionsContainer a.openCollection.active {
 	color:#fff;
 	background-color: #00cfb7;
+}
+.collectionsContainer a.openCollection{
+	font-size:16px;
 }
 
 
