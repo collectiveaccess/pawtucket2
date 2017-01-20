@@ -1690,6 +1690,9 @@ a.readmore-js-toggle{
 }
 .trimText {margin-top:5px;}
 
+.caAudioPlayer{
+	padding-top:26px;
+}
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */
@@ -2088,6 +2091,7 @@ a.readmore-js-toggle{
 	width: 100%;
 	height:500px;
 }
+
 
 /* --------------------------------- */
 /* multi-search */
