@@ -61,7 +61,8 @@
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
-	
+	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
+	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 if (!$vb_ajax) {	// !ajax
@@ -165,7 +166,7 @@ if (!$vb_ajax) {	// !ajax
 				if($i < sizeof($va_criteria)){
 					print " ";
 				}
-				$va_current_facet = $va_facets[$va_criterion['facet_name']];
+				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
 				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
 					$t_authority_table = new $va_current_facet["table"];
 					$t_authority_table->load($va_criterion['id']);
