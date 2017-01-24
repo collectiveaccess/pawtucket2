@@ -322,6 +322,7 @@ a.navbar-brand .line3{
 }
 #footer a{
 	color:#999999 !important;
+	text-decoration:none;
 }
 #footer h3, #footer h5{
 	color:#999999;
@@ -338,6 +339,11 @@ a.navbar-brand .line3{
 @media (min-width: 768px) {
 	#footer h5{
 		float:right;
+	}
+	#footer h5 .terms{
+		clear:both;
+		text-align:center;
+		padding-top:10px;
 	}
 }
 @media (max-width: 768px) {
