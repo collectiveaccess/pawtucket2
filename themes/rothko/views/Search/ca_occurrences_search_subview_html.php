@@ -90,7 +90,7 @@
 				if ($vs_nonpreferred = $qr_results->get('ca_occurrences.nonpreferred_labels')) {
 					$vs_title_text.= ", ".$vs_nonpreferred;
 				}				
-				$vs_result_text.= ( strlen($vs_title_text) > 75 ? substr($vs_title_text, 0, 72)."... " : $vs_title_text.", ");			
+				$vs_result_text.= ( strlen($vs_title_text) > 75 ? strip_tags(substr($vs_title_text, 0, 72))."... " : $vs_title_text.", ");			
 				if ($vs_author = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
 					$vs_result_text.= $vs_author;
 				}
