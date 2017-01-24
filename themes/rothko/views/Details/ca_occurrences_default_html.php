@@ -19,12 +19,12 @@
 		}
 		print "<h1>";
 		print "<i>".$t_item->get('ca_occurrences.preferred_labels')."</i>";
-		if ($vs_venue = $t_item->getWithTemplate('<unit restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit>')) {
+		if ($vs_venue = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.preferred_labels" restrictToRelationshipTypes="venue"><unit restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount>')) { 
 			print $vs_venue;
 		}
 		print "</h1>";
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
-			print "<div class='unit' style='padding-bottom:20px;'>".$va_date."</div>";
+			print "<div class='unit' style='padding-bottom:20px;'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/ca_occurrences.occurrence_dates:"'.$va_date.'"')."</div>";
 		}
 ?>
 	</div>

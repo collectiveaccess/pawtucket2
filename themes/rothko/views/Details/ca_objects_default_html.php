@@ -99,13 +99,30 @@
 		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /163/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit></ifcount>')) {
 			print "<div class='unit'>Dimensions - ".$vs_dimensions."</div>";
 		}
-		if ($va_collection = $t_parent->get('ca_objects_x_collections.relation_id', array('returnAsArray' => true))) {
-			foreach ($va_collection as $va_key => $va_collection_relation_id) {
-				$t_collection_rel = new ca_objects_x_collections($va_collection_relation_id);
-				if ($t_collection_rel->get('ca_objects_x_collections.current_collection', array('convertCodesToDisplayText' => true)) == $vs_list_value) {
-					$vn_current_collection_id = $t_collection_rel->get('ca_objects_x_collections.collection_id');
-					print "<div class='unit'>Collection - ".$t_collection_rel->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>')." ".(($t_collection_rel->get('ca_objects_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
-					if ($vs_credit_line = $t_collection_rel->get('ca_objects_x_collections.collection_line')) {
+		// if ($va_collection = $t_parent->get('ca_objects_x_collections.relation_id', array('returnAsArray' => true))) {
+// 			foreach ($va_collection as $va_key => $va_collection_relation_id) {
+// 				$t_collection_rel = new ca_objects_x_collections($va_collection_relation_id);
+// 				if ($t_collection_rel->get('ca_objects_x_collections.current_collection', array('convertCodesToDisplayText' => true)) == $vs_list_value) {
+// 					$vn_current_collection_id = $t_collection_rel->get('ca_objects_x_collections.collection_id');
+// 					print "<div class='unit'>Collection - ".$t_collection_rel->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>')." ".(($t_collection_rel->get('ca_objects_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
+// 					if ($vs_credit_line = $t_collection_rel->get('ca_objects_x_collections.collection_line')) {
+// 						print "<div class='unit'>Credit - ".$vs_credit_line."</div>";
+// 					}
+// 					if ($vs_institutional = $t_object->get('ca_collections.institutional_id')) {
+// 						print "<div class='unit'>Institutional id - ".$vs_institutional."</div>";
+// 					}						
+// 				}			
+// 			}
+// 
+// 		}
+		if ($qr_collections = $t_parent->get('ca_objects_x_collections.relation_id', array('returnAsSearchResult' => true))) {
+			while($qr_collections->nextHit()) {
+				if ($qr_collections->get('ca_collections.deleted') === null) { continue; } // you check for null because get() won't return info about deleted items
+				
+				if ($qr_collections->get('ca_objects_x_collections.current_collection', array('convertCodesToDisplayText' => true)) == $vs_list_value) {
+					$vn_current_collection_id = $qr_collections->get('ca_objects_x_collections.collection_id');
+					print "<div class='unit'>Collection - ".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>')." ".(($qr_collections->get('ca_objects_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
+					if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
 						print "<div class='unit'>Credit - ".$vs_credit_line."</div>";
 					}
 					if ($vs_institutional = $t_object->get('ca_collections.institutional_id')) {
@@ -113,7 +130,6 @@
 					}						
 				}			
 			}
-
 		}	
 		if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
 			print "<div class='unit'>Catalog ID - ".$va_catalog_id."</div>";
