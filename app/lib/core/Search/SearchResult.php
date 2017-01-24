@@ -1909,24 +1909,26 @@ class SearchResult extends BaseObject {
 					$va_auth_spec = null; 
 					if (is_a($o_value, "AuthorityAttributeValue")) {
 						$va_auth_spec = $va_path_components['components'];
-						
 						if ($pt_instance->hasElement($va_path_components['subfield_name'], null, true, array('dontCache' => false))) {
+							// ca_objects.hierarchy.authority_attr_code
 							array_shift($va_auth_spec); array_shift($va_auth_spec); array_shift($va_auth_spec);
 						} elseif ($pt_instance->hasElement($va_path_components['field_name'], null, true, array('dontCache' => false))) {
-							array_shift($va_auth_spec); array_shift($va_auth_spec); 
+							// ca_objects.authority_attr_code
+							array_shift($va_auth_spec);  array_shift($va_auth_spec);
 							$va_path_components['subfield_name'] = null;
-						} else {
-							$va_auth_spec = ['preferred_labels'];
 						}
 					}
 					if ($va_path_components['subfield_name'] && ($va_path_components['subfield_name'] !== $vs_element_code) && !($o_value instanceof InformationServiceAttributeValue)) {
 						$vb_dont_return_value = true;
 						if (!$pa_options['filter']) { continue; }
 					}
+					
 									
-					if (is_a($o_value, "AuthorityAttributeValue") && sizeof($va_auth_spec) > 0) {
-						array_unshift($va_auth_spec, $vs_auth_table_name = $o_value->tableName());
-				
+					if (is_a($o_value, "AuthorityAttributeValue")) {
+						$vs_auth_table_name = $o_value->tableName();
+						if (!is_array($va_auth_spec) || !sizeof($va_auth_spec)) { $va_auth_spec = [SearchResult::$opo_datamodel->primaryKey($vs_auth_table_name)]; }
+						array_unshift($va_auth_spec, $vs_auth_table_name);
+						
 						if ($qr_res = caMakeSearchResult($vs_auth_table_name, array($o_value->getID()))) {
 							$va_options = $pa_options;
 							unset($va_options['returnWithStructure']);
@@ -1938,6 +1940,7 @@ class SearchResult extends BaseObject {
 										continue;
 									}
 								}
+							
 								$va_val_proc = $qr_res->get(join(".", $va_auth_spec), $va_options);
 								if(is_array($va_val_proc)) {
 									foreach($va_val_proc as $vn_i => $vs_v) {
