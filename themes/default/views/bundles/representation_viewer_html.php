@@ -129,9 +129,9 @@
 				}
 			});
 			
-		//if({{{representation_id}}} > 0){
-		//	$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		//}
+		if({{{representation_id}}} > 0){
+			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		}
 	});
 </script>
 <?php

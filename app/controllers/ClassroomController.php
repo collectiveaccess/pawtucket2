@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -115,59 +115,53 @@
         /**
          *
          */
- 		function index() {
- 			
+ 		function index($pa_options = null) {
  			parent::index(array('view' => 'Classroom/list_html.php'));
  		}
  		# -------------------------------------------------------
- 		function setForm() {
+ 		function setForm($pa_options = null) {
  			$this->view->setVar('parent_id', $this->request->getParameter('parent_id', pInteger));
  			parent::setForm(array('view' => 'Classroom/form_set_info_html.php'));
  		}
  		# -------------------------------------------------------
- 		function userGroupForm() {
- 			
+ 		function userGroupForm($pa_options = null) {
  			parent::userGroupForm(array('user_group_heading' => _t('Group')));
  		}
  		# -------------------------------------------------------
- 		function saveUserGroup() {
- 			
+ 		function saveUserGroup($pa_options = null) {
  			parent::saveUserGroup(array('user_group_terminology' => _t('group')));
  		}
  		# -------------------------------------------------------
- 		function ajaxSaveSetInfo() {
- 			
+ 		function ajaxSaveSetInfo($pa_options = null) {
  			parent::ajaxSaveSetInfo(array('set_list_item_function' => 'caClassroomSetListItem', 'display_name' => $this->ops_classroom_display_name));
  		}
  		# -------------------------------------------------------
- 		function setDetail() {
- 			
+ 		function setDetail($pa_options = null) {
  			parent::setDetail(array('view' => 'Classroom/set_detail_html.php', 'display_name' => $this->ops_classroom_display_name));
  		}
  		# ------------------------------------------------------
- 		function shareSetForm() {
+ 		function shareSetForm($pa_options = null) {
            parent::shareSetForm(array('display_name' => $this->ops_classroom_display_name));
  		}
  		# -------------------------------------------------------
- 		function saveShareSet() {
+ 		function saveShareSet($pa_options = null) {
            parent::saveShareSet(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
  		}
  		# -------------------------------------------------------
- 		function setAccess() {
+ 		function setAccess($pa_options = null) {
            parent::setAccess(array('view' => 'Classroom/set_access_html.php'));
  		}
  		# -------------------------------------------------------
- 		function addItemForm() {
+ 		function addItemForm($pa_options = null) {
  			parent::addItemForm(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
  		}
  		# -------------------------------------------------------
- 		function ajaxAddItem() {
+ 		function ajaxAddItem($pa_options = null) {
  			parent::ajaxAddItem(array('display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
  		}
  		# -------------------------------------------------------
- 		function present() {
+ 		function present($pa_options = null) {
  			parent::present(array('controller' => 'Classroom', 'display_name' => $this->ops_classroom_display_name, 'display_name_plural' => $this->ops_classroom_display_name_plural));
  		}
  		# -------------------------------------------------------
- 		
  	}

@@ -50,7 +50,7 @@
             	print "You do not have access to view this page.";
             	die;
             }
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
+ 			
  			caSetPageCSSClasses(array("listing"));
  		}
  		# -------------------------------------------------------
