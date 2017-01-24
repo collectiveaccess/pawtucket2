@@ -74,8 +74,9 @@ if($this->request->getParameter("detailNav", pInteger)){
 	}
 	
 	$vb_show_filter = false; # collection pages have filter option
-	if(strpos($vs_search, "collection") !== false){
-		$vb_show_filter = true;
+	$vs_current_facet = null;
+	foreach($va_criteria as $va_criterion) {
+		if (in_array($va_criterion['facet_name'], ['collection', 'current_collection', 'past_collection'])) { $vb_show_filter = true; $vs_current_facet = $va_criterion['facet_name']; break; }
 	}
 	$vs_search_target = "artworks";
 ?>
@@ -135,31 +136,26 @@ if($this->request->getParameter("detailNav", pInteger)){
 			</div><!-- end btn-group -->
 <?php
 			if($vb_show_filter){
+				$va_options = ['collection' => 'all', 'current_collection' => 'current', 'past_collection' => 'previous'];
 				$t_lists = new ca_lists();
-				$va_current_collection_filters = caExtractValuesByUserLocale($t_lists->getItemsForList("yes_no"));
-				if(is_array($va_current_collection_filters) && sizeof($va_current_collection_filters)){
-					$vs_current_collection_mode = $this->request->getParameter('current_collection_mode', pString);
-					$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
+				if (!($vn_collection_id = $this->request->getParameter('collection_id', pInteger))) { $vn_collection_id = $this->request->getParameter('id', pInteger);}
 ?>
 				<div class="btn-group sortResults">
-					<span class="sortMenu" data-toggle="dropdown">collection status: <?php print ($vs_current_collection_mode) ? ($vs_current_collection_mode == 'yes' ? 'current' : 'past' ) : "all"; ?></span>
+					<span class="sortMenu" data-toggle="dropdown">collection status: <?php print $va_options[$vs_current_facet]; ?></span>
 					<ul class="dropdown-menu" role="menu">
 <?php
 							# --- add any as an option
-							print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'collection_id' => $vn_collection_id), array('dontURLEncodeParameters' => true))."', 'ca_collections.collection_id:{$vn_collection_id}'); return false;\">".(($vn_current_value) ? 'all' : '<i>all</i>').'</a></li>';
-							foreach($va_current_collection_filters as $vn_value => $va_current_collection_filter) {
-								if ($vn_current_value == $vn_value) {
-									print "<li><a href='#' onClick='return false;'><em>".($va_current_collection_filter["name_singular"] == 'yes' ? 'current' : 'past' )."</em></a></li>\n";
+							foreach($va_options as $vs_facet => $vs_label) {
+								if ($vs_facet == $vs_current_facet) {
+									print "<li><a href='#' onClick='return false;'><em>{$vs_label}</em></a></li>\n";
 								} else {
-									$vs_new_search = urlencode("ca_collections.collection_id:{$vn_collection_id} AND ca_objects_x_collections.current_collection:".$va_current_collection_filter["idno"]);
-									print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('current_collection_mode' => $va_current_collection_filter["idno"], 'collection_id' => $vn_collection_id, 'detailNav' => '1', 'sort' => $vs_current_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \''.$vs_new_search.'\'); return false;">'.($va_current_collection_filter["name_singular"] == 'yes' ? 'current' : 'past' ).'</a></li>';
+									print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', ['facet' => $vs_facet, 'id' => $vn_collection_id, 'detailNav' => '1', 'sort' => $vs_current_sort, 'view' => $vs_current_view], ['dontURLEncodeParameters' => true]).'\'); return false;">'.$vs_label.'</a></li>';
 								}
 							}
 ?>
 					</ul>
 				</div><!-- end btn-group -->
-<?php	
-				}
+<?php
 			}
 ?>
 			<H6 style='margin-top:-30px;'>

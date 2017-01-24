@@ -42,7 +42,7 @@
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_collections.collection_id:^ca_collections.collection_id', 'detailNav' => 1, 'collection_id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
