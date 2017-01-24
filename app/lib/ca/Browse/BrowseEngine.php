@@ -4312,8 +4312,6 @@
 						$vs_where_sql = ' AND ('.$vs_where_sql.')';
 					}
 
-
-
 					$vs_join_sql = join("\n", $va_joins);
 
 					if ($vb_is_element) {

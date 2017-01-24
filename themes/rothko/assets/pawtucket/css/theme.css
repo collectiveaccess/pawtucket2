@@ -110,6 +110,7 @@ p {
 	border:0px;
 	padding-top:15px;
 	margin:0px;
+	z-index:10000;
 }
 #footer p {
 	font-weight:400;
@@ -189,6 +190,9 @@ p {
 	box-shadow:none;
 	background-color:#f5f5f5;
 	border:0px;
+	margin:0px;
+	min-height:0;
+	position:relative;
 }
 .bResultItem:hover {
 	margin:0px;
@@ -262,6 +266,9 @@ p {
 
 /* Browse */
 
+#pageArea.browse.results {
+	margin-bottom:50px;
+}
 #bRefine {
 	background-color:#fff;
 	border-right:1px solid #ccc;
@@ -335,6 +342,11 @@ p {
 }
 .bResultListItem .bResultListItemText a:hover {
 	text-decoration:none;
+}
+.bResultListItem .bResultListItemText a.compare_link {
+	position: relative;
+    padding: 5px;
+    top: 5px;
 }
 .bResultListItem {
 	box-shadow:none;
@@ -759,4 +771,69 @@ div.advancedSearchField {
 	color:#fff;
 	text-decoration:none;
 	font-weight:200;
+}
+
+/* Mirador */
+
+h3.window-manifest-title {
+	text-transform:none;
+	font-weight:normal;
+	font-size:13px;
+	color:#eee;
+}
+.manifest-info {
+	background-color:#000;
+}
+#comparison_viewer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin-top: -30px;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.compareDrawer {
+	display:none;
+	background-color:#eaeaea;
+	width:30%;
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	z-index:1000;
+	padding-top:5px;
+}
+.compareDrawer ul {
+	padding-left:25px;
+}
+.compareDrawer a:hover {
+	text-decoration:none;
+}
+.compareDrawer .items {
+	display:none;
+	clear:both;
+}
+.compareDrawer .items p {
+	clear:both;
+}
+.listTitle {
+	font-size:14px;
+}
+.compareDrawer p {
+	margin-bottom:5px;
+	float:left;
+}
+.openItems {
+	float:right;
+	padding-top:5px;
+	padding-right:20px;
+}
+.compare_link {
+	position:absolute;
+	bottom:5px;
+	right:5px;
 }
