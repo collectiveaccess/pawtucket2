@@ -506,7 +506,7 @@
 
 			$o_pdf->setPage(caGetOption('pageSize', $pa_template_info, 'letter'), caGetOption('pageOrientation', $pa_template_info, 'portrait'), caGetOption('marginTop', $pa_template_info, '0mm'), caGetOption('marginRight', $pa_template_info, '0mm'), caGetOption('marginBottom', $pa_template_info, '0mm'), caGetOption('marginLeft', $pa_template_info, '0mm'));
 		
-			$ps_output_filename = ($ps_output_filename) ? preg_replace('![^A-Za-z0-9_\-]+!', '_', $ps_output_filename) : 'export';
+			$ps_output_filename = ($ps_output_filename) ? preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $ps_output_filename) : 'export';
 
 			$o_pdf->render($ps_content, array('stream'=> true, 'filename' => $ps_output_filename));
 
@@ -517,5 +517,38 @@
 		}
 		
 		return $vb_printed_properly;
+	}
+	# ----------------------------------------
+	/**
+	 * Generate name for downloadable file. Can take a display template evaluated relative to a provided model instance, a template
+	 * evaluated with an array of tag values or static text. (Note: for compatibility reasons if the static text "label" is passed and
+	 * a model instance is passed in the 't_subject' option then the preferred label of the instance will be returned).
+	 *
+	 * The returned value will have all non-alphanumeric characters replaced with underscores, ready for use as a download file name.
+	 *
+	 * @param string $ps_template A display template or static text used to generate the file name.
+	 * @param array $pa_options Options include:
+	 * 		t_subject = a model instance to evaluate the filename template relative to. [Default is null]
+	 *		values = an array of values, where keys are tag names in the filename template. [Default is null]
+	 *
+	 * Note that if neither the t_subject or values options are set the template will be evaluated as static text.
+	 *
+	 * @return string
+	 */
+	function caGenerateDownloadFileName($ps_template, $pa_options=null) {
+		$pt_subject = caGetOption('t_subject', $pa_options, null);
+		if ((strpos($ps_template, "^") !== false) && ($pt_subject)) {
+			return caProcessTemplateForIDs($ps_template, $pt_subject->tableName(), [$pt_subject->getPrimaryKey()], $pa_options);
+		} elseif ((strpos($ps_template, "^") !== false) && is_array($va_values = caGetOption('values', $pa_options, null))) {
+			return caProcessTemplate($ps_template, $va_values, $pa_options);
+		}
+		
+		switch(strtolower($ps_template)) {
+			case 'label':
+				return $pt_subject ? $pt_subject->getLabelForDisplay() : "export";
+				break;
+		}
+		
+		return $ps_template;
 	}
 	# ----------------------------------------

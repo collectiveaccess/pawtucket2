@@ -40,10 +40,10 @@
 			<div class="leader ltGrayBg">
 				<H1><?php print _t("Flatfile Digital Archives"); ?></H1>
 				<p>
-					Etiam pharetra, elit ac fermentum accumsan, ex lectus lacinia nisi, consequat auctor nulla urna ac enim. Vivamus feugiat massa sem, sed fringilla magna cursus sed. Cras laoreet est vitae arcu finibus, id volutpat elit vehicula.
+					The Kentler Flatfiles have been an essential element of Kentler International Drawing Space since its founding in 1990. A collection of over 2,000 artworks by local, national and international artists, this living archive represents the incredible breadth and diversity found in contemporary drawings and works on paper.The Flatfiles Digital Archive, providing full online access to the collection, was awarded an ArtWorks grant by the National Endowment for the Arts in 2015. Thank you for your patience as we work towards a complete representation of all current and historic holdings. 
 				</p>
 				<p>
-					Aenean eget enim ullamcorper, consectetur nisi sit amet, accumsan massa. Vivamus a urna nec leo pharetra porta. Nam non sapien non nisl mattis rutrum. Praesent pretium auctor diam congue hendrerit. Nulla ullamcorper arcu ante, sit amet dictum justo vestibulum vitae.
+					Flatfiles works are held on consignment in Kentler's showroom and are available to the public for viewing and purchase. Starting in 2017, a rotating selection of works will be on view in our front gallery space. To schedule a viewing appointment or inquire about prices, please <a href="mailto:info@kentlergallery.org" style="text-decoration:underline;">contact</a> the gallery.
 				</p>
 			</div>
 		</div>
