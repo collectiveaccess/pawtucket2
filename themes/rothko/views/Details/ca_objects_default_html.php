@@ -73,16 +73,23 @@
 		if ($va_paper = $t_parent->get('ca_objects.paper', array('returnAsArray' => true, 'excludeIdnos' => array('null')))) {
 			$va_paper_links = array();
 			foreach ($va_paper as $va_key => $va_paper_id) {
+				if ($va_paper_id == 0) {continue;}
 				$va_paper_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_paper_id), '', '', 'Browse', 'artworks/facet/paper_facet/id/'.$va_paper_id);	
 			}
-			print "<div class='unit'>Support - ".join(', ', $va_paper_links)."</div>";
+			if (sizeof($va_paper_links) > 0){
+				print "<div class='unit'>Support - ".join(', ', $va_paper_links)."</div>";
+			}	
 		}				
 		if ($va_mount = $t_parent->get('ca_objects.mount', array('returnAsArray' => true, 'excludeIdnos' => array('null')))) {
 			$va_mount_links = array();
-			foreach ($va_mount as $va_key => $va_mount_id) { 
-				$va_mount_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_mount_id), '', '', 'Browse', 'artworks/facet/mount_facet/id/'.$va_mount_id);	
+			foreach ($va_mount as $va_key => $va_mount_id) {
+				if ($va_mount_id != 0) { 
+					$va_mount_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_mount_id), '', '', 'Browse', 'artworks/facet/mount_facet/id/'.$va_mount_id);	
+				}
 			}
-			print "<div class='unit'>Mount - ".join(', ', $va_mount_links)."</div>";
+			if (sizeof($va_mount_links) > 0) {
+				print "<div class='unit'>Mount - ".join(', ', $va_mount_links)."</div>";
+			}
 		}
 		if ($va_watermark = $t_object->get('ca_objects.watermark', array('returnWithStructure' => true))) {
 			$va_media_links = array();
@@ -119,7 +126,7 @@
 			while($qr_collections->nextHit()) {
 				if ($qr_collections->get('ca_collections.deleted') === null) { continue; } // you check for null because get() won't return info about deleted items
 				
-				if ($qr_collections->get('ca_objects_x_collections.current_collection', array('convertCodesToDisplayText' => true)) == $vs_list_value) {
+				if ($qr_collections->get('ca_objects_x_collections.current_collection') == $vs_list_value) {
 					$vn_current_collection_id = $qr_collections->get('ca_objects_x_collections.collection_id');
 					print "<div class='unit'>Collection - ".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>')." ".(($qr_collections->get('ca_objects_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
 					if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
@@ -207,7 +214,7 @@
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov = new ca_collections($va_relation_id['collection_id']);
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id['relation_id']);
-			if ($t_prov->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) == 403) {
+			if ($t_prov->get('ca_collections.public_private') == 403) {
 				$vs_provenance.= "<div>";
 				$vs_provenance.= $t_prov->get('ca_collections.preferred_labels');
 				if ($vs_display_date = $t_prov_rel->get('ca_objects_x_collections.display_date')) {
@@ -235,7 +242,7 @@
 					if ($t_prov_rel->get('ca_objects_x_collections.gift_artist') == $vs_list_value) {
 						$vs_buf[] = "gift of the artist";
 					}
-					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn', array('convertCodesToDisplayText' => true)) == 163) {
+					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
 					if (sizeof($vs_buf) > 0){

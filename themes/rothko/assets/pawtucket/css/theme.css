@@ -816,6 +816,7 @@ h3.window-manifest-title {
 .compareDrawer .items {
 	display:none;
 	clear:both;
+	font-size:13px;
 }
 .compareDrawer .items p {
 	clear:both;

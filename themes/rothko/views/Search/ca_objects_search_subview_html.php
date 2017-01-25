@@ -93,14 +93,15 @@
 				$t_list_item->load($qr_results->get("type_id"));
 				$vs_typecode = $t_list_item->get("idno");
 				$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
+				$vb_has_image = true;
 				if(!($vs_thumbnail = $qr_results->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
+					$vb_has_image = false;
 					if($vs_type_placeholder){
 						$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
 				}
-				
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);
 				}else{
@@ -115,7 +116,7 @@
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
 				}	
 				
-				$vs_compare_link = $vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-th-large' aria-hidden='true'></i></a>" : '';			
+				$vs_compare_link = ($vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '');			
 				print "
 	<div class='bResultItemCol col-xs-6 col-sm-3'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
@@ -123,8 +124,8 @@
 				<div class='bResultItemText'>
 					{$vs_catno}
 					{$vs_label_detail_link}
-					{$vs_compare_link}
 					{$vs_link_text}
+					{$vs_compare_link}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 		</div><!-- end bResultItem -->

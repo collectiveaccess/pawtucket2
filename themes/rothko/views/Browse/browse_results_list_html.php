@@ -130,24 +130,6 @@
 						}else{
 							$vs_image = $vs_default_placeholder_tag;
 						}
-					}else{
-						$vs_image = $vs_default_placeholder_tag;
-					}
-				}
-				$vs_info = null;
-				if ($vs_table === 'ca_objects') {
-					$vs_rep_detail_link 	= "<div class='text-center bResultListItemImg'>".caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id)."</div>";	
-					$vn_parent_id = $qr_res->get("ca_objects.parent_id");
-					$t_parent = new ca_objects($vn_parent_id);
-					$vs_catno = "";
-					if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-						$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
-					}				
-					if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
-						$vs_info.= "<p>".$vs_date."</p>";
-					}
-					if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						$vs_info.= "<p>".caGetListItemByIDForDisplay($vs_medium)."</p>";
 					}
 					$vs_info = null;
 					if ($vs_table === 'ca_objects') {

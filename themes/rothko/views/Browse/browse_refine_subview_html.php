@@ -45,6 +45,7 @@
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 
 		foreach ($va_browse_types as $vs_browse_id => $va_browse_type) {
+			if($vs_browse_id == 'works_in_collection') { continue; }
 			print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
 			if ($vs_browse_type == $vs_browse_id) {
 				if(is_array($va_facets) && sizeof($va_facets)) {
