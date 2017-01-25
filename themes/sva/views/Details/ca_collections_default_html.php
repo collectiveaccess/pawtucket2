@@ -7,20 +7,12 @@
  	$va_view_icons = $o_config->getAssoc("views")
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+		<div>
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_collections.preferred_labels.displayname}}}</H4>
-					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
+					<H6>{{{^ca_collections.type_id}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row --> 
 			<div class="row">			

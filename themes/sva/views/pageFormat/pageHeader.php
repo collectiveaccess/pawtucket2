@@ -65,67 +65,53 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!--
+        <link rel="stylesheet" href="http://svaca.sva.edu/ca_new/pawtucket/themes/sva/assets/pawtucket/css/reset.css">
+-->
+		<link rel='stylesheet' href='http://svaca.sva.edu/ca_new/pawtucket/themes/default/assets/pawtucket/css/Font-Awesome/css/font-awesome.css' type='text/css' media='all'/>
+		<link type="text/css" rel="stylesheet" href="http://fast.fonts.net/cssapi/08d66479-d029-4b18-b2e5-1459df4ebe21.css"/>
+        <link rel="stylesheet" href="http://svaca.sva.edu/ca_new/pawtucket/themes/sva/assets/pawtucket/css/main.css">
+		<script type="text/javascript" src="http://svaca.sva.edu/ca_new/pawtucket/themes/sva/assets/sva.js"></script>
+
+
 </head>
-<body>
-	<nav class="navbar navbar-default yamm" role="navigation">
-		<div class="container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-<?php
-				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
-?>
-			<span class='navbar-brand'><?php print caNavLink($this->request, "School of Visual Arts <span class='red'>Exhibition Archive</span>", '', '', '', '');?></span>
-			</div>
-
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">					
-<?php
-							print $vs_user_links;
-?>
-				</ul>
-			</div>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative; display: none">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu">
-<?php
-							print $vs_user_links;
-?>
-						</ul>
-					</li>
-					<li>
-						<?php print caNavLink($this->request, "<i class='fa fa-ellipsis-h'></i>", "", "", "Search/advanced", "objects"); ?>
-					</li>
-				</ul>
-
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
-						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
-
-			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
-	</nav>
+<body id="index">
 	<div class="container">
-		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-			<div class="row">
+
+        <div id="header" class="">
+			<ul class="nav nav-tabs hidden-xs">
+				<li class="active"><a href="#">Glaser Archives</a></li> 
+				<li><a href="http://svaarchives.org/">SVA Archives</a></li> 
+				
+				<li class="navbar-right" id="social-bar">
+					<i onclick="window.location='http://twitter.com/glaserarchives'" class="fa fa-twitter  fa-lg"></i>
+					<i onclick="window.location='http://instagram.com/glaserarchives'" class="fa fa-instagram  fa-lg"></i>
+					<i onclick="window.location='http://www.flickr.com/photos/mgdsca/albums'" class="fa fa-flickr  fa-lg"></i>
+					<i onclick="doSearch();'" class="fa fa-search fa-lg"></i></a>
+				</li>	
+
+			</ul>
+
+			<div id="banner">
+				<h1>Milton Glaser <span>Design Study Center and Archives</span></h1>
+				<ul class="nav nav-pills">
+					<li><a href="/">About the Archives</a></li>
+					<li class="active"><a href="http://svaca.sva.edu/ca_new/">Collections</a></li>
+					<li><a href="#">About SVA</a></li>
+					<li><a href="http://containerlist.glaserarchives.org">Containerlist Blog</a></li>
+				</ul>
+			</div>
+
+        </div>
+
+        <div id="main">
+            
+            <div class="wrapper">
+
+
+
+	
+<!--			<div class="row">
 				<div class="col-sm-8">
 				<ul class='svaMenu'>
 				<li>BROWSE...<li>
@@ -149,8 +135,8 @@
 ?>	
 
 				</ul>	
-				</div>
-				<div class="col-sm-3 col-sm-offset-1">
+				</div> -->
+	<!--			<div class="col-sm-3 col-sm-offset-1">
 							<h2 class='about'><?php print caNavLink($this->request, _t("About the archives"), "", "", "About", "Index"); ?></h2>
-				</div>
+				</div> -->
 			</div><!-- end row -->
